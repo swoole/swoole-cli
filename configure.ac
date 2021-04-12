@@ -1443,8 +1443,6 @@ PHP_INSTALL_HEADERS([Zend/Optimizer], [ \
     zend_optimizer.h \
     zend_ssa.h])
 
-PHP_ADD_SOURCES(TSRM, TSRM.c, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
-
 PHP_ADD_SOURCES(main, main.c snprintf.c spprintf.c \
        fopen_wrappers.c alloca.c  php_scandir.c \
        php_ini.c SAPI.c rfc1867.c php_content_types.c strlcpy.c \
