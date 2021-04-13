@@ -27,7 +27,6 @@
 #include "php_incomplete_class.h"
 #include "php_getopt.h"
 #include "ext/standard/info.h"
-#include "ext/session/php_session.h"
 #include "zend_exceptions.h"
 #include "zend_operators.h"
 #include "ext/standard/php_dns.h"
