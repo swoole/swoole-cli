@@ -26,6 +26,7 @@
 #include "zend_interfaces.h"
 
 #include "ext/reflection/php_reflection.h"
+#include "ext/swoole/include/swoole_version.h"
 
 #include "SAPI.h"
 
@@ -637,8 +638,8 @@ static int do_cli(int argc, char **argv) /* {{{ */
 				goto out;
 
 			case 'v': /* show php version & quit */
-				php_printf("PHP %s (%s) (built: %s %s) ( %s)\nCopyright (c) The PHP Group\n%s",
-					PHP_VERSION, cli_sapi_module.name, __DATE__, __TIME__,
+				php_printf("Swoole %s (%s) (built: %s %s) ( %s)\nCopyright (c) The PHP Group\n%s",
+					SWOOLE_VERSION, cli_sapi_module.name, __DATE__, __TIME__,
 #ifdef ZTS
 					"ZTS "
 #else
