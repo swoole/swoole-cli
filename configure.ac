@@ -271,9 +271,11 @@ SAPI_SHARED=libs/libphp.[]$SHLIB_DL_SUFFIX_NAME
 SAPI_STATIC=libs/libphp.a
 SAPI_LIBTOOL=libphp.la
 
-PHP_CONFIGURE_PART(Configuring SAPI modules)
+PHP_CONFIGURE_PART(Configuring CLI)
 
-esyscmd(./build/config-stubs sapi)
+sinclude(main/cli/config.m4)
+
+dnl esyscmd(./build/config-stubs sapi)
 
 dnl Show which main SAPI was selected.
 AC_MSG_CHECKING([for chosen SAPI module])
@@ -1459,7 +1461,7 @@ PHP_GEN_GLOBAL_MAKEFILE
 AC_DEFINE([HAVE_BUILD_DEFS_H], 1, [ ])
 
 dnl Make directories when building in a separate build directory.
-$php_shtool mkdir -p pear
+$php_shtool mkdir -p bin
 $php_shtool mkdir -p scripts
 $php_shtool mkdir -p scripts/man1
 

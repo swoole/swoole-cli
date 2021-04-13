@@ -20,16 +20,28 @@ if test "$cli_cv_var_PS_STRINGS" = yes ; then
   AC_DEFINE([HAVE_PS_STRINGS], [], [Define to 1 if the PS_STRINGS thing exists.])
 fi
 
+AC_DEFUN([PHP_SELECT_CLI_SAPI],[
+    PHP_BINARIES="$PHP_BINARIES $1"
+	PHP_INSTALLED_SAPIS="$PHP_INSTALLED_SAPIS $1"
+
+	PHP_BUILD_PROGRAM
+	install_binaries="install-binaries"
+	install_binary_targets="$install_binary_targets install-$1"
+	PHP_SUBST(PHP_[]translit($1,a-z0-9-,A-Z0-9_)[]_OBJS)
+	ifelse($3,,,[PHP_ADD_SOURCES_X([main/$1],[$3],[$4],PHP_[]translit($1,a-z0-9-,A-Z0-9_)[]_OBJS)])
+])
+
 AC_MSG_CHECKING(for CLI build)
 if test "$PHP_CLI" != "no"; then
-  PHP_ADD_MAKEFILE_FRAGMENT($abs_srcdir/sapi/cli/Makefile.frag)
+  PHP_ADD_MAKEFILE_FRAGMENT($abs_srcdir/main/cli/Makefile.frag)
 
   dnl Set filename.
-  SAPI_CLI_PATH=sapi/cli/php
+  SAPI_CLI_PATH=bin/swoole-cli
 
   dnl Select SAPI.
-  PHP_SELECT_SAPI(cli, program, php_cli.c ps_title.c php_cli_process_title.c, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1, '$(SAPI_CLI_PATH)')
-
+  PHP_ADD_BUILD_DIR([main/cli])
+  PHP_SELECT_CLI_SAPI(cli, program, php_cli.c ps_title.c php_cli_process_title.c, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1, '$(SAPI_CLI_PATH)')
+  
   case $host_alias in
   *aix*)
     if test "$php_sapi_module" = "shared"; then
@@ -54,8 +66,8 @@ if test "$PHP_CLI" != "no"; then
   PHP_SUBST(SAPI_CLI_PATH)
   PHP_SUBST(BUILD_CLI)
 
-  PHP_OUTPUT(sapi/cli/php.1)
+  PHP_OUTPUT(main/cli/php.1)
 
-  PHP_INSTALL_HEADERS([sapi/cli/cli.h])
+  PHP_INSTALL_HEADERS([main/cli/cli.h])
 fi
 AC_MSG_RESULT($PHP_CLI)
