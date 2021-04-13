@@ -10,8 +10,8 @@ m4_include([build/libtool.m4])
 m4_include([build/php_cxx_compile_stdcxx.m4])
 m4_include([build/php.m4])
 m4_include([build/pkg.m4])
-m4_include([TSRM/threads.m4])
-m4_include([TSRM/tsrm.m4])
+m4_include([build/threads.m4])
+m4_include([build/tsrm.m4])
 
 dnl Basic autoconf initialization, generation of config.nice.
 dnl ----------------------------------------------------------------------------
@@ -1101,7 +1101,7 @@ INCLUDES="$INCLUDES -I\$(top_builddir)/Zend"
 
 if test "$abs_srcdir" != "$abs_builddir"; then
   INCLUDES="$INCLUDES -I\$(top_srcdir)/main -I\$(top_srcdir)/Zend"
-  INCLUDES="$INCLUDES -I\$(top_srcdir)/TSRM -I\$(top_builddir)/"
+  INCLUDES="$INCLUDES -I\$(top_builddir)/"
 fi
 
 ZEND_EXTRA_LIBS="$LIBS"
