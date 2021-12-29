@@ -267,16 +267,27 @@ int main() {
 ])])
 
 
+PHP_ARG_WITH([external-libcrypt],
+  [for external libcrypt or libxcrypt],
+  [AS_HELP_STRING([--with-external-libcrypt],
+    [Use external libcrypt or libxcrypt])],
+  [no],
+  [no])
+
 dnl
 dnl If one of them is missing, use our own implementation, portable code is then possible
 dnl
-dnl TODO This is currently always enabled
-if test "$ac_cv_crypt_blowfish" = "no" || test "$ac_cv_crypt_des" = "no" || test "$ac_cv_crypt_ext_des" = "no" || test "$ac_cv_crypt_md5" = "no" || test "$ac_cv_crypt_sha512" = "no" || test "$ac_cv_crypt_sha256" = "no" || test "$ac_cv_func_crypt_r" != "yes" || true; then
-  AC_DEFINE_UNQUOTED(PHP_USE_PHP_CRYPT_R, 1, [Whether PHP has to use its own crypt_r for blowfish, des, ext des and md5])
+dnl This is currently enabled by default
+if test "$ac_cv_crypt_blowfish" = "no" || test "$ac_cv_crypt_des" = "no" || test "$ac_cv_crypt_ext_des" = "no" || test "$ac_cv_crypt_md5" = "no" || test "$ac_cv_crypt_sha512" = "no" || test "$ac_cv_crypt_sha256" = "no" || test "$ac_cv_func_crypt_r" != "yes" || test "$PHP_EXTERNAL_LIBCRYPT" = "no"; then
+  if test "$PHP_EXTERNAL_LIBCRYPT" = "no"; then
+    AC_DEFINE_UNQUOTED(PHP_USE_PHP_CRYPT_R, 1, [Whether PHP has to use its own crypt_r])
 
-  PHP_ADD_SOURCES(PHP_EXT_DIR(standard), crypt_freesec.c crypt_blowfish.c crypt_sha512.c crypt_sha256.c php_crypt_r.c)
+    PHP_ADD_SOURCES(PHP_EXT_DIR(standard), crypt_freesec.c crypt_blowfish.c crypt_sha512.c crypt_sha256.c php_crypt_r.c)
+   else
+    AC_MSG_ERROR([Cannot use external libcrypt as some algo are missing])
+   fi
 else
-  AC_DEFINE_UNQUOTED(PHP_USE_PHP_CRYPT_R, 0, [Whether PHP has to use its own crypt_r for blowfish, des and ext des])
+  AC_DEFINE_UNQUOTED(PHP_USE_PHP_CRYPT_R, 0, [Whether PHP has to use its own crypt_r])
 fi
 
 dnl
@@ -295,7 +306,17 @@ if test "$ac_cv_attribute_aligned" = "yes"; then
   AC_DEFINE([HAVE_ATTRIBUTE_ALIGNED], 1, [whether the compiler supports __attribute__ ((__aligned__))])
 fi
 
-AC_FUNC_FNMATCH
+if test "$cross_compiling" = yes ; then
+  case $host_alias in
+    *linux*)
+      AC_DEFINE([HAVE_FNMATCH], 1,
+		     [Define to 1 if your system has a working POSIX `fnmatch'
+		      function.])
+      ;;
+  esac
+else
+  AC_FUNC_FNMATCH
+fi
 
 dnl
 dnl Check if there is a support means of creating a new process and defining
@@ -397,6 +418,8 @@ if test "$PHP_PASSWORD_ARGON2" != "no"; then
   PKG_CHECK_MODULES([ARGON2], [libargon2])
   PHP_EVAL_INCLINE($ARGON2_CFLAGS)
   PHP_EVAL_LIBLINE($ARGON2_LIBS)
+
+  AC_DEFINE(HAVE_ARGON2LIB, 1, [ ])
 fi
 
 dnl

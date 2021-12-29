@@ -5,7 +5,7 @@
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
   | available through the world-wide-web at the following url:           |
-  | http://www.php.net/license/3_01.txt                                  |
+  | https://www.php.net/license/3_01.txt                                 |
   | If you did not receive a copy of the PHP license and are unable to   |
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
@@ -18,6 +18,7 @@
 #include "ext/standard/php_var.h"
 #include "php_incomplete_class.h"
 #include "zend_portability.h"
+#include "zend_exceptions.h"
 
 /* {{{ reference-handling for unserializer: var_* */
 #define VAR_ENTRIES_MAX 1018     /* 1024 - offsetof(php_unserialize_data, entries) / sizeof(void*) */
@@ -1023,7 +1024,7 @@ use_double:
 
 	if (!var_hash) {
 		/* Array or object key unserialization */
-		ZVAL_STR(rval, zend_string_init_interned(str, len, 0));
+		ZVAL_STR(rval, zend_string_init_existing_interned(str, len, 0));
 	} else {
 		ZVAL_STRINGL_FAST(rval, str, len);
 	}
@@ -1267,6 +1268,13 @@ object ":" uiv ":" ["]	{
 
 	*p = YYCURSOR;
 
+	if (ce->ce_flags & ZEND_ACC_NOT_SERIALIZABLE) {
+		zend_throw_exception_ex(NULL, 0, "Unserialization of '%s' is not allowed",
+			ZSTR_VAL(ce->name));
+		zend_string_release_ex(class_name, 0);
+		return 0;
+	}
+
 	if (custom_object) {
 		int ret;
 
@@ -1373,7 +1381,7 @@ object ":" uiv ":" ["]	{
 		goto fail;
 	}
 
-	if (!(Z_ACCESS_FLAGS(c->value) & ZEND_CLASS_CONST_IS_CASE)) {
+	if (!(ZEND_CLASS_CONST_FLAGS(c) & ZEND_CLASS_CONST_IS_CASE)) {
 		php_error_docref(NULL, E_WARNING, "%s::%s is not an enum case", ZSTR_VAL(enum_name), ZSTR_VAL(case_name));
 		goto fail;
 	}

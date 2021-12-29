@@ -1,8 +1,9 @@
 --TEST--
 Exhaustive test of MacJapanese encoding verification and conversion
+--EXTENSIONS--
+mbstring
 --SKIPIF--
 <?php
-extension_loaded('mbstring') or die('skip mbstring not available');
 if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 ?>
 --FILE--
@@ -85,9 +86,18 @@ echo "Unicode -> SJIS-mac conversion works on all valid characters\n";
 findInvalidChars($fromUnicode, $invalidChars, $unused, array_fill_keys(range(0, 0xFF), 2));
 convertAllInvalidChars($invalidChars, $fromUnicode, 'UTF-16BE', 'SJIS-mac', '%');
 echo "Unicode -> SJIS-mac conversion works on all invalid characters\n";
+
+// Test "long" illegal character markers
+mb_substitute_character("long");
+convertInvalidString("\x81", "%", "SJIS-mac", "UTF-8");
+convertInvalidString("\x81\x20", "%", "SJIS-mac", "UTF-8");
+convertInvalidString("\xED\x9F", "%", "SJIS-mac", "UTF-8");
+
+echo "Done!\n";
 ?>
 --EXPECT--
 MacJapanese verification and conversion works on all valid characters
 MacJapanese verification and conversion rejects all invalid characters
 Unicode -> SJIS-mac conversion works on all valid characters
 Unicode -> SJIS-mac conversion works on all invalid characters
+Done!

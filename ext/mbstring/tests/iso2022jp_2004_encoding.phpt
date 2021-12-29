@@ -1,8 +1,9 @@
 --TEST--
 Exhaustive test of ISO-2022-JP-2004 encoding verification and conversion
+--EXTENSIONS--
+mbstring
 --SKIPIF--
 <?php
-extension_loaded('mbstring') or die('skip mbstring not available');
 if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 ?>
 --FILE--
@@ -312,6 +313,12 @@ for ($i = 0; $i < 100; $i++) {
 
 	testValid($testString, $convertsTo, false);
 }
+
+// Test "long" illegal character markers
+mb_substitute_character("long");
+convertInvalidString("\xE0", "%", "ISO-2022-JP-2004", "UTF-8");
+convertInvalidString("\x1B\$(X", "%", "ISO-2022-JP-2004", "UTF-8"); // Invalid escape
+convertInvalidString("\x1B\$B!", "%", "ISO-2022-JP-2004", "UTF-8"); // Truncated character
 
 echo "All done!\n";
 

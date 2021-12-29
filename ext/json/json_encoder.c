@@ -5,7 +5,7 @@
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
   | available through the world-wide-web at the following url:           |
-  | http://www.php.net/license/3_01.txt                                  |
+  | https://www.php.net/license/3_01.txt                                 |
   | If you did not receive a copy of the PHP license and are unable to   |
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
@@ -80,11 +80,11 @@ static inline int php_json_is_valid_double(double d) /* {{{ */
 static inline void php_json_encode_double(smart_str *buf, double d, int options) /* {{{ */
 {
 	size_t len;
-	char num[PHP_DOUBLE_MAX_LENGTH];
+	char num[ZEND_DOUBLE_MAX_LENGTH];
 
-	php_gcvt(d, (int)PG(serialize_precision), '.', 'e', num);
+	zend_gcvt(d, (int)PG(serialize_precision), '.', 'e', num);
 	len = strlen(num);
-	if (options & PHP_JSON_PRESERVE_ZERO_FRACTION && strchr(num, '.') == NULL && len < PHP_DOUBLE_MAX_LENGTH - 2) {
+	if (options & PHP_JSON_PRESERVE_ZERO_FRACTION && strchr(num, '.') == NULL && len < ZEND_DOUBLE_MAX_LENGTH - 2) {
 		num[len++] = '.';
 		num[len++] = '0';
 		num[len] = '\0';
@@ -179,6 +179,13 @@ static int php_json_encode_array(smart_str *buf, zval *val, int options, php_jso
 			}
 		}
 
+		PHP_JSON_HASH_UNPROTECT_RECURSION(obj);
+		if (encoder->depth > encoder->max_depth) {
+			encoder->error_code = PHP_JSON_ERROR_DEPTH;
+			if (!(options & PHP_JSON_PARTIAL_OUTPUT_ON_ERROR)) {
+				return FAILURE;
+			}
+		}
 		--encoder->depth;
 
 		if (need_comma) {
@@ -186,7 +193,6 @@ static int php_json_encode_array(smart_str *buf, zval *val, int options, php_jso
 			php_json_pretty_print_indent(buf, options, encoder);
 		}
 		smart_str_appendc(buf, '}');
-		PHP_JSON_HASH_UNPROTECT_RECURSION(obj);
 		return SUCCESS;
 	} else {
 		prop_ht = myht = zend_get_properties_for(val, ZEND_PROP_PURPOSE_JSON);

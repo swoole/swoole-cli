@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -47,6 +47,10 @@
 #endif
 #if HAVE_RESOLV_H
 #include <resolv.h>
+#if defined(__HAIKU__)
+extern void __res_ndestroy(res_state statp);
+#define res_ndestroy __res_ndestroy
+#endif
 #endif
 #ifdef HAVE_DNS_H
 #include <dns.h>
@@ -169,20 +173,32 @@ PHP_FUNCTION(gethostbyaddr)
 static zend_string *php_gethostbyaddr(char *ip)
 {
 #if HAVE_IPV6 && HAVE_INET_PTON
-	struct in6_addr addr6;
-#endif
+	struct sockaddr_in sa4;
+	struct sockaddr_in6 sa6;
+	char out[NI_MAXHOST];
+	memset(&sa4, 0, sizeof(struct sockaddr_in));
+	memset(&sa6, 0, sizeof(struct sockaddr_in6));
+
+	if (inet_pton(AF_INET6, ip, &sa6.sin6_addr)) {
+		sa6.sin6_family = AF_INET6;
+
+		if (getnameinfo((struct sockaddr *)&sa6, sizeof(sa6), out, sizeof(out), NULL, 0, NI_NAMEREQD) < 0) {
+			return zend_string_init(ip, strlen(ip), 0);
+		}
+		return zend_string_init(out, strlen(out), 0);
+	} else if (inet_pton(AF_INET, ip, &sa4.sin_addr)) {
+		sa4.sin_family = AF_INET;
+
+		if (getnameinfo((struct sockaddr *)&sa4, sizeof(sa4), out, sizeof(out), NULL, 0, NI_NAMEREQD) < 0) {
+			return zend_string_init(ip, strlen(ip), 0);
+		}
+		return zend_string_init(out, strlen(out), 0);
+	}
+	return NULL; /* not a valid IP */
+#else
 	struct in_addr addr;
 	struct hostent *hp;
 
-#if HAVE_IPV6 && HAVE_INET_PTON
-	if (inet_pton(AF_INET6, ip, &addr6)) {
-		hp = gethostbyaddr((char *) &addr6, sizeof(addr6), AF_INET6);
-	} else if (inet_pton(AF_INET, ip, &addr)) {
-		hp = gethostbyaddr((char *) &addr, sizeof(addr), AF_INET);
-	} else {
-		return NULL;
-	}
-#else
 	addr.s_addr = inet_addr(ip);
 
 	if (addr.s_addr == -1) {
@@ -190,13 +206,13 @@ static zend_string *php_gethostbyaddr(char *ip)
 	}
 
 	hp = gethostbyaddr((char *) &addr, sizeof(addr), AF_INET);
-#endif
 
 	if (!hp || hp->h_name == NULL || hp->h_name[0] == '\0') {
 		return zend_string_init(ip, strlen(ip), 0);
 	}
 
 	return zend_string_init(hp->h_name, strlen(hp->h_name), 0);
+#endif
 }
 /* }}} */
 
@@ -228,6 +244,9 @@ PHP_FUNCTION(gethostbynamel)
 	struct hostent *hp;
 	struct in_addr in;
 	int i;
+#ifdef HAVE_INET_NTOP
+	char addr4[INET_ADDRSTRLEN];
+#endif
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_PATH(hostname, hostname_len)
@@ -255,7 +274,11 @@ PHP_FUNCTION(gethostbynamel)
 		}
 
 		in = *h_addr_entry;
+#ifdef HAVE_INET_NTOP
+		add_next_index_string(return_value, inet_ntop(AF_INET, &in, addr4, INET_ADDRSTRLEN));
+#else
 		add_next_index_string(return_value, inet_ntoa(in));
+#endif
 	}
 }
 /* }}} */
@@ -266,7 +289,10 @@ static zend_string *php_gethostbyname(char *name)
 	struct hostent *hp;
 	struct in_addr *h_addr_0; /* Don't call this h_addr, it's a macro! */
 	struct in_addr in;
-	char *address;
+#ifdef HAVE_INET_NTOP
+	char addr4[INET_ADDRSTRLEN];
+#endif
+	const char *address;
 
 	hp = php_network_gethostbyname(name);
 	if (!hp) {
@@ -281,7 +307,11 @@ static zend_string *php_gethostbyname(char *name)
 
 	memcpy(&in.s_addr, h_addr_0, sizeof(in.s_addr));
 
+#ifdef HAVE_INET_NTOP
+	address = inet_ntop(AF_INET, &in, addr4, INET_ADDRSTRLEN);
+#else
 	address = inet_ntoa(in);
+#endif
 	return zend_string_init(address, strlen(address), 0);
 }
 /* }}} */
@@ -405,8 +435,8 @@ PHP_FUNCTION(dns_check_record)
 		RETURN_FALSE;
 	}
 #elif defined(HAVE_RES_NSEARCH)
-    memset(&state, 0, sizeof(state));
-    if (res_ninit(handle)) {
+	memset(&state, 0, sizeof(state));
+	if (res_ninit(handle)) {
 			RETURN_FALSE;
 	}
 #else
@@ -457,11 +487,11 @@ static u_char *php_parserr(u_char *cp, u_char *end, querybuf *answer, int type_t
 	GETLONG(ttl, cp);
 	GETSHORT(dlen, cp);
 	CHECKCP(dlen);
-    if (dlen == 0) {
-        /* No data in the response - nothing to do */
-        return NULL;
-    }
-    if (type_to_fetch != DNS_T_ANY && type != type_to_fetch) {
+	if (dlen == 0) {
+		/* No data in the response - nothing to do */
+		return NULL;
+	}
+	if (type_to_fetch != DNS_T_ANY && type != type_to_fetch) {
 		cp += dlen;
 		return cp;
 	}
@@ -799,6 +829,7 @@ PHP_FUNCTION(dns_get_record)
 	zend_long type_param = PHP_DNS_ANY;
 	zval *authns = NULL, *addtl = NULL;
 	int type_to_fetch;
+	int dns_errno;
 #if defined(HAVE_DNS_SEARCH)
 	struct sockaddr_storage from;
 	uint32_t fromsize = sizeof(from);
@@ -947,8 +978,9 @@ PHP_FUNCTION(dns_get_record)
 			n = php_dns_search(handle, hostname, C_IN, type_to_fetch, answer.qb2, sizeof answer);
 
 			if (n < 0) {
+				dns_errno = php_dns_errno(handle);
 				php_dns_free_handle(handle);
-				switch (h_errno) {
+				switch (dns_errno) {
 					case NO_DATA:
 					case HOST_NOT_FOUND:
 						continue;
@@ -1076,8 +1108,8 @@ PHP_FUNCTION(dns_get_mx)
 		RETURN_FALSE;
 	}
 #elif defined(HAVE_RES_NSEARCH)
-    memset(&state, 0, sizeof(state));
-    if (res_ninit(handle)) {
+	memset(&state, 0, sizeof(state));
+	if (res_ninit(handle)) {
 			RETURN_FALSE;
 	}
 #else

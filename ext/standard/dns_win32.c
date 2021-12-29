@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -221,18 +221,18 @@ static void php_parserr(PDNS_RECORD pRec, int type_to_fetch, int store, int raw,
 				array_init(&entries);
 
 				for (i = 0; i < count; i++) {
-					txt_len += strlen(data_txt->pStringArray[i]) + 1;
+					txt_len += strlen(data_txt->pStringArray[i]);
 				}
 
-				txt = zend_string_safe_alloc(txt_len, 2, 0, 0);
-				txt_dst = txt->val;
+				txt = zend_string_alloc(txt_len, 0);
+				txt_dst = ZSTR_VAL(txt);
 				for (i = 0; i < count; i++) {
 					size_t len = strlen(data_txt->pStringArray[i]);
 					memcpy(txt_dst, data_txt->pStringArray[i], len);
 					add_next_index_stringl(&entries, data_txt->pStringArray[i], len);
 					txt_dst += len;
 				}
-				txt->len = txt_dst - txt->val;
+				*txt_dst = '\0';
 				add_assoc_str(subarray, "txt", txt);
 				add_assoc_zval(subarray, "entries", &entries);
 			}
