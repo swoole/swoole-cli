@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -485,11 +485,7 @@ static void php_cli_usage(char *argv0)
 				"   %s [options] -- [args...]\n"
 				"   %s [options] -a\n"
 				"\n"
-#if (defined(HAVE_LIBREADLINE) || defined(HAVE_LIBEDIT)) && !defined(COMPILE_DL_READLINE)
-				"  -a               Run as interactive shell\n"
-#else
-				"  -a               Run interactively\n"
-#endif
+				"  -a               Run as interactive shell (requires readline extension)\n"
 				"  -c <path>|<file> Look for php.ini file in this directory\n"
 				"  -n               No configuration (ini) files will be used\n"
 				"  -d foo[=bar]     Define INI entry foo with value 'bar'\n"
@@ -505,7 +501,6 @@ static void php_cli_usage(char *argv0)
 				"  -F <file>        Parse and execute <file> for every input line\n"
 				"  -E <end_code>    Run PHP <end_code> after processing all input lines\n"
 				"  -H               Hide any passed arguments from external tools.\n"
-				"  -S <addr>:<port> Run with built-in web server.\n"
 				"  -t <docroot>     Specify document root <docroot> for built-in web server.\n"
 				"  -s               Output HTML syntax highlighted source.\n"
 				"  -v               Version number\n"
@@ -638,29 +633,25 @@ static int do_cli(int argc, char **argv) /* {{{ */
 				goto out;
 
 			case 'v': /* show php version & quit */
-				php_printf("Swoole %s (%s) (built: %s %s) ( %s)\nCopyright (c) The PHP Group\n%s",
+				php_printf("Swoole %s (%s) (built: %s %s) (%s)\n",
 					SWOOLE_VERSION, cli_sapi_module.name, __DATE__, __TIME__,
 #ifdef ZTS
-					"ZTS "
+					"ZTS"
 #else
-					"NTS "
+					"NTS"
 #endif
 #ifdef PHP_BUILD_COMPILER
-					PHP_BUILD_COMPILER
-					" "
+					" " PHP_BUILD_COMPILER
 #endif
 #ifdef PHP_BUILD_ARCH
-					PHP_BUILD_ARCH
-					" "
+					" " PHP_BUILD_ARCH
 #endif
 #if ZEND_DEBUG
-					"DEBUG "
+					" DEBUG"
 #endif
 #ifdef HAVE_GCOV
-					"GCOV "
+					" GCOV"
 #endif
-					,
-					get_zend_version()
 				);
 				sapi_deactivate();
 				goto out;
@@ -693,6 +684,10 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			switch (c) {
 
 			case 'a':	/* interactive mode */
+				if (!cli_shell_callbacks.cli_shell_run) {
+					param_error = "Interactive shell (-a) requires the readline extension.\n";
+					break;
+				}
 				if (!interactive) {
 					if (behavior != PHP_MODE_STANDARD) {
 						param_error = param_mode_conflict;
@@ -873,11 +868,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 #endif
 
 		if (interactive) {
-#if (defined(HAVE_LIBREADLINE) || defined(HAVE_LIBEDIT)) && !defined(COMPILE_DL_READLINE)
 			printf("Interactive shell\n\n");
-#else
-			printf("Interactive mode enabled\n\n");
-#endif
 			fflush(stdout);
 		}
 
@@ -944,7 +935,7 @@ do_repeat:
 			is_ps_title_available() == PS_TITLE_SUCCESS,
 			CONST_CS, 0);
 
-		*arg_excp = arg_free; /* reconstuct argv */
+		*arg_excp = arg_free; /* reconstruct argv */
 
 		if (hide_argv) {
 			int i;
@@ -962,7 +953,7 @@ do_repeat:
 				cli_register_file_handles(/* no_close */ PHP_DEBUG || num_repeats > 1);
 			}
 
-			if (interactive && cli_shell_callbacks.cli_shell_run) {
+			if (interactive) {
 				EG(exit_status) = cli_shell_callbacks.cli_shell_run();
 			} else {
 				php_execute_script(&file_handle);
@@ -1088,6 +1079,7 @@ do_repeat:
 						zend_printf("Exception: %s\n", Z_STRVAL_P(msg));
 						zend_object_release(EG(exception));
 						EG(exception) = NULL;
+						EG(exit_status) = 1;
 					} else {
 						zend_print_zval(&ref, 0);
 						zend_write("\n", 1);
@@ -1199,7 +1191,7 @@ int main(int argc, char *argv[])
 #if defined(PHP_WIN32) && defined(_DEBUG)
 	{
 		char *tmp = getenv("PHP_WIN32_DEBUG_HEAP");
-		if (tmp && zend_atoi(tmp, 0)) {
+		if (tmp && ZEND_ATOL(tmp)) {
 			int tmp_flag;
 			_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
 			_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
@@ -1247,7 +1239,7 @@ int main(int argc, char *argv[])
 				if (ini_path_override) {
 					free(ini_path_override);
 				}
- 				ini_path_override = strdup(php_optarg);
+				ini_path_override = strdup(php_optarg);
 				break;
 			case 'n':
 				ini_ignore = 1;
@@ -1329,7 +1321,7 @@ exit_loop:
 	/* startup after we get the above ini override se we get things right */
 	if (sapi_module->startup(sapi_module) == FAILURE) {
 		/* there is no way to see if we must call zend_ini_deactivate()
-		 * since we cannot check if EG(ini_directives) has been initialised
+		 * since we cannot check if EG(ini_directives) has been initialized
 		 * because the executor's constructor does not set initialize it.
 		 * Apart from that there seems no need for zend_ini_deactivate() yet.
 		 * So we goto out_err.*/
@@ -1357,7 +1349,7 @@ exit_loop:
 	}
 
 	zend_first_try {
-		exit_status = do_cli(argc, argv);
+        exit_status = do_cli(argc, argv);
 	} zend_end_try();
 out:
 	if (ini_path_override) {
