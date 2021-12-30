@@ -10,14 +10,14 @@ m4_include([build/libtool.m4])
 m4_include([build/php_cxx_compile_stdcxx.m4])
 m4_include([build/php.m4])
 m4_include([build/pkg.m4])
-m4_include([build/threads.m4])
-m4_include([build/tsrm.m4])
+m4_include([TSRM/threads.m4])
+m4_include([TSRM/tsrm.m4])
 
 dnl Basic autoconf initialization, generation of config.nice.
 dnl ----------------------------------------------------------------------------
 
 AC_PREREQ([2.68])
-AC_INIT([PHP],[8.1.0-dev],[https://bugs.php.net],[php],[https://www.php.net])
+AC_INIT([PHP],[8.1.1],[https://bugs.php.net],[php],[https://www.php.net])
 AC_CONFIG_SRCDIR([main/php_version.h])
 AC_CONFIG_AUX_DIR([build])
 AC_PRESERVE_HELP_ORDER
@@ -133,6 +133,14 @@ AC_PROG_CPP
 AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_LN_S
 
+if test "$cross_compiling" = yes ; then
+  AC_MSG_CHECKING(for native build C compiler)
+  AC_CHECK_PROGS(BUILD_CC, [gcc clang c99 c89 cc cl],none)
+  AC_MSG_RESULT($BUILD_CC)
+else
+  BUILD_CC=$CC
+fi
+
 dnl Support systems with system libraries in e.g. /usr/lib64.
 PHP_ARG_WITH([libdir],
   [for system library directory],
@@ -216,9 +224,6 @@ AX_CHECK_COMPILE_FLAG([-fvisibility=hidden],
 case $host_alias in
   *solaris*)
     CPPFLAGS="$CPPFLAGS -D_POSIX_PTHREAD_SEMANTICS"
-    if test "${enable_libgcc+set}" != "set" && test "$GCC" = "yes"; then
-      enable_libgcc=yes
-    fi
     ;;
   *dgux*)
     CPPFLAGS="$CPPFLAGS -D_BSD_TIMEOFDAY_FLAVOR"
@@ -250,6 +255,17 @@ case $host_alias in
     ;;
 esac
 
+dnl Detect musl libc
+AC_MSG_CHECKING([whether we are using musl libc])
+if command -v ldd >/dev/null && ldd --version 2>&1 | grep -q ^musl
+then
+  AC_MSG_RESULT(yes)
+  CPPFLAGS="$CPPFLAGS -D__MUSL__"
+else
+  AC_MSG_RESULT(no)
+fi
+
+
 dnl Include Zend configurations.
 dnl ----------------------------------------------------------------------------
 
@@ -275,7 +291,7 @@ PHP_CONFIGURE_PART(Configuring CLI)
 
 sinclude(main/cli/config.m4)
 
-dnl esyscmd(./build/config-stubs sapi)
+esyscmd(./build/config-stubs sapi)
 
 dnl Show which main SAPI was selected.
 AC_MSG_CHECKING([for chosen SAPI module])
@@ -521,7 +537,7 @@ dnl Fix for these systems is already included in GCC 7, but not on GCC 6.
 dnl
 dnl At least some versions of FreeBSD seem to have buggy ifunc support, see
 dnl bug #77284. Conservatively don't use ifuncs on FreeBSD.
-AS_CASE([$host_alias], [*-*-*android*|*-*-*uclibc*|*-*-*musl*|*freebsd*], [true], [
+AS_CASE([$host_alias], [*-*-*android*|*-*-*uclibc*|*-*-*musl*|*freebsd*|*openbsd*], [true], [
   AX_GCC_FUNC_ATTRIBUTE([ifunc])
   AX_GCC_FUNC_ATTRIBUTE([target])
 ])
@@ -542,6 +558,7 @@ asctime_r \
 chroot \
 ctime_r \
 explicit_memset \
+fdatasync \
 flock \
 ftok \
 funopen \
@@ -647,7 +664,17 @@ int main(void) {
   freeaddrinfo(ai);
   return 0;
 }
-  ]])],[ac_cv_func_getaddrinfo=yes], [ac_cv_func_getaddrinfo=no], [ac_cv_func_getaddrinfo=no])],
+  ]])],[ac_cv_func_getaddrinfo=yes], [ac_cv_func_getaddrinfo=no], [
+    dnl Cross compilation.
+    case $host_alias in
+      *linux*)
+        ac_cv_func_getaddrinfo=yes
+        ;;
+      *)
+        ac_cv_func_getaddrinfo=no
+        ;;
+    esac
+  ])],
 [ac_cv_func_getaddrinfo=no])])
 if test "$ac_cv_func_getaddrinfo" = yes; then
   AC_DEFINE(HAVE_GETADDRINFO,1,[Define if you have the getaddrinfo function])
@@ -676,7 +703,19 @@ int main(void) {
 end:
     return 0;
 }
-  ]])], [ac_cv__asm_goto=yes], [ac_cv__asm_goto=no], [ac_cv__asm_goto=no])])
+  ]])], [ac_cv__asm_goto=yes], [ac_cv__asm_goto=no], [
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+int main(void) {
+#if defined(__x86_64__) || defined(__i386__)
+    __asm__ goto("jmp %l0\n" :::: end);
+#elif defined(__aarch64__)
+    __asm__ goto("b %l0\n" :::: end);
+#endif
+end:
+    return 0;
+}
+  ]])], [ac_cv__asm_goto=yes], [ac_cv__asm_goto=no])
+])])
 
 if test "$ac_cv__asm_goto" = yes; then
   AC_DEFINE(HAVE_ASM_GOTO,1,[Define if asm goto support])
@@ -1086,11 +1125,126 @@ fi
 
 unset LIBS LDFLAGS
 
+dnl PEAR
+dnl ----------------------------------------------------------------------------
+
+PHP_HELP_SEPARATOR([PEAR:])
+PHP_CONFIGURE_PART(Configuring PEAR)
+
+dnl Compatibility
+if test -z "$with_pear" && test "$enable_pear" = "no"; then
+  with_pear=no
+fi
+
+dnl If CLI is disabled disable PEAR.
+if test "$PHP_CLI" = "no"; then
+  with_pear=no
+fi
+
+PHP_ARG_WITH([pear],
+  [whether to install PEAR],
+  [AS_HELP_STRING([[--with-pear[=DIR]]],
+    [Install PEAR in DIR [PREFIX/lib/php]])],
+  [no],
+  [yes])
+
+if test "$PHP_PEAR" != "no"; then
+
+  dnl PEAR dependencies.
+  if test "$PHP_XML" = "no"; then
+    pear_error_msg="$pear_error_msg
+                    PEAR requires XML to be enabled.     Add --enable-xml to the configure line. (or --without-pear)"
+  fi
+
+  if test "$pear_error_msg"; then
+    AC_MSG_ERROR([$pear_error_msg])
+  fi
+
+  AC_MSG_WARN([The --with-pear option is deprecated])
+
+  install_pear="install-pear"
+  PEAR_INSTALLDIR=$PHP_PEAR
+
+  if test "$PHP_PEAR" = "yes"; then
+    case $PHP_LAYOUT in
+      GNU) PEAR_INSTALLDIR=$datadir/pear;;
+      *)   PEAR_INSTALLDIR=$libdir/php;;
+    esac
+  fi
+
+  PHP_ADD_MAKEFILE_FRAGMENT($abs_srcdir/pear/Makefile.frag,$abs_srcdir/pear,pear)
+fi
+
 dnl Configuring Zend and TSRM.
 dnl ----------------------------------------------------------------------------
 
+AC_ARG_ENABLE([fiber-asm],
+  [AS_HELP_STRING([--disable-fiber-asm],
+    [Disable the use of boost fiber assembly files])],
+  [fiber_asm=$enableval], [fiber_asm='yes'])
+
 PHP_HELP_SEPARATOR([Zend:])
 PHP_CONFIGURE_PART(Configuring Zend)
+
+AS_CASE([$host_cpu],
+  [x86_64*|amd64*], [fiber_cpu="x86_64"],
+  [x86*|amd*|i?86*|pentium], [fiber_cpu="i386"],
+  [aarch64*|arm64*], [fiber_cpu="arm64"],
+  [arm*], [fiber_cpu="arm32"],
+  [ppc64*|powerpc64*], [fiber_cpu="ppc64"],
+  [ppc*|powerpc*], [fiber_cpu="ppc32"],
+  [s390x*], [fiber_cpu="s390x"],
+  [mips64*], [fiber_cpu="mips64"],
+  [mips*], [fiber_cpu="mips32"],
+  [fiber_cpu="unknown"]
+)
+
+AS_CASE([$host_os],
+  [darwin*], [fiber_os="mac"],
+  [aix*|os400*], [fiber_os="aix"],
+  [fiber_os="other"]
+)
+
+AS_CASE([$fiber_cpu],
+  [x86_64], [fiber_asm_file_prefix="x86_64_sysv"],
+  [i386], [fiber_asm_file_prefix="i386_sysv"],
+  [arm64], [fiber_asm_file_prefix="arm64_aapcs"],
+  [arm32], [fiber_asm_file_prefix="arm_aapcs"],
+  [ppc64], [fiber_asm_file_prefix="ppc64_sysv"],
+  [ppc32], [fiber_asm_file_prefix="ppc32_sysv"],
+  [s390x], [fiber_asm_file_prefix="s390x_sysv"],
+  [mips64], [fiber_asm_file_prefix="mips64_n64"],
+  [mips32], [fiber_asm_file_prefix="mips32_o32"],
+  [fiber_asm_file_prefix="unknown"]
+)
+
+if test "$fiber_os" = 'mac'; then
+  fiber_asm_file="combined_sysv_macho_gas"
+elif test "$fiber_os" = 'aix'; then
+  # AIX uses a different calling convention (shared with non-_CALL_ELF Linux).
+  # The AIX assembler isn't GNU, but the file is compatible.
+  fiber_asm_file="${fiber_asm_file_prefix}_xcoff_gas"
+elif test "$fiber_asm_file_prefix" != 'unknown'; then
+  fiber_asm_file="${fiber_asm_file_prefix}_elf_gas"
+else
+  fiber_asm="no"
+fi
+
+if test "$fiber_asm" = 'yes'; then
+  AC_MSG_CHECKING([for fiber switching context])
+  AC_DEFINE([ZEND_FIBER_ASM], 1, [ ])
+  PHP_ADD_SOURCES(Zend/asm, make_${fiber_asm_file}.S jump_${fiber_asm_file}.S)
+  AC_MSG_RESULT([$fiber_asm_file])
+else
+  if test "$fiber_os" = 'mac'; then
+    AC_DEFINE([_XOPEN_SOURCE], 1, [ ])
+  fi
+  AC_CHECK_HEADER(ucontext.h, [
+    AC_DEFINE([ZEND_FIBER_UCONTEXT], 1, [ ])
+  ], [
+       AC_MSG_ERROR([fibers not available on this platform])
+  ])
+fi
 
 LIBZEND_BASIC_CHECKS
 LIBZEND_DLSYM_CHECK
@@ -1101,7 +1255,7 @@ INCLUDES="$INCLUDES -I\$(top_builddir)/Zend"
 
 if test "$abs_srcdir" != "$abs_builddir"; then
   INCLUDES="$INCLUDES -I\$(top_srcdir)/main -I\$(top_srcdir)/Zend"
-  INCLUDES="$INCLUDES -I\$(top_builddir)/"
+  INCLUDES="$INCLUDES -I\$(top_srcdir)/TSRM -I\$(top_builddir)/"
 fi
 
 ZEND_EXTRA_LIBS="$LIBS"
@@ -1324,10 +1478,38 @@ if test "$PHP_WERROR" = "yes"; then
   CXXFLAGS="$CXXFLAGS -Werror"
 fi
 
+if test "$PHP_MEMORY_SANITIZER" = "yes" &&
+   test "$PHP_ADDRESS_SANITIZER" = "yes"; then
+   AC_MSG_ERROR([MemorySanitizer and AddressSanitizer are mutually exclusive])
+fi
+
 dnl Enable -fsanitize=memory late, because interceptors may break linking detection.
 if test "$PHP_MEMORY_SANITIZER" = "yes"; then
-  CFLAGS="$CFLAGS -fsanitize=memory -fsanitize-memory-track-origins"
-  CXXFLAGS="$CXXFLAGS -fsanitize=memory -fsanitize-memory-track-origins"
+  AX_CHECK_COMPILE_FLAG([-fsanitize=memory -fsanitize-memory-track-origins], [
+    CFLAGS="$CFLAGS -fsanitize=memory -fsanitize-memory-track-origins"
+    CXXFLAGS="$CXXFLAGS -fsanitize=memory -fsanitize-memory-track-origins"
+  ], [AC_MSG_ERROR([MemorySanitizer is not available])])
+fi
+
+if test "$PHP_ADDRESS_SANITIZER" = "yes"; then
+  AX_CHECK_COMPILE_FLAG([-fsanitize=address], [
+    CFLAGS="$CFLAGS -fsanitize=address -DZEND_TRACK_ARENA_ALLOC"
+    CXXFLAGS="$CXXFLAGS -fsanitize=address -DZEND_TRACK_ARENA_ALLOC"
+  ], [AC_MSG_ERROR([AddressSanitizer is not available])])
+fi
+
+if test "$PHP_UNDEFINED_SANITIZER" = "yes"; then
+  AX_CHECK_COMPILE_FLAG([-fsanitize=undefined], [
+    CFLAGS="$CFLAGS -fsanitize=undefined"
+    CXXFLAGS="$CXXFLAGS -fsanitize=undefined"
+  ], [AC_MSG_ERROR([UndefinedBehaviorSanitizer is not available])])
+fi
+
+if test "$PHP_MEMORY_SANITIZER" = "yes" ||
+   test "$PHP_ADDRESS_SANITIZER" = "yes" ||
+   test "$PHP_UNDEFINED_SANITIZER" = "yes"; then
+    CFLAGS="$CFLAGS -fno-omit-frame-pointer"
+    CXXFLAGS="$CXXFLAGS -fno-omit-frame-pointer"
 fi
 
 dnl
@@ -1356,6 +1538,9 @@ PHP_SET_LIBTOOL_VARIABLE([--silent])
 
 dnl libtool 1.4.3 needs this.
 PHP_SET_LIBTOOL_VARIABLE([--preserve-dup-deps])
+
+dnl This needs to be passed explicitly to allow scan-build compiler overrides.
+PHP_SET_LIBTOOL_VARIABLE([--tag CC])
 
 test -z "$PHP_COMPILE" && PHP_COMPILE='$(LIBTOOL) --mode=compile $(COMPILE) -c $<'
 test -z "$CXX_PHP_COMPILE" && CXX_PHP_COMPILE='$(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $<'
@@ -1389,11 +1574,14 @@ PHP_INSTALL_HEADERS([Zend/ TSRM/ include/ main/ main/streams/])
 PHP_INSTALL_HEADERS([Zend/Optimizer], [ \
     zend_call_graph.h \
     zend_cfg.h \
+    zend_dfg.h \
     zend_dump.h \
     zend_func_info.h \
     zend_inference.h \
     zend_optimizer.h \
     zend_ssa.h])
+
+PHP_ADD_SOURCES(TSRM, TSRM.c, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 
 PHP_ADD_SOURCES(main, main.c snprintf.c spprintf.c \
        fopen_wrappers.c alloca.c  php_scandir.c \
@@ -1419,12 +1607,12 @@ PHP_ADD_SOURCES(Zend, \
     zend_vm_opcodes.c zend_opcode.c zend_operators.c zend_ptr_stack.c zend_stack.c \
     zend_variables.c zend.c zend_API.c zend_extensions.c zend_hash.c \
     zend_list.c zend_builtin_functions.c zend_attributes.c zend_execute.c \
-    zend_ini.c zend_sort.c zend_multibyte.c zend_ts_hash.c zend_stream.c \
+    zend_ini.c zend_sort.c zend_multibyte.c zend_stream.c \
     zend_iterators.c zend_interfaces.c zend_exceptions.c zend_strtod.c zend_gc.c \
     zend_closures.c zend_weakrefs.c zend_float.c zend_string.c zend_signal.c zend_generators.c \
     zend_virtual_cwd.c zend_ast.c zend_objects.c zend_object_handlers.c zend_objects_API.c \
     zend_default_classes.c zend_inheritance.c zend_smart_str.c zend_cpuinfo.c zend_gdb.c \
-    zend_observer.c zend_system_id.c zend_enum.c \
+    zend_observer.c zend_system_id.c zend_enum.c zend_fibers.c \
 	Optimizer/zend_optimizer.c \
 	Optimizer/pass1.c \
 	Optimizer/pass3.c \
@@ -1450,7 +1638,7 @@ PHP_ADD_SOURCES(Zend, \
 
 PHP_ADD_BUILD_DIR(main main/streams)
 PHP_ADD_BUILD_DIR(TSRM)
-PHP_ADD_BUILD_DIR(Zend Zend/Optimizer)
+PHP_ADD_BUILD_DIR(Zend Zend/asm Zend/Optimizer)
 
 PHP_ADD_MAKEFILE_FRAGMENT($abs_srcdir/scripts/Makefile.frag,$abs_srcdir/scripts,scripts)
 PHP_ADD_MAKEFILE_FRAGMENT($abs_srcdir/Zend/Makefile.frag,$abs_srcdir/Zend,Zend)
@@ -1461,7 +1649,7 @@ PHP_GEN_GLOBAL_MAKEFILE
 AC_DEFINE([HAVE_BUILD_DEFS_H], 1, [ ])
 
 dnl Make directories when building in a separate build directory.
-$php_shtool mkdir -p bin
+$php_shtool mkdir -p pear
 $php_shtool mkdir -p scripts
 $php_shtool mkdir -p scripts/man1
 
