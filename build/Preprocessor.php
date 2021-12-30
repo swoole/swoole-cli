@@ -8,6 +8,7 @@ class Library
     public string $file = '';
     public string $ldflags = '';
     public string $makeOptions = '';
+    public string $pkgConfig = '';
 
     function __construct(string $name)
     {
@@ -39,8 +40,13 @@ class Library
         return $this;
     }
 
-    function withMakeOptions(string $makeOptions) {
+    function withMakeOptions(string $makeOptions) : static{
         $this->makeOptions = $makeOptions;
+        return $this;
+    }
+
+    function withPkgConfig(string $pkgConfig) : static{
+        $this->pkgConfig = $pkgConfig;
         return $this;
     }
 }
@@ -48,7 +54,11 @@ class Library
 class Extension
 {
     public string $name;
+    public string $url;
     public string $options = '';
+    public string $peclVersion = '';
+    public string $file = '';
+    public string $path = '';
 
     function __construct(string $name)
     {
@@ -60,6 +70,18 @@ class Extension
         $this->options = $options;
         return $this;
     }
+
+    function withUrl(string $url): static
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    function withPeclVersion(string $peclVersion): static
+    {
+        $this->peclVersion = $peclVersion;
+        return $this;
+    }
 }
 
 class Preprocessor
@@ -68,12 +90,15 @@ class Preprocessor
     protected array $extensionList = [];
     protected string $rootDir;
     protected string $libraryDir;
+    protected string $extensionDir;
+    protected string $pkgConfigPath = '$PKG_CONFIG_PATH';
     protected int $maxJob = 8;
 
     function __construct(string $rootPath)
     {
         $this->rootDir = $rootPath;
         $this->libraryDir = $rootPath . '/pool/lib';
+        $this->extensionDir = $rootPath . '/pool/ext';
     }
 
     function addLibrary(Library $lib)
@@ -85,7 +110,11 @@ class Preprocessor
             echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
             echo $lib->file;
         } else {
-            echo "file cached: " . $lib->file . PHP_EOL;
+            echo "[Library] file cached: " . $lib->file . PHP_EOL;
+        }
+
+        if (!empty($lib->pkgConfig)) {
+            $this->pkgConfigPath = $lib->pkgConfig . ':' . $this->pkgConfigPath;
         }
 
         $this->libraryList[] = $lib;
@@ -93,6 +122,25 @@ class Preprocessor
 
     function addExtension(Extension $ext)
     {
+        if ($ext->peclVersion) {
+            $file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+            $ext->file = $file;
+            $ext->path = $this->extensionDir . '/' . $file;
+            if (!is_file($ext->path)) {
+                $download_name = $ext->name . '-' . $ext->peclVersion;
+                echo "pecl download $download_name\n";
+                echo `cd {$this->extensionDir} && pecl download $download_name && cd -`;
+            } else {
+                echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+            }
+
+            $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
+            if (!is_dir($dst_dir)) {
+                echo `mkdir -p $dst_dir`;
+                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+            }
+        }
+
         $this->extensionList[] = $ext;
     }
 
@@ -112,9 +160,20 @@ class Preprocessor
         $this->maxJob = $n;
     }
 
-    function stats()
+    function info()
     {
-        echo "extension count: " . count($this->extensionList) . PHP_EOL;
-        echo "library count: " . count($this->libraryList) . PHP_EOL;
+        echo '=========================================================='. PHP_EOL;
+        echo "Extension count: " . count($this->extensionList) . PHP_EOL;
+        echo '=========================================================='. PHP_EOL;
+        foreach ($this->extensionList as $item) {
+            echo $item->name . PHP_EOL;
+        }
+
+        echo '=========================================================='. PHP_EOL;
+        echo "Library count: " . count($this->libraryList) . PHP_EOL;
+        echo '=========================================================='. PHP_EOL;
+        foreach ($this->libraryList as $item) {
+            echo $item->name . PHP_EOL;
+        }
     }
 }

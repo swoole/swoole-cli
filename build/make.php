@@ -8,6 +8,7 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
+export PKG_CONFIG_PATH=<?= $this->pkgConfigPath . PHP_EOL ?>
 OPTIONS="--disable-all \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
@@ -50,7 +51,7 @@ elif [ "$1" = "all-library" ] ;then
 elif [ "$1" = "<?=$item->name?>" ] ;then
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 <?php endforeach; ?>
-elif [ "$1" = "static-config" ] ;then
+elif [ "$1" = "config" ] ;then
    rm ./configure
    ./buildconf --force
    mv main/php_config.h.in /tmp/cnt
@@ -60,11 +61,12 @@ elif [ "$1" = "static-config" ] ;then
    echo $OPTIONS
    export PKG_CONFIG_PATH=/usr/openssl/lib/pkgconfig:/usr/curl/lib/pkgconfig:$PKG_CONFIG_PATH
   ./configure $OPTIONS
-elif [ "$1" = "static-build" ] ;then
+elif [ "$1" = "build" ] ;then
 make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
 EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?php foreach ($this->libraryList as $item) {
     if (!empty($item->ldflags)) {
         echo $item->ldflags;
+        echo ' ';
     }
 } ?>'  -j <?=$this->maxJob?> && echo ""
 elif [ "$1" = "diff-configure" ] ;then

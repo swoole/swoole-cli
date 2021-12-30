@@ -3,6 +3,7 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
+export PKG_CONFIG_PATH=/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/libxslt/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl=/usr/curl \
@@ -21,6 +22,7 @@ OPTIONS="--disable-all \
 --enable-posix \
 --enable-sockets \
 --enable-pdo \
+--with-sqlite3 \
 --enable-phar \
 --enable-mysqlnd \
 --enable-mysqlnd \
@@ -28,7 +30,12 @@ OPTIONS="--disable-all \
 --enable-fileinfo \
 --with-pdo_mysql \
 --with-pdo-sqlite \
---with-sqlite3 \
+--with-xsl --with-libxml=/usr/libxml2 \
+--with-gmp=/usr/gmp \
+--enable-exif \
+--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom \
+--enable-gd --with-jpeg=/usr/libjpeg  --with-freetype=/usr/freetype \
+--enable-redis \
 "
 
 make_openssl() {
@@ -49,10 +56,8 @@ make_curl() {
     mkdir -p /work/pool/lib/curl && \
     tar --strip-components=1 -C /work/pool/lib/curl -xf /work/pool/lib/curl-7.80.0.tar.gz  && \
     cd curl && \
-    echo  "autoreconf -fi && \ 
-./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl"
-        autoreconf -fi && \ 
-./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl && \
+    echo  "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl"
+        autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl && \
         make -j 8   && \
     make install
 }
@@ -65,6 +70,90 @@ make_libiconv() {
     cd libiconv && \
     echo  "./configure --prefix=/usr enable_static=yes enable_shared=no"
         ./configure --prefix=/usr enable_static=yes enable_shared=no && \
+        make -j 8   && \
+    make install
+}
+
+make_libxml2() {
+    cd /work/pool/lib
+    echo "build libxml2"
+    mkdir -p /work/pool/lib/libxml2 && \
+    tar --strip-components=1 -C /work/pool/lib/libxml2 -xf /work/pool/lib/libxml2-v2.9.10.tar.gz  && \
+    cd libxml2 && \
+    echo  "./autogen.sh && ./configure --prefix=/usr/libxml2 --enable-static=yes --enable-shared=no"
+        ./autogen.sh && ./configure --prefix=/usr/libxml2 --enable-static=yes --enable-shared=no && \
+        make -j 8   && \
+    make install
+}
+
+make_libxslt() {
+    cd /work/pool/lib
+    echo "build libxslt"
+    mkdir -p /work/pool/lib/libxslt && \
+    tar --strip-components=1 -C /work/pool/lib/libxslt -xf /work/pool/lib/libxslt-v1.1.34.tar.gz  && \
+    cd libxslt && \
+    echo  "./autogen.sh && ./configure --prefix=/usr/libxslt --enable-static=yes --enable-shared=no"
+        ./autogen.sh && ./configure --prefix=/usr/libxslt --enable-static=yes --enable-shared=no && \
+        make -j 8   && \
+    make install
+}
+
+make_gmp() {
+    cd /work/pool/lib
+    echo "build gmp"
+    mkdir -p /work/pool/lib/gmp && \
+    tar --strip-components=1 -C /work/pool/lib/gmp -xf /work/pool/lib/gmp-6.2.1.tar.lz  && \
+    cd gmp && \
+    echo  "./configure --prefix=/usr/gmp --enable-static --disable-shared"
+        ./configure --prefix=/usr/gmp --enable-static --disable-shared && \
+        make -j 8   && \
+    make install
+}
+
+make_giflib() {
+    cd /work/pool/lib
+    echo "build giflib"
+    mkdir -p /work/pool/lib/giflib && \
+    tar --strip-components=1 -C /work/pool/lib/giflib -xf /work/pool/lib/giflib-5.2.1.tar.gz  && \
+    cd giflib && \
+    echo  "./configure --prefix=/usr/giflib --enable-static --disable-shared"
+        ./configure --prefix=/usr/giflib --enable-static --disable-shared && \
+        make -j 8   && \
+    make install
+}
+
+make_libpng() {
+    cd /work/pool/lib
+    echo "build libpng"
+    mkdir -p /work/pool/lib/libpng && \
+    tar --strip-components=1 -C /work/pool/lib/libpng -xf /work/pool/lib/libpng-1.6.37.tar.gz  && \
+    cd libpng && \
+    echo  "./configure --prefix=/usr/libpng --enable-static --disable-shared"
+        ./configure --prefix=/usr/libpng --enable-static --disable-shared && \
+        make -j 8   && \
+    make install
+}
+
+make_libjpeg() {
+    cd /work/pool/lib
+    echo "build libjpeg"
+    mkdir -p /work/pool/lib/libjpeg && \
+    tar --strip-components=1 -C /work/pool/lib/libjpeg -xf /work/pool/lib/libjpeg-turbo-2.1.2.tar.gz  && \
+    cd libjpeg && \
+    echo  "cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg ."
+        cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg . && \
+        make -j 8   && \
+    make install
+}
+
+make_freetype() {
+    cd /work/pool/lib
+    echo "build freetype"
+    mkdir -p /work/pool/lib/freetype && \
+    tar --strip-components=1 -C /work/pool/lib/freetype -xf /work/pool/lib/freetype-2.10.4.tar.gz  && \
+    cd freetype && \
+    echo  "./configure --prefix=/usr/freetype --enable-static --disable-shared"
+        ./configure --prefix=/usr/freetype --enable-static --disable-shared && \
         make -j 8   && \
     make install
 }
@@ -157,6 +246,13 @@ make_all_library() {
     make_openssl && echo "[SUCCESS] make openssl"
     make_curl && echo "[SUCCESS] make curl"
     make_libiconv && echo "[SUCCESS] make libiconv"
+    make_libxml2 && echo "[SUCCESS] make libxml2"
+    make_libxslt && echo "[SUCCESS] make libxslt"
+    make_gmp && echo "[SUCCESS] make gmp"
+    make_giflib && echo "[SUCCESS] make giflib"
+    make_libpng && echo "[SUCCESS] make libpng"
+    make_libjpeg && echo "[SUCCESS] make libjpeg"
+    make_freetype && echo "[SUCCESS] make freetype"
     make_sqlite3 && echo "[SUCCESS] make sqlite3"
     make_zlib && echo "[SUCCESS] make zlib"
     make_bzip2 && echo "[SUCCESS] make bzip2"
@@ -181,6 +277,20 @@ elif [ "$1" = "curl" ] ;then
     make_curl && echo "[SUCCESS] make curl"
 elif [ "$1" = "libiconv" ] ;then
     make_libiconv && echo "[SUCCESS] make libiconv"
+elif [ "$1" = "libxml2" ] ;then
+    make_libxml2 && echo "[SUCCESS] make libxml2"
+elif [ "$1" = "libxslt" ] ;then
+    make_libxslt && echo "[SUCCESS] make libxslt"
+elif [ "$1" = "gmp" ] ;then
+    make_gmp && echo "[SUCCESS] make gmp"
+elif [ "$1" = "giflib" ] ;then
+    make_giflib && echo "[SUCCESS] make giflib"
+elif [ "$1" = "libpng" ] ;then
+    make_libpng && echo "[SUCCESS] make libpng"
+elif [ "$1" = "libjpeg" ] ;then
+    make_libjpeg && echo "[SUCCESS] make libjpeg"
+elif [ "$1" = "freetype" ] ;then
+    make_freetype && echo "[SUCCESS] make freetype"
 elif [ "$1" = "sqlite3" ] ;then
     make_sqlite3 && echo "[SUCCESS] make sqlite3"
 elif [ "$1" = "zlib" ] ;then
@@ -195,7 +305,7 @@ elif [ "$1" = "zip" ] ;then
     make_zip && echo "[SUCCESS] make zip"
 elif [ "$1" = "c-ares" ] ;then
     make_c-ares && echo "[SUCCESS] make c-ares"
-elif [ "$1" = "static-config" ] ;then
+elif [ "$1" = "config" ] ;then
    rm ./configure
    ./buildconf --force
    mv main/php_config.h.in /tmp/cnt
@@ -205,9 +315,9 @@ elif [ "$1" = "static-config" ] ;then
    echo $OPTIONS
    export PKG_CONFIG_PATH=/usr/openssl/lib/pkgconfig:/usr/curl/lib/pkgconfig:$PKG_CONFIG_PATH
   ./configure $OPTIONS
-elif [ "$1" = "static-build" ] ;then
+elif [ "$1" = "build" ] ;then
 make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib-L/usr/curl/lib-L/usr/bzip2/lib'  -j 8 && echo ""
+EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libxml2/lib -L/usr/libxslt/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/bzip2/lib '  -j 8 && echo ""
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "sync" ] ;then
