@@ -1,32 +1,35 @@
 SRC=/home/htf/soft/php-8.1.1
 ROOT=$(pwd)
+export CC=clang
+export CXX=clang++
+export LD=ld.lld
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl=/usr/curl \
 --with-iconv=/usr \
---enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
---enable-posix \
---enable-sockets \
---enable-pcntl \
---enable-bcmath \
 --with-bz2 \
---enable-pdo \
---with-mysqli \
---with-pdo_mysql \
---enable-mysqlnd \
---enable-fileinfo \
---enable-intl \
+--enable-bcmath \
+--enable-pcntl \
 --enable-filter \
 --enable-session \
 --enable-tokenizer \
 --enable-mbstring \
---enable-opcache \
 --enable-ctype \
 --with-zlib \
 --with-zip \
+--enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
+--enable-posix \
+--enable-sockets \
+--enable-pdo \
 --enable-phar \
+--enable-mysqlnd \
+--enable-mysqlnd \
+--enable-intl \
+--enable-fileinfo \
+--with-pdo_mysql \
+--with-pdo-sqlite \
 --with-sqlite3 \
---with-pdo-sqlite"
+"
 
 make_openssl() {
     cd /work/pool/lib
@@ -35,8 +38,8 @@ make_openssl() {
     tar --strip-components=1 -C /work/pool/lib/openssl -xf /work/pool/lib/openssl-1.1.1m.tar.gz  && \
     cd openssl && \
     echo  "./config -static --static no-shared --prefix=/usr/openssl"
-    ./config -static --static no-shared --prefix=/usr/openssl && \
-    make -j 8 && \
+        ./config -static --static no-shared --prefix=/usr/openssl && \
+        make -j 8   && \
     make install
 }
 
@@ -48,9 +51,9 @@ make_curl() {
     cd curl && \
     echo  "autoreconf -fi && \ 
 ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl"
-    autoreconf -fi && \ 
+        autoreconf -fi && \ 
 ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl && \
-    make -j 8 && \
+        make -j 8   && \
     make install
 }
 
@@ -61,8 +64,8 @@ make_libiconv() {
     tar --strip-components=1 -C /work/pool/lib/libiconv -xf /work/pool/lib/libiconv-1.16.tar.gz  && \
     cd libiconv && \
     echo  "./configure --prefix=/usr enable_static=yes enable_shared=no"
-    ./configure --prefix=/usr enable_static=yes enable_shared=no && \
-    make -j 8 && \
+        ./configure --prefix=/usr enable_static=yes enable_shared=no && \
+        make -j 8   && \
     make install
 }
 
@@ -73,8 +76,8 @@ make_sqlite3() {
     tar --strip-components=1 -C /work/pool/lib/sqlite3 -xf /work/pool/lib/sqlite-autoconf-3370000.tar.gz  && \
     cd sqlite3 && \
     echo  "./configure --prefix=/usr --enable-static --disable-shared"
-    ./configure --prefix=/usr --enable-static --disable-shared && \
-    make -j 8 && \
+        ./configure --prefix=/usr --enable-static --disable-shared && \
+        make -j 8   && \
     make install
 }
 
@@ -85,8 +88,8 @@ make_zlib() {
     tar --strip-components=1 -C /work/pool/lib/zlib -xf /work/pool/lib/zlib-1.2.11.tar.gz  && \
     cd zlib && \
     echo  "./configure --prefix=/usr --static"
-    ./configure --prefix=/usr --static && \
-    make -j 8 && \
+        ./configure --prefix=/usr --static && \
+        make -j 8   && \
     make install
 }
 
@@ -96,9 +99,8 @@ make_bzip2() {
     mkdir -p /work/pool/lib/bzip2 && \
     tar --strip-components=1 -C /work/pool/lib/bzip2 -xf /work/pool/lib/bzip2-1.0.8.tar.gz  && \
     cd bzip2 && \
-    echo  "echo make libbzip2.a"
-    echo make libbzip2.a && \
-    make -j 8 && \
+    echo  ""
+        make -j 8  PREFIX=/usr/bzip2 && \
     make install
 }
 
@@ -109,8 +111,8 @@ make_icu() {
     tar --strip-components=1 -C /work/pool/lib/icu -xf /work/pool/lib/icu4c-60_3-src.tgz  && \
     cd icu && \
     echo  "source/runConfigureICU Linux --enable-static --disable-shared"
-    source/runConfigureICU Linux --enable-static --disable-shared && \
-    make -j 8 && \
+        source/runConfigureICU Linux --enable-static --disable-shared && \
+        make -j 8   && \
     make install
 }
 
@@ -121,8 +123,8 @@ make_oniguruma() {
     tar --strip-components=1 -C /work/pool/lib/oniguruma -xf /work/pool/lib/oniguruma-6.9.7.tar.gz  && \
     cd oniguruma && \
     echo  "./autogen.sh && ./configure --prefix=/usr --enable-static --disable-shared"
-    ./autogen.sh && ./configure --prefix=/usr --enable-static --disable-shared && \
-    make -j 8 && \
+        ./autogen.sh && ./configure --prefix=/usr --enable-static --disable-shared && \
+        make -j 8   && \
     make install
 }
 
@@ -132,9 +134,21 @@ make_zip() {
     mkdir -p /work/pool/lib/zip && \
     tar --strip-components=1 -C /work/pool/lib/zip -xf /work/pool/lib/libzip-1.8.0.tar.gz  && \
     cd zip && \
+    echo  "cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr"
+        cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr && \
+        make -j 8   && \
+    make install
+}
+
+make_c-ares() {
+    cd /work/pool/lib
+    echo "build c-ares"
+    mkdir -p /work/pool/lib/c-ares && \
+    tar --strip-components=1 -C /work/pool/lib/c-ares -xf /work/pool/lib/c-ares-1.18.1.tar.gz  && \
+    cd c-ares && \
     echo  "./configure --prefix=/usr --enable-static --disable-shared"
-    ./configure --prefix=/usr --enable-static --disable-shared && \
-    make -j 8 && \
+        ./configure --prefix=/usr --enable-static --disable-shared && \
+        make -j 8   && \
     make install
 }
 
@@ -149,6 +163,7 @@ make_all_library() {
     make_icu && echo "[SUCCESS] make icu"
     make_oniguruma && echo "[SUCCESS] make oniguruma"
     make_zip && echo "[SUCCESS] make zip"
+    make_c-ares && echo "[SUCCESS] make c-ares"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -178,6 +193,8 @@ elif [ "$1" = "oniguruma" ] ;then
     make_oniguruma && echo "[SUCCESS] make oniguruma"
 elif [ "$1" = "zip" ] ;then
     make_zip && echo "[SUCCESS] make zip"
+elif [ "$1" = "c-ares" ] ;then
+    make_c-ares && echo "[SUCCESS] make c-ares"
 elif [ "$1" = "static-config" ] ;then
    rm ./configure
    ./buildconf --force
@@ -188,6 +205,9 @@ elif [ "$1" = "static-config" ] ;then
    echo $OPTIONS
    export PKG_CONFIG_PATH=/usr/openssl/lib/pkgconfig:/usr/curl/lib/pkgconfig:$PKG_CONFIG_PATH
   ./configure $OPTIONS
+elif [ "$1" = "static-build" ] ;then
+make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
+EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib-L/usr/curl/lib-L/usr/bzip2/lib'  -j 8 && echo ""
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "sync" ] ;then

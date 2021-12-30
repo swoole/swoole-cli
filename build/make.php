@@ -5,44 +5,27 @@
 ?>
 SRC=/home/htf/soft/php-8.1.1
 ROOT=$(pwd)
+export CC=clang
+export CXX=clang++
+export LD=ld.lld
 OPTIONS="--disable-all \
 <?php foreach ($this->extensionList as $item) : ?>
-<?=$item['options']?> \
+<?=$item->options?> \
 <?php endforeach; ?>
---enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
---enable-posix \
---enable-sockets \
---enable-pcntl \
---enable-bcmath \
---with-bz2 \
---enable-pdo \
---with-mysqli \
---with-pdo_mysql \
---enable-mysqlnd \
---enable-fileinfo \
---enable-intl \
---enable-filter \
---enable-session \
---enable-tokenizer \
---enable-mbstring \
---enable-opcache \
---enable-ctype \
---with-zlib \
---with-zip \
---enable-phar \
---with-sqlite3 \
---with-pdo-sqlite"
+"
 
 <?php foreach ($this->libraryList as $item) : ?>
-make_<?=$item['name']?>() {
+make_<?=$item->name?>() {
     cd /work/pool/lib
-    echo "build <?=$item['name']?>"
-    mkdir -p /work/pool/lib/<?=$item['name']?> && \
-    tar --strip-components=1 -C /work/pool/lib/<?=$item['name']?> -xf /work/pool/lib/<?=$item['file']?>  && \
-    cd <?=$item['name']?> && \
-    echo  "<?=$item['configure']?>"
-    <?=$item['configure']?> && \
-    make -j <?=$this->maxJob?> && \
+    echo "build <?=$item->name?>"
+    mkdir -p /work/pool/lib/<?=$item->name?> && \
+    tar --strip-components=1 -C /work/pool/lib/<?=$item->name?> -xf /work/pool/lib/<?=$item->file?>  && \
+    cd <?=$item->name?> && \
+    echo  "<?=$item->configure?>"
+    <?php if (!empty($item->configure)): ?>
+    <?=$item->configure?> && \
+    <?php endif; ?>
+    make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
     make install
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
@@ -50,7 +33,7 @@ make_<?=$item['name']?>() {
 
 make_all_library() {
 <?php foreach ($this->libraryList as $item) : ?>
-    make_<?=$item['name']?> && echo "[SUCCESS] make <?=$item['name']?>"
+    make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 <?php endforeach; ?>
 }
 
@@ -64,8 +47,8 @@ elif [ "$1" = "config" ] ;then
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
-elif [ "$1" = "<?=$item['name']?>" ] ;then
-    make_<?=$item['name']?> && echo "[SUCCESS] make <?=$item['name']?>"
+elif [ "$1" = "<?=$item->name?>" ] ;then
+    make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 <?php endforeach; ?>
 elif [ "$1" = "static-config" ] ;then
    rm ./configure
@@ -77,6 +60,13 @@ elif [ "$1" = "static-config" ] ;then
    echo $OPTIONS
    export PKG_CONFIG_PATH=/usr/openssl/lib/pkgconfig:/usr/curl/lib/pkgconfig:$PKG_CONFIG_PATH
   ./configure $OPTIONS
+elif [ "$1" = "static-build" ] ;then
+make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
+EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?php foreach ($this->libraryList as $item) {
+    if (!empty($item->ldflags)) {
+        echo $item->ldflags;
+    }
+} ?>'  -j <?=$this->maxJob?> && echo ""
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "sync" ] ;then

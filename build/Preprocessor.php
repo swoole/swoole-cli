@@ -1,5 +1,67 @@
 <?php
 
+class Library
+{
+    public string $name;
+    public string $url;
+    public string $configure = '';
+    public string $file = '';
+    public string $ldflags = '';
+    public string $makeOptions = '';
+
+    function __construct(string $name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    function withUrl(string $url): static
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    function withFile(string $file): static
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    function withConfigure(string $configure): static
+    {
+        $this->configure = $configure;
+        return $this;
+    }
+
+    function withLdflags(string $ldflags): static
+    {
+        $this->ldflags = $ldflags;
+        return $this;
+    }
+
+    function withMakeOptions(string $makeOptions) {
+        $this->makeOptions = $makeOptions;
+        return $this;
+    }
+}
+
+class Extension
+{
+    public string $name;
+    public string $options = '';
+
+    function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    function withOptions(string $options): static
+    {
+        $this->options = $options;
+        return $this;
+    }
+}
+
 class Preprocessor
 {
     protected array $libraryList = [];
@@ -14,31 +76,24 @@ class Preprocessor
         $this->libraryDir = $rootPath . '/pool/lib';
     }
 
-    function addLibrary(string $name, string $url, string $configure = '', string $file = '')
+    function addLibrary(Library $lib)
     {
-        if (empty($file)) {
-            $file = basename($url);
+        if (empty($lib->file)) {
+            $lib->file = basename($lib->url);
         }
-        if (!is_file($this->libraryDir . '/' . $file)) {
-            echo `wget $url -O {$this->libraryDir}/$file`;
-            echo $file;
+        if (!is_file($this->libraryDir . '/' . $lib->file)) {
+            echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
+            echo $lib->file;
         } else {
-            echo "file cached: " . $file . PHP_EOL;
+            echo "file cached: " . $lib->file . PHP_EOL;
         }
 
-        $this->libraryList[] = [
-            'name' => $name,
-            'file' => $file,
-            'configure' => $configure,
-        ];
+        $this->libraryList[] = $lib;
     }
 
-    function addExtension(string $name, string $options)
+    function addExtension(Extension $ext)
     {
-        $this->extensionList[] = [
-            'name' => $name,
-            'options' => $options,
-        ];
+        $this->extensionList[] = $ext;
     }
 
     function gen()
@@ -55,5 +110,11 @@ class Preprocessor
     function setMaxJob(int $n)
     {
         $this->maxJob = $n;
+    }
+
+    function stats()
+    {
+        echo "extension count: " . count($this->extensionList) . PHP_EOL;
+        echo "library count: " . count($this->libraryList) . PHP_EOL;
     }
 }
