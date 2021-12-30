@@ -29,10 +29,7 @@ OPTIONS="--disable-all \
 --with-pdo-sqlite"
 
 if [ "$1" = "docker-build" ] ;then
-  sudo docker build . -t phpswoole/swoole_cli_os:latest \
-     --build-arg OPENSSL_FILE=openssl-1.1.1k.tar.gz \
-     --build-arg CURL_FILE=curl-curl-7_77_0.tar.gz \
-     --build-arg LIBICONV_FILE=libiconv-1.16.tar.gz
+  sudo docker build -t phpswoole/swoole_cli_os:latest .
 elif [ "$1" = "config" ] ;then
    echo $OPTIONS
   ./configure $OPTIONS
