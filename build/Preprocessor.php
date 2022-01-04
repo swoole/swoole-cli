@@ -5,7 +5,7 @@ namespace SwooleCli;
 abstract class Project
 {
     public string $name;
-    public string $homePage;
+    public string $homePage = '';
     public string $license = '';
     public int $licenseType = self::LICENSE_SPEC;
 
@@ -198,7 +198,7 @@ class Preprocessor
         echo "Library count: " . count($this->libraryList) . PHP_EOL;
         echo '==========================================================' . PHP_EOL;
         foreach ($this->libraryList as $item) {
-            echo $item->name . PHP_EOL;
+            echo "{$item->name}, license: {$item->license}\n";
         }
     }
 }

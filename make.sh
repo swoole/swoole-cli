@@ -3,7 +3,7 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
-export PKG_CONFIG_PATH=/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/libxslt/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/libxslt/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl=/usr/curl \
@@ -95,18 +95,6 @@ make_libxslt() {
     cd libxslt && \
     echo  "./autogen.sh && ./configure --prefix=/usr/libxslt --enable-static=yes --enable-shared=no"
         ./autogen.sh && ./configure --prefix=/usr/libxslt --enable-static=yes --enable-shared=no && \
-        make -j 8   && \
-    make install
-}
-
-make_imagemagick() {
-    cd /work/pool/lib
-    echo "build imagemagick"
-    mkdir -p /work/pool/lib/imagemagick && \
-    tar --strip-components=1 -C /work/pool/lib/imagemagick -xf /work/pool/lib/7.1.0-19.tar.gz  && \
-    cd imagemagick && \
-    echo  "./configure --prefix=/usr/imagemagick --enable-static --disable-shared"
-        ./configure --prefix=/usr/imagemagick --enable-static --disable-shared && \
         make -j 8   && \
     make install
 }
@@ -273,7 +261,6 @@ make_all_library() {
     make_libiconv && echo "[SUCCESS] make libiconv"
     make_libxml2 && echo "[SUCCESS] make libxml2"
     make_libxslt && echo "[SUCCESS] make libxslt"
-    make_imagemagick && echo "[SUCCESS] make imagemagick"
     make_gmp && echo "[SUCCESS] make gmp"
     make_giflib && echo "[SUCCESS] make giflib"
     make_libpng && echo "[SUCCESS] make libpng"
@@ -305,8 +292,6 @@ elif [ "$1" = "libxml2" ] ;then
     make_libxml2 && echo "[SUCCESS] make libxml2"
 elif [ "$1" = "libxslt" ] ;then
     make_libxslt && echo "[SUCCESS] make libxslt"
-elif [ "$1" = "imagemagick" ] ;then
-    make_imagemagick && echo "[SUCCESS] make imagemagick"
 elif [ "$1" = "gmp" ] ;then
     make_gmp && echo "[SUCCESS] make gmp"
 elif [ "$1" = "giflib" ] ;then
@@ -344,7 +329,7 @@ elif [ "$1" = "config" ] ;then
   ./configure $OPTIONS
 elif [ "$1" = "build" ] ;then
 make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libxml2/lib -L/usr/libxslt/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib '  -j 8 && echo ""
+EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libxml2/lib -L/usr/libxslt/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib '  -j 8 && echo ""
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "sync" ] ;then

@@ -161,8 +161,8 @@ function install_libwebp(Preprocessor $p)
             ->withLdflags('-L/usr/libwebp/lib')
             ->withFile('libwebp-1.2.1.tar.gz')
             ->withPkgConfig('/usr/libwebp/lib/pkgconfig')
-        ->withHomePage('https://github.com/webmproject/libwebp')
-        ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
+            ->withHomePage('https://github.com/webmproject/libwebp')
+            ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
     );
 }
 
@@ -177,69 +177,72 @@ function install_sqlite3(Preprocessor $p)
     );
 }
 
-install_openssl($p);
-install_curl($p);
-install_libiconv($p);
-install_libxml2($p);
-install_libxslt($p);
-install_imagemagick($p);
-//install_libmemcached($p);
-install_gmp($p);
-install_giflib($p);
-install_libpng($p);
-install_libjpeg($p);
-install_freetype($p);
-install_libwebp($p);
-install_sqlite3($p);
+function install_zlib(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('zlib'))
+            ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
+            ->withConfigure('./configure --prefix=/usr --static')
+            ->withHomePage('https://zlib.net/')
+            ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
+    );
+}
 
-$p->addLibrary(
-    (new Library('zlib'))
-        ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
-        ->withConfigure('./configure --prefix=/usr --static')
-        ->withHomePage('https://zlib.net/')
-        ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
-);
+function install_bzip2(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('bzip2'))
+            ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
+            ->withMakeOptions('PREFIX=/usr/bzip2')
+            ->withLdflags('-L/usr/bzip2/lib')
+            ->withHomePage('https://www.sourceware.org/bzip2/')
+            ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
+    );
+}
 
-$p->addLibrary(
-    (new Library('bzip2'))
-        ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
-        ->withMakeOptions('PREFIX=/usr/bzip2')
-        ->withLdflags('-L/usr/bzip2/lib')
-        ->withHomePage('https://www.sourceware.org/bzip2/')
-        ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
-);
+function install_icu(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('icu'))
+            ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
+            ->withConfigure('source/runConfigureICU Linux --enable-static --disable-shared')
+            ->withHomePage('https://icu.unicode.org/')
+            ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
+    );
+}
 
-$p->addLibrary(
-    (new Library('icu'))
-        ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-        ->withConfigure('source/runConfigureICU Linux --enable-static --disable-shared')
-        ->withHomePage('https://icu.unicode.org/')
-        ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
-);
+function install_oniguruma(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('oniguruma'))
+            ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
+            ->withConfigure('./autogen.sh && ./configure --prefix=/usr --enable-static --disable-shared')
+            ->withFile('oniguruma-6.9.7.tar.gz')
+            ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
+    );
+}
 
-$p->addLibrary(
-    (new Library('oniguruma'))
-        ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
-        ->withConfigure('./autogen.sh && ./configure --prefix=/usr --enable-static --disable-shared')
-        ->withFile('oniguruma-6.9.7.tar.gz')
-        ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
-);
+function install_zip(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('zip'))
+            ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
+            ->withConfigure('cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr')
+            ->withHomePage('https://libzip.org/')
+            ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
+    );
+}
 
-$p->addLibrary(
-    (new Library('zip'))
-        ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-        ->withConfigure('cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr')
-        ->withHomePage('https://libzip.org/')
-        ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
-);
-
-$p->addLibrary(
-    (new Library('c-ares'))
-        ->withUrl('https://c-ares.org/download/c-ares-1.18.1.tar.gz')
-        ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
-        ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
-        ->withHomePage('https://c-ares.org/')
-);
+function install_cares(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('c-ares'))
+            ->withUrl('https://c-ares.org/download/c-ares-1.18.1.tar.gz')
+            ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
+            ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
+            ->withHomePage('https://c-ares.org/')
+    );
+}
 
 $p->addExtension(
     (new Extension('openssl'))
@@ -301,7 +304,7 @@ $p->addExtension(
 $p->addExtension((new Extension('redis'))
     ->withOptions('--enable-redis')
     ->withPeclVersion('5.3.5')
-    ->withHomePage()
+    ->withHomePage('https://github.com/phpredis/phpredis')
     ->withLicense('https://github.com/phpredis/phpredis/blob/develop/COPYING', Extension::LICENSE_PHP)
 );
 
@@ -314,6 +317,27 @@ $p->addExtension((new Extension('imagick'))
     ->withOptions('--with-imagick')
     ->withPeclVersion('3.6.0')
 );
+
+install_openssl($p);
+install_curl($p);
+install_libiconv($p);
+install_libxml2($p);
+install_libxslt($p);
+//install_imagemagick($p);
+//install_libmemcached($p);
+install_gmp($p);
+install_giflib($p);
+install_libpng($p);
+install_libjpeg($p);
+install_freetype($p);
+install_libwebp($p);
+install_sqlite3($p);
+install_zlib($p);
+install_bzip2($p);
+install_icu($p);
+install_oniguruma($p);
+install_zip($p);
+install_cares($p);
 
 $p->gen();
 $p->info();
