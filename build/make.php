@@ -42,9 +42,6 @@ if [ "$1" = "docker-build" ] ;then
   sudo docker build -t phpswoole/swoole_cli_os:latest .
 elif [ "$1" = "docker-bash" ] ;then
   sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os /bin/bash
-elif [ "$1" = "config" ] ;then
-   echo $OPTIONS
-  ./configure $OPTIONS
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
@@ -59,7 +56,6 @@ elif [ "$1" = "config" ] ;then
    cat /tmp/cnt >> main/php_config.h.in
    echo -ne '\n#endif\n' >> main/php_config.h.in
    echo $OPTIONS
-   export PKG_CONFIG_PATH=/usr/openssl/lib/pkgconfig:/usr/curl/lib/pkgconfig:$PKG_CONFIG_PATH
   ./configure $OPTIONS
 elif [ "$1" = "build" ] ;then
 make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
@@ -72,6 +68,7 @@ EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?php foreach ($this->libraryList 
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "sync" ] ;then
+  echo "sync"
   # ZendVM
   cp -r $SRC/Zend ./
   # Extension

@@ -1,20 +1,49 @@
 <?php
 
-class Library
+namespace SwooleCli;
+
+abstract class Project
 {
     public string $name;
+    public string $homePage;
+    public string $license = '';
+    public int $licenseType = self::LICENSE_SPEC;
+
+    const LICENSE_SPEC = 0;
+    const LICENSE_APACHE2 = 1;
+    const LICENSE_BSD = 2;
+    const LICENSE_GPL = 3;
+    const LICENSE_LGPL = 4;
+    const LICENSE_MIT = 5;
+    const LICENSE_PHP = 6;
+
+    function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
+    {
+        $this->license = $license;
+        $this->licenseType = $licenseType;
+        return $this;
+    }
+
+    function withHomePage(string $homePage): static
+    {
+        $this->homePage = $homePage;
+        return $this;
+    }
+}
+
+class Library extends Project
+{
     public string $url;
     public string $configure = '';
     public string $file = '';
     public string $ldflags = '';
     public string $makeOptions = '';
     public string $pkgConfig = '';
-
-    function __construct(string $name)
-    {
-        $this->name = $name;
-        return $this;
-    }
 
     function withUrl(string $url): static
     {
@@ -40,30 +69,26 @@ class Library
         return $this;
     }
 
-    function withMakeOptions(string $makeOptions) : static{
+    function withMakeOptions(string $makeOptions): static
+    {
         $this->makeOptions = $makeOptions;
         return $this;
     }
 
-    function withPkgConfig(string $pkgConfig) : static{
+    function withPkgConfig(string $pkgConfig): static
+    {
         $this->pkgConfig = $pkgConfig;
         return $this;
     }
 }
 
-class Extension
+class Extension extends Project
 {
-    public string $name;
     public string $url;
     public string $options = '';
     public string $peclVersion = '';
     public string $file = '';
     public string $path = '';
-
-    function __construct(string $name)
-    {
-        $this->name = $name;
-    }
 
     function withOptions(string $options): static
     {
@@ -162,16 +187,16 @@ class Preprocessor
 
     function info()
     {
-        echo '=========================================================='. PHP_EOL;
+        echo '==========================================================' . PHP_EOL;
         echo "Extension count: " . count($this->extensionList) . PHP_EOL;
-        echo '=========================================================='. PHP_EOL;
+        echo '==========================================================' . PHP_EOL;
         foreach ($this->extensionList as $item) {
             echo $item->name . PHP_EOL;
         }
 
-        echo '=========================================================='. PHP_EOL;
+        echo '==========================================================' . PHP_EOL;
         echo "Library count: " . count($this->libraryList) . PHP_EOL;
-        echo '=========================================================='. PHP_EOL;
+        echo '==========================================================' . PHP_EOL;
         foreach ($this->libraryList as $item) {
             echo $item->name . PHP_EOL;
         }

@@ -3,7 +3,7 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
-export PKG_CONFIG_PATH=/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/libxslt/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/libxslt/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl=/usr/curl \
@@ -36,6 +36,7 @@ OPTIONS="--disable-all \
 --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom \
 --enable-gd --with-jpeg=/usr/libjpeg  --with-freetype=/usr/freetype \
 --enable-redis \
+--with-imagick \
 "
 
 make_openssl() {
@@ -98,6 +99,18 @@ make_libxslt() {
     make install
 }
 
+make_imagemagick() {
+    cd /work/pool/lib
+    echo "build imagemagick"
+    mkdir -p /work/pool/lib/imagemagick && \
+    tar --strip-components=1 -C /work/pool/lib/imagemagick -xf /work/pool/lib/7.1.0-19.tar.gz  && \
+    cd imagemagick && \
+    echo  "./configure --prefix=/usr/imagemagick --enable-static --disable-shared"
+        ./configure --prefix=/usr/imagemagick --enable-static --disable-shared && \
+        make -j 8   && \
+    make install
+}
+
 make_gmp() {
     cd /work/pool/lib
     echo "build gmp"
@@ -154,6 +167,18 @@ make_freetype() {
     cd freetype && \
     echo  "./configure --prefix=/usr/freetype --enable-static --disable-shared"
         ./configure --prefix=/usr/freetype --enable-static --disable-shared && \
+        make -j 8   && \
+    make install
+}
+
+make_libwebp() {
+    cd /work/pool/lib
+    echo "build libwebp"
+    mkdir -p /work/pool/lib/libwebp && \
+    tar --strip-components=1 -C /work/pool/lib/libwebp -xf /work/pool/lib/libwebp-1.2.1.tar.gz  && \
+    cd libwebp && \
+    echo  "./configure --prefix=/usr/libwebp --enable-static --disable-shared"
+        ./configure --prefix=/usr/libwebp --enable-static --disable-shared && \
         make -j 8   && \
     make install
 }
@@ -248,11 +273,13 @@ make_all_library() {
     make_libiconv && echo "[SUCCESS] make libiconv"
     make_libxml2 && echo "[SUCCESS] make libxml2"
     make_libxslt && echo "[SUCCESS] make libxslt"
+    make_imagemagick && echo "[SUCCESS] make imagemagick"
     make_gmp && echo "[SUCCESS] make gmp"
     make_giflib && echo "[SUCCESS] make giflib"
     make_libpng && echo "[SUCCESS] make libpng"
     make_libjpeg && echo "[SUCCESS] make libjpeg"
     make_freetype && echo "[SUCCESS] make freetype"
+    make_libwebp && echo "[SUCCESS] make libwebp"
     make_sqlite3 && echo "[SUCCESS] make sqlite3"
     make_zlib && echo "[SUCCESS] make zlib"
     make_bzip2 && echo "[SUCCESS] make bzip2"
@@ -266,9 +293,6 @@ if [ "$1" = "docker-build" ] ;then
   sudo docker build -t phpswoole/swoole_cli_os:latest .
 elif [ "$1" = "docker-bash" ] ;then
   sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os /bin/bash
-elif [ "$1" = "config" ] ;then
-   echo $OPTIONS
-  ./configure $OPTIONS
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 elif [ "$1" = "openssl" ] ;then
@@ -281,6 +305,8 @@ elif [ "$1" = "libxml2" ] ;then
     make_libxml2 && echo "[SUCCESS] make libxml2"
 elif [ "$1" = "libxslt" ] ;then
     make_libxslt && echo "[SUCCESS] make libxslt"
+elif [ "$1" = "imagemagick" ] ;then
+    make_imagemagick && echo "[SUCCESS] make imagemagick"
 elif [ "$1" = "gmp" ] ;then
     make_gmp && echo "[SUCCESS] make gmp"
 elif [ "$1" = "giflib" ] ;then
@@ -291,6 +317,8 @@ elif [ "$1" = "libjpeg" ] ;then
     make_libjpeg && echo "[SUCCESS] make libjpeg"
 elif [ "$1" = "freetype" ] ;then
     make_freetype && echo "[SUCCESS] make freetype"
+elif [ "$1" = "libwebp" ] ;then
+    make_libwebp && echo "[SUCCESS] make libwebp"
 elif [ "$1" = "sqlite3" ] ;then
     make_sqlite3 && echo "[SUCCESS] make sqlite3"
 elif [ "$1" = "zlib" ] ;then
@@ -313,14 +341,14 @@ elif [ "$1" = "config" ] ;then
    cat /tmp/cnt >> main/php_config.h.in
    echo -ne '\n#endif\n' >> main/php_config.h.in
    echo $OPTIONS
-   export PKG_CONFIG_PATH=/usr/openssl/lib/pkgconfig:/usr/curl/lib/pkgconfig:$PKG_CONFIG_PATH
   ./configure $OPTIONS
 elif [ "$1" = "build" ] ;then
 make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libxml2/lib -L/usr/libxslt/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/bzip2/lib '  -j 8 && echo ""
+EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libxml2/lib -L/usr/libxslt/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib '  -j 8 && echo ""
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "sync" ] ;then
+  echo "sync"
   # ZendVM
   cp -r $SRC/Zend ./
   # Extension
