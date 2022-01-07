@@ -44,6 +44,7 @@ class Library extends Project
     public string $ldflags = '';
     public string $makeOptions = '';
     public string $pkgConfig = '';
+    public string $pkgName = '';
 
     function withUrl(string $url): static
     {
@@ -78,6 +79,12 @@ class Library extends Project
     function withPkgConfig(string $pkgConfig): static
     {
         $this->pkgConfig = $pkgConfig;
+        return $this;
+    }
+
+    function withPkgName(string $pkgName): static
+    {
+        $this->pkgName = $pkgName;
         return $this;
     }
 }

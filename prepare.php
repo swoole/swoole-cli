@@ -28,6 +28,7 @@ function install_curl(Preprocessor $p)
             ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl")
             ->withLdflags('-L/usr/curl/lib')
             ->withPkgConfig('/usr/curl/lib/pkgconfig')
+            ->withPkgName('libcurl')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withHomePage('https://curl.se/')
     );
@@ -38,31 +39,32 @@ function install_libiconv(Preprocessor $p)
     $p->addLibrary(
         (new Library('libiconv'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz')
-            ->withConfigure('./configure --prefix=/usr enable_static=yes enable_shared=no')
+            ->withConfigure('./configure --prefix=/usr/libiconv enable_static=yes enable_shared=no')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
     );
 }
 
+// MUST be in the /usr directory
 function install_libxml2(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('libxml2'))
             ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.10/libxml2-v2.9.10.tar.gz')
-            ->withConfigure('./autogen.sh && ./configure --prefix=/usr/libxml2 --enable-static=yes --enable-shared=no')
-            ->withLdflags('-L/usr/libxml2/lib')
-            ->withPkgConfig('/usr/libxml2/lib/pkgconfig')
+            ->withConfigure('./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no')
+//            ->withLdflags('-L/usr/libxml2/lib')
+//            ->withPkgConfig('/usr/libxml2/lib/pkgconfig')
+//            ->withPkgName('libxml-2.0')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
     );
 }
 
+// MUST be in the /usr directory
 function install_libxslt(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('libxslt'))
             ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
-            ->withConfigure('./autogen.sh && ./configure --prefix=/usr/libxslt --enable-static=yes --enable-shared=no')
-            ->withLdflags('-L/usr/libxslt/lib')
-            ->withPkgConfig('/usr/libxslt/lib/pkgconfig')
+            ->withConfigure('./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
     );
 }
@@ -75,6 +77,8 @@ function install_imagemagick(Preprocessor $p)
             ->withConfigure('./configure --prefix=/usr/imagemagick --enable-static --disable-shared')
             ->withLdflags('-L/usr/imagemagick/lib')
             ->withPkgConfig('/usr/imagemagick/lib/pkgconfig')
+            ->withPkgName('ImageMagick')
+            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
     );
 }
 
@@ -106,7 +110,7 @@ function install_giflib(Preprocessor $p)
     $p->addLibrary(
         (new Library('giflib'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/giflib --enable-static --disable-shared')
+            ->withMakeOptions('libgif.a')
             ->withLdflags('-L/usr/giflib/lib')
             ->withPkgConfig('/usr/giflib/lib/pkgconfig')
             ->withLicense('http://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
@@ -157,7 +161,7 @@ function install_libwebp(Preprocessor $p)
     $p->addLibrary(
         (new Library('libwebp'))
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
-            ->withConfigure('./configure --prefix=/usr/libwebp --enable-static --disable-shared')
+            ->withConfigure('./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared')
             ->withLdflags('-L/usr/libwebp/lib')
             ->withFile('libwebp-1.2.1.tar.gz')
             ->withPkgConfig('/usr/libwebp/lib/pkgconfig')
@@ -205,7 +209,7 @@ function install_icu(Preprocessor $p)
     $p->addLibrary(
         (new Library('icu'))
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-            ->withConfigure('source/runConfigureICU Linux --enable-static --disable-shared')
+            ->withConfigure('source/runConfigureICU Linux --prefix=/usr/icu --enable-static --disable-shared')
             ->withHomePage('https://icu.unicode.org/')
             ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
     );
@@ -222,12 +226,13 @@ function install_oniguruma(Preprocessor $p)
     );
 }
 
+// MUST be in the /usr directory
 function install_zip(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('zip'))
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-            ->withConfigure('cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr')
+            ->withConfigure('cmake . -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr')
             ->withHomePage('https://libzip.org/')
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
     );
@@ -236,7 +241,7 @@ function install_zip(Preprocessor $p)
 function install_cares(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('c-ares'))
+        (new Library('cares'))
             ->withUrl('https://c-ares.org/download/c-ares-1.18.1.tar.gz')
             ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
             ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
@@ -244,12 +249,32 @@ function install_cares(Preprocessor $p)
     );
 }
 
+install_openssl($p);
+install_curl($p);
+install_libiconv($p);
+install_libxml2($p);
+install_libxslt($p);
+install_imagemagick($p);
+install_gmp($p);
+install_giflib($p);
+install_libpng($p);
+install_libjpeg($p);
+install_freetype($p);
+install_libwebp($p);
+install_sqlite3($p);
+install_zlib($p);
+install_bzip2($p);
+install_icu($p);
+install_oniguruma($p);
+install_zip($p);
+install_cares($p);
+
 $p->addExtension(
     (new Extension('openssl'))
         ->withOptions('--with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl')
 );
 $p->addExtension((new Extension('curl'))->withOptions('--with-curl=/usr/curl'));
-$p->addExtension((new Extension('iconv'))->withOptions('--with-iconv=/usr'));
+$p->addExtension((new Extension('iconv'))->withOptions('--with-iconv=/usr/libiconv'));
 $p->addExtension((new Extension('bz2'))->withOptions('--with-bz2'));
 $p->addExtension((new Extension('bcmath'))->withOptions('--enable-bcmath'));
 $p->addExtension((new Extension('pcntl'))->withOptions('--enable-pcntl'));
@@ -277,8 +302,13 @@ $p->addExtension((new Extension('pdo_mysql'))->withOptions('--with-pdo_mysql'));
 $p->addExtension((new Extension('pdo-sqlite'))->withOptions('--with-pdo-sqlite'));
 
 $p->addExtension(
+    (new Extension('xml'))
+        ->withOptions('--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml')
+);
+
+$p->addExtension(
     (new Extension('xsl'))
-        ->withOptions('--with-xsl --with-libxml=/usr/libxml2')
+        ->withOptions('--with-xsl')
 );
 
 $p->addExtension(
@@ -289,11 +319,6 @@ $p->addExtension(
 $p->addExtension(
     (new Extension('exif'))
         ->withOptions('--enable-exif')
-);
-
-$p->addExtension(
-    (new Extension('xml'))
-        ->withOptions('--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom')
 );
 
 $p->addExtension(
@@ -308,36 +333,10 @@ $p->addExtension((new Extension('redis'))
     ->withLicense('https://github.com/phpredis/phpredis/blob/develop/COPYING', Extension::LICENSE_PHP)
 );
 
-//$p->addExtension((new Extension('memcached'))
-//    ->withOptions('--enable-memcached')
-//    ->withPeclVersion('3.1.5')
-//);
-
 $p->addExtension((new Extension('imagick'))
-    ->withOptions('--with-imagick')
+    ->withOptions('--with-imagick=/usr/imagemagick')
     ->withPeclVersion('3.6.0')
 );
-
-install_openssl($p);
-install_curl($p);
-install_libiconv($p);
-install_libxml2($p);
-install_libxslt($p);
-//install_imagemagick($p);
-//install_libmemcached($p);
-install_gmp($p);
-install_giflib($p);
-install_libpng($p);
-install_libjpeg($p);
-install_freetype($p);
-install_libwebp($p);
-install_sqlite3($p);
-install_zlib($p);
-install_bzip2($p);
-install_icu($p);
-install_oniguruma($p);
-install_zip($p);
-install_cares($p);
 
 $p->gen();
 $p->info();

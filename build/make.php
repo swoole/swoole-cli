@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $this Preprocessor
+ * @var $this SwooleCli\Preprocessor
  */
 ?>
 SRC=/home/htf/soft/php-8.1.1
@@ -38,6 +38,28 @@ make_all_library() {
 <?php endforeach; ?>
 }
 
+config_php() {
+    rm ./configure
+    ./buildconf --force
+    mv main/php_config.h.in /tmp/cnt
+    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
+    cat /tmp/cnt >> main/php_config.h.in
+    echo -ne '\n#endif\n' >> main/php_config.h.in
+    echo $OPTIONS
+    echo $PKG_CONFIG_PATH
+    ./configure $OPTIONS
+}
+
+make_php() {
+    make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?php foreach ($this->libraryList as $item) {
+        if (!empty($item->ldflags)) {
+            echo $item->ldflags;
+            echo ' ';
+        }
+    } ?>'  -j <?=$this->maxJob?> && echo ""
+}
+
 if [ "$1" = "docker-build" ] ;then
   sudo docker build -t phpswoole/swoole_cli_os:latest .
 elif [ "$1" = "docker-bash" ] ;then
@@ -49,24 +71,16 @@ elif [ "$1" = "<?=$item->name?>" ] ;then
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
-   rm ./configure
-   ./buildconf --force
-   mv main/php_config.h.in /tmp/cnt
-   echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
-   cat /tmp/cnt >> main/php_config.h.in
-   echo -ne '\n#endif\n' >> main/php_config.h.in
-   echo $OPTIONS
-  ./configure $OPTIONS
+    config_php
 elif [ "$1" = "build" ] ;then
-make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?php foreach ($this->libraryList as $item) {
-    if (!empty($item->ldflags)) {
-        echo $item->ldflags;
-        echo ' ';
-    }
-} ?>'  -j <?=$this->maxJob?> && echo ""
+    make_php
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
+elif [ "$1" = "pkg-check" ] ;then
+<?php foreach ($this->libraryList as $item) : ?>
+    echo "<?= $item->name ?>"
+    pkg-config --libs <?= ($item->pkgName ?: $item->name) . PHP_EOL ?>
+<?php endforeach; ?>
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM

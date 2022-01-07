@@ -3,11 +3,11 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
-export PKG_CONFIG_PATH=/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/libxslt/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl=/usr/curl \
---with-iconv=/usr \
+--with-iconv=/usr/libiconv \
 --with-bz2 \
 --enable-bcmath \
 --enable-pcntl \
@@ -30,13 +30,13 @@ OPTIONS="--disable-all \
 --enable-fileinfo \
 --with-pdo_mysql \
 --with-pdo-sqlite \
---with-xsl --with-libxml=/usr/libxml2 \
+--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
+--with-xsl \
 --with-gmp=/usr/gmp \
 --enable-exif \
---enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom \
 --enable-gd --with-jpeg=/usr/libjpeg  --with-freetype=/usr/freetype \
 --enable-redis \
---with-imagick \
+--with-imagick=/usr/imagemagick \
 "
 
 make_openssl() {
@@ -69,8 +69,8 @@ make_libiconv() {
     mkdir -p /work/pool/lib/libiconv && \
     tar --strip-components=1 -C /work/pool/lib/libiconv -xf /work/pool/lib/libiconv-1.16.tar.gz  && \
     cd libiconv && \
-    echo  "./configure --prefix=/usr enable_static=yes enable_shared=no"
-        ./configure --prefix=/usr enable_static=yes enable_shared=no && \
+    echo  "./configure --prefix=/usr/libiconv enable_static=yes enable_shared=no"
+        ./configure --prefix=/usr/libiconv enable_static=yes enable_shared=no && \
         make -j 8   && \
     make install
 }
@@ -81,8 +81,8 @@ make_libxml2() {
     mkdir -p /work/pool/lib/libxml2 && \
     tar --strip-components=1 -C /work/pool/lib/libxml2 -xf /work/pool/lib/libxml2-v2.9.10.tar.gz  && \
     cd libxml2 && \
-    echo  "./autogen.sh && ./configure --prefix=/usr/libxml2 --enable-static=yes --enable-shared=no"
-        ./autogen.sh && ./configure --prefix=/usr/libxml2 --enable-static=yes --enable-shared=no && \
+    echo  "./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no"
+        ./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no && \
         make -j 8   && \
     make install
 }
@@ -93,8 +93,20 @@ make_libxslt() {
     mkdir -p /work/pool/lib/libxslt && \
     tar --strip-components=1 -C /work/pool/lib/libxslt -xf /work/pool/lib/libxslt-v1.1.34.tar.gz  && \
     cd libxslt && \
-    echo  "./autogen.sh && ./configure --prefix=/usr/libxslt --enable-static=yes --enable-shared=no"
-        ./autogen.sh && ./configure --prefix=/usr/libxslt --enable-static=yes --enable-shared=no && \
+    echo  "./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no"
+        ./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no && \
+        make -j 8   && \
+    make install
+}
+
+make_imagemagick() {
+    cd /work/pool/lib
+    echo "build imagemagick"
+    mkdir -p /work/pool/lib/imagemagick && \
+    tar --strip-components=1 -C /work/pool/lib/imagemagick -xf /work/pool/lib/7.1.0-19.tar.gz  && \
+    cd imagemagick && \
+    echo  "./configure --prefix=/usr/imagemagick --enable-static --disable-shared"
+        ./configure --prefix=/usr/imagemagick --enable-static --disable-shared && \
         make -j 8   && \
     make install
 }
@@ -117,9 +129,8 @@ make_giflib() {
     mkdir -p /work/pool/lib/giflib && \
     tar --strip-components=1 -C /work/pool/lib/giflib -xf /work/pool/lib/giflib-5.2.1.tar.gz  && \
     cd giflib && \
-    echo  "./configure --prefix=/usr/giflib --enable-static --disable-shared"
-        ./configure --prefix=/usr/giflib --enable-static --disable-shared && \
-        make -j 8   && \
+    echo  ""
+        make -j 8  libgif.a && \
     make install
 }
 
@@ -165,8 +176,8 @@ make_libwebp() {
     mkdir -p /work/pool/lib/libwebp && \
     tar --strip-components=1 -C /work/pool/lib/libwebp -xf /work/pool/lib/libwebp-1.2.1.tar.gz  && \
     cd libwebp && \
-    echo  "./configure --prefix=/usr/libwebp --enable-static --disable-shared"
-        ./configure --prefix=/usr/libwebp --enable-static --disable-shared && \
+    echo  "./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared"
+        ./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared && \
         make -j 8   && \
     make install
 }
@@ -212,8 +223,8 @@ make_icu() {
     mkdir -p /work/pool/lib/icu && \
     tar --strip-components=1 -C /work/pool/lib/icu -xf /work/pool/lib/icu4c-60_3-src.tgz  && \
     cd icu && \
-    echo  "source/runConfigureICU Linux --enable-static --disable-shared"
-        source/runConfigureICU Linux --enable-static --disable-shared && \
+    echo  "source/runConfigureICU Linux --prefix=/usr/icu --enable-static --disable-shared"
+        source/runConfigureICU Linux --prefix=/usr/icu --enable-static --disable-shared && \
         make -j 8   && \
     make install
 }
@@ -236,18 +247,18 @@ make_zip() {
     mkdir -p /work/pool/lib/zip && \
     tar --strip-components=1 -C /work/pool/lib/zip -xf /work/pool/lib/libzip-1.8.0.tar.gz  && \
     cd zip && \
-    echo  "cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr"
-        cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr && \
+    echo  "cmake . -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr"
+        cmake . -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr && \
         make -j 8   && \
     make install
 }
 
-make_c-ares() {
+make_cares() {
     cd /work/pool/lib
-    echo "build c-ares"
-    mkdir -p /work/pool/lib/c-ares && \
-    tar --strip-components=1 -C /work/pool/lib/c-ares -xf /work/pool/lib/c-ares-1.18.1.tar.gz  && \
-    cd c-ares && \
+    echo "build cares"
+    mkdir -p /work/pool/lib/cares && \
+    tar --strip-components=1 -C /work/pool/lib/cares -xf /work/pool/lib/c-ares-1.18.1.tar.gz  && \
+    cd cares && \
     echo  "./configure --prefix=/usr --enable-static --disable-shared"
         ./configure --prefix=/usr --enable-static --disable-shared && \
         make -j 8   && \
@@ -261,6 +272,7 @@ make_all_library() {
     make_libiconv && echo "[SUCCESS] make libiconv"
     make_libxml2 && echo "[SUCCESS] make libxml2"
     make_libxslt && echo "[SUCCESS] make libxslt"
+    make_imagemagick && echo "[SUCCESS] make imagemagick"
     make_gmp && echo "[SUCCESS] make gmp"
     make_giflib && echo "[SUCCESS] make giflib"
     make_libpng && echo "[SUCCESS] make libpng"
@@ -273,7 +285,24 @@ make_all_library() {
     make_icu && echo "[SUCCESS] make icu"
     make_oniguruma && echo "[SUCCESS] make oniguruma"
     make_zip && echo "[SUCCESS] make zip"
-    make_c-ares && echo "[SUCCESS] make c-ares"
+    make_cares && echo "[SUCCESS] make cares"
+}
+
+config_php() {
+    rm ./configure
+    ./buildconf --force
+    mv main/php_config.h.in /tmp/cnt
+    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
+    cat /tmp/cnt >> main/php_config.h.in
+    echo -ne '\n#endif\n' >> main/php_config.h.in
+    echo $OPTIONS
+    echo $PKG_CONFIG_PATH
+    ./configure $OPTIONS
+}
+
+make_php() {
+    make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib '  -j 8 && echo ""
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -292,6 +321,8 @@ elif [ "$1" = "libxml2" ] ;then
     make_libxml2 && echo "[SUCCESS] make libxml2"
 elif [ "$1" = "libxslt" ] ;then
     make_libxslt && echo "[SUCCESS] make libxslt"
+elif [ "$1" = "imagemagick" ] ;then
+    make_imagemagick && echo "[SUCCESS] make imagemagick"
 elif [ "$1" = "gmp" ] ;then
     make_gmp && echo "[SUCCESS] make gmp"
 elif [ "$1" = "giflib" ] ;then
@@ -316,22 +347,53 @@ elif [ "$1" = "oniguruma" ] ;then
     make_oniguruma && echo "[SUCCESS] make oniguruma"
 elif [ "$1" = "zip" ] ;then
     make_zip && echo "[SUCCESS] make zip"
-elif [ "$1" = "c-ares" ] ;then
-    make_c-ares && echo "[SUCCESS] make c-ares"
+elif [ "$1" = "cares" ] ;then
+    make_cares && echo "[SUCCESS] make cares"
 elif [ "$1" = "config" ] ;then
-   rm ./configure
-   ./buildconf --force
-   mv main/php_config.h.in /tmp/cnt
-   echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
-   cat /tmp/cnt >> main/php_config.h.in
-   echo -ne '\n#endif\n' >> main/php_config.h.in
-   echo $OPTIONS
-  ./configure $OPTIONS
+    config_php
 elif [ "$1" = "build" ] ;then
-make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libxml2/lib -L/usr/libxslt/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib '  -j 8 && echo ""
+    make_php
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
+elif [ "$1" = "pkg-check" ] ;then
+    echo "openssl"
+    pkg-config --libs openssl
+    echo "curl"
+    pkg-config --libs libcurl
+    echo "libiconv"
+    pkg-config --libs libiconv
+    echo "libxml2"
+    pkg-config --libs libxml2
+    echo "libxslt"
+    pkg-config --libs libxslt
+    echo "imagemagick"
+    pkg-config --libs ImageMagick
+    echo "gmp"
+    pkg-config --libs gmp
+    echo "giflib"
+    pkg-config --libs giflib
+    echo "libpng"
+    pkg-config --libs libpng
+    echo "libjpeg"
+    pkg-config --libs libjpeg
+    echo "freetype"
+    pkg-config --libs freetype
+    echo "libwebp"
+    pkg-config --libs libwebp
+    echo "sqlite3"
+    pkg-config --libs sqlite3
+    echo "zlib"
+    pkg-config --libs zlib
+    echo "bzip2"
+    pkg-config --libs bzip2
+    echo "icu"
+    pkg-config --libs icu
+    echo "oniguruma"
+    pkg-config --libs oniguruma
+    echo "zip"
+    pkg-config --libs zip
+    echo "cares"
+    pkg-config --libs cares
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM
