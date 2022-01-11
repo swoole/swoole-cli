@@ -296,3 +296,7 @@ tmp-php.ini
 /.project
 /.cproject
 /pool/
+/ext/redis
+/ext/memcached
+/ext/imagick
+

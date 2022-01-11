@@ -459,7 +459,6 @@ static sapi_module_struct cli_sapi_module = {
 /* }}} */
 
 static const zend_function_entry additional_functions[] = {
-	ZEND_FE(dl, arginfo_dl)
 	PHP_FE(cli_set_process_title,        arginfo_cli_set_process_title)
 	PHP_FE(cli_get_process_title,        arginfo_cli_get_process_title)
 	PHP_FE_END
@@ -935,6 +934,11 @@ do_repeat:
 			is_ps_title_available() == PS_TITLE_SUCCESS,
 			CONST_CS, 0);
 
+        zend_register_bool_constant(
+            ZEND_STRL("SWOOLE_CLI"),
+            1,
+            CONST_CS, 0);
+
 		*arg_excp = arg_free; /* reconstruct argv */
 
 		if (hide_argv) {
@@ -1172,7 +1176,7 @@ int main(int argc, char *argv[])
 	char *ini_path_override = NULL;
 	char *ini_entries = NULL;
 	size_t ini_entries_len = 0;
-	int ini_ignore = 0;
+	int ini_ignore = 1;
 	sapi_module_struct *sapi_module = &cli_sapi_module;
 
 	/*

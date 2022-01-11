@@ -49,6 +49,14 @@ make_openssl() {
         ./config -static --static no-shared --prefix=/usr/openssl && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_openssl() {
+    cd /work/pool/lib
+    echo "clean openssl"
+    cd /work/pool/lib/openssl && make clean
+    cd -
 }
 
 make_curl() {
@@ -61,6 +69,14 @@ make_curl() {
         autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_curl() {
+    cd /work/pool/lib
+    echo "clean curl"
+    cd /work/pool/lib/curl && make clean
+    cd -
 }
 
 make_libiconv() {
@@ -73,6 +89,14 @@ make_libiconv() {
         ./configure --prefix=/usr/libiconv enable_static=yes enable_shared=no && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_libiconv() {
+    cd /work/pool/lib
+    echo "clean libiconv"
+    cd /work/pool/lib/libiconv && make clean
+    cd -
 }
 
 make_libxml2() {
@@ -85,6 +109,14 @@ make_libxml2() {
         ./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_libxml2() {
+    cd /work/pool/lib
+    echo "clean libxml2"
+    cd /work/pool/lib/libxml2 && make clean
+    cd -
 }
 
 make_libxslt() {
@@ -97,6 +129,14 @@ make_libxslt() {
         ./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_libxslt() {
+    cd /work/pool/lib
+    echo "clean libxslt"
+    cd /work/pool/lib/libxslt && make clean
+    cd -
 }
 
 make_imagemagick() {
@@ -109,6 +149,14 @@ make_imagemagick() {
         ./configure --prefix=/usr/imagemagick --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_imagemagick() {
+    cd /work/pool/lib
+    echo "clean imagemagick"
+    cd /work/pool/lib/imagemagick && make clean
+    cd -
 }
 
 make_gmp() {
@@ -121,6 +169,14 @@ make_gmp() {
         ./configure --prefix=/usr/gmp --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_gmp() {
+    cd /work/pool/lib
+    echo "clean gmp"
+    cd /work/pool/lib/gmp && make clean
+    cd -
 }
 
 make_giflib() {
@@ -132,6 +188,14 @@ make_giflib() {
     echo  ""
         make -j 8  libgif.a && \
     make install
+    cd -
+}
+
+clean_giflib() {
+    cd /work/pool/lib
+    echo "clean giflib"
+    cd /work/pool/lib/giflib && make clean
+    cd -
 }
 
 make_libpng() {
@@ -144,6 +208,14 @@ make_libpng() {
         ./configure --prefix=/usr/libpng --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_libpng() {
+    cd /work/pool/lib
+    echo "clean libpng"
+    cd /work/pool/lib/libpng && make clean
+    cd -
 }
 
 make_libjpeg() {
@@ -156,6 +228,14 @@ make_libjpeg() {
         cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg . && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_libjpeg() {
+    cd /work/pool/lib
+    echo "clean libjpeg"
+    cd /work/pool/lib/libjpeg && make clean
+    cd -
 }
 
 make_freetype() {
@@ -168,6 +248,14 @@ make_freetype() {
         ./configure --prefix=/usr/freetype --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_freetype() {
+    cd /work/pool/lib
+    echo "clean freetype"
+    cd /work/pool/lib/freetype && make clean
+    cd -
 }
 
 make_libwebp() {
@@ -180,6 +268,14 @@ make_libwebp() {
         ./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_libwebp() {
+    cd /work/pool/lib
+    echo "clean libwebp"
+    cd /work/pool/lib/libwebp && make clean
+    cd -
 }
 
 make_sqlite3() {
@@ -192,6 +288,14 @@ make_sqlite3() {
         ./configure --prefix=/usr --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_sqlite3() {
+    cd /work/pool/lib
+    echo "clean sqlite3"
+    cd /work/pool/lib/sqlite3 && make clean
+    cd -
 }
 
 make_zlib() {
@@ -204,6 +308,14 @@ make_zlib() {
         ./configure --prefix=/usr --static && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_zlib() {
+    cd /work/pool/lib
+    echo "clean zlib"
+    cd /work/pool/lib/zlib && make clean
+    cd -
 }
 
 make_bzip2() {
@@ -215,6 +327,14 @@ make_bzip2() {
     echo  ""
         make -j 8  PREFIX=/usr/bzip2 && \
     make install
+    cd -
+}
+
+clean_bzip2() {
+    cd /work/pool/lib
+    echo "clean bzip2"
+    cd /work/pool/lib/bzip2 && make clean
+    cd -
 }
 
 make_icu() {
@@ -223,10 +343,18 @@ make_icu() {
     mkdir -p /work/pool/lib/icu && \
     tar --strip-components=1 -C /work/pool/lib/icu -xf /work/pool/lib/icu4c-60_3-src.tgz  && \
     cd icu && \
-    echo  "source/runConfigureICU Linux --prefix=/usr/icu --enable-static --disable-shared"
-        source/runConfigureICU Linux --prefix=/usr/icu --enable-static --disable-shared && \
+    echo  "source/runConfigureICU Linux --prefix=/usr --enable-static --disable-shared"
+        source/runConfigureICU Linux --prefix=/usr --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_icu() {
+    cd /work/pool/lib
+    echo "clean icu"
+    cd /work/pool/lib/icu && make clean
+    cd -
 }
 
 make_oniguruma() {
@@ -239,6 +367,14 @@ make_oniguruma() {
         ./autogen.sh && ./configure --prefix=/usr --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_oniguruma() {
+    cd /work/pool/lib
+    echo "clean oniguruma"
+    cd /work/pool/lib/oniguruma && make clean
+    cd -
 }
 
 make_zip() {
@@ -251,6 +387,14 @@ make_zip() {
         cmake . -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_zip() {
+    cd /work/pool/lib
+    echo "clean zip"
+    cd /work/pool/lib/zip && make clean
+    cd -
 }
 
 make_cares() {
@@ -263,6 +407,14 @@ make_cares() {
         ./configure --prefix=/usr --enable-static --disable-shared && \
         make -j 8   && \
     make install
+    cd -
+}
+
+clean_cares() {
+    cd /work/pool/lib
+    echo "clean cares"
+    cd /work/pool/lib/cares && make clean
+    cd -
 }
 
 
@@ -302,7 +454,12 @@ config_php() {
 
 make_php() {
     make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib '  -j 8 && echo ""
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libiconv/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib '  -j 8 && echo ""
+}
+
+help() {
+    echo "php prepare.php config"
+    echo "php prepare.php build"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -353,6 +510,26 @@ elif [ "$1" = "config" ] ;then
     config_php
 elif [ "$1" = "build" ] ;then
     make_php
+elif [ "$1" = "clean-library" ] ;then
+    clean_openssl && echo "[SUCCESS] make clean [openssl]"
+    clean_curl && echo "[SUCCESS] make clean [curl]"
+    clean_libiconv && echo "[SUCCESS] make clean [libiconv]"
+    clean_libxml2 && echo "[SUCCESS] make clean [libxml2]"
+    clean_libxslt && echo "[SUCCESS] make clean [libxslt]"
+    clean_imagemagick && echo "[SUCCESS] make clean [imagemagick]"
+    clean_gmp && echo "[SUCCESS] make clean [gmp]"
+    clean_giflib && echo "[SUCCESS] make clean [giflib]"
+    clean_libpng && echo "[SUCCESS] make clean [libpng]"
+    clean_libjpeg && echo "[SUCCESS] make clean [libjpeg]"
+    clean_freetype && echo "[SUCCESS] make clean [freetype]"
+    clean_libwebp && echo "[SUCCESS] make clean [libwebp]"
+    clean_sqlite3 && echo "[SUCCESS] make clean [sqlite3]"
+    clean_zlib && echo "[SUCCESS] make clean [zlib]"
+    clean_bzip2 && echo "[SUCCESS] make clean [bzip2]"
+    clean_icu && echo "[SUCCESS] make clean [icu]"
+    clean_oniguruma && echo "[SUCCESS] make clean [oniguruma]"
+    clean_zip && echo "[SUCCESS] make clean [zip]"
+    clean_cares && echo "[SUCCESS] make clean [cares]"
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "pkg-check" ] ;then
@@ -452,5 +629,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r sapi/cli sapi/cli
   cp -r ./TSRM/TSRM.h main/TSRM.h
   exit 0
+else
+    help
 fi
 

@@ -39,6 +39,7 @@ function install_libiconv(Preprocessor $p)
     $p->addLibrary(
         (new Library('libiconv'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz')
+            ->withLdflags('-L/usr/libiconv/lib')
             ->withConfigure('./configure --prefix=/usr/libiconv enable_static=yes enable_shared=no')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
     );
@@ -209,7 +210,7 @@ function install_icu(Preprocessor $p)
     $p->addLibrary(
         (new Library('icu'))
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-            ->withConfigure('source/runConfigureICU Linux --prefix=/usr/icu --enable-static --disable-shared')
+            ->withConfigure('source/runConfigureICU Linux --prefix=/usr --enable-static --disable-shared')
             ->withHomePage('https://icu.unicode.org/')
             ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
     );

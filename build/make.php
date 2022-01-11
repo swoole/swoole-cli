@@ -28,6 +28,14 @@ make_<?=$item->name?>() {
     <?php endif; ?>
     make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
     make install
+    cd -
+}
+
+clean_<?=$item->name?>() {
+    cd /work/pool/lib
+    echo "clean <?=$item->name?>"
+    cd /work/pool/lib/<?=$item->name?> && make clean
+    cd -
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
 <?php endforeach; ?>
@@ -60,6 +68,11 @@ make_php() {
     } ?>'  -j <?=$this->maxJob?> && echo ""
 }
 
+help() {
+    echo "php prepare.php config"
+    echo "php prepare.php build"
+}
+
 if [ "$1" = "docker-build" ] ;then
   sudo docker build -t phpswoole/swoole_cli_os:latest .
 elif [ "$1" = "docker-bash" ] ;then
@@ -74,6 +87,10 @@ elif [ "$1" = "config" ] ;then
     config_php
 elif [ "$1" = "build" ] ;then
     make_php
+elif [ "$1" = "clean-library" ] ;then
+<?php foreach ($this->libraryList as $item) : ?>
+    clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"
+<?php endforeach; ?>
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "pkg-check" ] ;then
@@ -139,5 +156,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r sapi/cli sapi/cli
   cp -r ./TSRM/TSRM.h main/TSRM.h
   exit 0
+else
+    help
 fi
 
