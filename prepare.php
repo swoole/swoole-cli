@@ -7,6 +7,9 @@ use SwooleCli\Library;
 use SwooleCli\Extension;
 
 $p = new Preprocessor(__DIR__);
+$p->setPhpSrcDir('/home/htf/soft/php-8.1.1');
+$p->setDockerVersion('1.1');
+$p->setSwooleDir('/home/htf/workspace/swoole');
 
 function install_openssl(Preprocessor $p)
 {
@@ -274,6 +277,14 @@ $p->addExtension(
     (new Extension('openssl'))
         ->withOptions('--with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl')
 );
+
+$p->addExtension(
+    (new Extension('swoole'))
+        ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares')
+        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
+        ->withHomePage('https://github.com/swoole/swoole-src')
+);
+
 $p->addExtension((new Extension('curl'))->withOptions('--with-curl=/usr/curl'));
 $p->addExtension((new Extension('iconv'))->withOptions('--with-iconv=/usr/libiconv'));
 $p->addExtension((new Extension('bz2'))->withOptions('--with-bz2'));
@@ -286,21 +297,19 @@ $p->addExtension((new Extension('mbstring'))->withOptions('--enable-mbstring'));
 $p->addExtension((new Extension('ctype'))->withOptions('--enable-ctype'));
 $p->addExtension((new Extension('zlib'))->withOptions('--with-zlib'));
 $p->addExtension((new Extension('zip'))->withOptions('--with-zip'));
-$p->addExtension(
-    (new Extension('swoole'))
-        ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares')
-);
 $p->addExtension((new Extension('posix'))->withOptions('--enable-posix'));
 $p->addExtension((new Extension('sockets'))->withOptions('--enable-sockets'));
 $p->addExtension((new Extension('pdo'))->withOptions('--enable-pdo'));
 $p->addExtension((new Extension('sqlite3'))->withOptions('--with-sqlite3'));
 $p->addExtension((new Extension('phar'))->withOptions('--enable-phar'));
 $p->addExtension((new Extension('mysqlnd'))->withOptions('--enable-mysqlnd'));
-$p->addExtension((new Extension('mysqlnd'))->withOptions('--enable-mysqlnd'));
+$p->addExtension((new Extension('mysqli'))->withOptions('--with-mysqli'));
 $p->addExtension((new Extension('intl'))->withOptions('--enable-intl'));
 $p->addExtension((new Extension('fileinfo'))->withOptions('--enable-fileinfo'));
 $p->addExtension((new Extension('pdo_mysql'))->withOptions('--with-pdo_mysql'));
 $p->addExtension((new Extension('pdo-sqlite'))->withOptions('--with-pdo-sqlite'));
+$p->addExtension((new Extension('soap'))->withOptions('--enable-soap'));
+//$p->addExtension((new Extension('opcache'))->withOptions('--enable-opcache'));
 
 $p->addExtension(
     (new Extension('xml'))

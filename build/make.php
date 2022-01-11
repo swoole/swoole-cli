@@ -3,7 +3,7 @@
  * @var $this SwooleCli\Preprocessor
  */
 ?>
-SRC=/home/htf/soft/php-8.1.1
+SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
@@ -74,9 +74,9 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-  sudo docker build -t phpswoole/swoole_cli_os:latest .
+  sudo docker build -t phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> .
 elif [ "$1" = "docker-bash" ] ;then
-  sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os /bin/bash
+    sudo docker run -it -v $ROOT:/work -v <?= $this->swooleDir ?>:/work/ext/swoole phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> /bin/bash
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>

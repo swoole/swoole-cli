@@ -6,6 +6,7 @@ export LD=ld.lld
 export PKG_CONFIG_PATH=/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
+--enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
 --with-curl=/usr/curl \
 --with-iconv=/usr/libiconv \
 --with-bz2 \
@@ -18,18 +19,18 @@ OPTIONS="--disable-all \
 --enable-ctype \
 --with-zlib \
 --with-zip \
---enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
 --enable-posix \
 --enable-sockets \
 --enable-pdo \
 --with-sqlite3 \
 --enable-phar \
 --enable-mysqlnd \
---enable-mysqlnd \
+--with-mysqli \
 --enable-intl \
 --enable-fileinfo \
 --with-pdo_mysql \
 --with-pdo-sqlite \
+--enable-soap \
 --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
 --with-xsl \
 --with-gmp=/usr/gmp \
@@ -463,9 +464,9 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-  sudo docker build -t phpswoole/swoole_cli_os:latest .
+  sudo docker build -t phpswoole/swoole_cli_os:1.1 .
 elif [ "$1" = "docker-bash" ] ;then
-  sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os /bin/bash
+    sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os:1.1 /bin/bash
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 elif [ "$1" = "openssl" ] ;then

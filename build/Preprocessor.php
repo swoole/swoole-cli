@@ -124,6 +124,9 @@ class Preprocessor
     protected string $libraryDir;
     protected string $extensionDir;
     protected string $pkgConfigPath = '$PKG_CONFIG_PATH';
+    protected string $phpSrcDir;
+    protected string $dockerVersion = 'latest';
+    protected string $swooleDir;
     protected int $maxJob = 8;
 
     function __construct(string $rootPath)
@@ -131,6 +134,21 @@ class Preprocessor
         $this->rootDir = $rootPath;
         $this->libraryDir = $rootPath . '/pool/lib';
         $this->extensionDir = $rootPath . '/pool/ext';
+    }
+
+    function setPhpSrcDir(string $phpSrcDir)
+    {
+        $this->phpSrcDir = $phpSrcDir;
+    }
+
+    function setDockerVersion(string $dockerVersion)
+    {
+        $this->dockerVersion = $dockerVersion;
+    }
+
+    function setSwooleDir(string $swooleDir)
+    {
+        $this->swooleDir = $swooleDir;
     }
 
     function addLibrary(Library $lib)
