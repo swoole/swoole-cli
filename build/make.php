@@ -87,6 +87,14 @@ elif [ "$1" = "config" ] ;then
     config_php
 elif [ "$1" = "build" ] ;then
     make_php
+elif [ "$1" = "archive" ] ;then
+    cd bin
+    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-linux-x64.tar.xz
+    strip swoole-cli
+    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
+    mv ${SWOOLE_CLI_FILE} ../
+    cd -
 elif [ "$1" = "clean-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"

@@ -152,8 +152,6 @@ const opt_struct OPTIONS[] = {
 	{'r', 1, "run"},
 	{'s', 0, "syntax-highlight"},
 	{'s', 0, "syntax-highlighting"},
-	{'S', 1, "server"},
-	{'t', 1, "docroot"},
 	{'w', 0, "strip"},
 	{'?', 0, "usage"},/* help alias (both '?' and 'usage') */
 	{'v', 0, "version"},
@@ -480,7 +478,6 @@ static void php_cli_usage(char *argv0)
 				"   %s [options] -r <code> [--] [args...]\n"
 				"   %s [options] [-B <begin_code>] -R <code> [-E <end_code>] [--] [args...]\n"
 				"   %s [options] [-B <begin_code>] -F <file> [-E <end_code>] [--] [args...]\n"
-				"   %s [options] -S <addr>:<port> [-t docroot] [router]\n"
 				"   %s [options] -- [args...]\n"
 				"   %s [options] -a\n"
 				"\n"

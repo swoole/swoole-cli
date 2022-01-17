@@ -6,7 +6,6 @@ export LD=ld.lld
 export PKG_CONFIG_PATH=/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
---enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
 --with-curl=/usr/curl \
 --with-iconv=/usr/libiconv \
 --with-bz2 \
@@ -31,11 +30,13 @@ OPTIONS="--disable-all \
 --with-pdo_mysql \
 --with-pdo-sqlite \
 --enable-soap \
---enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
 --with-xsl \
 --with-gmp=/usr/gmp \
 --enable-exif \
+--with-sodium \
+--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
 --enable-gd --with-jpeg=/usr/libjpeg  --with-freetype=/usr/freetype \
+--enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
 --enable-redis \
 --with-imagick=/usr/imagemagick \
 "
@@ -418,6 +419,26 @@ clean_cares() {
     cd -
 }
 
+make_libsodium() {
+    cd /work/pool/lib
+    echo "build libsodium"
+    mkdir -p /work/pool/lib/libsodium && \
+    tar --strip-components=1 -C /work/pool/lib/libsodium -xf /work/pool/lib/libsodium-1.0.18.tar.gz  && \
+    cd libsodium && \
+    echo  "./configure --prefix=/usr --enable-static --disable-shared"
+        ./configure --prefix=/usr --enable-static --disable-shared && \
+        make -j 8   && \
+    make install
+    cd -
+}
+
+clean_libsodium() {
+    cd /work/pool/lib
+    echo "clean libsodium"
+    cd /work/pool/lib/libsodium && make clean
+    cd -
+}
+
 
 make_all_library() {
     make_openssl && echo "[SUCCESS] make openssl"
@@ -439,6 +460,7 @@ make_all_library() {
     make_oniguruma && echo "[SUCCESS] make oniguruma"
     make_zip && echo "[SUCCESS] make zip"
     make_cares && echo "[SUCCESS] make cares"
+    make_libsodium && echo "[SUCCESS] make libsodium"
 }
 
 config_php() {
@@ -507,10 +529,20 @@ elif [ "$1" = "zip" ] ;then
     make_zip && echo "[SUCCESS] make zip"
 elif [ "$1" = "cares" ] ;then
     make_cares && echo "[SUCCESS] make cares"
+elif [ "$1" = "libsodium" ] ;then
+    make_libsodium && echo "[SUCCESS] make libsodium"
 elif [ "$1" = "config" ] ;then
     config_php
 elif [ "$1" = "build" ] ;then
     make_php
+elif [ "$1" = "archive" ] ;then
+    cd bin
+    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-linux-x64.tar.xz
+    strip swoole-cli
+    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
+    mv ${SWOOLE_CLI_FILE} ../
+    cd -
 elif [ "$1" = "clean-library" ] ;then
     clean_openssl && echo "[SUCCESS] make clean [openssl]"
     clean_curl && echo "[SUCCESS] make clean [curl]"
@@ -531,6 +563,7 @@ elif [ "$1" = "clean-library" ] ;then
     clean_oniguruma && echo "[SUCCESS] make clean [oniguruma]"
     clean_zip && echo "[SUCCESS] make clean [zip]"
     clean_cares && echo "[SUCCESS] make clean [cares]"
+    clean_libsodium && echo "[SUCCESS] make clean [libsodium]"
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "pkg-check" ] ;then
@@ -572,6 +605,8 @@ elif [ "$1" = "pkg-check" ] ;then
     pkg-config --libs zip
     echo "cares"
     pkg-config --libs cares
+    echo "libsodium"
+    pkg-config --libs libsodium
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM

@@ -11,6 +11,10 @@ $p->setPhpSrcDir('/home/htf/soft/php-8.1.1');
 $p->setDockerVersion('1.1');
 $p->setSwooleDir('/home/htf/workspace/swoole');
 
+// ================================================================================================
+// Library
+// ================================================================================================
+
 function install_openssl(Preprocessor $p)
 {
     $p->addLibrary((new Library('openssl'))
@@ -253,6 +257,41 @@ function install_cares(Preprocessor $p)
     );
 }
 
+function install_libedit(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('libedit'))
+            ->withUrl('https://thrysoee.dk/editline/libedit-20210910-3.1.tar.gz')
+            ->withConfigure('./configure --prefix=/usr/libedit --enable-static --disable-shared')
+            ->withPkgConfig('/usr/libedit/lib/pkgconfig')
+            ->withLicense('http://www.netbsd.org/Goals/redistribution.html', Library::LICENSE_BSD)
+            ->withHomePage('https://thrysoee.dk/editline/')
+    );
+}
+
+function install_ncurses(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('ncurses'))
+            ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
+            ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/projectceladon/libncurses')
+    );
+}
+
+function install_libsodium(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('libsodium'))
+            ->withUrl('https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz')
+            ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
+            // ISC License, like BSD
+            ->withLicense('https://en.wikipedia.org/wiki/ISC_license', Library::LICENSE_SPEC)
+            ->withHomePage('https://doc.libsodium.org/')
+    );
+}
+
 install_openssl($p);
 install_curl($p);
 install_libiconv($p);
@@ -272,17 +311,16 @@ install_icu($p);
 install_oniguruma($p);
 install_zip($p);
 install_cares($p);
+//install_ncurses($p);
+//install_libedit($p);
+install_libsodium($p);
+// ================================================================================================
+// PHP Extension
+// ================================================================================================
 
 $p->addExtension(
     (new Extension('openssl'))
         ->withOptions('--with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl')
-);
-
-$p->addExtension(
-    (new Extension('swoole'))
-        ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares')
-        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
-        ->withHomePage('https://github.com/swoole/swoole-src')
 );
 
 $p->addExtension((new Extension('curl'))->withOptions('--with-curl=/usr/curl'));
@@ -309,6 +347,11 @@ $p->addExtension((new Extension('fileinfo'))->withOptions('--enable-fileinfo'));
 $p->addExtension((new Extension('pdo_mysql'))->withOptions('--with-pdo_mysql'));
 $p->addExtension((new Extension('pdo-sqlite'))->withOptions('--with-pdo-sqlite'));
 $p->addExtension((new Extension('soap'))->withOptions('--enable-soap'));
+$p->addExtension((new Extension('xsl'))->withOptions('--with-xsl'));
+$p->addExtension((new Extension('gmp'))->withOptions('--with-gmp=/usr/gmp'));
+$p->addExtension((new Extension('exif'))->withOptions('--enable-exif'));
+$p->addExtension((new Extension('sodium'))->withOptions('--with-sodium'));
+//$p->addExtension((new Extension('readline'))->withOptions('--with-libedit'));
 //$p->addExtension((new Extension('opcache'))->withOptions('--enable-opcache'));
 
 $p->addExtension(
@@ -317,23 +360,15 @@ $p->addExtension(
 );
 
 $p->addExtension(
-    (new Extension('xsl'))
-        ->withOptions('--with-xsl')
-);
-
-$p->addExtension(
-    (new Extension('gmp'))
-        ->withOptions('--with-gmp=/usr/gmp')
-);
-
-$p->addExtension(
-    (new Extension('exif'))
-        ->withOptions('--enable-exif')
-);
-
-$p->addExtension(
     (new Extension('gd'))
         ->withOptions('--enable-gd --with-jpeg=/usr/libjpeg  --with-freetype=/usr/freetype')
+);
+
+$p->addExtension(
+    (new Extension('swoole'))
+        ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares')
+        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
+        ->withHomePage('https://github.com/swoole/swoole-src')
 );
 
 $p->addExtension((new Extension('redis'))
@@ -346,6 +381,8 @@ $p->addExtension((new Extension('redis'))
 $p->addExtension((new Extension('imagick'))
     ->withOptions('--with-imagick=/usr/imagemagick')
     ->withPeclVersion('3.6.0')
+    ->withHomePage('https://github.com/Imagick/imagick')
+    ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
 );
 
 $p->gen();

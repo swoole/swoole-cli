@@ -199,6 +199,10 @@ class Preprocessor
         ob_start();
         include __DIR__ . '/make.php';
         file_put_contents($this->rootDir . '/make.sh', ob_get_clean());
+
+        ob_start();
+        include __DIR__ . '/license.php';
+        file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
     }
 
     /**
