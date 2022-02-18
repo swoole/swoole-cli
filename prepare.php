@@ -292,6 +292,18 @@ function install_libsodium(Preprocessor $p)
     );
 }
 
+function install_libyaml(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('libyaml'))
+            ->withUrl('http://pyyaml.org/download/libyaml/yaml-0.2.5.tar.gz')
+            ->withConfigure('./configure --prefix=/usr/libyaml --enable-static --disable-shared')
+            ->withLdflags('-L/usr/libyaml/lib')
+            ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
+            ->withHomePage('https://pyyaml.org/wiki/LibYAML')
+    );
+}
+
 install_openssl($p);
 install_curl($p);
 install_libiconv($p);
@@ -314,6 +326,8 @@ install_cares($p);
 //install_ncurses($p);
 //install_libedit($p);
 install_libsodium($p);
+install_libyaml($p);
+
 // ================================================================================================
 // PHP Extension
 // ================================================================================================
@@ -383,6 +397,13 @@ $p->addExtension((new Extension('imagick'))
     ->withPeclVersion('3.6.0')
     ->withHomePage('https://github.com/Imagick/imagick')
     ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
+);
+
+$p->addExtension((new Extension('yaml'))
+    ->withOptions('--with-yaml=/usr/libyaml')
+    ->withPeclVersion('2.2.2')
+    ->withHomePage('https://github.com/php/pecl-file_formats-yaml')
+    ->withLicense('https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE', Extension::LICENSE_MIT)
 );
 
 $p->gen();

@@ -39,6 +39,7 @@ OPTIONS="--disable-all \
 --enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
 --enable-redis \
 --with-imagick=/usr/imagemagick \
+--with-yaml=/usr/libyaml \
 "
 
 make_openssl() {
@@ -439,6 +440,26 @@ clean_libsodium() {
     cd -
 }
 
+make_libyaml() {
+    cd /work/pool/lib
+    echo "build libyaml"
+    mkdir -p /work/pool/lib/libyaml && \
+    tar --strip-components=1 -C /work/pool/lib/libyaml -xf /work/pool/lib/yaml-0.2.5.tar.gz  && \
+    cd libyaml && \
+    echo  "./configure --prefix=/usr/libyaml --enable-static --disable-shared"
+        ./configure --prefix=/usr/libyaml --enable-static --disable-shared && \
+        make -j 8   && \
+    make install
+    cd -
+}
+
+clean_libyaml() {
+    cd /work/pool/lib
+    echo "clean libyaml"
+    cd /work/pool/lib/libyaml && make clean
+    cd -
+}
+
 
 make_all_library() {
     make_openssl && echo "[SUCCESS] make openssl"
@@ -461,6 +482,7 @@ make_all_library() {
     make_zip && echo "[SUCCESS] make zip"
     make_cares && echo "[SUCCESS] make cares"
     make_libsodium && echo "[SUCCESS] make libsodium"
+    make_libyaml && echo "[SUCCESS] make libyaml"
 }
 
 config_php() {
@@ -477,7 +499,7 @@ config_php() {
 
 make_php() {
     make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libiconv/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib '  -j 8 && echo ""
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libiconv/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/libyaml/lib '  -j 8 && echo ""
 }
 
 help() {
@@ -486,9 +508,9 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-  sudo docker build -t phpswoole/swoole_cli_os:1.1 .
+  sudo docker build -t phpswoole/swoole_cli_os:1.2 .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os:1.1 /bin/bash
+    sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os:1.2 /bin/bash
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 elif [ "$1" = "openssl" ] ;then
@@ -531,6 +553,8 @@ elif [ "$1" = "cares" ] ;then
     make_cares && echo "[SUCCESS] make cares"
 elif [ "$1" = "libsodium" ] ;then
     make_libsodium && echo "[SUCCESS] make libsodium"
+elif [ "$1" = "libyaml" ] ;then
+    make_libyaml && echo "[SUCCESS] make libyaml"
 elif [ "$1" = "config" ] ;then
     config_php
 elif [ "$1" = "build" ] ;then
@@ -564,6 +588,7 @@ elif [ "$1" = "clean-library" ] ;then
     clean_zip && echo "[SUCCESS] make clean [zip]"
     clean_cares && echo "[SUCCESS] make clean [cares]"
     clean_libsodium && echo "[SUCCESS] make clean [libsodium]"
+    clean_libyaml && echo "[SUCCESS] make clean [libyaml]"
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "pkg-check" ] ;then
@@ -607,6 +632,8 @@ elif [ "$1" = "pkg-check" ] ;then
     pkg-config --libs cares
     echo "libsodium"
     pkg-config --libs libsodium
+    echo "libyaml"
+    pkg-config --libs libyaml
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM

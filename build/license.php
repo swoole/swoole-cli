@@ -4,6 +4,7 @@
  */
 
 echo "License\n---------------------------------------------------------\n";
+echo "musl-libc: http://git.musl-libc.org/cgit/musl/tree/COPYRIGHT\n";
 
 foreach ($this->libraryList as $item) {
     echo "{$item->name}: {$item->license}\n";

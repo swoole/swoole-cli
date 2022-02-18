@@ -167,6 +167,10 @@ class Preprocessor
             $this->pkgConfigPath = $lib->pkgConfig . ':' . $this->pkgConfigPath;
         }
 
+        if (empty($lib->license)) {
+            throw new \RuntimeException("require license");
+        }
+
         $this->libraryList[] = $lib;
     }
 
@@ -227,7 +231,7 @@ class Preprocessor
         echo "Library count: " . count($this->libraryList) . PHP_EOL;
         echo '==========================================================' . PHP_EOL;
         foreach ($this->libraryList as $item) {
-            echo "{$item->name}, license: {$item->license}\n";
+            echo "{$item->name}\n";
         }
     }
 }
