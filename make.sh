@@ -43,10 +43,10 @@ OPTIONS="--disable-all \
 "
 
 make_openssl() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build openssl"
-    mkdir -p /work/pool/lib/openssl && \
-    tar --strip-components=1 -C /work/pool/lib/openssl -xf /work/pool/lib/openssl-1.1.1m.tar.gz  && \
+    mkdir -p /work/libs/openssl && \
+    tar --strip-components=1 -C /work/libs/openssl -xf /work/pool/lib/openssl-1.1.1m.tar.gz  && \
     cd openssl && \
     echo  "./config -static --static no-shared --prefix=/usr/openssl"
         ./config -static --static no-shared --prefix=/usr/openssl && \
@@ -56,17 +56,17 @@ make_openssl() {
 }
 
 clean_openssl() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean openssl"
-    cd /work/pool/lib/openssl && make clean
+    cd /work/libs/openssl && make clean
     cd -
 }
 
 make_curl() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build curl"
-    mkdir -p /work/pool/lib/curl && \
-    tar --strip-components=1 -C /work/pool/lib/curl -xf /work/pool/lib/curl-7.80.0.tar.gz  && \
+    mkdir -p /work/libs/curl && \
+    tar --strip-components=1 -C /work/libs/curl -xf /work/pool/lib/curl-7.80.0.tar.gz  && \
     cd curl && \
     echo  "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl"
         autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl && \
@@ -76,17 +76,17 @@ make_curl() {
 }
 
 clean_curl() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean curl"
-    cd /work/pool/lib/curl && make clean
+    cd /work/libs/curl && make clean
     cd -
 }
 
 make_libiconv() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build libiconv"
-    mkdir -p /work/pool/lib/libiconv && \
-    tar --strip-components=1 -C /work/pool/lib/libiconv -xf /work/pool/lib/libiconv-1.16.tar.gz  && \
+    mkdir -p /work/libs/libiconv && \
+    tar --strip-components=1 -C /work/libs/libiconv -xf /work/pool/lib/libiconv-1.16.tar.gz  && \
     cd libiconv && \
     echo  "./configure --prefix=/usr/libiconv enable_static=yes enable_shared=no"
         ./configure --prefix=/usr/libiconv enable_static=yes enable_shared=no && \
@@ -96,17 +96,17 @@ make_libiconv() {
 }
 
 clean_libiconv() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean libiconv"
-    cd /work/pool/lib/libiconv && make clean
+    cd /work/libs/libiconv && make clean
     cd -
 }
 
 make_libxml2() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build libxml2"
-    mkdir -p /work/pool/lib/libxml2 && \
-    tar --strip-components=1 -C /work/pool/lib/libxml2 -xf /work/pool/lib/libxml2-v2.9.10.tar.gz  && \
+    mkdir -p /work/libs/libxml2 && \
+    tar --strip-components=1 -C /work/libs/libxml2 -xf /work/pool/lib/libxml2-v2.9.10.tar.gz  && \
     cd libxml2 && \
     echo  "./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no"
         ./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no && \
@@ -116,17 +116,17 @@ make_libxml2() {
 }
 
 clean_libxml2() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean libxml2"
-    cd /work/pool/lib/libxml2 && make clean
+    cd /work/libs/libxml2 && make clean
     cd -
 }
 
 make_libxslt() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build libxslt"
-    mkdir -p /work/pool/lib/libxslt && \
-    tar --strip-components=1 -C /work/pool/lib/libxslt -xf /work/pool/lib/libxslt-v1.1.34.tar.gz  && \
+    mkdir -p /work/libs/libxslt && \
+    tar --strip-components=1 -C /work/libs/libxslt -xf /work/pool/lib/libxslt-v1.1.34.tar.gz  && \
     cd libxslt && \
     echo  "./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no"
         ./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no && \
@@ -136,17 +136,17 @@ make_libxslt() {
 }
 
 clean_libxslt() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean libxslt"
-    cd /work/pool/lib/libxslt && make clean
+    cd /work/libs/libxslt && make clean
     cd -
 }
 
 make_imagemagick() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build imagemagick"
-    mkdir -p /work/pool/lib/imagemagick && \
-    tar --strip-components=1 -C /work/pool/lib/imagemagick -xf /work/pool/lib/7.1.0-19.tar.gz  && \
+    mkdir -p /work/libs/imagemagick && \
+    tar --strip-components=1 -C /work/libs/imagemagick -xf /work/pool/lib/7.1.0-19.tar.gz  && \
     cd imagemagick && \
     echo  "./configure --prefix=/usr/imagemagick --enable-static --disable-shared"
         ./configure --prefix=/usr/imagemagick --enable-static --disable-shared && \
@@ -156,17 +156,17 @@ make_imagemagick() {
 }
 
 clean_imagemagick() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean imagemagick"
-    cd /work/pool/lib/imagemagick && make clean
+    cd /work/libs/imagemagick && make clean
     cd -
 }
 
 make_gmp() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build gmp"
-    mkdir -p /work/pool/lib/gmp && \
-    tar --strip-components=1 -C /work/pool/lib/gmp -xf /work/pool/lib/gmp-6.2.1.tar.lz  && \
+    mkdir -p /work/libs/gmp && \
+    tar --strip-components=1 -C /work/libs/gmp -xf /work/pool/lib/gmp-6.2.1.tar.lz  && \
     cd gmp && \
     echo  "./configure --prefix=/usr/gmp --enable-static --disable-shared"
         ./configure --prefix=/usr/gmp --enable-static --disable-shared && \
@@ -176,17 +176,17 @@ make_gmp() {
 }
 
 clean_gmp() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean gmp"
-    cd /work/pool/lib/gmp && make clean
+    cd /work/libs/gmp && make clean
     cd -
 }
 
 make_giflib() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build giflib"
-    mkdir -p /work/pool/lib/giflib && \
-    tar --strip-components=1 -C /work/pool/lib/giflib -xf /work/pool/lib/giflib-5.2.1.tar.gz  && \
+    mkdir -p /work/libs/giflib && \
+    tar --strip-components=1 -C /work/libs/giflib -xf /work/pool/lib/giflib-5.2.1.tar.gz  && \
     cd giflib && \
     echo  ""
         make -j 8  libgif.a && \
@@ -195,17 +195,17 @@ make_giflib() {
 }
 
 clean_giflib() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean giflib"
-    cd /work/pool/lib/giflib && make clean
+    cd /work/libs/giflib && make clean
     cd -
 }
 
 make_libpng() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build libpng"
-    mkdir -p /work/pool/lib/libpng && \
-    tar --strip-components=1 -C /work/pool/lib/libpng -xf /work/pool/lib/libpng-1.6.37.tar.gz  && \
+    mkdir -p /work/libs/libpng && \
+    tar --strip-components=1 -C /work/libs/libpng -xf /work/pool/lib/libpng-1.6.37.tar.gz  && \
     cd libpng && \
     echo  "./configure --prefix=/usr/libpng --enable-static --disable-shared"
         ./configure --prefix=/usr/libpng --enable-static --disable-shared && \
@@ -215,17 +215,17 @@ make_libpng() {
 }
 
 clean_libpng() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean libpng"
-    cd /work/pool/lib/libpng && make clean
+    cd /work/libs/libpng && make clean
     cd -
 }
 
 make_libjpeg() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build libjpeg"
-    mkdir -p /work/pool/lib/libjpeg && \
-    tar --strip-components=1 -C /work/pool/lib/libjpeg -xf /work/pool/lib/libjpeg-turbo-2.1.2.tar.gz  && \
+    mkdir -p /work/libs/libjpeg && \
+    tar --strip-components=1 -C /work/libs/libjpeg -xf /work/pool/lib/libjpeg-turbo-2.1.2.tar.gz  && \
     cd libjpeg && \
     echo  "cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg ."
         cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg . && \
@@ -235,17 +235,17 @@ make_libjpeg() {
 }
 
 clean_libjpeg() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean libjpeg"
-    cd /work/pool/lib/libjpeg && make clean
+    cd /work/libs/libjpeg && make clean
     cd -
 }
 
 make_freetype() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build freetype"
-    mkdir -p /work/pool/lib/freetype && \
-    tar --strip-components=1 -C /work/pool/lib/freetype -xf /work/pool/lib/freetype-2.10.4.tar.gz  && \
+    mkdir -p /work/libs/freetype && \
+    tar --strip-components=1 -C /work/libs/freetype -xf /work/pool/lib/freetype-2.10.4.tar.gz  && \
     cd freetype && \
     echo  "./configure --prefix=/usr/freetype --enable-static --disable-shared"
         ./configure --prefix=/usr/freetype --enable-static --disable-shared && \
@@ -255,17 +255,17 @@ make_freetype() {
 }
 
 clean_freetype() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean freetype"
-    cd /work/pool/lib/freetype && make clean
+    cd /work/libs/freetype && make clean
     cd -
 }
 
 make_libwebp() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build libwebp"
-    mkdir -p /work/pool/lib/libwebp && \
-    tar --strip-components=1 -C /work/pool/lib/libwebp -xf /work/pool/lib/libwebp-1.2.1.tar.gz  && \
+    mkdir -p /work/libs/libwebp && \
+    tar --strip-components=1 -C /work/libs/libwebp -xf /work/pool/lib/libwebp-1.2.1.tar.gz  && \
     cd libwebp && \
     echo  "./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared"
         ./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared && \
@@ -275,17 +275,17 @@ make_libwebp() {
 }
 
 clean_libwebp() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean libwebp"
-    cd /work/pool/lib/libwebp && make clean
+    cd /work/libs/libwebp && make clean
     cd -
 }
 
 make_sqlite3() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build sqlite3"
-    mkdir -p /work/pool/lib/sqlite3 && \
-    tar --strip-components=1 -C /work/pool/lib/sqlite3 -xf /work/pool/lib/sqlite-autoconf-3370000.tar.gz  && \
+    mkdir -p /work/libs/sqlite3 && \
+    tar --strip-components=1 -C /work/libs/sqlite3 -xf /work/pool/lib/sqlite-autoconf-3370000.tar.gz  && \
     cd sqlite3 && \
     echo  "./configure --prefix=/usr --enable-static --disable-shared"
         ./configure --prefix=/usr --enable-static --disable-shared && \
@@ -295,17 +295,17 @@ make_sqlite3() {
 }
 
 clean_sqlite3() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean sqlite3"
-    cd /work/pool/lib/sqlite3 && make clean
+    cd /work/libs/sqlite3 && make clean
     cd -
 }
 
 make_zlib() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build zlib"
-    mkdir -p /work/pool/lib/zlib && \
-    tar --strip-components=1 -C /work/pool/lib/zlib -xf /work/pool/lib/zlib-1.2.11.tar.gz  && \
+    mkdir -p /work/libs/zlib && \
+    tar --strip-components=1 -C /work/libs/zlib -xf /work/pool/lib/zlib-1.2.11.tar.gz  && \
     cd zlib && \
     echo  "./configure --prefix=/usr --static"
         ./configure --prefix=/usr --static && \
@@ -315,17 +315,17 @@ make_zlib() {
 }
 
 clean_zlib() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean zlib"
-    cd /work/pool/lib/zlib && make clean
+    cd /work/libs/zlib && make clean
     cd -
 }
 
 make_bzip2() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build bzip2"
-    mkdir -p /work/pool/lib/bzip2 && \
-    tar --strip-components=1 -C /work/pool/lib/bzip2 -xf /work/pool/lib/bzip2-1.0.8.tar.gz  && \
+    mkdir -p /work/libs/bzip2 && \
+    tar --strip-components=1 -C /work/libs/bzip2 -xf /work/pool/lib/bzip2-1.0.8.tar.gz  && \
     cd bzip2 && \
     echo  ""
         make -j 8  PREFIX=/usr/bzip2 && \
@@ -334,17 +334,17 @@ make_bzip2() {
 }
 
 clean_bzip2() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean bzip2"
-    cd /work/pool/lib/bzip2 && make clean
+    cd /work/libs/bzip2 && make clean
     cd -
 }
 
 make_icu() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build icu"
-    mkdir -p /work/pool/lib/icu && \
-    tar --strip-components=1 -C /work/pool/lib/icu -xf /work/pool/lib/icu4c-60_3-src.tgz  && \
+    mkdir -p /work/libs/icu && \
+    tar --strip-components=1 -C /work/libs/icu -xf /work/pool/lib/icu4c-60_3-src.tgz  && \
     cd icu && \
     echo  "source/runConfigureICU Linux --prefix=/usr --enable-static --disable-shared"
         source/runConfigureICU Linux --prefix=/usr --enable-static --disable-shared && \
@@ -354,17 +354,17 @@ make_icu() {
 }
 
 clean_icu() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean icu"
-    cd /work/pool/lib/icu && make clean
+    cd /work/libs/icu && make clean
     cd -
 }
 
 make_oniguruma() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build oniguruma"
-    mkdir -p /work/pool/lib/oniguruma && \
-    tar --strip-components=1 -C /work/pool/lib/oniguruma -xf /work/pool/lib/oniguruma-6.9.7.tar.gz  && \
+    mkdir -p /work/libs/oniguruma && \
+    tar --strip-components=1 -C /work/libs/oniguruma -xf /work/pool/lib/oniguruma-6.9.7.tar.gz  && \
     cd oniguruma && \
     echo  "./autogen.sh && ./configure --prefix=/usr --enable-static --disable-shared"
         ./autogen.sh && ./configure --prefix=/usr --enable-static --disable-shared && \
@@ -374,17 +374,17 @@ make_oniguruma() {
 }
 
 clean_oniguruma() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean oniguruma"
-    cd /work/pool/lib/oniguruma && make clean
+    cd /work/libs/oniguruma && make clean
     cd -
 }
 
 make_zip() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build zip"
-    mkdir -p /work/pool/lib/zip && \
-    tar --strip-components=1 -C /work/pool/lib/zip -xf /work/pool/lib/libzip-1.8.0.tar.gz  && \
+    mkdir -p /work/libs/zip && \
+    tar --strip-components=1 -C /work/libs/zip -xf /work/pool/lib/libzip-1.8.0.tar.gz  && \
     cd zip && \
     echo  "cmake . -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr"
         cmake . -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr && \
@@ -394,17 +394,17 @@ make_zip() {
 }
 
 clean_zip() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean zip"
-    cd /work/pool/lib/zip && make clean
+    cd /work/libs/zip && make clean
     cd -
 }
 
 make_cares() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build cares"
-    mkdir -p /work/pool/lib/cares && \
-    tar --strip-components=1 -C /work/pool/lib/cares -xf /work/pool/lib/c-ares-1.18.1.tar.gz  && \
+    mkdir -p /work/libs/cares && \
+    tar --strip-components=1 -C /work/libs/cares -xf /work/pool/lib/c-ares-1.18.1.tar.gz  && \
     cd cares && \
     echo  "./configure --prefix=/usr --enable-static --disable-shared"
         ./configure --prefix=/usr --enable-static --disable-shared && \
@@ -414,17 +414,17 @@ make_cares() {
 }
 
 clean_cares() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean cares"
-    cd /work/pool/lib/cares && make clean
+    cd /work/libs/cares && make clean
     cd -
 }
 
 make_libsodium() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build libsodium"
-    mkdir -p /work/pool/lib/libsodium && \
-    tar --strip-components=1 -C /work/pool/lib/libsodium -xf /work/pool/lib/libsodium-1.0.18.tar.gz  && \
+    mkdir -p /work/libs/libsodium && \
+    tar --strip-components=1 -C /work/libs/libsodium -xf /work/pool/lib/libsodium-1.0.18.tar.gz  && \
     cd libsodium && \
     echo  "./configure --prefix=/usr --enable-static --disable-shared"
         ./configure --prefix=/usr --enable-static --disable-shared && \
@@ -434,17 +434,17 @@ make_libsodium() {
 }
 
 clean_libsodium() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean libsodium"
-    cd /work/pool/lib/libsodium && make clean
+    cd /work/libs/libsodium && make clean
     cd -
 }
 
 make_libyaml() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build libyaml"
-    mkdir -p /work/pool/lib/libyaml && \
-    tar --strip-components=1 -C /work/pool/lib/libyaml -xf /work/pool/lib/yaml-0.2.5.tar.gz  && \
+    mkdir -p /work/libs/libyaml && \
+    tar --strip-components=1 -C /work/libs/libyaml -xf /work/pool/lib/yaml-0.2.5.tar.gz  && \
     cd libyaml && \
     echo  "./configure --prefix=/usr/libyaml --enable-static --disable-shared"
         ./configure --prefix=/usr/libyaml --enable-static --disable-shared && \
@@ -454,9 +454,9 @@ make_libyaml() {
 }
 
 clean_libyaml() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean libyaml"
-    cd /work/pool/lib/libyaml && make clean
+    cd /work/libs/libyaml && make clean
     cd -
 }
 
@@ -508,9 +508,9 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-  sudo docker build -t phpswoole/swoole_cli_os:1.2 .
+  sudo docker build -t phpswoole/swoole_cli_os:1.1 .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os:1.2 /bin/bash
+    sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os:1.1 /bin/bash
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 elif [ "$1" = "openssl" ] ;then
@@ -563,7 +563,7 @@ elif [ "$1" = "archive" ] ;then
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
     SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-linux-x64.tar.xz
-    # strip swoole-cli
+    strip swoole-cli
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
     mv ${SWOOLE_CLI_FILE} ../
     cd -
