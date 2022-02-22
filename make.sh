@@ -563,7 +563,7 @@ elif [ "$1" = "archive" ] ;then
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
     SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-linux-x64.tar.xz
-    strip swoole-cli
+    # strip swoole-cli
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
     mv ${SWOOLE_CLI_FILE} ../
     cd -

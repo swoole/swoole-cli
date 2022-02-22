@@ -17,10 +17,10 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "build <?=$item->name?>"
-    mkdir -p /work/pool/lib/<?=$item->name?> && \
-    tar --strip-components=1 -C /work/pool/lib/<?=$item->name?> -xf /work/pool/lib/<?=$item->file?>  && \
+    mkdir -p /work/libs/<?=$item->name?> && \
+    tar --strip-components=1 -C /work/libs/<?=$item->name?> -xf /work/pool/lib/<?=$item->file?>  && \
     cd <?=$item->name?> && \
     echo  "<?=$item->configure?>"
     <?php if (!empty($item->configure)): ?>
@@ -32,9 +32,9 @@ make_<?=$item->name?>() {
 }
 
 clean_<?=$item->name?>() {
-    cd /work/pool/lib
+    cd /work/libs
     echo "clean <?=$item->name?>"
-    cd /work/pool/lib/<?=$item->name?> && make clean
+    cd /work/libs/<?=$item->name?> && make clean
     cd -
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
