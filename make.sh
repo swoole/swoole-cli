@@ -503,8 +503,9 @@ make_php() {
 }
 
 help() {
-    echo "php prepare.php config"
-    echo "php prepare.php build"
+    echo "./make.sh config"
+    echo "./make.sh build"
+    echo "./make.sh archive"
 }
 
 if [ "$1" = "docker-build" ] ;then

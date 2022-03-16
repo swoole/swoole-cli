@@ -1,0 +1,29 @@
+License
+---------------------------------------------------------
+musl-libc: http://git.musl-libc.org/cgit/musl/tree/COPYRIGHT
+openssl: https://github.com/openssl/openssl/blob/master/LICENSE.txt
+curl: https://github.com/curl/curl/blob/master/COPYING
+libiconv: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+libxml2: http://www.opensource.org/licenses/mit-license.html
+libxslt: http://www.opensource.org/licenses/mit-license.html
+imagemagick: https://imagemagick.org/script/license.php
+gmp: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+giflib: http://giflib.sourceforge.net/intro.html
+libpng: http://www.libpng.org/pub/png/src/libpng-LICENSE.txt
+libjpeg: https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md
+freetype: https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT
+libwebp: https://github.com/webmproject/libwebp/blob/main/COPYING
+sqlite3: https://www.sqlite.org/copyright.html
+zlib: https://zlib.net/zlib_license.html
+bzip2: https://www.sourceware.org/bzip2/
+icu: https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE
+oniguruma: https://github.com/kkos/oniguruma/blob/master/COPYING
+zip: https://libzip.org/license/
+cares: https://c-ares.org/license.html
+libsodium: https://en.wikipedia.org/wiki/ISC_license
+libyaml: https://pyyaml.org/wiki/LibYAML
+php: https://github.com/php/php-src/blob/master/LICENSE
+php-ext-swoole: https://github.com/swoole/swoole-src/blob/master/LICENSE
+php-ext-redis: https://github.com/phpredis/phpredis/blob/develop/COPYING
+php-ext-imagick: https://github.com/Imagick/imagick/blob/master/LICENSE
+php-ext-yaml: https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE
