@@ -444,10 +444,10 @@ void php_filter_float(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 
 	switch (is_numeric_string(num, p - num, &lval, &dval, 0)) {
 		case IS_LONG:
-			zval_ptr_dtor(value);
 			if ((min_range_set && (lval < min_range)) || (max_range_set && (lval > max_range))) {
 				goto error;
 			}
+			zval_ptr_dtor(value);
 			ZVAL_DOUBLE(value, (double)lval);
 			break;
 		case IS_DOUBLE:
@@ -937,7 +937,7 @@ void php_filter_validate_ip(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 						&& ip[4] == 0 && ip[5] == 0 && ip[6] == 0 && (ip[7] == 0 || ip[7] == 1))
 						|| (ip[0] == 0x5f)
 						|| (ip[0] >= 0xfe80 && ip[0] <= 0xfebf)
-						|| ((ip[0] == 0x2001 && ip[1] == 0x0db8) || (ip[1] >= 0x0010 && ip[1] <= 0x001f))
+						|| (ip[0] == 0x2001 && (ip[1] == 0x0db8 || (ip[1] >= 0x0010 && ip[1] <= 0x001f)))
 						|| (ip[0] == 0x3ff3)
 								) {
 									RETURN_VALIDATION_FAILED

@@ -540,7 +540,7 @@ static uint32_t zend_ssa_cv_info(const zend_op_array *op_array, zend_ssa *ssa, u
 	return info;
 }
 
-static bool zend_jit_may_avoid_refcounting(const zend_op *opline)
+static bool zend_jit_may_avoid_refcounting(const zend_op *opline, uint32_t op1_info)
 {
 	switch (opline->opcode) {
 		case ZEND_FETCH_OBJ_FUNC_ARG:
@@ -552,7 +552,8 @@ static bool zend_jit_may_avoid_refcounting(const zend_op *opline)
 			/* break missing intentionally */
 		case ZEND_FETCH_OBJ_R:
 		case ZEND_FETCH_OBJ_IS:
-			if (opline->op2_type == IS_CONST
+			if ((op1_info & MAY_BE_OBJECT)
+			 && opline->op2_type == IS_CONST
 			 && Z_TYPE_P(RT_CONSTANT(opline, opline->op2)) == IS_STRING
 			 && Z_STRVAL_P(RT_CONSTANT(opline, opline->op2))[0] != '\0') {
 				return 1;
@@ -1967,13 +1968,17 @@ static int zend_jit_compute_liveness(const zend_op_array *op_array, zend_ssa *ss
 								if (ssa->ops[line].op1_use >= 0 &&
 								    intervals[ssa->ops[line].op1_use] &&
 								    ssa->ops[line].op1_use_chain < 0 &&
-								    !ssa->vars[ssa->ops[line].op1_use].phi_use_chain) {
+								    !ssa->vars[ssa->ops[line].op1_use].phi_use_chain &&
+								    (ssa->var_info[i].type & MAY_BE_ANY) ==
+								        (ssa->var_info[ssa->ops[line].op1_use].type & MAY_BE_ANY)) {
 									zend_jit_add_hint(intervals, i, ssa->ops[line].op1_use);
 								} else if (opline->opcode != ZEND_SUB &&
 								    ssa->ops[line].op2_use >= 0 &&
 								    intervals[ssa->ops[line].op2_use] &&
 								    ssa->ops[line].op2_use_chain < 0 &&
-								    !ssa->vars[ssa->ops[line].op2_use].phi_use_chain) {
+								    !ssa->vars[ssa->ops[line].op2_use].phi_use_chain &&
+								    (ssa->var_info[i].type & MAY_BE_ANY) ==
+								        (ssa->var_info[ssa->ops[line].op2_use].type & MAY_BE_ANY)) {
 									zend_jit_add_hint(intervals, i, ssa->ops[line].op2_use);
 								}
 							}
@@ -2893,7 +2898,7 @@ static int zend_jit(const zend_op_array *op_array, zend_ssa *ssa, const zend_op 
 		}
 		end = ssa->cfg.blocks[b].start + ssa->cfg.blocks[b].len - 1;
 		for (i = ssa->cfg.blocks[b].start; i <= end; i++) {
-			zend_ssa_op *ssa_op = &ssa->ops[i];
+			zend_ssa_op *ssa_op = ssa->ops ? &ssa->ops[i] : NULL;
 			opline = op_array->opcodes + i;
 			switch (opline->opcode) {
 				case ZEND_INIT_FCALL:
@@ -2923,7 +2928,10 @@ static int zend_jit(const zend_op_array *op_array, zend_ssa *ssa, const zend_op 
 						if (opline->result_type != IS_UNUSED) {
 							res_use_info = -1;
 
-							if (opline->result_type == IS_CV) {
+							if (opline->result_type == IS_CV
+							 && ssa->vars
+							 && ssa_op->result_use >= 0
+							 && !ssa->vars[ssa_op->result_use].no_val) {
 								zend_jit_addr res_use_addr = RES_USE_REG_ADDR();
 
 								if (Z_MODE(res_use_addr) != IS_REG
@@ -2981,7 +2989,10 @@ static int zend_jit(const zend_op_array *op_array, zend_ssa *ssa, const zend_op 
 						} else {
 							res_use_info = -1;
 
-							if (opline->result_type == IS_CV) {
+							if (opline->result_type == IS_CV
+							 && ssa->vars
+							 && ssa_op->result_use >= 0
+							 && !ssa->vars[ssa_op->result_use].no_val) {
 								zend_jit_addr res_use_addr = RES_USE_REG_ADDR();
 
 								if (Z_MODE(res_use_addr) != IS_REG
@@ -3032,7 +3043,10 @@ static int zend_jit(const zend_op_array *op_array, zend_ssa *ssa, const zend_op 
 						} else {
 							res_use_info = -1;
 
-							if (opline->result_type == IS_CV) {
+							if (opline->result_type == IS_CV
+							 && ssa->vars
+							 && ssa_op->result_use >= 0
+							 && !ssa->vars[ssa_op->result_use].no_val) {
 								zend_jit_addr res_use_addr = RES_USE_REG_ADDR();
 
 								if (Z_MODE(res_use_addr) != IS_REG
@@ -4991,7 +5005,7 @@ ZEND_EXT_API int zend_jit_startup(void *buf, size_t size, bool reattached)
 #endif
 	}
 
-	if (zend_jit_trace_startup() != SUCCESS) {
+	if (zend_jit_trace_startup(reattached) != SUCCESS) {
 		return FAILURE;
 	}
 
