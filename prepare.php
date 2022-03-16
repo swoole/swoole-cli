@@ -1,13 +1,13 @@
 #!/usr/bin/env php
 <?php
-require __DIR__ . '/build/Preprocessor.php';
+require __DIR__ . '/sapi/Preprocessor.php';
 
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 use SwooleCli\Extension;
 
 $p = new Preprocessor(__DIR__);
-$p->setPhpSrcDir('/home/htf/soft/php-8.1.1');
+$p->setPhpSrcDir('/home/htf/soft/php-8.1.3');
 $p->setDockerVersion('1.1');
 $p->setSwooleDir('/home/htf/workspace/swoole');
 
