@@ -1952,7 +1952,7 @@ ZEND_API int ZEND_FASTCALL string_compare_function_ex(zval *op1, zval *op2, bool
 	int ret;
 
 	if (case_insensitive) {
-		ret = zend_binary_strcasecmp_l(ZSTR_VAL(str1), ZSTR_LEN(str1), ZSTR_VAL(str2), ZSTR_LEN(str1));
+		ret = zend_binary_strcasecmp_l(ZSTR_VAL(str1), ZSTR_LEN(str1), ZSTR_VAL(str2), ZSTR_LEN(str2));
 	} else {
 		ret = zend_binary_strcmp(ZSTR_VAL(str1), ZSTR_LEN(str1), ZSTR_VAL(str2), ZSTR_LEN(str2));
 	}
@@ -1998,7 +1998,7 @@ ZEND_API int ZEND_FASTCALL string_case_compare_function(zval *op1, zval *op2) /*
 		zend_string *tmp_str1, *tmp_str2;
 		zend_string *str1 = zval_get_tmp_string(op1, &tmp_str1);
 		zend_string *str2 = zval_get_tmp_string(op2, &tmp_str2);
-		int ret = zend_binary_strcasecmp_l(ZSTR_VAL(str1), ZSTR_LEN(str1), ZSTR_VAL(str2), ZSTR_LEN(str1));
+		int ret = zend_binary_strcasecmp_l(ZSTR_VAL(str1), ZSTR_LEN(str1), ZSTR_VAL(str2), ZSTR_LEN(str2));
 
 		zend_tmp_string_release(tmp_str1);
 		zend_tmp_string_release(tmp_str2);
@@ -2661,6 +2661,15 @@ ZEND_API void zend_update_current_locale(void) /* {{{ */
 #endif
 }
 /* }}} */
+
+ZEND_API void zend_reset_lc_ctype_locale(void)
+{
+	/* Use the C.UTF-8 locale so that readline can process UTF-8 input, while not interfering
+	 * with single-byte locale-dependent functions used by PHP. */
+	if (!setlocale(LC_CTYPE, "C.UTF-8")) {
+		setlocale(LC_CTYPE, "C");
+	}
+}
 
 static zend_always_inline void zend_str_tolower_impl(char *dest, const char *str, size_t length) /* {{{ */ {
 	unsigned char *p = (unsigned char*)str;
