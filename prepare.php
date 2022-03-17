@@ -27,20 +27,6 @@ function install_openssl(Preprocessor $p)
     );
 }
 
-function install_curl(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('curl'))
-            ->withUrl('https://curl.se/download/curl-7.80.0.tar.gz')
-            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl")
-            ->withLdflags('-L/usr/curl/lib')
-            ->withPkgConfig('/usr/curl/lib/pkgconfig')
-            ->withPkgName('libcurl')
-            ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
-            ->withHomePage('https://curl.se/')
-    );
-}
-
 function install_libiconv(Preprocessor $p)
 {
     $p->addLibrary(
@@ -304,8 +290,33 @@ function install_libyaml(Preprocessor $p)
     );
 }
 
+function install_brotli(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('brotli'))
+            ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
+            ->withFile('brotli-1.0.9.tar.gz')
+            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr --enable-static --disable-shared")
+            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/google/brotli')
+    );
+}
+
+function install_curl(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('curl'))
+            ->withUrl('https://curl.se/download/curl-7.80.0.tar.gz')
+            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl")
+            ->withLdflags('-L/usr/curl/lib')
+            ->withPkgConfig('/usr/curl/lib/pkgconfig')
+            ->withPkgName('libcurl')
+            ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
+            ->withHomePage('https://curl.se/')
+    );
+}
+
 install_openssl($p);
-install_curl($p);
 install_libiconv($p);
 install_libxml2($p);
 install_libxslt($p);
@@ -322,9 +333,11 @@ install_bzip2($p);
 install_icu($p);
 install_oniguruma($p);
 install_zip($p);
+//install_brotli($p);
 install_cares($p);
 //install_ncurses($p);
 //install_libedit($p);
+install_curl($p);
 install_libsodium($p);
 install_libyaml($p);
 
@@ -337,7 +350,7 @@ $p->addExtension(
         ->withOptions('--with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl')
 );
 
-$p->addExtension((new Extension('curl'))->withOptions('--with-curl=/usr/curl'));
+$p->addExtension((new Extension('curl'))->withOptions('--with-curl'));
 $p->addExtension((new Extension('iconv'))->withOptions('--with-iconv=/usr/libiconv'));
 $p->addExtension((new Extension('bz2'))->withOptions('--with-bz2'));
 $p->addExtension((new Extension('bcmath'))->withOptions('--enable-bcmath'));

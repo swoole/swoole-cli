@@ -3,7 +3,7 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
-export PKG_CONFIG_PATH=/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=/usr/curl/lib/pkgconfig:/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl=/usr/curl \
@@ -59,26 +59,6 @@ clean_openssl() {
     cd /work/libs
     echo "clean openssl"
     cd /work/libs/openssl && make clean
-    cd -
-}
-
-make_curl() {
-    cd /work/libs
-    echo "build curl"
-    mkdir -p /work/libs/curl && \
-    tar --strip-components=1 -C /work/libs/curl -xf /work/pool/lib/curl-7.80.0.tar.gz  && \
-    cd curl && \
-    echo  "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl"
-        autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl && \
-        make -j 8   && \
-    make install
-    cd -
-}
-
-clean_curl() {
-    cd /work/libs
-    echo "clean curl"
-    cd /work/libs/curl && make clean
     cd -
 }
 
@@ -420,6 +400,26 @@ clean_cares() {
     cd -
 }
 
+make_curl() {
+    cd /work/libs
+    echo "build curl"
+    mkdir -p /work/libs/curl && \
+    tar --strip-components=1 -C /work/libs/curl -xf /work/pool/lib/curl-7.80.0.tar.gz  && \
+    cd curl && \
+    echo  "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl"
+        autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl && \
+        make -j 8   && \
+    make install
+    cd -
+}
+
+clean_curl() {
+    cd /work/libs
+    echo "clean curl"
+    cd /work/libs/curl && make clean
+    cd -
+}
+
 make_libsodium() {
     cd /work/libs
     echo "build libsodium"
@@ -463,7 +463,6 @@ clean_libyaml() {
 
 make_all_library() {
     make_openssl && echo "[SUCCESS] make openssl"
-    make_curl && echo "[SUCCESS] make curl"
     make_libiconv && echo "[SUCCESS] make libiconv"
     make_libxml2 && echo "[SUCCESS] make libxml2"
     make_libxslt && echo "[SUCCESS] make libxslt"
@@ -481,6 +480,7 @@ make_all_library() {
     make_oniguruma && echo "[SUCCESS] make oniguruma"
     make_zip && echo "[SUCCESS] make zip"
     make_cares && echo "[SUCCESS] make cares"
+    make_curl && echo "[SUCCESS] make curl"
     make_libsodium && echo "[SUCCESS] make libsodium"
     make_libyaml && echo "[SUCCESS] make libyaml"
 }
@@ -499,7 +499,7 @@ config_php() {
 
 make_php() {
     make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/curl/lib -L/usr/libiconv/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/libyaml/lib '  -j 8 && echo ""
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/libiconv/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/curl/lib -L/usr/libyaml/lib '  -j 8 && echo ""
 }
 
 help() {
@@ -512,12 +512,11 @@ if [ "$1" = "docker-build" ] ;then
   sudo docker build -t phpswoole/swoole_cli_os:1.1 .
 elif [ "$1" = "docker-bash" ] ;then
     sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os:1.1 /bin/bash
+    exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 elif [ "$1" = "openssl" ] ;then
     make_openssl && echo "[SUCCESS] make openssl"
-elif [ "$1" = "curl" ] ;then
-    make_curl && echo "[SUCCESS] make curl"
 elif [ "$1" = "libiconv" ] ;then
     make_libiconv && echo "[SUCCESS] make libiconv"
 elif [ "$1" = "libxml2" ] ;then
@@ -552,6 +551,8 @@ elif [ "$1" = "zip" ] ;then
     make_zip && echo "[SUCCESS] make zip"
 elif [ "$1" = "cares" ] ;then
     make_cares && echo "[SUCCESS] make cares"
+elif [ "$1" = "curl" ] ;then
+    make_curl && echo "[SUCCESS] make curl"
 elif [ "$1" = "libsodium" ] ;then
     make_libsodium && echo "[SUCCESS] make libsodium"
 elif [ "$1" = "libyaml" ] ;then
@@ -570,7 +571,6 @@ elif [ "$1" = "archive" ] ;then
     cd -
 elif [ "$1" = "clean-library" ] ;then
     clean_openssl && echo "[SUCCESS] make clean [openssl]"
-    clean_curl && echo "[SUCCESS] make clean [curl]"
     clean_libiconv && echo "[SUCCESS] make clean [libiconv]"
     clean_libxml2 && echo "[SUCCESS] make clean [libxml2]"
     clean_libxslt && echo "[SUCCESS] make clean [libxslt]"
@@ -588,6 +588,7 @@ elif [ "$1" = "clean-library" ] ;then
     clean_oniguruma && echo "[SUCCESS] make clean [oniguruma]"
     clean_zip && echo "[SUCCESS] make clean [zip]"
     clean_cares && echo "[SUCCESS] make clean [cares]"
+    clean_curl && echo "[SUCCESS] make clean [curl]"
     clean_libsodium && echo "[SUCCESS] make clean [libsodium]"
     clean_libyaml && echo "[SUCCESS] make clean [libyaml]"
 elif [ "$1" = "diff-configure" ] ;then
@@ -595,8 +596,6 @@ elif [ "$1" = "diff-configure" ] ;then
 elif [ "$1" = "pkg-check" ] ;then
     echo "openssl"
     pkg-config --libs openssl
-    echo "curl"
-    pkg-config --libs libcurl
     echo "libiconv"
     pkg-config --libs libiconv
     echo "libxml2"
@@ -631,6 +630,8 @@ elif [ "$1" = "pkg-check" ] ;then
     pkg-config --libs zip
     echo "cares"
     pkg-config --libs cares
+    echo "curl"
+    pkg-config --libs libcurl
     echo "libsodium"
     pkg-config --libs libsodium
     echo "libyaml"

@@ -78,6 +78,7 @@ if [ "$1" = "docker-build" ] ;then
   sudo docker build -t phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> .
 elif [ "$1" = "docker-bash" ] ;then
     sudo docker run -it -v $ROOT:/work -v <?= $this->swooleDir ?>:/work/ext/swoole phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> /bin/bash
+    exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>

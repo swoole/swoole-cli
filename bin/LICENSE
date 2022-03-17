@@ -2,7 +2,6 @@ License
 ---------------------------------------------------------
 musl-libc: http://git.musl-libc.org/cgit/musl/tree/COPYRIGHT
 openssl: https://github.com/openssl/openssl/blob/master/LICENSE.txt
-curl: https://github.com/curl/curl/blob/master/COPYING
 libiconv: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 libxml2: http://www.opensource.org/licenses/mit-license.html
 libxslt: http://www.opensource.org/licenses/mit-license.html
@@ -20,6 +19,7 @@ icu: https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE
 oniguruma: https://github.com/kkos/oniguruma/blob/master/COPYING
 zip: https://libzip.org/license/
 cares: https://c-ares.org/license.html
+curl: https://github.com/curl/curl/blob/master/COPYING
 libsodium: https://en.wikipedia.org/wiki/ISC_license
 libyaml: https://pyyaml.org/wiki/LibYAML
 php: https://github.com/php/php-src/blob/master/LICENSE
