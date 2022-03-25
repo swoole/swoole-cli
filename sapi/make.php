@@ -17,24 +17,27 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    cd /work/libs
+    cd <?=$this->workDir?>/libs
     echo "build <?=$item->name?>"
-    mkdir -p /work/libs/<?=$item->name?> && \
-    tar --strip-components=1 -C /work/libs/<?=$item->name?> -xf /work/pool/lib/<?=$item->file?>  && \
+    mkdir -p <?=$this->workDir?>/libs/<?=$item->name?> && \
+    tar --strip-components=1 -C <?=$this->workDir?>/libs/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
     cd <?=$item->name?> && \
     echo  "<?=$item->configure?>"
     <?php if (!empty($item->configure)): ?>
     <?=$item->configure?> && \
     <?php endif; ?>
-    make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
+    make -j <?=$this->maxJob?>  <?=$item->makeOptions?>
+    
+    <?php if ($this->installLibrary): ?>
     make install
+    <?php endif; ?>
     cd -
 }
 
 clean_<?=$item->name?>() {
-    cd /work/libs
+    cd <?=$this->workDir?>/libs
     echo "clean <?=$item->name?>"
-    cd /work/libs/<?=$item->name?> && make clean
+    cd <?=$this->workDir?>/libs/<?=$item->name?> && make clean
     cd -
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
@@ -77,7 +80,7 @@ help() {
 if [ "$1" = "docker-build" ] ;then
   sudo docker build -t phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:/work -v <?= $this->swooleDir ?>:/work/ext/swoole phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> /bin/bash
+    sudo docker run -it -v $ROOT:<?=$this->workDir?> -v <?= $this->swooleDir ?>:<?=$this->workDir?>/ext/swoole phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> /bin/bash
     exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library

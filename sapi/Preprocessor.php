@@ -7,6 +7,7 @@ abstract class Project
     public string $name;
     public string $homePage = '';
     public string $license = '';
+    public string $prefix = '';
     public int $licenseType = self::LICENSE_SPEC;
 
     const LICENSE_SPEC = 0;
@@ -127,7 +128,9 @@ class Preprocessor
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
     protected string $swooleDir;
+    protected string $workDir = '/work';
     protected int $maxJob = 8;
+    protected bool $installLibrary = true;
 
     function __construct(string $rootPath)
     {
@@ -149,6 +152,21 @@ class Preprocessor
     function setSwooleDir(string $swooleDir)
     {
         $this->swooleDir = $swooleDir;
+    }
+
+    function setPrefix(string $prefix)
+    {
+        $this->prefix = $prefix;
+    }
+
+    function setWorkdir(string $workDir)
+    {
+        $this->workDir = $workDir;
+    }
+
+    function donotInstallLibrary()
+    {
+        $this->installLibrary = false;
     }
 
     function addLibrary(Library $lib)

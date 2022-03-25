@@ -6,10 +6,21 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 use SwooleCli\Extension;
 
+if (empty($argv[1])) {
+    $type = 'linux';
+} else {
+    $type = trim($argv[1]);
+}
+
 $p = new Preprocessor(__DIR__);
 $p->setPhpSrcDir('/home/htf/soft/php-8.1.3');
 $p->setDockerVersion('1.1');
 $p->setSwooleDir('/home/htf/workspace/swoole');
+
+if ($type == 'macos') {
+    $p->setWorkDir('/Users/hantianfeng/workspace/cli-swoole');
+    $p->donotInstallLibrary();
+}
 
 // ================================================================================================
 // Library
