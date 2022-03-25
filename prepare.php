@@ -17,9 +17,17 @@ $p->setPhpSrcDir('/home/htf/soft/php-8.1.3');
 $p->setDockerVersion('1.1');
 $p->setSwooleDir('/home/htf/workspace/swoole');
 
+$endCallback = function() {};
+
 if ($type == 'macos') {
-    $p->setWorkDir('/Users/hantianfeng/workspace/cli-swoole');
-    $p->donotInstallLibrary();
+    define('WORKSPACE', '/Users/hantianfeng/workspace');
+    $p->setWorkDir(WORKSPACE.'/cli-swoole');
+    $endCallback = function($p) {
+        $makesh = file_get_contents(__DIR__.'/make.sh');
+        $makesh = str_replace('/usr', WORKSPACE.'/opt/usr', $makesh);
+        $makesh = str_replace('export PKG_CONFIG_PATH=', 'export PKG_CONFIG_PATH='.WORKSPACE.'/opt/usr/lib/pkgconfig:', $makesh);
+        file_put_contents(__DIR__.'/make.sh', $makesh);
+    };
 }
 
 // ================================================================================================
@@ -56,9 +64,9 @@ function install_libxml2(Preprocessor $p)
         (new Library('libxml2'))
             ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.10/libxml2-v2.9.10.tar.gz')
             ->withConfigure('./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no')
-//            ->withLdflags('-L/usr/libxml2/lib')
-//            ->withPkgConfig('/usr/libxml2/lib/pkgconfig')
-//            ->withPkgName('libxml-2.0')
+            ->withLdflags('-L/usr/libxml2/lib')
+            ->withPkgConfig('/usr/libxml2/lib/pkgconfig')
+            ->withPkgName('libxml-2.0')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
     );
 }
@@ -156,6 +164,7 @@ function install_freetype(Preprocessor $p)
             ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared')
             ->withLdflags('-L/usr/freetype/lib')
             ->withPkgConfig('/usr/freetype/lib/pkgconfig')
+            ->withPkgName('freetype2')
             ->withHomePage('https://freetype.org/')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
     );
@@ -215,6 +224,7 @@ function install_icu(Preprocessor $p)
         (new Library('icu'))
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
             ->withConfigure('source/runConfigureICU Linux --prefix=/usr --enable-static --disable-shared')
+            ->withPkgName('icu-i18n')
             ->withHomePage('https://icu.unicode.org/')
             ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
     );
@@ -238,6 +248,7 @@ function install_zip(Preprocessor $p)
         (new Library('zip'))
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
             ->withConfigure('cmake . -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr')
+            ->withPkgName('libzip')
             ->withHomePage('https://libzip.org/')
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
     );
@@ -249,6 +260,7 @@ function install_cares(Preprocessor $p)
         (new Library('cares'))
             ->withUrl('https://c-ares.org/download/c-ares-1.18.1.tar.gz')
             ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
+            ->withPkgName('libcares')
             ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
             ->withHomePage('https://c-ares.org/')
     );
@@ -296,6 +308,8 @@ function install_libyaml(Preprocessor $p)
             ->withUrl('http://pyyaml.org/download/libyaml/yaml-0.2.5.tar.gz')
             ->withConfigure('./configure --prefix=/usr/libyaml --enable-static --disable-shared')
             ->withLdflags('-L/usr/libyaml/lib')
+            ->withPkgConfig('/usr/libyaml/lib/pkgconfig')
+            ->withPkgName('yaml-0.1')
             ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
             ->withHomePage('https://pyyaml.org/wiki/LibYAML')
     );
@@ -318,7 +332,9 @@ function install_curl(Preprocessor $p)
     $p->addLibrary(
         (new Library('curl'))
             ->withUrl('https://curl.se/download/curl-7.80.0.tar.gz')
-            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl")
+            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl ".
+                "--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3"
+            )
             ->withLdflags('-L/usr/curl/lib')
             ->withPkgConfig('/usr/curl/lib/pkgconfig')
             ->withPkgName('libcurl')
@@ -363,7 +379,7 @@ $p->addExtension(
 
 $p->addExtension((new Extension('curl'))->withOptions('--with-curl'));
 $p->addExtension((new Extension('iconv'))->withOptions('--with-iconv=/usr/libiconv'));
-$p->addExtension((new Extension('bz2'))->withOptions('--with-bz2'));
+$p->addExtension((new Extension('bz2'))->withOptions('--with-bz2=/usr/bzip2'));
 $p->addExtension((new Extension('bcmath'))->withOptions('--enable-bcmath'));
 $p->addExtension((new Extension('pcntl'))->withOptions('--enable-pcntl'));
 $p->addExtension((new Extension('filter'))->withOptions('--enable-filter'));
@@ -432,3 +448,5 @@ $p->addExtension((new Extension('yaml'))
 
 $p->gen();
 $p->info();
+
+$endCallback($p);

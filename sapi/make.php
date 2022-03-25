@@ -26,11 +26,8 @@ make_<?=$item->name?>() {
     <?php if (!empty($item->configure)): ?>
     <?=$item->configure?> && \
     <?php endif; ?>
-    make -j <?=$this->maxJob?>  <?=$item->makeOptions?>
-    
-    <?php if ($this->installLibrary): ?>
+    make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
     make install
-    <?php endif; ?>
     cd -
 }
 
@@ -108,8 +105,9 @@ elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    echo "<?= $item->name ?>"
+    echo "[<?= $item->name ?>]"
     pkg-config --libs <?= ($item->pkgName ?: $item->name) . PHP_EOL ?>
+    echo "==========================================================="
 <?php endforeach; ?>
 elif [ "$1" = "sync" ] ;then
   echo "sync"

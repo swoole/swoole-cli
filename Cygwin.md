@@ -6,9 +6,23 @@ g++
 cmake
 libtool
 
-re2c 需要源码安装
+re2c: 需要源码安装
+bison: 3.x 以上版本，macOS 下需要编译安装
 
--D_POSIX_C_SOURCE=200809L
+问题记录
+======
+
+CygWin
+----
+cygwin下intl 扩展有问题，需要增加 `-D_POSIX_C_SOURCE=200809L` 编译参数，暂时未解决
+
+macOS
+----
+缺少`libtool`:
+```shell
+ln -s /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
+```
+
 
 posix 问题
 
