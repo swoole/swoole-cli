@@ -3003,9 +3003,6 @@ PHP_METHOD(ZipArchive, registerCancelCallback)
 /* {{{ check if a compression method is available in used libzip */
 PHP_METHOD(ZipArchive, isCompressionMethodSupported)
 {
-#ifdef __CYGWIN__
-	RETURN_FALSE;
-#else
 	zend_long method;
 	bool enc = 1;
 
@@ -3013,16 +3010,12 @@ PHP_METHOD(ZipArchive, isCompressionMethodSupported)
 		return;
 	}
 	RETVAL_BOOL(zip_compression_method_supported((zip_int32_t)method, enc));
-#endif
 }
 /* }}} */
 
 /* {{{ check if a encryption method is available in used libzip */
 PHP_METHOD(ZipArchive, isEncryptionMethodSupported)
 {
-#ifdef __CYGWIN__
-	RETURN_FALSE;
-#else
 	zend_long method;
 	bool enc = 1;
 
@@ -3030,7 +3023,6 @@ PHP_METHOD(ZipArchive, isEncryptionMethodSupported)
 		return;
 	}
 	RETVAL_BOOL(zip_encryption_method_supported((zip_uint16_t)method, enc));
-#endif
 }
 /* }}} */
 #endif
@@ -3249,15 +3241,12 @@ static PHP_MINFO_FUNCTION(zip)
 #else
 	php_info_print_table_row(2, "ZSTD compression", "No");
 #endif
-
-#ifndef __CYGWIN__
 	php_info_print_table_row(2, "AES-128 encryption",
 		zip_encryption_method_supported(ZIP_EM_AES_128, 1) ? "Yes" : "No");
 	php_info_print_table_row(2, "AES-192 encryption",
 		zip_encryption_method_supported(ZIP_EM_AES_128, 1) ? "Yes" : "No");
 	php_info_print_table_row(2, "AES-256 encryption",
 		zip_encryption_method_supported(ZIP_EM_AES_128, 1) ? "Yes" : "No");
-#endif
 #endif
 
 	php_info_print_table_end();
