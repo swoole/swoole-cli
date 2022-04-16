@@ -14,7 +14,7 @@ if (empty($argv[1])) {
 
 $p = new Preprocessor(__DIR__);
 $p->setPhpSrcDir('/home/htf/soft/php-8.1.5');
-$p->setDockerVersion('1.1');
+$p->setDockerVersion('1.2');
 $p->setSwooleDir('/home/htf/workspace/swoole');
 
 $endCallback = function() {};
