@@ -13,7 +13,7 @@ if (empty($argv[1])) {
 }
 
 $p = new Preprocessor(__DIR__);
-$p->setPhpSrcDir('/home/htf/soft/php-8.1.3');
+$p->setPhpSrcDir('/home/htf/soft/php-8.1.5');
 $p->setDockerVersion('1.1');
 $p->setSwooleDir('/home/htf/workspace/swoole');
 

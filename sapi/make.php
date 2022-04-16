@@ -163,8 +163,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/ext/zip/ ./ext
   cp -r $SRC/ext/zlib/ ./ext
   # main
-  cp -r $SRC/main ./main
-  cp -r sapi/cli sapi/cli
+  cp -r $SRC/main ./
   cp -r ./TSRM/TSRM.h main/TSRM.h
   exit 0
 else

@@ -46,10 +46,17 @@ class Library extends Project
     public string $makeOptions = '';
     public string $pkgConfig = '';
     public string $pkgName = '';
+    public string $prefix = '/usr/local';
 
     function withUrl(string $url): static
     {
         $this->url = $url;
+        return $this;
+    }
+
+    function withPrefix(string $prefix): static
+    {
+        $this->prefix = $prefix;
         return $this;
     }
 

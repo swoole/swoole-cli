@@ -1,14 +1,14 @@
-SRC=/home/htf/soft/php-8.1.3
+SRC=/home/htf/soft/php-8.1.5
 ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
-export PKG_CONFIG_PATH=/usr/curl/lib/pkgconfig:/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=/usr/libyaml/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
---with-curl=/usr/curl \
+--with-curl \
 --with-iconv=/usr/libiconv \
---with-bz2 \
+--with-bz2=/usr/bzip2 \
 --enable-bcmath \
 --enable-pcntl \
 --enable-filter \
@@ -406,8 +406,8 @@ make_curl() {
     mkdir -p /work/libs/curl && \
     tar --strip-components=1 -C /work/libs/curl -xf /work/pool/lib/curl-7.80.0.tar.gz  && \
     cd curl && \
-    echo  "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl"
-        autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl && \
+    echo  "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl --without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3"
+        autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl --without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3 && \
         make -j 8   && \
     make install
     cd -
@@ -499,7 +499,7 @@ config_php() {
 
 make_php() {
     make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/libiconv/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/curl/lib -L/usr/libyaml/lib '  -j 8 && echo ""
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/libiconv/lib -L/usr/libxml2/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/curl/lib -L/usr/libyaml/lib '  -j 8 && echo ""
 }
 
 help() {
@@ -594,48 +594,69 @@ elif [ "$1" = "clean-library" ] ;then
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "pkg-check" ] ;then
-    echo "openssl"
+    echo "[openssl]"
     pkg-config --libs openssl
-    echo "libiconv"
+    echo "==========================================================="
+    echo "[libiconv]"
     pkg-config --libs libiconv
-    echo "libxml2"
-    pkg-config --libs libxml2
-    echo "libxslt"
+    echo "==========================================================="
+    echo "[libxml2]"
+    pkg-config --libs libxml-2.0
+    echo "==========================================================="
+    echo "[libxslt]"
     pkg-config --libs libxslt
-    echo "imagemagick"
+    echo "==========================================================="
+    echo "[imagemagick]"
     pkg-config --libs ImageMagick
-    echo "gmp"
+    echo "==========================================================="
+    echo "[gmp]"
     pkg-config --libs gmp
-    echo "giflib"
+    echo "==========================================================="
+    echo "[giflib]"
     pkg-config --libs giflib
-    echo "libpng"
+    echo "==========================================================="
+    echo "[libpng]"
     pkg-config --libs libpng
-    echo "libjpeg"
+    echo "==========================================================="
+    echo "[libjpeg]"
     pkg-config --libs libjpeg
-    echo "freetype"
-    pkg-config --libs freetype
-    echo "libwebp"
+    echo "==========================================================="
+    echo "[freetype]"
+    pkg-config --libs freetype2
+    echo "==========================================================="
+    echo "[libwebp]"
     pkg-config --libs libwebp
-    echo "sqlite3"
+    echo "==========================================================="
+    echo "[sqlite3]"
     pkg-config --libs sqlite3
-    echo "zlib"
+    echo "==========================================================="
+    echo "[zlib]"
     pkg-config --libs zlib
-    echo "bzip2"
+    echo "==========================================================="
+    echo "[bzip2]"
     pkg-config --libs bzip2
-    echo "icu"
-    pkg-config --libs icu
-    echo "oniguruma"
+    echo "==========================================================="
+    echo "[icu]"
+    pkg-config --libs icu-i18n
+    echo "==========================================================="
+    echo "[oniguruma]"
     pkg-config --libs oniguruma
-    echo "zip"
-    pkg-config --libs zip
-    echo "cares"
-    pkg-config --libs cares
-    echo "curl"
+    echo "==========================================================="
+    echo "[zip]"
+    pkg-config --libs libzip
+    echo "==========================================================="
+    echo "[cares]"
+    pkg-config --libs libcares
+    echo "==========================================================="
+    echo "[curl]"
     pkg-config --libs libcurl
-    echo "libsodium"
+    echo "==========================================================="
+    echo "[libsodium]"
     pkg-config --libs libsodium
-    echo "libyaml"
-    pkg-config --libs libyaml
+    echo "==========================================================="
+    echo "[libyaml]"
+    pkg-config --libs yaml-0.1
+    echo "==========================================================="
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM
@@ -690,8 +711,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/ext/zip/ ./ext
   cp -r $SRC/ext/zlib/ ./ext
   # main
-  cp -r $SRC/main ./main
-  cp -r sapi/cli sapi/cli
+  cp -r $SRC/main ./
   cp -r ./TSRM/TSRM.h main/TSRM.h
   exit 0
 else
