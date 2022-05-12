@@ -72,6 +72,8 @@ help() {
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh archive"
+    echo "./make.sh all-library"
+    echo "./make.sh clean-all-library"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -84,6 +86,8 @@ elif [ "$1" = "all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
+elif [ "$1" = "clean-<?=$item->name?>" ] ;then
+    clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
     config_php
@@ -97,7 +101,7 @@ elif [ "$1" = "archive" ] ;then
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
     mv ${SWOOLE_CLI_FILE} ../
     cd -
-elif [ "$1" = "clean-library" ] ;then
+elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"
 <?php endforeach; ?>
@@ -164,6 +168,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/ext/zlib/ ./ext
   # main
   cp -r $SRC/main ./
+  cp -r $SRC/build ./
   cp -r ./TSRM/TSRM.h main/TSRM.h
   exit 0
 else

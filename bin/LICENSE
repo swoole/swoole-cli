@@ -5,7 +5,6 @@ openssl: https://github.com/openssl/openssl/blob/master/LICENSE.txt
 libiconv: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 libxml2: http://www.opensource.org/licenses/mit-license.html
 libxslt: http://www.opensource.org/licenses/mit-license.html
-imagemagick: https://imagemagick.org/script/license.php
 gmp: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 giflib: http://giflib.sourceforge.net/intro.html
 libpng: http://www.libpng.org/pub/png/src/libpng-LICENSE.txt
@@ -19,6 +18,7 @@ icu: https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE
 oniguruma: https://github.com/kkos/oniguruma/blob/master/COPYING
 zip: https://libzip.org/license/
 cares: https://c-ares.org/license.html
+imagemagick: https://imagemagick.org/script/license.php
 curl: https://github.com/curl/curl/blob/master/COPYING
 libsodium: https://en.wikipedia.org/wiki/ISC_license
 libyaml: https://pyyaml.org/wiki/LibYAML

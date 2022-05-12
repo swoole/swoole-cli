@@ -3,7 +3,7 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
-export PKG_CONFIG_PATH=/usr/libyaml/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libjpeg/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=/usr/libyaml/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl \
@@ -122,26 +122,6 @@ clean_libxslt() {
     cd -
 }
 
-make_imagemagick() {
-    cd /work/libs
-    echo "build imagemagick"
-    mkdir -p /work/libs/imagemagick && \
-    tar --strip-components=1 -C /work/libs/imagemagick -xf /work/pool/lib/7.1.0-19.tar.gz  && \
-    cd imagemagick && \
-    echo  "./configure --prefix=/usr/imagemagick --enable-static --disable-shared"
-        ./configure --prefix=/usr/imagemagick --enable-static --disable-shared && \
-        make -j 8   && \
-    make install
-    cd -
-}
-
-clean_imagemagick() {
-    cd /work/libs
-    echo "clean imagemagick"
-    cd /work/libs/imagemagick && make clean
-    cd -
-}
-
 make_gmp() {
     cd /work/libs
     echo "build gmp"
@@ -207,8 +187,8 @@ make_libjpeg() {
     mkdir -p /work/libs/libjpeg && \
     tar --strip-components=1 -C /work/libs/libjpeg -xf /work/pool/lib/libjpeg-turbo-2.1.2.tar.gz  && \
     cd libjpeg && \
-    echo  "cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg ."
-        cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg . && \
+    echo  "cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr ."
+        cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr . && \
         make -j 8   && \
     make install
     cd -
@@ -400,6 +380,26 @@ clean_cares() {
     cd -
 }
 
+make_imagemagick() {
+    cd /work/libs
+    echo "build imagemagick"
+    mkdir -p /work/libs/imagemagick && \
+    tar --strip-components=1 -C /work/libs/imagemagick -xf /work/pool/lib/7.1.0-19.tar.gz  && \
+    cd imagemagick && \
+    echo  "./configure --prefix=/usr/imagemagick --enable-static --disable-shared"
+        ./configure --prefix=/usr/imagemagick --enable-static --disable-shared && \
+        make -j 8   && \
+    make install
+    cd -
+}
+
+clean_imagemagick() {
+    cd /work/libs
+    echo "clean imagemagick"
+    cd /work/libs/imagemagick && make clean
+    cd -
+}
+
 make_curl() {
     cd /work/libs
     echo "build curl"
@@ -466,7 +466,6 @@ make_all_library() {
     make_libiconv && echo "[SUCCESS] make libiconv"
     make_libxml2 && echo "[SUCCESS] make libxml2"
     make_libxslt && echo "[SUCCESS] make libxslt"
-    make_imagemagick && echo "[SUCCESS] make imagemagick"
     make_gmp && echo "[SUCCESS] make gmp"
     make_giflib && echo "[SUCCESS] make giflib"
     make_libpng && echo "[SUCCESS] make libpng"
@@ -480,6 +479,7 @@ make_all_library() {
     make_oniguruma && echo "[SUCCESS] make oniguruma"
     make_zip && echo "[SUCCESS] make zip"
     make_cares && echo "[SUCCESS] make cares"
+    make_imagemagick && echo "[SUCCESS] make imagemagick"
     make_curl && echo "[SUCCESS] make curl"
     make_libsodium && echo "[SUCCESS] make libsodium"
     make_libyaml && echo "[SUCCESS] make libyaml"
@@ -499,13 +499,15 @@ config_php() {
 
 make_php() {
     make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/libiconv/lib -L/usr/libxml2/lib -L/usr/imagemagick/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/libjpeg/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/curl/lib -L/usr/libyaml/lib '  -j 8 && echo ""
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/libiconv/lib -L/usr/libxml2/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/imagemagick/lib -L/usr/curl/lib -L/usr/libyaml/lib '  -j 8 && echo ""
 }
 
 help() {
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh archive"
+    echo "./make.sh all-library"
+    echo "./make.sh clean-all-library"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -517,46 +519,88 @@ elif [ "$1" = "all-library" ] ;then
     make_all_library
 elif [ "$1" = "openssl" ] ;then
     make_openssl && echo "[SUCCESS] make openssl"
+elif [ "$1" = "clean-openssl" ] ;then
+    clean_openssl && echo "[SUCCESS] make clean openssl"
 elif [ "$1" = "libiconv" ] ;then
     make_libiconv && echo "[SUCCESS] make libiconv"
+elif [ "$1" = "clean-libiconv" ] ;then
+    clean_libiconv && echo "[SUCCESS] make clean libiconv"
 elif [ "$1" = "libxml2" ] ;then
     make_libxml2 && echo "[SUCCESS] make libxml2"
+elif [ "$1" = "clean-libxml2" ] ;then
+    clean_libxml2 && echo "[SUCCESS] make clean libxml2"
 elif [ "$1" = "libxslt" ] ;then
     make_libxslt && echo "[SUCCESS] make libxslt"
-elif [ "$1" = "imagemagick" ] ;then
-    make_imagemagick && echo "[SUCCESS] make imagemagick"
+elif [ "$1" = "clean-libxslt" ] ;then
+    clean_libxslt && echo "[SUCCESS] make clean libxslt"
 elif [ "$1" = "gmp" ] ;then
     make_gmp && echo "[SUCCESS] make gmp"
+elif [ "$1" = "clean-gmp" ] ;then
+    clean_gmp && echo "[SUCCESS] make clean gmp"
 elif [ "$1" = "giflib" ] ;then
     make_giflib && echo "[SUCCESS] make giflib"
+elif [ "$1" = "clean-giflib" ] ;then
+    clean_giflib && echo "[SUCCESS] make clean giflib"
 elif [ "$1" = "libpng" ] ;then
     make_libpng && echo "[SUCCESS] make libpng"
+elif [ "$1" = "clean-libpng" ] ;then
+    clean_libpng && echo "[SUCCESS] make clean libpng"
 elif [ "$1" = "libjpeg" ] ;then
     make_libjpeg && echo "[SUCCESS] make libjpeg"
+elif [ "$1" = "clean-libjpeg" ] ;then
+    clean_libjpeg && echo "[SUCCESS] make clean libjpeg"
 elif [ "$1" = "freetype" ] ;then
     make_freetype && echo "[SUCCESS] make freetype"
+elif [ "$1" = "clean-freetype" ] ;then
+    clean_freetype && echo "[SUCCESS] make clean freetype"
 elif [ "$1" = "libwebp" ] ;then
     make_libwebp && echo "[SUCCESS] make libwebp"
+elif [ "$1" = "clean-libwebp" ] ;then
+    clean_libwebp && echo "[SUCCESS] make clean libwebp"
 elif [ "$1" = "sqlite3" ] ;then
     make_sqlite3 && echo "[SUCCESS] make sqlite3"
+elif [ "$1" = "clean-sqlite3" ] ;then
+    clean_sqlite3 && echo "[SUCCESS] make clean sqlite3"
 elif [ "$1" = "zlib" ] ;then
     make_zlib && echo "[SUCCESS] make zlib"
+elif [ "$1" = "clean-zlib" ] ;then
+    clean_zlib && echo "[SUCCESS] make clean zlib"
 elif [ "$1" = "bzip2" ] ;then
     make_bzip2 && echo "[SUCCESS] make bzip2"
+elif [ "$1" = "clean-bzip2" ] ;then
+    clean_bzip2 && echo "[SUCCESS] make clean bzip2"
 elif [ "$1" = "icu" ] ;then
     make_icu && echo "[SUCCESS] make icu"
+elif [ "$1" = "clean-icu" ] ;then
+    clean_icu && echo "[SUCCESS] make clean icu"
 elif [ "$1" = "oniguruma" ] ;then
     make_oniguruma && echo "[SUCCESS] make oniguruma"
+elif [ "$1" = "clean-oniguruma" ] ;then
+    clean_oniguruma && echo "[SUCCESS] make clean oniguruma"
 elif [ "$1" = "zip" ] ;then
     make_zip && echo "[SUCCESS] make zip"
+elif [ "$1" = "clean-zip" ] ;then
+    clean_zip && echo "[SUCCESS] make clean zip"
 elif [ "$1" = "cares" ] ;then
     make_cares && echo "[SUCCESS] make cares"
+elif [ "$1" = "clean-cares" ] ;then
+    clean_cares && echo "[SUCCESS] make clean cares"
+elif [ "$1" = "imagemagick" ] ;then
+    make_imagemagick && echo "[SUCCESS] make imagemagick"
+elif [ "$1" = "clean-imagemagick" ] ;then
+    clean_imagemagick && echo "[SUCCESS] make clean imagemagick"
 elif [ "$1" = "curl" ] ;then
     make_curl && echo "[SUCCESS] make curl"
+elif [ "$1" = "clean-curl" ] ;then
+    clean_curl && echo "[SUCCESS] make clean curl"
 elif [ "$1" = "libsodium" ] ;then
     make_libsodium && echo "[SUCCESS] make libsodium"
+elif [ "$1" = "clean-libsodium" ] ;then
+    clean_libsodium && echo "[SUCCESS] make clean libsodium"
 elif [ "$1" = "libyaml" ] ;then
     make_libyaml && echo "[SUCCESS] make libyaml"
+elif [ "$1" = "clean-libyaml" ] ;then
+    clean_libyaml && echo "[SUCCESS] make clean libyaml"
 elif [ "$1" = "config" ] ;then
     config_php
 elif [ "$1" = "build" ] ;then
@@ -569,12 +613,11 @@ elif [ "$1" = "archive" ] ;then
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
     mv ${SWOOLE_CLI_FILE} ../
     cd -
-elif [ "$1" = "clean-library" ] ;then
+elif [ "$1" = "clean-all-library" ] ;then
     clean_openssl && echo "[SUCCESS] make clean [openssl]"
     clean_libiconv && echo "[SUCCESS] make clean [libiconv]"
     clean_libxml2 && echo "[SUCCESS] make clean [libxml2]"
     clean_libxslt && echo "[SUCCESS] make clean [libxslt]"
-    clean_imagemagick && echo "[SUCCESS] make clean [imagemagick]"
     clean_gmp && echo "[SUCCESS] make clean [gmp]"
     clean_giflib && echo "[SUCCESS] make clean [giflib]"
     clean_libpng && echo "[SUCCESS] make clean [libpng]"
@@ -588,6 +631,7 @@ elif [ "$1" = "clean-library" ] ;then
     clean_oniguruma && echo "[SUCCESS] make clean [oniguruma]"
     clean_zip && echo "[SUCCESS] make clean [zip]"
     clean_cares && echo "[SUCCESS] make clean [cares]"
+    clean_imagemagick && echo "[SUCCESS] make clean [imagemagick]"
     clean_curl && echo "[SUCCESS] make clean [curl]"
     clean_libsodium && echo "[SUCCESS] make clean [libsodium]"
     clean_libyaml && echo "[SUCCESS] make clean [libyaml]"
@@ -605,9 +649,6 @@ elif [ "$1" = "pkg-check" ] ;then
     echo "==========================================================="
     echo "[libxslt]"
     pkg-config --libs libxslt
-    echo "==========================================================="
-    echo "[imagemagick]"
-    pkg-config --libs ImageMagick
     echo "==========================================================="
     echo "[gmp]"
     pkg-config --libs gmp
@@ -647,6 +688,9 @@ elif [ "$1" = "pkg-check" ] ;then
     echo "==========================================================="
     echo "[cares]"
     pkg-config --libs libcares
+    echo "==========================================================="
+    echo "[imagemagick]"
+    pkg-config --libs ImageMagick
     echo "==========================================================="
     echo "[curl]"
     pkg-config --libs libcurl
@@ -712,6 +756,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/ext/zlib/ ./ext
   # main
   cp -r $SRC/main ./
+  cp -r $SRC/build ./
   cp -r ./TSRM/TSRM.h main/TSRM.h
   exit 0
 else

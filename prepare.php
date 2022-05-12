@@ -147,10 +147,8 @@ function install_libjpeg(Preprocessor $p)
     $p->addLibrary(
         (new Library('libjpeg'))
             ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
-            ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg .')
-            ->withLdflags('-L/usr/libjpeg/lib64')
+            ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr .')
             ->withFile('libjpeg-turbo-2.1.2.tar.gz')
-            ->withPkgConfig('/usr/libjpeg/lib64/pkgconfig')
             ->withHomePage('https://libjpeg-turbo.org/')
             ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
     );
@@ -347,7 +345,6 @@ install_openssl($p);
 install_libiconv($p);
 install_libxml2($p);
 install_libxslt($p);
-install_imagemagick($p);
 install_gmp($p);
 install_giflib($p);
 install_libpng($p);
@@ -364,6 +361,7 @@ install_zip($p);
 install_cares($p);
 //install_ncurses($p);
 //install_libedit($p);
+install_imagemagick($p);
 install_curl($p);
 install_libsodium($p);
 install_libyaml($p);
