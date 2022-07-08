@@ -17,7 +17,7 @@ dnl Basic autoconf initialization, generation of config.nice.
 dnl ----------------------------------------------------------------------------
 
 AC_PREREQ([2.68])
-AC_INIT([PHP],[8.1.1],[https://bugs.php.net],[php],[https://www.php.net])
+AC_INIT([PHP],[8.1.8],[https://bugs.php.net],[php],[https://www.php.net])
 AC_CONFIG_SRCDIR([main/php_version.h])
 AC_CONFIG_AUX_DIR([build])
 AC_PRESERVE_HELP_ORDER
@@ -260,7 +260,7 @@ AC_MSG_CHECKING([whether we are using musl libc])
 if command -v ldd >/dev/null && ldd --version 2>&1 | grep -q ^musl
 then
   AC_MSG_RESULT(yes)
-  CPPFLAGS="$CPPFLAGS -D__MUSL__"
+  AC_DEFINE([__MUSL__], [1], [Define when using musl libc])
 else
   AC_MSG_RESULT(no)
 fi
@@ -287,9 +287,7 @@ SAPI_SHARED=libs/libphp.[]$SHLIB_DL_SUFFIX_NAME
 SAPI_STATIC=libs/libphp.a
 SAPI_LIBTOOL=libphp.la
 
-PHP_CONFIGURE_PART(Configuring CLI)
-
-sinclude(main/cli/config.m4)
+PHP_CONFIGURE_PART(Configuring SAPI modules)
 
 esyscmd(./build/config-stubs sapi)
 
@@ -1023,6 +1021,16 @@ PHP_ARG_ENABLE([memory-sanitizer],,
     [Enable memory sanitizer (clang only)])],
   [no],
   [no])
+PHP_ARG_ENABLE([address-sanitizer],,
+  [AS_HELP_STRING([--enable-address-sanitizer],
+    [Enable address sanitizer])],
+  [no],
+  [no])
+PHP_ARG_ENABLE([undefined-sanitizer],,
+  [AS_HELP_STRING([--enable-undefined-sanitizer],
+    [Enable undefined sanitizer])],
+  [no],
+  [no])
 
 dnl Extension configuration.
 dnl ----------------------------------------------------------------------------
@@ -1193,6 +1201,7 @@ AS_CASE([$host_cpu],
   [arm*], [fiber_cpu="arm32"],
   [ppc64*|powerpc64*], [fiber_cpu="ppc64"],
   [ppc*|powerpc*], [fiber_cpu="ppc32"],
+  [riscv64*], [fiber_cpu="riscv64"],
   [s390x*], [fiber_cpu="s390x"],
   [mips64*], [fiber_cpu="mips64"],
   [mips*], [fiber_cpu="mips32"],
@@ -1212,6 +1221,7 @@ AS_CASE([$fiber_cpu],
   [arm32], [fiber_asm_file_prefix="arm_aapcs"],
   [ppc64], [fiber_asm_file_prefix="ppc64_sysv"],
   [ppc32], [fiber_asm_file_prefix="ppc32_sysv"],
+  [riscv64], [fiber_asm_file_prefix="riscv64_sysv"],
   [s390x], [fiber_asm_file_prefix="s390x_sysv"],
   [mips64], [fiber_asm_file_prefix="mips64_n64"],
   [mips32], [fiber_asm_file_prefix="mips32_o32"],
@@ -1430,6 +1440,7 @@ PHP_SUBST(sysconfdir)
 
 PHP_SUBST(EXEEXT)
 PHP_SUBST(CC)
+PHP_SUBST(BUILD_CC)
 PHP_SUBST(CFLAGS)
 PHP_SUBST(CFLAGS_CLEAN)
 PHP_SUBST(CPP)
