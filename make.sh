@@ -1,4 +1,4 @@
-SRC=/home/htf/soft/php-8.1.5
+SRC=/home/htf/soft/php-8.1.8
 ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
