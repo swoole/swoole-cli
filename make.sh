@@ -503,17 +503,19 @@ make_php() {
 }
 
 help() {
+    echo "./make.sh docker-bash"
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh archive"
     echo "./make.sh all-library"
     echo "./make.sh clean-all-library"
+    echo "./make.sh sync"
 }
 
 if [ "$1" = "docker-build" ] ;then
-  sudo docker build -t phpswoole/swoole_cli_os:1.2 .
+  sudo docker build -t phpswoole/swoole_cli_os:1.4 .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os:1.2 /bin/bash
+    sudo docker run -it -v $ROOT:/work -v /home/htf/workspace/swoole:/work/ext/swoole phpswoole/swoole_cli_os:1.4 /bin/bash
     exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library
@@ -758,6 +760,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/main ./
   cp -r $SRC/build ./
   cp -r ./TSRM/TSRM.h main/TSRM.h
+  cp -r $SRC/configure.ac ./
   exit 0
 else
     help
