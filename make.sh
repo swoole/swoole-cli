@@ -3,7 +3,7 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
-export PKG_CONFIG_PATH=/usr/libyaml/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=/usr/libyaml/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/giflib/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/libxml2/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
 --with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl \
@@ -35,7 +35,7 @@ OPTIONS="--disable-all \
 --enable-exif \
 --with-sodium \
 --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
---enable-gd --with-jpeg=/usr/libjpeg  --with-freetype=/usr/freetype \
+--enable-gd --with-jpeg=/usr --with-freetype=/usr \
 --enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
 --enable-redis \
 --with-imagick=/usr/imagemagick \
@@ -386,8 +386,8 @@ make_imagemagick() {
     mkdir -p /work/libs/imagemagick && \
     tar --strip-components=1 -C /work/libs/imagemagick -xf /work/pool/lib/7.1.0-19.tar.gz  && \
     cd imagemagick && \
-    echo  "./configure --prefix=/usr/imagemagick --enable-static --disable-shared"
-        ./configure --prefix=/usr/imagemagick --enable-static --disable-shared && \
+    echo  "./configure --prefix=/usr/imagemagick --with-zip=no --enable-static --disable-shared"
+        ./configure --prefix=/usr/imagemagick --with-zip=no --enable-static --disable-shared && \
         make -j 8   && \
     make install
     cd -
@@ -499,7 +499,7 @@ config_php() {
 
 make_php() {
     make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/libiconv/lib -L/usr/libxml2/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/imagemagick/lib -L/usr/curl/lib -L/usr/libyaml/lib '  -j 8 && echo ""
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -L/usr/openssl/lib -L/usr/libiconv/lib -L/usr/libxml2/lib -L/usr/gmp/lib -L/usr/giflib/lib -L/usr/libpng/lib -L/usr/lib64 -L/usr/freetype/lib -L/usr/libwebp/lib -L/usr/bzip2/lib -L/usr/imagemagick/lib -L/usr/curl/lib -L/usr/libyaml/lib '  -j 8 && echo ""
 }
 
 help() {
@@ -663,7 +663,7 @@ elif [ "$1" = "pkg-check" ] ;then
     pkg-config --libs libjpeg
     echo "==========================================================="
     echo "[freetype]"
-    pkg-config --libs freetype2
+    pkg-config --libs freetyp2
     echo "==========================================================="
     echo "[libwebp]"
     pkg-config --libs libwebp

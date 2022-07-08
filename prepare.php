@@ -13,7 +13,7 @@ if (empty($argv[1])) {
 }
 
 $p = new Preprocessor(__DIR__);
-$p->setPhpSrcDir('/home/htf/soft/php-8.1.5');
+$p->setPhpSrcDir('/home/htf/soft/php-8.1.8');
 $p->setDockerVersion('1.2');
 $p->setSwooleDir('/home/htf/workspace/swoole');
 
@@ -87,7 +87,7 @@ function install_imagemagick(Preprocessor $p)
     $p->addLibrary(
         (new Library('imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-19.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/imagemagick --enable-static --disable-shared')
+            ->withConfigure('./configure --prefix=/usr/imagemagick --with-zip=no --enable-static --disable-shared')
             ->withLdflags('-L/usr/imagemagick/lib')
             ->withPkgConfig('/usr/imagemagick/lib/pkgconfig')
             ->withPkgName('ImageMagick')
@@ -135,9 +135,9 @@ function install_libpng(Preprocessor $p)
     $p->addLibrary(
         (new Library('libpng'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/libpng --enable-static --disable-shared')
             ->withLdflags('-L/usr/libpng/lib')
             ->withPkgConfig('/usr/libpng/lib/pkgconfig')
+            ->withConfigure('./configure --prefix=/usr/libpng --enable-static --disable-shared')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
     );
 }
@@ -148,6 +148,8 @@ function install_libjpeg(Preprocessor $p)
         (new Library('libjpeg'))
             ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
             ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr .')
+            ->withLdflags('-L/usr/lib64')
+            ->withPkgConfig('/usr/lib64/pkgconfig')
             ->withFile('libjpeg-turbo-2.1.2.tar.gz')
             ->withHomePage('https://libjpeg-turbo.org/')
             ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
@@ -160,10 +162,10 @@ function install_freetype(Preprocessor $p)
         (new Library('freetype'))
             ->withUrl('https://mirror.yongbok.net/nongnu/freetype/freetype-2.10.4.tar.gz')
             ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared')
-            ->withLdflags('-L/usr/freetype/lib')
-            ->withPkgConfig('/usr/freetype/lib/pkgconfig')
-            ->withPkgName('freetype2')
             ->withHomePage('https://freetype.org/')
+            ->withLdflags('-L/usr/freetype/lib')
+            ->withPkgName('freetyp2')
+            ->withPkgConfig('/usr/freetype/lib/pkgconfig')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
     );
 }
@@ -413,7 +415,7 @@ $p->addExtension(
 
 $p->addExtension(
     (new Extension('gd'))
-        ->withOptions('--enable-gd --with-jpeg=/usr/libjpeg  --with-freetype=/usr/freetype')
+        ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr')
 );
 
 $p->addExtension(
