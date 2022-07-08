@@ -12,10 +12,6 @@ bison: 3.x 以上版本，macOS 下需要编译安装
 问题记录
 ======
 
-CygWin
-----
-cygwin下intl 扩展有问题，需要增加 `-D_POSIX_C_SOURCE=200809L` 编译参数，暂时未解决
-
 macOS
 ----
 缺少`libtool`:
@@ -55,10 +51,6 @@ libMagick-devel
 编译参数
 ------
 ```
---enable-intl
-```
-
-```
 ./configure --prefix=/usr --disable-all \
 --disable-fiber-asm \
 --disable-opcache \
@@ -66,6 +58,7 @@ libMagick-devel
 --with-openssl --enable-openssl \
 --with-curl \
 --with-iconv \
+--enable-intl \
 --with-bz2 \
 --enable-bcmath \
 --enable-filter \
