@@ -69,11 +69,13 @@ make_php() {
 }
 
 help() {
+    echo "./make.sh docker-bash"
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh archive"
     echo "./make.sh all-library"
     echo "./make.sh clean-all-library"
+    echo "./make.sh sync"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -170,6 +172,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/main ./
   cp -r $SRC/build ./
   cp -r ./TSRM/TSRM.h main/TSRM.h
+  cp -r $SRC/configure.ac ./
   exit 0
 else
     help
