@@ -295,6 +295,7 @@ tmp-php.ini
 /.settings
 /.project
 /.cproject
+/.vscode
 /pool/
 /ext/redis
 /ext/memcached
