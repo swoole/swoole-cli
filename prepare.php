@@ -22,6 +22,7 @@ $endCallback = function() {};
 if ($type == 'macos') {
     define('WORKSPACE', '/Users/hantianfeng/workspace');
     $p->setWorkDir(WORKSPACE.'/cli-swoole');
+    $p->setExtraLdflags('-L/usr/lib -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
     $endCallback = function($p) {
         $makesh = file_get_contents(__DIR__.'/make.sh');
         $makesh = str_replace('/usr', WORKSPACE.'/opt/usr', $makesh);
@@ -64,8 +65,6 @@ function install_libxml2(Preprocessor $p)
         (new Library('libxml2'))
             ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.10/libxml2-v2.9.10.tar.gz')
             ->withConfigure('./autogen.sh && ./configure --prefix=/usr --enable-static=yes --enable-shared=no')
-            ->withLdflags('-L/usr/libxml2/lib')
-            ->withPkgConfig('/usr/libxml2/lib/pkgconfig')
             ->withPkgName('libxml-2.0')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
     );
@@ -124,8 +123,6 @@ function install_giflib(Preprocessor $p)
         (new Library('giflib'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
             ->withMakeOptions('libgif.a')
-            ->withLdflags('-L/usr/giflib/lib')
-            ->withPkgConfig('/usr/giflib/lib/pkgconfig')
             ->withLicense('http://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
     );
 }

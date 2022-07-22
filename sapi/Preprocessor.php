@@ -136,6 +136,7 @@ class Preprocessor
     protected string $dockerVersion = 'latest';
     protected string $swooleDir;
     protected string $workDir = '/work';
+    protected string $extraLdflags = '';
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
 
@@ -169,6 +170,11 @@ class Preprocessor
     function setWorkdir(string $workDir)
     {
         $this->workDir = $workDir;
+    }
+
+    function setExtraLdflags(string $flags)
+    {
+        $this->extraLdflags = $flags;
     }
 
     function donotInstallLibrary()

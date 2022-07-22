@@ -17,10 +17,10 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    cd <?=$this->workDir?>/libs
+    cd <?=$this->workDir?>/thirdparty
     echo "build <?=$item->name?>"
-    mkdir -p <?=$this->workDir?>/libs/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->workDir?>/libs/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
+    mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
+    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
     cd <?=$item->name?> && \
     echo  "<?=$item->configure?>"
     <?php if (!empty($item->configure)): ?>
@@ -32,9 +32,9 @@ make_<?=$item->name?>() {
 }
 
 clean_<?=$item->name?>() {
-    cd <?=$this->workDir?>/libs
+    cd <?=$this->workDir?>/thirdparty
     echo "clean <?=$item->name?>"
-    cd <?=$this->workDir?>/libs/<?=$item->name?> && make clean
+    cd <?=$this->workDir?>/thirdparty/<?=$item->name?> && make clean
     cd -
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
@@ -60,7 +60,7 @@ config_php() {
 
 make_php() {
     make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?php foreach ($this->libraryList as $item) {
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?=$this->extraLdflags?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
             echo $item->ldflags;
             echo ' ';

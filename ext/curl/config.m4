@@ -72,14 +72,7 @@ int main(int argc, char *argv[])
     AC_MSG_RESULT([no])
   fi
 
-  PHP_CHECK_LIBRARY(curl,curl_easy_perform,
-  [
-    AC_DEFINE(HAVE_CURL,1,[ ])
-  ],[
-    AC_MSG_ERROR(There is something wrong. Please check config.log for more information.)
-  ],[
-    $CURL_LIBS
-  ])
+  AC_DEFINE(HAVE_CURL,1,[ ])
 
   PHP_NEW_EXTENSION(curl, interface.c multi.c share.c curl_file.c, $ext_shared)
   PHP_INSTALL_HEADERS([ext/curl], [php_curl.h])
