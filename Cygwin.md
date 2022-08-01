@@ -1,13 +1,12 @@
 工具
 ----
-autoconf
-automake
-g++
-cmake
-libtool
-
-re2c: 需要源码安装
-bison: 3.x 以上版本，macOS 下需要编译安装
+- autoconf
+- automake
+- g++
+- cmake
+- libtool
+- re2c （需要源码安装）
+- bison: 3.x 以上版本（macOS 下需要编译安装）
 
 问题记录
 ======
