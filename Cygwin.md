@@ -11,17 +11,7 @@
 问题记录
 ======
 
-macOS
-----
-缺少`libtool`:
-```shell
-ln -s /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-```
-
-
-posix 问题
-
-库
+CygWin 依赖
 ----
 ```
 libssl-devel
