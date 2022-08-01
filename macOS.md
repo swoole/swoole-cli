@@ -16,6 +16,14 @@ brew uninstall --ignore-dependencies freetype
 
 # 问题
 
+## 缺少 bison
+下载源代码，自行编译安装
+
+## 缺少`libtool`
+```shell
+ln -s /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
+```
+
 
 ## curl configure 检测不通过
 修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
