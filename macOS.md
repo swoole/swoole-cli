@@ -65,13 +65,3 @@ In file included from /Users/hantianfeng/workspace/cli-swoole/Zend/zend_config.h
 
 需要修改 `main/php_config.h` ，去掉 `-ne` 多余的字符
 
-## 连接错误
-直接 `build` 会失败，需要将脚本复制到单独的一个 `build.sh` 中，然后手工修改，加入相关参数。
-
-> 不清楚为什么丢弃了很多编译参数
-
-在 `-all-static -fno-ident` 之后添加： 
-
-```
--L/Users/hantianfeng/workspace/opt/usr/lib -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio
-```
