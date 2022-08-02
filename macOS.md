@@ -32,7 +32,7 @@ No package 'icu-io' found
 No package 'icu-i18n' found
 ```
 
-### 1. 需要手工执行 `export PKG_CONFIG_PATH` 设置路径
+### 1. 需要手工执行 `export PKG_CONFIG_PATH` 设置路径(复制 `make.sh` 中的指令)
 ### 2. 设置 `ICU` 相关环境变量
 
 ```shell
@@ -40,6 +40,8 @@ export ICU_CFLAGS=$(pkg-config --cflags icu-uc)
 export ICU_LIBS=$(pkg-config --libs icu-uc)
 export ONIG_CFLAGS=$(pkg-config --cflags oniguruma)
 export ONIG_LIBS=$(pkg-config --libs oniguruma)
+export LIBZIP_CFLAGS=$(pkg-config --cflags libzip)
+export LIBZIP_LIBS=$(pkg-config --libs libzip)
 ```
 
 ## 编译错误
