@@ -1,28 +1,17 @@
 工具
 ----
-autoconf
-automake
-g++
-cmake
-libtool
-
-re2c: 需要源码安装
-bison: 3.x 以上版本，macOS 下需要编译安装
+- autoconf
+- automake
+- g++
+- cmake
+- libtool
+- re2c （需要源码安装）
+- bison: 3.x 以上版本（macOS 下需要编译安装）
 
 问题记录
 ======
 
-macOS
-----
-缺少`libtool`:
-```shell
-ln -s /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-```
-
-
-posix 问题
-
-库
+CygWin 依赖
 ----
 ```
 libssl-devel
@@ -86,7 +75,7 @@ libMagick-devel
 --with-sodium \
 --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
 --enable-gd --with-jpeg  --with-freetype \
---enable-swoole --enable-sockets --enable-mysqlnd --enable-http2 --enable-swoole-json --enable-swoole-curl --enable-cares \
+--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
 --enable-redis \
 --with-imagick \
 --with-yaml 
