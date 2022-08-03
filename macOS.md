@@ -50,6 +50,8 @@ export ONIG_CFLAGS=$(pkg-config --cflags oniguruma)
 export ONIG_LIBS=$(pkg-config --libs oniguruma)
 export LIBZIP_CFLAGS=$(pkg-config --cflags libzip)
 export LIBZIP_LIBS=$(pkg-config --libs libzip)
+export LIBSODIUM_CFLAGS=$(pkg-config --cflags libsodium)
+export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```
 
 ## 编译错误
