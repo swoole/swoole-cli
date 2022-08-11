@@ -7,4 +7,4 @@
 
 ## SWOOLE-CLI LICENSE
 * 对`swoole-cli`代码进行使用、修改、发布的新项目必须含有`SWOOLE-CLI LICENSE`的全部内容
-* 使用`swoole-cli`代码发布为新项目时项目或产品名称不得包含`swoole`单词
+* 使用`swoole-cli`代码重新发布为新项目或者产品时，项目或产品名称不得包含`swoole`单词
