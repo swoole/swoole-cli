@@ -17,17 +17,18 @@ $p->setPhpSrcDir('/home/htf/soft/php-8.1.8');
 $p->setDockerVersion('1.4');
 $p->setSwooleDir('/home/htf/workspace/swoole');
 
-$endCallback = function() {};
+$endCallback = function () {
+};
 
 if ($type == 'macos') {
     define('WORKSPACE', '/Users/hantianfeng/workspace');
-    $p->setWorkDir(WORKSPACE.'/cli-swoole');
+    $p->setWorkDir(WORKSPACE . '/cli-swoole');
     $p->setExtraLdflags('-L/usr/lib -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
-    $endCallback = function($p) {
-        $makesh = file_get_contents(__DIR__.'/make.sh');
-        $makesh = str_replace('/usr', WORKSPACE.'/opt/usr', $makesh);
-        $makesh = str_replace('export PKG_CONFIG_PATH=', 'export PKG_CONFIG_PATH='.WORKSPACE.'/opt/usr/lib/pkgconfig:', $makesh);
-        file_put_contents(__DIR__.'/make.sh', $makesh);
+    $endCallback = function ($p) {
+        $makesh = file_get_contents(__DIR__ . '/make.sh');
+        $makesh = str_replace('/usr', WORKSPACE . '/opt/usr', $makesh);
+        $makesh = str_replace('export PKG_CONFIG_PATH=', 'export PKG_CONFIG_PATH=' . WORKSPACE . '/opt/usr/lib/pkgconfig:', $makesh);
+        file_put_contents(__DIR__ . '/make.sh', $makesh);
     };
 }
 
@@ -329,7 +330,7 @@ function install_curl(Preprocessor $p)
     $p->addLibrary(
         (new Library('curl'))
             ->withUrl('https://curl.se/download/curl-7.80.0.tar.gz')
-            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl ".
+            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl " .
                 "--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3"
             )
             ->withLdflags('-L/usr/curl/lib')
@@ -369,11 +370,6 @@ install_libyaml($p);
 // PHP Extension
 // ================================================================================================
 
-$p->addExtension(
-    (new Extension('openssl'))
-        ->withOptions('--with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl')
-);
-
 $p->addExtension((new Extension('curl'))->withOptions('--with-curl'));
 $p->addExtension((new Extension('iconv'))->withOptions('--with-iconv=/usr/libiconv'));
 $p->addExtension((new Extension('bz2'))->withOptions('--with-bz2=/usr/bzip2'));
@@ -405,43 +401,96 @@ $p->addExtension((new Extension('sodium'))->withOptions('--with-sodium'));
 //$p->addExtension((new Extension('readline'))->withOptions('--with-libedit'));
 //$p->addExtension((new Extension('opcache'))->withOptions('--enable-opcache'));
 
-$p->addExtension(
-    (new Extension('xml'))
-        ->withOptions('--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml')
-);
+$extAvailabled = [
+    'openssl' => function ($p) {
+        $p->addExtension(
+            (new Extension('openssl'))
+                ->withOptions('--with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl')
+        );
+    },
+    'xml' => function ($p) {
+        $p->addExtension((new Extension('swoole'))
+            ->withOptions('--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml')
+        );
+    },
+    'gd' => function ($p) {
+        $p->addExtension((new Extension('swoole'))
+            ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr')
+        );
+    },
+    'swoole' => function ($p) {
+        $p->addExtension((new Extension('swoole'))
+            ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares')
+            ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
+            ->withHomePage('https://github.com/swoole/swoole-src')
+        );
+    },
+    'yaml' => function ($p) {
+        $p->addExtension((new Extension('yaml'))
+            ->withOptions('--with-yaml=/usr/libyaml')
+            ->withPeclVersion('2.2.2')
+            ->withHomePage('https://github.com/php/pecl-file_formats-yaml')
+            ->withLicense('https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE', Extension::LICENSE_MIT)
+        );
+    },
+    'imagick' => function ($p) {
+        $p->addExtension((new Extension('imagick'))
+            ->withOptions('--with-imagick=/usr/imagemagick')
+            ->withPeclVersion('3.6.0')
+            ->withHomePage('https://github.com/Imagick/imagick')
+            ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
+        );
+    },
+    'redis' => function ($p) {
+        $p->addExtension((new Extension('redis'))
+            ->withOptions('--enable-redis')
+            ->withPeclVersion('5.3.5')
+            ->withHomePage('https://github.com/phpredis/phpredis')
+            ->withLicense('https://github.com/phpredis/phpredis/blob/develop/COPYING', Extension::LICENSE_PHP)
+        );
+    },
+    'inotify' => function ($p) {
+        $p->addExtension((new Extension('inotify'))
+            ->withOptions('--enable-inotify')
+            ->withPeclVersion('3.0.0'));
+    },
+    'mongodb' => function ($p) {
+        $p->addExtension((new Extension('mongodb'))
+            ->withOptions('--enable-mongodb')
+            ->withPeclVersion('1.14.0'));
+    }
+];
 
-$p->addExtension(
-    (new Extension('gd'))
-        ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr')
-);
+$extEnabled = [
+    'openssl',
+    'xml',
+    'gd',
+    'redis',
+    'swoole',
+    'yaml',
+    'imagick',
+];
 
-$p->addExtension(
-    (new Extension('swoole'))
-        ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares')
-        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
-        ->withHomePage('https://github.com/swoole/swoole-src')
-);
+for ($i = 1; $i < $argc; $i++) {
+    $op = $argv[$i][0];
+    $ext = substr($argv[$i], 1);
+    if ($op == '+') {
+        $extEnabled[] = $ext;
+    } elseif ($op == '-') {
+        $key = array_search($ext, $extEnabled);
+        if ($key !== false) {
+            unset($extEnabled[$key]);
+        }
+    }
+}
 
-$p->addExtension((new Extension('redis'))
-    ->withOptions('--enable-redis')
-    ->withPeclVersion('5.3.5')
-    ->withHomePage('https://github.com/phpredis/phpredis')
-    ->withLicense('https://github.com/phpredis/phpredis/blob/develop/COPYING', Extension::LICENSE_PHP)
-);
-
-$p->addExtension((new Extension('imagick'))
-    ->withOptions('--with-imagick=/usr/imagemagick')
-    ->withPeclVersion('3.6.0')
-    ->withHomePage('https://github.com/Imagick/imagick')
-    ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
-);
-
-$p->addExtension((new Extension('yaml'))
-    ->withOptions('--with-yaml=/usr/libyaml')
-    ->withPeclVersion('2.2.2')
-    ->withHomePage('https://github.com/php/pecl-file_formats-yaml')
-    ->withLicense('https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE', Extension::LICENSE_MIT)
-);
+foreach ($extEnabled as $ext) {
+    if (!isset($extAvailabled[$ext])) {
+        echo "unsupported extension[$ext]\n";
+        continue;
+    }
+    ($extAvailabled[$ext])($p);
+}
 
 $p->gen();
 $p->info();

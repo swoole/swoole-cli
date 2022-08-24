@@ -208,11 +208,22 @@ class Preprocessor
     function addExtension(Extension $ext)
     {
         if ($ext->peclVersion) {
-            $file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+            if ($ext->peclVersion == 'latest') {
+                $find = glob($this->extensionDir . '/' . $ext->name . '-*.tgz');
+                if (!$find) {
+                    goto _download;
+                }
+                $file = basename($find[0]);
+            } else {
+                $file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+            }
+
             $ext->file = $file;
             $ext->path = $this->extensionDir . '/' . $file;
+
             if (!is_file($ext->path)) {
-                $download_name = $ext->name . '-' . $ext->peclVersion;
+                _download:
+                $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
                 echo "pecl download $download_name\n";
                 echo `cd {$this->extensionDir} && pecl download $download_name && cd -`;
             } else {

@@ -5,7 +5,6 @@ export CXX=clang++
 export LD=ld.lld
 export PKG_CONFIG_PATH=/usr/libyaml/lib/pkgconfig:/usr/curl/lib/pkgconfig:/usr/imagemagick/lib/pkgconfig:/usr/libwebp/lib/pkgconfig:/usr/freetype/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/libpng/lib/pkgconfig:/usr/gmp/lib/pkgconfig:/usr/openssl/lib/pkgconfig:$PKG_CONFIG_PATH
 OPTIONS="--disable-all \
---with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --with-curl \
 --with-iconv=/usr/libiconv \
 --with-bz2=/usr/bzip2 \
@@ -34,12 +33,14 @@ OPTIONS="--disable-all \
 --with-gmp=/usr/gmp \
 --enable-exif \
 --with-sodium \
+--with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl \
 --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
 --enable-gd --with-jpeg=/usr --with-freetype=/usr \
---enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
 --enable-redis \
---with-imagick=/usr/imagemagick \
+--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
 --with-yaml=/usr/libyaml \
+--with-imagick=/usr/imagemagick \
+--enable-inotify \
 "
 
 make_openssl() {
