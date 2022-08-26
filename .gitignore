@@ -302,4 +302,5 @@ tmp-php.ini
 /ext/memcached
 /ext/imagick
 /ext/yaml
-/ext/swoole
+/ext/mongodb
+/ext/inotify
