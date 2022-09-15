@@ -24,17 +24,12 @@ if ($type == 'macos') {
     define('WORKSPACE', '/Users/hantianfeng/workspace');
     $p->setWorkDir(WORKSPACE . '/cli-swoole');
     $p->setExtraLdflags('-L/usr/lib -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
-    $endCallback = function ($p) {
-        $makesh = file_get_contents(__DIR__ . '/make.sh');
-        $makesh = str_replace('/usr', WORKSPACE . '/opt/usr', $makesh);
-        $makesh = str_replace('export PKG_CONFIG_PATH=', 'export PKG_CONFIG_PATH=' . WORKSPACE . '/opt/usr/lib/pkgconfig:', $makesh);
-        file_put_contents(__DIR__ . '/make.sh', $makesh);
     $p->setWorkDir(WORKSPACE.'/cli-swoole');
     $p->setExtraLdflags('-L/usr/lib -framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
     $endCallback = function($p) {
         $makesh = file_get_contents(__DIR__.'/make.sh');
         $makesh = str_replace('/usr', WORKSPACE.'/opt/usr', $makesh);
-        $makesh = str_replace('export PKG_CONFIG_PATH=', 'export PKG_CONFIG_PATH='.WORKSPACE.'/opt/usr/lib/pkgconfig:', $makesh);
+        $makesh = str_replace('export PKG_CONFIG_PATH=', 'export PKG_CONFIG_PATH=' . WORKSPACE . '/opt/usr/lib/pkgconfig:', $makesh);
         file_put_contents(__DIR__.'/make.sh', $makesh);
     };
 }
