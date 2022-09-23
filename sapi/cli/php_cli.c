@@ -74,6 +74,10 @@
 
 #include "php_getopt.h"
 
+#ifndef PHP_CLI_WIN32_NO_CONSOLE
+#include "php_cli_server.h"
+#endif
+
 #include "ps_title.h"
 #include "php_cli_process_title.h"
 #include "php_cli_process_title_arginfo.h"
@@ -146,12 +150,15 @@ const opt_struct OPTIONS[] = {
 	{'l', 0, "syntax-check"},
 	{'m', 0, "modules"},
 	{'n', 0, "no-php-ini"},
+        {'P', 0, "fpm"},
 	{'q', 0, "no-header"}, /* for compatibility with CGI (do not generate HTTP headers) */
 	{'R', 1, "process-code"},
 	{'H', 0, "hide-args"},
 	{'r', 1, "run"},
 	{'s', 0, "syntax-highlight"},
 	{'s', 0, "syntax-highlighting"},
+	{'S', 1, "server"},
+	{'t', 1, "docroot"},
 	{'w', 0, "strip"},
 	{'?', 0, "usage"},/* help alias (both '?' and 'usage') */
 	{'v', 0, "version"},
@@ -471,17 +478,21 @@ static void php_cli_usage(char *argv0)
 	if (prog) {
 		prog++;
 	} else {
-		prog = "php";
+		prog = "swoole-cli";
 	}
 
 	printf( "Usage: %s [options] [-f] <file> [--] [args...]\n"
 				"   %s [options] -r <code> [--] [args...]\n"
 				"   %s [options] [-B <begin_code>] -R <code> [-E <end_code>] [--] [args...]\n"
 				"   %s [options] [-B <begin_code>] -F <file> [-E <end_code>] [--] [args...]\n"
+	            "   %s [options] -P --fpm-config <file>\n"
+				"   %s [options] -S <addr>:<port> [-t docroot] [router]\n"
 				"   %s [options] -- [args...]\n"
 				"   %s [options] -a\n"
 				"\n"
 				"  -a               Run as interactive shell (requires readline extension)\n"
+	            "  -P               Run with fpm\n"
+	            "  -S <addr>:<port> Run with built-in web server.\n"
 				"  -c <path>|<file> Look for php.ini file in this directory\n"
 				"  -n               No configuration (ini) files will be used\n"
 				"  -d foo[=bar]     Define INI entry foo with value 'bar'\n"
@@ -497,6 +508,7 @@ static void php_cli_usage(char *argv0)
 				"  -F <file>        Parse and execute <file> for every input line\n"
 				"  -E <end_code>    Run PHP <end_code> after processing all input lines\n"
 				"  -H               Hide any passed arguments from external tools.\n"
+				"  -t <docroot>     Specify document root <docroot> for built-in web server.\n"
 				"  -s               Output HTML syntax highlighted source.\n"
 				"  -v               Version number\n"
 				"  -w               Output source with stripped comments and whitespace.\n"
@@ -513,7 +525,7 @@ static void php_cli_usage(char *argv0)
 				"  --rz <name>      Show information about Zend extension <name>.\n"
 				"  --ri <name>      Show configuration for extension <name>.\n"
 				"\n"
-				, prog, prog, prog, prog, prog, prog, prog);
+				, prog, prog, prog, prog, prog, prog, prog, prog);
 }
 /* }}} */
 
@@ -529,17 +541,19 @@ static void cli_register_file_handles(bool no_close) /* {{{ */
 	s_out = php_stream_open_wrapper_ex("php://stdout", "wb", 0, NULL, sc_out);
 	s_err = php_stream_open_wrapper_ex("php://stderr", "wb", 0, NULL, sc_err);
 
+	/* Release stream resources, but don't free the underlying handles. Othewrise,
+	 * extensions which write to stderr or company during mshutdown/gshutdown
+	 * won't have the expected functionality.
+	 */
+	if (s_in) s_in->flags |= PHP_STREAM_FLAG_NO_CLOSE;
+	if (s_out) s_out->flags |= PHP_STREAM_FLAG_NO_CLOSE;
+	if (s_err) s_err->flags |= PHP_STREAM_FLAG_NO_CLOSE;
+
 	if (s_in==NULL || s_out==NULL || s_err==NULL) {
 		if (s_in) php_stream_close(s_in);
 		if (s_out) php_stream_close(s_out);
 		if (s_err) php_stream_close(s_err);
 		return;
-	}
-
-	if (no_close) {
-		s_in->flags |= PHP_STREAM_FLAG_NO_CLOSE;
-		s_out->flags |= PHP_STREAM_FLAG_NO_CLOSE;
-		s_err->flags |= PHP_STREAM_FLAG_NO_CLOSE;
 	}
 
 	s_in_process = s_in;
@@ -590,6 +604,29 @@ BOOL WINAPI php_cli_win32_ctrl_handler(DWORD sig)
 #endif
 /*}}}*/
 
+void show_swoole_version(void) {
+    php_printf("Swoole %s (%s) (built: %s %s) (%s)\n",
+        SWOOLE_VERSION, cli_sapi_module.name, __DATE__, __TIME__,
+#ifdef ZTS
+        "ZTS"
+#else
+        "NTS"
+#endif
+#ifdef PHP_BUILD_COMPILER
+        " " PHP_BUILD_COMPILER
+#endif
+#ifdef PHP_BUILD_ARCH
+        " " PHP_BUILD_ARCH
+#endif
+#if ZEND_DEBUG
+        " DEBUG"
+#endif
+#ifdef HAVE_GCOV
+        " GCOV"
+#endif
+    );
+}
+
 static int do_cli(int argc, char **argv) /* {{{ */
 {
 	int c;
@@ -627,27 +664,8 @@ static int do_cli(int argc, char **argv) /* {{{ */
 				EG(exit_status) = (c == '?' && argc > 1 && !strchr(argv[1],  c));
 				goto out;
 
-			case 'v': /* show php version & quit */
-				php_printf("Swoole %s (%s) (built: %s %s) (%s)\n",
-					SWOOLE_VERSION, cli_sapi_module.name, __DATE__, __TIME__,
-#ifdef ZTS
-					"ZTS"
-#else
-					"NTS"
-#endif
-#ifdef PHP_BUILD_COMPILER
-					" " PHP_BUILD_COMPILER
-#endif
-#ifdef PHP_BUILD_ARCH
-					" " PHP_BUILD_ARCH
-#endif
-#if ZEND_DEBUG
-					" DEBUG"
-#endif
-#ifdef HAVE_GCOV
-					" GCOV"
-#endif
-				);
+			case 'v': /* show swoole version & quit */
+			    show_swoole_version();
 				sapi_deactivate();
 				goto out;
 
@@ -1146,6 +1164,8 @@ err:
 }
 /* }}} */
 
+extern int fpm_main(int argc, char *argv[]);
+
 /* {{{ main */
 #ifdef PHP_CLI_WIN32_NO_CONSOLE
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -1174,6 +1194,18 @@ int main(int argc, char *argv[])
 	size_t ini_entries_len = 0;
 	int ini_ignore = 1;
 	sapi_module_struct *sapi_module = &cli_sapi_module;
+
+    while ((c = php_getopt(argc, argv, OPTIONS, &php_optarg, &php_optind, 1, 2))!=-1) {
+        switch (c) {
+            case 'P':
+                return fpm_main(argc, argv);
+            default:
+                break;
+        }
+    }
+
+    php_optarg = NULL;
+    php_optind = 1;
 
 	/*
 	 * Do not move this initialization. It needs to happen before argv is used
@@ -1275,6 +1307,12 @@ int main(int argc, char *argv[])
 				}
 				break;
 			}
+#ifndef PHP_CLI_WIN32_NO_CONSOLE
+			case 'S':
+				sapi_module = &cli_server_sapi_module;
+				cli_server_sapi_module.additional_functions = server_additional_functions;
+				break;
+#endif
 			case 'h': /* help & quit */
 			case '?':
 				php_cli_usage(argv[0]);
@@ -1349,7 +1387,15 @@ exit_loop:
 	}
 
 	zend_first_try {
-        exit_status = do_cli(argc, argv);
+#ifndef PHP_CLI_WIN32_NO_CONSOLE
+		if (sapi_module == &cli_sapi_module) {
+#endif
+			exit_status = do_cli(argc, argv);
+#ifndef PHP_CLI_WIN32_NO_CONSOLE
+		} else {
+			exit_status = do_cli_server(argc, argv);
+		}
+#endif
 	} zend_end_try();
 out:
 	if (ini_path_override) {
