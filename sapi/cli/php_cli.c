@@ -150,14 +150,14 @@ const opt_struct OPTIONS[] = {
 	{'l', 0, "syntax-check"},
 	{'m', 0, "modules"},
 	{'n', 0, "no-php-ini"},
-        {'P', 0, "fpm"},
+    {'P', 0, "fpm"},
 	{'q', 0, "no-header"}, /* for compatibility with CGI (do not generate HTTP headers) */
 	{'R', 1, "process-code"},
 	{'H', 0, "hide-args"},
 	{'r', 1, "run"},
 	{'s', 0, "syntax-highlight"},
 	{'s', 0, "syntax-highlighting"},
-	{'S', 1, "server"},
+	{'S', 1, "cli-web-server"},
 	{'t', 1, "docroot"},
 	{'w', 0, "strip"},
 	{'?', 0, "usage"},/* help alias (both '?' and 'usage') */
