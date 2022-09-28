@@ -456,6 +456,20 @@ $extAvailabled = [
         $p->addExtension((new Extension('mongodb'))
             ->withOptions('--enable-mongodb')
             ->withPeclVersion('1.14.0'));
+    },
+    "protobuf" => function ($p) {
+        $p->addExtension((new Extension('protobuf'))
+            ->withOptions('--enable-protobuf')
+            ->withPeclVersion('3.21.6')
+            ->withHomePage('https://developers.google.com/protocol-buffers'));
+    },
+];
+
+$extCallback = [
+    'protobuf' => function () {
+        // compatible with redis
+        echo `sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
+        echo `find ext/protobuf/ -name \*.bak | xargs rm -f`;
     }
 ];
 
@@ -467,6 +481,7 @@ $extEnabled = [
     'swoole',
     'yaml',
     'imagick',
+    //'protobuf',
 ];
 
 for ($i = 1; $i < $argc; $i++) {
@@ -488,6 +503,9 @@ foreach ($extEnabled as $ext) {
         continue;
     }
     ($extAvailabled[$ext])($p);
+    if (isset($extCallback[$ext])) {
+        ($extCallback[$ext])($p);
+    }
 }
 
 $p->gen();
