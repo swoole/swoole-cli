@@ -8,7 +8,7 @@ ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
-export PKG_CONFIG_PATH=<?= $this->pkgConfigPath . PHP_EOL ?>
+export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
@@ -20,14 +20,17 @@ make_<?=$item->name?>() {
     cd <?=$this->workDir?>/thirdparty
     echo "build <?=$item->name?>"
     mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
+    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->libraryDir?>/<?=$item->file?>  && \
     cd <?=$item->name?> && \
     echo  "<?=$item->configure?>"
     <?php if (!empty($item->configure)): ?>
     <?=$item->configure?> && \
     <?php endif; ?>
     make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
-    make install
+    make install <?=$item->makeInstallOptions?> && \
+    <?php if ($item->clearDylib): ?>
+    find <?=$item->prefix?> -name \*.dylib | xargs rm -f && \
+    <?php endif; ?>
     cd -
 }
 
@@ -49,10 +52,12 @@ make_all_library() {
 config_php() {
     rm ./configure
     ./buildconf --force
+<?php if (PHP_OS !== 'Darwin') : ?>
     mv main/php_config.h.in /tmp/cnt
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
+<?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
     ./configure $OPTIONS

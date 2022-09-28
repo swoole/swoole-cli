@@ -1,8 +1,8 @@
 License
 ---------------------------------------------------------
 musl-libc: http://git.musl-libc.org/cgit/musl/tree/COPYRIGHT
-openssl: https://github.com/openssl/openssl/blob/master/LICENSE.txt
 libiconv: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+openssl: https://github.com/openssl/openssl/blob/master/LICENSE.txt
 libxml2: http://www.opensource.org/licenses/mit-license.html
 libxslt: http://www.opensource.org/licenses/mit-license.html
 gmp: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html

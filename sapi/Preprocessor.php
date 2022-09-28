@@ -46,7 +46,14 @@ class Library extends Project
     public string $makeOptions = '';
     public string $pkgConfig = '';
     public string $pkgName = '';
-    public string $prefix = '/usr/local';
+    public string $prefix = '/usr';
+    public bool $clearDylib = false;
+
+    public function __construct(string $name, string $prefix = null)
+    {
+        $this->withPrefix($prefix ?? $this->prefix . '/' . $name);
+        parent::__construct($name);
+    }
 
     function withUrl(string $url): static
     {
@@ -57,6 +64,8 @@ class Library extends Project
     function withPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
+        $this->withLdflags('-L' . $prefix . '/lib');
+        $this->withPkgConfig($prefix . '/lib/pkgconfig');
         return $this;
     }
 
@@ -95,6 +104,12 @@ class Library extends Project
         $this->pkgName = $pkgName;
         return $this;
     }
+
+    function withClearDylib(bool $clearDylib = true): static
+    {
+        $this->clearDylib = $clearDylib;
+        return $this;
+    }
 }
 
 class Extension extends Project
@@ -131,7 +146,7 @@ class Preprocessor
     protected string $rootDir;
     protected string $libraryDir;
     protected string $extensionDir;
-    protected string $pkgConfigPath = '$PKG_CONFIG_PATH';
+    protected array $pkgConfigPaths = [];
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
     protected string $swooleDir;
@@ -195,7 +210,7 @@ class Preprocessor
         }
 
         if (!empty($lib->pkgConfig)) {
-            $this->pkgConfigPath = $lib->pkgConfig . ':' . $this->pkgConfigPath;
+            $this->pkgConfigPaths[] = $lib->pkgConfig;
         }
 
         if (empty($lib->license)) {
@@ -242,6 +257,9 @@ class Preprocessor
 
     function gen()
     {
+        $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
+        $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+
         ob_start();
         include __DIR__ . '/make.php';
         file_put_contents($this->rootDir . '/make.sh', ob_get_clean());
