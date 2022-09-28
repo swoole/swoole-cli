@@ -44,6 +44,7 @@ class Library extends Project
     public string $file = '';
     public string $ldflags = '';
     public string $makeOptions = '';
+    public string $makeInstallOptions = '';
     public string $pkgConfig = '';
     public string $pkgName = '';
     public string $prefix = '/usr';
@@ -90,6 +91,12 @@ class Library extends Project
     function withMakeOptions(string $makeOptions): static
     {
         $this->makeOptions = $makeOptions;
+        return $this;
+    }
+
+    function withMakeInstallOptions(string $makeInstallOptions): static
+    {
+        $this->makeInstallOptions = $makeInstallOptions;
         return $this;
     }
 

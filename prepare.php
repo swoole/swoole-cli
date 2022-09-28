@@ -44,9 +44,10 @@ if ($type == 'macos') {
 
 function install_openssl(Preprocessor $p)
 {
+    global $type;
     $p->addLibrary((new Library('openssl'))
-        ->withUrl('https://www.openssl.org/source/openssl-1.1.1m.tar.gz')
-        ->withConfigure('./config -static --static no-shared --prefix=/usr/openssl')
+        ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
+        ->withConfigure('./config' . ($type === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=/usr/openssl')
         ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
         ->withHomePage('https://www.openssl.org/')
     );
@@ -93,7 +94,7 @@ function install_imagemagick(Preprocessor $p)
     $p->addLibrary(
         (new Library('imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-19.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/imagemagick --with-zip=no --enable-static --disable-shared')
+            ->withConfigure('./configure --prefix=/usr/imagemagick --enable-static --disable-shared --with-zip=no --with-fontconfig=no --with-heic=no --with-lcms=no --with-lqr=no --with-openexr=no --with-openjp2=no --with-pango=no --with-raw=no --with-tiff=no')
             ->withPkgName('ImageMagick')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
     );
@@ -207,6 +208,7 @@ function install_bzip2(Preprocessor $p)
         (new Library('bzip2'))
             ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
             ->withMakeOptions('PREFIX=/usr/bzip2')
+            ->withMakeInstallOptions('PREFIX=/usr/bzip2')
             ->withPkgConfig('')
             ->withHomePage('https://www.sourceware.org/bzip2/')
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
@@ -315,7 +317,7 @@ function install_brotli(Preprocessor $p)
         (new Library('brotli'))
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
             ->withFile('brotli-1.0.9.tar.gz')
-            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr --enable-static --disable-shared")
+            ->withConfigure("cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/brotli .")
             ->withClearDylib($type === 'macos')
             ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withHomePage('https://github.com/google/brotli')
@@ -416,6 +418,7 @@ $extAvailabled = [
     'swoole' => function ($p) {
         $p->addExtension((new Extension('swoole'))
             ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares')
+            //->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares --with-brotli-dir=/usr/brotli')
             ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
             ->withHomePage('https://github.com/swoole/swoole-src')
         );
