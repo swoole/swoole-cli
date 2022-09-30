@@ -469,8 +469,13 @@ $extAvailabled = [
 $extCallback = [
     'protobuf' => function () {
         // compatible with redis
-        echo `sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
-        echo `find ext/protobuf/ -name \*.bak | xargs rm -f`;
+        global $type;
+        if ($type === 'macos') {
+            echo `sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
+            echo `find ext/protobuf/ -name \*.bak | xargs rm -f`;
+        } else {
+            echo `sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
+        }
     }
 ];
 
