@@ -413,12 +413,12 @@ $extAvailabled = [
         );
     },
     'xml' => function ($p) {
-        $p->addExtension((new Extension('swoole'))
+        $p->addExtension((new Extension('xml'))
             ->withOptions('--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml')
         );
     },
     'gd' => function ($p) {
-        $p->addExtension((new Extension('swoole'))
+        $p->addExtension((new Extension('gd'))
             ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr')
         );
     },
@@ -464,6 +464,20 @@ $extAvailabled = [
             ->withPeclVersion('1.14.0'));
     }
 ];
+
+/**
+ * Scan and load files in directory
+ */
+$extInclude = getenv('SWOOLE_CLI_EXT_INCLUDE');
+if ($extInclude) {
+    $files = scandir($extInclude);
+    foreach ($files as $f) {
+        if ($f == '.' or $f == '..') {
+            continue;
+        }
+        $extAvailabled[basename($f, '.php')] = require $extInclude . '/' . $f;
+    }
+}
 
 $extEnabled = [
     'openssl',
