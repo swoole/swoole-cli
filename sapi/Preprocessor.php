@@ -160,6 +160,7 @@ class Preprocessor
     protected string $swooleDir;
     protected string $workDir = '/work';
     protected string $extraLdflags = '';
+    protected string $extraOptions = '';
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
 
@@ -216,6 +217,11 @@ class Preprocessor
     function setExtraLdflags(string $flags)
     {
         $this->extraLdflags = $flags;
+    }
+
+    function setExtraOptions(string $options)
+    {
+        $this->extraOptions = $options;
     }
 
     function donotInstallLibrary()

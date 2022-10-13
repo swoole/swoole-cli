@@ -19,6 +19,7 @@ $endCallbacks = [];
 if ($p->osType == 'macos') {
     $p->setWorkDir(__DIR__ . '/work');
     $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
+    //$p->setExtraOptions('--with-config-file-path=/usr/local/etc');
     $endCallbacks[] = function() {
         file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', __DIR__ . '/work/opt/usr', file_get_contents(__DIR__ . '/make.sh')));
     };

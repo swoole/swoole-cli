@@ -13,6 +13,7 @@ OPTIONS="--disable-all \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
 <?php endforeach; ?>
+<?=$this->extraOptions?>
 "
 
 <?php foreach ($this->libraryList as $item) : ?>
