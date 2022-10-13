@@ -141,6 +141,7 @@ static const opt_struct OPTIONS[] = {
 	{'D', 0, "daemonize"},
 	{'F', 0, "nodaemonize"},
 	{'O', 0, "force-stderr"},
+    {'P', 0, "fpm"},
 	{'-', 0, NULL} /* end of args */
 };
 
@@ -1670,6 +1671,9 @@ int fpm_main(int argc, char *argv[])
 			case 'O': /* force stderr even on non tty */
 				force_stderr = 1;
 				break;
+
+			case 'P':
+			    break;
 
 			default:
 			case 'h':
