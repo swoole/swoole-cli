@@ -52,7 +52,7 @@ make_all_library() {
 config_php() {
     rm ./configure
     ./buildconf --force
-<?php if (PHP_OS !== 'Darwin') : ?>
+<?php if ($this->osType !== 'macos') : ?>
     mv main/php_config.h.in /tmp/cnt
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
     cat /tmp/cnt >> main/php_config.h.in

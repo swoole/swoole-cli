@@ -50,9 +50,9 @@ class Library extends Project
     public string $prefix = '/usr';
     public bool $clearDylib = false;
 
-    public function __construct(string $name, string $prefix = null)
+    public function __construct(string $name, string $prefix = '/usr')
     {
-        $this->withPrefix($prefix ?? $this->prefix . '/' . $name);
+        $this->withPrefix($prefix);
         parent::__construct($name);
     }
 
@@ -148,6 +148,7 @@ class Extension extends Project
 
 class Preprocessor
 {
+    public string $osType;
     protected array $libraryList = [];
     protected array $extensionList = [];
     protected string $rootDir;
@@ -167,6 +168,24 @@ class Preprocessor
         $this->rootDir = $rootPath;
         $this->libraryDir = $rootPath . '/pool/lib';
         $this->extensionDir = $rootPath . '/pool/ext';
+
+        switch (PHP_OS) {
+            default:
+            case 'Linux':
+                $this->setOsType('linux');
+                break;
+            case 'Darwin':
+                $this->setOsType('macos');
+                break;
+            case 'WINNT':
+                $this->setOsType('win');
+                break;
+        }
+    }
+
+    function setOsType(string $osType)
+    {
+        $this->osType = $osType;
     }
 
     function setPhpSrcDir(string $phpSrcDir)
