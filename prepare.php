@@ -6,31 +6,22 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 use SwooleCli\Extension;
 
-if (empty($argv[1])) {
-    $type = 'linux';
-} else {
-    $type = trim($argv[1]);
-}
-
 $p = new Preprocessor(__DIR__);
 $p->setPhpSrcDir('/home/htf/soft/php-8.1.8');
 $p->setDockerVersion('1.4');
 $p->setSwooleDir('/home/htf/workspace/swoole');
+if (!empty($argv[1])) {
+    $p->setOsType(trim($argv[1]));
+}
 
-$endCallback = function () {
-};
+$endCallbacks = [];
 
-if ($type == 'macos') {
-    define('WORKSPACE', '/Users/hantianfeng/workspace');
-    $p->setWorkDir(WORKSPACE . '/cli-swoole');
-    $p->setExtraLdflags('-L/usr/lib -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
-    $p->setWorkDir(WORKSPACE.'/cli-swoole');
-    $p->setExtraLdflags('-L/usr/lib -framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
-    $endCallback = function($p) {
-        $makesh = file_get_contents(__DIR__.'/make.sh');
-        $makesh = str_replace('/usr', WORKSPACE.'/opt/usr', $makesh);
-        $makesh = str_replace('export PKG_CONFIG_PATH=', 'export PKG_CONFIG_PATH=' . WORKSPACE . '/opt/usr/lib/pkgconfig:', $makesh);
-        file_put_contents(__DIR__.'/make.sh', $makesh);
+if ($p->osType == 'macos') {
+    $p->setWorkDir(__DIR__ . '/work');
+    $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
+    //$p->setExtraOptions('--with-config-file-path=/usr/local/etc');
+    $endCallbacks[] = function() {
+        file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', __DIR__ . '/work/opt/usr', file_get_contents(__DIR__ . '/make.sh')));
     };
 }
 
@@ -40,11 +31,9 @@ if ($type == 'macos') {
 
 function install_openssl(Preprocessor $p)
 {
-    $p->addLibrary((new Library('openssl'))
-        ->withUrl('https://www.openssl.org/source/openssl-1.1.1m.tar.gz')
-        ->withConfigure('./config -static --static no-shared --prefix=/usr/openssl')
-        ->withLdflags('-L/usr/openssl/lib')
-        ->withPkgConfig('/usr/openssl/lib/pkgconfig')
+    $p->addLibrary((new Library('openssl', '/usr/openssl'))
+        ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
+        ->withConfigure('./config' . ($p->osType === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=/usr/openssl')
         ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
         ->withHomePage('https://www.openssl.org/')
     );
@@ -53,9 +42,9 @@ function install_openssl(Preprocessor $p)
 function install_libiconv(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('libiconv'))
+        (new Library('libiconv', '/usr/libiconv'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz')
-            ->withLdflags('-L/usr/libiconv/lib')
+            ->withPkgConfig('')
             ->withConfigure('./configure --prefix=/usr/libiconv enable_static=yes enable_shared=no')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
     );
@@ -89,11 +78,9 @@ function install_libxslt(Preprocessor $p)
 function install_imagemagick(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('imagemagick'))
+        (new Library('imagemagick', '/usr/imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-19.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/imagemagick --with-zip=no --enable-static --disable-shared')
-            ->withLdflags('-L/usr/imagemagick/lib')
-            ->withPkgConfig('/usr/imagemagick/lib/pkgconfig')
+            ->withConfigure('./configure --prefix=/usr/imagemagick --enable-static --disable-shared --with-zip=no --with-fontconfig=no --with-heic=no --with-lcms=no --with-lqr=no --with-openexr=no --with-openjp2=no --with-pango=no --with-raw=no --with-tiff=no')
             ->withPkgName('ImageMagick')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
     );
@@ -102,22 +89,19 @@ function install_imagemagick(Preprocessor $p)
 function install_libmemcached(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('libmemcached'))
+        (new Library('libmemcached', '/usr/libmemcached'))
             ->withUrl('https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz')
             ->withConfigure('./configure --prefix=/usr/libmemcached --enable-static --disable-shared')
-            ->withLdflags('-L/usr/libmemcached/lib')
-            ->withPkgConfig('/usr/libmemcached/lib/pkgconfig')
+            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_BSD)
     );
 }
 
 function install_gmp(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('gmp'))
+        (new Library('gmp', '/usr/gmp'))
             ->withUrl('https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz')
             ->withConfigure('./configure --prefix=/usr/gmp --enable-static --disable-shared')
-            ->withLdflags('-L/usr/gmp/lib')
-            ->withPkgConfig('/usr/gmp/lib/pkgconfig')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
     );
 }
@@ -135,10 +119,8 @@ function install_giflib(Preprocessor $p)
 function install_libpng(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('libpng'))
+        (new Library('libpng', '/usr/libpng'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
-            ->withLdflags('-L/usr/libpng/lib')
-            ->withPkgConfig('/usr/libpng/lib/pkgconfig')
             ->withConfigure('./configure --prefix=/usr/libpng --enable-static --disable-shared')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
     );
@@ -152,6 +134,7 @@ function install_libjpeg(Preprocessor $p)
             ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr .')
             ->withLdflags('-L/usr/lib64')
             ->withPkgConfig('/usr/lib64/pkgconfig')
+            ->withClearDylib($p->osType === 'macos')
             ->withFile('libjpeg-turbo-2.1.2.tar.gz')
             ->withHomePage('https://libjpeg-turbo.org/')
             ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
@@ -161,13 +144,11 @@ function install_libjpeg(Preprocessor $p)
 function install_freetype(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('freetype'))
+        (new Library('freetype', '/usr/freetype'))
             ->withUrl('https://mirror.yongbok.net/nongnu/freetype/freetype-2.10.4.tar.gz')
             ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared')
             ->withHomePage('https://freetype.org/')
-            ->withLdflags('-L/usr/freetype/lib')
-            ->withPkgName('freetyp2')
-            ->withPkgConfig('/usr/freetype/lib/pkgconfig')
+            ->withPkgName('freetype2')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
     );
 }
@@ -175,12 +156,10 @@ function install_freetype(Preprocessor $p)
 function install_libwebp(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('libwebp'))
+        (new Library('libwebp', '/usr/libwebp'))
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
             ->withConfigure('./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared')
-            ->withLdflags('-L/usr/libwebp/lib')
             ->withFile('libwebp-1.2.1.tar.gz')
-            ->withPkgConfig('/usr/libwebp/lib/pkgconfig')
             ->withHomePage('https://github.com/webmproject/libwebp')
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
     );
@@ -211,10 +190,11 @@ function install_zlib(Preprocessor $p)
 function install_bzip2(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('bzip2'))
+        (new Library('bzip2', '/usr/bzip2'))
             ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
             ->withMakeOptions('PREFIX=/usr/bzip2')
-            ->withLdflags('-L/usr/bzip2/lib')
+            ->withMakeInstallOptions('PREFIX=/usr/bzip2')
+            ->withPkgConfig('')
             ->withHomePage('https://www.sourceware.org/bzip2/')
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
     );
@@ -271,10 +251,10 @@ function install_cares(Preprocessor $p)
 function install_libedit(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('libedit'))
+        (new Library('libedit', '/usr/libedit'))
             ->withUrl('https://thrysoee.dk/editline/libedit-20210910-3.1.tar.gz')
             ->withConfigure('./configure --prefix=/usr/libedit --enable-static --disable-shared')
-            ->withPkgConfig('/usr/libedit/lib/pkgconfig')
+            ->withLdflags('')
             ->withLicense('http://www.netbsd.org/Goals/redistribution.html', Library::LICENSE_BSD)
             ->withHomePage('https://thrysoee.dk/editline/')
     );
@@ -306,11 +286,9 @@ function install_libsodium(Preprocessor $p)
 function install_libyaml(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('libyaml'))
+        (new Library('libyaml', '/usr/libyaml'))
             ->withUrl('http://pyyaml.org/download/libyaml/yaml-0.2.5.tar.gz')
             ->withConfigure('./configure --prefix=/usr/libyaml --enable-static --disable-shared')
-            ->withLdflags('-L/usr/libyaml/lib')
-            ->withPkgConfig('/usr/libyaml/lib/pkgconfig')
             ->withPkgName('yaml-0.1')
             ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
             ->withHomePage('https://pyyaml.org/wiki/LibYAML')
@@ -320,10 +298,12 @@ function install_libyaml(Preprocessor $p)
 function install_brotli(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('brotli'))
+        (new Library('brotli', '/usr/brotli'))
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
             ->withFile('brotli-1.0.9.tar.gz')
-            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr --enable-static --disable-shared")
+            ->withConfigure("cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/brotli .")
+            ->withClearDylib($p->osType === 'macos')
+            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
             ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withHomePage('https://github.com/google/brotli')
     );
@@ -332,21 +312,19 @@ function install_brotli(Preprocessor $p)
 function install_curl(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('curl'))
+        (new Library('curl', '/usr/curl'))
             ->withUrl('https://curl.se/download/curl-7.80.0.tar.gz')
             ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl " .
                 "--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3"
             )
-            ->withLdflags('-L/usr/curl/lib')
-            ->withPkgConfig('/usr/curl/lib/pkgconfig')
             ->withPkgName('libcurl')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withHomePage('https://curl.se/')
     );
 }
 
-install_openssl($p);
 install_libiconv($p);
+install_openssl($p);
 install_libxml2($p);
 install_libxslt($p);
 install_gmp($p);
@@ -424,7 +402,7 @@ $extAvailabled = [
     },
     'swoole' => function ($p) {
         $p->addExtension((new Extension('swoole'))
-            ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares')
+            ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares --disable-brotli')
             ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
             ->withHomePage('https://github.com/swoole/swoole-src')
         );
@@ -462,6 +440,24 @@ $extAvailabled = [
         $p->addExtension((new Extension('mongodb'))
             ->withOptions('--enable-mongodb')
             ->withPeclVersion('1.14.0'));
+    },
+    "protobuf" => function ($p) {
+        $p->addExtension((new Extension('protobuf'))
+            ->withOptions('--enable-protobuf')
+            ->withPeclVersion('3.21.6')
+            ->withHomePage('https://developers.google.com/protocol-buffers'));
+    },
+];
+
+$extCallback = [
+    'protobuf' => function ($p) {
+        // compatible with redis
+        if ($p->osType === 'macos') {
+            echo `sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
+            echo `find ext/protobuf/ -name \*.bak | xargs rm -f`;
+        } else {
+            echo `sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
+        }
     }
 ];
 
@@ -487,6 +483,7 @@ $extEnabled = [
     'swoole',
     'yaml',
     'imagick',
+    //'protobuf',
 ];
 
 for ($i = 1; $i < $argc; $i++) {
@@ -508,9 +505,14 @@ foreach ($extEnabled as $ext) {
         continue;
     }
     ($extAvailabled[$ext])($p);
+    if (isset($extCallback[$ext])) {
+        ($extCallback[$ext])($p);
+    }
 }
 
 $p->gen();
 $p->info();
 
-$endCallback($p);
+foreach ($endCallbacks as $endCallback) {
+    $endCallback($p);
+}

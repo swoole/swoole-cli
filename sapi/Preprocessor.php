@@ -44,9 +44,17 @@ class Library extends Project
     public string $file = '';
     public string $ldflags = '';
     public string $makeOptions = '';
+    public string $makeInstallOptions = '';
     public string $pkgConfig = '';
     public string $pkgName = '';
-    public string $prefix = '/usr/local';
+    public string $prefix = '/usr';
+    public bool $clearDylib = false;
+
+    public function __construct(string $name, string $prefix = '/usr')
+    {
+        $this->withPrefix($prefix);
+        parent::__construct($name);
+    }
 
     function withUrl(string $url): static
     {
@@ -57,6 +65,8 @@ class Library extends Project
     function withPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
+        $this->withLdflags('-L' . $prefix . '/lib');
+        $this->withPkgConfig($prefix . '/lib/pkgconfig');
         return $this;
     }
 
@@ -84,6 +94,12 @@ class Library extends Project
         return $this;
     }
 
+    function withMakeInstallOptions(string $makeInstallOptions): static
+    {
+        $this->makeInstallOptions = $makeInstallOptions;
+        return $this;
+    }
+
     function withPkgConfig(string $pkgConfig): static
     {
         $this->pkgConfig = $pkgConfig;
@@ -93,6 +109,12 @@ class Library extends Project
     function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
+        return $this;
+    }
+
+    function withClearDylib(bool $clearDylib = true): static
+    {
+        $this->clearDylib = $clearDylib;
         return $this;
     }
 }
@@ -126,17 +148,19 @@ class Extension extends Project
 
 class Preprocessor
 {
+    public string $osType;
     protected array $libraryList = [];
     protected array $extensionList = [];
     protected string $rootDir;
     protected string $libraryDir;
     protected string $extensionDir;
-    protected string $pkgConfigPath = '$PKG_CONFIG_PATH';
+    protected array $pkgConfigPaths = [];
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
     protected string $swooleDir;
     protected string $workDir = '/work';
     protected string $extraLdflags = '';
+    protected string $extraOptions = '';
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
 
@@ -145,6 +169,24 @@ class Preprocessor
         $this->rootDir = $rootPath;
         $this->libraryDir = $rootPath . '/pool/lib';
         $this->extensionDir = $rootPath . '/pool/ext';
+
+        switch (PHP_OS) {
+            default:
+            case 'Linux':
+                $this->setOsType('linux');
+                break;
+            case 'Darwin':
+                $this->setOsType('macos');
+                break;
+            case 'WINNT':
+                $this->setOsType('win');
+                break;
+        }
+    }
+
+    function setOsType(string $osType)
+    {
+        $this->osType = $osType;
     }
 
     function setPhpSrcDir(string $phpSrcDir)
@@ -177,6 +219,11 @@ class Preprocessor
         $this->extraLdflags = $flags;
     }
 
+    function setExtraOptions(string $options)
+    {
+        $this->extraOptions = $options;
+    }
+
     function donotInstallLibrary()
     {
         $this->installLibrary = false;
@@ -195,7 +242,7 @@ class Preprocessor
         }
 
         if (!empty($lib->pkgConfig)) {
-            $this->pkgConfigPath = $lib->pkgConfig . ':' . $this->pkgConfigPath;
+            $this->pkgConfigPaths[] = $lib->pkgConfig;
         }
 
         if (empty($lib->license)) {
@@ -242,6 +289,9 @@ class Preprocessor
 
     function gen()
     {
+        $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
+        $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+
         ob_start();
         include __DIR__ . '/make.php';
         file_put_contents($this->rootDir . '/make.sh', ob_get_clean());

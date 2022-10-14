@@ -1,8 +1,9 @@
 # 步骤
 0. 清理 `brew` 安装的软件
-1. 编译所有依赖的库
-2. 配置 `./make.sh config`
-3. 构建 `./make.sh build`
+1. 执行 `php prepare.php`
+2. 编译所有依赖的库 `./make.sh all-library`
+3. 配置 `./make.sh config`
+4. 构建 `./make.sh build`
 
 
 ## 清理
@@ -53,19 +54,4 @@ export LIBZIP_LIBS=$(pkg-config --libs libzip)
 export LIBSODIUM_CFLAGS=$(pkg-config --cflags libsodium)
 export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```
-
-## 编译错误
-```
-In file included from /Users/hantianfeng/workspace/cli-swoole/Zend/zend_config.h:1:
-/Users/hantianfeng/workspace/cli-swoole/include/../main/php_config.h:2:1: error: expected external declaration
--ne #ifndef __PHP_CONFIG_H
-^
-/Users/hantianfeng/workspace/cli-swoole/include/../main/php_config.h:2:2: error: unknown type name 'ne'
--ne #ifndef __PHP_CONFIG_H
- ^
-/Users/hantianfeng/workspace/cli-swoole/include/../main/php_config.h:2:5: error: expected identifier or '('
--ne #ifndef __PHP_CONFIG_H
-```
-
-需要修改 `main/php_config.h` ，去掉 `-ne` 多余的字符
 
