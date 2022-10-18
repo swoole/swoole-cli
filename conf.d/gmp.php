@@ -1,0 +1,8 @@
+<?php
+
+use SwooleCli\Preprocessor;
+use SwooleCli\Extension;
+
+return function (Preprocessor $p) {
+    $p->addExtension((new Extension('gmp'))->withOptions('--with-gmp=/usr/gmp'));
+};

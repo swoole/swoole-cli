@@ -164,6 +164,51 @@ class Preprocessor
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
 
+    /**
+     * Extensions enabled by default
+     * @var array|string[]
+     */
+    protected array $extEnabled = [
+        'curl',
+        'iconv',
+        'bz2',
+        'bcmath',
+        'pcntl',
+        'filter',
+        'session',
+        'tokenizer',
+        'mbstring',
+        'ctype',
+        'zlib',
+        'zip',
+        'posix',
+        'sockets',
+        'pdo',
+        'sqlite3',
+        'phar',
+        'mysqlnd',
+        'mysqli',
+        'intl',
+        'fileinfo',
+        'pdo_mysql',
+        'pdo_sqlite',
+        'soap',
+        'xsl',
+        'gmp',
+        'exif',
+        'sodium',
+        'openssl',
+        'xml',
+        'gd',
+        'redis',
+        'swoole',
+        'yaml',
+        'imagick',
+    ];
+
+    protected array $endCallbacks = [];
+    protected array $extCallbacks = [];
+
     function __construct(string $rootPath)
     {
         $this->rootDir = $rootPath;
@@ -287,6 +332,56 @@ class Preprocessor
         $this->extensionList[] = $ext;
     }
 
+    function addEndCallback($fn)
+    {
+        $this->endCallbacks[] = $fn;
+    }
+
+    function setExtCallback($name, $fn)
+    {
+        $this->extCallbacks[$name] = $fn;
+    }
+
+    function parseArguments(int $argc, array $argv)
+    {
+        /**
+         * Scan and load files in directory
+         */
+        $extInclude = getenv('SWOOLE_CLI_EXT_INCLUDE') ?: $this->rootDir . '/conf.d';
+        $extAvailabled = [];
+        $files = scandir($extInclude);
+        foreach ($files as $f) {
+            if ($f == '.' or $f == '..') {
+                continue;
+            }
+            $extAvailabled[basename($f, '.php')] = require $extInclude . '/' . $f;
+        }
+
+        for ($i = 1; $i < $argc; $i++) {
+            $op = $argv[$i][0];
+            $ext = substr($argv[$i], 1);
+            if ($op == '+') {
+                $this->extEnabled[] = $ext;
+            } elseif ($op == '-') {
+                $key = array_search($ext, $this->extEnabled);
+                if ($key !== false) {
+                    unset($this->extEnabled[$key]);
+                }
+            }
+        }
+
+        foreach ($this->extEnabled as $ext) {
+            if (!isset($extAvailabled[$ext])) {
+                echo "unsupported extension[$ext]\n";
+                continue;
+            }
+            ($extAvailabled[$ext])($this);
+            if (isset($this->extCallbacks[$ext])) {
+                ($this->extCallbacks[$ext])($this);
+            }
+        }
+    }
+
     function gen()
     {
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
@@ -299,6 +394,10 @@ class Preprocessor
         ob_start();
         include __DIR__ . '/license.php';
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
+
+        foreach ($this->endCallbacks as $endCallback) {
+            $endCallback($this);
+        }
     }
 
     /**

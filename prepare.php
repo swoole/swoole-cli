@@ -4,25 +4,22 @@ require __DIR__ . '/sapi/Preprocessor.php';
 
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
-use SwooleCli\Extension;
 
 $p = new Preprocessor(__DIR__);
-$p->setPhpSrcDir('/home/htf/soft/php-8.1.8');
+$p->setPhpSrcDir(getenv('HOME') . '/soft/php-8.1.8');
 $p->setDockerVersion('1.4');
-$p->setSwooleDir('/home/htf/workspace/swoole');
+$p->setSwooleDir(getenv('HOME') . '/workspace/swoole');
 if (!empty($argv[1])) {
     $p->setOsType(trim($argv[1]));
 }
-
-$endCallbacks = [];
 
 if ($p->osType == 'macos') {
     $p->setWorkDir(__DIR__ . '/work');
     $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
     //$p->setExtraOptions('--with-config-file-path=/usr/local/etc');
-    $endCallbacks[] = function() {
+    $p->addEndCallback(function () {
         file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', __DIR__ . '/work/opt/usr', file_get_contents(__DIR__ . '/make.sh')));
-    };
+    });
 }
 
 // ================================================================================================
@@ -348,171 +345,6 @@ install_curl($p);
 install_libsodium($p);
 install_libyaml($p);
 
-// ================================================================================================
-// PHP Extension
-// ================================================================================================
-
-$p->addExtension((new Extension('curl'))->withOptions('--with-curl'));
-$p->addExtension((new Extension('iconv'))->withOptions('--with-iconv=/usr/libiconv'));
-$p->addExtension((new Extension('bz2'))->withOptions('--with-bz2=/usr/bzip2'));
-$p->addExtension((new Extension('bcmath'))->withOptions('--enable-bcmath'));
-$p->addExtension((new Extension('pcntl'))->withOptions('--enable-pcntl'));
-$p->addExtension((new Extension('filter'))->withOptions('--enable-filter'));
-$p->addExtension((new Extension('session'))->withOptions('--enable-session'));
-$p->addExtension((new Extension('tokenizer'))->withOptions('--enable-tokenizer'));
-$p->addExtension((new Extension('mbstring'))->withOptions('--enable-mbstring'));
-$p->addExtension((new Extension('ctype'))->withOptions('--enable-ctype'));
-$p->addExtension((new Extension('zlib'))->withOptions('--with-zlib'));
-$p->addExtension((new Extension('zip'))->withOptions('--with-zip'));
-$p->addExtension((new Extension('posix'))->withOptions('--enable-posix'));
-$p->addExtension((new Extension('sockets'))->withOptions('--enable-sockets'));
-$p->addExtension((new Extension('pdo'))->withOptions('--enable-pdo'));
-$p->addExtension((new Extension('sqlite3'))->withOptions('--with-sqlite3'));
-$p->addExtension((new Extension('phar'))->withOptions('--enable-phar'));
-$p->addExtension((new Extension('mysqlnd'))->withOptions('--enable-mysqlnd'));
-$p->addExtension((new Extension('mysqli'))->withOptions('--with-mysqli'));
-$p->addExtension((new Extension('intl'))->withOptions('--enable-intl'));
-$p->addExtension((new Extension('fileinfo'))->withOptions('--enable-fileinfo'));
-$p->addExtension((new Extension('pdo_mysql'))->withOptions('--with-pdo_mysql'));
-$p->addExtension((new Extension('pdo-sqlite'))->withOptions('--with-pdo-sqlite'));
-$p->addExtension((new Extension('soap'))->withOptions('--enable-soap'));
-$p->addExtension((new Extension('xsl'))->withOptions('--with-xsl'));
-$p->addExtension((new Extension('gmp'))->withOptions('--with-gmp=/usr/gmp'));
-$p->addExtension((new Extension('exif'))->withOptions('--enable-exif'));
-$p->addExtension((new Extension('sodium'))->withOptions('--with-sodium'));
-//$p->addExtension((new Extension('readline'))->withOptions('--with-libedit'));
-//$p->addExtension((new Extension('opcache'))->withOptions('--enable-opcache'));
-
-$extAvailabled = [
-    'openssl' => function ($p) {
-        $p->addExtension(
-            (new Extension('openssl'))
-                ->withOptions('--with-openssl=/usr/openssl --with-openssl-dir=/usr/openssl')
-        );
-    },
-    'xml' => function ($p) {
-        $p->addExtension((new Extension('xml'))
-            ->withOptions('--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml')
-        );
-    },
-    'gd' => function ($p) {
-        $p->addExtension((new Extension('gd'))
-            ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr')
-        );
-    },
-    'swoole' => function ($p) {
-        $p->addExtension((new Extension('swoole'))
-            ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares --disable-brotli')
-            ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
-            ->withHomePage('https://github.com/swoole/swoole-src')
-        );
-    },
-    'yaml' => function ($p) {
-        $p->addExtension((new Extension('yaml'))
-            ->withOptions('--with-yaml=/usr/libyaml')
-            ->withPeclVersion('2.2.2')
-            ->withHomePage('https://github.com/php/pecl-file_formats-yaml')
-            ->withLicense('https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE', Extension::LICENSE_MIT)
-        );
-    },
-    'imagick' => function ($p) {
-        $p->addExtension((new Extension('imagick'))
-            ->withOptions('--with-imagick=/usr/imagemagick')
-            ->withPeclVersion('3.6.0')
-            ->withHomePage('https://github.com/Imagick/imagick')
-            ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
-        );
-    },
-    'redis' => function ($p) {
-        $p->addExtension((new Extension('redis'))
-            ->withOptions('--enable-redis')
-            ->withPeclVersion('5.3.5')
-            ->withHomePage('https://github.com/phpredis/phpredis')
-            ->withLicense('https://github.com/phpredis/phpredis/blob/develop/COPYING', Extension::LICENSE_PHP)
-        );
-    },
-    'inotify' => function ($p) {
-        $p->addExtension((new Extension('inotify'))
-            ->withOptions('--enable-inotify')
-            ->withPeclVersion('3.0.0'));
-    },
-    'mongodb' => function ($p) {
-        $p->addExtension((new Extension('mongodb'))
-            ->withOptions('--enable-mongodb')
-            ->withPeclVersion('1.14.0'));
-    },
-    "protobuf" => function ($p) {
-        $p->addExtension((new Extension('protobuf'))
-            ->withOptions('--enable-protobuf')
-            ->withPeclVersion('3.21.6')
-            ->withHomePage('https://developers.google.com/protocol-buffers'));
-    },
-];
-
-$extCallback = [
-    'protobuf' => function ($p) {
-        // compatible with redis
-        if ($p->osType === 'macos') {
-            echo `sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
-            echo `find ext/protobuf/ -name \*.bak | xargs rm -f`;
-        } else {
-            echo `sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
-        }
-    }
-];
-
-/**
- * Scan and load files in directory
- */
-$extInclude = getenv('SWOOLE_CLI_EXT_INCLUDE');
-if ($extInclude) {
-    $files = scandir($extInclude);
-    foreach ($files as $f) {
-        if ($f == '.' or $f == '..') {
-            continue;
-        }
-        $extAvailabled[basename($f, '.php')] = require $extInclude . '/' . $f;
-    }
-}
-
-$extEnabled = [
-    'openssl',
-    'xml',
-    'gd',
-    'redis',
-    'swoole',
-    'yaml',
-    'imagick',
-    //'protobuf',
-];
-
-for ($i = 1; $i < $argc; $i++) {
-    $op = $argv[$i][0];
-    $ext = substr($argv[$i], 1);
-    if ($op == '+') {
-        $extEnabled[] = $ext;
-    } elseif ($op == '-') {
-        $key = array_search($ext, $extEnabled);
-        if ($key !== false) {
-            unset($extEnabled[$key]);
-        }
-    }
-}
-
-foreach ($extEnabled as $ext) {
-    if (!isset($extAvailabled[$ext])) {
-        echo "unsupported extension[$ext]\n";
-        continue;
-    }
-    ($extAvailabled[$ext])($p);
-    if (isset($extCallback[$ext])) {
-        ($extCallback[$ext])($p);
-    }
-}
-
+$p->parseArguments($argc, $argv);
 $p->gen();
 $p->info();
-
-foreach ($endCallbacks as $endCallback) {
-    $endCallback($p);
-}
