@@ -668,8 +668,14 @@ static void accel_copy_permanent_strings(zend_new_interned_string_func_t new_int
 		} ZEND_HASH_FOREACH_END();
 
 		ZEND_HASH_FOREACH_BUCKET(&ce->constants_table, q) {
+			zend_class_constant* c;
+
 			if (q->key) {
 				q->key = new_interned_string(q->key);
+			}
+			c = (zend_class_constant*)Z_PTR(q->val);
+			if (Z_TYPE(c->value) == IS_STRING) {
+				ZVAL_STR(&c->value, new_interned_string(Z_STR(c->value)));
 			}
 		} ZEND_HASH_FOREACH_END();
 	} ZEND_HASH_FOREACH_END();
@@ -2204,9 +2210,10 @@ zend_op_array *persistent_compile_file(zend_file_handle *file_handle, int type)
 
 		/* see bug #15471 (old BTS) */
 		if (persistent_script->script.filename) {
-			if (!EG(current_execute_data) || !EG(current_execute_data)->opline ||
+			if (!EG(current_execute_data) ||
 			    !EG(current_execute_data)->func ||
 			    !ZEND_USER_CODE(EG(current_execute_data)->func->common.type) ||
+			    !EG(current_execute_data)->opline ||
 			    EG(current_execute_data)->opline->opcode != ZEND_INCLUDE_OR_EVAL ||
 			    (EG(current_execute_data)->opline->extended_value != ZEND_INCLUDE_ONCE &&
 			     EG(current_execute_data)->opline->extended_value != ZEND_REQUIRE_ONCE)) {
@@ -3929,12 +3936,7 @@ static void preload_link(void)
 
 						/* Inheritance successful, print out any warnings. */
 						zend_error_cb = orig_error_cb;
-						EG(record_errors) = false;
-						for (uint32_t i = 0; i < EG(num_errors); i++) {
-							zend_error_info *error = EG(errors)[i];
-							zend_error_zstr_at(
-								error->type, error->filename, error->lineno, error->message);
-						}
+						zend_emit_recorded_errors();
 					} zend_catch {
 						/* Clear variance obligations that were left behind on bailout. */
 						if (CG(delayed_variance_obligations)) {

@@ -793,7 +793,7 @@ static void _function_string(smart_str *str, zend_function *fptr, zend_class_ent
 		} else if (fptr->common.scope->parent) {
 			lc_name = zend_string_tolower(fptr->common.function_name);
 			if ((overwrites = zend_hash_find_ptr(&fptr->common.scope->parent->function_table, lc_name)) != NULL) {
-				if (fptr->common.scope != overwrites->common.scope) {
+				if (fptr->common.scope != overwrites->common.scope && !(overwrites->common.fn_flags & ZEND_ACC_PRIVATE)) {
 					smart_str_append_printf(str, ", overwrites %s", ZSTR_VAL(overwrites->common.scope->name));
 				}
 			}
@@ -1550,6 +1550,10 @@ ZEND_METHOD(Reflection, getModifierNames)
 	if (modifiers & ZEND_ACC_STATIC) {
 		add_next_index_stringl(return_value, "static", sizeof("static")-1);
 	}
+
+	if (modifiers & ZEND_ACC_READONLY) {
+		add_next_index_stringl(return_value, "readonly", sizeof("readonly")-1);
+	}
 }
 /* }}} */
 
@@ -1687,6 +1691,28 @@ ZEND_METHOD(ReflectionFunctionAbstract, getClosureScopeClass)
 		closure_func = zend_get_closure_method_def(Z_OBJ(intern->obj));
 		if (closure_func && closure_func->common.scope) {
 			zend_reflection_class_factory(closure_func->common.scope, return_value);
+		}
+	}
+}
+/* }}} */
+
+/* {{{ Returns the called scope associated to the closure */
+ZEND_METHOD(ReflectionFunctionAbstract, getClosureCalledClass)
+{
+	reflection_object *intern;
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		RETURN_THROWS();
+	}
+	GET_REFLECTION_OBJECT();
+	if (!Z_ISUNDEF(intern->obj)) {
+		zend_class_entry *called_scope;
+		zend_function *closure_func;
+		zend_object *object;
+		if (Z_OBJ_HANDLER(intern->obj, get_closure)
+		 && Z_OBJ_HANDLER(intern->obj, get_closure)(Z_OBJ(intern->obj), &called_scope, &closure_func, &object, 1) == SUCCESS
+		 && closure_func && (called_scope || closure_func->common.scope)) {
+			zend_reflection_class_factory(called_scope ? (zend_class_entry *) called_scope : closure_func->common.scope, return_value);
 		}
 	}
 }
@@ -1878,7 +1904,7 @@ ZEND_METHOD(ReflectionFunctionAbstract, getAttributes)
 
 	GET_REFLECTION_OBJECT_PTR(fptr);
 
-	if (fptr->common.scope && !(fptr->common.fn_flags & ZEND_ACC_CLOSURE)) {
+	if (fptr->common.scope && (fptr->common.fn_flags & (ZEND_ACC_CLOSURE|ZEND_ACC_FAKE_CLOSURE)) != ZEND_ACC_CLOSURE) {
 		target = ZEND_ATTRIBUTE_TARGET_METHOD;
 	} else {
 		target = ZEND_ATTRIBUTE_TARGET_FUNCTION;

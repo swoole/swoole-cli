@@ -306,3 +306,5 @@ tmp-php.ini
 /ext/yaml
 /ext/mongodb
 /ext/inotify
+/ext/swoole_tracker_agent
+/ext/loader8

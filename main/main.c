@@ -832,9 +832,10 @@ PHPAPI ZEND_COLD void php_log_err_with_severity(const char *log_message, int sys
 #endif
 			len = spprintf(&tmp, 0, "[%s] %s%s", ZSTR_VAL(error_time_str), log_message, PHP_EOL);
 #ifdef PHP_WIN32
-			php_flock(fd, 2);
+			php_flock(fd, LOCK_EX);
 			/* XXX should eventually write in a loop if len > UINT_MAX */
 			php_ignore_value(write(fd, tmp, (unsigned)len));
+			php_flock(fd, LOCK_UN);
 #else
 			php_ignore_value(write(fd, tmp, len));
 #endif
@@ -1853,10 +1854,12 @@ void php_request_shutdown(void *dummy)
 		zend_post_deactivate_modules();
 	} zend_end_try();
 
-	/* 12. SAPI related shutdown (free stuff) */
+	/* 12. SAPI related shutdown*/
 	zend_try {
-		sapi_deactivate();
+		sapi_deactivate_module();
 	} zend_end_try();
+	/* free SAPI stuff */
+	sapi_deactivate_destroy();
 
 	/* 13. free virtual CWD memory */
 	virtual_cwd_deactivate();

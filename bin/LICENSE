@@ -17,6 +17,7 @@ bzip2: https://www.sourceware.org/bzip2/
 icu: https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE
 oniguruma: https://github.com/kkos/oniguruma/blob/master/COPYING
 zip: https://libzip.org/license/
+libmemcached: https://imagemagick.org/script/license.php
 cares: https://c-ares.org/license.html
 imagemagick: https://imagemagick.org/script/license.php
 curl: https://github.com/curl/curl/blob/master/COPYING
