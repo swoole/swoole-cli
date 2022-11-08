@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
 $p = new Preprocessor(__DIR__);
-$p->setPhpSrcDir(getenv('HOME') . '/soft/php-8.1.8');
+$p->setPhpSrcDir(getenv('HOME') . '/.phpbrew/build/php-8.1.12');
 $p->setDockerVersion('1.4');
 $p->setSwooleDir(getenv('HOME') . '/workspace/swoole');
 if (!empty($argv[1])) {
@@ -80,16 +80,6 @@ function install_imagemagick(Preprocessor $p)
             ->withConfigure('./configure --prefix=/usr/imagemagick --enable-static --disable-shared --with-zip=no --with-fontconfig=no --with-heic=no --with-lcms=no --with-lqr=no --with-openexr=no --with-openjp2=no --with-pango=no --with-raw=no --with-tiff=no')
             ->withPkgName('ImageMagick')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
-    );
-}
-
-function install_libmemcached(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('libmemcached', '/usr/libmemcached'))
-            ->withUrl('https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/libmemcached --enable-static --disable-shared')
-            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_BSD)
     );
 }
 

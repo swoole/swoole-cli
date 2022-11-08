@@ -21,7 +21,7 @@ make_<?=$item->name?>() {
     cd <?=$this->workDir?>/thirdparty
     echo "build <?=$item->name?>"
     mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->libraryDir?>/<?=$item->file?>  && \
+    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
     cd <?=$item->name?> && \
     echo  "<?=$item->configure?>"
     <?php if (!empty($item->configure)): ?>
@@ -179,6 +179,8 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/build ./
   cp -r ./TSRM/TSRM.h main/TSRM.h
   cp -r $SRC/configure.ac ./
+  # fpm
+  cp -r $SRC/sapi/fpm/fpm ./sapi/cli
   exit 0
 else
     help

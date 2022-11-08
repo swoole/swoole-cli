@@ -65,6 +65,9 @@
 #include "fopen_wrappers.h"
 #include "ext/standard/php_standard.h"
 
+#include "ext/swoole/include/swoole_version.h"
+extern void show_swoole_version(void);
+
 #ifdef __riscos__
 # include <unixlib/local.h>
 int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
@@ -138,6 +141,7 @@ static const opt_struct OPTIONS[] = {
 	{'D', 0, "daemonize"},
 	{'F', 0, "nodaemonize"},
 	{'O', 0, "force-stderr"},
+    {'P', 0, "fpm"},
 	{'-', 0, NULL} /* end of args */
 };
 
@@ -816,10 +820,10 @@ static void php_cgi_usage(char *argv0)
 	if (prog) {
 		prog++;
 	} else {
-		prog = "php";
+		prog = "swoole-cli";
 	}
 
-	php_printf(	"Usage: %s [-n] [-e] [-h] [-i] [-m] [-v] [-t] [-p <prefix>] [-g <pid>] [-c <file>] [-d foo[=bar]] [-y <file>] [-D] [-F [-O]]\n"
+	php_printf(	"Usage: %s (fpm) [-n] [-e] [-h] [-i] [-m] [-v] [-t] [-p <prefix>] [-g <pid>] [-c <file>] [-d foo[=bar]] [-y <file>] [-D] [-F [-O]]\n"
 				"  -c <path>|<file> Look for php.ini file in this directory\n"
 				"  -n               No php.ini file will be used\n"
 				"  -d foo[=bar]     Define INI entry foo with value 'bar'\n"
@@ -1508,7 +1512,7 @@ static zend_module_entry cgi_module_entry = {
 };
 
 /* {{{ main */
-int main(int argc, char *argv[])
+int fpm_main(int argc, char *argv[])
 {
 	int exit_status = FPM_EXIT_OK;
 	int cgi = 0, c, use_extended_info = 0;
@@ -1560,6 +1564,7 @@ int main(int argc, char *argv[])
 	sapi_startup(&cgi_sapi_module);
 	cgi_sapi_module.php_ini_path_override = NULL;
 	cgi_sapi_module.php_ini_ignore_cwd = 1;
+    cgi_sapi_module.php_ini_ignore = 1;
 
 #ifndef HAVE_ATTRIBUTE_WEAK
 	fcgi_set_logger(fpm_fcgi_log);
@@ -1667,6 +1672,9 @@ int main(int argc, char *argv[])
 				force_stderr = 1;
 				break;
 
+			case 'P':
+			    break;
+
 			default:
 			case 'h':
 			case '?':
@@ -1690,12 +1698,7 @@ int main(int argc, char *argv[])
 				}
 				SG(headers_sent) = 1;
 				SG(request_info).no_headers = 1;
-
-#if ZEND_DEBUG
-				php_printf("PHP %s (%s) (built: %s %s) (DEBUG)\nCopyright (c) The PHP Group\n%s", PHP_VERSION, sapi_module.name, __DATE__,        __TIME__, get_zend_version());
-#else
-				php_printf("PHP %s (%s) (built: %s %s)\nCopyright (c) The PHP Group\n%s", PHP_VERSION, sapi_module.name, __DATE__, __TIME__,      get_zend_version());
-#endif
+				show_swoole_version();
 				php_request_shutdown((void *) 0);
 				fcgi_shutdown();
 				exit_status = FPM_EXIT_OK;
