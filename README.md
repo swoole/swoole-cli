@@ -3,6 +3,7 @@
 ## 生成构建脚本
 ```shell
 php prepare.php
+php prepare.php +inotify +mongodb
 ```
 * 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
 * 可使用`+{ext}`或者`-{ext}`增减扩展
