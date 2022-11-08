@@ -157,7 +157,6 @@ class Preprocessor
     protected array $pkgConfigPaths = [];
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
-    protected string $swooleDir;
     protected string $workDir = '/work';
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -242,11 +241,6 @@ class Preprocessor
     function setDockerVersion(string $dockerVersion)
     {
         $this->dockerVersion = $dockerVersion;
-    }
-
-    function setSwooleDir(string $swooleDir)
-    {
-        $this->swooleDir = $swooleDir;
     }
 
     function setPrefix(string $prefix)

@@ -8,7 +8,6 @@ use SwooleCli\Library;
 $p = new Preprocessor(__DIR__);
 $p->setPhpSrcDir(getenv('HOME') . '/.phpbrew/build/php-8.1.12');
 $p->setDockerVersion('1.4');
-$p->setSwooleDir(getenv('HOME') . '/workspace/swoole');
 if (!empty($argv[1])) {
     $p->setOsType(trim($argv[1]));
 }
