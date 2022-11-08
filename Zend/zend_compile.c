@@ -1227,7 +1227,8 @@ zend_string *zend_type_to_string_resolved(zend_type type, zend_class_entry *scop
 	}
 	if (type_mask & MAY_BE_STATIC) {
 		zend_string *name = ZSTR_KNOWN(ZEND_STR_STATIC);
-		if (scope) {
+		// During compilation of eval'd code the called scope refers to the scope calling the eval
+		if (scope && !zend_is_compiling()) {
 			zend_class_entry *called_scope = zend_get_called_scope(EG(current_execute_data));
 			if (called_scope) {
 				name = called_scope->name;
@@ -3995,6 +3996,7 @@ static void zend_compile_init_user_func(zend_ast *name_ast, uint32_t num_args, z
 static zend_result zend_compile_func_cufa(znode *result, zend_ast_list *args, zend_string *lcname) /* {{{ */
 {
 	znode arg_node;
+	zend_op *opline;
 
 	if (args->children != 2) {
 		return FAILURE;
@@ -4036,7 +4038,8 @@ static zend_result zend_compile_func_cufa(znode *result, zend_ast_list *args, ze
 	zend_compile_expr(&arg_node, args->child[1]);
 	zend_emit_op(NULL, ZEND_SEND_ARRAY, &arg_node, NULL);
 	zend_emit_op(NULL, ZEND_CHECK_UNDEF_ARGS, NULL, NULL);
-	zend_emit_op(result, ZEND_DO_FCALL, NULL, NULL);
+	opline = zend_emit_op(result, ZEND_DO_FCALL, NULL, NULL);
+	opline->extended_value = ZEND_FCALL_MAY_HAVE_EXTRA_NAMED_PARAMS;
 
 	return SUCCESS;
 }
@@ -9736,8 +9739,8 @@ static void zend_compile_const_expr_class_const(zend_ast **ast_ptr) /* {{{ */
 		zend_string_release_ex(class_name, 0);
 		if (tmp != class_name) {
 			zval *zv = zend_ast_get_zval(class_ast);
-
 			ZVAL_STR(zv, tmp);
+			class_ast->attr = ZEND_NAME_FQ;
 		}
 	}
 
@@ -9832,7 +9835,7 @@ static void zend_compile_const_expr_new(zend_ast **ast_ptr)
 	zval *class_ast_zv = zend_ast_get_zval(class_ast);
 	zval_ptr_dtor_nogc(class_ast_zv);
 	ZVAL_STR(class_ast_zv, class_name);
-	class_ast->attr = fetch_type;
+	class_ast->attr = fetch_type << ZEND_CONST_EXPR_NEW_FETCH_TYPE_SHIFT;
 }
 
 static void zend_compile_const_expr_args(zend_ast **ast_ptr)
