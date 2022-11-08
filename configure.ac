@@ -17,7 +17,7 @@ dnl Basic autoconf initialization, generation of config.nice.
 dnl ----------------------------------------------------------------------------
 
 AC_PREREQ([2.68])
-AC_INIT([PHP],[8.1.8],[https://bugs.php.net],[php],[https://www.php.net])
+AC_INIT([PHP],[8.1.12],[https://bugs.php.net],[php],[https://www.php.net])
 AC_CONFIG_SRCDIR([main/php_version.h])
 AC_CONFIG_AUX_DIR([build])
 AC_PRESERVE_HELP_ORDER
@@ -1211,6 +1211,7 @@ AS_CASE([$host_cpu],
 AS_CASE([$host_os],
   [darwin*], [fiber_os="mac"],
   [aix*|os400*], [fiber_os="aix"],
+  [freebsd*], [fiber_os="freebsd"],
   [fiber_os="other"]
 )
 
@@ -1234,6 +1235,15 @@ elif test "$fiber_os" = 'aix'; then
   # AIX uses a different calling convention (shared with non-_CALL_ELF Linux).
   # The AIX assembler isn't GNU, but the file is compatible.
   fiber_asm_file="${fiber_asm_file_prefix}_xcoff_gas"
+elif test "$fiber_os" = 'freebsd'; then
+  case $fiber_cpu in
+    i386*)
+      fiber_asm="no"
+      ;;
+    *)
+      fiber_asm_file="${fiber_asm_file_prefix}_elf_gas"
+      ;;
+  esac
 elif test "$fiber_asm_file_prefix" != 'unknown'; then
   fiber_asm_file="${fiber_asm_file_prefix}_elf_gas"
 else
