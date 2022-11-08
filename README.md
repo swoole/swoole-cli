@@ -1,5 +1,35 @@
 # swoole-cli
 
+## 生成构建脚本
+```shell
+php prepare.php
+```
+* 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
+* 可使用`+{ext}`或者`-{ext}`增减扩展
+
+## 进入 Docker Bash
+```shell
+./make.sh docker-bash
+```
+> 需要将`swoole-cli`的目录映射到容器的`/work`目录
+
+## 编译配置
+```shell
+./make.sh config
+```
+
+## 构建
+```shell
+./make.sh build
+```
+
+> 编译成功后会生成`bin/swoole-cli`
+
+## 打包
+```shell
+./make.sh archive
+```
+
 ## 授权协议
 
 * `swoole-cli`使用了多个其他开源项目，请认真阅读`LICENSE`文件中版权协议，遵守对应开源项目的`LICENSE`
