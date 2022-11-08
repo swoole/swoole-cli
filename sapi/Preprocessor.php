@@ -214,6 +214,16 @@ class Preprocessor
         $this->libraryDir = $rootPath . '/pool/lib';
         $this->extensionDir = $rootPath . '/pool/ext';
 
+        if (!is_dir($rootPath . '/pool')) {
+            mkdir($rootPath . '/pool');
+        }
+        if (!is_dir($this->libraryDir)) {
+            mkdir($this->libraryDir);
+        }
+        if (!is_dir($this->extensionDir)) {
+            mkdir($this->extensionDir);
+        }
+
         switch (PHP_OS) {
             default:
             case 'Linux':
