@@ -9,3 +9,4 @@ ENV CC=clang
 ENV CXX=clang++
 ENV LD=ld.lld
 #RUN mv /usr/bin/ld /usr/bin/ld.old && ln -s /usr/bin/ld.lld /usr/bin/ld
+WORKDIR /work
