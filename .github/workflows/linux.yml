@@ -1,0 +1,20 @@
+name: swoole-cli-linux
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: configure
+        run: php prepare.php +mongodb +inotify
+      - name: Run the build process with Docker
+       uses: addnab/docker-run-action@v3
+       with:
+         image: phpswoole/swoole_cli_os:1.4
+         options: -v ${{ github.workspace }}:/work
+         run: |
+           ./make.sh config
+           ./make.sh build
+
