@@ -3,7 +3,7 @@ name: swoole-cli-linux
 on: [push, pull_request]
 
 jobs:
-  build:
+  build-ubuntu-latest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
