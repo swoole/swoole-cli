@@ -8,12 +8,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: configure
-      run: php prepare.php +mongodb +inotify
+      run: SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
     - name: Run the build process with Docker
       uses: addnab/docker-run-action@v3
       with:
         image: phpswoole/swoole_cli_os:1.4
         options: -v ${{ github.workspace }}:/work
         run: |
+          cd /work
           ./make.sh config
           ./make.sh build
