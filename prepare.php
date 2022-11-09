@@ -13,11 +13,11 @@ if (!empty($argv[1])) {
 }
 
 if ($p->osType == 'macos') {
-    $p->setWorkDir(__DIR__ . '/work');
+    $p->setWorkDir(__DIR__);
     $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
     //$p->setExtraOptions('--with-config-file-path=/usr/local/etc');
-    $p->addEndCallback(function () {
-        file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', __DIR__ . '/work/opt/usr', file_get_contents(__DIR__ . '/make.sh')));
+    $p->addEndCallback(function () use ($p) {
+        file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', $p->getWorkDir() . '/usr', file_get_contents(__DIR__ . '/make.sh')));
     });
 }
 
@@ -180,7 +180,6 @@ function install_bzip2(Preprocessor $p)
             ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
             ->withMakeOptions('PREFIX=/usr/bzip2')
             ->withMakeInstallOptions('PREFIX=/usr/bzip2')
-            ->withPkgConfig('')
             ->withHomePage('https://www.sourceware.org/bzip2/')
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
     );

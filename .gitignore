@@ -300,6 +300,7 @@ tmp-php.ini
 /pool/
 /work/
 /thirdparty
+/usr
 /ext/redis
 /ext/memcached
 /ext/imagick

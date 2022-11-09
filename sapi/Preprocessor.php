@@ -157,6 +157,12 @@ class Preprocessor
     protected array $pkgConfigPaths = [];
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
+    /**
+     * 指向 swoole-cli 所在的目录
+     * $workDir/ext 存放扩展
+     * $workDir/thirdparty 存放第三方库的源代码，编译后的 .a 文件会安装到系统的 /usr 目录下
+     * 在 macOS 系统上，/usr 目录将会被替换为 $workDir/usr
+     */
     protected string $workDir = '/work';
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -214,6 +220,7 @@ class Preprocessor
         $this->libraryDir = $rootPath . '/pool/lib';
         $this->extensionDir = $rootPath . '/pool/ext';
 
+        // 此目录用于存放源代码包
         if (!is_dir($rootPath . '/pool')) {
             mkdir($rootPath . '/pool');
         }
@@ -258,9 +265,14 @@ class Preprocessor
         $this->prefix = $prefix;
     }
 
-    function setWorkdir(string $workDir)
+    function setWorkDir(string $workDir)
     {
         $this->workDir = $workDir;
+    }
+
+    function getWorkDir()
+    {
+        return $this->workDir;
     }
 
     function setExtraLdflags(string $flags)
