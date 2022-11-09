@@ -16,5 +16,6 @@ jobs:
         options: -v ${{ github.workspace }}:/work
         run: |
           cd /work
+          chmod +x ./make.sh
           ./make.sh config
           ./make.sh build
