@@ -8,7 +8,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: configure
-      run: SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
+      run: |
+        git submodule update --init
+        SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
     - name: Run the build process with Docker
       uses: addnab/docker-run-action@v3
       with:
