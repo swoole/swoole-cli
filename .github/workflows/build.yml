@@ -42,6 +42,7 @@ jobs:
 
     - name: Configure
       run: |
+        uname -a
         git submodule update --init
         bash ./sapi/cygwin-config.sh
     - name: Build
