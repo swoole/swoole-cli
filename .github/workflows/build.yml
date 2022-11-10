@@ -44,7 +44,7 @@ jobs:
       run: |
         uname -a
         git submodule update --init
-        dos2unix
+        dos2unix cygwin-config.sh
         bash ./sapi/cygwin-config.sh
     - name: Build
       run: | 

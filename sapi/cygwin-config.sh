@@ -1,17 +1,43 @@
-wget -O redis.tar.gz https://pecl.php.net/get/redis-5.3.7.tgz
-wget -O mongodb.tar.gz https://pecl.php.net/get/mongodb-1.14.2.tgz
-wget -O yaml.tar.gz https://pecl.php.net/get/yaml-2.2.2.tgz.tgz
-wget -O imagick.tar.gz https://pecl.php.net/get/imagick-3.7.0.tgz
+cd pool/ext
 
-tar xvf redis.tgz
-tar xvf mongodb.tgz
-tar xvf yaml.tgz
-tar xvf imagick.tgz
+REDIS_VERSION=5.3.7
+MONGODB_VERSION=1.14.2
+YAML_VERSION=2.2.2
+IMAGICK_VERSION=3.7.0
 
-mv redis ext/redis
-mv mongodb ext/mongodb
-mv yaml ext/yaml
-mv imagick ext/imagick
+if [ ! -d ../../ext/redis ]; then
+    if [ ! -f redis-${REDIS_VERSION}.tgz ]; then
+        wget https://pecl.php.net/get/redis-${REDIS_VERSION}.tgz
+    fi
+    tar xvf redis-${REDIS_VERSION}.tgz
+    mv redis-${REDIS_VERSION} ../../ext/redis
+fi
+
+if [ ! -d ../../ext/mongodb ]; then
+    if [ ! -f redis-${MONGODB_VERSION}.tgz ]; then
+        wget https://pecl.php.net/get/mongodb-${MONGODB_VERSION}.tgz
+    fi
+    tar xvf mongodb-${MONGODB_VERSION}.tgz
+    mv mongodb-${MONGODB_VERSION} ../../ext/mongodb
+fi
+
+if [ ! -d ../../ext/yaml ]; then
+    if [ ! -f redis-${YAML_VERSION}.tgz ]; then
+        wget https://pecl.php.net/get/yaml-${YAML_VERSION}.tgz
+    fi
+    tar xvf yaml-${YAML_VERSION}.tgz
+    mv yaml-${YAML_VERSION} ../../ext/yaml
+fi
+
+if [ ! -d ../../ext/imagick ]; then
+    if [ ! -f redis-${IMAGICK_VERSION}.tgz ]; then
+        wget https://pecl.php.net/get/imagick-${IMAGICK_VERSION}.tgz
+    fi
+    tar xvf imagick-${IMAGICK_VERSION}.tgz
+    mv imagick-${IMAGICK_VERSION} ../../ext/imagick
+fi
+
+cd ../..
 
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
@@ -51,5 +77,5 @@ mv imagick ext/imagick
     --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
     --enable-redis \
     --with-imagick \
-    --with-yaml 
+    --with-yaml \
     --enable-mongodb
