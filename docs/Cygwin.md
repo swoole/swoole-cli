@@ -6,12 +6,8 @@
 - cmake
 - libtool
 - re2c （需要源码安装）
-- bison: 3.x 以上版本（macOS 下需要编译安装）
 
-问题记录
-======
-
-CygWin 依赖
+库
 ----
 ```
 libssl-devel
@@ -27,25 +23,16 @@ libwebp-devel
 libsqlite3-devel
 zlib-devel
 libbz2-devel
-libzip2-devel
+libzip-devel
 libicu-devel
 libonig-devel
 libcares-devel
 libsodium-devel
 libyaml-devel
 libMagick-devel
-```
-
-追加
-```
-libzip2
-libzip-devel
 libzstd-devel
 libbrotli-devel
 ```
-
-> 最新版本中没有 `libzip2-devel` ?
-
 
 编译参数
 ------
