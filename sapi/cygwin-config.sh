@@ -56,6 +56,7 @@ fi
 
 cd $ROOT
 
+dos2unix ./buildconf
 ./buildconf --force
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
