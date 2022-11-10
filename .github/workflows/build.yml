@@ -22,6 +22,7 @@ jobs:
           cd /work
           ./make.sh config
           ./make.sh build
+          ./bin/swoole-cli -v
   cygwin:
     runs-on: windows-latest
     steps:
@@ -38,7 +39,7 @@ jobs:
       uses: cygwin/cygwin-install-action@v2
       with:
         platform: x64
-        packages: wget tar php php-devel gcc-g++ openssl libpcre2-devellibssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel libzip2-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel 
+        packages: wget tar libtool php php-devel gcc-g++ openssl libpcre2-devellibssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel libzip2-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel 
 
     - name: Configure
       run: |

@@ -19,7 +19,7 @@ fi
 tar xvf re2c-${RE2C_VERSION}.tar.xz
 cd re2c-${RE2C_VERSION}
 autoreconf -i -W all
-./configure && make && make install
+./configure && make -j $(nproc) && make install
 cd ../
 
 if [ ! -d $ROOT/ext/redis ]; then
@@ -56,6 +56,7 @@ fi
 
 cd $ROOT
 
+./buildconf --force
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --disable-opcache \
