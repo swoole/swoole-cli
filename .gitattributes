@@ -17,3 +17,7 @@
 # special characters, such as ASCII control characters. Git recognizes these as
 # binary and wouldn't generate diffs.
 *.phpt diff
+* text eof=lf
+*.zip binary
+*.png binary
+*.jpg binary
