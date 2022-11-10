@@ -1,26 +1,14 @@
 ROOT=$(pwd)
+REDIS_VERSION=5.3.7
+MONGODB_VERSION=1.14.2
+YAML_VERSION=2.2.2
+IMAGICK_VERSION=3.7.0
 
 if [ ! -d pool/ext ]; then
     mkdir pool/ext
 fi
 
 cd pool/ext
-
-REDIS_VERSION=5.3.7
-MONGODB_VERSION=1.14.2
-YAML_VERSION=2.2.2
-IMAGICK_VERSION=3.7.0
-RE2C_VERSION=3.0
-
-if [ ! -f re2c-${RE2C_VERSION}.tar.xz ]; then
-    wget https://github.com/skvadrik/re2c/releases/download/3.0/re2c-3.0.tar.xz
-fi
-
-tar xvf re2c-${RE2C_VERSION}.tar.xz
-cd re2c-${RE2C_VERSION}
-autoreconf -i -W all
-./configure --prefix=/usr && make -j $(nproc) && make install
-cd ../
 
 if [ ! -d $ROOT/ext/redis ]; then
     if [ ! -f redis-${REDIS_VERSION}.tgz ]; then
