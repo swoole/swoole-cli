@@ -36,6 +36,16 @@ libyaml-devel
 libMagick-devel
 ```
 
+追加
+```
+libzip2
+libzip-devel
+libzstd-devel
+libbrotli-devel
+```
+
+> 最新版本中没有 `libzip2-devel` ?
+
 
 编译参数
 ------
