@@ -34,8 +34,7 @@ jobs:
     - name: configure
       run: |
         git submodule update --init
-        SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb
-        ./sapi/cygwin-config.sh
+        bash ./sapi/cygwin-config.sh
     - name: build
       run: | 
         make -j$(nproc)
