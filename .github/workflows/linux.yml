@@ -3,7 +3,7 @@ name: swoole-cli-linux
 on: [push, pull_request]
 
 jobs:
-  build-linux:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -12,7 +12,7 @@ jobs:
         git submodule update --init
         SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
         chmod +x ./make.sh
-    - name: Run the build process with Docker
+    - name: build
       uses: addnab/docker-run-action@v3
       with:
         image: phpswoole/swoole_cli_os:1.4

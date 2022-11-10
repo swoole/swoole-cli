@@ -79,4 +79,5 @@ libMagick-devel
 --enable-redis \
 --with-imagick \
 --with-yaml 
+--enable-mongodb
 ```
