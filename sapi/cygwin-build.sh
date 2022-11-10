@@ -44,7 +44,6 @@ fi
 
 cd $ROOT
 
-dos2unix ./buildconf
 ./buildconf --force
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
@@ -86,3 +85,6 @@ dos2unix ./buildconf
     --with-imagick \
     --with-yaml \
     --enable-mongodb
+
+make -j $(nproc)
+./bin/swoole-cli -v
