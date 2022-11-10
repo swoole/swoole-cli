@@ -2,9 +2,12 @@
 ----
 - autoconf
 - automake
-- g++
-- cmake
 - libtool
+- bison
+- wget
+- tar
+- gcc-g++
+- openssl
 - re2c （需要源码安装）
 
 库
