@@ -1,43 +1,60 @@
+ROOT=$(pwd)
+
+if [ ! -d pool/ext ]; then
+    mkdir pool/ext
+fi
+
 cd pool/ext
 
 REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+RE2C_VERSION=3.0
 
-if [ ! -d ../../ext/redis ]; then
+if [ ! -f re2c-${RE2C_VERSION}.tar.xz ]; then
+    wget https://github.com/skvadrik/re2c/releases/download/3.0/re2c-3.0.tar.xz
+fi
+
+tar xvf re2c-${RE2C_VERSION}.tar.xz
+cd re2c-${RE2C_VERSION}
+autoreconf -i -W all
+./configure && make && make install
+cd ../
+
+if [ ! -d $ROOT/ext/redis ]; then
     if [ ! -f redis-${REDIS_VERSION}.tgz ]; then
         wget https://pecl.php.net/get/redis-${REDIS_VERSION}.tgz
     fi
     tar xvf redis-${REDIS_VERSION}.tgz
-    mv redis-${REDIS_VERSION} ../../ext/redis
+    mv redis-${REDIS_VERSION} $ROOT/ext/redis
 fi
 
-if [ ! -d ../../ext/mongodb ]; then
+if [ ! -d $ROOT/ext/mongodb ]; then
     if [ ! -f redis-${MONGODB_VERSION}.tgz ]; then
         wget https://pecl.php.net/get/mongodb-${MONGODB_VERSION}.tgz
     fi
     tar xvf mongodb-${MONGODB_VERSION}.tgz
-    mv mongodb-${MONGODB_VERSION} ../../ext/mongodb
+    mv mongodb-${MONGODB_VERSION} $ROOT/ext/mongodb
 fi
 
-if [ ! -d ../../ext/yaml ]; then
+if [ ! -d $ROOT/ext/yaml ]; then
     if [ ! -f redis-${YAML_VERSION}.tgz ]; then
         wget https://pecl.php.net/get/yaml-${YAML_VERSION}.tgz
     fi
     tar xvf yaml-${YAML_VERSION}.tgz
-    mv yaml-${YAML_VERSION} ../../ext/yaml
+    mv yaml-${YAML_VERSION} $ROOT/ext/yaml
 fi
 
-if [ ! -d ../../ext/imagick ]; then
+if [ ! -d $ROOT/ext/imagick ]; then
     if [ ! -f redis-${IMAGICK_VERSION}.tgz ]; then
         wget https://pecl.php.net/get/imagick-${IMAGICK_VERSION}.tgz
     fi
     tar xvf imagick-${IMAGICK_VERSION}.tgz
-    mv imagick-${IMAGICK_VERSION} ../../ext/imagick
+    mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
 fi
 
-cd ../..
+cd $ROOT
 
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
