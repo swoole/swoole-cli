@@ -19,7 +19,7 @@ fi
 tar xvf re2c-${RE2C_VERSION}.tar.xz
 cd re2c-${RE2C_VERSION}
 autoreconf -i -W all
-./configure && make -j $(nproc) && make install
+./configure --prefix=/usr && make -j $(nproc) && make install
 cd ../
 
 if [ ! -d $ROOT/ext/redis ]; then
