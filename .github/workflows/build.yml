@@ -26,7 +26,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Cache node modules
+    - name: Cache cygwin packages
       id: cache-npm
       uses: actions/cache@v3
       env:
@@ -34,6 +34,8 @@ jobs:
       with:
         path: C:/cygwin-packages
         key: ${{ runner.os }}-build-${{ env.cache-name }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Install deps
       uses: cygwin/cygwin-install-action@v2
       with:

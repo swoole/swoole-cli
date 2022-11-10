@@ -1,4 +1,22 @@
-SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb
+pecl download redis
+pecl download mongodb
+pecl download yaml
+pecl download imagick
+
+mv redis-*.tgz redis.tgz
+mv mongodb-*.tgz mongodb.tgz
+mv yaml-*.tgz yaml.tgz
+mv imagick-*.tgz imagick.tgz
+
+tar xvf redis.tgz
+tar xvf mongodb.tgz
+tar xvf yaml.tgz
+tar xvf imagick.tgz
+
+mv ext/redis-* ext/redis
+mv ext/mongodb-* ext/mongodb
+mv ext/yaml-* ext/yaml
+mv ext/imagick-* ext/imagick
 
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
