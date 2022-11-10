@@ -27,20 +27,19 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Cache cygwin packages
-      id: cache-npm
+      id: cache-cygwin
       uses: actions/cache@v3
       env:
         cache-name: cache-cygwin-packages
       with:
         path: C:/cygwin-packages
         key: ${{ runner.os }}-build-${{ env.cache-name }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Install deps
       uses: cygwin/cygwin-install-action@v2
       with:
         platform: x64
         packages: wget tar php php-devel gcc-g++ openssl libpcre2-devellibssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel libzip2-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel 
+
     - name: Configure
       run: |
         git submodule update --init

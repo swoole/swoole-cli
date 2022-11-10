@@ -1,22 +1,17 @@
-pecl download redis
-pecl download mongodb
-pecl download yaml
-pecl download imagick
-
-mv redis-*.tgz redis.tgz
-mv mongodb-*.tgz mongodb.tgz
-mv yaml-*.tgz yaml.tgz
-mv imagick-*.tgz imagick.tgz
+wget -O redis.tar.gz https://pecl.php.net/get/redis-5.3.7.tgz
+wget -O mongodb.tar.gz https://pecl.php.net/get/mongodb-1.14.2.tgz
+wget -O yaml.tar.gz https://pecl.php.net/get/yaml-2.2.2.tgz.tgz
+wget -O imagick.tar.gz https://pecl.php.net/get/imagick-3.7.0.tgz
 
 tar xvf redis.tgz
 tar xvf mongodb.tgz
 tar xvf yaml.tgz
 tar xvf imagick.tgz
 
-mv ext/redis-* ext/redis
-mv ext/mongodb-* ext/mongodb
-mv ext/yaml-* ext/yaml
-mv ext/imagick-* ext/imagick
+mv redis ext/redis
+mv mongodb ext/mongodb
+mv yaml ext/yaml
+mv imagick ext/imagick
 
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
