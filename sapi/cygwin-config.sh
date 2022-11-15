@@ -5,7 +5,7 @@ YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
 
 if [ ! -d pool/ext ]; then
-    mkdir pool/ext
+    mkdir -p pool/ext
 fi
 
 cd pool/ext
@@ -84,7 +84,7 @@ cd $ROOT
     --enable-redis \
     --with-imagick \
     --with-yaml \
-    --enable-mongodb
+    --enable-mongodb --with-mongodb-client-side-encryption=no
 
 ls -al ./
 ls -al ./ext
