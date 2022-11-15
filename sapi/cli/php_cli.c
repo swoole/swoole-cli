@@ -150,7 +150,7 @@ const opt_struct OPTIONS[] = {
 	{'l', 0, "syntax-check"},
 	{'m', 0, "modules"},
 	{'n', 0, "no-php-ini"},
-    {'P', 0, "fpm"},
+	{'P', 0, "fpm"},
 	{'q', 0, "no-header"}, /* for compatibility with CGI (do not generate HTTP headers) */
 	{'R', 1, "process-code"},
 	{'H', 0, "hide-args"},
@@ -541,19 +541,17 @@ static void cli_register_file_handles(bool no_close) /* {{{ */
 	s_out = php_stream_open_wrapper_ex("php://stdout", "wb", 0, NULL, sc_out);
 	s_err = php_stream_open_wrapper_ex("php://stderr", "wb", 0, NULL, sc_err);
 
-	/* Release stream resources, but don't free the underlying handles. Othewrise,
-	 * extensions which write to stderr or company during mshutdown/gshutdown
-	 * won't have the expected functionality.
-	 */
-	if (s_in) s_in->flags |= PHP_STREAM_FLAG_NO_CLOSE;
-	if (s_out) s_out->flags |= PHP_STREAM_FLAG_NO_CLOSE;
-	if (s_err) s_err->flags |= PHP_STREAM_FLAG_NO_CLOSE;
-
 	if (s_in==NULL || s_out==NULL || s_err==NULL) {
 		if (s_in) php_stream_close(s_in);
 		if (s_out) php_stream_close(s_out);
 		if (s_err) php_stream_close(s_err);
 		return;
+	}
+
+	if (no_close) {
+		s_in->flags |= PHP_STREAM_FLAG_NO_CLOSE;
+		s_out->flags |= PHP_STREAM_FLAG_NO_CLOSE;
+		s_err->flags |= PHP_STREAM_FLAG_NO_CLOSE;
 	}
 
 	s_in_process = s_in;
