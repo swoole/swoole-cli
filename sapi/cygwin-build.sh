@@ -86,5 +86,9 @@ cd $ROOT
     --with-yaml \
     --enable-mongodb
 
+ls -al ./
+ls -al ./ext
+ls -al ./ext/date
+
 make -j $(nproc)
 ./bin/swoole-cli -v
