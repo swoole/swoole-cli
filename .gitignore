@@ -297,6 +297,7 @@ tmp-php.ini
 /.cproject
 /.vscode
 /make.sh
+/bin
 /pool/
 /work/
 /thirdparty

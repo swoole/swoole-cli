@@ -2,16 +2,15 @@
 ----
 - autoconf
 - automake
-- g++
-- cmake
 - libtool
+- bison
+- wget
+- tar
+- gcc-g++
+- openssl
 - re2c （需要源码安装）
-- bison: 3.x 以上版本（macOS 下需要编译安装）
 
-问题记录
-======
-
-CygWin 依赖
+库
 ----
 ```
 libssl-devel
@@ -27,15 +26,16 @@ libwebp-devel
 libsqlite3-devel
 zlib-devel
 libbz2-devel
-libzip2-devel
+libzip-devel
 libicu-devel
 libonig-devel
 libcares-devel
 libsodium-devel
 libyaml-devel
 libMagick-devel
+libzstd-devel
+libbrotli-devel
 ```
-
 
 编译参数
 ------
@@ -78,5 +78,6 @@ libMagick-devel
 --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
 --enable-redis \
 --with-imagick \
---with-yaml 
+--with-yaml \
+--enable-mongodb --with-mongodb-client-side-encryption=no
 ```

@@ -308,11 +308,14 @@ class Preprocessor
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
         }
-        if (!is_file($this->libraryDir . '/' . $lib->file)) {
-            echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
-            echo $lib->file;
-        } else {
-            echo "[Library] file cached: " . $lib->file . PHP_EOL;
+        $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
+        if (empty($skip_library_download)) {
+            if (!is_file($this->libraryDir . '/' . $lib->file)) {
+                echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
+                echo $lib->file;
+            } else {
+                echo "[Library] file cached: " . $lib->file . PHP_EOL;
+            }
         }
 
         if (!empty($lib->pkgConfig)) {

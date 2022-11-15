@@ -1,0 +1,58 @@
+name: build-swoole-cli
+
+on: [push, pull_request]
+
+jobs:
+  linux:
+    if: 0
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure
+      run: |
+        git submodule update --init
+        SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
+        chmod +x ./make.sh
+    - name: Build
+      uses: addnab/docker-run-action@v3
+      with:
+        image: phpswoole/swoole_cli_os:1.4
+        options: -v ${{ github.workspace }}:/work
+        run: |
+          cd /work
+          ./make.sh config
+          ./make.sh build
+          ./bin/swoole-cli -v
+  cygwin:
+    runs-on: windows-latest
+    steps:
+    - name: Prepare git
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
+    - uses: actions/checkout@v3
+    - name: Cache cygwin packages
+      id: cache-cygwin
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-cygwin-packages
+      with:
+        path: C:/cygwin-packages
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+    - name: Install deps
+      uses: cygwin/cygwin-install-action@v2
+      with:
+        platform: x64
+        packages: wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel 
+    - name: Install re2c
+      run: |
+        bash ./sapi/install-re2c.sh
+    - name: Configure
+      run: |
+        uname -a
+        git submodule update --init
+        bash ./sapi/cygwin-config.sh
+    - name: Build
+      run: |
+        make -j $(nproc)
+        ./bin/swoole-cli -v

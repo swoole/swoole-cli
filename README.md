@@ -12,7 +12,7 @@ php prepare.php +inotify +mongodb
 ```shell
 ./make.sh docker-bash
 ```
-> 需要将`swoole-cli`的目录映射到容器的`/work`目录
+> 需要将 `swoole-cli` 的目录映射到容器的 `/work` 目录
 
 ## 编译配置
 ```shell
