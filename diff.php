@@ -10,10 +10,14 @@ $list_intersect = array_intersect($list_php_src->toArray(), $list_swoole_cli->to
 
 $diff1 = array_diff($list_swoole_cli->toArray(), $list_intersect);
 echo "Added(" . count($diff1) . ")\n===============================================================\n";
-echo implode(PHP_EOL, $diff1);
-echo PHP_EOL . PHP_EOL;
+foreach ($diff1 as $v) {
+    echo '+ ' . $v . PHP_EOL;
+}
+echo PHP_EOL;
 
 $diff2 = array_diff($list_php_src->toArray(), $list_intersect);
 echo "Removed(" . count($diff2) . ")\n==============================================================\n";
-echo implode(PHP_EOL, $diff2);
+foreach ($diff2 as $v) {
+    echo '- ' . $v . PHP_EOL;
+}
 echo PHP_EOL;

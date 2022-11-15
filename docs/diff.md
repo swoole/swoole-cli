@@ -1,12 +1,13 @@
-Added(5)
+Added(6)
 ===============================================================
++ ds
 + imagick
 + mongodb
 + redis
 + swoole
 + yaml
 
-Removed(27)
+Removed(26)
 ==============================================================
 - calendar
 - com_dotnet
@@ -27,7 +28,6 @@ Removed(27)
 - pdo_pgsql
 - pgsql
 - pspell
-- readline
 - shmop
 - skeleton
 - snmp
@@ -35,3 +35,4 @@ Removed(27)
 - sysvsem
 - sysvshm
 - tidy
+
