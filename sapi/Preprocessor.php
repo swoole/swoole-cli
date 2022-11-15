@@ -45,10 +45,11 @@ class Library extends Project
     public string $ldflags = '';
     public string $makeOptions = '';
     public string $makeInstallOptions = '';
+    public string $beforeInstallScript = '';
+    public string $afterInstallScript = '';
     public string $pkgConfig = '';
     public string $pkgName = '';
     public string $prefix = '/usr';
-    public bool $clearDylib = false;
 
     public function __construct(string $name, string $prefix = '/usr')
     {
@@ -94,6 +95,18 @@ class Library extends Project
         return $this;
     }
 
+    function withScriptBeforeInstall(string $script)
+    {
+        $this->beforeInstallScript = $script;
+        return $this;
+    }
+
+    function withScriptAfterInstall(string $script)
+    {
+        $this->afterInstallScript = $script;
+        return $this;
+    }
+
     function withMakeInstallOptions(string $makeInstallOptions): static
     {
         $this->makeInstallOptions = $makeInstallOptions;
@@ -109,12 +122,6 @@ class Library extends Project
     function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
-        return $this;
-    }
-
-    function withClearDylib(bool $clearDylib = true): static
-    {
-        $this->clearDylib = $clearDylib;
         return $this;
     }
 }
@@ -209,6 +216,7 @@ class Preprocessor
         'swoole',
         'yaml',
         'imagick',
+        'mongodb',
     ];
 
     protected array $endCallbacks = [];

@@ -4,5 +4,5 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $p->addExtension((new Extension('readline'))->withOptions('--with-libedit'));
+    $p->addExtension((new Extension('readline'))->withOptions('--with-readline=/usr/readline'));
 };

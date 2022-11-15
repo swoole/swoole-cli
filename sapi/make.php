@@ -28,9 +28,12 @@ make_<?=$item->name?>() {
     <?=$item->configure?> && \
     <?php endif; ?>
     make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
+    <?php if ($item->beforeInstallScript): ?>
+    <?=$item->beforeInstallScript?> && \
+    <?php endif; ?>
     make install <?=$item->makeInstallOptions?> && \
-    <?php if ($item->clearDylib): ?>
-    find <?=$item->prefix?> -name \*.dylib | xargs rm -f && \
+    <?php if ($item->afterInstallScript): ?>
+    <?=$item->afterInstallScript?> && \
     <?php endif; ?>
     cd -
 }

@@ -114,17 +114,18 @@ function install_libpng(Preprocessor $p)
 
 function install_libjpeg(Preprocessor $p)
 {
-    $p->addLibrary(
-        (new Library('libjpeg'))
-            ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
-            ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr .')
-            ->withLdflags('-L/usr/lib64')
-            ->withPkgConfig('/usr/lib64/pkgconfig')
-            ->withClearDylib($p->osType === 'macos')
-            ->withFile('libjpeg-turbo-2.1.2.tar.gz')
-            ->withHomePage('https://libjpeg-turbo.org/')
-            ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
-    );
+    $lib = new Library('libjpeg');
+    $lib->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
+        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr .')
+        ->withLdflags('-L/usr/lib64')
+        ->withPkgConfig('/usr/lib64/pkgconfig')
+        ->withFile('libjpeg-turbo-2.1.2.tar.gz')
+        ->withHomePage('https://libjpeg-turbo.org/')
+        ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD);
+    if ($p->osType === 'macos') {
+        $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
+    }
+    $p->addLibrary($lib);
 }
 
 function install_freetype(Preprocessor $p)
@@ -233,6 +234,19 @@ function install_cares(Preprocessor $p)
     );
 }
 
+function install_readline(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('readline', '/usr/readline'))
+            ->withUrl('ftp://ftp.cwru.edu/pub/bash/readline-8.2.tar.gz')
+            ->withConfigure('./configure --prefix=/usr/readline --enable-static --disable-shared')
+            ->withPkgName('readline')
+            ->withLdflags('-L/usr/readline/lib')
+            ->withLicense('http://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
+            ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
+    );
+}
+
 function install_libedit(Preprocessor $p)
 {
     $p->addLibrary(
@@ -287,7 +301,14 @@ function install_brotli(Preprocessor $p)
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
             ->withFile('brotli-1.0.9.tar.gz')
             ->withConfigure("cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/brotli .")
-            ->withClearDylib($p->osType === 'macos')
+            ->withScriptAfterInstall(
+                implode(PHP_EOL, [
+                'rm -rf /usr/brotli/lib/*.so.*',
+                'rm -rf /usr/brotli/lib/*.so',
+                'mv /usr/brotli/lib/libbrotlicommon-static.a /usr/brotli/lib/libbrotli.a',
+                'mv /usr/brotli/lib/libbrotlienc-static.a /usr/brotli/lib/libbrotlienc.a',
+                'mv /usr/brotli/lib/libbrotlidec-static.a /usr/brotli/lib/libbrotlidec.a',
+            ]))
             ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
             ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withHomePage('https://github.com/google/brotli')
@@ -324,9 +345,10 @@ install_bzip2($p);
 install_icu($p);
 install_oniguruma($p);
 install_zip($p);
-//install_brotli($p);
+install_brotli($p);
 install_cares($p);
-//install_ncurses($p);
+install_readline($p);
+install_ncurses($p);
 //install_libedit($p);
 install_imagemagick($p);
 install_curl($p);

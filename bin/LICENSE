@@ -17,7 +17,10 @@ bzip2: https://www.sourceware.org/bzip2/
 icu: https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE
 oniguruma: https://github.com/kkos/oniguruma/blob/master/COPYING
 zip: https://libzip.org/license/
+brotli: https://github.com/google/brotli/blob/master/LICENSE
 cares: https://c-ares.org/license.html
+readline: http://www.gnu.org/licenses/gpl.html
+ncurses: https://github.com/projectceladon/libncurses/blob/master/README
 imagemagick: https://imagemagick.org/script/license.php
 curl: https://github.com/curl/curl/blob/master/COPYING
 libsodium: https://en.wikipedia.org/wiki/ISC_license
@@ -27,3 +30,4 @@ php-ext-redis: https://github.com/phpredis/phpredis/blob/develop/COPYING
 php-ext-swoole: https://github.com/swoole/swoole-src/blob/master/LICENSE
 php-ext-yaml: https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE
 php-ext-imagick: https://github.com/Imagick/imagick/blob/master/LICENSE
+php-ext-ds: https://github.com/php-ds/ext-ds/blob/master/LICENSE
