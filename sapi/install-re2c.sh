@@ -11,7 +11,7 @@ if [ ! -f ./re2c.exe ]; then
     autoreconf -i -W all
     ./configure --prefix=/usr && make -j $(nproc) && make install
 else
-    mv re2c.exe /usr/bin
+    mv ./re2c.exe /usr/bin/re2c
 fi
 
 cd $ROOT
