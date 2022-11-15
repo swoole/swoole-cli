@@ -78,6 +78,6 @@ libbrotli-devel
 --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
 --enable-redis \
 --with-imagick \
---with-yaml 
---enable-mongodb
+--with-yaml \
+--enable-mongodb --with-mongodb-client-side-encryption=no
 ```
