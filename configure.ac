@@ -1131,10 +1131,6 @@ if test "$ac_cv_lib_crypt_crypt" = "yes"; then
   EXTRA_LIBS="-lcrypt $EXTRA_LIBS -lcrypt"
 fi
 
-AC_CHECK_FILE(/usr/lib/mimalloc.o,[
-  EXTRA_LIBS="/usr/lib/mimalloc.o $EXTRA_LIBS"
-],[])
-
 unset LIBS LDFLAGS
 
 dnl PEAR
