@@ -16,14 +16,7 @@ php prepare.php +inotify +mongodb
 ./make.sh docker-bash
 ```
 
-> 需要将`swoole-cli`的目录映射到容器的`/work`目录
-
-## 使用`mimalloc`替换`musl(malloc)`
-
-```shell
-./make.sh mimalloc
-export EXTRA_LIBS=$(pkg-config --libs mimalloc)
-```
+> 需要将 `swoole-cli` 的目录映射到容器的 `/work` 目录
 
 ## 编译配置
 

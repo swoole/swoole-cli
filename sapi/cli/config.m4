@@ -547,6 +547,7 @@ if test "$PHP_CLI" != "no"; then
   
   PHP_CLI_FILES="php_cli.c \
   	ps_title.c \
+    patch.c \
   	php_cli_process_title.c \
    	php_cli_server.c \
   	php_http_parser.c"
