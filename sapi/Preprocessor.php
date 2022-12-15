@@ -181,6 +181,7 @@ class Preprocessor
      * @var array|string[]
      */
     protected array $extEnabled = [
+        'opcache',
         'curl',
         'iconv',
         'bz2',
@@ -210,6 +211,7 @@ class Preprocessor
         'exif',
         'sodium',
         'openssl',
+        'readline',
         'xml',
         'gd',
         'redis',

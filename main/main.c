@@ -2259,6 +2259,8 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	zend_startup_modules();
 
 	/* start Zend extensions */
+	extern zend_extension zend_extension_entry;
+	zend_register_extension(&zend_extension_entry, NULL);
 	zend_startup_extensions();
 
 	zend_collect_module_handlers();
