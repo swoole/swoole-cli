@@ -28,10 +28,10 @@ if ($p->osType == 'macos') {
 function install_openssl(Preprocessor $p)
 {
     $p->addLibrary((new Library('openssl', '/usr/openssl'))
-        ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
-        ->withConfigure('./config' . ($p->osType === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=/usr/openssl')
-        ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
-        ->withHomePage('https://www.openssl.org/')
+            ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
+            ->withConfigure('./config' . ($p->osType === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=/usr/openssl')
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            ->withHomePage('https://www.openssl.org/')
     );
 }
 
@@ -215,7 +215,7 @@ function install_zip(Preprocessor $p)
     $p->addLibrary(
         (new Library('zip'))
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-            ->withConfigure('cmake . -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr')
+            ->withConfigure('cmake . -DENABLE_ZSTD=OFF -DENABLE_LZMA=OFF -DBUILD_SHARED_LIBS=OFF -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=/usr')
             ->withPkgName('libzip')
             ->withHomePage('https://libzip.org/')
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
@@ -320,12 +320,30 @@ function install_curl(Preprocessor $p)
     $p->addLibrary(
         (new Library('curl', '/usr/curl'))
             ->withUrl('https://curl.se/download/curl-7.80.0.tar.gz')
-            ->withConfigure("autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl " .
-                "--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3"
+            ->withConfigure(
+                "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl " .
+                    "--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3"
             )
             ->withPkgName('libcurl')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withHomePage('https://curl.se/')
+    );
+}
+
+function install_mimalloc(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('mimalloc', '/usr/mimalloc'))
+            ->withUrl('https://github.com/microsoft/mimalloc/archive/refs/tags/v2.0.7.tar.gz')
+            ->withFile('mimalloc-2.0.7.tar.gz')
+            ->withConfigure("cmake . -DMI_BUILD_SHARED=OFF -DCMAKE_INSTALL_PREFIX=/usr/mimalloc -DMI_INSTALL_TOPLEVEL=ON -DMI_PADDING=OFF -DMI_SKIP_COLLECT_ON_EXIT=ON -DMI_BUILD_TESTS=OFF")
+            ->withPkgName('libmimalloc')
+            ->withLicense('https://github.com/microsoft/mimalloc/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withHomePage('https://microsoft.github.io/mimalloc/')
+            ->withScriptAfterInstall(implode(PHP_EOL, [
+                'export PKG_CONFIG_PATH=/usr/mimalloc/lib/pkgconfig',
+                'export EXTRA_LIBS=$(pkg-config --libs mimalloc)'
+            ]))
     );
 }
 
@@ -334,14 +352,14 @@ install_openssl($p);
 install_libxml2($p);
 install_libxslt($p);
 install_gmp($p);
+install_zlib($p);
+install_bzip2($p);
 install_giflib($p);
 install_libpng($p);
 install_libjpeg($p);
 install_freetype($p);
 install_libwebp($p);
 install_sqlite3($p);
-install_zlib($p);
-install_bzip2($p);
 install_icu($p);
 install_oniguruma($p);
 install_zip($p);
@@ -354,6 +372,7 @@ install_imagemagick($p);
 install_curl($p);
 install_libsodium($p);
 install_libyaml($p);
+install_mimalloc($p);
 
 $p->parseArguments($argc, $argv);
 $p->gen();
