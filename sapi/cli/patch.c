@@ -1,4 +1,5 @@
 #include "php.h"
+#include "library.h"
 
 #ifdef __CYGWIN__
 #include "ext/zip/php_zip.h"
@@ -21,3 +22,9 @@ zend_module_entry opcache_module_entry = {
     PHP_VERSION,
     STANDARD_MODULE_PROPERTIES
 };
+
+void swoole_cli_self_update(void) {
+    php_swoole_cli_load_library();
+    zend_eval_string_ex("swoole_cli_self_update();", NULL, "self update", 1);
+}
+

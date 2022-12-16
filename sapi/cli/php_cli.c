@@ -28,6 +28,8 @@
 #include "ext/reflection/php_reflection.h"
 #include "ext/swoole/include/swoole_version.h"
 
+extern void swoole_cli_self_update(void);
+
 #include "SAPI.h"
 
 #include <stdio.h>
@@ -151,6 +153,7 @@ const opt_struct OPTIONS[] = {
 	{'m', 0, "modules"},
 	{'n', 0, "no-php-ini"},
 	{'P', 0, "fpm"},
+    {'U', 0, "self-update"},
 	{'q', 0, "no-header"}, /* for compatibility with CGI (do not generate HTTP headers) */
 	{'R', 1, "process-code"},
 	{'H', 0, "hide-args"},
@@ -508,6 +511,7 @@ static void php_cli_usage(char *argv0)
 				"  -F <file>        Parse and execute <file> for every input line\n"
 				"  -E <end_code>    Run PHP <end_code> after processing all input lines\n"
 				"  -H               Hide any passed arguments from external tools.\n"
+                "  -U               Update swoole-cli to the latest version\n"
 				"  -t <docroot>     Specify document root <docroot> for built-in web server.\n"
 				"  -s               Output HTML syntax highlighted source.\n"
 				"  -v               Version number\n"
@@ -680,6 +684,16 @@ static int do_cli(int argc, char **argv) /* {{{ */
 				php_output_end_all();
 				EG(exit_status) = 0;
 				goto out;
+
+			case 'U': /* self update */
+                if (php_request_startup()==FAILURE) {
+                    goto err;
+                }
+                request_started = 1;
+                swoole_cli_self_update();
+                php_output_end_all();
+                EG(exit_status) = 0;
+                goto out;
 
 			default:
 				break;
