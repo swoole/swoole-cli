@@ -205,11 +205,13 @@ static php_cli_server_http_response_status_code_pair template_map[] = {
     {500, "<h1>%s</h1><p>The server is temporarily unavailable.</p>"},
     {501, "<h1>%s</h1><p>Request method not supported.</p>"}};
 
-#define PHP_CLI_SERVER_LOG_PROCESS 1
-#define PHP_CLI_SERVER_LOG_ERROR 2
-#define PHP_CLI_SERVER_LOG_MESSAGE 3
-
-static int php_cli_server_log_level = 3;
+enum {
+    PHP_CLI_SERVER_LOG_ERROR = 1,
+    PHP_CLI_SERVER_LOG_WARNING = 2,
+    PHP_CLI_SERVER_LOG_NOTICE = 3,
+    PHP_CLI_SERVER_LOG_INFO = 4,
+    PHP_CLI_SERVER_LOG_TRACE = 5,
+};
 
 /**
  * Close the connection when client has not sent or received data for more than 5 seconds
@@ -470,11 +472,14 @@ PHP_FUNCTION(apache_response_headers) /* {{{ */
 
 static void cli_server_init_globals(zend_cli_server_globals *cg) {
     cg->color = 0;
+    cg->log_level = PHP_CLI_SERVER_LOG_TRACE;
 }
 
 PHP_INI_BEGIN()
 STD_PHP_INI_BOOLEAN(
     "cli_server.color", "0", PHP_INI_ALL, OnUpdateBool, color, zend_cli_server_globals, cli_server_globals)
+STD_PHP_INI_ENTRY(
+    "cli_server.log_level", "5", PHP_INI_ALL, OnUpdateLong, log_level, zend_cli_server_globals, cli_server_globals)
 PHP_INI_END()
 
 static PHP_MINIT_FUNCTION(cli_server) {
@@ -730,7 +735,7 @@ static void sapi_cli_server_log_write(int type, const char *msg) /* {{{ */
 {
     char buf[52];
 
-    if (php_cli_server_log_level < type) {
+    if (CLI_SERVER_G(log_level) < type) {
         return;
     }
 
@@ -763,7 +768,7 @@ static void sapi_cli_server_log_write(int type, const char *msg) /* {{{ */
 
 static void sapi_cli_server_log_message(const char *msg, int syslog_type_int) /* {{{ */
 {
-    sapi_cli_server_log_write(PHP_CLI_SERVER_LOG_MESSAGE, msg);
+    sapi_cli_server_log_write(PHP_CLI_SERVER_LOG_WARNING, msg);
 } /* }}} */
 
 // clang-format off
@@ -1013,7 +1018,7 @@ static int php_cli_server_content_sender_pull(php_cli_server_content_sender *sen
     _nbytes_read = read(fd, chunk->data.heap.p, chunk->data.heap.len);
 #endif
     if (_nbytes_read < 0) {
-        if (php_cli_server_log_level >= PHP_CLI_SERVER_LOG_ERROR) {
+        if (CLI_SERVER_G(log_level) >= PHP_CLI_SERVER_LOG_ERROR) {
             char *errstr = get_last_error();
             php_cli_server_logf(PHP_CLI_SERVER_LOG_ERROR, "%s", errstr);
             pefree(errstr, 1);
@@ -1120,9 +1125,9 @@ static void php_cli_server_log_response(php_cli_server_client *client, int statu
 
     if (color) {
         php_cli_server_logf(
-            PHP_CLI_SERVER_LOG_MESSAGE, "\x1b[3%dm%s%s%s\x1b[0m", color, basic_buf, message_buf, error_buf);
+            PHP_CLI_SERVER_LOG_NOTICE, "\x1b[3%dm%s%s%s\x1b[0m", color, basic_buf, message_buf, error_buf);
     } else {
-        php_cli_server_logf(PHP_CLI_SERVER_LOG_MESSAGE, "%s%s%s", basic_buf, message_buf, error_buf);
+        php_cli_server_logf(PHP_CLI_SERVER_LOG_NOTICE, "%s%s%s", basic_buf, message_buf, error_buf);
     }
 
     efree(basic_buf);
@@ -1139,7 +1144,7 @@ static void php_cli_server_logf(int type, const char *format, ...) /* {{{ */
     char *buf = NULL;
     va_list ap;
 
-    if (php_cli_server_log_level < type) {
+    if (CLI_SERVER_G(log_level) < type) {
         return;
     }
 
@@ -1722,13 +1727,13 @@ static int php_cli_server_client_read_request(php_cli_server_client *client, cha
             return 0;
         }
 
-        if (php_cli_server_log_level >= PHP_CLI_SERVER_LOG_ERROR) {
+        if (CLI_SERVER_G(log_level) >= PHP_CLI_SERVER_LOG_ERROR) {
             *errstr = php_socket_strerror(err, NULL, 0);
         }
 
         return -1;
     } else if (nbytes_read == 0) {
-        if (php_cli_server_log_level >= PHP_CLI_SERVER_LOG_ERROR) {
+        if (CLI_SERVER_G(log_level) >= PHP_CLI_SERVER_LOG_ERROR) {
             *errstr = estrdup(php_cli_server_request_error_unexpected_eof);
         }
 
@@ -1737,7 +1742,7 @@ static int php_cli_server_client_read_request(php_cli_server_client *client, cha
     client->parser.data = client;
     nbytes_consumed = php_http_parser_execute(&client->parser, &settings, buf, nbytes_read);
     if (nbytes_consumed != (size_t) nbytes_read) {
-        if (php_cli_server_log_level >= PHP_CLI_SERVER_LOG_ERROR) {
+        if (CLI_SERVER_G(log_level) >= PHP_CLI_SERVER_LOG_ERROR) {
             if ((buf[0] & 0x80) /* SSLv2 */ || buf[0] == 0x16 /* SSLv3/TLSv1 */) {
                 *errstr = estrdup("Unsupported SSL request");
             } else {
@@ -1870,7 +1875,8 @@ static void php_cli_server_client_dtor(php_cli_server_client *client) /* {{{ */
 
 static void php_cli_server_close_connection(php_cli_server *server, php_cli_server_client *client) /* {{{ */
 {
-    php_cli_server_logf(PHP_CLI_SERVER_LOG_MESSAGE, "%s Closing", client->addr_str);
+    php_cli_server_logf(PHP_CLI_SERVER_LOG_INFO, "%s Closing", client->addr_str);
+    fflush(php_cli_server_log_fp);
 } /* }}} */
 
 static int php_cli_server_send_error_page(php_cli_server *server, php_cli_server_client *client, int status) /* {{{ */
@@ -2391,7 +2397,7 @@ static void php_cli_server_wait_workers(php_cli_server *server) {
         }
 
         if (found_i == -1) {
-            php_cli_server_logf(PHP_CLI_SERVER_LOG_MESSAGE, "unknown worker process[%d]", exited_worker_process);
+            php_cli_server_logf(PHP_CLI_SERVER_LOG_WARNING, "unknown worker process[%d]", exited_worker_process);
             continue;
         }
 
@@ -2410,7 +2416,7 @@ static void php_cli_server_wait_workers(php_cli_server *server) {
         } while (0);
     }
 
-    php_cli_server_logf(PHP_CLI_SERVER_LOG_PROCESS, "Server is terminated");
+    php_cli_server_logf(PHP_CLI_SERVER_LOG_WARNING, "Server is terminated");
 
     for (i = 0; i < php_cli_server_workers_max; i++) {
         kill(php_cli_server_workers[i], SIGINT);
@@ -2518,7 +2524,7 @@ static int php_cli_server_recv_event_read_request(php_cli_server *server, php_cl
             if (strcmp(errstr, php_cli_server_request_error_unexpected_eof) == 0 &&
                 client->parser.state == s_start_req) {
                 php_cli_server_logf(
-                    PHP_CLI_SERVER_LOG_MESSAGE,
+                    PHP_CLI_SERVER_LOG_WARNING,
                     "%s Closed without sending a request; it was probably just an unused speculative preconnection",
                     client->addr_str);
             } else {
@@ -2595,7 +2601,7 @@ static php_cli_server_client *php_cli_server_do_accept(php_cli_server *server) {
     struct sockaddr *sa = pemalloc(server->socklen, 1);
     client_sock = accept(server->server_sock, sa, &socklen);
     if (!ZEND_VALID_SOCKET(client_sock)) {
-        if (php_cli_server_log_level >= PHP_CLI_SERVER_LOG_ERROR && php_socket_errno() != SOCK_EINTR) {
+        if (CLI_SERVER_G(log_level) >= PHP_CLI_SERVER_LOG_ERROR && php_socket_errno() != SOCK_EINTR) {
             char *errstr = php_socket_strerror(php_socket_errno(), NULL, 0);
             php_cli_server_logf(PHP_CLI_SERVER_LOG_ERROR, "Failed to accept a client (reason: %s)", errstr);
             efree(errstr);
@@ -2619,7 +2625,7 @@ static php_cli_server_client *php_cli_server_do_accept(php_cli_server *server) {
         closesocket(client_sock);
         return NULL;
     }
-    php_cli_server_logf(PHP_CLI_SERVER_LOG_MESSAGE, "%s Accepted", client->addr_str);
+    php_cli_server_logf(PHP_CLI_SERVER_LOG_INFO, "%s Accepted", client->addr_str);
     return client;
 }
 
@@ -2631,7 +2637,7 @@ static int php_cli_server_do_event_loop(php_cli_server *server) /* {{{ */
         if (client == NULL) {
             int err = php_socket_errno();
             if (err != SOCK_EINTR) {
-                if (php_cli_server_log_level >= PHP_CLI_SERVER_LOG_ERROR) {
+                if (CLI_SERVER_G(log_level) >= PHP_CLI_SERVER_LOG_ERROR) {
                     char *errstr = php_socket_strerror(err, NULL, 0);
                     php_cli_server_logf(PHP_CLI_SERVER_LOG_ERROR, "%s", errstr);
                     efree(errstr);
@@ -2686,7 +2692,7 @@ int do_cli_server(int argc, char **argv) /* {{{ */
     if (workers) {
         php_cli_server_set_workers(workers);
     }
-    php_cli_server_log_fp = stderr;
+    php_cli_server_log_fp = stdout;
 
     while ((c = php_getopt(argc, argv, OPTIONS, &php_optarg, &php_optind, 0, 2)) != -1) {
         switch (c) {
@@ -2725,8 +2731,8 @@ int do_cli_server(int argc, char **argv) /* {{{ */
             break;
         }
         case 'q':
-            if (php_cli_server_log_level > 1) {
-                php_cli_server_log_level--;
+            if (CLI_SERVER_G(log_level) > 1) {
+                CLI_SERVER_G(log_level) = PHP_CLI_SERVER_LOG_WARNING;
             }
             break;
         }
@@ -2768,7 +2774,7 @@ int do_cli_server(int argc, char **argv) /* {{{ */
 
     {
         bool ipv6 = strchr(server.host, ':');
-        php_cli_server_logf(PHP_CLI_SERVER_LOG_PROCESS,
+        php_cli_server_logf(PHP_CLI_SERVER_LOG_WARNING,
                             "PHP %s Development Server (http://%s%s%s:%d) started",
                             PHP_VERSION,
                             ipv6 ? "[" : "",

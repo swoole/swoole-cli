@@ -25,6 +25,7 @@ extern int do_cli_server(int argc, char **argv);
 
 ZEND_BEGIN_MODULE_GLOBALS(cli_server)
 	short color;
+    zend_long log_level;
 ZEND_END_MODULE_GLOBALS(cli_server)
 
 #ifdef ZTS
