@@ -110,6 +110,8 @@ static zend_long php_cli_server_workers_max = 1;
 static FILE     *php_cli_server_log_fp;
 #endif
 
+typedef void (*php_sighandler_t)(int);
+
 typedef struct php_cli_server_request {
 	enum php_http_method request_method;
 	int protocol_version;
@@ -209,7 +211,7 @@ static php_cli_server_http_response_status_code_pair template_map[] = {
 static int php_cli_server_log_level = 3;
 
 /**
- * Close the connection when the client has not sent or received data for more than 5 seconds
+ * Close the connection when client has not sent or received data for more than 5 seconds
  */
 #define PHP_CLI_SERVER_CLIENT_TIMEOUT  5
 
@@ -228,6 +230,7 @@ static void php_cli_server_set_workers(char *workers);
 static void php_cli_server_sigint_handler(int sig);
 static void php_cli_server_close_connection(php_cli_server *server, php_cli_server_client *client);
 static void php_cli_server_client_dtor_wrapper(php_cli_server_client *p);
+static void php_cli_server_wait_workers(php_cli_server *server);
 
 ZEND_DECLARE_MODULE_GLOBALS(cli_server)
 
@@ -2108,14 +2111,14 @@ static int php_cli_server_dispatch(php_cli_server *server, php_cli_server_client
 	if (server->router || !is_static_file) {
 		if (FAILURE == php_cli_server_request_startup(server, client)) {
 			php_cli_server_request_shutdown(server, client);
-			return SUCCESS;
+			return FAILURE;
 		}
 	}
 
 	if (server->router) {
 		if (!php_cli_server_dispatch_router(server, client)) {
 			php_cli_server_request_shutdown(server, client);
-			return SUCCESS;
+			return FAILURE;
 		}
 	}
 
@@ -2126,7 +2129,7 @@ static int php_cli_server_dispatch(php_cli_server *server, php_cli_server_client
 				SG(sapi_headers).send_default_content_type = 0;
 			}
 			php_cli_server_request_shutdown(server, client);
-			return SUCCESS;
+			return FAILURE;
 		}
 	} else {
 		if (server->router) {
@@ -2143,6 +2146,8 @@ static int php_cli_server_dispatch(php_cli_server *server, php_cli_server_client
 		}
 		if (SUCCESS != php_cli_server_begin_send_static(server, client)) {
 			php_cli_server_close_connection(server, client);
+	        SG(server_context) = NULL;
+	        return FAILURE;
 		}
 		SG(server_context) = NULL;
 		return SUCCESS;
@@ -2278,7 +2283,44 @@ static char *php_cli_server_parse_addr(const char *addr, int *pport) {
 	return pestrndup(addr, end - addr, 1);
 }
 
-typedef void (*php_sighandler_t)(int);
+static void php_cli_server_startup_workers(php_cli_server *server) {
+    if (php_cli_server_workers_max == 1) {
+        return;
+    }
+
+#if HAVE_FORK
+	if (php_cli_server_workers_max > 1) {
+		zend_long php_cli_server_worker;
+
+		php_cli_server_workers = pecalloc(
+			php_cli_server_workers_max, sizeof(pid_t), 1);
+
+		php_cli_server_master = getpid();
+
+		for (php_cli_server_worker = 0;
+			 php_cli_server_worker < php_cli_server_workers_max;
+			 php_cli_server_worker++) {
+			pid_t pid = fork();
+
+			if (pid == FAILURE) {
+				/* no more forks allowed, work with what we have ... */
+				php_cli_server_workers_max =
+					php_cli_server_worker + 1;
+				return;
+			} else if (pid == SUCCESS) {
+				return;
+			} else {
+				php_cli_server_workers[php_cli_server_worker] = pid;
+			}
+		}
+		php_cli_server_wait_workers(server);
+	} else {
+		fprintf(stderr, "number of workers must be larger than 1\n");
+	}
+#else
+	fprintf(stderr, "forking is not supported on this platform\n");
+#endif
+}
 
 static php_sighandler_t php_cli_server_signal_set(int signo, php_sighandler_t handler, int restart, int mask) {
     struct sigaction act = {}, oact = {};
@@ -2342,44 +2384,6 @@ static void php_cli_server_wait_workers(php_cli_server *server) {
     }
     php_cli_server_dtor(server);
     exit(0);
-}
-
-static void php_cli_server_startup_workers(php_cli_server *server) {
-    if (php_cli_server_workers_max == 1) {
-        return;
-    }
-#if HAVE_FORK
-	if (php_cli_server_workers_max > 1) {
-		zend_long php_cli_server_worker;
-
-		php_cli_server_workers = pecalloc(
-			php_cli_server_workers_max, sizeof(pid_t), 1);
-
-		php_cli_server_master = getpid();
-
-		for (php_cli_server_worker = 0;
-			 php_cli_server_worker < php_cli_server_workers_max;
-			 php_cli_server_worker++) {
-			pid_t pid = fork();
-
-			if (pid == FAILURE) {
-				/* no more forks allowed, work with what we have ... */
-				php_cli_server_workers_max =
-					php_cli_server_worker + 1;
-				return;
-			} else if (pid == SUCCESS) {
-				return;
-			} else {
-				php_cli_server_workers[php_cli_server_worker] = pid;
-			}
-		}
-		php_cli_server_wait_workers(server);
-	} else {
-		fprintf(stderr, "number of workers must be larger than 1\n");
-	}
-#else
-	fprintf(stderr, "forking is not supported on this platform\n");
-#endif
 }
 
 static int php_cli_server_ctor(php_cli_server *server, const char *addr, const char *document_root, const char *router) /* {{{ */
@@ -2479,14 +2483,14 @@ static int php_cli_server_recv_event_read_request(php_cli_server *server, php_cl
 			efree(errstr);
 		}
 		php_cli_server_close_connection(server, client);
-		return status;
+		return FAILURE;
 	} else if (status == 1 && client->request.request_method == PHP_HTTP_NOT_IMPLEMENTED) {
 		return php_cli_server_send_error_page(server, client, 501);
 	} else if (status == 1) {
 		return php_cli_server_dispatch(server, client);
-	} else {
-	    return status;
 	}
+
+	return SUCCESS;
 } /* }}} */
 
 static int php_cli_server_send_event(php_cli_server *server, php_cli_server_client *client) /* {{{ */
@@ -2521,8 +2525,10 @@ static int php_cli_server_send_event(php_cli_server *server, php_cli_server_clie
 			php_cli_server_close_connection(server, client);
 		    return FAILURE;
 		}
+	    return SUCCESS;
+	} else {
+        return FAILURE;
 	}
-	return SUCCESS;
 }
 /* }}} */
 
@@ -2557,8 +2563,12 @@ static php_cli_server_client *php_cli_server_do_accept(php_cli_server *server) {
     if (SUCCESS != php_set_sock_blocking(client_sock, 0)) {
         pefree(sa, 1);
         closesocket(client_sock);
-        return SUCCESS;
+        return NULL;
     }
+#ifdef TCP_NODELAY
+    int sockoptval = 1;
+    setsockopt(client_sock, IPPROTO_TCP, TCP_NODELAY, (char*) &sockoptval, sizeof(sockoptval));
+#endif
     client = pemalloc(sizeof(php_cli_server_client), 1);
     if (FAILURE == php_cli_server_client_ctor(client, server, client_sock, sa, socklen)) {
         php_cli_server_logf(PHP_CLI_SERVER_LOG_ERROR, "Failed to create a new request object");
@@ -2726,7 +2736,7 @@ int do_cli_server(int argc, char **argv) /* {{{ */
 #endif
 
 #if defined(SIGPIPE)
-	signal(SIGPIPE, SIG_IGN);
+	php_cli_server_signal_set(SIGPIPE, SIG_IGN, 1, 0);
 #endif
 
 	zend_signal_init();
