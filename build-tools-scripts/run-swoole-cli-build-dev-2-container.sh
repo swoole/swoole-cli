@@ -18,6 +18,7 @@ cd ${__DIR__}
   echo $?
 }
 
+cd ${__DIR__}
 test -f swoole-cli-build-dev-2-container.txt && image=$(cat swoole-cli-build-dev-1-container.txt)
 test -f swoole-cli-build-dev-2-container.txt || image=phpswoole/swoole_cli_os:1.4
 

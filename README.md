@@ -31,6 +31,10 @@ php prepare.php +inotify +mongodb
 
 > 需要将 `swoole-cli` 的目录映射到容器的 `/work` 目录
 
+* 生成构建脚本例子[`build-tools-scripts/download-init-depend.sh`](build-tools-scripts/download-init-depend.sh)
+* 生成构建脚本例子使用代理[`build-tools-scripts/download-init-depend-use-proxy.sh`](build-tools-scripts/download-init-depend-use-proxy.sh)
+
+
 ## 准备依赖库
 
 > 静态编译 依赖库
