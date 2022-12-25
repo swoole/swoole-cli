@@ -105,7 +105,7 @@ help() {
 if [ "$1" = "docker-build" ] ;then
   sudo docker build -t phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:<?=$this->workDir?> phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> /bin/bash
+    sudo docker run -it -v $ROOT:<?=$this->workDir?> --workdir <?=$this->workDir?> phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> /bin/bash
     exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library
