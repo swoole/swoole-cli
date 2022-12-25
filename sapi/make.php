@@ -63,13 +63,13 @@ make_all_library() {
 
 config_php() {
 <?php if ( $this->disableZendOpcache == true ) : ?>
-    test -f main/main.c.save ||  cp -f main/main.c main/main.c.save
-    sed -i 's/extern zend_extension zend_extension_entry;//g' main/main.c
-    sed -i 's/zend_register_extension(&zend_extension_entry, NULL);//g' main/main.c
+    test -f main/main.c.save ||  cp -f main/main.c main/main.c.save ;
+    sed -i 's/extern zend_extension zend_extension_entry;//g' main/main.c ;
+    sed -i 's/zend_register_extension(&zend_extension_entry, NULL);//g' main/main.c ;
 <?php else : ?>
-    test -f main/main.c.save &&  cp -f main/main.c.save main/main.c
+    test -f main/main.c.save &&  cp -f main/main.c.save main/main.c ;
 <?php endif; ?>
-     test -f ./configure && rm ./configure
+     test -f ./configure && rm ./configure ;
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
     mv main/php_config.h.in /tmp/cnt
