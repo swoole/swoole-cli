@@ -43,6 +43,8 @@ class Library extends Project
     public string $configure = '';
     public string $file = '';
     public string $ldflags = '';
+    public bool   $configureBeforeCleanPackageFlag = false;
+    public string $configureBeforeScript = '';
     public string $makeOptions = '';
     public string $makeInstallOptions = '';
     public string $makeInstallDefaultOptions = 'install';
@@ -78,6 +80,18 @@ class Library extends Project
         return $this;
     }
 
+    function withConfigureBeforeCleanPackage(): static
+    {
+        $this->configureBeforeCleanPackageFlag = true ;
+        return $this;
+    }
+
+    function withConfigureBeforeScript(string $script): static
+    {
+        $this->configureBeforeScript = $script;
+        return $this;
+    }
+
     function withConfigure(string $configure): static
     {
         $this->configure = $configure;
@@ -87,6 +101,12 @@ class Library extends Project
     function withLdflags(string $ldflags): static
     {
         $this->ldflags = $ldflags;
+        return $this;
+    }
+
+    function disableDefaultLdflags(): static
+    {
+        $this->ldflags = '';
         return $this;
     }
 
@@ -121,6 +141,11 @@ class Library extends Project
         return $this;
     }
 
+    function disableDefaultPkgConfig(): static
+    {
+        $this->pkgConfig = '';
+        return $this;
+    }
     function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
@@ -158,7 +183,7 @@ class Extension extends Project
 class Preprocessor
 {
     public string $osType = 'linux';
-    public bool $disableZendOpcache = false;
+    public bool $disableZendOpcacheFlag = false;
     protected array $libraryList = [];
     protected array $extensionList = [];
     protected string $rootDir;
@@ -268,13 +293,13 @@ class Preprocessor
         return $this->osType;
     }
 
-    function setDisableZendOpcache()
+    function disableZendOpcache()
     {
         $key=array_search('opcache',$this->extEnabled);
         if($key !== false) {
             unset($this->extEnabled[$key]);
         }
-        $this->disableZendOpcache= true;
+        $this->disableZendOpcacheFlag = true;
     }
 
     function setPhpSrcDir(string $phpSrcDir)
@@ -419,7 +444,7 @@ class Preprocessor
 
         $key=array_search('opcache',$this->extEnabled);
         if(!$key) {
-            $this->disableZendOpcache= true ;
+            $this->disableZendOpcacheFlag = true ;
         }
 
         foreach ($this->extEnabled as $ext) {

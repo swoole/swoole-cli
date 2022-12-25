@@ -381,7 +381,7 @@ install_mimalloc($p);
 
 
 # 禁用zendOpcache
-//$p->setDisableZendOpcache();
+// $p->disableZendOpcache();
 $p->parseArguments($argc, $argv);
 $p->gen();
 $p->info();

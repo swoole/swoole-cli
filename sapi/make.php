@@ -26,14 +26,20 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    cd <?=$this->workDir?>/thirdparty
-    echo "build <?=$item->name?>"
-    mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
-    cd <?=$item->name?> && \
+    cd <?=$this->workDir?>/thirdparty ;
+    echo "build <?=$item->name?>" ;
+    <?php if ($item->configureBeforeCleanPackageFlag == true ): ?>
+        test -d <?=$this->workDir?>/thirdparty/<?=$item->name?> && rm -rf <?=$this->workDir?>/thirdparty/<?=$item->name?> ;
+    <?php endif;?>
+    mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> ;
+    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?> ;
+    cd <?=$item->name?> ;
+    <?php if (!empty($item->configureBeforeScript)):?>
+        <?= $item->configureBeforeScript ?> ;
+    <?php endif ;?>
     echo  "<?=$item->configure?>"
     <?php if (!empty($item->configure)): ?>
-    <?=$item->configure?> && \
+    <?=$item->configure?> ;
     <?php endif; ?>
     make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
     <?php if ($item->beforeInstallScript): ?>
@@ -62,7 +68,7 @@ make_all_library() {
 }
 
 config_php() {
-<?php if ( $this->disableZendOpcache == true ) : ?>
+<?php if ( $this->disableZendOpcacheFlag == true ) : ?>
     test -f main/main.c.save ||  cp -f main/main.c main/main.c.save ;
     sed -i 's/extern zend_extension zend_extension_entry;//g' main/main.c ;
     sed -i 's/zend_register_extension(&zend_extension_entry, NULL);//g' main/main.c ;
