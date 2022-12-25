@@ -18,6 +18,8 @@ php prepare.php +inotify +mongodb
 
 * 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
 * 可使用`+{ext}`或者`-{ext}`增减扩展
+* 准备生成构建脚本环境[`prepare-swoole-cli-build-dev-1-container`](build-tools-scripts/prepare-swoole-cli-build-dev-1-container.sh)
+* 运行生成构建脚本环境[`run-swoole-cli-build-dev-1-container`](build-tools-scripts/run-swoole-cli-build-dev-1-container)
 * 生成构建脚本例子[`build-tools-scripts/download-init-depend.sh`](build-tools-scripts/download-init-depend.sh)
 * 生成构建脚本例子使用代理[`build-tools-scripts/download-init-depend-use-proxy.sh`](build-tools-scripts/download-init-depend-use-proxy.sh)
 
