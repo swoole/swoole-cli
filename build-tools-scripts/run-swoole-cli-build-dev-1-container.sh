@@ -10,7 +10,7 @@ __PROJECT__=$(
   pwd
 )
 cd ${__DIR__}
-cd ${__PROJECT__}
+
 
 {
   docker stop swoole-cli-build-dev-1
@@ -19,8 +19,10 @@ cd ${__PROJECT__}
   echo $?
 }
 
+cd ${__DIR__}
 
-image=docker.io/phpswoole/swoole_cli_os:build-dev-1-alpine-edge
+test -f swoole-cli-build-dev-1-container.txt && image=$(cat swoole-cli-build-dev-1-container.txt)
+test -f swoole-cli-build-dev-1-container.txt || ( echo '请准备生成构建脚本环境' && exit 0 )
 
 docker run --rm --name swoole-cli-build-dev-1 -d -v ${__PROJECT__}:/work -w /work $image tail -f /dev/null
 
