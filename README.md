@@ -1,9 +1,9 @@
 # swoole-cli
 
-> 说明：需要准备2个构建环境
+> 说明：需要准备二个构建环境
 
-1. 第1个构建环境用于生成构建脚本
-1. 第2个构建环境用于静态编译本项目
+1. 第一个构建环境用于生成构建脚本
+1. 第二个构建环境用于静态编译本项目
 
 ## 生成构建脚本
 
@@ -20,6 +20,7 @@ php prepare.php +inotify +mongodb
 * 可使用`+{ext}`或者`-{ext}`增减扩展
 * 准备生成构建脚本环境[`prepare-swoole-cli-build-dev-1-container`](build-tools-scripts/prepare-swoole-cli-build-dev-1-container.sh)
 * 运行生成构建脚本环境[`run-swoole-cli-build-dev-1-container`](build-tools-scripts/run-swoole-cli-build-dev-1-container)
+* 进入容器[`connection-download-container.sh`](build-tools-scripts/connection-download-container.sh)
 * 生成构建脚本例子[`build-tools-scripts/download-init-depend.sh`](build-tools-scripts/download-init-depend.sh)
 * 生成构建脚本例子使用代理[`build-tools-scripts/download-init-depend-use-proxy.sh`](build-tools-scripts/download-init-depend-use-proxy.sh)
 
@@ -31,8 +32,10 @@ php prepare.php +inotify +mongodb
 
 > 需要将 `swoole-cli` 的目录映射到容器的 `/work` 目录
 
-* 生成构建脚本例子[`build-tools-scripts/download-init-depend.sh`](build-tools-scripts/download-init-depend.sh)
-* 生成构建脚本例子使用代理[`build-tools-scripts/download-init-depend-use-proxy.sh`](build-tools-scripts/download-init-depend-use-proxy.sh)
+* 使用容器环境
+* 准备第二阶段静态编译依赖库环境[`build-tools-scripts/prepare-swoole-cli-build-dev-2-container.sh`](build-tools-scripts/prepare-swoole-cli-build-dev-2-container.sh)
+* 运行第二阶段静态编译依赖库环境[`build-tools-scripts/run-swoole-cli-build-dev-2-container.sh`](build-tools-scripts/download-init-depend-use-proxy.sh)
+* 进入容器[`connection-build-container.sh`](build-tools-scripts/connection-build-container.sh)执行下一步
 
 
 ## 准备依赖库
