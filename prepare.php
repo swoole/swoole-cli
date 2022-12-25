@@ -180,7 +180,7 @@ function install_bzip2(Preprocessor $p)
         (new Library('bzip2', '/usr/bzip2'))
             ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
             ->withMakeOptions('PREFIX=/usr/bzip2')
-            ->withMakeInstallOptions('PREFIX=/usr/bzip2')
+            ->withMakeInstallOptions('install PREFIX=/usr/bzip2')
             ->withHomePage('https://www.sourceware.org/bzip2/')
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
     );
