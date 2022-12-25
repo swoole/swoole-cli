@@ -6,10 +6,10 @@
 set -uex
 
 PKG_CONFIG_PATH=''
-test -d /usr/lib/pkgconfig || PKG_CONFIG_PATH="/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
-test -d /usr/lib64/pkgconfig || PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH"
-test -d /usr/local/lib/pkgconfig || PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
-test -d /usr/local/lib64/pkgconfig || PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH"
+test -d /usr/lib/pkgconfig && PKG_CONFIG_PATH="/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
+test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH"
+test -d /usr/local/lib/pkgconfig && PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+test -d /usr/local/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH"
 
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=$(pwd)

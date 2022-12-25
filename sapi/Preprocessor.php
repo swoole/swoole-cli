@@ -268,13 +268,13 @@ class Preprocessor
         return $this->osType;
     }
 
-    function setDisableZendOpcache(bool $flag)
+    function setDisableZendOpcache()
     {
         $key=array_search('opcache',$this->extEnabled);
         if($key !== false) {
             unset($this->extEnabled[$key]);
         }
-        $this->disableZendOpcache=$flag;
+        $this->disableZendOpcache= true;
     }
 
     function setPhpSrcDir(string $phpSrcDir)
