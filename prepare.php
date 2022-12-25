@@ -132,7 +132,9 @@ function install_freetype(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('freetype', '/usr/freetype'))
-            ->withUrl('https://mirror.yongbok.net/nongnu/freetype/freetype-2.10.4.tar.gz')
+            // DNS 无解析 dig mirror.yongbok.net
+            //->withUrl('https://mirror.yongbok.net/nongnu/freetype/freetype-2.10.4.tar.gz')
+            ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared')
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
@@ -374,6 +376,7 @@ install_libsodium($p);
 install_libyaml($p);
 install_mimalloc($p);
 
+//$p->setDisableZendOpcache();
 $p->parseArguments($argc, $argv);
 $p->gen();
 $p->info();
