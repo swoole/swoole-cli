@@ -5,12 +5,12 @@ __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-cd ${__DIR__}
-
-__ROOT__=$(
+__PROJECT__=$(
   cd ${__DIR__}/../
   pwd
 )
+cd ${__DIR__}
+cd ${__PROJECT__}
 
 {
   docker stop swoole-cli-build-dev-2
