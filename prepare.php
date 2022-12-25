@@ -21,6 +21,9 @@ if ($p->osType == 'macos') {
     });
 }
 
+# 设置CPU核数 获取CPU核数，用于 make -j $(nproc)
+$p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
+
 // ================================================================================================
 // Library
 // ================================================================================================
@@ -375,6 +378,7 @@ install_curl($p);
 install_libsodium($p);
 install_libyaml($p);
 install_mimalloc($p);
+
 
 # 禁用zendOpcache
 //$p->setDisableZendOpcache();
