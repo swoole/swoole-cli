@@ -376,6 +376,7 @@ install_libsodium($p);
 install_libyaml($p);
 install_mimalloc($p);
 
+# 禁用zendOpcache
 //$p->setDisableZendOpcache();
 $p->parseArguments($argc, $argv);
 $p->gen();
