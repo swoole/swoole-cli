@@ -13,11 +13,14 @@ cd ${__DIR__}
 cd ${__PROJECT__}
 
 
-export http_proxy=http://127.0.0.1:1087
-export https_proxy=http://127.0.0.1:1087
+export http_proxy=http://192.168.3.26:8015
+export https_proxy=http://192.168.3.26:8015
 
 pear config-set http_proxy $http_proxy
 pecl config-show
+
+git config --global --add safe.directory '*'
+git submodule update --init --recursive
 
 # SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
 # php prepare.php  +mongodb +inotify

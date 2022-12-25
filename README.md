@@ -18,7 +18,8 @@ php prepare.php +inotify +mongodb
 
 * 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
 * 可使用`+{ext}`或者`-{ext}`增减扩展
-* 下载使用代理例子[`download-init-depend-use-proxy`](build-tools-scripts/download-init-depend-use-proxy.sh)
+* 生成构建脚本例子[`build-tools-scripts/download-init-depend.sh`](build-tools-scripts/download-init-depend.sh)
+* 生成构建脚本使用代理例子[`build-tools-scripts/download-init-depend-use-proxy.sh`](build-tools-scripts/download-init-depend-use-proxy.sh)
 
 ## 进入 Docker Bash
 

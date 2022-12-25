@@ -12,6 +12,10 @@ __PROJECT__=$(
 cd ${__DIR__}
 cd ${__PROJECT__}
 
+git config --global --add safe.directory '*'
+git submodule update --init --recursive
+
+
 # SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
 # php prepare.php  +mongodb +inotify
 php prepare.php
