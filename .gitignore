@@ -299,8 +299,10 @@ tmp-php.ini
 /make.sh
 /bin
 /pool/
+!/pool/.gitkeep
 /work/
 /thirdparty
+!/thirdparty/.gitkeep
 /usr
 /ext/redis
 /ext/memcached

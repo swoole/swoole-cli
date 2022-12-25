@@ -3,6 +3,14 @@
  * @var $this SwooleCli\Preprocessor
  */
 ?>
+set -uex
+
+PKG_CONFIG_PATH=''
+test -d /usr/lib/pkgconfig || PKG_CONFIG_PATH="/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
+test -d /usr/lib64/pkgconfig || PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH"
+test -d /usr/local/lib/pkgconfig || PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+test -d /usr/local/lib64/pkgconfig || PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH"
+
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=$(pwd)
 export CC=clang
@@ -31,7 +39,7 @@ make_<?=$item->name?>() {
     <?php if ($item->beforeInstallScript): ?>
     <?=$item->beforeInstallScript?> && \
     <?php endif; ?>
-    make install <?=$item->makeInstallOptions?> && \
+    make <?=$item->makeInstallDefaultOptions?> <?=$item->makeInstallOptions?> && \
     <?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript?> && \
     <?php endif; ?>
@@ -54,7 +62,14 @@ make_all_library() {
 }
 
 config_php() {
-    rm ./configure
+<?php if ( $this->disableZendOpcache == true ) : ?>
+    test -f main/main.c.save ||  cp -f main/main.c main/main.c.save
+    sed -i 's/extern zend_extension zend_extension_entry;//g' main/main.c
+    sed -i 's/zend_register_extension(&zend_extension_entry, NULL);//g' main/main.c
+<?php else : ?>
+    test -f main/main.c.save ||  cp -f main/main.c.save main/main.c
+<?php endif; ?>
+     test -f ./configure && rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
     mv main/php_config.h.in /tmp/cnt

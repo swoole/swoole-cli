@@ -45,6 +45,7 @@ class Library extends Project
     public string $ldflags = '';
     public string $makeOptions = '';
     public string $makeInstallOptions = '';
+    public string $makeInstallDefaultOptions = 'install';
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
     public string $pkgConfig = '';
@@ -109,6 +110,7 @@ class Library extends Project
 
     function withMakeInstallOptions(string $makeInstallOptions): static
     {
+        $this->makeInstallDefaultOptions='';
         $this->makeInstallOptions = $makeInstallOptions;
         return $this;
     }
@@ -156,6 +158,7 @@ class Extension extends Project
 class Preprocessor
 {
     public string $osType = 'linux';
+    public bool $disableZendOpcache = false;
     protected array $libraryList = [];
     protected array $extensionList = [];
     protected string $rootDir;
@@ -263,6 +266,15 @@ class Preprocessor
     function getOsType()
     {
         return $this->osType;
+    }
+
+    function setDisableZendOpcache(bool $flag)
+    {
+        $key=array_search('opcache',$this->extEnabled);
+        if($key !== false) {
+            unset($this->extEnabled[$key]);
+        }
+        $this->disableZendOpcache=$flag;
     }
 
     function setPhpSrcDir(string $phpSrcDir)
@@ -402,6 +414,11 @@ class Preprocessor
                     unset($this->extEnabled[$key]);
                 }
             }
+        }
+
+        $key=array_search('opcache',$this->extEnabled);
+        if(!$key) {
+            $this->disableZendOpcache= true ;
         }
 
         foreach ($this->extEnabled as $ext) {
