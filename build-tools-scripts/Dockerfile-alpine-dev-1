@@ -1,0 +1,18 @@
+FROM alpine:edge
+
+
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+
+RUN apk update  && apk add curl wget git   tini ca-certificates openssl openssl-dev
+
+RUN apk add --no-cache php81-dev php81-cli php81-pear php81-curl php81-openssl &&  \
+pecl channel-update https://pecl.php.net/channel.xml && pear update-channels && pecl config-show
+
+WORKDIR /work
+
+RUN rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+RUN cp -f /etc/apk/repositories.save /etc/apk/repositories
