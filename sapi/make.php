@@ -37,7 +37,7 @@ make_<?=$item->name?>() {
     <?php if (!empty($item->configureBeforeScript)):?>
         <?= $item->configureBeforeScript ?> ;
     <?php endif ;?>
-    echo  "<?=$item->configure?>"
+    echo  "<?=$item->configure?>" ;
     <?php if (!empty($item->configure)): ?>
     <?=$item->configure?> ;
     <?php endif; ?>
