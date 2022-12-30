@@ -340,10 +340,7 @@ function install_mimalloc(Preprocessor $p)
             ->withPkgName('libmimalloc')
             ->withLicense('https://github.com/microsoft/mimalloc/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withHomePage('https://microsoft.github.io/mimalloc/')
-            ->withScriptAfterInstall(implode(PHP_EOL, [
-                'export PKG_CONFIG_PATH=/usr/mimalloc/lib/pkgconfig',
-                'export EXTRA_LIBS=$(pkg-config --libs mimalloc)'
-            ]))
+            ->withLdflags('-L/usr/mimalloc/lib -lmimalloc')
     );
 }
 
