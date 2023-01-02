@@ -4,6 +4,8 @@
  */
 ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
+PKG_CONFIG_PATH='/usr/lib/pkgconfig'
+test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
@@ -20,18 +22,27 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     cd <?=$this->workDir?>/thirdparty
     echo "build <?=$item->name?>"
+    <?php if ($item->cleanBuildDirectory) : ?>
+        test -d <?= $this->workDir ?>/thirdparty/<?= $item->name ?> && rm -rf <?= $this->workDir ?>/thirdparty/<?= $item->name ?> ;
+    <?php endif; ?>
     mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
     tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
-    cd <?=$item->name?> && \
-    echo  "<?=$item->configure?>"
+    cd <?=$item->name?> ;
+    <?php if (!empty($item->beforeConfigureScript)) : ?>
+        <?= $item->beforeConfigureScript . PHP_EOL ?>
+    <?php endif; ?>
+    :;
+    echo <<'EOF'
+    <?= $item->configure . PHP_EOL ?>
+EOF
     <?php if (!empty($item->configure)): ?>
     <?=$item->configure?> && \
     <?php endif; ?>
     make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
-    <?php if ($item->beforeInstallScript): ?>
+    <?php if (!empty($item->beforeInstallScript)): ?>
     <?=$item->beforeInstallScript?> && \
     <?php endif; ?>
-    make install <?=$item->makeInstallOptions?> && \
+    make <?=$item->makeInstallDefaultOptions?> <?=$item->makeInstallOptions?> && \
     <?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript?> && \
     <?php endif; ?>
