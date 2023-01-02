@@ -89,7 +89,9 @@ function install_gmp(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('gmp', '/usr/gmp'))
-            ->withUrl('https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz')
+            //站点SSL证书过期
+            //->withUrl('https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz')
+            ->withUrl('https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.lz')
             ->withConfigure('./configure --prefix=/usr/gmp --enable-static --disable-shared')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
     );
@@ -135,7 +137,9 @@ function install_freetype(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('freetype', '/usr/freetype'))
-            ->withUrl('https://mirror.yongbok.net/nongnu/freetype/freetype-2.10.4.tar.gz')
+            // 域名 mirror.yongbok.net 无 DNS 解析
+            //->withUrl('https://mirror.yongbok.net/nongnu/freetype/freetype-2.10.4.tar.gz')
+            ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared')
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
