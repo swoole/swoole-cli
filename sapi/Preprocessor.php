@@ -4,33 +4,43 @@ namespace SwooleCli;
 
 abstract class Project
 {
+    public const LICENSE_SPEC = 0;
+
+    public const LICENSE_APACHE2 = 1;
+
+    public const LICENSE_BSD = 2;
+
+    public const LICENSE_GPL = 3;
+
+    public const LICENSE_LGPL = 4;
+
+    public const LICENSE_MIT = 5;
+
+    public const LICENSE_PHP = 6;
+
     public string $name;
+
     public string $homePage = '';
+
     public string $license = '';
+
     public string $prefix = '';
+
     public int $licenseType = self::LICENSE_SPEC;
 
-    const LICENSE_SPEC = 0;
-    const LICENSE_APACHE2 = 1;
-    const LICENSE_BSD = 2;
-    const LICENSE_GPL = 3;
-    const LICENSE_LGPL = 4;
-    const LICENSE_MIT = 5;
-    const LICENSE_PHP = 6;
-
-    function __construct(string $name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
-    function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
+    public function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
     {
         $this->license = $license;
         $this->licenseType = $licenseType;
         return $this;
     }
 
-    function withHomePage(string $homePage): static
+    public function withHomePage(string $homePage): static
     {
         $this->homePage = $homePage;
         return $this;
@@ -40,15 +50,31 @@ abstract class Project
 class Library extends Project
 {
     public string $url;
+
+    public bool $cleanBuildDirectory = false;
+
+    public string $beforeConfigureScript = '';
+
     public string $configure = '';
+
     public string $file = '';
+
     public string $ldflags = '';
+
     public string $makeOptions = '';
+
     public string $makeInstallOptions = '';
+
+    public string $makeInstallDefaultOptions = 'install';
+
     public string $beforeInstallScript = '';
+
     public string $afterInstallScript = '';
+
     public string $pkgConfig = '';
+
     public string $pkgName = '';
+
     public string $prefix = '/usr';
 
     public function __construct(string $name, string $prefix = '/usr')
@@ -57,13 +83,13 @@ class Library extends Project
         parent::__construct($name);
     }
 
-    function withUrl(string $url): static
+    public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
     }
 
-    function withPrefix(string $prefix): static
+    public function withPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
         $this->withLdflags('-L' . $prefix . '/lib');
@@ -71,57 +97,88 @@ class Library extends Project
         return $this;
     }
 
-    function withFile(string $file): static
+    public function withFile(string $file): static
     {
         $this->file = $file;
         return $this;
     }
 
-    function withConfigure(string $configure): static
+    public function withCleanBuildDirectory(): static
+    {
+        $this->cleanBuildDirectory = true;
+        return $this;
+    }
+
+    public function withScriptBeforeConfigure(string $script): static
+    {
+        $this->beforeConfigureScript = $script;
+        return $this;
+    }
+
+    public function withConfigure(string $configure): static
     {
         $this->configure = $configure;
         return $this;
     }
 
-    function withLdflags(string $ldflags): static
+    public function withLdflags(string $ldflags): static
     {
         $this->ldflags = $ldflags;
         return $this;
     }
 
-    function withMakeOptions(string $makeOptions): static
+    public function disableDefaultLdflags(): static
+    {
+        $this->ldflags = '';
+        return $this;
+    }
+
+    public function withMakeOptions(string $makeOptions): static
     {
         $this->makeOptions = $makeOptions;
         return $this;
     }
 
-    function withScriptBeforeInstall(string $script)
+    public function withScriptBeforeInstall(string $script): static
     {
         $this->beforeInstallScript = $script;
         return $this;
     }
 
-    function withScriptAfterInstall(string $script)
+    public function withScriptAfterInstall(string $script): static
     {
         $this->afterInstallScript = $script;
         return $this;
     }
 
-    function withMakeInstallOptions(string $makeInstallOptions): static
+    public function withMakeInstallOptions(string $makeInstallOptions): static
     {
+        $this->makeInstallDefaultOptions = '';
         $this->makeInstallOptions = $makeInstallOptions;
         return $this;
     }
 
-    function withPkgConfig(string $pkgConfig): static
+    public function withPkgConfig(string $pkgConfig): static
     {
         $this->pkgConfig = $pkgConfig;
         return $this;
     }
 
-    function withPkgName(string $pkgName): static
+    public function disableDefaultPkgConfig(): static
+    {
+        $this->pkgConfig = '';
+        return $this;
+    }
+
+    public function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
+        return $this;
+    }
+
+    public function disablePkgName(): static
+    {
+        $this->pkgName = '';
         return $this;
     }
 }
@@ -129,24 +186,28 @@ class Library extends Project
 class Extension extends Project
 {
     public string $url;
+
     public string $options = '';
+
     public string $peclVersion = '';
+
     public string $file = '';
+
     public string $path = '';
 
-    function withOptions(string $options): static
+    public function withOptions(string $options): static
     {
         $this->options = $options;
         return $this;
     }
 
-    function withUrl(string $url): static
+    public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
     }
 
-    function withPeclVersion(string $peclVersion): static
+    public function withPeclVersion(string $peclVersion): static
     {
         $this->peclVersion = $peclVersion;
         return $this;
@@ -156,14 +217,23 @@ class Extension extends Project
 class Preprocessor
 {
     public string $osType = 'linux';
+
     protected array $libraryList = [];
+
     protected array $extensionList = [];
+
     protected string $rootDir;
+
     protected string $libraryDir;
+
     protected string $extensionDir;
+
     protected array $pkgConfigPaths = [];
+
     protected string $phpSrcDir;
+
     protected string $dockerVersion = 'latest';
+
     /**
      * 指向 swoole-cli 所在的目录
      * $workDir/ext 存放扩展
@@ -171,9 +241,13 @@ class Preprocessor
      * 在 macOS 系统上，/usr 目录将会被替换为 $workDir/usr
      */
     protected string $workDir = '/work';
+
     protected string $extraLdflags = '';
+
     protected string $extraOptions = '';
+
     protected int $maxJob = 8;
+
     protected bool $installLibrary = true;
 
     /**
@@ -222,9 +296,10 @@ class Preprocessor
     ];
 
     protected array $endCallbacks = [];
+
     protected array $extCallbacks = [];
 
-    function __construct(string $rootPath)
+    public function __construct(string $rootPath)
     {
         $this->rootDir = $rootPath;
         $this->libraryDir = $rootPath . '/pool/lib';
@@ -255,57 +330,57 @@ class Preprocessor
         }
     }
 
-    function setOsType(string $osType)
+    public function setOsType(string $osType)
     {
         $this->osType = $osType;
     }
 
-    function getOsType()
+    public function getOsType()
     {
         return $this->osType;
     }
 
-    function setPhpSrcDir(string $phpSrcDir)
+    public function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
     }
 
-    function setDockerVersion(string $dockerVersion)
+    public function setDockerVersion(string $dockerVersion)
     {
         $this->dockerVersion = $dockerVersion;
     }
 
-    function setPrefix(string $prefix)
+    public function setPrefix(string $prefix)
     {
         $this->prefix = $prefix;
     }
 
-    function setWorkDir(string $workDir)
+    public function setWorkDir(string $workDir)
     {
         $this->workDir = $workDir;
     }
 
-    function getWorkDir()
+    public function getWorkDir()
     {
         return $this->workDir;
     }
 
-    function setExtraLdflags(string $flags)
+    public function setExtraLdflags(string $flags)
     {
         $this->extraLdflags = $flags;
     }
 
-    function setExtraOptions(string $options)
+    public function setExtraOptions(string $options)
     {
         $this->extraOptions = $options;
     }
 
-    function donotInstallLibrary()
+    public function donotInstallLibrary()
     {
         $this->installLibrary = false;
     }
 
-    function addLibrary(Library $lib)
+    public function addLibrary(Library $lib)
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
@@ -313,10 +388,16 @@ class Preprocessor
         $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
         if (empty($skip_library_download)) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
-                echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
-                echo $lib->file;
+                echo '[Library] file downloading: ' . $lib->file . PHP_EOL . 'download url: ' . $lib->url . PHP_EOL;
+                // echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
+                echo shell_exec(
+                    "curl --connect-timeout 15 --retry 5 --retry-delay 5  -Lo {$this->libraryDir}/{$lib->file} {$lib->url}"
+                );
+                echo PHP_EOL;
+                echo 'download ' . $lib->file . ' OK ' . PHP_EOL . PHP_EOL;
+                // TODO PGP  验证
             } else {
-                echo "[Library] file cached: " . $lib->file . PHP_EOL;
+                echo '[Library] file cached: ' . $lib->file . PHP_EOL;
             }
         }
 
@@ -325,13 +406,13 @@ class Preprocessor
         }
 
         if (empty($lib->license)) {
-            throw new \RuntimeException("require license");
+            throw new \RuntimeException('require license');
         }
 
         $this->libraryList[] = $lib;
     }
 
-    function addExtension(Extension $ext)
+    public function addExtension(Extension $ext)
     {
         if ($ext->peclVersion) {
             if ($ext->peclVersion == 'latest') {
@@ -350,33 +431,33 @@ class Preprocessor
             if (!is_file($ext->path)) {
                 _download:
                 $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
-                echo "pecl download $download_name\n";
-                echo `cd {$this->extensionDir} && pecl download $download_name && cd -`;
+                echo "pecl download {$download_name} " . PHP_EOL;
+                echo shell_exec("cd {$this->extensionDir} && pecl download {$download_name} && cd -");
             } else {
-                echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                echo '[Extension] file cached: ' . $ext->file . PHP_EOL;
             }
 
             $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
             if (!is_dir($dst_dir)) {
-                echo `mkdir -p $dst_dir`;
-                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+                echo shell_exec("mkdir -p {$dst_dir}");
+                echo shell_exec("tar --strip-components=1 -C {$dst_dir} -xf {$ext->path}");
             }
         }
 
         $this->extensionList[] = $ext;
     }
 
-    function addEndCallback($fn)
+    public function addEndCallback($fn)
     {
         $this->endCallbacks[] = $fn;
     }
 
-    function setExtCallback($name, $fn)
+    public function setExtCallback($name, $fn)
     {
         $this->extCallbacks[$name] = $fn;
     }
 
-    function parseArguments(int $argc, array $argv)
+    public function parseArguments(int $argc, array $argv)
     {
         /**
          * Scan and load files in directory
@@ -406,7 +487,7 @@ class Preprocessor
 
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
-                echo "unsupported extension[$ext]\n";
+                echo "unsupported extension[{$ext}]\n";
                 continue;
             }
             ($extAvailabled[$ext])($this);
@@ -416,7 +497,7 @@ class Preprocessor
         }
     }
 
-    function gen()
+    public function gen()
     {
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
@@ -436,24 +517,23 @@ class Preprocessor
 
     /**
      * make -j {$n}
-     * @param int $n
      */
-    function setMaxJob(int $n)
+    public function setMaxJob(int $n)
     {
         $this->maxJob = $n;
     }
 
-    function info()
+    public function info()
     {
         echo '==========================================================' . PHP_EOL;
-        echo "Extension count: " . count($this->extensionList) . PHP_EOL;
+        echo 'Extension count: ' . count($this->extensionList) . PHP_EOL;
         echo '==========================================================' . PHP_EOL;
         foreach ($this->extensionList as $item) {
             echo $item->name . PHP_EOL;
         }
 
         echo '==========================================================' . PHP_EOL;
-        echo "Library count: " . count($this->libraryList) . PHP_EOL;
+        echo 'Library count: ' . count($this->libraryList) . PHP_EOL;
         echo '==========================================================' . PHP_EOL;
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
