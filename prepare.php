@@ -12,6 +12,9 @@ if (!empty($argv[1])) {
     $p->setOsType(trim($argv[1]));
 }
 
+# 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
+$p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
+
 if ($p->osType == 'macos') {
     $p->setWorkDir(__DIR__);
     $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
