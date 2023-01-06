@@ -32,9 +32,9 @@ make_<?=$item->name?>() {
         <?= $item->beforeConfigureScript . PHP_EOL ?>
     <?php endif; ?>
     :;
-    echo <<'EOF'
+    cat <<'__EOF__'
     <?= $item->configure . PHP_EOL ?>
-EOF
+__EOF__
     <?php if (!empty($item->configure)): ?>
     <?=$item->configure?> && \
     <?php endif; ?>
