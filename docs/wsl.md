@@ -148,7 +148,7 @@ configure: WARNING: unrecognized options: --enable-redis, --with-imagick, --enab
 
 参考：[https://www.php.net/manual/zh/install.pecl.static.php](https://www.php.net/manual/zh/install.pecl.static.php)
 
-2.  参考步骤3中tar error错误出力检查扩展包的完整性
+2.  参考步骤3中tar error错误处理检查扩展包的完整性
 
 
 ---
