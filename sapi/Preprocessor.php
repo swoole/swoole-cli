@@ -359,8 +359,9 @@ class Preprocessor
             $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
             if (!is_dir($dst_dir)) {
                 echo `mkdir -p $dst_dir`;
-                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
+
+            echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
         }
 
         $this->extensionList[] = $ext;
