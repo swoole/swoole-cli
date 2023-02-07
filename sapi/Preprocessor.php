@@ -155,7 +155,7 @@ class Extension extends Project
 
 class Preprocessor
 {
-    public string $osType = 'linux';
+    protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
     protected string $rootDir;
@@ -255,7 +255,7 @@ class Preprocessor
         }
     }
 
-    function setOsType(string $osType)
+    protected function setOsType(string $osType)
     {
         $this->osType = $osType;
     }

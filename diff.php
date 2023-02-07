@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 $list_swoole_cli = swoole_string(`./bin/swoole-cli -m | tail -n +2 | head -n -3`)->trim()->lower()->split(PHP_EOL)
     ->remove('core');
