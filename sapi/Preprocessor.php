@@ -216,7 +216,8 @@ class Extension extends Project
 
 class Preprocessor
 {
-    public string $osType = 'linux';
+
+    protected string $osType = 'linux';
 
     protected array $libraryList = [];
 
@@ -330,7 +331,7 @@ class Preprocessor
         }
     }
 
-    public function setOsType(string $osType)
+    protected function setOsType(string $osType)
     {
         $this->osType = $osType;
     }
@@ -441,7 +442,9 @@ class Preprocessor
             if (!is_dir($dst_dir)) {
                 echo shell_exec("mkdir -p {$dst_dir}");
                 echo shell_exec("tar --strip-components=1 -C {$dst_dir} -xf {$ext->path}");
+                # echo `mkdir -p $dst_dir`;
             }
+            # echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
         }
 
         $this->extensionList[] = $ext;
