@@ -132,7 +132,7 @@ function install_freetype(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('freetype', '/usr/freetype'))
-            ->withUrl('https://mirror.yongbok.net/nongnu/freetype/freetype-2.10.4.tar.gz')
+            ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared')
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
@@ -238,7 +238,7 @@ function install_readline(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('readline', '/usr/readline'))
-            ->withUrl('ftp://ftp.cwru.edu/pub/bash/readline-8.2.tar.gz')
+            ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
             ->withConfigure('./configure --prefix=/usr/readline --enable-static --disable-shared')
             ->withPkgName('readline')
             ->withLdflags('-L/usr/readline/lib')
