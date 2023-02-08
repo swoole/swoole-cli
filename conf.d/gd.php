@@ -5,6 +5,6 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $p->addExtension((new Extension('gd'))
-        ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr')
+        ->withOptions('--enable-gd --with-jpeg=/usr/libjpeg/ --with-freetype=/usr/freetype/')
     );
 };

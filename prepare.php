@@ -293,6 +293,11 @@ function install_zip(Preprocessor $p)
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
             ->withHomePage('https://libzip.org/')
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure("
+                mkdir -p build 
+                cd build 
+            ")
             ->withConfigure(
                 '
                  cmake ..  \

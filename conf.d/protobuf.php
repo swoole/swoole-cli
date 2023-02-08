@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
 
     $p->setExtCallback('protobuf', function (Preprocessor $p) {
         // compatible with redis
-        if ($p->osType === 'macos') {
+        if ($p->getOsType() === 'macos') {
             echo `sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
             echo `find ext/protobuf/ -name \*.bak | xargs rm -f`;
         } else {
