@@ -7,12 +7,8 @@ use SwooleCli\Library;
 
 $p = new Preprocessor(__DIR__);
 $p->setPhpSrcDir(getenv('HOME') . '/.phpbrew/build/php-8.1.12');
-$p->setDockerVersion('1.4');
-if (!empty($argv[1])) {
-    $p->setOsType(trim($argv[1]));
-}
-
-if ($p->osType == 'macos') {
+$p->setDockerVersion('1.5');
+if ($p->getOsType() == 'macos') {
     $p->setWorkDir(__DIR__);
     $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
     //$p->setExtraOptions('--with-config-file-path=/usr/local/etc');
@@ -29,7 +25,7 @@ function install_openssl(Preprocessor $p)
 {
     $p->addLibrary((new Library('openssl', '/usr/openssl'))
             ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
-            ->withConfigure('./config' . ($p->osType === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=/usr/openssl')
+            ->withConfigure('./config' . ($p->getOsType() === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=/usr/openssl')
             ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withHomePage('https://www.openssl.org/')
     );
@@ -122,7 +118,7 @@ function install_libjpeg(Preprocessor $p)
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD);
-    if ($p->osType === 'macos') {
+    if ($p->getOsType() === 'macos') {
         $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
     }
     $p->addLibrary($lib);
