@@ -3,12 +3,23 @@
  * @var $this SwooleCli\Preprocessor
  */
 ?>
+PKG_CONFIG_PATH='/usr/lib/pkgconfig'
+test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
+
+cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
+# `grep "processor" /proc/cpuinfo | sort -u | wc -l`
+
+export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
+export ORIGIN_PATH=$PATH
+
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=$(pwd)
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
+export ORIGIN_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+
 OPTIONS="--disable-all \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
@@ -18,22 +29,72 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
+    <?php if ($item->skipBuildInstall == true): ?>
+        echo "skip install library <?=$item->name?>" ;
+        return 0 ;
+    <?php endif ;?>
+
     cd <?=$this->workDir?>/thirdparty
     echo "build <?=$item->name?>"
-    mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
-    cd <?=$item->name?> && \
-    echo  "<?=$item->configure?>"
+
+    <?php if ($item->cleanBuildDirectory) : ?>
+        test -d <?= $this->workDir ?>/thirdparty/<?= $item->name ?> && rm -rf <?= $this->workDir ?>/thirdparty/<?= $item->name ?><?= PHP_EOL; ?>
+    <?php endif; ?>
+
+    mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name .PHP_EOL ?>
+
+    <?php if($item->untarArchiveCommand == 'tar' ):?>
+        tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?><?= PHP_EOL; ?>
+    <?php endif ;?>
+    <?php if($item->untarArchiveCommand == 'unzip'):?>
+        unzip -d  <?=$this->workDir?>/thirdparty/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
+    <?php endif ; ?>
+
+    <?php if($item->untarArchiveCommand == 'mv'):?>
+        cp -rf  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->workDir?>/thirdparty/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
+    <?php endif ; ?>
+
+    cd <?=$item->name?> ;
+
+    <?php if (!empty($item->beforeConfigureScript)) : ?>
+        <?= $item->beforeConfigureScript . PHP_EOL ?>
+        result=$?
+        [[ $result -gt 1 ]] &&  echo "[before configure script failure]" && exit 0 && return $result ;
+    <?php endif; ?>
+
+    cat <<'__EOF__'
+    <?= $item->configure . PHP_EOL ?>
+__EOF__
+
+    <?php if (!empty($item->configure)): ?>
+        <?=$item->configure . PHP_EOL ?>
+        result=$?
+        [[ $result -ne 0 ]] &&  echo "[configure failure]" && exit 0 &&  return $result ;
+    <?php endif; ?>
+
     <?php if (!empty($item->configure)): ?>
     <?=$item->configure?> && \
     <?php endif; ?>
-    make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
-    <?php if ($item->beforeInstallScript): ?>
-    <?=$item->beforeInstallScript?> && \
+
+    make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
+    result=$?
+    [[ $result -ne 0 ]] && echo "[make failure]" && exit 0 &&  return $result ;
+
+
+    <?php if (!empty($item->beforeInstallScript)): ?>
+        <?=$item->beforeInstallScript . PHP_EOL ?>
+        result=$?
+        [[ $result -ne 0 ]] &&  echo "[before install script  failure]" && exit 0 &&  return $result ;
     <?php endif; ?>
-    make install <?=$item->makeInstallOptions?> && \
+
+    make  <?=$item->makeInstallOptions . PHP_EOL?>
+    result=$?
+    [[ $result -ne 0 ]] &&  echo "[make install failure]" && exit 0 &&   return $result;
+
     <?php if ($item->afterInstallScript): ?>
-    <?=$item->afterInstallScript?> && \
+        <?=$item->afterInstallScript . PHP_EOL ?>
+        result=$?
+        [[ $result -gt 1 ]] &&  echo "[after install script  failure]" && exit 0 &&  return $result;
     <?php endif; ?>
     cd -
 }
@@ -49,12 +110,12 @@ clean_<?=$item->name?>() {
 
 make_all_library() {
 <?php foreach ($this->libraryList as $item) : ?>
-    make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
+    make_<?= $item->name ?> && [[ $? -eq 0 ]] && echo "[SUCCESS] make <?= $item->name ?>"
 <?php endforeach; ?>
 }
 
 config_php() {
-    rm ./configure
+test -f ./configure && rm ./configure ;
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
     mv main/php_config.h.in /tmp/cnt

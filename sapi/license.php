@@ -7,6 +7,9 @@ echo "License\n---------------------------------------------------------\n";
 echo "musl-libc: http://git.musl-libc.org/cgit/musl/tree/COPYRIGHT\n";
 
 foreach ($this->libraryList as $item) {
+    if ($item->skipBuildLicense || $item->skipBuildInstall ||  empty($item->license)) {
+        continue;
+    }
     echo "{$item->name}: {$item->license}\n";
 }
 

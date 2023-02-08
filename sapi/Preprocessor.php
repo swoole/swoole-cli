@@ -10,13 +10,15 @@ abstract class Project
     public string $prefix = '';
     public int $licenseType = self::LICENSE_SPEC;
 
-    const LICENSE_SPEC = 0;
-    const LICENSE_APACHE2 = 1;
-    const LICENSE_BSD = 2;
-    const LICENSE_GPL = 3;
-    const LICENSE_LGPL = 4;
-    const LICENSE_MIT = 5;
-    const LICENSE_PHP = 6;
+    public const LICENSE_SPEC = 0;
+    public const LICENSE_APACHE2 = 1;
+    public const LICENSE_BSD = 2;
+    public const LICENSE_GPL = 3;
+    public const LICENSE_LGPL = 4;
+    public const LICENSE_MIT = 5;
+    public const LICENSE_PHP = 6;
+
+    public string $manual = '';
 
     function __construct(string $name)
     {
@@ -35,21 +37,37 @@ abstract class Project
         $this->homePage = $homePage;
         return $this;
     }
+
+    public function withManual(string $manual): static
+    {
+        $this->manual = $manual;
+        return $this;
+    }
 }
 
 class Library extends Project
 {
     public string $url;
+
     public string $configure = '';
+
     public string $file = '';
+
     public string $ldflags = '';
     public string $makeOptions = '';
-    public string $makeInstallOptions = '';
+    public string $makeInstallOptions = 'install';
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
     public string $pkgConfig = '';
     public string $pkgName = '';
+
     public string $prefix = '/usr';
+    public bool $skipBuildLicense = false;
+    public bool $skipBuildInstall = false;
+    public bool $cleanBuildDirectory = false;
+    public string $untarArchiveCommand = 'tar';
+    public string $beforeConfigureScript = '';
+    public string $binPath = '';
 
     public function __construct(string $name, string $prefix = '/usr')
     {
@@ -122,6 +140,59 @@ class Library extends Project
     function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
+        return $this;
+    }
+
+    public function withCleanBuildDirectory(): static
+    {
+        $this->cleanBuildDirectory = true;
+        return $this;
+    }
+
+    public function withSkipBuildInstall(): static
+    {
+        $this->skipBuildInstall = true;
+        $this->skipBuildLicense = true;
+        $this->withBinPath('');
+        $this->disableDefaultPkgConfig();
+        $this->disablePkgName();
+        $this->disableDefaultLdflags();
+        return $this;
+    }
+
+    public function withUntarArchiveCommand(string $command): static
+    {
+        $this->untarArchiveCommand = $command;
+        return $this;
+    }
+
+    public function withScriptBeforeConfigure(string $script): static
+    {
+        $this->beforeConfigureScript = $script;
+        return $this;
+    }
+
+    public function disableDefaultLdflags(): static
+    {
+        $this->ldflags = '';
+        return $this;
+    }
+
+    public function withBinPath(string $path): static
+    {
+        $this->binPath = $path;
+        return $this;
+    }
+
+    public function disableDefaultPkgConfig(): static
+    {
+        $this->pkgConfig = '';
+        return $this;
+    }
+
+    public function disablePkgName(): static
+    {
+        $this->pkgName = '';
         return $this;
     }
 }
@@ -223,6 +294,7 @@ class Preprocessor
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
+    protected array $binPaths = [];
 
     function __construct(string $rootPath)
     {
@@ -313,8 +385,13 @@ class Preprocessor
         $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
         if (empty($skip_library_download)) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
-                echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
-                echo $lib->file;
+                # echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
+                # echo $lib->file;
+                echo '[Library] file downloading: ' . $lib->file . PHP_EOL . 'download url: ' . $lib->url . PHP_EOL;
+                `curl --connect-timeout 15 --retry 5 --retry-delay 5  -Lo {$this->libraryDir}/{$lib->file} '{$lib->url}'`;
+                echo PHP_EOL;
+                echo 'download ' . $lib->file . ' OK ' . PHP_EOL . PHP_EOL;
+                // TODO PGP  验证
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -322,6 +399,10 @@ class Preprocessor
 
         if (!empty($lib->pkgConfig)) {
             $this->pkgConfigPaths[] = $lib->pkgConfig;
+        }
+
+        if (!empty($lib->binPath)) {
+            $this->binPaths[] = $lib->binPath;
         }
 
         if (empty($lib->license)) {
@@ -349,9 +430,27 @@ class Preprocessor
 
             if (!is_file($ext->path)) {
                 _download:
-                $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
-                echo "pecl download $download_name\n";
-                echo `cd {$this->extensionDir} && pecl download $download_name && cd -`;
+                # $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
+                # echo "curl download {$download_name} " . PHP_EOL;
+                # echo `cd {$this->extensionDir} && pecl download $download_name && cd -`;
+                /*
+                 * 不使用 pecl 下载扩展
+                 * curl -lO https://pecl.php.net/get/redis
+                 * curl -lO https://pecl.php.net/get/redis-5.3.7.tgz
+                 */
+                $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
+                $download_url = '';
+                $download_name = '';
+                if ($ext->peclVersion == 'latest') {
+                    $download_name = $ext->name;
+                    $download_url = "https://pecl.php.net/get/" . $download_name;
+                } else {
+                    $download_name = $ext->name . '-' . $ext->peclVersion . '.tgz';
+                    $download_url = "https://pecl.php.net/get/" . $ext->name . '-' . $ext->peclVersion . '.tgz';
+                }
+                echo "curl downloading {$download_name} " . PHP_EOL;
+                echo `cd {$this->extensionDir} && curl --user-agent '{$userAgent} --connect-timeout 15 --retry 5 --retry-delay 5  -LO '{$download_url}' && cd -`;
+                echo 'download ' . $ext->file . ' OK ' . PHP_EOL . PHP_EOL;
             } else {
                 echo "[Extension] file cached: " . $ext->file . PHP_EOL;
             }
@@ -361,7 +460,11 @@ class Preprocessor
                 echo `mkdir -p $dst_dir`;
             }
 
-            echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+            # echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+            $isDirEmpty = count(glob("{$dst_dir}/*")) == 0 ? true : false;
+            if ($isDirEmpty) {
+                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+            }
         }
 
         $this->extensionList[] = $ext;
@@ -421,6 +524,8 @@ class Preprocessor
     {
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+        $this->binPaths[] = '$PATH';
+        $this->binPaths = array_unique($this->binPaths);
 
         ob_start();
         include __DIR__ . '/make.php';
@@ -429,6 +534,10 @@ class Preprocessor
         ob_start();
         include __DIR__ . '/license.php';
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
+
+        ob_start();
+        include __DIR__ . '/credits.php';
+        file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
