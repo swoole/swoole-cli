@@ -92,9 +92,9 @@ function install_imagemagick(Preprocessor $p)
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-19.tar.gz')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
             ->withConfigure('
-            ./configure \
-            --prefix=/usr/imagemagick \
-             --enable-static\
+              ./configure \
+              --prefix=/usr/imagemagick \
+              --enable-static\
               --disable-shared \
               --with-zip=no \
               --with-fontconfig=no \
@@ -136,7 +136,6 @@ function install_giflib(Preprocessor $p)
             ->withScriptBeforeConfigure('sed -i "s@PREFIX = /usr/local@PREFIX = /usr/giflib@" Makefile')
             //->withMakeOptions('libgif.a')
             ->withMakeOptions('all')
-            ->withMakeInstallOptions("install")
             ->withLdflags('-L/usr/giflib/lib')
             ->disableDefaultPkgConfig()
     );
@@ -437,9 +436,9 @@ function install_brotli(Preprocessor $p)
             ->withConfigure(
                 "
                  cmake . -DCMAKE_BUILD_TYPE=Release \
-                -DBUILD_SHARED_LIBS=OFF \
-                -DCMAKE_INSTALL_PREFIX=/usr/brotli
-            "
+                 -DBUILD_SHARED_LIBS=OFF \
+                 -DCMAKE_INSTALL_PREFIX=/usr/brotli
+                "
             )
             ->withScriptAfterInstall(
                 '
@@ -528,10 +527,10 @@ function install_pgsql(Preprocessor $p)
             )
             ->withConfigure(
                 '
-           sed -i "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
+            sed -i "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
   
-           # 替换指定行内容
-           sed -i "102c all: all-lib" src/interfaces/libpq/Makefile
+            # 替换指定行内容
+            sed -i "102c all: all-lib" src/interfaces/libpq/Makefile
            
             export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
             
