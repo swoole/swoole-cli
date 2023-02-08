@@ -458,14 +458,12 @@ class Preprocessor
             }
 
             $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-            if (!is_dir($dst_dir)) {
+            if (is_file($ext->path)) {
                 echo `mkdir -p $dst_dir`;
-            }
-
-            # echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
-            $isDirEmpty = count(glob("{$dst_dir}/*")) == 0 ? true : false;
-            if (!$isDirEmpty) {
-                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+                //扩展目录不存在指定扩展的文件夹，则解压扩展包到扩展目录
+                if (!(new \FilesystemIterator($dst_dir))->valid()) {
+                    echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+                }
             }
         }
 
