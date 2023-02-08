@@ -84,7 +84,7 @@ __EOF__
         [[ $result -ne 0 ]] &&  echo "[before install script  failure]" && exit 0 &&  return $result ;
     <?php endif; ?>
 
-    make  <?=$item->makeInstallOptions . PHP_EOL?>
+    make  <?= empty($item->makeInstallOptions)? "install" : $item->makeInstallOptions . PHP_EOL ?> <?= PHP_EOL ?>
     result=$?
     [[ $result -ne 0 ]] &&  echo "[make install failure]" && exit 0 &&   return $result;
 

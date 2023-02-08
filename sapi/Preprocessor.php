@@ -55,7 +55,7 @@ class Library extends Project
 
     public string $ldflags = '';
     public string $makeOptions = '';
-    public string $makeInstallOptions = 'install';
+    public string $makeInstallOptions = '';
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
     public string $pkgConfig = '';
