@@ -3,6 +3,8 @@
  * @var $this SwooleCli\Preprocessor
  */
 ?>
+#!/bin/env sh
+set -uex
 PKG_CONFIG_PATH='/usr/lib/pkgconfig'
 test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 
@@ -72,14 +74,9 @@ __EOF__
         [[ $result -ne 0 ]] &&  echo "[configure failure]" && exit 0 &&  return $result ;
     <?php endif; ?>
 
-    <?php if (!empty($item->configure)): ?>
-    <?=$item->configure?> && \
-    <?php endif; ?>
-
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result=$?
     [[ $result -ne 0 ]] && echo "[make failure]" && exit 0 &&  return $result ;
-
 
     <?php if (!empty($item->beforeInstallScript)): ?>
         <?=$item->beforeInstallScript . PHP_EOL ?>
