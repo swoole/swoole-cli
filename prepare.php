@@ -179,7 +179,7 @@ function install_freetype(Preprocessor $p)
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
             ->withConfigure("
-                            export ZLIB_CFLAGS=$(pkg-config --cflags zlib) ;
+                export ZLIB_CFLAGS=$(pkg-config --cflags zlib) ;
                 export ZLIB_LIBS=$(pkg-config --libs zlib) ;
 
                 export BZIP2_CFLAGS='-I/usr/bzip2/include'
