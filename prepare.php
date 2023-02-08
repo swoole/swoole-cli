@@ -643,6 +643,7 @@ function install_php_internal_extensions($p)
             ->disablePkgName()
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
+            ->withSkipBuildLicense()
 
     );
 

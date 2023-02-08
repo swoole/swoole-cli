@@ -171,7 +171,11 @@ class Library extends Project
         $this->beforeConfigureScript = $script;
         return $this;
     }
-
+    public function withSkipBuildLicense(): static
+    {
+        $this->skipBuildLicense = true;
+        return $this;
+    }
     public function disableDefaultLdflags(): static
     {
         $this->ldflags = '';
