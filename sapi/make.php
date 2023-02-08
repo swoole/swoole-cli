@@ -112,7 +112,21 @@ make_all_library() {
 }
 
 config_php() {
-test -f ./configure && rm ./configure ;
+    export  ONIG_CFLAGS=$(pkg-config --cflags  --static oniguruma) ;
+    export  ONIG_LIBS=$(pkg-config --libs  --static oniguruma) ;
+
+    export  LIBSODIUM_CFLAGS=$(pkg-config --cflags  --static libsodium) ;
+    export  LIBSODIUM_LIBS=$(pkg-config --libs  --static libsodium) ;
+
+    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
+    export   LIBZIP_LIBS=$(pkg-config --libs --static libzip) ;
+
+    export  LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
+    export  LIBPQ_LIBS=$(pkg-config  --libs  --static       libpq)
+
+    export  CPPFLAGS=$(pkg-config  --cflags --static  libpq ncurses readline libcares libffi)
+    export  LIBS=$(pkg-config  --libs --static   libpq ncurses readline libcares libffi)
+    test -f ./configure && rm ./configure ;
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
     mv main/php_config.h.in /tmp/cnt
