@@ -448,8 +448,10 @@ class Preprocessor
                     $download_name = $ext->name . '-' . $ext->peclVersion . '.tgz';
                     $download_url = "https://pecl.php.net/get/" . $ext->name . '-' . $ext->peclVersion . '.tgz';
                 }
-                echo "curl downloading {$download_name} " . PHP_EOL;
-                echo `cd {$this->extensionDir} && curl --user-agent '{$userAgent} --connect-timeout 15 --retry 5 --retry-delay 5  -LO '{$download_url}' && cd -`;
+                echo "curl downloading {$download_name} dongload link $download_url" . PHP_EOL;
+                $cmd="cd {$this->extensionDir} && curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -LO '{$download_url}' && cd -";
+                echo $cmd;
+                `$cmd`;
                 echo 'download ' . $ext->file . ' OK ' . PHP_EOL . PHP_EOL;
             } else {
                 echo "[Extension] file cached: " . $ext->file . PHP_EOL;
@@ -462,7 +464,7 @@ class Preprocessor
 
             # echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             $isDirEmpty = count(glob("{$dst_dir}/*")) == 0 ? true : false;
-            if ($isDirEmpty) {
+            if (!$isDirEmpty) {
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
         }
