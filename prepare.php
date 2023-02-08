@@ -610,6 +610,40 @@ function install_libffi($p)
     );
 }
 
+function install_php_internal_extensions($p)
+{
+    $workDir=$p->getWorkDir();;
+    $p->addLibrary(
+        (new Library('php_internal_extension'))
+            ->withHomePage('https://www.php.net/')
+            ->withLicense('http://github.com/libffi/libffi/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
+            ->withFile('php-8.1.12.tar.gz')
+            ->withManual('https://www.php.net/docs.php')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                "
+                    pwd
+                    test -d {$workDir}/ext/ffi && rm -rf {$workDir}/ext/ffi
+                    cp -rf  ext/ffi {$workDir}/ext/
+                    
+                    test -d {$workDir}/ext/pdo_pgsql && rm -rf {$workDir}/ext/pdo_pgsql
+                    cp -rf  ext/pdo_pgsql {$workDir}/ext/
+                    
+                    test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
+                    cp -rf  ext/pgsql {$workDir}/ext/
+                    
+                    return 0
+               "
+            )
+            ->disablePkgName()
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+
+    );
+
+}
+
 install_libiconv($p);
 install_openssl($p);
 install_libxml2($p);
@@ -638,6 +672,7 @@ install_libyaml($p);
 install_mimalloc($p);
 install_pgsql($p);
 install_libffi($p);
+install_php_internal_extensions($p);
 $p->parseArguments($argc, $argv);
 $p->gen();
 $p->info();

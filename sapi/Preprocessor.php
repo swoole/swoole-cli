@@ -337,9 +337,19 @@ class Preprocessor
         return $this->osType;
     }
 
+    public function getRootDir()
+    {
+        return $this->rootDir;
+    }
+
     function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
+    }
+
+    public function getPhpSrcDir()
+    {
+        return $this->phpSrcDir ;
     }
 
     function setDockerVersion(string $dockerVersion)
