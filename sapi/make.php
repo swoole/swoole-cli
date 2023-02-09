@@ -124,6 +124,9 @@ config_php() {
     export  LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
     export  LIBPQ_LIBS=$(pkg-config  --libs  --static       libpq)
 
+    export   XSL_CFLAGS=$(pkg-config --cflags  --static libxslt) ;
+    export   XSL_LIBS=$(pkg-config --libs  --static libxslt) ;
+
     export  CPPFLAGS=$(pkg-config  --cflags --static  libpq ncurses readline libcares libffi)
     export  LIBS=$(pkg-config  --libs --static   libpq ncurses readline libcares libffi)
     test -f ./configure && rm ./configure ;
