@@ -298,9 +298,12 @@ tmp-php.ini
 /.vscode
 /make.sh
 /bin
+!/bin/.gitkeep
 /pool/
+!/pool/.gitkeep
 /work/
 /thirdparty
+!/thirdparty/.gitkeep
 /usr
 /ext/redis
 /ext/memcached
