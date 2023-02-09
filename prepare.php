@@ -614,7 +614,7 @@ function install_libffi($p)
     );
 }
 
-function install_php_internal_extensions($p)
+function install_php_internal_extension($p)
 {
     $workDir=$p->getWorkDir();;
     $p->addLibrary(
@@ -677,7 +677,7 @@ install_libyaml($p);
 install_mimalloc($p);
 install_pgsql($p);
 install_libffi($p);
-install_php_internal_extensions($p);
+install_php_internal_extension($p);
 $p->parseArguments($argc, $argv);
 $p->gen();
 $p->info();
