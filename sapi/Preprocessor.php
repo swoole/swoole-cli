@@ -321,9 +321,12 @@ class Preprocessor
             default:
             case 'Linux':
                 $this->setOsType('linux');
+                $this->setMaxJob(`nproc 2> /dev/null`);
+                //`grep "processor" /proc/cpuinfo | sort -u | wc -l`
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
+                $this->setMaxJob(`sysctl -n hw.ncpu`);
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -401,7 +404,7 @@ class Preprocessor
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 # echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
                 # echo $lib->file;
-                echo '[Library] file downloading: ' . $lib->file . PHP_EOL . 'download url: ' . $lib->url . PHP_EOL;
+                echo '[Library] file download: ' . $lib->file . PHP_EOL . 'download url: ' . $lib->url . PHP_EOL;
                 `curl --connect-timeout 15 --retry 5 --retry-delay 5  -Lo {$this->libraryDir}/{$lib->file} '{$lib->url}'`;
                 echo PHP_EOL;
                 echo 'download ' . $lib->file . ' OK ' . PHP_EOL . PHP_EOL;
