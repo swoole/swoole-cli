@@ -60,8 +60,8 @@ make_<?=$item->name?>() {
 
     <?php if (!empty($item->beforeConfigureScript)) : ?>
         <?= $item->beforeConfigureScript . PHP_EOL ?>
-        result=$?
-        [[ $result -gt 1 ]] &&  echo "[before configure script failure]" && exit 0 && return $result ;
+        result_code=$?
+        [[ $result_code -gt 1 ]] &&  echo "[before configure script failure]" && exit $result_code;
     <?php endif; ?>
 
     cat <<'__EOF__'
@@ -70,28 +70,28 @@ __EOF__
 
     <?php if (!empty($item->configure)): ?>
         <?=$item->configure . PHP_EOL ?>
-        result=$?
-        [[ $result -ne 0 ]] &&  echo "[configure failure]" && exit 0 &&  return $result ;
+        result_code=$?
+        [[ $result_code -ne 0 ]] &&  echo "[configure failure]" && exit $result_code;
     <?php endif; ?>
 
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
-    result=$?
-    [[ $result -ne 0 ]] && echo "[make failure]" && exit 0 &&  return $result ;
+    result_code=$?
+    [[ $result_code -ne 0 ]] && echo "[make failure]" && exit $result_code;
 
     <?php if (!empty($item->beforeInstallScript)): ?>
         <?=$item->beforeInstallScript . PHP_EOL ?>
-        result=$?
-        [[ $result -ne 0 ]] &&  echo "[before install script  failure]" && exit 0 &&  return $result ;
+        result_code=$?
+        [[ $result_code -ne 0 ]] &&  echo "[before install script  failure]" && exit $result_code;
     <?php endif; ?>
 
     make  <?= empty($item->makeInstallOptions)? "install" : $item->makeInstallOptions . PHP_EOL ?> <?= PHP_EOL ?>
-    result=$?
-    [[ $result -ne 0 ]] &&  echo "[make install failure]" && exit 0 &&   return $result;
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[make install failure]" && exit $result_code;
 
     <?php if ($item->afterInstallScript): ?>
         <?=$item->afterInstallScript . PHP_EOL ?>
-        result=$?
-        [[ $result -gt 1 ]] &&  echo "[after install script  failure]" && exit 0 &&  return $result;
+        result_code=$?
+        [[ $result_code -gt 1 ]] &&  echo "[after install script  failure]" && exit $result_code;
     <?php endif; ?>
     cd -
 }
