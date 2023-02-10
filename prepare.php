@@ -235,7 +235,7 @@ function install_zlib(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('zlib'))
-            ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
+            ->withUrl('https://www.zlib.net/zlib-1.2.13.tar.gz')
             ->withHomePage('https://zlib.net/')
             ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
             ->withConfigure('./configure --prefix=/usr/zlib --static')
