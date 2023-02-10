@@ -845,6 +845,14 @@ install_php_internal_extension($p);
 # 本项目 swoole 也是必装扩展，否则 sh make.sh archive 无法打包
 # php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64 或者 /usr/lib64
 
+/**
+ * 开始预处理之前，需要特别设置的地方
+
+    LIBS=$(pkg-config  --libs --static   libpq libcares libffi)
+    export LIBS="$LIBS -L/usr/lib -lstdc++"
+
+ */
+
 $p->parseArguments($argc, $argv);
 $p->gen();
 $p->info();
