@@ -812,10 +812,10 @@ install_giflib($p);
 install_libpng($p);
 install_libjpeg($p);
 install_harfbuzz($p);
-install_freetype($p); //需要 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz 静态库 (HarfBuzz不打算安装）
+install_freetype($p); //依赖 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz (暂不启用)
 install_libwebp($p);
 install_sqlite3($p);
-install_icu($p); // 默认跳过安装，默认使用系统提供的静态库
+install_icu($p); // // 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
 install_oniguruma($p);
 install_liblz4($p);
 install_liblzma($p);
@@ -823,13 +823,13 @@ install_libzstd($p); //zstd 依赖 lz4
 install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma zstd不打算安装）
 install_brotli($p);
 install_cares($p);
-install_readline($p);// 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录暂未解决）
-install_ncurses($p); // 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录暂未解决）
+install_readline($p);// 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
+install_ncurses($p); // 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
 //install_libedit($p);
 install_imagemagick($p);
-install_libidn2($p);  //(HarfBuzz不打算安装）
-install_nghttp2($p);  //(HarfBuzz不打算安装）
-install_curl($p); //curl 依赖 idn idn2 http2 依赖
+install_libidn2($p);  //默认跳过安装
+install_nghttp2($p);  //默认跳过安装
+install_curl($p); //curl 依赖 brotli(暂不启用) zstd(暂不启用) idn(暂不启用) idn2(暂不启用) nghttp2(暂不启用) nghttp3(暂不启用)
 install_libsodium($p);
 install_libyaml($p);
 install_mimalloc($p);
