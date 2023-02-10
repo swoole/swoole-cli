@@ -836,6 +836,15 @@ install_mimalloc($p);
 install_pgsql($p);
 install_libffi($p);
 install_php_internal_extension($p);
+
+# 扩展 mbstring 依赖 oniguruma 库
+# 扩展 intl 依赖 ICU 库
+# 扩展 gd 依赖 freetype 库 , freetype 依赖 zlib bzip2 libpng  brotli 等库
+# 扩展 mongodb 依赖 openssl, zlib ICU 等库
+# 本项目 opcache 是必装扩展，否则编译报错，不想启用，需要修改源码: main/main.c
+# 本项目 swoole 也是必装扩展，否则 sh make.sh archive 无法打包
+# php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64 或者 /usr/lib64
+
 $p->parseArguments($argc, $argv);
 $p->gen();
 $p->info();
