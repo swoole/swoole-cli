@@ -649,29 +649,187 @@ function install_php_internal_extension($p)
 
 }
 
-install_libiconv($p);
+function install_liblz4(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('liblz4'))
+            ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
+            ->withFile('lz4-v1.9.4.tar.gz')
+            ->withPkgName('liblz4')
+            ->withScriptBeforeConfigure("test -d /usr/liblz4/ && rm -rf /usr/liblz4/ ;")
+            ->withMakeInstallOptions("prefix=/usr/liblz4/ install ")
+            ->withPkgConfig('/usr/liblz4/lib/pkgconfig')
+            ->withLdflags('-L/usr/liblz4/lib')
+            ->withHomePage('https://github.com/lz4/lz4.git')
+            ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_GPL)
+    );
+}
+
+function install_liblzma(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('liblzma'))
+            ->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
+            ->withFile('xz-5.2.9.tar.gz')
+            ->withConfigure('./configure --prefix=/usr/liblzma/ --enable-static  --disable-shared --disable-doc')
+            ->withPkgName('liblzma')
+            ->withPkgConfig('/usr/liblzma/lib/pkgconfig')
+            ->withLdflags('-L/usr/liblzma/lib')
+            ->withHomePage('https://tukaani.org/xz/')
+            ->withLicense('https://git.tukaani.org/?p=xz.git;a=blob;f=COPYING', Library::LICENSE_LGPL)
+    );
+}
+
+function install_libzstd(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('libzstd'))
+            ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
+            ->withFile('zstd-1.5.2.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                '
+            test -d /usr/libzstd/ && rm -rf /usr/libzstd/
+            mkdir -p build/cmake/builddir
+            '
+            )
+            ->withConfigure(
+                '
+            cd build/cmake/builddir
+            # cmake -LH ..
+            cmake .. \
+            -DCMAKE_INSTALL_PREFIX=/usr/libzstd/ \
+            -DZSTD_BUILD_STATIC=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DZSTD_BUILD_CONTRIB=ON \
+            -DZSTD_BUILD_PROGRAMS=OFF \
+            -DZSTD_BUILD_SHARED=OFF \
+            -DZSTD_BUILD_TESTS=OFF \
+            -DZSTD_LEGACY_SUPPORT=ON \
+            \
+            -DZSTD_ZLIB_SUPPORT=ON \
+            -DZLIB_INCLUDE_DIR=/usr/zlib/include \
+            -DZLIB_LIBRARY=/usr/zlib/lib \
+            \
+            -DZSTD_LZ4_SUPPORT=ON \
+            -DLIBLZ4_INCLUDE_DIR=/usr/liblz4/include \
+            -DLIBLZ4_LIBRARY=/usr/liblz4/lib \
+            \
+            -DZSTD_LZMA_SUPPORT=ON \
+            -DLIBLZMA_LIBRARY=/usr/liblzma/lib \
+            -DLIBLZMA_INCLUDE_DIR=/usr/liblzma/include \
+            -DLIBLZMA_HAS_AUTO_DECODER=ON\
+            -DLIBLZMA_HAS_EASY_ENCODER=ON \
+            -DLIBLZMA_HAS_LZMA_PRESET=ON
+            '
+            )
+            ->withMakeOptions('lib')
+            ->withMakeInstallOptions('install PREFIX=/usr/libzstd/')
+            ->withPkgName('libzstd')
+            ->withPkgConfig('/usr/libzstd/lib/pkgconfig')
+            ->withLdflags('-L/usr/libzstd/lib')
+            ->withHomePage('https://github.com/facebook/zstd')
+            ->withLicense('https://github.com/facebook/zstd/blob/dev/COPYING', Library::LICENSE_GPL)
+    );
+}
+
+function install_harfbuzz(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('harfbuzz', '/usr/brotli'))
+
+            ->withLicense('https://github.com/harfbuzz/harfbuzz/blob/main/COPYING', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/harfbuzz/harfbuzz.git')
+            ->withUrl('https://github.com/harfbuzz/harfbuzz/archive/refs/tags/6.0.0.tar.gz')
+            ->withFile('harfbuzz-6.0.0.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure('test -d /usr/harfbuzz/ && rm -rf /usr/harfbuzz/ ')
+            ->withConfigure(
+                "
+                ls -lh
+                meson help
+                meson setup --help
+
+                meson setup  build \
+                --backend=ninja \
+                --prefix=/usr/harfbuzz \
+                --default-library=static \
+                -D freetype=disabled \
+                -D tests=disabled \
+                -D docs=disabled  \
+                -D benchmark=disabled
+
+                meson compile -C build
+                # ninja -C builddir
+                meson install -C build
+                # ninja -C builddir install
+            "
+            )
+            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
+            ->withPkgConfig('/usr/harfbuzz/lib/pkgconfig')
+            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
+            ->withLdflags('-L/usr/harfbuzz/lib')
+            ->withSkipBuildInstall()
+    );
+}
+
+
+function install_libidn2(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('libidn2', '/usr/libidn2'))
+            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
+            ->withPkgConfig('')
+            ->withLdflags('-L/usr/libidn2/lib')
+            ->withConfigure('./configure --prefix=/usr/libidn2 enable_static=yes enable_shared=no')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
+            ->withSkipBuildInstall()
+    );
+}
+
+function install_nghttp2(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('nghttp2', '/usr/nghttp2'))
+            ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
+            ->withPkgConfig('')
+            ->withLdflags('-L/usr/nghttp2/lib')
+            ->withConfigure('./configure --prefix=/usr/nghttp2 enable_static=yes enable_shared=no')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
+            ->withSkipBuildInstall()
+    );
+}
+
+
+install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
 install_openssl($p);
 install_libxml2($p);
 install_libxslt($p);
 install_gmp($p);
 install_zlib($p);
-install_bzip2($p);
+install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
 install_giflib($p);
 install_libpng($p);
 install_libjpeg($p);
-install_freetype($p);
+install_harfbuzz($p);
+install_freetype($p); //需要 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz 静态库 (HarfBuzz不打算安装）
 install_libwebp($p);
 install_sqlite3($p);
-install_icu($p);
+install_icu($p); // 默认跳过安装，默认使用系统提供的静态库
 install_oniguruma($p);
-install_zip($p);
+install_liblz4($p);
+install_liblzma($p);
+install_libzstd($p); //zstd 依赖 lz4
+install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma zstd不打算安装）
 install_brotli($p);
 install_cares($p);
-install_readline($p);
-install_ncurses($p);
+install_readline($p);// 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录暂未解决）
+install_ncurses($p); // 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录暂未解决）
 //install_libedit($p);
 install_imagemagick($p);
-install_curl($p);
+install_libidn2($p);  //(HarfBuzz不打算安装）
+install_nghttp2($p);  //(HarfBuzz不打算安装）
+install_curl($p); //curl 依赖 idn idn2 http2 依赖
 install_libsodium($p);
 install_libyaml($p);
 install_mimalloc($p);
