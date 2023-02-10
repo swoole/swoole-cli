@@ -799,7 +799,21 @@ function install_nghttp2(Preprocessor $p)
             ->withSkipBuildInstall()
     );
 }
-
+function install_php_extension_phpmicro(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('phpmicro', ))
+            ->withHomePage('https://github.com/dixyes/phpmicro')
+            ->withUrl('https://github.com/dixyes/phpmicro/archive/refs/heads/master.zip')
+            ->withFile('latest-phpmicro.zip')
+            ->withLicense('https://github.com/dixyes/phpmicro/blob/master/LICENSE', Library::LICENSE_APACHE2)
+            ->withManual('https://github.com/dixyes/phpmicro#readme')
+            ->withScriptBeforeConfigure('return 0')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
 
 install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
 install_openssl($p);
@@ -836,6 +850,7 @@ install_mimalloc($p);
 install_pgsql($p);
 install_libffi($p);
 install_php_internal_extension($p);
+install_php_extension_phpmicro($p);
 
 # 扩展 mbstring 依赖 oniguruma 库
 # 扩展 intl 依赖 ICU 库
