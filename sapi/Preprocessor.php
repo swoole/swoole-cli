@@ -69,6 +69,8 @@ class Library extends Project
     public string $beforeConfigureScript = '';
     public string $binPath = '';
 
+    public string $label = '';
+
     public function __construct(string $name, string $prefix = '/usr')
     {
         $this->withPrefix($prefix);
@@ -199,6 +201,13 @@ class Library extends Project
         $this->pkgName = '';
         return $this;
     }
+
+    public function withLabel(string $label):static
+    {
+        $this->label=$label;
+        return $this;
+    }
+
 }
 
 class Extension extends Project
@@ -556,6 +565,15 @@ class Preprocessor
         include __DIR__ . '/credits.php';
         file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
+        $download_urls=[];
+        foreach ($this->libraryList as $item) {
+            if (0 && empty($item->label)) {
+                continue;
+            }
+            # $download_urls[$item->label]=$item->url;
+            $download_urls[]=$item->url;
+        }
+        file_put_contents($this->rootDir . '/bin/download_urls.txt',implode(PHP_EOL,$download_urls));
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
