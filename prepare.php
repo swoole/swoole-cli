@@ -157,11 +157,11 @@ function install_giflib(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withScriptBeforeConfigure('
 
-            dir="/ u s r" # 阻止 macos 系统下编译路径被替换
+            default_prefix_dir="/ u s r" # 阻止 macos 系统下编译路径被替换
             # 替换空格
-            dir=$(echo "$dir" | sed -e "s/[ ]//g")
+            default_dir=$(echo "$dir" | sed -e "s/[ ]//g")
             
-            sed -i.bakup "s@PREFIX = $dir/local@PREFIX = /usr/giflib@" Makefile
+            sed -i.bakup "s@PREFIX = $default_prefix_dir/local@PREFIX = /usr/giflib@" Makefile
        
        
             cat >> Makefile <<"EOF"
@@ -176,9 +176,8 @@ EOF
             ')
             ->withMakeOptions('libgif.a')
             //->withMakeOptions('all')
-                ->withMakeInstallOptions('install-include && make  install-lib-static')
-                ->withMakeInstallOptions('install-include && make  install-lib-static')
-                ->withMakeInstallOptions('install-include DESTDIR=/usr/giflib')
+            ->withMakeInstallOptions('install-include && make  install-lib-static')
+            # ->withMakeInstallOptions('install-include DESTDIR=/usr/giflib && make  install-lib-static DESTDIR=/usr/giflib')
             ->withLdflags('-L/usr/giflib/lib')
             ->disableDefaultPkgConfig()
     );
@@ -705,7 +704,7 @@ function install_php_internal_extension($p)
                     test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
                     
                     return 0
-               ". $p->getOs
+               "
             )
             ->disablePkgName()
             ->disableDefaultPkgConfig()

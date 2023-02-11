@@ -570,10 +570,12 @@ class Preprocessor
     {
         $this->maxJob = $n;
     }
+
     function getMaxJob()
     {
         return $this->maxJob ;
     }
+
     function info()
     {
         echo '==========================================================' . PHP_EOL;
