@@ -3,13 +3,7 @@
  * @var $this SwooleCli\Preprocessor
  */
 ?>
-#!/bin/env sh
-set -uex
-PKG_CONFIG_PATH='/usr/lib/pkgconfig'
-test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 
-cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
-# `grep "processor" /proc/cpuinfo | sort -u | wc -l`
 
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 export ORIGIN_PATH=$PATH
@@ -127,8 +121,20 @@ config_php() {
     export   XSL_CFLAGS=$(pkg-config --cflags  --static libxslt) ;
     export   XSL_LIBS=$(pkg-config --libs  --static libxslt) ;
 
-    export  CPPFLAGS=$(pkg-config  --cflags --static  libpq ncurses readline libcares libffi)
-    export  LIBS=$(pkg-config  --libs --static   libpq ncurses readline libcares libffi)
+
+
+    export  ICU_CFLAGS=$(pkg-config --cflags icu-uc)  ;
+    export  ICU_LIBS=$(pkg-config  --libs   icu-uc icu-io icu-i18n)  ;
+
+    export   NCURSES_CFLAGS=$(pkg-config --cflags --static  ncurses);
+    export   NCURSES_LIBS=$(pkg-config  --libs --static ncurses);
+
+    export   READLINE_CFLAGS=$(pkg-config --cflags --static readline)  ;
+    export   READLINE_LIBS=$(pkg-config  --libs --static readline)  ;
+
+    export  CPPFLAGS=$(pkg-config  --cflags --static  libpq ncurses libcares libffi icu-uc icu-io icu-i18n)
+    export  LIBS=$(pkg-config  --libs --static   libpq ncurses  libcares libffi icu-uc icu-io icu-i18n)
+
     test -f ./configure && rm ./configure ;
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>

@@ -18,7 +18,23 @@ if ($p->getOsType() == 'macos') {
     $p->addEndCallback(function () use ($p) {
         file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', $p->getWorkDir() . '/usr', file_get_contents(__DIR__ . '/make.sh')));
     });
+
 }
+$p->addEndCallback(function () use ($p) {
+    $header=<<<'EOF'
+#!/bin/env sh
+set -uex
+PKG_CONFIG_PATH='/usr/lib/pkgconfig'
+test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
+
+cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
+# `grep "processor" /proc/cpuinfo | sort -u | wc -l`
+
+EOF;
+    $command= file_get_contents(__DIR__ . '/make.sh');
+    $command=$header.PHP_EOL.$command;
+    file_put_contents(__DIR__ . '/make.sh',$command);
+});
 
 
 // ================================================================================================
@@ -137,9 +153,31 @@ function install_giflib(Preprocessor $p)
         (new Library('giflib'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
             ->withLicense('http://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
-            ->withScriptBeforeConfigure('sed -i "s@PREFIX = /usr/local@PREFIX = /usr/giflib@" Makefile')
-            //->withMakeOptions('libgif.a')
-            ->withMakeOptions('all')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure('
+
+            dir="/ u s r" # 阻止 macos 系统下编译路径被替换
+            # 替换空格
+            dir=$(echo "$dir" | sed -e "s/[ ]//g")
+            
+            sed -i.bakup "s@PREFIX = $dir/local@PREFIX = /usr/giflib@" Makefile
+       
+       
+            cat >> Makefile <<"EOF"
+            
+            
+install-lib-static:
+	$(INSTALL) -d "$(DESTDIR)$(LIBDIR)"
+	$(INSTALL) -m 644 libgif.a "$(DESTDIR)$(LIBDIR)/libgif.a"
+EOF
+          
+           
+            ')
+            ->withMakeOptions('libgif.a')
+            //->withMakeOptions('all')
+                ->withMakeInstallOptions('install-include && make  install-lib-static')
+                ->withMakeInstallOptions('install-include && make  install-lib-static')
+                ->withMakeInstallOptions('install-include DESTDIR=/usr/giflib')
             ->withLdflags('-L/usr/giflib/lib')
             ->disableDefaultPkgConfig()
     );
@@ -266,9 +304,30 @@ function install_icu(Preprocessor $p)
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
             ->withHomePage('https://icu.unicode.org/')
             ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
-            ->withConfigure('source/runConfigureICU Linux --prefix=/usr --enable-static --disable-shared')
-            ->withPkgName('icu-i18n')
-            ->withSkipBuildInstall()
+            ->withManual("https://unicode-org.github.io/icu/userguide/icu4c/build.html")
+            ->withCleanBuildDirectory()
+            ->withConfigure('
+              source/runConfigureICU Linux --help
+
+             CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1"
+
+             source/runConfigureICU Linux --prefix=/usr/icu \
+             --enable-icu-config=no \
+             --enable-static=yes \
+             --enable-shared=no \
+             --with-data-packaging=archive \
+             --enable-release=yes \
+             --enable-extras=yes \
+             --enable-icuio=yes \
+             --enable-dyload=no \
+             --enable-tools=yes \
+             --enable-tests=no \
+             --enable-samples=no
+             ')
+            ->withMakeOptions('all VERBOSE=1')
+            ->withPkgName('icu-uc icu-io icu-i18n')
+            ->withPkgConfig('/usr/icu/lib/pkgconfig')
+            ->withLdflags('-L/usr/icu/lib')
     );
 }
 
@@ -531,12 +590,16 @@ function install_pgsql(Preprocessor $p)
             )
             ->withConfigure(
                 '
-            sed -i "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
+                 ./configure --help
+              
+            sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
   
             # 替换指定行内容
-            sed -i "102c all: all-lib" src/interfaces/libpq/Makefile
+            sed -i.backup "102c all: all-lib" src/interfaces/libpq/Makefile
            
-            export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
+            # export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
+          
+            # export CFLAGS="-static -fPIE -fPIC -O2 -Wall "
             
             ./configure  --prefix=/usr/pgsql \
             --enable-coverage=no \
@@ -637,8 +700,11 @@ function install_php_internal_extension($p)
                     test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
                     cp -rf  ext/pgsql {$workDir}/ext/
                     
+                    #  config.m4.backup不存在执行 才执行后面命令 (因为不能多次删除制定行）
+                    test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
+                    
                     return 0
-               "
+               ". $p->getOs
             )
             ->disablePkgName()
             ->disableDefaultPkgConfig()
@@ -815,6 +881,26 @@ function install_php_extension_phpmicro(Preprocessor $p)
             ->disablePkgName()
     );
 }
+function install_bison(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('bison', ))
+            ->withHomePage('https://www.gnu.org/software/bison/')
+            ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
+            ->withLicense('https://github.com/dixyes/phpmicro/blob/master/LICENSE', Library::LICENSE_GPL)
+            ->withManual('https://www.gnu.org/licenses/gpl-3.0.html')
+            ->withCleanBuildDirectory()
+            ->withConfigure("
+             ./configure --help 
+             ./configure --prefix=/usr/bison
+         
+            ")
+            ->withBinPath('/usr/bison/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
 
 install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
 install_openssl($p);
@@ -852,6 +938,7 @@ install_pgsql($p);
 install_libffi($p);
 install_php_internal_extension($p);
 install_php_extension_phpmicro($p);
+install_bison($p);
 
 # 扩展 mbstring 依赖 oniguruma 库
 # 扩展 intl 依赖 ICU 库

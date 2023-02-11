@@ -559,6 +559,7 @@ class Preprocessor
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
+
     }
 
     /**
@@ -569,7 +570,10 @@ class Preprocessor
     {
         $this->maxJob = $n;
     }
-
+    function getMaxJob()
+    {
+        return $this->maxJob ;
+    }
     function info()
     {
         echo '==========================================================' . PHP_EOL;
@@ -586,4 +590,5 @@ class Preprocessor
             echo "{$item->name}\n";
         }
     }
+
 }
