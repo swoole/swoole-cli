@@ -425,12 +425,25 @@ function install_readline(Preprocessor $p)
     $p->addLibrary(
         (new Library('readline', '/usr/readline'))
             ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/readline --enable-static --disable-shared')
+            ->withConfigure('
+            ./configure --help 
+            export CPPFLAGS=$(pkg-config --cflags --static  formw menuw      ncurses++w  ncursesw   panelw    ticw)
+            export LIBS=$(pkg-config  --libs --static  formw menuw      ncurses++w  ncursesw   panelw    ticw)
+            # ld -lncursesw --verbose 
+              exit 0 
+            ./configure \
+            --prefix=/usr/readline \
+            --enable-static \
+            --disable-shared \
+            --with-curses \
+            --enable-multibyte
+            
+            ')
             ->withPkgName('readline')
             ->withLdflags('-L/usr/readline/lib')
             ->withLicense('http://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
             ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
-            ->withSkipBuildInstall()
+
     );
 }
 
@@ -453,10 +466,95 @@ function install_ncurses(Preprocessor $p)
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
             ->withHomePage('https://github.com/projectceladon/libncurses')
-            ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
-            ->withSkipBuildInstall()
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                '
+                test -d /usr/ncurses/ && rm -rf /usr/ncurses/ ;
+                mkdir -p /usr/ncurses/lib/pkgconfig
+            '
+            )
+            // CFLAGS="-static -O2 -Wall" \
+            //   LDFLAGS="-Wl,R-lncurses"
+            // LDFLAGS="-lncurses" \
+            ->withConfigure(
+                '
+            ./configure --help
+
+            # CFLAGS=$(pkg-config --cflags libpcre2-16     libpcre2-32    libpcre2-8 libpcre2-posix)
+            # LDFLAGS=$(pkg-config  --libs libpcre2-16     libpcre2-32    libpcre2-8  libpcre2-posix)
+
+            #    --with-pcre2 \
+            #  --with-curses-h
+            #    --enable-widec\
+            #    --enable-overwrite \
+            
+            ./configure \
+            --prefix=/usr/ncurses \
+            --enable-static \
+            --disable-shared \
+            --enable-pc-files \
+            --enable-echo \
+            --enable-widec \
+            --with-libtool \
+            --with-libtool-opts=-static \
+            --with-normal \
+            --with-pkg-config=/usr/ncurses/lib/pkgconfig \
+            --with-pkg-config-libdir=/usr/ncurses/lib/pkgconfig \
+            --with-ticlib=ticw \
+            --with-tic-path=/usr/ncurses/share/terminfo \
+            --without-tests \
+            --without-dlsym \
+            --without-debug \
+            --enable-symlinks
+            make -j $cpu_nums ;
+            make install 
+            
+            /usr/ncurses/bin/ncursesw6-config --cflags
+            return 0;
+            '
+            )
+            /*
+                --enable-overwrite\
+               -with-form-libname=form \
+              --with-menu-libname=menu \
+              --with-panel-libname=panel \
+              --with-cxx-libname=ncurses
+             */
+            ->withScriptAfterInstall(
+                "
+              
+            # ln -s  /usr/ncurses/include/ncursesw /usr/ncurses/include/ncurses
+            # ln -s  /usr/ncurses/include/ncursesw /usr/ncurses/include/curses
+            
+            ln -s /usr/ncurses/lib/pkgconfig/formw.pc /usr/ncurses/lib/pkgconfig/form.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/menuw.pc /usr/ncurses/lib/pkgconfig/menu.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/ncursesw.pc /usr/ncurses/lib/pkgconfig/ncurses.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/ncursesw.pc /usr/ncurses/lib/pkgconfig/curses.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/panelw.pc /usr/ncurses/lib/pkgconfig/panel.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/ncurses++w.pc /usr/ncurses/lib/pkgconfig/ncurses++.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/ticw.pc /usr/ncurses/lib/pkgconfig/tic.pc ;
+
+            ln -s /usr/ncurses/lib/libformw.a /usr/ncurses/lib/libform.a ;
+            ln -s /usr/ncurses/lib/libmenuw.a /usr/ncurses/lib/libmenu.a ;
+            ln -s /usr/ncurses/lib/libncursesw.a /usr/ncurses/lib/libncurses.a ;
+            ln -s /usr/ncurses/lib/libncurses++w.a /usr/ncurses/lib/libncurses++.a ;
+            ln -s /usr/ncurses/lib/libpanelw.a /usr/ncurses/lib/libpanel.a ;
+            ln -s /usr/ncurses/lib/libticw.a /usr/ncurses/lib/libtic.a ;
+
+            "
+            )
+            ->withMakeOptions('all')
+            ->withPkgName('ncursesw ncurses')
+            ->withPkgConfig('/usr/ncurses/lib/pkgconfig')
+            ->withLdflags('-L/usr/ncurses/lib/')
+            ->withBinPath('/usr/ncurses/bin/')
+    //            ->disableDefaultLdflags()
+    //            ->disableDefaultPkgConfig()
+    //            ->disablePkgName()
+
     );
 }
+
 
 function install_libsodium(Preprocessor $p)
 {
