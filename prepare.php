@@ -916,7 +916,7 @@ install_harfbuzz($p);
 install_freetype($p); //依赖 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz (暂不启用)
 install_libwebp($p);
 install_sqlite3($p);
-install_icu($p); // // 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
+install_icu($p); //依赖  -lstdc++
 install_oniguruma($p);
 install_liblz4($p);
 install_liblzma($p);
