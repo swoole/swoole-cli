@@ -106,17 +106,17 @@ make_all_library() {
 }
 
 config_php() {
-    export  ONIG_CFLAGS=$(pkg-config --cflags  --static oniguruma) ;
-    export  ONIG_LIBS=$(pkg-config --libs  --static oniguruma) ;
+    export   ONIG_CFLAGS=$(pkg-config --cflags  --static oniguruma) ;
+    export   ONIG_LIBS=$(pkg-config --libs  --static oniguruma) ;
 
-    export  LIBSODIUM_CFLAGS=$(pkg-config --cflags  --static libsodium) ;
-    export  LIBSODIUM_LIBS=$(pkg-config --libs  --static libsodium) ;
+    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags  --static libsodium) ;
+    export   LIBSODIUM_LIBS=$(pkg-config --libs  --static libsodium) ;
 
     export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
     export   LIBZIP_LIBS=$(pkg-config --libs --static libzip) ;
 
-    export  LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
-    export  LIBPQ_LIBS=$(pkg-config  --libs  --static       libpq)
+    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
+    export   LIBPQ_LIBS=$(pkg-config  --libs  --static       libpq)
 
     export   XSL_CFLAGS=$(pkg-config --cflags  --static libxslt) ;
     export   XSL_LIBS=$(pkg-config --libs  --static libxslt) ;
@@ -125,15 +125,14 @@ config_php() {
 
     export  ICU_CFLAGS=$(pkg-config --cflags icu-uc)  ;
     export  ICU_LIBS=$(pkg-config  --libs   icu-uc icu-io icu-i18n)  ;
-
+:<<'EOF'
     export   NCURSES_CFLAGS=$(pkg-config --cflags --static  ncurses);
     export   NCURSES_LIBS=$(pkg-config  --libs --static ncurses);
 
     export   READLINE_CFLAGS=$(pkg-config --cflags --static readline)  ;
     export   READLINE_LIBS=$(pkg-config  --libs --static readline)  ;
-
+EOF
     export  CPPFLAGS=$(pkg-config  --cflags --static  libpq ncurses libcares libffi icu-uc icu-io icu-i18n)
-    LIBS=$(pkg-config  --libs --static   libpq ncurses  libcares libffi icu-uc icu-io icu-i18n)
     LIBS=$(pkg-config  --libs --static   libpq libcares libffi)
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 
