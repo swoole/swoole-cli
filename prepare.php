@@ -8,7 +8,7 @@ use SwooleCli\Library;
 $p = new Preprocessor(__DIR__);
 $p->setPhpSrcDir(getenv('HOME') . '/.phpbrew/build/php-8.1.12');
 $p->setDockerVersion('1.5');
-$p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`);
+# $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`);
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
 
 if ($p->getOsType() == 'macos') {
@@ -20,6 +20,7 @@ if ($p->getOsType() == 'macos') {
     });
 
 }
+
 $p->addEndCallback(function () use ($p) {
     $header=<<<'EOF'
 #!/bin/env sh
