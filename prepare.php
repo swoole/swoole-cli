@@ -27,6 +27,7 @@ $p->addEndCallback(function () use ($p) {
 set -uex
 PKG_CONFIG_PATH='/usr/lib/pkgconfig'
 test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
+test -d /usr/local/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 
 cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
@@ -111,6 +112,7 @@ function install_imagemagick(Preprocessor $p)
     $p->addLibrary(
         (new Library('imagemagick', '/usr/imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-19.tar.gz')
+            ->withFile('imagemagick-7.1.0-19.tar.gz')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
             ->withConfigure('
               ./configure \
@@ -1022,12 +1024,12 @@ install_oniguruma($p);
 install_liblz4($p);
 install_liblzma($p);
 install_libzstd($p); //zstd 依赖 lz4
-install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma zstd不打算安装）
+install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma zstd 暂不启用）
 install_brotli($p);
 install_cares($p);
-install_readline($p);// 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
-install_ncurses($p); // 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
 //install_libedit($p);
+install_ncurses($p); // 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
+install_readline($p);// 依赖 ncurses 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
 install_imagemagick($p);
 install_libidn2($p);  //默认跳过安装
 install_nghttp2($p);  //默认跳过安装
