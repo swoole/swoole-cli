@@ -571,7 +571,8 @@ class Preprocessor
                 continue;
             }
             # $download_urls[$item->label]=$item->url;
-            $download_urls[]=$item->url;
+            # $download_urls[]=$item->url;
+            $download_urls[]=$item->url .(empty($item->file)?'':PHP_EOL.' out='.$item->file);
         }
         file_put_contents($this->rootDir . '/bin/download_urls.txt',implode(PHP_EOL,$download_urls));
         foreach ($this->endCallbacks as $endCallback) {
