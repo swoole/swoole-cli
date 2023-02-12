@@ -979,8 +979,8 @@ install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzm
 install_brotli($p);
 install_cares($p);
 //install_libedit($p);
-install_ncurses($p); // 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
-install_readline($p);// 依赖 ncurses 默认跳过安装，默认使用系统提供的静态库 (因为自定义安装目录，安装失败的暂未解决）
+install_ncurses($p);
+install_readline($p);//依赖 ncurses
 install_imagemagick($p);
 install_libidn2($p);  //默认跳过安装
 install_nghttp2($p);  //默认跳过安装
