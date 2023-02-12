@@ -198,7 +198,7 @@ function install_libpng(Preprocessor $p)
 
 function install_libjpeg(Preprocessor $p)
 {
-    $lib = new Library('libjpeg');
+    $lib = new Library('libjpeg',"/usr/libjpeg");
     $lib->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withHomePage('https://libjpeg-turbo.org/')
