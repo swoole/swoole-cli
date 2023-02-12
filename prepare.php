@@ -748,6 +748,14 @@ function install_libffi($p)
 function install_php_internal_extensions($p)
 {
     $workDir=$p->getWorkDir();;
+    $command = '';
+    if ($p->getOsType() === 'macos') {
+        $command = <<<'EOF'
+        #  config.m4.backup不存在执行 才执行后面命令 (因为不能多次删除制定行）
+        test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
+
+EOF;
+    }
     $p->addLibrary(
         (new Library('php_internal_extensions'))
             ->withHomePage('https://www.php.net/')
@@ -767,12 +775,7 @@ function install_php_internal_extensions($p)
                     
                     test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
                     cp -rf  ext/pgsql {$workDir}/ext/
-                    
-                    #  config.m4.backup不存在执行 才执行后面命令 (因为不能多次删除制定行）
-                    test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
-                    
-                    return 0
-               "
+                " .$command
             )
             ->disablePkgName()
             ->disableDefaultPkgConfig()
