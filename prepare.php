@@ -920,7 +920,7 @@ function install_nghttp2(Preprocessor $p)
 function install_php_extension_micro(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('php-extension-micro', ))
+        (new Library('php_extension_micro', ))
             ->withHomePage('https://github.com/dixyes/phpmicro')
             ->withUrl('https://github.com/dixyes/phpmicro/archive/refs/heads/master.zip')
             ->withFile('latest-phpmicro.zip')
