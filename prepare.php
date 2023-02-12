@@ -728,7 +728,7 @@ function install_libffi($p)
     );
 }
 
-function install_php_internal_extension($p)
+function install_php_internal_extensions($p)
 {
     $workDir=$p->getWorkDir();;
     $p->addLibrary(
@@ -990,7 +990,7 @@ install_libyaml($p);
 install_mimalloc($p);
 install_pgsql($p);
 install_libffi($p);
-install_php_internal_extension($p);
+install_php_internal_extensions($p);
 install_php_extension_phpmicro($p);
 install_bison($p);
 
