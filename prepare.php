@@ -161,7 +161,7 @@ function install_giflib(Preprocessor $p)
 
             default_prefix_dir="/ u s r" # 阻止 macos 系统下编译路径被替换
             # 替换空格
-            default_dir=$(echo "$dir" | sed -e "s/[ ]//g")
+            default_prefix_dir=$(echo "$default_prefix_dir" | sed -e "s/[ ]//g")
             
             sed -i.bakup "s@PREFIX = $default_prefix_dir/local@PREFIX = /usr/giflib@" Makefile
        
