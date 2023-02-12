@@ -501,6 +501,21 @@ function install_ncurses(Preprocessor $p)
             --enable-symlinks
             '
             )
+            ->withScriptBeforeInstall('
+            ln -s /usr/ncurses/lib/pkgconfig/formw.pc /usr/ncurses/lib/pkgconfig/form.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/menuw.pc /usr/ncurses/lib/pkgconfig/menu.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/ncurses++w.pc /usr/ncurses/lib/pkgconfig/ncurses++.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/ncursesw.pc /usr/ncurses/lib/pkgconfig/ncurses.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/panelw.pc /usr/ncurses/lib/pkgconfig/panel.pc ;
+            ln -s /usr/ncurses/lib/pkgconfig/ticw.pc /usr/ncurses/lib/pkgconfig/tic.pc ;
+
+            ln -s /usr/ncurses/lib/libformw.a /usr/ncurses/lib/libform.a ;
+            ln -s /usr/ncurses/lib/libmenuw.a /usr/ncurses/lib/libmenu.a ;
+            ln -s /usr/ncurses/lib/libncurses++w.a /usr/ncurses/lib/libncurses++.a ;
+            ln -s /usr/ncurses/lib/libncursesw.a /usr/ncurses/lib/libncurses.a ;
+            ln -s /usr/ncurses/lib/libpanelw.a  /usr/ncurses/lib/libpanel.a ;
+            ln -s /usr/ncurses/lib/libticw.a /usr/ncurses/lib/libtic.a ;
+            ')
             ->withPkgName('ncursesw')
             ->withPkgConfig('/usr/ncurses/lib/pkgconfig')
             ->withLdflags('-L/usr/ncurses/lib/')
