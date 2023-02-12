@@ -747,7 +747,7 @@ function install_php_internal_extensions($p)
 {
     $workDir=$p->getWorkDir();;
     $p->addLibrary(
-        (new Library('php_internal_extension'))
+        (new Library('php_internal_extensions'))
             ->withHomePage('https://www.php.net/')
             ->withLicense('http://github.com/libffi/libffi/blob/master/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
@@ -973,8 +973,8 @@ function install_bison(Preprocessor $p)
 
 install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
 install_openssl($p);
-install_libxml2($p);
-install_libxslt($p);
+install_libxml2($p); //依赖 libiconv
+install_libxslt($p); //依赖 libxml2
 install_gmp($p);
 install_zlib($p);
 install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
@@ -999,11 +999,11 @@ install_readline($p);//依赖 ncurses
 install_imagemagick($p);
 install_libidn2($p);  //默认跳过安装
 install_nghttp2($p);  //默认跳过安装
-install_curl($p); //curl 依赖 brotli(暂不启用) zstd(暂不启用) idn(暂不启用) idn2(暂不启用) nghttp2(暂不启用) nghttp3(暂不启用)
+install_curl($p); //curl 依赖 openssl brotli(暂不启用) zstd(暂不启用) idn(暂不启用) idn2(暂不启用) nghttp2(暂不启用) nghttp3(暂不启用)
 install_libsodium($p);
 install_libyaml($p);
 install_mimalloc($p);
-install_pgsql($p);
+install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib
 install_libffi($p);
 install_php_internal_extensions($p);
 install_php_extension_micro($p);
