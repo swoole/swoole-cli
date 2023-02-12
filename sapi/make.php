@@ -133,8 +133,8 @@ config_php() {
     export   READLINE_LIBS=$(pkg-config  --libs --static readline)  ;
 EOF
 
-    export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n)
-    LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n)
+    export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
+    LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 
     test -f ./configure && rm ./configure ;
