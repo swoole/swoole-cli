@@ -1020,7 +1020,8 @@ install_bison($p);
 /**
  * 开始预处理之前，需要特别设置的地方
 
-    LIBS=$(pkg-config  --libs --static   libpq libcares libffi)
+    export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
+    LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 
  */
