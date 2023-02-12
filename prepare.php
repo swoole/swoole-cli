@@ -1000,7 +1000,7 @@ install_bison($p);
 # 扩展 mongodb 依赖 openssl, zlib ICU 等库
 # 本项目 opcache 是必装扩展，否则编译报错，不想启用，需要修改源码: main/main.c
 # 本项目 swoole 也是必装扩展，否则 sh make.sh archive 无法打包
-# php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64 或者 /usr/lib64
+# php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64
 
 /**
  * 开始预处理之前，需要特别设置的地方
