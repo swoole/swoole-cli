@@ -198,7 +198,7 @@ function install_libpng(Preprocessor $p)
 
 function install_libjpeg(Preprocessor $p)
 {
-    $lib = new Library('libjpeg',"/usr/libjpeg");
+    $lib = new Library('libjpeg','/usr/libjpeg/');
     $lib->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withHomePage('https://libjpeg-turbo.org/')
@@ -209,7 +209,9 @@ function install_libjpeg(Preprocessor $p)
         ->withPkgName('libjpeg libturbojpeg');
 
     if ($p->getOsType() === 'macos') {
-        $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
+        $lib->withLdflags('-L/usr/libjpeg/lib')
+            ->withPkgConfig('/usr/libjpeg/lib/pkgconfig')
+            ->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
     }
     $p->addLibrary($lib);
 }
