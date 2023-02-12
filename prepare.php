@@ -917,10 +917,10 @@ function install_nghttp2(Preprocessor $p)
             ->withSkipBuildInstall()
     );
 }
-function install_php_extension_phpmicro(Preprocessor $p)
+function install_php_extension_micro(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('phpmicro', ))
+        (new Library('php-extension-micro', ))
             ->withHomePage('https://github.com/dixyes/phpmicro')
             ->withUrl('https://github.com/dixyes/phpmicro/archive/refs/heads/master.zip')
             ->withFile('latest-phpmicro.zip')
@@ -991,7 +991,7 @@ install_mimalloc($p);
 install_pgsql($p);
 install_libffi($p);
 install_php_internal_extensions($p);
-install_php_extension_phpmicro($p);
+install_php_extension_micro($p);
 install_bison($p);
 
 # 扩展 mbstring 依赖 oniguruma 库
