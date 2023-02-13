@@ -354,12 +354,13 @@ class Preprocessor
 
             $ext->file = $file;
             $ext->path = $this->extensionDir . '/' . $file;
+            $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
+            $ext->url = "https://pecl.php.net/get/$download_name";
 
             if (!is_file($ext->path)) {
                 _download:
-                $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
-                echo "pecl download $download_name\n";
-                echo `cd {$this->extensionDir} && pecl download $download_name && cd -`;
+                echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                $this->downloadFile($ext->url, "{$this->extensionDir}/{$ext->name}.tgz");
             } else {
                 echo "[Extension] file cached: " . $ext->file . PHP_EOL;
             }
