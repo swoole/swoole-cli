@@ -2,12 +2,17 @@
 
 namespace SwooleCli;
 
+use MJS\TopSort\CircularDependencyException;
+use MJS\TopSort\ElementNotFoundException;
+use MJS\TopSort\Implementations\StringSort;
+
 abstract class Project
 {
     public string $name;
     public string $homePage = '';
     public string $license = '';
     public string $prefix = '';
+    public array $deps = [];
     public int $licenseType = self::LICENSE_SPEC;
 
     const LICENSE_SPEC = 0;
@@ -33,6 +38,12 @@ abstract class Project
     function withHomePage(string $homePage): static
     {
         $this->homePage = $homePage;
+        return $this;
+    }
+
+    function depends(string ...$libs): static
+    {
+        $this->deps += $libs;
         return $this;
     }
 }
@@ -428,10 +439,45 @@ class Preprocessor
         }
     }
 
+    /**
+     * @throws CircularDependencyException
+     * @throws ElementNotFoundException
+     */
+    protected function sortLibrary(): void
+    {
+        $libs = [];
+        $sorter = new StringSort();
+        foreach ($this->libraryList as $item) {
+            $libs[$item->name] = $item;
+            $sorter->add($item->name, $item->deps);
+        }
+        $sorted_list = $sorter->sort();
+        foreach ($this->extensionList as $item) {
+            if ($item->deps) {
+                foreach ($item->deps as $lib) {
+                    if (!isset($libs[$lib])) {
+                        throw new \RuntimeException("The ext-{$item->name} depends on $lib, but it does not exist");
+                    }
+                }
+            }
+        }
+
+        $libraryList = [];
+        foreach ($sorted_list as $name) {
+            $libraryList[] = $libs[$name];
+        }
+        $this->libraryList = $libraryList;
+    }
+
+    /**
+     * @throws CircularDependencyException
+     * @throws ElementNotFoundException
+     */
     function gen()
     {
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+        $this->sortLibrary();
 
         ob_start();
         include __DIR__ . '/make.php';

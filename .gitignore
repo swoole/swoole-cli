@@ -299,7 +299,7 @@ tmp-php.ini
 /make.sh
 /bin
 /pool/
-/work/
+/vendor
 /thirdparty
 /usr
 /ext/redis

@@ -1,9 +1,17 @@
 <?php
 
+use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+    $p->addLibrary(
+        (new Library('imagemagick', '/usr/imagemagick'))
+            ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-19.tar.gz')
+            ->withConfigure('./configure --prefix=/usr/imagemagick --enable-static --disable-shared --with-zip=no --with-fontconfig=no --with-heic=no --with-lcms=no --with-lqr=no --with-openexr=no --with-openjp2=no --with-pango=no --with-raw=no --with-tiff=no')
+            ->withPkgName('ImageMagick')
+            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
+    );
     $p->addExtension((new Extension('imagick'))
         ->withOptions('--with-imagick=/usr/imagemagick')
         ->withPeclVersion('3.6.0')
