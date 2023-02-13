@@ -422,7 +422,7 @@ class Preprocessor
 
                 # echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
                 # echo $lib->file;
-                echo '[Library] {$lib->file} not found, ' . $lib->file . PHP_EOL . 'downloading:: ' . $lib->url . PHP_EOL;
+                echo "[Library] {$lib->file} not found, " . $lib->file . PHP_EOL . 'downloading:: ' . $lib->url . PHP_EOL;
                 `curl --connect-timeout 15 --retry 5 --retry-delay 5  -Lo {$this->libraryDir}/{$lib->file} '{$lib->url}'`;
                 echo PHP_EOL;
                 if (!is_file("{$this->libraryDir}/{$lib->file}") or filesize("{$this->libraryDir}/{$lib->file}") == 0) {
