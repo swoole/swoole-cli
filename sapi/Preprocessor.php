@@ -403,6 +403,14 @@ class Preprocessor
         $this->installLibrary = false;
     }
 
+    protected function downloadFile(string $url, string $file)
+    {
+        echo `wget {$url} -O {$file}`;
+        if (!is_file($file) or filesize($file) == 0) {
+            throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
+        }
+    }
+
     function addLibrary(Library $lib)
     {
         if (empty($lib->file)) {
@@ -411,13 +419,15 @@ class Preprocessor
         $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
         if (empty($skip_library_download)) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
+
                 # echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
                 # echo $lib->file;
-                echo '[Library] file download: ' . $lib->file . PHP_EOL . 'download url: ' . $lib->url . PHP_EOL;
+                echo '[Library] {$lib->file} not found, ' . $lib->file . PHP_EOL . 'downloading:: ' . $lib->url . PHP_EOL;
                 `curl --connect-timeout 15 --retry 5 --retry-delay 5  -Lo {$this->libraryDir}/{$lib->file} '{$lib->url}'`;
                 echo PHP_EOL;
                 echo 'download ' . $lib->file . ' OK ' . PHP_EOL . PHP_EOL;
                 // TODO PGP  验证
+
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -453,6 +463,8 @@ class Preprocessor
 
             $ext->file = $file;
             $ext->path = $this->extensionDir . '/' . $file;
+            $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
+            $ext->url = "https://pecl.php.net/get/$download_name";
 
             if (!is_file($ext->path)) {
                 _download:
@@ -474,11 +486,12 @@ class Preprocessor
                     $download_name = $ext->name . '-' . $ext->peclVersion . '.tgz';
                     $download_url = "https://pecl.php.net/get/" . $ext->name . '-' . $ext->peclVersion . '.tgz';
                 }
-                echo "curl downloading {$download_name} dongload link $download_url" . PHP_EOL;
+               echo "[Extension] {$ext->file} not found, downloading: $download_url" . PHP_EOL;
                 $cmd="cd {$this->extensionDir} && curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -LO '{$download_url}' && cd -";
                 echo $cmd;
                 `$cmd`;
                 echo 'download ' . $ext->file . ' OK ' . PHP_EOL . PHP_EOL;
+
             } else {
                 echo "[Extension] file cached: " . $ext->file . PHP_EOL;
             }
@@ -523,14 +536,16 @@ class Preprocessor
 
         for ($i = 1; $i < $argc; $i++) {
             $op = $argv[$i][0];
-            $ext = substr($argv[$i], 1);
+            $value = substr($argv[$i], 1);
             if ($op == '+') {
-                $this->extEnabled[] = $ext;
+                $this->extEnabled[] = $value;
             } elseif ($op == '-') {
-                $key = array_search($ext, $this->extEnabled);
+                $key = array_search($value, $this->extEnabled);
                 if ($key !== false) {
                     unset($this->extEnabled[$key]);
                 }
+            } elseif ($op == '@') {
+                $this->setOsType($value);
             }
         }
 
