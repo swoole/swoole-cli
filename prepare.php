@@ -781,6 +781,7 @@ EOF;
                     
                 " . $command
             )
+            ->withScriptBeforeConfigure('return 0')
             ->disablePkgName()
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
@@ -951,6 +952,7 @@ function install_php_extension_micro(Preprocessor $p)
             ->withLicense('https://github.com/dixyes/phpmicro/blob/master/LICENSE', Library::LICENSE_APACHE2)
             ->withManual('https://github.com/dixyes/phpmicro#readme')
             ->withLabel('extension')
+            ->withCleanBuildDirectory()
             ->withUntarArchiveCommand('unzip')
             ->withScriptBeforeConfigure('return 0')
             ->disableDefaultPkgConfig()
