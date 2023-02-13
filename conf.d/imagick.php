@@ -17,5 +17,6 @@ return function (Preprocessor $p) {
         ->withPeclVersion('3.6.0')
         ->withHomePage('https://github.com/Imagick/imagick')
         ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
+        ->depends('imagemagick')
     );
 };

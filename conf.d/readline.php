@@ -30,11 +30,11 @@ return function (Preprocessor $p) {
                 ->withLdflags('-L/usr/readline/lib')
                 ->withLicense('http://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
                 ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
+                ->depends('ncurses')
         );
     }
     $p->addExtension((new Extension('readline'))
         ->withOptions('--with-readline=/usr/readline')
-        ->depends('ncurses')
-        ->depends('readline')
+        ->depends('ncurses', 'readline')
     );
 };
