@@ -781,7 +781,7 @@ EOF;
                     
                 " . $command
             )
-            ->withScriptBeforeConfigure('return 0')
+            ->withConfigure('return 0')
             ->disablePkgName()
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
