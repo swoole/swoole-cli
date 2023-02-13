@@ -490,10 +490,11 @@ class Preprocessor
                     $download_url = "https://pecl.php.net/get/" . $ext->name . '-' . $ext->peclVersion . '.tgz';
                 }
                 echo "[Extension] {$ext->file} not found, downloading: $download_url" . PHP_EOL;
-                $cmd="cd {$this->extensionDir} && curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -LO '{$download_url}' && cd -";
+                $cmd="cd {$this->extensionDir} && curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -LO  '{$download_url}' && cd -";
                 echo $cmd;
                 `$cmd`;
-                if (!is_file($download_name) or filesize($download_name) == 0) {
+
+                if (!is_file( $ext->path) or filesize( $ext->path) == 0) {
                     throw new \RuntimeException("Downloading file[ $download_name] from url[$download_url] failed");
                 }
                 echo 'download ' . $ext->file . ' OK ' . PHP_EOL . PHP_EOL;
