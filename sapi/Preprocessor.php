@@ -427,6 +427,7 @@ class Preprocessor
             }
         }
 
+        $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
                 echo "unsupported extension[$ext]\n";
