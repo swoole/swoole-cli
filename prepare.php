@@ -915,7 +915,6 @@ function install_harfbuzz(Preprocessor $p)
     );
 }
 
-
 function install_libidn2(Preprocessor $p)
 {
     $p->addLibrary(
@@ -941,6 +940,7 @@ function install_nghttp2(Preprocessor $p)
             ->withSkipBuildInstall()
     );
 }
+
 function install_php_extension_micro(Preprocessor $p)
 {
     $p->addLibrary(
@@ -958,22 +958,46 @@ function install_php_extension_micro(Preprocessor $p)
             ->disablePkgName()
     );
 }
+
 function install_bison(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('bison', ))
             ->withHomePage('https://www.gnu.org/software/bison/')
             ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
-            ->withLicense('https://github.com/dixyes/phpmicro/blob/master/LICENSE', Library::LICENSE_GPL)
-            ->withManual('https://www.gnu.org/licenses/gpl-3.0.html')
+            ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
+            ->withManual('https://www.gnu.org/software/bison/manual/')
             ->withLabel('env')
             ->withCleanBuildDirectory()
             ->withConfigure("
              ./configure --help 
              ./configure --prefix=/usr/bison
-         
             ")
             ->withBinPath('/usr/bison/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
+
+function install_re2c(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('re2c', ))
+            ->withHomePage('http://re2c.org/')
+            ->withUrl('https://github.com/skvadrik/re2c/releases/download/3.0/re2c-3.0.tar.xz')
+            ->withLicense('https://github.com/skvadrik/re2c/blob/master/LICENSE', Library::LICENSE_GPL)
+            ->withManual('https://re2c.org/build/build.html')
+            ->withLabel('env')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure('
+             autoreconf -i -W all
+            ')
+            ->withConfigure("
+             ./configure --help 
+             ./configure --prefix=/usr/re2c
+            ")
+            ->withBinPath('/usr/re2c/bin/')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
@@ -1017,6 +1041,8 @@ install_libffi($p);
 install_php_internal_extensions($p);
 install_php_extension_micro($p);
 install_bison($p);
+install_re2c($p);
+
 
 # 扩展 mbstring 依赖 oniguruma 库
 # 扩展 intl 依赖 ICU 库
