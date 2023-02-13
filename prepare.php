@@ -9,6 +9,7 @@ $homeDir = getenv('HOME');
 $p = new Preprocessor(__DIR__);
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
 $p->setDockerVersion('1.5');
+$p->parseArguments($argc, $argv);
 if ($p->getOsType() == 'macos') {
     $p->setWorkDir(__DIR__);
     $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
@@ -21,6 +22,5 @@ if ($p->getOsType() == 'macos') {
         file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', $homeDir . '/.swoole-cli', file_get_contents(__DIR__ . '/make.sh')));
     });
 }
-$p->parseArguments($argc, $argv);
 $p->gen();
 $p->info();

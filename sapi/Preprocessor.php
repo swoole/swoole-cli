@@ -371,7 +371,7 @@ class Preprocessor
             if (!is_file($ext->path)) {
                 _download:
                 echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                $this->downloadFile($ext->url, "{$this->extensionDir}/{$ext->name}.tgz");
+                $this->downloadFile($ext->url, $ext->path);
             } else {
                 echo "[Extension] file cached: " . $ext->file . PHP_EOL;
             }
