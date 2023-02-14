@@ -40,7 +40,7 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[ before make install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
-    make install <?=$item->makeInstallOptions . PHP_EOL ?>
+    make <?= empty($item->makeInstallOptions)? "install" : $item->makeInstallOptions . PHP_EOL ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit  $result_code;
     <?php if ($item->afterInstallScript): ?>
