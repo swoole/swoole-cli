@@ -501,6 +501,11 @@ class Preprocessor
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
         $this->sortLibrary();
 
+        $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
+        if ($skip_library_download == 1) {
+            $this->generateDownloadLibraryLinks();
+        }
+
         ob_start();
         include __DIR__ . '/make.php';
         file_put_contents($this->rootDir . '/make.sh', ob_get_clean());
@@ -538,5 +543,17 @@ class Preprocessor
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
         }
+    }
+
+    protected function generateDownloadLibraryLinks():void
+    {
+        $download_urls=[];
+        foreach ($this->libraryList as $item) {
+            $download_urls[]=$item->url .(empty($item->file)?'':PHP_EOL.' out='.$item->file);
+        }
+        if(!is_dir($this->rootDir . '/var/')){
+            mkdir($this->rootDir . '/var/',0755,true);
+        }
+        file_put_contents($this->rootDir . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
     }
 }
