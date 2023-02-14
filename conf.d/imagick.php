@@ -11,6 +11,7 @@ return function (Preprocessor $p) {
             ->withConfigure('./configure --prefix=/usr/imagemagick --enable-static --disable-shared --with-zip=no --with-fontconfig=no --with-heic=no --with-lcms=no --with-lqr=no --with-openexr=no --with-openjp2=no --with-pango=no --with-raw=no --with-tiff=no')
             ->withPkgName('ImageMagick')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
+            ->depends('libxml2', 'zip', 'zlib', 'libjpeg', 'freetype', 'libwebp', 'libpng', 'giflib')
     );
     $p->addExtension((new Extension('imagick'))
         ->withOptions('--with-imagick=/usr/imagemagick')

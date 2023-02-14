@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('freetype', '/usr/freetype'))
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared')
+            ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared --with-brotli=no')
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
@@ -51,7 +51,7 @@ return function (Preprocessor $p) {
     );
 
     $p->addExtension((new Extension('gd'))
-        ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr')
+        ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr/freetype')
         ->depends('libjpeg', 'freetype', 'libwebp', 'libpng', 'giflib')
     );
 };

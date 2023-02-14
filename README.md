@@ -1,5 +1,16 @@
 # swoole-cli
 
+## Clone
+```shell
+git clone --recursive git@github.com:swoole/swoole-cli.git
+```
+
+或者
+```shell
+git clone git@github.com:swoole/swoole-cli.git
+git submodule update --init
+```
+
 ## 生成构建脚本
 
 ```shell
