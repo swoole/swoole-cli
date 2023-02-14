@@ -21,12 +21,18 @@ make_<?=$item->name?>() {
     cd <?=$this->workDir?>/thirdparty
     echo "build <?=$item->name?>"
     mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
-    cd <?=$item->name?> && \
-    echo  "<?=$item->configure?>"
+    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?> && \
+    cd <?=$item->name .PHP_EOL?>
+
     <?php if (!empty($item->configure)): ?>
-    <?=$item->configure?> && \
+cat <<'__EOF__'
+   <?= $item->configure . PHP_EOL ?>
+__EOF__
+   <?=$item->configure . PHP_EOL ?>
+   result_code=$?
+   [[ $result_code -ne 0 ]] &&  echo "[configure failure]" && exit $result_code;
     <?php endif; ?>
+
     make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
     <?php if ($item->beforeInstallScript): ?>
     <?=$item->beforeInstallScript?> && \
