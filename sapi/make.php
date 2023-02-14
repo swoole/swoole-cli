@@ -23,25 +23,32 @@ make_<?=$item->name?>() {
     mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
     tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?> && \
     cd <?=$item->name .PHP_EOL?>
-
     <?php if (!empty($item->configure)): ?>
 cat <<'__EOF__'
-   <?= $item->configure . PHP_EOL ?>
+    <?= $item->configure . PHP_EOL ?>
 __EOF__
-   <?=$item->configure . PHP_EOL ?>
-   result_code=$?
-   [[ $result_code -ne 0 ]] &&  echo "[configure failure]" && exit $result_code;
+    <?=$item->configure . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[configure failure]" && return  $result_code;
     <?php endif; ?>
-
-    make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
+    make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[make failure]" && return  $result_code;
     <?php if ($item->beforeInstallScript): ?>
-    <?=$item->beforeInstallScript?> && \
+    <?=$item->beforeInstallScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[ before make install failure]" && return  $result_code;
     <?php endif; ?>
-    make install <?=$item->makeInstallOptions?> && \
+    make install <?=$item->makeInstallOptions . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[make install failure]" && return  $result_code;
     <?php if ($item->afterInstallScript): ?>
-    <?=$item->afterInstallScript?> && \
+    <?=$item->afterInstallScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[ after make  install failure]" && return  $result_code;
     <?php endif; ?>
     cd -
+    return 0
 }
 
 clean_<?=$item->name?>() {
@@ -102,7 +109,13 @@ elif [ "$1" = "all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then
-    make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
+    make_<?= $item->name .PHP_EOL ?>
+    result_code=$?
+    if [[ $result_code -ne 0 ]] ;then
+        echo "[<?= $item->name ?> make failure]" && exit $result_code
+    else
+        echo "[SUCCESS] make <?=$item->name?>"
+    fi
 elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
 <?php endforeach; ?>
