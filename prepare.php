@@ -1016,7 +1016,7 @@ install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
 install_giflib($p);
 install_libpng($p);
 install_libjpeg($p);
-install_harfbuzz($p);
+install_harfbuzz($p); //默认跳过安装
 install_freetype($p); //依赖 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz (暂不启用)
 install_libwebp($p);
 install_sqlite3($p);
@@ -1031,7 +1031,7 @@ install_cares($p);
 //install_libedit($p);
 install_ncurses($p);
 install_readline($p);//依赖 ncurses
-install_imagemagick($p);
+install_imagemagick($p);//依赖 freetype png webp xml zip zlib
 install_libidn2($p);  //默认跳过安装
 install_nghttp2($p);  //默认跳过安装
 install_curl($p); //curl 依赖 openssl brotli(暂不启用) zstd(暂不启用) idn(暂不启用) idn2(暂不启用) nghttp2(暂不启用) nghttp3(暂不启用)
