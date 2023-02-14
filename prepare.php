@@ -420,7 +420,7 @@ function install_cares(Preprocessor $p)
             ->withPkgName('libcares')
             ->withPkgConfig('/usr/cares/lib/pkgconfig')
             ->withLdflags('-L/usr/cares/lib')
-            ->withBinPath('/usr/c-ares/bin/')
+            ->withBinPath('/usr/cares/bin/')
     );
 }
 
