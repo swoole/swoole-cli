@@ -6,7 +6,8 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     // curl/imagemagick 对 brotli 静态库的支持有点问题，暂时关闭
-    if (0) {
+    $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares';
+    if (getenv('SWOOLE_CLI_WITH_BROTLI')) {
         $p->addLibrary(
             (new Library('brotli', '/usr/brotli'))
                 ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
@@ -24,10 +25,11 @@ return function (Preprocessor $p) {
                 ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
                 ->withHomePage('https://github.com/google/brotli')
         );
+        $options .=  ' --with-brotli-dir=/usr/brotli';
     }
+
     $p->addExtension((new Extension('swoole'))
-        ->withOptions('--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ' .
-            '--with-brotli-dir=/usr/brotli')
+        ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->depends('curl', 'openssl', 'cares', 'zlib')
