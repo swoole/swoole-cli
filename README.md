@@ -16,7 +16,7 @@
 
 - [swoole-cli release site 1 (recommend)](https://www.swoole.com/download)
 - [swoole-cli release site 2](https://github.com/swoole/swoole-src/releases)
-- [swoole-cli release site 3](https://github.com/swoole/swoole-cli/releases/tag/v5.0.1)
+- [swoole-cli release site 3](https://github.com/swoole/swoole-cli/releases)
 
 
 ## Clone
