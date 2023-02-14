@@ -276,6 +276,19 @@ class Preprocessor
         return $this->osType;
     }
 
+    function getSystemArch()
+    {
+        $uname = posix_uname();
+        switch ($uname['machine']) {
+            case 'x86_64':
+                return 'x64';
+            case 'aarch64':
+                return 'arm64';
+            default:
+                return $uname['machine'];
+        }
+    }
+
     function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
