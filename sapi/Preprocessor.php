@@ -575,6 +575,11 @@ class Preprocessor
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
 
+        $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
+        if ($skip_library_download == 1) {
+            $this->generateDownloadLibraryLinks();
+        }
+
         ob_start();
         include __DIR__ . '/make.php';
         file_put_contents($this->rootDir . '/make.sh', ob_get_clean());
@@ -587,16 +592,6 @@ class Preprocessor
         include __DIR__ . '/credits.php';
         file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
-        $download_urls=[];
-        foreach ($this->libraryList as $item) {
-            if (0 && empty($item->label)) {
-                continue;
-            }
-            # $download_urls[$item->label]=$item->url;
-            # $download_urls[]=$item->url;
-            $download_urls[]=$item->url .(empty($item->file)?'':PHP_EOL.' out='.$item->file);
-        }
-        file_put_contents($this->rootDir . '/bin/download_urls.txt',implode(PHP_EOL,$download_urls));
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
@@ -632,6 +627,23 @@ class Preprocessor
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
         }
+    }
+
+    protected function generateDownloadLibraryLinks():void
+    {
+        $download_urls=[];
+        foreach ($this->libraryList as $item) {
+            if (0 && empty($item->label)) {
+                continue;
+            }
+            # $download_urls[$item->label]=$item->url;
+            # $download_urls[]=$item->url;
+            $download_urls[]=$item->url .(empty($item->file)?'':PHP_EOL.' out='.$item->file);
+        }
+        if(!is_dir($this->rootDir . '/var/')){
+            mkdir($this->rootDir . '/var/',0755,true);
+        }
+        file_put_contents($this->rootDir . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
     }
 
 }
