@@ -29,25 +29,24 @@ cat <<'__EOF__'
 __EOF__
     <?=$item->configure . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[configure failure]" && return  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
     <?php endif; ?>
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[make failure]" && return  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[make FAILURE]" && exit  $result_code;
     <?php if ($item->beforeInstallScript): ?>
     <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ before make install failure]" && return  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[ before make install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
     make install <?=$item->makeInstallOptions . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[make install failure]" && return  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit  $result_code;
     <?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ after make  install failure]" && return  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
-    cd -
     return 0
 }
 
@@ -109,13 +108,7 @@ elif [ "$1" = "all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then
-    make_<?= $item->name .PHP_EOL ?>
-    result_code=$?
-    if [[ $result_code -ne 0 ]] ;then
-        echo "[<?= $item->name ?> make failure]" && exit $result_code
-    else
-        echo "[SUCCESS] make <?=$item->name?>"
-    fi
+    make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
 <?php endforeach; ?>
