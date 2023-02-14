@@ -8,7 +8,6 @@ $homeDir = getenv('HOME');
 
 $p = new Preprocessor(__DIR__);
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
-$p->setDockerVersion('1.5');
 $p->parseArguments($argc, $argv);
 if ($p->getOsType() == 'macos') {
     $p->setWorkDir(__DIR__);

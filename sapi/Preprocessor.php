@@ -166,6 +166,9 @@ class Extension extends Project
 
 class Preprocessor
 {
+    const VERSION = '1.5';
+    const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
+
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
@@ -289,14 +292,19 @@ class Preprocessor
         }
     }
 
+    function getImageTag(): string
+    {
+        $arch = $this->getSystemArch();
+        if ($arch == 'x64') {
+            return self::VERSION;
+        } else {
+            return self::VERSION . '-' . $arch;
+        }
+    }
+
     function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
-    }
-
-    function setDockerVersion(string $dockerVersion)
-    {
-        $this->dockerVersion = $dockerVersion;
     }
 
     function setPrefix(string $prefix)

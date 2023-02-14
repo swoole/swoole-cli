@@ -2,6 +2,7 @@
 /**
  * @var $this SwooleCli\Preprocessor
  */
+use SwooleCli\Preprocessor;
 ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=$(pwd)
@@ -88,9 +89,9 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-  sudo docker build -t phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> .
+    sudo docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:<?=$this->workDir?> phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> /bin/bash
+    sudo docker run -it -v $ROOT:<?=$this->workDir?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
     exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library
