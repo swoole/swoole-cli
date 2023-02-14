@@ -2,12 +2,17 @@
 
 namespace SwooleCli;
 
+use MJS\TopSort\CircularDependencyException;
+use MJS\TopSort\ElementNotFoundException;
+use MJS\TopSort\Implementations\StringSort;
+
 abstract class Project
 {
     public string $name;
     public string $homePage = '';
     public string $license = '';
     public string $prefix = '';
+    public array $deps = [];
     public int $licenseType = self::LICENSE_SPEC;
 
     public const LICENSE_SPEC = 0;
@@ -41,6 +46,12 @@ abstract class Project
     public function withManual(string $manual): static
     {
         $this->manual = $manual;
+            return $this;
+    }
+
+    function depends(string ...$libs): static
+    {
+        $this->deps += $libs;
         return $this;
     }
 }
@@ -239,6 +250,9 @@ class Extension extends Project
 
 class Preprocessor
 {
+    const VERSION = '1.5';
+    const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
+
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
@@ -353,9 +367,33 @@ class Preprocessor
         return $this->osType;
     }
 
+
     public function getRootDir()
     {
         return $this->rootDir;
+    }
+
+    function getSystemArch()
+    {
+        $uname = posix_uname();
+        switch ($uname['machine']) {
+            case 'x86_64':
+                return 'x64';
+            case 'aarch64':
+                return 'arm64';
+            default:
+                return $uname['machine'];
+        }
+    }
+
+    function getImageTag(): string
+    {
+        $arch = $this->getSystemArch();
+        if ($arch == 'x64') {
+            return self::VERSION;
+        } else {
+            return self::VERSION . '-' . $arch;
+        }
     }
 
     function setPhpSrcDir(string $phpSrcDir)
@@ -372,6 +410,7 @@ class Preprocessor
     {
         $this->dockerVersion = $dockerVersion;
     }
+
 
     function setPrefix(string $prefix)
     {
@@ -471,6 +510,7 @@ class Preprocessor
 
             if (!is_file($ext->path)) {
                 _download:
+
                 # $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
                 # echo "curl download {$download_name} " . PHP_EOL;
                 # echo `cd {$this->extensionDir} && pecl download $download_name && cd -`;
@@ -556,6 +596,7 @@ class Preprocessor
             }
         }
 
+        $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
                 echo "unsupported extension[$ext]\n";
@@ -568,10 +609,45 @@ class Preprocessor
         }
     }
 
+    /**
+     * @throws CircularDependencyException
+     * @throws ElementNotFoundException
+     */
+    protected function sortLibrary(): void
+    {
+        $libs = [];
+        $sorter = new StringSort();
+        foreach ($this->libraryList as $item) {
+            $libs[$item->name] = $item;
+            $sorter->add($item->name, $item->deps);
+        }
+        $sorted_list = $sorter->sort();
+        foreach ($this->extensionList as $item) {
+            if ($item->deps) {
+                foreach ($item->deps as $lib) {
+                    if (!isset($libs[$lib])) {
+                        throw new \RuntimeException("The ext-{$item->name} depends on $lib, but it does not exist");
+                    }
+                }
+            }
+        }
+
+        $libraryList = [];
+        foreach ($sorted_list as $name) {
+            $libraryList[] = $libs[$name];
+        }
+        $this->libraryList = $libraryList;
+    }
+
+    /**
+     * @throws CircularDependencyException
+     * @throws ElementNotFoundException
+     */
     function gen()
     {
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
 
@@ -579,6 +655,9 @@ class Preprocessor
         if ($skip_library_download == 1) {
             $this->generateDownloadLibraryLinks();
         }
+
+        // $this->sortLibrary();
+
 
         ob_start();
         include __DIR__ . '/make.php';

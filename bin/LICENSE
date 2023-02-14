@@ -1,0 +1,33 @@
+License
+---------------------------------------------------------
+musl-libc: http://git.musl-libc.org/cgit/musl/tree/COPYRIGHT
+cares: https://c-ares.org/license.html
+openssl: https://github.com/openssl/openssl/blob/master/LICENSE.txt
+libiconv: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+libxml2: https://www.opensource.org/licenses/mit-license.html
+bzip2: https://www.sourceware.org/bzip2/
+zlib: https://zlib.net/zlib_license.html
+curl: https://github.com/curl/curl/blob/master/COPYING
+oniguruma: https://github.com/kkos/oniguruma/blob/master/COPYING
+zip: https://libzip.org/license/
+sqlite3: https://www.sqlite.org/copyright.html
+icu: https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE
+libxslt: http://www.opensource.org/licenses/mit-license.html
+gmp: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+libsodium: https://en.wikipedia.org/wiki/ISC_license
+ncurses: https://github.com/projectceladon/libncurses/blob/master/README
+readline: http://www.gnu.org/licenses/gpl.html
+libjpeg: https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md
+freetype: https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT
+libwebp: https://github.com/webmproject/libwebp/blob/main/COPYING
+libpng: http://www.libpng.org/pub/png/src/libpng-LICENSE.txt
+giflib: http://giflib.sourceforge.net/intro.html
+brotli: https://github.com/google/brotli/blob/master/LICENSE
+libyaml: https://pyyaml.org/wiki/LibYAML
+imagemagick: https://imagemagick.org/script/license.php
+mimalloc: https://github.com/microsoft/mimalloc/blob/master/LICENSE
+php: https://github.com/php/php-src/blob/master/LICENSE
+php-ext-redis: https://github.com/phpredis/phpredis/blob/develop/COPYING
+php-ext-swoole: https://github.com/swoole/swoole-src/blob/master/LICENSE
+php-ext-yaml: https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE
+php-ext-imagick: https://github.com/Imagick/imagick/blob/master/LICENSE

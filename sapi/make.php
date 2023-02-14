@@ -2,6 +2,7 @@
 /**
  * @var $this SwooleCli\Preprocessor
  */
+use SwooleCli\Preprocessor;
 ?>
 
 
@@ -151,7 +152,7 @@ EOF
 }
 
 make_php() {
-    make EXTRA_CFLAGS='-fno-ident -Xcompiler -march=nehalem -Xcompiler -mtune=haswell -Os' \
+    make EXTRA_CFLAGS='-fno-ident -Os' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?=$this->extraLdflags?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
             echo $item->ldflags;
@@ -171,9 +172,9 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-  sudo docker build -t phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> .
+    sudo docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:<?=$this->workDir?> phpswoole/swoole_cli_os:<?= $this->dockerVersion ?> /bin/bash
+    sudo docker run -it -v $ROOT:<?=$this->workDir?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
     exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library
@@ -190,7 +191,7 @@ elif [ "$1" = "build" ] ;then
 elif [ "$1" = "archive" ] ;then
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-x64.tar.xz
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     strip swoole-cli
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
     mv ${SWOOLE_CLI_FILE} ../

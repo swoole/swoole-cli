@@ -1,22 +1,30 @@
 #!/usr/bin/env php
 <?php
-require __DIR__ . '/sapi/Preprocessor.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
-use SwooleCli\Library;
+
+$homeDir = getenv('HOME');
 
 $p = new Preprocessor(__DIR__);
-$p->setPhpSrcDir(getenv('HOME') . '/.phpbrew/build/php-8.1.12');
-$p->setDockerVersion('1.5');
+
+$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`);
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
+
+
+
 
 if ($p->getOsType() == 'macos') {
     $p->setWorkDir(__DIR__);
     $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
-    //$p->setExtraOptions('--with-config-file-path=/usr/local/etc');
-    $p->addEndCallback(function () use ($p) {
-        file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', $p->getWorkDir() . '/usr', file_get_contents(__DIR__ . '/make.sh')));
+    $p->addEndCallback(function () use ($p, $homeDir) {
+        $libDir = $homeDir . '/.swoole-cli';
+        if (!is_dir($libDir)) {
+            mkdir($libDir);
+        }
+        // The lib directory MUST not be in the current directory, otherwise the php make clean script will delete librarys
+        file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', $homeDir . '/.swoole-cli', file_get_contents(__DIR__ . '/make.sh')));
     });
 
 }
@@ -1064,5 +1072,6 @@ install_re2c($p);
  */
 
 $p->parseArguments($argc, $argv);
+
 $p->gen();
 $p->info();

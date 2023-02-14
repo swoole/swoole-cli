@@ -302,6 +302,7 @@ tmp-php.ini
 /pool/
 !/pool/.gitkeep
 /work/
+/vendor
 /thirdparty
 !/thirdparty/.gitkeep
 /usr

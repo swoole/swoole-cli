@@ -1,0 +1,10 @@
+{
+  "require": {
+    "marcj/topsort": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SwooleCli\\": "sapi"
+    }
+  }
+}
