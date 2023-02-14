@@ -6,9 +6,9 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $p->addLibrary(
-        (new Library('cares'))
+        (new Library('cares',"/usr/cares"))
             ->withUrl('https://c-ares.org/download/c-ares-1.18.1.tar.gz')
-            ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
+            ->withConfigure('./configure --prefix=/usr/cares --enable-static --disable-shared')
             ->withPkgName('libcares')
             ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
             ->withHomePage('https://c-ares.org/')
@@ -25,5 +25,5 @@ return function (Preprocessor $p) {
             ->withHomePage('https://curl.se/')
             ->depends('openssl', 'cares', 'zlib')
     );
-    $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
+    $p->addExtension((new Extension('curl'))->withOptions('--with-curl=/usr/curl')->depends('curl'));
 };

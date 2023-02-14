@@ -5,11 +5,11 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $lib = new Library('libjpeg');
+    $lib = new Library('libjpeg','/usr/libjpeg');
     $lib->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
-        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr .')
-        ->withLdflags('-L/usr/lib64')
-        ->withPkgConfig('/usr/lib64/pkgconfig')
+        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg .')
+        ->withLdflags('-L/usr/libjpeg/lib64')
+        ->withPkgConfig('/usr/libjpeg/lib64/pkgconfig')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD);
@@ -21,7 +21,19 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('freetype', '/usr/freetype'))
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
-            ->withConfigure('./configure --prefix=/usr/freetype --enable-static --disable-shared --with-brotli=no')
+            ->withConfigure(<<<EOF
+            export BZIP2_CFLAGS='-I/usr/bzip2/include'
+            export BZIP2_LIBS='-L/usr/bzip2/lib -lbz2'
+            ./configure --prefix=/usr/freetype \
+            --enable-static \
+            --disable-shared  \
+            --with-zlib=yes \
+            --with-bzip2=yes \
+            --with-png=yes \
+            --with-harfbuzz=no \
+            --with-brotli=no
+EOF
+            )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
@@ -51,7 +63,7 @@ return function (Preprocessor $p) {
     );
 
     $p->addExtension((new Extension('gd'))
-        ->withOptions('--enable-gd --with-jpeg=/usr --with-freetype=/usr/freetype')
+        ->withOptions('--enable-gd --with-jpeg=/usr/libjpeg --with-freetype=/usr/freetype')
         ->depends('libjpeg', 'freetype', 'libwebp', 'libpng', 'giflib')
     );
 };
