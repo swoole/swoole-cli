@@ -1018,7 +1018,7 @@ install_libpng($p);
 install_libjpeg($p);
 install_harfbuzz($p); //默认跳过安装
 install_freetype($p); //依赖 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz (暂不启用)
-install_libwebp($p);
+install_libwebp($p); //依赖 giflib
 install_sqlite3($p);
 install_icu($p); //依赖  -lstdc++
 install_oniguruma($p);
