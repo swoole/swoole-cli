@@ -55,6 +55,8 @@ class Library extends Project
     public string $file = '';
     public string $ldflags = '';
     public string $makeOptions = '';
+    public string $makeInstallCommand = 'install';
+
     public string $makeInstallOptions = '';
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
@@ -115,6 +117,12 @@ class Library extends Project
     function withScriptAfterInstall(string $script)
     {
         $this->afterInstallScript = $script;
+        return $this;
+    }
+
+    public function withMakeInstallCommand(string $makeInstallCommand): static
+    {
+        $this->makeInstallCommand = $makeInstallCommand;
         return $this;
     }
 
