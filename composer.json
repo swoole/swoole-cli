@@ -5,6 +5,7 @@
   "autoload": {
     "psr-4": {
       "SwooleCli\\": "sapi"
-    }
+    },
+    "files": ["library_install_builder.php"]
   }
 }
