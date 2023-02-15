@@ -5,6 +5,9 @@
 SWOOLE_CLI_WITH_BROTLI=yes SWOOLE_CLI_EXT_INCLUDE="./conf.d" php prepare.php +mimalloc -mongodb
 ```
 
+SKIP_LIBRARY_DOWNLOAD
+----
+跳过下载依赖库
 
 SWOOLE_CLI_WITH_BROTLI
 ----
