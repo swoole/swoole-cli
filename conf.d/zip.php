@@ -7,8 +7,9 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     // MUST be in the /usr directory
     $p->addLibrary(
-        (new Library('zip',"/usr/zip"))
+        (new Library('zip'))
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
+            ->withPrefix('/usr/libyaml')
             ->withConfigure('
                  cmake -Wno-dev .  \
                 -DCMAKE_INSTALL_PREFIX=/usr/zip  \

@@ -6,8 +6,9 @@ use SwooleCli\Library;
 
 return function (Preprocessor $p) {
     $p->addLibrary(
-        (new Library('ncurses',"/usr/ncurses/"))
+        (new Library('ncurses'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withPrefix('/usr/ncurses/')
             ->withConfigure(<<<EOF
             mkdir -p /usr/ncurses/lib/pkgconfig
             ./configure \
@@ -57,8 +58,9 @@ EOF
     );
     if (0) {
         $p->addLibrary(
-            (new Library('libedit', '/usr/libedit'))
+            (new Library('libedit'))
                 ->withUrl('https://thrysoee.dk/editline/libedit-20210910-3.1.tar.gz')
+                ->withPrefix('/usr/libedit')
                 ->withConfigure('./configure --prefix=/usr/libedit --enable-static --disable-shared')
                 ->withLdflags('')
                 ->withLicense('http://www.netbsd.org/Goals/redistribution.html', Library::LICENSE_BSD)
@@ -66,8 +68,9 @@ EOF
         );
     } else {
         $p->addLibrary(
-            (new Library('readline', '/usr/readline'))
+            (new Library('readline'))
                 ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
+                ->withPrefix('/usr/readline')
                 ->withConfigure(<<<EOF
                 ./configure \
                 --prefix=/usr/readline \
