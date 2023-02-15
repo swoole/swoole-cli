@@ -375,7 +375,7 @@ class Preprocessor
 
     function getSystemArch()
     {
-        $uname = posix_uname();
+        $uname = \posix_uname();
         switch ($uname['machine']) {
             case 'x86_64':
                 return 'x64';

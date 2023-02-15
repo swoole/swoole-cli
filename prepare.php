@@ -3,6 +3,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
+use SwooleCli\Library;
 
 $homeDir = getenv('HOME');
 
@@ -819,7 +820,8 @@ function install_liblzma(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('liblzma'))
-            ->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
+            //->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
+            ->withUrl('https://jaist.dl.sourceforge.net/project/lzmautils/xz-5.4.1.tar.xz')
             ->withFile('xz-5.2.9.tar.gz')
             ->withConfigure('./configure --prefix=/usr/liblzma/ --enable-static  --disable-shared --disable-doc')
             ->withPkgName('liblzma')
