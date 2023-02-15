@@ -22,21 +22,33 @@ make_<?=$item->name?>() {
     cd <?=$this->workDir?>/thirdparty
     echo "build <?=$item->name?>"
     mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?>  && \
-    cd <?=$item->name?> && \
-    echo  "<?=$item->configure?>"
+    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?> && \
+    cd <?=$item->name .PHP_EOL?>
     <?php if (!empty($item->configure)): ?>
-    <?=$item->configure?> && \
+cat <<'__EOF__'
+    <?= $item->configure . PHP_EOL ?>
+__EOF__
+    <?=$item->configure . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
     <?php endif; ?>
-    make -j <?=$this->maxJob?>  <?=$item->makeOptions?> && \
+    make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[make FAILURE]" && exit  $result_code;
     <?php if ($item->beforeInstallScript): ?>
-    <?=$item->beforeInstallScript?> && \
+    <?=$item->beforeInstallScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[ before make install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
-    make install <?=$item->makeInstallOptions?> && \
+    make install <?=$item->makeInstallOptions . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit  $result_code;
     <?php if ($item->afterInstallScript): ?>
-    <?=$item->afterInstallScript?> && \
+    <?=$item->afterInstallScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
-    cd -
+    return 0
 }
 
 clean_<?=$item->name?>() {
