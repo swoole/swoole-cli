@@ -13,6 +13,7 @@
 brew uninstall --ignore-dependencies oniguruma
 brew uninstall --ignore-dependencies brotli
 brew uninstall --ignore-dependencies freetype
+brew uninstall --ignore-dependencies zstd
 ```
 
 # 问题
@@ -21,10 +22,18 @@ brew uninstall --ignore-dependencies freetype
 下载源代码，自行编译安装
 
 ## 缺少`libtool`
+可使用 `which glibtool` 找到所在路径，使用 `ln -s` 创建软连接
+
 ```shell
+ln -s /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -s /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 ```
 
+若使用 `brew` 安装，可能是在 `/opt/homebrew/bin/glibtool` 位置
+```shell
+ln -s /opt/homebrew/bin/glibtool /opt/homebrew/bin/libtool
+ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
+```
 
 ## curl configure 检测不通过
 修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
@@ -54,4 +63,3 @@ export LIBZIP_LIBS=$(pkg-config --libs libzip)
 export LIBSODIUM_CFLAGS=$(pkg-config --cflags libsodium)
 export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```
-
