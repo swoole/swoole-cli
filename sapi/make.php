@@ -20,10 +20,10 @@ OPTIONS="--disable-all \
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
-    if [ ! -d <?=$this->workDir?>/thirdparty ]; then
+    if [ ! -d <?=$this->workDir?>/thirdparty/<?=$item->name?> ]; then
         mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name . PHP_EOL?>
     fi
-    cd <?=$this->workDir?>/thirdparty
+    cd <?=$this->workDir?>/thirdparty/<?=$item->name?>
     tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?> && \
     cd <?=$item->name .PHP_EOL?>
     <?php if (!empty($item->configure)): ?>
