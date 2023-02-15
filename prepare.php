@@ -80,7 +80,7 @@ install_curl($p); //curl 依赖 openssl brotli(暂不启用) zstd(暂不启用) 
 install_libsodium($p);
 install_libyaml($p);
 install_mimalloc($p);
-install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib
+install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt
 install_libffi($p);
 install_php_internal_extensions($p);
 install_php_extension_micro($p);

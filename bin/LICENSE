@@ -40,3 +40,4 @@ php-ext-swoole: https://github.com/swoole/swoole-src/blob/master/LICENSE
 php-ext-yaml: https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE
 php-ext-imagick: https://github.com/Imagick/imagick/blob/master/LICENSE
 php-ext-mongodb: https://github.com/mongodb/mongo-php-driver/blob/master/LICENSE
+php-ext-ffi: http://github.com/libffi/libffi/blob/master/LICENSE
