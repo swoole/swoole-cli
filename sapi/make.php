@@ -21,7 +21,7 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
     if [ ! -d <?=$this->workDir?>/thirdparty ]; then
-        mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?>
+        mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name . PHP_EOL?>
     fi
     cd <?=$this->workDir?>/thirdparty
     tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?> && \
