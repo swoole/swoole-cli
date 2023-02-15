@@ -30,10 +30,13 @@ make_<?=$item->name?>() {
     echo "skip install library <?=$item->name?>" ;
     return 0 ;
     <?php endif ;?>
+
     cd <?=$this->workDir?>/thirdparty
+
     <?php if ($item->cleanBuildDirectory) : ?>
     test -d <?= $this->workDir ?>/thirdparty/<?= $item->name ?> && rm -rf <?= $this->workDir ?>/thirdparty/<?= $item->name ?><?= PHP_EOL; ?>
     <?php endif; ?>
+
     mkdir -p <?= $this->workDir ?>/thirdparty/<?= $item->name ?><?= PHP_EOL ?>
     <?php if($item->untarArchiveCommand == 'tar' ):?>
      tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?><?= PHP_EOL; ?>
@@ -44,12 +47,14 @@ make_<?=$item->name?>() {
     <?php if($item->untarArchiveCommand == 'mv'):?>
     cp -rf  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->workDir?>/thirdparty/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
     <?php endif ; ?>
+
     cd <?=$item->name?> ;
     <?php if (!empty($item->beforeConfigureScript)) : ?>
     <?= $item->beforeConfigureScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -gt 1 ]] &&  echo "[before configure script FAILURE]" && exit $result_code;
     <?php endif; ?>
+
     <?php if (!empty($item->configure)): ?>
 cat <<'__EOF__'
     <?= $item->configure . PHP_EOL ?>
@@ -58,17 +63,21 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
     <?php endif; ?>
+
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
+
     <?php if (!empty($item->beforeInstallScript)): ?>
     <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[before install script  FAILURE]" && exit $result_code;
     <?php endif; ?>
+
     make  <?= empty($item->makeInstallOptions)? "install" : $item->makeInstallOptions . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit $result_code;
+
     <?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
@@ -97,25 +106,25 @@ make_all_library() {
 make_config() {
     cd <?= $this->workDir . PHP_EOL ?>
     export   ONIG_CFLAGS=$(pkg-config --cflags  --static oniguruma) ;
-    export   ONIG_LIBS=$(pkg-config --libs  --static oniguruma) ;
+    export   ONIG_LIBS=$(pkg-config   --libs    --static oniguruma) ;
 
     export   LIBSODIUM_CFLAGS=$(pkg-config --cflags  --static libsodium) ;
-    export   LIBSODIUM_LIBS=$(pkg-config --libs  --static libsodium) ;
+    export   LIBSODIUM_LIBS=$(pkg-config   --libs    --static libsodium) ;
 
     export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
-    export   LIBZIP_LIBS=$(pkg-config --libs --static libzip) ;
-
-    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
-    export   LIBPQ_LIBS=$(pkg-config  --libs  --static       libpq)
+    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
 
     export   XSL_CFLAGS=$(pkg-config --cflags  --static libxslt) ;
-    export   XSL_LIBS=$(pkg-config --libs  --static libxslt) ;
+    export   XSL_LIBS=$(pkg-config   --libs    --static libxslt) ;
 
+    export   ICU_CFLAGS=$(pkg-config --cflags icu-uc icu-io icu-i18n)  ;
+    export   ICU_LIBS=$(pkg-config   --libs   icu-uc icu-io icu-i18n)  ;
 
+    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
+    export   LIBPQ_LIBS=$(pkg-config    --libs   --static       libpq)
 
-    export   ICU_CFLAGS=$(pkg-config --cflags icu-uc)  ;
-    export   ICU_LIBS=$(pkg-config  --libs   icu-uc icu-io icu-i18n)  ;
 :<<'EOF'
+
     export   NCURSES_CFLAGS=$(pkg-config --cflags --static  ncurses);
     export   NCURSES_LIBS=$(pkg-config  --libs --static ncurses);
 
