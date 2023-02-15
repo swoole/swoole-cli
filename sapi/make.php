@@ -26,6 +26,7 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
+
     <?php if ($item->skipBuildInstall == true): ?>
         echo "skip install library <?=$item->name?>" ;
         return 0 ;
@@ -38,7 +39,9 @@ make_<?=$item->name?>() {
         test -d <?= $this->workDir ?>/thirdparty/<?= $item->name ?> && rm -rf <?= $this->workDir ?>/thirdparty/<?= $item->name ?><?= PHP_EOL; ?>
     <?php endif; ?>
 
-    mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name .PHP_EOL ?>
+    if [ ! -d <?=$this->workDir?>/thirdparty ]; then
+        mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name . PHP_EOL?>
+    fi
 
     <?php if($item->untarArchiveCommand == 'tar' ):?>
         tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?><?= PHP_EOL; ?>
@@ -46,7 +49,6 @@ make_<?=$item->name?>() {
     <?php if($item->untarArchiveCommand == 'unzip'):?>
         unzip -d  <?=$this->workDir?>/thirdparty/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
     <?php endif ; ?>
-
     <?php if($item->untarArchiveCommand == 'mv'):?>
         cp -rf  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->workDir?>/thirdparty/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
     <?php endif ; ?>
@@ -59,14 +61,13 @@ make_<?=$item->name?>() {
         [[ $result_code -gt 1 ]] &&  echo "[before configure script failure]" && exit $result_code;
     <?php endif; ?>
 
-    cat <<'__EOF__'
+    <?php if (!empty($item->configure)): ?>
+cat <<'__EOF__'
     <?= $item->configure . PHP_EOL ?>
 __EOF__
-
-    <?php if (!empty($item->configure)): ?>
-        <?=$item->configure . PHP_EOL ?>
-        result_code=$?
-        [[ $result_code -ne 0 ]] &&  echo "[configure failure]" && exit $result_code;
+    <?=$item->configure . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
     <?php endif; ?>
 
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
@@ -88,7 +89,7 @@ __EOF__
         result_code=$?
         [[ $result_code -gt 1 ]] &&  echo "[after install script  failure]" && exit $result_code;
     <?php endif; ?>
-    cd -
+    return 0
 }
 
 clean_<?=$item->name?>() {
@@ -106,7 +107,8 @@ make_all_library() {
 <?php endforeach; ?>
 }
 
-config_php() {
+
+make_config() {
     export   ONIG_CFLAGS=$(pkg-config --cflags  --static oniguruma) ;
     export   ONIG_LIBS=$(pkg-config --libs  --static oniguruma) ;
 
@@ -151,7 +153,7 @@ EOF
     ./configure $OPTIONS
 }
 
-make_php() {
+make_build() {
     make EXTRA_CFLAGS='-fno-ident -Os' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?=$this->extraLdflags?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
@@ -185,9 +187,9 @@ elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
-    config_php
+    make_config
 elif [ "$1" = "build" ] ;then
-    make_php
+    make_build
 elif [ "$1" = "archive" ] ;then
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
