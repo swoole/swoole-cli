@@ -94,7 +94,7 @@ function install_imagemagick(Preprocessor $p)
               --with-raw=no \
               --with-tiff=no \
               --with-zstd=no \
-              --with-freetype=no
+              --with-freetype=yes
               ')
             ->withPkgName('ImageMagick')
     );
