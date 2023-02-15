@@ -33,7 +33,6 @@ pgsql: https://www.postgresql.org/about/licence/
 libffi: http://github.com/libffi/libffi/blob/master/LICENSE
 php_extension_micro: https://github.com/dixyes/phpmicro/blob/master/LICENSE
 bison: https://www.gnu.org/licenses/gpl-3.0.html
-re2c: https://github.com/skvadrik/re2c/blob/master/LICENSE
 php: https://github.com/php/php-src/blob/master/LICENSE
 php-ext-redis: https://github.com/phpredis/phpredis/blob/develop/COPYING
 php-ext-swoole: https://github.com/swoole/swoole-src/blob/master/LICENSE

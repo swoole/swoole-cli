@@ -84,9 +84,14 @@ install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 li
 install_libffi($p);
 install_php_internal_extensions($p);
 install_php_extension_micro($p);
-install_bison($p);
-install_re2c($p);
 
+if ($p->getOsType() == 'macos') {
+    install_bison($p);
+}
+
+if ($p->getOsType() == 'win') {
+    install_re2c($p);
+}
 
 # 扩展 mbstring 依赖 oniguruma 库
 # 扩展 intl 依赖 ICU 库

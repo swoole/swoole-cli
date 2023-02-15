@@ -653,9 +653,9 @@ class Preprocessor
 
         $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
         if ($skip_library_download == 1) {
-            $this->generateDownloadLibraryLinks();
+            $this->generateLibraryDownloadLinks();
         }
-
+        //暂时由手工维护，依赖关系
         // $this->sortLibrary();
 
 
@@ -708,7 +708,7 @@ class Preprocessor
         }
     }
 
-    protected function generateDownloadLibraryLinks():void
+    protected function generateLibraryDownloadLinks():void
     {
         $download_urls=[];
         foreach ($this->libraryList as $item) {
@@ -722,7 +722,7 @@ class Preprocessor
         if(!is_dir($this->rootDir . '/var/')){
             mkdir($this->rootDir . '/var/',0755,true);
         }
-        file_put_contents($this->rootDir . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
+        file_put_contents($this->rootDir . '/var/library_download_urls.txt',implode(PHP_EOL,$download_urls));
     }
 
 }

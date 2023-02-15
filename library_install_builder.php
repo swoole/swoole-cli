@@ -733,10 +733,28 @@ function install_php_internal_extensions($p)
 {
     $workDir=$p->getWorkDir();;
     $command = '';
+    $curl_need_replace_source_code=0;
     if ($p->getOsType() === 'macos') {
+        if(is_file("{$workDir}/ext/curl/config.m4.backup")){
+            $origin_file_md5=md5(file_get_contents("{$workDir}/ext/curl/config.m4"));
+            $backup_origin_file_md5=md5(file_get_contents("{$workDir}/ext/curl/config.m4.backup"));
+            if($origin_file_md5 == $backup_origin_file_md5 ){
+                $curl_need_replace_source_code=1;
+                $command .=<<<EOF
 
-        $command = <<<EOF
-        #  config.m4.backup不存在执行 才执行后面命令 (因为不能多次删除指定行）
+               test -f {$workDir}/ext/curl/config.m4.backup && rm -f {$workDir}/ext/curl/config.m4.backup
+               
+EOF;
+
+            }
+        } else {
+            $curl_need_replace_source_code=1;
+        }
+    }
+
+    if($curl_need_replace_source_code==1){
+                $command .= <<<EOF
+        #  config.m4.backup 不存在执行 才执行后面命令 (因为不能多次删除指定行）
         test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
 
 EOF;
