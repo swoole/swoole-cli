@@ -19,9 +19,11 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    cd <?=$this->workDir?>/thirdparty
     echo "build <?=$item->name?>"
-    mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
+    if [ ! -d <?=$this->workDir?>/thirdparty ]; then
+        mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name?>
+    fi
+    cd <?=$this->workDir?>/thirdparty
     tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?> && \
     cd <?=$item->name .PHP_EOL?>
     <?php if (!empty($item->configure)): ?>
@@ -66,7 +68,7 @@ make_all_library() {
 <?php endforeach; ?>
 }
 
-config_php() {
+make_config() {
     rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
@@ -80,7 +82,7 @@ config_php() {
     ./configure $OPTIONS
 }
 
-make_php() {
+make_build() {
     make EXTRA_CFLAGS='-fno-ident -Os' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?=$this->extraLdflags?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
@@ -114,9 +116,9 @@ elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
-    config_php
+    make_config
 elif [ "$1" = "build" ] ;then
-    make_php
+    make_build
 elif [ "$1" = "archive" ] ;then
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
