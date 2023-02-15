@@ -26,7 +26,6 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-
     <?php if ($item->skipBuildInstall == true): ?>
     echo "skip install library <?=$item->name?>" ;
     return 0 ;
@@ -35,9 +34,7 @@ make_<?=$item->name?>() {
     <?php if ($item->cleanBuildDirectory) : ?>
     test -d <?= $this->workDir ?>/thirdparty/<?= $item->name ?> && rm -rf <?= $this->workDir ?>/thirdparty/<?= $item->name ?><?= PHP_EOL; ?>
     <?php endif; ?>
-    if [ ! -d <?=$this->workDir?>/thirdparty ]; then
-        mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name . PHP_EOL?>
-    fi
+    mkdir -p <?= $this->workDir ?>/thirdparty/<?= $item->name ?><?= PHP_EOL ?>
     <?php if($item->untarArchiveCommand == 'tar' ):?>
      tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?><?= PHP_EOL; ?>
     <?php endif ;?>
@@ -47,15 +44,12 @@ make_<?=$item->name?>() {
     <?php if($item->untarArchiveCommand == 'mv'):?>
     cp -rf  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->workDir?>/thirdparty/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
     <?php endif ; ?>
-
     cd <?=$item->name?> ;
-
     <?php if (!empty($item->beforeConfigureScript)) : ?>
     <?= $item->beforeConfigureScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -gt 1 ]] &&  echo "[before configure script FAILURE]" && exit $result_code;
     <?php endif; ?>
-
     <?php if (!empty($item->configure)): ?>
 cat <<'__EOF__'
     <?= $item->configure . PHP_EOL ?>
@@ -64,21 +58,17 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
     <?php endif; ?>
-
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-
     <?php if (!empty($item->beforeInstallScript)): ?>
     <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[before install script  FAILURE]" && exit $result_code;
     <?php endif; ?>
-
-    make  <?= empty($item->makeInstallOptions)? "install" : $item->makeInstallOptions . PHP_EOL ?> <?= PHP_EOL ?>
+    make  <?= empty($item->makeInstallOptions)? "install" : $item->makeInstallOptions . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit $result_code;
-
     <?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
