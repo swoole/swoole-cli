@@ -80,13 +80,18 @@ install_curl($p); //curl 依赖 openssl brotli(暂不启用) zstd(暂不启用) 
 install_libsodium($p);
 install_libyaml($p);
 install_mimalloc($p);
-install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib
+install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt
 install_libffi($p);
 install_php_internal_extensions($p);
 install_php_extension_micro($p);
-install_bison($p);
-install_re2c($p);
 
+if ($p->getOsType() == 'macos') {
+    install_bison($p);
+}
+
+if ($p->getOsType() == 'win') {
+    install_re2c($p);
+}
 
 # 扩展 mbstring 依赖 oniguruma 库
 # 扩展 intl 依赖 ICU 库
