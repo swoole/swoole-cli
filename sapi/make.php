@@ -23,9 +23,8 @@ make_<?=$item->name?>() {
     if [ ! -d <?=$this->workDir?>/thirdparty/<?=$item->name?> ]; then
         mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name . PHP_EOL?>
     fi
-    cd <?=$this->workDir?>/thirdparty/<?=$item->name?>
-    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file?> && \
-    cd <?=$item->name .PHP_EOL?>
+    cd <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
+    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
     <?php if (!empty($item->configure)): ?>
 cat <<'__EOF__'
     <?= $item->configure . PHP_EOL ?>
@@ -50,14 +49,15 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
+    cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
 
 clean_<?=$item->name?>() {
     cd <?=$this->workDir?>/thirdparty
     echo "clean <?=$item->name?>"
-    cd <?=$this->workDir?>/thirdparty/<?=$item->name?> && make clean
-    cd -
+    cd <?= $this->workDir ?>/thirdparty/<?= $item->name ?> && make clean
+    cd <?= $this->workDir . PHP_EOL ?>
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
 <?php endforeach; ?>
@@ -69,6 +69,7 @@ make_all_library() {
 }
 
 make_config() {
+    cd <?= $this->workDir . PHP_EOL ?>
     rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
@@ -83,6 +84,7 @@ make_config() {
 }
 
 make_build() {
+    cd <?= $this->workDir . PHP_EOL ?>
     make EXTRA_CFLAGS='-fno-ident -Os' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?=$this->extraLdflags?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
@@ -100,6 +102,7 @@ help() {
     echo "./make.sh all-library"
     echo "./make.sh clean-all-library"
     echo "./make.sh sync"
+    echo "./make.sh list-library"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -138,6 +141,10 @@ elif [ "$1" = "pkg-check" ] ;then
     echo "[<?= $item->name ?>]"
     pkg-config --libs <?= ($item->pkgName ?: $item->name) . PHP_EOL ?>
     echo "==========================================================="
+<?php endforeach; ?>
+elif [ "$1" = "list-library" ] ;then
+<?php foreach ($this->libraryList as $item) : ?>
+    echo "[<?= $item->name ?>]"
 <?php endforeach; ?>
 elif [ "$1" = "sync" ] ;then
   echo "sync"
