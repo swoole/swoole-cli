@@ -47,7 +47,7 @@ return function (Preprocessor $p) {
         (new Library('giflib'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
             ->withMakeOptions('libgif.a')
-            ->withLicense('http://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
+            ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
     );
 
     $p->addExtension((new Extension('gd'))

@@ -17,6 +17,7 @@ return function (Preprocessor $p) {
                     implode(PHP_EOL, [
                         'rm -rf /usr/brotli/lib/*.so.*',
                         'rm -rf /usr/brotli/lib/*.so',
+                        'rm -rf /usr/brotli/lib/*.dylib',
                         'mv /usr/brotli/lib/libbrotlicommon-static.a /usr/brotli/lib/libbrotli.a',
                         'mv /usr/brotli/lib/libbrotlienc-static.a /usr/brotli/lib/libbrotlienc.a',
                         'mv /usr/brotli/lib/libbrotlidec-static.a /usr/brotli/lib/libbrotlidec.a',
