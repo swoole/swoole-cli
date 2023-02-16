@@ -20,43 +20,56 @@ OPTIONS="--disable-all \
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
-    if [ ! -d <?=$this->workDir?>/thirdparty/<?=$item->name?> ]; then
-        mkdir -p <?=$this->workDir?>/thirdparty/<?=$item->name . PHP_EOL?>
+    if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
+        mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
     fi
-    cd <?=$this->workDir?>/thirdparty/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->workDir?>/thirdparty/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
-    <?php if (!empty($item->configure)): ?>
+    cd <?=$this->getBuildDir()?>/<?=$item->name?> && \
+    tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
+
+    # configure
+<?php if (!empty($item->configure)): ?>
 cat <<'__EOF__'
     <?= $item->configure . PHP_EOL ?>
 __EOF__
     <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
-    <?php endif; ?>
+<?php endif; ?>
+
+    # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[make FAILURE]" && exit  $result_code;
-    <?php if ($item->beforeInstallScript): ?>
+
+    # before make install
+<?php if ($item->beforeInstallScript): ?>
     <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[ before make install script FAILURE]" && exit  $result_code;
-    <?php endif; ?>
+<?php endif; ?>
+
+    # make install
+<?php if ($item->makeInstallCommand): ?>
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit  $result_code;
-    <?php if ($item->afterInstallScript): ?>
+<?php endif; ?>
+
+    # after make install
+<?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[ after make  install script FAILURE]" && exit  $result_code;
-    <?php endif; ?>
+<?php endif; ?>
+
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
 
 clean_<?=$item->name?>() {
-    cd <?=$this->workDir?>/thirdparty
+    cd <?=$this->getBuildDir()?>
     echo "clean <?=$item->name?>"
-    cd <?= $this->workDir ?>/thirdparty/<?= $item->name ?> && make clean
+    cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
     cd <?= $this->workDir . PHP_EOL ?>
 }
 <?php echo str_repeat(PHP_EOL, 1);?>

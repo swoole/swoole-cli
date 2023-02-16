@@ -63,6 +63,8 @@ EOF
         (new Library('giflib'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
             ->withMakeOptions('libgif.a')
+            ->withMakeInstallCommand('')
+            ->withScriptAfterInstall('cp libgif.a /usr/lib && cp gif_lib.h /usr/include')
             ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
     );
 
