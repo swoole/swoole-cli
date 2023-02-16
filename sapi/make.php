@@ -154,8 +154,6 @@ EOF
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-    ./configure --help | grep with | grep "[=DIR]"
-    exit 0
     ./configure $OPTIONS
 }
 
