@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
         ->withOptions('--enable-gd \
         --with-jpeg \
         --with-freetype \
-        --with-webp=/usr/libwebp')
+        --with-webp')
         ->withManual('https://www.php.net/manual/zh/image.installation.php')
     );
 };
