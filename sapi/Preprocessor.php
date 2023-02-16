@@ -388,23 +388,11 @@ class Preprocessor
     function addExtension(Extension $ext)
     {
         if ($ext->peclVersion) {
-            if ($ext->peclVersion == 'latest') {
-                $find = glob($this->extensionDir . '/' . $ext->name . '-*.tgz');
-                if (!$find) {
-                    goto _download;
-                }
-                $file = basename($find[0]);
-            } else {
-                $file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-            }
-
-            $ext->file = $file;
-            $ext->path = $this->extensionDir . '/' . $file;
-            $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
-            $ext->url = "https://pecl.php.net/get/$download_name";
+            $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+            $ext->path = $this->extensionDir . '/' . $ext->file;
+            $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!is_file($ext->path)) {
-                _download:
                 echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                 $this->downloadFile($ext->url, $ext->path);
             } else {
