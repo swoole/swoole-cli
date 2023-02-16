@@ -9,10 +9,10 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('zip'))
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-            ->withPrefix('/usr')
+            ->withPrefix('/usr/zip')
             ->withConfigure('
                  cmake -Wno-dev .  \
-                -DCMAKE_INSTALL_PREFIX=/usr  \
+                -DCMAKE_INSTALL_PREFIX=/usr/zip  \
                 -DBUILD_TOOLS=OFF \
                 -DBUILD_EXAMPLES=OFF \
                 -DBUILD_DOC=OFF \
@@ -38,6 +38,7 @@ return function (Preprocessor $p) {
             ->withPkgName('libzip')
             ->withHomePage('https://libzip.org/')
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
+            ->depends('openssl','zlib','bzip2')
     );
     $p->addExtension((new Extension('zip'))->withOptions('--with-zip=/usr/zip'));
 };
