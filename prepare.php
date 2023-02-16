@@ -66,7 +66,7 @@ install_libxslt($p); //依赖 libxml2
 install_gmp($p);
 install_zlib($p);
 install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
-install_libgif($p);
+install_libgif($p);//没有 libgif.pc 文件，不能使用 pkg-config 命令
 install_libpng($p); //依赖 zlib
 install_libjpeg($p);
 install_harfbuzz($p); //默认跳过安装
