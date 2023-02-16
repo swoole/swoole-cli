@@ -50,7 +50,7 @@ return function (Preprocessor $p) {
             mkdir -p /usr/libgif/lib
             mkdir -p /usr/libgif/include
             ')
-            ->withScriptAfterInstall('cp libgif.a /usr/lib && cp gif_lib.h /usr/include')
+            ->withScriptAfterInstall('cp libgif.a /usr/libgif/lib && cp gif_lib.h /usr/libgif/include')
             ->withLdflags('-L/usr/libgif/lib')
             ->withPkgName('')
             ->withPkgConfig('')
