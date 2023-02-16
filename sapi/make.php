@@ -26,6 +26,7 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
+<<<<<<< HEAD
     <?php if ($item->skipBuildInstall == true): ?>
     echo "skip install library <?=$item->name?>" ;
     return 0 ;
@@ -56,12 +57,24 @@ make_<?=$item->name?>() {
     <?php endif; ?>
 
     <?php if (!empty($item->configure)): ?>
+=======
+    echo "build <?=$item->name?>"
+    if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
+        mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
+    fi
+    cd <?=$this->getBuildDir()?>/<?=$item->name?> && \
+    tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
+
+    # configure
+<?php if (!empty($item->configure)): ?>
+>>>>>>> main
 cat <<'__EOF__'
     <?= $item->configure . PHP_EOL ?>
 __EOF__
     <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
+<<<<<<< HEAD
     <?php endif; ?>
 
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
@@ -83,14 +96,44 @@ __EOF__
     result_code=$?
     [[ $result_code -gt 1 ]] &&  echo "[after install script  FAILURE]" && exit $result_code;
     <?php endif; ?>
+=======
+<?php endif; ?>
+
+    # make
+    make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[make FAILURE]" && exit  $result_code;
+
+    # before make install
+<?php if ($item->beforeInstallScript): ?>
+    <?=$item->beforeInstallScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[ before make install script FAILURE]" && exit  $result_code;
+<?php endif; ?>
+
+    # make install
+<?php if ($item->makeInstallCommand): ?>
+    make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit  $result_code;
+<?php endif; ?>
+
+    # after make install
+<?php if ($item->afterInstallScript): ?>
+    <?=$item->afterInstallScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[ after make  install script FAILURE]" && exit  $result_code;
+<?php endif; ?>
+
+>>>>>>> main
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
 
 clean_<?=$item->name?>() {
-    cd <?=$this->workDir?>/thirdparty
+    cd <?=$this->getBuildDir()?>
     echo "clean <?=$item->name?>"
-    cd <?= $this->workDir ?>/thirdparty/<?= $item->name ?> && make clean
+    cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
     cd <?= $this->workDir . PHP_EOL ?>
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
@@ -104,39 +147,35 @@ make_all_library() {
 
 
 make_config() {
-    cd <?= $this->workDir . PHP_EOL ?>
-    export   ONIG_CFLAGS=$(pkg-config --cflags  --static oniguruma) ;
-    export   ONIG_LIBS=$(pkg-config   --libs    --static oniguruma) ;
-
-    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags  --static libsodium) ;
-    export   LIBSODIUM_LIBS=$(pkg-config   --libs    --static libsodium) ;
-
-    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
-    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
-
-    export   XSL_CFLAGS=$(pkg-config --cflags  --static libxslt) ;
-    export   XSL_LIBS=$(pkg-config   --libs    --static libxslt) ;
-
-    export   ICU_CFLAGS=$(pkg-config --cflags icu-uc icu-io icu-i18n)  ;
-    export   ICU_LIBS=$(pkg-config   --libs   icu-uc icu-io icu-i18n)  ;
-
-    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
-    export   LIBPQ_LIBS=$(pkg-config    --libs   --static       libpq)
-
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
 :<<'EOF'
-
     export   NCURSES_CFLAGS=$(pkg-config --cflags --static  ncurses);
     export   NCURSES_LIBS=$(pkg-config  --libs --static ncurses);
 
     export   READLINE_CFLAGS=$(pkg-config --cflags --static readline)  ;
     export   READLINE_LIBS=$(pkg-config  --libs --static readline)  ;
 EOF
-<?php if ($this->osType !== 'macos') : ?>
+
+    export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
+    export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
+    export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
+    export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
+    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
+    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
+    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
+    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
+    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
+    export   LIBPQ_LIBS=$(pkg-config    --libs   --static       libpq)
+    export   XSL_CFLAGS=$(pkg-config --cflags  --static libxslt) ;
+    export   XSL_LIBS=$(pkg-config   --libs    --static libxslt) ;
+
+<?php if ($this->getOsType() == 'linux') : ?>
     export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
     LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 <?php endif; ?>
-    test -f ./configure && rm ./configure ;
+
+    test -f ./configure &&  rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
     mv main/php_config.h.in /tmp/cnt
@@ -150,7 +189,7 @@ EOF
 }
 
 make_build() {
-    cd <?= $this->workDir . PHP_EOL ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
     make EXTRA_CFLAGS='-fno-ident -Os' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?=$this->extraLdflags?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
@@ -166,15 +205,15 @@ help() {
     echo "./make.sh build"
     echo "./make.sh archive"
     echo "./make.sh all-library"
+    echo "./make.sh list-library"
     echo "./make.sh clean-all-library"
     echo "./make.sh sync"
-    echo "./make.sh list-library"
 }
 
 if [ "$1" = "docker-build" ] ;then
     sudo docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:<?=$this->workDir?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+    sudo docker run -it -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
     exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library

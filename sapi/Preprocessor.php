@@ -2,6 +2,7 @@
 
 namespace SwooleCli;
 
+use JetBrains\PhpStorm\Pure;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
@@ -66,6 +67,8 @@ class Library extends Project
 
     public string $ldflags = '';
     public string $makeOptions = '';
+    public string $makeInstallCommand = 'install';
+
     public string $makeInstallOptions = '';
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
@@ -81,12 +84,6 @@ class Library extends Project
     public string $binPath = '';
 
     public string $label = '';
-
-    public function __construct(string $name, string $prefix = '/usr')
-    {
-        $this->withPrefix($prefix);
-        parent::__construct($name);
-    }
 
     function withUrl(string $url): static
     {
@@ -135,6 +132,12 @@ class Library extends Project
     function withScriptAfterInstall(string $script)
     {
         $this->afterInstallScript = $script;
+        return $this;
+    }
+
+    public function withMakeInstallCommand(string $makeInstallCommand): static
+    {
+        $this->makeInstallCommand = $makeInstallCommand;
         return $this;
     }
 
@@ -269,6 +272,7 @@ class Preprocessor
      * 在 macOS 系统上，/usr 目录将会被替换为 $workDir/usr
      */
     protected string $workDir = '/work';
+    protected string $buildDir = '/work/thirdparty';
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
     protected int $maxJob = 8;
@@ -422,7 +426,17 @@ class Preprocessor
         $this->workDir = $workDir;
     }
 
-    function getWorkDir()
+    function setBuildDir(string $buildDir)
+    {
+        $this->buildDir = $buildDir;
+    }
+
+    function getBuildDir() : string
+    {
+        return $this->buildDir;
+    }
+
+    function getWorkDir(): string
     {
         return $this->workDir;
     }
