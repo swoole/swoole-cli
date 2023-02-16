@@ -34,7 +34,7 @@ make_<?=$item->name?>() {
 
     echo "build <?=$item->name?>"
 <?php if ($item->cleanBuildDirectory) : ?>
-        test -d <?=$this->getBuildDir()?>/<?= $item->name ?> && rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?><?= PHP_EOL; ?>
+    test -d <?=$this->getBuildDir()?>/<?= $item->name ?> && rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?><?= PHP_EOL; ?>
 <?php endif; ?>
 
     if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
@@ -42,39 +42,38 @@ make_<?=$item->name?>() {
     fi
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
-    <?php if($item->untarArchiveCommand == 'tar' ):?>
-     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
-    <?php endif ;?>
-    <?php if($item->untarArchiveCommand == 'unzip'):?>
-     unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
-    <?php endif ; ?>
-    <?php if($item->untarArchiveCommand == 'mv'):?>
+<?php if($item->untarArchiveCommand == 'tar' ):?>
+    tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
+<?php endif ;?>
+<?php if($item->untarArchiveCommand == 'unzip'):?>
+    unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
+<?php endif ; ?>
+<?php if($item->untarArchiveCommand == 'mv'):?>
     cp -rf  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
-    <?php endif ; ?>
+<?php endif ; ?>
 
     # before configure
-    <?php if (!empty($item->beforeConfigureScript)) : ?>
+<?php if (!empty($item->beforeConfigureScript)) : ?>
     <?= $item->beforeConfigureScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -gt 1 ]] &&  echo "[before configure FAILURE]" && exit $result_code;
-    <?php endif; ?>
+    [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
+<?php endif; ?>
 
     # configure
 <?php if (!empty($item->configure)): ?>
-
 cat <<'__EOF__'
     <?= $item->configure . PHP_EOL ?>
 __EOF__
     <?=$item->configure . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[ configure FAILURE]" && exit  $result_code;
 
 <?php endif; ?>
 
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[make FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[ make FAILURE]" && exit  $result_code;
 
     # before make install
 <?php if ($item->beforeInstallScript): ?>
@@ -87,7 +86,7 @@ __EOF__
 <?php if ($item->makeInstallCommand): ?>
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[ make install FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # after make install
