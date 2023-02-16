@@ -11,7 +11,8 @@ $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
 $p->parseArguments($argc, $argv);
 if ($p->getOsType() == 'macos') {
     $p->setWorkDir(__DIR__);
-    $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -licudata -licui18n -licuio');
+    $p->setBuildDir(__DIR__ . '/thirdparty');
+    $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -lwebpdemux -lwebpmux -licudata -licui18n -licuio');
     $p->addEndCallback(function () use ($p, $homeDir) {
         $libDir = $homeDir . '/.swoole-cli';
         if (!is_dir($libDir)) {

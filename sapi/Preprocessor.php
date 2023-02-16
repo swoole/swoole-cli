@@ -2,6 +2,7 @@
 
 namespace SwooleCli;
 
+use JetBrains\PhpStorm\Pure;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
@@ -55,18 +56,14 @@ class Library extends Project
     public string $file = '';
     public string $ldflags = '';
     public string $makeOptions = '';
+    public string $makeInstallCommand = 'install';
+
     public string $makeInstallOptions = '';
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
     public string $pkgConfig = '';
     public string $pkgName = '';
     public string $prefix = '/usr';
-
-    public function __construct(string $name, string $prefix = '/usr')
-    {
-        $this->withPrefix($prefix);
-        parent::__construct($name);
-    }
 
     function withUrl(string $url): static
     {
@@ -115,6 +112,12 @@ class Library extends Project
     function withScriptAfterInstall(string $script)
     {
         $this->afterInstallScript = $script;
+        return $this;
+    }
+
+    public function withMakeInstallCommand(string $makeInstallCommand): static
+    {
+        $this->makeInstallCommand = $makeInstallCommand;
         return $this;
     }
 
@@ -185,6 +188,7 @@ class Preprocessor
      * 在 macOS 系统上，/usr 目录将会被替换为 $workDir/usr
      */
     protected string $workDir = '/work';
+    protected string $buildDir = '/work/thirdparty';
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
     protected int $maxJob = 8;
@@ -317,7 +321,17 @@ class Preprocessor
         $this->workDir = $workDir;
     }
 
-    function getWorkDir()
+    function setBuildDir(string $buildDir)
+    {
+        $this->buildDir = $buildDir;
+    }
+
+    function getBuildDir() : string
+    {
+        return $this->buildDir;
+    }
+
+    function getWorkDir(): string
     {
         return $this->workDir;
     }
@@ -374,23 +388,11 @@ class Preprocessor
     function addExtension(Extension $ext)
     {
         if ($ext->peclVersion) {
-            if ($ext->peclVersion == 'latest') {
-                $find = glob($this->extensionDir . '/' . $ext->name . '-*.tgz');
-                if (!$find) {
-                    goto _download;
-                }
-                $file = basename($find[0]);
-            } else {
-                $file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-            }
-
-            $ext->file = $file;
-            $ext->path = $this->extensionDir . '/' . $file;
-            $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
-            $ext->url = "https://pecl.php.net/get/$download_name";
+            $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+            $ext->path = $this->extensionDir . '/' . $ext->file;
+            $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!is_file($ext->path)) {
-                _download:
                 echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                 $this->downloadFile($ext->url, $ext->path);
             } else {
