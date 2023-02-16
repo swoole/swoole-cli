@@ -731,39 +731,12 @@ function install_libffi($p)
 
 function install_php_internal_extensions($p)
 {
-    $workDir=$p->getWorkDir();;
-    $command = '';
-    $curl_need_replace_source_code=0;
-    if ($p->getOsType() === 'macos') {
-        if(is_file("{$workDir}/ext/curl/config.m4.backup")){
-            $origin_file_md5=md5(file_get_contents("{$workDir}/ext/curl/config.m4"));
-            $backup_origin_file_md5=md5(file_get_contents("{$workDir}/ext/curl/config.m4.backup"));
-            if($origin_file_md5 == $backup_origin_file_md5 ){
-                $curl_need_replace_source_code=1;
-                $command .=<<<EOF
 
-               test -f {$workDir}/ext/curl/config.m4.backup && rm -f {$workDir}/ext/curl/config.m4.backup
-               
-EOF;
-
-            }
-        } else {
-            $curl_need_replace_source_code=1;
-        }
-    }
-
-    if($curl_need_replace_source_code==1){
-                $command .= <<<EOF
-        #  config.m4.backup 不存在执行 才执行后面命令 (因为不能多次删除指定行）
-        test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
-
-EOF;
-
-    }
+    $workDir = $p->getWorkDir();
     $p->addLibrary(
         (new Library('php_internal_extensions'))
             ->withHomePage('https://www.php.net/')
-            ->withLicense('http://github.com/libffi/libffi/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
             ->withFile('php-8.1.12.tar.gz')
             ->withManual('https://www.php.net/docs.php')
@@ -779,9 +752,7 @@ EOF;
                     
                     test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
                     cp -rf  ext/pgsql {$workDir}/ext/
-                    
-                    
-                " . $command
+                "
             )
             ->withConfigure('return 0')
             ->disablePkgName()
@@ -1003,6 +974,42 @@ function install_re2c(Preprocessor $p)
              ./configure --prefix=/usr/re2c
             ")
             ->withBinPath('/usr/re2c/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
+
+function patch_php_internal_extension_curl(Preprocessor $p)
+{
+    $workDir=$p->getWorkDir();
+    $command = '';
+    if ($p->getOsType() === 'macos') {
+        if(is_file("{$workDir}/ext/curl/config.m4.backup")){
+            $originFileHash=md5(file_get_contents("{$workDir}/ext/curl/config.m4"));
+            $backupFileHash=md5(file_get_contents("{$workDir}/ext/curl/config.m4.backup"));
+            if($originFileHash == $backupFileHash){
+                $command =<<<EOF
+               test -f {$workDir}/ext/curl/config.m4.backup && rm -f {$workDir}/ext/curl/config.m4.backup
+               test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
+EOF;
+            }
+        } else {
+            $command =<<<EOF
+               test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
+EOF;
+        }
+    }
+
+
+        $p->addLibrary(
+        (new Library('patch_php_internal_extension_curl'))
+            ->withHomePage('https://www.php.net/')
+            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
+            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
+            ->withManual('https://www.php.net/docs.php')
+            ->withLabel('patch')
+            ->withScriptBeforeConfigure($command)
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()

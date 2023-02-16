@@ -83,11 +83,14 @@ install_libyaml($p);
 install_mimalloc($p);
 install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt
 install_libffi($p);
-install_php_internal_extensions($p); //安装ffi  pgsql pdo_pgsql
+
+install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
+
 install_php_extension_micro($p);
 
 if ($p->getOsType() == 'macos') {
-    install_bison($p);
+    install_bison($p);  // 源码编译bison
+    patch_php_internal_extension_curl($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
 }
 
 if ($p->getOsType() == 'win') {
