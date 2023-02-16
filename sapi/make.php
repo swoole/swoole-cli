@@ -94,6 +94,8 @@ make_config() {
     export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
 
 <?php if ($this->getOsType() == 'linux') : ?>
+    export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
+    export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
     export CPPFLAGS=$(pkg-config  --cflags --static  readline icu-i18n  icu-io   icu-uc)
     LIBS=$(pkg-config  --libs --static readline libcares icu-i18n  icu-io   icu-uc)
     export LIBS="$LIBS -L/usr/lib -lstdc++"
