@@ -28,6 +28,16 @@ if ($p->getOsType() == 'macos') {
         file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', $homeDir . '/.swoole-cli', file_get_contents(__DIR__ . '/make.sh')));
     });
 
+    $p->addEndCallback(function () use ($p) {
+        $header=<<<'EOF'
+export PATH=/opt/homebrew/bin/:/usr/local/bin/:$PATH
+EOF;
+        $command= file_get_contents(__DIR__ . '/make.sh');
+        $command=$header.PHP_EOL.$command;
+        file_put_contents(__DIR__ . '/make.sh',$command);
+    });
+
+
 }
 
 $p->addEndCallback(function () use ($p) {
