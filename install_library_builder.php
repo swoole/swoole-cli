@@ -1058,35 +1058,33 @@ function install_php_internal_extension_curl_patch(Preprocessor $p)
 {
     $workDir=$p->getWorkDir();
     $command = '';
-    if ($p->getOsType() === 'macos') {
-        if(is_file("{$workDir}/ext/curl/config.m4.backup")){
-            $originFileHash=md5(file_get_contents("{$workDir}/ext/curl/config.m4"));
-            $backupFileHash=md5(file_get_contents("{$workDir}/ext/curl/config.m4.backup"));
-            if($originFileHash == $backupFileHash){
-                $command =<<<EOF
-               test -f {$workDir}/ext/curl/config.m4.backup && rm -f {$workDir}/ext/curl/config.m4.backup
-               test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
-EOF;
-            }
-        } else {
+
+    if(is_file("{$workDir}/ext/curl/config.m4.backup")){
+        $originFileHash=md5(file_get_contents("{$workDir}/ext/curl/config.m4"));
+        $backupFileHash=md5(file_get_contents("{$workDir}/ext/curl/config.m4.backup"));
+        if($originFileHash == $backupFileHash){
             $command =<<<EOF
-               test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
+           test -f {$workDir}/ext/curl/config.m4.backup && rm -f {$workDir}/ext/curl/config.m4.backup
+           test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
 EOF;
         }
+    } else {
+        $command =<<<EOF
+           test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
+EOF;
     }
 
-
-        $p->addLibrary(
-        (new Library('patch_php_internal_extension_curl'))
-            ->withHomePage('https://www.php.net/')
-            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
-            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
-            ->withManual('https://www.php.net/docs.php')
-            ->withLabel('php_extension_patch')
-            ->withScriptBeforeConfigure($command)
-            ->withConfigure('return 0 ')
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->disablePkgName()
+    $p->addLibrary(
+    (new Library('patch_php_internal_extension_curl'))
+        ->withHomePage('https://www.php.net/')
+        ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
+        ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
+        ->withManual('https://www.php.net/docs.php')
+        ->withLabel('php_extension_patch')
+        ->withScriptBeforeConfigure($command)
+        ->withConfigure('return 0 ')
+        ->disableDefaultPkgConfig()
+        ->disableDefaultLdflags()
+        ->disablePkgName()
     );
 }
