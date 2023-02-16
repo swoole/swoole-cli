@@ -57,18 +57,18 @@ install_gmp($p);
 install_zlib($p);
 install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
 install_giflib($p);
-install_libpng($p);
+install_libpng($p); //依赖 zlib
 install_libjpeg($p);
 install_harfbuzz($p); //默认跳过安装
-install_freetype($p); //依赖 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz (暂不启用)
 install_libwebp($p); //依赖 giflib
+install_freetype($p); //依赖 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz (暂不启用)
 install_sqlite3($p);
 install_icu($p); //依赖  -lstdc++
 install_oniguruma($p);
 install_liblz4($p);
 install_liblzma($p);
 install_libzstd($p); //zstd 依赖 lz4
-install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma zstd 暂不启用）
+install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma库 zstd库 暂不启用）
 install_brotli($p);
 install_cares($p);
 //install_libedit($p);

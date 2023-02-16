@@ -152,11 +152,18 @@ EOF
 function install_libpng(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('libpng', '/usr/libpng'))
+        (new Library('libpng'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
-            ->withConfigure('./configure --prefix=/usr/libpng --enable-static --disable-shared')
-            ->withPkgName('libpng libpng16')
+            ->withConfigure('
+            ./configure --help 
+         
+            ./configure --prefix=/usr/libpng --enable-static --disable-shared \
+            --with-zlib-prefix=/usr/zlib
+            
+            ')
+            ->withPkgName('libpng16')
+            ->withPrefix('/usr/libpng')
     );
 }
 
