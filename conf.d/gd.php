@@ -54,7 +54,6 @@ return function (Preprocessor $p) {
             ->withLdflags('-L/usr/libgif/lib')
             ->withPkgName('')
             ->withPkgConfig('')
-            ->depends('libjpeg','bzip2','zlib')
     );
     $p->addLibrary(
         (new Library('libwebp'))
