@@ -70,7 +70,23 @@ make_all_library() {
 
 make_config() {
     cd <?= $this->workDir . PHP_EOL ?>
-    rm ./configure
+
+    export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
+    export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
+    export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
+    export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
+    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
+    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
+    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
+    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
+
+<?php if ($this->getOsType() == 'linux') : ?>
+    export CPPFLAGS=$(pkg-config  --cflags --static  readline icu-i18n  icu-io   icu-uc)
+    LIBS=$(pkg-config  --libs --static readline libcares icu-i18n  icu-io   icu-uc)
+    export LIBS="$LIBS -L/usr/lib -lstdc++"
+<?php endif; ?>
+
+    test -f ./configure &&  rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
     mv main/php_config.h.in /tmp/cnt

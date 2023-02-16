@@ -21,11 +21,9 @@ libjpeg: https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md
 freetype: https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT
 libwebp: https://github.com/webmproject/libwebp/blob/main/COPYING
 libpng: http://www.libpng.org/pub/png/src/libpng-LICENSE.txt
-giflib: http://giflib.sourceforge.net/intro.html
-brotli: https://github.com/google/brotli/blob/master/LICENSE
+giflib: https://giflib.sourceforge.net/intro.html
 libyaml: https://pyyaml.org/wiki/LibYAML
 imagemagick: https://imagemagick.org/script/license.php
-mimalloc: https://github.com/microsoft/mimalloc/blob/master/LICENSE
 php: https://github.com/php/php-src/blob/master/LICENSE
 php-ext-redis: https://github.com/phpredis/phpredis/blob/develop/COPYING
 php-ext-swoole: https://github.com/swoole/swoole-src/blob/master/LICENSE

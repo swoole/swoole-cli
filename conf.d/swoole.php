@@ -9,9 +9,10 @@ return function (Preprocessor $p) {
     $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares';
     if (getenv('SWOOLE_CLI_WITH_BROTLI')) {
         $p->addLibrary(
-            (new Library('brotli', '/usr/brotli'))
+            (new Library('brotli'))
                 ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
                 ->withFile('brotli-1.0.9.tar.gz')
+                ->withPrefix('/usr/brotli')
                 ->withConfigure("cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/brotli .")
                 ->withScriptAfterInstall(
                     implode(PHP_EOL, [
