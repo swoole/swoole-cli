@@ -175,6 +175,7 @@ class Preprocessor
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
+    protected array $downloadExtensionList = [];
     protected string $rootDir;
     protected string $libraryDir;
     protected string $extensionDir;
@@ -391,20 +392,23 @@ class Preprocessor
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
+            $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
+            if(empty($skip_library_download)){
+                if (!is_file($ext->path)) {
+                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                    $this->downloadFile($ext->url, $ext->path);
+                } else {
+                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                }
 
-            if (!is_file($ext->path)) {
-                echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                $this->downloadFile($ext->url, $ext->path);
-            } else {
-                echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
+                if (!is_dir($dst_dir)) {
+                    echo `mkdir -p $dst_dir`;
+                }
+
+                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
-
-            $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-            if (!is_dir($dst_dir)) {
-                echo `mkdir -p $dst_dir`;
-            }
-
-            echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+            $this->downloadExtensionList[] = ['url'=>$ext->url,'file'=>$ext->file];
         }
 
         $this->extensionList[] = $ext;
@@ -557,5 +561,15 @@ class Preprocessor
             mkdir($this->rootDir . '/var/',0755,true);
         }
         file_put_contents($this->rootDir . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
+
+        $download_urls=[];
+        foreach ($this->downloadExtensionList as $item) {
+            $download_urls[]=$item['url'] . PHP_EOL . ' out='.$item['file'];
+        }
+        if(!is_dir($this->rootDir . '/var/')){
+            mkdir($this->rootDir . '/var/',0755,true);
+        }
+        file_put_contents($this->rootDir . '/var/download_extension_urls.txt',implode(PHP_EOL,$download_urls));
+
     }
 }

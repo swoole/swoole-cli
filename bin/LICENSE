@@ -16,7 +16,7 @@ libxslt: http://www.opensource.org/licenses/mit-license.html
 gmp: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 libsodium: https://en.wikipedia.org/wiki/ISC_license
 ncurses: https://github.com/projectceladon/libncurses/blob/master/README
-readline: http://www.gnu.org/licenses/gpl.html
+readline: https://www.gnu.org/licenses/gpl.html
 libjpeg: https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md
 freetype: https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT
 libwebp: https://github.com/webmproject/libwebp/blob/main/COPYING
