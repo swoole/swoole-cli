@@ -90,7 +90,7 @@ install_php_extension_micro($p);
 
 if ($p->getOsType() == 'macos') {
     install_bison($p);  // 源码编译bison
-    patch_php_internal_extension_curl($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
+    install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
 }
 
 if ($p->getOsType() == 'win') {
@@ -99,13 +99,15 @@ if ($p->getOsType() == 'win') {
 
 # 扩展 mbstring 依赖 oniguruma 库
 # 扩展 intl 依赖 ICU 库
-# 扩展 gd 依赖 libpng，freetype 库 ； freetype 依赖 zlib bzip2 libpng  brotli 等, libwebp 依赖 giflib
+# 扩展 gd 依赖 libpng，freetype 库 ；  freetype 依赖 zlib bzip2 libpng  brotli 等;  libwebp 依赖 giflib
 # 扩展 mongodb 依赖 openssl, zlib, ICU 等库
 # 本项目 opcache 是必装扩展，否则编译报错，不想启用opcache，需要修改源码: main/main.c
 # 本项目 swoole  是必装扩展，否则 sh make.sh archive 无法打包
 
 # php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64
 
+# label: build_env_bin , php_extension_patch , php_internal_extension , php_extension ,extension_library
+#
 /**
     # 需要特别设置的地方
 

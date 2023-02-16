@@ -60,6 +60,7 @@ abstract class Project
 class Library extends Project
 {
     public string $url;
+    public array $urlMirrors = [];
 
     public string $configure = '';
 
@@ -88,6 +89,12 @@ class Library extends Project
     function withUrl(string $url): static
     {
         $this->url = $url;
+        return $this;
+    }
+
+    public function withUrlMirror(string $url):static
+    {
+        $this->urlMirrors[] = $url;
         return $this;
     }
 

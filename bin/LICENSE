@@ -8,7 +8,7 @@ libxslt: http://www.opensource.org/licenses/mit-license.html
 gmp: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 zlib: https://zlib.net/zlib_license.html
 bzip2: https://www.sourceware.org/bzip2/
-giflib: http://giflib.sourceforge.net/intro.html
+giflib: https://giflib.sourceforge.net/intro.html
 libpng: http://www.libpng.org/pub/png/src/libpng-LICENSE.txt
 libjpeg: https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md
 libwebp: https://github.com/webmproject/libwebp/blob/main/COPYING
@@ -17,7 +17,7 @@ sqlite3: https://www.sqlite.org/copyright.html
 icu: https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE
 oniguruma: https://github.com/kkos/oniguruma/blob/master/COPYING
 liblz4: https://github.com/lz4/lz4/blob/dev/LICENSE
-liblzma: https://git.tukaani.org/?p=xz.git;a=blob;f=COPYING
+liblzma: https://github.com/tukaani-project/xz/blob/master/COPYING.GPLv3
 libzstd: https://github.com/facebook/zstd/blob/dev/COPYING
 zip: https://libzip.org/license/
 brotli: https://github.com/google/brotli/blob/master/LICENSE
@@ -31,7 +31,6 @@ libyaml: https://pyyaml.org/wiki/LibYAML
 mimalloc: https://github.com/microsoft/mimalloc/blob/master/LICENSE
 pgsql: https://www.postgresql.org/about/licence/
 libffi: http://github.com/libffi/libffi/blob/master/LICENSE
-php_extension_micro: https://github.com/dixyes/phpmicro/blob/master/LICENSE
 php: https://github.com/php/php-src/blob/master/LICENSE
 php-ext-redis: https://github.com/phpredis/phpredis/blob/develop/COPYING
 php-ext-swoole: https://github.com/swoole/swoole-src/blob/master/LICENSE
