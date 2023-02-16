@@ -9,10 +9,10 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('zip'))
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-            ->withPrefix('/usr/zip')
+            ->withPrefix('/usr')
             ->withConfigure('
                  cmake -Wno-dev .  \
-                -DCMAKE_INSTALL_PREFIX=/usr/zip  \
+                -DCMAKE_INSTALL_PREFIX=/usr  \
                 -DBUILD_TOOLS=OFF \
                 -DBUILD_EXAMPLES=OFF \
                 -DBUILD_DOC=OFF \

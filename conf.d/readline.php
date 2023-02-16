@@ -82,7 +82,7 @@ EOF
                 )
                 ->withPkgName('readline')
                 ->withLdflags('-L/usr/readline/lib')
-                ->withLicense('http://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
+                ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
                 ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
                 ->depends('ncurses')
         );

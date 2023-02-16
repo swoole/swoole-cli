@@ -7,11 +7,10 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $lib = new Library('libjpeg');
     $lib->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
-        ->withPrefix('/usr/libjpeg')
-        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg .')
-        ->withLdflags('-L/usr/libjpeg/lib -L/usr/libjpeg/lib64')
-        ->withPkgConfig('/usr/libjpeg/lib/pkgconfig')
-        ->withPkgConfig('/usr/libjpeg/lib64/pkgconfig')
+        ->withPrefix('/usr')
+        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr .')
+        ->withLdflags('-L/usr/lib64')
+        ->withPkgConfig('/usr/lib64/pkgconfig')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD);
@@ -43,7 +42,7 @@ EOF
     );
 
     $p->addLibrary(
-        (new Library('libwebp' ))
+        (new Library('libwebp'))
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
             ->withPrefix('/usr/libwebp')
             ->withConfigure('./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared')
@@ -70,7 +69,7 @@ EOF
     );
 
     $p->addExtension((new Extension('gd'))
-        ->withOptions('--enable-gd --with-jpeg=/usr/libjpeg --with-freetype=/usr/freetype')
+        ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp')
         ->depends('libjpeg', 'freetype', 'libwebp', 'libpng', 'giflib')
     );
 };

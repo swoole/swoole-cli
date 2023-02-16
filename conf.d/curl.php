@@ -8,8 +8,8 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('cares'))
             ->withUrl('https://c-ares.org/download/c-ares-1.18.1.tar.gz')
-            ->withPrefix('/usr/cares')
-            ->withConfigure('./configure --prefix=/usr/cares --enable-static --disable-shared')
+            ->withPrefix('/usr')
+            ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
             ->withPkgName('libcares')
             ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
             ->withHomePage('https://c-ares.org/')
