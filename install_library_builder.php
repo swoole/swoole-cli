@@ -166,7 +166,7 @@ EOF
                 ->withMakeOptions('libgif.a')
                 //->withMakeOptions('all')
                 ->withMakeInstallOptions('install-include && make  install-lib-static')
-                ->withMakeInstallCommand('install-include DESTDIR=/usr/giflib && make  install-lib-static DESTDIR=/usr/giflib')
+                # ->withMakeInstallCommand('install-include DESTDIR=/usr/giflib && make  install-lib-static DESTDIR=/usr/giflib')
                 # ->withMakeInstallOptions('DESTDIR=/usr/libgif')
                 ->withLdflags('-L/usr/giflib/lib')
                 ->disableDefaultPkgConfig()
