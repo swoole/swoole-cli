@@ -411,7 +411,7 @@ function install_zip(Preprocessor $p)
                 -DZstd_INCLUDE_DIR=/usr/libzstd/include
              */
             ->withMakeOptions('VERBOSE=1 all  ') //VERBOSE=1
-            ->withMakeInstallOptions("VERBOSE=1 install PREFIX=/usr/zip")
+            ->withMakeInstallOptions("VERBOSE=1  PREFIX=/usr/zip")
             ->withPkgName('libzip')
             ->withPkgConfig('/usr/zip/lib/pkgconfig')
             ->withLdflags('-L/usr/zip/lib')
