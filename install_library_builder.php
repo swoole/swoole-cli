@@ -17,7 +17,7 @@ function install_openssl(Preprocessor $p)
         ->withConfigure('./config' . ($p->getOsType() === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=/usr/openssl')
         ->withMakeInstallOptions('install_sw')
         ->withPkgConfig('/usr/openssl/lib/pkgconfig')
-        ->withPkgName('libcrypto libssl openssl')
+        ->withPkgName('openssl')
         ->withLdflags('-L/usr/openssl/lib')
 
     );
@@ -101,7 +101,7 @@ function install_imagemagick(Preprocessor $p)
               --with-zstd=no \
               --with-freetype=yes
               ')
-            ->withPkgName('imagemagick')
+            ->withPkgName('ImageMagick')
     );
 }
 
