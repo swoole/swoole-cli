@@ -12,6 +12,7 @@ return function (Preprocessor $p) {
             ->withConfigure('./configure --prefix=/usr/zlib --static')
             ->withHomePage('https://zlib.net/')
             ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
+            ->withPkgName('zlib')
             ->depends('libxml2', 'bzip2')
     );
     $p->addExtension((new Extension('zlib'))->withOptions('--with-zlib --with-zlib-dir=/usr/zlib'));

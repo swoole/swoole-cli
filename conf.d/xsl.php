@@ -11,6 +11,7 @@ return function (Preprocessor $p) {
             ->withPrefix('/usr/libxslt')
             ->withConfigure('./autogen.sh && ./configure --prefix=/usr/libxslt --enable-static=yes --enable-shared=no')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
+            ->withPkgName('libxslt')
         ->depends('libxml2')
     );
     $p->addExtension((new Extension('xsl'))->withOptions('--with-xsl')->depends('libxslt'));
