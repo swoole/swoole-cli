@@ -120,23 +120,23 @@ function install_gmp(Preprocessor $p)
     );
 }
 
-function install_giflib(Preprocessor $p)
+function install_libgif(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('giflib'))
+        (new Library('libgif'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
-            ->withPrefix('/usr/giflib')
+            ->withPrefix('/usr/libgif')
             ->withCleanBuildDirectory()
             ->withScriptBeforeConfigure('
-            test -d /usr/giflib/ && rm -rf /usr/giflib/
-            mkdir -p /usr/giflib/lib
-            mkdir -p /usr/giflib/include
+            test -d /usr/libgif/ && rm -rf /usr/libgif/
+            mkdir -p /usr/libgif/lib
+            mkdir -p /usr/libgif/include
             ')
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
-            ->withScriptAfterInstall('cp libgif.a /usr/giflib/lib/ && cp gif_lib.h /usr/giflib/include/')
+            ->withScriptAfterInstall('cp libgif.a /usr/libgif/lib/ && cp gif_lib.h /usr/libgif/include/')
             ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
-            ->withLdflags('-L/usr/giflib/lib')
+            ->withLdflags('-L/usr/libgif/lib')
             ->withPkgName('')
             ->withPkgConfig('')
     );
@@ -166,7 +166,8 @@ EOF
                 ->withMakeOptions('libgif.a')
                 //->withMakeOptions('all')
                 ->withMakeInstallOptions('install-include && make  install-lib-static')
-                # ->withMakeInstallOptions('install-include DESTDIR=/usr/giflib && make  install-lib-static DESTDIR=/usr/giflib')
+                ->withMakeInstallCommand('install-include DESTDIR=/usr/giflib && make  install-lib-static DESTDIR=/usr/giflib')
+                # ->withMakeInstallOptions('DESTDIR=/usr/libgif')
                 ->withLdflags('-L/usr/giflib/lib')
                 ->disableDefaultPkgConfig()
         );
@@ -182,9 +183,9 @@ function install_libpng(Preprocessor $p)
             ->withPrefix('/usr/libpng')
             ->withConfigure('
             ./configure --help 
-         
             ./configure --prefix=/usr/libpng --enable-static --disable-shared \
-            --with-zlib-prefix=/usr/zlib
+            --with-zlib-prefix=/usr/zlib \
+            --with-binconfigs
             
             ')
             ->withPkgName('libpng16')
@@ -256,7 +257,25 @@ function install_libwebp(Preprocessor $p)
             ->withFile('libwebp-1.2.1.tar.gz')
             ->withManual('https://github.com/webmproject/libwebp.git')
             ->withPrefix('/usr/libwebp')
-            ->withConfigure('./autogen.sh && ./configure --prefix=/usr/libwebp --enable-static --disable-shared')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                'test -d /usr/libwebp && rm -rf /usr/libwebp'
+            )
+            ->withConfigure('
+            ./autogen.sh 
+            # ./configure -help
+            
+             ./configure --prefix=/usr/libwebp --enable-static --disable-shared \
+             --enable-libwebpdecoder \
+             --enable-libwebpextras \
+             --with-pngincludedir=/usr/libpng/include \
+             --with-pnglibdir=/usr/libpng/lib \
+             --with-jpegincludedir=/usr/libjpeg/include \
+             --with-jpeglibdir=/usr/libjpeg/lib64 \
+             --with-gifincludedir=/usr/libgif/include \
+             --with-giflibdir=/usr/libgif/lib
+
+            ')
 
 
     );

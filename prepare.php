@@ -56,11 +56,11 @@ install_libxslt($p); //依赖 libxml2
 install_gmp($p);
 install_zlib($p);
 install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
-install_giflib($p);
+install_libgif($p);
 install_libpng($p); //依赖 zlib
 install_libjpeg($p);
 install_harfbuzz($p); //默认跳过安装
-install_libwebp($p); //依赖 giflib
+install_libwebp($p); //依赖 libgif libpng libjpeg
 install_freetype($p); //依赖 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz (暂不启用)
 install_sqlite3($p);
 install_icu($p); //依赖  -lstdc++
