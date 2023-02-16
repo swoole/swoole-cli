@@ -82,7 +82,7 @@ make_all_library() {
 }
 
 make_config() {
-    cd <?= $this->workDir . PHP_EOL ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
 
     export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
     export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
@@ -113,7 +113,7 @@ make_config() {
 }
 
 make_build() {
-    cd <?= $this->workDir . PHP_EOL ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
     make EXTRA_CFLAGS='-fno-ident -Os' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?=$this->extraLdflags?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
@@ -129,15 +129,15 @@ help() {
     echo "./make.sh build"
     echo "./make.sh archive"
     echo "./make.sh all-library"
+    echo "./make.sh list-library"
     echo "./make.sh clean-all-library"
     echo "./make.sh sync"
-    echo "./make.sh list-library"
 }
 
 if [ "$1" = "docker-build" ] ;then
     sudo docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> .
 elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:<?=$this->workDir?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+    sudo docker run -it -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
     exit 0
 elif [ "$1" = "all-library" ] ;then
     make_all_library
