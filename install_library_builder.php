@@ -1084,6 +1084,7 @@ EOF;
             ->withManual('https://www.php.net/docs.php')
             ->withLabel('php_extension_patch')
             ->withScriptBeforeConfigure($command)
+            ->withConfigure('return 0 ')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
