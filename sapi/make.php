@@ -212,9 +212,11 @@ elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
+    <?php if(!empty($item->pkgName)): ?>
     echo "[<?= $item->name ?>]"
     pkg-config --libs <?= ($item->pkgName ?: $item->name) . PHP_EOL ?>
     echo "==========================================================="
+    <?php endif ?>
 <?php endforeach; ?>
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
