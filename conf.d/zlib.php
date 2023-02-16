@@ -14,5 +14,5 @@ return function (Preprocessor $p) {
             ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
             ->depends('libxml2', 'bzip2')
     );
-    $p->addExtension((new Extension('zlib'))->withOptions('--with-zlib=/usr/zlib'));
+    $p->addExtension((new Extension('zlib'))->withOptions('--with-zlib-dir=/usr/zlib'));
 };

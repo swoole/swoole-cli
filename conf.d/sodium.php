@@ -14,5 +14,5 @@ return function (Preprocessor $p) {
             ->withLicense('https://en.wikipedia.org/wiki/ISC_license', Library::LICENSE_SPEC)
             ->withHomePage('https://doc.libsodium.org/')
     );
-    $p->addExtension((new Extension('sodium'))->withOptions('--with-sodium=/usr/libsodium'));
+    $p->addExtension((new Extension('sodium'))->withOptions('--with-sodium'));
 };

@@ -13,5 +13,5 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.sqlite.org/index.html')
             ->withLicense('https://www.sqlite.org/copyright.html', Library::LICENSE_SPEC)
     );
-    $p->addExtension((new Extension('sqlite3'))->withOptions('--with-sqlite3=/usr/sqlite3')->depends('sqlite3'));
+    $p->addExtension((new Extension('sqlite3'))->withOptions('--with-sqlite3')->depends('sqlite3'));
 };

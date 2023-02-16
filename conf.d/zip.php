@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('zip'))
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-            ->withPrefix('/usr/libyaml')
+            ->withPrefix('/usr/zip')
             ->withConfigure('
                  cmake -Wno-dev .  \
                 -DCMAKE_INSTALL_PREFIX=/usr/zip  \
@@ -33,7 +33,6 @@ return function (Preprocessor $p) {
                 -DBZIP2_NEED_PREFIX=ON \
                 -DENABLE_LZMA=OFF  \
                 -DENABLE_ZSTD=OFF
-            
             ')
             ->withMakeOptions('VERBOSE=1')
             ->withPkgName('libzip')

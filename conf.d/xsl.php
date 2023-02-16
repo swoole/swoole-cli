@@ -13,5 +13,5 @@ return function (Preprocessor $p) {
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
         ->depends('libxml2')
     );
-    $p->addExtension((new Extension('xsl'))->withOptions('--with-xsl=/usr/libxslt')->depends('libxslt'));
+    $p->addExtension((new Extension('xsl'))->withOptions('--with-xsl')->depends('libxslt'));
 };
