@@ -12,22 +12,22 @@ return function (Preprocessor $p) {
             (new Library('brotli'))
                 ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
                 ->withFile('brotli-1.0.9.tar.gz')
-                ->withPrefix('/usr/brotli')
-                ->withConfigure("cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/brotli .")
+                ->withPrefix(BROTLI_PREFIX)
+                ->withConfigure('cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=' . BROTLI_PREFIX . ' .')
                 ->withScriptAfterInstall(
                     implode(PHP_EOL, [
-                        'rm -rf /usr/brotli/lib/*.so.*',
-                        'rm -rf /usr/brotli/lib/*.so',
-                        'rm -rf /usr/brotli/lib/*.dylib',
-                        'mv /usr/brotli/lib/libbrotlicommon-static.a /usr/brotli/lib/libbrotli.a',
-                        'mv /usr/brotli/lib/libbrotlienc-static.a /usr/brotli/lib/libbrotlienc.a',
-                        'mv /usr/brotli/lib/libbrotlidec-static.a /usr/brotli/lib/libbrotlidec.a',
+                        'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',
+                        'rm -rf ' . BROTLI_PREFIX . '/lib/*.so',
+                        'rm -rf ' . BROTLI_PREFIX . '/lib/*.dylib',
+                        'mv ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotli.a',
+                        'mv ' . BROTLI_PREFIX . '/lib/libbrotlienc-static.a ' . BROTLI_PREFIX . '/lib/libbrotlienc.a',
+                        'mv ' . BROTLI_PREFIX . '/lib/libbrotlidec-static.a ' . BROTLI_PREFIX . '/lib/libbrotlidec.a',
                     ]))
                 ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
                 ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
                 ->withHomePage('https://github.com/google/brotli')
         );
-        $options .=  ' --with-brotli-dir=/usr/brotli';
+        $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     }
 
     $p->addExtension((new Extension('swoole'))

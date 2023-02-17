@@ -5,13 +5,14 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+    $icu_prefix = ICU_PREFIX;
     $p->addLibrary(
         (new Library('icu'))
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-            ->withPrefix('/usr/icu')
+            ->withPrefix(ICU_PREFIX)
             ->withConfigure(<<<EOF
              export CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1"
-             source/runConfigureICU Linux --prefix=/usr/icu \
+             ./configure --prefix={$icu_prefix} \
              --enable-icu-config=yes \
              --enable-static=yes \
              --enable-shared=no \

@@ -353,6 +353,15 @@ class Preprocessor
         $this->extraOptions = $options;
     }
 
+    /**
+     * make -j {$n}
+     * @param int $n
+     */
+    function setMaxJob(int $n)
+    {
+        $this->maxJob = $n;
+    }
+
     function donotInstallLibrary()
     {
         $this->installLibrary = false;
@@ -457,19 +466,7 @@ class Preprocessor
 
     function parseArguments(int $argc, array $argv)
     {
-        /**
-         * Scan and load files in directory
-         */
-        $extInclude = getenv('SWOOLE_CLI_EXT_INCLUDE') ?: $this->rootDir . '/conf.d';
-        $extAvailabled = [];
-        $files = scandir($extInclude);
-        foreach ($files as $f) {
-            if ($f == '.' or $f == '..') {
-                continue;
-            }
-            $extAvailabled[basename($f, '.php')] = require $extInclude . '/' . $f;
-        }
-
+        // parse the parameters passed in by the user
         for ($i = 1; $i < $argc; $i++) {
             $op = $argv[$i][0];
             $value = substr($argv[$i], 1);
@@ -482,18 +479,6 @@ class Preprocessor
                 }
             } elseif ($op == '@') {
                 $this->setOsType($value);
-            }
-        }
-
-        $this->extEnabled = array_unique($this->extEnabled);
-        foreach ($this->extEnabled as $ext) {
-            if (!isset($extAvailabled[$ext])) {
-                echo "unsupported extension[$ext]\n";
-                continue;
-            }
-            ($extAvailabled[$ext])($this);
-            if (isset($this->extCallbacks[$ext])) {
-                ($this->extCallbacks[$ext])($this);
             }
         }
     }
@@ -529,11 +514,48 @@ class Preprocessor
     }
 
     /**
+     * Scan and load config files in directory
+     */
+    protected function scanConfigFiles(string $dir, array &$extAvailabled)
+    {
+        $files = scandir($dir);
+        foreach ($files as $f) {
+            if ($f == '.' or $f == '..') {
+                continue;
+            }
+            $path = $dir . '/' . $f;
+            if (is_dir($path)) {
+                $this->scanConfigFiles($path, $extAvailabled);
+            } else {
+                $extAvailabled[basename($f, '.php')] = require $path;
+            }
+        }
+    }
+
+    /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
      */
-    function gen()
+    function execute()
     {
+        include __DIR__ . '/constants.php';
+
+        $extInclude = getenv('SWOOLE_CLI_EXT_INCLUDE') ?: $this->rootDir . '/conf.d';
+        $extAvailabled = [];
+        $this->scanConfigFiles($extInclude, $extAvailabled);
+
+        $this->extEnabled = array_unique($this->extEnabled);
+        foreach ($this->extEnabled as $ext) {
+            if (!isset($extAvailabled[$ext])) {
+                echo "unsupported extension[$ext]\n";
+                continue;
+            }
+            ($extAvailabled[$ext])($this);
+            if (isset($this->extCallbacks[$ext])) {
+                ($this->extCallbacks[$ext])($this);
+            }
+        }
+
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
         $this->sortLibrary();
@@ -549,19 +571,7 @@ class Preprocessor
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
-    }
 
-    /**
-     * make -j {$n}
-     * @param int $n
-     */
-    function setMaxJob(int $n)
-    {
-        $this->maxJob = $n;
-    }
-
-    function info()
-    {
         echo '==========================================================' . PHP_EOL;
         echo "Extension count: " . count($this->extensionList) . PHP_EOL;
         echo '==========================================================' . PHP_EOL;

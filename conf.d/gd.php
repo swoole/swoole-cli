@@ -14,8 +14,9 @@ return function (Preprocessor $p) {
         ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . JPEG_PREFIX . ' .')
         ->withPkgName('libjpeg');
 
-    // linux 系统中是保存在 lib64 目录下的，而 macos 是放在 /usr/libjpeg/lib 目录中的，不清楚这里是什么原因？
+    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
     $jpeg_lib_dir = JPEG_PREFIX . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
+    $gif_prefix = GIF_PREFIX;
     $lib->withLdflags('-L' . $jpeg_lib_dir)
         ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
     if ($p->getOsType() === 'macos') {
@@ -43,11 +44,17 @@ return function (Preprocessor $p) {
             ->withPrefix(GIF_PREFIX)
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
-            ->withScriptBeforeInstall('test -d ' . GIF_PREFIX . ' && rm -rf ' . GIF_PREFIX .
-                'mkdir -p ' . GIF_PREFIX . '/lib
-                mkdir -p ' . GIF_PREFIX . '/include'
+            ->withScriptAfterInstall(<<<EOF
+                if [ ! -d {$gif_prefix}/lib ]; then
+                    mkdir -p {$gif_prefix}/lib
+                fi
+                if [ ! -d {$gif_prefix}/include ]; then
+                    mkdir -p {$gif_prefix}/include
+                fi
+                cp libgif.a {$gif_prefix}/lib/libgif.a
+                cp gif_lib.h {$gif_prefix}/include/gif_lib.h
+                EOF
             )
-            ->withScriptAfterInstall('cp libgif.a ' . GIF_PREFIX . '/lib && cp gif_lib.h ' . GIF_PREFIX . '/include')
             ->withLdflags('-L' . GIF_PREFIX . '/lib')
             ->withPkgName('')
             ->withPkgConfig('')
@@ -77,9 +84,9 @@ return function (Preprocessor $p) {
             ->withPrefix(FREETYPE_PREFIX)
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
-            ->withConfigure('BZIP2_CFLAGS="-I/usr/bzip2/include" & \\' .
-                'BZIP2_LIBS="-L/usr/bzip2/lib -lbz2" & \\' .
-                'PATH="' . PNG_PREFIX .'/bin:$PATH" & \\' .
+            ->withConfigure('BZIP2_CFLAGS="-I' . BZIP2_PREFIX . '/include" & \\' .
+                'BZIP2_LIBS="-L' . BZIP2_PREFIX . '/lib -lbz2" & \\' .
+                'PATH="' . PNG_PREFIX . '/bin:$PATH" & \\' .
                 './configure --prefix=' . FREETYPE_PREFIX . ' \\' . PHP_EOL .
                 '--enable-static \\' . PHP_EOL .
                 '--disable-shared \\' . PHP_EOL .

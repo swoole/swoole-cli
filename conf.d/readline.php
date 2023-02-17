@@ -5,19 +5,20 @@ use SwooleCli\Extension;
 use SwooleCli\Library;
 
 return function (Preprocessor $p) {
+    $ncurses_prefix = NCURSES_PREFIX;
     $p->addLibrary(
         (new Library('ncurses'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
-            ->withPrefix('/usr/ncurses/')
+            ->withPrefix(NCURSES_PREFIX)
             ->withConfigure(<<<EOF
-            mkdir -p /usr/ncurses/lib/pkgconfig
+            mkdir -p {$ncurses_prefix}/lib/pkgconfig
             ./configure \
-            --prefix=/usr/ncurses \
+            --prefix={$ncurses_prefix} \
             --enable-static \
             --disable-shared \
             --enable-pc-files \
-            --with-pkg-config=/usr/ncurses/lib/pkgconfig \
-            --with-pkg-config-libdir=/usr/ncurses/lib/pkgconfig \
+            --with-pkg-config={$ncurses_prefix}/lib/pkgconfig \
+            --with-pkg-config-libdir={$ncurses_prefix}/lib/pkgconfig \
             --with-normal \
             --enable-widec \
             --enable-echo \
@@ -36,21 +37,20 @@ return function (Preprocessor $p) {
             --enable-symlinks
 EOF
             )
-
             ->withScriptBeforeInstall('
-            ln -s /usr/ncurses/lib/pkgconfig/formw.pc /usr/ncurses/lib/pkgconfig/form.pc ;
-            ln -s /usr/ncurses/lib/pkgconfig/menuw.pc /usr/ncurses/lib/pkgconfig/menu.pc ;
-            ln -s /usr/ncurses/lib/pkgconfig/ncurses++w.pc /usr/ncurses/lib/pkgconfig/ncurses++.pc ;
-            ln -s /usr/ncurses/lib/pkgconfig/ncursesw.pc /usr/ncurses/lib/pkgconfig/ncurses.pc ;
-            ln -s /usr/ncurses/lib/pkgconfig/panelw.pc /usr/ncurses/lib/pkgconfig/panel.pc ;
-            ln -s /usr/ncurses/lib/pkgconfig/ticw.pc /usr/ncurses/lib/pkgconfig/tic.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/formw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/form.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/menuw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/menu.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++w.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncursesw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/panelw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/panel.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ticw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/tic.pc ;
 
-            ln -s /usr/ncurses/lib/libformw.a /usr/ncurses/lib/libform.a ;
-            ln -s /usr/ncurses/lib/libmenuw.a /usr/ncurses/lib/libmenu.a ;
-            ln -s /usr/ncurses/lib/libncurses++w.a /usr/ncurses/lib/libncurses++.a ;
-            ln -s /usr/ncurses/lib/libncursesw.a /usr/ncurses/lib/libncurses.a ;
-            ln -s /usr/ncurses/lib/libpanelw.a  /usr/ncurses/lib/libpanel.a ;
-            ln -s /usr/ncurses/lib/libticw.a /usr/ncurses/lib/libtic.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libformw.a ' . NCURSES_PREFIX . '/lib/libform.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libmenuw.a ' . NCURSES_PREFIX . '/lib/libmenu.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libncurses++w.a ' . NCURSES_PREFIX . '/lib/libncurses++.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libncursesw.a ' . NCURSES_PREFIX . '/lib/libncurses.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libpanelw.a  ' . NCURSES_PREFIX . '/lib/libpanel.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libticw.a ' . NCURSES_PREFIX . '/lib/libtic.a ;
             ')
             ->withPkgName('ncursesw')
             ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
@@ -60,20 +60,21 @@ EOF
         $p->addLibrary(
             (new Library('libedit'))
                 ->withUrl('https://thrysoee.dk/editline/libedit-20210910-3.1.tar.gz')
-                ->withPrefix('/usr/libedit')
-                ->withConfigure('./configure --prefix=/usr/libedit --enable-static --disable-shared')
+                ->withPrefix(LIBEDIT_PREFIX)
+                ->withConfigure('./configure --prefix=' . LIBEDIT_PREFIX . ' --enable-static --disable-shared')
                 ->withLdflags('')
                 ->withLicense('http://www.netbsd.org/Goals/redistribution.html', Library::LICENSE_BSD)
                 ->withHomePage('https://thrysoee.dk/editline/')
         );
     } else {
+        $readline_prefix = READLINE_PREFIX;
         $p->addLibrary(
             (new Library('readline'))
                 ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
-                ->withPrefix('/usr/readline')
+                ->withPrefix(READLINE_PREFIX)
                 ->withConfigure(<<<EOF
                 ./configure \
-                --prefix=/usr/readline \
+                --prefix={$readline_prefix} \
                 --enable-static \
                 --disable-shared \
                 --with-curses \
@@ -81,14 +82,14 @@ EOF
 EOF
                 )
                 ->withPkgName('readline')
-                ->withLdflags('-L/usr/readline/lib')
+                ->withLdflags('-L' . READLINE_PREFIX . '/lib')
                 ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
                 ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
                 ->depends('ncurses')
         );
     }
     $p->addExtension((new Extension('readline'))
-        ->withOptions('--with-readline=/usr/readline')
+        ->withOptions('--with-readline=' . READLINE_PREFIX)
         ->depends('ncurses', 'readline')
     );
 };
