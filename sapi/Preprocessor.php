@@ -79,6 +79,11 @@ class Library extends Project
         return $this;
     }
 
+    function getPrefix(): string
+    {
+        return $this->prefix;
+    }
+
     function withFile(string $file): static
     {
         $this->file = $file;
@@ -175,7 +180,11 @@ class Preprocessor
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
+
     protected array $downloadExtensionList = [];
+
+    protected array $libraryMap = [];
+    protected array $extensionMap = [];
     protected string $rootDir;
     protected string $libraryDir;
     protected string $extensionDir;
@@ -365,7 +374,7 @@ class Preprocessor
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
         }
-        $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
+        $skip_library_download = getenv('SWOOLE_CLI_SKIP_DOWNLOAD');
         if (empty($skip_library_download)) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
@@ -384,6 +393,7 @@ class Preprocessor
         }
 
         $this->libraryList[] = $lib;
+        $this->libraryMap[$lib->name] = $lib;
     }
 
     function addExtension(Extension $ext)
@@ -392,7 +402,7 @@ class Preprocessor
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
-            $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
+            $skip_library_download = getenv('SWOOLE_CLI_SKIP_DOWNLOAD');
             if(empty($skip_library_download)){
                 if (!is_file($ext->path)) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
@@ -412,6 +422,33 @@ class Preprocessor
         }
 
         $this->extensionList[] = $ext;
+        $this->extensionMap[$ext->name] = $ext;
+    }
+
+    function getLibrary(string $name): ?Library
+    {
+        if (!isset($this->libraryMap[$name])) {
+            return null;
+        }
+        return $this->libraryMap[$name];
+    }
+
+    function getExtension(string $name): ?Extension
+    {
+        if (!isset($this->extensionMap[$name])) {
+            return null;
+        }
+        return $this->extensionMap[$name];
+    }
+
+    function existsLibrary(string $name): bool
+    {
+        return isset($this->libraryMap[$name]);
+    }
+
+    function existsExtension(string $name): bool
+    {
+        return isset($this->extensionMap[$name]);
     }
 
     function addEndCallback($fn)

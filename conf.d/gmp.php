@@ -11,6 +11,7 @@ return function (Preprocessor $p) {
             ->withPrefix('/usr/gmp')
             ->withConfigure('./configure --prefix=/usr/gmp --enable-static --disable-shared')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
+            ->withPkgName('gmp')
     );
     $p->addExtension((new Extension('gmp'))->withOptions('--with-gmp=/usr/gmp')->depends('gmp'));
 };

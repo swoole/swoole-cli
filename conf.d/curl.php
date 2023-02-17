@@ -8,8 +8,8 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('cares'))
             ->withUrl('https://c-ares.org/download/c-ares-1.18.1.tar.gz')
-            ->withPrefix('/usr')
-            ->withConfigure('./configure --prefix=/usr --enable-static --disable-shared')
+            ->withPrefix('/usr/cares')
+            ->withConfigure('./configure --prefix=/usr/cares --enable-static --disable-shared')
             ->withPkgName('libcares')
             ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
             ->withHomePage('https://c-ares.org/')
@@ -19,8 +19,10 @@ return function (Preprocessor $p) {
             ->withUrl('https://curl.se/download/curl-7.80.0.tar.gz')
             ->withPrefix('/usr/curl')
             ->withConfigure(
-                "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl " .
-                "--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3"
+                'autoreconf -fi && ./configure --prefix=/usr/curl' .
+                '--enable-static --disable-shared --with-openssl=/usr/openssl ' .
+                '--enable-ares ' .
+                '--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3'
             )
             ->withPkgName('libcurl')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)

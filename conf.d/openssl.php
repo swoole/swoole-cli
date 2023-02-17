@@ -9,9 +9,10 @@ return function (Preprocessor $p) {
         ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
         ->withPrefix('/usr/openssl')
         ->withConfigure('./config' . ($p->getOsType() === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=/usr/openssl')
-        ->withMakeInstallOptions('install_sw')
+        ->withMakeInstallCommand('install_sw')
         ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
         ->withHomePage('https://www.openssl.org/')
+        ->withPkgName('openssl')
     );
     $p->addExtension(
         (new Extension('openssl'))

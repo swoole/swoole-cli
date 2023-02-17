@@ -8,10 +8,10 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('icu'))
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-            ->withPrefix('/usr')
+            ->withPrefix('/usr/icu')
             ->withConfigure(<<<EOF
              export CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1"
-             source/runConfigureICU Linux --prefix=/usr \
+             source/runConfigureICU Linux --prefix=/usr/icu \
              --enable-icu-config=yes \
              --enable-static=yes \
              --enable-shared=no \

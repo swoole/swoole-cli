@@ -39,27 +39,27 @@ __EOF__
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[make FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
 
     # before make install
 <?php if ($item->beforeInstallScript): ?>
     <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ before make install script FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ before make install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # make install
 <?php if ($item->makeInstallCommand): ?>
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # after make install
 <?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ after make  install script FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     cd <?= $this->workDir . PHP_EOL ?>
@@ -94,8 +94,10 @@ make_config() {
     export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
 
 <?php if ($this->getOsType() == 'linux') : ?>
-    export CPPFLAGS=$(pkg-config  --cflags --static  readline icu-i18n  icu-io   icu-uc)
-    LIBS=$(pkg-config  --libs --static readline libcares icu-i18n  icu-io   icu-uc)
+    export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
+    export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
+    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc)
+    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc)
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 <?php endif; ?>
 
@@ -130,8 +132,10 @@ help() {
     echo "./make.sh archive"
     echo "./make.sh all-library"
     echo "./make.sh list-library"
+    echo "./make.sh list-extension"
     echo "./make.sh clean-all-library"
     echo "./make.sh sync"
+    echo "./make.sh pkg-check"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -144,8 +148,10 @@ elif [ "$1" = "all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
+    exit 0
 elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
+    exit 0
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
     make_config
@@ -168,12 +174,20 @@ elif [ "$1" = "diff-configure" ] ;then
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
-    pkg-config --libs <?= ($item->pkgName ?: $item->name) . PHP_EOL ?>
+<?php if(!empty($item->pkgName)) :?>
+    pkg-config --libs <?= $item->pkgName . PHP_EOL ?>
+<?php else :?>
+    echo "no PKG_CONFIG !"
+<?php endif ?>
     echo "==========================================================="
 <?php endforeach; ?>
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    echo "[<?= $item->name ?>]"
+    echo "<?= $item->name ?>"
+<?php endforeach; ?>
+elif [ "$1" = "list-extension" ] ;then
+<?php foreach ($this->extensionList as $item) : ?>
+    echo "<?= $item->name ?>"
 <?php endforeach; ?>
 elif [ "$1" = "sync" ] ;then
   echo "sync"

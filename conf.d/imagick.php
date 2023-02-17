@@ -7,14 +7,14 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('imagemagick' ))
-            ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-19.tar.gz')
+            ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
             ->withPrefix('/usr/imagemagick')
             ->withConfigure(<<<EOF
               ./configure \
               --prefix=/usr/imagemagick \
               --enable-static\
               --disable-shared \
-              --with-zip=no \
+              --with-zip=yes \
               --with-fontconfig=no \
               --with-heic=no \
               --with-lcms=no \
@@ -28,9 +28,9 @@ return function (Preprocessor $p) {
               --with-freetype=yes
 EOF
             )
-            ->withPkgName('imageMagick')
+            ->withPkgName('ImageMagick')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
-            ->depends('libxml2', 'zip', 'zlib', 'libjpeg', 'freetype', 'libwebp', 'libpng', 'giflib')
+            ->depends('libxml2', 'zip', 'zlib', 'libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
     );
     $p->addExtension((new Extension('imagick'))
         ->withOptions('--with-imagick=/usr/imagemagick')
