@@ -5,10 +5,26 @@ require __DIR__ . '/vendor/autoload.php';
 use SwooleCli\Preprocessor;
 
 $homeDir = getenv('HOME');
+$p = Preprocessor::getInstance();
+$p->parseArguments($argc, $argv);
 
-$p = new Preprocessor(__DIR__);
-
+// Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
+
+// Compile directly on the host machine, not in the docker container
+if ($p->getInputOption('without-docker')) {
+    $p->setWorkDir(__DIR__);
+    $p->setBuildDir(__DIR__ . '/thirdparty');
+    $p->setGlobalPrefix($homeDir . '/.swoole-cli');
+}
+
+if ($p->getOsType() == 'macos') {
+    $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup');
+}
+
+
+
+
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`);
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
 
@@ -16,17 +32,6 @@ $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
 
 
 if ($p->getOsType() == 'macos') {
-    $p->setWorkDir(__DIR__);
-    $p->setBuildDir(__DIR__ . '/thirdparty');
-    $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -lwebpdemux -lwebpmux -licudata -licui18n -licuio');
-    $p->addEndCallback(function () use ($p, $homeDir) {
-        $libDir = $homeDir . '/.swoole-cli';
-        if (!is_dir($libDir)) {
-            mkdir($libDir);
-        }
-        // The lib directory MUST not be in the current directory, otherwise the php make clean script will delete librarys
-        file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', $homeDir . '/.swoole-cli', file_get_contents(__DIR__ . '/make.sh')));
-    });
 
     $p->addEndCallback(function () use ($p) {
         $header=<<<'EOF'
@@ -62,9 +67,9 @@ EOF;
 install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
 install_openssl($p);
 install_libxml2($p); //依赖 libiconv
-install_libxslt($p); //依赖 libxml2
+install_libxslt($p); //依赖 libxml2 libiconv
 install_gmp($p);
-install_zlib($p);
+install_zlib($p);//->depends('libxml2', 'bzip2')
 install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
 install_libgif($p);//没有 libgif.pc 文件，不能使用 pkg-config 命令
 install_libpng($p); //依赖 zlib
@@ -127,7 +132,6 @@ if ($p->getOsType() == 'win') {
 
  */
 
-$p->parseArguments($argc, $argv);
 
-$p->gen();
-$p->info();
+// Generate make.sh
+$p->execute();

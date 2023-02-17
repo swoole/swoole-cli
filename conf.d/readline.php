@@ -6,6 +6,7 @@ use SwooleCli\Library;
 
 return function (Preprocessor $p) {
     $p->addExtension((new Extension('readline'))
-        ->withOptions('--with-readline=/usr/readline')
+        ->withOptions('--with-readline=' . READLINE_PREFIX)
+        ->depends('ncurses', 'readline')
     );
 };

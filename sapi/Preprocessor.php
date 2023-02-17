@@ -106,6 +106,11 @@ class Library extends Project
         return $this;
     }
 
+    function getPrefix(): string
+    {
+        return $this->prefix;
+    }
+
     function withFile(string $file): static
     {
         $this->file = $file;
@@ -263,9 +268,17 @@ class Preprocessor
     const VERSION = '1.5';
     const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
 
+    protected static $instance = null;
+
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
+    protected array $libraryMap = [];
+    protected array $extensionMap = [];
+    /**
+     * 仅用于预处理阶段
+     * @var string
+     */
     protected string $rootDir;
     protected string $libraryDir;
     protected string $extensionDir;
@@ -273,17 +286,27 @@ class Preprocessor
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
     /**
-     * 指向 swoole-cli 所在的目录
-     * $workDir/ext 存放扩展
-     * $workDir/thirdparty 存放第三方库的源代码，编译后的 .a 文件会安装到系统的 /usr 目录下
-     * 在 macOS 系统上，/usr 目录将会被替换为 $workDir/usr
+     * 指向 swoole-cli 所在的目录，在构建阶段使用
+     * $workDir/pool/ext 存放扩展
+     * $workDir/pool/lib 存放依赖库
      */
     protected string $workDir = '/work';
+    /**
+     * 依赖库的构建目录，在构建阶段使用
+     * @var string
+     */
     protected string $buildDir = '/work/thirdparty';
+    /**
+     * 编译后.a静态库文件安装目录的全局前缀，在构建阶段使用
+     * @var string
+     */
+    protected string $globalPrefix = '/usr';
+
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
+    protected array $inputOptions = [];
 
     /**
      * Extensions enabled by default
@@ -334,38 +357,17 @@ class Preprocessor
     protected array $extCallbacks = [];
     protected array $binPaths = [];
 
-    function __construct(string $rootPath)
+    protected function __construct()
     {
-        $this->rootDir = $rootPath;
-        $this->libraryDir = $rootPath . '/pool/lib';
-        $this->extensionDir = $rootPath . '/pool/ext';
 
-        // 此目录用于存放源代码包
-        if (!is_dir($rootPath . '/pool')) {
-            mkdir($rootPath . '/pool');
-        }
-        if (!is_dir($this->libraryDir)) {
-            mkdir($this->libraryDir);
-        }
-        if (!is_dir($this->extensionDir)) {
-            mkdir($this->extensionDir);
-        }
+    }
 
-        switch (PHP_OS) {
-            default:
-            case 'Linux':
-                $this->setOsType('linux');
-                $this->setMaxJob(`nproc 2> /dev/null`);
-                //`grep "processor" /proc/cpuinfo | sort -u | wc -l`
-                break;
-            case 'Darwin':
-                $this->setOsType('macos');
-                $this->setMaxJob(`sysctl -n hw.ncpu`);
-                break;
-            case 'WINNT':
-                $this->setOsType('win');
-                break;
+    public static function getInstance(): static
+    {
+        if (!self::$instance) {
+            self::$instance = new static;
         }
+        return self::$instance;
     }
 
     protected function setOsType(string $osType)
@@ -412,20 +414,30 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
-    public function getPhpSrcDir()
+
+    function setGlobalPrefix(string $prefix)
     {
-        return $this->phpSrcDir ;
+        $this->globalPrefix = $prefix;
     }
 
-    function setDockerVersion(string $dockerVersion)
+    function getGlobalPrefix(): string
     {
-        $this->dockerVersion = $dockerVersion;
+        return $this->globalPrefix;
     }
 
-
-    function setPrefix(string $prefix)
+    function setRootDir(string $rootDir)
     {
-        $this->prefix = $prefix;
+        $this->rootDir = $rootDir;
+    }
+
+    function setLibraryDir(string $libraryDir)
+    {
+        $this->libraryDir = $libraryDir;
+    }
+
+    function setExtensionDir(string $extensionDir)
+    {
+        $this->extensionDir = $extensionDir;
     }
 
     function setWorkDir(string $workDir)
@@ -458,6 +470,15 @@ class Preprocessor
         $this->extraOptions = $options;
     }
 
+    /**
+     * make -j {$n}
+     * @param int $n
+     */
+    function setMaxJob(int $n)
+    {
+        $this->maxJob = $n;
+    }
+
     function donotInstallLibrary()
     {
         $this->installLibrary = false;
@@ -465,7 +486,10 @@ class Preprocessor
 
     protected function downloadFile(string $url, string $file)
     {
-        echo `wget {$url} -O {$file}`;
+        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
+        echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
+
+        //echo `wget {$url} -O {$file}`;
         if (!is_file($file) or filesize($file) == 0) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
@@ -476,21 +500,11 @@ class Preprocessor
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
         }
-        $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
+        $skip_library_download = $this->getInputOption('skip-download');
         if (empty($skip_library_download)) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
-
-                # echo `wget {$lib->url} -O {$this->libraryDir}/{$lib->file}`;
-                # echo $lib->file;
-                echo "[Library] {$lib->file} not found, " . $lib->file . PHP_EOL . 'downloading:: ' . $lib->url . PHP_EOL;
-                `curl --connect-timeout 15 --retry 5 --retry-delay 5  -Lo {$this->libraryDir}/{$lib->file} '{$lib->url}'`;
-                echo PHP_EOL;
-                if (!is_file("{$this->libraryDir}/{$lib->file}") or filesize("{$this->libraryDir}/{$lib->file}") == 0) {
-                    throw new \RuntimeException("Downloading file[$lib->file] from url[$lib->url] failed");
-                }
-                echo 'download ' . $lib->file . ' OK ' . PHP_EOL . PHP_EOL;
-                // TODO PGP  验证
-
+                echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
+                $this->downloadFile($lib->url, "{$this->libraryDir}/{$lib->file}");
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -509,72 +523,58 @@ class Preprocessor
         }
 
         $this->libraryList[] = $lib;
+        $this->libraryMap[$lib->name] = $lib;
     }
 
     function addExtension(Extension $ext)
     {
         if ($ext->peclVersion) {
-            if ($ext->peclVersion == 'latest') {
-                $find = glob($this->extensionDir . '/' . $ext->name . '-*.tgz');
-                if (!$find) {
-                    goto _download;
-                }
-                $file = basename($find[0]);
-            } else {
-                $file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-            }
-
-            $ext->file = $file;
-            $ext->path = $this->extensionDir . '/' . $file;
-            $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
-            $ext->url = "https://pecl.php.net/get/$download_name";
+            $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+            $ext->path = $this->extensionDir . '/' . $ext->file;
+            $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!is_file($ext->path)) {
-                _download:
-
-                # $download_name = $ext->peclVersion == 'latest' ? $ext->name : $ext->name . '-' . $ext->peclVersion;
-                # echo "curl download {$download_name} " . PHP_EOL;
-                # echo `cd {$this->extensionDir} && pecl download $download_name && cd -`;
-                /*
-                 * 不使用 pecl 下载扩展
-                 * curl -lO https://pecl.php.net/get/redis
-                 * curl -lO https://pecl.php.net/get/redis-5.3.7.tgz
-                 */
-                $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
-                $download_url = '';
-                $download_name = '';
-                if ($ext->peclVersion == 'latest') {
-                    $download_name = $ext->name;
-                    $download_url = "https://pecl.php.net/get/" . $download_name;
-                } else {
-                    $download_name = $ext->name . '-' . $ext->peclVersion . '.tgz';
-                    $download_url = "https://pecl.php.net/get/" . $ext->name . '-' . $ext->peclVersion . '.tgz';
-                }
-                echo "[Extension] {$ext->file} not found, downloading: $download_url" . PHP_EOL;
-                $cmd="cd {$this->extensionDir} && curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -LO  '{$download_url}' && cd -";
-                echo $cmd;
-                `$cmd`;
-
-                if (!is_file( $ext->path) or filesize( $ext->path) == 0) {
-                    throw new \RuntimeException("Downloading file[ $download_name] from url[$download_url] failed");
-                }
-                echo 'download ' . $ext->file . ' OK ' . PHP_EOL . PHP_EOL;
-
+                echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                $this->downloadFile($ext->url, $ext->path);
             } else {
                 echo "[Extension] file cached: " . $ext->file . PHP_EOL;
             }
-
             $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-            if (is_file($ext->path)) {
+            if (!is_dir($dst_dir)) {
                 echo `mkdir -p $dst_dir`;
-                //扩展目录不存在指定扩展的文件夹，则解压扩展包到扩展目录
-                if (!(new \FilesystemIterator($dst_dir))->valid()) {
-                    echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
-                }
             }
+
+            echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
         }
 
         $this->extensionList[] = $ext;
+        $this->extensionMap[$ext->name] = $ext;
+    }
+
+    function getLibrary(string $name): ?Library
+    {
+        if (!isset($this->libraryMap[$name])) {
+            return null;
+        }
+        return $this->libraryMap[$name];
+    }
+
+    function getExtension(string $name): ?Extension
+    {
+        if (!isset($this->extensionMap[$name])) {
+            return null;
+        }
+        return $this->extensionMap[$name];
+    }
+
+    function existsLibrary(string $name): bool
+    {
+        return isset($this->libraryMap[$name]);
+    }
+
+    function existsExtension(string $name): bool
+    {
+        return isset($this->extensionMap[$name]);
     }
 
     function addEndCallback($fn)
@@ -589,45 +589,32 @@ class Preprocessor
 
     function parseArguments(int $argc, array $argv)
     {
-        /**
-         * Scan and load files in directory
-         */
-        $extInclude = getenv('SWOOLE_CLI_EXT_INCLUDE') ?: $this->rootDir . '/conf.d';
-        $extAvailabled = [];
-        $files = scandir($extInclude);
-        foreach ($files as $f) {
-            if ($f == '.' or $f == '..') {
-                continue;
-            }
-            $extAvailabled[basename($f, '.php')] = require $extInclude . '/' . $f;
-        }
-
+        // parse the parameters passed in by the user
         for ($i = 1; $i < $argc; $i++) {
-            $op = $argv[$i][0];
+            $arg = $argv[$i];
+            $op = $arg[0];
             $value = substr($argv[$i], 1);
             if ($op == '+') {
                 $this->extEnabled[] = $value;
             } elseif ($op == '-') {
-                $key = array_search($value, $this->extEnabled);
-                if ($key !== false) {
-                    unset($this->extEnabled[$key]);
+                if ($arg[1] == '-') {
+                    $_ = explode('=', substr($arg, 2));
+                    $this->inputOptions[$_[0]] = $_[1] ?? true;
+                } else {
+                    $key = array_search($value, $this->extEnabled);
+                    if ($key !== false) {
+                        unset($this->extEnabled[$key]);
+                    }
                 }
             } elseif ($op == '@') {
                 $this->setOsType($value);
             }
         }
+    }
 
-        $this->extEnabled = array_unique($this->extEnabled);
-        foreach ($this->extEnabled as $ext) {
-            if (!isset($extAvailabled[$ext])) {
-                echo "unsupported extension[$ext]\n";
-                continue;
-            }
-            ($extAvailabled[$ext])($this);
-            if (isset($this->extCallbacks[$ext])) {
-                ($this->extCallbacks[$ext])($this);
-            }
-        }
+    function getInputOption(string $key): string
+    {
+        return $this->inputOptions[$key] ?? false;
     }
 
     /**
@@ -661,11 +648,89 @@ class Preprocessor
     }
 
     /**
+     * Scan and load config files in directory
+     */
+    protected function scanConfigFiles(string $dir, array &$extAvailabled)
+    {
+        $files = scandir($dir);
+        foreach ($files as $f) {
+            if ($f == '.' or $f == '..' or substr($f, -4, 4) != '.php') {
+                continue;
+            }
+            $path = $dir . '/' . $f;
+            if (is_dir($path)) {
+                $this->scanConfigFiles($path, $extAvailabled);
+            } else {
+                $extAvailabled[basename($f, '.php')] = require $path;
+            }
+        }
+    }
+
+    /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
      */
-    function gen()
+    function execute()
     {
+        if (empty($this->rootDir)) {
+            $this->rootDir = dirname(__DIR__);
+        }
+        if (empty($this->libraryDir)) {
+            $this->libraryDir = $this->rootDir . '/pool/lib';
+        }
+        if (empty($this->extensionDir)) {
+            $this->extensionDir = $this->rootDir . '/pool/ext';
+        }
+        if (!is_dir($this->libraryDir)) {
+            mkdir($this->libraryDir, 0777, true);
+        }
+        if (!is_dir($this->extensionDir)) {
+            mkdir($this->extensionDir, 0777, true);
+        }
+        if (empty($this->osType)) {
+            switch (PHP_OS) {
+                default:
+                case 'Linux':
+                    $this->setOsType('linux');
+                    break;
+                case 'Darwin':
+                    $this->setOsType('macos');
+                    break;
+                case 'WINNT':
+                    $this->setOsType('win');
+                    break;
+            }
+        }
+
+        include __DIR__ . '/constants.php';
+
+        $extAvailabled = [];
+        if (is_dir($this->rootDir . '/conf.d')) {
+            $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
+        }
+        $confPath = $this->getInputOption('conf-path');
+        if ($confPath) {
+            $confDirList = explode(':', $confPath);
+            foreach ($confDirList as $dir) {
+                if (!is_dir($dir)) {
+                    continue;
+                }
+                $this->scanConfigFiles($dir, $extAvailabled);
+            }
+        }
+
+        $this->extEnabled = array_unique($this->extEnabled);
+        foreach ($this->extEnabled as $ext) {
+            if (!isset($extAvailabled[$ext])) {
+                echo "unsupported extension[$ext]\n";
+                continue;
+            }
+            ($extAvailabled[$ext])($this);
+            if (isset($this->extCallbacks[$ext])) {
+                ($this->extCallbacks[$ext])($this);
+            }
+        }
+
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
@@ -686,6 +751,9 @@ class Preprocessor
 
         ob_start();
         include __DIR__ . '/license.php';
+        if (!$this->rootDir . '/bin') {
+            mkdir($this->rootDir . '/bin');
+        }
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
 
         ob_start();
@@ -695,25 +763,6 @@ class Preprocessor
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
-
-    }
-
-    /**
-     * make -j {$n}
-     * @param int $n
-     */
-    function setMaxJob(int $n)
-    {
-        $this->maxJob = $n;
-    }
-
-    function getMaxJob()
-    {
-        return $this->maxJob ;
-    }
-
-    function info()
-    {
         echo '==========================================================' . PHP_EOL;
         echo "Extension count: " . count($this->extensionList) . PHP_EOL;
         echo '==========================================================' . PHP_EOL;
@@ -727,6 +776,7 @@ class Preprocessor
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
         }
+
     }
 
     protected function generateLibraryDownloadLinks():void

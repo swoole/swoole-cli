@@ -7,6 +7,7 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $p->addExtension(
         (new Extension('openssl'))
-            ->withOptions('--with-openssl --with-openssl-dir=/usr/openssl')
+            ->withOptions('--with-openssl --with-openssl-dir=' . OPENSSL_PREFIX)
+            ->depends('openssl')
     );
 };

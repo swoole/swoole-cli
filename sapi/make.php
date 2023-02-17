@@ -33,14 +33,15 @@ make_<?=$item->name?>() {
 <?php endif ;?>
 
     echo "build <?=$item->name?>"
+
 <?php if ($item->cleanBuildDirectory) : ?>
     test -d <?=$this->getBuildDir()?>/<?= $item->name ?> && rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?><?= PHP_EOL; ?>
 <?php endif; ?>
-
+    # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
         mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
     fi
-    cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
+
 
 <?php if($item->untarArchiveCommand == 'tar' ):?>
     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
@@ -52,12 +53,21 @@ make_<?=$item->name?>() {
     cp -rf  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
 <?php endif ; ?>
 
+    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+        echo "[<?=$item->name?>] compiled, skip.."
+        cd <?= $this->workDir . PHP_EOL ?>
+        return 0
+    fi
+
+    cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
+
+
     # before configure
-<?php if (!empty($item->beforeConfigureScript)) : ?>
-    <?= $item->beforeConfigureScript . PHP_EOL ?>
-    result_code=$?
-    [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
-<?php endif; ?>
+    <?php if (!empty($item->beforeConfigureScript)) : ?>
+        <?= $item->beforeConfigureScript . PHP_EOL ?>
+        result_code=$?
+        [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
+    <?php endif; ?>
 
     # configure
 <?php if (!empty($item->configure)): ?>
@@ -66,35 +76,40 @@ cat <<'__EOF__'
 __EOF__
     <?=$item->configure . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ configure FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
 
 <?php endif; ?>
 
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ make FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
+
 
     # before make install
 <?php if ($item->beforeInstallScript): ?>
     <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ before make install FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ before make install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # make install
 <?php if ($item->makeInstallCommand): ?>
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ make install FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
+
 <?php endif; ?>
 
     # after make install
 <?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ after make  install script FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
+
+    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
@@ -103,6 +118,7 @@ clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?>
     echo "clean <?=$item->name?>"
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
+    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     cd <?= $this->workDir . PHP_EOL ?>
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
@@ -133,14 +149,15 @@ EOF
     export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
     export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
     export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
-    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static      libpq)
+    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static       libpq)
     export   LIBPQ_LIBS=$(pkg-config    --libs   --static       libpq)
-    export   XSL_CFLAGS=$(pkg-config --cflags  --static libxslt) ;
-    export   XSL_LIBS=$(pkg-config   --libs    --static libxslt) ;
+
 
 <?php if ($this->getOsType() == 'linux') : ?>
-    export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
-    LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
+    export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
+    export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
+    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
+    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 <?php endif; ?>
 
@@ -175,8 +192,11 @@ help() {
     echo "./make.sh archive"
     echo "./make.sh all-library"
     echo "./make.sh list-library"
+    echo "./make.sh list-extension"
     echo "./make.sh clean-all-library"
+    echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
+    echo "./make.sh pkg-check"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -189,8 +209,10 @@ elif [ "$1" = "all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
+    exit 0
 elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
+    exit 0
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
     make_config
@@ -208,19 +230,32 @@ elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"
 <?php endforeach; ?>
+elif [ "$1" = "clean-all-library-cached" ] ;then
+<?php foreach ($this->libraryList as $item) : ?>
+    echo "rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed"
+    rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
+<?php endforeach; ?>
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if(!empty($item->pkgName)): ?>
     echo "[<?= $item->name ?>]"
-    pkg-config --libs <?= ($item->pkgName ?: $item->name) . PHP_EOL ?>
+<?php if(!empty($item->pkgName)) :?>
+    pkg-config --libs <?= $item->pkgName . PHP_EOL ?>
+<?php else :?>
+    echo "no PKG_CONFIG !"
+<?php endif ?>
     echo "==========================================================="
     <?php endif ?>
 <?php endforeach; ?>
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    echo "[<?= $item->name ?>]"
+    echo "<?= $item->name ?>"
+<?php endforeach; ?>
+elif [ "$1" = "list-extension" ] ;then
+<?php foreach ($this->extensionList as $item) : ?>
+    echo "<?= $item->name ?>"
 <?php endforeach; ?>
 elif [ "$1" = "sync" ] ;then
   echo "sync"
