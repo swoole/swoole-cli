@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
+            ->withFile('ImageMagick-v7.1.0-62.tar.gz')
             ->withPrefix(IMAGEMAGICK_PREFIX)
             ->withConfigure(<<<EOF
               ./configure \

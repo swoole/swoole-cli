@@ -1,27 +1,26 @@
 #!/usr/bin/env php
 <?php
 require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/sapi/constants.php';
 
 use SwooleCli\Preprocessor;
 
 $homeDir = getenv('HOME');
-
-$p = new Preprocessor(__DIR__);
-$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
+$p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
-if ($p->getOsType() == 'macos') {
+
+// Sync code from php-src
+$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
+
+// Compile directly on the host machine, not in the docker container
+if ($p->getInputOption('without-docker')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
-    $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup -lwebp -lwebpdemux -lwebpmux -licudata -licui18n -licuio');
-    $p->addEndCallback(function () use ($p, $homeDir) {
-        $libDir = $homeDir . '/.swoole-cli';
-        if (!is_dir($libDir)) {
-            mkdir($libDir);
-        }
-        // The lib directory MUST not be in the current directory, otherwise the php make clean script will delete librarys
-        file_put_contents(__DIR__ . '/make.sh', str_replace('/usr', $homeDir . '/.swoole-cli', file_get_contents(__DIR__ . '/make.sh')));
-    });
+    $p->setGlobalPrefix($homeDir . '/.swoole-cli');
 }
-$p->gen();
-$p->info();
+
+if ($p->getOsType() == 'macos') {
+    $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup');
+}
+
+// Generate make.sh
+$p->execute();

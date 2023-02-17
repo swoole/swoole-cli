@@ -146,6 +146,7 @@ help() {
     echo "./make.sh list-library"
     echo "./make.sh list-extension"
     echo "./make.sh clean-all-library"
+    echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
     echo "./make.sh pkg-check"
 }
@@ -180,6 +181,11 @@ elif [ "$1" = "archive" ] ;then
 elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"
+<?php endforeach; ?>
+elif [ "$1" = "clean-all-library-cached" ] ;then
+<?php foreach ($this->libraryList as $item) : ?>
+    echo "rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed"
+    rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
 <?php endforeach; ?>
 elif [ "$1" = "diff-configure" ] ;then
   meld $SRC/configure.ac ./configure.ac

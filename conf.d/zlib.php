@@ -15,5 +15,5 @@ return function (Preprocessor $p) {
             ->withPkgName('zlib')
             ->depends('libxml2', 'bzip2')
     );
-    $p->addExtension((new Extension('zlib'))->withOptions('--with-zlib --with-zlib-dir=/usr/zlib'));
+    $p->addExtension((new Extension('zlib'))->withOptions('--with-zlib --with-zlib-dir=' . ZLIB_PREFIX));
 };
