@@ -148,8 +148,10 @@ elif [ "$1" = "all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
+    exit 0
 elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
+    exit 0
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
     make_config
