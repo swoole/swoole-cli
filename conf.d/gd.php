@@ -29,8 +29,8 @@ return function (Preprocessor $p) {
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
             ->withPrefix(PNG_PREFIX)
             ->withConfigure(
-                './configure --prefix=' . PNG_PREFIX . '--enable-static --disable-shared ' .
-                '--with-zlib-prefix=/usr/zlib  --with-binconfigs'
+                './configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared ' .
+                '--with-zlib-prefix=' . ZLIB_PREFIX . '  --with-binconfigs'
             )
             ->withPkgName('libpng16')
             ->depends('zlib')
@@ -40,14 +40,13 @@ return function (Preprocessor $p) {
         (new Library('libgif'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
             ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
-            ->withPrefix('libgif')
+            ->withPrefix(GIF_PREFIX)
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
-            ->withScriptBeforeInstall('
-            test -d ' . GIF_PREFIX . ' && rm -rf /usr/libgif/
-            mkdir -p ' . GIF_PREFIX . '/lib
-            mkdir -p ' . GIF_PREFIX . '/include
-            ')
+            ->withScriptBeforeInstall('test -d ' . GIF_PREFIX . ' && rm -rf ' . GIF_PREFIX .
+                'mkdir -p ' . GIF_PREFIX . '/lib
+                mkdir -p ' . GIF_PREFIX . '/include'
+            )
             ->withScriptAfterInstall('cp libgif.a ' . GIF_PREFIX . '/lib && cp gif_lib.h ' . GIF_PREFIX . '/include')
             ->withLdflags('-L' . GIF_PREFIX . '/lib')
             ->withPkgName('')
@@ -60,7 +59,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/webmproject/libwebp')
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
             ->withPrefix(WEBP_PREFIX)
-            ->withConfigure('./autogen.sh && ./configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared' .
+            ->withConfigure('./autogen.sh && ./configure --prefix=' . WEBP_PREFIX . ' --enable-static --disable-shared ' .
                 '--enable-libwebpdecoder ' .
                 '--enable-libwebpextras ' .
                 '--with-pngincludedir=' . PNG_PREFIX . '/include ' .
@@ -78,17 +77,17 @@ return function (Preprocessor $p) {
             ->withPrefix(FREETYPE_PREFIX)
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
-            ->withConfigure(
-                'export BZIP2_CFLAGS=-I/usr/bzip2/include \ ' . PHP_EOL .
-                'export BZIP2_LIBS=-L/usr/bzip2/lib -lbz2 \ ' . PHP_EOL .
-                './configure --prefix=' . FREETYPE_PREFIX . ' \ ' . PHP_EOL .
-                '--enable-static \ ' . PHP_EOL .
-                '--disable-shared \ ' . PHP_EOL .
-                '--with-zlib=yes \ ' . PHP_EOL .
-                '--with-bzip2=yes \ ' . PHP_EOL .
-                '--with-png=yes \ ' . PHP_EOL .
-                '--with-harfbuzz=no \ ' . PHP_EOL .
-                '--with-brotli=no \ ' . PHP_EOL
+            ->withConfigure('BZIP2_CFLAGS="-I/usr/bzip2/include" & \\' .
+                'BZIP2_LIBS="-L/usr/bzip2/lib -lbz2" & \\' .
+                'PATH="' . PNG_PREFIX .'/bin:$PATH" & \\' .
+                './configure --prefix=' . FREETYPE_PREFIX . ' \\' . PHP_EOL .
+                '--enable-static \\' . PHP_EOL .
+                '--disable-shared \\' . PHP_EOL .
+                '--with-zlib=yes \\' . PHP_EOL .
+                '--with-bzip2=yes \\' . PHP_EOL .
+                '--with-png=yes \\' . PHP_EOL .
+                '--with-harfbuzz=no \\' . PHP_EOL .
+                '--with-brotli=no' . PHP_EOL
             )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')

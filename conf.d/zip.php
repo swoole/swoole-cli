@@ -5,7 +5,6 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    // MUST be in the /usr directory
     $p->addLibrary(
         (new Library('zip'))
             ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
@@ -22,14 +21,14 @@ return function (Preprocessor $p) {
                 -DENABLE_MBEDTLS=OFF \
                 -DENABLE_OPENSSL=ON \
                 -DOPENSSL_USE_STATIC_LIBS=TRUE \
-                -DOPENSSL_LIBRARIES=/usr/openssl/lib \
-                -DOPENSSL_INCLUDE_DIR=/usr/openssl/include \
-                -DZLIB_LIBRARY=/usr/zlib/lib \
-                -DZLIB_INCLUDE_DIR=/usr/zlib/include \
+                -DOPENSSL_LIBRARIES=' . OPENSSL_PREFIX . '/lib \
+                -DOPENSSL_INCLUDE_DIR=' . OPENSSL_PREFIX . '/include \
+                -DZLIB_LIBRARY=' . ZLIB_PREFIX . '/lib \
+                -DZLIB_INCLUDE_DIR=' . ZLIB_PREFIX . '/include \
                 -DENABLE_BZIP2=ON \
-                -DBZIP2_LIBRARIES=/usr/bzip2/lib \
-                -DBZIP2_LIBRARY=/usr/bzip2/lib \
-                -DBZIP2_INCLUDE_DIR=/usr/bzip2/include \
+                -DBZIP2_LIBRARIES=' . BZIP2_PREFIX . '/lib \
+                -DBZIP2_LIBRARY=' . BZIP2_PREFIX . '/lib \
+                -DBZIP2_INCLUDE_DIR=' . BZIP2_PREFIX . '/include \
                 -DBZIP2_NEED_PREFIX=ON \
                 -DENABLE_LZMA=OFF  \
                 -DENABLE_ZSTD=OFF

@@ -5,13 +5,14 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+    $imagemagick_prefix = IMAGEMAGICK_PREFIX;
     $p->addLibrary(
-        (new Library('imagemagick' ))
+        (new Library('imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
-            ->withPrefix('/usr/imagemagick')
+            ->withPrefix(IMAGEMAGICK_PREFIX)
             ->withConfigure(<<<EOF
               ./configure \
-              --prefix=/usr/imagemagick \
+              --prefix={$imagemagick_prefix} \
               --enable-static\
               --disable-shared \
               --with-zip=yes \
@@ -34,7 +35,7 @@ EOF
             ->depends('libxml2', 'zip', 'zlib', 'libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
     );
     $p->addExtension((new Extension('imagick'))
-        ->withOptions('--with-imagick=/usr/imagemagick')
+        ->withOptions('--with-imagick=' . IMAGEMAGICK_PREFIX)
         ->withPeclVersion('3.6.0')
         ->withHomePage('https://github.com/Imagick/imagick')
         ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
