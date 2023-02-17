@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
               --prefix=/usr/imagemagick \
               --enable-static\
               --disable-shared \
-              --with-zip=no \
+              --with-zip=yes \
               --with-fontconfig=no \
               --with-heic=no \
               --with-lcms=no \
