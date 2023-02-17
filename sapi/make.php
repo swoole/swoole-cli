@@ -20,11 +20,20 @@ OPTIONS="--disable-all \
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
-    if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
-        mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
+
+    # If the source code directory does not exist, create a directory and decompress the source code archive
+    if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
+        mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
+        tar --strip-components=1 -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file . PHP_EOL ?>
     fi
-    cd <?=$this->getBuildDir()?>/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
+
+    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+        echo "[<?=$item->name?>] compiled, skip.."
+        cd <?= $this->workDir . PHP_EOL ?>
+        return 0
+    fi
+
+    cd <?=$this->getBuildDir()?>/<?=$item->name?>
 
     # configure
 <?php if (!empty($item->configure)): ?>
@@ -33,7 +42,7 @@ cat <<'__EOF__'
 __EOF__
     <?=$item->configure . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # make
@@ -62,6 +71,8 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
+    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
@@ -70,6 +81,7 @@ clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?>
     echo "clean <?=$item->name?>"
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
+    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     cd <?= $this->workDir . PHP_EOL ?>
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
