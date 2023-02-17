@@ -20,7 +20,7 @@ return function (Preprocessor $p) {
             ->withPrefix(CURL_PREFIX)
             ->withConfigure(
                 'autoreconf -fi && ./configure --prefix=' . CURL_PREFIX .
-                '--enable-static --disable-shared --with-openssl=/usr/openssl ' .
+                ' --enable-static --disable-shared --with-openssl=/usr/openssl ' .
                 '--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3'
             )
             ->withPkgName('libcurl')

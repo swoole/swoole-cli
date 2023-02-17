@@ -60,7 +60,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/webmproject/libwebp')
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
             ->withPrefix(WEBP_PREFIX)
-            ->withConfigure('./autogen.sh && ./configure --prefix={$webp_prefix} --enable-static --disable-shared' .
+            ->withConfigure('./autogen.sh && ./configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared' .
                 '--enable-libwebpdecoder ' .
                 '--enable-libwebpextras ' .
                 '--with-pngincludedir=' . PNG_PREFIX . '/include ' .
