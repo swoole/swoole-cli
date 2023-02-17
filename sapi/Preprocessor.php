@@ -177,11 +177,17 @@ class Preprocessor
     const VERSION = '1.5';
     const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
 
+    protected static $instance = null;
+
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
     protected array $libraryMap = [];
     protected array $extensionMap = [];
+    /**
+     * 仅用于预处理阶段
+     * @var string
+     */
     protected string $rootDir;
     protected string $libraryDir;
     protected string $extensionDir;
@@ -189,17 +195,27 @@ class Preprocessor
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
     /**
-     * 指向 swoole-cli 所在的目录
-     * $workDir/ext 存放扩展
-     * $workDir/thirdparty 存放第三方库的源代码，编译后的 .a 文件会安装到系统的 /usr 目录下
-     * 在 macOS 系统上，/usr 目录将会被替换为 $workDir/usr
+     * 指向 swoole-cli 所在的目录，在构建阶段使用
+     * $workDir/pool/ext 存放扩展
+     * $workDir/pool/lib 存放依赖库
      */
     protected string $workDir = '/work';
+    /**
+     * 依赖库的构建目录，在构建阶段使用
+     * @var string
+     */
     protected string $buildDir = '/work/thirdparty';
+    /**
+     * 编译后.a静态库文件安装目录的全局前缀，在构建阶段使用
+     * @var string
+     */
+    protected string $globalPrefix = '/usr';
+
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
+    protected array $inputOptions = [];
 
     /**
      * Extensions enabled by default
@@ -249,35 +265,17 @@ class Preprocessor
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
 
-    function __construct(string $rootPath)
+    protected function __construct()
     {
-        $this->rootDir = $rootPath;
-        $this->libraryDir = $rootPath . '/pool/lib';
-        $this->extensionDir = $rootPath . '/pool/ext';
 
-        // 此目录用于存放源代码包
-        if (!is_dir($rootPath . '/pool')) {
-            mkdir($rootPath . '/pool');
-        }
-        if (!is_dir($this->libraryDir)) {
-            mkdir($this->libraryDir);
-        }
-        if (!is_dir($this->extensionDir)) {
-            mkdir($this->extensionDir);
-        }
+    }
 
-        switch (PHP_OS) {
-            default:
-            case 'Linux':
-                $this->setOsType('linux');
-                break;
-            case 'Darwin':
-                $this->setOsType('macos');
-                break;
-            case 'WINNT':
-                $this->setOsType('win');
-                break;
+    public static function getInstance(): static
+    {
+        if (!self::$instance) {
+            self::$instance = new static;
         }
+        return self::$instance;
     }
 
     protected function setOsType(string $osType)
@@ -318,9 +316,30 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
-    function setPrefix(string $prefix)
+
+    function setGlobalPrefix(string $prefix)
     {
-        $this->prefix = $prefix;
+        $this->globalPrefix = $prefix;
+    }
+
+    function getGlobalPrefix(): string
+    {
+        return $this->globalPrefix;
+    }
+
+    function setRootDir(string $rootDir)
+    {
+        $this->rootDir = $rootDir;
+    }
+
+    function setLibraryDir(string $libraryDir)
+    {
+        $this->libraryDir = $libraryDir;
+    }
+
+    function setExtensionDir(string $extensionDir)
+    {
+        $this->extensionDir = $extensionDir;
     }
 
     function setWorkDir(string $workDir)
@@ -380,7 +399,7 @@ class Preprocessor
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
         }
-        $skip_library_download = getenv('SKIP_LIBRARY_DOWNLOAD');
+        $skip_library_download = $this->getInputOption('skip-download');
         if (empty($skip_library_download)) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
@@ -468,19 +487,30 @@ class Preprocessor
     {
         // parse the parameters passed in by the user
         for ($i = 1; $i < $argc; $i++) {
-            $op = $argv[$i][0];
+            $arg = $argv[$i];
+            $op = $arg[0];
             $value = substr($argv[$i], 1);
             if ($op == '+') {
                 $this->extEnabled[] = $value;
             } elseif ($op == '-') {
-                $key = array_search($value, $this->extEnabled);
-                if ($key !== false) {
-                    unset($this->extEnabled[$key]);
+                if ($arg[1] == '-') {
+                    $_ = explode('=', substr($arg, 2));
+                    $this->inputOptions[$_[0]] = $_[1] ?? true;
+                } else {
+                    $key = array_search($value, $this->extEnabled);
+                    if ($key !== false) {
+                        unset($this->extEnabled[$key]);
+                    }
                 }
             } elseif ($op == '@') {
                 $this->setOsType($value);
             }
         }
+    }
+
+    function getInputOption(string $key): string
+    {
+        return $this->inputOptions[$key] ?? false;
     }
 
     /**
@@ -520,7 +550,7 @@ class Preprocessor
     {
         $files = scandir($dir);
         foreach ($files as $f) {
-            if ($f == '.' or $f == '..') {
+            if ($f == '.' or $f == '..' or substr($f, -4, 4) != '.php') {
                 continue;
             }
             $path = $dir . '/' . $f;
@@ -538,11 +568,52 @@ class Preprocessor
      */
     function execute()
     {
+        if (empty($this->rootDir)) {
+            $this->rootDir = dirname(__DIR__);
+        }
+        if (empty($this->libraryDir)) {
+            $this->libraryDir = $this->rootDir . '/pool/lib';
+        }
+        if (empty($this->extensionDir)) {
+            $this->extensionDir = $this->rootDir . '/pool/ext';
+        }
+        if (!is_dir($this->libraryDir)) {
+            mkdir($this->libraryDir, 0777, true);
+        }
+        if (!is_dir($this->extensionDir)) {
+            mkdir($this->extensionDir, 0777, true);
+        }
+        if (empty($this->osType)) {
+            switch (PHP_OS) {
+                default:
+                case 'Linux':
+                    $this->setOsType('linux');
+                    break;
+                case 'Darwin':
+                    $this->setOsType('macos');
+                    break;
+                case 'WINNT':
+                    $this->setOsType('win');
+                    break;
+            }
+        }
+
         include __DIR__ . '/constants.php';
 
-        $extInclude = getenv('SWOOLE_CLI_EXT_INCLUDE') ?: $this->rootDir . '/conf.d';
         $extAvailabled = [];
-        $this->scanConfigFiles($extInclude, $extAvailabled);
+        if (is_dir($this->rootDir . '/conf.d')) {
+            $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
+        }
+        $confPath = $this->getInputOption('conf-path');
+        if ($confPath) {
+            $confDirList = explode(':', $confPath);
+            foreach ($confDirList as $dir) {
+                if (!is_dir($dir)) {
+                    continue;
+                }
+                $this->scanConfigFiles($dir, $extAvailabled);
+            }
+        }
 
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
@@ -566,6 +637,9 @@ class Preprocessor
 
         ob_start();
         include __DIR__ . '/license.php';
+        if (!$this->rootDir . '/bin') {
+            mkdir($this->rootDir . '/bin');
+        }
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
 
         foreach ($this->endCallbacks as $endCallback) {

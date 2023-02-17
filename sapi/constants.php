@@ -1,29 +1,33 @@
 <?php
+
+use SwooleCli\Preprocessor;
+
+$p = Preprocessor::getInstance();
 // MUST be in the /usr directory
-const JPEG_PREFIX = GLOBAL_PREFIX;
-const GIF_PREFIX = GLOBAL_PREFIX;
-const ZIP_PREFIX = GLOBAL_PREFIX;
+define("JPEG_PREFIX", $p->getGlobalPrefix());
+define("GIF_PREFIX", $p->getGlobalPrefix());
+define("ZIP_PREFIX", $p->getGlobalPrefix());
 // ========================================================
-const FREETYPE_PREFIX = GLOBAL_PREFIX . '/freetype';
-const PNG_PREFIX = GLOBAL_PREFIX . '/libpng';
-const WEBP_PREFIX = GLOBAL_PREFIX . '/libwebp';
-const CURL_PREFIX = GLOBAL_PREFIX . '/curl';
-const CARES_PREFIX = GLOBAL_PREFIX . '/cares';
-const OPENSSL_PREFIX = GLOBAL_PREFIX . '/openssl';
-const ZLIB_PREFIX = GLOBAL_PREFIX . '/zlib';
-const BZIP2_PREFIX = GLOBAL_PREFIX . '/bzip2';
-const GMP_PREFIX = GLOBAL_PREFIX . '/gmp';
-const ICONV_PREFIX = GLOBAL_PREFIX . '/libiconv';
-const IMAGEMAGICK_PREFIX = GLOBAL_PREFIX . '/imagemagick';
-const ICU_PREFIX = GLOBAL_PREFIX . '/icu';
-const ONIGURUMA_PREFIX = GLOBAL_PREFIX . '/oniguruma';
-const MIMALLOC_PREFIX = GLOBAL_PREFIX . '/mimalloc';
-const NCURSES_PREFIX = GLOBAL_PREFIX . '/ncurses';
-const READLINE_PREFIX = GLOBAL_PREFIX . '/readline';
-const LIBYAML_PREFIX = GLOBAL_PREFIX . '/libyaml';
-const LIBXML2_PREFIX = GLOBAL_PREFIX . '/libxml2';
-const LIBXSLT_PREFIX = GLOBAL_PREFIX . '/libxslt';
-const SQLITE3_PREFIX = GLOBAL_PREFIX . '/sqlite3';
-const LIBSODIUM_PREFIX = GLOBAL_PREFIX . '/libsodium';
-const LIBEDIT_PREFIX = GLOBAL_PREFIX . '/libedit';
-const BROTLI_PREFIX = GLOBAL_PREFIX . '/brotli';
+define("FREETYPE_PREFIX", $p->getGlobalPrefix() . '/freetype');
+define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');
+define("WEBP_PREFIX", $p->getGlobalPrefix() . '/libwebp');
+define("CURL_PREFIX", $p->getGlobalPrefix() . '/curl');
+define("CARES_PREFIX", $p->getGlobalPrefix() . '/cares');
+define("OPENSSL_PREFIX", $p->getGlobalPrefix() . '/openssl');
+define("ZLIB_PREFIX", $p->getGlobalPrefix() . '/zlib');
+define("BZIP2_PREFIX", $p->getGlobalPrefix() . '/bzip2');
+define("GMP_PREFIX", $p->getGlobalPrefix() . '/gmp');
+define("ICONV_PREFIX", $p->getGlobalPrefix() . '/libiconv');
+define("IMAGEMAGICK_PREFIX", $p->getGlobalPrefix() . '/imagemagick');
+define("ICU_PREFIX", $p->getGlobalPrefix() . '/icu');
+define("ONIGURUMA_PREFIX", $p->getGlobalPrefix() . '/oniguruma');
+define("MIMALLOC_PREFIX", $p->getGlobalPrefix() . '/mimalloc');
+define("NCURSES_PREFIX", $p->getGlobalPrefix() . '/ncurses');
+define("READLINE_PREFIX", $p->getGlobalPrefix() . '/readline');
+define("LIBYAML_PREFIX", $p->getGlobalPrefix() . '/libyaml');
+define("LIBXML2_PREFIX", $p->getGlobalPrefix() . '/libxml2');
+define("LIBXSLT_PREFIX", $p->getGlobalPrefix() . '/libxslt');
+define("SQLITE3_PREFIX", $p->getGlobalPrefix() . '/sqlite3');
+define("LIBSODIUM_PREFIX", $p->getGlobalPrefix() . '/libsodium');
+define("LIBEDIT_PREFIX", $p->getGlobalPrefix() . '/libedit');
+define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
