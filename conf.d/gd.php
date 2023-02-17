@@ -6,22 +6,22 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $lib = new Library('libjpeg');
+    $jpeg_prefix = '/usr/libjpeg';
     $lib->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
         ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
-        ->withPrefix('/usr/libjpeg')
-        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg .')
-        ->withPkgName('libjpeg') ;
+        ->withPrefix($jpeg_prefix)
+        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . $jpeg_prefix . ' .')
+        ->withPkgName('libjpeg');
 
+    // linux 系统中是保存在 lib64 目录下的，而 macos 是放在 /usr/libjpeg/lib 目录中的，不清楚这里是什么原因？
+    $jpeg_lib_dir = $jpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
+    $lib->withLdflags('-L' . $jpeg_lib_dir)
+        ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
     if ($p->getOsType() === 'macos') {
         $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
-        $lib->withLdflags('-L/usr/libjpeg/lib')
-            ->withPkgConfig('/usr/libjpeg/lib/pkgconfig');
-    } else {
-        // linux 系统中是保存在 lib64 目录下的
-        $lib->withLdflags('-L/usr/libjpeg/lib64')
-            ->withPkgConfig('/usr/libjpeg/lib64/pkgconfig');
+
     }
     $p->addLibrary($lib);
 
@@ -70,13 +70,13 @@ return function (Preprocessor $p) {
              --enable-libwebpextras \
              --with-pngincludedir=/usr/libpng/include \
              --with-pnglibdir=/usr/libpng/lib \
-             --with-jpegincludedir=/usr/libjpeg/include \
-             --with-jpeglibdir=/usr/libjpeg/lib64 \
+             --with-jpegincludedir=' . $jpeg_prefix . '/include \
+             --with-jpeglibdir=' . $jpeg_lib_dir . ' \
              --with-gifincludedir=/usr/libgif/include \
              --with-giflibdir=/usr/libgif/lib
             ')
             ->withPkgName('libwebp')
-            ->depends('libpng','libjpeg','libgif')
+            ->depends('libpng', 'libjpeg', 'libgif')
 
     );
     $p->addLibrary(
@@ -99,7 +99,7 @@ EOF
             )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
-            ->depends('zlib','libpng')
+            ->depends('zlib', 'libpng')
 
     );
 
