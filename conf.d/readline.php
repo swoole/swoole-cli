@@ -8,6 +8,9 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('ncurses'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.aliyun.com/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withPrefix('/usr/ncurses/')
             ->withConfigure(<<<EOF
             mkdir -p /usr/ncurses/lib/pkgconfig
