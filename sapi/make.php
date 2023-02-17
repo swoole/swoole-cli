@@ -22,10 +22,9 @@ make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
-    if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
-        mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
-        cd <?=$this->getBuildDir()?>/<?=$item->name?> && \
-        tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
+    if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
+        mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
+        tar --strip-components=1 -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file . PHP_EOL ?>
     fi
 
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
@@ -33,6 +32,8 @@ make_<?=$item->name?>() {
         cd <?= $this->workDir . PHP_EOL ?>
         return 0
     fi
+
+    cd <?=$this->getBuildDir()?>/<?=$item->name?>
 
     # configure
 <?php if (!empty($item->configure)): ?>
