@@ -20,6 +20,7 @@ return function (Preprocessor $p) {
             ->withPrefix('/usr/curl')
             ->withConfigure(
                 "autoreconf -fi && ./configure --prefix=/usr/curl --enable-static --disable-shared --with-openssl=/usr/openssl " .
+                '--enable-ares=' . $p->getLibrary('cares')->getPrefix() .
                 "--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3"
             )
             ->withPkgName('libcurl')

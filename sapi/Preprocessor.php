@@ -79,6 +79,11 @@ class Library extends Project
         return $this;
     }
 
+    function getPrefix(): string
+    {
+        return $this->prefix;
+    }
+
     function withFile(string $file): static
     {
         $this->file = $file;
