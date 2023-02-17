@@ -553,23 +553,18 @@ class Preprocessor
 
     protected function generateDownloadLibraryLinks():void
     {
+        if(!is_dir($this->getWorkDir() . '/var/')){
+            mkdir($this->getWorkDir() . '/var/',0755,true);
+        }
         $download_urls=[];
         foreach ($this->libraryList as $item) {
             $download_urls[]=$item->url .(empty($item->file)?'':PHP_EOL.' out='.$item->file);
         }
-        if(!is_dir($this->rootDir . '/var/')){
-            mkdir($this->rootDir . '/var/',0755,true);
-        }
-        file_put_contents($this->rootDir . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
-
+        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
         $download_urls=[];
         foreach ($this->downloadExtensionList as $item) {
             $download_urls[]=$item['url'] . PHP_EOL . ' out='.$item['file'];
         }
-        if(!is_dir($this->rootDir . '/var/')){
-            mkdir($this->rootDir . '/var/',0755,true);
-        }
-        file_put_contents($this->rootDir . '/var/download_extension_urls.txt',implode(PHP_EOL,$download_urls));
-
+        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt',implode(PHP_EOL,$download_urls));
     }
 }
