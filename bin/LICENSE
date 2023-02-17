@@ -16,12 +16,13 @@ libxslt: http://www.opensource.org/licenses/mit-license.html
 gmp: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 libsodium: https://en.wikipedia.org/wiki/ISC_license
 ncurses: https://github.com/projectceladon/libncurses/blob/master/README
-readline: http://www.gnu.org/licenses/gpl.html
+readline: https://www.gnu.org/licenses/gpl.html
 libjpeg: https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md
-freetype: https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT
-libwebp: https://github.com/webmproject/libwebp/blob/main/COPYING
 libpng: http://www.libpng.org/pub/png/src/libpng-LICENSE.txt
-giflib: https://giflib.sourceforge.net/intro.html
+libgif: https://giflib.sourceforge.net/intro.html
+libwebp: https://github.com/webmproject/libwebp/blob/main/COPYING
+freetype: https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT
+brotli: https://github.com/google/brotli/blob/master/LICENSE
 libyaml: https://pyyaml.org/wiki/LibYAML
 imagemagick: https://imagemagick.org/script/license.php
 php: https://github.com/php/php-src/blob/master/LICENSE
@@ -29,3 +30,4 @@ php-ext-redis: https://github.com/phpredis/phpredis/blob/develop/COPYING
 php-ext-swoole: https://github.com/swoole/swoole-src/blob/master/LICENSE
 php-ext-yaml: https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE
 php-ext-imagick: https://github.com/Imagick/imagick/blob/master/LICENSE
+php-ext-ds: https://github.com/php-ds/ext-ds/blob/master/LICENSE

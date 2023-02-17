@@ -12,6 +12,7 @@ return function (Preprocessor $p) {
             ->withConfigure('./configure --prefix=/usr/sqlite3 --enable-static --disable-shared')
             ->withHomePage('https://www.sqlite.org/index.html')
             ->withLicense('https://www.sqlite.org/copyright.html', Library::LICENSE_SPEC)
+            ->withPkgName('sqlite3')
     );
     $p->addExtension((new Extension('sqlite3'))->withOptions('--with-sqlite3')->depends('sqlite3'));
 };

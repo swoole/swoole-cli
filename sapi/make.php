@@ -94,8 +94,10 @@ make_config() {
     export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
 
 <?php if ($this->getOsType() == 'linux') : ?>
-    export CPPFLAGS=$(pkg-config  --cflags --static  readline icu-i18n  icu-io   icu-uc)
-    LIBS=$(pkg-config  --libs --static readline libcares icu-i18n  icu-io   icu-uc)
+    export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
+    export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
+    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc)
+    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc)
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 <?php endif; ?>
 
@@ -133,6 +135,7 @@ help() {
     echo "./make.sh list-extension"
     echo "./make.sh clean-all-library"
     echo "./make.sh sync"
+    echo "./make.sh pkg-check"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -169,7 +172,11 @@ elif [ "$1" = "diff-configure" ] ;then
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
-    pkg-config --libs <?= ($item->pkgName ?: $item->name) . PHP_EOL ?>
+<?php if(!empty($item->pkgName)) :?>
+    pkg-config --libs <?= $item->pkgName . PHP_EOL ?>
+<?php else :?>
+    echo "no PKG_CONFIG !"
+<?php endif ?>
     echo "==========================================================="
 <?php endforeach; ?>
 elif [ "$1" = "list-library" ] ;then

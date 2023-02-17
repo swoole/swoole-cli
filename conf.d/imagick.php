@@ -28,9 +28,9 @@ return function (Preprocessor $p) {
               --with-freetype=yes
 EOF
             )
-            ->withPkgName('imageMagick')
+            ->withPkgName('ImageMagick')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
-            ->depends('libxml2', 'zip', 'zlib', 'libjpeg', 'freetype', 'libwebp', 'libpng', 'giflib')
+            ->depends('libxml2', 'zip', 'zlib', 'libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
     );
     $p->addExtension((new Extension('imagick'))
         ->withOptions('--with-imagick=/usr/imagemagick')
