@@ -25,6 +25,7 @@ return function (Preprocessor $p) {
               --with-raw=no \
               --with-tiff=no \
               --with-zstd=no \
+              --with-jpeg=yes \
               --with-freetype=yes
 EOF
             )

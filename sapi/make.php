@@ -20,11 +20,13 @@ OPTIONS="--disable-all \
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
+
+    # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
         mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
+        cd <?=$this->getBuildDir()?>/<?=$item->name?> && \
+        tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
     fi
-    cd <?=$this->getBuildDir()?>/<?=$item->name?> && \
-    tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
 
     # configure
 <?php if (!empty($item->configure)): ?>
