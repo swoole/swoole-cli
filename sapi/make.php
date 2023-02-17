@@ -28,6 +28,12 @@ make_<?=$item->name?>() {
         tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
     fi
 
+    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+        echo "[<?=$item->name?>] compiled, skip.."
+        cd <?= $this->workDir . PHP_EOL ?>
+        return 0
+    fi
+
     # configure
 <?php if (!empty($item->configure)): ?>
 cat <<'__EOF__'
@@ -35,7 +41,7 @@ cat <<'__EOF__'
 __EOF__
     <?=$item->configure . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[configure FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # make
@@ -64,6 +70,8 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
+    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
@@ -72,6 +80,7 @@ clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?>
     echo "clean <?=$item->name?>"
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
+    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     cd <?= $this->workDir . PHP_EOL ?>
 }
 <?php echo str_repeat(PHP_EOL, 1);?>
