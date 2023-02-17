@@ -39,27 +39,27 @@ __EOF__
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[make FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
 
     # before make install
 <?php if ($item->beforeInstallScript): ?>
     <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ before make install script FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ before make install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # make install
 <?php if ($item->makeInstallCommand): ?>
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[make install FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # after make install
 <?php if ($item->afterInstallScript): ?>
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo "[ after make  install script FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     cd <?= $this->workDir . PHP_EOL ?>
@@ -130,6 +130,7 @@ help() {
     echo "./make.sh archive"
     echo "./make.sh all-library"
     echo "./make.sh list-library"
+    echo "./make.sh list-extension"
     echo "./make.sh clean-all-library"
     echo "./make.sh sync"
 }
@@ -173,7 +174,11 @@ elif [ "$1" = "pkg-check" ] ;then
 <?php endforeach; ?>
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    echo "[<?= $item->name ?>]"
+    echo "<?= $item->name ?>"
+<?php endforeach; ?>
+elif [ "$1" = "list-extension" ] ;then
+<?php foreach ($this->extensionList as $item) : ?>
+    echo "<?= $item->name ?>"
 <?php endforeach; ?>
 elif [ "$1" = "sync" ] ;then
   echo "sync"

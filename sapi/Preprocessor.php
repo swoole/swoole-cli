@@ -175,6 +175,8 @@ class Preprocessor
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
+    protected array $libraryMap = [];
+    protected array $extensionMap = [];
     protected string $rootDir;
     protected string $libraryDir;
     protected string $extensionDir;
@@ -383,6 +385,7 @@ class Preprocessor
         }
 
         $this->libraryList[] = $lib;
+        $this->libraryMap[$lib->name] = $lib;
     }
 
     function addExtension(Extension $ext)
@@ -408,6 +411,33 @@ class Preprocessor
         }
 
         $this->extensionList[] = $ext;
+        $this->extensionMap[$ext->name] = $ext;
+    }
+
+    function getLibrary(string $name): ?Library
+    {
+        if (!isset($this->libraryMap[$name])) {
+            return null;
+        }
+        return $this->libraryMap[$name];
+    }
+
+    function getExtension(string $name): ?Extension
+    {
+        if (!isset($this->extensionMap[$name])) {
+            return null;
+        }
+        return $this->extensionMap[$name];
+    }
+
+    function existsLibrary(string $name): bool
+    {
+        return isset($this->libraryMap[$name]);
+    }
+
+    function existsExtension(string $name): bool
+    {
+        return isset($this->extensionMap[$name]);
     }
 
     function addEndCallback($fn)
