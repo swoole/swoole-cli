@@ -12,16 +12,14 @@ return function (Preprocessor $p) {
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withPrefix('/usr/libjpeg')
         ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/libjpeg .')
-        ->withLdflags('-L/usr/libjpeg/lib64')
-        ->withPkgConfig('/usr/libjpeg/lib64/pkgconfig')
+        ->withLdflags('-L/usr/libjpeg/lib')
+        ->withPkgConfig('/usr/libjpeg/lib/pkgconfig')
         ->withPkgName('libjpeg') ;
 
     if ($p->getOsType() === 'macos') {
         $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
     }
     $p->addLibrary($lib);
-
-
 
     $p->addLibrary(
         (new Library('libpng'))
