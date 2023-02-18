@@ -39,7 +39,7 @@ function libraries_install_builder_conf($p){
     install_imagemagick($p);//依赖 freetype png webp xml zip zlib
 
     install_libunistring($p);
-    install_libidn2($p);//依赖libunistring
+    install_libidn2($p);//依赖 libunistring(暂不启用)
     install_nghttp2($p);
 
     install_nettle($p); //加密库
