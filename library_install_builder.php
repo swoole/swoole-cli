@@ -53,7 +53,7 @@ function libraries_install_builder($p){
     install_nettle($p); //加密库
     install_libtasn1($p);
     install_libexpat($p);
-    install_unbound($p); //依赖 libsodium nghttp2 nettle openssl libexpat
+    install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
     install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
     install_boringssl($p);//需要 golang
     install_nghttp3($p); // 使用GnuTLS  ； 说明：HTTP/3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
