@@ -81,6 +81,8 @@ __EOF__
 
 <?php endif; ?>
 
+<?php if( !$item->skipMakeAndMakeInstall): ?>
+
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
@@ -109,6 +111,9 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
+<?php endif; ?>
+
+    # build end
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
 
     cd <?= $this->workDir . PHP_EOL ?>

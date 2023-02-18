@@ -52,13 +52,19 @@ set -uex
 PKG_CONFIG_PATH='/usr/lib/pkgconfig'
 test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 test -d /usr/local/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
+test -d /usr/local/lib/pkgconfig/ && PKG_CONFIG_PATH="/usr/local/lib/pkgconfig/:$PKG_CONFIG_PATH" ;
 
-export PATH=/usr/bin:/usr/local/bin/:$PATH
+
 
 cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
 
+export PATH=$PATH
+
+
 EOF;
+
+
     $command= file_get_contents(__DIR__ . '/make.sh');
     $command=$header.PHP_EOL.$command;
     file_put_contents(__DIR__ . '/make.sh',$command);

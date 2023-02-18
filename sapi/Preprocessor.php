@@ -78,7 +78,9 @@ class Library extends Project
 
     public string $prefix = '/usr';
     public bool $skipBuildLicense = false;
+    public bool $skipDownload = false;
     public bool $skipBuildInstall = false;
+    public bool $skipMakeAndMakeInstall = false;
     public bool $cleanBuildDirectory = false;
     public string $untarArchiveCommand = 'tar';
     public string $beforeConfigureScript = '';
@@ -186,7 +188,11 @@ class Library extends Project
         $this->disableDefaultLdflags();
         return $this;
     }
-
+    public function withSkipMakeAndMakeInstall(): static
+    {
+        $this->skipMakeAndMakeInstall = true ;
+        return $this;
+    }
     public function withUntarArchiveCommand(string $command): static
     {
         $this->untarArchiveCommand = $command;
@@ -203,6 +209,17 @@ class Library extends Project
         $this->skipBuildLicense = true;
         return $this;
     }
+
+    public function withSkipDownload(): static
+    {
+        $this->skipDownload = true;
+        return $this;
+    }
+    public function getSkipDownload()
+    {
+        return $this->skipDownload ;
+    }
+
     public function disableDefaultLdflags(): static
     {
         $this->ldflags = '';
@@ -503,7 +520,7 @@ class Preprocessor
             $lib->file = basename($lib->url);
         }
 
-        $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
+        $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD') || $lib->getSkipDownload() );
         if (!$skip_download) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
@@ -711,7 +728,7 @@ class Preprocessor
         }
 
         include __DIR__ . '/constants.php';
-        libraries_install_builder_conf($this);
+        libraries_install_builder($this);
         $extAvailabled = [];
         if (is_dir($this->rootDir . '/conf.d')) {
             $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
