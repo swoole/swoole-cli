@@ -19,5 +19,6 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://github.com/swoole/swoole-src/releases')
+        ->depends('curl', 'openssl', 'cares', 'zlib')
     );
 };
