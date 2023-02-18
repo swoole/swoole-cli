@@ -602,10 +602,8 @@ EOF
                # OpenSSL GnuTLS mbedTLS WolfSSL BearSSL rustls NSS,
                
                # https://curl.se/docs/http3.html 
-               export CPPFLAGS=$(pkg-config  --cflags --static  libbrotlicommon libbrotlidec    libbrotlienc libngtcp2  libngtcp2_crypto_gnutls)
-               # export CFLAGS=$(pkg-config  --cflags --static  libbrotlicommon libbrotlidec    libbrotlienc)
-               # export LIBS=$(pkg-config      --libs   --static  libbrotlicommon)
-             
+               export CPPFLAGS=$(pkg-config  --cflags --static  llibcares libbrotlicommon libbrotlidec    libbrotlienc)
+               export LIBS=$(pkg-config      --libs   --static  libcares libbrotlicommon libbrotlidec    libbrotlienc)
                
 EOF
 

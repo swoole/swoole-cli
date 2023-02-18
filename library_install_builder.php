@@ -55,12 +55,12 @@ function libraries_install_builder($p){
     install_libexpat($p);
     install_unbound($p); //依赖 libsodium nghttp2 nettle openssl libexpat
     install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
-    install_boringssl($p);//依赖 golang
+    install_boringssl($p);//需要 golang
     install_nghttp3($p); // 使用GnuTLS  ； 说明：HTTP/3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
-    install_ngtcp2($p);
+    install_ngtcp2($p); //依赖gnutls nghttp3
     install_quiche($p); // 依赖 boringssl ，需要 rust ；
     install_msh3($p);
-    install_curl($p); //curl 依赖 openssl brotli(暂不启用) zstd(暂不启用) idn(暂不启用) idn2(暂不启用) nghttp2(暂不启用) nghttp3(暂不启用)
+    install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
 
 
     install_libyaml($p);
