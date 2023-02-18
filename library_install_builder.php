@@ -56,10 +56,12 @@ function libraries_install_builder($p){
     install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
     install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
     install_boringssl($p);//需要 golang
-    install_nghttp3($p); // 使用GnuTLS  ； 说明：HTTP/3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
+    install_nghttp3($p); // 使用 GnuTLS，这样就不用更换openssl版本了 ； 说明：HTTP/3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
+
     install_ngtcp2($p); //依赖gnutls nghttp3
     install_quiche($p); // 依赖 boringssl ，需要 rust ；
-    install_msh3($p);
+    install_msh3($p);  //需要安装库 bsd-compat-headers 解决 sys/queue.h 不存在的问题
+
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
 
 

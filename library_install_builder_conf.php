@@ -1520,13 +1520,13 @@ function install_msh3(Preprocessor $p)
             ->withPrefix('/usr/msh3')
             ->withScriptBeforeConfigure('
               cp -rf /work/pool/lib/msh3 /work/thirdparty/msh3
-            
+              apk add bsd-compat-headers
             ')
             ->withConfigure(<<<EOF
             cd /work/thirdparty/msh3/msh3
    
             mkdir build && cd build
-            cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo .. -DCMAKE_INSTALL_PREFIX=/usr/boringssl
+            cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo .. -DCMAKE_INSTALL_PREFIX=/msh3/msh3
             cmake --build .
             cmake --install .
 
