@@ -569,10 +569,47 @@ function install_curl(Preprocessor $p)
         (new Library('curl'))
             ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
             ->withPrefix(CURL_PREFIX)
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(<<<EOF
+              test -d /usr/curl && rm -rf /usr/curl 
+EOF
+            )
             ->withConfigure(
+                <<<EOF
+                autoreconf -fi 
+               ./configure --help 
+               ./configure --help | grep '--with-'
+               ./configure --help | grep '=PATH'
+               
+               # TLS 
+               # https://stackoverflow.com/questions/67204980/wolfssl-vs-mbedtls-vs-openssl-what-is-the-difference
+               # OpenSSL GnuTLS mbedTLS WolfSSL BearSSL rustls NSS,
+               
+               # https://curl.se/docs/http3.html 
+               
+EOF
+
+                .
                 'autoreconf -fi && ./configure --prefix=' . CURL_PREFIX .
-                ' --enable-static --disable-shared --with-openssl=' . OPENSSL_PREFIX . ' ' .
-                '--without-librtmp --without-brotli --without-libidn2 --disable-ldap --disable-rtsp --without-zstd --without-nghttp2 --without-nghttp3'
+                ' --enable-static --disable-shared --with-openssl=' . OPENSSL_PREFIX . ' \\' .PHP_EOL . <<<EOF
+                --without-librtmp \
+                --disable-ldap \
+                --disable-rtsp \
+                --with-zlib=/usr/zlib \
+                --with-zstd=/usr/libzstd \
+                --with-libidn2=/usr/libidn2 \
+                --with-nghttp2=/usr/nghttp2
+             
+                
+:<<_EOF_
+                    
+                --with-brotli=/usr/brotli \
+                --with-nghttp3=PATH  
+                --with-quiche=PATH      
+                --with-msh3=PATH      
+_EOF_
+EOF
+
             )
             ->withPkgName('libcurl')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
@@ -759,16 +796,25 @@ function install_liblz4(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('liblz4'))
+            ->withHomePage('https://github.com/lz4/lz4.git')
+            ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_GPL)
             ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
             ->withFile('lz4-v1.9.4.tar.gz')
             ->withPkgName('liblz4')
             ->withPrefix('/usr/liblz4')
-            ->withScriptBeforeConfigure("test -d /usr/liblz4/ && rm -rf /usr/liblz4/ ;")
-            ->withMakeInstallOptions("prefix=/usr/liblz4/")
-            ->withPkgConfig('/usr/liblz4/lib/pkgconfig')
-            ->withLdflags('-L/usr/liblz4/lib')
-            ->withHomePage('https://github.com/lz4/lz4.git')
-            ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_GPL)
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure("
+            test -d /usr/liblz4/ && rm -rf /usr/liblz4/ 
+            ")
+            ->withConfigure(<<<EOF
+            cd build/cmake/
+           cmake . -DCMAKE_INSTALL_PREFIX=/usr/liblz4/ 
+EOF
+            )
+            //可以使用CMAKE 编译 也可以不使用
+            //不使用CMAKE，需要自己修改安装目录
+            //->withMakeOptions('INSTALL_PROGRAM=/usr/liblz4/')
+            //->withMakeInstallOptions("DESTDIR=/usr/liblz4/")
     );
 }
 
@@ -776,17 +822,17 @@ function install_liblzma(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('liblzma'))
-            //->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
-            ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
-            ->withFile('xz-5.2.9.tar.gz')
-            ->withPrefix('/usr/liblzma/')
-            ->withConfigure('./configure --prefix=/usr/liblzma/ --enable-static  --disable-shared --disable-doc')
-            ->withPkgName('liblzma')
-            ->withPkgConfig('/usr/liblzma/lib/pkgconfig')
-            ->withLdflags('-L/usr/liblzma/lib')
             ->withHomePage('https://tukaani.org/xz/')
             ->withLicense('https://github.com/tukaani-project/xz/blob/master/COPYING.GPLv3', Library::LICENSE_LGPL)
             ->withManual('https://github.com/tukaani-project/xz.git')
+            //->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
+            //->withFile('xz-5.2.9.tar.gz')
+            ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
+            ->withFile('xz-5.4.1.tar.gz')
+            ->withPrefix('/usr/liblzma/')
+            ->withConfigure('./configure --prefix=/usr/liblzma/ --enable-static  --disable-shared --disable-doc')
+            ->withPkgName('liblzma')
+
     );
 }
 
@@ -794,6 +840,8 @@ function install_libzstd(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('libzstd'))
+            ->withHomePage('https://github.com/facebook/zstd')
+            ->withLicense('https://github.com/facebook/zstd/blob/dev/COPYING', Library::LICENSE_GPL)
             ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
             ->withFile('zstd-1.5.2.tar.gz')
             ->withPrefix('/usr/libzstd/')
@@ -801,11 +849,12 @@ function install_libzstd(Preprocessor $p)
             ->withScriptBeforeConfigure(
                 '
             test -d /usr/libzstd/ && rm -rf /usr/libzstd/
-            mkdir -p build/cmake/builddir
+           
             '
             )
             ->withConfigure(
                 '
+            mkdir -p build/cmake/builddir
             cd build/cmake/builddir
             # cmake -LH ..
             cmake .. \
@@ -837,10 +886,8 @@ function install_libzstd(Preprocessor $p)
             ->withMakeOptions('lib')
             ->withMakeInstallOptions('install PREFIX=/usr/libzstd/')
             ->withPkgName('libzstd')
-            ->withPkgConfig('/usr/libzstd/lib/pkgconfig')
-            ->withLdflags('-L/usr/libzstd/lib')
-            ->withHomePage('https://github.com/facebook/zstd')
-            ->withLicense('https://github.com/facebook/zstd/blob/dev/COPYING', Library::LICENSE_GPL)
+
+
     );
 }
 
@@ -855,8 +902,13 @@ function install_harfbuzz(Preprocessor $p)
             ->withFile('harfbuzz-6.0.0.tar.gz')
             ->withLabel('library')
             ->withPrefix('/usr/harfbuzz/')
-            ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure('test -d /usr/harfbuzz/ && rm -rf /usr/harfbuzz/ ')
+            //->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure('
+            apk add python3 py3-pip 
+            pip3 install meson  -i https://pypi.tuna.tsinghua.edu.cn/simple
+            test -d /usr/harfbuzz/ && rm -rf /usr/harfbuzz/ 
+            
+            ')
             ->withConfigure(
                 "
                 ls -lh
@@ -876,13 +928,14 @@ function install_harfbuzz(Preprocessor $p)
                 # ninja -C builddir
                 meson install -C build
                 # ninja -C builddir install
+                return 0
             "
             )
-            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
             ->withPkgConfig('/usr/harfbuzz/lib/pkgconfig')
-            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
+            ->withPkgName('')
             ->withLdflags('-L/usr/harfbuzz/lib')
-            ->withSkipBuildInstall()
+            ->depends('ninja')
+            //->withSkipBuildInstall()
     );
 }
 
@@ -891,10 +944,24 @@ function install_libidn2(Preprocessor $p)
     $p->addLibrary(
         (new Library('libidn2'))
             ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
-            ->withPrefix('/usr/libidn2')
-            ->withConfigure('./configure --prefix=/usr/libidn2 enable_static=yes enable_shared=no')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            ->withSkipBuildInstall()
+            ->withCleanBuildDirectory()
+            ->withPrefix('/usr/libidn2')
+            ->withScriptBeforeConfigure('
+            test -d /usr/libidn2 && rm -rf /usr/libidn2
+            ')
+            ->withConfigure('
+            ./configure --help 
+           
+            ./configure --prefix=/usr/libidn2 enable_static=yes enable_shared=no \
+             --disable-doc \
+             --with-libiconv-prefix=/usr/libiconv \
+             --with-libintl-prefix
+             # --with-libunistring-prefix
+             # --with-libintl-prefix
+             # intl  依赖 gettext
+            ')
+            ->withPkgName('libidn2')
     );
 }
 
@@ -902,11 +969,15 @@ function install_nghttp2(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('nghttp2'))
+            ->withHomePage('https://github.com/nghttp2/nghttp2.git')
             ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
+            ->withCleanBuildDirectory()
             ->withPrefix('/usr/nghttp2')
+            ->withScriptBeforeConfigure('
+             test -d /usr/nghttp2 && rm -rf /usr/nghttp2
+            ')
             ->withConfigure('./configure --prefix=/usr/nghttp2 enable_static=yes enable_shared=no')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            ->withSkipBuildInstall()
+            ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
     );
 }
 
@@ -1007,5 +1078,168 @@ EOF;
         ->disableDefaultPkgConfig()
         ->disableDefaultLdflags()
         ->disablePkgName()
+    );
+}
+
+function install_ninja(Preprocessor $p)
+{
+    $p->addLibrary(
+        $lib = (new Library('ninja'))
+            ->withHomePage('https://ninja-build.org/')
+            //->withUrl('https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-linux.zip')
+            ->withUrl('https://github.com/ninja-build/ninja/archive/refs/tags/v1.11.1.tar.gz')
+            ->withFile('ninja-build-v1.11.1.tar.gz')
+            ->withLicense('https://github.com/ninja-build/ninja/blob/master/COPYING', Library::LICENSE_APACHE2)
+            ->withManual('https://ninja-build.org/manual.html')
+            ->withManual('https://github.com/ninja-build/ninja/wiki')
+            ->withLabel('build_env_bin')
+            //->withCleanBuildDirectory()
+            //->withUntarArchiveCommand('unzip')
+            ->withConfigure(
+                "
+                /usr/bin/ar -h 
+                cmake -Bbuild-cmake -D CMAKE_AR=/usr/bin/ar
+                cmake --build build-cmake
+                mkdir -p /usr/ninja/bin/
+                cp build-cmake/ninja /usr/ninja/bin/
+                return 0 ;
+                ./configure.py --bootstrap
+                mkdir -p /usr/ninja/bin/
+                cp ninja /usr/ninja/bin/
+                return 0 ;
+            "
+            )
+            ->withBinPath('/usr/ninja/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+
+    if ($p->getOsType() == 'macos') {
+        $lib->withUrl('https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-mac.zip');
+    }
+}
+
+function install_nettle($p)
+{
+    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+    $p->addLibrary(
+        (new Library('nettle'))
+            ->withHomePage('https://www.lysator.liu.se/~nisse/nettle/')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+            ->withUrl('https://ftp.gnu.org/gnu/nettle/nettle-3.8.tar.gz')
+            ->withFile('nettle-3.8.tar.gz')
+            ->withPrefix('/usr/nettle/')
+            ->withConfigure(
+                '
+             ./configure --help
+             return  0
+            ./configure \
+            --prefix=/usr/nettle \
+            --enable-static \
+            --disable-shared
+            '
+            )
+            ->withPkgName('nettle')
+    );
+}
+
+function install_gnu_tls($p)
+{
+        $note=<<<EOF
+
+        Required libraries:
+            libnettle crypto back-end
+            gmplib arithmetic library1
+            
+        Optional libraries:
+        libtasn1 ASN.1 parsing - a copy is included in GnuTLS
+        p11-kit for PKCS #11 support
+        trousers for TPM support
+        libidn2 for Internationalized Domain Names support
+        libunbound for DNSSEC/DANE functionality
+EOF;
+
+        $p->addLibrary(
+            (new Library('gnu_tls'))
+                ->withHomePage('https://www.gnutls.org/')
+                ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+                ->withUrl('https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.8.tar.xz')
+                ->withManual('https://gitlab.com/gnutls/gnutls.git')
+                ->withConfigure(
+                    '
+            ./configure --help ;
+            ./configure \
+            --prefix=/usr/gnutls \
+             --enable-static \
+            --disable-shared \
+            --without-zstd \
+            --without-tpm2 \
+            --without-tpm \
+            --disable-doc \
+            --disable-tests \
+            --without-included-unistring
+            '
+                )
+                //->withPkgConfig('/usr/gnutls/lib/pkgconfig')
+                ->disableDefaultPkgConfig()
+                //->withPkgName('hogweed nettle')
+                ->disablePkgName()
+                //->withLdflags('/usr/gnutls/lib')
+                ->disableDefaultLdflags()
+                ->withSkipBuildInstall()
+        );
+
+}
+
+function install_nghttp3(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('nghttp3'))
+            ->withHomePage('https://github.com/ngtcp2/nghttp3')
+            ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/heads/main.zip')
+            ->withFile('latest-nghttp3.zip')
+            ->withPrefix('/usr/nghttp3')
+            ->withConfigure('./configure --prefix=/usr/nghttp3 enable_static=yes enable_shared=no')
+            ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
+    );
+}function install_ngtcp2(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('ngtcp2'))
+            ->withHomePage('https://github.com/ngtcp2/ngtcp2')
+            ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/heads/main.zip')
+            ->withFile('latest-ngtcp2.zip')
+            ->withPrefix('/usr/nghttp2')
+            ->withConfigure('./configure --prefix=/usr/ngtcp2 enable_static=yes enable_shared=no')
+            ->withLicense('https://github-com.proxy.zibenyulun.cn/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
+    );
+}
+
+function install_libunistring($p)
+{
+    $p->addLibrary(
+        (new Library('libunistring'))
+            ->withHomePage('https://www.gnu.org/software/libunistring/')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+            ->withUrl('https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.1.1.tar.gz')
+            ->withFile('libunistring-0.9.1.1.tar.gz')
+            ->withConfigure(
+                '
+             ./configure --help
+            
+            ./configure \
+            --prefix=/usr/libunistring \
+            --enable-static \
+            --disable-shared \
+             --with-libiconv-prefix=/usr/libiconv 
+            '
+            )
+            ->withPkgConfig('/usr/libunistring/lib/pkgconfig')
+            ->withPkgName('libunistringe')
+            ->disableDefaultPkgConfig()
+            ->disablePkgName()
+            ->disableDefaultLdflags()
+            ->withSkipBuildInstall()
     );
 }

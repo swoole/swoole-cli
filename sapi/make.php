@@ -37,6 +37,7 @@ make_<?=$item->name?>() {
 <?php if ($item->cleanBuildDirectory) : ?>
     test -d <?=$this->getBuildDir()?>/<?= $item->name ?> && rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?><?= PHP_EOL; ?>
 <?php endif; ?>
+
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
         mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>

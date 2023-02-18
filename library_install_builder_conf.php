@@ -8,31 +8,46 @@ function libraries_install_builder_conf($p){
     install_openssl($p);
     install_libxml2($p); //依赖 libiconv
     install_libxslt($p); //依赖 libxml2 libiconv
-    install_gmp($p);
-    install_zlib($p);
+
+    install_gmp($p); // 精度算术库
+
     install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
+    install_zlib($p);
     install_libgif($p);//没有 libgif.pc 文件，不能使用 pkg-config 命令
     install_libpng($p); //依赖 zlib
     install_libjpeg($p);
-    install_harfbuzz($p); //默认跳过安装
+
+    install_brotli($p);
+    install_cares($p);
+
+    install_ninja($p);
+    install_harfbuzz($p);
     install_libwebp($p); //依赖 libgif libpng libjpeg
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli(暂不启用)  HarfBuzz (暂不启用)
     install_sqlite3($p);
     install_icu($p); //依赖  -lstdc++
     install_oniguruma($p);
+
     install_liblz4($p);
     install_liblzma($p);
     install_libzstd($p); //zstd 依赖 lz4
     install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma库 zstd库 暂不启用）
-    install_brotli($p);
-    install_cares($p);
+
 //install_libedit($p);
     install_ncurses($p);
     install_readline($p);//依赖 ncurses
     install_imagemagick($p);//依赖 freetype png webp xml zip zlib
-    install_libidn2($p);  //默认跳过安装
-    install_nghttp2($p);  //默认跳过安装
+
+    install_libunistring($p);
+    install_libidn2($p);//依赖libunistring
+    install_nghttp2($p);
+
+    install_nettle($p); //加密库
+    install_gnu_tls($p); //依赖 GMP NETTLS
+    install_nghttp3($p);
+    install_ngtcp2($p);
     install_curl($p); //curl 依赖 openssl brotli(暂不启用) zstd(暂不启用) idn(暂不启用) idn2(暂不启用) nghttp2(暂不启用) nghttp3(暂不启用)
+
     install_libsodium($p);
     install_libyaml($p);
     install_mimalloc($p);
