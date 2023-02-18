@@ -1514,9 +1514,10 @@ function install_msh3(Preprocessor $p)
             ->withManual('https://github.com/nibanks/msh3.git')
             ->withUrl('https://github.com/nibanks/msh3/archive/refs/heads/main.zip')
             ->withFile('latest-msh3.zip')
+            ->withFile('msh3')
             ->withSkipDownload()
-            ->withCleanBuildDirectory()
-            ->withUntarArchiveCommand('unzip')
+            //->withCleanBuildDirectory()
+            ->withUntarArchiveCommand('mv')
             ->withPrefix('/usr/msh3')
             ->withScriptBeforeConfigure('
               cp -rf /work/pool/lib/msh3 /work/thirdparty/msh3
@@ -1524,9 +1525,11 @@ function install_msh3(Preprocessor $p)
             ')
             ->withConfigure(<<<EOF
             cd /work/thirdparty/msh3/msh3
-   
+            pwd
+            ls -lh 
             mkdir build && cd build
-            cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo .. -DCMAKE_INSTALL_PREFIX=/msh3/msh3
+            #  cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo .. -DCMAKE_INSTALL_PREFIX=/usr/
+            cmake -G 'Unix Makefiles'  -DCMAKE_BUILD_TYPE=Release  .. -DBUILD_SHARED_LIBS=0 -DCMAKE_INSTALL_PREFIX=/usr/msh3 
             cmake --build .
             cmake --install .
 
