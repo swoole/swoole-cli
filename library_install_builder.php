@@ -72,6 +72,7 @@ function install_imagemagick(Preprocessor $p)
     $p->addLibrary(
         (new Library('imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
+            ->withFile('ImageMagick-v7.1.0-62.tar.gz')
             ->withPrefix(IMAGEMAGICK_PREFIX)
             ->withConfigure(<<<EOF
               ./configure \
@@ -414,6 +415,8 @@ function install_readline(Preprocessor $p)
     $p->addLibrary(
         (new Library('readline'))
             ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
+            ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
+            ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
             ->withPrefix(READLINE_PREFIX)
             ->withConfigure(<<<EOF
                 ./configure \
@@ -451,6 +454,8 @@ function install_ncurses(Preprocessor $p)
     $p->addLibrary(
         (new Library('ncurses'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withPrefix(NCURSES_PREFIX)
             ->withConfigure(<<<EOF
             mkdir -p {$ncurses_prefix}/lib/pkgconfig
@@ -498,7 +503,6 @@ EOF
             ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
             ->withHomePage('https://github.com/projectceladon/libncurses')
     );
-
 }
 
 

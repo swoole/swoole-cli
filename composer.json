@@ -6,7 +6,7 @@
     "psr-4": {
       "SwooleCli\\": "sapi"
     },
-    "files": ["install_library_builder.php","sapi/constants.php"]
+    "files": ["library_install_builder.php","sapi/constants.php","library_install_builder_conf.php"]
   },
   "repositories": {
     "packagist": {
