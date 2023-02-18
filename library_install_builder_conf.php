@@ -1,7 +1,7 @@
 <?php
 
 
-function install_libraries($p){
+function libraries_install_builder_conf($p){
 
 
     install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
@@ -9,7 +9,7 @@ function install_libraries($p){
     install_libxml2($p); //依赖 libiconv
     install_libxslt($p); //依赖 libxml2 libiconv
     install_gmp($p);
-    install_zlib($p);//->depends('libxml2', 'bzip2')
+    install_zlib($p);
     install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
     install_libgif($p);//没有 libgif.pc 文件，不能使用 pkg-config 命令
     install_libpng($p); //依赖 zlib

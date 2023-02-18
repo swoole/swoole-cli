@@ -278,7 +278,14 @@ function install_zlib(Preprocessor $p)
         (new Library('zlib'))
             ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
             ->withPrefix(ZLIB_PREFIX)
-            ->withConfigure('./configure --prefix=' . ZLIB_PREFIX . ' --static')
+            ->withConfigure(
+                <<<EOF
+./configure -help 
+
+EOF
+.
+                './configure --prefix=' . ZLIB_PREFIX . ' --static'
+            )
             ->withHomePage('https://zlib.net/')
             ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
             ->withPkgName('zlib')

@@ -97,12 +97,6 @@ class Library extends Project
         return $this;
     }
 
-    public function withUrlMirror(string $url):static
-    {
-        $this->urlMirrors[] = $url;
-        return $this;
-    }
-
     function withPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
@@ -717,7 +711,7 @@ class Preprocessor
         }
 
         include __DIR__ . '/constants.php';
-        install_libraries($this);
+        libraries_install_builder_conf($this);
         $extAvailabled = [];
         if (is_dir($this->rootDir . '/conf.d')) {
             $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
