@@ -54,9 +54,16 @@ function libraries_install_builder($p){
     install_libtasn1($p);
     install_libexpat($p);
     install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
+
+    # TLS/ESNI/ECH/DoT/DoH/  参考文档https://zhuanlan.zhihu.com/p/572101957
+    # SSL 比较 https://curl.se/docs/ssl-compared.html
     install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
     install_boringssl($p);//需要 golang
-    install_nghttp3($p); // 使用 GnuTLS，这样就不用更换openssl版本了 ； 说明：HTTP/3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
+    install_wolfssl($p);//
+
+    //参考 ：HTTP3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
+    install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
+
 
     install_ngtcp2($p); //依赖gnutls nghttp3
     install_quiche($p); // 依赖 boringssl ，需要 rust ；

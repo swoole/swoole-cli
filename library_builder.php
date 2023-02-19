@@ -216,9 +216,10 @@ function install_freetype(Preprocessor $p)
             ->withPrefix(FREETYPE_PREFIX)
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
-            ->withConfigure('BZIP2_CFLAGS="-I' . BZIP2_PREFIX . '/include" & \\' .
-                'BZIP2_LIBS="-L' . BZIP2_PREFIX . '/lib -lbz2" & \\' .
-                'PATH="' . PNG_PREFIX . '/bin:$PATH" & \\' .
+            ->withConfigure(
+                'export BZIP2_CFLAGS="-I' . BZIP2_PREFIX . '/include" ' .PHP_EOL.
+                'export BZIP2_LIBS="-L' . BZIP2_PREFIX . '/lib -lbz2" ' .PHP_EOL.
+                'export PATH="' . PNG_PREFIX . '/bin:$PATH" ' .PHP_EOL .
                 './configure --prefix=' . FREETYPE_PREFIX . ' \\' . PHP_EOL .
                 '--enable-static \\' . PHP_EOL .
                 '--disable-shared \\' . PHP_EOL .
@@ -584,6 +585,7 @@ function install_curl(Preprocessor $p)
     $p->addLibrary(
         (new Library('curl'))
             ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
+            ->withManual('https://curl.se/docs/install.html')
             ->withPrefix(CURL_PREFIX)
             ->withCleanBuildDirectory()
             ->withScriptBeforeConfigure(<<<EOF
@@ -602,7 +604,7 @@ EOF
                # OpenSSL GnuTLS mbedTLS WolfSSL BearSSL rustls NSS,
                
                # https://curl.se/docs/http3.html 
-               export CPPFLAGS=$(pkg-config  --cflags --static  llibcares libbrotlicommon libbrotlidec    libbrotlienc)
+               export CPPFLAGS=$(pkg-config  --cflags --static  libcares libbrotlicommon libbrotlidec    libbrotlienc)
                export LIBS=$(pkg-config      --libs   --static  libcares libbrotlicommon libbrotlidec    libbrotlienc)
                
 EOF
@@ -1371,7 +1373,6 @@ function install_boringssl($p)
                 ->withScriptBeforeConfigure('
                  test -d /usr/boringssl && rm -rf /usr/boringssl
                 ')
-                ->withPrefix('/usr/boringssl')
                 ->withConfigure(
                     '
                 cd boringssl-master
@@ -1388,6 +1389,39 @@ function install_boringssl($p)
                 )
                 ->withSkipMakeAndMakeInstall()
                 ->disableDefaultPkgConfig()
+                //->withSkipBuildInstall()
+        );
+
+}
+
+function install_wolfssl($p)
+{
+        $p->addLibrary(
+            (new Library('wolfssl'))
+                ->withHomePage('https://github.com/wolfSSL/wolfssl.git')
+                ->withLicense('https://github.com/wolfSSL/wolfssl/blob/master/COPYING', Library::LICENSE_GPL)
+                ->withUrl('https://github.com/wolfSSL/wolfssl/archive/refs/tags/v5.5.4-stable.tar.gz')
+                ->withFile('wolfssl-v5.5.4-stable.tar.gz')
+                ->withManual('https://wolfssl.com/wolfSSL/Docs.html')
+                ->withCleanBuildDirectory()
+                ->withPrefix('/usr/wolfssl')
+                ->withScriptBeforeConfigure('
+                 test -d /usr/wolfssl && rm -rf /usr/wolfssl
+                ')
+
+                ->withConfigure(<<<EOF
+                ./autogen.sh
+                ./configure --help
+                
+                ./configure  --prefix=/usr/wolfssl \
+                --enable-static=yes \
+                --enable-shared=no \
+                --enable-all
+
+EOF
+                )
+                //->withSkipMakeAndMakeInstall()
+                ->withPkgName('wolfssl')
                 //->withSkipBuildInstall()
         );
 
