@@ -6,15 +6,18 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
 
-    $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares --enable-swoole-pgsql --with-brotli-dir=/usr/brotli ';
+    $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares --enable-swoole-pgsql --with-brotli-dir='.BROTLI_PREFIX ;
 
     // curl/imagemagick 对 brotli 静态库的支持有点问题，暂时关闭
+
     # $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares';
     //if ($p->getInputOption('with-brotli')) {
         //$options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     //}
 
     //exclude bypass skip ignore
+
+
 
     $p->addExtension((new Extension('swoole'))
         ->withOptions($options)

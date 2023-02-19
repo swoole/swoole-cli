@@ -551,29 +551,18 @@ function install_libyaml(Preprocessor $p)
 
 function install_brotli(Preprocessor $p)
 {
+
     $p->addLibrary(
         (new Library('brotli'))
-            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/google/brotli')
+            ->withManual('https://github.com/google/brotli')//有多种构建方式，选择cmake 构建
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
-            ->withManual('https://github.com/google/brotli/')
             ->withFile('brotli-1.0.9.tar.gz')
+            //->withCleanBuildDirectory()
             ->withPrefix(BROTLI_PREFIX)
-            ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure('
-            test -d /usr/brotli && rm -rf /usr/brotli
-            ')
-            ->withConfigure('
-            mkdir cmake-build 
-            cd cmake-build
-            cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=' . BROTLI_PREFIX . ' .. '. PHP_EOL.
-                <<<EOF
-            cmake --build . --config Release --target install
-           
-EOF
-
+            ->withConfigure('cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=' . BROTLI_PREFIX . ' . && \\'.PHP_EOL.
+                'cmake --build . --config Release --target install'
             )
-            ->withSkipMakeAndMakeInstall()
+            ->withBypassMakeAndMakeInstall()
             ->withScriptAfterInstall(
                 implode(PHP_EOL, [
                     'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',
@@ -584,8 +573,10 @@ EOF
                     'mv ' . BROTLI_PREFIX . '/lib/libbrotlidec-static.a ' . BROTLI_PREFIX . '/lib/libbrotlidec.a',
                 ]))
             ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
-
+            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/google/brotli')
     );
+
 }
 
 function install_curl(Preprocessor $p)

@@ -10,6 +10,8 @@ use MJS\TopSort\Implementations\StringSort;
 abstract class Project
 {
     public string $name;
+
+    public string $manual;
     public string $homePage = '';
     public string $license = '';
     public string $prefix = '';
@@ -23,8 +25,6 @@ abstract class Project
     public const LICENSE_LGPL = 4;
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
-
-    public string $manual = '';
 
     function __construct(string $name)
     {
@@ -44,15 +44,16 @@ abstract class Project
         return $this;
     }
 
-    public function withManual(string $manual): static
-    {
-        $this->manual = $manual;
-            return $this;
-    }
 
     function depends(string ...$libs): static
     {
         $this->deps += $libs;
+        return $this;
+    }
+
+    public function withManual(string $manua):static
+    {
+        $this->manual = $manua;
         return $this;
     }
 }
@@ -68,6 +69,9 @@ class Library extends Project
     public string $file = '';
 
     public string $ldflags = '';
+
+    public bool $cleanBuildDirectory = false;
+    public bool $bypassMakeAndMakeInstall = false;
     public string $makeOptions = '';
     public string $makeInstallCommand = 'install';
     public string $makeInstallOptions = '';
@@ -81,7 +85,6 @@ class Library extends Project
     public bool $skipDownload = false;
     public bool $skipBuildInstall = false;
     public bool $skipMakeAndMakeInstall = false;
-    public bool $cleanBuildDirectory = false;
     public string $untarArchiveCommand = 'tar';
     public string $beforeConfigureScript = '';
     public string $binPath = '';
@@ -130,6 +133,18 @@ class Library extends Project
         return $this;
     }
 
+    public function withCleanBuildDirectory():static
+    {
+        $this->cleanBuildDirectory = true;
+        return $this;
+    }
+
+    public function withBypassMakeAndMakeInstall():static
+    {
+        $this->bypassMakeAndMakeInstall = true;
+        return $this;
+    }
+
     function withMakeOptions(string $makeOptions): static
     {
         $this->makeOptions = $makeOptions;
@@ -169,12 +184,6 @@ class Library extends Project
     function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
-        return $this;
-    }
-
-    public function withCleanBuildDirectory(): static
-    {
-        $this->cleanBuildDirectory = true;
         return $this;
     }
 

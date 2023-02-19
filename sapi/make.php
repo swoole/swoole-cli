@@ -34,8 +34,9 @@ make_<?=$item->name?>() {
 
     echo "build <?=$item->name?>"
 
-<?php if ($item->cleanBuildDirectory) : ?>
-    test -d <?=$this->getBuildDir()?>/<?= $item->name ?> && rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?><?= PHP_EOL; ?>
+<?php if($item->cleanBuildDirectory): ?>
+    # If the build directory exist, clean the build directory
+    test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
 <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
@@ -81,13 +82,12 @@ __EOF__
 
 <?php endif; ?>
 
-<?php if( !$item->skipMakeAndMakeInstall): ?>
 
+<?php if(!$item->bypassMakeAndMakeInstall): ?>
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
-
 
     # before make install
 <?php if ($item->beforeInstallScript): ?>
@@ -101,7 +101,7 @@ __EOF__
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
-
+<?php endif; ?>
 <?php endif; ?>
 
     # after make install
@@ -109,8 +109,6 @@ __EOF__
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
-<?php endif; ?>
-
 <?php endif; ?>
 
     # build end
