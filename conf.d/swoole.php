@@ -14,6 +14,8 @@ return function (Preprocessor $p) {
         //$options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     //}
 
+    //exclude bypass skip ignore
+
     $p->addExtension((new Extension('swoole'))
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
