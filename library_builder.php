@@ -19,6 +19,7 @@ function install_openssl(Preprocessor $p)
 {
     $p->addLibrary((new Library('openssl'))
         ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
+        ->withCleanBuildDirectory()
         ->withPrefix(OPENSSL_PREFIX)
         ->withConfigure('./config' . ($p->getOsType() === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=' . OPENSSL_PREFIX)
         ->withMakeInstallCommand('install_sw')
@@ -34,6 +35,7 @@ function install_libiconv(Preprocessor $p)
         (new Library('libiconv'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz')
             ->withPrefix(ICONV_PREFIX)
+            ->withCleanBuildDirectory()
             ->withPkgConfig('')
             ->withConfigure('./configure --prefix=' . ICONV_PREFIX . ' enable_static=yes enable_shared=no')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
@@ -49,6 +51,7 @@ function install_libxml2(Preprocessor $p)
     $p->addLibrary(
         (new Library('libxml2'))
             ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.10/libxml2-v2.9.10.tar.gz')
+            ->withCleanBuildDirectory()
             ->withPrefix(LIBXML2_PREFIX)
             ->withConfigure(<<<EOF
 ./autogen.sh && ./configure --prefix=$libxml2_prefix --with-iconv=$iconv_prefix --enable-static=yes --enable-shared=no --without-python
@@ -66,6 +69,7 @@ function install_libxslt(Preprocessor $p)
     $p->addLibrary(
         (new Library('libxslt'))
             ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
+            ->withCleanBuildDirectory()
             ->withPrefix(LIBXSLT_PREFIX)
             ->withConfigure('./autogen.sh && ./configure --prefix=' . LIBXSLT_PREFIX . '--enable-static=yes --enable-shared=no')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
@@ -433,6 +437,7 @@ function install_readline(Preprocessor $p)
             ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
+            ->withCleanBuildDirectory()
             ->withPrefix(READLINE_PREFIX)
             ->withConfigure(<<<EOF
                 ./configure \
@@ -1847,22 +1852,27 @@ function install_libunwind($p)
                 ->withHomePage('http://www.dest-unreach.org/socat/')
                 ->withLicense('http://www.dest-unreach.org/socat/doc/README', Library::LICENSE_GPL)
                 ->withUrl('http://www.dest-unreach.org/socat/download/socat-1.7.4.4.tar.gz')
+                ->withCleanBuildDirectory()
+                ->withPrefix('/usr/socat')
                 ->withConfigure(
                     '
             pkg-config --cflags --static readline
             pkg-config  --libs --static readline
             ./configure --help ;
-            CFLAGS=$(pkg-config --cflags --static  libcrypto  libssl    openssl readline)
+            CFLAGS=$(pkg-config --cflags --static   openssl readline)
             export CFLAGS="-static -O2 -Wall -fPIC $CFLAGS "
-            export LDFLAGS=$(pkg-config --libs --static libcrypto  libssl    openssl readline)
-            # LIBS="-static -Wall -O2 -fPIC  -lcrypt  -lssl   -lreadline"
+            # export LDFLAGS=$(pkg-config --libs --static  openssl readline)
+            LIBS=$(pkg-config --libs --static  openssl readline)
+            export LIBS="-static -Wall -O2 -fPIC "
             # CFLAGS="-static -Wall -O2 -fPIC"
+           
+           # 需要 openssl V3 
             ./configure \
             --prefix=/usr/socat \
             --enable-readline \
             --enable-openssl-base=/usr/openssl
             ')
-                ->withSkipBuildInstall()
+               // ->withSkipBuildInstall()
         );
     }
 
@@ -1931,7 +1941,7 @@ function install_libunwind($p)
     {
         // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
         $p->addLibrary(
-            (new Library('aria2c'))
+            (new Library('aria2'))
                 ->withHomePage('https://aria2.github.io/')
                 ->withLicense('https://github.com/aria2/aria2/blob/master/COPYING', Library::LICENSE_GPL)
                 ->withUrl('https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0.tar.gz')
@@ -1944,9 +1954,10 @@ function install_libunwind($p)
             # export LDFLAGS=$(pkg-config --libs --static libcrypto  libssl    openssl readline)
             # LIBS="-static -Wall -O2 -fPIC  -lcrypt  -lssl   -lreadline"
             # CFLAGS="-static -Wall -O2 -fPIC"
-            export ZLIB_CFLAGS=$(pkg-config --cflags --static zlib) ;
+            export  ZLIB_CFLAGS=$(pkg-config --cflags --static zlib) ;
             export  ZLIB_LIBS=$(pkg-config --libs --static zlib) ;
             ./configure --help ;
+            exit 0 
              ARIA2_STATIC=yes
             ./configure \
             --with-ca-bundle="/etc/ssl/certs/ca-certificates.crt" \
@@ -1958,11 +1969,13 @@ function install_libunwind($p)
             --without-gnutls \
             --with-openssl \
             --with-libiconv-prefix=/usr/libiconv/ \
+            --with-libintl-prefix \
+            --with-libuv \
             --with-libz
             # --with-tcmalloc
             '
                 )
-                ->withSkipBuildInstall()
+
         );
     }
 
