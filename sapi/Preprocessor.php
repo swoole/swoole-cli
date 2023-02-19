@@ -10,6 +10,8 @@ use MJS\TopSort\Implementations\StringSort;
 abstract class Project
 {
     public string $name;
+
+    public string $manual;
     public string $homePage = '';
     public string $license = '';
     public string $prefix = '';
@@ -47,6 +49,12 @@ abstract class Project
         $this->deps += $libs;
         return $this;
     }
+
+    public function withManual(string $manua):static
+    {
+        $this->manual = $manua;
+        return $this;
+    }
 }
 
 class Library extends Project
@@ -55,6 +63,9 @@ class Library extends Project
     public string $configure = '';
     public string $file = '';
     public string $ldflags = '';
+
+    public bool $cleanBuildDir = false;
+    public bool $bypassMakeAndMakeInstall = false;
     public string $makeOptions = '';
     public string $makeInstallCommand = 'install';
 
@@ -99,6 +110,18 @@ class Library extends Project
     function withLdflags(string $ldflags): static
     {
         $this->ldflags = $ldflags;
+        return $this;
+    }
+
+    public function withCleanBuildDir():static
+    {
+        $this->cleanBuildDir = true;
+        return $this;
+    }
+
+    public function withBypassMakeAndMakeInstall():static
+    {
+        $this->bypassMakeAndMakeInstall = true;
         return $this;
     }
 
