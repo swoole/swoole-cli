@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
                 ->withManual('https://github.com/google/brotli')//有多种构建方式，选择cmake 构建
                 ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
                 ->withFile('brotli-1.0.9.tar.gz')
-                ->withCleanBuildDir()
+                //->withCleanBuildDirectory()
                 ->withPrefix(BROTLI_PREFIX)
                 ->withConfigure('cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=' . BROTLI_PREFIX . ' . && \\'.PHP_EOL.
                     'cmake --build . --config Release --target install'

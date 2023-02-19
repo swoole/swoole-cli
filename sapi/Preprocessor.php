@@ -64,7 +64,7 @@ class Library extends Project
     public string $file = '';
     public string $ldflags = '';
 
-    public bool $cleanBuildDir = false;
+    public bool $cleanBuildDirectory = false;
     public bool $bypassMakeAndMakeInstall = false;
     public string $makeOptions = '';
     public string $makeInstallCommand = 'install';
@@ -113,9 +113,9 @@ class Library extends Project
         return $this;
     }
 
-    public function withCleanBuildDir():static
+    public function withCleanBuildDirectory():static
     {
-        $this->cleanBuildDir = true;
+        $this->cleanBuildDirectory = true;
         return $this;
     }
 

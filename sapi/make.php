@@ -21,7 +21,7 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
-<?php if($item->cleanBuildDir): ?>
+<?php if($item->cleanBuildDirectory): ?>
     # If the build directory exist, clean the build directory
     test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
 <?php endif; ?>
