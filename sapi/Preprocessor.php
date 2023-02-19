@@ -11,7 +11,7 @@ abstract class Project
 {
     public string $name;
 
-    public string $manual;
+    public string $manual = '';
     public string $homePage = '';
     public string $license = '';
     public string $prefix = '';
