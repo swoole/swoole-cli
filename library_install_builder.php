@@ -20,7 +20,7 @@ function libraries_install_builder($p){
     install_brotli($p); //有多种安装方式，选择使用cmake 安装
     install_cares($p);
 
-    install_ninja($p);
+    install_ninja($p); //需要自己构建，alpine 默认没有提供源
     install_harfbuzz($p); //依赖ninja （alpine ninja 需要源码编译)
 
     install_libwebp($p); //依赖 libgif libpng libjpeg
@@ -74,12 +74,23 @@ function libraries_install_builder($p){
 
     install_libyaml($p);
     install_mimalloc($p);
+
+    //参考 https://github.com/docker-library/php/issues/221
     install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt
     install_libffi($p);
+
+    install_libfastcommon($p);
+    install_libserverframe($p);
+    install_fastdfs($p); //依赖 libfastcommon libserverframe
+
 
     install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
 
     install_php_extension_micro($p);
+    //install_php_extension_fastdfs($p);
+    //install_php_extension_libevent($p);
+    //install_php_extension_zstd($p);
+    //install_php_extension_libuv($p);
 
     if ($p->getOsType() == 'macos') {
         install_bison($p);  // 源码编译bison
@@ -109,5 +120,14 @@ function libraries_install_builder($p){
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 
      */
+    install_libevent($p);
+    install_libuv($p);
 
+    install_libunwind($p); //使用 libunwind 可以很方便的获取函数栈中的内容，极大的方便了对函数间调用关系的了解。
+    install_socat($p);
+    install_jemalloc($p);
+    install_tcmalloc($p);
+
+    install_aria2($p);
+    install_bazel($p);
 }

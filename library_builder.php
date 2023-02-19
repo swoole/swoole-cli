@@ -7,6 +7,14 @@ use SwooleCli\Preprocessor;
 // Library
 // ================================================================================================
 
+/**
+cmake use static openssl
+
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+find_package(OpenSSL REQUIRED)
+target_link_libraries(program OpenSSL::Crypto)
+ */
+
 function install_openssl(Preprocessor $p)
 {
     $p->addLibrary((new Library('openssl'))
@@ -773,6 +781,91 @@ function install_libffi($p)
             ->withLdflags('-L/usr/libffi/lib/')
             ->withBinPath('/usr/libffi/bin/')
     //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
+    );
+}
+
+function install_fastdfs($p)
+{
+    $p->addLibrary(
+        (new Library('fastdfs'))
+            ->withHomePage('https://github.com/happyfish100/fastdfs.git')
+            ->withLicense('https://github.com/happyfish100/fastdfs/blob/master/COPYING-3_0.txt', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/happyfish100/fastdfs/archive/refs/tags/V6.9.4.tar.gz')
+            ->withFile('fastdfs-V6.9.4.tar.gz')
+            ->withPrefix('/usr/fastdfs/')
+            ->withScriptBeforeConfigure(
+                'test -d /usr/fastdfs/ && rm -rf /usr/fastdfs/'
+            )
+            ->withConfigure(
+                '
+            export DESTDIR=/usr/libserverframe/
+            ./make.sh clean && ./make.sh && ./make.sh install
+            ./setup.sh /etc/fdfs
+            '
+            )
+            ->withPkgName('')
+            ->withPkgConfig('/usr/fastdfs//lib/pkgconfig')
+            ->withLdflags('-L/usr/fastdfs/lib/')
+            ->withBinPath('/usr/fastdfs/bin/')
+            ->withSkipBuildInstall()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
+    );
+}
+
+function install_libserverframe($p)
+{
+    $p->addLibrary(
+        (new Library('libserverframe'))
+            ->withHomePage('https://github.com/happyfish100/libserverframe')
+            ->withLicense('https://github.com/happyfish100/libserverframe/blob/master/LICENSE', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/happyfish100/libserverframe/archive/refs/tags/V1.1.25.tar.gz')
+            ->withFile('libserverframe-V1.1.25.tar.gz')
+            ->withPrefix('/usr/libserverframe/')
+            ->withScriptBeforeConfigure(
+                'test -d /usr/libserverframe/ && rm -rf /usr/libserverframe/'
+            )
+            ->withConfigure(
+                '
+                export DESTDIR=/usr/libserverframe/
+                ./make.sh clean && ./make.sh && ./make.sh install
+            '
+            )
+            ->withPkgName('')
+            ->withSkipBuildInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
+    );
+}
+function install_libfastcommon($p)
+{
+    $p->addLibrary(
+        (new Library('libfastcommon'))
+            ->withHomePage('https://github.com/happyfish100/libfastcommon')
+            ->withLicense('https://github.com/happyfish100/libfastcommon/blob/master/LICENSE', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/happyfish100/libfastcommon/archive/refs/tags/V1.0.66.tar.gz')
+            ->withFile('libfastcommon-V1.0.66.tar.gz')
+            ->withPrefix('/usr/libfastcommon/')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                'test -d /usr/libfastcommon/ && rm -rf /usr/libfastcommon/'
+            )
+            ->withConfigure(
+                '
+             export DESTDIR=/usr/libfastcommon
+             ./make.sh clean && ./make.sh && ./make.sh install
+             exit 0 
+            '
+            )
+            ->withPkgName('')
+            ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
+            ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
     //->disablePkgName()
     //->disableDefaultPkgConfig()
     //->disableDefaultLdflags()
@@ -1675,10 +1768,255 @@ function install_libunistring($p)
     );
 }
 
-/**
- cmake use static openssl
+function install_libevent($p)
+{
+    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+    $p->addLibrary(
+        (new Library('libevent'))
+            ->withHomePage('https://github-com.proxy.zibenyulun.cn/libevent/libevent')
+            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz')
+            ->withManual('https://libevent.org/libevent-book/')
+            ->withPrefix('/usr/libevent')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+            # 查看更多选项
+            # cmake -LAH .
+            
+            mkdir build && cd build
+            cmake ..   -DEVENT__DISABLE_DEBUG_MODE=ON   -DEVENT__LIBRARY_TYPE=STATIC -DEVENT_INSTALL_CMAKE_DIR=/usr/libevent
+            
+            # make
+            
+            # make verify  # (optional)
+EOF
 
-    set(OPENSSL_USE_STATIC_LIBS TRUE)
-    find_package(OpenSSL REQUIRED)
-    target_link_libraries(program OpenSSL::Crypto)
- */
+            )
+            ->withPkgName('libevent')
+            //->withSkipBuildInstall()
+    );
+}function install_libuv($p)
+{
+    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+    $p->addLibrary(
+        (new Library('libuv'))
+            ->withHomePage('https://libuv.org/')
+            ->withLicense('https://github.com/libuv/libuv/blob/v1.x/LICENSE', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/libuv/libuv/archive/refs/tags/v1.44.2.tar.gz')
+            ->withFile('libuv-v1.44.2.tar.gz')
+            ->withConfigure(
+                '
+            sh autogen.sh
+            ./configure --help ;
+            ./configure \
+            --prefix=/usr/libuv \
+            --enable-static \
+            --disable-shared
+            '
+            )
+            ->withPkgConfig('/usr/libuv/lib/pkgconfig')
+            ->withPkgName('libuv')
+            ->withLdflags('/usr/libuv/lib')
+            ->withSkipBuildInstall()
+    );
+}
+
+function install_libunwind($p)
+{
+    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+    $p->addLibrary(
+        (new Library('libunwind'))
+            ->withHomePage('https://github.com/libunwind/libunwind.git')
+            ->withLicense('https://github.com/libunwind/libunwind/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withUrl('https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz')
+            ->withFile('libunwind-1.6.2.tar.gz')
+            ->withConfigure(
+                '
+             # autoreconf -i
+                ./configure --prefix=PREFIX
+            ./configure --help ;
+            ./configure \
+            --prefix=/usr/libunwind \
+            --enable-static=yes \
+            --enable-shared=no
+            '
+            )
+            ->withPkgConfig('/usr/libunwind/lib/pkgconfig')
+            ->withPkgName('libunwind-coredump  libunwind-generic   libunwind-ptrace    libunwind-setjmp    libunwind')
+            ->withLdflags('/usr/libunwind/lib')
+            ->withSkipBuildInstall()
+    );
+
+    function install_socat($p)
+    {
+        // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+        $p->addLibrary(
+            (new Library('socat'))
+                ->withHomePage('http://www.dest-unreach.org/socat/')
+                ->withLicense('http://www.dest-unreach.org/socat/doc/README', Library::LICENSE_GPL)
+                ->withUrl('http://www.dest-unreach.org/socat/download/socat-1.7.4.4.tar.gz')
+                ->withConfigure(
+                    '
+            pkg-config --cflags --static readline
+            pkg-config  --libs --static readline
+            ./configure --help ;
+            CFLAGS=$(pkg-config --cflags --static  libcrypto  libssl    openssl readline)
+            export CFLAGS="-static -O2 -Wall -fPIC $CFLAGS "
+            export LDFLAGS=$(pkg-config --libs --static libcrypto  libssl    openssl readline)
+            # LIBS="-static -Wall -O2 -fPIC  -lcrypt  -lssl   -lreadline"
+            # CFLAGS="-static -Wall -O2 -fPIC"
+            ./configure \
+            --prefix=/usr/socat \
+            --enable-readline \
+            --enable-openssl-base=/usr/openssl
+            ')
+                ->withSkipBuildInstall()
+        );
+    }
+
+
+    function install_jemalloc($p)
+    {
+        // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+        $p->addLibrary(
+            (new Library('jemalloc'))
+                ->withHomePage('http://jemalloc.net/')
+                ->withLicense(
+                    'https://github.com/jemalloc/jemalloc/blob/dev/COPYING',
+                    Library::LICENSE_GPL
+                )
+                ->withUrl('https://github.com/jemalloc/jemalloc/archive/refs/tags/5.3.0.tar.gz')
+                ->withFile('jemalloc-5.3.0.tar.gz')
+                ->withConfigure(
+                    '
+            sh autogen.sh
+            ./configure --help ;
+            ./configure \
+            --prefix=/usr/jemalloc \
+            --enable-static=yes \
+            --enable-shared=no \
+            --with-static-libunwind=/usr/libunwind/lib/libunwind.a
+            '
+                )
+                ->withPkgConfig('/usr/jemalloc/lib/pkgconfig')
+                ->withPkgName('jemalloc')
+                ->withLdflags('/usr/jemalloc/lib')
+                ->withSkipBuildInstall()
+        );
+    }
+
+    function install_tcmalloc($p)
+    {
+        // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+        $p->addLibrary(
+            (new Library('tcmalloc'))
+                ->withHomePage('https://google.github.io/tcmalloc/overview.html')
+                ->withLicense('https://github.com/google/tcmalloc/blob/master/LICENSE', Library::LICENSE_APACHE2)
+                ->withUrl('https://github.com/google/tcmalloc/archive/refs/heads/master.zip')
+                ->withFile('tcmalloc.zip')
+                ->withUntarArchiveCommand('unzip')
+                ->withCleanBuildDirectory()
+                ->withConfigure(
+                    '
+            cd  tcmalloc-master/
+            bazel help
+            bazel build
+            return
+            ./configure \
+            --prefix=/usr/tcmalloc \
+            --enable-static \
+            --disable-shared
+            '
+                )
+                ->withPkgConfig('/usr/tcmalloc/lib/pkgconfig')
+                ->withPkgName('tcmalloc')
+                ->withLdflags('/usr/tcmalloc/lib')
+                ->withSkipBuildInstall()
+        );
+    }
+
+    function install_aria2($p)
+    {
+        // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+        $p->addLibrary(
+            (new Library('aria2c'))
+                ->withHomePage('https://aria2.github.io/')
+                ->withLicense('https://github.com/aria2/aria2/blob/master/COPYING', Library::LICENSE_GPL)
+                ->withUrl('https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0.tar.gz')
+                ->withManual('https://aria2.github.io/manual/en/html/README.html')
+                ->withCleanBuildDirectory()
+                ->withConfigure(
+                    '
+            # CFLAGS=$(pkg-config --cflags --static  libcrypto  libssl    openssl readline)
+            # export CFLAGS="-static -O2 -Wall -fPIC $CFLAGS "
+            # export LDFLAGS=$(pkg-config --libs --static libcrypto  libssl    openssl readline)
+            # LIBS="-static -Wall -O2 -fPIC  -lcrypt  -lssl   -lreadline"
+            # CFLAGS="-static -Wall -O2 -fPIC"
+            export ZLIB_CFLAGS=$(pkg-config --cflags --static zlib) ;
+            export  ZLIB_LIBS=$(pkg-config --libs --static zlib) ;
+            ./configure --help ;
+             ARIA2_STATIC=yes
+            ./configure \
+            --with-ca-bundle="/etc/ssl/certs/ca-certificates.crt" \
+            --prefix=/usr/aria2 \
+            --enable-static=yes \
+            --enable-shared=no \
+            --enable-libaria2 \
+            --with-libuv \
+            --without-gnutls \
+            --with-openssl \
+            --with-libiconv-prefix=/usr/libiconv/ \
+            --with-libz
+            # --with-tcmalloc
+            '
+                )
+                ->withSkipBuildInstall()
+        );
+    }
+
+    function install_bazel($p)
+    {
+        $p->addLibrary(
+            (new Library('bazel'))
+                ->withHomePage('https://bazel.build')
+                ->withLicense('https://github.com/bazelbuild/bazel/blob/master/LICENSE', Library::LICENSE_APACHE2)
+                ->withUrl('https://github.com/bazelbuild/bazel/releases/download/6.0.0/bazel-6.0.0-linux-x86_64')
+                ->withManual('/usr/bazel/bin/')
+                ->withManual('https://bazel.build/install')
+                ->withCleanBuildDirectory()
+                ->withUntarArchiveCommand('mv')
+                ->withScriptBeforeConfigure(
+                    '
+                test -d /usr/bazel/bin/ || mkdir -p /usr/bazel/bin/
+                mv bazel /usr/bazel/bin/
+                chmod a+x /usr/bazel/bin/bazel
+                return 0 
+            '
+                )
+                ->disableDefaultPkgConfig()
+                ->disablePkgName()
+                ->disableDefaultLdflags()
+                ->withSkipBuildInstall()
+        );
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
