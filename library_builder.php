@@ -1122,7 +1122,48 @@ function install_nghttp2(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/nghttp2')
             ->withScriptBeforeConfigure('
-             test -d /usr/nghttp2 && rm -rf /usr/nghttp2
+                      test -d /usr/nghttp2 && rm -rf /usr/nghttp2
+             ./configure --help
+ 
+              export ZLIB_CFLAGS=$(pkg-config  --cflags --static zlib)
+              export ZLIB_LIBS=$(pkg-config    --libs   --static zlib)
+            
+              export OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
+              export OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
+              
+              export LIBCARES_CFLAGS=$(pkg-config  --cflags --static libcares)
+              export LIBCARES_LIBS=$(pkg-config    --libs   --static libcares)
+              
+              export LIBNGTCP2_CFLAGS=$(pkg-config  --cflags --static libngtcp2)
+              export LIBNGTCP2_LIBS=$(pkg-config    --libs   --static libngtcp2)
+              
+              export LIBNGTCP2_CRYPTO_OPENSSL_CFLAGS=$(pkg-config  --cflags --static libngtcp2_crypto_gnutls)
+              export LIBNGTCP2_CRYPTO_OPENSSL_LIBS=$(pkg-config    --libs   --static libngtcp2_crypto_gnutls)
+            
+              export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
+              export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
+              
+              # LIBBPF_CFLAGS=$(pkg-config  --cflags --static gnutls)
+              # LIBBPF_LIBS=$(pkg-config    --libs   --static gnutls)
+              
+              LIBEVENT_OPENSSL_CFLAGS=$(pkg-config  --cflags --static gnutls)
+              LIBEVENT_OPENSSL_LIBS=$(pkg-config    --libs   --static gnutls)
+              
+              export JANSSON_CFLAGS=$(pkg-config  --cflags --static jansson)
+              export JANSSON_LIBS=$(pkg-config    --libs   --static jansson)
+            
+              export LIBXML2_CFLAGS=$(pkg-config  --cflags --static libxml-2.0)
+              export LIBXML2_LIBS=$(pkg-config    --libs   --static libxml-2.0)
+
+         
+            export LIBEV_CFLAGS="-L/usr/libev/include"
+            export LIBEV_LIBS="-L/usr/libev/lib -lev"
+                  
+            # export LDFLAGS="-L/usr/libev/lib"
+            export CPPFLAGS="-I/usr/libev/include"
+            export LIBS="-L/usr/libev/lib -lev"
+            
+            ./configure --prefix=/usr/nghttp2 enable_static=yes enable_shared=no
             ')
             ->withConfigure('./configure --prefix=/usr/nghttp2 enable_static=yes enable_shared=no')
             ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
@@ -1400,16 +1441,16 @@ EOF;
                 ->withPrefix('/usr/gnutls')
                 ->withConfigure(
                     '
-                ./configure --help ;
-            
-       
-                GMP_CFLAGS=$(pkg-config  --cflags --static gmp)
-                GMP_LIBS=$(pkg-config    --libs   --static gmp)
-                LIBTASN1_CFLAGS=$(pkg-config  --cflags --static libtasn1)
-                LIBTASN1_LIBS=$(pkg-config    --libs   --static libtasn1)
+                             
+                 test -d /usr/gnutls && rm -rf /usr/gnutls
+                 set -uex 
+                export GMP_CFLAGS=$(pkg-config  --cflags --static gmp)
+                export GMP_LIBS=$(pkg-config    --libs   --static gmp)
+                export LIBTASN1_CFLAGS=$(pkg-config  --cflags --static libtasn1)
+                export LIBTASN1_LIBS=$(pkg-config    --libs   --static libtasn1)
                 
-                LIBIDN2_CFLAGS=$(pkg-config  --cflags --static libidn2)
-                LIBIDN2_LIBS=$(pkg-config    --libs   --static libidn2)
+                export LIBIDN2_CFLAGS=$(pkg-config  --cflags --static libidn2)
+                export LIBIDN2_LIBS=$(pkg-config    --libs   --static libidn2)
                 
                 
                 export LIBBROTLIENC_CFLAGS=$(pkg-config  --cflags --static libbrotlienc)
@@ -1418,14 +1459,16 @@ EOF;
                 export LIBBROTLIDEC_CFLAGS=$(pkg-config  --cflags --static libbrotlidec)
                 export LIBBROTLIDEC_LIBS=$(pkg-config    --libs   --static libbrotlidec)
 
-                LIBZSTD_CFLAGS=$(pkg-config  --cflags --static libzstd)
-                LIBZSTD_LIBS=$(pkg-config    --libs   --static libzstd)
+                export LIBZSTD_CFLAGS=$(pkg-config  --cflags --static libzstd)
+                export LIBZSTD_LIBS=$(pkg-config    --libs   --static libzstd)
 
             
-                export CPPFLAGS=$(pkg-config    --cflags   --static libbrotlienc libbrotlidec)
-                export LIBS=$(pkg-config        --libs   --static libbrotlienc libbrotlidec)
-              
-                ./configure \
+                export CPPFLAGS=$(pkg-config    --cflags   --static libbrotlicommon libbrotlienc libbrotlidec)
+                export LIBS=$(pkg-config        --libs     --static libbrotlicommon libbrotlienc libbrotlidec)
+                # ./bootstrap
+                ./configure --help | grep with
+
+./configure \
                 --prefix=/usr/gnutls \
                 --enable-static=yes \
                 --enable-shared=no \
@@ -1433,8 +1476,11 @@ EOF;
                 --with-brotli \
                 --with-libiconv-prefix=/usr/libiconv \
                 --with-libz-prefix=/usr/zlib \
+                --with-libev-prefix=/usr/libev \
                 --with-libintl-prefix \
                 --with-included-unistring \
+                --with-nettle-mini  \
+                --with-included-libtasn1 \
                 --without-tpm2 \
                 --without-tpm \
                 --disable-doc \
@@ -1539,6 +1585,9 @@ function install_nghttp3(Preprocessor $p)
              ./configure --prefix=/usr/nghttp3 --enable-lib-only \
             --enable-shared=no \
             --enable-static=yes 
+            
+        
+            --enable-static=yes 
                 
             ')
             ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
@@ -1552,44 +1601,37 @@ function install_ngtcp2(Preprocessor $p)
         (new Library('ngtcp2'))
             ->withHomePage('https://github.com/ngtcp2/ngtcp2')
             ->withManual('https://curl.se/docs/http3.html')
-            ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/heads/main.zip')
-            ->withFile('latest-ngtcp2.zip')
+            ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/tags/v0.13.1.tar.gz')
+            ->withFile('ngtcp2-v0.13.1.tar.gz')
             ->withCleanBuildDirectory()
-            ->withUntarArchiveCommand('unzip')
             ->withPrefix('/usr/ngtcp2')
             ->withConfigure('
-            cd ngtcp2-main
+         
             
-            autoreconf -fi
-            ./configure --help 
-          
-            # openssl does not have QUIC interface, disabling it
+                    # openssl does not have QUIC interface, disabling it
             # 
             # OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
             # OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
             
+           
             export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
             export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
             export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
             export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
-
-            # BORINGSSL_CFLAGS=$(pkg-config  --cflags --static boringssl)
-            # BORINGSSL_LIBS=$(pkg-config    --libs   --static boringssl)
-         
+           
+            export LIBEV_CFLAGS="-L/usr/libev/include"
+            export LIBEV_LIBS="-L/usr/libev/lib -lev"
+            
+             autoreconf -fi
+            ./configure --help 
+          
             ./configure \
             --prefix=/usr/ngtcp2 \
-            --enable-lib-only \
             --enable-shared=no \
             --enable-static=yes \
             --with-gnutls=yes \
             --with-libnghttp3=yes \
-            PKG_CONFIG_PATH=/usr/gnutls/lib/pkgconfig:/usr/libnghttp3/lib/pkgconfig \
-            LDFLAGS="-Wl,-rpath,/usr/gnutls/lib" 
-
-
-            # --with-openssl=yes # need use openssl-3.0.8+quic
-
-            
+            --with-libev=yes 
             ')
             ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
             ->withPkgName('libngtcp2  libngtcp2_crypto_gnutls')
@@ -1770,6 +1812,7 @@ function install_libunistring($p)
 
 function install_libevent($p)
 {
+
     $p->addLibrary(
         (new Library('libevent'))
             ->withHomePage('https://github.com/libevent/libevent')
@@ -1782,19 +1825,18 @@ function install_libevent($p)
                 <<<EOF
             # 查看更多选项
             # cmake -LAH .
-            
             mkdir build && cd build
-            cmake ..   -DEVENT__DISABLE_DEBUG_MODE=ON   -DEVENT__LIBRARY_TYPE=STATIC -DEVENT_INSTALL_CMAKE_DIR=/usr/libevent
-            
-            # make
-            
-            # make verify  # (optional)
+            cmake ..   \
+            -DCMAKE_INSTALL_PREFIX=/usr/libevent \
+            -DEVENT__DISABLE_DEBUG_MODE=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DEVENT__LIBRARY_TYPE=STATIC  
 EOF
 
             )
             ->withPkgName('libevent')
-            //->withSkipBuildInstall()
     );
+
 }
 
 function install_libuv($p)
@@ -2002,7 +2044,7 @@ function install_bazel(Preprocessor $p)
 
 }
 
-public function install_libelf(Preprocessor $p)
+ function install_libelf(Preprocessor $p)
 {
 
     $p->addLibrary(
@@ -2032,7 +2074,7 @@ EOF
     );
 }
 
-public function install_libbpf(Preprocessor $p)
+function install_libbpf(Preprocessor $p)
 {
 
 
@@ -2060,7 +2102,7 @@ EOF
     );
 }
 
-public function install_valgrind(Preprocessor $p)
+function install_valgrind(Preprocessor $p)
 {
 
     $p->addLibrary(
