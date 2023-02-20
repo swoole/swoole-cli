@@ -28,18 +28,18 @@ make_<?=$item->name?>() {
         result_code=$?
         if [ $result_code -ne 0 ]; then
             echo "[<?=$item->name?>] [configure FAILURE]"
-            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>
+            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
             exit  $result_code
         fi
     fi
 
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
         echo "[<?=$item->name?>] compiled, skip.."
-        cd <?= $this->workDir . PHP_EOL ?>
+        cd <?= $this->workDir ?>/
         return 0
     fi
 
-    cd <?=$this->getBuildDir()?>/<?=$item->name?>
+    cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
     # configure
 <?php if (!empty($item->configure)): ?>
