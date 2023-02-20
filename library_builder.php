@@ -1770,10 +1770,9 @@ function install_libunistring($p)
 
 function install_libevent($p)
 {
-    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
     $p->addLibrary(
         (new Library('libevent'))
-            ->withHomePage('https://github-com.proxy.zibenyulun.cn/libevent/libevent')
+            ->withHomePage('https://github.com/libevent/libevent')
             ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz')
             ->withManual('https://libevent.org/libevent-book/')
@@ -1796,58 +1795,60 @@ EOF
             ->withPkgName('libevent')
             //->withSkipBuildInstall()
     );
-}function install_libuv($p)
-{
-    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
-    $p->addLibrary(
-        (new Library('libuv'))
-            ->withHomePage('https://libuv.org/')
-            ->withLicense('https://github.com/libuv/libuv/blob/v1.x/LICENSE', Library::LICENSE_GPL)
-            ->withUrl('https://github.com/libuv/libuv/archive/refs/tags/v1.44.2.tar.gz')
-            ->withFile('libuv-v1.44.2.tar.gz')
-            ->withConfigure(
-                '
-            sh autogen.sh
-            ./configure --help ;
-            ./configure \
-            --prefix=/usr/libuv \
-            --enable-static \
-            --disable-shared
-            '
-            )
-            ->withPkgConfig('/usr/libuv/lib/pkgconfig')
-            ->withPkgName('libuv')
-            ->withLdflags('/usr/libuv/lib')
-            ->withSkipBuildInstall()
-    );
 }
 
-function install_libunwind($p)
+function install_libuv($p)
 {
-    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+    //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
     $p->addLibrary(
-        (new Library('libunwind'))
-            ->withHomePage('https://github.com/libunwind/libunwind.git')
-            ->withLicense('https://github.com/libunwind/libunwind/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withUrl('https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz')
-            ->withFile('libunwind-1.6.2.tar.gz')
+        (new Library('libev'))
+            ->withHomePage('http://software.schmorp.de/pkg/libev.html')
+            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
+            ->withManual('http://cvs.schmorp.de/libev/README')
+            ->withPrefix('/usr/libev')
+            ->withCleanBuildDirectory()
             ->withConfigure(
-                '
-             # autoreconf -i
-                ./configure --prefix=PREFIX
-            ./configure --help ;
-            ./configure \
-            --prefix=/usr/libunwind \
-            --enable-static=yes \
-            --enable-shared=no
-            '
+                <<<EOF
+            ls -lh 
+            ./configure --help 
+            ./configure --prefix=/usr/libev \
+            --enable-shared=no \
+            --enable-static=yes
+           
+EOF
+
             )
-            ->withPkgConfig('/usr/libunwind/lib/pkgconfig')
-            ->withPkgName('libunwind-coredump  libunwind-generic   libunwind-ptrace    libunwind-setjmp    libunwind')
-            ->withLdflags('/usr/libunwind/lib')
-            ->withSkipBuildInstall()
+            ->withPkgName('libev')
+    //->withSkipBuildInstall()
     );
 
+}
+
+    function install_libunwind($p)
+    {
+        $p->addLibrary(
+            (new Library('libunwind'))
+                ->withHomePage('https://github.com/libunwind/libunwind.git')
+                ->withLicense('https://github.com/libunwind/libunwind/blob/master/LICENSE', Library::LICENSE_MIT)
+                ->withUrl('https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz')
+                ->withFile('libunwind-1.6.2.tar.gz')
+                ->withPrefix('/usr/libunwind')
+                ->withConfigure(
+                    '
+                 autoreconf -i
+                 
+                ./configure --help ;
+                ./configure \
+                --prefix=/usr/libunwind \
+                --enable-static=yes \
+                --enable-shared=no
+                '
+                )
+                ->withPkgName('libunwind-coredump  libunwind-generic   libunwind-ptrace    libunwind-setjmp    libunwind')
+                ->withSkipBuildInstall()
+        );
+    }
     function install_socat($p)
     {
         // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
@@ -1874,7 +1875,6 @@ function install_libunwind($p)
                 ->withSkipBuildInstall()
         );
     }
-
 
     function install_jemalloc($p)
     {
@@ -1936,8 +1936,8 @@ function install_libunwind($p)
         );
     }
 
-    function install_aria2($p)
-    {
+function install_aria2($p)
+{
         // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
         $p->addLibrary(
             (new Library('aria2c'))
@@ -1975,8 +1975,8 @@ function install_libunwind($p)
         );
     }
 
-    function install_bazel($p)
-    {
+function install_bazel(Preprocessor $p)
+{
         $p->addLibrary(
             (new Library('bazel'))
                 ->withHomePage('https://bazel.build')
@@ -1992,31 +1992,99 @@ function install_libunwind($p)
                 mv bazel /usr/bazel/bin/
                 chmod a+x /usr/bazel/bin/bazel
                 return 0 
-            '
+               '
                 )
                 ->disableDefaultPkgConfig()
                 ->disablePkgName()
                 ->disableDefaultLdflags()
                 ->withSkipBuildInstall()
         );
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
+
+public function install_libelf(Preprocessor $p)
+{
+
+    $p->addLibrary(
+        (new Library('libelf'))
+            ->withHomePage('https://github.com/WolfgangSt/libelf.git')
+            ->withLicense('https://github.com/WolfgangSt/libelf/blob/master/COPYING.LIB', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/libbpf/libbpf/archive/refs/tags/v1.1.0.tar.gz')
+            ->withFile('libbpf-v1.1.0.tar.gz')
+            ->withManual('https://github.com/WolfgangSt/libelf.git')
+            ->withPrefix('/usr/libelf')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+<<<EOF
+                pwd
+                test -d {$p->getBuildDir()}/libelf && rm -rf {$p->getBuildDir()}/libelf
+                cp -rf {$p->getWorkDir()}/pool/lib/libelf {$p->getBuildDir()}/
+                cd {$p->getBuildDir()}/libelf
+                ./configure --help 
+                ./configure --prefix=/usr/libelf \
+                --enable-compat \
+                --enable-shared=no 
+  
+EOF
+             )
+            ->withMakeInstallCommand('install-local')
+            ->withPkgName('libelf')
+    );
+}
+
+public function install_libbpf(Preprocessor $p)
+{
+
+
+    $p->addLibrary(
+    (new Library('libbpf'))
+        ->withHomePage('https://github.com/libbpf/libbpf.git')
+        ->withLicense('https://github.com/libbpf/libbpf/blob/master/LICENSE.BSD-2-Clause', Library::LICENSE_LGPL)
+        ->withUrl('https://github.com/libbpf/libbpf/archive/refs/tags/v1.1.0.tar.gz')
+        ->withFile('libbpf-v1.1.0.tar.gz')
+        ->withManual('https://libbpf.readthedocs.io/en/latest/api.html')
+        ->withPrefix('/usr/libbpf')
+        ->withCleanBuildDirectory()
+        ->withConfigure(
+            <<<EOF
+                cd src
+                BUILD_STATIC_ONLY=y  make 
+                exit 0 
+                mkdir build /usr/libbpf
+                BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR=/usr/libbpf make install
+                eixt 0 
+    
+EOF
+           )
+        ->withPkgName('libbpf')
+    );
+}
+
+public function install_valgrind(Preprocessor $p)
+{
+
+    $p->addLibrary(
+        (new Library('valgrind'))
+            ->withHomePage('https://valgrind.org/')
+            ->withLicense('https://github.com/libbpf/libbpf/blob/master/LICENSE.BSD-2-Clause', Library::LICENSE_LGPL)
+            ->withUrl('https://sourceware.org/pub/valgrind/valgrind-3.20.0.tar.bz2')
+            ->withManual('https://valgrind.org/docs/man')
+            ->withPrefix('/usr/valgrind')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+
+./autogen.sh
+./configure --prefix=/usr/valgrind
+
+  
+EOF
+
+            )
+            ->withPkgName('valgrind')
+            ->withBinPath('/usr/valgrind/bin/')
+    );
+}
+
+
 

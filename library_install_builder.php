@@ -111,7 +111,9 @@ function libraries_install_builder($p){
 # php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64
 
 # label: build_env_bin , php_extension_patch , php_internal_extension , php_extension ,extension_library
-#
+
+# pdo_pgsql,pdo_oci,pdo_odbc,ldap,ffi
+
     /**
     # 需要特别设置的地方
 
@@ -130,4 +132,7 @@ function libraries_install_builder($p){
 
     install_aria2($p);
     install_bazel($p);
+    install_libelf($p);
+    install_libbpf($p);
+    install_valgrind($p);
 }
