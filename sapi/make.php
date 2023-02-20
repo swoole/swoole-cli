@@ -25,6 +25,12 @@ make_<?=$item->name?>() {
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
         mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
         tar --strip-components=1 -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file . PHP_EOL ?>
+        result_code=$?
+        if [ $result_code -ne 0 ]; then
+            echo "[<?=$item->name?>] [configure FAILURE]"
+            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>
+            exit  $result_code
+        fi
     fi
 
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
@@ -78,12 +84,17 @@ __EOF__
 }
 
 clean_<?=$item->name?>() {
-    cd <?=$this->getBuildDir()?>
-    echo "clean <?=$item->name?>"
+    cd <?=$this->getBuildDir()?> && echo "clean <?=$item->name?>"
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
-    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    rm -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     cd <?= $this->workDir . PHP_EOL ?>
 }
+
+clean_<?=$item->name?>_cached() {
+    echo "clean <?=$item->name?> [cached]"
+    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+}
+
 <?php echo str_repeat(PHP_EOL, 1);?>
 <?php endforeach; ?>
 
@@ -164,6 +175,9 @@ elif [ "$1" = "<?=$item->name?>" ] ;then
     exit 0
 elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
+    exit 0
+elif [ "$1" = "clean-<?=$item->name?>-cached" ] ;then
+    clean_<?=$item->name?>_cached && echo "[SUCCESS] clean <?=$item->name?> "
     exit 0
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
