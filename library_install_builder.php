@@ -136,4 +136,5 @@ function libraries_install_builder($p){
     install_libbpf($p);
     install_valgrind($p);
     install_snappy($p);
+    install_kerberos($p);
 }

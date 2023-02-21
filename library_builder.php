@@ -2157,6 +2157,30 @@ EOF
             ->withBinPath('/usr/snappy/bin/')
     );
 }
+function install_kerberos(Preprocessor $p)
+{
+
+    $p->addLibrary(
+        (new Library('kerberos'))
+            ->withHomePage('https://web.mit.edu/kerberos/')
+            ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
+            ->withUrl('https://kerberos.org/dist/krb5/1.20/krb5-1.20.1.tar.gz')
+            ->withFile('krb5-1.20.1.tar.gz')
+            ->withManual('https://web.mit.edu/kerberos/krb5-1.20/README-1.20.1.txt')
+            ->withPrefix('/usr/kerberos')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+pwd
+exit 0 
+  
+EOF
+
+            )
+            ->withPkgName('kerberos')
+            ->withBinPath('/usr/kerberos/bin/')
+    );
+}
 
 
 
