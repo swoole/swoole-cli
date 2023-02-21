@@ -588,6 +588,20 @@ EOF
     );
 }
 
+/**
+
+-lz      压缩库（Z）
+
+-lrt     实时库（real time）：shm_open系列
+
+-lm     数学库（math）
+
+-lc     标准C库（C lib）
+
+-dl ，是显式加载动态库的动态函数库
+
+ *
+ */
 function install_curl(Preprocessor $p)
 {
     $p->addLibrary(
