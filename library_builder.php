@@ -1428,20 +1428,17 @@ function install_gnutls($p)
         libunbound for DNSSEC/DANE functionality
 EOF;
 
-        $p->addLibrary(
-            (new Library('gnutls'))
-                ->withHomePage('https://www.gnutls.org/')
-                ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-                ->withUrl('https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.8.tar.xz')
-                ->withManual('https://gitlab.com/gnutls/gnutls.git')
-                ->withCleanBuildDirectory()
-                ->withScriptBeforeConfigure('
-                 test -d /usr/gnutls && rm -rf /usr/gnutls
-                ')
-                ->withPrefix('/usr/gnutls')
-                ->withConfigure(
-                    '
-                             
+    $p->addLibrary(
+        (new Library('gnutls'))
+            ->withHomePage('https://www.gnutls.org/')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+            ->withUrl('https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.8.tar.xz')
+            ->withManual('https://gitlab.com/gnutls/gnutls.git')
+            ->withManual('https://www.gnutls.org/download.html')
+            ->withCleanBuildDirectory()
+            ->withPrefix('/usr/gnutls')
+            ->withConfigure(
+                '
                  test -d /usr/gnutls && rm -rf /usr/gnutls
                  set -uex 
                 export GMP_CFLAGS=$(pkg-config  --cflags --static gmp)
@@ -1461,14 +1458,20 @@ EOF;
 
                 export LIBZSTD_CFLAGS=$(pkg-config  --cflags --static libzstd)
                 export LIBZSTD_LIBS=$(pkg-config    --libs   --static libzstd)
+                
+                export P11_KIT_CFLAGS=$(pkg-config  --cflags --static p11-kit-1)
+                export P11_KIT_LIBS=$(pkg-config    --libs   --static p11-kit-1)
+            
 
             
                 export CPPFLAGS=$(pkg-config    --cflags   --static libbrotlicommon libbrotlienc libbrotlidec)
                 export LIBS=$(pkg-config        --libs     --static libbrotlicommon libbrotlienc libbrotlidec)
+                 //  exit 0 
                 # ./bootstrap
-                ./configure --help | grep with
-
-./configure \
+                ./configure --help 
+             
+             
+                ./configure \
                 --prefix=/usr/gnutls \
                 --enable-static=yes \
                 --enable-shared=no \
@@ -1476,7 +1479,6 @@ EOF;
                 --with-brotli \
                 --with-libiconv-prefix=/usr/libiconv \
                 --with-libz-prefix=/usr/zlib \
-                --with-libev-prefix=/usr/libev \
                 --with-libintl-prefix \
                 --with-included-unistring \
                 --with-nettle-mini  \
@@ -1485,11 +1487,12 @@ EOF;
                 --without-tpm \
                 --disable-doc \
                 --disable-tests 
-           
+               # --with-libev-prefix=/usr/libev \
             '
-                )->withPkgName('gnutls')
+            )->withPkgName('gnutls')
+    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
+    );
 
-        );
 
 }
 
@@ -2127,6 +2130,76 @@ EOF
             ->withBinPath('/usr/valgrind/bin/')
     );
 }
+function install_snappy(Preprocessor $p)
+{
+
+    $p->addLibrary(
+        (new Library('valgrind'))
+            ->withHomePage('https://github.com/google/snappy')
+            ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
+            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.9.tar.gz')
+            ->withFile('snappy-1.1.9.tar.gz')
+            ->withManual('https://github.com/google/snappy/blob/main/README.md')
+            ->withPrefix('/usr/snappy')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+
+git submodule update --init
+mkdir build
+cd build && cmake ../ && make
+
+  
+EOF
+
+            )
+            ->withPkgName('snappy')
+            ->withBinPath('/usr/snappy/bin/')
+    );
+}
 
 
 
+
+function install_p11_kit(Preprocessor $p)
+{
+
+
+$p->addLibrary(
+    (new Library('p11_kit'))
+        ->withHomePage('https://github.com/p11-glue/p11-kit.git')
+        ->withLicense('https://github.com/p11-glue/p11-kit/blob/master/COPYING', Library::LICENSE_BSD)
+        ->withManual('https://p11-glue.github.io/p11-glue/p11-kit.html')
+        ->withManual('https://p11-glue.github.io/p11-glue/p11-kit/manual/devel-building.html')
+        ->withUrl('https://github.com/p11-glue/p11-kit/archive/refs/tags/0.24.1.tar.gz')
+        ->withFile('p11-kit-0.24.1.tar.gz')
+        ->withPrefix('/usr/p11_kit/')
+        ->withConfigure(
+            '
+          
+                apk add python3 py3-pip  gettext  coreutils
+                pip3 install meson  -i https://pypi.tuna.tsinghua.edu.cn/simple
+            
+            echo $PATH;
+            #./autogen.sh
+            #./configure --help
+            
+           
+            # meson setup -Dprefix=/usr/p11_kit/ -Dsystemd=disabled -Dbash_completion=disabled  --reconfigure  _build
+            # run "ninja reconfigure" or "meson setup --reconfigure"
+            # ninja reconfigure -C _build
+            meson setup --reconfigure _build
+            meson setup -Dprefix=/usr/p11_kit/ -Dsystemd=disabled   -Denable-static=yes   _build
+            # meson setup --wipe
+            
+            meson compile -C _build
+            
+           # DESTDIR=/usr/p11_kit/  meson install -C _build
+            meson install -C _build
+           exit 0 
+            '
+        )
+        ->withBypassMakeAndMakeInstall()
+        ->withPkgName('p11_kit')
+    );
+}
