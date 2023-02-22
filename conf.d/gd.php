@@ -29,10 +29,7 @@ return function (Preprocessor $p) {
             ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
             ->withPrefix(PNG_PREFIX)
-            ->withConfigure(
-                './configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared ' .
-                '--with-zlib-prefix=' . ZLIB_PREFIX . '  --with-binconfigs'
-            )
+            ->withConfigure('./configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared')
             ->withPkgName('libpng16')
             ->depends('zlib')
     );
@@ -102,6 +99,7 @@ return function (Preprocessor $p) {
             --with-harfbuzz=no \
             --with-brotli=yes
 EOF
+
             )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')

@@ -57,6 +57,7 @@ class Library extends Project
     public string $ldflags = '';
     public bool $skipMakeAndMakeInstall = false;
     public string $makeOptions = '';
+    public string $makeVariables = '';
     public string $makeInstallCommand = 'install';
 
     public string $makeInstallOptions = '';
@@ -108,6 +109,13 @@ class Library extends Project
         $this->skipMakeAndMakeInstall = true;
         return $this;
     }
+
+    function withMakeVariables(string $variables): static
+    {
+        $this->makeVariables = $variables;
+        return $this;
+    }
+
     function withMakeOptions(string $makeOptions): static
     {
         $this->makeOptions = $makeOptions;
@@ -180,10 +188,11 @@ class Extension extends Project
 
 class Preprocessor
 {
-    const VERSION = '1.5';
+    const VERSION = '1.6';
     const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
+    const CONTAINER_NAME = 'swoole-cli-builder';
 
-    protected static $instance = null;
+    protected static ?Preprocessor $instance = null;
 
     protected string $osType = 'linux';
     protected array $libraryList = [];
@@ -336,6 +345,11 @@ class Preprocessor
     function setRootDir(string $rootDir)
     {
         $this->rootDir = $rootDir;
+    }
+
+    function getRootDir(): string
+    {
+        return $this->rootDir;
     }
 
     function setLibraryDir(string $libraryDir)

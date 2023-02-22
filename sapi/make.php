@@ -53,7 +53,7 @@ __EOF__
 
 <?php if(!$item->skipMakeAndMakeInstall): ?>
     # make
-    make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
+    make -j <?= $this->maxJob ?> <?= $item->makeOptions . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
 
@@ -165,13 +165,27 @@ help() {
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
     echo "./make.sh pkg-check"
+    echo "./make.sh build-base-image"
+    echo "./make.sh docker-commit"
+    echo "./make.sh docker-bash-init"
+    echo "./make.sh list-swoole-branch"
+    echo "./make.sh switch-swoole-branch"
 }
 
-if [ "$1" = "docker-build" ] ;then
-    sudo docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> .
-elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+if [ "$1" = "build-base-image" ] ;then
+    cd <?=$this->getRootDir()?>/sapi
+    docker build -t <?= Preprocessor::IMAGE_NAME ?>:base .
     exit 0
+elif [ "$1" = "docker-bash-init" ] ;then
+    docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:base /bin/bash
+elif [ "$1" = "docker-bash" ] ;then
+    docker exec -it <?= Preprocessor::CONTAINER_NAME ?> /bin/bash
+    result_code=$?
+    if [ $result_code -ne 0 ] ;then
+        docker run -it -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+    fi
+elif [ "$1" = "docker-commit" ] ;then
+    docker commit swoole-cli-builder  <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
 elif [ "$1" = "build-all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
@@ -207,7 +221,14 @@ elif [ "$1" = "clean-all-library-cached" ] ;then
     rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
 <?php endforeach; ?>
 elif [ "$1" = "diff-configure" ] ;then
-  meld $SRC/configure.ac ./configure.ac
+    meld $SRC/configure.ac ./configure.ac
+elif [ "$1" = "list-swoole-branch" ] ;then
+    cd <?= $this->getRootDir() ?>/ext/swoole
+    git branch
+elif [ "$1" = "switch-swoole-branch" ] ;then
+    cd <?= $this->getRootDir() ?>/ext/swoole
+    SWOOLE_BRANCH=$2
+    git checkout $SWOOLE_BRANCH
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
