@@ -634,16 +634,18 @@ strip
  */
 function install_curl(Preprocessor $p)
 {
-    //http3 有多个实现，这里使用gnutls 版本
+    //http3 有多个实现
     //参考文档： https://curl.se/docs/http3.html
+    //https://curl.se/docs/protdocs.html
     $curl_prefix = CURL_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $zlib_prefix = ZLIB_PREFIX ;
 
-    $libidn2_prefix = LIBIDN2_PREFIX  ;
-    $libzstd_prefix = LIBZSTD_PREFIX   ;
-    $cares_prefix = CARES_PREFIX   ;
-    $brotli_prefix = BROTLI_PREFIX   ;
+    $libidn2_prefix = LIBIDN2_PREFIX;
+    $libzstd_prefix = LIBZSTD_PREFIX;
+    $cares_prefix = CARES_PREFIX;
+    $brotli_prefix = BROTLI_PREFIX;
+    $nghttp2_prefix = NGHTTP2_PREFIX;
     $p->addLibrary(
         (new Library('curl'))
             ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
@@ -1217,66 +1219,66 @@ function install_libidn2(Preprocessor $p)
     );
 }
 
+function install_jansson(Preprocessor $p)
+{
+    $jansson_prefix = JANSSON_PREFIX;
+    $p->addLibrary(
+        (new Library('jansson'))
+            ->withHomePage('http://www.digip.org/jansson/')
+            ->withUrl('https://github.com/akheron/jansson/archive/refs/tags/v2.14.tar.gz')
+            ->withFile('jansson-v2.14.tar.gz')
+            ->withManual('https://github.com/akheron/jansson.git')
+            ->withLicense('https://github.com/akheron/jansson/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withPrefix($jansson_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($jansson_prefix)
+            ->withConfigure(<<<EOF
+             autoreconf -fi
+            ./configure --help 
+            ./configure \
+            --prefix={$jansson_prefix} \
+            --enable-shared=no \
+            --enable-static=yes
+EOF
+            )
+
+            ->withPkgName('jansson')
+
+    );
+
+}
+
 function install_nghttp2(Preprocessor $p)
 {
-
+    $nghttp2_prefix = NGHTTP2_PREFIX;
     $p->addLibrary(
         (new Library('nghttp2'))
             ->withHomePage('https://github.com/nghttp2/nghttp2.git')
             ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
             ->withCleanBuildDirectory()
-            ->withPrefix('/usr/nghttp2')
+            ->withPrefix($nghttp2_prefix)
+            ->withCleanInstallDirectory($nghttp2_prefix)
 
-            ->withConfigure('
-             test -d /usr/nghttp2 && rm -rf /usr/nghttp2
-             ./configure --help
- 
-              export ZLIB_CFLAGS=$(pkg-config  --cflags --static zlib)
-              export ZLIB_LIBS=$(pkg-config    --libs   --static zlib)
-            
-              export OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
-              export OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
-              
-              export LIBCARES_CFLAGS=$(pkg-config  --cflags --static libcares)
-              export LIBCARES_LIBS=$(pkg-config    --libs   --static libcares)
-             
-              # export LIBNGTCP2_CFLAGS=$(pkg-config  --cflags --static libngtcp2)
-              # export LIBNGTCP2_LIBS=$(pkg-config    --libs   --static libngtcp2)
-              
-              # export LIBNGTCP2_CRYPTO_OPENSSL_CFLAGS=$(pkg-config  --cflags --static libngtcp2_crypto_gnutls)
-              # export LIBNGTCP2_CRYPTO_OPENSSL_LIBS=$(pkg-config    --libs   --static libngtcp2_crypto_gnutls)
-            
-              # export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
-              # export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
-           
-              # LIBBPF_CFLAGS=$(pkg-config  --cflags --static gnutls)
-              # LIBBPF_LIBS=$(pkg-config    --libs   --static gnutls)
-              
-              # LIBEVENT_OPENSSL_CFLAGS=$(pkg-config  --cflags --static gnutls)
-              # LIBEVENT_OPENSSL_LIBS=$(pkg-config    --libs   --static gnutls)
-              
-              export JANSSON_CFLAGS=$(pkg-config  --cflags --static jansson)
-              export JANSSON_LIBS=$(pkg-config    --libs   --static jansson)
-            
-              export LIBXML2_CFLAGS=$(pkg-config  --cflags --static libxml-2.0)
-              export LIBXML2_LIBS=$(pkg-config    --libs   --static libxml-2.0)
+            ->withConfigure(<<<EOF
+            ./configure --help
 
-         
-            # export LIBEV_CFLAGS="-L/usr/libev/include"
-            # export LIBEV_LIBS="-L/usr/libev/lib -lev"
-                  
-            # export LDFLAGS="-L/usr/libev/lib"
-            # export CPPFLAGS="-I/usr/libev/include"
-            # export LIBS="-L/usr/libev/lib -lev"
-         
-            ./configure --prefix=/usr/nghttp2 enable_static=yes enable_shared=no --enable-lib-only
-            
-            '
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libxml-2.0 jansson  libcares openssl )"  \
+            LDFLAGS="$(pkg-config --libs-only-L      --static zlib libxml-2.0 jansson  libcares openssl )"  \
+            LIBS="$(pkg-config --libs-only-l         --static zlib libxml-2.0 jansson  libcares openssl )"  \
+            ./configure --prefix={$nghttp2_prefix} \
+            --enable-static=yes \
+            --enable-shared=no \
+            --enable-lib-only \
+            --enable-python-bindings=no \
+            --with-libxml2  \
+            --with-jansson  \
+            --with-zlib \
+            --with-libcares
+EOF
             )
             ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
-    //zlib  openssl libcares  jansson libxml-2.0 libngtcp2 libnghttp3
+            ->depends('openssl','zlib','libxml2','jansson','cares')
     );
-
 }
 
 function install_php_extension_micro(Preprocessor $p)
@@ -1444,25 +1446,25 @@ function install_nettle($p)
 
 function install_libtasn1($p)
 {
+    $libtasn1_prefix = LIBTASN1_PREFIX;
     $p->addLibrary(
         (new Library('libtasn1'))
             ->withHomePage('https://www.gnu.org/software/libtasn1/')
             ->withLicense('https://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
             ->withManual('https://www.gnu.org/software/libtasn1/manual/')
             ->withUrl('https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.19.0.tar.gz')
-            ->withPrefix('/usr/libtasn1/')
-            ->withConfigure(
-                '
-             ./configure --help
-        
+            ->withPrefix($libtasn1_prefix)
+            ->withConfigure(<<<EOF
+            ./configure --help
             ./configure \
-            --prefix=/usr/libtasn1/ \
+            --prefix={$libtasn1_prefix} \
             --enable-static=yes \
             --enable-shared=no
-            '
+EOF
             )
             ->withPkgName('libtasn1')
     );
+
 }
 function install_libexpat($p)
 {

@@ -35,6 +35,8 @@ define("LIBLZ4_PREFIX", $p->getGlobalPrefix() . '/liblz4');
 define("LIBLMA_PREFIX", $p->getGlobalPrefix() . '/liblzma');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
+define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
+define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');

@@ -49,6 +49,7 @@ function libraries_install_builder($p){
     //解决依赖 apk add  gettext  coreutils
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring );
     install_nghttp2($p);
+    install_nghttp2($p);
 
     install_nettle($p); //加密库
     install_libtasn1($p);

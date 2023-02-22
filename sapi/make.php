@@ -171,7 +171,7 @@ EOF
     LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 <?php endif; ?>
-
+    #  gnutls libnghttp3 libngtcp2 p11-kit-1
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
