@@ -152,6 +152,7 @@ help() {
     echo "./make.sh docker-bash"
     echo "./make.sh config"
     echo "./make.sh build"
+    echo "./make.sh test"
     echo "./make.sh archive"
     echo "./make.sh all-library"
     echo "./make.sh list-library"
@@ -198,6 +199,8 @@ elif [ "$1" = "config" ] ;then
     make_config
 elif [ "$1" = "build" ] ;then
     make_build
+elif [ "$1" = "test" ] ;then
+    ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
