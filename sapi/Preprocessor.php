@@ -65,7 +65,7 @@ class Library extends Project
     public string $ldflags = '';
 
     public bool $cleanBuildDirectory = false;
-    public bool $bypassMakeAndMakeInstall = false;
+    public bool $skipMakeAndMakeInstall = false;
     public string $makeOptions = '';
     public string $makeInstallCommand = 'install';
 
@@ -119,9 +119,9 @@ class Library extends Project
         return $this;
     }
 
-    public function withBypassMakeAndMakeInstall():static
+    public function withSkipMakeAndMakeInstall():static
     {
-        $this->bypassMakeAndMakeInstall = true;
+        $this->skipMakeAndMakeInstall = true;
         return $this;
     }
 

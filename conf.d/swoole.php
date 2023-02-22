@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
                 ->withConfigure('cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=' . BROTLI_PREFIX . ' . && \\'.PHP_EOL.
                     'cmake --build . --config Release --target install'
                 )
-                ->withBypassMakeAndMakeInstall()
+                ->withSkipMakeAndMakeInstall()
                 ->withScriptAfterInstall(
                     implode(PHP_EOL, [
                         'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',

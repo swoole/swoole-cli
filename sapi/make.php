@@ -55,7 +55,7 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
-<?php if(!$item->bypassMakeAndMakeInstall): ?>
+<?php if(!$item->skipMakeAndMakeInstall): ?>
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
