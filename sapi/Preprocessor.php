@@ -521,9 +521,9 @@ class Preprocessor
         }
     }
 
-    function getInputOption(string $key): string
+    function getInputOption(string $key, mixed $default = false): mixed
     {
-        return $this->inputOptions[$key] ?? false;
+        return $this->inputOptions[$key] ?? $default;
     }
 
     /**
