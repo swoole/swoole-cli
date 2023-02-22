@@ -55,6 +55,7 @@ class Library extends Project
     public string $configure = '';
     public string $file = '';
     public string $ldflags = '';
+    public bool $skipMakeAndMakeInstall = false;
     public string $makeOptions = '';
     public string $makeInstallCommand = 'install';
 
@@ -102,6 +103,11 @@ class Library extends Project
         return $this;
     }
 
+    public function withSkipMakeAndMakeInstall():static
+    {
+        $this->skipMakeAndMakeInstall = true;
+        return $this;
+    }
     function withMakeOptions(string $makeOptions): static
     {
         $this->makeOptions = $makeOptions;

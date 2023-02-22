@@ -51,6 +51,7 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
+<?php if(!$item->skipMakeAndMakeInstall): ?>
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
@@ -68,6 +69,7 @@ __EOF__
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
+<?php endif; ?>
 <?php endif; ?>
 
     # after make install
