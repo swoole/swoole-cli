@@ -99,7 +99,7 @@ tar error：这是因为网络原因下载的包不完整导致的解压错误�
 
 **5. 编译所有用到的库**
 
-    ./make.sh all-library
+    ./make.sh build-all-library
 
 所有编译后的库会放在/work/ext目录中。
 
