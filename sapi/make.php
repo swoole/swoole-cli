@@ -154,9 +154,13 @@ make_build() {
 }
 
 help() {
+    echo "./make.sh docker-build"
     echo "./make.sh docker-bash"
+    echo "./make.sh docker-commit"
+    echo "./make.sh docker-push"
     echo "./make.sh config"
     echo "./make.sh build"
+    echo "./make.sh test"
     echo "./make.sh archive"
     echo "./make.sh list-library"
     echo "./make.sh list-extension"
@@ -165,27 +169,41 @@ help() {
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
     echo "./make.sh pkg-check"
-    echo "./make.sh build-base-image"
-    echo "./make.sh docker-commit"
-    echo "./make.sh docker-bash-init"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
+    echo "./make.sh [library-name]"
+    echo  "./make.sh clean-[library-name]"
+    echo  "./make.sh clean-[library-name]-cached"
 }
 
-if [ "$1" = "build-base-image" ] ;then
+if [ "$1" = "docker-build" ] ;then
     cd <?=$this->getRootDir()?>/sapi
     docker build -t <?= Preprocessor::IMAGE_NAME ?>:base .
     exit 0
-elif [ "$1" = "docker-bash-init" ] ;then
-    docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:base /bin/bash
 elif [ "$1" = "docker-bash" ] ;then
-    docker exec -it <?= Preprocessor::CONTAINER_NAME ?> /bin/bash
-    result_code=$?
-    if [ $result_code -ne 0 ] ;then
-        docker run -it -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+    container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
+    base_image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:base | tail -n +2 2> /dev/null)
+    image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> | tail -n +2 2> /dev/null)
+
+    if [[ -z ${container} ]] ;then
+        if [ -n -z ${image} ] ;then
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+        elif [ -n -z ${base_image} ]] ;then
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:base /bin/bash
+        else
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+        fi
+    else
+        if [[ "${container}" =~ "Exited" ]]; then
+            docker start <?= Preprocessor::CONTAINER_NAME ?> ;
+        fi
+        docker exec -it <?= Preprocessor::CONTAINER_NAME ?> /bin/bash
     fi
+    exit 0
 elif [ "$1" = "docker-commit" ] ;then
-    docker commit swoole-cli-builder  <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
+    docker commit <?= Preprocessor::CONTAINER_NAME ?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
+elif [ "$1" = "docker-push" ] ;then
+    docker push <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
 elif [ "$1" = "build-all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
@@ -203,6 +221,8 @@ elif [ "$1" = "config" ] ;then
     make_config
 elif [ "$1" = "build" ] ;then
     make_build
+elif [ "$1" = "test" ] ;then
+    ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
