@@ -62,13 +62,18 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
+<?php if($item->cleanInstallDirectory): ?>
+    # If the install directory exist, clean the install directory
+    test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
+<?php endif; ?>
+
 
     # before configure
-    <?php if (!empty($item->beforeConfigureScript)) : ?>
-        <?= $item->beforeConfigureScript . PHP_EOL ?>
-        result_code=$?
-        [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
-    <?php endif; ?>
+<?php if (!empty($item->beforeConfigureScript)) : ?>
+    <?= $item->beforeConfigureScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
+<?php endif; ?>
 
     # configure
 <?php if (!empty($item->configure)): ?>

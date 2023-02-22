@@ -82,6 +82,11 @@ class Library extends Project
     public bool $skipBuildInstall = false;
     public bool $skipMakeAndMakeInstall = false;
     public bool $cleanBuildDirectory = false;
+
+    public bool $cleanInstallDirectory = false;
+
+    public string $preInstallDirectory = '';
+
     public string $untarArchiveCommand = 'tar';
     public string $beforeConfigureScript = '';
     public string $binPath = '';
@@ -175,6 +180,15 @@ class Library extends Project
     public function withCleanBuildDirectory(): static
     {
         $this->cleanBuildDirectory = true;
+        return $this;
+    }
+
+    public function withCleanInstallDirectory(string $pre_install_dir ):static
+    {
+        if( $this->prefix != '/usr' &&  !empty($pre_install_dir)) {
+            $this->cleanInstallDirectory = true;
+            $this->preInstallDirectory = $pre_install_dir;
+        }
         return $this;
     }
 

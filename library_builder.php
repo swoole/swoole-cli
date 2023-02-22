@@ -362,53 +362,59 @@ function install_oniguruma(Preprocessor $p)
 // MUST be in the /usr directory
 function install_zip(Preprocessor $p)
 {
+    $openssl_prefix = OPENSSL_PREFIX;
+    $zip_prefix = ZIP_PREFIX;
+    $liblzma_prefix = LIBLZ4_PREFIX;
+    $libzstd_prefix = LIBZSTD_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $bzip2_prefix = BZIP2_PREFIX;
     $p->addLibrary(
         (new Library('zip'))
-            ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-            ->withPrefix(ZIP_PREFIX)
+            //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
+            ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
+            ->withManual('https://libzip.org')
+            ->withPrefix($zip_prefix)
             ->withCleanBuildDirectory()
-            ->withConfigure('
-                 cmake -Wno-dev .  \
-                -DCMAKE_INSTALL_PREFIX=' . ZIP_PREFIX . ' \
-                -DBUILD_TOOLS=OFF \
-                -DBUILD_EXAMPLES=OFF \
-                -DBUILD_DOC=OFF \
-                -DLIBZIP_DO_INSTALL=ON \
-                -DBUILD_SHARED_LIBS=OFF \
-                -DENABLE_GNUTLS=OFF  \
-                -DENABLE_MBEDTLS=OFF \
-                -DENABLE_OPENSSL=ON \
-                -DOPENSSL_USE_STATIC_LIBS=TRUE \
-                -DOPENSSL_LIBRARIES=' . OPENSSL_PREFIX . '/lib \
-                -DOPENSSL_INCLUDE_DIR=' . OPENSSL_PREFIX . '/include \
-                -DZLIB_LIBRARY=' . ZLIB_PREFIX . '/lib \
-                -DZLIB_INCLUDE_DIR=' . ZLIB_PREFIX . '/include \
-                -DENABLE_BZIP2=ON \
-                -DBZIP2_LIBRARIES=' . BZIP2_PREFIX . '/lib \
-                -DBZIP2_LIBRARY=' . BZIP2_PREFIX . '/lib \
-                -DBZIP2_INCLUDE_DIR=' . BZIP2_PREFIX . '/include \
-                -DBZIP2_NEED_PREFIX=ON \
-                -DENABLE_LZMA=OFF  \
-                -DENABLE_ZSTD=OFF
-            ')
+            ->withCleanInstallDirectory($zip_prefix)
+            ->withConfigure(<<<EOF
+            cmake -Wno-dev .  \
+            -DCMAKE_INSTALL_PREFIX={$zip_prefix} \
+            -DCMAKE_BUILD_TYPE=optimized \
+            -DBUILD_TOOLS=OFF \
+            -DBUILD_EXAMPLES=OFF \
+            -DBUILD_DOC=OFF \
+            -DLIBZIP_DO_INSTALL=ON \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DENABLE_GNUTLS=OFF  \
+            -DENABLE_MBEDTLS=OFF \
+            -DENABLE_OPENSSL=ON \
+            -DOPENSSL_USE_STATIC_LIBS=TRUE \
+            -DOPENSSL_LIBRARIES={$openssl_prefix}/lib \
+            -DOPENSSL_INCLUDE_DIR={$openssl_prefix}/include \
+            -DZLIB_LIBRARY={$zlib_prefix}/lib \
+            -DZLIB_INCLUDE_DIR={$zlib_prefix}/include \
+            -DENABLE_BZIP2=ON \
+            -DBZIP2_LIBRARIES={$bzip2_prefix}/lib \
+            -DBZIP2_LIBRARY={$bzip2_prefix}/lib \
+            -DBZIP2_INCLUDE_DIR={$bzip2_prefix}/include \
+            -DBZIP2_NEED_PREFIX=ON \
+            -DENABLE_LZMA=ON  \
+            -DLIBLZMA_LIBRARY={$liblzma_prefix}/lib \
+            -DLIBLZMA_INCLUDE_DIR={$liblzma_prefix}/include \
+            -DLIBLZMA_HAS_AUTO_DECODER=ON  \
+            -DLIBLZMA_HAS_EASY_ENCODER=ON  \
+            -DLIBLZMA_HAS_LZMA_PRESET=ON \
+            -DENABLE_ZSTD=ON \
+            -DZstd_LIBRARY={$libzstd_prefix}/lib \
+            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include
+EOF
+
+            )
             ->withMakeOptions('VERBOSE=1')
-            #->withMakeOptions('VERBOSE=1 all  ') //VERBOSE=1
-            #->withMakeInstallOptions("VERBOSE=1  PREFIX=/usr/zip")
             ->withPkgName('libzip')
             ->withHomePage('https://libzip.org/')
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
-            ->depends('openssl', 'zlib', 'bzip2')
-                /*
-                -DENABLE_LZMA=OFF  \
-                -DLIBLZMA_LIBRARY=/usr/liblzma/lib \
-                -DLIBLZMA_INCLUDE_DIR=/usr/liblzma/include \
-                -DLIBLZMA_HAS_AUTO_DECODER=ON  \
-                -DLIBLZMA_HAS_EASY_ENCODER=ON  \
-                -DLIBLZMA_HAS_LZMA_PRESET=ON \
-                -DENABLE_ZSTD=OFF \
-                -DZstd_LIBRARY=/usr/libzstd/lib \
-                -DZstd_INCLUDE_DIR=/usr/libzstd/include
-            */
+            ->depends('openssl', 'zlib', 'bzip2','liblzma','libzstd')
     );
 }
 
@@ -628,79 +634,87 @@ strip
  */
 function install_curl(Preprocessor $p)
 {
-    $curl_prefix=CURL_PREFIX;
-    $openssl_prefix=OPENSSL_PREFIX;
-    $zlib_prefix=ZLIB_PREFIX ;
+    //http3 有多个实现，这里使用gnutls 版本
+    //参考文档： https://curl.se/docs/http3.html
+    $curl_prefix = CURL_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX ;
 
-    $libidn2=LIBIDN2_PREFIX  ;
-    $libzstd=LIBZSTD_PREFIX   ;
-    $cares=CARES_PREFIX   ;
-    $brotli=BROTLI_PREFIX   ;
+    $libidn2_prefix = LIBIDN2_PREFIX  ;
+    $libzstd_prefix = LIBZSTD_PREFIX   ;
+    $cares_prefix = CARES_PREFIX   ;
+    $brotli_prefix = BROTLI_PREFIX   ;
     $p->addLibrary(
         (new Library('curl'))
             ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
             ->withManual('https://curl.se/docs/install.html')
-            ->withPrefix(CURL_PREFIX)
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(<<<EOF
-              test -d /usr/curl && rm -rf /usr/curl 
-EOF
-            )
-            ->withConfigure(
-                <<<EOF
-                test -d {$curl_prefix}  && rm -rf {$curl_prefix} 
-             
-             
-               # TLS 
-               # https://stackoverflow.com/questions/67204980/wolfssl-vs-mbedtls-vs-openssl-what-is-the-difference
-               # OpenSSL GnuTLS mbedTLS WolfSSL BearSSL rustls NSS,
-               
-               # https://curl.se/docs/http3.html 
+            ->withPrefix($curl_prefix)
+            ->withCleanInstallDirectory($curl_prefix)
+            ->withConfigure(<<<EOF
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
+            LDFLAGS="$(pkg-config --libs-only-L      --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
+            LIBS="$(pkg-config --libs-only-l         --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
+            ./configure --prefix={$curl_prefix}  \
+            --enable-static --disable-shared \
+            --without-librtmp --disable-ldap --disable-rtsp \
+            --enable-http --enable-alt-svc --enable-hsts --enable-http-auth --enable-mime --enable-cookies \
+            --enable-doh --enable-threaded-resolver --enable-ipv6 --enable-proxy  \
+            --enable-websockets --enable-get-easy-options \
+            --enable-file --enable-mqtt --enable-unix-sockets  --enable-progress-meter \
+            --enable-optimize \
+            --with-zlib={$zlib_prefix} \
+            --with-openssl={$openssl_prefix} \
+            --with-libidn2={$libidn2_prefix} \
+            --with-zstd={$libzstd_prefix} \
+            --enable-ares={$cares_prefix} \
+            --with-brotli={$brotli_prefix} \
+            --with-default-ssl-backend=openssl \
+            --without-nghttp2 \
+            --without-ngtcp2 \
+            --without-nghttp3 
             
-                '# -DCURL_STATICLIB -DNGHTTP2_STATICLIB  -Wl,-R/usr/brotli/lib'.PHP_EOL.
-                autoreconf -fi && ./configure --help
-                
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2  libnghttp2 ) \
-                LDFLAGS="$(pkg-config --libs-only-L      --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2  libnghttp2 ) \
-                LIBS="$(pkg-config --libs-only-l         --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2  libnghttp2 ) \
-                ./configure --prefix={$curl_prefix}  \
-                --enable-static --disable-shared \
-                --without-librtmp --disable-ldap --disable-rtsp \
-                --enable-http --enable-alt-svc --enable-hsts --enable-http-auth --enable-mime --enable-cookies \
-                --enable-doh --enable-threaded-resolver --enable-ipv6 --enable-proxy  \
-                --enable-websockets --enable-get-easy-options \
-                --enable-file --enable-mqtt --enable-unix-sockets  --enable-progress-meter \
-                --enable-optimize \
-                --with-zlib={$zlib_prefix} \
-                --with-openssl={$openssl_prefix} \
-                --with-libidn2={$libidn2} \
-                --with-zstd={$libzstd} \
-                --enable-ares={$cares} \
-                --with-brotli={$brotli} \
-                --with-default-ssl-backend=openssl \
-                --without-nghttp2 \
-                --without-ngtcp2 \
-                --without-nghttp3 
-                
-                #--with-gnutls=GNUTLS_PREFIX
-                #--with-nghttp3=' . NGHTTP3_PREFIX
-                #--with-ngtcp2=' .  NGTCP2_PREFIX . ' \\'.PHP_EOL
-                #--with-nghttp2=' . NGHTTP2_PREFIX . ' \\'.PHP_EOL.
-                #--without-brotli
-                #--disable-ares
-               
-                #--with-ngtcp2=/usr/ngtcp2 \
-                #--with-quiche=/usr/quiche 
-                #--with-msh3=PATH      
-
-
+            #--with-gnutls=GNUTLS_PREFIX
+            #--with-nghttp3=NGHTTP3_PREFIX
+            #--with-ngtcp2=NGTCP2_PREFIX 
+            #--with-nghttp2=NGHTTP2_PREFIX 
+            #--without-brotli
+            #--disable-ares
+            
+            #--with-ngtcp2=/usr/ngtcp2 \
+            #--with-quiche=/usr/quiche 
+            #--with-msh3=PATH     
+            
 EOF
             )
             ->withPkgName('libcurl')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withHomePage('https://curl.se/')
-            ->depends('openssl', 'cares', 'zlib')
+            ->depends('openssl', 'cares', 'zlib','brotli','libzstd','libidn2')
     );
+    /**
+    configure: pkg-config: SSL_LIBS: "-lssl -lcrypto"
+    configure: pkg-config: SSL_LDFLAGS: "-L/usr/openssl/lib"
+    configure: pkg-config: SSL_CPPFLAGS: "-I/usr/openssl/include"
+
+    onfigure: pkg-config: IDN_LIBS: "-lidn2"
+    configure: pkg-config: IDN_LDFLAGS: "-L/usr/libidn2/lib"
+    configure: pkg-config: IDN_CPPFLAGS: "-I/usr/libidn2/include"
+    configure: pkg-config: IDN_DIR: "/usr/libidn2/lib"
+
+    configure: -l is -lnghttp2
+    configure: -I is -I/usr/nghttp2/include
+    configure: -L is -L/usr/nghttp2/lib
+    # search idn2_lookup_ul
+     *
+
+    configure: pkg-config: ares LIBS: "-lcares"
+    configure: pkg-config: ares LDFLAGS: "-L/usr/cares/lib"
+    configure: pkg-config: ares CPPFLAGS: "-I/usr/cares/include"
+
+     * -lidn -lrt
+
+     */
 }
 
 function install_mimalloc(Preprocessor $p)
@@ -964,32 +978,34 @@ function install_php_internal_extensions($p)
 
 function install_liblz4(Preprocessor $p)
 {
+    $liblz4_prefix = LIBLZ4_PREFIX;
     $p->addLibrary(
         (new Library('liblz4'))
-            ->withHomePage('https://github.com/lz4/lz4.git')
-            ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_GPL)
+            ->withHomePage('http://www.lz4.org')
+            ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
+            ->withManual('https://github.com/lz4/lz4.git')
             ->withFile('lz4-v1.9.4.tar.gz')
             ->withPkgName('liblz4')
-            ->withPrefix('/usr/liblz4')
+            ->withPrefix($liblz4_prefix)
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure("
-            test -d /usr/liblz4/ && rm -rf /usr/liblz4/ 
-            ")
+            ->withCleanInstallDirectory($liblz4_prefix)
             ->withConfigure(<<<EOF
             cd build/cmake/
-           cmake . -DCMAKE_INSTALL_PREFIX=/usr/liblz4/ 
+            cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON
 EOF
             )
-            //可以使用CMAKE 编译 也可以不使用
-            //不使用CMAKE，需要自己修改安装目录
-            //->withMakeOptions('INSTALL_PROGRAM=/usr/liblz4/')
-            //->withMakeInstallOptions("DESTDIR=/usr/liblz4/")
+
+    //可以使用CMAKE 编译 也可以
+    //不使用CMAKE，需要自己修改安装目录
+    //->withMakeOptions('INSTALL_PROGRAM=/usr/liblz4/')
+    //->withMakeInstallOptions("DESTDIR=/usr/liblz4/")
     );
 }
 
 function install_liblzma(Preprocessor $p)
 {
+    $liblzma_prefix = LIBLZ4_PREFIX;
     $p->addLibrary(
         (new Library('liblzma'))
             ->withHomePage('https://tukaani.org/xz/')
@@ -999,15 +1015,48 @@ function install_liblzma(Preprocessor $p)
             //->withFile('xz-5.2.9.tar.gz')
             ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
             ->withFile('xz-5.4.1.tar.gz')
-            ->withPrefix('/usr/liblzma/')
-            ->withConfigure('./configure --prefix=/usr/liblzma/ --enable-static  --disable-shared --disable-doc')
+            ->withCleanBuildDirectory()
+            ->withPrefix($liblzma_prefix)
+            ->withCleanInstallDirectory($liblzma_prefix)
+            ->withConfigure('./configure --prefix=' .$liblzma_prefix . ' --enable-static  --disable-shared --disable-doc')
             ->withPkgName('liblzma')
-
     );
+
 }
 
 function install_libzstd(Preprocessor $p)
 {
+    $libzstd_prefix = LIBZSTD_PREFIX;
+    $p->addLibrary(
+        (new Library('libzstd'))
+            ->withHomePage('https://github.com/facebook/zstd')
+            ->withLicense('https://github.com/facebook/zstd/blob/dev/COPYING', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
+            ->withFile('zstd-1.5.2.tar.gz')
+            ->withPrefix($libzstd_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libzstd_prefix)
+            ->withConfigure(
+                <<<EOF
+            mkdir -p build/cmake/builddir
+            cd build/cmake/builddir
+            cmake .. \
+            -DCMAKE_INSTALL_PREFIX={$libzstd_prefix} \
+            -DZSTD_BUILD_STATIC=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DZSTD_BUILD_CONTRIB=ON \
+            -DZSTD_BUILD_PROGRAMS=ON \
+            -DZSTD_BUILD_SHARED=OFF \
+            -DZSTD_BUILD_TESTS=OFF \
+            -DZSTD_LEGACY_SUPPORT=ON 
+EOF
+            )
+            ->withMakeOptions('lib')
+            //->withMakeInstallOptions('install PREFIX=/usr/libzstd/')
+            ->withPkgName('libzstd')
+            ->depends('liblz4')
+
+    );
     $p->addLibrary(
         (new Library('libzstd'))
             ->withHomePage('https://github.com/facebook/zstd')
