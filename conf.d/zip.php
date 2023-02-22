@@ -60,7 +60,7 @@ EOF
             ->withMakeOptions('lib')
             //->withMakeInstallOptions('install PREFIX=/usr/libzstd/')
             ->withPkgName('libzstd')
-            ->depends('liblz4')
+            ->depends('liblz4','liblzma')
 
     );
     $openssl_prefix = OPENSSL_PREFIX;
