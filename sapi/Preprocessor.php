@@ -65,7 +65,9 @@ class Library extends Project
     public string $ldflags = '';
 
     public bool $cleanBuildDirectory = false;
-    public bool $bypassMakeAndMakeInstall = false;
+    public bool $cleanInstallDirectory = false;
+    public string $preInstallDirectory = '';
+    public bool $skipMakeAndMakeInstall = false;
     public string $makeOptions = '';
     public string $makeInstallCommand = 'install';
 
@@ -75,6 +77,8 @@ class Library extends Project
     public string $pkgConfig = '';
     public string $pkgName = '';
     public string $prefix = '/usr';
+
+    public string $binPath = '';
 
     function withUrl(string $url): static
     {
@@ -119,9 +123,18 @@ class Library extends Project
         return $this;
     }
 
-    public function withBypassMakeAndMakeInstall():static
+    public function withCleanInstallDirectory(string $pre_install_dir ):static
     {
-        $this->bypassMakeAndMakeInstall = true;
+        if( $this->prefix != '/usr' &&  !empty($pre_install_dir)) {
+            $this->cleanInstallDirectory = true;
+            $this->preInstallDirectory = $pre_install_dir;
+        }
+        return $this;
+    }
+
+    public function withSkipMakeAndMakeInstall():static
+    {
+        $this->skipMakeAndMakeInstall = true;
         return $this;
     }
 
@@ -164,6 +177,12 @@ class Library extends Project
     function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
+        return $this;
+    }
+
+    public function withBinPath(string $path): static
+    {
+        $this->binPath = $path;
         return $this;
     }
 }
@@ -240,6 +259,7 @@ class Preprocessor
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
 
+    protected array $binPaths = [];
     /**
      * Extensions enabled by default
      * @var array|string[]
@@ -411,7 +431,9 @@ class Preprocessor
 
     protected function downloadFile(string $url, string $file)
     {
-        echo `wget {$url} -O {$file}`;
+        $cmd="wget -c {$url} -O {$file}";
+        echo $cmd.PHP_EOL;
+        `{$cmd}`;
         if (!is_file($file) or filesize($file) == 0) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
@@ -424,9 +446,11 @@ class Preprocessor
         }
         $skip_library_download = $this->getInputOption('skip-download');
         if (empty($skip_library_download)) {
-            if (!is_file($this->libraryDir . '/' . $lib->file)) {
+            $file=$this->libraryDir . '/' . $lib->file;
+            if (!is_file($file) or filesize($file) == 0) {
+                `test -f {$file} &&  rm -rf {$file} ;`;
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, "{$this->libraryDir}/{$lib->file}");
+                $this->downloadFile($lib->url, "{$file}");
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -434,6 +458,10 @@ class Preprocessor
 
         if (!empty($lib->pkgConfig)) {
             $this->pkgConfigPaths[] = $lib->pkgConfig;
+        }
+
+        if (!empty($lib->binPath)) {
+            $this->binPaths[] = $lib->binPath;
         }
 
         if (empty($lib->license)) {
@@ -653,6 +681,9 @@ class Preprocessor
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
         $this->sortLibrary();
+
+        $this->binPaths[] = '$PATH';
+        $this->binPaths = array_unique($this->binPaths);
 
         ob_start();
         include __DIR__ . '/make.php';

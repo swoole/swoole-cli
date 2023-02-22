@@ -4,6 +4,8 @@
  */
 use SwooleCli\Preprocessor;
 ?>
+export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
+export ORIGIN_PATH=$PATH
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=$(pwd)
 export CC=clang
@@ -20,7 +22,7 @@ OPTIONS="--disable-all \
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
-
+    set -uex
 <?php if($item->cleanBuildDirectory): ?>
     # If the build directory exist, clean the build directory
     test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
@@ -37,6 +39,11 @@ make_<?=$item->name?>() {
         return 0
     fi
 
+<?php if($item->cleanInstallDirectory): ?>
+    # If the install directory exist, clean the install directory
+    test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
+<?php endif; ?>
+
     cd <?=$this->getBuildDir()?>/<?=$item->name?>
 
     # configure
@@ -49,7 +56,7 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
-<?php if(!$item->bypassMakeAndMakeInstall): ?>
+<?php if(!$item->skipMakeAndMakeInstall): ?>
     # make
     make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
     result_code=$?
@@ -101,7 +108,7 @@ make_all_library() {
 
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-
+    set -uex
     export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
     export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
     export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
@@ -114,9 +121,12 @@ make_config() {
 <?php if ($this->getOsType() == 'linux') : ?>
     export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
     export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
-    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc)
-    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc)
-    export LIBS="$LIBS -L/usr/lib -lstdc++"
+    CPPFLAGS=$(pkg-config  --cflags-only-I --static libcares readline icu-i18n  icu-io   icu-uc libzstd libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )
+    export   CPPFLAGS="$CPPFLAGS -I/usr/include"
+    LDFLAGS=$(pkg-config   --libs-only-L   --static libcares readline icu-i18n  icu-io   icu-uc libzstd libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )
+    export   LDFLAGS="$LDFLAGS -L/usr/lib"
+    LIBS=$(pkg-config      --libs-only-l   --static libcares readline icu-i18n  icu-io   icu-uc libzstd libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )
+    export  LIBS="$LIBS -lstdc++"
 <?php endif; ?>
 
     test -f ./configure &&  rm ./configure
@@ -129,6 +139,7 @@ make_config() {
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
+    ./configure --help
     ./configure $OPTIONS
 }
 

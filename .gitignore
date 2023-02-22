@@ -297,8 +297,12 @@ tmp-php.ini
 /.cproject
 /.vscode
 /make.sh
-/bin
+/bin/
+!/bin/.gitkeep
 /pool/
+!/pool/lib/.gitkeep
+!/pool/ext/.gitkeep
+/var
 /vendor
 /thirdparty
 /usr

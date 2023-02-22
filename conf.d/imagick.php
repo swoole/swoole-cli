@@ -9,30 +9,45 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
-            ->withPrefix(IMAGEMAGICK_PREFIX)
+            ->withPrefix($imagemagick_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($imagemagick_prefix)
             ->withConfigure(<<<EOF
-              ./configure \
-              --prefix={$imagemagick_prefix} \
-              --enable-static\
-              --disable-shared \
-              --with-zip=yes \
-              --with-fontconfig=no \
-              --with-heic=no \
-              --with-lcms=no \
-              --with-lqr=no \
-              --with-openexr=no \
-              --with-openjp2=no \
-              --with-pango=no \
-              --with-raw=no \
-              --with-tiff=no \
-              --with-zstd=no \
-              --with-jpeg=yes \
-              --with-freetype=yes
+          
+            ./configure --help   
+            
+            CPPFLAGS="$(pkg-config --cflags-only-I --static libzip zlib libzstd freetype2 liblzma openssl)" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static libzip zlib libzstd freetype2 liblzma openssl)" \
+            LIBS="$(pkg-config     --libs-only-l   --static libzip zlib libzstd freetype2 liblzma openssl)" \
+            ./configure \
+            --prefix={$imagemagick_prefix} \
+            --enable-static \
+            --disable-shared \
+            --with-zip=yes \
+            --with-fontconfig=no \
+            --with-heic=no \
+            --with-lcms=no \
+            --with-lqr=no \
+            --with-openexr=no \
+            --with-openjp2=no \
+            --with-pango=no \
+            --with-jpeg=yes \
+            --with-png=yes \
+            --with-webp=yes \
+            --with-raw=yes \
+            --with-tiff=yes \
+            --with-zstd=yes \
+            --with-lzma=yes \
+            --with-xml=yes \
+            --with-zip=yes \
+            --with-zlib=yes \
+            --with-zstd=yes \
+            --with-freetype=yes
 EOF
             )
             ->withPkgName('ImageMagick')
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
-            ->depends('libxml2', 'zip', 'zlib', 'libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
+            ->depends('libxml2', 'zip', 'zlib', 'libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif','openssl','libzstd')
     );
     $p->addExtension((new Extension('imagick'))
         ->withOptions('--with-imagick=' . IMAGEMAGICK_PREFIX)
