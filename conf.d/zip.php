@@ -11,12 +11,9 @@ return function (Preprocessor $p) {
             ->withHomePage('http://www.lz4.org')
             ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
-            ->withManual('https://github.com/lz4/lz4.git')
             ->withFile('lz4-v1.9.4.tar.gz')
             ->withPkgName('liblz4')
             ->withPrefix($liblz4_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($liblz4_prefix)
             ->withConfigure(<<<EOF
             cd build/cmake/
             cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON
@@ -28,14 +25,11 @@ EOF
         (new Library('liblzma'))
             ->withHomePage('https://tukaani.org/xz/')
             ->withLicense('https://github.com/tukaani-project/xz/blob/master/COPYING.GPLv3', Library::LICENSE_LGPL)
-            ->withManual('https://github.com/tukaani-project/xz.git')
             //->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
             //->withFile('xz-5.2.9.tar.gz')
             ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
             ->withFile('xz-5.4.1.tar.gz')
-            ->withCleanBuildDirectory()
             ->withPrefix($liblzma_prefix)
-            ->withCleanInstallDirectory($liblzma_prefix)
             ->withConfigure('./configure --prefix=' .$liblzma_prefix . ' --enable-static  --disable-shared --disable-doc')
             ->withPkgName('liblzma')
     );
@@ -48,8 +42,6 @@ EOF
             ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
             ->withFile('zstd-1.5.2.tar.gz')
             ->withPrefix($libzstd_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($libzstd_prefix)
             ->withConfigure(
                 <<<EOF
             mkdir -p build/cmake/builddir
@@ -76,13 +68,10 @@ EOF
     $zlib_prefix = ZLIB_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $p->addLibrary(
-        (new Library('zip'))
+        (new Library('libzip'))
             //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
             ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
-            ->withManual('https://libzip.org')
             ->withPrefix($zip_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($zip_prefix)
             ->withConfigure(<<<EOF
             cmake -Wno-dev .  \
             -DCMAKE_INSTALL_PREFIX={$zip_prefix} \
@@ -123,61 +112,6 @@ EOF
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
             ->depends('openssl', 'zlib', 'bzip2','liblzma','libzstd')
     );
-    $p->addExtension((new Extension('zip'))->withOptions('--with-zip')->depends('zip'));
+    $p->addExtension((new Extension('zip'))->withOptions('--with-zip')->depends('libzip'));
 
-    if(0){
-    $options = 'cmake -Wno-dev .  \
-                -DCMAKE_INSTALL_PREFIX=' . ZIP_PREFIX . ' \
-                -DBUILD_TOOLS=OFF \
-                -DBUILD_EXAMPLES=OFF \
-                -DBUILD_DOC=OFF \
-                -DLIBZIP_DO_INSTALL=ON \
-                -DBUILD_SHARED_LIBS=OFF \
-                -DENABLE_GNUTLS=OFF  \
-                -DENABLE_MBEDTLS=OFF \
-                -DOPENSSL_USE_STATIC_LIBS=TRUE \\' . PHP_EOL;
-    if ($p->getInputOption('zip-openssl')) {
-        $options .= '-DENABLE_OPENSSL=ON \
-                -DOPENSSL_LIBRARIES=' . OPENSSL_PREFIX . '/lib \
-                -DOPENSSL_INCLUDE_DIR=' . OPENSSL_PREFIX . '/include \\' . PHP_EOL;
-    } else {
-        $options .= '-DENABLE_OPENSSL=OFF \\' . PHP_EOL;
-    }
-    if ($p->getInputOption('zip-zlib', 'yes') == 'yes') {
-        $options .= '-DZLIB_LIBRARY=' . ZLIB_PREFIX . '/lib \
-                -DZLIB_INCLUDE_DIR=' . ZLIB_PREFIX . '/include \\' . PHP_EOL;
-    }
-    if ($p->getInputOption('zip-bz2', 'yes') == 'yes') {
-        $options .= '-DENABLE_BZIP2=ON \
-                -DBZIP2_LIBRARIES=' . BZIP2_PREFIX . '/lib \
-                -DBZIP2_LIBRARY=' . BZIP2_PREFIX . '/lib \
-                -DBZIP2_NEED_PREFIX=ON \
-                -DBZIP2_INCLUDE_DIR=' . BZIP2_PREFIX . '/include \\' . PHP_EOL;
-    } else {
-        $options .= '-DENABLE_BZIP2=OFF \\' . PHP_EOL;
-    }
-    $options .= '-DENABLE_LZMA=OFF  \
-                -DENABLE_ZSTD=OFF';
-
-    $zip_library = (new Library('zip'))
-        ->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-        ->withPrefix(ZIP_PREFIX)
-        ->withConfigure($options)
-        ->withMakeOptions('VERBOSE=1')
-        ->withPkgName('libzip')
-        ->withHomePage('https://libzip.org/')
-        ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD);
-
-    if ($p->getInputOption('zip-openssl')) {
-        $zip_library->depends('openssl');
-    }
-    if ($p->getInputOption('zip-zlib')) {
-        $zip_library->depends('zlib');
-    }
-    if ($p->getInputOption('zip-bz2')) {
-        $zip_library->depends('bzip2');
-    }
-    $p->addLibrary($zip_library);
-    $p->addExtension((new Extension('zip'))->withOptions('--with-zip'));
-    }
 };

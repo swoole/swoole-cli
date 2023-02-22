@@ -121,9 +121,12 @@ make_config() {
 <?php if ($this->getOsType() == 'linux') : ?>
     export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
     export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
-    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc)
-    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc)
-    export LIBS="$LIBS -L/usr/lib -lstdc++"
+    CPPFLAGS=$(pkg-config  --cflags-only-I --static libcares readline icu-i18n  icu-io   icu-uc libzstd libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )
+    export   CPPFLAGS="$CPPFLAGS -I/usr/include"
+    LDFLAGS=$(pkg-config   --libs-only-L   --static libcares readline icu-i18n  icu-io   icu-uc libzstd libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )
+    export   LDFLAGS="$LDFLAGS -L/usr/lib"
+    LIBS=$(pkg-config      --libs-only-l   --static libcares readline icu-i18n  icu-io   icu-uc libzstd libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )
+    export  LIBS="$LIBS -lstdc++"
 <?php endif; ?>
 
     test -f ./configure &&  rm ./configure
@@ -155,9 +158,9 @@ help() {
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh archive"
-    echo "./make.sh all-library"
     echo "./make.sh list-library"
     echo "./make.sh list-extension"
+    echo "./make.sh build-all-library"
     echo "./make.sh clean-all-library"
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
@@ -169,7 +172,7 @@ if [ "$1" = "docker-build" ] ;then
 elif [ "$1" = "docker-bash" ] ;then
     sudo docker run -it -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
     exit 0
-elif [ "$1" = "all-library" ] ;then
+elif [ "$1" = "build-all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then

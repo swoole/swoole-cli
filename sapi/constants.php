@@ -4,9 +4,9 @@ use SwooleCli\Preprocessor;
 
 $p = Preprocessor::getInstance();
 // MUST be in the /usr directory
-define("JPEG_PREFIX", $p->getGlobalPrefix());
-define("GIF_PREFIX", $p->getGlobalPrefix());
-define("ZIP_PREFIX", $p->getGlobalPrefix());
+define("JPEG_PREFIX", $p->getGlobalPrefix() . '/libjpeg');
+define("GIF_PREFIX", $p->getGlobalPrefix() . '/libgif');
+define("ZIP_PREFIX", $p->getGlobalPrefix() . '/libzip');
 // ========================================================
 define("FREETYPE_PREFIX", $p->getGlobalPrefix() . '/freetype');
 define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');

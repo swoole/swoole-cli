@@ -79,26 +79,33 @@ return function (Preprocessor $p) {
             ->withPkgName('libwebp')
             ->depends('libpng', 'libjpeg', 'libgif')
     );
+    $freetype_prefix = FREETYPE_PREFIX;
+    $bzip2_prefix = BZIP2_PREFIX;
     $p->addLibrary(
         (new Library('freetype'))
-            ->withPrefix(FREETYPE_PREFIX)
+            ->withPrefix($freetype_prefix)
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
-            ->withConfigure('BZIP2_CFLAGS="-I' . BZIP2_PREFIX . '/include" & \\' .
-                'BZIP2_LIBS="-L' . BZIP2_PREFIX . '/lib -lbz2" & \\' .
-                'PATH="' . PNG_PREFIX . '/bin:$PATH" & \\' .
-                './configure --prefix=' . FREETYPE_PREFIX . ' \\' . PHP_EOL .
-                '--enable-static \\' . PHP_EOL .
-                '--disable-shared \\' . PHP_EOL .
-                '--with-zlib=yes \\' . PHP_EOL .
-                '--with-bzip2=yes \\' . PHP_EOL .
-                '--with-png=yes \\' . PHP_EOL .
-                '--with-harfbuzz=no \\' . PHP_EOL .
-                '--with-brotli=no' . PHP_EOL
+            ->withConfigure(<<<EOF
+            ./configure --help 
+            BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
+            BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
+            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            ./configure --prefix={$freetype_prefix} \
+            --enable-static \
+            --disable-shared \
+            --with-zlib=yes \
+            --with-bzip2=yes \
+            --with-png=yes \
+            --with-harfbuzz=no \
+            --with-brotli=yes
+EOF
             )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
-            ->depends('zlib', 'libpng')
+            ->depends('zlib','bzip2','libpng','brotli')
     );
 
     $p->addExtension((new Extension('gd'))
