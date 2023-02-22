@@ -29,10 +29,7 @@ return function (Preprocessor $p) {
             ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
             ->withPrefix(PNG_PREFIX)
-            ->withConfigure(
-                './configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared ' .
-                '--with-zlib-prefix=' . ZLIB_PREFIX . '  --with-binconfigs'
-            )
+            ->withConfigure('./configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared')
             ->withPkgName('libpng16')
             ->depends('zlib')
     );
@@ -84,9 +81,8 @@ return function (Preprocessor $p) {
             ->withPrefix(FREETYPE_PREFIX)
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
-            ->withConfigure('BZIP2_CFLAGS="-I' . BZIP2_PREFIX . '/include" & \\' .
-                'BZIP2_LIBS="-L' . BZIP2_PREFIX . '/lib -lbz2" & \\' .
-                'PATH="' . PNG_PREFIX . '/bin:$PATH" & \\' .
+            ->withConfigure('BZIP2_CFLAGS="-I' . BZIP2_PREFIX . '/include" \\' . PHP_EOL .
+                'BZIP2_LIBS="-L' . BZIP2_PREFIX . '/lib -lbz2" \\' . PHP_EOL .
                 './configure --prefix=' . FREETYPE_PREFIX . ' \\' . PHP_EOL .
                 '--enable-static \\' . PHP_EOL .
                 '--disable-shared \\' . PHP_EOL .
