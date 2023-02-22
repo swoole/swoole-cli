@@ -551,6 +551,11 @@ function install_libyaml(Preprocessor $p)
 
 function install_brotli(Preprocessor $p)
 {
+    /*
+    -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
+    -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+    -DCMAKE_INSTALL_LIBDIR="${LIBDIR}" \
+  */
     $p->addLibrary(
         (new Library('brotli'))
             ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
