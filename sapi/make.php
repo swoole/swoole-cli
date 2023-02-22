@@ -163,6 +163,8 @@ help() {
     echo "./make.sh build-base-image"
     echo "./make.sh docker-commit"
     echo "./make.sh docker-bash-init"
+    echo "./make.sh list-swoole-branch"
+    echo "./make.sh switch-swoole-branch"
 }
 
 if [ "$1" = "build-base-image" ] ;then
@@ -214,7 +216,14 @@ elif [ "$1" = "clean-all-library-cached" ] ;then
     rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
 <?php endforeach; ?>
 elif [ "$1" = "diff-configure" ] ;then
-  meld $SRC/configure.ac ./configure.ac
+    meld $SRC/configure.ac ./configure.ac
+elif [ "$1" = "list-swoole-branch" ] ;then
+    cd <?= $this->getRootDir() ?>/ext/swoole
+    git branch
+elif [ "$1" = "switch-swoole-branch" ] ;then
+    cd <?= $this->getRootDir() ?>/ext/swoole
+    SWOOLE_BRANCH=$2
+    git checkout $SWOOLE_BRANCH
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
