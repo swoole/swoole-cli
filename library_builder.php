@@ -602,8 +602,35 @@ EOF
 
  *
  */
+/**
+cur  交叉编译
+ *
+https://curl.se/docs/install.html
+ *
+export PATH=$PATH:/opt/hardhat/devkit/ppc/405/bin
+export CPPFLAGS="-I/opt/hardhat/devkit/ppc/405/target/usr/include"
+export AR=ppc_405-ar
+export AS=ppc_405-as
+export LD=ppc_405-ld
+export RANLIB=ppc_405-ranlib
+export CC=ppc_405-gcc
+export NM=ppc_405-nm
+--with-random=/dev/urandom
+ *
+randlib
+strip
+ *
+ */
 function install_curl(Preprocessor $p)
 {
+    $curl_prefix=CURL_PREFIX;
+    $openssl_prefix=OPENSSL_PREFIX;
+    $zlib_prefix=ZLIB_PREFIX ;
+
+    $libidn2=LIBIDN2_PREFIX  ;
+    $libzstd=LIBZSTD_PREFIX   ;
+    $cares=CARES_PREFIX   ;
+    $brotli=BROTLI_PREFIX   ;
     $p->addLibrary(
         (new Library('curl'))
             ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
@@ -616,37 +643,46 @@ EOF
             )
             ->withConfigure(
                 <<<EOF
-                autoreconf -fi 
-               ./configure --help 
-               ./configure --help | grep '--with'
-               ./configure --help | grep '=PATH'
-               
+                test -d {$curl_prefix}  && rm -rf {$curl_prefix} 
+             
+             
                # TLS 
                # https://stackoverflow.com/questions/67204980/wolfssl-vs-mbedtls-vs-openssl-what-is-the-difference
                # OpenSSL GnuTLS mbedTLS WolfSSL BearSSL rustls NSS,
                
                # https://curl.se/docs/http3.html 
-               export CPPFLAGS=$(pkg-config  --cflags --static  libcares libbrotlicommon libbrotlidec    libbrotlienc)
-               export LIBS=$(pkg-config      --libs   --static  libcares libbrotlicommon libbrotlidec    libbrotlienc)
-               
-EOF
-
-                .
-                'autoreconf -fi && ./configure --prefix=' . CURL_PREFIX .
-                ' --enable-static --disable-shared --with-openssl=' . OPENSSL_PREFIX . ' \\' .PHP_EOL .
-                <<<EOF
-                --enable-shared=no \
-                --without-librtmp \
-                --disable-ldap \
-                --disable-rtsp \
-                --enable-ares=/usr/cares \
-                --with-zlib=/usr/zlib \
-                --with-zstd=/usr/libzstd \
-                --with-libidn2=/usr/libidn2 \
-                --with-nghttp2=/usr/nghttp2 \
-                --with-brotli=/usr/brotli  \
-                --with-gnutls=/usr/gnutls \
-                --with-nghttp3=/usr/nghttp3  
+            
+                '# -DCURL_STATICLIB -DNGHTTP2_STATICLIB  -Wl,-R/usr/brotli/lib'.PHP_EOL.
+                autoreconf -fi && ./configure --help
+                
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2  libnghttp2 ) \
+                LDFLAGS="$(pkg-config --libs-only-L      --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2  libnghttp2 ) \
+                LIBS="$(pkg-config --libs-only-l         --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2  libnghttp2 ) \
+                ./configure --prefix={$curl_prefix}  \
+                --enable-static --disable-shared \
+                --without-librtmp --disable-ldap --disable-rtsp \
+                --enable-http --enable-alt-svc --enable-hsts --enable-http-auth --enable-mime --enable-cookies \
+                --enable-doh --enable-threaded-resolver --enable-ipv6 --enable-proxy  \
+                --enable-websockets --enable-get-easy-options \
+                --enable-file --enable-mqtt --enable-unix-sockets  --enable-progress-meter \
+                --enable-optimize \
+                --with-zlib={$zlib_prefix} \
+                --with-openssl={$openssl_prefix} \
+                --with-libidn2={$libidn2} \
+                --with-zstd={$libzstd} \
+                --enable-ares={$cares} \
+                --with-brotli={$brotli} \
+                --with-default-ssl-backend=openssl \
+                --without-nghttp2 \
+                --without-ngtcp2 \
+                --without-nghttp3 
+                
+                #--with-gnutls=GNUTLS_PREFIX
+                #--with-nghttp3=' . NGHTTP3_PREFIX
+                #--with-ngtcp2=' .  NGTCP2_PREFIX . ' \\'.PHP_EOL
+                #--with-nghttp2=' . NGHTTP2_PREFIX . ' \\'.PHP_EOL.
+                #--without-brotli
+                #--disable-ares
                
                 #--with-ngtcp2=/usr/ngtcp2 \
                 #--with-quiche=/usr/quiche 
@@ -1129,14 +1165,16 @@ function install_libidn2(Preprocessor $p)
 
 function install_nghttp2(Preprocessor $p)
 {
+
     $p->addLibrary(
         (new Library('nghttp2'))
             ->withHomePage('https://github.com/nghttp2/nghttp2.git')
             ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/nghttp2')
-            ->withScriptBeforeConfigure('
-                      test -d /usr/nghttp2 && rm -rf /usr/nghttp2
+
+            ->withConfigure('
+             test -d /usr/nghttp2 && rm -rf /usr/nghttp2
              ./configure --help
  
               export ZLIB_CFLAGS=$(pkg-config  --cflags --static zlib)
@@ -1147,21 +1185,21 @@ function install_nghttp2(Preprocessor $p)
               
               export LIBCARES_CFLAGS=$(pkg-config  --cflags --static libcares)
               export LIBCARES_LIBS=$(pkg-config    --libs   --static libcares)
+             
+              # export LIBNGTCP2_CFLAGS=$(pkg-config  --cflags --static libngtcp2)
+              # export LIBNGTCP2_LIBS=$(pkg-config    --libs   --static libngtcp2)
               
-              export LIBNGTCP2_CFLAGS=$(pkg-config  --cflags --static libngtcp2)
-              export LIBNGTCP2_LIBS=$(pkg-config    --libs   --static libngtcp2)
-              
-              export LIBNGTCP2_CRYPTO_OPENSSL_CFLAGS=$(pkg-config  --cflags --static libngtcp2_crypto_gnutls)
-              export LIBNGTCP2_CRYPTO_OPENSSL_LIBS=$(pkg-config    --libs   --static libngtcp2_crypto_gnutls)
+              # export LIBNGTCP2_CRYPTO_OPENSSL_CFLAGS=$(pkg-config  --cflags --static libngtcp2_crypto_gnutls)
+              # export LIBNGTCP2_CRYPTO_OPENSSL_LIBS=$(pkg-config    --libs   --static libngtcp2_crypto_gnutls)
             
-              export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
-              export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
-              
+              # export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
+              # export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
+           
               # LIBBPF_CFLAGS=$(pkg-config  --cflags --static gnutls)
               # LIBBPF_LIBS=$(pkg-config    --libs   --static gnutls)
               
-              LIBEVENT_OPENSSL_CFLAGS=$(pkg-config  --cflags --static gnutls)
-              LIBEVENT_OPENSSL_LIBS=$(pkg-config    --libs   --static gnutls)
+              # LIBEVENT_OPENSSL_CFLAGS=$(pkg-config  --cflags --static gnutls)
+              # LIBEVENT_OPENSSL_LIBS=$(pkg-config    --libs   --static gnutls)
               
               export JANSSON_CFLAGS=$(pkg-config  --cflags --static jansson)
               export JANSSON_LIBS=$(pkg-config    --libs   --static jansson)
@@ -1170,18 +1208,21 @@ function install_nghttp2(Preprocessor $p)
               export LIBXML2_LIBS=$(pkg-config    --libs   --static libxml-2.0)
 
          
-            export LIBEV_CFLAGS="-L/usr/libev/include"
-            export LIBEV_LIBS="-L/usr/libev/lib -lev"
+            # export LIBEV_CFLAGS="-L/usr/libev/include"
+            # export LIBEV_LIBS="-L/usr/libev/lib -lev"
                   
             # export LDFLAGS="-L/usr/libev/lib"
-            export CPPFLAGS="-I/usr/libev/include"
-            export LIBS="-L/usr/libev/lib -lev"
+            # export CPPFLAGS="-I/usr/libev/include"
+            # export LIBS="-L/usr/libev/lib -lev"
+         
+            ./configure --prefix=/usr/nghttp2 enable_static=yes enable_shared=no --enable-lib-only
             
-            ./configure --prefix=/usr/nghttp2 enable_static=yes enable_shared=no
-            ')
-            ->withConfigure('./configure --prefix=/usr/nghttp2 enable_static=yes enable_shared=no')
+            '
+            )
             ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
+    //zlib  openssl libcares  jansson libxml-2.0 libngtcp2 libnghttp3
     );
+
 }
 
 function install_php_extension_micro(Preprocessor $p)
@@ -1321,6 +1362,8 @@ function install_ninja(Preprocessor $p)
     if ($p->getOsType() == 'macos') {
         $lib->withUrl('https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-mac.zip');
     }
+
+
 }
 
 function install_nettle($p)
@@ -1442,6 +1485,7 @@ function install_gnutls($p)
         libunbound for DNSSEC/DANE functionality
 EOF;
 
+
     $p->addLibrary(
         (new Library('gnutls'))
             ->withHomePage('https://www.gnutls.org/')
@@ -1476,7 +1520,7 @@ EOF;
                 export P11_KIT_CFLAGS=$(pkg-config  --cflags --static p11-kit-1)
                 export P11_KIT_LIBS=$(pkg-config    --libs   --static p11-kit-1)
             
-
+              
             
                 export CPPFLAGS=$(pkg-config    --cflags   --static libbrotlicommon libbrotlienc libbrotlidec)
                 export LIBS=$(pkg-config        --libs     --static libbrotlicommon libbrotlienc libbrotlidec)
@@ -1502,11 +1546,11 @@ EOF;
                 --disable-doc \
                 --disable-tests 
                # --with-libev-prefix=/usr/libev \
+              
             '
             )->withPkgName('gnutls')
     //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
-
 
 }
 
@@ -1585,28 +1629,28 @@ EOF
 
 function install_nghttp3(Preprocessor $p)
 {
+
     $p->addLibrary(
         (new Library('nghttp3'))
             ->withHomePage('https://github.com/ngtcp2/nghttp3')
             ->withManual('https://nghttp2.org/nghttp3/')
-            ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/heads/main.zip')
-            ->withFile('latest-nghttp3.zip')
+            ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/tags/v0.8.0.tar.gz')
+            //->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/heads/main.zip')
+            ->withFile('nghttp3-v0.8.0.tar.gz')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/nghttp3')
-            ->withUntarArchiveCommand('unzip')
             ->withConfigure('
-            cd nghttp3-main
-             autoreconf -fi
-             ./configure --help 
-            
-             ./configure --prefix=/usr/nghttp3 --enable-lib-only \
+                export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
+                export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
+           
+            autoreconf -fi
+            ./configure --help 
+          
+            ./configure --prefix=/usr/nghttp3 --enable-lib-only \
             --enable-shared=no \
             --enable-static=yes 
             
-        
-            --enable-static=yes 
-                
-            ')
+        ')
             ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
             ->withPkgName('libnghttp3')
     );
@@ -1614,6 +1658,9 @@ function install_nghttp3(Preprocessor $p)
 
 function install_ngtcp2(Preprocessor $p)
 {
+
+    //libexpat pcre2 libidn2 brotli
+
     $p->addLibrary(
         (new Library('ngtcp2'))
             ->withHomePage('https://github.com/ngtcp2/ngtcp2')
@@ -1623,9 +1670,8 @@ function install_ngtcp2(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/ngtcp2')
             ->withConfigure('
-         
-            
-                    # openssl does not have QUIC interface, disabling it
+
+            # openssl does not have QUIC interface, disabling it
             # 
             # OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
             # OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
@@ -1636,7 +1682,7 @@ function install_ngtcp2(Preprocessor $p)
             export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
             export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
            
-            export LIBEV_CFLAGS="-L/usr/libev/include"
+            export LIBEV_CFLAGS="-I/usr/libev/include"
             export LIBEV_LIBS="-L/usr/libev/lib -lev"
             
              autoreconf -fi
@@ -1830,6 +1876,7 @@ function install_libunistring($p)
 function install_libevent($p)
 {
 
+
     $p->addLibrary(
         (new Library('libevent'))
             ->withHomePage('https://github.com/libevent/libevent')
@@ -1842,18 +1889,18 @@ function install_libevent($p)
                 <<<EOF
             # 查看更多选项
             # cmake -LAH .
-            mkdir build && cd build
-            cmake ..   \
-            -DCMAKE_INSTALL_PREFIX=/usr/libevent \
-            -DEVENT__DISABLE_DEBUG_MODE=ON \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DEVENT__LIBRARY_TYPE=STATIC  
+        mkdir build && cd build
+        cmake ..   \
+        -DCMAKE_INSTALL_PREFIX=/usr/libevent \
+        -DEVENT__DISABLE_DEBUG_MODE=ON \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DEVENT__LIBRARY_TYPE=STATIC  
+  
 EOF
 
             )
             ->withPkgName('libevent')
     );
-
 }
 
 function install_libuv($p)
@@ -1882,6 +1929,32 @@ EOF
     //->withSkipBuildInstall()
     );
 
+}
+
+function install_libev($p)
+{
+    $p->addLibrary(
+        (new Library('libev'))
+            ->withHomePage('http://software.schmorp.de/pkg/libev.html')
+            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
+            ->withManual('http://cvs.schmorp.de/libev/README')
+            ->withPrefix('/usr/libev')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+            ls -lh 
+            ./configure --help 
+            ./configure --prefix=/usr/libev \
+            --enable-shared=no \
+            --enable-static=yes
+           
+EOF
+
+            )
+            ->withPkgName('libev')
+
+    );
 }
 
     function install_libunwind($p)
@@ -2195,6 +2268,31 @@ EOF
             ->withPkgName('kerberos')
             ->withBinPath('/usr/kerberos/bin/')
     );
+}function install_fontconfig(Preprocessor $p)
+{
+
+    $p->addLibrary(
+        (new Library('fontconfig'))
+            ->withHomePage('https://www.freedesktop.org/wiki/Software/fontconfig/')
+            ->withLicense('https://www.freedesktop.org/software/fontconfig/webfonts/Licen.TXT', Library::LICENSE_SPEC)
+            //->withUrl('https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/main/fontconfig-main.tar.gz')
+            ->withUrl('https://gitlab.freedesktop.org/fontconfig/fontconfig/-/tags/2.14.2')
+            //download font https://www.freedesktop.org/software/fontconfig/webfonts/webfonts.tar.gz
+            ->withFile('fontconfig-2.14.2.tar.gz')
+            ->withManual('https://gitlab.freedesktop.org/fontconfig/fontconfig')
+            ->withPrefix('/usr/fontconfig')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+pwd
+exit 0 
+  
+EOF
+
+            )
+            ->withPkgName('fontconfig')
+            ->withBinPath('/usr/fontconfig/bin/')
+    );
 }
 
 
@@ -2204,41 +2302,52 @@ function install_p11_kit(Preprocessor $p)
 {
 
 
-$p->addLibrary(
-    (new Library('p11_kit'))
-        ->withHomePage('https://github.com/p11-glue/p11-kit.git')
-        ->withLicense('https://github.com/p11-glue/p11-kit/blob/master/COPYING', Library::LICENSE_BSD)
-        ->withManual('https://p11-glue.github.io/p11-glue/p11-kit.html')
-        ->withManual('https://p11-glue.github.io/p11-glue/p11-kit/manual/devel-building.html')
-        ->withUrl('https://github.com/p11-glue/p11-kit/archive/refs/tags/0.24.1.tar.gz')
-        ->withFile('p11-kit-0.24.1.tar.gz')
-        ->withPrefix('/usr/p11_kit/')
-        ->withConfigure(
-            '
+    $p->addLibrary(
+        (new Library('p11_kit'))
+            ->withHomePage('https://github.com/p11-glue/p11-kit.git')
+            ->withLicense('https://github.com/p11-glue/p11-kit/blob/master/COPYING', Library::LICENSE_BSD)
+            ->withManual('https://p11-glue.github.io/p11-glue/p11-kit.html')
+            ->withManual('https://p11-glue.github.io/p11-glue/p11-kit/manual/devel-building.html')
+            ->withUrl('https://github.com/p11-glue/p11-kit/archive/refs/tags/0.24.1.tar.gz')
+            //构建选项参参考文档： https://mesonbuild.com/Builtin-options.html
+            ->withFile('p11-kit-0.24.1.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withPrefix('/usr/p11_kit/')
+            ->withConfigure(
+                '
           
-                apk add python3 py3-pip  gettext  coreutils
-                pip3 install meson  -i https://pypi.tuna.tsinghua.edu.cn/simple
+                # apk add python3 py3-pip  gettext  coreutils
+                # pip3 install meson  -i https://pypi.tuna.tsinghua.edu.cn/simple
             
             echo $PATH;
             #./autogen.sh
             #./configure --help
-            
+            # --with-libtasn1 --with-libffi
            
             # meson setup -Dprefix=/usr/p11_kit/ -Dsystemd=disabled -Dbash_completion=disabled  --reconfigure  _build
             # run "ninja reconfigure" or "meson setup --reconfigure"
             # ninja reconfigure -C _build
-            meson setup --reconfigure _build
-            meson setup -Dprefix=/usr/p11_kit/ -Dsystemd=disabled   -Denable-static=yes   _build
+            # meson setup --reconfigure _build
+            meson setup  -Dprefix=/usr/p11_kit/ -Dsystemd=disabled    -Dbackend=ninja \
+            -Dbuildtype=release \
+            -Ddefault_library=static \
+            -Db_staticpic=true \
+            -Dprefer_static=true \
+            -Ddebug=false \
+            -Dunity=off \
+             _build
+             
+           
             # meson setup --wipe
             
             meson compile -C _build
             
            # DESTDIR=/usr/p11_kit/  meson install -C _build
             meson install -C _build
-           exit 0 
+            exit 0 
             '
-        )
-        ->withBypassMakeAndMakeInstall()
-        ->withPkgName('p11_kit')
+            )
+            ->withBypassMakeAndMakeInstall()
+            ->withPkgName('p11_kit')
     );
 }

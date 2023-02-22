@@ -54,7 +54,7 @@ function libraries_install_builder($p){
     install_libtasn1($p);
     install_libexpat($p);
     install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
-
+    install_p11_kit($p);
     # TLS/ESNI/ECH/DoT/DoH/  参考文档https://zhuanlan.zhihu.com/p/572101957
     # SSL 比较 https://curl.se/docs/ssl-compared.html
     install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
@@ -124,6 +124,7 @@ function libraries_install_builder($p){
      */
     install_libevent($p);
     install_libuv($p);
+    install_libev($p);
 
     install_libunwind($p); //使用 libunwind 可以很方便的获取函数栈中的内容，极大的方便了对函数间调用关系的了解。
     install_socat($p);
@@ -137,4 +138,7 @@ function libraries_install_builder($p){
     install_valgrind($p);
     install_snappy($p);
     install_kerberos($p);
+    install_fontconfig($p);
+
+
 }
