@@ -24,6 +24,7 @@ return function (Preprocessor $p) {
                         'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',
                         'rm -rf ' . BROTLI_PREFIX . '/lib/*.so',
                         'rm -rf ' . BROTLI_PREFIX . '/lib/*.dylib',
+                        'cp ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotli.a',
                         'mv ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotlicommon.a',
                         'mv ' . BROTLI_PREFIX . '/lib/libbrotlienc-static.a ' . BROTLI_PREFIX . '/lib/libbrotlienc.a',
                         'mv ' . BROTLI_PREFIX . '/lib/libbrotlidec-static.a ' . BROTLI_PREFIX . '/lib/libbrotlidec.a',
