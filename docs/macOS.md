@@ -1,7 +1,7 @@
 # 步骤
 0. 清理 `brew` 安装的软件
-1. 执行 `php prepare.php`
-2. 编译所有依赖的库 `./make.sh all-library`
+1. 执行 `php prepare.php --without-docker=1 @macos`
+2. 编译所有依赖的库 `./make.sh build-all-library`
 3. 配置 `./make.sh config`
 4. 构建 `./make.sh build`
 
