@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
         (new Library('imagemagick'))
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
             ->withFile('ImageMagick-v7.1.0-62.tar.gz')
-            ->withPrefix(IMAGEMAGICK_PREFIX)
+            ->withPrefix($imagemagick_prefix)
             ->withConfigure(<<<EOF
             ./configure --help   
             CPPFLAGS="$(pkg-config --cflags-only-I --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
             --with-zip=yes \
             --with-zlib=yes \
             --with-zstd=yes \
-            --with-freetype=yes
+            --with-freetype=yes 
 EOF
             )
             ->withPkgName('ImageMagick')

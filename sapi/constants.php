@@ -33,6 +33,6 @@ define("LIBSODIUM_PREFIX", $p->getGlobalPrefix() . '/libsodium');
 define("LIBEDIT_PREFIX", $p->getGlobalPrefix() . '/libedit');
 define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
 define("LIBLZ4_PREFIX", $p->getGlobalPrefix() . '/liblz4');
-define("LIBLMA_PREFIX", $p->getGlobalPrefix() . '/liblzma');
+define("LIBLZMA_PREFIX", $p->getGlobalPrefix() . '/liblzma');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
