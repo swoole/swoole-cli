@@ -66,9 +66,9 @@ class Library extends Project
     public string $ldflags = '';
 
     public bool $cleanBuildDirectory = false;
+
     public bool $cleanInstallDirectory = false;
     public string $preInstallDirectory = '';
-
     public bool $skipMakeAndMakeInstall = false;
     public string $makeOptions = '';
     public string $makeVariables = '';
