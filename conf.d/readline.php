@@ -9,6 +9,8 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('ncurses'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withPrefix(NCURSES_PREFIX)
             ->withConfigure(<<<EOF
             mkdir -p {$ncurses_prefix}/lib/pkgconfig
@@ -71,6 +73,8 @@ EOF
         $p->addLibrary(
             (new Library('readline'))
                 ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
+                ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
+                ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
                 ->withPrefix(READLINE_PREFIX)
                 ->withConfigure(<<<EOF
                 ./configure \
