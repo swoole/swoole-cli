@@ -7,6 +7,10 @@ $p = Preprocessor::getInstance();
 define("JPEG_PREFIX", $p->getGlobalPrefix());
 define("GIF_PREFIX", $p->getGlobalPrefix());
 define("ZIP_PREFIX", $p->getGlobalPrefix());
+// FIXME: libpng
+define("ZLIB_PREFIX", $p->getGlobalPrefix());
+// FIXME: ImageMagick
+define("BZIP2_PREFIX", $p->getGlobalPrefix());
 // ========================================================
 define("FREETYPE_PREFIX", $p->getGlobalPrefix() . '/freetype');
 define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');
@@ -14,8 +18,6 @@ define("WEBP_PREFIX", $p->getGlobalPrefix() . '/libwebp');
 define("CURL_PREFIX", $p->getGlobalPrefix() . '/curl');
 define("CARES_PREFIX", $p->getGlobalPrefix() . '/cares');
 define("OPENSSL_PREFIX", $p->getGlobalPrefix() . '/openssl');
-define("ZLIB_PREFIX", $p->getGlobalPrefix() . '/zlib');
-define("BZIP2_PREFIX", $p->getGlobalPrefix() . '/bzip2');
 define("GMP_PREFIX", $p->getGlobalPrefix() . '/gmp');
 define("ICONV_PREFIX", $p->getGlobalPrefix() . '/libiconv');
 define("IMAGEMAGICK_PREFIX", $p->getGlobalPrefix() . '/imagemagick');
