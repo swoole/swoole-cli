@@ -134,7 +134,7 @@ make_config() {
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-    ./configure $OPTIONS
+    <?= $this->configureVarables ?> ./configure $OPTIONS
 }
 
 make_build() {

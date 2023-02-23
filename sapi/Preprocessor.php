@@ -221,6 +221,7 @@ class Preprocessor
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
+    protected string $configureVarables = '';
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
@@ -389,6 +390,11 @@ class Preprocessor
     function setExtraLdflags(string $flags)
     {
         $this->extraLdflags = $flags;
+    }
+
+    function setConfigureVarables(string $varables)
+    {
+        $this->configureVarables = $varables;
     }
 
     function setExtraOptions(string $options)
