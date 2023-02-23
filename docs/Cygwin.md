@@ -19,7 +19,7 @@ libcurl-devel
 libxml2-devel
 libxslt-devel
 libgmp-devel
-ImageMagick-devel
+ImageMagick
 libpng-devel
 libjpeg-devel
 libfreetype-devel
