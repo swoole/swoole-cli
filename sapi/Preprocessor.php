@@ -275,7 +275,18 @@ class Preprocessor
 
     protected function __construct()
     {
-
+        switch (PHP_OS) {
+            default:
+            case 'Linux':
+                $this->setOsType('linux');
+                break;
+            case 'Darwin':
+                $this->setOsType('macos');
+                break;
+            case 'WINNT':
+                $this->setOsType('win');
+                break;
+        }
     }
 
     public static function getInstance(): static
@@ -596,21 +607,6 @@ class Preprocessor
         if (!is_dir($this->extensionDir)) {
             mkdir($this->extensionDir, 0777, true);
         }
-        if (empty($this->osType)) {
-            switch (PHP_OS) {
-                default:
-                case 'Linux':
-                    $this->setOsType('linux');
-                    break;
-                case 'Darwin':
-                    $this->setOsType('macos');
-                    break;
-                case 'WINNT':
-                    $this->setOsType('win');
-                    break;
-            }
-        }
-
         include __DIR__ . '/constants.php';
 
         $extAvailabled = [];
