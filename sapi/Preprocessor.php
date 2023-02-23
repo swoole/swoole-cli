@@ -52,13 +52,13 @@ abstract class Project
 class Library extends Project
 {
     public string $url;
+    public array $mirrorUrls = [];
     public string $configure = '';
     public string $file = '';
     public string $ldflags = '';
     public string $makeOptions = '';
     public string $makeVariables = '';
     public string $makeInstallCommand = 'install';
-
     public string $makeInstallOptions = '';
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
@@ -69,6 +69,11 @@ class Library extends Project
     function withUrl(string $url): static
     {
         $this->url = $url;
+        return $this;
+    }
+    public function withMirrorUrl(string $url):static
+    {
+        $this->mirrorUrls[] = $url;
         return $this;
     }
 
@@ -190,6 +195,9 @@ class Preprocessor
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
+
+    protected array $downloadExtensionList = [];
+
     protected array $libraryMap = [];
     protected array $extensionMap = [];
     /**
@@ -423,8 +431,9 @@ class Preprocessor
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
         }
-        $skip_library_download = $this->getInputOption('skip-download');
-        if (empty($skip_library_download)) {
+
+        $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
+        if (!$skip_download) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
                 $this->downloadFile($lib->url, "{$this->libraryDir}/{$lib->file}");
@@ -452,19 +461,23 @@ class Preprocessor
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
-            if (!is_file($ext->path)) {
-                echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                $this->downloadFile($ext->url, $ext->path);
-            } else {
-                echo "[Extension] file cached: " . $ext->file . PHP_EOL;
-            }
+            $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
+            if (!$skip_download) {
+                if (!is_file($ext->path)) {
+                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                    $this->downloadFile($ext->url, $ext->path);
+                } else {
+                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                }
 
-            $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-            if (!is_dir($dst_dir)) {
-                echo `mkdir -p $dst_dir`;
-            }
+                $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
+                if (!is_dir($dst_dir)) {
+                    echo `mkdir -p $dst_dir`;
+                }
 
-            echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+            }
+            $this->downloadExtensionList[] = ['url'=>$ext->url,'file'=>$ext->file];
         }
 
         $this->extensionList[] = $ext;
@@ -640,6 +653,11 @@ class Preprocessor
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
         $this->sortLibrary();
 
+        $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
+        if ($skip_download) {
+            $this->generateLibraryDownloadLinks();
+        }
+
         ob_start();
         include __DIR__ . '/make.php';
         file_put_contents($this->rootDir . '/make.sh', ob_get_clean());
@@ -668,5 +686,36 @@ class Preprocessor
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
         }
+    }
+
+    protected function generateLibraryDownloadLinks():void
+    {
+        if(!is_dir($this->getWorkDir() . '/var/')){
+            mkdir($this->getWorkDir() . '/var/',0755,true);
+        }
+
+        $download_urls=[];
+        foreach ($this->libraryList as $item) {
+            if(empty($item->url))
+            {
+                continue;
+            }
+            $url='';
+            $item->mirrorUrls[]=$item->url;
+            if(!empty($item->mirrorUrls)){
+                $newMirrorUrls= [];
+                foreach ($item->mirrorUrls as $value){
+                    $newMirrorUrls[] =trim($value);
+                }
+                $url =implode("\t",$newMirrorUrls);
+            }
+            $download_urls[]= $url . PHP_EOL." out=".$item->file;
+        }
+        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
+        $download_urls=[];
+        foreach ($this->downloadExtensionList as $item) {
+            $download_urls[]= $item['url'] . PHP_EOL . " out=".$item['file'];
+        }
+        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt',implode(PHP_EOL,$download_urls));
     }
 }
