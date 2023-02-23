@@ -69,7 +69,7 @@ EOF
             enable_shared=no \
             --disable-doc \
             --with-libiconv-prefix=/usr/libiconv \
-            --with-libintl-prefix
+            --with-libintl-prefix 
              
 EOF
             )

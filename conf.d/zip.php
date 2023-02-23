@@ -11,31 +11,25 @@ return function (Preprocessor $p) {
             ->withHomePage('http://www.lz4.org')
             ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
-            ->withManual('https://github.com/lz4/lz4.git')
             ->withFile('lz4-v1.9.4.tar.gz')
             ->withPkgName('liblz4')
             ->withPrefix($liblz4_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($liblz4_prefix)
             ->withConfigure(<<<EOF
             cd build/cmake/
             cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON
 EOF
             )
     );
-    $liblzma_prefix = LIBLZ4_PREFIX;
+    $liblzma_prefix = LIBLZMA_PREFIX;
     $p->addLibrary(
         (new Library('liblzma'))
             ->withHomePage('https://tukaani.org/xz/')
             ->withLicense('https://github.com/tukaani-project/xz/blob/master/COPYING.GPLv3', Library::LICENSE_LGPL)
-            ->withManual('https://github.com/tukaani-project/xz.git')
             //->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
             //->withFile('xz-5.2.9.tar.gz')
             ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
             ->withFile('xz-5.4.1.tar.gz')
-            ->withCleanBuildDirectory()
             ->withPrefix($liblzma_prefix)
-            ->withCleanInstallDirectory($liblzma_prefix)
             ->withConfigure('./configure --prefix=' .$liblzma_prefix . ' --enable-static  --disable-shared --disable-doc')
             ->withPkgName('liblzma')
     );
@@ -48,8 +42,6 @@ EOF
             ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
             ->withFile('zstd-1.5.2.tar.gz')
             ->withPrefix($libzstd_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($libzstd_prefix)
             ->withConfigure(
                 <<<EOF
             mkdir -p build/cmake/builddir
@@ -68,7 +60,7 @@ EOF
             ->withMakeOptions('lib')
             //->withMakeInstallOptions('install PREFIX=/usr/libzstd/')
             ->withPkgName('libzstd')
-            ->depends('liblz4')
+            ->depends('liblz4','liblzma')
 
     );
     $openssl_prefix = OPENSSL_PREFIX;
@@ -76,10 +68,9 @@ EOF
     $zlib_prefix = ZLIB_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $p->addLibrary(
-        (new Library('zip'))
+        (new Library('libzip'))
             //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
             ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
-            ->withManual('https://libzip.org')
             ->withPrefix($zip_prefix)
             ->withCleanBuildDirectory()
             ->withCleanInstallDirectory($zip_prefix)
@@ -123,5 +114,5 @@ EOF
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
             ->depends('openssl', 'zlib', 'bzip2','liblzma','libzstd')
     );
-    $p->addExtension((new Extension('zip'))->withOptions('--with-zip')->depends('zip'));
+    $p->addExtension((new Extension('zip'))->withOptions('--with-zip')->depends('libzip'));
 };

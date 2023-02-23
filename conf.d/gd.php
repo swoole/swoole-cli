@@ -29,10 +29,7 @@ return function (Preprocessor $p) {
             ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
             ->withPrefix(PNG_PREFIX)
-            ->withConfigure(
-                './configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared ' .
-                '--with-zlib-prefix=' . ZLIB_PREFIX . '  --with-binconfigs'
-            )
+            ->withConfigure('./configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared')
             ->withPkgName('libpng16')
             ->depends('zlib')
     );
@@ -77,10 +74,13 @@ return function (Preprocessor $p) {
                 '--with-giflibdir=' . GIF_PREFIX . '/lib'
             )
             ->withPkgName('libwebp')
+            ->withLdflags('-L' . WEBP_PREFIX . '/lib -lwebpdemux -lwebpmux')
             ->depends('libpng', 'libjpeg', 'libgif')
     );
-    $freetype_prefix=FREETYPE_PREFIX;
-    $bzip2_prefix=BZIP2_PREFIX;
+
+    $freetype_prefix = FREETYPE_PREFIX;
+    $bzip2_prefix = BZIP2_PREFIX;
+
     $p->addLibrary(
         (new Library('freetype'))
             ->withPrefix($freetype_prefix)
@@ -102,8 +102,9 @@ return function (Preprocessor $p) {
             --with-bzip2=yes \
             --with-png=yes \
             --with-harfbuzz=no \
-            --with-brotli=yes
+            --with-brotli=yes 
 EOF
+
             )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
