@@ -5,9 +5,9 @@
 use SwooleCli\Preprocessor;
 ?>
 
-
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 export ORIGIN_PATH=$PATH
+
 
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=$(pwd)
@@ -34,8 +34,9 @@ make_<?=$item->name?>() {
 
     echo "build <?=$item->name?>"
 
-<?php if ($item->cleanBuildDirectory) : ?>
-    test -d <?=$this->getBuildDir()?>/<?= $item->name ?> && rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?><?= PHP_EOL; ?>
+<?php if($item->cleanBuildDirectory): ?>
+    # If the build directory exist, clean the build directory
+    test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
 <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
@@ -43,9 +44,14 @@ make_<?=$item->name?>() {
         mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
     fi
 
-
 <?php if($item->untarArchiveCommand == 'tar' ):?>
     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
+    result_code=$?
+    if [ $result_code -ne 0 ]; then
+        echo "[<?=$item->name?>] [configure FAILURE]"
+        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+        exit  $result_code
+    fi
 <?php endif ;?>
 <?php if($item->untarArchiveCommand == 'unzip'):?>
     unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
@@ -56,7 +62,7 @@ make_<?=$item->name?>() {
 
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
         echo "[<?=$item->name?>] compiled, skip.."
-        cd <?= $this->workDir . PHP_EOL ?>
+        cd <?= $this->workDir ?>/
         return 0
     fi
 
@@ -67,13 +73,15 @@ make_<?=$item->name?>() {
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
 <?php endif; ?>
 
-
     # before configure
 <?php if (!empty($item->beforeConfigureScript)) : ?>
     <?= $item->beforeConfigureScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
 <?php endif; ?>
+
+    cd <?=$this->getBuildDir()?>/<?=$item->name?>/
+
 
     # configure
 <?php if (!empty($item->configure)): ?>
@@ -86,10 +94,10 @@ __EOF__
 
 <?php endif; ?>
 
-<?php if( !$item->skipMakeAndMakeInstall): ?>
 
+<?php if(!$item->skipMakeAndMakeInstall): ?>
     # make
-    make -j <?=$this->maxJob?>  <?=$item->makeOptions . PHP_EOL ?>
+    make -j <?= $this->maxJob ?> <?= $item->makeOptions . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
 
@@ -106,7 +114,7 @@ __EOF__
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
-
+<?php endif; ?>
 <?php endif; ?>
 
     # after make install
@@ -114,8 +122,6 @@ __EOF__
     <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
-<?php endif; ?>
-
 <?php endif; ?>
 
     # build end
@@ -126,12 +132,17 @@ __EOF__
 }
 
 clean_<?=$item->name?>() {
-    cd <?=$this->getBuildDir()?>
-    echo "clean <?=$item->name?>"
+    cd <?=$this->getBuildDir()?> && echo "clean <?=$item->name?>"
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
-    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    rm -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     cd <?= $this->workDir . PHP_EOL ?>
 }
+
+clean_<?=$item->name?>_cached() {
+    echo "clean <?=$item->name?> [cached]"
+    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+}
+
 <?php echo str_repeat(PHP_EOL, 1);?>
 <?php endforeach; ?>
 
@@ -144,6 +155,7 @@ make_all_library() {
 
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+
 :<<'EOF'
     export   NCURSES_CFLAGS=$(pkg-config --cflags --static  ncurses);
     export   NCURSES_LIBS=$(pkg-config  --libs --static ncurses);
@@ -151,6 +163,8 @@ make_config() {
     export   READLINE_CFLAGS=$(pkg-config --cflags --static readline)  ;
     export   READLINE_LIBS=$(pkg-config  --libs --static readline)  ;
 EOF
+
+    set -uex
 
     export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
     export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
@@ -167,9 +181,22 @@ EOF
 <?php if ($this->getOsType() == 'linux') : ?>
     export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
     export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
-    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
-    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
-    export LIBS="$LIBS -L/usr/lib -lstdc++"
+
+    # export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
+    # LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
+    # export LIBS="$LIBS -L/usr/lib -lstdc++"
+
+    package_names="readline icu-i18n  icu-io   icu-uc libpq libffi"
+    package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
+    package_names="${package_names} "
+
+    CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
+    export   CPPFLAGS="$CPPFLAGS -I/usr/include"
+    LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
+    export   LDFLAGS="$LDFLAGS -L/usr/lib"
+    LIBS=$(pkg-config      --libs-only-l   --static $package_names )
+    export  LIBS="$LIBS -lstdc++"
+
 <?php endif; ?>
     #  gnutls libnghttp3 libngtcp2 p11-kit-1
     test -f ./configure &&  rm ./configure
@@ -182,7 +209,9 @@ EOF
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-    ./configure $OPTIONS
+    ./configure --help
+    <?= $this->configureVarables ?> ./configure $OPTIONS
+
 }
 
 make_build() {
@@ -197,25 +226,57 @@ make_build() {
 }
 
 help() {
+    echo "./make.sh docker-build"
     echo "./make.sh docker-bash"
+    echo "./make.sh docker-commit"
+    echo "./make.sh docker-push"
+    echo "./make.sh build-all-library"
     echo "./make.sh config"
     echo "./make.sh build"
+    echo "./make.sh test"
     echo "./make.sh archive"
-    echo "./make.sh all-library"
     echo "./make.sh list-library"
     echo "./make.sh list-extension"
     echo "./make.sh clean-all-library"
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
     echo "./make.sh pkg-check"
+    echo "./make.sh list-swoole-branch"
+    echo "./make.sh switch-swoole-branch"
+    echo "./make.sh [library-name]"
+    echo  "./make.sh clean-[library-name]"
+    echo  "./make.sh clean-[library-name]-cached"
 }
 
 if [ "$1" = "docker-build" ] ;then
-    sudo docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> .
-elif [ "$1" = "docker-bash" ] ;then
-    sudo docker run -it -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+    cd <?=$this->getRootDir()?>/sapi
+    docker build -t <?= Preprocessor::IMAGE_NAME ?>:base .
     exit 0
-elif [ "$1" = "all-library" ] ;then
+elif [ "$1" = "docker-bash" ] ;then
+    container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
+    base_image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:base | tail -n +2 2> /dev/null)
+    image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> | tail -n +2 2> /dev/null)
+
+    if [[ -z ${container} ]] ;then
+        if [ -n -z ${image} ] ;then
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+        elif [ -n -z ${base_image} ]] ;then
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:base /bin/bash
+        else
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+        fi
+    else
+        if [[ "${container}" =~ "Exited" ]]; then
+            docker start <?= Preprocessor::CONTAINER_NAME ?> ;
+        fi
+        docker exec -it <?= Preprocessor::CONTAINER_NAME ?> /bin/bash
+    fi
+    exit 0
+elif [ "$1" = "docker-commit" ] ;then
+    docker commit <?= Preprocessor::CONTAINER_NAME ?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
+elif [ "$1" = "docker-push" ] ;then
+    docker push <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
+elif [ "$1" = "build-all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then
@@ -224,11 +285,16 @@ elif [ "$1" = "<?=$item->name?>" ] ;then
 elif [ "$1" = "clean-<?=$item->name?>" ] ;then
     clean_<?=$item->name?> && echo "[SUCCESS] make clean <?=$item->name?>"
     exit 0
+elif [ "$1" = "clean-<?=$item->name?>-cached" ] ;then
+    clean_<?=$item->name?>_cached && echo "[SUCCESS] clean <?=$item->name?> "
+    exit 0
 <?php endforeach; ?>
 elif [ "$1" = "config" ] ;then
     make_config
 elif [ "$1" = "build" ] ;then
     make_build
+elif [ "$1" = "test" ] ;then
+    ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
@@ -247,7 +313,14 @@ elif [ "$1" = "clean-all-library-cached" ] ;then
     rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
 <?php endforeach; ?>
 elif [ "$1" = "diff-configure" ] ;then
-  meld $SRC/configure.ac ./configure.ac
+    meld $SRC/configure.ac ./configure.ac
+elif [ "$1" = "list-swoole-branch" ] ;then
+    cd <?= $this->getRootDir() ?>/ext/swoole
+    git branch
+elif [ "$1" = "switch-swoole-branch" ] ;then
+    cd <?= $this->getRootDir() ?>/ext/swoole
+    SWOOLE_BRANCH=$2
+    git checkout $SWOOLE_BRANCH
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if(!empty($item->pkgName)): ?>

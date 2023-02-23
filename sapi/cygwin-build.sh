@@ -45,9 +45,10 @@ fi
 cd $ROOT
 
 ./buildconf --force
+make clean
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
-    --disable-opcache \
+    --enable-opcache \
     --without-pcre-jit \
     --with-openssl --enable-openssl \
     --with-curl \
@@ -84,11 +85,7 @@ cd $ROOT
     --enable-redis \
     --with-imagick \
     --with-yaml \
-    --enable-mongodb --with-mongodb-client-side-encryption=no
-
-ls -al ./
-ls -al ./ext
-ls -al ./ext/date
+    --with-readline
 
 make -j $(nproc)
 ./bin/swoole-cli -v

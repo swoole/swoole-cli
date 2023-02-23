@@ -13,9 +13,10 @@ function libraries_install_builder($p){
 
     install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令  BZIP2_LIBS=-L/usr/bizp2/lib -lbz2
     install_zlib($p);
+    install_libjpeg($p);
     install_libgif($p);//没有 libgif.pc 文件，不能使用 pkg-config 命令
     install_libpng($p); //依赖 zlib
-    install_libjpeg($p);
+
 
     install_brotli($p); //有多种安装方式，选择使用cmake 安装
     install_cares($p);
@@ -34,7 +35,7 @@ function libraries_install_builder($p){
     install_libzstd($p); //zstd 依赖 lz4
     install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma库 zstd库 暂不启用）
 
-    //install_libedit($p);
+    install_libedit($p);
     install_ncurses($p);
     install_readline($p);//依赖 ncurses
     install_imagemagick($p);//依赖 freetype png webp xml zip zlib
@@ -123,23 +124,24 @@ function libraries_install_builder($p){
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 
      */
-    install_libevent($p);
-    install_libuv($p);
-    install_libev($p);
+    if(0) {
+        install_libevent($p);
+        install_libuv($p);
+        install_libev($p);
 
-    install_libunwind($p); //使用 libunwind 可以很方便的获取函数栈中的内容，极大的方便了对函数间调用关系的了解。
-    install_socat($p);
-    install_jemalloc($p);
-    install_tcmalloc($p);
+        install_libunwind($p); //使用 libunwind 可以很方便的获取函数栈中的内容，极大的方便了对函数间调用关系的了解。
+        install_socat($p);
+        install_jemalloc($p);
+        install_tcmalloc($p);
 
-    install_aria2($p);
-    install_bazel($p);
-    install_libelf($p);
-    install_libbpf($p);
-    install_valgrind($p);
-    install_snappy($p);
-    install_kerberos($p);
-    install_fontconfig($p);
-
+        install_aria2($p);
+        install_bazel($p);
+        install_libelf($p);
+        install_libbpf($p);
+        install_valgrind($p);
+        install_snappy($p);
+        install_kerberos($p);
+        install_fontconfig($p);
+    }
 
 }
