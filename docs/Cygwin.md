@@ -9,6 +9,7 @@
 - gcc-g++
 - openssl
 - re2c （需要源码安装）
+- zip/unzip（用于压缩打包）
 
 库
 ----
@@ -35,49 +36,21 @@ libyaml-devel
 libMagick-devel
 libzstd-devel
 libbrotli-devel
+libreadline-devel
 ```
 
-编译参数
+构建
 ------
+首先需要安装上述工具和库，然后 Clone 项目，并切换 `ext/swoole` 到对应的分支，如 `4.8.x` 或 `master` (`5.0.x`)
+
+```shell
+git clone --recursive git@github.com:swoole/swoole-cli.git
 ```
-./configure --prefix=/usr --disable-all \
---disable-fiber-asm \
---disable-opcache \
---without-pcre-jit \
---with-openssl --enable-openssl \
---with-curl \
---with-iconv \
---enable-intl \
---with-bz2 \
---enable-bcmath \
---enable-filter \
---enable-session \
---enable-tokenizer \
---enable-mbstring \
---enable-ctype \
---with-zlib \
---with-zip \
---enable-posix \
---enable-sockets \
---enable-pdo \
---with-sqlite3 \
---enable-phar \
---enable-pcntl \
---enable-mysqlnd \
---with-mysqli \
---enable-fileinfo \
---with-pdo_mysql \
---with-pdo-sqlite \
---enable-soap \
---with-xsl \
---with-gmp \
---enable-exif \
---with-sodium \
---enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
---enable-gd --with-jpeg  --with-freetype \
---enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
---enable-redis \
---with-imagick \
---with-yaml \
---enable-mongodb --with-mongodb-client-side-encryption=no
-```
+
+- 构建：`./sapi/cygwin-build.sh`
+- 打包：`bin/swoole-cli sapi/cygwin-pack.php`
+
+备注
+----
+1. Cygwin 下不支持 `mongodb` 扩展，参考：[https://github.com/mongodb/mongo-php-driver/issues/1381](https://github.com/mongodb/mongo-php-driver/issues/1381)
+
