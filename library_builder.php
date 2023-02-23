@@ -28,6 +28,59 @@ function install_openssl(Preprocessor $p)
     );
 }
 
+function install_openssl_v3(Preprocessor $p)
+{
+    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    $p->addLibrary(
+        (new Library('openssl_v3', '/usr/openssl'))
+            ->withUrl('https://www.openssl.org/source/openssl-3.0.7.tar.gz')
+            ->withFile('openssl-3.0.7.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+            # ./config $static \
+            ./Configure   $static  \
+            no-shared --release --prefix=/usr/openssl_v3
+EOF
+            )
+            ->withMakeOptions('build_sw')
+            ->withMakeInstallOptions('install_sw')
+            ->withPkgConfig('/usr/openssl_v3/lib64/pkgconfig')
+            ->withPkgName('libcrypto libssl openssl')
+            ->withLdflags('-L/usr/openssl_v3/lib64')
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            ->withHomePage('https://www.openssl.org/')
+
+    );
+}
+
+function install_openssl_v3_quic(Preprocessor $p)
+{
+    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    $p->addLibrary(
+        (new Library('openssl_v3_quic', '/usr/openssl'))
+            ->withUrl('https://www.openssl.org/source/openssl-3.0.7.tar.gz')
+            //https://github.com/quictls/openssl
+            ->withFile('openssl-3.0.7.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+            # ./config $static \
+            ./Configure   $static  \
+            no-shared --release --prefix=/usr/openssl_v3_quic
+EOF
+            )
+            ->withMakeOptions('build_sw')
+            ->withMakeInstallOptions('install_sw')
+            ->withPkgConfig('/usr/openssl_v3_quic/lib64/pkgconfig')
+            ->withPkgName('libcrypto libssl openssl')
+            ->withLdflags('-L/usr/openssl_v3_quic/lib64')
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            ->withHomePage('https://curl.se/docs/http3.html')
+
+    );
+}
+
 function install_libiconv(Preprocessor $p)
 {
 
@@ -94,6 +147,27 @@ function install_libxslt(Preprocessor $p)
     );
 }
 
+
+/*
+            ZIP_CFLAGS=$(pkg-config --cflags libzip) ;
+            ZIP_LIBS=$(pkg-config --libs libzip) ;
+            ZLIB_CFLAGS=$(pkg-config --cflags zlib) ;
+            ZLIB_LIBS=$(pkg-config --libs zlib) ;
+            LIBZSTD_CFLAGS=$(pkg-config --cflags libzstd) ;
+            LIBZSTD_LIBS=$(pkg-config --libs libzstd) ;
+            FREETYPE_CFLAGS=$(pkg-config --cflags freetype2) ;
+            FREETYPE_LIBS=$(pkg-config --libs freetype2) ;
+            LZMA_CFLAGS=$(pkg-config --cflags liblzma) ;
+            LZMA_LIBS=$(pkg-config --libs liblzma) ;
+            PNG_CFLAGS=$(pkg-config --cflags libpng  libpng16) ;
+            PNG_LIBS=$(pkg-config --libs libpng  libpng16) ;
+            WEBP_CFLAGS=$(pkg-config --cflags libwebp ) ;
+            WEBP_LIBS=$(pkg-config --libs libwebp ) ;
+            WEBPMUX_CFLAGS=$(pkg-config --cflags libwebp libwebpdemux  libwebpmux) ;
+            WEBPMUX_LIBS=$(pkg-config --libs libwebp libwebpdemux  libwebpmux) ;
+            XML_CFLAGS=$(pkg-config --cflags libxml-2.0) ;
+            XML_LIBS=$(pkg-config --libs libxml-2.0) ;
+ */
 function install_imagemagick(Preprocessor $p)
 {
     $imagemagick_prefix = IMAGEMAGICK_PREFIX;
@@ -333,6 +407,7 @@ function install_zlib(Preprocessor $p)
 {
     $p->addLibrary(
         (new Library('zlib'))
+            //->withUrl('https://zlib.net/zlib-1.2.13.tar.gz')
             ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
             ->withPrefix(ZLIB_PREFIX)
             ->withConfigure('./configure --prefix=' . ZLIB_PREFIX . ' --static')
@@ -363,6 +438,7 @@ function install_icu(Preprocessor $p)
     $p->addLibrary(
         (new Library('icu'))
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
+            //->withUrl('https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz')
             ->withManual("https://unicode-org.github.io/icu/userguide/icu4c/build.html")
             ->withCleanBuildDirectory()
             ->withPrefix(ICU_PREFIX)
@@ -460,6 +536,37 @@ EOF
     );
 }
 
+function install_bzip2_dev_latest(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('bzip2', '/usr/bzip2'))
+            ->withUrl('https://gitlab.com/bzip2/bzip2/-/archive/master/bzip2-master.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                '
+              test -d /usr/bzip2 && rm -rf /usr/bzip2 ;
+              apk add python3 py3-pip && python3 -m pip install pytest ;
+              mkdir build && cd build ;
+            '
+            )
+            ->withConfigure(
+                '
+                    cmake .. -DCMAKE_BUILD_TYPE="Release" \
+                    -DCMAKE_INSTALL_PREFIX=/usr/bzip2  \
+                    -DENABLE_STATIC_LIB=ON ;
+                    cmake --build . --target install   ;
+                    cd - ;
+                    :; #  shell空语句
+                    pwd
+                    return 0 ; # 返回本函数调用处，本函数后续代码不在执行
+            '
+            )
+            ->withLdflags('-L/usr/bzip2/lib')
+            ->withHomePage('https://www.sourceware.org/bzip2/')
+            ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
+    );
+}
+
 function install_cares(Preprocessor $p)
 {
     $cares_prefix = CARES_PREFIX   ;
@@ -514,6 +621,11 @@ function install_libedit(Preprocessor $p)
     );
 }
 
+/*
+// CFLAGS="-static -O2 -Wall" \
+// LDFLAGS="-Wl,R-lncurses"
+// LDFLAGS="-lncurses" \
+ */
 function install_ncurses(Preprocessor $p)
 {
     $ncurses_prefix = NCURSES_PREFIX;
@@ -869,6 +981,150 @@ function install_pgsql(Preprocessor $p)
     );
 }
 
+function install_pgsql_test(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('pgsql'))
+            ->withHomePage('https://www.postgresql.org/')
+            ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
+            ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
+            //https://www.postgresql.org/docs/devel/installation.html
+            //https://www.postgresql.org/docs/devel/install-make.html#INSTALL-PROCEDURE-MAKE
+            ->withManual('https://www.postgresql.org/docs/')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                '
+               test -d /usr/pgsql && rm -rf /usr/pgsql
+            '
+            )
+            ->withConfigure(
+                '
+             # src/Makefile.shlib 有静态配置
+             # src/interfaces/libpq/Makefile  有静态配置  参考：  install-lib install-lib-static  installdirs  installdirs-lib install-lib-pc
+              
+           # sed -i "s/ifndef haslibarule/ifndef custom_static/"  src/Makefile.shlib     
+           # sed -i "s/endif #haslibarule/endif #custom_static/"  src/Makefile.shlib     
+           sed -i "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
+           # cp -rf  /work/Makefile.shlib src/Makefile.shlib   
+           # sed -i "120a \	echo \$<" src/interfaces/libpq/Makefile
+           # sed -i "120a \	echo \$(PORTNAME)" src/interfaces/libpq/Makefile
+           # 替换指定行内容
+           sed -i "102c all: all-lib" src/interfaces/libpq/Makefile
+           
+           cat >> src/interfaces/libpq/Makefile <<"-EOF-"
+           
+libpq5555.a: $(OBJS) | $(SHLIB_PREREQS)
+	echo $(SHLIB_PREREQS)
+	echo $(SHLIB_LINK)
+	echo $(exports_file)
+	#rm -f $@
+	rm -f libpq.a
+	# ar  rcs $@  $^ 
+	ar  rcs libpq.a  $^ 
+	# ranlib $@
+	ranlib libpq.a
+	# touch $@
+	# touch libpq.a
+install-libpq5555.a: install-lib-static install-lib-pc
+	$(MKDIR_P) "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)"
+	$(INSTALL_DATA) $(srcdir)/libpq-fe.h "$(DESTDIR)$(includedir)"
+	$(INSTALL_DATA) $(srcdir)/libpq-events.h "$(DESTDIR)$(includedir)"
+	$(INSTALL_DATA) $(srcdir)/libpq-int.h "$(DESTDIR)$(includedir_internal)"
+	$(INSTALL_DATA) $(srcdir)/fe-auth-sasl.h "$(DESTDIR)$(includedir_internal)"
+	$(INSTALL_DATA) $(srcdir)/pqexpbuffer.h "$(DESTDIR)$(includedir_internal)"
+-EOF-
+             
+            export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
+            
+            ./configure  --prefix=/usr/pgsql \
+            --enable-coverage=no \
+            --with-ssl=openssl  \
+            --with-readline \
+            --without-icu \
+            --without-ldap \
+            --without-libxml  \
+            --without-libxslt \
+            \
+           --with-includes="/usr/openssl_3/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/zlib/include:/usr/include" \
+           --with-libraries="/usr/openssl_3/lib64:/usr/libxslt/lib/:/usr/libxml2/lib/:/usr/zlib/lib:/usr/lib"
+            # --with-includes="/usr/openssl_1/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/zlib/include:/usr/include" \
+            # --with-libraries="/usr/openssl_1/lib:/usr/libxslt/lib/:/usr/libxml2/lib/:/usr/zlib/lib:/usr/lib"
+           
+            make -C src/include install 
+            make -C  src/bin/pg_config install
+            
+            make -C  src/common -j $cpu_nums all 
+            make -C  src/common install 
+            
+            make -C  src/port -j $cpu_nums all 
+            make -C  src/port install 
+            
+     
+            make -C  src/backend/libpq -j $cpu_nums all 
+            make -C  src/backend/libpq install 
+            
+            make -C src/interfaces/ecpg   -j $cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
+            make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
+            
+            # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
+            
+            
+ 
+            make -C src/interfaces/libpq  -j $cpu_nums # soname=true
+           
+            make -C src/interfaces/libpq  install 
+            
+            rm -rf /usr/pgsql/lib/*.so.*
+            rm -rf /usr/pgsql/lib/*.so
+            return 0 
+            make -C  src/interfaces/libpq -j $cpu_nums libpq5555.a
+            make -C  src/interfaces/libpq install-libpq5555.a
+            
+            rm -rf /usr/pgsql/lib/*.so.*
+            rm -rf /usr/pgsql/lib/*.so
+            
+            return 0 
+            
+            nm -A /usr/pgsql/lib/libpq.a 
+            
+            exit 0 
+            make -C src/interfaces/libpq  -j $cpu_nums  libpq.a 
+            exit 0 
+            make -C src/interfaces/libpq    install-libpq.a
+            
+            return 0 
+            
+            rm -rf /usr/pgsql/lib/*.so.*
+            rm -rf /usr/pgsql/lib/*.so
+            
+            return 0
+            
+            # need stage 
+            # src/include         
+            $ src/common        
+            # src/port          
+            # src/interfaces/libpq        
+            # src/bin/pg_config
+           
+           
+            '
+            )
+            ->withMakeOptions('-C src/common all')
+            ->withMakeInstallOptions('-C src/include install ')
+            ->withPkgName('libpq')
+            ->withPkgConfig('/usr/pgsql/lib/pkgconfig')
+            ->withLdflags('-L/usr/pgsql/lib/')
+            ->withBinPath('/usr/pgsql/bin/')
+            ->withScriptAfterInstall(
+                '
+            '
+            )
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
+    );
+}
 function install_libffi($p)
 {
     $p->addLibrary(
@@ -2422,5 +2678,41 @@ function install_p11_kit(Preprocessor $p)
             )
             ->withBypassMakeAndMakeInstall()
             ->withPkgName('p11_kit')
+    );
+}
+
+function install_pcre2(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('pcre2', '/usr/pcre2'))
+            ->withUrl('https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz')
+            ->withFile('pcre2-10.42.tar.gz')
+            ->withSkipInstall()
+            //  CFLAGS='-static -O2 -Wall'
+            ->withConfigure(
+                "
+            ./configure --help
+            ./configure \
+            --prefix=/usr/pcre2 \
+            --enable-static \
+            --disable-shared \
+            --enable-pcre2-16 \
+            --enable-pcre2-32 \
+            --enable-jit \
+            --enable-unicode
+         "
+            )
+            ->withMakeInstallOptions('install ')
+            //->withPkgConfig('/usr/pcre2/lib/pkgconfig')
+            ->disableDefaultPkgConfig()
+            //->withPkgName("libpcre2-16     libpcre2-32    libpcre2-8      libpcre2-posix")
+            ->disablePkgName()
+            //->withLdflags('-L/usr/pcre2/lib')
+            ->disableDefaultLdflags()
+            ->withLicense(
+                'https://github.com/PCRE2Project/pcre2/blob/master/COPYING',
+                Library::LICENSE_PCRE2
+            ) //PCRE2 LICENCE
+            ->withHomePage('https://github.com/PCRE2Project/pcre2.git')
     );
 }

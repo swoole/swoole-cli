@@ -6,6 +6,8 @@ function libraries_install_builder($p){
 
     install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
     install_openssl($p);
+    install_openssl_v3($p);
+    install_openssl_v3_quic($p);
     install_libxml2($p); //依赖 libiconv
     install_libxslt($p); //依赖 libxml2 libiconv
 
@@ -19,7 +21,7 @@ function libraries_install_builder($p){
 
 
     install_brotli($p); //有多种安装方式，选择使用cmake 安装
-    install_cares($p);
+    install_cares($p);  // swoole 使用 SWOOLE_CFLAGS 实现
 
     install_ninja($p); //需要自己构建，alpine 默认没有提供源
     install_harfbuzz($p); //依赖ninja （alpine ninja 需要源码编译)
@@ -34,6 +36,7 @@ function libraries_install_builder($p){
     install_liblzma($p);
     install_libzstd($p); //zstd 依赖 lz4
     install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd 静态库 (liblzma库 zstd库 暂不启用）
+    //install_bzip2_dev_latest($p);
 
     install_libedit($p);
     install_ncurses($p);
@@ -142,6 +145,8 @@ function libraries_install_builder($p){
         install_snappy($p);
         install_kerberos($p);
         install_fontconfig($p);
+        install_pcre2($p);
+        install_pgsql_test($p);
     }
 
 }
