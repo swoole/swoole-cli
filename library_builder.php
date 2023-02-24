@@ -1,13 +1,11 @@
 <?php
 
 
-function libraries_install_builder($p){
+function libraries_builder($p){
 
 
     install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
     install_openssl($p);
-    install_openssl_v3($p);
-    install_openssl_v3_quic($p);
     install_libxml2($p); //依赖 libiconv
     install_libxslt($p); //依赖 libxml2 libiconv
 
@@ -128,6 +126,8 @@ function libraries_install_builder($p){
 
      */
     if(0) {
+        install_openssl_v3($p);
+        install_openssl_v3_quic($p);
         install_libevent($p);
         install_libuv($p);
         install_libev($p);

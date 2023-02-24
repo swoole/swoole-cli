@@ -28,59 +28,6 @@ function install_openssl(Preprocessor $p)
     );
 }
 
-function install_openssl_v3(Preprocessor $p)
-{
-    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
-    $p->addLibrary(
-        (new Library('openssl_v3', '/usr/openssl'))
-            ->withUrl('https://www.openssl.org/source/openssl-3.0.7.tar.gz')
-            ->withFile('openssl-3.0.7.tar.gz')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            # ./config $static \
-            ./Configure   $static  \
-            no-shared --release --prefix=/usr/openssl_v3
-EOF
-            )
-            ->withMakeOptions('build_sw')
-            ->withMakeInstallOptions('install_sw')
-            ->withPkgConfig('/usr/openssl_v3/lib64/pkgconfig')
-            ->withPkgName('libcrypto libssl openssl')
-            ->withLdflags('-L/usr/openssl_v3/lib64')
-            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
-            ->withHomePage('https://www.openssl.org/')
-
-    );
-}
-
-function install_openssl_v3_quic(Preprocessor $p)
-{
-    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
-    $p->addLibrary(
-        (new Library('openssl_v3_quic', '/usr/openssl'))
-            ->withUrl('https://www.openssl.org/source/openssl-3.0.7.tar.gz')
-            //https://github.com/quictls/openssl
-            ->withFile('openssl-3.0.7.tar.gz')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            # ./config $static \
-            ./Configure   $static  \
-            no-shared --release --prefix=/usr/openssl_v3_quic
-EOF
-            )
-            ->withMakeOptions('build_sw')
-            ->withMakeInstallOptions('install_sw')
-            ->withPkgConfig('/usr/openssl_v3_quic/lib64/pkgconfig')
-            ->withPkgName('libcrypto libssl openssl')
-            ->withLdflags('-L/usr/openssl_v3_quic/lib64')
-            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
-            ->withHomePage('https://curl.se/docs/http3.html')
-
-    );
-}
-
 function install_libiconv(Preprocessor $p)
 {
 
@@ -112,7 +59,7 @@ EOF
 
 }
 
-// MUST be in the /usr directory
+
 // Dependent libiconv
 function install_libxml2(Preprocessor $p)
 {
@@ -128,7 +75,7 @@ EOF
             )
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
             ->withPkgName('libexslt libxslt')
-            ->depends('libxml2', 'libiconv')
+            ->depends( 'libiconv')
     );
 
 }
