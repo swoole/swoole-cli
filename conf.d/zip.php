@@ -20,7 +20,7 @@ return function (Preprocessor $p) {
 EOF
             )
     );
-    $liblzma_prefix = LIBLZ4_PREFIX;
+    $liblzma_prefix = LIBLZMA_PREFIX;
     $p->addLibrary(
         (new Library('liblzma'))
             ->withHomePage('https://tukaani.org/xz/')
