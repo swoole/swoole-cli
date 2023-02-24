@@ -15,9 +15,13 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.6"
+    "phpunit/phpunit": "^9.6",
+    "friendsofphp/php-cs-fixer": "^3.13.1",
+    "phpstan/phpstan": "^1.9.4",
+    "squizlabs/php_codesniffer": "*"
   },
   "scripts": {
-    "test": "phpunit"
+    "test": "phpunit",
+    "format-code": "php-cs-fixer  fix ./library_install_builder.php --rules=@PSR12"
   }
 }
