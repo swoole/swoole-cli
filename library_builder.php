@@ -49,10 +49,14 @@ function libraries_builder($p){
 
 
 
-
     //参考 https://github.com/docker-library/php/issues/221
     install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt
     install_libffi($p);
+
+    if ($p->getOsType() == 'macos') {
+        install_bison($p);  // 源码编译bison
+        // install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
+    }
 
 
 
@@ -61,10 +65,6 @@ function libraries_builder($p){
     install_php_extension_micro($p);
 
 
-    if ($p->getOsType() == 'macos') {
-        install_bison($p);  // 源码编译bison
-       // install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
-    }
 
     if ($p->getOsType() == 'win') {
         install_re2c($p);
@@ -92,6 +92,9 @@ function libraries_builder($p){
     export LIBS="$LIBS -L/usr/lib -lstdc++"
 
      */
+    if(1){
+
+    }
     if(0) {
         install_libedit($p);
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
