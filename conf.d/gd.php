@@ -74,6 +74,7 @@ return function (Preprocessor $p) {
                 '--with-giflibdir=' . GIF_PREFIX . '/lib'
             )
             ->withPkgName('libwebp')
+            ->withLdflags('-L' . WEBP_PREFIX . '/lib -lwebpdemux -lwebpmux')
             ->depends('libpng', 'libjpeg', 'libgif')
     );
     $freetype_prefix = FREETYPE_PREFIX;

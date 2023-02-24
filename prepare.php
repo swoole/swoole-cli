@@ -20,7 +20,11 @@ if ($p->getInputOption('without-docker')) {
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup');
+    // fix "checking for curl_easy_perform in -lcurl"
+    $p->setConfigureVarables('LDFLAGS="-framework CoreFoundation -framework SystemConfiguration"');
 }
+
+$p->setExtraCflags('-fno-ident -Os');
 
 // Generate make.sh
 $p->execute();
