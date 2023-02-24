@@ -803,7 +803,8 @@ class Preprocessor
             mkdir($this->extensionDir, 0777, true);
         }
         include __DIR__ . '/constants.php';
-        libraries_install_builder($this);
+        //构建依赖库安装脚本
+        libraries_builder($this);
         $extAvailabled = [];
         if (is_dir($this->rootDir . '/conf.d')) {
             $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
