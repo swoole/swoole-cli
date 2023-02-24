@@ -1,6 +1,7 @@
 <?php
 $src = dirname(__DIR__);
-$dst = "/cygdrive/d/swoole-cli-v".SWOOLE_VERSION."-cygwin-x64";
+$name = "swoole-cli-v".SWOOLE_VERSION."-cygwin-x64";
+$dst = "/tmp/{$name}";
 if (!is_dir($dst)) {
     mkdir($dst, 0777, true);
 }
@@ -31,3 +32,16 @@ copy("{$src}/bin/swoole-cli.exe", $dst."/bin/swoole-cli.exe");
 copy("{$src}/bin/LICENSE", $dst."/LICENSE");
 echo `cp -rL /etc/pki/ {$dst}/etc`;
 echo "done.\n";
+
+
+$pack = "cd " . dirname($dst) . " && zip -r {$name}.zip {$name} && cd -";
+echo $pack . PHP_EOL;
+echo `$pack`;
+
+$move = "mv {$dst}.zip {$src}";
+echo $move . PHP_EOL;
+echo `$move`;
+
+echo "clean..." . PHP_EOL;
+echo `rm -rf {$dst}`;
+

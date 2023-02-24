@@ -50,6 +50,8 @@ git clone --recursive git@github.com:swoole/swoole-cli.git
 - 构建：`./sapi/cygwin-build.sh`
 - 打包：`bin/swoole-cli sapi/cygwin-pack.php`
 
+打包完成后会在当前目录下生成 `swoole-cli-{version}-cygwin-x64.zip` 压缩包。
+
 备注
 ----
 1. Cygwin 下不支持 `mongodb` 扩展，参考：[https://github.com/mongodb/mongo-php-driver/issues/1381](https://github.com/mongodb/mongo-php-driver/issues/1381)
