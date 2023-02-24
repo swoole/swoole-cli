@@ -8,5 +8,6 @@ return function (Preprocessor $p) {
         ->withOptions('--enable-apcu')
         ->withPeclVersion('5.1.22')
         ->withHomePage('https://pecl.php.net/package/APCu')
+        ->withManual("https://github.com/krakjoe/apcu")
     );
 };

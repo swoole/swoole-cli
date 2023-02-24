@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+
     $p->addExtension((new Extension('imagick'))
         ->withOptions('--with-imagick=' . IMAGEMAGICK_PREFIX)
         ->withPeclVersion('3.6.0')

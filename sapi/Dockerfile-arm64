@@ -1,0 +1,21 @@
+FROM arm64v8/alpine:latest
+
+# setup source repo, install dependencies
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+RUN apk update --allow-untrusted
+RUN apk upgrade --allow-untrusted
+RUN apk add --allow-untrusted vim
+RUN apk add --allow-untrusted alpine-sdk
+RUN apk add --allow-untrusted xz
+RUN apk add --allow-untrusted autoconf
+RUN apk add --allow-untrusted automake
+RUN apk add --allow-untrusted linux-headers
+RUN apk add --allow-untrusted clang
+RUN apk add --allow-untrusted clang-dev
+RUN apk add --allow-untrusted lld
+RUN apk add --allow-untrusted libtool
+RUN apk add --allow-untrusted cmake
+RUN apk add --allow-untrusted bison
+RUN apk add --allow-untrusted re2c
+RUN apk add --allow-untrusted bash
+WORKDIR /work

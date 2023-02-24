@@ -2,7 +2,6 @@
 
 namespace SwooleCli;
 
-use JetBrains\PhpStorm\Pure;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
@@ -51,11 +50,6 @@ abstract class Project
         return $this;
     }
 
-    public function withManual(string $manua):static
-    {
-        $this->manual = $manua;
-        return $this;
-    }
 }
 
 class Library extends Project
@@ -71,8 +65,13 @@ class Library extends Project
     public string $ldflags = '';
 
     public bool $cleanBuildDirectory = false;
-    public bool $bypassMakeAndMakeInstall = false;
+
+    public bool $cleanInstallDirectory = false;
+    public string $preInstallDirectory = '';
+    public bool $skipMakeAndMakeInstall = false;
     public string $makeOptions = '';
+    public string $makeVariables = '';
+
     public string $makeInstallCommand = 'install';
     public string $makeInstallOptions = '';
     public string $beforeInstallScript = '';
@@ -84,12 +83,13 @@ class Library extends Project
     public bool $skipBuildLicense = false;
     public bool $skipDownload = false;
     public bool $skipBuildInstall = false;
-    public bool $skipMakeAndMakeInstall = false;
+
     public string $untarArchiveCommand = 'tar';
     public string $beforeConfigureScript = '';
     public string $binPath = '';
 
     public string $label = '';
+
 
     function withUrl(string $url): static
     {
@@ -139,9 +139,24 @@ class Library extends Project
         return $this;
     }
 
-    public function withBypassMakeAndMakeInstall():static
+    public function withCleanInstallDirectory(string $pre_install_dir ):static
     {
-        $this->bypassMakeAndMakeInstall = true;
+        if( $this->prefix != '/usr' &&  !empty($pre_install_dir)) {
+            $this->cleanInstallDirectory = true;
+            $this->preInstallDirectory = $pre_install_dir;
+        }
+        return $this;
+    }
+
+    public function withSkipMakeAndMakeInstall():static
+    {
+        $this->skipMakeAndMakeInstall = true;
+        return $this;
+    }
+
+    function withMakeVariables(string $variables): static
+    {
+        $this->makeVariables = $variables;
         return $this;
     }
 
@@ -151,13 +166,13 @@ class Library extends Project
         return $this;
     }
 
-    function withScriptBeforeInstall(string $script)
+    function withScriptBeforeInstall(string $script): static
     {
         $this->beforeInstallScript = $script;
         return $this;
     }
 
-    function withScriptAfterInstall(string $script)
+    function withScriptAfterInstall(string $script): static
     {
         $this->afterInstallScript = $script;
         return $this;
@@ -197,11 +212,7 @@ class Library extends Project
         $this->disableDefaultLdflags();
         return $this;
     }
-    public function withSkipMakeAndMakeInstall(): static
-    {
-        $this->skipMakeAndMakeInstall = true ;
-        return $this;
-    }
+
     public function withUntarArchiveCommand(string $command): static
     {
         $this->untarArchiveCommand = $command;
@@ -240,6 +251,7 @@ class Library extends Project
         $this->binPath = $path;
         return $this;
     }
+
 
     public function disableDefaultPkgConfig(): static
     {
@@ -290,14 +302,19 @@ class Extension extends Project
 
 class Preprocessor
 {
-    const VERSION = '1.5';
+    const VERSION = '1.6';
     const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
+    const CONTAINER_NAME = 'swoole-cli-builder';
 
-    protected static $instance = null;
+    protected static ?Preprocessor $instance = null;
 
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
+
+    protected string $cCompiler = 'clang';
+    protected string $cppCompiler = 'clang++';
+    protected string $lld = 'ld.lld';
 
     protected array $downloadExtensionList = [];
 
@@ -332,10 +349,13 @@ class Preprocessor
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
+    protected string $extraCflags = '';
+    protected string $configureVarables = '';
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
 
+    protected array $binPaths = [];
     /**
      * Extensions enabled by default
      * @var array|string[]
@@ -383,11 +403,21 @@ class Preprocessor
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
-    protected array $binPaths = [];
 
     protected function __construct()
     {
-
+        switch (PHP_OS) {
+            default:
+            case 'Linux':
+                $this->setOsType('linux');
+                break;
+            case 'Darwin':
+                $this->setOsType('macos');
+                break;
+            case 'WINNT':
+                $this->setOsType('win');
+                break;
+        }
     }
 
     public static function getInstance(): static
@@ -403,18 +433,12 @@ class Preprocessor
         $this->osType = $osType;
     }
 
-    function getOsType()
+    function getOsType(): string
     {
         return $this->osType;
     }
 
-
-    public function getRootDir()
-    {
-        return $this->rootDir;
-    }
-
-    function getSystemArch()
+    function getSystemArch(): string
     {
         $uname = \posix_uname();
         switch ($uname['machine']) {
@@ -437,6 +461,26 @@ class Preprocessor
         }
     }
 
+    function getBaseImageTag(): string
+    {
+        $arch = $this->getSystemArch();
+        if ($arch == 'x64') {
+            return 'base';
+        } else {
+            return 'base' . '-' . $arch;
+        }
+    }
+
+    function getBaseImageDockerFile(): string
+    {
+        $arch = $this->getSystemArch();
+        if ($arch == 'x64') {
+            return 'Dockerfile';
+        } else {
+            return 'Dockerfile' . '-' . $arch;
+        }
+    }
+
     function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
@@ -456,6 +500,11 @@ class Preprocessor
     function setRootDir(string $rootDir)
     {
         $this->rootDir = $rootDir;
+    }
+
+    function getRootDir(): string
+    {
+        return $this->rootDir;
     }
 
     function setLibraryDir(string $libraryDir)
@@ -493,6 +542,16 @@ class Preprocessor
         $this->extraLdflags = $flags;
     }
 
+    function setExtraCflags(string $flags)
+    {
+        $this->extraCflags = $flags;
+    }
+
+    function setConfigureVarables(string $varables)
+    {
+        $this->configureVarables = $varables;
+    }
+
     function setExtraOptions(string $options)
     {
         $this->extraOptions = $options;
@@ -516,24 +575,28 @@ class Preprocessor
     {
         $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
         echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
-
-        //echo `wget {$url} -O {$file}`;
         if (!is_file($file) or filesize($file) == 0) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
     }
 
+    /**
+     * @param Library $lib
+     * @throws \RuntimeException
+     */
     function addLibrary(Library $lib)
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
         }
 
-        $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD') || $lib->getSkipDownload() );
+
+        $skip_download = ($this->getInputOption('skip-download') ||  $lib->getSkipDownload() );
         if (!$skip_download) {
+            $file=$this->libraryDir . '/' . $lib->file;
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, "{$this->libraryDir}/{$lib->file}");
+                $this->downloadFile($lib->url, "{$file}");
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -562,8 +625,7 @@ class Preprocessor
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
-            $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
-            if (!$skip_download) {
+            if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path)) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                     $this->downloadFile($ext->url, $ext->path);
@@ -578,7 +640,7 @@ class Preprocessor
 
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
-            $this->downloadExtensionList[] = ['url'=>$ext->url,'file'=>$ext->file];
+            $this->downloadExtensionList[] = ['url' => $ext->url, 'file' => $ext->file];
         }
 
         $this->extensionList[] = $ext;
@@ -646,9 +708,23 @@ class Preprocessor
         }
     }
 
-    function getInputOption(string $key): string
+    /**
+     * Get the value of an input option, attempting to read from command-line arguments and environment variables,
+     * and returning the default value if not set
+     * @param string $key
+     * @param string $default
+     * @return string
+     */
+    function getInputOption(string $key, string $default = ''): string
     {
-        return $this->inputOptions[$key] ?? false;
+        if (isset($this->inputOptions[$key])) {
+            return $this->inputOptions[$key];
+        }
+        $env = getenv('SWOOLE_CLI_' . str_replace('-', '_', strtoupper($key)));
+        if ($env !== false) {
+            return $env;
+        }
+        return $default;
     }
 
     /**
@@ -721,23 +797,9 @@ class Preprocessor
         if (!is_dir($this->extensionDir)) {
             mkdir($this->extensionDir, 0777, true);
         }
-        if (empty($this->osType)) {
-            switch (PHP_OS) {
-                default:
-                case 'Linux':
-                    $this->setOsType('linux');
-                    break;
-                case 'Darwin':
-                    $this->setOsType('macos');
-                    break;
-                case 'WINNT':
-                    $this->setOsType('win');
-                    break;
-            }
-        }
-
         include __DIR__ . '/constants.php';
-        libraries_install_builder($this);
+        //构建依赖库安装脚本
+        libraries_builder($this);
         $extAvailabled = [];
         if (is_dir($this->rootDir . '/conf.d')) {
             $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
@@ -778,6 +840,13 @@ class Preprocessor
         //暂时由手工维护，依赖关系
         // $this->sortLibrary();
 
+
+        $this->binPaths[] = '$PATH';
+        $this->binPaths = array_unique($this->binPaths);
+
+        if ($this->getInputOption('skip-download')) {
+            $this->generateLibraryDownloadLinks();
+        }
 
         ob_start();
         include __DIR__ . '/make.php';
