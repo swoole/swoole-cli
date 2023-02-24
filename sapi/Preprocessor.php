@@ -25,7 +25,6 @@ abstract class Project
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
-
     function __construct(string $name)
     {
         $this->name = $name;
@@ -44,11 +43,6 @@ abstract class Project
         return $this;
     }
 
-    public function withManual(string $manual): static
-    {
-        $this->manual = $manual;
-            return $this;
-    }
 
     function depends(string ...$libs): static
     {
@@ -89,6 +83,7 @@ class Library extends Project
     public bool $skipBuildLicense = false;
     public bool $skipDownload = false;
     public bool $skipBuildInstall = false;
+
     public string $untarArchiveCommand = 'tar';
     public string $beforeConfigureScript = '';
     public string $binPath = '';

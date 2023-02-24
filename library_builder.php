@@ -9,6 +9,7 @@ function libraries_builder($p){
     install_libxml2($p); //依赖 libiconv
     install_libxslt($p); //依赖 libxml2 libiconv
 
+
     install_gmp($p); // 精度算术库
 
     install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令  BZIP2_LIBS=-L/usr/bizp2/lib -lbz2
@@ -20,6 +21,7 @@ function libraries_builder($p){
 
     install_brotli($p); //有多种安装方式，选择使用cmake 安装
     install_cares($p);  // swoole 使用 SWOOLE_CFLAGS 实现
+
 
     install_ninja($p); //需要自己构建，alpine 默认没有提供源
     install_harfbuzz($p); //依赖ninja （alpine ninja 需要源码编译)
@@ -86,7 +88,6 @@ function libraries_builder($p){
     install_libserverframe($p);
     install_fastdfs($p); //依赖 libfastcommon libserverframe
 
-
     install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
 
     install_php_extension_micro($p);
@@ -94,6 +95,7 @@ function libraries_builder($p){
     //install_php_extension_libevent($p);
     //install_php_extension_zstd($p);
     //install_php_extension_libuv($p);
+
 
     if ($p->getOsType() == 'macos') {
         install_bison($p);  // 源码编译bison
@@ -150,3 +152,4 @@ function libraries_builder($p){
     }
 
 }
+

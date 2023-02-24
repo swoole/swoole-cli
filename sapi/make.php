@@ -101,7 +101,6 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
 
-
     # before make install
 <?php if ($item->beforeInstallScript): ?>
     <?=$item->beforeInstallScript . PHP_EOL ?>
