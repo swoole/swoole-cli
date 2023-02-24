@@ -2,7 +2,6 @@
 
 namespace SwooleCli;
 
-use JetBrains\PhpStorm\Pure;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
@@ -120,13 +119,13 @@ class Library extends Project
         return $this;
     }
 
-    function withScriptBeforeInstall(string $script)
+    function withScriptBeforeInstall(string $script): static
     {
         $this->beforeInstallScript = $script;
         return $this;
     }
 
-    function withScriptAfterInstall(string $script)
+    function withScriptAfterInstall(string $script): static
     {
         $this->afterInstallScript = $script;
         return $this;
@@ -196,6 +195,10 @@ class Preprocessor
     protected array $libraryList = [];
     protected array $extensionList = [];
 
+    protected string $cCompiler = 'clang';
+    protected string $cppCompiler = 'clang++';
+    protected string $lld = 'ld.lld';
+
     protected array $downloadExtensionList = [];
 
     protected array $libraryMap = [];
@@ -229,6 +232,7 @@ class Preprocessor
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
+    protected string $extraCflags = '';
     protected string $configureVarables = '';
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
@@ -311,12 +315,12 @@ class Preprocessor
         $this->osType = $osType;
     }
 
-    function getOsType()
+    function getOsType(): string
     {
         return $this->osType;
     }
 
-    function getSystemArch()
+    function getSystemArch(): string
     {
         $uname = posix_uname();
         switch ($uname['machine']) {
@@ -420,6 +424,11 @@ class Preprocessor
         $this->extraLdflags = $flags;
     }
 
+    function setExtraCflags(string $flags)
+    {
+        $this->extraCflags = $flags;
+    }
+
     function setConfigureVarables(string $varables)
     {
         $this->configureVarables = $varables;
@@ -452,13 +461,17 @@ class Preprocessor
         }
     }
 
+    /**
+     * @param Library $lib
+     * @throws \RuntimeException
+     */
     function addLibrary(Library $lib)
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
         }
 
-        $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
+        $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
@@ -487,8 +500,7 @@ class Preprocessor
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
-            $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
-            if (!$skip_download) {
+            if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path)) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                     $this->downloadFile($ext->url, $ext->path);
@@ -503,7 +515,7 @@ class Preprocessor
 
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
-            $this->downloadExtensionList[] = ['url'=>$ext->url,'file'=>$ext->file];
+            $this->downloadExtensionList[] = ['url' => $ext->url, 'file' => $ext->file];
         }
 
         $this->extensionList[] = $ext;
@@ -571,9 +583,23 @@ class Preprocessor
         }
     }
 
-    function getInputOption(string $key, mixed $default = false): mixed
+    /**
+     * Get the value of an input option, attempting to read from command-line arguments and environment variables,
+     * and returning the default value if not set
+     * @param string $key
+     * @param string $default
+     * @return string
+     */
+    function getInputOption(string $key, string $default = ''): string
     {
-        return $this->inputOptions[$key] ?? $default;
+        if (isset($this->inputOptions[$key])) {
+            return $this->inputOptions[$key];
+        }
+        $env = getenv('SWOOLE_CLI_' . str_replace('-', '_', strtoupper($key)));
+        if ($env !== false) {
+            return $env;
+        }
+        return $default;
     }
 
     /**
@@ -679,8 +705,7 @@ class Preprocessor
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
         $this->sortLibrary();
 
-        $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
-        if ($skip_download) {
+        if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();
         }
 

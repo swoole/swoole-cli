@@ -24,5 +24,7 @@ if ($p->getOsType() == 'macos') {
     $p->setConfigureVarables('LDFLAGS="-framework CoreFoundation -framework SystemConfiguration"');
 }
 
+$p->setExtraCflags('-fno-ident -Os');
+
 // Generate make.sh
 $p->execute();

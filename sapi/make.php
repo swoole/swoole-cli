@@ -6,9 +6,9 @@ use SwooleCli\Preprocessor;
 ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
-export CC=clang
-export CXX=clang++
-export LD=ld.lld
+export CC=<?= $this->cCompiler . PHP_EOL ?>
+export CXX=<?= $this->cppCompiler . PHP_EOL ?>
+export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
 <?php foreach ($this->extensionList as $item) : ?>
@@ -139,13 +139,13 @@ make_config() {
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-    make EXTRA_CFLAGS='-fno-ident -Os' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?=$this->extraLdflags?> <?php foreach ($this->libraryList as $item) {
+    make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
+    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
             echo $item->ldflags;
             echo ' ';
         }
-    } ?>'  -j <?=$this->maxJob?> && echo ""
+    } ?>'  -j <?= $this->maxJob ?> && echo ""
 }
 
 help() {
