@@ -25,6 +25,7 @@ if ($p->getOsType() == 'macos') {
 }
 
 
+
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
@@ -70,6 +71,7 @@ EOF;
 });
 
 
+$p->setExtraCflags('-fno-ident -Os');
 
 // Generate make.sh
 $p->execute();
