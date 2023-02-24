@@ -5,7 +5,7 @@
 use SwooleCli\Preprocessor;
 ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
-ROOT=$(pwd)
+ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
@@ -173,20 +173,24 @@ help() {
 
 if [ "$1" = "docker-build" ] ;then
     cd <?=$this->getRootDir()?>/sapi
-    docker build -t <?= Preprocessor::IMAGE_NAME ?>:base .
+    docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f <?= $this->getBaseImageDockerFile() ?>  .
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
-    base_image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:base | tail -n +2 2> /dev/null)
+    base_image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> | tail -n +2 2> /dev/null)
     image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> | tail -n +2 2> /dev/null)
 
     if [[ -z ${container} ]] ;then
-        if [ -n -z ${image} ] ;then
-            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
-        elif [ -n -z ${base_image} ]] ;then
-            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:base /bin/bash
+        if [[ ! -z ${image} ]] ;then
+            echo "swoole-cli-builder container does not exist, try to create with image[<?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?>]"
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v ${ROOT}:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+        elif [[ ! -z ${base_image} ]] ;then
+            echo "swoole-cli-builder container does not exist, try to create with image[<?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?>]"
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v ${ROOT}:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> /bin/bash
         else
-            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v $ROOT:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+            echo "<?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> image does not exist, try to pull"
+            echo "create container with <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> image"
+            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v ${ROOT}:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
         fi
     else
         if [[ "${container}" =~ "Exited" ]]; then

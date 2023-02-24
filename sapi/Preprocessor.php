@@ -339,6 +339,26 @@ class Preprocessor
         }
     }
 
+    function getBaseImageTag(): string
+    {
+        $arch = $this->getSystemArch();
+        if ($arch == 'x64') {
+            return 'base';
+        } else {
+            return 'base' . '-' . $arch;
+        }
+    }
+
+    function getBaseImageDockerFile(): string
+    {
+        $arch = $this->getSystemArch();
+        if ($arch == 'x64') {
+            return 'Dockerfile';
+        } else {
+            return 'Dockerfile' . '-' . $arch;
+        }
+    }
+
     function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
