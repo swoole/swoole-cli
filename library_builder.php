@@ -59,15 +59,11 @@ function libraries_builder($p){
     install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
 
     install_php_extension_micro($p);
-    //install_php_extension_fastdfs($p);
-    //install_php_extension_libevent($p);
-    //install_php_extension_zstd($p);
-    //install_php_extension_libuv($p);
 
 
     if ($p->getOsType() == 'macos') {
         install_bison($p);  // 源码编译bison
-        install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
+       // install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
     }
 
     if ($p->getOsType() == 'win') {
@@ -154,6 +150,13 @@ function libraries_builder($p){
         install_pcre2($p);
         install_pgsql_test($p);
 
+
+    }
+    if(0){
+        //install_php_extension_fastdfs($p);
+        //install_php_extension_libevent($p);
+        //install_php_extension_zstd($p);
+        //install_php_extension_libuv($p);
 
     }
 

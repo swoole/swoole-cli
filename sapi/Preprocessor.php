@@ -43,6 +43,12 @@ abstract class Project
         return $this;
     }
 
+    function withManual(string $manual): static
+    {
+        $this->manual = $manual;
+        return $this;
+    }
+
 
     function depends(string ...$libs): static
     {
