@@ -991,6 +991,8 @@ EOF;
 /usr/lib
 EOF;
 
+
+
     $libraries=trim(str_replace(PHP_EOL,'',$libraries));
     $p->addLibrary(
         (new Library('pgsql'))
@@ -1004,7 +1006,7 @@ EOF;
             ->withCleanBuildDirectory()
             ->withCleanInstallDirectory($pgsql_prefix)
             ->withConfigure(
-                <<<EOF
+                <<<'EOF'
             ./configure --help
             
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
@@ -1015,9 +1017,19 @@ EOF;
             # export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
             # export CFLAGS="-static -fPIE -fPIC -O2 -Wall "
             
-            export CPPFLAGS=$(pkg-config  --cflags --static  icu-uc icu-io icu-i18n readline libxml-2.0)
-            export LIBS=$(pkg-config  --libs --static   icu-uc icu-io icu-i18n readline libxml-2.0)
-          
+       
+            package_names="icu-uc icu-io icu-i18n readline libxml-2.0 openssl "
+         
+        
+            CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
+            export   CPPFLAGS="$CPPFLAGS -I/usr/include"
+            LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
+            export   LDFLAGS="$LDFLAGS -L/usr/lib"
+            LIBS=$(pkg-config      --libs-only-l   --static $package_names )
+            export  LIBS="$LIBS "
+            
+EOF
+.          <<<EOF
           
             ./configure  --prefix={$pgsql_prefix} \
             --enable-coverage=no \
@@ -1027,8 +1039,8 @@ EOF;
             --without-ldap \
             --with-libxml  \
             --with-libxslt \
-            --with-includes="{$includes}" \
-            --with-libraries="{$libraries}"
+            # --with-includes="{$includes}" \
+            # --with-libraries="{$libraries}"
 EOF
         .   <<<'EOF'
 
