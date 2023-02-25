@@ -1,11 +1,11 @@
 <?php
 
 
-function libraries_builder($p){
-
-
-    install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
+function libraries_builder($p)
+{
     install_openssl($p);
+    install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
+
     install_libxml2($p); //依赖 libiconv
     install_libxslt($p); //依赖 libxml2 libiconv
 
@@ -48,7 +48,6 @@ function libraries_builder($p){
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
 
 
-
     //参考 https://github.com/docker-library/php/issues/221
     install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt
     install_libffi($p);
@@ -59,11 +58,9 @@ function libraries_builder($p){
     }
 
 
-
     install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
 
     install_php_extension_micro($p);
-
 
 
     if ($p->getOsType() == 'win') {
@@ -85,17 +82,15 @@ function libraries_builder($p){
 # pdo_pgsql,pdo_oci,pdo_odbc,ldap,ffi
 
     /**
-    # 需要特别设置的地方
-
-    export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
-    LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
-    export LIBS="$LIBS -L/usr/lib -lstdc++"
-
+     * # 需要特别设置的地方
+     *
+     * export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
+     * LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
+     * export LIBS="$LIBS -L/usr/lib -lstdc++"
      */
-    if(1){
-
+    if (1) {
     }
-    if(0) {
+    if (0) {
         install_libedit($p);
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
         install_harfbuzz($p); //依赖ninja （alpine ninja 需要源码编译)
@@ -105,7 +100,6 @@ function libraries_builder($p){
         install_libevent($p);
         install_libuv($p);
         install_libev($p);
-
 
 
         install_nettle($p); //加密库
@@ -152,16 +146,13 @@ function libraries_builder($p){
         install_fontconfig($p);
         install_pcre2($p);
         install_pgsql_test($p);
-
-
     }
-    if(0){
+    if (0) {
         //install_php_extension_fastdfs($p);
         //install_php_extension_libevent($p);
         //install_php_extension_zstd($p);
         //install_php_extension_libuv($p);
 
     }
-
 }
 

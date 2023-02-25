@@ -909,7 +909,7 @@ class Preprocessor
                 }
                 $url =implode("\t",$newMirrorUrls);
             }
-            $download_urls[]= $url . PHP_EOL." out=".$item->file;
+            $download_urls[]= $url . PHP_EOL. " out=".$item->file;
         }
         file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
         $download_urls=[];

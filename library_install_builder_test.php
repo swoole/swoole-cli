@@ -105,8 +105,6 @@ function install_ninja(Preprocessor $p)
     if ($p->getOsType() == 'macos') {
         $lib->withUrl('https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-mac.zip');
     }
-
-
 }
 
 function install_nettle($p)
@@ -141,7 +139,8 @@ function install_libtasn1($p)
             ->withManual('https://www.gnu.org/software/libtasn1/manual/')
             ->withUrl('https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.19.0.tar.gz')
             ->withPrefix($libtasn1_prefix)
-            ->withConfigure(<<<EOF
+            ->withConfigure(
+                <<<EOF
             ./configure --help
             ./configure \
             --prefix={$libtasn1_prefix} \
@@ -151,8 +150,8 @@ EOF
             )
             ->withPkgName('libtasn1')
     );
-
 }
+
 function install_libexpat($p)
 {
     $p->addLibrary(
@@ -187,9 +186,11 @@ function install_unbound($p)
             ->withUrl('https://nlnetlabs.nl/downloads/unbound/unbound-1.17.1.tar.gz')
             ->withPrefix('/usr/unbound/')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure('
+            ->withScriptBeforeConfigure(
+                '
                 test -d /usr/unbound/ && rm -rf /usr/unbound/
-            ')
+            '
+            )
             ->withConfigure(
                 '
              ./configure --help
@@ -214,7 +215,7 @@ function install_unbound($p)
 
 function install_gnutls($p)
 {
-    $note=<<<EOF
+    $note = <<<EOF
 
         Required libraries:
             libnettle crypto back-end
@@ -294,7 +295,6 @@ EOF;
             )->withPkgName('gnutls')
     //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
-
 }
 
 
@@ -303,7 +303,10 @@ function install_boringssl($p)
     $p->addLibrary(
         (new Library('boringssl'))
             ->withHomePage('https://boringssl.googlesource.com/boringssl/')
-            ->withLicense('https://boringssl.googlesource.com/boringssl/+/refs/heads/master/LICENSE', Library::LICENSE_BSD)
+            ->withLicense(
+                'https://boringssl.googlesource.com/boringssl/+/refs/heads/master/LICENSE',
+                Library::LICENSE_BSD
+            )
             ->withUrl('https://github.com/google/boringssl/archive/refs/heads/master.zip')
             ->withFile('latest-boringssl.zip')
             ->withSkipDownload()
@@ -313,9 +316,11 @@ function install_boringssl($p)
             ->withUntarArchiveCommand('unzip')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/boringssl')
-            ->withScriptBeforeConfigure('
+            ->withScriptBeforeConfigure(
+                '
                  test -d /usr/boringssl && rm -rf /usr/boringssl
-                ')
+                '
+            )
             ->withConfigure(
                 '
                 cd boringssl-master
@@ -334,7 +339,6 @@ function install_boringssl($p)
             ->disableDefaultPkgConfig()
     //->withSkipBuildInstall()
     );
-
 }
 
 function install_wolfssl($p)
@@ -348,11 +352,13 @@ function install_wolfssl($p)
             ->withManual('https://wolfssl.com/wolfSSL/Docs.html')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/wolfssl')
-            ->withScriptBeforeConfigure('
+            ->withScriptBeforeConfigure(
+                '
                  test -d /usr/wolfssl && rm -rf /usr/wolfssl
-                ')
-
-            ->withConfigure(<<<EOF
+                '
+            )
+            ->withConfigure(
+                <<<EOF
                 ./autogen.sh
                 ./configure --help
                 
@@ -367,12 +373,10 @@ EOF
             ->withPkgName('wolfssl')
     //->withSkipBuildInstall()
     );
-
 }
 
 function install_nghttp3(Preprocessor $p)
 {
-
     $p->addLibrary(
         (new Library('nghttp3'))
             ->withHomePage('https://github.com/ngtcp2/nghttp3')
@@ -382,7 +386,8 @@ function install_nghttp3(Preprocessor $p)
             ->withFile('nghttp3-v0.8.0.tar.gz')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/nghttp3')
-            ->withConfigure('
+            ->withConfigure(
+                '
                 export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
                 export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
            
@@ -393,7 +398,8 @@ function install_nghttp3(Preprocessor $p)
             --enable-shared=no \
             --enable-static=yes 
             
-        ')
+        '
+            )
             ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
             ->withPkgName('libnghttp3')
     );
@@ -401,7 +407,6 @@ function install_nghttp3(Preprocessor $p)
 
 function install_ngtcp2(Preprocessor $p)
 {
-
     //libexpat pcre2 libidn2 brotli
 
     $p->addLibrary(
@@ -412,7 +417,8 @@ function install_ngtcp2(Preprocessor $p)
             ->withFile('ngtcp2-v0.13.1.tar.gz')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/ngtcp2')
-            ->withConfigure('
+            ->withConfigure(
+                '
 
             # openssl does not have QUIC interface, disabling it
             # 
@@ -438,11 +444,13 @@ function install_ngtcp2(Preprocessor $p)
             --with-gnutls=yes \
             --with-libnghttp3=yes \
             --with-libev=yes 
-            ')
+            '
+            )
             ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
             ->withPkgName('libngtcp2  libngtcp2_crypto_gnutls')
     );
 }
+
 function install_quiche(Preprocessor $p)
 {
     $p->addLibrary(
@@ -454,7 +462,8 @@ function install_quiche(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withUntarArchiveCommand('unzip')
             ->withPrefix('/usr/quiche')
-            ->withScriptBeforeConfigure('
+            ->withScriptBeforeConfigure(
+                '
              test  -d /usr/quiche && rm -rf /usr/quiche
              # export RUSTUP_DIST_SERVER=https://mirrors.tuna.edu.cn/rustup
              # export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.edu.cn/rustup/rustup
@@ -465,8 +474,10 @@ function install_quiche(Preprocessor $p)
              export OPENSSL_DIR=/usr/openssl
              export OPENSSL_STATIC=Yes
           
-            ')
-            ->withConfigure('
+            '
+            )
+            ->withConfigure(
+                '
             cd quiche-master
             cargo build --help 
             
@@ -476,11 +487,13 @@ function install_quiche(Preprocessor $p)
             ln -vnf $(find target/release -name libcrypto.a -o -name libssl.a) quiche/deps/boringssl/src/lib/
             exit 0 
         
-            ')
+            '
+            )
             ->withLicense('https://github.com/cloudflare/quiche/blob/master/COPYING', Library::LICENSE_BSD)
             ->withPkgName('quiche')
     );
 }
+
 function install_msh3(Preprocessor $p)
 {
     $p->addLibrary(
@@ -494,11 +507,14 @@ function install_msh3(Preprocessor $p)
             //->withCleanBuildDirectory()
             ->withUntarArchiveCommand('mv')
             ->withPrefix('/usr/msh3')
-            ->withScriptBeforeConfigure('
+            ->withScriptBeforeConfigure(
+                '
               cp -rf /work/pool/lib/msh3 /work/thirdparty/msh3
               apk add bsd-compat-headers
-            ')
-            ->withConfigure(<<<EOF
+            '
+            )
+            ->withConfigure(
+                <<<EOF
             cd /work/thirdparty/msh3/msh3
             pwd
             ls -lh 
@@ -594,12 +610,14 @@ function install_libunistring($p)
             ->withUrl('https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.1.1.tar.gz')
             ->withFile('libunistring-0.9.1.1.tar.gz')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure('
+            ->withScriptBeforeConfigure(
+                '
             
             apk add coreutils
             
             test -d /usr/libunistring && rm -rf /usr/libunistring
-            ')
+            '
+            )
             ->withConfigure(
                 '
              ./configure --help
@@ -618,13 +636,13 @@ function install_libunistring($p)
 
 function install_libevent($p)
 {
-
-
     $p->addLibrary(
         (new Library('libevent'))
             ->withHomePage('https://github.com/libevent/libevent')
             ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz')
+            ->withUrl(
+                'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz'
+            )
             ->withManual('https://libevent.org/libevent-book/')
             ->withPrefix('/usr/libevent')
             ->withCleanBuildDirectory()
@@ -671,7 +689,6 @@ EOF
             ->withPkgName('libev')
     //->withSkipBuildInstall()
     );
-
 }
 
 function install_libev($p)
@@ -724,6 +741,7 @@ function install_libunwind($p)
             ->withSkipBuildInstall()
     );
 }
+
 function install_socat($p)
 {
     // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
@@ -746,7 +764,8 @@ function install_socat($p)
             --prefix=/usr/socat \
             --enable-readline \
             --enable-openssl-base=/usr/openssl
-            ')
+            '
+            )
             ->withSkipBuildInstall()
     );
 }
@@ -874,12 +893,10 @@ function install_bazel(Preprocessor $p)
             ->disableDefaultLdflags()
             ->withSkipBuildInstall()
     );
-
 }
 
 function install_libelf(Preprocessor $p)
 {
-
     $p->addLibrary(
         (new Library('libelf'))
             ->withHomePage('https://github.com/WolfgangSt/libelf.git')
@@ -909,8 +926,6 @@ EOF
 
 function install_libbpf(Preprocessor $p)
 {
-
-
     $p->addLibrary(
         (new Library('libbpf'))
             ->withHomePage('https://github.com/libbpf/libbpf.git')
@@ -937,7 +952,6 @@ EOF
 
 function install_valgrind(Preprocessor $p)
 {
-
     $p->addLibrary(
         (new Library('valgrind'))
             ->withHomePage('https://valgrind.org/')
@@ -960,9 +974,9 @@ EOF
             ->withBinPath('/usr/valgrind/bin/')
     );
 }
+
 function install_snappy(Preprocessor $p)
 {
-
     $p->addLibrary(
         (new Library('valgrind'))
             ->withHomePage('https://github.com/google/snappy')
@@ -987,9 +1001,9 @@ EOF
             ->withBinPath('/usr/snappy/bin/')
     );
 }
+
 function install_kerberos(Preprocessor $p)
 {
-
     $p->addLibrary(
         (new Library('kerberos'))
             ->withHomePage('https://web.mit.edu/kerberos/')
@@ -1011,9 +1025,10 @@ EOF
             ->withPkgName('kerberos')
             ->withBinPath('/usr/kerberos/bin/')
     );
-}function install_fontconfig(Preprocessor $p)
-{
+}
 
+function install_fontconfig(Preprocessor $p)
+{
     $p->addLibrary(
         (new Library('fontconfig'))
             ->withHomePage('https://www.freedesktop.org/wiki/Software/fontconfig/')
@@ -1039,12 +1054,8 @@ EOF
 }
 
 
-
-
 function install_p11_kit(Preprocessor $p)
 {
-
-
     $p->addLibrary(
         (new Library('p11_kit'))
             ->withHomePage('https://github.com/p11-glue/p11-kit.git')
