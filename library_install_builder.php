@@ -959,6 +959,39 @@ EOF
 function install_pgsql(Preprocessor $p)
 {
     $pgsql_prefix= PGSQL_PREFIX ;
+
+    $openssl_prefix = OPENSSL_PREFIX;
+    $curl_prefix = CURL_PREFIX;
+    $libxml2_prefix = LIBXML2_PREFIX;
+    $libxslt_prefix = LIBXSLT_PREFIX;
+    $readline_prefix = READLINE_PREFIX;
+    $icu_prefix = ICU_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+
+
+    $includes=<<<EOF
+{$openssl_prefix}/include/:
+{$libxml2_prefix}/usr/libxml2/include/:
+{$libxslt_prefix}/usr/libxslt/include:
+{$readline_prefix}/usr/readline/include/readline:
+{$icu_prefix}/usr/icu/include:
+{$zlib_prefix}/usr/zlib/include:
+/usr/include
+
+EOF;
+
+    $includes=trim(str_replace(PHP_EOL,'',$includes));
+    $libraries=<<<EOF
+{$openssl_prefix}/lib/:
+{$libxml2_prefix}/usr/libxml2/lib/:
+{$libxslt_prefix}/usr/libxslt/lib:
+{$readline_prefix}/usr/readline/lib:
+{$icu_prefix}/usr/icu/lib:
+{$zlib_prefix}/usr/zlib/lib:
+/usr/lib
+EOF;
+
+    $libraries=trim(str_replace(PHP_EOL,'',$libraries));
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
@@ -994,8 +1027,8 @@ function install_pgsql(Preprocessor $p)
             --without-ldap \
             --with-libxml  \
             --with-libxslt \
-            --with-includes="/usr/openssl/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/readline/include/readline:/usr/icu/include:/usr/zlib/include:/usr/include" \
-            --with-libraries="/usr/openssl/lib:/usr/libxml2/lib/:/usr/libxslt/lib/:/usr/readline/lib:/usr/icu/lib:/usr/zlib/lib:/usr/lib"
+            --with-includes="{$includes}" \
+            --with-libraries="{$libraries}"
 EOF
         .   <<<'EOF'
 
