@@ -842,10 +842,6 @@ class Preprocessor
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
 
-        $skip_download = ($this->getInputOption('skip-download') || getenv('SWOOLE_CLI_SKIP_DOWNLOAD'));
-        if ($skip_download) {
-            $this->generateLibraryDownloadLinks();
-        }
         //暂时由手工维护，依赖关系
         // $this->sortLibrary();
 
