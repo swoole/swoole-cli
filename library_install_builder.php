@@ -971,11 +971,11 @@ function install_pgsql(Preprocessor $p)
 
     $includes=<<<EOF
 {$openssl_prefix}/include/:
-{$libxml2_prefix}/usr/libxml2/include/:
-{$libxslt_prefix}/usr/libxslt/include:
-{$readline_prefix}/usr/readline/include/readline:
-{$icu_prefix}/usr/icu/include:
-{$zlib_prefix}/usr/zlib/include:
+{$libxml2_prefix}/include/:
+{$libxslt_prefix}/include:
+{$readline_prefix}/include/readline:
+{$icu_prefix}/include:
+{$zlib_prefix}/include:
 /usr/include
 
 EOF;
@@ -983,11 +983,11 @@ EOF;
     $includes=trim(str_replace(PHP_EOL,'',$includes));
     $libraries=<<<EOF
 {$openssl_prefix}/lib/:
-{$libxml2_prefix}/usr/libxml2/lib/:
-{$libxslt_prefix}/usr/libxslt/lib:
-{$readline_prefix}/usr/readline/lib:
-{$icu_prefix}/usr/icu/lib:
-{$zlib_prefix}/usr/zlib/lib:
+{$libxml2_prefix}/lib/:
+{$libxslt_prefix}/lib:
+{$readline_prefix}/lib:
+{$icu_prefix}/lib:
+{$zlib_prefix}/lib:
 /usr/lib
 EOF;
 
