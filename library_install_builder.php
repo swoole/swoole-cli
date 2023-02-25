@@ -441,23 +441,23 @@ EOF
 function install_zip(Preprocessor $p)
 {
     $openssl_prefix = OPENSSL_PREFIX;
-    $zip_prefix = ZIP_PREFIX;
-    $liblzma_prefix = LIBLZ4_PREFIX;
+    $libzip_prefix = ZIP_PREFIX;
+    $liblzma_prefix = LIBLZMA_PREFIX;
     $libzstd_prefix = LIBZSTD_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $p->addLibrary(
-        (new Library('zip'))
+        (new Library('libzip'))
             //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
             ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
             ->withManual('https://libzip.org')
-            ->withPrefix($zip_prefix)
+            ->withPrefix($libzip_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($zip_prefix)
+            ->withCleanInstallDirectory($libzip_prefix)
             ->withConfigure(
                 <<<EOF
             cmake -Wno-dev .  \
-            -DCMAKE_INSTALL_PREFIX={$zip_prefix} \
+            -DCMAKE_INSTALL_PREFIX={$libzip_prefix} \
             -DCMAKE_BUILD_TYPE=optimized \
             -DBUILD_TOOLS=OFF \
             -DBUILD_EXAMPLES=OFF \
