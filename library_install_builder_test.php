@@ -107,6 +107,172 @@ function install_ninja(Preprocessor $p)
     }
 }
 
+
+function install_harfbuzz(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('harfbuzz'))
+            ->withLicense('https://github.com/harfbuzz/harfbuzz/blob/main/COPYING', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/harfbuzz/harfbuzz.git')
+            ->withUrl('https://github.com/harfbuzz/harfbuzz/archive/refs/tags/6.0.0.tar.gz')
+            ->withFile('harfbuzz-6.0.0.tar.gz')
+            ->withLabel('library')
+            ->withPrefix('/usr/harfbuzz/')
+            //->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                '
+            apk add python3 py3-pip 
+            pip3 install meson  -i https://pypi.tuna.tsinghua.edu.cn/simple
+            test -d /usr/harfbuzz/ && rm -rf /usr/harfbuzz/ 
+            
+            '
+            )
+            ->withConfigure(
+                "
+                ls -lh
+                meson help
+                meson setup --help
+
+                meson setup  build \
+                --backend=ninja \
+                --prefix=/usr/harfbuzz \
+                --default-library=static \
+                -D freetype=disabled \
+                -D tests=disabled \
+                -D docs=disabled  \
+                -D benchmark=disabled
+
+                meson compile -C build
+                # ninja -C builddir
+                meson install -C build
+                # ninja -C builddir install
+                return 0
+            "
+            )
+            ->withPkgConfig('/usr/harfbuzz/lib/pkgconfig')
+            ->withPkgName('')
+            ->withLdflags('-L/usr/harfbuzz/lib')
+            ->depends('ninja')
+    //->withSkipBuildInstall()
+    );
+}
+
+
+function install_bzip2_dev_latest(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('bzip2', '/usr/bzip2'))
+            ->withUrl('https://gitlab.com/bzip2/bzip2/-/archive/master/bzip2-master.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                '
+              test -d /usr/bzip2 && rm -rf /usr/bzip2 ;
+              apk add python3 py3-pip && python3 -m pip install pytest ;
+              mkdir build && cd build ;
+            '
+            )
+            ->withConfigure(
+                '
+                    cmake .. -DCMAKE_BUILD_TYPE="Release" \
+                    -DCMAKE_INSTALL_PREFIX=/usr/bzip2  \
+                    -DENABLE_STATIC_LIB=ON ;
+                    cmake --build . --target install   ;
+                    cd - ;
+                    :; #  shell空语句
+                    pwd
+                    return 0 ; # 返回本函数调用处，本函数后续代码不在执行
+            '
+            )
+            ->withLdflags('-L/usr/bzip2/lib')
+            ->withHomePage('https://www.sourceware.org/bzip2/')
+            ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
+    );
+}
+
+
+function install_libevent($p)
+{
+    $p->addLibrary(
+        (new Library('libevent'))
+            ->withHomePage('https://github.com/libevent/libevent')
+            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl(
+                'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz'
+            )
+            ->withManual('https://libevent.org/libevent-book/')
+            ->withPrefix('/usr/libevent')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+            # 查看更多选项
+            # cmake -LAH .
+        mkdir build && cd build
+        cmake ..   \
+        -DCMAKE_INSTALL_PREFIX=/usr/libevent \
+        -DEVENT__DISABLE_DEBUG_MODE=ON \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DEVENT__LIBRARY_TYPE=STATIC  
+  
+EOF
+
+            )
+            ->withPkgName('libevent')
+    );
+}
+
+function install_libuv($p)
+{
+    //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
+    $p->addLibrary(
+        (new Library('libev'))
+            ->withHomePage('http://software.schmorp.de/pkg/libev.html')
+            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
+            ->withManual('http://cvs.schmorp.de/libev/README')
+            ->withPrefix('/usr/libev')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+            ls -lh 
+            ./configure --help 
+            ./configure --prefix=/usr/libev \
+            --enable-shared=no \
+            --enable-static=yes
+           
+EOF
+
+            )
+            ->withPkgName('libev')
+    //->withSkipBuildInstall()
+    );
+}
+
+function install_libev($p)
+{
+    $p->addLibrary(
+        (new Library('libev'))
+            ->withHomePage('http://software.schmorp.de/pkg/libev.html')
+            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
+            ->withManual('http://cvs.schmorp.de/libev/README')
+            ->withPrefix('/usr/libev')
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+            ls -lh 
+            ./configure --help 
+            ./configure --prefix=/usr/libev \
+            --enable-shared=no \
+            --enable-static=yes
+           
+EOF
+
+            )
+            ->withPkgName('libev')
+
+    );
+}
+
 function install_nettle($p)
 {
     $p->addLibrary(
@@ -451,6 +617,7 @@ function install_ngtcp2(Preprocessor $p)
     );
 }
 
+
 function install_quiche(Preprocessor $p)
 {
     $p->addLibrary(
@@ -530,6 +697,40 @@ EOF
             ->withPkgName('msh3')
     );
 }
+
+function install_nghttp2(Preprocessor $p): void
+{
+    $nghttp2_prefix = NGHTTP2_PREFIX;
+    $p->addLibrary(
+        (new Library('nghttp2'))
+            ->withHomePage('https://github.com/nghttp2/nghttp2.git')
+            ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withPrefix($nghttp2_prefix)
+            ->withCleanInstallDirectory($nghttp2_prefix)
+            ->withConfigure(
+                <<<EOF
+            ./configure --help
+
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libxml-2.0 jansson  libcares openssl )"  \
+            LDFLAGS="$(pkg-config --libs-only-L      --static zlib libxml-2.0 jansson  libcares openssl )"  \
+            LIBS="$(pkg-config --libs-only-l         --static zlib libxml-2.0 jansson  libcares openssl )"  \
+            ./configure --prefix={$nghttp2_prefix} \
+            --enable-static=yes \
+            --enable-shared=no \
+            --enable-lib-only \
+            --enable-python-bindings=no \
+            --with-libxml2  \
+            --with-jansson  \
+            --with-zlib \
+            --with-libcares
+EOF
+            )
+            ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
+            ->depends('openssl', 'zlib', 'libxml2', 'jansson', 'cares')
+    );
+}
+
 
 function install_coreutils($p)
 {
@@ -634,88 +835,6 @@ function install_libunistring($p)
     );
 }
 
-function install_libevent($p)
-{
-    $p->addLibrary(
-        (new Library('libevent'))
-            ->withHomePage('https://github.com/libevent/libevent')
-            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withUrl(
-                'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz'
-            )
-            ->withManual('https://libevent.org/libevent-book/')
-            ->withPrefix('/usr/libevent')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            # 查看更多选项
-            # cmake -LAH .
-        mkdir build && cd build
-        cmake ..   \
-        -DCMAKE_INSTALL_PREFIX=/usr/libevent \
-        -DEVENT__DISABLE_DEBUG_MODE=ON \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DEVENT__LIBRARY_TYPE=STATIC  
-  
-EOF
-
-            )
-            ->withPkgName('libevent')
-    );
-}
-
-function install_libuv($p)
-{
-    //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
-    $p->addLibrary(
-        (new Library('libev'))
-            ->withHomePage('http://software.schmorp.de/pkg/libev.html')
-            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
-            ->withManual('http://cvs.schmorp.de/libev/README')
-            ->withPrefix('/usr/libev')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            ls -lh 
-            ./configure --help 
-            ./configure --prefix=/usr/libev \
-            --enable-shared=no \
-            --enable-static=yes
-           
-EOF
-
-            )
-            ->withPkgName('libev')
-    //->withSkipBuildInstall()
-    );
-}
-
-function install_libev($p)
-{
-    $p->addLibrary(
-        (new Library('libev'))
-            ->withHomePage('http://software.schmorp.de/pkg/libev.html')
-            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
-            ->withManual('http://cvs.schmorp.de/libev/README')
-            ->withPrefix('/usr/libev')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            ls -lh 
-            ./configure --help 
-            ./configure --prefix=/usr/libev \
-            --enable-shared=no \
-            --enable-static=yes
-           
-EOF
-
-            )
-            ->withPkgName('libev')
-
-    );
-}
 
 function install_libunwind($p)
 {
@@ -1139,5 +1258,337 @@ function install_pcre2(Preprocessor $p)
                 Library::LICENSE_PCRE2
             ) //PCRE2 LICENCE
             ->withHomePage('https://github.com/PCRE2Project/pcre2.git')
+    );
+}
+
+
+function install_pgsql_test(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('pgsql'))
+            ->withHomePage('https://www.postgresql.org/')
+            ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
+            ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
+            //https://www.postgresql.org/docs/devel/installation.html
+            //https://www.postgresql.org/docs/devel/install-make.html#INSTALL-PROCEDURE-MAKE
+            ->withManual('https://www.postgresql.org/docs/')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                '
+               test -d /usr/pgsql && rm -rf /usr/pgsql
+            '
+            )
+            ->withConfigure(
+                '
+             # src/Makefile.shlib 有静态配置
+             # src/interfaces/libpq/Makefile  有静态配置  参考：  install-lib install-lib-static  installdirs  installdirs-lib install-lib-pc
+              
+           # sed -i "s/ifndef haslibarule/ifndef custom_static/"  src/Makefile.shlib     
+           # sed -i "s/endif #haslibarule/endif #custom_static/"  src/Makefile.shlib     
+           sed -i "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
+           # cp -rf  /work/Makefile.shlib src/Makefile.shlib   
+           # sed -i "120a \	echo \$<" src/interfaces/libpq/Makefile
+           # sed -i "120a \	echo \$(PORTNAME)" src/interfaces/libpq/Makefile
+           # 替换指定行内容
+           sed -i "102c all: all-lib" src/interfaces/libpq/Makefile
+           
+           cat >> src/interfaces/libpq/Makefile <<"-EOF-"
+           
+libpq5555.a: $(OBJS) | $(SHLIB_PREREQS)
+	echo $(SHLIB_PREREQS)
+	echo $(SHLIB_LINK)
+	echo $(exports_file)
+	#rm -f $@
+	rm -f libpq.a
+	# ar  rcs $@  $^ 
+	ar  rcs libpq.a  $^ 
+	# ranlib $@
+	ranlib libpq.a
+	# touch $@
+	# touch libpq.a
+install-libpq5555.a: install-lib-static install-lib-pc
+	$(MKDIR_P) "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)"
+	$(INSTALL_DATA) $(srcdir)/libpq-fe.h "$(DESTDIR)$(includedir)"
+	$(INSTALL_DATA) $(srcdir)/libpq-events.h "$(DESTDIR)$(includedir)"
+	$(INSTALL_DATA) $(srcdir)/libpq-int.h "$(DESTDIR)$(includedir_internal)"
+	$(INSTALL_DATA) $(srcdir)/fe-auth-sasl.h "$(DESTDIR)$(includedir_internal)"
+	$(INSTALL_DATA) $(srcdir)/pqexpbuffer.h "$(DESTDIR)$(includedir_internal)"
+-EOF-
+             
+            export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
+            
+            ./configure  --prefix=/usr/pgsql \
+            --enable-coverage=no \
+            --with-ssl=openssl  \
+            --with-readline \
+            --without-icu \
+            --without-ldap \
+            --without-libxml  \
+            --without-libxslt \
+            \
+           --with-includes="/usr/openssl_3/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/zlib/include:/usr/include" \
+           --with-libraries="/usr/openssl_3/lib64:/usr/libxslt/lib/:/usr/libxml2/lib/:/usr/zlib/lib:/usr/lib"
+            # --with-includes="/usr/openssl_1/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/zlib/include:/usr/include" \
+            # --with-libraries="/usr/openssl_1/lib:/usr/libxslt/lib/:/usr/libxml2/lib/:/usr/zlib/lib:/usr/lib"
+           
+            make -C src/include install 
+            make -C  src/bin/pg_config install
+            
+            make -C  src/common -j $cpu_nums all 
+            make -C  src/common install 
+            
+            make -C  src/port -j $cpu_nums all 
+            make -C  src/port install 
+            
+     
+            make -C  src/backend/libpq -j $cpu_nums all 
+            make -C  src/backend/libpq install 
+            
+            make -C src/interfaces/ecpg   -j $cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
+            make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
+            
+            # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
+            
+            
+ 
+            make -C src/interfaces/libpq  -j $cpu_nums # soname=true
+           
+            make -C src/interfaces/libpq  install 
+            
+            rm -rf /usr/pgsql/lib/*.so.*
+            rm -rf /usr/pgsql/lib/*.so
+            return 0 
+            make -C  src/interfaces/libpq -j $cpu_nums libpq5555.a
+            make -C  src/interfaces/libpq install-libpq5555.a
+            
+            rm -rf /usr/pgsql/lib/*.so.*
+            rm -rf /usr/pgsql/lib/*.so
+            
+            return 0 
+            
+            nm -A /usr/pgsql/lib/libpq.a 
+            
+            exit 0 
+            make -C src/interfaces/libpq  -j $cpu_nums  libpq.a 
+            exit 0 
+            make -C src/interfaces/libpq    install-libpq.a
+            
+            return 0 
+            
+            rm -rf /usr/pgsql/lib/*.so.*
+            rm -rf /usr/pgsql/lib/*.so
+            
+            return 0
+            
+            # need stage 
+            # src/include         
+            $ src/common        
+            # src/port          
+            # src/interfaces/libpq        
+            # src/bin/pg_config
+           
+           
+            '
+            )
+            ->withMakeOptions('-C src/common all')
+            ->withMakeInstallOptions('-C src/include install ')
+            ->withPkgName('libpq')
+            ->withPkgConfig('/usr/pgsql/lib/pkgconfig')
+            ->withLdflags('-L/usr/pgsql/lib/')
+            ->withBinPath('/usr/pgsql/bin/')
+            ->withScriptAfterInstall(
+                '
+            '
+            )
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
+    );
+}
+
+
+function install_fastdfs($p)
+{
+    $p->addLibrary(
+        (new Library('fastdfs'))
+            ->withHomePage('https://github.com/happyfish100/fastdfs.git')
+            ->withLicense('https://github.com/happyfish100/fastdfs/blob/master/COPYING-3_0.txt', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/happyfish100/fastdfs/archive/refs/tags/V6.9.4.tar.gz')
+            ->withFile('fastdfs-V6.9.4.tar.gz')
+            ->withPrefix('/usr/fastdfs/')
+            ->withScriptBeforeConfigure(
+                'test -d /usr/fastdfs/ && rm -rf /usr/fastdfs/'
+            )
+            ->withConfigure(
+                '
+            export DESTDIR=/usr/libserverframe/
+            ./make.sh clean && ./make.sh && ./make.sh install
+            ./setup.sh /etc/fdfs
+            '
+            )
+            ->withPkgName('')
+            ->withPkgConfig('/usr/fastdfs//lib/pkgconfig')
+            ->withLdflags('-L/usr/fastdfs/lib/')
+            ->withBinPath('/usr/fastdfs/bin/')
+            ->withSkipBuildInstall()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
+    );
+}
+
+function install_libserverframe($p)
+{
+    $p->addLibrary(
+        (new Library('libserverframe'))
+            ->withHomePage('https://github.com/happyfish100/libserverframe')
+            ->withLicense('https://github.com/happyfish100/libserverframe/blob/master/LICENSE', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/happyfish100/libserverframe/archive/refs/tags/V1.1.25.tar.gz')
+            ->withFile('libserverframe-V1.1.25.tar.gz')
+            ->withPrefix('/usr/libserverframe/')
+            ->withScriptBeforeConfigure(
+                'test -d /usr/libserverframe/ && rm -rf /usr/libserverframe/'
+            )
+            ->withConfigure(
+                '
+                export DESTDIR=/usr/libserverframe/
+                ./make.sh clean && ./make.sh && ./make.sh install
+            '
+            )
+            ->withPkgName('')
+            ->withSkipBuildInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
+    );
+}
+
+function install_libfastcommon($p)
+{
+    $p->addLibrary(
+        (new Library('libfastcommon'))
+            ->withHomePage('https://github.com/happyfish100/libfastcommon')
+            ->withLicense('https://github.com/happyfish100/libfastcommon/blob/master/LICENSE', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/happyfish100/libfastcommon/archive/refs/tags/V1.0.66.tar.gz')
+            ->withFile('libfastcommon-V1.0.66.tar.gz')
+            ->withPrefix('/usr/libfastcommon/')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                'test -d /usr/libfastcommon/ && rm -rf /usr/libfastcommon/'
+            )
+            ->withConfigure(
+                '
+             export DESTDIR=/usr/libfastcommon
+             ./make.sh clean && ./make.sh && ./make.sh install
+             exit 0 
+            '
+            )
+            ->withPkgName('')
+            ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
+            ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
+    );
+}
+
+
+function install_gettext(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('gettext'))
+            ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.21.1.tar.gz')
+            ->withHomePage('https://www.gnu.org/software/gettext/')
+            ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
+            ->withCleanBuildDirectory()
+            ->withPrefix('/usr/gettext')
+            ->withScriptBeforeConfigure(
+                '
+            test -d /usr/gettext && rm -rf /usr/gettext
+            '
+            )
+            ->withConfigure(
+                '
+            ./configure --help 
+           
+            ./configure --prefix=/usr/gettext enable_static=yes enable_shared=no \
+             --disable-java \
+             --without-git \
+             --with-libiconv-prefix=/usr/libiconv \
+             --with-libncurses-prefix=/usr/ncurses \
+             --with-libxml2-prefix=/usr/libxml2/ \
+             --with-libunistring-prefix \
+             --with-libintl-prefix 
+             
+            '
+            )
+            ->withPkgName('gettext')
+    );
+}
+
+
+function install_jansson(Preprocessor $p)
+{
+    $jansson_prefix = JANSSON_PREFIX;
+    $p->addLibrary(
+        (new Library('jansson'))
+            ->withHomePage('http://www.digip.org/jansson/')
+            ->withUrl('https://github.com/akheron/jansson/archive/refs/tags/v2.14.tar.gz')
+            ->withFile('jansson-v2.14.tar.gz')
+            ->withManual('https://github.com/akheron/jansson.git')
+            ->withLicense('https://github.com/akheron/jansson/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withPrefix($jansson_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($jansson_prefix)
+            ->withConfigure(
+                <<<EOF
+             autoreconf -fi
+            ./configure --help 
+            ./configure \
+            --prefix={$jansson_prefix} \
+            --enable-shared=no \
+            --enable-static=yes
+EOF
+            )
+            ->withPkgName('jansson')
+
+    );
+}
+
+
+function install_php_internal_extension_curl_patch(Preprocessor $p)
+{
+    $workDir = $p->getWorkDir();
+    $command = '';
+
+    if (is_file("{$workDir}/ext/curl/config.m4.backup")) {
+        $originFileHash = md5(file_get_contents("{$workDir}/ext/curl/config.m4"));
+        $backupFileHash = md5(file_get_contents("{$workDir}/ext/curl/config.m4.backup"));
+        if ($originFileHash == $backupFileHash) {
+            $command = <<<EOF
+           test -f {$workDir}/ext/curl/config.m4.backup && rm -f {$workDir}/ext/curl/config.m4.backup
+           test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
+EOF;
+        }
+    } else {
+        $command = <<<EOF
+           test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
+EOF;
+    }
+
+    $p->addLibrary(
+        (new Library('patch_php_internal_extension_curl'))
+            ->withHomePage('https://www.php.net/')
+            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
+            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
+            ->withManual('https://www.php.net/docs.php')
+            ->withLabel('php_extension_patch')
+            ->withScriptBeforeConfigure($command)
+            ->withConfigure('return 0 ')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
     );
 }

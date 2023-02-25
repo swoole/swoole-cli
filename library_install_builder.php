@@ -35,31 +35,13 @@ function install_openssl(Preprocessor $p)
 
 function install_libiconv(Preprocessor $p)
 {
-    $libidn2_prefix = LIBIDN2_PREFIX;
     $p->addLibrary(
-        (new Library('libidn2'))
-            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
+        (new Library('libiconv'))
+            ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz')
+            ->withPrefix(ICONV_PREFIX)
+            ->withPkgConfig('')
+            ->withConfigure('./configure --prefix=' . ICONV_PREFIX . ' enable_static=yes enable_shared=no')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            ->withPrefix($libidn2_prefix)
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            ./configure --help 
-            
-            #  intl  依赖  gettext
-            # 解决依赖  apk add  gettext  coreutils
-            
-            ./configure --prefix={$libidn2_prefix} \
-            enable_static=yes \
-            enable_shared=no \
-            --disable-doc \
-            --with-libiconv-prefix=/usr/libiconv \
-            --with-libintl-prefix 
-             
-EOF
-            )
-            ->withPkgName('libidn2')
-            ->depends('libiconv')
     );
 }
 
@@ -70,16 +52,16 @@ function install_libxml2(Preprocessor $p)
     $libxml2_prefix = LIBXML2_PREFIX;
     $iconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
-        (new Library('libxslt'))
-            ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
-            ->withPrefix(LIBXSLT_PREFIX)
+        (new Library('libxml2'))
+            ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.10/libxml2-v2.9.10.tar.gz')
+            ->withPrefix(LIBXML2_PREFIX)
             ->withConfigure(
                 <<<EOF
 ./autogen.sh && ./configure --prefix=$libxml2_prefix --with-iconv=$iconv_prefix --enable-static=yes --enable-shared=no --without-python
 EOF
             )
-            ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
-            ->withPkgName('libexslt libxslt')
+            ->withPkgName('libxml-2.0')
+            ->withLicense('https://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
             ->depends('libiconv')
     );
 }
@@ -92,7 +74,7 @@ function install_libxslt(Preprocessor $p)
             ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
             ->withPrefix(LIBXSLT_PREFIX)
             ->withConfigure(
-                './autogen.sh && ./configure --prefix=' . LIBXSLT_PREFIX . '--enable-static=yes --enable-shared=no'
+                './autogen.sh && ./configure --prefix=' . LIBXSLT_PREFIX . ' --enable-static=yes --enable-shared=no'
             )
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
             ->withPkgName('libexslt libxslt')
@@ -100,6 +82,172 @@ function install_libxslt(Preprocessor $p)
     );
 }
 
+
+function install_brotli(Preprocessor $p)
+{
+    /*
+    -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
+    -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+    -DCMAKE_INSTALL_LIBDIR="${LIBDIR}" \
+  */
+    $brotli_prefix = BROTLI_PREFIX;
+    $p->addLibrary(
+        (new Library('brotli'))
+            ->withManual('https://github.com/google/brotli')//有多种构建方式，选择cmake 构建
+            ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
+            ->withFile('brotli-1.0.9.tar.gz')
+            ->withPrefix($brotli_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($brotli_prefix)
+            ->withConfigure(
+                <<<EOF
+            cmake . -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX={$brotli_prefix} \
+            -DBROTLI_SHARED_LIBS=OFF \
+            -DBROTLI_STATIC_LIBS=ON \
+            -DBROTLI_DISABLE_TESTS=ON \
+            -DBROTLI_BUNDLED_MODE=OFF 
+                
+            cmake --build . --config Release --target install
+EOF
+            )
+            ->withSkipMakeAndMakeInstall()
+            ->withScriptAfterInstall(
+                implode(PHP_EOL, [
+                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',
+                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.so',
+                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.dylib',
+                    'cp ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotli.a',
+                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotlicommon.a',
+                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlienc-static.a ' . BROTLI_PREFIX . '/lib/libbrotlienc.a',
+                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlidec-static.a ' . BROTLI_PREFIX . '/lib/libbrotlidec.a'
+                ])
+            )
+            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
+            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/google/brotli')
+    );
+}
+
+function install_cares(Preprocessor $p)
+{
+    $cares_prefix = CARES_PREFIX;
+    $p->addLibrary(
+        (new Library('cares'))
+            ->withUrl('https://c-ares.org/download/c-ares-1.19.0.tar.gz')
+            ->withPrefix($cares_prefix)
+            ->withConfigure("./configure --prefix={$cares_prefix} --enable-static --disable-shared")
+            ->withPkgName('libcares')
+            ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
+            ->withHomePage('https://c-ares.org/')
+    );
+}
+
+function install_gmp(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('gmp'))
+            ->withUrl('https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz')
+            ->withPrefix(GMP_PREFIX)
+            ->withConfigure('./configure --prefix=' . GMP_PREFIX . ' --enable-static --disable-shared')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
+            ->withPkgName('gmp')
+    );
+}
+
+
+/*
+// CFLAGS="-static -O2 -Wall" \
+// LDFLAGS="-Wl,R-lncurses"
+// LDFLAGS="-lncurses" \
+ */
+function install_ncurses(Preprocessor $p)
+{
+    $ncurses_prefix = NCURSES_PREFIX;
+    $p->addLibrary(
+        (new Library('ncurses'))
+            ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
+            ->withPrefix(NCURSES_PREFIX)
+            ->withConfigure(
+                <<<EOF
+            mkdir -p {$ncurses_prefix}/lib/pkgconfig
+            ./configure \
+            --prefix={$ncurses_prefix} \
+            --enable-static \
+            --disable-shared \
+            --enable-pc-files \
+            --with-pkg-config={$ncurses_prefix}/lib/pkgconfig \
+            --with-pkg-config-libdir={$ncurses_prefix}/lib/pkgconfig \
+            --with-normal \
+            --enable-widec \
+            --enable-echo \
+            --with-ticlib  \
+            --without-termlib \
+            --enable-sp-funcs \
+            --enable-term-driver \
+            --enable-ext-colors \
+            --enable-ext-mouse \
+            --enable-ext-putwin \
+            --enable-no-padding \
+            --without-debug \
+            --without-tests \
+            --without-dlsym \
+            --without-debug \
+            --enable-symlinks
+EOF
+            )
+            ->withScriptBeforeInstall(
+                '
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/formw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/form.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/menuw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/menu.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++w.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncursesw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/panelw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/panel.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ticw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/tic.pc ;
+
+                ln -s ' . NCURSES_PREFIX . '/lib/libformw.a ' . NCURSES_PREFIX . '/lib/libform.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libmenuw.a ' . NCURSES_PREFIX . '/lib/libmenu.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libncurses++w.a ' . NCURSES_PREFIX . '/lib/libncurses++.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libncursesw.a ' . NCURSES_PREFIX . '/lib/libncurses.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libpanelw.a  ' . NCURSES_PREFIX . '/lib/libpanel.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libticw.a ' . NCURSES_PREFIX . '/lib/libtic.a ;
+            '
+            )
+            ->withPkgName('ncursesw')
+            ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/projectceladon/libncurses')
+    );
+}
+
+
+function install_readline(Preprocessor $p)
+{
+    $readline_prefix = READLINE_PREFIX;
+    $p->addLibrary(
+        (new Library('readline'))
+            ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
+            ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
+            ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
+            ->withPrefix(READLINE_PREFIX)
+            ->withConfigure(
+                <<<EOF
+                ./configure \
+                --prefix={$readline_prefix} \
+                --enable-static \
+                --disable-shared \
+                --with-curses \
+                --enable-multibyte 
+EOF
+            )
+            ->withPkgName('readline')
+            ->withLdflags('-L' . READLINE_PREFIX . '/lib')
+            ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
+            ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
+            ->depends('ncurses')
+    );
+}
 
 /*
             ZIP_CFLAGS=$(pkg-config --cflags libzip) ;
@@ -121,79 +269,337 @@ function install_libxslt(Preprocessor $p)
             XML_CFLAGS=$(pkg-config --cflags libxml-2.0) ;
             XML_LIBS=$(pkg-config --libs libxml-2.0) ;
  */
-function install_imagemagick(Preprocessor $p)
+
+
+function install_libyaml(Preprocessor $p)
 {
-    $imagemagick_prefix = IMAGEMAGICK_PREFIX;
     $p->addLibrary(
-        (new Library('imagemagick'))
-            ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
-            ->withPrefix($imagemagick_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($imagemagick_prefix)
-            ->withFile('ImageMagick-v7.1.0-62.tar.gz')
-            ->withPrefix($imagemagick_prefix)
+        (new Library('libyaml'))
+            ->withUrl('https://pyyaml.org/download/libyaml/yaml-0.2.5.tar.gz')
+            ->withPrefix(LIBYAML_PREFIX)
+            ->withConfigure('./configure --prefix=' . LIBYAML_PREFIX . ' --enable-static --disable-shared')
+            ->withPkgName('yaml-0.1')
+            ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
+            ->withHomePage('https://pyyaml.org/wiki/LibYAML')
+    );
+}
+
+function install_libsodium(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('libsodium'))
+            // ISC License, like BSD
+            ->withLicense('https://en.wikipedia.org/wiki/ISC_license', Library::LICENSE_SPEC)
+            ->withHomePage('https://doc.libsodium.org/')
+            ->withUrl('https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz')
+            ->withPrefix(LIBSODIUM_PREFIX)
+            ->withConfigure('./configure --prefix=' . LIBSODIUM_PREFIX . ' --enable-static --disable-shared')
+            ->withPkgName('libsodium')
+    );
+}
+
+function install_bzip2(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('bzip2'))
+            ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
+            ->withPrefix(BZIP2_PREFIX)
+            ->withMakeOptions('PREFIX=' . BZIP2_PREFIX)
+            ->withMakeInstallOptions('PREFIX=' . BZIP2_PREFIX)
+            ->withHomePage('https://www.sourceware.org/bzip2/')
+            ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
+    );
+}
+
+function install_zlib(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('zlib'))
+            //->withUrl('https://zlib.net/zlib-1.2.13.tar.gz')
+            ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
+            ->withPrefix(ZLIB_PREFIX)
+            ->withConfigure('./configure --prefix=' . ZLIB_PREFIX . ' --static')
+            ->withHomePage('https://zlib.net/')
+            ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
+            ->withPkgName('zlib')
+            ->depends('libxml2', 'bzip2')
+    );
+}
+
+
+function install_liblz4(Preprocessor $p)
+{
+    $liblz4_prefix = LIBLZ4_PREFIX;
+    $p->addLibrary(
+        (new Library('liblz4'))
+            ->withHomePage('http://www.lz4.org')
+            ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
+            ->withFile('lz4-v1.9.4.tar.gz')
+            ->withPkgName('liblz4')
+            ->withPrefix($liblz4_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help   
-            CPPFLAGS="$(pkg-config --cflags-only-I --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
-            LIBS="$(pkg-config     --libs-only-l   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
-            ./configure \
-            --prefix={$imagemagick_prefix} \
-            --enable-static \
-            --disable-shared \
-            --with-zip=yes \
-            --with-fontconfig=no \
-            --with-heic=no \
-            --with-lcms=no \
-            --with-lqr=no \
-            --with-openexr=no \
-            --with-openjp2=no \
-            --with-pango=no \
-            --with-jpeg=yes \
-            --with-png=yes \
-            --with-webp=yes \
-            --with-raw=yes \
-            --with-tiff=yes \
-            --with-zstd=yes \
-            --with-lzma=yes \
-            --with-xml=yes \
-            --with-zip=yes \
-            --with-zlib=yes \
-            --with-zstd=yes \
-            --with-freetype=yes 
-
+            cd build/cmake/
+            cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON
 EOF
             )
-            ->withPkgName('ImageMagick')
-            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
-            ->depends(
-                'libxml2',
-                'libzip',
-                'zlib',
-                'libjpeg',
-                'freetype',
-                'libwebp',
-                'libpng',
-                'libgif',
-                'openssl',
-                'libzstd'
-            )
+    );
 
+    //可以使用CMAKE 编译 也可以
+    //不使用CMAKE，需要自己修改安装目录
+    //->withMakeOptions('INSTALL_PROGRAM=/usr/liblz4/')
+    //->withMakeInstallOptions("DESTDIR=/usr/liblz4/")
+}
+
+
+function install_liblzma(Preprocessor $p)
+{
+    $liblzma_prefix = LIBLZMA_PREFIX;
+    $p->addLibrary(
+        (new Library('liblzma'))
+            ->withHomePage('https://tukaani.org/xz/')
+            ->withLicense('https://github.com/tukaani-project/xz/blob/master/COPYING.GPLv3', Library::LICENSE_LGPL)
+            //->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
+            //->withFile('xz-5.2.9.tar.gz')
+            ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
+            ->withFile('xz-5.4.1.tar.gz')
+            ->withPrefix($liblzma_prefix)
+            ->withConfigure(
+                './configure --prefix=' . $liblzma_prefix . ' --enable-static  --disable-shared --disable-doc'
+            )
+            ->withPkgName('liblzma')
     );
 }
 
-function install_gmp(Preprocessor $p)
+
+function install_libzstd(Preprocessor $p)
+{
+    $libzstd_prefix = LIBZSTD_PREFIX;
+    $p->addLibrary(
+        (new Library('libzstd'))
+            ->withHomePage('https://github.com/facebook/zstd')
+            ->withLicense('https://github.com/facebook/zstd/blob/dev/COPYING', Library::LICENSE_GPL)
+            ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
+            ->withFile('zstd-1.5.2.tar.gz')
+            ->withPrefix($libzstd_prefix)
+            ->withConfigure(
+                <<<EOF
+            mkdir -p build/cmake/builddir
+            cd build/cmake/builddir
+            cmake .. \
+            -DCMAKE_INSTALL_PREFIX={$libzstd_prefix} \
+            -DZSTD_BUILD_STATIC=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DZSTD_BUILD_CONTRIB=ON \
+            -DZSTD_BUILD_PROGRAMS=ON \
+            -DZSTD_BUILD_SHARED=OFF \
+            -DZSTD_BUILD_TESTS=OFF \
+            -DZSTD_LEGACY_SUPPORT=ON 
+EOF
+            )
+            ->withMakeOptions('lib')
+            //->withMakeInstallOptions('install PREFIX=/usr/libzstd/')
+            ->withPkgName('libzstd')
+            ->depends('liblz4', 'liblzma')
+    );
+    /*
+               '
+           mkdir -p build/cmake/builddir
+           cd build/cmake/builddir
+           # cmake -LH ..
+           cmake .. \
+           -DCMAKE_INSTALL_PREFIX=/usr/libzstd/ \
+           -DZSTD_BUILD_STATIC=ON \
+           -DCMAKE_BUILD_TYPE=Release \
+           -DZSTD_BUILD_CONTRIB=ON \
+           -DZSTD_BUILD_PROGRAMS=OFF \
+           -DZSTD_BUILD_SHARED=OFF \
+           -DZSTD_BUILD_TESTS=OFF \
+           -DZSTD_LEGACY_SUPPORT=ON \
+           \
+           -DZSTD_ZLIB_SUPPORT=ON \
+           -DZLIB_INCLUDE_DIR=/usr/zlib/include \
+           -DZLIB_LIBRARY=/usr/zlib/lib \
+           \
+           -DZSTD_LZ4_SUPPORT=ON \
+           -DLIBLZ4_INCLUDE_DIR=/usr/liblz4/include \
+           -DLIBLZ4_LIBRARY=/usr/liblz4/lib \
+           \
+           -DZSTD_LZMA_SUPPORT=ON \
+           -DLIBLZMA_LIBRARY=/usr/liblzma/lib \
+           -DLIBLZMA_INCLUDE_DIR=/usr/liblzma/include \
+           -DLIBLZMA_HAS_AUTO_DECODER=ON\
+           -DLIBLZMA_HAS_EASY_ENCODER=ON \
+           -DLIBLZMA_HAS_LZMA_PRESET=ON
+           '
+    */
+}
+
+
+// MUST be in the /usr directory
+function install_zip(Preprocessor $p)
+{
+    $openssl_prefix = OPENSSL_PREFIX;
+    $zip_prefix = ZIP_PREFIX;
+    $liblzma_prefix = LIBLZ4_PREFIX;
+    $libzstd_prefix = LIBZSTD_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $bzip2_prefix = BZIP2_PREFIX;
+    $p->addLibrary(
+        (new Library('zip'))
+            //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
+            ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
+            ->withManual('https://libzip.org')
+            ->withPrefix($zip_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($zip_prefix)
+            ->withConfigure(
+                <<<EOF
+            cmake -Wno-dev .  \
+            -DCMAKE_INSTALL_PREFIX={$zip_prefix} \
+            -DCMAKE_BUILD_TYPE=optimized \
+            -DBUILD_TOOLS=OFF \
+            -DBUILD_EXAMPLES=OFF \
+            -DBUILD_DOC=OFF \
+            -DLIBZIP_DO_INSTALL=ON \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DENABLE_GNUTLS=OFF  \
+            -DENABLE_MBEDTLS=OFF \
+            -DENABLE_OPENSSL=ON \
+            -DOPENSSL_USE_STATIC_LIBS=TRUE \
+            -DOPENSSL_LIBRARIES={$openssl_prefix}/lib \
+            -DOPENSSL_INCLUDE_DIR={$openssl_prefix}/include \
+            -DZLIB_LIBRARY={$zlib_prefix}/lib \
+            -DZLIB_INCLUDE_DIR={$zlib_prefix}/include \
+            -DENABLE_BZIP2=ON \
+            -DBZIP2_LIBRARIES={$bzip2_prefix}/lib \
+            -DBZIP2_LIBRARY={$bzip2_prefix}/lib \
+            -DBZIP2_INCLUDE_DIR={$bzip2_prefix}/include \
+            -DBZIP2_NEED_PREFIX=ON \
+            -DENABLE_LZMA=ON  \
+            -DLIBLZMA_LIBRARY={$liblzma_prefix}/lib \
+            -DLIBLZMA_INCLUDE_DIR={$liblzma_prefix}/include \
+            -DLIBLZMA_HAS_AUTO_DECODER=ON  \
+            -DLIBLZMA_HAS_EASY_ENCODER=ON  \
+            -DLIBLZMA_HAS_LZMA_PRESET=ON \
+            -DENABLE_ZSTD=ON \
+            -DZstd_LIBRARY={$libzstd_prefix}/lib \
+            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include
+EOF
+            )
+            ->withMakeOptions('VERBOSE=1')
+            ->withPkgName('libzip')
+            ->withHomePage('https://libzip.org/')
+            ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
+            ->depends('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
+    );
+}
+
+
+function install_sqlite3(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('gmp'))
-            ->withUrl('https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz')
-            ->withPrefix(GMP_PREFIX)
-            ->withConfigure('./configure --prefix=' . GMP_PREFIX . ' --enable-static --disable-shared')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            ->withPkgName('gmp')
+        (new Library('sqlite3'))
+            ->withUrl('https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz')
+            ->withPrefix(SQLITE3_PREFIX)
+            ->withConfigure('./configure --prefix=' . SQLITE3_PREFIX . ' --enable-static --disable-shared')
+            ->withHomePage('https://www.sqlite.org/index.html')
+            ->withLicense('https://www.sqlite.org/copyright.html', Library::LICENSE_SPEC)
+            ->withPkgName('sqlite3')
     );
 }
+
+
+function install_icu(Preprocessor $p)
+{
+    $icu_prefix = ICU_PREFIX;
+    $os = $p->getOsType() == 'macos' ? 'MacOSX' : 'Linux';
+    $p->addLibrary(
+        (new Library('icu'))
+            ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
+            //->withUrl('https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz')
+            ->withManual("https://unicode-org.github.io/icu/userguide/icu4c/build.html")
+            ->withCleanBuildDirectory()
+            ->withPrefix(ICU_PREFIX)
+            ->withConfigure(
+                <<<EOF
+             export CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1"
+             source/runConfigureICU $os --prefix={$icu_prefix} \
+             --enable-icu-config=yes \
+             --enable-static=yes \
+             --enable-shared=no \
+             --with-data-packaging=archive \
+             --enable-release=yes \
+             --enable-extras=yes \
+             --enable-icuio=yes \
+             --enable-dyload=no \
+             --enable-tools=yes \
+             --enable-tests=no \
+             --enable-samples=no
+EOF
+            )
+            ->withPkgName('icu-i18n  icu-io   icu-uc')
+            ->withHomePage('https://icu.unicode.org/')
+            ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
+    );
+}
+
+function install_oniguruma(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('oniguruma'))
+            ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
+            ->withPrefix(ONIGURUMA_PREFIX)
+            ->withConfigure(
+                './autogen.sh && ./configure --prefix=' . ONIGURUMA_PREFIX . ' --enable-static --disable-shared'
+            )
+            ->withFile('oniguruma-6.9.7.tar.gz')
+            ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
+            ->withPkgName('oniguruma')
+    );
+}
+
+function install_mimalloc(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('mimalloc'))
+            ->withUrl('https://github.com/microsoft/mimalloc/archive/refs/tags/v2.0.7.tar.gz')
+            ->withFile('mimalloc-2.0.7.tar.gz')
+            ->withPrefix(MIMALLOC_PREFIX)
+            ->withConfigure(
+                'cmake . -DMI_BUILD_SHARED=OFF -DCMAKE_INSTALL_PREFIX=' . MIMALLOC_PREFIX . ' -DMI_INSTALL_TOPLEVEL=ON -DMI_PADDING=OFF -DMI_SKIP_COLLECT_ON_EXIT=ON -DMI_BUILD_TESTS=OFF'
+            )
+            ->withPkgName('libmimalloc')
+            ->withLicense('https://github.com/microsoft/mimalloc/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withHomePage('https://microsoft.github.io/mimalloc/')
+            ->withLdflags('-L' . MIMALLOC_PREFIX . '/lib -lmimalloc')
+    );
+}
+
+
+function install_libjpeg(Preprocessor $p)
+{
+    $lib = new Library('libjpeg');
+    $lib->withHomePage('https://libjpeg-turbo.org/')
+        ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
+        ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
+        ->withFile('libjpeg-turbo-2.1.2.tar.gz')
+        ->withPrefix(JPEG_PREFIX)
+        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . JPEG_PREFIX . ' .')
+        ->withPkgName('libjpeg');
+
+    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
+    $jpeg_lib_dir = JPEG_PREFIX . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
+    $gif_prefix = GIF_PREFIX;
+    $lib->withLdflags('-L' . $jpeg_lib_dir)
+        ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
+    if ($p->getOsType() === 'macos') {
+        $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
+    }
+    $p->addLibrary($lib);
+}
+
 
 function install_libgif(Preprocessor $p)
 {
@@ -273,27 +679,33 @@ function install_libpng(Preprocessor $p)
     );
 }
 
-function install_libjpeg(Preprocessor $p)
-{
-    $lib = new Library('libjpeg');
-    $lib->withHomePage('https://libjpeg-turbo.org/')
-        ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
-        ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
-        ->withFile('libjpeg-turbo-2.1.2.tar.gz')
-        ->withPrefix(JPEG_PREFIX)
-        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . JPEG_PREFIX . ' .')
-        ->withPkgName('libjpeg');
 
-    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
-    $jpeg_lib_dir = JPEG_PREFIX . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
-    $gif_prefix = GIF_PREFIX;
-    $lib->withLdflags('-L' . $jpeg_lib_dir)
-        ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
-    if ($p->getOsType() === 'macos') {
-        $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
-    }
-    $p->addLibrary($lib);
+function install_libwebp(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('libwebp'))
+            ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
+            ->withFile('libwebp-1.2.1.tar.gz')
+            ->withHomePage('https://github.com/webmproject/libwebp')
+            ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
+            ->withPrefix(WEBP_PREFIX)
+            ->withConfigure(
+                './autogen.sh && ./configure --prefix=' . WEBP_PREFIX . ' --enable-static --disable-shared ' .
+                '--enable-libwebpdecoder ' .
+                '--enable-libwebpextras ' .
+                '--with-pngincludedir=' . PNG_PREFIX . '/include ' .
+                '--with-pnglibdir=' . PNG_PREFIX . '/lib ' .
+                '--with-jpegincludedir=' . JPEG_PREFIX . '/include ' .
+                '--with-jpeglibdir=' . JPEG_PREFIX . ' ' .
+                '--with-gifincludedir=' . GIF_PREFIX . '/include ' .
+                '--with-giflibdir=' . GIF_PREFIX . '/lib'
+            )
+            ->withPkgName('libwebp')
+            ->withLdflags('-L' . WEBP_PREFIX . '/lib -lwebpdemux -lwebpmux')
+            ->depends('libpng', 'libjpeg', 'libgif')
+    );
 }
+
 
 function install_freetype(Preprocessor $p)
 {
@@ -326,7 +738,6 @@ function install_freetype(Preprocessor $p)
             --with-harfbuzz=no \
             --with-brotli=yes 
 EOF
-
             )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
@@ -334,393 +745,102 @@ EOF
     );
 }
 
-function install_libwebp(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('libwebp'))
-            ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
-            ->withFile('libwebp-1.2.1.tar.gz')
-            ->withHomePage('https://github.com/webmproject/libwebp')
-            ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
-            ->withPrefix(WEBP_PREFIX)
-            ->withConfigure(
-                './autogen.sh && ./configure --prefix=' . WEBP_PREFIX . ' --enable-static --disable-shared ' .
-                '--enable-libwebpdecoder ' .
-                '--enable-libwebpextras ' .
-                '--with-pngincludedir=' . PNG_PREFIX . '/include ' .
-                '--with-pnglibdir=' . PNG_PREFIX . '/lib ' .
-                '--with-jpegincludedir=' . JPEG_PREFIX . '/include ' .
-                '--with-jpeglibdir=' . JPEG_PREFIX . ' ' .
-                '--with-gifincludedir=' . GIF_PREFIX . '/include ' .
-                '--with-giflibdir=' . GIF_PREFIX . '/lib'
-            )
-            ->withPkgName('libwebp')
-            ->withLdflags('-L' . WEBP_PREFIX . '/lib -lwebpdemux -lwebpmux')
-            ->depends('libpng', 'libjpeg', 'libgif')
-    );
-}
 
-function install_sqlite3(Preprocessor $p)
+function install_imagemagick(Preprocessor $p)
 {
+    $imagemagick_prefix = IMAGEMAGICK_PREFIX;
     $p->addLibrary(
-        (new Library('sqlite3'))
-            ->withUrl('https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz')
-            ->withPrefix(SQLITE3_PREFIX)
-            ->withConfigure('./configure --prefix=' . SQLITE3_PREFIX . ' --enable-static --disable-shared')
-            ->withHomePage('https://www.sqlite.org/index.html')
-            ->withLicense('https://www.sqlite.org/copyright.html', Library::LICENSE_SPEC)
-            ->withPkgName('sqlite3')
-    );
-}
-
-function install_zlib(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('zlib'))
-            //->withUrl('https://zlib.net/zlib-1.2.13.tar.gz')
-            ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
-            ->withPrefix(ZLIB_PREFIX)
-            ->withConfigure('./configure --prefix=' . ZLIB_PREFIX . ' --static')
-            ->withHomePage('https://zlib.net/')
-            ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
-            ->withPkgName('zlib')
-            ->depends('libxml2', 'bzip2')
-    );
-}
-
-function install_bzip2(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('bzip2'))
-            ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
-            ->withPrefix(BZIP2_PREFIX)
-            ->withMakeOptions('PREFIX=' . BZIP2_PREFIX)
-            ->withMakeInstallOptions('PREFIX=' . BZIP2_PREFIX)
-            ->withHomePage('https://www.sourceware.org/bzip2/')
-            ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
-    );
-}
-
-function install_icu(Preprocessor $p)
-{
-    $icu_prefix = ICU_PREFIX;
-    $os = $p->getOsType() == 'macos' ? 'MacOSX' : 'Linux';
-    $p->addLibrary(
-        (new Library('icu'))
-            ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-            //->withUrl('https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz')
-            ->withManual("https://unicode-org.github.io/icu/userguide/icu4c/build.html")
+        (new Library('imagemagick'))
+            ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
+            ->withPrefix($imagemagick_prefix)
             ->withCleanBuildDirectory()
-            ->withPrefix(ICU_PREFIX)
+            ->withCleanInstallDirectory($imagemagick_prefix)
+            ->withFile('ImageMagick-v7.1.0-62.tar.gz')
+            ->withPrefix($imagemagick_prefix)
             ->withConfigure(
                 <<<EOF
-             export CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1"
-             source/runConfigureICU $os --prefix={$icu_prefix} \
-             --enable-icu-config=yes \
-             --enable-static=yes \
-             --enable-shared=no \
-             --with-data-packaging=archive \
-             --enable-release=yes \
-             --enable-extras=yes \
-             --enable-icuio=yes \
-             --enable-dyload=no \
-             --enable-tools=yes \
-             --enable-tests=no \
-             --enable-samples=no
-EOF
-            )
-            ->withPkgName('icu-i18n  icu-io   icu-uc')
-            ->withHomePage('https://icu.unicode.org/')
-            ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
-    );
-}
-
-function install_oniguruma(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('oniguruma'))
-            ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
-            ->withPrefix(ONIGURUMA_PREFIX)
-            ->withConfigure(
-                './autogen.sh && ./configure --prefix=' . ONIGURUMA_PREFIX . ' --enable-static --disable-shared'
-            )
-            ->withFile('oniguruma-6.9.7.tar.gz')
-            ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
-            ->withPkgName('oniguruma')
-    );
-}
-
-// MUST be in the /usr directory
-function install_zip(Preprocessor $p)
-{
-    $openssl_prefix = OPENSSL_PREFIX;
-    $zip_prefix = ZIP_PREFIX;
-    $liblzma_prefix = LIBLZ4_PREFIX;
-    $libzstd_prefix = LIBZSTD_PREFIX;
-    $zlib_prefix = ZLIB_PREFIX;
-    $bzip2_prefix = BZIP2_PREFIX;
-    $p->addLibrary(
-        (new Library('zip'))
-            //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
-            ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
-            ->withManual('https://libzip.org')
-            ->withPrefix($zip_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($zip_prefix)
-            ->withConfigure(
-                <<<EOF
-            cmake -Wno-dev .  \
-            -DCMAKE_INSTALL_PREFIX={$zip_prefix} \
-            -DCMAKE_BUILD_TYPE=optimized \
-            -DBUILD_TOOLS=OFF \
-            -DBUILD_EXAMPLES=OFF \
-            -DBUILD_DOC=OFF \
-            -DLIBZIP_DO_INSTALL=ON \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DENABLE_GNUTLS=OFF  \
-            -DENABLE_MBEDTLS=OFF \
-            -DENABLE_OPENSSL=ON \
-            -DOPENSSL_USE_STATIC_LIBS=TRUE \
-            -DOPENSSL_LIBRARIES={$openssl_prefix}/lib \
-            -DOPENSSL_INCLUDE_DIR={$openssl_prefix}/include \
-            -DZLIB_LIBRARY={$zlib_prefix}/lib \
-            -DZLIB_INCLUDE_DIR={$zlib_prefix}/include \
-            -DENABLE_BZIP2=ON \
-            -DBZIP2_LIBRARIES={$bzip2_prefix}/lib \
-            -DBZIP2_LIBRARY={$bzip2_prefix}/lib \
-            -DBZIP2_INCLUDE_DIR={$bzip2_prefix}/include \
-            -DBZIP2_NEED_PREFIX=ON \
-            -DENABLE_LZMA=ON  \
-            -DLIBLZMA_LIBRARY={$liblzma_prefix}/lib \
-            -DLIBLZMA_INCLUDE_DIR={$liblzma_prefix}/include \
-            -DLIBLZMA_HAS_AUTO_DECODER=ON  \
-            -DLIBLZMA_HAS_EASY_ENCODER=ON  \
-            -DLIBLZMA_HAS_LZMA_PRESET=ON \
-            -DENABLE_ZSTD=ON \
-            -DZstd_LIBRARY={$libzstd_prefix}/lib \
-            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include
-EOF
-
-            )
-            ->withMakeOptions('VERBOSE=1')
-            ->withPkgName('libzip')
-            ->withHomePage('https://libzip.org/')
-            ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
-            ->depends('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
-    );
-}
-
-function install_bzip2_dev_latest(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('bzip2', '/usr/bzip2'))
-            ->withUrl('https://gitlab.com/bzip2/bzip2/-/archive/master/bzip2-master.tar.gz')
-            ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                '
-              test -d /usr/bzip2 && rm -rf /usr/bzip2 ;
-              apk add python3 py3-pip && python3 -m pip install pytest ;
-              mkdir build && cd build ;
-            '
-            )
-            ->withConfigure(
-                '
-                    cmake .. -DCMAKE_BUILD_TYPE="Release" \
-                    -DCMAKE_INSTALL_PREFIX=/usr/bzip2  \
-                    -DENABLE_STATIC_LIB=ON ;
-                    cmake --build . --target install   ;
-                    cd - ;
-                    :; #  shell空语句
-                    pwd
-                    return 0 ; # 返回本函数调用处，本函数后续代码不在执行
-            '
-            )
-            ->withLdflags('-L/usr/bzip2/lib')
-            ->withHomePage('https://www.sourceware.org/bzip2/')
-            ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
-    );
-}
-
-function install_cares(Preprocessor $p)
-{
-    $cares_prefix = CARES_PREFIX;
-    $p->addLibrary(
-        (new Library('cares'))
-            ->withUrl('https://c-ares.org/download/c-ares-1.19.0.tar.gz')
-            ->withPrefix($cares_prefix)
-            ->withConfigure("./configure --prefix={$cares_prefix} --enable-static --disable-shared")
-            ->withPkgName('libcares')
-            ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
-            ->withHomePage('https://c-ares.org/')
-    );
-}
-
-function install_readline(Preprocessor $p)
-{
-    $readline_prefix = READLINE_PREFIX;
-    $p->addLibrary(
-        (new Library('readline'))
-            ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
-            ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
-            ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
-            ->withPrefix(READLINE_PREFIX)
-            ->withConfigure(
-                <<<EOF
-                ./configure \
-                --prefix={$readline_prefix} \
-                --enable-static \
-                --disable-shared \
-                --with-curses \
-                --enable-multibyte
-EOF
-            )
-            ->withPkgName('readline')
-            ->withLdflags('-L' . READLINE_PREFIX . '/lib')
-            ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
-            ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
-            ->depends('ncurses')
-    );
-}
-
-
-/*
-// CFLAGS="-static -O2 -Wall" \
-// LDFLAGS="-Wl,R-lncurses"
-// LDFLAGS="-lncurses" \
- */
-function install_ncurses(Preprocessor $p)
-{
-    $ncurses_prefix = NCURSES_PREFIX;
-    $p->addLibrary(
-        (new Library('ncurses'))
-            ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
-            ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
-            ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
-            ->withPrefix(NCURSES_PREFIX)
-            ->withConfigure(
-                <<<EOF
-            mkdir -p {$ncurses_prefix}/lib/pkgconfig
+            ./configure --help   
+            CPPFLAGS="$(pkg-config --cflags-only-I --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
+            LIBS="$(pkg-config     --libs-only-l   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
             ./configure \
-            --prefix={$ncurses_prefix} \
+            --prefix={$imagemagick_prefix} \
             --enable-static \
             --disable-shared \
-            --enable-pc-files \
-            --with-pkg-config={$ncurses_prefix}/lib/pkgconfig \
-            --with-pkg-config-libdir={$ncurses_prefix}/lib/pkgconfig \
-            --with-normal \
-            --enable-widec \
-            --enable-echo \
-            --with-ticlib  \
-            --without-termlib \
-            --enable-sp-funcs \
-            --enable-term-driver \
-            --enable-ext-colors \
-            --enable-ext-mouse \
-            --enable-ext-putwin \
-            --enable-no-padding \
-            --without-debug \
-            --without-tests \
-            --without-dlsym \
-            --without-debug \
-            --enable-symlinks
+            --with-zip=yes \
+            --with-fontconfig=no \
+            --with-heic=no \
+            --with-lcms=no \
+            --with-lqr=no \
+            --with-openexr=no \
+            --with-openjp2=no \
+            --with-pango=no \
+            --with-jpeg=yes \
+            --with-png=yes \
+            --with-webp=yes \
+            --with-raw=yes \
+            --with-tiff=yes \
+            --with-zstd=yes \
+            --with-lzma=yes \
+            --with-xml=yes \
+            --with-zip=yes \
+            --with-zlib=yes \
+            --with-zstd=yes \
+            --with-freetype=yes 
+
 EOF
             )
-            ->withScriptBeforeInstall(
-                '
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/formw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/form.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/menuw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/menu.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++w.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncursesw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/panelw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/panel.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ticw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/tic.pc ;
+            ->withPkgName('ImageMagick')
+            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
+            ->depends(
+                'libxml2',
+                'libzip',
+                'zlib',
+                'libjpeg',
+                'freetype',
+                'libwebp',
+                'libpng',
+                'libgif',
+                'openssl',
+                'libzstd'
+            )
+    );
+}
 
-                ln -s ' . NCURSES_PREFIX . '/lib/libformw.a ' . NCURSES_PREFIX . '/lib/libform.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libmenuw.a ' . NCURSES_PREFIX . '/lib/libmenu.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libncurses++w.a ' . NCURSES_PREFIX . '/lib/libncurses++.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libncursesw.a ' . NCURSES_PREFIX . '/lib/libncurses.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libpanelw.a  ' . NCURSES_PREFIX . '/lib/libpanel.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libticw.a ' . NCURSES_PREFIX . '/lib/libtic.a ;
+
+function install_libidn2(Preprocessor $p)
+{
+    $p->addLibrary(
+        (new Library('libidn2'))
+            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
+            ->withCleanBuildDirectory()
+            ->withPrefix('/usr/libidn2')
+            ->withScriptBeforeConfigure(
+                '
+            test -d /usr/libidn2 && rm -rf /usr/libidn2
+            
+            apk add  gettext  coreutils
+           
             '
             )
-            ->withPkgName('ncursesw')
-            ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/projectceladon/libncurses')
-    );
-}
-
-
-function install_libsodium(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('libsodium'))
-            // ISC License, like BSD
-            ->withLicense('https://en.wikipedia.org/wiki/ISC_license', Library::LICENSE_SPEC)
-            ->withHomePage('https://doc.libsodium.org/')
-            ->withUrl('https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz')
-            ->withPrefix(LIBSODIUM_PREFIX)
-            ->withConfigure('./configure --prefix=' . LIBSODIUM_PREFIX . ' --enable-static --disable-shared')
-            ->withPkgName('libsodium')
-    );
-}
-
-function install_libyaml(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('libyaml'))
-            ->withUrl('https://pyyaml.org/download/libyaml/yaml-0.2.5.tar.gz')
-            ->withPrefix(LIBYAML_PREFIX)
-            ->withConfigure('./configure --prefix=' . LIBYAML_PREFIX . ' --enable-static --disable-shared')
-            ->withPkgName('yaml-0.1')
-            ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
-            ->withHomePage('https://pyyaml.org/wiki/LibYAML')
-    );
-}
-
-function install_brotli(Preprocessor $p)
-{
-    /*
-    -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
-    -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-    -DCMAKE_INSTALL_LIBDIR="${LIBDIR}" \
-  */
-    $brotli_prefix = BROTLI_PREFIX;
-    $p->addLibrary(
-        (new Library('brotli'))
-            ->withManual('https://github.com/google/brotli')//有多种构建方式，选择cmake 构建
-            ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
-            ->withFile('brotli-1.0.9.tar.gz')
-            ->withPrefix($brotli_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($brotli_prefix)
             ->withConfigure(
-                <<<EOF
-            cmake . -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX={$brotli_prefix} \
-            -DBROTLI_SHARED_LIBS=OFF \
-            -DBROTLI_STATIC_LIBS=ON \
-            -DBROTLI_DISABLE_TESTS=ON \
-            -DBROTLI_BUNDLED_MODE=OFF 
-                
-            cmake --build . --config Release --target install
-EOF
+                '
+            ./configure --help 
+            
+            #  intl  依赖  gettext
+            
+            ./configure --prefix=/usr/libidn2 enable_static=yes enable_shared=no \
+             --disable-doc \
+             --with-libiconv-prefix=/usr/libiconv \
+             --with-libintl-prefix
+             
+            '
             )
-            ->withSkipMakeAndMakeInstall()
-            ->withScriptAfterInstall(
-                implode(PHP_EOL, [
-                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',
-                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.so',
-                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.dylib',
-                    'cp ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotli.a',
-                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotlicommon.a',
-                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlienc-static.a ' . BROTLI_PREFIX . '/lib/libbrotlienc.a',
-                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlidec-static.a ' . BROTLI_PREFIX . '/lib/libbrotlidec.a'
-                ])
-            )
-            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
-            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/google/brotli')
+            ->withPkgName('libidn2')
     );
 }
+
 
 /**
  *
@@ -805,17 +925,16 @@ EOF
             ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'libidn2')
 
 
-    #--with-gnutls=GNUTLS_PREFIX
-    #--with-nghttp3=NGHTTP3_PREFIX
-    #--with-ngtcp2=NGTCP2_PREFIX
-    #--with-nghttp2=NGHTTP2_PREFIX
-    #--without-brotli
-    #--disable-ares
+        #--with-gnutls=GNUTLS_PREFIX
+        #--with-nghttp3=NGHTTP3_PREFIX
+        #--with-ngtcp2=NGTCP2_PREFIX
+        #--with-nghttp2=NGHTTP2_PREFIX
+        #--without-brotli
+        #--disable-ares
 
-    #--with-ngtcp2=/usr/ngtcp2 \
-    #--with-quiche=/usr/quiche
-    #--with-msh3=PATH
-
+        #--with-ngtcp2=/usr/ngtcp2 \
+        #--with-quiche=/usr/quiche
+        #--with-msh3=PATH
     );
     /**
      * configure: pkg-config: SSL_LIBS: "-lssl -lcrypto"
@@ -839,22 +958,6 @@ EOF
      */
 }
 
-function install_mimalloc(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('mimalloc'))
-            ->withUrl('https://github.com/microsoft/mimalloc/archive/refs/tags/v2.0.7.tar.gz')
-            ->withFile('mimalloc-2.0.7.tar.gz')
-            ->withPrefix(MIMALLOC_PREFIX)
-            ->withConfigure(
-                'cmake . -DMI_BUILD_SHARED=OFF -DCMAKE_INSTALL_PREFIX=' . MIMALLOC_PREFIX . ' -DMI_INSTALL_TOPLEVEL=ON -DMI_PADDING=OFF -DMI_SKIP_COLLECT_ON_EXIT=ON -DMI_BUILD_TESTS=OFF'
-            )
-            ->withPkgName('libmimalloc')
-            ->withLicense('https://github.com/microsoft/mimalloc/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withHomePage('https://microsoft.github.io/mimalloc/')
-            ->withLdflags('-L' . MIMALLOC_PREFIX . '/lib -lmimalloc')
-    );
-}
 
 function install_pgsql(Preprocessor $p)
 {
@@ -948,150 +1051,6 @@ function install_pgsql(Preprocessor $p)
     );
 }
 
-function install_pgsql_test(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('pgsql'))
-            ->withHomePage('https://www.postgresql.org/')
-            ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
-            ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
-            //https://www.postgresql.org/docs/devel/installation.html
-            //https://www.postgresql.org/docs/devel/install-make.html#INSTALL-PROCEDURE-MAKE
-            ->withManual('https://www.postgresql.org/docs/')
-            ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                '
-               test -d /usr/pgsql && rm -rf /usr/pgsql
-            '
-            )
-            ->withConfigure(
-                '
-             # src/Makefile.shlib 有静态配置
-             # src/interfaces/libpq/Makefile  有静态配置  参考：  install-lib install-lib-static  installdirs  installdirs-lib install-lib-pc
-              
-           # sed -i "s/ifndef haslibarule/ifndef custom_static/"  src/Makefile.shlib     
-           # sed -i "s/endif #haslibarule/endif #custom_static/"  src/Makefile.shlib     
-           sed -i "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
-           # cp -rf  /work/Makefile.shlib src/Makefile.shlib   
-           # sed -i "120a \	echo \$<" src/interfaces/libpq/Makefile
-           # sed -i "120a \	echo \$(PORTNAME)" src/interfaces/libpq/Makefile
-           # 替换指定行内容
-           sed -i "102c all: all-lib" src/interfaces/libpq/Makefile
-           
-           cat >> src/interfaces/libpq/Makefile <<"-EOF-"
-           
-libpq5555.a: $(OBJS) | $(SHLIB_PREREQS)
-	echo $(SHLIB_PREREQS)
-	echo $(SHLIB_LINK)
-	echo $(exports_file)
-	#rm -f $@
-	rm -f libpq.a
-	# ar  rcs $@  $^ 
-	ar  rcs libpq.a  $^ 
-	# ranlib $@
-	ranlib libpq.a
-	# touch $@
-	# touch libpq.a
-install-libpq5555.a: install-lib-static install-lib-pc
-	$(MKDIR_P) "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)"
-	$(INSTALL_DATA) $(srcdir)/libpq-fe.h "$(DESTDIR)$(includedir)"
-	$(INSTALL_DATA) $(srcdir)/libpq-events.h "$(DESTDIR)$(includedir)"
-	$(INSTALL_DATA) $(srcdir)/libpq-int.h "$(DESTDIR)$(includedir_internal)"
-	$(INSTALL_DATA) $(srcdir)/fe-auth-sasl.h "$(DESTDIR)$(includedir_internal)"
-	$(INSTALL_DATA) $(srcdir)/pqexpbuffer.h "$(DESTDIR)$(includedir_internal)"
--EOF-
-             
-            export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
-            
-            ./configure  --prefix=/usr/pgsql \
-            --enable-coverage=no \
-            --with-ssl=openssl  \
-            --with-readline \
-            --without-icu \
-            --without-ldap \
-            --without-libxml  \
-            --without-libxslt \
-            \
-           --with-includes="/usr/openssl_3/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/zlib/include:/usr/include" \
-           --with-libraries="/usr/openssl_3/lib64:/usr/libxslt/lib/:/usr/libxml2/lib/:/usr/zlib/lib:/usr/lib"
-            # --with-includes="/usr/openssl_1/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/zlib/include:/usr/include" \
-            # --with-libraries="/usr/openssl_1/lib:/usr/libxslt/lib/:/usr/libxml2/lib/:/usr/zlib/lib:/usr/lib"
-           
-            make -C src/include install 
-            make -C  src/bin/pg_config install
-            
-            make -C  src/common -j $cpu_nums all 
-            make -C  src/common install 
-            
-            make -C  src/port -j $cpu_nums all 
-            make -C  src/port install 
-            
-     
-            make -C  src/backend/libpq -j $cpu_nums all 
-            make -C  src/backend/libpq install 
-            
-            make -C src/interfaces/ecpg   -j $cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
-            make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
-            
-            # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
-            
-            
- 
-            make -C src/interfaces/libpq  -j $cpu_nums # soname=true
-           
-            make -C src/interfaces/libpq  install 
-            
-            rm -rf /usr/pgsql/lib/*.so.*
-            rm -rf /usr/pgsql/lib/*.so
-            return 0 
-            make -C  src/interfaces/libpq -j $cpu_nums libpq5555.a
-            make -C  src/interfaces/libpq install-libpq5555.a
-            
-            rm -rf /usr/pgsql/lib/*.so.*
-            rm -rf /usr/pgsql/lib/*.so
-            
-            return 0 
-            
-            nm -A /usr/pgsql/lib/libpq.a 
-            
-            exit 0 
-            make -C src/interfaces/libpq  -j $cpu_nums  libpq.a 
-            exit 0 
-            make -C src/interfaces/libpq    install-libpq.a
-            
-            return 0 
-            
-            rm -rf /usr/pgsql/lib/*.so.*
-            rm -rf /usr/pgsql/lib/*.so
-            
-            return 0
-            
-            # need stage 
-            # src/include         
-            $ src/common        
-            # src/port          
-            # src/interfaces/libpq        
-            # src/bin/pg_config
-           
-           
-            '
-            )
-            ->withMakeOptions('-C src/common all')
-            ->withMakeInstallOptions('-C src/include install ')
-            ->withPkgName('libpq')
-            ->withPkgConfig('/usr/pgsql/lib/pkgconfig')
-            ->withLdflags('-L/usr/pgsql/lib/')
-            ->withBinPath('/usr/pgsql/bin/')
-            ->withScriptAfterInstall(
-                '
-            '
-            )
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
-    );
-}
 
 function install_libffi($p)
 {
@@ -1118,98 +1077,36 @@ function install_libffi($p)
             ->withPkgConfig('/usr/libffi/lib/pkgconfig')
             ->withLdflags('-L/usr/libffi/lib/')
             ->withBinPath('/usr/libffi/bin/')
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->withSkipInstall()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
-function install_fastdfs($p)
+function install_bison(Preprocessor $p)
 {
     $p->addLibrary(
-        (new Library('fastdfs'))
-            ->withHomePage('https://github.com/happyfish100/fastdfs.git')
-            ->withLicense('https://github.com/happyfish100/fastdfs/blob/master/COPYING-3_0.txt', Library::LICENSE_GPL)
-            ->withUrl('https://github.com/happyfish100/fastdfs/archive/refs/tags/V6.9.4.tar.gz')
-            ->withFile('fastdfs-V6.9.4.tar.gz')
-            ->withPrefix('/usr/fastdfs/')
-            ->withScriptBeforeConfigure(
-                'test -d /usr/fastdfs/ && rm -rf /usr/fastdfs/'
-            )
-            ->withConfigure(
-                '
-            export DESTDIR=/usr/libserverframe/
-            ./make.sh clean && ./make.sh && ./make.sh install
-            ./setup.sh /etc/fdfs
-            '
-            )
-            ->withPkgName('')
-            ->withPkgConfig('/usr/fastdfs//lib/pkgconfig')
-            ->withLdflags('-L/usr/fastdfs/lib/')
-            ->withBinPath('/usr/fastdfs/bin/')
-            ->withSkipBuildInstall()
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
-    );
-}
-
-function install_libserverframe($p)
-{
-    $p->addLibrary(
-        (new Library('libserverframe'))
-            ->withHomePage('https://github.com/happyfish100/libserverframe')
-            ->withLicense('https://github.com/happyfish100/libserverframe/blob/master/LICENSE', Library::LICENSE_GPL)
-            ->withUrl('https://github.com/happyfish100/libserverframe/archive/refs/tags/V1.1.25.tar.gz')
-            ->withFile('libserverframe-V1.1.25.tar.gz')
-            ->withPrefix('/usr/libserverframe/')
-            ->withScriptBeforeConfigure(
-                'test -d /usr/libserverframe/ && rm -rf /usr/libserverframe/'
-            )
-            ->withConfigure(
-                '
-                export DESTDIR=/usr/libserverframe/
-                ./make.sh clean && ./make.sh && ./make.sh install
-            '
-            )
-            ->withPkgName('')
-            ->withSkipBuildInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
-    );
-}
-
-function install_libfastcommon($p)
-{
-    $p->addLibrary(
-        (new Library('libfastcommon'))
-            ->withHomePage('https://github.com/happyfish100/libfastcommon')
-            ->withLicense('https://github.com/happyfish100/libfastcommon/blob/master/LICENSE', Library::LICENSE_GPL)
-            ->withUrl('https://github.com/happyfish100/libfastcommon/archive/refs/tags/V1.0.66.tar.gz')
-            ->withFile('libfastcommon-V1.0.66.tar.gz')
-            ->withPrefix('/usr/libfastcommon/')
+        (new Library('bison', ))
+            ->withHomePage('https://www.gnu.org/software/bison/')
+            ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
+            ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
+            ->withManual('https://www.gnu.org/software/bison/manual/')
+            ->withLabel('build_env_bin')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                'test -d /usr/libfastcommon/ && rm -rf /usr/libfastcommon/'
-            )
             ->withConfigure(
-                '
-             export DESTDIR=/usr/libfastcommon
-             ./make.sh clean && ./make.sh && ./make.sh install
-             exit 0 
-            '
+                "
+             ./configure --help 
+             ./configure --prefix=/usr/bison
+            "
             )
-            ->withPkgName('')
-            ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
-            ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+            ->withBinPath('/usr/bison/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
     );
 }
+
 
 function install_php_internal_extensions($p)
 {
@@ -1240,295 +1137,9 @@ function install_php_internal_extensions($p)
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->withSkipBuildLicense()
-
     );
 }
 
-function install_liblz4(Preprocessor $p)
-{
-    $liblz4_prefix = LIBLZ4_PREFIX;
-    $p->addLibrary(
-        (new Library('liblz4'))
-            ->withHomePage('http://www.lz4.org')
-            ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
-            ->withFile('lz4-v1.9.4.tar.gz')
-            ->withPkgName('liblz4')
-            ->withPrefix($liblz4_prefix)
-            ->withConfigure(
-                <<<EOF
-            cd build/cmake/
-            cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON
-EOF
-            )
-    );
-
-    //可以使用CMAKE 编译 也可以
-    //不使用CMAKE，需要自己修改安装目录
-    //->withMakeOptions('INSTALL_PROGRAM=/usr/liblz4/')
-    //->withMakeInstallOptions("DESTDIR=/usr/liblz4/")
-
-}
-
-function install_liblzma(Preprocessor $p)
-{
-    $liblzma_prefix = LIBLZMA_PREFIX;
-    $p->addLibrary(
-        (new Library('liblzma'))
-            ->withHomePage('https://tukaani.org/xz/')
-            ->withLicense('https://github.com/tukaani-project/xz/blob/master/COPYING.GPLv3', Library::LICENSE_LGPL)
-            //->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
-            //->withFile('xz-5.2.9.tar.gz')
-            ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
-            ->withFile('xz-5.4.1.tar.gz')
-            ->withPrefix($liblzma_prefix)
-            ->withConfigure(
-                './configure --prefix=' . $liblzma_prefix . ' --enable-static  --disable-shared --disable-doc'
-            )
-            ->withPkgName('liblzma')
-    );
-}
-
-function install_libzstd(Preprocessor $p)
-{
-    $libzstd_prefix = LIBZSTD_PREFIX;
-    $p->addLibrary(
-        (new Library('libzstd'))
-            ->withHomePage('https://github.com/facebook/zstd')
-            ->withLicense('https://github.com/facebook/zstd/blob/dev/COPYING', Library::LICENSE_GPL)
-            ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
-            ->withFile('zstd-1.5.2.tar.gz')
-            ->withPrefix($libzstd_prefix)
-            ->withConfigure(
-                <<<EOF
-            mkdir -p build/cmake/builddir
-            cd build/cmake/builddir
-            cmake .. \
-            -DCMAKE_INSTALL_PREFIX={$libzstd_prefix} \
-            -DZSTD_BUILD_STATIC=ON \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DZSTD_BUILD_CONTRIB=ON \
-            -DZSTD_BUILD_PROGRAMS=ON \
-            -DZSTD_BUILD_SHARED=OFF \
-            -DZSTD_BUILD_TESTS=OFF \
-            -DZSTD_LEGACY_SUPPORT=ON 
-EOF
-            )
-            ->withMakeOptions('lib')
-            //->withMakeInstallOptions('install PREFIX=/usr/libzstd/')
-            ->withPkgName('libzstd')
-            ->depends('liblz4', 'liblzma')
-
-    );
-    /*
-               '
-           mkdir -p build/cmake/builddir
-           cd build/cmake/builddir
-           # cmake -LH ..
-           cmake .. \
-           -DCMAKE_INSTALL_PREFIX=/usr/libzstd/ \
-           -DZSTD_BUILD_STATIC=ON \
-           -DCMAKE_BUILD_TYPE=Release \
-           -DZSTD_BUILD_CONTRIB=ON \
-           -DZSTD_BUILD_PROGRAMS=OFF \
-           -DZSTD_BUILD_SHARED=OFF \
-           -DZSTD_BUILD_TESTS=OFF \
-           -DZSTD_LEGACY_SUPPORT=ON \
-           \
-           -DZSTD_ZLIB_SUPPORT=ON \
-           -DZLIB_INCLUDE_DIR=/usr/zlib/include \
-           -DZLIB_LIBRARY=/usr/zlib/lib \
-           \
-           -DZSTD_LZ4_SUPPORT=ON \
-           -DLIBLZ4_INCLUDE_DIR=/usr/liblz4/include \
-           -DLIBLZ4_LIBRARY=/usr/liblz4/lib \
-           \
-           -DZSTD_LZMA_SUPPORT=ON \
-           -DLIBLZMA_LIBRARY=/usr/liblzma/lib \
-           -DLIBLZMA_INCLUDE_DIR=/usr/liblzma/include \
-           -DLIBLZMA_HAS_AUTO_DECODER=ON\
-           -DLIBLZMA_HAS_EASY_ENCODER=ON \
-           -DLIBLZMA_HAS_LZMA_PRESET=ON
-           '
-    */
-}
-
-function install_harfbuzz(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('harfbuzz'))
-            ->withLicense('https://github.com/harfbuzz/harfbuzz/blob/main/COPYING', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/harfbuzz/harfbuzz.git')
-            ->withUrl('https://github.com/harfbuzz/harfbuzz/archive/refs/tags/6.0.0.tar.gz')
-            ->withFile('harfbuzz-6.0.0.tar.gz')
-            ->withLabel('library')
-            ->withPrefix('/usr/harfbuzz/')
-            //->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                '
-            apk add python3 py3-pip 
-            pip3 install meson  -i https://pypi.tuna.tsinghua.edu.cn/simple
-            test -d /usr/harfbuzz/ && rm -rf /usr/harfbuzz/ 
-            
-            '
-            )
-            ->withConfigure(
-                "
-                ls -lh
-                meson help
-                meson setup --help
-
-                meson setup  build \
-                --backend=ninja \
-                --prefix=/usr/harfbuzz \
-                --default-library=static \
-                -D freetype=disabled \
-                -D tests=disabled \
-                -D docs=disabled  \
-                -D benchmark=disabled
-
-                meson compile -C build
-                # ninja -C builddir
-                meson install -C build
-                # ninja -C builddir install
-                return 0
-            "
-            )
-            ->withPkgConfig('/usr/harfbuzz/lib/pkgconfig')
-            ->withPkgName('')
-            ->withLdflags('-L/usr/harfbuzz/lib')
-            ->depends('ninja')
-    //->withSkipBuildInstall()
-    );
-}
-
-
-function install_gettext(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('gettext'))
-            ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.21.1.tar.gz')
-            ->withHomePage('https://www.gnu.org/software/gettext/')
-            ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
-            ->withCleanBuildDirectory()
-            ->withPrefix('/usr/gettext')
-            ->withScriptBeforeConfigure(
-                '
-            test -d /usr/gettext && rm -rf /usr/gettext
-            '
-            )
-            ->withConfigure(
-                '
-            ./configure --help 
-           
-            ./configure --prefix=/usr/gettext enable_static=yes enable_shared=no \
-             --disable-java \
-             --without-git \
-             --with-libiconv-prefix=/usr/libiconv \
-             --with-libncurses-prefix=/usr/ncurses \
-             --with-libxml2-prefix=/usr/libxml2/ \
-             --with-libunistring-prefix \
-             --with-libintl-prefix 
-             
-            '
-            )
-            ->withPkgName('gettext')
-    );
-}
-
-function install_libidn2(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('libidn2'))
-            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            ->withCleanBuildDirectory()
-            ->withPrefix('/usr/libidn2')
-            ->withScriptBeforeConfigure(
-                '
-            test -d /usr/libidn2 && rm -rf /usr/libidn2
-            
-            apk add  gettext  coreutils
-           
-            '
-            )
-            ->withConfigure(
-                '
-            ./configure --help 
-            
-            #  intl  依赖  gettext
-            
-            ./configure --prefix=/usr/libidn2 enable_static=yes enable_shared=no \
-             --disable-doc \
-             --with-libiconv-prefix=/usr/libiconv \
-             --with-libintl-prefix
-             
-            '
-            )
-            ->withPkgName('libidn2')
-    );
-}
-
-function install_jansson(Preprocessor $p)
-{
-    $jansson_prefix = JANSSON_PREFIX;
-    $p->addLibrary(
-        (new Library('jansson'))
-            ->withHomePage('http://www.digip.org/jansson/')
-            ->withUrl('https://github.com/akheron/jansson/archive/refs/tags/v2.14.tar.gz')
-            ->withFile('jansson-v2.14.tar.gz')
-            ->withManual('https://github.com/akheron/jansson.git')
-            ->withLicense('https://github.com/akheron/jansson/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withPrefix($jansson_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($jansson_prefix)
-            ->withConfigure(
-                <<<EOF
-             autoreconf -fi
-            ./configure --help 
-            ./configure \
-            --prefix={$jansson_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
-EOF
-            )
-            ->withPkgName('jansson')
-
-    );
-}
-
-function install_nghttp2(Preprocessor $p)
-{
-    $nghttp2_prefix = NGHTTP2_PREFIX;
-    $p->addLibrary(
-        (new Library('nghttp2'))
-            ->withHomePage('https://github.com/nghttp2/nghttp2.git')
-            ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
-            ->withCleanBuildDirectory()
-            ->withPrefix($nghttp2_prefix)
-            ->withCleanInstallDirectory($nghttp2_prefix)
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
-
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libxml-2.0 jansson  libcares openssl )"  \
-            LDFLAGS="$(pkg-config --libs-only-L      --static zlib libxml-2.0 jansson  libcares openssl )"  \
-            LIBS="$(pkg-config --libs-only-l         --static zlib libxml-2.0 jansson  libcares openssl )"  \
-            ./configure --prefix={$nghttp2_prefix} \
-            --enable-static=yes \
-            --enable-shared=no \
-            --enable-lib-only \
-            --enable-python-bindings=no \
-            --with-libxml2  \
-            --with-jansson  \
-            --with-zlib \
-            --with-libcares
-EOF
-            )
-            ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
-            ->depends('openssl', 'zlib', 'libxml2', 'jansson', 'cares')
-    );
-}
 
 function install_php_extension_micro(Preprocessor $p)
 {
@@ -1550,28 +1161,6 @@ function install_php_extension_micro(Preprocessor $p)
     );
 }
 
-function install_bison(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('bison',))
-            ->withHomePage('https://www.gnu.org/software/bison/')
-            ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
-            ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
-            ->withManual('https://www.gnu.org/software/bison/manual/')
-            ->withLabel('build_env_bin')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                "
-             ./configure --help 
-             ./configure --prefix=/usr/bison
-            "
-            )
-            ->withBinPath('/usr/bison/bin/')
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->disablePkgName()
-    );
-}
 
 function install_re2c(Preprocessor $p)
 {
@@ -1595,41 +1184,6 @@ function install_re2c(Preprocessor $p)
             "
             )
             ->withBinPath('/usr/re2c/bin/')
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->disablePkgName()
-    );
-}
-
-function install_php_internal_extension_curl_patch(Preprocessor $p)
-{
-    $workDir = $p->getWorkDir();
-    $command = '';
-
-    if (is_file("{$workDir}/ext/curl/config.m4.backup")) {
-        $originFileHash = md5(file_get_contents("{$workDir}/ext/curl/config.m4"));
-        $backupFileHash = md5(file_get_contents("{$workDir}/ext/curl/config.m4.backup"));
-        if ($originFileHash == $backupFileHash) {
-            $command = <<<EOF
-           test -f {$workDir}/ext/curl/config.m4.backup && rm -f {$workDir}/ext/curl/config.m4.backup
-           test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
-EOF;
-        }
-    } else {
-        $command = <<<EOF
-           test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
-EOF;
-    }
-
-    $p->addLibrary(
-        (new Library('patch_php_internal_extension_curl'))
-            ->withHomePage('https://www.php.net/')
-            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
-            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
-            ->withManual('https://www.php.net/docs.php')
-            ->withLabel('php_extension_patch')
-            ->withScriptBeforeConfigure($command)
-            ->withConfigure('return 0 ')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
