@@ -23,7 +23,6 @@ EOF
             ->withLdflags('-L/usr/openssl_v3/lib64')
             ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withHomePage('https://www.openssl.org/')
-
     );
 }
 
@@ -50,7 +49,6 @@ EOF
             ->withLdflags('-L/usr/openssl_v3_quic/lib64')
             ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withHomePage('https://curl.se/docs/http3.html')
-
     );
 }
 
@@ -153,7 +151,7 @@ function install_harfbuzz(Preprocessor $p)
             ->withPkgName('')
             ->withLdflags('-L/usr/harfbuzz/lib')
             ->depends('ninja')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -214,7 +212,6 @@ function install_libevent($p)
         -DEVENT__LIBRARY_TYPE=STATIC  
   
 EOF
-
             )
             ->withPkgName('libevent')
     );
@@ -240,10 +237,9 @@ function install_libuv($p)
             --enable-static=yes
            
 EOF
-
             )
             ->withPkgName('libev')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -266,10 +262,8 @@ function install_libev($p)
             --enable-static=yes
            
 EOF
-
             )
             ->withPkgName('libev')
-
     );
 }
 
@@ -459,7 +453,7 @@ EOF;
               
             '
             )->withPkgName('gnutls')
-    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
+        //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
 }
 
@@ -503,7 +497,7 @@ function install_boringssl($p)
             )
             ->withSkipMakeAndMakeInstall()
             ->disableDefaultPkgConfig()
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -537,7 +531,7 @@ EOF
             )
             //->withSkipMakeAndMakeInstall()
             ->withPkgName('wolfssl')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -1087,7 +1081,6 @@ function install_valgrind(Preprocessor $p)
 
   
 EOF
-
             )
             ->withPkgName('valgrind')
             ->withBinPath('/usr/valgrind/bin/')
@@ -1114,7 +1107,6 @@ cd build && cmake ../ && make
 
   
 EOF
-
             )
             ->withPkgName('snappy')
             ->withBinPath('/usr/snappy/bin/')
@@ -1139,7 +1131,6 @@ pwd
 exit 0 
   
 EOF
-
             )
             ->withPkgName('kerberos')
             ->withBinPath('/usr/kerberos/bin/')
@@ -1165,7 +1156,6 @@ pwd
 exit 0 
   
 EOF
-
             )
             ->withPkgName('fontconfig')
             ->withBinPath('/usr/fontconfig/bin/')
@@ -1400,10 +1390,10 @@ install-libpq5555.a: install-lib-static install-lib-pc
                 '
             '
             )
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->withSkipInstall()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -1432,10 +1422,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->withSkipInstall()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -1459,9 +1449,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -1488,9 +1478,9 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -1553,7 +1543,6 @@ function install_jansson(Preprocessor $p)
 EOF
             )
             ->withPkgName('jansson')
-
     );
 }
 

@@ -56,24 +56,23 @@ function libraries_builder($p)
         install_php_extension_micro($p);
     }
 
-
     if ($p->getOsType() == 'win') {
         install_re2c($p);
     }
 
 
-# 扩展 mbstring 依赖 oniguruma 库
-# 扩展 intl 依赖 ICU 库
-# 扩展 gd 依赖 libpng，freetype 库 ；  freetype 依赖 zlib bzip2 libpng  brotli 等;  libwebp 依赖 giflib
-# 扩展 mongodb 依赖 openssl, zlib, ICU 等库
-# 本项目 opcache 是必装扩展，否则编译报错，不想启用opcache，需要修改源码: main/main.c
-# 本项目 swoole  是必装扩展，否则 sh make.sh archive 无法打包
+    # 扩展 mbstring 依赖 oniguruma 库
+    # 扩展 intl 依赖 ICU 库
+    # 扩展 gd 依赖 libpng，freetype 库 ；  freetype 依赖 zlib bzip2 libpng  brotli 等;  libwebp 依赖 giflib
+    # 扩展 mongodb 依赖 openssl, zlib, ICU 等库
+    # 本项目 opcache 是必装扩展，否则编译报错，不想启用opcache，需要修改源码: main/main.c
+    # 本项目 swoole  是必装扩展，否则 sh make.sh archive 无法打包
 
-# php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64
+    # php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64
 
-# label: build_env_bin , php_extension_patch , php_internal_extension , php_extension ,extension_library
+    # label: build_env_bin , php_extension_patch , php_internal_extension , php_extension ,extension_library
 
-# pdo_pgsql,pdo_oci,pdo_odbc,ldap,ffi
+    # pdo_pgsql,pdo_oci,pdo_odbc,ldap,ffi
 
     /**
      * # 需要特别设置的地方
@@ -82,6 +81,9 @@ function libraries_builder($p)
      * LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
      * export LIBS="$LIBS -L/usr/lib -lstdc++"
      */
+
+
+    //测试
 
     if (0) {
         install_openssl_v3($p);
@@ -98,6 +100,7 @@ function libraries_builder($p)
 
 
         install_nettle($p); //加密库
+        install_jansson($p);
         install_libtasn1($p);
         install_libexpat($p);
         install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
@@ -146,10 +149,10 @@ function libraries_builder($p)
     }
 
     if (0) {
+        install_php_internal_extension_curl_patch($p);
         install_php_extension_fastdfs($p);
         install_php_extension_libevent($p);
         install_php_extension_zstd($p);
         install_php_extension_libuv($p);
     }
 }
-
