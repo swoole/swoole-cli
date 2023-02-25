@@ -961,6 +961,7 @@ EOF
 
 function install_pgsql(Preprocessor $p)
 {
+    $pgsql_prefix= PGSQL_PREFIX ;
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
@@ -969,14 +970,11 @@ function install_pgsql(Preprocessor $p)
             //https://www.postgresql.org/docs/devel/installation.html
             //https://www.postgresql.org/docs/devel/install-make.html#INSTALL-PROCEDURE-MAKE
             ->withManual('https://www.postgresql.org/docs/')
+            ->withPrefix($pgsql_prefix)
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                '
-               test -d /usr/pgsql && rm -rf /usr/pgsql
-            '
-            )
+            ->withCleanInstallDirectory($pgsql_prefix)
             ->withConfigure(
-                '
+                <<<EOF
             ./configure --help
             
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
@@ -991,7 +989,7 @@ function install_pgsql(Preprocessor $p)
             export LIBS=$(pkg-config  --libs --static   icu-uc icu-io icu-i18n readline libxml-2.0)
           
          
-            ./configure  --prefix=/usr/pgsql \
+            ./configure  --prefix={$pgsql_prefix} \
             --enable-coverage=no \
             --with-ssl=openssl  \
             --with-readline \
@@ -1001,7 +999,8 @@ function install_pgsql(Preprocessor $p)
             --with-libxslt \
             --with-includes="/usr/openssl/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/readline/include/readline:/usr/icu/include:/usr/zlib/include:/usr/include" \
             --with-libraries="/usr/openssl/lib:/usr/libxml2/lib/:/usr/libxslt/lib/:/usr/readline/lib:/usr/icu/lib:/usr/zlib/lib:/usr/lib"
-
+EOF
+        .   <<<'EOF'
             make -C src/include install 
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
@@ -1042,50 +1041,43 @@ function install_pgsql(Preprocessor $p)
             rm -rf /usr/pgsql/lib/*.so
             return 0 
 
-            '
+EOF
             )
             ->withPkgName('libpq')
-            ->withPkgConfig('/usr/pgsql/lib/pkgconfig')
-            ->withLdflags('-L/usr/pgsql/lib/')
-            ->withBinPath('/usr/pgsql/bin/')
+            ->withBinPath($pgsql_prefix.'/bin/')
     );
 }
 
 
 function install_libffi($p)
 {
+    $libffi_prefix = LIBFFI_PREFIX ;
     $p->addLibrary(
         (new Library('libffi'))
             ->withHomePage('https://sourceware.org/libffi/')
             ->withLicense('http://github.com/libffi/libffi/blob/master/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/libffi/libffi/releases/download/v3.4.4/libffi-3.4.4.tar.gz')
             ->withFile('libffi-3.4.4.tar.gz')
-            ->withPrefix('/usr/libffi/')
-            ->withScriptBeforeConfigure(
-                'test -d /usr/libffi && rm -rf /usr/libffi'
-            )
+            ->withPrefix($libffi_prefix)
             ->withConfigure(
-                '
+                "
             ./configure --help ;
             ./configure \
-            --prefix=/usr/libffi \
+            --prefix={$libffi_prefix} \
             --enable-shared=no \
             --enable-static=yes 
-            '
+            "
             )
             ->withPkgName('libffi')
             ->withPkgConfig('/usr/libffi/lib/pkgconfig')
             ->withLdflags('-L/usr/libffi/lib/')
-            ->withBinPath('/usr/libffi/bin/')
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+            ->withBinPath($libffi_prefix. '/bin/')
     );
 }
 
 function install_bison(Preprocessor $p)
 {
+    $bison_prefix = BISON_PREFIX;
     $p->addLibrary(
         (new Library('bison', ))
             ->withHomePage('https://www.gnu.org/software/bison/')
@@ -1097,13 +1089,12 @@ function install_bison(Preprocessor $p)
             ->withConfigure(
                 "
              ./configure --help 
-             ./configure --prefix=/usr/bison
+             ./configure --prefix={$bison_prefix}
             "
             )
-            ->withBinPath('/usr/bison/bin/')
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->disablePkgName()
+            ->withBinPath($bison_prefix.'/bin/')
+            ->withPkgName('bision')
+
     );
 }
 
@@ -1121,7 +1112,7 @@ function install_php_internal_extensions($p)
             ->withLabel('php_internal_extension')
             ->withCleanBuildDirectory()
             ->withScriptBeforeConfigure(
-                "
+                <<<EOF
                     test -d {$workDir}/ext/ffi && rm -rf {$workDir}/ext/ffi
                     cp -rf  ext/ffi {$workDir}/ext/
                     
@@ -1130,9 +1121,10 @@ function install_php_internal_extensions($p)
                     
                     test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
                     cp -rf  ext/pgsql {$workDir}/ext/
-                "
+EOF
             )
             ->withConfigure('return 0')
+            ->withSkipDownload()
             ->disablePkgName()
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()

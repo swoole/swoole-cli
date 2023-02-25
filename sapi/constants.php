@@ -32,12 +32,17 @@ define("LIBXSLT_PREFIX", $p->getGlobalPrefix() . '/libxslt');
 define("SQLITE3_PREFIX", $p->getGlobalPrefix() . '/sqlite3');
 define("LIBSODIUM_PREFIX", $p->getGlobalPrefix() . '/libsodium');
 define("LIBEDIT_PREFIX", $p->getGlobalPrefix() . '/libedit');
+
 define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
 define("LIBLZ4_PREFIX", $p->getGlobalPrefix() . '/liblz4');
-
 define("LIBLZMA_PREFIX", $p->getGlobalPrefix() . '/liblzma');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
+
+define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
+define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
+define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
+
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
 define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
