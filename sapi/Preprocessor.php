@@ -25,37 +25,36 @@ abstract class Project
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
-    function __construct(string $name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
-    function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
+    public function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
     {
         $this->license = $license;
         $this->licenseType = $licenseType;
         return $this;
     }
 
-    function withHomePage(string $homePage): static
+    public function withHomePage(string $homePage): static
     {
         $this->homePage = $homePage;
         return $this;
     }
 
-    function withManual(string $manual): static
+    public function withManual(string $manual): static
     {
         $this->manual = $manual;
         return $this;
     }
 
 
-    function depends(string ...$libs): static
+    public function depends(string ...$libs): static
     {
         $this->deps += $libs;
         return $this;
     }
-
 }
 
 class Library extends Project
@@ -97,18 +96,18 @@ class Library extends Project
     public string $label = '';
 
 
-    function withUrl(string $url): static
+    public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
     }
-    public function withMirrorUrl(string $url):static
+    public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
         return $this;
     }
 
-    function withPrefix(string $prefix): static
+    public function withPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
         $this->withLdflags('-L' . $prefix . '/lib');
@@ -116,69 +115,73 @@ class Library extends Project
         return $this;
     }
 
-    function getPrefix(): string
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    function withFile(string $file): static
+    public function withFile(string $file): static
     {
         $this->file = $file;
         return $this;
     }
 
-    function withConfigure(string $configure): static
+    public function withConfigure(string $configure): static
     {
         $this->configure = $configure;
         return $this;
     }
 
-    function withLdflags(string $ldflags): static
+    public function withLdflags(string $ldflags): static
     {
         $this->ldflags = $ldflags;
         return $this;
     }
 
-    public function withCleanBuildDirectory():static
+    public function withCleanBuildDirectory(): static
     {
-        $this->cleanBuildDirectory = true;
-        return $this;
-    }
-
-    public function withCleanInstallDirectory(string $pre_install_dir ):static
-    {
-        if( $this->prefix != '/usr' &&  !empty($pre_install_dir)) {
-            $this->cleanInstallDirectory = true;
-            $this->preInstallDirectory = $pre_install_dir;
+        if (SUPPPER_SKIP != true) {
+            $this->cleanBuildDirectory = true;
         }
         return $this;
     }
 
-    public function withSkipMakeAndMakeInstall():static
+    public function withCleanInstallDirectory(string $pre_install_dir): static
+    {
+        if ($this->prefix != '/usr' &&  !empty($pre_install_dir)) {
+            if (SUPPPER_SKIP != true) {
+                $this->cleanInstallDirectory = true;
+                $this->preInstallDirectory = $pre_install_dir;
+            }
+        }
+        return $this;
+    }
+
+    public function withSkipMakeAndMakeInstall(): static
     {
         $this->skipMakeAndMakeInstall = true;
         return $this;
     }
 
-    function withMakeVariables(string $variables): static
+    public function withMakeVariables(string $variables): static
     {
         $this->makeVariables = $variables;
         return $this;
     }
 
-    function withMakeOptions(string $makeOptions): static
+    public function withMakeOptions(string $makeOptions): static
     {
         $this->makeOptions = $makeOptions;
         return $this;
     }
 
-    function withScriptBeforeInstall(string $script): static
+    public function withScriptBeforeInstall(string $script): static
     {
         $this->beforeInstallScript = $script;
         return $this;
     }
 
-    function withScriptAfterInstall(string $script): static
+    public function withScriptAfterInstall(string $script): static
     {
         $this->afterInstallScript = $script;
         return $this;
@@ -190,19 +193,19 @@ class Library extends Project
         return $this;
     }
 
-    function withMakeInstallOptions(string $makeInstallOptions): static
+    public function withMakeInstallOptions(string $makeInstallOptions): static
     {
         $this->makeInstallOptions = $makeInstallOptions;
         return $this;
     }
 
-    function withPkgConfig(string $pkgConfig): static
+    public function withPkgConfig(string $pkgConfig): static
     {
         $this->pkgConfig = $pkgConfig;
         return $this;
     }
 
-    function withPkgName(string $pkgName): static
+    public function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
         return $this;
@@ -271,12 +274,11 @@ class Library extends Project
         return $this;
     }
 
-    public function withLabel(string $label):static
+    public function withLabel(string $label): static
     {
         $this->label=$label;
         return $this;
     }
-
 }
 
 class Extension extends Project
@@ -287,19 +289,19 @@ class Extension extends Project
     public string $file = '';
     public string $path = '';
 
-    function withOptions(string $options): static
+    public function withOptions(string $options): static
     {
         $this->options = $options;
         return $this;
     }
 
-    function withUrl(string $url): static
+    public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
     }
 
-    function withPeclVersion(string $peclVersion): static
+    public function withPeclVersion(string $peclVersion): static
     {
         $this->peclVersion = $peclVersion;
         return $this;
@@ -308,9 +310,9 @@ class Extension extends Project
 
 class Preprocessor
 {
-    const VERSION = '1.6';
-    const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
-    const CONTAINER_NAME = 'swoole-cli-builder';
+    public const VERSION = '1.6';
+    public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
+    public const CONTAINER_NAME = 'swoole-cli-builder';
 
     protected static ?Preprocessor $instance = null;
 
@@ -424,12 +426,13 @@ class Preprocessor
                 $this->setOsType('win');
                 break;
         }
+
     }
 
     public static function getInstance(): static
     {
         if (!self::$instance) {
-            self::$instance = new static;
+            self::$instance = new static();
         }
         return self::$instance;
     }
@@ -439,12 +442,12 @@ class Preprocessor
         $this->osType = $osType;
     }
 
-    function getOsType(): string
+    public function getOsType(): string
     {
         return $this->osType;
     }
 
-    function getSystemArch(): string
+    public function getSystemArch(): string
     {
         $uname = \posix_uname();
         switch ($uname['machine']) {
@@ -457,7 +460,7 @@ class Preprocessor
         }
     }
 
-    function getImageTag(): string
+    public function getImageTag(): string
     {
         $arch = $this->getSystemArch();
         if ($arch == 'x64') {
@@ -467,7 +470,7 @@ class Preprocessor
         }
     }
 
-    function getBaseImageTag(): string
+    public function getBaseImageTag(): string
     {
         $arch = $this->getSystemArch();
         if ($arch == 'x64') {
@@ -477,7 +480,7 @@ class Preprocessor
         }
     }
 
-    function getBaseImageDockerFile(): string
+    public function getBaseImageDockerFile(): string
     {
         $arch = $this->getSystemArch();
         if ($arch == 'x64') {
@@ -487,78 +490,78 @@ class Preprocessor
         }
     }
 
-    function setPhpSrcDir(string $phpSrcDir)
+    public function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
     }
 
 
-    function setGlobalPrefix(string $prefix)
+    public function setGlobalPrefix(string $prefix)
     {
         $this->globalPrefix = $prefix;
     }
 
-    function getGlobalPrefix(): string
+    public function getGlobalPrefix(): string
     {
         return $this->globalPrefix;
     }
 
-    function setRootDir(string $rootDir)
+    public function setRootDir(string $rootDir)
     {
         $this->rootDir = $rootDir;
     }
 
-    function getRootDir(): string
+    public function getRootDir(): string
     {
         return $this->rootDir;
     }
 
-    function setLibraryDir(string $libraryDir)
+    public function setLibraryDir(string $libraryDir)
     {
         $this->libraryDir = $libraryDir;
     }
 
-    function setExtensionDir(string $extensionDir)
+    public function setExtensionDir(string $extensionDir)
     {
         $this->extensionDir = $extensionDir;
     }
 
-    function setWorkDir(string $workDir)
+    public function setWorkDir(string $workDir)
     {
         $this->workDir = $workDir;
     }
 
-    function setBuildDir(string $buildDir)
+    public function setBuildDir(string $buildDir)
     {
         $this->buildDir = $buildDir;
     }
 
-    function getBuildDir() : string
+    public function getBuildDir(): string
     {
         return $this->buildDir;
     }
 
-    function getWorkDir(): string
+    public function getWorkDir(): string
     {
         return $this->workDir;
     }
 
-    function setExtraLdflags(string $flags)
+    public function setExtraLdflags(string $flags)
     {
         $this->extraLdflags = $flags;
     }
 
-    function setExtraCflags(string $flags)
+    public function setExtraCflags(string $flags)
     {
         $this->extraCflags = $flags;
     }
 
-    function setConfigureVarables(string $varables)
+    public function setConfigureVarables(string $varables)
     {
         $this->configureVarables = $varables;
     }
 
-    function setExtraOptions(string $options)
+    public function setExtraOptions(string $options)
     {
         $this->extraOptions = $options;
     }
@@ -567,12 +570,12 @@ class Preprocessor
      * make -j {$n}
      * @param int $n
      */
-    function setMaxJob(int $n)
+    public function setMaxJob(int $n)
     {
         $this->maxJob = $n;
     }
 
-    function donotInstallLibrary()
+    public function donotInstallLibrary()
     {
         $this->installLibrary = false;
     }
@@ -590,14 +593,14 @@ class Preprocessor
      * @param Library $lib
      * @throws \RuntimeException
      */
-    function addLibrary(Library $lib)
+    public function addLibrary(Library $lib)
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
         }
 
 
-        $skip_download = ($this->getInputOption('skip-download') ||  $lib->getSkipDownload() );
+        $skip_download = ($this->getInputOption('skip-download') ||  $lib->getSkipDownload());
         if (!$skip_download) {
             $file=$this->libraryDir . '/' . $lib->file;
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
@@ -624,7 +627,7 @@ class Preprocessor
         $this->libraryMap[$lib->name] = $lib;
     }
 
-    function addExtension(Extension $ext)
+    public function addExtension(Extension $ext)
     {
         if ($ext->peclVersion) {
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
@@ -653,7 +656,7 @@ class Preprocessor
         $this->extensionMap[$ext->name] = $ext;
     }
 
-    function getLibrary(string $name): ?Library
+    public function getLibrary(string $name): ?Library
     {
         if (!isset($this->libraryMap[$name])) {
             return null;
@@ -661,7 +664,7 @@ class Preprocessor
         return $this->libraryMap[$name];
     }
 
-    function getExtension(string $name): ?Extension
+    public function getExtension(string $name): ?Extension
     {
         if (!isset($this->extensionMap[$name])) {
             return null;
@@ -669,27 +672,27 @@ class Preprocessor
         return $this->extensionMap[$name];
     }
 
-    function existsLibrary(string $name): bool
+    public function existsLibrary(string $name): bool
     {
         return isset($this->libraryMap[$name]);
     }
 
-    function existsExtension(string $name): bool
+    public function existsExtension(string $name): bool
     {
         return isset($this->extensionMap[$name]);
     }
 
-    function addEndCallback($fn)
+    public function addEndCallback($fn)
     {
         $this->endCallbacks[] = $fn;
     }
 
-    function setExtCallback($name, $fn)
+    public function setExtCallback($name, $fn)
     {
         $this->extCallbacks[$name] = $fn;
     }
 
-    function parseArguments(int $argc, array $argv)
+    public function parseArguments(int $argc, array $argv)
     {
         // parse the parameters passed in by the user
         for ($i = 1; $i < $argc; $i++) {
@@ -721,7 +724,7 @@ class Preprocessor
      * @param string $default
      * @return string
      */
-    function getInputOption(string $key, string $default = ''): string
+    public function getInputOption(string $key, string $default = ''): string
     {
         if (isset($this->inputOptions[$key])) {
             return $this->inputOptions[$key];
@@ -786,7 +789,7 @@ class Preprocessor
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
      */
-    function execute()
+    public function execute()
     {
         if (empty($this->rootDir)) {
             $this->rootDir = dirname(__DIR__);
@@ -885,38 +888,35 @@ class Preprocessor
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
         }
-
     }
 
-    protected function generateLibraryDownloadLinks():void
+    protected function generateLibraryDownloadLinks(): void
     {
-        if(!is_dir($this->getWorkDir() . '/var/')){
-            mkdir($this->getWorkDir() . '/var/',0755,true);
+        if (!is_dir($this->getWorkDir() . '/var/')) {
+            mkdir($this->getWorkDir() . '/var/', 0755, true);
         }
 
         $download_urls=[];
         foreach ($this->libraryList as $item) {
-            if(empty($item->url))
-            {
+            if (empty($item->url)) {
                 continue;
             }
             $url='';
             $item->mirrorUrls[]=$item->url;
-            if(!empty($item->mirrorUrls)){
+            if (!empty($item->mirrorUrls)) {
                 $newMirrorUrls= [];
-                foreach ($item->mirrorUrls as $value){
+                foreach ($item->mirrorUrls as $value) {
                     $newMirrorUrls[] =trim($value);
                 }
-                $url =implode("\t",$newMirrorUrls);
+                $url =implode("\t", $newMirrorUrls);
             }
             $download_urls[]= $url . PHP_EOL. " out=".$item->file;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
+        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
         $download_urls=[];
         foreach ($this->downloadExtensionList as $item) {
             $download_urls[]= $item['url'] . PHP_EOL . " out=".$item['file'];
         }
-        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt',implode(PHP_EOL,$download_urls));
+        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
-
 }

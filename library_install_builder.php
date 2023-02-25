@@ -169,7 +169,8 @@ function install_ncurses(Preprocessor $p)
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
-            ->withPrefix(NCURSES_PREFIX)
+            ->withPrefix($ncurses_prefix)
+            ->withCleanInstallDirectory($ncurses_prefix)
             ->withConfigure(
                 <<<EOF
             mkdir -p {$ncurses_prefix}/lib/pkgconfig
@@ -810,34 +811,30 @@ EOF
 
 function install_libidn2(Preprocessor $p)
 {
+    $libidn2_prefix = LIBIDN2_PREFIX;
     $p->addLibrary(
         (new Library('libidn2'))
             ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            ->withCleanBuildDirectory()
-            ->withPrefix('/usr/libidn2')
-            ->withScriptBeforeConfigure(
-                '
-            test -d /usr/libidn2 && rm -rf /usr/libidn2
-            
-            apk add  gettext  coreutils
-           
-            '
-            )
+            ->withPrefix($libidn2_prefix)
             ->withConfigure(
-                '
+                <<<EOF
             ./configure --help 
             
             #  intl  依赖  gettext
+            # 解决依赖  apk add  gettext  coreutils
             
-            ./configure --prefix=/usr/libidn2 enable_static=yes enable_shared=no \
-             --disable-doc \
-             --with-libiconv-prefix=/usr/libiconv \
-             --with-libintl-prefix
+            ./configure --prefix={$libidn2_prefix} \
+            enable_static=yes \
+            enable_shared=no \
+            --disable-doc \
+            --with-libiconv-prefix=/usr/libiconv \
+            --with-libintl-prefix
              
-            '
+EOF
             )
             ->withPkgName('libidn2')
+            ->depends('libiconv')
     );
 }
 
@@ -988,7 +985,7 @@ function install_pgsql(Preprocessor $p)
             export CPPFLAGS=$(pkg-config  --cflags --static  icu-uc icu-io icu-i18n readline libxml-2.0)
             export LIBS=$(pkg-config  --libs --static   icu-uc icu-io icu-i18n readline libxml-2.0)
           
-         
+          
             ./configure  --prefix={$pgsql_prefix} \
             --enable-coverage=no \
             --with-ssl=openssl  \
@@ -1001,6 +998,7 @@ function install_pgsql(Preprocessor $p)
             --with-libraries="/usr/openssl/lib:/usr/libxml2/lib/:/usr/libxslt/lib/:/usr/readline/lib:/usr/icu/lib:/usr/zlib/lib:/usr/lib"
 EOF
         .   <<<'EOF'
+
             make -C src/include install 
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
@@ -1094,7 +1092,6 @@ function install_bison(Preprocessor $p)
             )
             ->withBinPath($bison_prefix.'/bin/')
             ->withPkgName('bision')
-
     );
 }
 
