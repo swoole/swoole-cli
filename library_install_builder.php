@@ -666,14 +666,22 @@ EOF
 
 function install_libpng(Preprocessor $p)
 {
+    $libpng_prefix = PNG_PREFIX;
+    $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('libpng'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
-            ->withPrefix(PNG_PREFIX)
-            ->withConfigure(
-                './configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared ' .
-                '--with-zlib-prefix=' . ZLIB_PREFIX . '  --with-binconfigs'
+            ->withPrefix($libpng_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libpng_prefix)
+            ->withConfigure(<<<EOF
+                ./configure --help ]
+                ./configure --prefix={$libpng_prefix} \
+                --enable-static --disable-shared \
+                --with-zlib-prefix={$libzlib_prefix} \
+                --with-binconfigs 
+EOF
             )
             ->withPkgName('libpng16')
             ->depends('zlib')
