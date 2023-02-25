@@ -1112,8 +1112,6 @@ function install_libffi($p)
             "
             )
             ->withPkgName('libffi')
-            ->withPkgConfig('/usr/libffi/lib/pkgconfig')
-            ->withLdflags('-L/usr/libffi/lib/')
             ->withBinPath($libffi_prefix. '/bin/')
     );
 }
