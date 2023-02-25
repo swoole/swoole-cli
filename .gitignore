@@ -310,8 +310,6 @@ tmp-php.ini
 /thirdparty
 !/thirdparty/.gitkeep
 var/
-!var/download_extension_urls.txt
-!var/download_library_urls.txt
 /usr
 /ext/redis
 /ext/memcached
