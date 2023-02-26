@@ -101,6 +101,8 @@ function install_brotli(Preprocessor $p)
     -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
     -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
     -DCMAKE_INSTALL_LIBDIR="${LIBDIR}" \
+
+    -Wno-dev
   */
     $brotli_prefix = BROTLI_PREFIX;
     $p->addLibrary(
