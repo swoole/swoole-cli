@@ -61,7 +61,6 @@ test -d /usr/local/lib/pkgconfig/ && PKG_CONFIG_PATH="/usr/local/lib/pkgconfig/:
 cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
 
-export PATH=/usr/ninja/bin/:$PATH
 
 EOF;
 
