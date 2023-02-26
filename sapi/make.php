@@ -197,6 +197,11 @@ EOF
     export  LIBS="$LIBS -lstdc++"
 
 <?php endif; ?>
+
+<?php if ($this->osType !== 'macos') : ?>
+    export  LIBS="-llibc++"
+<?php endif; ?>
+
     #  gnutls libnghttp3 libngtcp2 p11-kit-1
     test -f ./configure &&  rm ./configure
     ./buildconf --force
