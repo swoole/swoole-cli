@@ -1232,6 +1232,39 @@ EOF
     );
 }
 
+function install_php_parser($p)
+{
+    $workDir = $p->getWorkDir();
+    $p->addLibrary(
+        (new Library('php_extension_php_parser'))
+            ->withHomePage('https://github.com/nikic/PHP-Parser.git')
+            ->withLicense('https://github.com/nikic/PHP-Parser/blob/4.x/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('https://github.com/nikic/PHP-Parser/archive/refs/tags/v4.15.3.tar.gz')
+            ->withFile('php-8.1.12.tar.gz')
+            ->withManual('https://www.php.net/docs.php')
+            ->withLabel('php_internal_extension')
+            ->withCleanBuildDirectory()
+            ->withScriptBeforeConfigure(
+                <<<EOF
+                    test -d {$workDir}/ext/ffi && rm -rf {$workDir}/ext/ffi
+                    cp -rf  ext/ffi {$workDir}/ext/
+                    
+                    test -d {$workDir}/ext/pdo_pgsql && rm -rf {$workDir}/ext/pdo_pgsql
+                    cp -rf  ext/pdo_pgsql {$workDir}/ext/
+                    
+                    test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
+                    cp -rf  ext/pgsql {$workDir}/ext/
+EOF
+            )
+            ->withConfigure('return 0')
+            ->withSkipDownload()
+            ->disablePkgName()
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->withSkipBuildLicense()
+    );
+}
+
 
 function install_php_extension_micro(Preprocessor $p)
 {

@@ -54,6 +54,7 @@ function libraries_builder($p)
     }
     if (0) {
         install_php_extension_micro($p);
+        install_php_parser($p);
     }
 
     if ($p->getOsType() == 'win') {
