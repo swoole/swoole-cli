@@ -18,29 +18,36 @@ use SwooleCli\Preprocessor;
 
 function install_openssl(Preprocessor $p)
 {
+    $openssl_prefix = OPENSSL_PREFIX;
     $p->addLibrary(
         (new Library('openssl'))
+            ->withHomePage('https://www.openssl.org/')
             ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
-            ->withPrefix(OPENSSL_PREFIX)
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            ->withPrefix($openssl_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($openssl_prefix)
             ->withConfigure(
                 './config' . ($p->getOsType(
-                ) === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=' . OPENSSL_PREFIX
+                ) === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=' . $openssl_prefix
             )
             ->withMakeInstallCommand('install_sw')
-            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
-            ->withHomePage('https://www.openssl.org/')
+
             ->withPkgName('openssl')
     );
 }
 
 function install_libiconv(Preprocessor $p)
 {
+    $libiconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('libiconv'))
             ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz')
-            ->withPrefix(ICONV_PREFIX)
+            ->withPrefix($libiconv_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libiconv_prefix)
             ->withPkgConfig('')
-            ->withConfigure('./configure --prefix=' . ICONV_PREFIX . ' enable_static=yes enable_shared=no')
+            ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
     );
 }
@@ -54,7 +61,9 @@ function install_libxml2(Preprocessor $p)
     $p->addLibrary(
         (new Library('libxml2'))
             ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.10/libxml2-v2.9.10.tar.gz')
-            ->withPrefix(LIBXML2_PREFIX)
+            ->withPrefix($libxml2_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libxml2_prefix)
             ->withConfigure(
                 <<<EOF
 ./autogen.sh && ./configure --prefix=$libxml2_prefix --with-iconv=$iconv_prefix --enable-static=yes --enable-shared=no --without-python
@@ -69,14 +78,17 @@ EOF
 // Dependent libxml2
 function install_libxslt(Preprocessor $p)
 {
+    $libxslt_prefix = LIBXSLT_PREFIX;
     $p->addLibrary(
         (new Library('libxslt'))
             ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
-            ->withPrefix(LIBXSLT_PREFIX)
-            ->withConfigure(
-                './autogen.sh && ./configure --prefix=' . LIBXSLT_PREFIX . ' --enable-static=yes --enable-shared=no'
-            )
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
+            ->withPrefix($libxslt_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libxslt_prefix)
+            ->withConfigure(
+                './autogen.sh && ./configure --prefix=' . $libxslt_prefix . ' --enable-static=yes --enable-shared=no'
+            )
             ->withPkgName('libexslt libxslt')
             ->depends('libxml2', 'libiconv')
     );
@@ -301,25 +313,32 @@ function install_libsodium(Preprocessor $p)
 
 function install_bzip2(Preprocessor $p)
 {
+    $libbzip2_prefix = BZIP2_PREFIX;
     $p->addLibrary(
         (new Library('bzip2'))
-            ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
-            ->withPrefix(BZIP2_PREFIX)
-            ->withMakeOptions('PREFIX=' . BZIP2_PREFIX)
-            ->withMakeInstallOptions('PREFIX=' . BZIP2_PREFIX)
             ->withHomePage('https://www.sourceware.org/bzip2/')
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
+            ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
+            ->withPrefix($libbzip2_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libbzip2_prefix)
+            ->withMakeOptions('PREFIX=' . $libbzip2_prefix)
+            ->withMakeInstallOptions('PREFIX=' . $libbzip2_prefix)
+
     );
 }
 
 function install_zlib(Preprocessor $p)
 {
+    $zlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('zlib'))
             //->withUrl('https://zlib.net/zlib-1.2.13.tar.gz')
             ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
-            ->withPrefix(ZLIB_PREFIX)
-            ->withConfigure('./configure --prefix=' . ZLIB_PREFIX . ' --static')
+            ->withPrefix($zlib_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($zlib_prefix)
+            ->withConfigure('./configure --prefix=' . $zlib_prefix . ' --static')
             ->withHomePage('https://zlib.net/')
             ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
             ->withPkgName('zlib')
@@ -339,6 +358,8 @@ function install_liblz4(Preprocessor $p)
             ->withFile('lz4-v1.9.4.tar.gz')
             ->withPkgName('liblz4')
             ->withPrefix($liblz4_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($liblz4_prefix)
             ->withConfigure(
                 <<<EOF
             cd build/cmake/
@@ -366,6 +387,8 @@ function install_liblzma(Preprocessor $p)
             ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
             ->withFile('xz-5.4.1.tar.gz')
             ->withPrefix($liblzma_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($liblzma_prefix)
             ->withConfigure(
                 './configure --prefix=' . $liblzma_prefix . ' --enable-static  --disable-shared --disable-doc'
             )
@@ -384,6 +407,8 @@ function install_libzstd(Preprocessor $p)
             ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
             ->withFile('zstd-1.5.2.tar.gz')
             ->withPrefix($libzstd_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libzstd_prefix)
             ->withConfigure(
                 <<<EOF
             mkdir -p build/cmake/builddir
@@ -439,7 +464,7 @@ EOF
 
 
 // MUST be in the /usr directory
-function install_zip(Preprocessor $p)
+function install_libzip(Preprocessor $p)
 {
     $openssl_prefix = OPENSSL_PREFIX;
     $libzip_prefix = ZIP_PREFIX;
@@ -581,18 +606,20 @@ function install_mimalloc(Preprocessor $p)
 
 function install_libjpeg(Preprocessor $p)
 {
+    $libjpeg_prefix = JPEG_PREFIX;
     $lib = new Library('libjpeg');
     $lib->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
         ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
-        ->withPrefix(JPEG_PREFIX)
-        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . JPEG_PREFIX . ' .')
+        ->withPrefix($libjpeg_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libjpeg_prefix)
+        ->withConfigure('cmake -G"Unix Makefiles" -DENABLE_STATIC=1 -DENABLE_SHARED=0  -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
         ->withPkgName('libjpeg');
 
     // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
-    $jpeg_lib_dir = JPEG_PREFIX . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
-    $gif_prefix = GIF_PREFIX;
+    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $lib->withLdflags('-L' . $jpeg_lib_dir)
         ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
     if ($p->getOsType() === 'macos') {
@@ -604,27 +631,29 @@ function install_libjpeg(Preprocessor $p)
 
 function install_libgif(Preprocessor $p)
 {
-    $gif_prefix = GIF_PREFIX;
+    $libgif_prefix = GIF_PREFIX;
     $p->addLibrary(
         (new Library('libgif'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
             ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
-            ->withPrefix(GIF_PREFIX)
+            ->withPrefix($libgif_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanBuildDirectory()
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
             ->withScriptAfterInstall(
                 <<<EOF
-                if [ ! -d {$gif_prefix}/lib ]; then
-                    mkdir -p {$gif_prefix}/lib
+                if [ ! -d {$libgif_prefix}/lib ]; then
+                    mkdir -p {$libgif_prefix}/lib
                 fi
-                if [ ! -d {$gif_prefix}/include ]; then
-                    mkdir -p {$gif_prefix}/include
+                if [ ! -d {$libgif_prefix}/include ]; then
+                    mkdir -p {$libgif_prefix}/include
                 fi
-                cp libgif.a {$gif_prefix}/lib/libgif.a
-                cp gif_lib.h {$gif_prefix}/include/gif_lib.h
+                cp libgif.a {$libgif_prefix}/lib/libgif.a
+                cp gif_lib.h {$libgif_prefix}/include/gif_lib.h
                 EOF
             )
-            ->withLdflags('-L' . GIF_PREFIX . '/lib')
+            ->withLdflags('-L' . $libgif_prefix . '/lib')
             ->withPkgName('')
             ->withPkgConfig('')
     );
@@ -675,8 +704,12 @@ function install_libpng(Preprocessor $p)
             ->withPrefix($libpng_prefix)
             ->withCleanBuildDirectory()
             ->withCleanInstallDirectory($libpng_prefix)
-            ->withConfigure(<<<EOF
-                ./configure --help ]
+            ->withConfigure(
+                <<<EOF
+                ./configure --help 
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
+                LDFLAGS="$(pkg-config --libs-only-L      --static zlib )" \
+                LIBS="$(pkg-config --libs-only-l         --static zlib )" \
                 ./configure --prefix={$libpng_prefix} \
                 --enable-static --disable-shared \
                 --with-zlib-prefix={$libzlib_prefix} \
@@ -691,23 +724,38 @@ EOF
 
 function install_libwebp(Preprocessor $p)
 {
+    $libwebp_prefix = WEBP_PREFIX;
+    $libpng_prefix = PNG_PREFIX;
+    $libjpeg_prefix = JPEG_PREFIX;
+    $libgif_prefix = GIF_PREFIX;
+    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $p->addLibrary(
         (new Library('libwebp'))
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
             ->withFile('libwebp-1.2.1.tar.gz')
             ->withHomePage('https://github.com/webmproject/libwebp')
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
-            ->withPrefix(WEBP_PREFIX)
+            ->withPrefix($libwebp_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libwebp_prefix)
             ->withConfigure(
-                './autogen.sh && ./configure --prefix=' . WEBP_PREFIX . ' --enable-static --disable-shared ' .
-                '--enable-libwebpdecoder ' .
-                '--enable-libwebpextras ' .
-                '--with-pngincludedir=' . PNG_PREFIX . '/include ' .
-                '--with-pnglibdir=' . PNG_PREFIX . '/lib ' .
-                '--with-jpegincludedir=' . JPEG_PREFIX . '/include ' .
-                '--with-jpeglibdir=' . JPEG_PREFIX . ' ' .
-                '--with-gifincludedir=' . GIF_PREFIX . '/include ' .
-                '--with-giflibdir=' . GIF_PREFIX . '/lib'
+                <<<EOF
+                ./autogen.sh && \
+                ./configure --help &&  \
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
+                LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
+                LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
+                ./configure --prefix={$libwebp_prefix} \
+                --enable-static --disable-shared \
+                --enable-libwebpdecoder \
+                --enable-libwebpextras \
+                --with-pngincludedir={$libpng_prefix}/include \
+                --with-pnglibdir={$libpng_prefix}/lib \
+                --with-jpegincludedir={$libjpeg_prefix}/include \
+                --with-jpeglibdir={$jpeg_lib_dir} \
+                --with-gifincludedir={$libgif_prefix}/include \
+                --with-giflibdir={$libgif_prefix}/lib
+EOF
             )
             ->withPkgName('libwebp')
             ->withLdflags('-L' . WEBP_PREFIX . '/lib -lwebpdemux -lwebpmux')
@@ -720,6 +768,8 @@ function install_freetype(Preprocessor $p)
 {
     $freetype_prefix = FREETYPE_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
+    $libpng_prefix = PNG_PREFIX;
+    $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('freetype'))
             ->withPrefix($freetype_prefix)
@@ -732,7 +782,7 @@ function install_freetype(Preprocessor $p)
             ->withCleanInstallDirectory($freetype_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help 
+            ./configure --help  
             BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
             BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
             CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
@@ -757,10 +807,14 @@ EOF
 
 function install_imagemagick(Preprocessor $p)
 {
+    $bzip2_prefix = BZIP2_PREFIX;
     $imagemagick_prefix = IMAGEMAGICK_PREFIX;
     $p->addLibrary(
         (new Library('imagemagick'))
+            ->withHomePage('https://imagemagick.org/index.php')
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
+            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
+            ->withManual('https://github.com/ImageMagick/ImageMagick.git')
             ->withPrefix($imagemagick_prefix)
             ->withCleanBuildDirectory()
             ->withCleanInstallDirectory($imagemagick_prefix)
@@ -769,9 +823,9 @@ function install_imagemagick(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
             ./configure --help   
-            CPPFLAGS="$(pkg-config --cflags-only-I --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
-            LIBS="$(pkg-config     --libs-only-l   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux)" \
+            CPPFLAGS="$(pkg-config --cflags-only-I --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -I{$bzip2_prefix}/include" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -L{$bzip2_prefix}/lib" \
+            LIBS="$(pkg-config     --libs-only-l   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -lbz2" \
             ./configure \
             --prefix={$imagemagick_prefix} \
             --enable-static \
@@ -787,8 +841,8 @@ function install_imagemagick(Preprocessor $p)
             --with-jpeg=yes \
             --with-png=yes \
             --with-webp=yes \
-            --with-raw=yes \
-            --with-tiff=yes \
+            --with-raw=no \
+            --with-tiff=no \
             --with-zstd=yes \
             --with-lzma=yes \
             --with-xml=yes \
@@ -800,7 +854,6 @@ function install_imagemagick(Preprocessor $p)
 EOF
             )
             ->withPkgName('ImageMagick')
-            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
             ->depends(
                 'libxml2',
                 'libzip',
@@ -988,7 +1041,7 @@ function install_pgsql(Preprocessor $p)
 
 EOF;
 
-    $includes=trim(str_replace(PHP_EOL,'',$includes));
+    $includes=trim(str_replace(PHP_EOL, '', $includes));
     $libraries=<<<EOF
 {$openssl_prefix}/lib/:
 {$libxml2_prefix}/lib/:
@@ -1001,7 +1054,7 @@ EOF;
 
 
 
-    $libraries=trim(str_replace(PHP_EOL,'',$libraries));
+    $libraries=trim(str_replace(PHP_EOL, '', $libraries));
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')

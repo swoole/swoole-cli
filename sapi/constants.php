@@ -15,6 +15,8 @@ define("BZIP2_PREFIX", $p->getGlobalPrefix() . '/bzip2');
 define("FREETYPE_PREFIX", $p->getGlobalPrefix() . '/freetype');
 define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');
 define("WEBP_PREFIX", $p->getGlobalPrefix() . '/libwebp');
+define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
+define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("CURL_PREFIX", $p->getGlobalPrefix() . '/curl');
 define("CARES_PREFIX", $p->getGlobalPrefix() . '/cares');
 define("OPENSSL_PREFIX", $p->getGlobalPrefix() . '/openssl');

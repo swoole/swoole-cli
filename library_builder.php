@@ -10,7 +10,7 @@ function libraries_builder($p)
 
     install_brotli($p); //有多种安装方式，选择使用cmake 安装
     install_cares($p);  // swoole 使用 SWOOLE_CFLAGS 实现
-    install_gmp($p); // 高精度算术库
+    install_gmp($p);    // 高精度算术库
 
     install_ncurses($p);
     install_readline($p);//依赖 ncurses
@@ -18,12 +18,12 @@ function libraries_builder($p)
     install_libyaml($p);
     install_libsodium($p);
 
-    install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令  BZIP2_LIBS=-L/usr/bizp2/lib -lbz2
+    install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令  BZIP2_LIBS=-L/usr/bizp2/lib -lbz2  BZIP2_CFLAGS="-I/usr/bizp2/include"
     install_zlib($p);
     install_liblz4($p); //有多种安装方式，选择cmake方式安装
     install_liblzma($p);
     install_libzstd($p); //zstd 依赖 lz4
-    install_zip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd
+    install_libzip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd
 
     install_sqlite3($p);
     install_icu($p); //依赖  -lstdc++
@@ -34,8 +34,8 @@ function libraries_builder($p)
     install_libgif($p);//没有 libgif.pc 文件，不能使用 pkg-config 命令
     install_libpng($p); //依赖 zlib
     install_libwebp($p); //依赖 libgif libpng libjpeg
-    install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz (暂不启用，启用需要安装ninja meson python3 pip3)
-    install_imagemagick($p);//依赖 freetype png webp xml zip zlib
+    install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
+    install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib
 
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
@@ -82,8 +82,16 @@ function libraries_builder($p)
      * export LIBS="$LIBS -L/usr/lib -lstdc++"
      */
 
-
     //测试
+
+    if(0){
+        install_libtiff($p);
+        install_libraw($p);
+        install_libheif($p);
+        install_libjpegxl($p);
+    }
+
+
 
     if (0) {
         install_openssl_v3($p);
@@ -146,6 +154,7 @@ function libraries_builder($p)
         install_fontconfig($p);
         install_pcre2($p);
         install_pgsql_test($p);
+        install_libgomp($p); //压缩算法
     }
 
     if (0) {
