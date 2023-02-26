@@ -1080,10 +1080,8 @@ EOF;
             # export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
             # export CFLAGS="-static -fPIE -fPIC -O2 -Wall "
             
-       
-            package_names="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib"
-         
-        
+            package_names="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib libxslt"
+
             CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
             export   CPPFLAGS="$CPPFLAGS -I/usr/include"
             LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
