@@ -1081,7 +1081,7 @@ EOF;
             # export CFLAGS="-static -fPIE -fPIC -O2 -Wall "
             
        
-            package_names="icu-uc icu-io icu-i18n readline libxml-2.0 openssl "
+            package_names="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib"
          
         
             CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
