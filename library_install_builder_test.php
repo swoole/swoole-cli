@@ -1585,6 +1585,35 @@ EOF;
 }
 
 
+function install_libmcrypt(Preprocessor $p)
+{
+    $libmcrypt_prefix = "/usr/libmcrypt";
+    $lib = new Library('libmcrypt');
+    $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
+        ->withLicense('https://gitlab.com/libtiff/libtiff/-/blob/master/LICENSE.md', Library::LICENSE_LGPL)
+        ->withUrl('https://github.com/winlibs/libmcrypt/archive/refs/tags/libmcrypt-2.5.8-3.4.tar.gz')
+        ->withPrefix($libmcrypt_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libmcrypt_prefix)
+        ->withConfigure(
+            <<<EOF
+pwd
+ls -lha .
+
+sh ./configure --help
+chmod a+x install-sh
+sh ./configure --prefix=$libmcrypt_prefix \
+--enable-static=yes \
+--enable-shared=no
+
+
+EOF
+        )
+        ->withPkgName('libmcrypt');
+
+    $p->addLibrary($lib);
+}
+
 function install_libtiff(Preprocessor $p)
 {
     $libtiff_prefix = LIBTIFF_PREFIX;
