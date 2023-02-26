@@ -1,5 +1,7 @@
 <?php
 
+use SwooleCli\Library;
+use SwooleCli\Preprocessor;
 
 function install_openssl_v3(Preprocessor $p)
 {
@@ -1580,4 +1582,110 @@ EOF;
             ->disableDefaultLdflags()
             ->disablePkgName()
     );
+}
+
+
+function install_libtiff(Preprocessor $p)
+{
+    $libtiff_prefix = LIBTIFF_PREFIX;
+    $lib = new Library('libtiff');
+    $lib->withHomePage('http://www.simplesystems.org/libtiff/')
+        ->withLicense('https://gitlab.com/libtiff/libtiff/-/blob/master/LICENSE.md', Library::LICENSE_SPEC)
+        ->withUrl('http://download.osgeo.org/libtiff/tiff-4.5.0.tar.gz')
+
+        ->withPrefix($libtiff_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libtiff_prefix)
+        ->withConfigure(
+            <<<EOF
+./configure --help
+EOF
+        )
+        ->withPkgName('libtiff');
+
+    $p->addLibrary($lib);
+}
+
+function install_libraw(Preprocessor $p)
+{
+    $libraw_prefix = LIBRAW_PREFIX;
+    $lib = new Library('libraw');
+    $lib->withHomePage('https://www.libraw.org/about')
+        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+        ->withUrl('https://www.libraw.org/data/LibRaw-0.21.1.tar.gz')
+
+        ->withPrefix($libraw_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libraw_prefix)
+        ->withConfigure(
+            <<<EOF
+./configure --help
+EOF
+        )
+        ->withPkgName('libraw');
+
+    $p->addLibrary($lib);
+}
+
+function install_libheif(Preprocessor $p)
+{
+    $libheif_prefix = LIBRAW_PREFIX;
+    $lib = new Library('libheif');
+    $lib->withHomePage('https://github.com/strukturag/libheif.git')
+        ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
+        ->withUrl('https://github-com.proxy.zibenyulun.cn/strukturag/libheif/releases/download/v1.15.1/libheif-1.15.1.tar.gz')
+
+        ->withPrefix($libheif_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libheif_prefix)
+        ->withConfigure(
+            <<<EOF
+./configure --help
+EOF
+        )
+        ->withPkgName('libheif');
+
+    $p->addLibrary($lib);
+}
+
+function install_libjpegxl(Preprocessor $p)
+{
+    $libjpegxl_prefix = '/usr/libjpegxl';
+    $lib = new Library('libjpegxl');
+    $lib->withHomePage('https://github.com/libjxl/libjxl.git')
+        ->withLicense('https://github.com/libjxl/libjxl/blob/main/LICENSE', Library::LICENSE_BSD)
+        ->withUrl('https://github.com/libjxl/libjxl/archive/refs/tags/v0.8.1.tar.gz')
+        ->withFile('libjpegxl-v0.8.1.tar.gz')
+        ->withPrefix($libjpegxl_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libjpegxl_prefix)
+        ->withConfigure(
+            <<<EOF
+./configure --help
+EOF
+        )
+        ->withPkgName('libjpegxl');
+
+    $p->addLibrary($lib);
+}
+
+function install_libgomp(Preprocessor $p)
+{
+    $libgomp_prefix = '/usr/libgomp';
+    $lib = new Library('libgomp');
+    $lib->withHomePage('https://gcc.gnu.org/projects/gomp/')
+        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+        ->withUrl('')
+        ->withManual('https://gcc.gnu.org/onlinedocs/libgomp/')
+        ->withPrefix($libgomp_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libgomp_prefix)
+        ->withConfigure(
+            <<<EOF
+./configure --help
+EOF
+        )
+        ->withPkgName('libgomp');
+
+    $p->addLibrary($lib);
 }
