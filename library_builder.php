@@ -86,7 +86,7 @@ function libraries_builder($p)
     //测试
     if(0){
         install_libmcrypt($p);
-
+        install_libxlsxwriter($p);
     }
     if(0){
         install_libtiff($p);

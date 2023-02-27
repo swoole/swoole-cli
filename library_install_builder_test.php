@@ -1587,7 +1587,7 @@ EOF;
 
 function install_libmcrypt(Preprocessor $p)
 {
-    $libmcrypt_prefix = "/usr/libmcrypt";
+    $libmcrypt_prefix = LIBMCRYPT_PREFIX;
     $lib = new Library('libmcrypt');
     $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
         ->withLicense('https://gitlab.com/libtiff/libtiff/-/blob/master/LICENSE.md', Library::LICENSE_LGPL)
@@ -1611,6 +1611,36 @@ sh ./configure --prefix=$libmcrypt_prefix \
 EOF
         )
         ->withPkgName('libmcrypt');
+
+    $p->addLibrary($lib);
+}
+
+function install_libxlsxwriter(Preprocessor $p)
+{
+    $libxlsxwriter_prefix = LIBXLSXWRITER_PREFIX;
+    $lib = new Library('libxlsxwriter');
+    $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
+        ->withLicense('https://github.COM/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_LGPL)
+        ->withUrl('https://github.COM/jmcnamara/libxlsxwriter/archive/refs/tags/RELEASE_1.1.5.tar.gz')
+        ->withManual('http://libxlsxwriter.github.io/getting_started.html')
+        ->withPrefix($libxlsxwriter_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libxlsxwriter_prefix)
+        ->withConfigure(
+            <<<EOF
+pwd
+ls -lha .
+
+sh ./configure --help
+chmod a+x install-sh
+sh ./configure --prefix=$libxlsxwriter_prefix \
+--enable-static=yes \
+--enable-shared=no
+
+
+EOF
+        )
+        ->withPkgName('libxlsxwriter');
 
     $p->addLibrary($lib);
 }

@@ -45,6 +45,9 @@ define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 
+define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
+define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
+
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
 define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
