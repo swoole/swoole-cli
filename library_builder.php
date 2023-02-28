@@ -114,7 +114,6 @@ function libraries_builder($p)
         install_libuv($p);
         install_libev($p);
 
-
         install_nettle($p); //加密库
         install_jansson($p);
         install_libtasn1($p);
@@ -148,11 +147,11 @@ function libraries_builder($p)
 
 
         install_libunwind($p); //使用 libunwind 可以很方便的获取函数栈中的内容，极大的方便了对函数间调用关系的了解。
-        install_socat($p);
+
         install_jemalloc($p);
         install_tcmalloc($p);
 
-        install_aria2($p);
+
         install_bazel($p);
         install_libelf($p);
         install_libbpf($p);
@@ -164,13 +163,17 @@ function libraries_builder($p)
         install_pgsql_test($p);
         install_libgomp($p); //压缩算法
     }
+    if (0) {
+        install_aria2($p);
+        install_socat($p);
+    }
 
     if (0) {
         install_php_internal_extension_curl_patch($p);
         install_php_extension_fastdfs($p);
         install_php_extension_libuv($p);
     }
-    if (0) {
+    if (1) {
         install_opencv($p);
         install_ffmpeg($p);
         install_ovs($p);
