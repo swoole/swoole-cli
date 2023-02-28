@@ -98,13 +98,16 @@ function libraries_builder($p)
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
     }
 
+    if (1) {
+        install_ninja($p); //需要自己构建，alpine 默认没有提供源
+    }
 
 
     if (0) {
         install_openssl_v3($p);
         install_openssl_v3_quic($p);
         install_libedit($p);
-        install_ninja($p); //需要自己构建，alpine 默认没有提供源
+
         install_harfbuzz($p); //依赖ninja （alpine ninja 需要源码编译)
         install_libdeflate($p); //依赖 libzip zlib gzip
 
@@ -154,6 +157,7 @@ function libraries_builder($p)
         install_bazel($p);
         install_libelf($p);
         install_libbpf($p);
+
         install_valgrind($p);
         install_snappy($p);
         install_kerberos($p);
@@ -177,9 +181,15 @@ function libraries_builder($p)
         install_php_extension_fastdfs($p);
     }
     if (1) {
-        install_opencv($p);
         install_ffmpeg($p);
-        install_ovs($p);
+        install_opencv($p);
+
+    }
+    if (0) {
+        //改善iptables/netfilter的规模瓶颈，提高Linux内核协议栈IO性能
+        install_dpdk($p); //ninja
+        install_xdp($p);  //依赖 llvm bpftool
+        install_ovs($p);  //依赖 openssl python3  ; 网络优化以来 dpdk
         install_ovn($p);
     }
 }

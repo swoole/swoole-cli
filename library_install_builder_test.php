@@ -70,6 +70,7 @@ function install_libedit(Preprocessor $p)
 
 function install_ninja(Preprocessor $p)
 {
+    $ninja_prefix = '/usr/ninja';
     $p->addLibrary(
         $lib = (new Library('ninja'))
             ->withHomePage('https://ninja-build.org/')
@@ -79,6 +80,7 @@ function install_ninja(Preprocessor $p)
             ->withLicense('https://github.com/ninja-build/ninja/blob/master/COPYING', Library::LICENSE_APACHE2)
             ->withManual('https://ninja-build.org/manual.html')
             ->withManual('https://github.com/ninja-build/ninja/wiki')
+            ->withPrefix($ninja_prefix)
             ->withLabel('build_env_bin')
             //->withCleanBuildDirectory()
             //->withUntarArchiveCommand('unzip')
@@ -87,8 +89,8 @@ function install_ninja(Preprocessor $p)
                 /usr/bin/ar -h 
                 cmake -Bbuild-cmake -D CMAKE_AR=/usr/bin/ar
                 cmake --build build-cmake
-                mkdir -p /usr/ninja/bin/
-                cp build-cmake/ninja /usr/ninja/bin/
+                mkdir -p {$ninja_prefix}/bin/
+                cp build-cmake/ninja  {$ninja_prefix}/bin/
                 return 0 ;
                 ./configure.py --bootstrap
                 mkdir -p /usr/ninja/bin/
@@ -96,7 +98,8 @@ function install_ninja(Preprocessor $p)
                 return 0 ;
             "
             )
-            ->withBinPath('/usr/ninja/bin/')
+            ->withSkipMakeAndMakeInstall()
+            ->withBinPath($ninja_prefix . '/bin/')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()

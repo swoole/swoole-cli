@@ -56,6 +56,10 @@ make_<?=$item->name?>() {
 <?php if($item->untarArchiveCommand == 'unzip'):?>
     unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
 <?php endif ; ?>
+<?php if($item->untarArchiveCommand == 'xz'):?>
+   xz -f -d -k   <?=$this->workDir?>/pool/lib/<?=$item->file?>    <?= PHP_EOL; ?>
+   tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?= rtrim($this->workDir . '/pool/lib/' . $item->file,'.xz') . PHP_EOL?>
+<?php endif ; ?>
 <?php if($item->untarArchiveCommand == 'mv'):?>
     cp -rf  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
 <?php endif ; ?>
