@@ -181,7 +181,16 @@ function libraries_builder($p)
         install_php_extension_fastdfs($p);
     }
     if (1) {
+
+        install_aom($p);
+        install_av1($p);
+        install_libvpx($p);
+        install_libopus($p);
+        install_libx264($p);
+        install_libx265($p);
+        install_mp3lame($p);
         install_ffmpeg($p);
+        // install_librabbitmq($p);
         install_opencv($p);
 
     }

@@ -178,8 +178,12 @@ EOF
             ->withConfigure(
                 <<<EOF
                
-          meson setup build
-          ninja -C build
+            meson  build
+            ninja -C build
+            ninja -C build
+            ninja -C build install
+            ldconfig
+            pkg-config --modversion libdpdk
 EOF
             )
             ->withBinPath($dpdk_prefix . '/bin/')
@@ -204,9 +208,10 @@ EOF
             )
             ->withConfigure(
                 <<<EOF
-ls -lha .
-make 
-./configure -h
+cd lib/libxdp 
+make libxdp
+
+
 exit 0 
 ./configure 
 exit 0 
