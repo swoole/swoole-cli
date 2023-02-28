@@ -249,26 +249,32 @@ EOF
 function install_libuv($p)
 {
     //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
+    $libuv_prefix = '/usr/libuv';
     $p->addLibrary(
-        (new Library('libev'))
-            ->withHomePage('http://software.schmorp.de/pkg/libev.html')
-            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
-            ->withManual('http://cvs.schmorp.de/libev/README')
-            ->withPrefix('/usr/libev')
+        (new Library('libuv'))
+            ->withHomePage('https://libuv.org/')
+            ->withLicense('https://github.com/libuv/libuv/blob/v1.x/LICENSE', Library::LICENSE_MIT)
+            ->withUrl('https://github.com/libuv/libuv/archive/refs/tags/v1.44.2.tar.gz')
+            ->withManual('https://github.com/libuv/libuv.git')
+            ->withFile('libuv-v1.44.2.tar.gz')
+            ->withPrefix($libuv_prefix)
             ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libuv_prefix)
             ->withConfigure(
                 <<<EOF
             ls -lh 
+            
+            sh autogen.sh
             ./configure --help 
-            ./configure --prefix=/usr/libev \
+   
+            ./configure --prefix={$libuv_prefix} \
             --enable-shared=no \
             --enable-static=yes
-           
+
 EOF
             )
-            ->withPkgName('libev')
-        //->withSkipBuildInstall()
+            ->withPkgName('libuv')
+
     );
 }
 

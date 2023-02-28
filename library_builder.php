@@ -111,8 +111,7 @@ function libraries_builder($p)
         install_bzip2_dev_latest($p);
 
 
-        install_libuv($p);
-        install_libev($p);
+
 
         install_nettle($p); //加密库
         install_jansson($p);
@@ -163,15 +162,19 @@ function libraries_builder($p)
         install_pgsql_test($p);
         install_libgomp($p); //压缩算法
     }
+
     if (0) {
-        install_aria2($p);
-        install_socat($p);
+        install_libuv($p);
+        install_libev($p); //无 pkg-config
+    }
+    if (0) {
+        install_aria2($p); //依赖libuv openssl zlib libxml2 sqlite3 openssl c-ares
+        install_socat($p); //依赖 readline openssl
     }
 
     if (0) {
         install_php_internal_extension_curl_patch($p);
         install_php_extension_fastdfs($p);
-        install_php_extension_libuv($p);
     }
     if (1) {
         install_opencv($p);

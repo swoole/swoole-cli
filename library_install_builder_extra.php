@@ -51,6 +51,8 @@ EOF
 function install_socat($p)
 {
     // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+    $socat_prefix = '/usr/socat';
+    $openssl_prefix = OPENSSL_PREFIX;
     $p->addLibrary(
         (new Library('socat'))
             ->withHomePage('http://www.dest-unreach.org/socat/')
@@ -66,19 +68,23 @@ function install_socat($p)
             export LDFLAGS=$(pkg-config --libs --static libcrypto  libssl    openssl readline)
             # LIBS="-static -Wall -O2 -fPIC  -lcrypt  -lssl   -lreadline"
             # CFLAGS="-static -Wall -O2 -fPIC"
+            '. PHP_EOL .
+                <<<EOF
             ./configure \
             --prefix=/usr/socat \
             --enable-readline \
-            --enable-openssl-base=/usr/openssl
-            '
+            --enable-openssl-base={ $openssl_prefix}
+EOF
             )
-            ->withSkipBuildInstall()
+        ->withBinPath($socat_prefix . '/bin/')
+
     );
 }
 
 function install_aria2($p)
 {
-    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
+
+    $aria2_prefix = '/usr/aria2';
     $p->addLibrary(
         (new Library('aria2'))
             ->withHomePage('https://aria2.github.io/')
@@ -93,11 +99,16 @@ function install_aria2($p)
             # export LDFLAGS=$(pkg-config --libs --static libcrypto  libssl    openssl readline)
             # LIBS="-static -Wall -O2 -fPIC  -lcrypt  -lssl   -lreadline"
             # CFLAGS="-static -Wall -O2 -fPIC"
+            
             export ZLIB_CFLAGS=$(pkg-config --cflags --static zlib) ;
-            export  ZLIB_LIBS=$(pkg-config --libs --static zlib) ;
+            export ZLIB_LIBS=$(pkg-config   --libs  --static zlib) ;
+            
+            export LIBUV_CFLAGS=$(pkg-config --cflags --static libuv) ;
+            export LIBUV_LIBS=$(pkg-config   --libs   --static libuv) ;
+
             ./configure --help ;
-             ARIA2_STATIC=yes
-            ./configure \
+         
+             ARIA2_STATIC=yes ./configure \
             --with-ca-bundle="/etc/ssl/certs/ca-certificates.crt" \
             --prefix=/usr/aria2 \
             --enable-static=yes \
@@ -111,6 +122,7 @@ function install_aria2($p)
             # --with-tcmalloc
             '
             )
-            ->withSkipBuildInstall()
+        ->withBinPath($aria2_prefix . '/bin/')
+
     );
 }
