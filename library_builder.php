@@ -168,7 +168,12 @@ function libraries_builder($p)
     if (0) {
         install_php_internal_extension_curl_patch($p);
         install_php_extension_fastdfs($p);
-        install_php_extension_libevent($p);
         install_php_extension_libuv($p);
+    }
+    if (0) {
+        install_opencv($p);
+        install_ffmpeg($p);
+        install_ovs($p);
+        install_ovn($p);
     }
 }
