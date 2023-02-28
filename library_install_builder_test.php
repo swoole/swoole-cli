@@ -1620,8 +1620,9 @@ function install_libxlsxwriter(Preprocessor $p)
     $libxlsxwriter_prefix = LIBXLSXWRITER_PREFIX;
     $lib = new Library('libxlsxwriter');
     $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
-        ->withLicense('https://github.COM/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_LGPL)
-        ->withUrl('https://github.COM/jmcnamara/libxlsxwriter/archive/refs/tags/RELEASE_1.1.5.tar.gz')
+        ->withLicense('https://github.com/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_LGPL)
+        ->withUrl('https://github.com/jmcnamara/libxlsxwriter/archive/refs/tags/RELEASE_1.1.5.tar.gz')
+        ->withFile('libxlsxwriter-1.1.5.tar.gz')
         ->withManual('http://libxlsxwriter.github.io/getting_started.html')
         ->withPrefix($libxlsxwriter_prefix)
         ->withCleanBuildDirectory()

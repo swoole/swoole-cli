@@ -61,6 +61,8 @@ function libraries_builder($p)
         install_re2c($p);
     }
 
+    install_libmcrypt($p);
+    install_libxlsxwriter($p);
 
     # 扩展 mbstring 依赖 oniguruma 库
     # 扩展 intl 依赖 ICU 库
@@ -85,8 +87,8 @@ function libraries_builder($p)
 
     //测试
     if(0){
-        install_libmcrypt($p);
-        install_libxlsxwriter($p);
+
+
     }
     if(0){
         install_libtiff($p);
