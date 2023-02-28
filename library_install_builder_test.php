@@ -1572,7 +1572,7 @@ function install_libmcrypt(Preprocessor $p)
         ->withConfigure(
             <<<EOF
 sh ./configure --help
-chmod a+x install-sh
+chmod a+x ./install-sh
 sh ./configure --prefix=$libmcrypt_prefix \
 --enable-static=yes \
 --enable-shared=no

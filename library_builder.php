@@ -63,8 +63,8 @@ function libraries_builder($p)
     if ($p->getOsType() == 'win') {
         install_re2c($p);
     }
-    install_libevent($p); //依赖zlib libjpeg
-
+    install_libevent($p);
+    install_libuv($p);
 
     # 扩展 mbstring 依赖 oniguruma 库
     # 扩展 intl 依赖 ICU 库
@@ -168,7 +168,7 @@ function libraries_builder($p)
     }
 
     if (0) {
-        install_libuv($p);
+
         install_libev($p); //无 pkg-config
     }
     if (0) {
