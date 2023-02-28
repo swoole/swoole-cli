@@ -157,6 +157,32 @@ function install_harfbuzz(Preprocessor $p)
     );
 }
 
+function install_libdeflate(Preprocessor $p)
+{
+    $libdeflate_prefix = '/usr/libdeflate';
+    $p->addLibrary(
+        (new Library('libdeflate'))
+            ->withLicense('https://github.com/ebiggers/libdeflate/blob/master/COPYING', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/ebiggers/libdeflate.git')
+            ->withUrl('https://github-com.proxy.zibenyulun.cn/ebiggers/libdeflate/archive/refs/tags/v1.17.tar.gz')
+            ->withFile('libdeflate-v1.17.tar.gz')
+            ->withLabel('library')
+            ->withPrefix($libdeflate_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanInstallDirectory($libdeflate_prefix)
+            ->withConfigure(
+                "
+                ls -lh
+                exit 0 
+                cmake -B build && cmake --build build
+                
+            "
+            )
+            ->withPkgName('libdeflate')
+            ->depends('libzip', 'zlib')
+    );
+}
+
 
 function install_bzip2_dev_latest(Preprocessor $p)
 {
@@ -192,6 +218,7 @@ function install_bzip2_dev_latest(Preprocessor $p)
 
 function install_libevent($p)
 {
+    $libevent_prefix = LIBEVENT_PREFIX;
     $p->addLibrary(
         (new Library('libevent'))
             ->withHomePage('https://github.com/libevent/libevent')
@@ -200,7 +227,7 @@ function install_libevent($p)
                 'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz'
             )
             ->withManual('https://libevent.org/libevent-book/')
-            ->withPrefix('/usr/libevent')
+            ->withPrefix($libevent_prefix)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF
@@ -208,7 +235,7 @@ function install_libevent($p)
             # cmake -LAH .
         mkdir build && cd build
         cmake ..   \
-        -DCMAKE_INSTALL_PREFIX=/usr/libevent \
+        -DCMAKE_INSTALL_PREFIX={$libevent_prefix} \
         -DEVENT__DISABLE_DEBUG_MODE=ON \
         -DCMAKE_BUILD_TYPE=Release \
         -DEVENT__LIBRARY_TYPE=STATIC  
@@ -1598,9 +1625,6 @@ function install_libmcrypt(Preprocessor $p)
         ->withCleanInstallDirectory($libmcrypt_prefix)
         ->withConfigure(
             <<<EOF
-pwd
-ls -lha .
-
 sh ./configure --help
 chmod a+x install-sh
 sh ./configure --prefix=$libmcrypt_prefix \
@@ -1618,6 +1642,7 @@ EOF
 function install_libxlsxwriter(Preprocessor $p)
 {
     $libxlsxwriter_prefix = LIBXLSXWRITER_PREFIX;
+    $zlib_prefix =  ZLIB_PREFIX;
     $lib = new Library('libxlsxwriter');
     $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
         ->withLicense('https://github.com/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_LGPL)
@@ -1629,19 +1654,21 @@ function install_libxlsxwriter(Preprocessor $p)
         ->withCleanInstallDirectory($libxlsxwriter_prefix)
         ->withConfigure(
             <<<EOF
-pwd
-ls -lha .
-
-sh ./configure --help
-chmod a+x install-sh
-sh ./configure --prefix=$libxlsxwriter_prefix \
---enable-static=yes \
---enable-shared=no
-
-
+            # 启用DBUILD_TESTS 需要安装python3 pytest
+            mkdir build && cd build
+            cmake .. -DCMAKE_INSTALL_PREFIX={$libxlsxwriter_prefix} \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DZLIB_ROOT:STRING={$zlib_prefix} \
+            -DBUILD_TESTS=OFF \
+            -DBUILD_EXAMPLES=OFF \
+            -DUSE_STANDARD_TMPFILE=ON \
+            -DUSE_OPENSSL_MD5=ON \
+            && \
+            cmake --build . --config Release --target install
 EOF
         )
-        ->withPkgName('libxlsxwriter');
+        ->withSkipMakeAndMakeInstall()
+        ->withPkgName('xlsxwriter');
 
     $p->addLibrary($lib);
 }
@@ -1658,9 +1685,24 @@ function install_libtiff(Preprocessor $p)
         ->withCleanBuildDirectory()
         ->withCleanInstallDirectory($libtiff_prefix)
         ->withConfigure(
-            <<<EOF
-./configure --help
+            <<<'EOF'
+            ./configure --help
+            package_names="zlib libjpeg libturbojpeg liblzma  libzstd libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
+            
+            CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names ) \
+            LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names ) \
+            LIBS=$(pkg-config      --libs-only-l   --static $package_names ) \
 EOF
+            . PHP_EOL .
+            <<<EOF
+            ./configure --prefix={$libtiff_prefix} \
+            --enable-shared=no \
+            --enable-static=yes \
+            --disable-docs \
+            --disable-tests
+
+EOF
+
         )
         ->withPkgName('libtiff');
 
@@ -1679,18 +1721,62 @@ function install_libraw(Preprocessor $p)
         ->withCleanBuildDirectory()
         ->withCleanInstallDirectory($libraw_prefix)
         ->withConfigure(
+            <<<'EOF'
+            ./configure --help
+            # ZLIB_CFLAGS=$(pkg-config  --cflags --static zlib )
+            # ZLIB_LIBS=$(pkg-config    --libs   --static zlib )
+
+          
+            package_names="zlib libjpeg libturbojpeg "
+            CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names ) \
+            LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names ) \
+            LIBS=$(pkg-config      --libs-only-l   --static $package_names ) \
+            LIBS="-lstdc++" \
+EOF
+            . PHP_EOL .
             <<<EOF
-./configure --help
+            ./configure \
+            --prefix={$libraw_prefix} \
+            --enable-shared=no \
+            --enable-static=yes \
+            --enable-jpeg \
+            --enable-zlib
 EOF
         )
-        ->withPkgName('libraw');
+        ->withPkgName('librawc  libraw_r');
+
+    $p->addLibrary($lib);
+}
+
+function install_libde265(Preprocessor $p)
+{
+    $libde265_prefix = LIBDE265_PREFIX;
+    $lib = new Library('libde265');
+    $lib->withHomePage('https://github.com/strukturag/libde265.git')
+        ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
+        ->withUrl('https://github.com/strukturag/libde265/archive/refs/tags/v1.0.11.tar.gz')
+        ->withFile('libde265-v1.0.11.tar.gz')
+
+        ->withPrefix($libde265_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libde265_prefix)
+        ->withConfigure(
+            <<<EOF
+        ./autogen.sh
+        ./configure --help
+        ./configure --prefix={$libde265_prefix} \
+        --enable-shared=no \
+        --enable-static=yes 
+EOF
+        )
+        ->withPkgName('libde265');
 
     $p->addLibrary($lib);
 }
 
 function install_libheif(Preprocessor $p)
 {
-    $libheif_prefix = LIBRAW_PREFIX;
+    $libheif_prefix = LIBHEIF_PREFIX;
     $lib = new Library('libheif');
     $lib->withHomePage('https://github.com/strukturag/libheif.git')
         ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
@@ -1700,8 +1786,20 @@ function install_libheif(Preprocessor $p)
         ->withCleanBuildDirectory()
         ->withCleanInstallDirectory($libheif_prefix)
         ->withConfigure(
+            <<<'EOF'
+            ./configure --help
+            
+            libde265_CFLAGS=$(pkg-config  --cflags --static libde265 ) \
+            libde265_LIBS=$(pkg-config    --libs   --static libde265 ) \
+            libpng_CFLAGS=$(pkg-config  --cflags --static libpng ) \
+            libpng_LIBS=$(pkg-config    --libs   --static libpng ) \
+EOF
+            . PHP_EOL .
             <<<EOF
-./configure --help
+            ./configure \
+            --prefix={$libheif_prefix} \
+            --enable-shared=no \
+            --enable-static=yes
 EOF
         )
         ->withPkgName('libheif');
@@ -1709,23 +1807,32 @@ EOF
     $p->addLibrary($lib);
 }
 
-function install_libjpegxl(Preprocessor $p)
+function install_libjxl(Preprocessor $p)
 {
-    $libjpegxl_prefix = '/usr/libjpegxl';
-    $lib = new Library('libjpegxl');
+    $libjxl_prefix = LIBJXL_PREFIX;
+    $lib = new Library('libjxl');
     $lib->withHomePage('https://github.com/libjxl/libjxl.git')
         ->withLicense('https://github.com/libjxl/libjxl/blob/main/LICENSE', Library::LICENSE_BSD)
         ->withUrl('https://github.com/libjxl/libjxl/archive/refs/tags/v0.8.1.tar.gz')
+        ->withManual('https://github.com/libjxl/libjxl/blob/main/BUILDING.md')
         ->withFile('libjpegxl-v0.8.1.tar.gz')
-        ->withPrefix($libjpegxl_prefix)
+        ->withPrefix($libjxl_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libjpegxl_prefix)
+        ->withCleanInstallDirectory($libjxl_prefix)
         ->withConfigure(
             <<<EOF
-./configure --help
+        //下载依赖
+        sh deps.sh
+        mkdir build
+        cd build
+        cmake -DJPEGXL_STATIC=true -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. 
+        cmake --build . -- -j$(nproc)
+        exit 0 
+        cmake --install . 
 EOF
         )
-        ->withPkgName('libjpegxl');
+        ->withSkipMakeAndMakeInstall()
+        ->withPkgName('libjxl');
 
     $p->addLibrary($lib);
 }

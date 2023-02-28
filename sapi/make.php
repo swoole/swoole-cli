@@ -187,7 +187,7 @@ EOF
 
     package_names="readline icu-i18n  icu-io   icu-uc libpq libffi"
     package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
-    package_names="${package_names} "
+    package_names="${package_names} xlsxwriter"
 
     CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
     export   CPPFLAGS="$CPPFLAGS -I/usr/include"
@@ -213,7 +213,9 @@ EOF
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-    ./configure --help
+    ./configure --help | grep event
+exit 0
+
     <?= $this->configureVarables ?> ./configure $OPTIONS
 
 }

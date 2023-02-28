@@ -17,6 +17,10 @@ define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');
 define("WEBP_PREFIX", $p->getGlobalPrefix() . '/libwebp');
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
+define("LIBDE265_PREFIX", $p->getGlobalPrefix() . '/libde265');
+define("LIBHEIF_PREFIX", $p->getGlobalPrefix() . '/libheif');
+define("LIBJXL_PREFIX", $p->getGlobalPrefix() . '/libjxl');
+
 define("CURL_PREFIX", $p->getGlobalPrefix() . '/curl');
 define("CARES_PREFIX", $p->getGlobalPrefix() . '/cares');
 define("OPENSSL_PREFIX", $p->getGlobalPrefix() . '/openssl');
@@ -47,6 +51,7 @@ define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 
 define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
+define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
 define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');

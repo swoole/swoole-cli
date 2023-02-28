@@ -44,6 +44,9 @@ function libraries_builder($p)
     install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt
     install_libffi($p);
 
+    install_libmcrypt($p); //无 pkg-config 配置
+    install_libxlsxwriter($p); //依赖zlib  （使用cmake，便于配置参数)
+
     if ($p->getOsType() == 'macos') {
         install_bison($p);  // 源码编译bison
         // install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
@@ -60,9 +63,8 @@ function libraries_builder($p)
     if ($p->getOsType() == 'win') {
         install_re2c($p);
     }
+    install_libevent($p); //依赖zlib libjpeg
 
-    install_libmcrypt($p);
-    install_libxlsxwriter($p);
 
     # 扩展 mbstring 依赖 oniguruma 库
     # 扩展 intl 依赖 ICU 库
@@ -86,15 +88,14 @@ function libraries_builder($p)
      */
 
     //测试
-    if(0){
 
+    if (0) {
+        install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
+        install_libraw($p); //依赖 zlib  libjpeg
+        install_libde265($p);
+        install_libheif($p); //依赖 libde265
 
-    }
-    if(0){
-        install_libtiff($p);
-        install_libraw($p);
-        install_libheif($p);
-        install_libjpegxl($p);
+        install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
     }
 
 
@@ -105,10 +106,11 @@ function libraries_builder($p)
         install_libedit($p);
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
         install_harfbuzz($p); //依赖ninja （alpine ninja 需要源码编译)
+        install_libdeflate($p); //依赖 libzip zlib gzip
 
         install_bzip2_dev_latest($p);
 
-        install_libevent($p);
+
         install_libuv($p);
         install_libev($p);
 
@@ -167,7 +169,6 @@ function libraries_builder($p)
         install_php_internal_extension_curl_patch($p);
         install_php_extension_fastdfs($p);
         install_php_extension_libevent($p);
-        install_php_extension_zstd($p);
         install_php_extension_libuv($p);
     }
 }
