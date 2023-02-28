@@ -98,7 +98,7 @@ function libraries_builder($p)
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
     }
 
-    if (1) {
+    if (0) {
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
     }
 
@@ -180,7 +180,7 @@ function libraries_builder($p)
         install_php_internal_extension_curl_patch($p);
         install_php_extension_fastdfs($p);
     }
-    if (1) {
+    if (0) {
 
         install_aom($p);
         install_av1($p);

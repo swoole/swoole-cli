@@ -70,7 +70,7 @@ function install_libedit(Preprocessor $p)
 
 function install_ninja(Preprocessor $p)
 {
-    $ninja_prefix = '/usr/ninja';
+    $ninja_prefix = '/usr/ninja' ;
     $p->addLibrary(
         $lib = (new Library('ninja'))
             ->withHomePage('https://ninja-build.org/')
