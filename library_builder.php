@@ -47,6 +47,9 @@ function libraries_builder($p)
     install_libmcrypt($p); //无 pkg-config 配置
     install_libxlsxwriter($p); //依赖zlib  （使用cmake，便于配置参数)
 
+    install_libevent($p);
+    install_libuv($p);
+
     if ($p->getOsType() == 'macos') {
         install_bison($p);  // 源码编译bison
         // install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
@@ -54,6 +57,9 @@ function libraries_builder($p)
 
     if (1) {
         install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
+    }
+    if (1) {
+        install_php_extension_swow($p); //安装内置扩展; ffi  pgsql pdo_pgsql
     }
     if (0) {
         install_php_extension_micro($p);
@@ -63,8 +69,8 @@ function libraries_builder($p)
     if ($p->getOsType() == 'win') {
         install_re2c($p);
     }
-    install_libevent($p);
-    install_libuv($p);
+
+
 
     # 扩展 mbstring 依赖 oniguruma 库
     # 扩展 intl 依赖 ICU 库
@@ -98,7 +104,7 @@ function libraries_builder($p)
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
     }
 
-    if (1) {
+    if (0) {
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
     }
 
@@ -168,7 +174,6 @@ function libraries_builder($p)
     }
 
     if (0) {
-
         install_libev($p); //无 pkg-config
     }
     if (0) {
