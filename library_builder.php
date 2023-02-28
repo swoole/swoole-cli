@@ -98,7 +98,7 @@ function libraries_builder($p)
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
     }
 
-    if (0) {
+    if (1) {
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
     }
 
@@ -181,7 +181,6 @@ function libraries_builder($p)
         install_php_extension_fastdfs($p);
     }
     if (0) {
-
         install_aom($p);
         install_av1($p);
         install_libvpx($p);
@@ -191,8 +190,8 @@ function libraries_builder($p)
         install_mp3lame($p);
         install_ffmpeg($p);
         // install_librabbitmq($p);
-        install_opencv($p);
-
+        install_opencv($p); //构建过程中，会去github.com 下载 ippicv xfeatures2d wechat_qrcode unifont  face_landmark_model.dat
+        //依赖ffmpeg zlib ninja zlib libjpeg libwebp freetype
     }
     if (0) {
         //改善iptables/netfilter的规模瓶颈，提高Linux内核协议栈IO性能
