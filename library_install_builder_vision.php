@@ -4,6 +4,58 @@
 use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
+function install_rav1e(Preprocessor $p)
+{
+    $rav1e_prefix = '/usr/rav1e';
+    $lib = new Library('rav1e');
+    $lib->withHomePage('https://github.com/xiph/rav1e.git')
+        ->withLicense('https://github.com/xiph/rav1e/blob/master/LICENSE', Library::LICENSE_BSD)
+        ->withUrl('github.com/xiph/rav1e/archive/refs/tags/p20230221.tar.gz')
+        ->withFile('rav1e-p20230221.tar.gz')
+        ->withSkipDownload()
+        ->withManual('https://github.com/xiph/rav1e.git')
+        ->withPrefix($rav1e_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($rav1e_prefix)
+        ->withConfigure(
+            <<<EOF
+exit 0 
+
+EOF
+        )
+        ->withPkgName('');
+
+    $p->addLibrary($lib);
+}
+
+function install_libyuv(Preprocessor $p)
+{
+    $libyuv_prefix = '/usr/libyuv';
+    $lib = new Library('libyuv');
+    $lib->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
+        ->withLicense('https://github.com/xiph/rav1e/blob/master/LICENSE', Library::LICENSE_BSD)
+        ->withUrl('')
+        ->withSkipDownload()
+        ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
+        ->withPrefix($libyuv_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($libyuv_prefix)
+        ->withBuildScript(
+            <<<EOF
+        mkdir out
+        cd out
+        cmake -DCMAKE_INSTALL_PREFIX="/usr/lib" -DCMAKE_BUILD_TYPE="Release" ..
+        cmake --build . --config Release
+        sudo cmake --build . --target install --config Release
+
+EOF
+        )
+
+        ->withPkgName('libyuv');
+
+    $p->addLibrary($lib);
+}
+
 function install_aom(Preprocessor $p)
 {
     $aom_prefix = '/usr/aom';

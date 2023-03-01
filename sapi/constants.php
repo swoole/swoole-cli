@@ -20,6 +20,8 @@ define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LIBDE265_PREFIX", $p->getGlobalPrefix() . '/libde265');
 define("LIBHEIF_PREFIX", $p->getGlobalPrefix() . '/libheif');
 define("LIBJXL_PREFIX", $p->getGlobalPrefix() . '/libjxl');
+define("LIBGD_PREFIX", $p->getGlobalPrefix() . '/libgd');
+define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
 
 define("CURL_PREFIX", $p->getGlobalPrefix() . '/curl');
 define("CARES_PREFIX", $p->getGlobalPrefix() . '/cares');

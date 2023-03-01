@@ -56,6 +56,7 @@ function libraries_builder($p)
         // install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
     }
 
+
     if (1) {
         install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
     }
@@ -97,11 +98,17 @@ function libraries_builder($p)
     //测试
 
     if (0) {
-        install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
-        install_libraw($p); //依赖 zlib  libjpeg
+        install_libgd($p);
+        install_libavif($p); //依赖 libyuv
         install_libde265($p);
-        install_libheif($p); //依赖 libde265
 
+        install_libheif($p); //依赖 libde265
+        install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
+        if (0) {
+            install_libXpm($p); //依赖
+        }
+
+        install_libraw($p); //依赖 zlib  libjpeg
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
     }
 
@@ -187,6 +194,7 @@ function libraries_builder($p)
         install_php_extension_fastdfs($p);
     }
     if (0) {
+        install_rav1e($p);
         install_aom($p);
         install_av1($p);
         install_libvpx($p);
