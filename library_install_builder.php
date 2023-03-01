@@ -997,7 +997,8 @@ function install_unixodbc(Preprocessor $p)
                 "
                 autoreconf -fi
              ./configure --help 
-             ./configure --prefix={$unixODBC_prefix} \
+             ./configure \
+             --prefix={$unixODBC_prefix} \
              --enable-shared=no \
              --enable-static=yes \
              --enable-iconv \
