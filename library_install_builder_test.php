@@ -1608,6 +1608,7 @@ function install_libxlsxwriter(Preprocessor $p)
             cmake --build . --config Release --target install
 EOF
         )
+        ->depends('zlib')
         ->withPkgName('xlsxwriter');
 
     $p->addLibrary($lib);
