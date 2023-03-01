@@ -65,6 +65,8 @@ class Library extends Project
     public string $pkgName = '';
     public string $prefix = '/usr';
 
+    public string $binPath = '';
+
     function withUrl(string $url): static
     {
         $this->url = $url;
@@ -154,6 +156,12 @@ class Library extends Project
         $this->pkgName = $pkgName;
         return $this;
     }
+
+    public function withBinPath(string $path): static
+    {
+        $this->binPath = $path;
+        return $this;
+    }
 }
 
 class Extension extends Project
@@ -238,6 +246,7 @@ class Preprocessor
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
 
+    protected array $binPaths = [];
     /**
      * Extensions enabled by default
      * @var array|string[]
@@ -484,7 +493,9 @@ class Preprocessor
         if (!empty($lib->pkgConfig)) {
             $this->pkgConfigPaths[] = $lib->pkgConfig;
         }
-
+        if (!empty($lib->binPath)) {
+            $this->binPaths[] = $lib->binPath;
+        }
         if (empty($lib->license)) {
             throw new \RuntimeException("require license");
         }
@@ -703,6 +714,9 @@ class Preprocessor
 
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+
+        $this->binPaths[] = '$PATH';
+        $this->binPaths = array_unique($this->binPaths);
         $this->sortLibrary();
 
         if ($this->getInputOption('skip-download')) {
