@@ -120,21 +120,21 @@ function install_brotli(Preprocessor $p)
             -DBROTLI_SHARED_LIBS=OFF \
             -DBROTLI_STATIC_LIBS=ON \
             -DBROTLI_DISABLE_TESTS=ON \
-            -DBROTLI_BUNDLED_MODE=OFF 
-                
+            -DBROTLI_BUNDLED_MODE=OFF \
+            && \
             cmake --build . --config Release --target install
 EOF
             )
             ->withScriptAfterInstall(
-                implode(PHP_EOL, [
-                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',
-                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.so',
-                    'rm -rf ' . BROTLI_PREFIX . '/lib/*.dylib',
-                    'cp ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotli.a',
-                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotlicommon.a',
-                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlienc-static.a ' . BROTLI_PREFIX . '/lib/libbrotlienc.a',
-                    'mv ' . BROTLI_PREFIX . '/lib/libbrotlidec-static.a ' . BROTLI_PREFIX . '/lib/libbrotlidec.a'
-                ])
+                <<<EOF
+            rm -rf {$brotli_prefix}/lib/*.so.*
+            rm -rf {$brotli_prefix}/lib/*.so
+            rm -rf {$brotli_prefix}/lib/*.dylib
+            cp  -f {$brotli_prefix}/lib/libbrotlicommon-static.a {$brotli_prefix}/lib/libbrotli.a
+            mv     {$brotli_prefix}/lib/libbrotlicommon-static.a {$brotli_prefix}/lib/libbrotlicommon.a
+            mv     {$brotli_prefix}/lib/libbrotlienc-static.a    {$brotli_prefix}/lib/libbrotlienc.a
+            mv     {$brotli_prefix}/lib/libbrotlidec-static.a    {$brotli_prefix}/lib/libbrotlidec.a
+EOF
             )
             ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
             ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
@@ -325,7 +325,6 @@ function install_bzip2(Preprocessor $p)
             ->withCleanInstallDirectory($libbzip2_prefix)
             ->withMakeOptions('PREFIX=' . $libbzip2_prefix)
             ->withMakeInstallOptions('PREFIX=' . $libbzip2_prefix)
-
     );
 }
 
