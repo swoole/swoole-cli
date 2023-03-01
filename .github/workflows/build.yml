@@ -26,7 +26,7 @@ jobs:
             ./bin/swoole-cli ./bin/pack.php ./tests/test.php ./bin/swoole-cli-test
             ./bin/swoole-cli-test ./tests/test.php
             ./bin/swoole-cli-test --self
-            ./bin/swoole-cli ./tests/build-phar.php
+            ./bin/swoole-cli -dphar.readonly=0 ./tests/build-phar.php
             ./bin/swoole-cli ./bin/pack.php ./test.phar ./bin/swoole-cli-test-phar
             ./bin/swoole-cli-test-phar ./test.phar
             ./bin/swoole-cli-test-phar --self
