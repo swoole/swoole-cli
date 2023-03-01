@@ -41,7 +41,7 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
-    # use build script , skip： configure , make , make install
+    # use build script replace  configure、make、make install
 <?php if(empty($item->buildScript)): ?>
 
     # configure
