@@ -71,7 +71,7 @@ function libraries_builder($p)
     if ($p->getOsType() == 'win') {
         install_re2c($p);
     }
-
+    install_unixodbc($p);
 
 
     # 扩展 mbstring 依赖 oniguruma 库

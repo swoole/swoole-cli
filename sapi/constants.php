@@ -62,3 +62,5 @@ define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
 
+define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/gnutls');
+

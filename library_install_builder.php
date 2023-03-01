@@ -732,16 +732,16 @@ EOF
             ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'libidn2')
 
 
-    #--with-gnutls=GNUTLS_PREFIX
-    #--with-nghttp3=NGHTTP3_PREFIX
-    #--with-ngtcp2=NGTCP2_PREFIX
-    #--with-nghttp2=NGHTTP2_PREFIX
-    #--without-brotli
-    #--disable-ares
+        #--with-gnutls=GNUTLS_PREFIX
+        #--with-nghttp3=NGHTTP3_PREFIX
+        #--with-ngtcp2=NGTCP2_PREFIX
+        #--with-nghttp2=NGHTTP2_PREFIX
+        #--without-brotli
+        #--disable-ares
 
-    #--with-ngtcp2=/usr/ngtcp2 \
-    #--with-quiche=/usr/quiche
-    #--with-msh3=PATH
+        #--with-ngtcp2=/usr/ngtcp2 \
+        #--with-quiche=/usr/quiche
+        #--with-msh3=PATH
     );
     /**
      * configure: pkg-config: SSL_LIBS: "-lssl -lcrypto"
@@ -974,6 +974,40 @@ function install_re2c(Preprocessor $p)
             "
             )
             ->withBinPath('/usr/re2c/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
+
+function install_unixodbc(Preprocessor $p)
+{
+    $unixODBC_prefix = UNIX_ODBC_PREFIX;
+    $p->addLibrary(
+        (new Library('unixodbc'))
+            ->withHomePage('https://www.unixodbc.org/')
+            ->withUrl('https://www.unixodbc.org/unixODBC-2.3.11.tar.gz')
+            ->withLicense('https://github.com/lurcher/unixODBC/blob/master/LICENSE', Library::LICENSE_LGPL)
+            ->withManual('https://www.unixodbc.org/doc/')
+            ->withManual('https://github.com/lurcher/unixODBC.git')
+            ->withLabel('build_env_bin')
+            ->withCleanBuildDirectory()
+
+            ->withConfigure(
+                "
+                autoreconf -fi
+             ./configure --help 
+             ./configure --prefix={$unixODBC_prefix} \
+             --enable-shared=no \
+             --enable-static=yes \
+             --enable-iconv \
+             --enable-readline \
+             --enable-threads
+
+         
+            "
+            )
+            ->withBinPath($unixODBC_prefix .'/bin/')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
