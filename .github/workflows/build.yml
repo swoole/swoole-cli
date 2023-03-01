@@ -23,9 +23,13 @@ jobs:
             ./make.sh config
             ./make.sh build
             ./bin/swoole-cli -v
-            ./bin/swoole-cli ./bin/pack.php ./test.php ./bin/swoole-cli-test
-            ./bin/swoole-cli-test ./test.php
+            ./bin/swoole-cli ./bin/pack.php ./tests/test.php ./bin/swoole-cli-test
+            ./bin/swoole-cli-test ./tests/test.php
             ./bin/swoole-cli-test --self
+            ./bin/swoole-cli ./tests/build-phar.php
+            ./bin/swoole-cli ./bin/pack.php ./test.phar ./bin/swoole-cli-test-phar
+            ./bin/swoole-cli-test-phar ./test.phar
+            ./bin/swoole-cli-test-phar --self
   cygwin:
     if: 0
     runs-on: windows-latest
