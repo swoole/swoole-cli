@@ -55,7 +55,7 @@ class Library extends Project
     public string $configure = '';
     public string $file = '';
     public string $ldflags = '';
-    public bool $skipMakeAndMakeInstall = false;
+    public string $buildScript = '';
     public string $makeOptions = '';
     public string $makeVariables = '';
     public string $makeInstallCommand = 'install';
@@ -108,9 +108,9 @@ class Library extends Project
         return $this;
     }
 
-    public function withSkipMakeAndMakeInstall():static
+    public function withBuildScript(string $script):static
     {
-        $this->skipMakeAndMakeInstall = true;
+        $this->buildScript = $script;
         return $this;
     }
 

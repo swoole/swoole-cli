@@ -21,18 +21,19 @@ return function (Preprocessor $p) {
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
             ->withFile('brotli-1.0.9.tar.gz')
             ->withPrefix($brotli_prefix)
-            ->withConfigure(<<<EOF
+            ->withBuildScript(
+                <<<EOF
             cmake . -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX={$brotli_prefix} \
             -DBROTLI_SHARED_LIBS=OFF \
             -DBROTLI_STATIC_LIBS=ON \
             -DBROTLI_DISABLE_TESTS=ON \
-            -DBROTLI_BUNDLED_MODE=OFF 
-                
+            -DBROTLI_BUNDLED_MODE=OFF \
+            && \
             cmake --build . --config Release --target install
 EOF
             )
-            ->withSkipMakeAndMakeInstall()
+           // ->withSkipMakeAndMakeInstall()
             ->withScriptAfterInstall(
                 implode(PHP_EOL, [
                     'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',
@@ -42,7 +43,8 @@ EOF
                     'mv ' . BROTLI_PREFIX . '/lib/libbrotlicommon-static.a ' . BROTLI_PREFIX . '/lib/libbrotlicommon.a',
                     'mv ' . BROTLI_PREFIX . '/lib/libbrotlienc-static.a ' . BROTLI_PREFIX . '/lib/libbrotlienc.a',
                     'mv ' . BROTLI_PREFIX . '/lib/libbrotlidec-static.a ' . BROTLI_PREFIX . '/lib/libbrotlidec.a'
-                ]))
+                ])
+            )
             ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
             ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withHomePage('https://github.com/google/brotli')
@@ -54,7 +56,8 @@ EOF
             ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withPrefix($libidn2_prefix)
-            ->withConfigure(<<<EOF
+            ->withConfigure(
+                <<<EOF
             ./configure --help 
             
             #  intl  依赖  gettext
@@ -90,7 +93,8 @@ EOF
             ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPrefix($curl_prefix)
-            ->withConfigure(<<<EOF
+            ->withConfigure(
+                <<<EOF
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
             LDFLAGS="$(pkg-config --libs-only-L      --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
             LIBS="$(pkg-config --libs-only-l         --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
@@ -115,8 +119,7 @@ EOF
 EOF
             )
             ->withPkgName('libcurl')
-            ->depends('openssl', 'cares', 'zlib','brotli','libzstd','libidn2')
+            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'libidn2')
     );
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
-
 };
