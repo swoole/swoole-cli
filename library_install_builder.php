@@ -1004,8 +1004,6 @@ function install_unixodbc(Preprocessor $p)
              --enable-iconv \
              --enable-readline \
              --enable-threads
-
-         
             "
             )
             ->withBinPath($unixODBC_prefix .'/bin/')
