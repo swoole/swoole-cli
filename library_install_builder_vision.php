@@ -200,7 +200,7 @@ function install_opencv(Preprocessor $p)
             pip3 install numpy  -i https://pypi.tuna.tsinghua.edu.cn/simple 
 EOF
         )
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
         cd opencv
         mkdir -p build
@@ -224,7 +224,6 @@ EOF
         ninja install
 EOF
         )
-        ->withSkipMakeAndMakeInstall()
         ->withPkgName('opencv');
 
     $p->addLibrary($lib);

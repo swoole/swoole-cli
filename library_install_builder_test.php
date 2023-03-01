@@ -84,7 +84,7 @@ function install_ninja(Preprocessor $p)
             ->withLabel('build_env_bin')
             //->withCleanBuildDirectory()
             //->withUntarArchiveCommand('unzip')
-            ->withConfigure(
+            ->withBuildScript(
                 "
                 /usr/bin/ar -h 
                 cmake -Bbuild-cmake -D CMAKE_AR=/usr/bin/ar
@@ -98,7 +98,6 @@ function install_ninja(Preprocessor $p)
                 return 0 ;
             "
             )
-            ->withSkipMakeAndMakeInstall()
             ->withBinPath($ninja_prefix . '/bin/')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
@@ -519,7 +518,7 @@ function install_boringssl($p)
                  test -d /usr/boringssl && rm -rf /usr/boringssl
                 '
             )
-            ->withConfigure(
+            ->withBuildScript(
                 '
                 cd boringssl-master
                 mkdir build
@@ -533,7 +532,6 @@ function install_boringssl($p)
                 ninja -C build install
             '
             )
-            ->withSkipMakeAndMakeInstall()
             ->disableDefaultPkgConfig()
         //->withSkipBuildInstall()
     );
@@ -555,7 +553,7 @@ function install_wolfssl($p)
                  test -d /usr/wolfssl && rm -rf /usr/wolfssl
                 '
             )
-            ->withConfigure(
+            ->withBuildScript(
                 <<<EOF
                 ./autogen.sh
                 ./configure --help
@@ -567,7 +565,6 @@ function install_wolfssl($p)
 
 EOF
             )
-            //->withSkipMakeAndMakeInstall()
             ->withPkgName('wolfssl')
         //->withSkipBuildInstall()
     );
@@ -782,7 +779,7 @@ function install_coreutils($p)
             ->withUrl('https://mirrors.aliyun.com/gnu/coreutils/coreutils-9.1.tar.gz')
             ->withFile('coreutils-9.1.tar.gz')
             ->withCleanBuildDirectory()
-            ->withConfigure(
+            ->withBuildScript(
                 '
                 ./bootstrap
                 ./configure --help
@@ -796,7 +793,6 @@ function install_coreutils($p)
             
             '
             )
-            //->withSkipMakeAndMakeInstall()
             ->withPkgConfig('')
             ->withPkgName('')
     );
@@ -821,14 +817,13 @@ function install_gnulib($p)
             ->withFile('latest-gnulib.zip')
             ->withCleanBuildDirectory()
             ->withUntarArchiveCommand('unzip')
-            ->withConfigure(
+            ->withBuildScript(
                 '
                cd gnulib-master
              ./gnulib-tool --help
              return 0 ;
             '
             )
-            ->withSkipMakeAndMakeInstall()
             ->withPkgConfig('')
             ->withPkgName('')
     );
@@ -1598,7 +1593,7 @@ function install_libxlsxwriter(Preprocessor $p)
         ->withPrefix($libxlsxwriter_prefix)
         ->withCleanBuildDirectory()
         ->withCleanInstallDirectory($libxlsxwriter_prefix)
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
             # 启用DBUILD_TESTS 需要安装python3 pytest
             mkdir build && cd build
@@ -1613,7 +1608,6 @@ function install_libxlsxwriter(Preprocessor $p)
             cmake --build . --config Release --target install
 EOF
         )
-        ->withSkipMakeAndMakeInstall()
         ->withPkgName('xlsxwriter');
 
     $p->addLibrary($lib);

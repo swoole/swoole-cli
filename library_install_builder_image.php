@@ -150,7 +150,7 @@ function install_libjxl(Preprocessor $p)
         ->withPrefix($libjxl_prefix)
         ->withCleanBuildDirectory()
         ->withCleanInstallDirectory($libjxl_prefix)
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
         //下载依赖
         sh deps.sh
@@ -162,7 +162,6 @@ function install_libjxl(Preprocessor $p)
         cmake --install . 
 EOF
         )
-        ->withSkipMakeAndMakeInstall()
         ->withPkgName('libjxl');
 
     $p->addLibrary($lib);

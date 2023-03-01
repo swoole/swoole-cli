@@ -73,7 +73,9 @@ class Library extends Project
 
     public bool $cleanInstallDirectory = false;
     public string $preInstallDirectory = '';
-    public bool $skipMakeAndMakeInstall = false;
+
+    public string $buildScript = '';
+
     public string $makeOptions = '';
     public string $makeVariables = '';
 
@@ -157,9 +159,9 @@ class Library extends Project
         return $this;
     }
 
-    public function withSkipMakeAndMakeInstall(): static
+    public function withBuildScript(string $script):static
     {
-        $this->skipMakeAndMakeInstall = true;
+        $this->buildScript = $script;
         return $this;
     }
 

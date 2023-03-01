@@ -113,7 +113,7 @@ function install_brotli(Preprocessor $p)
             ->withPrefix($brotli_prefix)
             ->withCleanBuildDirectory()
             ->withCleanInstallDirectory($brotli_prefix)
-            ->withConfigure(
+            ->withBuildScript(
                 <<<EOF
             cmake . -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX={$brotli_prefix} \
@@ -125,7 +125,6 @@ function install_brotli(Preprocessor $p)
             cmake --build . --config Release --target install
 EOF
             )
-            ->withSkipMakeAndMakeInstall()
             ->withScriptAfterInstall(
                 implode(PHP_EOL, [
                     'rm -rf ' . BROTLI_PREFIX . '/lib/*.so.*',

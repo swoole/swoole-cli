@@ -77,6 +77,9 @@ make_<?=$item->name?>() {
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
 <?php endif; ?>
 
+    # use build script replace  configure、make、make install
+<?php if(empty($item->buildScript)): ?>
+
     # before configure
 <?php if (!empty($item->beforeConfigureScript)) : ?>
     <?= $item->beforeConfigureScript . PHP_EOL ?>
@@ -98,8 +101,6 @@ __EOF__
 
 <?php endif; ?>
 
-
-<?php if(!$item->skipMakeAndMakeInstall): ?>
     # make
     make -j <?= $this->maxJob ?> <?= $item->makeOptions . PHP_EOL ?>
     result_code=$?
@@ -118,6 +119,14 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
 <?php endif; ?>
+
+<?php else: ?>
+cat <<'__EOF__'
+    <?= $item->buildScript . PHP_EOL ?>
+__EOF__
+    <?= $item->buildScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # after make install
