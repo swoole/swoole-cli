@@ -194,11 +194,11 @@ EOF
     package_names="${package_names} xlsxwriter"
 
     CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
-    export   CPPFLAGS="$CPPFLAGS -I/usr/include"
+    export   CPPFLAGS="$CPPFLAGS -I/usr/libmcrypt/include -I/usr/include"
     LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
-    export   LDFLAGS="$LDFLAGS -L/usr/lib"
+    export   LDFLAGS="$LDFLAGS -L/usr/libmcrypt/lib -L/usr/lib"
     LIBS=$(pkg-config      --libs-only-l   --static $package_names )
-    export  LIBS="$LIBS -lstdc++"
+    export  LIBS="$LIBS -lmcrypt -lstdc++"
 
 <?php endif; ?>
 
@@ -217,8 +217,6 @@ EOF
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-    ./configure --help | grep event
-exit 0
 
     <?= $this->configureVarables ?> ./configure $OPTIONS
 

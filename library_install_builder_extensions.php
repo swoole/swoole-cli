@@ -83,22 +83,29 @@ function install_php_extension_micro(Preprocessor $p)
     );
 }
 
+
 function install_php_extension_swow(Preprocessor $p)
 {
+    $workDir = $p->getWorkDir();
+    $buildDir = $p->getBuildDir();
     $p->addLibrary(
-        (new Library('php_extension_micro'))
-            ->withHomePage('https://github.com/dixyes/phpmicro')
-            ->withUrl('https://github.com/dixyes/phpmicro/archive/refs/heads/master.zip')
-            ->withFile('latest-phpmicro.zip')
-            ->withLicense('https://github.com/dixyes/phpmicro/blob/master/LICENSE', Library::LICENSE_APACHE2)
-            ->withManual('https://github.com/dixyes/phpmicro#readme')
+        (new Library('php_extension_swow'))
+            ->withHomePage('https://github.com/swow/swow')
+            ->withUrl('https://github.com/swow/swow/archive/refs/tags/v1.2.0.tar.gz')
+            ->withFile('swow-v1.2.0.tar.gz')
+            ->withLicense('https://github.com/swow/swow/blob/develop/LICENSE', Library::LICENSE_APACHE2)
+            ->withManual('https://github.com/swow/swow')
             ->withLabel('php_extension')
             ->withCleanBuildDirectory()
-            ->withUntarArchiveCommand('unzip')
-            ->withScriptBeforeConfigure('return 0')
+            ->withScriptBeforeConfigure(
+                <<<EOF
+            test -d {$workDir}/ext/swow && rm -rf {$workDir}/ext/swow
+            cp -rf {$buildDir}/php_extension_swow/ext/ {$workDir}/ext/swow
+            return 0
+EOF
+            )
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
-            ->withSkipBuildInstall()
     );
 }

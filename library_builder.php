@@ -49,6 +49,7 @@ function libraries_builder($p)
 
     install_libevent($p);
     install_libuv($p);
+    //libcat for Swow https://github.com/libcat/libcat.git
 
     if ($p->getOsType() == 'macos') {
         install_bison($p);  // 源码编译bison

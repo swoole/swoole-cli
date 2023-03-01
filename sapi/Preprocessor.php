@@ -651,7 +651,6 @@ class Preprocessor
             }
             $this->downloadExtensionList[] = ['url' => $ext->url, 'file' => $ext->file];
         }
-
         $this->extensionList[] = $ext;
         $this->extensionMap[$ext->name] = $ext;
     }
@@ -689,6 +688,7 @@ class Preprocessor
 
     public function setExtCallback($name, $fn)
     {
+        var_dump($fn);
         $this->extCallbacks[$name] = $fn;
     }
 
@@ -813,6 +813,8 @@ class Preprocessor
         if (is_dir($this->rootDir . '/conf.d')) {
             $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
         }
+
+
         $confPath = $this->getInputOption('conf-path');
         if ($confPath) {
             $confDirList = explode(':', $confPath);
@@ -825,6 +827,7 @@ class Preprocessor
         }
 
         $this->extEnabled = array_unique($this->extEnabled);
+
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
                 echo "unsupported extension[$ext]\n";
