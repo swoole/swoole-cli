@@ -151,7 +151,6 @@ ZEND_API int zend_stream_init_fp_self_begin(zend_file_handle *handle, FILE *fp, 
 	size_t file_size, offset, script_size;
     char *buf = NULL;
 
-
 	memset(handle, 0, sizeof(zend_file_handle));
 	handle->handle.fp = fp;
 	handle->filename = filename ? zend_string_init(filename, strlen(filename), 0) : NULL;
@@ -170,15 +169,11 @@ ZEND_API int zend_stream_init_fp_self_begin(zend_file_handle *handle, FILE *fp, 
 #ifndef WORDS_BIGENDIAN
 	script_size = zend_stream_pack_reverse_int64(script_size);
 #endif
+    if (file_size < script_size + sizeof(script_size)) {
+        return FAILURE;
+    }
 	offset = file_size - script_size - sizeof(script_size);
-    // if (file_size < offset) {
-    //     return FAILURE;
-    // }
 	fseek(fp, offset, SEEK_SET);
-	// buf = safe_emalloc(1, offset, ZEND_MMAP_AHEAD);
-	// zend_stream_read(handle, buf, offset);
-	// efree(buf);
-	// buf = NULL;
 	if (script_size) {
 		ssize_t read;
 		size_t size = 0;
