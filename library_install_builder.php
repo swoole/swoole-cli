@@ -1009,8 +1009,6 @@ function install_unixodbc(Preprocessor $p)
             "
             )
             ->withBinPath($unixODBC_prefix .'/bin/')
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
             ->disablePkgName()
     );
 }
