@@ -182,6 +182,7 @@ const opt_struct OPTIONS[] = {
 	/* Internal testing option -- may be changed or removed without notice,
 	 * including in patch releases. */
 	{16,  1, "repeat"},
+	{127, 0, "self"},
 	{'-', 0, NULL} /* end of args */
 };
 
@@ -532,6 +533,7 @@ static void php_cli_usage(char *argv0)
 				"  --re <name>      Show information about extension <name>.\n"
 				"  --rz <name>      Show information about Zend extension <name>.\n"
 				"  --ri <name>      Show configuration for extension <name>.\n"
+				"  --self           Parse and execute self file.\n"
 				"\n"
 				, prog, prog, prog, prog, prog, prog, prog, prog);
 }
@@ -599,6 +601,24 @@ static int cli_seek_file_begin(zend_file_handle *file_handle, char *script_file)
 }
 /* }}} */
 
+/* {{{ cli_seek_file_self_begin */
+static int cli_seek_file_self_begin(zend_file_handle *file_handle, char *script_file)
+{
+	FILE *fp = VCWD_FOPEN(script_file, "rb");
+	if (!fp) {
+		php_printf("Could not open input file: %s\n", script_file);
+		return FAILURE;
+	}
+
+    int result = zend_stream_init_fp_self_begin(file_handle, fp, script_file);
+	if (SUCCESS != result) {
+        return result;
+    }
+	file_handle->primary_script = 1;
+	return SUCCESS;
+}
+/* }}} */
+
 /*{{{ php_cli_win32_ctrl_handler */
 #if defined(PHP_WIN32)
 BOOL WINAPI php_cli_win32_ctrl_handler(DWORD sig)
@@ -645,6 +665,8 @@ static int do_cli(int argc, char **argv) /* {{{ */
 	char *exec_direct=NULL, *exec_run=NULL, *exec_begin=NULL, *exec_end=NULL;
 	char *arg_free=NULL, **arg_excp=&arg_free;
 	char *script_file=NULL, *translated_path = NULL;
+	char *tmp_script_file = NULL;
+	bool exec_self = 0;
 	int interactive=0;
 	const char *param_error=NULL;
 	int hide_argv = 0;
@@ -871,6 +893,9 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			case 16:
 				num_repeats = atoi(php_optarg);
 				break;
+			case 127:
+				exec_self = 1;
+				break;
 			default:
 				break;
 			}
@@ -917,9 +942,18 @@ do_repeat:
 			script_file=argv[php_optind];
 			php_optind++;
 		}
+		if (!script_file && exec_self) {
+			if (PG(php_binary)) {
+				tmp_script_file = estrdup(PG(php_binary));
+				script_file = tmp_script_file;
+			} else {
+				php_printf("Could not get PHP_BINARY.\n");
+				exit(1);
+			}
+		}
 		if (script_file) {
 			virtual_cwd_activate();
-			if (cli_seek_file_begin(&file_handle, script_file) != SUCCESS) {
+			if ((exec_self ? cli_seek_file_self_begin(&file_handle, script_file) : cli_seek_file_begin(&file_handle, script_file)) != SUCCESS) {
 				goto err;
 			} else {
 				char real_path[MAXPATHLEN];
@@ -1052,7 +1086,7 @@ do_repeat:
 						zend_eval_string_ex(exec_run, NULL, "Command line run code", 1);
 					} else {
 						if (script_file) {
-							if (cli_seek_file_begin(&file_handle, script_file) != SUCCESS) {
+							if ((exec_self ? cli_seek_file_self_begin(&file_handle, script_file) : cli_seek_file_begin(&file_handle, script_file)) != SUCCESS) {
 								EG(exit_status) = 1;
 							} else {
 								CG(skip_shebang) = 1;
@@ -1164,6 +1198,9 @@ out:
 	}
 	if (translated_path) {
 		free(translated_path);
+	}
+	if (tmp_script_file) {
+		efree(tmp_script_file);
 	}
 	/* Don't repeat fork()ed processes. */
 	if (--num_repeats && pid == getpid()) {
