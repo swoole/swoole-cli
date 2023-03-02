@@ -320,9 +320,9 @@ function install_libgd2($p)
             <<<EOF
         # 下载依赖
          ./configure --help
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libbrotlicommon  libbrotlidec  libbrotlienc)" \
-        LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libbrotlicommon  libbrotlidec  libbrotlienc)" \
-        LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libbrotlicommon  libbrotlidec  libbrotlienc) -lbrotli " \
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux   ) -I/usr/brotli/include/" \
+        LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux   ) -L/usr/brotli/lib/" \
+        LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux   ) " \
         ./configure \
         --prefix={$libgd_prefix} \
         --enable-shared=no \
