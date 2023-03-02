@@ -1200,6 +1200,7 @@ function install_p11_kit(Preprocessor $p)
             -Dbuildtype=release \
             -Ddefault_library=static \
             -Db_staticpic=true \
+            -Db_pie=true \
             -Dprefer_static=true \
             -Ddebug=false \
             -Dstrict=true \
@@ -1213,8 +1214,8 @@ function install_p11_kit(Preprocessor $p)
             # meson install -C _build
             
             ninja  -C _build
-            # ninja  -C _build install 
-            exit 0 
+            ninja  -C _build install 
+           
             '
             )
 
