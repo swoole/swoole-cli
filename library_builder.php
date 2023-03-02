@@ -53,25 +53,33 @@ function libraries_builder($p)
 
     if ($p->getOsType() == 'macos') {
         install_bison($p);  // 源码编译bison
-        // install_php_internal_extension_curl_patch($p);  //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
+        if (0) {
+            install_php_internal_extension_curl_patch($p); //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
+        }
+        install_php_internal_extension_curl_patch($p);
     }
 
+    if (0) {
+        install_php_parser($p); //imagemagick 安装过程中需要
+    }
 
     if (1) {
         install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
     }
-    if (1) {
-        install_php_extension_swow($p); //安装内置扩展; ffi  pgsql pdo_pgsql
-    }
     if (0) {
+        install_php_extension_swow($p);
         install_php_extension_micro($p);
-        install_php_parser($p);
     }
 
+    install_php_extension_wasm($p);
+    if (0) {
+        install_php_extension_fastdfs($p);
+    }
     if ($p->getOsType() == 'win') {
         install_re2c($p);
     }
-    install_unixodbc($p);
+
+
 
 
     # 扩展 mbstring 依赖 oniguruma 库
@@ -96,9 +104,10 @@ function libraries_builder($p)
      */
 
     //测试
-    install_libgd2($p);
     if (0) {
-
+        install_unixodbc($p);
+    }
+    if (0) {
         install_libavif($p); //依赖 libyuv
         install_libde265($p);
 
@@ -110,6 +119,8 @@ function libraries_builder($p)
 
         install_libraw($p); //依赖 zlib  libjpeg
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
+
+        install_libgd2($p);
     }
 
     if (0) {
@@ -170,7 +181,7 @@ function libraries_builder($p)
 
         install_bazel($p);
         install_libelf($p);
-        install_libbpf($p);
+        install_libbpf($p); //libbpf 库是一个基于 C/C++ 的通用 eBPF 库
 
         install_valgrind($p);
         install_snappy($p);
@@ -182,6 +193,9 @@ function libraries_builder($p)
     }
 
     if (0) {
+        install_libgd2($p);
+    }
+    if (0) {
         install_libev($p); //无 pkg-config
     }
     if (0) {
@@ -190,8 +204,9 @@ function libraries_builder($p)
     }
 
     if (0) {
-        install_php_internal_extension_curl_patch($p);
-        install_php_extension_fastdfs($p);
+        //Wasm
+        //WebAssembly
+        //Docker+Wasm  https://docs.docker.com/desktop/wasm/
     }
     if (0) {
         install_rav1e($p);
@@ -208,7 +223,16 @@ function libraries_builder($p)
         //依赖ffmpeg zlib ninja zlib libjpeg libwebp freetype
     }
     if (0) {
-        //改善iptables/netfilter的规模瓶颈，提高Linux内核协议栈IO性能
+        // 改善iptables/netfilter的规模瓶颈，提高Linux内核协议栈IO性能
+        // DPDK让用户态程序直接处理网络流，bypass掉内核，使用独立的CPU专门干这个事。
+
+        // Berkeley Packet Filter (eBPF)
+        // XDP让灌入网卡的eBPF程序直接处理网络流，bypass掉内核，使用网卡NPU专门干这个事。
+        // XDP的全称是： eXpress Data Path
+
+        //  XDP 是Linux 内核中提供高性能、可编程的网络数据包处理框架。
+        //  eBPF/XDP
+
         install_dpdk($p); //ninja
         install_xdp($p);  //依赖 llvm bpftool
         install_ovs($p);  //依赖 openssl python3  ; 网络优化以来 dpdk

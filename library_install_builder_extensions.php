@@ -83,6 +83,31 @@ function install_php_extension_micro(Preprocessor $p)
     );
 }
 
+function install_php_extension_wasm(Preprocessor $p)
+{
+    $workDir = $p->getWorkDir();
+    $buildDir = $p->getBuildDir();
+    $p->addLibrary(
+        (new Library('php_extension_wasm'))
+            ->withHomePage('https://github.com/wasmerio/wasmer-php.git')
+            ->withUrl('https://github.com/wasmerio/wasmer-php/archive/refs/tags/1.1.0.tar.gz')
+            ->withFile('wasmer-php-1.1.0.tar.gz')
+            ->withLicense('https://github.com/wasmerio/wasmer-php/blob/master/LICENSE', Library::LICENSE_MIT)
+            ->withManual('https://github.com/wasmerio/wasmer-php.git')
+            ->withLabel('php_extension')
+            ->withCleanBuildDirectory()
+            ->withBuildScript("
+              ls -lh ./ext
+              pwd 
+              cp -rf ext  {$workDir}/ext/wasm
+            ")
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+        //->withSkipBuildInstall()
+    );
+}
+
 
 function install_php_extension_swow(Preprocessor $p)
 {
