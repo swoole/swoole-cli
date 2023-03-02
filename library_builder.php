@@ -126,10 +126,11 @@ function libraries_builder($p)
     }
 
     if (0) {
+        //apk add ninja
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
     }
 
-    install_libressl($p);//
+    install_p11_kit($p);
     if (0) {
         install_openssl_v3($p);
         install_openssl_v3_quic($p);
@@ -148,7 +149,7 @@ function libraries_builder($p)
         install_libtasn1($p);
         install_libexpat($p);
         install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
-        install_p11_kit($p);
+
         # TLS/ESNI/ECH/DoT/DoH/  参考文档https://zhuanlan.zhihu.com/p/572101957
         # SSL 比较 https://curl.se/docs/ssl-compared.html
         install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib

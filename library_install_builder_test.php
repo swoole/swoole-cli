@@ -82,12 +82,15 @@ function install_ninja(Preprocessor $p)
             ->withManual('https://github.com/ninja-build/ninja/wiki')
             ->withPrefix($ninja_prefix)
             ->withLabel('build_env_bin')
-            //->withCleanBuildDirectory()
+            ->withCleanBuildDirectory()
             //->withUntarArchiveCommand('unzip')
             ->withBuildScript(
                 "
-                /usr/bin/ar -h 
-                cmake -Bbuild-cmake -D CMAKE_AR=/usr/bin/ar
+                # apk add ninja
+                
+                #  ./configure.py --bootstrap
+         
+                cmake -Bbuild-cmake 
                 cmake --build build-cmake
                 mkdir -p {$ninja_prefix}/bin/
                 cp build-cmake/ninja  {$ninja_prefix}/bin/
@@ -276,7 +279,6 @@ function install_libuv($p)
 EOF
             )
             ->withPkgName('libuv')
-
     );
 }
 
@@ -1173,7 +1175,7 @@ function install_p11_kit(Preprocessor $p)
             ->withFile('p11-kit-0.24.1.tar.gz')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/p11_kit/')
-            ->withConfigure(
+            ->withBuildScript(
                 '
           
                 # apk add python3 py3-pip  gettext  coreutils
@@ -1207,7 +1209,7 @@ function install_p11_kit(Preprocessor $p)
             exit 0 
             '
             )
-            ->withBypassMakeAndMakeInstall()
+
             ->withPkgName('p11_kit')
     );
 }
@@ -1684,4 +1686,3 @@ EOF
 
     $p->addLibrary($lib);
 }
-
