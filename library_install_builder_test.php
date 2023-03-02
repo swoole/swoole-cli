@@ -569,6 +569,33 @@ EOF
         //->withSkipBuildInstall()
     );
 }
+function install_libressl($p)
+{
+    $libressl_prefix = '/usr/libressl';
+    $p->addLibrary(
+        (new Library('libressl'))
+            ->withHomePage('https://www.libressl.org/')
+            ->withLicense('https://github.com/wolfSSL/wolfssl/blob/master/COPYING', Library::LICENSE_GPL)
+            ->withUrl('https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.5.4.tar.gz')
+            ->withFile('libressl-3.5.4.tar.gz')
+            ->withManual('https://github.com/libressl/portable.git')
+            ->withCleanBuildDirectory()
+            ->withPrefix($libressl_prefix)
+            ->withCleanInstallDirectory($libressl_prefix)
+            ->withConfigure(
+                <<<EOF
+            ./configure  --help
+            ./configure \
+            --prefix={$libressl_prefix} \
+            --enable-shared=no \
+            --enable-static=yes
+
+EOF
+            )
+            ->withPkgName('libressl')
+        //->withSkipBuildInstall()
+    );
+}
 
 function install_nghttp3(Preprocessor $p)
 {
@@ -1633,6 +1660,27 @@ function install_libgomp(Preprocessor $p)
 EOF
         )
         ->withPkgName('libgomp');
+
+    $p->addLibrary($lib);
+}
+
+function install_libzip_ng(Preprocessor $p)
+{
+    $zlib_ng_prefix = '/usr/zlib_ng';
+    $lib = new Library('libgomp');
+    $lib->withHomePage('https://github.com/zlib-ng/zlib-ng.git')
+        ->withLicense('https://github.com/zlib-ng/minizip-ng/blob/master/LICENSE', Library::LICENSE_SPEC)
+        ->withUrl('https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.6.tar.gz')
+        ->withManual('https://github.com/zlib-ng/zlib-ng.git')
+        ->withPrefix($zlib_ng_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanInstallDirectory($zlib_ng_prefix)
+        ->withConfigure(
+            <<<EOF
+./configure --help
+EOF
+        )
+        ->withPkgName('zlib_ng');
 
     $p->addLibrary($lib);
 }

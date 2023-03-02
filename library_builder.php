@@ -129,7 +129,7 @@ function libraries_builder($p)
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
     }
 
-
+    install_libressl($p);//
     if (0) {
         install_openssl_v3($p);
         install_openssl_v3_quic($p);
@@ -154,6 +154,7 @@ function libraries_builder($p)
         install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
         install_boringssl($p);//需要 golang
         install_wolfssl($p);//
+        install_libressl($p);//
 
         //参考 ：HTTP3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
         install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
@@ -192,6 +193,7 @@ function libraries_builder($p)
         install_pcre2($p);
         install_pgsql_test($p);
         install_libgomp($p); //压缩算法
+        install_libzip_ng($p); //zlib next
     }
 
     if (0) {
