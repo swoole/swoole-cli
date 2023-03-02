@@ -96,9 +96,9 @@ function libraries_builder($p)
      */
 
     //测试
-
+    install_libgd2($p);
     if (0) {
-        install_libgd($p);
+
         install_libavif($p); //依赖 libyuv
         install_libde265($p);
 

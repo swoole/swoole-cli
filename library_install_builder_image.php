@@ -303,10 +303,11 @@ EOF
 
 //-lgd -lpng -lz -ljpeg -lfreetype -lm
 
-function install_libgd($p)
+function install_libgd2($p)
 {
     $libgd_prefix = LIBGD_PREFIX;
-    $lib = new Library('libgd');
+    $libiconv_prefix = ICONV_PREFIX;
+    $lib = new Library('libgd2');
     $lib->withHomePage('https://www.libgd.org/')
         ->withLicense('https://github.com/libgd/libgd/blob/master/COPYING', Library::LICENSE_SPEC)
         ->withUrl('https://github.com/libgd/libgd/releases/download/gd-2.3.3/libgd-2.3.3.tar.gz')
@@ -315,19 +316,45 @@ function install_libgd($p)
         ->withPrefix($libgd_prefix)
         ->withCleanBuildDirectory()
         ->withCleanInstallDirectory($libgd_prefix)
-        ->withBuildScript(
+        ->withConfigure(
             <<<EOF
-        //下载依赖
-      
+        # 下载依赖
+         ./configure --help
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libbrotlicommon  libbrotlidec  libbrotlienc)" \
+        LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libbrotlicommon  libbrotlidec  libbrotlienc)" \
+        LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libbrotlicommon  libbrotlidec  libbrotlienc) -lbrotli " \
+        ./configure \
+        --prefix={$libgd_prefix} \
+        --enable-shared=no \
+        --enable-static=yes \
+        --with-libiconv-prefix={$libiconv_prefix}
+         
+
+:<<'_EOF_'       
         mkdir -p build
         cd build
-        cmake  -DCMAKE_BUILD_TYPE=Release  .. 
+        cmake  -DCMAKE_BUILD_TYPE=Release  ..  \
+        -DCMAKE_INSTALL_PREFIX={$libgd_prefix} \
+        -DENABLE_GD_FORMATS=1 \
+        -DENABLE_JPEG=1 \
+        -DENABLE_TIFF=1 \
+        -DENABLE_ICONV=1 \
+        -DENABLE_FREETYPE=1 \
+        -DENABLE_FONTCONFIG=1 \
+        -DENABLE_WEBP=1 \
+        -DENABLE_HEIF=1 \
+        -DENABLE_AVIF=1 \
+        -DENABLE_WEBP=1 
+        
         cmake --build . -- -j$(nproc)
         exit 0 
         cmake --install . 
+_EOF_
+        
 EOF
         )
-        ->withPkgName('libjxl');
+        ->withMakeInstallCommand('')
+        ->withPkgName('libgd2');
 
     $p->addLibrary($lib);
 }
