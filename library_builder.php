@@ -71,8 +71,9 @@ function libraries_builder($p)
         install_php_extension_micro($p);
     }
 
-    install_php_extension_wasm($p);
+
     if (0) {
+        install_php_extension_wasm($p);
         install_php_extension_fastdfs($p);
     }
     if ($p->getOsType() == 'win') {
