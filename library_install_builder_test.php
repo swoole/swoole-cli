@@ -1190,7 +1190,12 @@ function install_p11_kit(Preprocessor $p)
             # run "ninja reconfigure" or "meson setup --reconfigure"
             # ninja reconfigure -C _build
             # meson setup --reconfigure _build
-            meson setup  -Dprefix=/usr/p11_kit/ -Dsystemd=disabled    -Dbackend=ninja \
+            
+            meson setup  \
+            -Dprefix=/usr/p11_kit/ \
+            -Dsystemd=disabled  \
+            -Dbash_completion=disabled \
+            -Dbackend=ninja \
             -Dbuildtype=release \
             -Ddefault_library=static \
             -Db_staticpic=true \
@@ -1202,10 +1207,13 @@ function install_p11_kit(Preprocessor $p)
            
             # meson setup --wipe
             
-            meson compile -C _build
+            meson compile -h  # -C _build
             
            # DESTDIR=/usr/p11_kit/  meson install -C _build
-            meson install -C _build
+            # meson install -C _build
+            
+            ninja  -C _build
+            ninja  -C _build install 
             exit 0 
             '
             )
