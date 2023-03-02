@@ -6,7 +6,8 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $p->addExtension((new Extension('protobuf'))
         ->withOptions('--enable-protobuf')
-        ->withPeclVersion('3.21.6')
+        ->withPeclVersion('3.22.0')
+        ->withLicense('https://github.com/protocolbuffers/protobuf/blob/main/LICENSE', Extension::LICENSE_BSD)
         ->withHomePage('https://developers.google.com/protocol-buffers'));
 
     $p->setExtCallback('protobuf', function (Preprocessor $p) {

@@ -71,11 +71,9 @@ function libraries_builder($p)
         install_php_extension_micro($p);
     }
 
-
-    install_zookeeper_client($p);
-    install_php_extension_zookeeper($p);
-
     if (0) {
+        install_zookeeper_client($p);
+        install_php_extension_zookeeper($p);
         install_php_extension_wasm($p);
         install_php_extension_fastdfs($p);
     }
