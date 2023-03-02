@@ -1175,17 +1175,18 @@ function install_p11_kit(Preprocessor $p)
             ->withFile('p11-kit-0.24.1.tar.gz')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/p11_kit/')
+            ->withCleanInstallDirectory('/usr/p11_kit/')
             ->withBuildScript(
                 '
           
                 # apk add python3 py3-pip  gettext  coreutils
                 # pip3 install meson  -i https://pypi.tuna.tsinghua.edu.cn/simple
             
-            echo $PATH;
-            #./autogen.sh
-            #./configure --help
+         
+            # ./autogen.sh --prefix=/usr/p11_kit/ --disable-trust-module --disable-debug
+            #  ./configure --help
             # --with-libtasn1 --with-libffi
-           
+          
             # meson setup -Dprefix=/usr/p11_kit/ -Dsystemd=disabled -Dbash_completion=disabled  --reconfigure  _build
             # run "ninja reconfigure" or "meson setup --reconfigure"
             # ninja reconfigure -C _build
@@ -1201,19 +1202,18 @@ function install_p11_kit(Preprocessor $p)
             -Db_staticpic=true \
             -Dprefer_static=true \
             -Ddebug=false \
+            -Dstrict=true \
             -Dunity=off \
              _build
              
            
             # meson setup --wipe
             
-            meson compile -h  # -C _build
-            
            # DESTDIR=/usr/p11_kit/  meson install -C _build
             # meson install -C _build
             
             ninja  -C _build
-            ninja  -C _build install 
+            # ninja  -C _build install 
             exit 0 
             '
             )
