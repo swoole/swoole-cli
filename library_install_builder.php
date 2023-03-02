@@ -622,6 +622,7 @@ function install_mimalloc(Preprocessor $p)
 function install_libidn2(Preprocessor $p)
 {
     $libidn2_prefix = LIBIDN2_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('libidn2'))
             ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
@@ -638,7 +639,7 @@ function install_libidn2(Preprocessor $p)
             enable_static=yes \
             enable_shared=no \
             --disable-doc \
-            --with-libiconv-prefix=/usr/libiconv \
+            --with-libiconv-prefix={$libiconv_prefix} \
             --with-libintl-prefix
              
 EOF
@@ -646,6 +647,7 @@ EOF
             ->withPkgName('libidn2')
             ->depends('libiconv')
     );
+
 }
 
 
