@@ -9,6 +9,7 @@ use MJS\TopSort\Implementations\StringSort;
 abstract class Project
 {
     public string $name;
+    public string $manual = '';
     public string $homePage = '';
     public string $license = '';
     public string $prefix = '';
@@ -38,6 +39,12 @@ abstract class Project
     function withHomePage(string $homePage): static
     {
         $this->homePage = $homePage;
+        return $this;
+    }
+
+    public function withManual(string $manual): static
+    {
+        $this->manual = $manual;
         return $this;
     }
 
@@ -719,6 +726,10 @@ class Preprocessor
             mkdir($this->rootDir . '/bin');
         }
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
+
+        ob_start();
+        include __DIR__ . '/credits.php';
+        file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
