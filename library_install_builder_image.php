@@ -281,9 +281,9 @@ function install_freetype(Preprocessor $p)
             ./configure --help  
             BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
             BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
-            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotli  libbrotlidec  libbrotlienc)" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  libbrotli  libbrotlidec  libbrotlienc)" \
+            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  libbrotli  libbrotlidec  libbrotlienc)" \
             ./configure --prefix={$freetype_prefix} \
             --enable-static \
             --disable-shared \
@@ -317,24 +317,31 @@ function install_libgd2($p)
         ->withCleanBuildDirectory()
         ->withCleanInstallDirectory($libgd_prefix)
         ->withConfigure(
-            <<<EOF
+            <<<'EOF'
         # 下载依赖
          ./configure --help
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux   ) -I/usr/brotli/include/" \
-        LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux   ) -L/usr/brotli/lib/" \
-        LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux   ) " \
+         # -lbrotlicommon-static -lbrotlidec-static -lbrotlienc-static
+        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        
+        echo $LIBS
+    
+EOF . PHP_EOL . <<<EOF
         ./configure \
         --prefix={$libgd_prefix} \
         --enable-shared=no \
         --enable-static=yes \
+        --without-freetype \
         --with-libiconv-prefix={$libiconv_prefix}
-         
+         # --with-freetype=/usr/freetype \
 
 :<<'_EOF_'       
         mkdir -p build
         cd build
-        cmake  -DCMAKE_BUILD_TYPE=Release  ..  \
+        cmake   ..  \
         -DCMAKE_INSTALL_PREFIX={$libgd_prefix} \
+        -DCMAKE_BUILD_TYPE=Release \
         -DENABLE_GD_FORMATS=1 \
         -DENABLE_JPEG=1 \
         -DENABLE_TIFF=1 \

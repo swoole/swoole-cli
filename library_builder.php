@@ -123,7 +123,7 @@ function libraries_builder($p)
 
         install_libgd2($p);
     }
-
+    install_libgd2($p);
     if (0) {
         //apk add ninja
         install_ninja($p); //需要自己构建，alpine 默认没有提供源

@@ -119,7 +119,7 @@ function install_brotli(Preprocessor $p)
             -DCMAKE_INSTALL_PREFIX={$brotli_prefix} \
             -DBROTLI_SHARED_LIBS=OFF \
             -DBROTLI_STATIC_LIBS=ON \
-            -DBROTLI_DISABLE_TESTS=ON \
+            -DBROTLI_DISABLE_TESTS=OFF \
             -DBROTLI_BUNDLED_MODE=OFF \
             && \
             cmake --build . --config Release --target install
