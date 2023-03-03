@@ -10,6 +10,7 @@ export CC=<?= $this->cCompiler . PHP_EOL ?>
 export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
+export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
@@ -41,6 +42,8 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
+    # use build script replace  configure、make、make install
+<?php if(empty($item->buildScript)): ?>
     # configure
 <?php if (!empty($item->configure)): ?>
 cat <<'__EOF__'
@@ -68,6 +71,14 @@ __EOF__
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
+<?php endif; ?>
+<?php else: ?>
+    cat <<'__EOF__'
+    <?= $item->buildScript . PHP_EOL ?>
+__EOF__
+    <?= $item->buildScript . PHP_EOL ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
 <?php endif; ?>
 
     # after make install
