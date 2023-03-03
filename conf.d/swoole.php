@@ -55,7 +55,7 @@ EOF
             ./configure --help
             
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
-            # 替换指定行内容
+            # 替换指定行内容。102行，整行替换
             sed -i.backup "102c all: all-lib" src/interfaces/libpq/Makefile
             package_names="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static $package_names )" \
@@ -104,7 +104,9 @@ EOF
              rm -rf {$pgsql_prefix}/lib/*.so
 EOF
             )
+            ->depends('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
     );
+
     $p->addExtension(
         (new Extension('swoole'))
         ->withOptions($options)
