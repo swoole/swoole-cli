@@ -212,7 +212,7 @@ function libraries_builder($p)
         //WebAssembly
         //Docker+Wasm  https://docs.docker.com/desktop/wasm/
     }
-    if (0) {
+    if (1) {
         install_rav1e($p);
         install_aom($p);
         install_av1($p);

@@ -293,13 +293,20 @@ function install_ffmpeg(Preprocessor $p)
         ->withPrefix($ffmpeg_prefix)
         ->withCleanBuildDirectory()
         ->withCleanInstallDirectory($ffmpeg_prefix)
+        ->withScriptBeforeConfigure('
+        # 汇编编译器
+        # apk add yasm nasm
+        ')
         ->withConfigure(
             <<<EOF
-exit 0 
+        ./configure --help
+        ./configure  --prefix=$ffmpeg_prefix
 
 EOF
         )
-        ->withPkgName('');
+        ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
+        ->withBinPath($ffmpeg_prefix . '/bin/')
+    ;
 
     $p->addLibrary($lib);
 }
