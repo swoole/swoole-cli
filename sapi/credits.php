@@ -61,48 +61,50 @@
     </span>
 </div>
 <?php
-foreach ($this->libraryList as $item) : ?>
-    <?php
-    if ($item->skipBuildLicense || $item->skipBuildInstall || empty($item->license)) : ?>
-        <?php continue  ?>
-    <?php endif ?>
-    <div class="product">
-        <span class="title"><?= $item->name ?></span>
-        <span class="homepage">
+
+foreach ($this->libraryList as $item) {
+    if ($item->skipBuildLicense || $item->skipBuildInstall || empty($item->license)) {
+        continue;
+    } else {
+        ?>
+        <div class="product">
+            <span class="title"><?= $item->name ?></span>
+            <span class="homepage">
             <a
                     href="<?= $item->homePage ?>"
                     target="_blank"
                     rel="noopener noreferrer"
             >homepage</a>
         </span>
-        <span class="manual">
+            <span class="manual">
+
             <a
                     href="<?= $item->manual ?>"
                     target="_blank"
                     rel="noopener noreferrer"
             >manual</a>
         </span>
-        <input type="checkbox" hidden="hidden" id=""/>
-        <label class="show" tabindex="0"></label>
-        <span class="licence">
+
+            <input type="checkbox" hidden="hidden" id=""/>
+            <label class="show" tabindex="0"></label>
+            <span class="licence">
             <a
                     href="<?= $item->license ?>"
                     target="_blank"
                     rel="noopener noreferrer"
             >licence</a>
         </span>
-    </div>
-<?php
-endforeach; ?>
+        </div>
 
-<?php
-foreach ($this->extensionList as $item) : ?>
-    <?php
-    if (empty($item->license)) : ?>
         <?php
-        continue ?>
-    <?php
-    else : ?>
+    }
+}
+
+foreach ($this->extensionList as $item) {
+    if (empty($item->license)) {
+        continue;
+    } else {
+        ?>
         <div class="product">
             <span class="title">php-ext-<?= $item->name ?></span>
             <span class="homepage"></span>
@@ -123,9 +125,10 @@ foreach ($this->extensionList as $item) : ?>
                 >licence</a>
             </span>
         </div>
-    <?php
-    endif ?>
-<?php
-endforeach; ?>
+        <?php
+    }
+}
+?>
+
 </body>
 </html>

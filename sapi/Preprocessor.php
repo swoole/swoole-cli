@@ -9,7 +9,6 @@ use MJS\TopSort\Implementations\StringSort;
 abstract class Project
 {
     public string $name;
-
     public string $manual = '';
     public string $homePage = '';
     public string $license = '';
@@ -49,7 +48,6 @@ abstract class Project
         return $this;
     }
 
-
     public function depends(string ...$libs): static
     {
         $this->deps += $libs;
@@ -86,6 +84,7 @@ class Library extends Project
     public string $pkgConfig = '';
     public string $pkgName = '';
 
+
     public string $prefix = '/usr';
     public bool $skipBuildLicense = false;
     public bool $skipDownload = false;
@@ -97,8 +96,7 @@ class Library extends Project
 
     public string $label = '';
 
-
-    public function withUrl(string $url): static
+    function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
@@ -128,7 +126,13 @@ class Library extends Project
         return $this;
     }
 
-    public function withConfigure(string $configure): static
+    public function withBuildScript(string $script):static
+    {
+        $this->buildScript = $script;
+        return $this;
+    }
+
+    function withConfigure(string $configure): static
     {
         $this->configure = $configure;
         return $this;
@@ -159,11 +163,6 @@ class Library extends Project
         return $this;
     }
 
-    public function withBuildScript(string $script):static
-    {
-        $this->buildScript = $script;
-        return $this;
-    }
 
     public function withMakeVariables(string $variables): static
     {
@@ -263,7 +262,6 @@ class Library extends Project
         return $this;
     }
 
-
     public function disableDefaultPkgConfig(): static
     {
         $this->pkgConfig = '';
@@ -281,6 +279,7 @@ class Library extends Project
         $this->label=$label;
         return $this;
     }
+
 }
 
 class Extension extends Project
@@ -850,9 +849,9 @@ class Preprocessor
         //暂时由手工维护，依赖关系
         // $this->sortLibrary();
 
-
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
+
 
         if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();
