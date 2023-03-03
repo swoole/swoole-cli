@@ -254,7 +254,7 @@ EOF
 function install_libuv($p)
 {
     //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
-    $libuv_prefix = '/usr/libuv';
+    $libuv_prefix = LIBUV_PREFIX;
     $p->addLibrary(
         (new Library('libuv'))
             ->withHomePage('https://libuv.org/')
