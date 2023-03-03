@@ -815,7 +815,7 @@ EOF;
             ->withPrefix($pgsql_prefix)
             ->withCleanBuildDirectory()
             ->withCleanInstallDirectory($pgsql_prefix)
-            ->withConfigure(
+            ->withBuildScript(
                 <<<'EOF'
             ./configure --help
             
@@ -890,8 +890,6 @@ EOF
                         
             rm -rf /usr/pgsql/lib/*.so.*
             rm -rf /usr/pgsql/lib/*.so
-            return 0 
-
 EOF
             )
             ->withPkgName('libpq')

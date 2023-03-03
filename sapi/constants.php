@@ -63,4 +63,5 @@ define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
 
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
+define("LIBUV_PREFIX", $p->getGlobalPrefix() . '/libuv');
 
