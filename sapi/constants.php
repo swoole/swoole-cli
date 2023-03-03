@@ -33,3 +33,4 @@ define("SQLITE3_PREFIX", $p->getGlobalPrefix() . '/sqlite3');
 define("LIBSODIUM_PREFIX", $p->getGlobalPrefix() . '/libsodium');
 define("LIBEDIT_PREFIX", $p->getGlobalPrefix() . '/libedit');
 define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
+define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
