@@ -35,3 +35,4 @@ define("LIBEDIT_PREFIX", $p->getGlobalPrefix() . '/libedit');
 define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
 define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
+define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');

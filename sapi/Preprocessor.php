@@ -9,6 +9,7 @@ use MJS\TopSort\Implementations\StringSort;
 abstract class Project
 {
     public string $name;
+    public string $manual = '';
     public string $homePage = '';
     public string $license = '';
     public string $prefix = '';
@@ -41,6 +42,12 @@ abstract class Project
         return $this;
     }
 
+    public function withManual(string $manual): static
+    {
+        $this->manual = $manual;
+        return $this;
+    }
+
     function depends(string ...$libs): static
     {
         $this->deps += $libs;
@@ -55,6 +62,8 @@ class Library extends Project
     public string $configure = '';
     public string $file = '';
     public string $ldflags = '';
+
+    public string $buildScript = '';
     public string $makeOptions = '';
     public string $makeVariables = '';
     public string $makeInstallCommand = 'install';
@@ -64,6 +73,8 @@ class Library extends Project
     public string $pkgConfig = '';
     public string $pkgName = '';
     public string $prefix = '/usr';
+
+    public string $binPath = '';
 
     function withUrl(string $url): static
     {
@@ -92,6 +103,12 @@ class Library extends Project
     function withFile(string $file): static
     {
         $this->file = $file;
+        return $this;
+    }
+
+    public function withBuildScript(string $script):static
+    {
+        $this->buildScript = $script;
         return $this;
     }
 
@@ -152,6 +169,12 @@ class Library extends Project
     function withPkgName(string $pkgName): static
     {
         $this->pkgName = $pkgName;
+        return $this;
+    }
+
+    public function withBinPath(string $path): static
+    {
+        $this->binPath = $path;
         return $this;
     }
 }
@@ -238,6 +261,7 @@ class Preprocessor
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
 
+    protected array $binPaths = [];
     /**
      * Extensions enabled by default
      * @var array|string[]
@@ -484,7 +508,9 @@ class Preprocessor
         if (!empty($lib->pkgConfig)) {
             $this->pkgConfigPaths[] = $lib->pkgConfig;
         }
-
+        if (!empty($lib->binPath)) {
+            $this->binPaths[] = $lib->binPath;
+        }
         if (empty($lib->license)) {
             throw new \RuntimeException("require license");
         }
@@ -703,6 +729,9 @@ class Preprocessor
 
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+
+        $this->binPaths[] = '$PATH';
+        $this->binPaths = array_unique($this->binPaths);
         $this->sortLibrary();
 
         if ($this->getInputOption('skip-download')) {
@@ -719,6 +748,10 @@ class Preprocessor
             mkdir($this->rootDir . '/bin');
         }
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
+
+        ob_start();
+        include __DIR__ . '/credits.php';
+        file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
