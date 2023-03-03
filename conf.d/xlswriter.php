@@ -8,8 +8,8 @@ return function (Preprocessor $p) {
     $libxlsxwriter_prefix = LIBXLSXWRITER_PREFIX;
     $zlib_prefix =  ZLIB_PREFIX;
     $lib = new Library('libxlsxwriter');
-    $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
-        ->withLicense('https://github.com/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_LGPL)
+    $lib->withHomePage('https://libxlsxwriter.github.io/')
+        ->withLicense('https://github.com/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_SPEC)
         ->withUrl('https://github.com/jmcnamara/libxlsxwriter/archive/refs/tags/RELEASE_1.1.5.tar.gz')
         ->withFile('libxlsxwriter-1.1.5.tar.gz')
         ->withPrefix($libxlsxwriter_prefix)
@@ -30,7 +30,7 @@ EOF
         )
         ->depends('zlib')
         ->withPkgName('xlsxwriter');
-
+    $p->addLibrary($lib);
     $p->addExtension(
         (new Extension('xlswriter'))
             ->withOptions('--with-libxlsxwriter=' . LIBXLSXWRITER_PREFIX)

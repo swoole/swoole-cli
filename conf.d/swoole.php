@@ -26,7 +26,8 @@ return function (Preprocessor $p) {
             cmake --build . --config Release --target install
 EOF
                 )
-                ->withScriptAfterInstall(<<<EOF
+                ->withScriptAfterInstall(
+                    <<<EOF
             rm -rf {$brotli_prefix}/lib/*.so.*
             rm -rf {$brotli_prefix}/lib/*.so
             rm -rf {$brotli_prefix}/lib/*.dylib
@@ -43,7 +44,8 @@ EOF
         $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     }
 
-    $p->addExtension((new Extension('swoole'))
+    $p->addExtension(
+        (new Extension('swoole'))
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
