@@ -56,7 +56,6 @@ function libraries_builder($p)
         if (0) {
             install_php_internal_extension_curl_patch($p); //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
         }
-        install_php_internal_extension_curl_patch($p);
     }
 
     if (0) {
