@@ -34,3 +34,4 @@ define("LIBSODIUM_PREFIX", $p->getGlobalPrefix() . '/libsodium');
 define("LIBEDIT_PREFIX", $p->getGlobalPrefix() . '/libedit');
 define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
+define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
