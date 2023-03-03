@@ -62,6 +62,8 @@ class Library extends Project
     public string $configure = '';
     public string $file = '';
     public string $ldflags = '';
+
+    public string $buildScript = '';
     public string $makeOptions = '';
     public string $makeVariables = '';
     public string $makeInstallCommand = 'install';
@@ -101,6 +103,12 @@ class Library extends Project
     function withFile(string $file): static
     {
         $this->file = $file;
+        return $this;
+    }
+
+    public function withBuildScript(string $script):static
+    {
+        $this->buildScript = $script;
         return $this;
     }
 
