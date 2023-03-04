@@ -1722,3 +1722,87 @@ function install_unixodbc(Preprocessor $p)
             ->disablePkgName()
     );
 }
+
+
+function install_xorgproto(Preprocessor $p)
+{
+    $xproto_prefix = LIBXPM_PREFIX;
+    $xorgproto_prefix = '/usr/xorgproto';
+    $lib = new Library('xorgproto');
+    $lib->withHomePage('xorgproto')
+        ->withLicense('https://gitlab.freedesktop.org/xorg/proto/xorgproto', Library::LICENSE_SPEC)
+        ->withUrl('https://gitlab.freedesktop.org/xorg/proto/xorgproto/-/archive/master/xorgproto-master.tar.gz')
+        ->withPrefix($xorgproto_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($xorgproto_prefix)
+        ->withBuildScript(
+            <<<EOF
+         # https://mesonbuild.com/Builtin-options.html#build-type-options
+         # meson configure build
+        meson setup  \
+        -Dprefix={$xorgproto_prefix} \
+        -Dbackend=ninja \
+        -Dbuildtype=release \
+        -Ddefault_library=static \
+        -Db_staticpic=true \
+        -Db_pie=true \
+        -Dprefer_static=true \
+        build
+        
+       
+        ninja -C build 
+        ninja -C build install
+EOF
+        )
+        ->withConfigure(
+            <<<EOF
+            autoreconf -ivf
+            ./configure --help
+        
+            LDFLAGS="-static " \
+            ./configure --prefix={$xorgproto_prefix} \
+            --enable-legacy \
+            --enable-strict-compilation
+
+EOF
+        )
+        ->withPkgName('xproto');
+
+    $p->addLibrary($lib);
+}
+
+function install_libXpm(Preprocessor $p)
+{
+    $libXpm_prefix = LIBXPM_PREFIX;
+    $lib = new Library('libXpm');
+    $lib->withHomePage('https://github.com/freedesktop/libXpm.git')
+        ->withLicense('https://github.com/freedesktop/libXpm/blob/master/COPYING', Library::LICENSE_SPEC)
+        ->withUrl('https://github.com/freedesktop/libXpm/archive/refs/tags/libXpm-3.5.11.tar.gz')
+        ->withFile('libXpm-3.5.11.tar.gz')
+        ->withPrefix($libXpm_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libXpm_prefix)
+        ->withScriptBeforeConfigure(
+            <<<EOF
+         # 依赖 xorg-macros
+         # 解决依赖
+         apk add util-macros
+EOF
+        )
+        ->withConfigure(
+            <<<EOF
+            ./autogen.sh
+            ./configure --help
+            ./configure --prefix={$libXpm_prefix} \
+            --enable-shared=no \
+            --enable-static=yes \
+            --disable-docs \
+            --disable-tests \
+            --enable-strict-compilation
+
+EOF
+        )
+        ->withPkgName('libXpm');
+
+    $p->addLibrary($lib);
+}

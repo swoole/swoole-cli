@@ -108,23 +108,24 @@ function libraries_builder($p)
     if (0) {
         install_unixodbc($p);
     }
-    if (0) {
+    if (1) {
         install_libavif($p); //依赖 libyuv
         install_libde265($p);
-
         install_libheif($p); //依赖 libde265
         install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
         if (0) {
-            install_libXpm($p); //依赖
+            install_xorgproto($p); //依赖 xorg-macros
+            install_libXpm($p); //依赖 xorg-macros  xorgproto
         }
 
         install_libraw($p); //依赖 zlib  libjpeg
+
+        install_libOpenEXR($p); // 依赖Imath
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
 
         install_libgd2($p);
     }
-    install_libXpm($p); //依赖 xorg-macros
-    install_libgd2($p);
+
     if (0) {
         //apk add ninja
         install_ninja($p); //需要自己构建，alpine 默认没有提供源
