@@ -296,6 +296,7 @@ EOF
             )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
+            ->withBinPath($freetype_prefix . '/bin/')
             ->depends('zlib', 'bzip2', 'libpng', 'brotli')
     );
 }
