@@ -34,6 +34,9 @@ function libraries_builder($p)
     install_libgif($p);//没有 libgif.pc 文件，不能使用 pkg-config 命令
     install_libpng($p); //依赖 zlib
     install_libwebp($p); //依赖 libgif libpng libjpeg
+    if ($p->getOsType() == 'linux') {
+        `apk add ninja meson python3 pip3`;
+    }
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
     install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib
 
@@ -120,11 +123,9 @@ function libraries_builder($p)
 
         install_libraw($p); //依赖 zlib  libjpeg
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
-
         install_libgd2($p);
     }
-    install_libXpm($p); //依赖 xorg-macros
-    install_libgd2($p);
+
     if (0) {
         //apk add ninja
         install_ninja($p); //需要自己构建，alpine 默认没有提供源

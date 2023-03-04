@@ -45,6 +45,42 @@ EOF;
     });
 }
 
+$cmd ='';
+if ($p->getOsType() == 'macos') {
+    $cmd .=<<<'EOF'
+    alpine=$(which ninja  | wc -l)
+    if (( $alpine < 1 )) ;then 
+    {
+        export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
+        export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+        # export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+        brew install ninja  python3 pip3
+    }
+    meson=$(which meson | wc -l )
+    if (( $meson < 1 )) ;then 
+    {
+        pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
+    }
+EOF;
+
+}
+if ($p->getOsType() == 'linux') {
+    $cmd .=<<<'EOF'
+    alpine=$(cat /etc/os-release | grep "ID=alpine" | wc -l)
+    if (( $alpine < 1 )) ;then 
+    {
+        apk add ninja python3 pip3
+    }
+    meson=$(which meson | wc -l )
+    if (( $meson < 1 )) ;then 
+    {
+        pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
+    }
+EOF;
+
+}
+
+
 
 $p->addEndCallback(function () use ($p) {
     $header=<<<'EOF'
@@ -70,6 +106,9 @@ EOF;
 
 
 $p->setExtraCflags('-fno-ident -Os');
+
+
+
 
 // Generate make.sh
 $p->execute();

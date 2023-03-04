@@ -420,7 +420,8 @@ function install_libXpm(Preprocessor $p)
             <<<EOF
          # 依赖 xorg-macros
          # 解决依赖
-         apk add util-macros
+         # apk add util-macros
+         # apk add libxpm-dev 
 EOF
         )
         ->withConfigure(
