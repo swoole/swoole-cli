@@ -62,7 +62,7 @@ make_<?=$item->name?>() {
    tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?= rtrim($this->workDir . '/pool/lib/' . $item->file,'.xz') . PHP_EOL?>
 <?php endif ; ?>
 <?php if($item->untarArchiveCommand == 'mv'):?>
-    cp -rf  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
+        cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->name?>/. <?=$this->getBuildDir()?>/<?=$item->name?>/<?=$item->name?>    <?= PHP_EOL; ?>
 <?php endif ; ?>
 
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then

@@ -28,34 +28,6 @@ EOF
     $p->addLibrary($lib);
 }
 
-function install_libyuv(Preprocessor $p)
-{
-    $libyuv_prefix = '/usr/libyuv';
-    $lib = new Library('libyuv');
-    $lib->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
-        ->withLicense('https://github.com/xiph/rav1e/blob/master/LICENSE', Library::LICENSE_BSD)
-        ->withUrl('')
-        ->withSkipDownload()
-        ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
-        ->withPrefix($libyuv_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libyuv_prefix)
-        ->withBuildScript(
-            <<<EOF
-        mkdir out
-        cd out
-        cmake -DCMAKE_INSTALL_PREFIX="/usr/lib" -DCMAKE_BUILD_TYPE="Release" ..
-        cmake --build . --config Release
-        sudo cmake --build . --target install --config Release
-
-EOF
-        )
-
-        ->withPkgName('libyuv');
-
-    $p->addLibrary($lib);
-}
-
 function install_aom(Preprocessor $p)
 {
     $aom_prefix = '/usr/aom';
@@ -232,7 +204,8 @@ EOF
 }
 
 
-function install_opencv_contrib(Preprocessor $p){
+function install_opencv_contrib(Preprocessor $p)
+{
     $opencv_prefix = OPENCV_PREFIX;
     $lib = new Library('opencv_contrib');
     $lib->withHomePage('https://opencv.org/')
@@ -256,7 +229,6 @@ EOF
         ->withSkipBuildLicense();
 
     $p->addLibrary($lib);
-
 }
 
 function install_opencv(Preprocessor $p)
@@ -332,6 +304,67 @@ EOF
         )
         ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
         ->withBinPath($ffmpeg_prefix . '/bin/')
+    ;
+
+    $p->addLibrary($lib);
+}
+
+function install_graphviz(Preprocessor $p)
+{
+    $graphviz_prefix = '/usr/graphviz';
+    $lib = new Library('graphviz');
+    $lib->withHomePage('https://www.graphviz.org/about/')
+        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
+        ->withUrl('https://gitlab.com/graphviz/graphviz/-/archive/main/graphviz-main.tar.gz')
+        ->withManual('https://www.graphviz.org/download/')
+        ->withManual('https://www.graphviz.org/documentation/')
+        ->withPrefix($graphviz_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($graphviz_prefix)
+        ->withConfigure(
+            <<<EOF
+        ./autogen.sh
+        ./configure --help
+
+        ./configure  --prefix=$graphviz_prefix \
+        --enable-static=yes \
+        --enable-shared=no
+
+
+EOF
+        )
+        ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
+        ->withBinPath($graphviz_prefix . '/bin/')
+    ;
+
+    $p->addLibrary($lib);
+}
+
+
+# https://mirrors.tuna.tsinghua.edu.cn/help/CTAN/
+function install_TeX(Preprocessor $p)
+{
+    $TeX_prefix = '/usr/TeX';
+    $lib = new Library('TeX');
+    $lib->withHomePage('https://www.ctan.org/')
+        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_SPEC)
+        ->withUrl('https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet/install-tl.zip')
+        ->withManual('https://www.graphviz.org/download/')
+        ->withManual('https://www.graphviz.org/documentation/')
+        ->withUntarArchiveCommand('unzip')
+        ->withPrefix($TeX_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($TeX_prefix)
+        ->withBuildScript(
+            <<<EOF
+        cd install-tl-* 
+        ls -lh 
+        perl install-tl --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet
+EOF
+        )
+
+        ->withPkgName('')
+        ->withBinPath($TeX_prefix . '/bin/')
     ;
 
     $p->addLibrary($lib);

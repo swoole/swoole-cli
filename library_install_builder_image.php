@@ -162,6 +162,33 @@ EOF
 }
 
 
+function install_libyuv(Preprocessor $p)
+{
+    $libyuv_prefix = LIBAVIF_PREFIX;
+    $p->addLibrary(
+        (new Library('libyuv'))
+            ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
+            ->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
+            ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
+            ->withManual('https://https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
+            ->withSkipDownload()
+            ->withUntarArchiveCommand('mv')
+            ->withPrefix($libyuv_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libyuv_prefix)
+            ->withBuildScript(
+                <<<EOF
+            pwd
+            ls -lh .
+            cd libyuv 
+            gn gen out/Release "--args=is_debug=false"
+            ninja -v -C out/Release
+EOF
+            )
+            ->withPkgName('libavif')
+            ->withLdflags('')
+    );
+}
 function install_libavif(Preprocessor $p)
 {
     $libavif_prefix = LIBAVIF_PREFIX;
@@ -256,6 +283,72 @@ EOF
 }
 
 
+function install_graphite2(Preprocessor $p)
+{
+    $graphite2_prefix = "/usr/graphite2";
+    $p->addLibrary(
+        (new Library('graphite2'))
+            ->withLicense('https://github.com/silnrsi/graphite/blob/master/COPYING', Library::LICENSE_SPEC)
+            ->withHomePage('http://graphite.sil.org/')
+            ->withUrl('https://github.com/silnrsi/graphite/archive/refs/tags/1.3.14.tar.gz')
+            ->withManual('https://github.com/silnrsi/graphite.git')
+            ->withFile('graphite-1.3.14.tar.gz')
+            ->withLabel('library')
+            ->withPrefix($graphite2_prefix)
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                "
+            mkdir -p build
+            cd build
+            cmake   ..  \
+            -DCMAKE_INSTALL_PREFIX={$graphite2_prefix} \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF 
+            "
+            )
+            ->withPkgName('graphite2')
+    );
+}
+function install_harfbuzz(Preprocessor $p)
+{
+    $harfbuzz_prefix = HARFBUZZ_PREFIX;
+    $p->addLibrary(
+        (new Library('harfbuzz'))
+            ->withLicense('https://github.com/harfbuzz/harfbuzz/blob/main/COPYING', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/harfbuzz/harfbuzz.git')
+            ->withUrl('https://github.com/harfbuzz/harfbuzz/archive/refs/tags/7.1.0.tar.gz')
+            ->withFile('harfbuzz-7.1.0.tar.gz')
+            ->withLabel('library')
+            ->withPrefix($harfbuzz_prefix)
+            ->withCleanBuildDirectory()
+
+            ->withBuildScript(
+                "
+                meson help
+                meson setup --help
+
+                meson setup  build \
+                --backend=ninja \
+                --prefix={$harfbuzz_prefix} \
+                --default-library=static \
+                -Dglib=disabled \
+                -Dicu=enabled \
+                -Dfreetype=disabled \
+                -Dtests=disabled \
+                -Ddocs=disabled  \
+                -Dbenchmark=disabled
+
+                meson compile -C build
+                meson install -C build
+                # ninja -C builddir
+                # ninja -C builddir install
+              
+            "
+            )
+            ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
+    );
+}
+
 
 
 
@@ -281,16 +374,16 @@ function install_freetype(Preprocessor $p)
             ./configure --help  
             BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
             BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
-            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotli  libbrotlidec  libbrotlienc)" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  libbrotli  libbrotlidec  libbrotlienc)" \
-            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  libbrotli  libbrotlidec  libbrotlienc)" \
+            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  harfbuzz libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  harfbuzz libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  harfbuzz libbrotlicommon  libbrotlidec  libbrotlienc)" \
             ./configure --prefix={$freetype_prefix} \
             --enable-static \
             --disable-shared \
             --with-zlib=yes \
             --with-bzip2=yes \
             --with-png=yes \
-            --with-harfbuzz=no \
+            --with-harfbuzz=yes  \
             --with-brotli=yes 
 EOF
             )
@@ -362,6 +455,47 @@ EOF
         )
         ->withMakeInstallCommand('')
         ->withPkgName('libgd2');
+
+    $p->addLibrary($lib);
+}
+
+function install_GraphicsMagick($p)
+{
+    $libiconv_prefix = ICONV_PREFIX;
+    $GraphicsMagick_prefix = '/usr/GraphicsMagick';
+    $lib = new Library('GraphicsMagick');
+    $lib->withHomePage('http://www.graphicsmagick.org/index.html')
+        ->withLicense('https://github.com/libgd/libgd/blob/master/COPYING', Library::LICENSE_SPEC)
+        ->withUrl('https://jaist.dl.sourceforge.net/project/graphicsmagick/graphicsmagick/1.3.40/GraphicsMagick-1.3.40.tar.gz')
+        ->withManual('http://www.graphicsmagick.org/README.html')
+        ->withManual('http://www.graphicsmagick.org/INSTALL-unix.html')
+        ->withPrefix($GraphicsMagick_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($GraphicsMagick_prefix)
+        ->withConfigure(
+            <<<'EOF'
+        # 下载依赖
+         ./configure --help
+         # -lbrotlicommon-static -lbrotlidec-static -lbrotlienc-static
+        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        
+        echo $LIBS
+    
+EOF . PHP_EOL . <<<EOF
+        ./configure \
+        --prefix={$GraphicsMagick_prefix} \
+        --enable-shared=no \
+        --enable-static=yes \
+        --without-freetype \
+        --with-libiconv-prefix={$libiconv_prefix}
+         # --with-freetype=/usr/freetype \
+
+EOF
+        )
+        ->withMakeInstallCommand('')
+        ->withPkgName('GraphicsMagick');
 
     $p->addLibrary($lib);
 }
@@ -484,7 +618,6 @@ EOF
 function install_libOpenEXR(Preprocessor $p)
 {
     $libOpenEXR_prefix = '/usr/libOpenEXR';
-    $buildDir = $p->getBuildDir() . '/libOpenEXR/' ;
     $lib = new Library('libOpenEXR');
     $lib->withHomePage('http://www.openexr.com/')
         ->withLicense('https://github.com/AcademySoftwareFoundation/openexr/blob/main/LICENSE.md', Library::LICENSE_BSD)
@@ -497,21 +630,60 @@ function install_libOpenEXR(Preprocessor $p)
         ->withCleanPreInstallDirectory($libOpenEXR_prefix)
         ->withBuildScript(
             <<<EOF
+        # cmake .  -DCMAKE_INSTALL_PREFIX={$libOpenEXR_prefix}
         
-        mkdir -p build_dir
-        cd build_dir 
-        # cmake ..  -DCMAKE_INSTALL_PREFIX={$libOpenEXR_prefix}
-        pwd
-        cmake $buildDir   --install-prefix={$libOpenEXR_prefix}
-        pwd
-        ls -lh .
+        cmake.   --install-prefix={$libOpenEXR_prefix}
         cmake --build .  --target install --config Release 
 EOF
         )
-        ->withPkgName('libOpenEXR');
+        ->withPkgName('Imath OpenEXR')
+        ->withBinPath('$libOpenEXR_prefix' . '/bin')
+    ;
 
     $p->addLibrary($lib);
-}function install_libjxl(Preprocessor $p)
+}
+
+/**
+ * @param Preprocessor $p
+ * @return void
+ * 并发编程：SIMD 介绍  https://zhuanlan.zhihu.com/p/416172020
+ */
+function install_highway(Preprocessor $p)
+{
+    $highway_prefix = '/usr/highway';
+    $lib = new Library('highway');
+    $lib->withHomePage('https://github.com/google/highway.git')
+        ->withLicense('https://github.com/google/highway/blob/master/LICENSE', Library::LICENSE_APACHE2)
+        ->withUrl('https://github.com/google/highway/archive/refs/tags/1.0.3.tar.gz')
+        ->withFile('highway-1.0.3.tar.gz')
+        ->withManual('https://github.com/google/highway.git')
+        ->withPrefix($highway_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($highway_prefix)
+
+        ->withConfigure(
+            <<<EOF
+# -DHWY_CMAKE_ARM7:BOOL=ON
+
+# 会自动下载 googletest 
+
+
+    mkdir -p build && cd build
+    cmake .. \
+    -DCMAKE_INSTALL_PREFIX={$highway_prefix} \
+    -DCMAKE_BUILD_TYPE=Release  \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DHWY_FORCE_STATIC_LIBS=ON \
+    -DBUILD_TESTING=OFF 
+ 
+EOF
+        )
+        ->withPkgName('libhwy-contrib.pc  libhwy-test.pc  libhwy');
+
+    $p->addLibrary($lib);
+}
+
+function install_libjxl(Preprocessor $p)
 {
     $libjxl_prefix = LIBJXL_PREFIX;
     $lib = new Library('libjxl');
@@ -525,13 +697,27 @@ EOF
         ->withCleanPreInstallDirectory($libjxl_prefix)
         ->withBuildScript(
             <<<EOF
+        
         ## 会自动 下载依赖 ，如网速不佳，请在环境变量里设置代理地址，用于加速下载
+        git init -b main .
+        git add ./.gitmodules
+
+        git -C . submodule update --init --recursive --depth 1 --recommend-shallow
+      
         sh deps.sh
-        mkdir build
-        cd build
-        cmake -DJPEGXL_STATIC=true -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. 
-        cmake --build . -- -j$(nproc)
+       
+        git submodule update --init --recursive
         exit 0 
+        mkdir -p build
+        cd build
+        cmake -DJPEGXL_STATIC=true \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DBUILD_TESTING=OFF \
+        -DCMAKE_INSTALL_PREFIX={$libjxl_prefix} \
+         ..  
+          
+        cmake --build . -- -j$(nproc)
         cmake --install .  
 EOF
         )

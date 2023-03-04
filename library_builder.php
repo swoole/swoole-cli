@@ -36,6 +36,11 @@ function libraries_builder($p)
     install_libwebp($p); //依赖 libgif libpng libjpeg
 
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
+
+    install_libde265($p);
+    install_libheif($p); //依赖 libde265
+    install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
+    install_libraw($p);  //依赖 zlib  libjpeg
     install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib
 
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
@@ -51,36 +56,6 @@ function libraries_builder($p)
     install_libevent($p);
     install_libuv($p);
     //libcat for Swow https://github.com/libcat/libcat.git
-
-    if ($p->getOsType() == 'macos') {
-        install_bison($p);  // 源码编译bison
-        if (0) {
-            install_php_internal_extension_curl_patch($p); //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
-        }
-    }
-
-    if (0) {
-        install_php_parser($p); //imagemagick 安装过程中需要
-    }
-
-    if (1) {
-        install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
-    }
-    if (0) {
-        install_php_extension_swow($p);
-        install_php_extension_micro($p);
-    }
-
-    if (0) {
-        install_zookeeper_client($p);
-        install_php_extension_zookeeper($p);
-        install_php_extension_wasm($p);
-        install_php_extension_fastdfs($p);
-    }
-    if ($p->getOsType() == 'win') {
-        install_re2c($p);
-    }
-
 
 
 
@@ -104,32 +79,76 @@ function libraries_builder($p)
      * LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
      * export LIBS="$LIBS -L/usr/lib -lstdc++"
      */
+    if ($p->getOsType() == 'win') {
+        install_re2c($p);
+    }
+
+    if ($p->getOsType() == 'macos') {
+        install_bison($p);  // 源码编译bison
+    }
+
+    if (0) {
+        install_php_parser($p); //imagemagick 安装过程中需要
+    }
+
+    if (1) {
+        install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
+    }
+
+    if ($p->getOsType() == 'macos') {
+        if (0) {
+            install_php_internal_extension_curl_patch($p); //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
+        }
+    }
+
+    if (0) {
+        install_zookeeper_client($p);
+    }
+
+    if (0) {
+        install_php_extension_swow($p);
+        install_php_extension_micro($p);
+        install_php_extension_zookeeper($p);
+        install_php_extension_wasm($p);
+
+        // install_php_extension_fastdfs($p);
+    }
+
+    if (1) {
+        //apk add ninja
+        //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
+        install_depot_tools($p); //依赖python
+        //install_gn($p);//依赖python
+        //install_gn_test($p);//源码编译GN
+    }
+
 
     //测试
     if (0) {
         install_unixodbc($p);
     }
-    if (1) {
-        install_libavif($p); //依赖 libyuv
-        install_libde265($p);
-        install_libheif($p); //依赖 libde265
-        install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
+
+
+    install_libyuv($p);
+    install_libavif($p); //依赖 libyuv
+    if (0) {
+        install_libOpenEXR($p); // 依赖Imath，不存在，会自动到github.com 下载
+        install_highway($p);
+        install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli highway
+
+        install_graphite2($p);
+        install_harfbuzz($p); //依赖ninja icu zlib glib
+
         if (0) {
             install_xorgproto($p); //依赖 xorg-macros
             install_libXpm($p); //依赖 xorg-macros  xorgproto
         }
 
-        install_libraw($p); //依赖 zlib  libjpeg
-
-        install_libOpenEXR($p); // 依赖Imath
-        install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli
         install_libgd2($p);
+        //GraphicsMagick  http://www.graphicsmagick.org/index.html
+        install_GraphicsMagick($p);
     }
 
-    if (0) {
-        //apk add ninja
-        install_ninja($p); //需要自己构建，alpine 默认没有提供源
-    }
 
 
     if (0) {
@@ -137,12 +156,9 @@ function libraries_builder($p)
         install_openssl_v3_quic($p);
         install_libedit($p);
 
-        install_harfbuzz($p); //依赖ninja （alpine ninja 需要源码编译)
+
         install_libdeflate($p); //依赖 libzip zlib gzip
-
         install_bzip2_dev_latest($p);
-
-
 
 
         install_nettle($p); //加密库
@@ -198,9 +214,7 @@ function libraries_builder($p)
         install_libzip_ng($p); //zlib next
     }
 
-    if (0) {
-        install_libgd2($p);
-    }
+
     if (0) {
         install_libev($p); //无 pkg-config
     }
@@ -214,6 +228,13 @@ function libraries_builder($p)
         //WebAssembly
         //Docker+Wasm  https://docs.docker.com/desktop/wasm/
     }
+
+    //排版相关
+    if (0) {
+        install_graphviz($p); //依赖git libwbp freetype
+        install_TeX($p); //排版系统
+    }
+
     if (0) {
         install_rav1e($p);
         install_aom($p);
@@ -244,5 +265,8 @@ function libraries_builder($p)
         install_xdp($p);  //依赖 llvm bpftool
         install_ovs($p);  //依赖 openssl python3  ; 网络优化以来 dpdk
         install_ovn($p);
+    }
+    if (0) {
+        install_qemu($p);
     }
 }

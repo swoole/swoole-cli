@@ -45,6 +45,8 @@ EOF;
     });
 }
 
+
+
 $cmd ='';
 if ($p->getOsType() == 'macos') {
     $cmd .=<<<'EOF'
@@ -76,6 +78,7 @@ if test -f /etc/os-release; then
         if test $meson -ne 1 ;then
              apk add ninja python3 pip3 
              pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
+             # git config --global --add safe.directory /work
         fi
     }
     fi
@@ -83,7 +86,6 @@ fi
 
 EOF;
 }
-
 
 
 $p->addEndCallback(function () use ($p, $cmd) {

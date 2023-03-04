@@ -208,16 +208,11 @@ EOF
             )
             ->withConfigure(
                 <<<EOF
-cd lib/libxdp 
-make libxdp
 
-
-exit 0 
-./configure 
-exit 0 
 EOF
             )
             ->withBinPath($xdp_prefix . '/bin/')
             ->withSkipBuildInstall()
     );
 }
+
