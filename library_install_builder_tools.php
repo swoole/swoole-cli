@@ -23,31 +23,33 @@ function install_qemu(Preprocessor $p): void
     $qemu_prefix = '/usr/qemu';
     $p->addLibrary(
         (new Library('qemu'))
-            ->withHomePage('https://github.com/xdp-project/xdp-tools.git')
-            ->withLicense('https://github.com/xdp-project/xdp-tools/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/xdp-project/xdp-tools/archive/refs/tags/v1.3.1.tar.gz')
-            ->withFile('xdp-v1.3.1.tar.gz')
-            ->withManual('https://github.com/xdp-project/xdp-tutorial')
+            ->withHomePage('http://www.qemu.org/')
+            ->withLicense('https://github.com/qemu/qemu/blob/master/COPYING.LIB', Library::LICENSE_GPL)
+            ->withUrl('https://download.qemu.org/qemu-7.2.0.tar.xz')
+            ->withManual('https://www.qemu.org/docs/master/')
+            ->withUntarArchiveCommand('xz')
+            ->withPrefix($qemu_prefix)
             ->withCleanBuildDirectory()
             ->withScriptBeforeConfigure(
                 <<<EOF
-            apk add llvm bpftool
+         
            
 EOF
             )
             ->withConfigure(
                 <<<EOF
-cd lib/libxdp 
-make libxdp
-
-
-exit 0 
-./configure 
-exit 0 
+            set -eux 
+            pwd
+            ls -lh .
+            
+            mkdir build
+            cd build
+            ../configure
+            make
 EOF
             )
             ->withBinPath($qemu_prefix . '/bin/')
-            ->withSkipBuildInstall()
+
     );
 }
 
@@ -107,9 +109,10 @@ function install_depot_tools(Preprocessor $p): void
             ->withHomePage('https://chromium.googlesource.com/chromium/tools/depot_tools')
             ->withLicense('https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
             ->withUrl('https://chromium.googlesource.com/chromium/tools/depot_tools')
+            ->withFile('depot_tools')
             ->withSkipDownload()
             ->withManual('https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up')
-            ->withUntarArchiveCommand('mv')
+            ->withUntarArchiveCommand('cp')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($depot_tools_prefix)
             ->withBuildScript("
@@ -168,7 +171,7 @@ function install_gn(Preprocessor $p): void
             ->withUrl('')
             ->withSkipDownload()
             ->withManual('https://gn.googlesource.com/gn/')
-            ->withUntarArchiveCommand('mv')
+            ->withUntarArchiveCommand('cp')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($gn_prefix)
             ->withBuildScript("
@@ -185,5 +188,35 @@ function install_gn(Preprocessor $p): void
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
+    );
+}
+
+
+function install_bazel(Preprocessor $p)
+{
+    $bazel_prefix = '/usr/bazel';
+    $p->addLibrary(
+        (new Library('bazel'))
+            ->withHomePage('https://bazel.build')
+            ->withLicense('https://github.com/bazelbuild/bazel/blob/master/LICENSE', Library::LICENSE_APACHE2)
+            ->withUrl('https://github.com/bazelbuild/bazel/releases/download/6.0.0/bazel-6.0.0-linux-x86_64')
+            ->withFile('bazel-6.0.0-linux-x86_64')
+            ->withManual('https://bazel.build/install')
+            ->withPrefix($bazel_prefix)
+            ->withCleanBuildDirectory()
+            ->withUntarArchiveCommand('mv')
+            ->withBuildScript(
+                '
+                test -d /usr/bazel/bin/ || mkdir -p /usr/bazel/bin/
+                mv bazel /usr/bazel/bin/
+                chmod a+x /usr/bazel/bin/bazel
+                /usr/bazel/bin/bazel -h
+             
+               '
+            )
+            ->withBinPath($bazel_prefix . '/bin/')
+            ->disableDefaultPkgConfig()
+            ->disablePkgName()
+            ->disableDefaultLdflags()
     );
 }

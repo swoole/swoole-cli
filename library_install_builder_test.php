@@ -637,7 +637,7 @@ function install_msh3(Preprocessor $p)
             ->withFile('msh3')
             ->withSkipDownload()
             //->withCleanBuildDirectory()
-            ->withUntarArchiveCommand('mv')
+            ->withUntarArchiveCommand('')
             ->withPrefix('/usr/msh3')
             ->withScriptBeforeConfigure(
                 '
@@ -887,32 +887,6 @@ function install_tcmalloc($p)
 }
 
 
-
-function install_bazel(Preprocessor $p)
-{
-    $p->addLibrary(
-        (new Library('bazel'))
-            ->withHomePage('https://bazel.build')
-            ->withLicense('https://github.com/bazelbuild/bazel/blob/master/LICENSE', Library::LICENSE_APACHE2)
-            ->withUrl('https://github.com/bazelbuild/bazel/releases/download/6.0.0/bazel-6.0.0-linux-x86_64')
-            ->withManual('/usr/bazel/bin/')
-            ->withManual('https://bazel.build/install')
-            ->withCleanBuildDirectory()
-            ->withUntarArchiveCommand('mv')
-            ->withScriptBeforeConfigure(
-                '
-                test -d /usr/bazel/bin/ || mkdir -p /usr/bazel/bin/
-                mv bazel /usr/bazel/bin/
-                chmod a+x /usr/bazel/bin/bazel
-                return 0 
-               '
-            )
-            ->disableDefaultPkgConfig()
-            ->disablePkgName()
-            ->disableDefaultLdflags()
-            ->withSkipBuildInstall()
-    );
-}
 
 function install_libelf(Preprocessor $p)
 {

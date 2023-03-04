@@ -116,6 +116,7 @@ function libraries_builder($p)
     }
 
     if (1) {
+        install_bazel($p);
         //apk add ninja
         //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
         install_depot_tools($p); //依赖python
@@ -192,7 +193,7 @@ function libraries_builder($p)
         install_tcmalloc($p);
 
 
-        install_bazel($p);
+
         install_libelf($p);
         install_libbpf($p); //libbpf 库是一个基于 C/C++ 的通用 eBPF 库
 
@@ -274,4 +275,7 @@ function libraries_builder($p)
     if (0) {
         install_qemu($p);
     }
+
+    //分布式构建(Distributed Builds)
+
 }
