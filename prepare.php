@@ -3,7 +3,8 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
-define('SUPPPER_SKIP',1);
+
+define('SUPPPER_SKIP', 1);
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
@@ -34,16 +35,14 @@ if ($p->getOsType() == 'macos') {
 
 
 if ($p->getOsType() == 'macos') {
-
     $p->addEndCallback(function () use ($p) {
         $header=<<<'EOF'
 export PATH=/opt/homebrew/bin/:/usr/local/bin/:$PATH
 EOF;
         $command= file_get_contents(__DIR__ . '/make.sh');
         $command=$header.PHP_EOL.$command;
-        file_put_contents(__DIR__ . '/make.sh',$command);
+        file_put_contents(__DIR__ . '/make.sh', $command);
     });
-
 }
 
 
@@ -66,7 +65,7 @@ EOF;
 
     $command= file_get_contents(__DIR__ . '/make.sh');
     $command=$header.PHP_EOL.$command;
-    file_put_contents(__DIR__ . '/make.sh',$command);
+    file_put_contents(__DIR__ . '/make.sh', $command);
 });
 
 
