@@ -13,7 +13,8 @@
       "library_install_builder_image.php",
       "library_install_builder_vision.php",
       "library_install_builder_extra.php",
-      "library_install_builder_extensions.php"
+      "library_install_builder_extensions.php",
+      "library_install_builder_tools.php"
     ]
   },
   "repositories": {
