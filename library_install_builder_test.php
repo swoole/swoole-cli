@@ -1591,66 +1591,6 @@ EOF;
 }
 
 
-function install_libmcrypt(Preprocessor $p)
-{
-    $libmcrypt_prefix = LIBMCRYPT_PREFIX;
-    $lib = new Library('libmcrypt');
-    $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
-        ->withLicense('https://gitlab.com/libtiff/libtiff/-/blob/master/LICENSE.md', Library::LICENSE_LGPL)
-        ->withUrl('https://github.com/winlibs/libmcrypt/archive/refs/tags/libmcrypt-2.5.8-3.4.tar.gz')
-        ->withManual('https://github.com/winlibs/libmcrypt/blob/master/INSTALL')
-        ->withPrefix($libmcrypt_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libmcrypt_prefix)
-        ->withConfigure(
-            <<<EOF
-sh ./configure --help
-chmod a+x ./install-sh
-sh ./configure --prefix=$libmcrypt_prefix \
---enable-static=yes \
---enable-shared=no
-
-
-EOF
-        )
-        ->withPkgName('libmcrypt');
-
-    $p->addLibrary($lib);
-}
-
-function install_libxlsxwriter(Preprocessor $p)
-{
-    $libxlsxwriter_prefix = LIBXLSXWRITER_PREFIX;
-    $zlib_prefix =  ZLIB_PREFIX;
-    $lib = new Library('libxlsxwriter');
-    $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
-        ->withLicense('https://github.com/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_LGPL)
-        ->withUrl('https://github.com/jmcnamara/libxlsxwriter/archive/refs/tags/RELEASE_1.1.5.tar.gz')
-        ->withFile('libxlsxwriter-1.1.5.tar.gz')
-        ->withManual('http://libxlsxwriter.github.io/getting_started.html')
-        ->withPrefix($libxlsxwriter_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libxlsxwriter_prefix)
-        ->withBuildScript(
-            <<<EOF
-            # 启用DBUILD_TESTS 需要安装python3 pytest
-            mkdir build && cd build
-            cmake .. -DCMAKE_INSTALL_PREFIX={$libxlsxwriter_prefix} \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DZLIB_ROOT:STRING={$zlib_prefix} \
-            -DBUILD_TESTS=OFF \
-            -DBUILD_EXAMPLES=OFF \
-            -DUSE_STANDARD_TMPFILE=ON \
-            -DUSE_OPENSSL_MD5=ON \
-            && \
-            cmake --build . --config Release --target install
-EOF
-        )
-        ->depends('zlib')
-        ->withPkgName('xlsxwriter');
-
-    $p->addLibrary($lib);
-}
 
 
 
@@ -1694,4 +1634,91 @@ EOF
         ->withPkgName('zlib_ng');
 
     $p->addLibrary($lib);
+}
+
+
+function install_zookeeper_client($p)
+{
+    $workDir = $p->getWorkDir();
+    $openssl_prefix = OPENSSL_PREFIX;
+    $zookeeper_client_prefix = '/usr/zookeeper_client';
+    $p->addLibrary(
+        (new Library('zookeeper_client'))
+            ->withHomePage('https://zookeeper.apache.org/')
+            ->withLicense('https://www.apache.org/licenses/', Library::LICENSE_APACHE2)
+            //->withUrl('https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.1/apache-zookeeper-3.8.1.tar.gz')
+            ->withUrl('https://dlcdn.apache.org/zookeeper/zookeeper-3.8.1/apache-zookeeper-3.8.1.tar.gz')
+            ->withManual('https://zookeeper.apache.org/doc/r3.8.1/zookeeperStarted.html')
+            ->withLabel('library')
+            ->withCleanBuildDirectory()
+            ->withBuildScript(
+                <<<EOF
+             ant compile_jute
+            cd zookeeper-client/zookeeper-client-c
+            cmake .
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="{$zookeeper_client_prefix}" \
+            -DWANT_CPPUNIT=OFF \
+            -DWITH_OPENSSL=ON  \
+            -DBUILD_SHARED_LIBS=OFF  
+
+            cmake --build .
+EOF
+            )
+            ->withConfigure(
+                <<<EOF
+
+            ant compile_jute
+            cd zookeeper-client/zookeeper-client-c
+            autoreconf -if
+            ./configure --help 
+            
+            ./configure \
+            --prefix={$zookeeper_client_prefix} \
+            --enable-shared=no \
+            --enable-static=yes  \
+            --with-openssl={$openssl_prefix} \
+            --without-cppunit
+
+EOF
+            )
+            //->withSkipDownload()
+            ->disablePkgName()
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->withSkipBuildLicense()
+        // ->withSkipBuildInstall()
+    );
+}
+
+
+function install_unixodbc(Preprocessor $p)
+{
+    $unixODBC_prefix = UNIX_ODBC_PREFIX;
+    $p->addLibrary(
+        (new Library('unixodbc'))
+            ->withHomePage('https://www.unixodbc.org/')
+            ->withUrl('https://www.unixodbc.org/unixODBC-2.3.11.tar.gz')
+            ->withLicense('https://github.com/lurcher/unixODBC/blob/master/LICENSE', Library::LICENSE_LGPL)
+            ->withManual('https://www.unixodbc.org/doc/')
+            ->withManual('https://github.com/lurcher/unixODBC.git')
+            ->withLabel('build_env_bin')
+            ->withCleanBuildDirectory()
+
+            ->withConfigure(
+                "
+                autoreconf -fi
+             ./configure --help 
+             ./configure \
+             --prefix={$unixODBC_prefix} \
+             --enable-shared=no \
+             --enable-static=yes \
+             --enable-iconv \
+             --enable-readline \
+             --enable-threads
+            "
+            )
+            ->withBinPath($unixODBC_prefix .'/bin/')
+            ->disablePkgName()
+    );
 }
