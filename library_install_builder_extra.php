@@ -17,7 +17,7 @@ function install_ovs(Preprocessor $p)
         ->withManual('https://github.com/openvswitch/ovs/blob/master/Documentation/intro/install/general.rst')
         ->withPrefix($ovs_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($ovs_prefix)
+        ->withCleanPreInstallDirectory($ovs_prefix)
         ->withScriptBeforeConfigure(
             <<<EOF
           # apk add python3 
@@ -55,7 +55,7 @@ function install_ovn(Preprocessor $p)
         ->withManual('https://github.com/ovn-org/ovn/blob/main/Documentation/intro/install/general.rst')
         ->withPrefix($ovn_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($ovn_prefix)
+        ->withCleanPreInstallDirectory($ovn_prefix)
         ->withScriptBeforeConfigure(
             <<<EOF
           

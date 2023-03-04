@@ -73,7 +73,7 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
-<?php if($item->cleanInstallDirectory): ?>
+<?php if($item->cleanPreInstallDirectory): ?>
     # If the install directory exist, clean the install directory
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
 <?php endif; ?>

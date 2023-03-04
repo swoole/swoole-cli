@@ -174,7 +174,7 @@ function install_libdeflate(Preprocessor $p)
             ->withLabel('library')
             ->withPrefix($libdeflate_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($libdeflate_prefix)
+            ->withCleanPreInstallDirectory($libdeflate_prefix)
             ->withConfigure(
                 "
                 ls -lh
@@ -264,7 +264,7 @@ function install_libuv($p)
             ->withFile('libuv-v1.44.2.tar.gz')
             ->withPrefix($libuv_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($libuv_prefix)
+            ->withCleanPreInstallDirectory($libuv_prefix)
             ->withConfigure(
                 <<<EOF
             ls -lh 
@@ -583,7 +583,7 @@ function install_libressl($p)
             ->withManual('https://github.com/libressl/portable.git')
             ->withCleanBuildDirectory()
             ->withPrefix($libressl_prefix)
-            ->withCleanInstallDirectory($libressl_prefix)
+            ->withCleanPreInstallDirectory($libressl_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure  --help
@@ -765,7 +765,7 @@ function install_nghttp2(Preprocessor $p): void
             ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
             ->withCleanBuildDirectory()
             ->withPrefix($nghttp2_prefix)
-            ->withCleanInstallDirectory($nghttp2_prefix)
+            ->withCleanPreInstallDirectory($nghttp2_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
@@ -1175,7 +1175,7 @@ function install_p11_kit(Preprocessor $p)
             ->withFile('p11-kit-0.24.1.tar.gz')
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/p11_kit/')
-            ->withCleanInstallDirectory('/usr/p11_kit/')
+            ->withCleanPreInstallDirectory('/usr/p11_kit/')
             ->withBuildScript(
                 '
           
@@ -1539,7 +1539,7 @@ function install_jansson(Preprocessor $p)
             ->withLicense('https://github.com/akheron/jansson/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withPrefix($jansson_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($jansson_prefix)
+            ->withCleanPreInstallDirectory($jansson_prefix)
             ->withConfigure(
                 <<<EOF
              autoreconf -fi
@@ -1601,7 +1601,7 @@ function install_libmcrypt(Preprocessor $p)
         ->withManual('https://github.com/winlibs/libmcrypt/blob/master/INSTALL')
         ->withPrefix($libmcrypt_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libmcrypt_prefix)
+        ->withCleanPreInstallDirectory($libmcrypt_prefix)
         ->withConfigure(
             <<<EOF
 sh ./configure --help
@@ -1630,7 +1630,7 @@ function install_libxlsxwriter(Preprocessor $p)
         ->withManual('http://libxlsxwriter.github.io/getting_started.html')
         ->withPrefix($libxlsxwriter_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libxlsxwriter_prefix)
+        ->withCleanPreInstallDirectory($libxlsxwriter_prefix)
         ->withBuildScript(
             <<<EOF
             # 启用DBUILD_TESTS 需要安装python3 pytest
@@ -1664,7 +1664,7 @@ function install_libgomp(Preprocessor $p)
         ->withManual('https://gcc.gnu.org/onlinedocs/libgomp/')
         ->withPrefix($libgomp_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libgomp_prefix)
+        ->withCleanPreInstallDirectory($libgomp_prefix)
         ->withConfigure(
             <<<EOF
 ./configure --help
@@ -1685,7 +1685,7 @@ function install_libzip_ng(Preprocessor $p)
         ->withManual('https://github.com/zlib-ng/zlib-ng.git')
         ->withPrefix($zlib_ng_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($zlib_ng_prefix)
+        ->withCleanPreInstallDirectory($zlib_ng_prefix)
         ->withConfigure(
             <<<EOF
 ./configure --help

@@ -16,7 +16,7 @@ function install_rav1e(Preprocessor $p)
         ->withManual('https://github.com/xiph/rav1e.git')
         ->withPrefix($rav1e_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($rav1e_prefix)
+        ->withCleanPreInstallDirectory($rav1e_prefix)
         ->withConfigure(
             <<<EOF
 exit 0 
@@ -39,7 +39,7 @@ function install_libyuv(Preprocessor $p)
         ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
         ->withPrefix($libyuv_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libyuv_prefix)
+        ->withCleanPreInstallDirectory($libyuv_prefix)
         ->withBuildScript(
             <<<EOF
         mkdir out
@@ -68,7 +68,7 @@ function install_aom(Preprocessor $p)
         ->withManual('https://aomedia.googlesource.com/aom')
         ->withPrefix($aom_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($aom_prefix)
+        ->withCleanPreInstallDirectory($aom_prefix)
         ->withConfigure(
             <<<EOF
 exit 0 
@@ -93,7 +93,7 @@ function install_av1(Preprocessor $p)
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1.git')
         ->withPrefix($av1_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($av1_prefix)
+        ->withCleanPreInstallDirectory($av1_prefix)
         ->withConfigure(
             <<<EOF
 exit 0 
@@ -117,7 +117,7 @@ function install_libvpx(Preprocessor $p)
         ->withManual('https://chromium.googlesource.com/webm/libvpx')
         ->withPrefix($libvpx_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libvpx_prefix)
+        ->withCleanPreInstallDirectory($libvpx_prefix)
         ->withConfigure(
             <<<EOF
 exit 0 
@@ -141,7 +141,7 @@ function install_libopus(Preprocessor $p)
         ->withManual('https://opus-codec.org/docs')
         ->withPrefix($libopus_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libopus_prefix)
+        ->withCleanPreInstallDirectory($libopus_prefix)
         ->withConfigure(
             <<<EOF
 exit 0 
@@ -165,7 +165,7 @@ function install_libx264(Preprocessor $p)
         ->withManual('https://code.videolan.org/videolan/x264.git')
         ->withPrefix($libx264_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libx264_prefix)
+        ->withCleanPreInstallDirectory($libx264_prefix)
         ->withConfigure(
             <<<EOF
 exit 0 
@@ -189,7 +189,7 @@ function install_mp3lame(Preprocessor $p)
         ->withManual('https://ffmpeg.org/documentation.html')
         ->withPrefix($mp3lame_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($mp3lame_prefix)
+        ->withCleanPreInstallDirectory($mp3lame_prefix)
         ->withConfigure(
             <<<EOF
 exit 0 
@@ -219,7 +219,7 @@ function install_libx265(Preprocessor $p)
         ->withManual('https://bitbucket.org/multicoreware/x265_git.git')
         ->withPrefix($libx265_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libx265_prefix)
+        ->withCleanPreInstallDirectory($libx265_prefix)
         ->withConfigure(
             <<<EOF
 exit 0 
@@ -232,33 +232,59 @@ EOF
 }
 
 
+function install_opencv_contrib(Preprocessor $p){
+    $opencv_prefix = OPENCV_PREFIX;
+    $lib = new Library('opencv_contrib');
+    $lib->withHomePage('https://opencv.org/')
+        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+        ->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
+        ->withManual('https://github.com/opencv/opencv.git')
+        ->withSkipDownload()
+        ->withUntarArchiveCommand('')
+        ->withPrefix($opencv_prefix)
+        ->withBuildScript(
+            <<<EOF
+            apk add python3 py3-pip  ccache
+            pip3 install numpy  -i https://pypi.tuna.tsinghua.edu.cn/simple
+            test -d opencv_contrib || git clone -b 5.x  https://github.com/opencv/opencv_contrib.git --depth 1 --progress
+            test -d opencv || git clone -b 5.x  https://github.com/opencv/opencv.git --depth 1 --progress
+EOF
+        )
+        ->disableDefaultLdflags()
+        ->disablePkgName()
+        ->disableDefaultPkgConfig()
+        ->withSkipBuildLicense();
+
+    $p->addLibrary($lib);
+
+}
+
 function install_opencv(Preprocessor $p)
 {
-    $opencv_prefix = '/usr/opencv';
+    $opencv_prefix = OPENCV_PREFIX;
+    $workDir = $p->getWorkDir();
+    $buildDir = $p->getBuildDir();
     $lib = new Library('opencv');
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
         ->withManual('https://github.com/opencv/opencv.git')
+        ->withSkipDownload()
         ->withUntarArchiveCommand('')
         ->withPrefix($opencv_prefix)
         //->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($opencv_prefix)
-        ->withScriptBeforeConfigure(
-            <<<EOF
-            test -d opencv || git clone -b 5.x  https://github.com/opencv/opencv.git --depth 1 --progress
-            test -d opencv_contrib || git clone -b 5.x  https://github.com/opencv/opencv_contrib.git --depth 1 --progress
-            apk add python3 py3-pip  ccache
-            pip3 install numpy  -i https://pypi.tuna.tsinghua.edu.cn/simple 
-EOF
-        )
+        ->withCleanPreInstallDirectory($opencv_prefix)
         ->withBuildScript(
             <<<EOF
+ 
+        test -d opencv || git clone -b 5.x  https://github.com/opencv/opencv.git --depth 1 --progress
+        
+        opencv_contrib={$buildDir}/opencv/opencv_contrib
         cd opencv
         mkdir -p build
         cd  build
         pwd
-       
+        
         cmake -G Ninja \
         -DCMAKE_INSTALL_PREFIX={$opencv_prefix} \
         -DOPENCV_EXTRA_MODULES_PATH="../../opencv_contrib/modules" \
@@ -292,7 +318,7 @@ function install_ffmpeg(Preprocessor $p)
         ->withManual('https://trac.ffmpeg.org/wiki/CompilationGuide')
         ->withPrefix($ffmpeg_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($ffmpeg_prefix)
+        ->withCleanPreInstallDirectory($ffmpeg_prefix)
         ->withScriptBeforeConfigure('
         # 汇编编译器
         # apk add yasm nasm

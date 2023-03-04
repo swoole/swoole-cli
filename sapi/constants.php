@@ -65,3 +65,6 @@ define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
 define("LIBUV_PREFIX", $p->getGlobalPrefix() . '/libuv');
 
+
+define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
+

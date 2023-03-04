@@ -212,7 +212,7 @@ function libraries_builder($p)
         //WebAssembly
         //Docker+Wasm  https://docs.docker.com/desktop/wasm/
     }
-    if (1) {
+    if (0) {
         install_rav1e($p);
         install_aom($p);
         install_av1($p);
@@ -223,6 +223,7 @@ function libraries_builder($p)
         install_mp3lame($p);
         install_ffmpeg($p);
         // install_librabbitmq($p);
+        install_opencv_contrib($p);
         install_opencv($p); //构建过程中，会去github.com 下载 ippicv xfeatures2d wechat_qrcode unifont  face_landmark_model.dat
         //依赖ffmpeg zlib ninja zlib libjpeg libwebp freetype
     }

@@ -14,7 +14,7 @@ function install_libjpeg(Preprocessor $p)
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withPrefix($libjpeg_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libjpeg_prefix)
+        ->withCleanPreInstallDirectory($libjpeg_prefix)
         ->withConfigure('cmake -G"Unix Makefiles" -DENABLE_STATIC=1 -DENABLE_SHARED=0  -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
         ->withPkgName('libjpeg');
 
@@ -102,7 +102,7 @@ function install_libpng(Preprocessor $p)
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
             ->withPrefix($libpng_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($libpng_prefix)
+            ->withCleanPreInstallDirectory($libpng_prefix)
             ->withConfigure(
                 <<<EOF
                 ./configure --help 
@@ -135,7 +135,7 @@ function install_libwebp(Preprocessor $p)
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
             ->withPrefix($libwebp_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($libwebp_prefix)
+            ->withCleanPreInstallDirectory($libwebp_prefix)
             ->withConfigure(
                 <<<EOF
                 ./autogen.sh && \
@@ -174,7 +174,7 @@ function install_libavif(Preprocessor $p)
             ->withManual('https://github.com/AOMediaCodec/libavif')
             ->withPrefix($libavif_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($libavif_prefix)
+            ->withCleanPreInstallDirectory($libavif_prefix)
             ->withConfigure(
                 <<<EOF
     
@@ -207,7 +207,7 @@ function install_libde265(Preprocessor $p)
 
         ->withPrefix($libde265_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libde265_prefix)
+        ->withCleanPreInstallDirectory($libde265_prefix)
         ->withConfigure(
             <<<EOF
         ./autogen.sh
@@ -232,7 +232,7 @@ function install_libheif(Preprocessor $p)
 
         ->withPrefix($libheif_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libheif_prefix)
+        ->withCleanPreInstallDirectory($libheif_prefix)
         ->withConfigure(
             <<<'EOF'
             ./configure --help
@@ -275,7 +275,7 @@ function install_freetype(Preprocessor $p)
                 Library::LICENSE_SPEC
             )
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($freetype_prefix)
+            ->withCleanPreInstallDirectory($freetype_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help  
@@ -315,7 +315,7 @@ function install_libgd2($p)
         ->withManual('https://libgd.github.io/pages/docs.html')
         ->withPrefix($libgd_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libgd_prefix)
+        ->withCleanPreInstallDirectory($libgd_prefix)
         ->withConfigure(
             <<<'EOF'
         # 下载依赖
@@ -378,7 +378,7 @@ function install_libtiff(Preprocessor $p)
         ->withUrl('http://download.osgeo.org/libtiff/tiff-4.5.0.tar.gz')
         ->withPrefix($libtiff_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libtiff_prefix)
+        ->withCleanPreInstallDirectory($libtiff_prefix)
         ->withConfigure(
             <<<'EOF'
             ./configure --help
@@ -413,7 +413,7 @@ function install_libXpm(Preprocessor $p)
         ->withFile('libXpm-3.5.11.tar.gz')
         ->withPrefix($libXpm_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libXpm_prefix)
+        ->withCleanPreInstallDirectory($libXpm_prefix)
         ->withConfigure(
             <<<'EOF'
             ./autogen.sh
@@ -450,7 +450,7 @@ function install_libraw(Preprocessor $p)
 
         ->withPrefix($libraw_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libraw_prefix)
+        ->withCleanPreInstallDirectory($libraw_prefix)
         ->withConfigure(
             <<<'EOF'
             ./configure --help
@@ -490,7 +490,7 @@ function install_libjxl(Preprocessor $p)
         ->withFile('libjpegxl-v0.8.1.tar.gz')
         ->withPrefix($libjxl_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanInstallDirectory($libjxl_prefix)
+        ->withCleanPreInstallDirectory($libjxl_prefix)
         ->withBuildScript(
             <<<EOF
         //下载依赖
@@ -520,7 +520,7 @@ function install_imagemagick(Preprocessor $p)
             ->withManual('https://github.com/ImageMagick/ImageMagick.git')
             ->withPrefix($imagemagick_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanInstallDirectory($imagemagick_prefix)
+            ->withCleanPreInstallDirectory($imagemagick_prefix)
             ->withFile('ImageMagick-v7.1.0-62.tar.gz')
             ->withPrefix($imagemagick_prefix)
             ->withConfigure(
