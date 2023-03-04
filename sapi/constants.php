@@ -68,3 +68,4 @@ define("LIBUV_PREFIX", $p->getGlobalPrefix() . '/libuv');
 
 define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
 
+define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');

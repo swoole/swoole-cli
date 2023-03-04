@@ -404,9 +404,10 @@ EOF
     $p->addLibrary($lib);
 }
 
+
 function install_libXpm(Preprocessor $p)
 {
-    $libXpm_prefix = LIBTIFF_PREFIX;
+    $libXpm_prefix = LIBXPM_PREFIX;
     $lib = new Library('libXpm');
     $lib->withHomePage('https://github.com/freedesktop/libXpm.git')
         ->withLicense('https://github.com/freedesktop/libXpm/blob/master/COPYING', Library::LICENSE_SPEC)
@@ -415,28 +416,27 @@ function install_libXpm(Preprocessor $p)
         ->withPrefix($libXpm_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libXpm_prefix)
+        ->withScriptBeforeConfigure(
+            <<<EOF
+         # 依赖 xorg-macros
+         # 解决依赖
+         apk add util-macros
+EOF
+        )
         ->withConfigure(
-            <<<'EOF'
+            <<<EOF
             ./autogen.sh
             ./configure --help
-            exit 0 
-            package_names="zlib libjpeg libturbojpeg liblzma  libzstd libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
-            
-            CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names ) \
-            LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names ) \
-            LIBS=$(pkg-config      --libs-only-l   --static $package_names ) \
-EOF
-            . PHP_EOL .
-            <<<EOF
             ./configure --prefix={$libXpm_prefix} \
             --enable-shared=no \
             --enable-static=yes \
             --disable-docs \
-            --disable-tests
+            --disable-tests \
+            --enable-strict-compilation
 
 EOF
         )
-        ->withPkgName('libtiff');
+        ->withPkgName('libXpm');
 
     $p->addLibrary($lib);
 }

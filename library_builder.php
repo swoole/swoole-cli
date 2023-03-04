@@ -123,6 +123,7 @@ function libraries_builder($p)
 
         install_libgd2($p);
     }
+    install_libXpm($p); //依赖 xorg-macros
     install_libgd2($p);
     if (0) {
         //apk add ninja
