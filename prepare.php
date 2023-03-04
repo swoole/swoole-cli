@@ -4,7 +4,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
 
-define('SUPPPER_SKIP', 1);
+define('SUPPPER_SKIP', 0);
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);

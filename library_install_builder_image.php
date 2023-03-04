@@ -433,7 +433,7 @@ EOF
             --enable-static=yes \
             --disable-docs \
             --disable-tests \
-            --enable-strict-compilation
+            --enable-strict-compilation 
 
 EOF
         )
@@ -441,6 +441,7 @@ EOF
 
     $p->addLibrary($lib);
 }
+
 
 function install_libraw(Preprocessor $p)
 {
@@ -473,7 +474,7 @@ EOF
             --enable-shared=no \
             --enable-static=yes \
             --enable-jpeg \
-            --enable-zlib
+            --enable-zlib 
 EOF
         )
         ->withPkgName('librawc  libraw_r');
@@ -481,7 +482,37 @@ EOF
     $p->addLibrary($lib);
 }
 
-function install_libjxl(Preprocessor $p)
+function install_libOpenEXR(Preprocessor $p)
+{
+    $libOpenEXR_prefix = '/usr/libOpenEXR';
+    $buildDir = $p->getBuildDir() . '/libOpenEXR/' ;
+    $lib = new Library('libOpenEXR');
+    $lib->withHomePage('http://www.openexr.com/')
+        ->withLicense('https://github.com/AcademySoftwareFoundation/openexr/blob/main/LICENSE.md', Library::LICENSE_BSD)
+        ->withUrl('https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.1.5.tar.gz')
+        ->withManual('https://github.com/AcademySoftwareFoundation/openexr.git')
+        ->withManual('https://openexr.com/en/latest/install.html#install')
+        ->withFile('openexr-v3.1.5.tar.gz')
+        ->withPrefix($libOpenEXR_prefix)
+        //->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libOpenEXR_prefix)
+        ->withBuildScript(
+            <<<EOF
+        
+        mkdir -p build_dir
+        cd build_dir 
+        # cmake ..  -DCMAKE_INSTALL_PREFIX={$libOpenEXR_prefix}
+        pwd
+        cmake $buildDir   --install-prefix={$libOpenEXR_prefix}
+        pwd
+        ls -lh .
+        cmake --build .  --target install --config Release 
+EOF
+        )
+        ->withPkgName('libOpenEXR');
+
+    $p->addLibrary($lib);
+}function install_libjxl(Preprocessor $p)
 {
     $libjxl_prefix = LIBJXL_PREFIX;
     $lib = new Library('libjxl');
@@ -495,14 +526,14 @@ function install_libjxl(Preprocessor $p)
         ->withCleanPreInstallDirectory($libjxl_prefix)
         ->withBuildScript(
             <<<EOF
-        //下载依赖
+        ## 会自动 下载依赖 ，如网速不佳，请在环境变量里设置代理地址，用于加速下载
         sh deps.sh
         mkdir build
         cd build
         cmake -DJPEGXL_STATIC=true -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. 
         cmake --build . -- -j$(nproc)
         exit 0 
-        cmake --install . 
+        cmake --install .  
 EOF
         )
         ->withPkgName('libjxl');
@@ -554,7 +585,7 @@ function install_imagemagick(Preprocessor $p)
             --with-zip=yes \
             --with-zlib=yes \
             --with-zstd=yes \
-            --with-freetype=yes 
+            --with-freetype=yes  
 
 EOF
             )
