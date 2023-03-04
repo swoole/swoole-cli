@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+__PROJECT__=$(
+  cd ${__DIR__}/../
+  pwd
+)
+cd ${__PROJECT__}
+
+proxy_url='http://192.168.3.26:8015'
+export http_proxy=$proxy_url
+export https_proxy=$proxy_url
+
+mkdir -p ${__PROJECT__}/var/git-download
+
+
+cd ${__PROJECT__}/var/git-download
+test -d depot_tools || git clone -b main --depth 1  https://chromium.googlesource.com/chromium/tools/depot_tools
+#test -d gn          || git clone -b main   https://gn.googlesource.com/gn
+test -d libyuv      || git clone -b main   https://chromium.googlesource.com/libyuv/libyuv
+
+test -d ${__PROJECT__}/pool/lib/depot_tools || cp -rf depot_tools ${__PROJECT__}/pool/lib/
+#test -d ${__PROJECT__}/pool/lib/gn          || cp -rf gn          ${__PROJECT__}/pool/lib/
+test -d ${__PROJECT__}/pool/lib/libyuv      || cp -rf libyuv      ${__PROJECT__}/pool/lib/
+
+
+cd ${__PROJECT__}/var/git-download
+
+
+test -d quiche || git clone --recursive  --depth=1 https://github.com/cloudflare/quiche
+
+test -d boringssl || git clone --depth=1  https://boringssl.googlesource.com/boringssl
+
+test -d msh3 || git clone -b v0.6.0 --depth 1 --recursive https://github.com/nibanks/msh3
+
+test -d libelf || git clone -b master --depth 1 --recursive https://github.com/WolfgangSt/libelf.git
+
+test -d ${__PROJECT__}/pool/lib/quiche || cp -rf quiche ${__PROJECT__}/pool/lib/
+test -d ${__PROJECT__}/pool/lib/boringssl || cp -rf boringssl ${__PROJECT__}/pool/lib/
+test -d ${__PROJECT__}/pool/lib/msh3 || cp -rf msh3 ${__PROJECT__}/pool/lib/
+test -d ${__PROJECT__}/pool/lib/libelf || cp -rf libelf ${__PROJECT__}/pool/lib/
+
+
+cd ${__PROJECT__}/
+
+
+# # git submodule update --init
