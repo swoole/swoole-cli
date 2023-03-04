@@ -1770,39 +1770,3 @@ EOF
 
     $p->addLibrary($lib);
 }
-
-function install_libXpm(Preprocessor $p)
-{
-    $libXpm_prefix = LIBXPM_PREFIX;
-    $lib = new Library('libXpm');
-    $lib->withHomePage('https://github.com/freedesktop/libXpm.git')
-        ->withLicense('https://github.com/freedesktop/libXpm/blob/master/COPYING', Library::LICENSE_SPEC)
-        ->withUrl('https://github.com/freedesktop/libXpm/archive/refs/tags/libXpm-3.5.11.tar.gz')
-        ->withFile('libXpm-3.5.11.tar.gz')
-        ->withPrefix($libXpm_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libXpm_prefix)
-        ->withScriptBeforeConfigure(
-            <<<EOF
-         # 依赖 xorg-macros
-         # 解决依赖
-         apk add util-macros
-EOF
-        )
-        ->withConfigure(
-            <<<EOF
-            ./autogen.sh
-            ./configure --help
-            ./configure --prefix={$libXpm_prefix} \
-            --enable-shared=no \
-            --enable-static=yes \
-            --disable-docs \
-            --disable-tests \
-            --enable-strict-compilation
-
-EOF
-        )
-        ->withPkgName('libXpm');
-
-    $p->addLibrary($lib);
-}

@@ -48,50 +48,52 @@ EOF;
 $cmd ='';
 if ($p->getOsType() == 'macos') {
     $cmd .=<<<'EOF'
-    alpine=$(which ninja  | wc -l)
-    if (( $alpine < 1 )) ;then 
+brew=$(which brew  | wc -l)
+if test $brew -eq 1 ;then
+{
+    meson=$(which meson  | wc -l)
+    if test $meson -ne  1 ;then 
     {
         export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
         export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
         # export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
         brew install ninja  python3 pip3
-    }
-    meson=$(which meson | wc -l )
-    if (( $meson < 1 )) ;then 
-    {
         pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
     }
-EOF;
+    fi
+fi
 
+
+EOF;
 }
 if ($p->getOsType() == 'linux') {
     $cmd .=<<<'EOF'
+if test -f /etc/os-release; then
     alpine=$(cat /etc/os-release | grep "ID=alpine" | wc -l)
-    if (( $alpine < 1 )) ;then 
+    if test $alpine -eq 1  ;then 
     {
-        apk add ninja python3 pip3
+        meson=$(which meson | wc -l )
+        if test $meson -ne 1 ;then
+             apk add ninja python3 pip3 
+             pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
+        fi
     }
-    meson=$(which meson | wc -l )
-    if (( $meson < 1 )) ;then 
-    {
-        pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
-    }
-EOF;
+    fi
+fi
 
+EOF;
 }
 
 
 
-$p->addEndCallback(function () use ($p) {
+$p->addEndCallback(function () use ($p, $cmd) {
     $header=<<<'EOF'
 #!/bin/env sh
-
 
 PKG_CONFIG_PATH='/usr/lib/pkgconfig'
 test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 test -d /usr/local/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 test -d /usr/local/lib/pkgconfig/ && PKG_CONFIG_PATH="/usr/local/lib/pkgconfig/:$PKG_CONFIG_PATH" ;
-
 
 cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
@@ -100,7 +102,7 @@ cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 EOF;
 
     $command= file_get_contents(__DIR__ . '/make.sh');
-    $command=$header.PHP_EOL.$command;
+    $command= $header. PHP_EOL . $cmd . PHP_EOL . $command ;
     file_put_contents(__DIR__ . '/make.sh', $command);
 });
 
