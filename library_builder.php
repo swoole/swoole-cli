@@ -103,6 +103,7 @@ function libraries_builder($p)
 
     if (0) {
         install_zookeeper_client($p);
+        install_unixodbc($p);
     }
 
     if (0) {
@@ -122,16 +123,9 @@ function libraries_builder($p)
         //install_gn_test($p);//源码编译GN
     }
 
-
-    //测试
     if (0) {
-        install_unixodbc($p);
-    }
-
-
-    install_libyuv($p);
-    install_libavif($p); //依赖 libyuv
-    if (0) {
+        install_libyuv($p);
+        install_libavif($p); //依赖 libyuv
         install_libOpenEXR($p); // 依赖Imath，不存在，会自动到github.com 下载
         install_highway($p);
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli highway
@@ -148,8 +142,6 @@ function libraries_builder($p)
         //GraphicsMagick  http://www.graphicsmagick.org/index.html
         install_GraphicsMagick($p);
     }
-
-
 
     if (0) {
         install_openssl_v3($p);
@@ -234,7 +226,20 @@ function libraries_builder($p)
         install_graphviz($p); //依赖git libwbp freetype
         install_TeX($p); //排版系统
     }
-
+    if (0) {
+        /*
+            gsm
+            alsa-lib
+            opus
+            libsamplerate
+            jack
+            portaudio
+            speex
+            speexdsp
+            libsrtp
+            pjproject
+        */
+    }
     if (0) {
         install_rav1e($p);
         install_aom($p);

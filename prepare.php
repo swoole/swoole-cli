@@ -76,7 +76,7 @@ if test -f /etc/os-release; then
     {
         meson=$(which meson | wc -l )
         if test $meson -ne 1 ;then
-             apk add ninja python3 pip3 
+             apk add ninja python3 py3-pip gn
              pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
              # git config --global --add safe.directory /work
         fi

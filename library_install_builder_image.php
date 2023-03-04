@@ -164,7 +164,9 @@ EOF
 
 function install_libyuv(Preprocessor $p)
 {
-    $libyuv_prefix = LIBAVIF_PREFIX;
+    $libyuv_prefix = "/usr/libyuv";
+    $libjpeg_prefix = JPEG_PREFIX;
+    $libjpeg_lib_dir = $p->getOsType()== 'linux' ? $libjpeg_prefix .'/lib64/' : $libjpeg_prefix .'/lib/';
     $p->addLibrary(
         (new Library('libyuv'))
             ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
@@ -178,15 +180,52 @@ function install_libyuv(Preprocessor $p)
             ->withCleanPreInstallDirectory($libyuv_prefix)
             ->withBuildScript(
                 <<<EOF
+            set -uex
             pwd
             ls -lh .
             cd libyuv 
+            
+            
+            ls -lh .
+            
+            make -f linux.mk 
+            mkdir -p $libyuv_prefix/lib
+            cp -rf libyuv.a  $libyuv_prefix/lib
+            cp -rf include $libyuv_prefix/
+            
+            exit  0
             gn gen out/Release "--args=is_debug=false"
+            
             ninja -v -C out/Release
+            exit  0
+           
+        
+            #  cmake默认查找到的是动态库 ; cmake 优先使用静态库  
+            #  参考 https://blog.csdn.net/10km/article/details/82931978
+            
+            # sed -i '/find_package ( JPEG )/i set( JPEG_NAMES libjpeg.a )'  CMakeLists.txt
+            
+            # -DJPEG_LIBRARY_RELEASE={$libjpeg_prefix}/lib/libjpeg.a 
+            # CMAKE_INCLUDE_PATH 和 CMAKE_LIBRARY_PATH
+            
+            # -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
+            
+            mkdir -p build
+            cd build
+            cmake \
+            -Wno-dev \
+            -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
+            -DCMAKE_BUILD_TYPE="Release"  \
+            -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
+            -DBUILD_SHARED_LIBS=OFF  .. 
+            
+            cmake --build . --config Release
+            cmake --build . --target install --config Release
+            
+      
 EOF
             )
-            ->withPkgName('libavif')
-            ->withLdflags('')
+            ->withPkgName('')
     );
 }
 function install_libavif(Preprocessor $p)
@@ -204,9 +243,11 @@ function install_libavif(Preprocessor $p)
             ->withCleanPreInstallDirectory($libavif_prefix)
             ->withConfigure(
                 <<<EOF
-    
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
+            LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
+            LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
             cmake .  \
-            -DMAKE_INSTALL_PREFIX={$libavif_prefix} \
+            -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
             -DAVIF_BUILD_EXAMPLES=ON \
             -DBUILD_SHARED_LIBS=OFF \
             -DAVIF_CODEC_AOM=OFF \
