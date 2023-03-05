@@ -5,18 +5,19 @@
 use SwooleCli\Preprocessor;
 ?>
 
-export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
-export ORIGIN_PATH=$PATH
-
-
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 export CC=<?= $this->cCompiler . PHP_EOL ?>
 export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>
+
+export SYSTEM_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export ORIGIN_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+
+export SYSTEM_PATH=$PATH
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
+export ORIGIN_PATH=$PATH
 
 OPTIONS="--disable-all \
 <?php foreach ($this->extensionList as $item) : ?>
