@@ -115,14 +115,6 @@ function libraries_builder($p)
         // install_php_extension_fastdfs($p);
     }
 
-    if (1) {
-        install_bazel($p);
-        //apk add ninja
-        //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
-        install_depot_tools($p); //依赖python
-        //install_gn($p);//依赖python
-        //install_gn_test($p);//源码编译GN
-    }
 
     if (0) {
         install_libyuv($p);
@@ -277,5 +269,23 @@ function libraries_builder($p)
     }
 
     //分布式构建(Distributed Builds)
+    if (0) {
+        install_bazel($p);  //use bazel docker https://bazel.build/install/docker-container
 
+        //install_icecream($p); //https://github.com/icecc/icecream.git
+
+        //原理： 类似 SwarmAgent  （Agent/Coordinator ）  //https://docs.unrealengine.com/5.1/en-US/unreal-swarm-in-unreal-engine/
+    }
+    if (0) {
+        //apk add ninja
+        //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
+        install_depot_tools($p); //依赖python
+        //install_gn($p);//依赖python
+        //install_gn_test($p);//源码编译GN
+    }
+
+    if (0) {
+        install_grpc($p); //use protobuf  https://github.com/grpc/grpc.git
+        install_thrift($p); //https://thrift.apache.org/
+    }
 }

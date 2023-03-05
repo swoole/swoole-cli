@@ -146,7 +146,7 @@ class Library extends Project
 
     public function withCleanBuildDirectory(): static
     {
-        if (SUPPPER_SKIP != true) {
+        if ( SWOOLE_CLI_BUILD_TYPE != true ) {
             $this->cleanBuildDirectory = true;
         }
         return $this;
@@ -155,7 +155,7 @@ class Library extends Project
     public function withCleanPreInstallDirectory(string $pre_install_dir): static
     {
         if ($this->prefix != '/usr' &&  !empty($pre_install_dir)) {
-            if (SUPPPER_SKIP != true) {
+            if ( SWOOLE_CLI_BUILD_TYPE != true ) {
                 $this->cleanPreInstallDirectory = true;
                 $this->preInstallDirectory = $pre_install_dir;
             }
