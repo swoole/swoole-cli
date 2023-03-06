@@ -803,8 +803,8 @@ function install_imagemagick(Preprocessor $p)
             --with-jpeg=yes \
             --with-png=yes \
             --with-webp=yes \
-            --with-raw=no \
-            --with-tiff=no \
+            --with-raw=yes \
+            --with-tiff=yes \
             --with-zstd=yes \
             --with-lzma=yes \
             --with-xml=yes \

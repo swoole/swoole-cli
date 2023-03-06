@@ -215,6 +215,7 @@ EOF
 <?php endif; ?>
 
 <?php if ($this->osType == 'macos') : ?>
+
     # export  LIBS="-llibc++"
 <?php endif; ?>
 
