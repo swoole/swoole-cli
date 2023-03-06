@@ -66,10 +66,11 @@ if test $brew -eq 1 ;then
         export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
         export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
         # export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
-        brew install ninja  python3 pip3
+        brew install ninja  python3
         pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
     }
     fi
+}
 fi
 
 
@@ -78,17 +79,21 @@ EOF;
 if ($p->getOsType() == 'linux') {
     $cmd .=<<<'EOF'
 if test -f /etc/os-release; then
+{
     alpine=$(cat /etc/os-release | grep "ID=alpine" | wc -l)
     if test $alpine -eq 1  ;then
     {
         meson=$(which meson | wc -l )
         if test $meson -ne 1 ;then
+        {
              apk add ninja python3 py3-pip gn zip unzip 7zip
              pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
              # git config --global --add safe.directory /work
+        }
         fi
     }
     fi
+}
 fi
 
 EOF;
