@@ -934,6 +934,12 @@ function install_bison(Preprocessor $p)
             ->withManual('https://www.gnu.org/software/bison/manual/')
             ->withLabel('build_env_bin')
             ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($bison_prefix)
+            ->withScriptBeforeConfigure(<<<'EOF'
+            export PATH=$SYSTEM_PATH
+            export PKG_CONFIG_PATH=$SYSTEM_PKG_CONFIG_PATH
+EOF
+            )
             ->withConfigure(
                 "
              ./configure --help
