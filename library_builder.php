@@ -47,7 +47,7 @@ function libraries_builder($p)
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
 
     //参考 https://github.com/docker-library/php/issues/221
-    install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt
+    install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt liblzma libiconv
     install_libffi($p);
 
     install_libmcrypt($p); //无 pkg-config 配置
