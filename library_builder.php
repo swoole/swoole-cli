@@ -37,8 +37,7 @@ function libraries_builder($p)
 
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
 
-    install_libde265($p);
-    install_libheif($p); //依赖 libde265
+
     install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
     install_libraw($p);  //依赖 zlib  libjpeg
     install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib
@@ -117,6 +116,9 @@ function libraries_builder($p)
 
 
     if (0) {
+        install_libde265($p);
+        install_libheif($p); //依赖 libde265
+
         install_libyuv($p);
         install_libavif($p); //依赖 libyuv
         install_libOpenEXR($p); // 依赖Imath，不存在，会自动到github.com 下载
