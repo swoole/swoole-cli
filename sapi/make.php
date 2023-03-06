@@ -249,7 +249,7 @@ elif [ "$1" = "archive" ] ;then
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
     SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     strip swoole-cli
-    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
+    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack.php
     mv ${SWOOLE_CLI_FILE} ../
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
