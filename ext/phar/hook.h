@@ -24,9 +24,7 @@ static inline uint64_t stream_pack_reverse_int64(uint64_t arg)
 #endif
 
 static inline bool is_file_exec_self(const char *script_file) {
-	printf("is_file_exec_self, script_file=%s\n", script_file);
     if (script_file && PG(php_binary)) {
-        printf("PG(php_binary)=%s\n", PG(php_binary));
         if (0 == strcmp(PG(php_binary), script_file)) {
             return 1;
         }
@@ -34,7 +32,6 @@ static inline bool is_file_exec_self(const char *script_file) {
         if (NULL == ptr) {
             return 0;
         }
-        printf("ptr=%s, ptr+3=%s\n", ptr, ptr + 3);
         return 0 == strcmp(PG(php_binary), ptr + 3);
     }
     return 0;
@@ -53,17 +50,14 @@ static inline size_t get_sfx_end_size(void) {
 static inline int init_phar_stream_seek(php_stream *ps) {
     zend_off_t dummy;
     if (0 == ps->position) {
-        printf("seek=0\n");
         // not appending mode
         ps->ops->seek(ps, 0, SEEK_SET, &dummy);
     } else if (0 < ps->position) {
         // appending mode
         // this will only called after micro_fileinfo_init,
         //  so it's sure thatself size wont be smaller then sfx size.
-        printf("is_stream_exec_self-1\n");
         ps->position -= (is_stream_exec_self(ps) ? get_sfx_filesize() : 0) + get_sfx_end_size();
         ps->ops->seek(ps, ps->position, SEEK_SET, &dummy);
-        printf("seek=%ld\n", ps->position);
     } else {
         // self should be seekable, if not, why?
         abort();

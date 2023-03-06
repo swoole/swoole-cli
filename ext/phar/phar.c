@@ -731,7 +731,6 @@ void phar_parse_metadata_lazy(const char *buffer, phar_metadata_tracker *tracker
  */
 static int phar_parse_pharfile(php_stream *fp, char *fname, size_t fname_len, char *alias, size_t alias_len, zend_long halt_offset, phar_archive_data** pphar, uint32_t compression, char **error) /* {{{ */
 {
-	printf("phar_parse_pharfile, fname=%s, fname_len=%zu\n", fname, fname_len);
 	char b32[4], *buffer, *endbuffer, *savebuf;
 	phar_archive_data *mydata = NULL;
 	phar_entry_info entry;
@@ -2355,7 +2354,6 @@ int phar_open_executed_filename(char *alias, size_t alias_len, char **error) /* 
 		return FAILURE;
 	}
 
-	printf("fname=%s\n", fname);
 	fp = php_stream_open_wrapper(fname, "rb", IGNORE_URL|STREAM_MUST_SEEK|REPORT_ERRORS, &actual);
 
 	if (!fp) {
@@ -2369,7 +2367,6 @@ int phar_open_executed_filename(char *alias, size_t alias_len, char **error) /* 
 	}
 
 	hook_php_stream_ops *hook_ops = NULL;
-	printf("is_file_exec_self-7\n");
 	if (is_file_exec_self(fname)) {
 		hook_ops = emalloc(sizeof(hook_php_stream_ops));
 		hook_ops->ops_orig = fp->ops;

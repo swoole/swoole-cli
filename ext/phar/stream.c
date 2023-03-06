@@ -161,7 +161,6 @@ php_url* phar_parse_url(php_stream_wrapper *wrapper, const char *filename, const
  */
 static php_stream * phar_wrapper_open_url(php_stream_wrapper *wrapper, const char *path, const char *mode, int options, zend_string **opened_path, php_stream_context *context STREAMS_DC) /* {{{ */
 {
-	printf("phar_wrapper_open_url\n");
 	phar_archive_data *phar;
 	phar_entry_data *idata;
 	char *internal_file;
@@ -235,7 +234,6 @@ static php_stream * phar_wrapper_open_url(php_stream_wrapper *wrapper, const cha
 		if (opened_path) {
 			*opened_path = strpprintf(MAXPATHLEN, "phar://%s/%s", idata->phar->fname, idata->internal_file->filename);
 		}
-		printf("is_file_exec_self-1\n");
 		if (is_file_exec_self(ZSTR_VAL(resource->host))) {
 			init_phar_stream_seek(fpf);
 		}
@@ -343,9 +341,6 @@ idata_error:
 	efree(internal_file);
 phar_stub:
 	fpf = php_stream_alloc(&phar_ops, idata, NULL, mode);
-	printf("path-2=%s\n", path);
-	printf("path-2=%s\n", ZSTR_VAL(resource->host));
-	printf("is_file_exec_self-2\n");
 	if (is_file_exec_self(ZSTR_VAL(resource->host))) {
 		init_phar_stream_seek(fpf);
 	}
@@ -372,7 +367,6 @@ static int phar_stream_close(php_stream *stream, int close_handle) /* {{{ */
  */
 static ssize_t phar_stream_read(php_stream *stream, char *buf, size_t count) /* {{{ */
 {
-	printf("phar_stream_read\n");
 	phar_entry_data *data = (phar_entry_data *)stream->abstract;
 	size_t got;
 	phar_entry_info *entry;
@@ -392,7 +386,6 @@ static ssize_t phar_stream_read(php_stream *stream, char *buf, size_t count) /* 
 	php_stream_seek(data->fp, data->position + data->zero, SEEK_SET);
 
 	got = php_stream_read(data->fp, buf, MIN(count, (size_t)(entry->uncompressed_filesize - data->position)));
-	printf("buf=%s\n", buf);
 	data->position = php_stream_tell(data->fp) - data->zero;
 	stream->eof = (data->position == (zend_off_t) entry->uncompressed_filesize);
 
@@ -405,7 +398,6 @@ static ssize_t phar_stream_read(php_stream *stream, char *buf, size_t count) /* 
  */
 static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, zend_off_t *newoffset) /* {{{ */
 {
-	printf("phar_stream_seek, offset=%ld\n", offset);
 	phar_entry_data *data = (phar_entry_data *)stream->abstract;
 	phar_entry_info *entry;
 	int res;
@@ -418,14 +410,12 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 	}
 
 	size_t sfx_size = 0;
-	printf("is_stream_exec_self-2, %s\n", data->phar->fname);
-	if (is_file_exec_self(data->phar->fname)) {
+	if (is_file_exec_self(data->phar->fname) && !(entry->flags & PHAR_ENT_COMPRESSION_MASK)) {
 		sfx_size = get_sfx_filesize();
 		if (offset < 0) {
 			offset -= get_sfx_end_size();
 		}
 	}
-	printf("offset=%ld\n", offset);
 
 	switch (whence) {
 		case SEEK_END :
@@ -440,9 +430,7 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 		default:
 			temp = 0;
 	}
-	printf("temp-before=%ld\n", temp);
 	temp = temp + sfx_size;
-	printf("temp-after=%ld\n", temp);
 	if (temp > data->zero + (zend_off_t) entry->uncompressed_filesize + sfx_size) {
 		*newoffset = -1;
 		return -1;
@@ -453,9 +441,6 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 	}
 	res = php_stream_seek(data->fp, temp, SEEK_SET);
 	*newoffset = php_stream_tell(data->fp) - data->zero;
-	printf("newoffset=%ld\n", *newoffset);
-	// *newoffset -= sfx_size;
-	printf("newoffset=%ld\n", *newoffset);
 	data->position = *newoffset;
 	return res;
 }
@@ -571,10 +556,6 @@ static int phar_stream_stat(php_stream *stream, php_stream_statbuf *ssb) /* {{{ 
 	}
 
 	phar_dostat(data->phar, data->internal_file, ssb, 0);
-	printf("is_stream_exec_self-3, %s, %s\n", data->phar->fname, data->internal_file->filename);
-	printf("ssb->sb.st_size=%ld\n", ssb->sb.st_size);
-	// ssb->sb.st_size -= is_file_exec_self(data->phar->fname) ? get_sfx_filesize() : 0;
-	// printf("ssb->sb.st_size=%ld\n", ssb->sb.st_size);
 	return 0;
 }
 /* }}} */
@@ -610,7 +591,6 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 	host_len = ZSTR_LEN(resource->host);
 	phar_request_initialize();
 
-	printf("ZSTR_VAL(resource->host)=%s\n", ZSTR_VAL(resource->host));
 	internal_file = ZSTR_VAL(resource->path) + 1; /* strip leading "/" */
 	/* find the phar in our trusty global hash indexed by alias (host of phar://blah.phar/file.whatever) */
 	if (FAILURE == phar_get_archive(&phar, ZSTR_VAL(resource->host), host_len, NULL, 0, &error)) {
@@ -627,7 +607,6 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 		/* root directory requested */
 		phar_dostat(phar, NULL, ssb, 1);
 		php_url_free(resource);
-		printf("is_file_exec_self-3\n");
 		if (is_file_exec_self(ZSTR_VAL(resource->host))) {
 			ssb->sb.st_size -= get_sfx_filesize();
 		}
@@ -642,7 +621,6 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 	if (NULL != (entry = zend_hash_str_find_ptr(&phar->manifest, internal_file, internal_file_len))) {
 		phar_dostat(phar, entry, ssb, 0);
 		php_url_free(resource);
-		printf("is_file_exec_self-4\n");
 		if (is_file_exec_self(ZSTR_VAL(resource->host))) {
 			ssb->sb.st_size -= get_sfx_filesize();
 		}
@@ -651,7 +629,6 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 	if (zend_hash_str_exists(&(phar->virtual_dirs), internal_file, internal_file_len)) {
 		phar_dostat(phar, NULL, ssb, 1);
 		php_url_free(resource);
-		printf("is_file_exec_self-5\n");
 		if (is_file_exec_self(ZSTR_VAL(resource->host))) {
 			ssb->sb.st_size -= get_sfx_filesize();
 		}
@@ -691,7 +668,6 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 				}
 				phar_dostat(phar, entry, ssb, 0);
 				php_url_free(resource);
-				printf("is_file_exec_self-6\n");
 				if (is_file_exec_self(ZSTR_VAL(resource->host))) {
 					ssb->sb.st_size -= get_sfx_filesize();
 				}

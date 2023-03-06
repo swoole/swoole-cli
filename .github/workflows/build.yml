@@ -27,9 +27,18 @@ jobs:
             ./bin/swoole-cli-test ./tests/test.php
             ./bin/swoole-cli-test --self
             ./bin/swoole-cli -dphar.readonly=0 ./tests/build-phar.php
-            ./bin/swoole-cli ./bin/pack.php ./tests/test.phar ./bin/swoole-cli-test-phar
-            ./bin/swoole-cli-test-phar ./tests/test.phar
+
+            ./bin/swoole-cli tests/test-none.phar
+            ./bin/swoole-cli bin/pack.php tests/test-none.phar ./bin/swoole-cli-test-phar
             ./bin/swoole-cli-test-phar --self
+
+            ./bin/swoole-cli tests/test-gz.phar
+            ./bin/swoole-cli bin/pack.php tests/test-gz.phar ./bin/swoole-cli-test-phar-gz
+            ./bin/swoole-cli-test-phar-gz --self
+
+            ./bin/swoole-cli tests/test-bz2.phar
+            ./bin/swoole-cli bin/pack.php tests/test-bz2.phar ./bin/swoole-cli-test-phar-bz2
+            ./bin/swoole-cli-test-phar-bz2 --self
   cygwin:
     if: 0
     runs-on: windows-latest

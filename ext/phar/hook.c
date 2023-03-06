@@ -33,7 +33,6 @@ size_t get_sfx_filesize(void) {
 }
 
 int hook_plain_stream_seek(php_stream *stream, zend_off_t offset, int whence, zend_off_t *newoffset) {
-    printf("hook_plain_stream_seek, offset=%ld\n", offset);
     int ret = -1;
     zend_off_t realoffset;
 
@@ -61,7 +60,6 @@ int hook_plain_stream_seek(php_stream *stream, zend_off_t offset, int whence, ze
 }
 
 int hook_plain_stream_stat(php_stream *stream, php_stream_statbuf *ssb) {
-    printf("hook_plain_stream_stat\n");
     int ret = -1;
 
     orig_ops(myops, stream);
