@@ -768,7 +768,7 @@ EOF
 
 function install_pgsql(Preprocessor $p): void
 {
-    $pgsql_prefix= PGSQL_PREFIX ;
+    $pgsql_prefix = PGSQL_PREFIX ;
 
     $openssl_prefix = OPENSSL_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
@@ -894,7 +894,7 @@ EOF
 EOF
 )
             ->withPkgName('libpq')
-            ->withBinPath($pgsql_prefix . '/bin/')
+            ->withBinPath( $pgsql_prefix . '/bin/')
     );
 }
 

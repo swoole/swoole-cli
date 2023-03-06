@@ -231,7 +231,15 @@ EOF
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
 
-    <?= $this->configureVarables ?> ./configure $OPTIONS
+    pg_config --help
+    pg_config --cppflags
+    pg_config --cflags
+    pg_config --ldflags
+    pg_config --libs
+    echo $PATH
+
+    # <?= $this->configureVarables ?> ./configure $OPTIONS
+    ./configure $OPTIONS
 
 }
 
