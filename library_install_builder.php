@@ -252,7 +252,7 @@ function install_readline(Preprocessor $p)
                 --enable-static \
                 --disable-shared \
                 --with-curses \
-                --enable-multibyte 
+                --enable-multibyte
 EOF
             )
             ->withPkgName('readline')
@@ -421,7 +421,7 @@ function install_libzstd(Preprocessor $p)
             -DZSTD_BUILD_PROGRAMS=ON \
             -DZSTD_BUILD_SHARED=OFF \
             -DZSTD_BUILD_TESTS=OFF \
-            -DZSTD_LEGACY_SUPPORT=ON 
+            -DZSTD_LEGACY_SUPPORT=ON
 EOF
             )
             ->withMakeOptions('lib')
@@ -614,18 +614,18 @@ function install_libidn2(Preprocessor $p)
             ->withPrefix($libidn2_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help 
-            
+            ./configure --help
+
             #  intl  依赖  gettext
             # 解决依赖  apk add  gettext  coreutils
-            
+
             ./configure --prefix={$libidn2_prefix} \
             enable_static=yes \
             enable_shared=no \
             --disable-doc \
             --with-libiconv-prefix={$libiconv_prefix} \
             --with-libintl-prefix
-             
+
 EOF
             )
             ->withPkgName('libidn2')
@@ -694,12 +694,27 @@ function install_curl(Preprocessor $p)
             LDFLAGS="$(pkg-config --libs-only-L      --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
             LIBS="$(pkg-config --libs-only-l         --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
             ./configure --prefix={$curl_prefix}  \
-            --enable-static --disable-shared \
-            --without-librtmp --disable-ldap --disable-rtsp \
-            --enable-http --enable-alt-svc --enable-hsts --enable-http-auth --enable-mime --enable-cookies \
-            --enable-doh --enable-threaded-resolver --enable-ipv6 --enable-proxy  \
-            --enable-websockets --enable-get-easy-options \
-            --enable-file --enable-mqtt --enable-unix-sockets  --enable-progress-meter \
+            --enable-static \
+            --disable-shared \
+            --without-librtmp \
+            --disable-ldap \
+            --disable-rtsp \
+            --enable-http \
+            --enable-alt-svc \
+            --enable-hsts \
+            --enable-http-auth \
+            --enable-mime \
+            --enable-cookies \
+            --enable-doh \
+            --enable-threaded-resolver \
+            --enable-ipv6 \
+            --enable-proxy  \
+            --enable-websockets \
+            --enable-get-easy-options \
+            --enable-file \
+            --enable-mqtt \
+            --enable-unix-sockets  \
+            --enable-progress-meter \
             --enable-optimize \
             --with-zlib={$zlib_prefix} \
             --with-openssl={$openssl_prefix} \
@@ -710,7 +725,7 @@ function install_curl(Preprocessor $p)
             --with-default-ssl-backend=openssl \
             --without-nghttp2 \
             --without-ngtcp2 \
-            --without-nghttp3 
+            --without-nghttp3
 EOF
             )
             ->withPkgName('libcurl')
@@ -802,15 +817,15 @@ EOF;
             ->withBuildScript(
                 <<<'EOF'
             ./configure --help
-            
+
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
-  
+
             # 替换指定行内容
             sed -i.backup "102c all: all-lib" src/interfaces/libpq/Makefile
-           
+
             # export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
             # export CFLAGS="-static -fPIE -fPIC -O2 -Wall "
-            
+
             package_names="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib libxslt"
 
             CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
@@ -819,10 +834,10 @@ EOF;
             export   LDFLAGS="$LDFLAGS -L/usr/lib"
             LIBS=$(pkg-config      --libs-only-l   --static $package_names )
             export  LIBS="$LIBS "
-            
+
 EOF
                 .          <<<EOF
-          
+
             ./configure  --prefix={$pgsql_prefix} \
             --enable-coverage=no \
             --with-ssl=openssl  \
@@ -836,42 +851,42 @@ EOF
 EOF
                 .   <<<'EOF'
 
-            make -C src/include install 
+            make -C src/include install
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-            
+
             make -C  src/bin/pg_config install
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-            
-            
-            make -C  src/common -j $cpu_nums all 
-            make -C  src/common install 
+
+
+            make -C  src/common -j $cpu_nums all
+            make -C  src/common install
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-            
-            make -C  src/port -j $cpu_nums all 
-            make -C  src/port install 
+
+            make -C  src/port -j $cpu_nums all
+            make -C  src/port install
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-                        
-            make -C  src/backend/libpq -j $cpu_nums all 
-            make -C  src/backend/libpq install 
+
+            make -C  src/backend/libpq -j $cpu_nums all
+            make -C  src/backend/libpq install
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-                        
+
             make -C src/interfaces/ecpg   -j $cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
             make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-                        
+
             # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
-            
+
             make -C src/interfaces/libpq  -j $cpu_nums # soname=true
-            make -C src/interfaces/libpq  install 
+            make -C src/interfaces/libpq  install
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-                        
+
             rm -rf /usr/pgsql/lib/*.so.*
             rm -rf /usr/pgsql/lib/*.so
 EOF
@@ -898,7 +913,7 @@ function install_libffi($p)
             ./configure \
             --prefix={$libffi_prefix} \
             --enable-shared=no \
-            --enable-static=yes 
+            --enable-static=yes
             "
             )
             ->withPkgName('libffi')
@@ -919,7 +934,7 @@ function install_bison(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 "
-             ./configure --help 
+             ./configure --help
              ./configure --prefix={$bison_prefix}
             "
             )
@@ -945,7 +960,7 @@ function install_re2c(Preprocessor $p)
             )
             ->withConfigure(
                 "
-             ./configure --help 
+             ./configure --help
              ./configure --prefix=/usr/re2c
             "
             )
