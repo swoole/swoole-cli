@@ -40,7 +40,7 @@ function libraries_builder($p)
 
     install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
     install_libraw($p);  //依赖 zlib  libjpeg
-    install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib
+    install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma libjxl libraw libtiff bzlib
 
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
