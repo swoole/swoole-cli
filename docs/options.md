@@ -16,8 +16,16 @@
 skip-download
 ----
 跳过下载依赖库
+
+> 会自动生成，待下载链接地址
+> 链接地址生成在 项目根目录下的 `var` 目录
+
 ```shell
 ./prepare.php --skip-download
+
+# 构建依赖库之前，批量下载依赖库和扩展的脚本
+sh sapi/download-dependencies-use-aria2.sh
+
 ```
 
 with-brotli
