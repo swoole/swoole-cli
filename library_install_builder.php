@@ -879,17 +879,22 @@ EOF
             make -C src/interfaces/libpq  install
   
 
-            rm -rf /usr/pgsql/lib/*.so.*
-            rm -rf /usr/pgsql/lib/*.so
+        
             
-            unset CPPFLAGS
-            unset LDFLAGS
-            unset LIBS
+            export -n CPPFLAGS
+            export -n LDFLAGS
+            export -n LIBS
             
 EOF
             )
+            ->withScriptAfterInstall(<<<EOF
+            rm -rf {$pgsql_prefix}/lib/*.so.*
+            rm -rf {$pgsql_prefix}/lib/*.so
+            rm -rf {$pgsql_prefix}/lib/*.dylib
+EOF
+)
             ->withPkgName('libpq')
-            ->withBinPath($pgsql_prefix.'/bin/')
+            ->withBinPath($pgsql_prefix . '/bin/')
     );
 }
 
