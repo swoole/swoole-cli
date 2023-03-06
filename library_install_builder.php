@@ -816,8 +816,7 @@ EOF;
             ->withCleanPreInstallDirectory($pgsql_prefix)
             ->withBuildScript(
                 <<<'EOF'
-            ./configure --help
-
+           
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
 
             # 替换指定行内容
@@ -836,8 +835,8 @@ EOF;
             export  LIBS="$LIBS "
 
 EOF
-                .          <<<EOF
-
+                . PHP_EOL . <<<EOF
+            ./configure --help
             ./configure  --prefix={$pgsql_prefix} \
             --enable-coverage=no \
             --with-ssl=openssl  \
@@ -845,50 +844,48 @@ EOF
             --with-icu \
             --without-ldap \
             --with-libxml  \
-            --with-libxslt \
+            --with-libxslt 
             # --with-includes="{$includes}" \
             # --with-libraries="{$libraries}"
+            
 EOF
-                .   <<<'EOF'
+                . PHP_EOL . <<<'EOF'
+            result_code=$?
+            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
 
             make -C src/include install
-            result_code=$?
-            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
 
             make -C  src/bin/pg_config install
-            result_code=$?
-            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-
-
+     
             make -C  src/common -j $cpu_nums all
             make -C  src/common install
-            result_code=$?
-            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
+     
 
             make -C  src/port -j $cpu_nums all
             make -C  src/port install
-            result_code=$?
-            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
+
 
             make -C  src/backend/libpq -j $cpu_nums all
             make -C  src/backend/libpq install
-            result_code=$?
-            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
+         
 
             make -C src/interfaces/ecpg   -j $cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
             make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
-            result_code=$?
-            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
+      
 
             # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
 
             make -C src/interfaces/libpq  -j $cpu_nums # soname=true
             make -C src/interfaces/libpq  install
-            result_code=$?
-            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
+  
 
             rm -rf /usr/pgsql/lib/*.so.*
             rm -rf /usr/pgsql/lib/*.so
+            
+            unset CPPFLAGS
+            unset LDFLAGS
+            unset LIBS
+            
 EOF
             )
             ->withPkgName('libpq')
