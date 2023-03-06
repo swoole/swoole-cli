@@ -5,6 +5,5 @@ foreach(['none' => Phar::NONE, 'gz' => Phar::GZ, 'bz2' => Phar::BZ2] as $name =>
     $phar->setDefaultStub('test.php');
     if (Phar::NONE !== $compress) {
         $phar->compressFiles($compress);
-        $phar->compress($compress);
     }
 }
