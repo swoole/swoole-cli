@@ -67,8 +67,6 @@ EOF
             )
             ->withPkgName('libcurl')
             ->depends('openssl', 'cares', 'zlib')
-
     );
-
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
 };
