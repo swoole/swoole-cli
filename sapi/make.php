@@ -238,7 +238,29 @@ EOF
     pg_config --libs
     echo $PATH
 
+    package_names="readline icu-i18n  icu-io   icu-uc libpq libffi"
+    package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
+    package_names="${package_names} xlsxwriter libpq ncursesw"
+
+    #  -I<?= LIBMCRYPT_PREFIX ?>/include
+    #  -L<?= LIBMCRYPT_PREFIX ?>/lib
+    #  -lmcrypt
+
+    CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
+    export   CPPFLAGS="$CPPFLAGS -I/usr/include"
+
+    <?= $this->configureVarables . PHP_EOL  ?>
+    LDFLAGS_2=$(pkg-config   --libs-only-L   --static $package_names )
+    LDFLAGS="$LDFLAGS_2 $LDFLAGS  -L/usr/lib "
+    export   LDFLAGS="$LDFLAGS"
+
+    LIBS=$(pkg-config      --libs-only-l   --static $package_names )
+    export  LIBS="$LIBS  "
+
     # <?= $this->configureVarables ?> ./configure $OPTIONS
+
+    ./configure --help | grep hash
+
     ./configure $OPTIONS
 
 }
