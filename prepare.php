@@ -67,7 +67,7 @@ if test $brew -eq 1 ;then
         export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
         # export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
         brew install ninja  python3
-        pip3 install meson -i https://pypi.tuna.tsinghua.edu.cn/simple
+        pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
     }
     fi
 }
