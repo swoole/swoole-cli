@@ -20,6 +20,8 @@ export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 export ORIGIN_PATH=$PATH
 
 OPTIONS="--disable-all \
+--enable-shared=no \
+--enable-static=yes \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
 <?php endforeach; ?>
@@ -186,12 +188,6 @@ make_config() {
     export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
     export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
 
-
-<?php if ($this->getOsType() == 'linux') : ?>
-    export  LIBS="$LIBS -lmcrypt -lstdc++"
-<?php endif; ?>
-
-
     package_names="readline icu-i18n  icu-io   icu-uc libpq libffi"
     package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
     package_names="${package_names} xlsxwriter libpq ncursesw"
@@ -205,6 +201,7 @@ make_config() {
 
     export   CFLAGS="-std=c11"
 
+    LDFLAGS=""
     <?= $this->configureVarables . PHP_EOL  ?>
     LDFLAGS="$LDFLAGS $(pkg-config   --libs-only-L   --static $package_names )"
     LDFLAGS="$LDFLAGS -L/usr/lib "
@@ -233,8 +230,10 @@ make_config() {
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
 
+    ./configure --help | grep -e '--enable'
+    ./configure --help | grep -e '--with'
     ./configure --help | grep hash
-
+    exit 0
     ./configure $OPTIONS
 
 }
