@@ -249,6 +249,8 @@ EOF
     CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
     export   CPPFLAGS="$CPPFLAGS -I/usr/include"
 
+    export   CFLAGS="-std=c11"
+
     <?= $this->configureVarables . PHP_EOL  ?>
     LDFLAGS_2=$(pkg-config   --libs-only-L   --static $package_names )
     LDFLAGS="$LDFLAGS_2 $LDFLAGS  -L/usr/lib "
