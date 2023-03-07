@@ -171,72 +171,26 @@ make_all_library() {
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 
-:<<'EOF'
-    export   NCURSES_CFLAGS=$(pkg-config --cflags --static  ncurses);
-    export   NCURSES_LIBS=$(pkg-config  --libs --static ncurses);
-
-    export   READLINE_CFLAGS=$(pkg-config --cflags --static readline)  ;
-    export   READLINE_LIBS=$(pkg-config  --libs --static readline)  ;
-EOF
-
     set -uex
 
-    export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
-    export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
+    export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
+    export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
     export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
     export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
     export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
     export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
-    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
-    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
-    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static       libpq)
-    export   LIBPQ_LIBS=$(pkg-config    --libs   --static       libpq)
+    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
+    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
+    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static libpq)
+    export   LIBPQ_LIBS=$(pkg-config    --libs   --static libpq)
+    export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
+    export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
 
 
 <?php if ($this->getOsType() == 'linux') : ?>
-    export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
-    export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
-
-    # export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
-    # LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc libpq libffi)
-    # export LIBS="$LIBS -L/usr/lib -lstdc++"
-
-    package_names="readline icu-i18n  icu-io   icu-uc libpq libffi"
-    package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
-    package_names="${package_names} xlsxwriter"
-
-    CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
-    export   CPPFLAGS="$CPPFLAGS -I/usr/libmcrypt/include -I/usr/include"
-    LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
-    export   LDFLAGS="$LDFLAGS -L/usr/libmcrypt/lib -L/usr/lib"
-    LIBS=$(pkg-config      --libs-only-l   --static $package_names )
     export  LIBS="$LIBS -lmcrypt -lstdc++"
-
 <?php endif; ?>
 
-<?php if ($this->osType == 'macos') : ?>
-
-    # export  LIBS="-llibc++"
-<?php endif; ?>
-
-    #  gnutls libnghttp3 libngtcp2 p11-kit-1
-    test -f ./configure &&  rm ./configure
-    ./buildconf --force
-<?php if ($this->osType !== 'macos') : ?>
-    mv main/php_config.h.in /tmp/cnt
-    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
-    cat /tmp/cnt >> main/php_config.h.in
-    echo -ne '\n#endif\n' >> main/php_config.h.in
-<?php endif; ?>
-    echo $OPTIONS
-    echo $PKG_CONFIG_PATH
-
-    pg_config --help
-    pg_config --cppflags
-    pg_config --cflags
-    pg_config --ldflags
-    pg_config --libs
-    echo $PATH
 
     package_names="readline icu-i18n  icu-io   icu-uc libpq libffi"
     package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
@@ -252,14 +206,32 @@ EOF
     export   CFLAGS="-std=c11"
 
     <?= $this->configureVarables . PHP_EOL  ?>
-    LDFLAGS_2=$(pkg-config   --libs-only-L   --static $package_names )
-    LDFLAGS="$LDFLAGS_2 $LDFLAGS  -L/usr/lib "
+    LDFLAGS="$LDFLAGS $(pkg-config   --libs-only-L   --static $package_names )"
+    LDFLAGS="$LDFLAGS -L/usr/lib "
     export   LDFLAGS="$LDFLAGS"
 
     LIBS=$(pkg-config      --libs-only-l   --static $package_names )
+
+<?php if ($this->getOsType() == 'linux') : ?>
+    LIBS="$LIBS -lstdc++"
+<?php endif; ?>
+<?php if ($this->osType == 'macos') : ?>
+    # export  LIBS="-llibc++"
+<?php endif; ?>
+
     export  LIBS="$LIBS  "
 
-    # <?= $this->configureVarables ?> ./configure $OPTIONS
+
+    test -f ./configure &&  rm ./configure
+    ./buildconf --force
+<?php if ($this->osType !== 'macos') : ?>
+    mv main/php_config.h.in /tmp/cnt
+    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
+    cat /tmp/cnt >> main/php_config.h.in
+    echo -ne '\n#endif\n' >> main/php_config.h.in
+<?php endif; ?>
+    echo $OPTIONS
+    echo $PKG_CONFIG_PATH
 
     ./configure --help | grep hash
 

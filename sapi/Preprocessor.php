@@ -96,7 +96,7 @@ class Library extends Project
 
     public string $label = '';
 
-    function withUrl(string $url): static
+    public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
@@ -126,13 +126,13 @@ class Library extends Project
         return $this;
     }
 
-    public function withBuildScript(string $script):static
+    public function withBuildScript(string $script): static
     {
         $this->buildScript = $script;
         return $this;
     }
 
-    function withConfigure(string $configure): static
+    public function withConfigure(string $configure): static
     {
         $this->configure = $configure;
         return $this;
@@ -146,7 +146,7 @@ class Library extends Project
 
     public function withCleanBuildDirectory(): static
     {
-        if ( SWOOLE_CLI_BUILD_TYPE != true ) {
+        if (!SWOOLE_CLI_BUILD_TYPE) {
             $this->cleanBuildDirectory = true;
         }
         return $this;
@@ -154,8 +154,8 @@ class Library extends Project
 
     public function withCleanPreInstallDirectory(string $pre_install_dir): static
     {
-        if ($this->prefix != '/usr' &&  !empty($pre_install_dir)) {
-            if ( SWOOLE_CLI_BUILD_TYPE != true ) {
+        if (!empty($this->prefix) && ($this->prefix != '/usr') &&  !empty($pre_install_dir)) {
+            if (!SWOOLE_CLI_BUILD_TYPE) {
                 $this->cleanPreInstallDirectory = true;
                 $this->preInstallDirectory = $pre_install_dir;
             }
@@ -279,7 +279,6 @@ class Library extends Project
         $this->label=$label;
         return $this;
     }
-
 }
 
 class Extension extends Project
@@ -427,7 +426,6 @@ class Preprocessor
                 $this->setOsType('win');
                 break;
         }
-
     }
 
     public static function getInstance(): static

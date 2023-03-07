@@ -35,11 +35,11 @@ function libraries_builder($p)
     install_libpng($p); //依赖 zlib
     install_libwebp($p); //依赖 libgif libpng libjpeg
 
-    install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
-
-
     install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd libwebp
     install_libraw($p);  //依赖 zlib  libjpeg
+
+    install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
+
     install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma libjxl libraw libtiff bzlib
 
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
@@ -83,7 +83,7 @@ function libraries_builder($p)
     }
 
     if ($p->getOsType() == 'macos') {
-       // install_bison($p);  // 源码编译bison
+        install_bison($p);  // 源码编译bison
     }
 
     if (0) {
@@ -99,6 +99,10 @@ function libraries_builder($p)
             install_php_internal_extension_curl_patch($p); //修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
         }
     }
+
+    //====================================
+    ///      TEST  验证
+    //====================================
 
     if (0) {
         install_zookeeper_client($p);
@@ -116,6 +120,10 @@ function libraries_builder($p)
 
 
     if (0) {
+        install_libfribidi($p); //以来c2man
+        //文本绘制引擎
+        install_harfbuzz($p); //依赖ninja icu
+
         install_libde265($p);
         install_libheif($p); //依赖 libde265
 
@@ -289,5 +297,14 @@ function libraries_builder($p)
     if (0) {
         install_grpc($p); //use protobuf  https://github.com/grpc/grpc.git
         install_thrift($p); //https://thrift.apache.org/
+    }
+    if (0) {
+         //一个为异构并行计算平台编写程序的工业标准
+        install_opencl($p); //OpenCL全称为Open Computing Language（开放计算语言） OpenCL不但支持数据并行，还支持任务并行
+        //用于共享内存并行系统的多处理器程序设
+        //Openmp和thread都是共享一个进程内存的并行，openmp最显著的特点是命令式(directive-based)语言
+        //install_openmp($p);
+
+        //并发编程：SIMD 介绍  https://zhuanlan.zhihu.com/p/416172020
     }
 }

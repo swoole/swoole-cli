@@ -45,8 +45,7 @@ define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
 define("LIBLZ4_PREFIX", $p->getGlobalPrefix() . '/liblz4');
 define("LIBLZMA_PREFIX", $p->getGlobalPrefix() . '/liblzma');
 define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
-define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
-define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
+
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
@@ -54,6 +53,18 @@ define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
+define("LIBUV_PREFIX", $p->getGlobalPrefix() . '/libuv');
+
+define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
+define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
+
+
+
+//  test
+define("HARFBUZZ_PREFIX", $p->getGlobalPrefix() . '/harfbuzz');
+define("LIBFRIBIDI_PREFIX", $p->getGlobalPrefix() . '/libfribidi');
+
+define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
 
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
 define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
@@ -62,10 +73,8 @@ define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
 
-define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
-define("LIBUV_PREFIX", $p->getGlobalPrefix() . '/libuv');
-
-
 define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
 
-define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
+
+
+define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');

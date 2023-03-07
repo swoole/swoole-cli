@@ -65,20 +65,20 @@ function install_libgif(Preprocessor $p)
                 ->withPrefix('/usr/giflib')
                 ->withScriptBeforeConfigure(
                     '
-    
+
                 default_prefix_dir="/ u s r" # 阻止 macos 系统下编译路径被替换
                 # 替换空格
                 default_prefix_dir=$(echo "$default_prefix_dir" | sed -e "s/[ ]//g")
-                
+
                 sed -i.bakup "s@PREFIX = $default_prefix_dir/local@PREFIX = /usr/giflib@" Makefile
-           
+
                 cat >> Makefile <<"EOF"
 install-lib-static:
     $(INSTALL) -d "$(DESTDIR)$(LIBDIR)"
     $(INSTALL) -m 644 libgif.a "$(DESTDIR)$(LIBDIR)/libgif.a"
 EOF
-              
-               
+
+
                 '
                 )
                 ->withMakeOptions('libgif.a')
@@ -105,14 +105,14 @@ function install_libpng(Preprocessor $p)
             ->withCleanPreInstallDirectory($libpng_prefix)
             ->withConfigure(
                 <<<EOF
-                ./configure --help 
+                ./configure --help
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
                 LDFLAGS="$(pkg-config --libs-only-L      --static zlib )" \
                 LIBS="$(pkg-config --libs-only-l         --static zlib )" \
                 ./configure --prefix={$libpng_prefix} \
                 --enable-static --disable-shared \
                 --with-zlib-prefix={$libzlib_prefix} \
-                --with-binconfigs 
+                --with-binconfigs
 EOF
             )
             ->withPkgName('libpng16')
@@ -183,33 +183,33 @@ function install_libyuv(Preprocessor $p)
             set -uex
             pwd
             ls -lh .
-            cd libyuv 
-            
-            
+            cd libyuv
+
+
             ls -lh .
-            
-            make -f linux.mk 
+
+            make -f linux.mk
             mkdir -p $libyuv_prefix/lib
             cp -rf libyuv.a  $libyuv_prefix/lib
             cp -rf include $libyuv_prefix/
-            
+
             exit  0
             gn gen out/Release "--args=is_debug=false"
-            
+
             ninja -v -C out/Release
             exit  0
-           
-        
-            #  cmake默认查找到的是动态库 ; cmake 优先使用静态库  
+
+
+            #  cmake默认查找到的是动态库 ; cmake 优先使用静态库
             #  参考 https://blog.csdn.net/10km/article/details/82931978
-            
+
             # sed -i '/find_package ( JPEG )/i set( JPEG_NAMES libjpeg.a )'  CMakeLists.txt
-            
-            # -DJPEG_LIBRARY_RELEASE={$libjpeg_prefix}/lib/libjpeg.a 
+
+            # -DJPEG_LIBRARY_RELEASE={$libjpeg_prefix}/lib/libjpeg.a
             # CMAKE_INCLUDE_PATH 和 CMAKE_LIBRARY_PATH
-            
+
             # -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
-            
+
             mkdir -p build
             cd build
             cmake \
@@ -217,12 +217,12 @@ function install_libyuv(Preprocessor $p)
             -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
             -DCMAKE_BUILD_TYPE="Release"  \
             -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
-            -DBUILD_SHARED_LIBS=OFF  .. 
-            
+            -DBUILD_SHARED_LIBS=OFF  ..
+
             cmake --build . --config Release
             cmake --build . --target install --config Release
-            
-      
+
+
 EOF
             )
             ->withPkgName('')
@@ -254,8 +254,8 @@ function install_libavif(Preprocessor $p)
             -DAVIF_CODEC_DAV1D=OFF \
             -DAVIF_CODEC_LIBGAV1=OFF \
             -DAVIF_CODEC_RAV1E=OFF
-            exit 0 
-               
+            exit 0
+
 EOF
             )
             ->withPkgName('libavif')
@@ -282,7 +282,7 @@ function install_libde265(Preprocessor $p)
         ./configure --help
         ./configure --prefix={$libde265_prefix} \
         --enable-shared=no \
-        --enable-static=yes 
+        --enable-static=yes
 EOF
         )
         ->withPkgName('libde265');
@@ -304,7 +304,7 @@ function install_libheif(Preprocessor $p)
         ->withConfigure(
             <<<'EOF'
             ./configure --help
-            
+
             libde265_CFLAGS=$(pkg-config  --cflags --static libde265 ) \
             libde265_LIBS=$(pkg-config    --libs   --static libde265 ) \
             libpng_CFLAGS=$(pkg-config  --cflags --static libpng ) \
@@ -344,10 +344,42 @@ function install_graphite2(Preprocessor $p)
             cmake   ..  \
             -DCMAKE_INSTALL_PREFIX={$graphite2_prefix} \
             -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_SHARED_LIBS=OFF 
+            -DBUILD_SHARED_LIBS=OFF
             "
             )
             ->withPkgName('graphite2')
+    );
+}
+
+function install_libfribidi(Preprocessor $p)
+{
+    $libfribidi_prefix = LIBFRIBIDI_PREFIX;
+    $p->addLibrary(
+        (new Library('libfribidi'))
+            ->withLicense('https://github.com/fribidi/fribidi/blob/master/COPYING', Library::LICENSE_LGPL)
+            ->withHomePage('https://github.com/fribidi/fribidi.git')
+            ->withUrl('https://github.com/fribidi/fribidi/archive/refs/tags/v1.0.12.tar.gz')
+            ->withFile('fribidi-v1.0.12.tar.gz')
+            ->withLabel('library')
+            ->withPrefix($libfribidi_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libfribidi_prefix)
+            ->withConfigure(
+                "
+
+                # 可以使用 meson
+                # meson setup  build
+
+                sh autogen.sh
+                ./configure --help
+
+                ./configure \
+                --prefix={$libfribidi_prefix} \
+                --enable-static=yes \
+                --enable-shared=no
+            "
+            )
+            ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
     );
 }
 function install_harfbuzz(Preprocessor $p)
@@ -362,7 +394,7 @@ function install_harfbuzz(Preprocessor $p)
             ->withLabel('library')
             ->withPrefix($harfbuzz_prefix)
             ->withCleanBuildDirectory()
-
+            ->withCleanPreInstallDirectory($harfbuzz_prefix)
             ->withBuildScript(
                 "
                 meson help
@@ -381,9 +413,9 @@ function install_harfbuzz(Preprocessor $p)
 
                 meson compile -C build
                 meson install -C build
-                # ninja -C builddir
-                # ninja -C builddir install
-              
+                # ninja -C build
+                # ninja -C build install
+
             "
             )
             ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
@@ -412,7 +444,7 @@ function install_freetype(Preprocessor $p)
             ->withCleanPreInstallDirectory($freetype_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help  
+            ./configure --help
             BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
             BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
             CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  harfbuzz libbrotlicommon  libbrotlidec  libbrotlienc)" \
@@ -424,8 +456,8 @@ function install_freetype(Preprocessor $p)
             --with-zlib=yes \
             --with-bzip2=yes \
             --with-png=yes \
-            --with-harfbuzz=yes  \
-            --with-brotli=yes 
+            --with-harfbuzz=no  \
+            --with-brotli=yes
 EOF
             )
             ->withHomePage('https://freetype.org/')
@@ -458,9 +490,9 @@ function install_libgd2($p)
         export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
         export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
         export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-        
+
         echo $LIBS
-    
+
 EOF . PHP_EOL . <<<EOF
         ./configure \
         --prefix={$libgd_prefix} \
@@ -470,7 +502,7 @@ EOF . PHP_EOL . <<<EOF
         --with-libiconv-prefix={$libiconv_prefix}
          # --with-freetype=/usr/freetype \
 
-:<<'_EOF_'       
+:<<'_EOF_'
         mkdir -p build
         cd build
         cmake   ..  \
@@ -485,13 +517,13 @@ EOF . PHP_EOL . <<<EOF
         -DENABLE_WEBP=1 \
         -DENABLE_HEIF=1 \
         -DENABLE_AVIF=1 \
-        -DENABLE_WEBP=1 
-        
+        -DENABLE_WEBP=1
+
         cmake --build . -- -j$(nproc)
-        exit 0 
-        cmake --install . 
+        exit 0
+        cmake --install .
 _EOF_
-        
+
 EOF
         )
         ->withMakeInstallCommand('')
@@ -521,9 +553,9 @@ function install_GraphicsMagick($p)
         export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
         export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
         export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-        
+
         echo $LIBS
-    
+
 EOF . PHP_EOL . <<<EOF
         ./configure \
         --prefix={$GraphicsMagick_prefix} \
@@ -558,7 +590,7 @@ function install_libtiff(Preprocessor $p)
             <<<'EOF'
             ./configure --help
             package_names="zlib libjpeg libturbojpeg liblzma  libzstd libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
-            
+
             CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names ) \
             LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names ) \
             LIBS=$(pkg-config      --libs-only-l   --static $package_names ) \
@@ -595,7 +627,7 @@ function install_libXpm(Preprocessor $p)
          # 依赖 xorg-macros
          # 解决依赖
          # apk add util-macros
-         # apk add libxpm-dev 
+         # apk add libxpm-dev
 EOF
         )
         ->withConfigure(
@@ -607,7 +639,7 @@ EOF
             --enable-static=yes \
             --disable-docs \
             --disable-tests \
-            --enable-strict-compilation 
+            --enable-strict-compilation
 
 EOF
         )
@@ -634,7 +666,7 @@ function install_libraw(Preprocessor $p)
             # ZLIB_CFLAGS=$(pkg-config  --cflags --static zlib )
             # ZLIB_LIBS=$(pkg-config    --libs   --static zlib )
 
-          
+
             package_names="zlib libjpeg libturbojpeg "
             CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names ) \
             LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names ) \
@@ -648,13 +680,15 @@ EOF
             --enable-shared=no \
             --enable-static=yes \
             --enable-jpeg \
-            --enable-zlib 
+            --enable-zlib
 EOF
         )
         ->withPkgName('librawc  libraw_r');
 
     $p->addLibrary($lib);
 }
+
+
 
 function install_libOpenEXR(Preprocessor $p)
 {
@@ -672,9 +706,9 @@ function install_libOpenEXR(Preprocessor $p)
         ->withBuildScript(
             <<<EOF
         # cmake .  -DCMAKE_INSTALL_PREFIX={$libOpenEXR_prefix}
-        
+
         cmake.   --install-prefix={$libOpenEXR_prefix}
-        cmake --build .  --target install --config Release 
+        cmake --build .  --target install --config Release
 EOF
         )
         ->withPkgName('Imath OpenEXR')
@@ -706,7 +740,7 @@ function install_highway(Preprocessor $p)
             <<<EOF
 # -DHWY_CMAKE_ARM7:BOOL=ON
 
-# 会自动下载 googletest 
+# 会自动下载 googletest
 
 
     mkdir -p build && cd build
@@ -715,8 +749,8 @@ function install_highway(Preprocessor $p)
     -DCMAKE_BUILD_TYPE=Release  \
     -DBUILD_SHARED_LIBS=OFF \
     -DHWY_FORCE_STATIC_LIBS=ON \
-    -DBUILD_TESTING=OFF 
- 
+    -DBUILD_TESTING=OFF
+
 EOF
         )
         ->withPkgName('libhwy-contrib.pc  libhwy-test.pc  libhwy');
@@ -738,17 +772,17 @@ function install_libjxl(Preprocessor $p)
         ->withCleanPreInstallDirectory($libjxl_prefix)
         ->withBuildScript(
             <<<EOF
-        
+
         ## 会自动 下载依赖 ，如网速不佳，请在环境变量里设置代理地址，用于加速下载
         git init -b main .
         git add ./.gitmodules
 
         git -C . submodule update --init --recursive --depth 1 --recommend-shallow
-      
+
         sh deps.sh
-       
+
         git submodule update --init --recursive
-        exit 0 
+        exit 0
         mkdir -p build
         cd build
         cmake -DJPEGXL_STATIC=true \
@@ -756,10 +790,10 @@ function install_libjxl(Preprocessor $p)
         -DBUILD_SHARED_LIBS=OFF \
         -DBUILD_TESTING=OFF \
         -DCMAKE_INSTALL_PREFIX={$libjxl_prefix} \
-         ..  
-          
+         ..
+
         cmake --build . -- -j$(nproc)
-        cmake --install .  
+        cmake --install .
 EOF
         )
         ->withPkgName('libjxl');
@@ -767,6 +801,26 @@ EOF
     $p->addLibrary($lib);
 }
 
+/**
+ *
+ * HEIC是新出的一种图像格式 与JPG相比，它占用的空间更小，画质更加无损 HEIC使用的图像压缩编解码器最早是为视频开发的。
+ * 高效视频编码（HEVC）用离散余弦和正弦变换（DCT和DST）压缩视频的每一帧
+ * HEIC的效率是JPEG的两倍  作为iPhone的默认格式
+ *
+ * OpenEXR 视觉特效行业使用的一种文件格式,适用于高动态范围图像和HDR标准。 这种胶片格式具有适合电影制作的色彩保真度和动态范围
+ *
+ * openjp2
+ * 参考文档：https://blog.csdn.net/Ruky_Z/article/details/100606195
+ * openslide是处理医学图像， 医学图像最显著的一个特征就是“大”，如何处理这种“大”，目前常用的一种方法就是切割，将一个大的WSI切割成多个小tile，然后分别对多个tile进行处理，“化大为小”。
+ *
+ * 参考文档 ：https://zhuanlan.zhihu.com/p/504610500
+ * JPEG XL 能在实现接近无损的视觉效果的同时，提供良好的压缩效果  它旨在超越现有的位图格式，并成为它们的通用替代
+ *
+ * 谷歌将专注于最终进一步推进 WebP 和 AVIF 图像格式
+ *
+ * @param Preprocessor $p
+ * @return void
+ */
 function install_imagemagick(Preprocessor $p)
 {
     $bzip2_prefix = BZIP2_PREFIX;
@@ -784,7 +838,8 @@ function install_imagemagick(Preprocessor $p)
             ->withPrefix($imagemagick_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help   
+            ./configure --help
+
             CPPFLAGS="$(pkg-config --cflags-only-I --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -I{$bzip2_prefix}/include" \
             LDFLAGS="$(pkg-config  --libs-only-L   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -L{$bzip2_prefix}/lib" \
             LIBS="$(pkg-config     --libs-only-l   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -lbz2" \
@@ -792,26 +847,30 @@ function install_imagemagick(Preprocessor $p)
             --prefix={$imagemagick_prefix} \
             --enable-static \
             --disable-shared \
-            --with-zip=yes \
-            --with-fontconfig=no \
-            --with-heic=no \
-            --with-lcms=no \
-            --with-lqr=no \
-            --with-openexr=no \
-            --with-openjp2=no \
-            --with-pango=no \
-            --with-jpeg=yes \
-            --with-png=yes \
-            --with-webp=yes \
-            --with-raw=yes \
-            --with-tiff=yes \
-            --with-zstd=yes \
-            --with-lzma=yes \
-            --with-xml=yes \
-            --with-zip=yes \
-            --with-zlib=yes \
-            --with-zstd=yes \
-            --with-freetype=yes  
+            --with-zip \
+            --with-zlib \
+            --with-lzma \
+            --with-zstd \
+            --with-jpeg \
+            --with-png \
+            --with-webp \
+            --with-raw \
+            --with-tiff \
+            --with-xml \
+            --with-freetype=yes \
+            --enable-hdri \
+            --enable-opencl \
+            --without-djvu \
+            --without-rsvg \
+            --without-fontconfig \
+            --without-heic \
+            --without-jbig \
+            --without-jxl \
+            --without-lcms \
+            --without-openjp2 \
+            --without-lqr \
+            --without-openexr \
+            --without-pango
 
 EOF
             )
