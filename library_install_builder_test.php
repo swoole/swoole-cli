@@ -3,6 +3,525 @@
 use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
+
+function install_libyuv(Preprocessor $p)
+{
+    $libyuv_prefix = "/usr/libyuv";
+    $libjpeg_prefix = JPEG_PREFIX;
+    $libjpeg_lib_dir = $p->getOsType()== 'linux' ? $libjpeg_prefix .'/lib64/' : $libjpeg_prefix .'/lib/';
+    $p->addLibrary(
+        (new Library('libyuv'))
+            ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
+            ->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
+            ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
+            ->withManual('https://https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
+            ->withSkipDownload()
+            ->withUntarArchiveCommand('mv')
+            ->withPrefix($libyuv_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libyuv_prefix)
+            ->withBuildScript(
+                <<<EOF
+            set -uex
+            pwd
+            ls -lh .
+            cd libyuv
+
+
+            ls -lh .
+
+            make -f linux.mk
+            mkdir -p $libyuv_prefix/lib
+            cp -rf libyuv.a  $libyuv_prefix/lib
+            cp -rf include $libyuv_prefix/
+
+            exit  0
+            gn gen out/Release "--args=is_debug=false"
+
+            ninja -v -C out/Release
+            exit  0
+
+
+            #  cmake默认查找到的是动态库 ; cmake 优先使用静态库
+            #  参考 https://blog.csdn.net/10km/article/details/82931978
+
+            # sed -i '/find_package ( JPEG )/i set( JPEG_NAMES libjpeg.a )'  CMakeLists.txt
+
+            # -DJPEG_LIBRARY_RELEASE={$libjpeg_prefix}/lib/libjpeg.a
+            # CMAKE_INCLUDE_PATH 和 CMAKE_LIBRARY_PATH
+
+            # -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
+
+            mkdir -p build
+            cd build
+            cmake \
+            -Wno-dev \
+            -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
+            -DCMAKE_BUILD_TYPE="Release"  \
+            -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
+            -DBUILD_SHARED_LIBS=OFF  ..
+
+            cmake --build . --config Release
+            cmake --build . --target install --config Release
+
+
+EOF
+            )
+            ->withPkgName('')
+    );
+}
+function install_libavif(Preprocessor $p)
+{
+    $libavif_prefix = LIBAVIF_PREFIX;
+    $p->addLibrary(
+        (new Library('libavif'))
+            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
+            ->withFile('libavif-v0.11.1.tar.g')
+            ->withHomePage('https://aomediacodec.github.io/av1-avif/')
+            ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
+            ->withManual('https://github.com/AOMediaCodec/libavif')
+            ->withPrefix($libavif_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libavif_prefix)
+            ->withConfigure(
+                <<<EOF
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
+            LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
+            LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
+            cmake .  \
+            -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
+            -DAVIF_BUILD_EXAMPLES=ON \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DAVIF_CODEC_AOM=OFF \
+            -DAVIF_CODEC_DAV1D=OFF \
+            -DAVIF_CODEC_LIBGAV1=OFF \
+            -DAVIF_CODEC_RAV1E=OFF
+            exit 0
+
+EOF
+            )
+            ->withPkgName('libavif')
+            ->withLdflags('')
+    );
+}
+
+
+function install_libde265(Preprocessor $p)
+{
+    $libde265_prefix = LIBDE265_PREFIX;
+    $lib = new Library('libde265');
+    $lib->withHomePage('https://github.com/strukturag/libde265.git')
+        ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
+        ->withUrl('https://github.com/strukturag/libde265/archive/refs/tags/v1.0.11.tar.gz')
+        ->withFile('libde265-v1.0.11.tar.gz')
+
+        ->withPrefix($libde265_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libde265_prefix)
+        ->withConfigure(
+            <<<EOF
+        ./autogen.sh
+        ./configure --help
+        ./configure --prefix={$libde265_prefix} \
+        --enable-shared=no \
+        --enable-static=yes
+EOF
+        )
+        ->withPkgName('libde265');
+
+    $p->addLibrary($lib);
+}
+
+function install_libheif(Preprocessor $p)
+{
+    $libheif_prefix = LIBHEIF_PREFIX;
+    $lib = new Library('libheif');
+    $lib->withHomePage('https://github.com/strukturag/libheif.git')
+        ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
+        ->withUrl('https://github.com/strukturag/libheif/releases/download/v1.15.1/libheif-1.15.1.tar.gz')
+
+        ->withPrefix($libheif_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libheif_prefix)
+        ->withConfigure(
+            <<<'EOF'
+            ./configure --help
+
+            libde265_CFLAGS=$(pkg-config  --cflags --static libde265 ) \
+            libde265_LIBS=$(pkg-config    --libs   --static libde265 ) \
+            libpng_CFLAGS=$(pkg-config  --cflags --static libpng ) \
+            libpng_LIBS=$(pkg-config    --libs   --static libpng ) \
+EOF
+            . PHP_EOL .
+            <<<EOF
+            ./configure \
+            --prefix={$libheif_prefix} \
+            --enable-shared=no \
+            --enable-static=yes
+EOF
+        )
+        ->withPkgName('libheif');
+
+    $p->addLibrary($lib);
+}
+
+
+function install_graphite2(Preprocessor $p)
+{
+    $graphite2_prefix = "/usr/graphite2";
+    $p->addLibrary(
+        (new Library('graphite2'))
+            ->withLicense('https://github.com/silnrsi/graphite/blob/master/COPYING', Library::LICENSE_SPEC)
+            ->withHomePage('http://graphite.sil.org/')
+            ->withUrl('https://github.com/silnrsi/graphite/archive/refs/tags/1.3.14.tar.gz')
+            ->withManual('https://github.com/silnrsi/graphite.git')
+            ->withFile('graphite-1.3.14.tar.gz')
+            ->withLabel('library')
+            ->withPrefix($graphite2_prefix)
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                "
+            mkdir -p build
+            cd build
+            cmake   ..  \
+            -DCMAKE_INSTALL_PREFIX={$graphite2_prefix} \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF
+            "
+            )
+            ->withPkgName('graphite2')
+    );
+}
+
+function install_libfribidi(Preprocessor $p)
+{
+    $libfribidi_prefix = LIBFRIBIDI_PREFIX;
+    $p->addLibrary(
+        (new Library('libfribidi'))
+            ->withLicense('https://github.com/fribidi/fribidi/blob/master/COPYING', Library::LICENSE_LGPL)
+            ->withHomePage('https://github.com/fribidi/fribidi.git')
+            ->withUrl('https://github.com/fribidi/fribidi/archive/refs/tags/v1.0.12.tar.gz')
+            ->withFile('fribidi-v1.0.12.tar.gz')
+            ->withLabel('library')
+            ->withPrefix($libfribidi_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libfribidi_prefix)
+            ->withConfigure(
+                "
+
+                # 可以使用 meson
+                # meson setup  build
+
+                sh autogen.sh
+                ./configure --help
+
+                ./configure \
+                --prefix={$libfribidi_prefix} \
+                --enable-static=yes \
+                --enable-shared=no
+            "
+            )
+            ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
+    );
+}
+function install_harfbuzz(Preprocessor $p)
+{
+    $harfbuzz_prefix = HARFBUZZ_PREFIX;
+    $p->addLibrary(
+        (new Library('harfbuzz'))
+            ->withLicense('https://github.com/harfbuzz/harfbuzz/blob/main/COPYING', Library::LICENSE_MIT)
+            ->withHomePage('https://github.com/harfbuzz/harfbuzz.git')
+            ->withUrl('https://github.com/harfbuzz/harfbuzz/archive/refs/tags/7.1.0.tar.gz')
+            ->withFile('harfbuzz-7.1.0.tar.gz')
+            ->withLabel('library')
+            ->withPrefix($harfbuzz_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($harfbuzz_prefix)
+            ->withBuildScript(
+                "
+                meson help
+                meson setup --help
+
+                meson setup  build \
+                --backend=ninja \
+                --prefix={$harfbuzz_prefix} \
+                --default-library=static \
+                -Dglib=disabled \
+                -Dicu=enabled \
+                -Dfreetype=disabled \
+                -Dtests=disabled \
+                -Ddocs=disabled  \
+                -Dbenchmark=disabled
+
+                meson compile -C build
+                meson install -C build
+                # ninja -C build
+                # ninja -C build install
+
+            "
+            )
+            ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
+    );
+}
+
+
+//-lgd -lpng -lz -ljpeg -lfreetype -lm
+
+function install_libgd2($p)
+{
+    $libgd_prefix = LIBGD_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
+    $lib = new Library('libgd2');
+    $lib->withHomePage('https://www.libgd.org/')
+        ->withLicense('https://github.com/libgd/libgd/blob/master/COPYING', Library::LICENSE_SPEC)
+        ->withUrl('https://github.com/libgd/libgd/releases/download/gd-2.3.3/libgd-2.3.3.tar.gz')
+        ->withManual('https://github.com/libgd/libgd.git')
+        ->withManual('https://libgd.github.io/pages/docs.html')
+        ->withPrefix($libgd_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libgd_prefix)
+        ->withConfigure(
+            <<<'EOF'
+        # 下载依赖
+         ./configure --help
+         # -lbrotlicommon-static -lbrotlidec-static -lbrotlienc-static
+        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+
+        echo $LIBS
+
+EOF . PHP_EOL . <<<EOF
+        ./configure \
+        --prefix={$libgd_prefix} \
+        --enable-shared=no \
+        --enable-static=yes \
+        --without-freetype \
+        --with-libiconv-prefix={$libiconv_prefix}
+         # --with-freetype=/usr/freetype \
+
+:<<'_EOF_'
+        mkdir -p build
+        cd build
+        cmake   ..  \
+        -DCMAKE_INSTALL_PREFIX={$libgd_prefix} \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DENABLE_GD_FORMATS=1 \
+        -DENABLE_JPEG=1 \
+        -DENABLE_TIFF=1 \
+        -DENABLE_ICONV=1 \
+        -DENABLE_FREETYPE=1 \
+        -DENABLE_FONTCONFIG=1 \
+        -DENABLE_WEBP=1 \
+        -DENABLE_HEIF=1 \
+        -DENABLE_AVIF=1 \
+        -DENABLE_WEBP=1
+
+        cmake --build . -- -j$(nproc)
+        exit 0
+        cmake --install .
+_EOF_
+
+EOF
+        )
+        ->withMakeInstallCommand('')
+        ->withPkgName('libgd2');
+
+    $p->addLibrary($lib);
+}
+
+function install_GraphicsMagick($p)
+{
+    $libiconv_prefix = ICONV_PREFIX;
+    $GraphicsMagick_prefix = '/usr/GraphicsMagick';
+    $lib = new Library('GraphicsMagick');
+    $lib->withHomePage('http://www.graphicsmagick.org/index.html')
+        ->withLicense('https://github.com/libgd/libgd/blob/master/COPYING', Library::LICENSE_SPEC)
+        ->withUrl('https://jaist.dl.sourceforge.net/project/graphicsmagick/graphicsmagick/1.3.40/GraphicsMagick-1.3.40.tar.gz')
+        ->withManual('http://www.graphicsmagick.org/README.html')
+        ->withManual('http://www.graphicsmagick.org/INSTALL-unix.html')
+        ->withPrefix($GraphicsMagick_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($GraphicsMagick_prefix)
+        ->withConfigure(
+            <<<'EOF'
+        # 下载依赖
+         ./configure --help
+         # -lbrotlicommon-static -lbrotlidec-static -lbrotlienc-static
+        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+        export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
+
+        echo $LIBS
+
+EOF . PHP_EOL . <<<EOF
+        ./configure \
+        --prefix={$GraphicsMagick_prefix} \
+        --enable-shared=no \
+        --enable-static=yes \
+        --without-freetype \
+        --with-libiconv-prefix={$libiconv_prefix}
+         # --with-freetype=/usr/freetype \
+
+EOF
+        )
+        ->withMakeInstallCommand('')
+        ->withPkgName('GraphicsMagick');
+
+    $p->addLibrary($lib);
+}
+
+
+
+function install_libXpm(Preprocessor $p)
+{
+    $libXpm_prefix = LIBXPM_PREFIX;
+    $lib = new Library('libXpm');
+    $lib->withHomePage('https://github.com/freedesktop/libXpm.git')
+        ->withLicense('https://github.com/freedesktop/libXpm/blob/master/COPYING', Library::LICENSE_SPEC)
+        ->withUrl('https://github.com/freedesktop/libXpm/archive/refs/tags/libXpm-3.5.11.tar.gz')
+        ->withFile('libXpm-3.5.11.tar.gz')
+        ->withPrefix($libXpm_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libXpm_prefix)
+        ->withScriptBeforeConfigure(
+            <<<EOF
+         # 依赖 xorg-macros
+         # 解决依赖
+         # apk add util-macros
+         # apk add libxpm-dev
+EOF
+        )
+        ->withConfigure(
+            <<<EOF
+            ./autogen.sh
+            ./configure --help
+            ./configure --prefix={$libXpm_prefix} \
+            --enable-shared=no \
+            --enable-static=yes \
+            --disable-docs \
+            --disable-tests \
+            --enable-strict-compilation
+
+EOF
+        )
+        ->withPkgName('libXpm');
+
+    $p->addLibrary($lib);
+}
+
+
+
+function install_libOpenEXR(Preprocessor $p)
+{
+    $libOpenEXR_prefix = '/usr/libOpenEXR';
+    $lib = new Library('libOpenEXR');
+    $lib->withHomePage('http://www.openexr.com/')
+        ->withLicense('https://github.com/AcademySoftwareFoundation/openexr/blob/main/LICENSE.md', Library::LICENSE_BSD)
+        ->withUrl('https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.1.5.tar.gz')
+        ->withManual('https://github.com/AcademySoftwareFoundation/openexr.git')
+        ->withManual('https://openexr.com/en/latest/install.html#install')
+        ->withFile('openexr-v3.1.5.tar.gz')
+        ->withPrefix($libOpenEXR_prefix)
+        //->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libOpenEXR_prefix)
+        ->withBuildScript(
+            <<<EOF
+        # cmake .  -DCMAKE_INSTALL_PREFIX={$libOpenEXR_prefix}
+
+        cmake.   --install-prefix={$libOpenEXR_prefix}
+        cmake --build .  --target install --config Release
+EOF
+        )
+        ->withPkgName('Imath OpenEXR')
+        ->withBinPath('$libOpenEXR_prefix' . '/bin')
+    ;
+
+    $p->addLibrary($lib);
+}
+
+/**
+ * @param Preprocessor $p
+ * @return void
+ * 并发编程：SIMD 介绍  https://zhuanlan.zhihu.com/p/416172020
+ */
+function install_highway(Preprocessor $p)
+{
+    $highway_prefix = '/usr/highway';
+    $lib = new Library('highway');
+    $lib->withHomePage('https://github.com/google/highway.git')
+        ->withLicense('https://github.com/google/highway/blob/master/LICENSE', Library::LICENSE_APACHE2)
+        ->withUrl('https://github.com/google/highway/archive/refs/tags/1.0.3.tar.gz')
+        ->withFile('highway-1.0.3.tar.gz')
+        ->withManual('https://github.com/google/highway.git')
+        ->withPrefix($highway_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($highway_prefix)
+
+        ->withConfigure(
+            <<<EOF
+# -DHWY_CMAKE_ARM7:BOOL=ON
+
+# 会自动下载 googletest
+
+
+    mkdir -p build && cd build
+    cmake .. \
+    -DCMAKE_INSTALL_PREFIX={$highway_prefix} \
+    -DCMAKE_BUILD_TYPE=Release  \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DHWY_FORCE_STATIC_LIBS=ON \
+    -DBUILD_TESTING=OFF
+
+EOF
+        )
+        ->withPkgName('libhwy-contrib.pc  libhwy-test.pc  libhwy');
+
+    $p->addLibrary($lib);
+}
+
+function install_libjxl(Preprocessor $p)
+{
+    $libjxl_prefix = LIBJXL_PREFIX;
+    $lib = new Library('libjxl');
+    $lib->withHomePage('https://github.com/libjxl/libjxl.git')
+        ->withLicense('https://github.com/libjxl/libjxl/blob/main/LICENSE', Library::LICENSE_BSD)
+        ->withUrl('https://github.com/libjxl/libjxl/archive/refs/tags/v0.8.1.tar.gz')
+        ->withManual('https://github.com/libjxl/libjxl/blob/main/BUILDING.md')
+        ->withFile('libjpegxl-v0.8.1.tar.gz')
+        ->withPrefix($libjxl_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libjxl_prefix)
+        ->withBuildScript(
+            <<<EOF
+
+        ## 会自动 下载依赖 ，如网速不佳，请在环境变量里设置代理地址，用于加速下载
+        git init -b main .
+        git add ./.gitmodules
+
+        git -C . submodule update --init --recursive --depth 1 --recommend-shallow
+
+        sh deps.sh
+
+        git submodule update --init --recursive
+        exit 0
+        mkdir -p build
+        cd build
+        cmake -DJPEGXL_STATIC=true \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DBUILD_TESTING=OFF \
+        -DCMAKE_INSTALL_PREFIX={$libjxl_prefix} \
+         ..
+
+        cmake --build . -- -j$(nproc)
+        cmake --install .
+EOF
+        )
+        ->withPkgName('libjxl');
+
+    $p->addLibrary($lib);
+}
 function install_openssl_v3(Preprocessor $p)
 {
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
@@ -85,9 +604,9 @@ function install_libdeflate(Preprocessor $p)
             ->withConfigure(
                 "
                 ls -lh
-                exit 0 
+                exit 0
                 cmake -B build && cmake --build build
-                
+
             "
             )
             ->withPkgName('libdeflate')
@@ -128,66 +647,6 @@ function install_bzip2_dev_latest(Preprocessor $p)
 }
 
 
-function install_libevent($p)
-{
-    $libevent_prefix = LIBEVENT_PREFIX;
-    $p->addLibrary(
-        (new Library('libevent'))
-            ->withHomePage('https://github.com/libevent/libevent')
-            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withUrl(
-                'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz'
-            )
-            ->withManual('https://libevent.org/libevent-book/')
-            ->withPrefix($libevent_prefix)
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            # 查看更多选项
-            # cmake -LAH .
-        mkdir build && cd build
-        cmake ..   \
-        -DCMAKE_INSTALL_PREFIX={$libevent_prefix} \
-        -DEVENT__DISABLE_DEBUG_MODE=ON \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DEVENT__LIBRARY_TYPE=STATIC  
-  
-EOF
-            )
-            ->withPkgName('libevent')
-    );
-}
-
-function install_libuv($p)
-{
-    //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
-    $libuv_prefix = LIBUV_PREFIX;
-    $p->addLibrary(
-        (new Library('libuv'))
-            ->withHomePage('https://libuv.org/')
-            ->withLicense('https://github.com/libuv/libuv/blob/v1.x/LICENSE', Library::LICENSE_MIT)
-            ->withUrl('https://github.com/libuv/libuv/archive/refs/tags/v1.44.2.tar.gz')
-            ->withManual('https://github.com/libuv/libuv.git')
-            ->withFile('libuv-v1.44.2.tar.gz')
-            ->withPrefix($libuv_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libuv_prefix)
-            ->withConfigure(
-                <<<EOF
-            ls -lh 
-            
-            sh autogen.sh
-            ./configure --help 
-   
-            ./configure --prefix={$libuv_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
-
-EOF
-            )
-            ->withPkgName('libuv')
-    );
-}
 
 function install_libev($p)
 {
@@ -201,12 +660,12 @@ function install_libev($p)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF
-            ls -lh 
-            ./configure --help 
+            ls -lh
+            ./configure --help
             ./configure --prefix=/usr/libev \
             --enable-shared=no \
             --enable-static=yes
-           
+
 EOF
             )
             ->withPkgName('libev')
@@ -271,7 +730,7 @@ function install_libexpat($p)
             ->withConfigure(
                 '
              ./configure --help
-            
+
             ./configure \
             --prefix=/usr/libexpat/ \
             --enable-static=yes \
@@ -300,7 +759,7 @@ function install_unbound($p)
             ->withConfigure(
                 '
              ./configure --help
-            
+
             ./configure \
             --prefix= \
             --enable-static=yes \
@@ -311,8 +770,8 @@ function install_unbound($p)
             --with-ssl=/usr/openssl \
             --with-libexpat=/usr/libexpat/ \
             --with-dynlibmodule=no \
-            --with-libunbound-only 
-          
+            --with-libunbound-only
+
             '
             )
             ->withPkgName('unbound')
@@ -326,7 +785,7 @@ function install_gnutls($p)
         Required libraries:
             libnettle crypto back-end
             gmplib arithmetic library1
-            
+
         Optional libraries:
         libtasn1 ASN.1 parsing - a copy is included in GnuTLS
         p11-kit for PKCS #11 support
@@ -348,37 +807,37 @@ EOF;
             ->withConfigure(
                 '
                  test -d /usr/gnutls && rm -rf /usr/gnutls
-                 set -uex 
+                 set -uex
                 export GMP_CFLAGS=$(pkg-config  --cflags --static gmp)
                 export GMP_LIBS=$(pkg-config    --libs   --static gmp)
                 export LIBTASN1_CFLAGS=$(pkg-config  --cflags --static libtasn1)
                 export LIBTASN1_LIBS=$(pkg-config    --libs   --static libtasn1)
-                
+
                 export LIBIDN2_CFLAGS=$(pkg-config  --cflags --static libidn2)
                 export LIBIDN2_LIBS=$(pkg-config    --libs   --static libidn2)
-                
-                
+
+
                 export LIBBROTLIENC_CFLAGS=$(pkg-config  --cflags --static libbrotlienc)
                 export LIBBROTLIENC_LIBS=$(pkg-config    --libs   --static libbrotlienc)
-                
+
                 export LIBBROTLIDEC_CFLAGS=$(pkg-config  --cflags --static libbrotlidec)
                 export LIBBROTLIDEC_LIBS=$(pkg-config    --libs   --static libbrotlidec)
 
                 export LIBZSTD_CFLAGS=$(pkg-config  --cflags --static libzstd)
                 export LIBZSTD_LIBS=$(pkg-config    --libs   --static libzstd)
-                
+
                 export P11_KIT_CFLAGS=$(pkg-config  --cflags --static p11-kit-1)
                 export P11_KIT_LIBS=$(pkg-config    --libs   --static p11-kit-1)
-            
-              
-            
+
+
+
                 export CPPFLAGS=$(pkg-config    --cflags   --static libbrotlicommon libbrotlienc libbrotlidec)
                 export LIBS=$(pkg-config        --libs     --static libbrotlicommon libbrotlienc libbrotlidec)
-                 //  exit 0 
+                 //  exit 0
                 # ./bootstrap
-                ./configure --help 
-             
-             
+                ./configure --help
+
+
                 ./configure \
                 --prefix=/usr/gnutls \
                 --enable-static=yes \
@@ -394,9 +853,9 @@ EOF;
                 --without-tpm2 \
                 --without-tpm \
                 --disable-doc \
-                --disable-tests 
+                --disable-tests
                # --with-libev-prefix=/usr/libev \
-              
+
             '
             )->withPkgName('gnutls')
         //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
@@ -433,11 +892,11 @@ function install_boringssl($p)
                 mkdir build
                 cd build
                 cmake -GNinja .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=0 -DCMAKE_INSTALL_PREFIX=/usr/boringssl
-               
+
                 cd ..
                 # ninja
                 ninja -C build
-                
+
                 ninja -C build install
             '
             )
@@ -466,7 +925,7 @@ function install_wolfssl($p)
                 <<<EOF
                 ./autogen.sh
                 ./configure --help
-                
+
                 ./configure  --prefix=/usr/wolfssl \
                 --enable-static=yes \
                 --enable-shared=no \
@@ -521,14 +980,14 @@ function install_nghttp3(Preprocessor $p)
                 '
                 export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
                 export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
-           
+
             autoreconf -fi
-            ./configure --help 
-          
+            ./configure --help
+
             ./configure --prefix=/usr/nghttp3 --enable-lib-only \
             --enable-shared=no \
-            --enable-static=yes 
-            
+            --enable-static=yes
+
         '
             )
             ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
@@ -552,29 +1011,29 @@ function install_ngtcp2(Preprocessor $p)
                 '
 
             # openssl does not have QUIC interface, disabling it
-            # 
+            #
             # OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
             # OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
-            
-           
+
+
             export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
             export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
             export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
             export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
-           
+
             export LIBEV_CFLAGS="-I/usr/libev/include"
             export LIBEV_LIBS="-L/usr/libev/lib -lev"
-            
+
              autoreconf -fi
-            ./configure --help 
-          
+            ./configure --help
+
             ./configure \
             --prefix=/usr/ngtcp2 \
             --enable-shared=no \
             --enable-static=yes \
             --with-gnutls=yes \
             --with-libnghttp3=yes \
-            --with-libev=yes 
+            --with-libev=yes
             '
             )
             ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
@@ -605,20 +1064,20 @@ function install_quiche(Preprocessor $p)
              cp -rf /work/pool/lib/boringssl /work/thirdparty/quiche/
              export OPENSSL_DIR=/usr/openssl
              export OPENSSL_STATIC=Yes
-          
+
             '
             )
             ->withConfigure(
                 '
             cd quiche-master
-            cargo build --help 
-            
+            cargo build --help
+
             export QUICHE_BSSL_PATH=/work/thirdparty/quiche/boringssl
             cargo build --package quiche --release --features ffi,pkg-config-meta,qlog
             mkdir -p quiche/deps/boringssl/src/lib
             ln -vnf $(find target/release -name libcrypto.a -o -name libssl.a) quiche/deps/boringssl/src/lib/
-            exit 0 
-        
+            exit 0
+
             '
             )
             ->withLicense('https://github.com/cloudflare/quiche/blob/master/COPYING', Library::LICENSE_BSD)
@@ -649,10 +1108,10 @@ function install_msh3(Preprocessor $p)
                 <<<EOF
             cd /work/thirdparty/msh3/msh3
             pwd
-            ls -lh 
+            ls -lh
             mkdir build && cd build
             #  cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo .. -DCMAKE_INSTALL_PREFIX=/usr/
-            cmake -G 'Unix Makefiles'  -DCMAKE_BUILD_TYPE=Release  .. -DBUILD_SHARED_LIBS=0 -DCMAKE_INSTALL_PREFIX=/usr/msh3 
+            cmake -G 'Unix Makefiles'  -DCMAKE_BUILD_TYPE=Release  .. -DBUILD_SHARED_LIBS=0 -DCMAKE_INSTALL_PREFIX=/usr/msh3
             cmake --build .
             cmake --install .
 
@@ -719,14 +1178,14 @@ function install_coreutils($p)
                 '
                 ./bootstrap
                 ./configure --help
-                exit 0 
-                  export FORCE_UNSAFE_CONFIGURE=1 
+                exit 0
+                  export FORCE_UNSAFE_CONFIGURE=1
                   ./configure --prefix=/usr/gnu_coreutils \
                   --with-openssl=yes \
                   --with-libiconv-prefix=/usr/libiconv \
                   --with-libintl-prefix
-             
-            
+
+
             '
             )
             ->withPkgConfig('')
@@ -776,21 +1235,21 @@ function install_libunistring($p)
             ->withCleanBuildDirectory()
             ->withScriptBeforeConfigure(
                 '
-            
+
             apk add coreutils
-            
+
             test -d /usr/libunistring && rm -rf /usr/libunistring
             '
             )
             ->withConfigure(
                 '
              ./configure --help
-            
+
             ./configure \
             --prefix=/usr/libunistring \
             --enable-static \
             --disable-shared \
-             --with-libiconv-prefix=/usr/libiconv 
+             --with-libiconv-prefix=/usr/libiconv
             '
             )
             ->withPkgConfig('/usr/libunistring/lib/pkgconfig')
@@ -811,7 +1270,7 @@ function install_libunwind($p)
             ->withConfigure(
                 '
                  autoreconf -i
-                 
+
                 ./configure --help ;
                 ./configure \
                 --prefix=/usr/libunwind \
@@ -905,11 +1364,11 @@ function install_libelf(Preprocessor $p)
                 test -d {$p->getBuildDir()}/libelf && rm -rf {$p->getBuildDir()}/libelf
                 cp -rf {$p->getWorkDir()}/pool/lib/libelf {$p->getBuildDir()}/
                 cd {$p->getBuildDir()}/libelf
-                ./configure --help 
+                ./configure --help
                 ./configure --prefix=/usr/libelf \
                 --enable-compat \
-                --enable-shared=no 
-  
+                --enable-shared=no
+
 EOF
             )
             ->withMakeInstallCommand('install-local')
@@ -931,12 +1390,12 @@ function install_libbpf(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
                 cd src
-                BUILD_STATIC_ONLY=y  make 
-                exit 0 
+                BUILD_STATIC_ONLY=y  make
+                exit 0
                 mkdir build /usr/libbpf
                 BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR=/usr/libbpf make install
-                eixt 0 
-    
+                eixt 0
+
 EOF
             )
             ->withPkgName('libbpf')
@@ -959,7 +1418,7 @@ function install_valgrind(Preprocessor $p)
 ./autogen.sh
 ./configure --prefix=/usr/valgrind
 
-  
+
 EOF
             )
             ->withPkgName('valgrind')
@@ -985,7 +1444,7 @@ git submodule update --init
 mkdir build
 cd build && cmake ../ && make
 
-  
+
 EOF
             )
             ->withPkgName('snappy')
@@ -1008,8 +1467,8 @@ function install_kerberos(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
 pwd
-exit 0 
-  
+exit 0
+
 EOF
             )
             ->withPkgName('kerberos')
@@ -1033,8 +1492,8 @@ function install_fontconfig(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
 pwd
-exit 0 
-  
+exit 0
+
 EOF
             )
             ->withPkgName('fontconfig')
@@ -1059,20 +1518,20 @@ function install_p11_kit(Preprocessor $p)
             ->withCleanPreInstallDirectory('/usr/p11_kit/')
             ->withBuildScript(
                 '
-          
+
                 # apk add python3 py3-pip  gettext  coreutils
                 # pip3 install meson  -i https://pypi.tuna.tsinghua.edu.cn/simple
-            
-         
+
+
             # ./autogen.sh --prefix=/usr/p11_kit/ --disable-trust-module --disable-debug
             #  ./configure --help
             # --with-libtasn1 --with-libffi
-          
+
             # meson setup -Dprefix=/usr/p11_kit/ -Dsystemd=disabled -Dbash_completion=disabled  --reconfigure  _build
             # run "ninja reconfigure" or "meson setup --reconfigure"
             # ninja reconfigure -C _build
             # meson setup --reconfigure _build
-            
+
             meson setup  \
             -Dprefix=/usr/p11_kit/ \
             -Dsystemd=disabled  \
@@ -1087,16 +1546,16 @@ function install_p11_kit(Preprocessor $p)
             -Dstrict=true \
             -Dunity=off \
              _build
-             
-           
+
+
             # meson setup --wipe
-            
+
            # DESTDIR=/usr/p11_kit/  meson install -C _build
             # meson install -C _build
-            
+
             ninja  -C _build
-            ninja  -C _build install 
-           
+            ninja  -C _build install
+
             '
             )
 
@@ -1161,26 +1620,26 @@ function install_pgsql_test(Preprocessor $p)
                 '
              # src/Makefile.shlib 有静态配置
              # src/interfaces/libpq/Makefile  有静态配置  参考：  install-lib install-lib-static  installdirs  installdirs-lib install-lib-pc
-              
-           # sed -i "s/ifndef haslibarule/ifndef custom_static/"  src/Makefile.shlib     
-           # sed -i "s/endif #haslibarule/endif #custom_static/"  src/Makefile.shlib     
+
+           # sed -i "s/ifndef haslibarule/ifndef custom_static/"  src/Makefile.shlib
+           # sed -i "s/endif #haslibarule/endif #custom_static/"  src/Makefile.shlib
            sed -i "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
-           # cp -rf  /work/Makefile.shlib src/Makefile.shlib   
+           # cp -rf  /work/Makefile.shlib src/Makefile.shlib
            # sed -i "120a \	echo \$<" src/interfaces/libpq/Makefile
            # sed -i "120a \	echo \$(PORTNAME)" src/interfaces/libpq/Makefile
            # 替换指定行内容
            sed -i "102c all: all-lib" src/interfaces/libpq/Makefile
-           
+
            cat >> src/interfaces/libpq/Makefile <<"-EOF-"
-           
+
 libpq5555.a: $(OBJS) | $(SHLIB_PREREQS)
 	echo $(SHLIB_PREREQS)
 	echo $(SHLIB_LINK)
 	echo $(exports_file)
 	#rm -f $@
 	rm -f libpq.a
-	# ar  rcs $@  $^ 
-	ar  rcs libpq.a  $^ 
+	# ar  rcs $@  $^
+	ar  rcs libpq.a  $^
 	# ranlib $@
 	ranlib libpq.a
 	# touch $@
@@ -1193,9 +1652,9 @@ install-libpq5555.a: install-lib-static install-lib-pc
 	$(INSTALL_DATA) $(srcdir)/fe-auth-sasl.h "$(DESTDIR)$(includedir_internal)"
 	$(INSTALL_DATA) $(srcdir)/pqexpbuffer.h "$(DESTDIR)$(includedir_internal)"
 -EOF-
-             
+
             export CPPFLAGS="-static -fPIE -fPIC -O2 -Wall "
-            
+
             ./configure  --prefix=/usr/pgsql \
             --enable-coverage=no \
             --with-ssl=openssl  \
@@ -1209,64 +1668,64 @@ install-libpq5555.a: install-lib-static install-lib-pc
            --with-libraries="/usr/openssl_3/lib64:/usr/libxslt/lib/:/usr/libxml2/lib/:/usr/zlib/lib:/usr/lib"
             # --with-includes="/usr/openssl_1/include/:/usr/libxml2/include/:/usr/libxslt/include:/usr/zlib/include:/usr/include" \
             # --with-libraries="/usr/openssl_1/lib:/usr/libxslt/lib/:/usr/libxml2/lib/:/usr/zlib/lib:/usr/lib"
-           
-            make -C src/include install 
+
+            make -C src/include install
             make -C  src/bin/pg_config install
-            
-            make -C  src/common -j $cpu_nums all 
-            make -C  src/common install 
-            
-            make -C  src/port -j $cpu_nums all 
-            make -C  src/port install 
-            
-     
-            make -C  src/backend/libpq -j $cpu_nums all 
-            make -C  src/backend/libpq install 
-            
+
+            make -C  src/common -j $cpu_nums all
+            make -C  src/common install
+
+            make -C  src/port -j $cpu_nums all
+            make -C  src/port install
+
+
+            make -C  src/backend/libpq -j $cpu_nums all
+            make -C  src/backend/libpq install
+
             make -C src/interfaces/ecpg   -j $cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
             make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
-            
+
             # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
-            
-            
- 
+
+
+
             make -C src/interfaces/libpq  -j $cpu_nums # soname=true
-           
-            make -C src/interfaces/libpq  install 
-            
+
+            make -C src/interfaces/libpq  install
+
             rm -rf /usr/pgsql/lib/*.so.*
             rm -rf /usr/pgsql/lib/*.so
-            return 0 
+            return 0
             make -C  src/interfaces/libpq -j $cpu_nums libpq5555.a
             make -C  src/interfaces/libpq install-libpq5555.a
-            
+
             rm -rf /usr/pgsql/lib/*.so.*
             rm -rf /usr/pgsql/lib/*.so
-            
-            return 0 
-            
-            nm -A /usr/pgsql/lib/libpq.a 
-            
-            exit 0 
-            make -C src/interfaces/libpq  -j $cpu_nums  libpq.a 
-            exit 0 
-            make -C src/interfaces/libpq    install-libpq.a
-            
-            return 0 
-            
-            rm -rf /usr/pgsql/lib/*.so.*
-            rm -rf /usr/pgsql/lib/*.so
-            
+
             return 0
-            
-            # need stage 
-            # src/include         
-            $ src/common        
-            # src/port          
-            # src/interfaces/libpq        
+
+            nm -A /usr/pgsql/lib/libpq.a
+
+            exit 0
+            make -C src/interfaces/libpq  -j $cpu_nums  libpq.a
+            exit 0
+            make -C src/interfaces/libpq    install-libpq.a
+
+            return 0
+
+            rm -rf /usr/pgsql/lib/*.so.*
+            rm -rf /usr/pgsql/lib/*.so
+
+            return 0
+
+            # need stage
+            # src/include
+            $ src/common
+            # src/port
+            # src/interfaces/libpq
             # src/bin/pg_config
-           
-           
+
+
             '
             )
             ->withMakeOptions('-C src/common all')
@@ -1361,7 +1820,7 @@ function install_libfastcommon($p)
                 '
              export DESTDIR=/usr/libfastcommon
              ./make.sh clean && ./make.sh && ./make.sh install
-             exit 0 
+             exit 0
             '
             )
             ->withPkgName('')
@@ -1390,8 +1849,8 @@ function install_gettext(Preprocessor $p)
             )
             ->withConfigure(
                 '
-            ./configure --help 
-           
+            ./configure --help
+
             ./configure --prefix=/usr/gettext enable_static=yes enable_shared=no \
              --disable-java \
              --without-git \
@@ -1399,8 +1858,8 @@ function install_gettext(Preprocessor $p)
              --with-libncurses-prefix=/usr/ncurses \
              --with-libxml2-prefix=/usr/libxml2/ \
              --with-libunistring-prefix \
-             --with-libintl-prefix 
-             
+             --with-libintl-prefix
+
             '
             )
             ->withPkgName('gettext')
@@ -1424,7 +1883,7 @@ function install_jansson(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
              autoreconf -fi
-            ./configure --help 
+            ./configure --help
             ./configure \
             --prefix={$jansson_prefix} \
             --enable-shared=no \
@@ -1541,7 +2000,7 @@ function install_zookeeper_client($p)
             -DCMAKE_INSTALL_PREFIX="{$zookeeper_client_prefix}" \
             -DWANT_CPPUNIT=OFF \
             -DWITH_OPENSSL=ON  \
-            -DBUILD_SHARED_LIBS=OFF  
+            -DBUILD_SHARED_LIBS=OFF
 
             cmake --build .
 EOF
@@ -1552,8 +2011,8 @@ EOF
             ant compile_jute
             cd zookeeper-client/zookeeper-client-c
             autoreconf -if
-            ./configure --help 
-            
+            ./configure --help
+
             ./configure \
             --prefix={$zookeeper_client_prefix} \
             --enable-shared=no \
@@ -1589,7 +2048,7 @@ function install_unixodbc(Preprocessor $p)
             ->withConfigure(
                 "
                 autoreconf -fi
-             ./configure --help 
+             ./configure --help
              ./configure \
              --prefix={$unixODBC_prefix} \
              --enable-shared=no \
@@ -1629,9 +2088,9 @@ function install_xorgproto(Preprocessor $p)
         -Db_pie=true \
         -Dprefer_static=true \
         build
-        
-       
-        ninja -C build 
+
+
+        ninja -C build
         ninja -C build install
 EOF
         )
@@ -1639,7 +2098,7 @@ EOF
             <<<EOF
             autoreconf -ivf
             ./configure --help
-        
+
             LDFLAGS="-static " \
             ./configure --prefix={$xorgproto_prefix} \
             --enable-legacy \

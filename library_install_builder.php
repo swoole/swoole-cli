@@ -816,7 +816,7 @@ EOF;
             ->withCleanPreInstallDirectory($pgsql_prefix)
             ->withBuildScript(
                 <<<'EOF'
-           
+
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
 
             # 替换指定行内容
@@ -844,10 +844,10 @@ EOF
             --with-icu \
             --without-ldap \
             --with-libxml  \
-            --with-libxslt 
+            --with-libxslt
             # --with-includes="{$includes}" \
             # --with-libraries="{$libraries}"
-            
+
 EOF
                 . PHP_EOL . <<<'EOF'
             result_code=$?
@@ -856,10 +856,10 @@ EOF
             make -C src/include install
 
             make -C  src/bin/pg_config install
-     
+
             make -C  src/common -j $cpu_nums all
             make -C  src/common install
-     
+
 
             make -C  src/port -j $cpu_nums all
             make -C  src/port install
@@ -867,24 +867,24 @@ EOF
 
             make -C  src/backend/libpq -j $cpu_nums all
             make -C  src/backend/libpq install
-         
+
 
             make -C src/interfaces/ecpg   -j $cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
             make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
-      
+
 
             # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
 
             make -C src/interfaces/libpq  -j $cpu_nums # soname=true
             make -C src/interfaces/libpq  install
-  
 
-        
-            
+
+
+
             export -n CPPFLAGS
             export -n LDFLAGS
             export -n LIBS
-            
+
 EOF
             )
             ->withScriptAfterInstall(<<<EOF
@@ -1038,4 +1038,67 @@ EOF
         ->withPkgName('xlsxwriter');
 
     $p->addLibrary($lib);
+}
+
+
+function install_libevent($p)
+{
+    $libevent_prefix = LIBEVENT_PREFIX;
+    $p->addLibrary(
+        (new Library('libevent'))
+            ->withHomePage('https://github.com/libevent/libevent')
+            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl(
+                'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz'
+            )
+            ->withManual('https://libevent.org/libevent-book/')
+            ->withPrefix($libevent_prefix)
+            ->withCleanBuildDirectory()
+            ->withConfigure(
+                <<<EOF
+            # 查看更多选项
+            # cmake -LAH .
+        mkdir build && cd build
+        cmake ..   \
+        -DCMAKE_INSTALL_PREFIX={$libevent_prefix} \
+        -DEVENT__DISABLE_DEBUG_MODE=ON \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DEVENT__LIBRARY_TYPE=STATIC
+
+EOF
+            )
+            ->withPkgName('libevent')
+    );
+}
+
+
+function install_libuv($p)
+{
+    //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
+    $libuv_prefix = LIBUV_PREFIX;
+    $p->addLibrary(
+        (new Library('libuv'))
+            ->withHomePage('https://libuv.org/')
+            ->withLicense('https://github.com/libuv/libuv/blob/v1.x/LICENSE', Library::LICENSE_MIT)
+            ->withUrl('https://github.com/libuv/libuv/archive/refs/tags/v1.44.2.tar.gz')
+            ->withManual('https://github.com/libuv/libuv.git')
+            ->withFile('libuv-v1.44.2.tar.gz')
+            ->withPrefix($libuv_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libuv_prefix)
+            ->withConfigure(
+                <<<EOF
+            ls -lh
+
+            sh autogen.sh
+            ./configure --help
+
+            ./configure --prefix={$libuv_prefix} \
+            --enable-shared=no \
+            --enable-static=yes
+
+EOF
+            )
+            ->withPkgName('libuv')
+    );
 }

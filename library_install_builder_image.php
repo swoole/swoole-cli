@@ -109,13 +109,16 @@ function install_libpng(Preprocessor $p)
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
                 LDFLAGS="$(pkg-config --libs-only-L      --static zlib )" \
                 LIBS="$(pkg-config --libs-only-l         --static zlib )" \
-                ./configure --prefix={$libpng_prefix} \
-                --enable-static --disable-shared \
+                ./configure \
+                --prefix={$libpng_prefix} \
+                --enable-static \
+                --disable-shared \
                 --with-zlib-prefix={$libzlib_prefix} \
                 --with-binconfigs
 EOF
             )
             ->withPkgName('libpng16')
+            ->withBinPath($libpng_prefix . '/bin')
             ->depends('zlib')
     );
 }
@@ -126,6 +129,7 @@ function install_libwebp(Preprocessor $p)
     $libpng_prefix = PNG_PREFIX;
     $libjpeg_prefix = JPEG_PREFIX;
     $libgif_prefix = GIF_PREFIX;
+    $libtiff_prefix = LIBTIFF_PREFIX;
     $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $p->addLibrary(
         (new Library('libwebp'))
@@ -138,8 +142,12 @@ function install_libwebp(Preprocessor $p)
             ->withCleanPreInstallDirectory($libwebp_prefix)
             ->withConfigure(
                 <<<EOF
-                ./autogen.sh && \
-                ./configure --help &&  \
+                ./autogen.sh
+                ./configure --help
+                ./configure --help | grep -e '--disable'
+                ./configure --help | grep -e '--enable'
+                ./configure --help | grep -e '--with'
+
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
                 LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
                 LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
@@ -152,277 +160,17 @@ function install_libwebp(Preprocessor $p)
                 --with-jpegincludedir={$libjpeg_prefix}/include \
                 --with-jpeglibdir={$jpeg_lib_dir} \
                 --with-gifincludedir={$libgif_prefix}/include \
-                --with-giflibdir={$libgif_prefix}/lib
+                --with-giflibdir={$libgif_prefix}/lib \
+                --disable-tiff
+
 EOF
             )
             ->withPkgName('libwebp')
-            ->withLdflags('-L' . WEBP_PREFIX . '/lib -lwebpdemux -lwebpmux')
+            ->withLdflags('-L' . $libwebp_prefix . '/lib -lwebpdemux -lwebpmux')
+            ->withBinPath($libwebp_prefix . '/bin')
             ->depends('libpng', 'libjpeg', 'libgif')
     );
 }
-
-
-function install_libyuv(Preprocessor $p)
-{
-    $libyuv_prefix = "/usr/libyuv";
-    $libjpeg_prefix = JPEG_PREFIX;
-    $libjpeg_lib_dir = $p->getOsType()== 'linux' ? $libjpeg_prefix .'/lib64/' : $libjpeg_prefix .'/lib/';
-    $p->addLibrary(
-        (new Library('libyuv'))
-            ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
-            ->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
-            ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
-            ->withManual('https://https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
-            ->withSkipDownload()
-            ->withUntarArchiveCommand('mv')
-            ->withPrefix($libyuv_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libyuv_prefix)
-            ->withBuildScript(
-                <<<EOF
-            set -uex
-            pwd
-            ls -lh .
-            cd libyuv
-
-
-            ls -lh .
-
-            make -f linux.mk
-            mkdir -p $libyuv_prefix/lib
-            cp -rf libyuv.a  $libyuv_prefix/lib
-            cp -rf include $libyuv_prefix/
-
-            exit  0
-            gn gen out/Release "--args=is_debug=false"
-
-            ninja -v -C out/Release
-            exit  0
-
-
-            #  cmake默认查找到的是动态库 ; cmake 优先使用静态库
-            #  参考 https://blog.csdn.net/10km/article/details/82931978
-
-            # sed -i '/find_package ( JPEG )/i set( JPEG_NAMES libjpeg.a )'  CMakeLists.txt
-
-            # -DJPEG_LIBRARY_RELEASE={$libjpeg_prefix}/lib/libjpeg.a
-            # CMAKE_INCLUDE_PATH 和 CMAKE_LIBRARY_PATH
-
-            # -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
-
-            mkdir -p build
-            cd build
-            cmake \
-            -Wno-dev \
-            -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
-            -DCMAKE_BUILD_TYPE="Release"  \
-            -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
-            -DBUILD_SHARED_LIBS=OFF  ..
-
-            cmake --build . --config Release
-            cmake --build . --target install --config Release
-
-
-EOF
-            )
-            ->withPkgName('')
-    );
-}
-function install_libavif(Preprocessor $p)
-{
-    $libavif_prefix = LIBAVIF_PREFIX;
-    $p->addLibrary(
-        (new Library('libavif'))
-            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
-            ->withFile('libavif-v0.11.1.tar.g')
-            ->withHomePage('https://aomediacodec.github.io/av1-avif/')
-            ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
-            ->withManual('https://github.com/AOMediaCodec/libavif')
-            ->withPrefix($libavif_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libavif_prefix)
-            ->withConfigure(
-                <<<EOF
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
-            LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
-            LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
-            cmake .  \
-            -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
-            -DAVIF_BUILD_EXAMPLES=ON \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DAVIF_CODEC_AOM=OFF \
-            -DAVIF_CODEC_DAV1D=OFF \
-            -DAVIF_CODEC_LIBGAV1=OFF \
-            -DAVIF_CODEC_RAV1E=OFF
-            exit 0
-
-EOF
-            )
-            ->withPkgName('libavif')
-            ->withLdflags('')
-    );
-}
-
-
-function install_libde265(Preprocessor $p)
-{
-    $libde265_prefix = LIBDE265_PREFIX;
-    $lib = new Library('libde265');
-    $lib->withHomePage('https://github.com/strukturag/libde265.git')
-        ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
-        ->withUrl('https://github.com/strukturag/libde265/archive/refs/tags/v1.0.11.tar.gz')
-        ->withFile('libde265-v1.0.11.tar.gz')
-
-        ->withPrefix($libde265_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libde265_prefix)
-        ->withConfigure(
-            <<<EOF
-        ./autogen.sh
-        ./configure --help
-        ./configure --prefix={$libde265_prefix} \
-        --enable-shared=no \
-        --enable-static=yes
-EOF
-        )
-        ->withPkgName('libde265');
-
-    $p->addLibrary($lib);
-}
-
-function install_libheif(Preprocessor $p)
-{
-    $libheif_prefix = LIBHEIF_PREFIX;
-    $lib = new Library('libheif');
-    $lib->withHomePage('https://github.com/strukturag/libheif.git')
-        ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
-        ->withUrl('https://github.com/strukturag/libheif/releases/download/v1.15.1/libheif-1.15.1.tar.gz')
-
-        ->withPrefix($libheif_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libheif_prefix)
-        ->withConfigure(
-            <<<'EOF'
-            ./configure --help
-
-            libde265_CFLAGS=$(pkg-config  --cflags --static libde265 ) \
-            libde265_LIBS=$(pkg-config    --libs   --static libde265 ) \
-            libpng_CFLAGS=$(pkg-config  --cflags --static libpng ) \
-            libpng_LIBS=$(pkg-config    --libs   --static libpng ) \
-EOF
-            . PHP_EOL .
-            <<<EOF
-            ./configure \
-            --prefix={$libheif_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
-EOF
-        )
-        ->withPkgName('libheif');
-
-    $p->addLibrary($lib);
-}
-
-
-function install_graphite2(Preprocessor $p)
-{
-    $graphite2_prefix = "/usr/graphite2";
-    $p->addLibrary(
-        (new Library('graphite2'))
-            ->withLicense('https://github.com/silnrsi/graphite/blob/master/COPYING', Library::LICENSE_SPEC)
-            ->withHomePage('http://graphite.sil.org/')
-            ->withUrl('https://github.com/silnrsi/graphite/archive/refs/tags/1.3.14.tar.gz')
-            ->withManual('https://github.com/silnrsi/graphite.git')
-            ->withFile('graphite-1.3.14.tar.gz')
-            ->withLabel('library')
-            ->withPrefix($graphite2_prefix)
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                "
-            mkdir -p build
-            cd build
-            cmake   ..  \
-            -DCMAKE_INSTALL_PREFIX={$graphite2_prefix} \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_SHARED_LIBS=OFF
-            "
-            )
-            ->withPkgName('graphite2')
-    );
-}
-
-function install_libfribidi(Preprocessor $p)
-{
-    $libfribidi_prefix = LIBFRIBIDI_PREFIX;
-    $p->addLibrary(
-        (new Library('libfribidi'))
-            ->withLicense('https://github.com/fribidi/fribidi/blob/master/COPYING', Library::LICENSE_LGPL)
-            ->withHomePage('https://github.com/fribidi/fribidi.git')
-            ->withUrl('https://github.com/fribidi/fribidi/archive/refs/tags/v1.0.12.tar.gz')
-            ->withFile('fribidi-v1.0.12.tar.gz')
-            ->withLabel('library')
-            ->withPrefix($libfribidi_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libfribidi_prefix)
-            ->withConfigure(
-                "
-
-                # 可以使用 meson
-                # meson setup  build
-
-                sh autogen.sh
-                ./configure --help
-
-                ./configure \
-                --prefix={$libfribidi_prefix} \
-                --enable-static=yes \
-                --enable-shared=no
-            "
-            )
-            ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
-    );
-}
-function install_harfbuzz(Preprocessor $p)
-{
-    $harfbuzz_prefix = HARFBUZZ_PREFIX;
-    $p->addLibrary(
-        (new Library('harfbuzz'))
-            ->withLicense('https://github.com/harfbuzz/harfbuzz/blob/main/COPYING', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/harfbuzz/harfbuzz.git')
-            ->withUrl('https://github.com/harfbuzz/harfbuzz/archive/refs/tags/7.1.0.tar.gz')
-            ->withFile('harfbuzz-7.1.0.tar.gz')
-            ->withLabel('library')
-            ->withPrefix($harfbuzz_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($harfbuzz_prefix)
-            ->withBuildScript(
-                "
-                meson help
-                meson setup --help
-
-                meson setup  build \
-                --backend=ninja \
-                --prefix={$harfbuzz_prefix} \
-                --default-library=static \
-                -Dglib=disabled \
-                -Dicu=enabled \
-                -Dfreetype=disabled \
-                -Dtests=disabled \
-                -Ddocs=disabled  \
-                -Dbenchmark=disabled
-
-                meson compile -C build
-                meson install -C build
-                # ninja -C build
-                # ninja -C build install
-
-            "
-            )
-            ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
-    );
-}
-
-
 
 
 
@@ -447,9 +195,9 @@ function install_freetype(Preprocessor $p)
             ./configure --help
             BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
             BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
-            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  harfbuzz libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  harfbuzz libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  harfbuzz libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
             ./configure --prefix={$freetype_prefix} \
             --enable-static \
             --disable-shared \
@@ -467,114 +215,6 @@ EOF
 }
 
 
-//-lgd -lpng -lz -ljpeg -lfreetype -lm
-
-function install_libgd2($p)
-{
-    $libgd_prefix = LIBGD_PREFIX;
-    $libiconv_prefix = ICONV_PREFIX;
-    $lib = new Library('libgd2');
-    $lib->withHomePage('https://www.libgd.org/')
-        ->withLicense('https://github.com/libgd/libgd/blob/master/COPYING', Library::LICENSE_SPEC)
-        ->withUrl('https://github.com/libgd/libgd/releases/download/gd-2.3.3/libgd-2.3.3.tar.gz')
-        ->withManual('https://github.com/libgd/libgd.git')
-        ->withManual('https://libgd.github.io/pages/docs.html')
-        ->withPrefix($libgd_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libgd_prefix)
-        ->withConfigure(
-            <<<'EOF'
-        # 下载依赖
-         ./configure --help
-         # -lbrotlicommon-static -lbrotlidec-static -lbrotlienc-static
-        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-        export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-        export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-
-        echo $LIBS
-
-EOF . PHP_EOL . <<<EOF
-        ./configure \
-        --prefix={$libgd_prefix} \
-        --enable-shared=no \
-        --enable-static=yes \
-        --without-freetype \
-        --with-libiconv-prefix={$libiconv_prefix}
-         # --with-freetype=/usr/freetype \
-
-:<<'_EOF_'
-        mkdir -p build
-        cd build
-        cmake   ..  \
-        -DCMAKE_INSTALL_PREFIX={$libgd_prefix} \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DENABLE_GD_FORMATS=1 \
-        -DENABLE_JPEG=1 \
-        -DENABLE_TIFF=1 \
-        -DENABLE_ICONV=1 \
-        -DENABLE_FREETYPE=1 \
-        -DENABLE_FONTCONFIG=1 \
-        -DENABLE_WEBP=1 \
-        -DENABLE_HEIF=1 \
-        -DENABLE_AVIF=1 \
-        -DENABLE_WEBP=1
-
-        cmake --build . -- -j$(nproc)
-        exit 0
-        cmake --install .
-_EOF_
-
-EOF
-        )
-        ->withMakeInstallCommand('')
-        ->withPkgName('libgd2');
-
-    $p->addLibrary($lib);
-}
-
-function install_GraphicsMagick($p)
-{
-    $libiconv_prefix = ICONV_PREFIX;
-    $GraphicsMagick_prefix = '/usr/GraphicsMagick';
-    $lib = new Library('GraphicsMagick');
-    $lib->withHomePage('http://www.graphicsmagick.org/index.html')
-        ->withLicense('https://github.com/libgd/libgd/blob/master/COPYING', Library::LICENSE_SPEC)
-        ->withUrl('https://jaist.dl.sourceforge.net/project/graphicsmagick/graphicsmagick/1.3.40/GraphicsMagick-1.3.40.tar.gz')
-        ->withManual('http://www.graphicsmagick.org/README.html')
-        ->withManual('http://www.graphicsmagick.org/INSTALL-unix.html')
-        ->withPrefix($GraphicsMagick_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($GraphicsMagick_prefix)
-        ->withConfigure(
-            <<<'EOF'
-        # 下载依赖
-         ./configure --help
-         # -lbrotlicommon-static -lbrotlidec-static -lbrotlienc-static
-        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-        export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-        export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-
-        echo $LIBS
-
-EOF . PHP_EOL . <<<EOF
-        ./configure \
-        --prefix={$GraphicsMagick_prefix} \
-        --enable-shared=no \
-        --enable-static=yes \
-        --without-freetype \
-        --with-libiconv-prefix={$libiconv_prefix}
-         # --with-freetype=/usr/freetype \
-
-EOF
-        )
-        ->withMakeInstallCommand('')
-        ->withPkgName('GraphicsMagick');
-
-    $p->addLibrary($lib);
-}
-
-
-
 
 function install_libtiff(Preprocessor $p)
 {
@@ -589,7 +229,10 @@ function install_libtiff(Preprocessor $p)
         ->withConfigure(
             <<<'EOF'
             ./configure --help
-            package_names="zlib libjpeg libturbojpeg liblzma  libzstd libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
+            ./configure --help | grep -e '--enable'
+            ./configure --help | grep -e '--disable'
+
+            package_names="zlib libjpeg libturbojpeg liblzma  libzstd "
 
             CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names ) \
             LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names ) \
@@ -601,52 +244,17 @@ EOF
             --enable-shared=no \
             --enable-static=yes \
             --disable-docs \
-            --disable-tests
+            --disable-tests \
+            --disable-webp
 
 EOF
         )
+        ->withBinPath($libtiff_prefix . '/bin')
         ->withPkgName('libtiff');
 
     $p->addLibrary($lib);
 }
 
-
-function install_libXpm(Preprocessor $p)
-{
-    $libXpm_prefix = LIBXPM_PREFIX;
-    $lib = new Library('libXpm');
-    $lib->withHomePage('https://github.com/freedesktop/libXpm.git')
-        ->withLicense('https://github.com/freedesktop/libXpm/blob/master/COPYING', Library::LICENSE_SPEC)
-        ->withUrl('https://github.com/freedesktop/libXpm/archive/refs/tags/libXpm-3.5.11.tar.gz')
-        ->withFile('libXpm-3.5.11.tar.gz')
-        ->withPrefix($libXpm_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libXpm_prefix)
-        ->withScriptBeforeConfigure(
-            <<<EOF
-         # 依赖 xorg-macros
-         # 解决依赖
-         # apk add util-macros
-         # apk add libxpm-dev
-EOF
-        )
-        ->withConfigure(
-            <<<EOF
-            ./autogen.sh
-            ./configure --help
-            ./configure --prefix={$libXpm_prefix} \
-            --enable-shared=no \
-            --enable-static=yes \
-            --disable-docs \
-            --disable-tests \
-            --enable-strict-compilation
-
-EOF
-        )
-        ->withPkgName('libXpm');
-
-    $p->addLibrary($lib);
-}
 
 
 function install_libraw(Preprocessor $p)
@@ -690,118 +298,9 @@ EOF
 
 
 
-function install_libOpenEXR(Preprocessor $p)
-{
-    $libOpenEXR_prefix = '/usr/libOpenEXR';
-    $lib = new Library('libOpenEXR');
-    $lib->withHomePage('http://www.openexr.com/')
-        ->withLicense('https://github.com/AcademySoftwareFoundation/openexr/blob/main/LICENSE.md', Library::LICENSE_BSD)
-        ->withUrl('https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.1.5.tar.gz')
-        ->withManual('https://github.com/AcademySoftwareFoundation/openexr.git')
-        ->withManual('https://openexr.com/en/latest/install.html#install')
-        ->withFile('openexr-v3.1.5.tar.gz')
-        ->withPrefix($libOpenEXR_prefix)
-        //->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libOpenEXR_prefix)
-        ->withBuildScript(
-            <<<EOF
-        # cmake .  -DCMAKE_INSTALL_PREFIX={$libOpenEXR_prefix}
-
-        cmake.   --install-prefix={$libOpenEXR_prefix}
-        cmake --build .  --target install --config Release
-EOF
-        )
-        ->withPkgName('Imath OpenEXR')
-        ->withBinPath('$libOpenEXR_prefix' . '/bin')
-    ;
-
-    $p->addLibrary($lib);
-}
-
 /**
- * @param Preprocessor $p
- * @return void
- * 并发编程：SIMD 介绍  https://zhuanlan.zhihu.com/p/416172020
- */
-function install_highway(Preprocessor $p)
-{
-    $highway_prefix = '/usr/highway';
-    $lib = new Library('highway');
-    $lib->withHomePage('https://github.com/google/highway.git')
-        ->withLicense('https://github.com/google/highway/blob/master/LICENSE', Library::LICENSE_APACHE2)
-        ->withUrl('https://github.com/google/highway/archive/refs/tags/1.0.3.tar.gz')
-        ->withFile('highway-1.0.3.tar.gz')
-        ->withManual('https://github.com/google/highway.git')
-        ->withPrefix($highway_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($highway_prefix)
-
-        ->withConfigure(
-            <<<EOF
-# -DHWY_CMAKE_ARM7:BOOL=ON
-
-# 会自动下载 googletest
-
-
-    mkdir -p build && cd build
-    cmake .. \
-    -DCMAKE_INSTALL_PREFIX={$highway_prefix} \
-    -DCMAKE_BUILD_TYPE=Release  \
-    -DBUILD_SHARED_LIBS=OFF \
-    -DHWY_FORCE_STATIC_LIBS=ON \
-    -DBUILD_TESTING=OFF
-
-EOF
-        )
-        ->withPkgName('libhwy-contrib.pc  libhwy-test.pc  libhwy');
-
-    $p->addLibrary($lib);
-}
-
-function install_libjxl(Preprocessor $p)
-{
-    $libjxl_prefix = LIBJXL_PREFIX;
-    $lib = new Library('libjxl');
-    $lib->withHomePage('https://github.com/libjxl/libjxl.git')
-        ->withLicense('https://github.com/libjxl/libjxl/blob/main/LICENSE', Library::LICENSE_BSD)
-        ->withUrl('https://github.com/libjxl/libjxl/archive/refs/tags/v0.8.1.tar.gz')
-        ->withManual('https://github.com/libjxl/libjxl/blob/main/BUILDING.md')
-        ->withFile('libjpegxl-v0.8.1.tar.gz')
-        ->withPrefix($libjxl_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libjxl_prefix)
-        ->withBuildScript(
-            <<<EOF
-
-        ## 会自动 下载依赖 ，如网速不佳，请在环境变量里设置代理地址，用于加速下载
-        git init -b main .
-        git add ./.gitmodules
-
-        git -C . submodule update --init --recursive --depth 1 --recommend-shallow
-
-        sh deps.sh
-
-        git submodule update --init --recursive
-        exit 0
-        mkdir -p build
-        cd build
-        cmake -DJPEGXL_STATIC=true \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_SHARED_LIBS=OFF \
-        -DBUILD_TESTING=OFF \
-        -DCMAKE_INSTALL_PREFIX={$libjxl_prefix} \
-         ..
-
-        cmake --build . -- -j$(nproc)
-        cmake --install .
-EOF
-        )
-        ->withPkgName('libjxl');
-
-    $p->addLibrary($lib);
-}
-
-/**
+ * 参考文档 https://zhuanlan.zhihu.com/p/355256489
+ * AVIF是一种基于AV1视频编码的新图像格式，相对于JPEG，WEBP这类图片格式来说，它的压缩率更高，并且画面细节更好。而最关键的是，它是免费且开源的，没有任何授权费用。
  *
  * HEIC是新出的一种图像格式 与JPG相比，它占用的空间更小，画质更加无损 HEIC使用的图像压缩编解码器最早是为视频开发的。
  * 高效视频编码（HEVC）用离散余弦和正弦变换（DCT和DST）压缩视频的每一帧

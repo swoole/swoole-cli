@@ -188,18 +188,33 @@ make_config() {
     export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
     export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
 
-    package_names="readline icu-i18n  icu-io   icu-uc libpq libffi"
+    package_names="ncursesw readline icu-i18n  icu-io  icu-uc "
     package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
-    package_names="${package_names} xlsxwriter libpq ncursesw"
+    package_names="${package_names} xlsxwriter libpq libffi libzstd"
 
+    # BZIP2_CFLAGS="-I{$bzip2_prefix}/include"
+    # BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"
     #  -I<?= LIBMCRYPT_PREFIX ?>/include
     #  -L<?= LIBMCRYPT_PREFIX ?>/lib
     #  -lmcrypt
 
+:<<'EOF'
+= 是最基本的赋值
+:= 是覆盖之前的值
+?= 是如果没有被赋值过就赋予等号后面的值
++= 是添加等号后面的值
+EOF
+
+
+
+    # GNU C编译器的gnu11和c11 https://www.cnblogs.com/litifeng/p/8328499.html
+    # -g是生成调试信息
+    # -Wall 是打开警告开关,-O代表默认优化,可选：-O0不优化,-O1低级优化,-O2中级优化,-O3高级优化,-Os代码空间优化
+
     CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
     export   CPPFLAGS="$CPPFLAGS -I/usr/include"
 
-    export   CFLAGS="-std=c11"
+    export CFLAGS="-std=gnu11 -g -Wall -O3"
 
     LDFLAGS=""
     <?= $this->configureVarables . PHP_EOL  ?>
@@ -215,7 +230,6 @@ make_config() {
 <?php if ($this->osType == 'macos') : ?>
     # export  LIBS="-llibc++"
 <?php endif; ?>
-
     export  LIBS="$LIBS  "
 
 
@@ -230,10 +244,11 @@ make_config() {
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
 
+    ./configure --help
     ./configure --help | grep -e '--enable'
     ./configure --help | grep -e '--with'
     ./configure --help | grep hash
-    exit 0
+
     ./configure $OPTIONS
 
 }
