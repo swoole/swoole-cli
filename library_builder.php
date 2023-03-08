@@ -49,12 +49,10 @@ function libraries_builder($p)
     install_libffi($p);
 
     //install_libmcrypt($p); //无 pkg-config 配置
-    install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    //install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
 
-    install_libevent($p);
-    install_libuv($p);
-
-
+    //install_libevent($p);
+    //install_libuv($p);
 
 
     # 扩展 mbstring 依赖 oniguruma 库
