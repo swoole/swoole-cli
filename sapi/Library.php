@@ -225,7 +225,12 @@ class Library extends Project
 
     public function withLabel(string $label): static
     {
-        $this->label=$label;
+        $this->label = $label;
         return $this;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
     }
 }

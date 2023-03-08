@@ -84,7 +84,7 @@ make_<?=$item->name?>() {
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
 <?php endif; ?>
 
-    # use build script replace  configure、make、make install
+
 <?php if(empty($item->buildScript)): ?>
 
     # before configure
@@ -126,6 +126,7 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
 <?php endif; ?>
 <?php else: ?>
+    # use build script replace  configure、make、make install
     cat <<'__EOF__'
     <?= $item->buildScript . PHP_EOL ?>
 __EOF__
@@ -150,7 +151,11 @@ __EOF__
 
 clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?> && echo "clean <?=$item->name?>"
+<?php if( ($item->getLabel() == 'php_internal_extension') || ($item->getLabel() == 'php_extension' )) : ?>
+    cd <?=$this->getBuildDir()?>/<?= $item->name . PHP_EOL ?>
+<?php else: ?>
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
+<?php endif; ?>
     rm -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     cd <?= $this->workDir . PHP_EOL ?>
 }
