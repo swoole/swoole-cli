@@ -195,8 +195,9 @@ make_config() {
 
     package_names="ncursesw readline icu-i18n  icu-io  icu-uc "
     package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
-    package_names="${package_names} xlsxwriter libpq libffi libzstd"
+    package_names="${package_names} libpq libffi libzstd"
 
+    #  xlsxwriter
     #  BZIP2_CFLAGS="-I{$bzip2_prefix}/include"
     #  BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"
     #  -I<?= LIBMCRYPT_PREFIX ?>/include
