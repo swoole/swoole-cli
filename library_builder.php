@@ -107,7 +107,7 @@ function libraries_builder($p)
         install_zookeeper_client($p);
         install_unixodbc($p);
     }
-
+    install_php_extension_swow($p);
     if (0) {
         install_php_extension_swow($p); // libcat for Swow https://github.com/libcat/libcat.git
         install_php_extension_micro($p);

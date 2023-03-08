@@ -46,10 +46,10 @@ function install_php_internal_extensions($p)
                 <<<EOF
                     test -d {$workDir}/ext/ffi && rm -rf {$workDir}/ext/ffi
                     cp -rf  ext/ffi {$workDir}/ext/
-                    
+
                     test -d {$workDir}/ext/pdo_pgsql && rm -rf {$workDir}/ext/pdo_pgsql
                     cp -rf  ext/pdo_pgsql {$workDir}/ext/
-                    
+
                     test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
                     cp -rf  ext/pgsql {$workDir}/ext/
 EOF
@@ -99,7 +99,7 @@ function install_php_extension_swow(Preprocessor $p)
             ->withManual('https://github.com/swow/swow')
             ->withLabel('php_extension')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
+            ->withBuildScript(
                 <<<EOF
             test -d {$workDir}/ext/swow && rm -rf {$workDir}/ext/swow
             cp -rf {$buildDir}/php_extension_swow/ext/ {$workDir}/ext/swow
@@ -126,7 +126,7 @@ function install_php_extension_wasm(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withBuildScript("
               ls -lh ./ext
-              pwd 
+              pwd
               cp -rf ext  {$workDir}/ext/wasm
             ")
             ->disableDefaultPkgConfig()
@@ -149,7 +149,7 @@ function install_php_extension_wasm(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withBuildScript("
               ls -lh ./ext
-              pwd 
+              pwd
               cp -rf ext  {$workDir}/ext/wasm
             ")
             ->disableDefaultPkgConfig()
