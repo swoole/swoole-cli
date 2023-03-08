@@ -225,7 +225,7 @@ EOF
     # export CFLAGS="-std=gnu11 -g -Wall -O3"
 
     LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
-    <?= $this->configureVarables ?>" ${LDFLAGS}"
+    # <?= $this->configureVarables ?>" ${LDFLAGS}"
     LDFLAGS="$LDFLAGS "
     LDFLAGS="$LDFLAGS -L/usr/lib "
     export   LDFLAGS="$LDFLAGS"
