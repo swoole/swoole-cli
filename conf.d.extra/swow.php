@@ -8,6 +8,8 @@ return function (Preprocessor $p) {
     # Sanitizers是LLVM的一部分。
     # gcc不支持MemorySanitizer。
     # --enable-swow-address-sanitizer --enable-swow-memory-sanitizer --enable-swow-undefined-sanitizer
+
+    # swow 启用不了
     $p->addExtension(
         (new Extension('swow'))
             ->withOptions('--enable-swow  --enable-swow-ssl --enable-swow-curl ')
