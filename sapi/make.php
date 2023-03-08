@@ -197,11 +197,13 @@ make_config() {
     package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
     package_names="${package_names} xlsxwriter libpq libffi libzstd"
 
-    # BZIP2_CFLAGS="-I{$bzip2_prefix}/include"
-    # BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"
+    #  BZIP2_CFLAGS="-I{$bzip2_prefix}/include"
+    #  BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"
     #  -I<?= LIBMCRYPT_PREFIX ?>/include
     #  -L<?= LIBMCRYPT_PREFIX ?>/lib
     #  -lmcrypt
+
+
 
 :<<'EOF'
 = 是最基本的赋值
