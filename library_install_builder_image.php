@@ -369,7 +369,8 @@ function install_imagemagick(Preprocessor $p)
             --without-openjp2 \
             --without-lqr \
             --without-openexr \
-            --without-pango
+            --without-pango \
+            --without-utilities
 
 EOF
             )
