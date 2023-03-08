@@ -252,7 +252,9 @@ EOF
     ./configure --help
     ./configure --help | grep -e '--enable'
     ./configure --help | grep -e '--with'
-    ./configure --help | grep hash
+    ./configure --help | grep zstd
+    ./configure --help | grep xls
+
 
     ./configure $OPTIONS
 
