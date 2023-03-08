@@ -222,11 +222,11 @@ EOF
     CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
     export   CPPFLAGS="$CPPFLAGS -I/usr/include"
 
-    export CFLAGS="-std=gnu11 -g -Wall -O3"
+    # export CFLAGS="-std=gnu11 -g -Wall -O3"
 
-    LDFLAGS=""
-    <?= $this->configureVarables . PHP_EOL  ?>
-    LDFLAGS="$LDFLAGS $(pkg-config   --libs-only-L   --static $package_names )"
+    LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
+    <?= $this->configureVarables ?>" ${LDFLAGS}"
+    LDFLAGS="$LDFLAGS "
     LDFLAGS="$LDFLAGS -L/usr/lib "
     export   LDFLAGS="$LDFLAGS"
 
