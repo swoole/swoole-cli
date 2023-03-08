@@ -48,9 +48,11 @@ function libraries_builder($p)
     install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt liblzma libiconv
     install_libffi($p);
 
+    //扩展不兼容本项目
     //install_libmcrypt($p); //无 pkg-config 配置
+    //扩展参数还需要调试
     //install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
-
+    //扩展不兼容本项目
     //install_libevent($p);
     //install_libuv($p);
 
