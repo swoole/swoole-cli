@@ -1022,15 +1022,16 @@ function install_libxlsxwriter(Preprocessor $p)
         ->withBuildScript(
             <<<EOF
             # 启用DBUILD_TESTS 需要安装python3 pytest
-            mkdir build && cd build
+            mkdir -p build
+            cd build
             cmake .. -DCMAKE_INSTALL_PREFIX={$libxlsxwriter_prefix} \
             -DCMAKE_BUILD_TYPE=Release \
             -DZLIB_ROOT:STRING={$zlib_prefix} \
             -DBUILD_TESTS=OFF \
             -DBUILD_EXAMPLES=OFF \
             -DUSE_STANDARD_TMPFILE=ON \
-            -DUSE_OPENSSL_MD5=ON \
-            && \
+            -DUSE_OPENSSL_MD5=ON
+
             cmake --build . --config Release --target install
 EOF
         )
@@ -1058,7 +1059,8 @@ function install_libevent($p)
                 <<<EOF
             # 查看更多选项
             # cmake -LAH .
-        mkdir build && cd build
+        mkdir -p build
+        cd build
         cmake ..   \
         -DCMAKE_INSTALL_PREFIX={$libevent_prefix} \
         -DEVENT__DISABLE_DEBUG_MODE=ON \

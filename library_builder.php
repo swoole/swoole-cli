@@ -39,7 +39,7 @@ function libraries_builder($p)
     install_libraw($p);  //依赖 zlib  libjpeg
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
 
-    install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma libjxl libraw libtiff bzlib
+    install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma  libraw libtiff bzlib2 libjxl(默认不启用)
 
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
@@ -48,12 +48,12 @@ function libraries_builder($p)
     install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt liblzma libiconv
     install_libffi($p);
 
-   // install_libmcrypt($p); //无 pkg-config 配置
+    install_libmcrypt($p); //无 pkg-config 配置
     install_libxlsxwriter($p); //依赖zlib  （使用cmake，便于配置参数)
 
     install_libevent($p);
     install_libuv($p);
-    //libcat for Swow https://github.com/libcat/libcat.git
+
 
 
 
@@ -66,7 +66,7 @@ function libraries_builder($p)
 
     # php7 不支持openssl V3 ，PHP8 支持openssl V3 , openssl V3 默认库目录 /usr/openssl/lib64
 
-    # label: build_env_bin , php_extension_patch , php_internal_extension , php_extension ,extension_library
+    # label: build_path_bin , php_extension_patch , php_internal_extension , php_extension ,extension_library
 
     # pdo_pgsql,pdo_oci,pdo_odbc,ldap,ffi
 
@@ -109,7 +109,7 @@ function libraries_builder($p)
     }
 
     if (0) {
-        install_php_extension_swow($p);
+        install_php_extension_swow($p); // libcat for Swow https://github.com/libcat/libcat.git
         install_php_extension_micro($p);
         install_php_extension_zookeeper($p);
         install_php_extension_wasm($p);
