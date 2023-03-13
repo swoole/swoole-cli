@@ -42,7 +42,7 @@ function install_php_internal_extensions($p)
             ->withManual('https://www.php.net/docs.php')
             ->withLabel('php_internal_extension')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
+            ->withBuildScript(
                 <<<EOF
                     test -d {$workDir}/ext/ffi && rm -rf {$workDir}/ext/ffi
                     cp -rf  ext/ffi {$workDir}/ext/
@@ -54,7 +54,6 @@ function install_php_internal_extensions($p)
                     cp -rf  ext/pgsql {$workDir}/ext/
 EOF
             )
-            ->withConfigure('return 0')
             ->withSkipDownload()
             ->disablePkgName()
             ->disableDefaultPkgConfig()

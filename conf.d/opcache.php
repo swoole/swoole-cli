@@ -4,5 +4,9 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $p->addExtension((new Extension('opcache'))->withOptions('--enable-opcache'));
+    $option = '--enable-opcache';
+    if($p->getOsType() == 'macos') {
+        $option .= ' --disable-opcache-jit';
+    }
+    $p->addExtension((new Extension('opcache'))->withOptions($option));
 };

@@ -5,6 +5,8 @@ abstract class Project
 {
     public string $name;
     public string $manual = '';
+
+    public string $tutorial = '';
     public string $homePage = '';
     public string $license = '';
     public string $prefix = '';
@@ -40,6 +42,12 @@ abstract class Project
     public function withManual(string $manual): static
     {
         $this->manual = $manual;
+        return $this;
+    }
+
+    public function withTutorial(string $tutorial): static
+    {
+        $this->tutorial = $tutorial;
         return $this;
     }
 

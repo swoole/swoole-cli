@@ -4,6 +4,116 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 
+/*
+            ZIP_CFLAGS=$(pkg-config --cflags libzip) ;
+            ZIP_LIBS=$(pkg-config --libs libzip) ;
+            ZLIB_CFLAGS=$(pkg-config --cflags zlib) ;
+            ZLIB_LIBS=$(pkg-config --libs zlib) ;
+            LIBZSTD_CFLAGS=$(pkg-config --cflags libzstd) ;
+            LIBZSTD_LIBS=$(pkg-config --libs libzstd) ;
+            FREETYPE_CFLAGS=$(pkg-config --cflags freetype2) ;
+            FREETYPE_LIBS=$(pkg-config --libs freetype2) ;
+            LZMA_CFLAGS=$(pkg-config --cflags liblzma) ;
+            LZMA_LIBS=$(pkg-config --libs liblzma) ;
+            PNG_CFLAGS=$(pkg-config --cflags libpng  libpng16) ;
+            PNG_LIBS=$(pkg-config --libs libpng  libpng16) ;
+            WEBP_CFLAGS=$(pkg-config --cflags libwebp ) ;
+            WEBP_LIBS=$(pkg-config --libs libwebp ) ;
+            WEBPMUX_CFLAGS=$(pkg-config --cflags libwebp libwebpdemux  libwebpmux) ;
+            WEBPMUX_LIBS=$(pkg-config --libs libwebp libwebpdemux  libwebpmux) ;
+            XML_CFLAGS=$(pkg-config --cflags libxml-2.0) ;
+            XML_LIBS=$(pkg-config --libs libxml-2.0) ;
+ */
+
+
+function install_libgcrypt_error(Preprocessor $p)
+{
+    $libgcrypt_error_prefix = LIBGCRYPT_ERROR_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
+    $p->addLibrary(
+        (new Library('libgcrypt_error'))
+            ->withHomePage('https://www.gnupg.org/')
+            ->withUrl('https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.46.tar.bz2')
+            ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
+            ->withManual('https://www.gnupg.org/documentation/manuals.html')
+            ->withPrefix($libgcrypt_error_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libgcrypt_error_prefix)
+            ->withConfigure(<<<EOF
+            ./configure --help 
+            ./configure \
+            --prefix={$libgcrypt_error_prefix} \
+            --enable-static=yes \
+            --enable-shared=no \
+            --with-libiconv-prefix={$libiconv_prefix} \
+            --with-libintl-prefix  \
+            --disable-doc \
+            --disable-tests 
+
+EOF
+
+
+            )
+            ->withBinPath($libgcrypt_error_prefix . '/bin')
+            ->withPkgName('gpg-error')
+    );
+}
+
+function install_libgcrypt(Preprocessor $p)
+{
+    $libgcrypt_prefix = LIBGCRYPT_PREFIX;
+    $p->addLibrary(
+        (new Library('libgcrypt'))
+            ->withHomePage('https://www.gnupg.org/')
+            ->withUrl('https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.10.1.tar.bz2')
+            ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
+            ->withManual('https://www.gnupg.org/documentation/manuals.html')
+            ->withPrefix($libgcrypt_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libgcrypt_prefix)
+            ->withConfigure(<<<EOF
+            ./configure --help 
+            ./configure \
+            --prefix={$libgcrypt_prefix} \
+            --enable-static=yes \
+            --enable-shared=no \
+
+EOF
+
+
+            )
+            ->withPkgName('libgcrypt')
+            ->withBinPath($libgcrypt_prefix . '/bin/')
+    );
+}
+
+/**
+ * libgcrypt是一个非常成熟的加密算法库，也是著名的开源加密软件GnuPG的底层库，支持多种对称、非对称加密算法，以及多种Hash算法。
+ * @param Preprocessor $p
+ * @return void
+ */
+function install_gnupg(Preprocessor $p)
+{
+    $gnupg_prefix = GNUPG_PREFIX;
+    $p->addLibrary(
+        (new Library('gnupg'))
+            ->withHomePage('https://www.gnupg.org/')
+            ->withUrl('https://www.gnupg.org/ftp/gcrypt/gnupg/gnupg-2.4.0.tar.bz2')
+            ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
+            ->withManual('https://www.gnupg.org/documentation/manuals.html')
+            ->withPrefix($gnupg_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($gnupg_prefix)
+            ->withBuildScript(<<<EOF
+            ./configure --help 
+EOF
+
+
+            )
+            ->withPkgName('gnupg')
+    );
+}
+
 function install_libyuv(Preprocessor $p)
 {
     $libyuv_prefix = "/usr/libyuv";
@@ -70,6 +180,58 @@ EOF
             ->withPkgName('')
     );
 }
+
+
+
+
+function install_libraw(Preprocessor $p)
+{
+    $link_cpp = $p->getOsType() == 'macos' ? '-lc++' : '-lstdc++';
+    $libraw_prefix = LIBRAW_PREFIX;
+    $lib = new Library('libraw');
+    $lib->withHomePage('https://www.libraw.org/about')
+        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+        ->withUrl('https://www.libraw.org/data/LibRaw-0.21.1.tar.gz')
+        ->withPrefix($libraw_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libraw_prefix)
+        ->withConfigure(
+            <<<EOF
+            ./configure --help
+            echo {$link_cpp}
+    
+            set -uex 
+            package_names="zlib libjpeg libturbojpeg lcms2"
+     
+            CPPFLAGS="\$(pkg-config  --cflags-only-I --static \$package_names )" \
+            LDFLAGS="\$(pkg-config   --libs-only-L   --static \$package_names )" \
+            LIBS="\$(pkg-config      --libs-only-l   --static \$package_names ) {$link_cpp}" \
+            ./configure \
+            --prefix={$libraw_prefix} \
+            --enable-shared=no \
+            --enable-static=yes \
+            --enable-jpeg \
+            --enable-zlib \
+            --enable-lcms \
+            --disable-jasper  \
+            --disable-openmp
+            
+EOF
+        )
+        ->withPkgName('libraw  libraw_r')
+        ->withScriptAfterInstall(<<<EOF
+        ls -lh {$libraw_prefix}/lib/pkgconfig/libraw.pc
+        ls -lh {$libraw_prefix}/lib/pkgconfig/libraw_r.pc
+        # sed  "s/-lstdc++/-lc++/g" '{$libraw_prefix}/lib/pkgconfig/libraw.pc'
+        # sed  "s/-lstdc++/-lc++/g" '{$libraw_prefix}/lib/pkgconfig/libraw_r.pc'
+EOF
+        )
+        ->withBinPath($libraw_prefix . '/bin/')
+    ;
+
+    $p->addLibrary($lib);
+}
+
 function install_libavif(Preprocessor $p)
 {
     $libavif_prefix = LIBAVIF_PREFIX;
@@ -1402,6 +1564,61 @@ EOF
     );
 }
 
+function  install_capstone(Preprocessor $p)
+{
+    $capstone_prefix = $p->getGlobalPrefix() . '/capstone';
+    $p->addLibrary(
+        (new Library('capstone'))
+            ->withHomePage('http://www.capstone-engine.org/')
+            ->withLicense('https://github.com/capstone-engine/capstone/blob/master/LICENSE.TXT', Library::LICENSE_BSD)
+            ->withUrl('https://github.com/capstone-engine/capstone/archive/refs/tags/4.0.2.tar.gz')
+            ->withManual('http://www.capstone-engine.org/documentation.html')
+            ->withPrefix($capstone_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($capstone_prefix)
+            ->withConfigure(
+                <<<EOF
+             set -uex 
+             cmake . \
+            -DCMAKE_INSTALL_PREFIX="{$capstone_prefix}" \
+            -DCAPSTONE_BUILD_STATIC_RUNTIME=ON \
+            -DCAPSTONE_BUILD_STATIC=ON \
+            -DCAPSTONE_BUILD_SHARED=OFF \
+            -DCAPSTONE_BUILD_TESTS=OFF  \
+            -DCAPSTONE_BUILD_CSTOOL=ON
+
+EOF
+            )
+            ->withScriptAfterInstall(<<<EOF
+             rm -rf {$capstone_prefix}/lib/*.dylib
+EOF
+            )
+            ->withPkgName('capstone')
+            ->withBinPath($capstone_prefix . '/bin/')
+    );
+}
+
+function  install_dynasm(Preprocessor $p)
+{
+    $dynasm_prefix = $p->getGlobalPrefix() . '/dynasm';
+    $p->addLibrary(
+        (new Library('dynasm'))
+            ->withHomePage('https://luajit.org/dynasm.html')
+            ->withLicense('https://www.opensource.org/licenses/mit-license.php', Library::LICENSE_MIT)
+            ->withUrl('https://luajit.org/download/LuaJIT-2.0.5.tar.gz')
+            ->withManual('https://luajit.org/download.html')
+            ->withTutorial('https://corsix.github.io/dynasm-doc/tutorial.html')
+            ->withPrefix($dynasm_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($dynasm_prefix)
+            ->withMakeOptions('PREFIX=' . $dynasm_prefix)
+            ->withMakeInstallOptions('PREFIX=' . $dynasm_prefix) //DESTDIR=/tmp/buildroot
+
+            ->withPkgName('dynasm')
+            ->withBinPath($dynasm_prefix . '/bin/')
+    );
+}
+
 function install_valgrind(Preprocessor $p)
 {
     $p->addLibrary(
@@ -2107,6 +2324,50 @@ EOF
 EOF
         )
         ->withPkgName('xproto');
+
+    $p->addLibrary($lib);
+}
+
+
+function install_opencl(Preprocessor $p)
+{
+    $opencl_prefix = LIBXPM_PREFIX;
+    $opencl_prefix = '/usr/opencl';
+    $lib = new Library('opencl');
+    $lib->withHomePage('https://www.khronos.org/opencl/')
+        ->withLicense('https://github.com/KhronosGroup/OpenCL-SDK/blob/main/LICENSE', Library::LICENSE_APACHE2)
+        ->withUrl('git clone --recursive https://github.com/KhronosGroup/OpenCL-SDK.git')
+        ->withPrefix($opencl_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($opencl_prefix)
+        ->withBuildScript(
+            <<<EOF
+      cmake -A x64 \
+      -D BUILD_TESTING=OFF \
+      -D BUILD_DOCS=OFF \
+      -D BUILD_EXAMPLES=OFF \
+      -D BUILD_TESTS=OFF \
+      -D OPENCL_SDK_BUILD_SAMPLES=ON \
+      -D OPENCL_SDK_TEST_SAMPLES=OFF \
+      -D CMAKE_TOOLCHAIN_FILE=/vcpkg/install/root/scripts/buildsystems/vcpkg.cmake  \
+      -D VCPKG_TARGET_TRIPLET=x64-windows  \
+      -B ./OpenCL-SDK/build -S ./OpenCL-SDK
+      cmake --build ./OpenCL-SDK/build --target install
+EOF
+        )
+        ->withConfigure(
+            <<<EOF
+            autoreconf -ivf
+            ./configure --help
+
+            LDFLAGS="-static " \
+            ./configure --prefix={$opencl_prefix} \
+            --enable-legacy \
+            --enable-strict-compilation
+
+EOF
+        )
+        ->withPkgName('opencv');
 
     $p->addLibrary($lib);
 }

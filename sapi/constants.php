@@ -17,11 +17,16 @@ define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');
 define("WEBP_PREFIX", $p->getGlobalPrefix() . '/libwebp');
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
+define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
 
 
 define("CURL_PREFIX", $p->getGlobalPrefix() . '/curl');
 define("CARES_PREFIX", $p->getGlobalPrefix() . '/cares');
 define("OPENSSL_PREFIX", $p->getGlobalPrefix() . '/openssl');
+
+define("LIBGCRYPT_PREFIX", $p->getGlobalPrefix() . '/libgcrypt');
+define("LIBGCRYPT_ERROR_PREFIX", $p->getGlobalPrefix() . '/libgcrypt_error');
+
 define("GMP_PREFIX", $p->getGlobalPrefix() . '/gmp');
 define("ICONV_PREFIX", $p->getGlobalPrefix() . '/libiconv');
 define("IMAGEMAGICK_PREFIX", $p->getGlobalPrefix() . '/imagemagick');
@@ -80,3 +85,5 @@ define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
 
 
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
+
+define("GNUPG_PREFIX", $p->getGlobalPrefix() . '/gnupg');

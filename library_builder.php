@@ -5,15 +5,18 @@ function libraries_builder($p)
 {
     install_openssl($p);
     install_libiconv($p);//没有 libiconv.pc 文件 不能使用 pkg-config 命令
-    install_libxml2($p); //依赖 libiconv
+    install_ncurses($p);
+    install_readline($p);//依赖 ncurses
+
+
+    install_liblzma($p);
+    install_libxml2($p); //依赖 libiconv  liblzma
     install_libxslt($p); //依赖 libxml2 libiconv
 
     install_brotli($p); //有多种安装方式，选择使用cmake 安装
     install_cares($p);  // swoole 使用 SWOOLE_CFLAGS 实现
-    install_gmp($p);    // 高精度算术库
+    install_gmp($p);    // GNU高精度算术运算库
 
-    install_ncurses($p);
-    install_readline($p);//依赖 ncurses
 
     install_libyaml($p);
     install_libsodium($p);
@@ -21,12 +24,11 @@ function libraries_builder($p)
     install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令  BZIP2_LIBS=-L/usr/bizp2/lib -lbz2  BZIP2_CFLAGS="-I/usr/bizp2/include"
     install_zlib($p);
     install_liblz4($p); //有多种安装方式，选择cmake方式安装
-    install_liblzma($p);
     install_libzstd($p); //zstd 依赖 lz4
     install_libzip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd
 
     install_sqlite3($p);
-    install_icu($p); //依赖  -lstdc++
+    install_icu($p); //依赖 linux : -lstdc++ ; macOS:  libc++ //注意事项：https://www.zhihu.com/question/343205052
     install_oniguruma($p);
     install_mimalloc($p);
 
@@ -35,9 +37,11 @@ function libraries_builder($p)
     install_libpng($p); //依赖 zlib
 
     install_libwebp($p); //依赖 libgif libpng libjpeg
-    install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
-    install_libraw($p);  //依赖 zlib  libjpeg
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
+    install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
+
+    install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
+
 
     install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma  libraw libtiff bzlib2 libjxl(默认不启用)
 
@@ -103,11 +107,17 @@ function libraries_builder($p)
     ///      TEST  验证
     //====================================
 
+    if (0){
+        install_libgcrypt_error($p); //依赖 libiconv libintl
+        install_libgcrypt($p); //依赖 libgcrypt_error
+        install_gnupg($p);  // GNU Privacy Guard  ; OpenPGP 标准的完整免费实现 依赖 libgcrypt
+    }
+
     if (0) {
         install_zookeeper_client($p);
         install_unixodbc($p);
     }
-    install_php_extension_swow($p);
+
     if (0) {
         install_php_extension_swow($p); // libcat for Swow https://github.com/libcat/libcat.git
         install_php_extension_micro($p);
@@ -119,6 +129,8 @@ function libraries_builder($p)
 
 
     if (0) {
+        install_libraw($p);  //依赖 zlib  libjpeg liblcms2
+        install_librsvg($p);
         install_libfribidi($p); //以来c2man
         //文本绘制引擎
         install_harfbuzz($p); //依赖ninja icu
@@ -198,7 +210,6 @@ function libraries_builder($p)
         install_libelf($p);
         install_libbpf($p); //libbpf 库是一个基于 C/C++ 的通用 eBPF 库
 
-        install_valgrind($p);
         install_snappy($p);
         install_kerberos($p);
         install_fontconfig($p);
@@ -285,12 +296,53 @@ function libraries_builder($p)
 
         //原理： 类似 SwarmAgent  （Agent/Coordinator ）  //https://docs.unrealengine.com/5.1/en-US/unreal-swarm-in-unreal-engine/
     }
+
     if (0) {
         //apk add ninja
         //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
         install_depot_tools($p); //依赖python
         //install_gn($p);//依赖python
         //install_gn_test($p);//源码编译GN
+
+        // sanitizer  动态代码分析的工具
+                        // AddressSanitizer (ASan)，检测内存问题，包括了 LeakSanitizer
+                        // LeakSanitizer (LSan)，检测内存泄漏问题
+                        // ThreadSanitizer (TSan)，检测数据竞争问题
+                        // UndefinedBehaviorSanitizer (UBSsan)，检测未定义行为
+                        // MemorySanitizer (MSan)，检测未初始化内存问题
+
+        // capstone 反汇编工具 http://www.capstone-engine.org/
+        install_capstone($p);
+
+        install_valgrind($p); //Valgrind是一款用于内存调试、内存泄漏检测以及性能分析的软件开发工具。
+
+        //#if defined(HAVE_DISASM) || defined(HAVE_GDB) || defined(HAVE_OPROFILE) || defined(HAVE_PERFTOOLS) || defined(HAVE_VTUNE)
+        //dynasm
+        install_dynasm($p);
+
+        //perf-tools简介一个开发中的Linux性能测试使用的工具,能够收集ftrace和perf_events中乱七八糟的参数。ftrace和perf都是Linux中的内核跟踪工具
+
+        //op-agent  OpManager提供全面的网络监控功能，可帮助您监控网络性能，实时检测故障隐患
+
+        //OProfile是Linux内核支持的一种性能分析机制。 它在时钟中断处理入口处建立监测点，记录被中断的上下文现场，由配套的用户态的工具oprof_start负责在用户态收集数据
+
+        //nm  结果参考 https://www.cnblogs.com/vaughnhuang/p/15771582.html
+
+        //gdb bin/swoole-cli
+        //set args -m
+        //run
+
+
+        //下载 boringssl 镜像地址 https://source.codeaurora.org/quic/lc
+
+        //Vtune Threading Profiler是线程性能检测工具 , 分析负载平衡、同步开销过大等线程相关的性能问题
+
+        //Perfdump 工具 Perfdump 是一个系统软件,当系统崩溃时,会调用它生成错误信息,供软件开发人员分析用
+
+
+        // 动态链接库和静态链接库 https://www.cnblogs.com/Blog-c/p/7811190.html
+        // .la 为libtool生成的共享库，其实是个配置文档。可以用file或者vim查看。
+        // .ko 文件是Linux内核使用的动态链接文件后缀，属于模块文件，用在Linux系统启动时加载内核模块
     }
 
     if (0) {
@@ -298,12 +350,17 @@ function libraries_builder($p)
         install_thrift($p); //https://thrift.apache.org/
     }
     if (0) {
-         //一个为异构并行计算平台编写程序的工业标准
+        //申明式  和 命令式
+
+         //一个为异构并行计算平台编写程序的工业标准  https://www.intel.com/content/www/us/en/docs/programmable/683846/22-1/opencl-library.html
         install_opencl($p); //OpenCL全称为Open Computing Language（开放计算语言） OpenCL不但支持数据并行，还支持任务并行
         //用于共享内存并行系统的多处理器程序设
+
         //Openmp和thread都是共享一个进程内存的并行，openmp最显著的特点是命令式(directive-based)语言
         //install_openmp($p);
 
         //并发编程：SIMD 介绍  https://zhuanlan.zhihu.com/p/416172020
+
+
     }
 }

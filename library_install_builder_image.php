@@ -16,7 +16,9 @@ function install_libjpeg(Preprocessor $p)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libjpeg_prefix)
         ->withConfigure('cmake -G"Unix Makefiles" -DENABLE_STATIC=1 -DENABLE_SHARED=0  -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
-        ->withPkgName('libjpeg');
+        ->withPkgName('libjpeg')
+        ->withBinPath($libjpeg_prefix . '/bin/')
+    ;
 
     // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
     $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
@@ -257,41 +259,38 @@ EOF
 
 
 
-function install_libraw(Preprocessor $p)
+function install_lcms2(Preprocessor $p)
 {
-    $libraw_prefix = LIBRAW_PREFIX;
-    $lib = new Library('libraw');
-    $lib->withHomePage('https://www.libraw.org/about')
-        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-        ->withUrl('https://www.libraw.org/data/LibRaw-0.21.1.tar.gz')
-
-        ->withPrefix($libraw_prefix)
+    $lcms2_prefix = LCMS2_PREFIX;
+    $libjpeg_prefix = JPEG_PREFIX;
+    $libtiff_prefix = LIBTIFF_PREFIX;
+    $lib = new Library('lcms2');
+    $lib->withHomePage('https://littlecms.com/color-engine/')
+        ->withLicense('https://www.opensource.org/licenses/mit-license.php', Library::LICENSE_MIT)
+        ->withUrl('https://jaist.dl.sourceforge.net/project/lcms/lcms/2.15/lcms2-2.15.tar.gz')
+        ->withManual('https://lfs.lug.org.cn/blfs/view/10.0/general/lcms2.html')
+        ->withPrefix($lcms2_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libraw_prefix)
+        ->withCleanPreInstallDirectory($lcms2_prefix)
         ->withConfigure(
-            <<<'EOF'
-            ./configure --help
-            # ZLIB_CFLAGS=$(pkg-config  --cflags --static zlib )
-            # ZLIB_LIBS=$(pkg-config    --libs   --static zlib )
-
-
-            package_names="zlib libjpeg libturbojpeg "
-            CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names ) \
-            LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names ) \
-            LIBS=$(pkg-config      --libs-only-l   --static $package_names ) \
-            LIBS="-lstdc++" \
-EOF
-            . PHP_EOL .
             <<<EOF
+            ./configure --help
+            
+            package_names="zlib"
+            CPPFLAGS="\$(pkg-config  --cflags-only-I --static \$package_names )" \
+            LDFLAGS="\$(pkg-config   --libs-only-L   --static \$package_names )" \
+            LIBS="\$(pkg-config      --libs-only-l   --static \$package_names )" \
             ./configure \
-            --prefix={$libraw_prefix} \
+            --prefix={$lcms2_prefix} \
             --enable-shared=no \
             --enable-static=yes \
-            --enable-jpeg \
-            --enable-zlib
+            --with-jpeg={$libjpeg_prefix} \
+            --with-tiff={$libtiff_prefix}
+
 EOF
         )
-        ->withPkgName('librawc  libraw_r');
+        ->withBinPath($lcms2_prefix . '/bin/')
+        ->withPkgName('lcms2');
 
     $p->addLibrary($lib);
 }
@@ -317,6 +316,7 @@ EOF
  *
  * 谷歌将专注于最终进一步推进 WebP 和 AVIF 图像格式
  *
+ *  颜色管理引擎 https://littlecms.com/color-engine/
  * @param Preprocessor $p
  * @return void
  */
@@ -338,14 +338,63 @@ function install_imagemagick(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
             ./configure --help
+       
+            ./configure --help | grep -e '--without'
+            ./configure --help | grep -e '--disable'
+            
+            set -uex 
+            # libraw libraw_r 
+            package_names="libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux lcms2 libtiff-4 "
+            package_names="libbrotlicommon libbrotlidec    libbrotlienc libcrypto libssl   openssl"
+            export CPPFLAGS="\$(pkg-config --cflags-only-I --static \$package_names ) -I{$bzip2_prefix}/include" 
+            export LDFLAGS="\$(pkg-config  --libs-only-L   --static \$package_names ) -L{$bzip2_prefix}/lib" 
+            export LIBS="\$(pkg-config     --libs-only-l   --static \$package_names ) -lbz2" 
+           
+            # $(pkg-config      --cflags-only-I --static \$package_names )
+            # $(pkg-config      --libs-only-L   --static \$package_names )
+            # $(pkg-config      --libs-only-l   --static \$package_names )
+            
+            export ZIP_CFLAGS=$(pkg-config  --cflags-only-I --static libzip )
+            export ZIP_LIBS=$(pkg-config    --libs-only-l   --static libzip )
+            export ZLIB_CFLAGS=$(pkg-config  --cflags-only-I --static zlib )
+            export ZLIB_LIBS=$(pkg-config    --libs-only-l   --static zlib )
+            export LIBZSTD_CFLAGS=$(pkg-config  --cflags-only-I --static libzstd )
+            export LIBZSTD_LIBS=$(pkg-config    --libs-only-l   --static libzstd )
+            
+            export FREETYPE_CFLAGS=$(pkg-config  --cflags-only-I --static freetype2 )
+            export FREETYPE_LIBS=$(pkg-config    --libs-only-l   --static freetype2 )
+            
+            #  HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
+            #  HEIF_LIBS   linker flags for HEIF, overriding pkg-config
+            #  JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
+            #  JXL_LIBS    linker flags for JXL, overriding pkg-config
 
-            CPPFLAGS="$(pkg-config --cflags-only-I --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -I{$bzip2_prefix}/include" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -L{$bzip2_prefix}/lib" \
-            LIBS="$(pkg-config     --libs-only-l   --static libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux) -lbz2" \
+            export LCMS2_CFLAGS=$(pkg-config  --cflags-only-I --static lcms2 )
+            export LCMS2_LIBS=$(pkg-config    --libs-only-l   --static lcms2 )
+            
+            
+            export LZMA_CFLAGS=$(pkg-config  --cflags-only-I --static liblzma )
+            export LZMA_LIBS=$(pkg-config    --libs-only-l   --static liblzma )
+
+            export PNG_CFLAGS=$(pkg-config  --cflags-only-I --static libpng )
+            export PNG_LIBS=$(pkg-config    --libs-only-l   --static libpng )
+            # export RAW_R_CFLAGS=$(pkg-config  --cflags-only-I --static libraw_r )
+            # export RAW_R_LIBS=$(pkg-config    --libs-only-l   --static libraw_r )
+            
+
+            export TIFF_CFLAGS=$(pkg-config  --cflags-only-I --static libtiff-4 )
+            export TIFF_LIBS=$(pkg-config    --libs-only-l   --static libtiff-4 )
+            export WEBP_CFLAGS=$(pkg-config  --cflags-only-I --static libwebp )
+            export WEBP_LIBS=$(pkg-config    --libs-only-l   --static libwebp )
+            export WEBPMUX_CFLAGS=$(pkg-config  --cflags-only-I --static libwebpmux )
+            export WEBPMUX_LIBS=$(pkg-config    --libs-only-l   --static libwebpmux )
+            export XML_CFLAGS=$(pkg-config  --cflags-only-I --static libxml-2.0 )
+            export XML_LIBS=$(pkg-config    --libs-only-l   --static libxml-2.0 )
+         
             ./configure \
             --prefix={$imagemagick_prefix} \
-            --enable-static \
-            --disable-shared \
+            --enable-shared=no \
+            --enable-static=yes \
             --with-zip \
             --with-zlib \
             --with-lzma \
@@ -353,28 +402,38 @@ function install_imagemagick(Preprocessor $p)
             --with-jpeg \
             --with-png \
             --with-webp \
-            --with-raw \
+            --without-raw \
             --with-tiff \
             --with-xml \
-            --with-freetype=yes \
+            --with-freetype \
+            --with-lcms \
+            --enable-zero-configuration \
+            --enable-bounds-checking \
+            --with-utilities \
             --enable-hdri \
-            --enable-opencl \
+            --disable-dependency-tracking \
+            --without-perl \
+            --disable-docs \
+            --disable-opencl \
+            --disable-openmp \
             --without-djvu \
             --without-rsvg \
             --without-fontconfig \
             --without-heic \
             --without-jbig \
             --without-jxl \
-            --without-lcms \
             --without-openjp2 \
             --without-lqr \
             --without-openexr \
             --without-pango \
-            --without-utilities
-
+            --without-jbig \
+            --without-x \
+            --with-modules \
+            --without-magick-plus-plus
 EOF
             )
             ->withPkgName('ImageMagick')
+            ->withBinPath($imagemagick_prefix . '/bin/')
             ->depends(
                 'libxml2',
                 'libzip',

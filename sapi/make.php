@@ -11,13 +11,13 @@ export CC=<?= $this->cCompiler . PHP_EOL ?>
 export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>
 
-export SYSTEM_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+export SYSTEM_ORIGIN_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
-export ORIGIN_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+export SWOOLE_CLI_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 
-export SYSTEM_PATH=$PATH
+export SYSTEM_ORIGIN_PATH=$PATH
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
-export ORIGIN_PATH=$PATH
+export SWOOLE_CLI_PATH=$PATH
 
 OPTIONS="--disable-all \
 --enable-shared=no \
@@ -177,41 +177,14 @@ make_all_library() {
 
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-
     set -uex
 
-    export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
-    export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
-    export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
-    export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
-    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
-    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
-    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
-    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
-    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static libpq)
-    export   LIBPQ_LIBS=$(pkg-config    --libs   --static libpq)
-    export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
-    export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
-
-    package_names="ncursesw readline icu-i18n  icu-io  icu-uc "
-    package_names="${package_names} openssl libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
-    package_names="${package_names} libpq libffi libzstd"
-
-    #  xlsxwriter
-    #  BZIP2_CFLAGS="-I{$bzip2_prefix}/include"
-    #  BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"
-    #  -I<?= LIBMCRYPT_PREFIX ?>/include
-    #  -L<?= LIBMCRYPT_PREFIX ?>/lib
-    #  -lmcrypt
-
-
-
 :<<'EOF'
-= 是最基本的赋值
-:= 是覆盖之前的值
-?= 是如果没有被赋值过就赋予等号后面的值
-+= 是添加等号后面的值
-EOF
+    = 是最基本的赋值
+    := 是覆盖之前的值
+    ?= 是如果没有被赋值过就赋予等号后面的值
+    += 是添加等号后面的值
+
 
 
 
@@ -219,26 +192,124 @@ EOF
     # -g是生成调试信息
     # -Wall 是打开警告开关,-O代表默认优化,可选：-O0不优化,-O1低级优化,-O2中级优化,-O3高级优化,-Os代码空间优化
 
-    CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
-    export   CPPFLAGS="$CPPFLAGS -I/usr/include"
+    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
+    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
 
-    # export CFLAGS="-std=gnu11 -g -Wall -O3"
+    export   NCURSES_CFLAGS=$(pkg-config --cflags --static  ncurses);
+    export   NCURSES_LIBS=$(pkg-config  --libs --static ncurses);
+    export   READLINE_CFLAGS=$(pkg-config --cflags --static readline)  ;
+    export   READLINE_LIBS=$(pkg-config  --libs --static readline)  ;
 
-    LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
-    # <?= $this->configureVarables ?>" ${LDFLAGS}"
-    LDFLAGS="$LDFLAGS "
-    LDFLAGS="$LDFLAGS -L/usr/lib "
-    export   LDFLAGS="$LDFLAGS"
+    export EXTRA_INCLUDES=
+    export EXTRA_CFLAGS
+    export EXTRA_LDFLAGS=
+    export EXTRA_LDFLAGS_PROGRAM=
+    export EXTRA_LIBS=
+    export ZEND_EXTRA_LIBS=
 
-    LIBS=$(pkg-config      --libs-only-l   --static $package_names )
+    export   CAPSTONE_CFLAGS="<?=$this->getGlobalPrefix()?>/capstone/include"
+    export   CAPSTONE_LIBS="<?=$this->getGlobalPrefix()?>/capstone/lib"
 
+
+
+
+    export   OPENSSL_CFLAGS=$(pkg-config --cflags --static libcrypto libssl    openssl)
+    export   OPENSSL_LIBS=$(pkg-config   --libs   --static libcrypto libssl    openssl)
+
+
+    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
+    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
+
+    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
+    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
+
+    export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
+    export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
+
+
+EOF
+
+
+    export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
+    export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
+
+    export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
+    export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
+    export   EXSLT_CFLAGS=$(pkg-config  --cflags --static libexslt)
+    export   EXSLT_LIBS=$(pkg-config    --libs   --static libexslt)
+
+    export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
+    export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
+
+    export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static libpq)
+    export   LIBPQ_LIBS=$(pkg-config    --libs   --static libpq)
+
+    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
+    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
+
+    # export BZIP2_CFLAGS="-I{$bzip2_prefix}/include"
+    # export BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"
+    #  -I<?= LIBMCRYPT_PREFIX ?>/include
+    #  -L<?= LIBMCRYPT_PREFIX ?>/lib
+    #  -lmcrypt
+    # -lm  math.h 链接数学库， -lptread 链接线程库
+
+    # macOS clang llvm 不支持  -static
+    # export CFLAGS="-static"
+    # export CFLAGS="-std=gnu11 -g -Wall -O3 -fPIE"
+    # export CFLAGS="-Wno-error=implicit-function-declaration"
+
+    package_names=''
+    package_names="ImageMagick-7.Q16HDRI ImageMagick    MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand"
+    package_names="${package_names}  libtiff-4 lcms2"
+    package_names="${package_names}  libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
+    package_names="${package_names}  ncurses readline  "
+    package_names="${package_names}  icu-i18n  icu-io  icu-uc "
+    package_names="${package_names}  libcrypto libssl    openssl"
+    package_names="${package_names}  libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
+    package_names="${package_names}  sqlite3 "
+    package_names="${package_names}  libffi "
+    package_names="${package_names}  libxml-2.0"
+    package_names="${package_names}  libexslt libxslt"
+    package_names="${package_names}  libsodium"
+    package_names="${package_names}  libzip"
+    # package_names="${package_names}  libpq"
+    # package_names=" libpq"
+
+
+
+   if [ ! -z "$package_names" ] ;then
+        CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
+        CPPFLAGS="$CPPFLAGS -I<?= ICONV_PREFIX ?>/include"
+        CPPFLAGS="$CPPFLAGS "
+
+        LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
+        # <?= $this->configureVarables ?>" ${LDFLAGS}"
+        LDFLAGS="$LDFLAGS -L<?= ICONV_PREFIX ?>/lib"
+        LDFLAGS="$LDFLAGS"
+
+
+        LIBS=$(pkg-config      --libs-only-l   --static $package_names )
 <?php if ($this->getOsType() == 'linux') : ?>
-    LIBS="$LIBS -lstdc++"
+        LIBS="$LIBS -lstdc++"
 <?php endif; ?>
-<?php if ($this->osType == 'macos') : ?>
-    # export  LIBS="-llibc++"
+<?php if ($this->getOsType() == 'macos') : ?>
+        LIBS="$LIBS -lc++"  # libc++
 <?php endif; ?>
-    export  LIBS="$LIBS  "
+
+        export  CPPFLAGS="$CPPFLAGS "
+        export  LDFLAGS="$LDFLAGS "
+        export  LIBS="$LIBS  "
+
+        # export EXTRA_INCLUDES="$CPPFLAGS"
+        # export EXTRA_LDFLAGS="$LDFLAGS "
+        # export EXTRA_LIBS="$LIBS"
+
+    fi
+
+
+
+    # exit 3
 
 
     test -f ./configure &&  rm ./configure
@@ -255,9 +326,9 @@ EOF
     ./configure --help
     ./configure --help | grep -e '--enable'
     ./configure --help | grep -e '--with'
-    ./configure --help | grep zstd
-    ./configure --help | grep xls
-
+    ./configure --help | grep -e '--disable'
+    ./configure --help | grep -e '--without'
+    ./configure --help | grep -e 'jit'
 
     ./configure $OPTIONS
 
@@ -265,8 +336,17 @@ EOF
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+
+
+    make -j <?= $this->maxJob ?> <?= PHP_EOL ?>
+    return 0
+
+   # export EXTRA_LDFLAGS="$(pkg-config   --libs-only-L   --static openssl libraw_r )"
+   # export EXTRA_LDFLAGS_PROGRAM=""
+   # EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident '
+
     make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
+    EXTRA_LDFLAGS_PROGRAM=' <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
             echo $item->ldflags;
             echo ' ';
@@ -347,6 +427,8 @@ elif [ "$1" = "config" ] ;then
 elif [ "$1" = "build" ] ;then
     make_build
 elif [ "$1" = "test" ] ;then
+    file bin/swoole-cli
+    nm -D bin/swoole-cli
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
     cd bin
