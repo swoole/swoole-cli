@@ -102,7 +102,7 @@ function libraries_builder($p)
     ///      TEST  验证
     //====================================
 
-    if (0){
+    if (0) {
         install_libgcrypt_error($p); //依赖 libiconv libintl
         install_libgcrypt($p); //依赖 libgcrypt_error
         install_gnupg($p);  // GNU Privacy Guard  ; OpenPGP 标准的完整免费实现 依赖 libgcrypt
@@ -302,11 +302,11 @@ function libraries_builder($p)
         //install_gn_test($p);//源码编译GN
 
         // sanitizer  动态代码分析的工具
-                        // AddressSanitizer (ASan)，检测内存问题，包括了 LeakSanitizer
-                        // LeakSanitizer (LSan)，检测内存泄漏问题
-                        // ThreadSanitizer (TSan)，检测数据竞争问题
-                        // UndefinedBehaviorSanitizer (UBSsan)，检测未定义行为
-                        // MemorySanitizer (MSan)，检测未初始化内存问题
+        // AddressSanitizer (ASan)，检测内存问题，包括了 LeakSanitizer
+        // LeakSanitizer (LSan)，检测内存泄漏问题
+        // ThreadSanitizer (TSan)，检测数据竞争问题
+        // UndefinedBehaviorSanitizer (UBSsan)，检测未定义行为
+        // MemorySanitizer (MSan)，检测未初始化内存问题
 
         // capstone 反汇编工具 http://www.capstone-engine.org/
         install_capstone($p);
@@ -357,7 +357,5 @@ function libraries_builder($p)
         //install_openmp($p);
 
         //并发编程：SIMD 介绍  https://zhuanlan.zhihu.com/p/416172020
-
-
     }
 }

@@ -39,7 +39,7 @@ function install_libgif(Preprocessor $p)
             ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
             ->withPrefix($libgif_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libgif_prefix)
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
             ->withScriptAfterInstall(
@@ -275,7 +275,7 @@ function install_lcms2(Preprocessor $p)
         ->withConfigure(
             <<<EOF
             ./configure --help
-            
+
             package_names="zlib"
             CPPFLAGS="\$(pkg-config  --cflags-only-I --static \$package_names )" \
             LDFLAGS="\$(pkg-config   --libs-only-L   --static \$package_names )" \
@@ -338,30 +338,30 @@ function install_imagemagick(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
             ./configure --help
-       
+
             ./configure --help | grep -e '--without'
             ./configure --help | grep -e '--disable'
-            
-            set -uex 
-            # lcms2 libtiff-4 libraw libraw_r 
+
+            set -uex
+            # lcms2 libtiff-4 libraw libraw_r
             # $(pkg-config      --cflags-only-I --static \$package_names )
             # $(pkg-config      --libs-only-L   --static \$package_names )
             # $(pkg-config      --libs-only-l   --static \$package_names )
-            
+
             # export RAW_R_CFLAGS=$(pkg-config  --cflags-only-I --static libraw_r )
             # export RAW_R_LIBS=$(pkg-config    --libs-only-l   --static libraw_r )
-            
+
             # export TIFF_CFLAGS=$(pkg-config  --cflags-only-I --static libtiff-4 )
             # export TIFF_LIBS=$(pkg-config    --libs-only-l   --static libtiff-4 )
-            
+
             #  HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
             #  HEIF_LIBS   linker flags for HEIF, overriding pkg-config
             #  JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
             #  JXL_LIBS    linker flags for JXL, overriding pkg-config
-            
+
             # export LCMS2_CFLAGS=$(pkg-config  --cflags-only-I --static lcms2 )
             # export LCMS2_LIBS=$(pkg-config    --libs-only-l   --static lcms2 )
-            
+
             package_names="libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
             package_names="\${package_names} libbrotlicommon libbrotlidec    libbrotlienc libcrypto libssl   openssl"
 
@@ -424,7 +424,7 @@ function install_imagemagick(Preprocessor $p)
             --without-x \
             --with-modules \
             --without-magick-plus-plus \
-            --without-utilities 
+            --without-utilities
 EOF
             )
             ->withPkgName('ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand ')

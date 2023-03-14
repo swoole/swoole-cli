@@ -282,6 +282,9 @@ class Preprocessor
         $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
         echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
         if (!is_file($file) or filesize($file) == 0) {
+            if (is_file($file) && (filesize($file) == 0)) {
+                `test -d $file && rm -rf $file`;
+            }
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
     }

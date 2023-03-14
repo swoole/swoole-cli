@@ -254,6 +254,10 @@ EOF
     export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
     export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
 
+    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
+    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
+
+
     # export BZIP2_CFLAGS="-I{$bzip2_prefix}/include"
     # export BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"
     #  -I<?= LIBMCRYPT_PREFIX ?>/include

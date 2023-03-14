@@ -80,7 +80,7 @@ EOF
             ->withPkgName('libxml-2.0')
             ->withBinPath($libxml2_prefix . '/bin/')
             ->withLicense('https://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
-            ->depends('libiconv','liblzma')
+            ->depends('libiconv', 'liblzma')
     );
 }
 
@@ -100,9 +100,10 @@ function install_libxslt(Preprocessor $p)
             ->withPrefix($libxslt_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libxslt_prefix)
-            ->withConfigure(<<<EOF
-            ./autogen.sh 
-           ./configure --help 
+            ->withConfigure(
+                <<<EOF
+            ./autogen.sh
+           ./configure --help
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static libxml-2.0  )" \
             LDFLAGS="$(pkg-config --libs-only-L      --static libxml-2.0  )" \
             LIBS="$(pkg-config --libs-only-l         --static libxml-2.0  )" \
@@ -117,8 +118,6 @@ function install_libxslt(Preprocessor $p)
             --without-plugins \
             --without-debugger
 EOF
-
-
             )
             ->withPkgName('libexslt libxslt')
             ->withBinPath($libxslt_prefix . '/bin/')
@@ -182,6 +181,8 @@ function install_cares(Preprocessor $p)
         (new Library('cares'))
             ->withUrl('https://c-ares.org/download/c-ares-1.19.0.tar.gz')
             ->withPrefix($cares_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($cares_prefix)
             ->withConfigure("./configure --prefix={$cares_prefix} --enable-static --disable-shared")
             ->withPkgName('libcares')
             ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
@@ -199,14 +200,15 @@ function install_gmp(Preprocessor $p)
             ->withPrefix($gmp_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($gmp_prefix)
-            ->withConfigure(<<<EOF
-            ./configure --help 
+            ->withConfigure(
+                <<<EOF
+            ./configure --help
             ./configure \
             --prefix=$gmp_prefix \
             --enable-static=yes \
             --enable-static=no
 EOF
-)
+            )
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withPkgName('gmp')
     );
@@ -289,7 +291,9 @@ function install_readline(Preprocessor $p)
             ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
-            ->withPrefix(READLINE_PREFIX)
+            ->withPrefix($readline_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($readline_prefix)
             ->withConfigure(
                 <<<EOF
                 ./configure \
@@ -301,7 +305,7 @@ function install_readline(Preprocessor $p)
 EOF
             )
             ->withPkgName('readline')
-            ->withLdflags('-L' . READLINE_PREFIX . '/lib')
+            ->withLdflags('-L' . $readline_prefix . '/lib')
             ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
             ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
             ->withBinPath($readline_prefix . '/bin/')
@@ -312,11 +316,14 @@ EOF
 
 function install_libyaml(Preprocessor $p): void
 {
+    $libyaml_prefix = LIBYAML_PREFIX;
     $p->addLibrary(
         (new Library('libyaml'))
             ->withUrl('https://pyyaml.org/download/libyaml/yaml-0.2.5.tar.gz')
-            ->withPrefix(LIBYAML_PREFIX)
-            ->withConfigure('./configure --prefix=' . LIBYAML_PREFIX . ' --enable-static --disable-shared')
+            ->withPrefix($libyaml_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libyaml_prefix)
+            ->withConfigure('./configure --prefix=' . $libyaml_prefix . ' --enable-static --disable-shared')
             ->withPkgName('yaml-0.1')
             ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
             ->withHomePage('https://pyyaml.org/wiki/LibYAML')
@@ -325,14 +332,17 @@ function install_libyaml(Preprocessor $p): void
 
 function install_libsodium(Preprocessor $p)
 {
+    $libsodium_prefix = LIBSODIUM_PREFIX;
     $p->addLibrary(
         (new Library('libsodium'))
             // ISC License, like BSD
             ->withLicense('https://en.wikipedia.org/wiki/ISC_license', Library::LICENSE_SPEC)
             ->withHomePage('https://doc.libsodium.org/')
             ->withUrl('https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz')
-            ->withPrefix(LIBSODIUM_PREFIX)
-            ->withConfigure('./configure --prefix=' . LIBSODIUM_PREFIX . ' --enable-static --disable-shared')
+            ->withPrefix($libsodium_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libsodium_prefix)
+            ->withConfigure('./configure --prefix=' . $libsodium_prefix . ' --enable-static --disable-shared')
             ->withPkgName('libsodium')
     );
 }
@@ -422,7 +432,6 @@ function install_liblzma(Preprocessor $p)
             )
             ->withPkgName('liblzma')
             ->withBinPath($liblzma_prefix . '/bin/')
-
     );
 }
 
@@ -560,8 +569,10 @@ function install_sqlite3(Preprocessor $p)
     $p->addLibrary(
         (new Library('sqlite3'))
             ->withUrl('https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz')
-            ->withPrefix(SQLITE3_PREFIX)
-            ->withConfigure('./configure --prefix=' . SQLITE3_PREFIX . ' --enable-static --disable-shared')
+            ->withPrefix($sqlite_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($sqlite_prefix)
+            ->withConfigure('./configure --prefix=' . $sqlite_prefix . ' --enable-static --disable-shared')
             ->withHomePage('https://www.sqlite.org/index.html')
             ->withLicense('https://www.sqlite.org/copyright.html', Library::LICENSE_SPEC)
             ->withPkgName('sqlite3')
@@ -579,8 +590,9 @@ function install_icu(Preprocessor $p)
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
             //->withUrl('https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz')
             ->withManual("https://unicode-org.github.io/icu/userguide/icu4c/build.html")
-            ->withCleanBuildDirectory()
             ->withPrefix($icu_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($icu_prefix)
             ->withConfigure(
                 <<<EOF
              export CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1"
@@ -612,6 +624,8 @@ function install_oniguruma(Preprocessor $p)
         (new Library('oniguruma'))
             ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
             ->withPrefix($oniguruma_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($oniguruma_prefix)
             ->withConfigure(
                 './autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared'
             )
@@ -624,18 +638,21 @@ function install_oniguruma(Preprocessor $p)
 
 function install_mimalloc(Preprocessor $p)
 {
+    $mimalloc_prefix = MIMALLOC_PREFIX;
     $p->addLibrary(
         (new Library('mimalloc'))
             ->withUrl('https://github.com/microsoft/mimalloc/archive/refs/tags/v2.0.7.tar.gz')
             ->withFile('mimalloc-2.0.7.tar.gz')
-            ->withPrefix(MIMALLOC_PREFIX)
+            ->withPrefix($mimalloc_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($mimalloc_prefix)
             ->withConfigure(
-                'cmake . -DMI_BUILD_SHARED=OFF -DCMAKE_INSTALL_PREFIX=' . MIMALLOC_PREFIX . ' -DMI_INSTALL_TOPLEVEL=ON -DMI_PADDING=OFF -DMI_SKIP_COLLECT_ON_EXIT=ON -DMI_BUILD_TESTS=OFF'
+                'cmake . -DMI_BUILD_SHARED=OFF -DCMAKE_INSTALL_PREFIX=' . $mimalloc_prefix . ' -DMI_INSTALL_TOPLEVEL=ON -DMI_PADDING=OFF -DMI_SKIP_COLLECT_ON_EXIT=ON -DMI_BUILD_TESTS=OFF'
             )
             ->withPkgName('libmimalloc')
             ->withLicense('https://github.com/microsoft/mimalloc/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withHomePage('https://microsoft.github.io/mimalloc/')
-            ->withLdflags('-L' . MIMALLOC_PREFIX . '/lib -lmimalloc')
+            ->withLdflags('-L' . $mimalloc_prefix . '/lib -lmimalloc')
     );
 }
 
@@ -648,6 +665,8 @@ function install_libidn2(Preprocessor $p)
             ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withPrefix($libidn2_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libidn2_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
@@ -861,9 +880,9 @@ EOF;
             sed -i.backup "102c all: all-lib" src/interfaces/libpq/Makefile
 
             # export CFLAGS="-static -g -fPIE -fPIC -O2 -Wall "
-            ./configure --help 
-       
-            # --with-includes="{$includes}" 
+            ./configure --help
+
+            # --with-includes="{$includes}"
             # --with-libraries="{$libraries}"
             package_names="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib libxslt liblz4 libzstd"
 
@@ -885,20 +904,20 @@ EOF
             --without-python \
             --without-perl \
             --without-systemd
-            
+
 
 
 EOF
                 . PHP_EOL . <<<'EOF'
             result_code=$?
             [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-            
-            # make -j $cpu_nums 
+
+            # make -j $cpu_nums
             # make -C  src/bin/pg_config install
-            # make install 
-            
-            
-           
+            # make install
+
+
+
             make -C src/include install
 
             make -C  src/bin/pg_config install
@@ -923,17 +942,18 @@ EOF
 
             make -C src/interfaces/libpq  -j $cpu_nums # soname=true
             make -C src/interfaces/libpq  install
-            
+
 EOF
             )
-            ->withScriptAfterInstall(<<<EOF
+            ->withScriptAfterInstall(
+                <<<EOF
             rm -rf {$pgsql_prefix}/lib/*.so.*
             rm -rf {$pgsql_prefix}/lib/*.so
             rm -rf {$pgsql_prefix}/lib/*.dylib
 EOF
             )
             ->withPkgName('libecpg  libecpg_compat libpgtypes  libpq')
-            ->withBinPath( $pgsql_prefix . '/bin/')
+            ->withBinPath($pgsql_prefix . '/bin/')
     );
 }
 
@@ -948,6 +968,8 @@ function install_libffi($p)
             ->withUrl('https://github.com/libffi/libffi/releases/download/v3.4.4/libffi-3.4.4.tar.gz')
             ->withFile('libffi-3.4.4.tar.gz')
             ->withPrefix($libffi_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libffi_prefix)
             ->withConfigure(
                 "
             ./configure --help ;
@@ -976,7 +998,8 @@ function install_bison(Preprocessor $p)
             ->withLabel('build_env_bin')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($bison_prefix)
-            ->withScriptBeforeConfigure(<<<'EOF'
+            ->withScriptBeforeConfigure(
+                <<<'EOF'
             export PATH=$SYSTEM_ORIGIN_PATH
             export PKG_CONFIG_PATH=$SYSTEM_ORIGIN_PKG_CONFIG_PATH
 EOF
@@ -984,13 +1007,14 @@ EOF
             ->withConfigure(
                 "
              ./configure --help
-            
+
              ./configure --prefix={$bison_prefix} \
              --enable-silent-rules \
              --disable-dependency-tracking
             "
             )
-            ->withScriptAfterInstall(<<<'EOF'
+            ->withScriptAfterInstall(
+                <<<'EOF'
             export PATH=$SWOOLE_CLI_PATH
             export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
 EOF
