@@ -280,7 +280,7 @@ EOF
     package_names="${package_names}  ncurses ncursesw readline  "
     package_names="${package_names}  icu-i18n  icu-io  icu-uc "
     package_names="${package_names}  libcrypto libssl    openssl"
-    package_names="${package_names}  libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
+    package_names="${package_names}  libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc libidn2"
     package_names="${package_names}  sqlite3 "
     package_names="${package_names}  libffi "
     package_names="${package_names}  libxml-2.0"
@@ -289,23 +289,23 @@ EOF
     package_names="${package_names}  libzip"
     package_names="${package_names}  libzip"
     package_names="${package_names}  yaml-0.1"
-    # package_names="${package_names}  libpq"
+    package_names="${package_names}  libcurl"
+    package_names="${package_names}  libpq"
     # package_names=" libpq"
-
-
 
    if [ ! -z "$package_names" ] ;then
         CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
-        CPPFLAGS="$CPPFLAGS -I<?= ICONV_PREFIX ?>/include"
+        CPPFLAGS="$CPPFLAGS -I<?= ICONV_PREFIX ?>/include -I<?= BZIP2_PREFIX ?>/include"
         CPPFLAGS="$CPPFLAGS "
 
         LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
         # <?= $this->configureVarables ?>" ${LDFLAGS}"
-        LDFLAGS="$LDFLAGS -L<?= ICONV_PREFIX ?>/lib"
+        LDFLAGS="$LDFLAGS -L<?= ICONV_PREFIX ?>/lib -L<?= BZIP2_PREFIX ?>/lib"
         LDFLAGS="$LDFLAGS"
 
 
         LIBS=$(pkg-config      --libs-only-l   --static $package_names )
+        LIBS="$LIBS -lbz2"
 <?php if ($this->getOsType() == 'linux') : ?>
         LIBS="$LIBS -lstdc++"
 <?php endif; ?>
@@ -313,13 +313,13 @@ EOF
         LIBS="$LIBS -lc++"  # libc++
 <?php endif; ?>
 
-        # export  CPPFLAGS="$CPPFLAGS "
-        # export  LDFLAGS="$LDFLAGS "
-        # export  LIBS="$LIBS  "
+        export  CPPFLAGS="$CPPFLAGS "
+        export  LDFLAGS="$LDFLAGS "
+        export  LIBS="$LIBS  "
 
-        export EXTRA_INCLUDES="$CPPFLAGS"
-        export EXTRA_LDFLAGS="$LDFLAGS "
-        export EXTRA_LIBS="$LIBS"
+        # export EXTRA_INCLUDES="$CPPFLAGS"
+        # export EXTRA_LDFLAGS="$LDFLAGS "
+        # export EXTRA_LIBS="$LIBS"
 
     fi
 
