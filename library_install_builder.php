@@ -229,6 +229,7 @@ function install_ncurses(Preprocessor $p)
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withPrefix($ncurses_prefix)
+            ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($ncurses_prefix)
             ->withConfigure(
                 <<<EOF
@@ -260,19 +261,19 @@ EOF
             )
             ->withScriptBeforeInstall(
                 '
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/formw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/form.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/menuw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/menu.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++w.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncursesw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/panelw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/panel.pc ;
-                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ticw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/tic.pc ;
+                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/formw.pc ' . $ncurses_prefix . '/lib/pkgconfig/form.pc ;
+                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/menuw.pc ' . $ncurses_prefix . '/lib/pkgconfig/menu.pc ;
+                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/ncurses++w.pc ' . $ncurses_prefix . '/lib/pkgconfig/ncurses++.pc ;
+                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/ncursesw.pc ' . $ncurses_prefix . '/lib/pkgconfig/ncurses.pc ;
+                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/panelw.pc ' . $ncurses_prefix . '/lib/pkgconfig/panel.pc ;
+                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/ticw.pc ' . $ncurses_prefix . '/lib/pkgconfig/tic.pc ;
 
-                ln -s ' . NCURSES_PREFIX . '/lib/libformw.a ' . NCURSES_PREFIX . '/lib/libform.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libmenuw.a ' . NCURSES_PREFIX . '/lib/libmenu.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libncurses++w.a ' . NCURSES_PREFIX . '/lib/libncurses++.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libncursesw.a ' . NCURSES_PREFIX . '/lib/libncurses.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libpanelw.a  ' . NCURSES_PREFIX . '/lib/libpanel.a ;
-                ln -s ' . NCURSES_PREFIX . '/lib/libticw.a ' . NCURSES_PREFIX . '/lib/libtic.a ;
+                ln -s ' . $ncurses_prefix . '/lib/libformw.a ' . $ncurses_prefix . '/lib/libform.a ;
+                ln -s ' . $ncurses_prefix . '/lib/libmenuw.a ' . $ncurses_prefix . '/lib/libmenu.a ;
+                ln -s ' . $ncurses_prefix . '/lib/libncurses++w.a ' . $ncurses_prefix . '/lib/libncurses++.a ;
+                ln -s ' . $ncurses_prefix . '/lib/libncursesw.a ' . $ncurses_prefix . '/lib/libncurses.a ;
+                ln -s ' . $ncurses_prefix . '/lib/libpanelw.a  ' . $ncurses_prefix . '/lib/libpanel.a ;
+                ln -s ' . $ncurses_prefix . '/lib/libticw.a ' . $ncurses_prefix . '/lib/libtic.a ;
             '
             )
             ->withPkgName('ncursesw')
