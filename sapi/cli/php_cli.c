@@ -942,9 +942,12 @@ do_repeat:
 			script_file=argv[php_optind];
 			php_optind++;
 		}
-		if (!script_file && exec_self) {
+		if (exec_self) {
 			if (PG(php_binary)) {
 				tmp_script_file = estrdup(PG(php_binary));
+				if (script_file) {
+					--php_optind;
+				}
 				script_file = tmp_script_file;
 			} else {
 				php_printf("Could not get PHP_BINARY.\n");
@@ -1210,6 +1213,9 @@ out:
 	}
 	return EG(exit_status);
 err:
+	if (tmp_script_file) {
+		efree(tmp_script_file);
+	}
 	sapi_deactivate();
 	zend_ini_deactivate();
 	EG(exit_status) = 1;
