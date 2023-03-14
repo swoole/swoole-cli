@@ -8,7 +8,6 @@ function libraries_builder($p)
     install_ncurses($p);
     install_readline($p);//依赖 ncurses
 
-
     install_liblzma($p);
     install_libxml2($p); //依赖 libiconv  liblzma
     install_libxslt($p); //依赖 libxml2 libiconv
@@ -38,12 +37,8 @@ function libraries_builder($p)
 
     install_libwebp($p); //依赖 libgif libpng libjpeg
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
-    install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
 
-    install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
-
-
-    install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma  libraw libtiff bzlib2 libjxl(默认不启用)
+    install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma bzlib2  lcms(默认不启用) libraw(默认不启用) libtiff(默认不启用) libjxl(默认不启用)
 
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
@@ -86,7 +81,7 @@ function libraries_builder($p)
     }
 
     if ($p->getOsType() == 'macos') {
-        install_bison($p);  // 源码编译bison
+        install_bison($p);  // 源码编译bison, mongodb 需要
     }
 
     if (0) {
@@ -129,6 +124,8 @@ function libraries_builder($p)
 
 
     if (0) {
+        install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
+        install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
         install_libraw($p);  //依赖 zlib  libjpeg liblcms2
         install_librsvg($p);
         install_libfribidi($p); //以来c2man

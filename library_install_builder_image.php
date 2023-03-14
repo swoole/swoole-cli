@@ -343,54 +343,49 @@ function install_imagemagick(Preprocessor $p)
             ./configure --help | grep -e '--disable'
             
             set -uex 
-            # libraw libraw_r 
-            package_names="libzip zlib libzstd freetype2 libxml-2.0 liblzma openssl libjpeg  libturbojpeg libpng libwebp  libwebpdecoder  libwebpdemux  libwebpmux lcms2 libtiff-4 "
-            package_names="libbrotlicommon libbrotlidec    libbrotlienc libcrypto libssl   openssl"
-            export CPPFLAGS="\$(pkg-config --cflags-only-I --static \$package_names ) -I{$bzip2_prefix}/include" 
-            export LDFLAGS="\$(pkg-config  --libs-only-L   --static \$package_names ) -L{$bzip2_prefix}/lib" 
-            export LIBS="\$(pkg-config     --libs-only-l   --static \$package_names ) -lbz2" 
-           
+            # lcms2 libtiff-4 libraw libraw_r 
             # $(pkg-config      --cflags-only-I --static \$package_names )
             # $(pkg-config      --libs-only-L   --static \$package_names )
             # $(pkg-config      --libs-only-l   --static \$package_names )
             
-            export ZIP_CFLAGS=$(pkg-config  --cflags-only-I --static libzip )
-            export ZIP_LIBS=$(pkg-config    --libs-only-l   --static libzip )
-            export ZLIB_CFLAGS=$(pkg-config  --cflags-only-I --static zlib )
-            export ZLIB_LIBS=$(pkg-config    --libs-only-l   --static zlib )
-            export LIBZSTD_CFLAGS=$(pkg-config  --cflags-only-I --static libzstd )
-            export LIBZSTD_LIBS=$(pkg-config    --libs-only-l   --static libzstd )
+            # export RAW_R_CFLAGS=$(pkg-config  --cflags-only-I --static libraw_r )
+            # export RAW_R_LIBS=$(pkg-config    --libs-only-l   --static libraw_r )
             
-            export FREETYPE_CFLAGS=$(pkg-config  --cflags-only-I --static freetype2 )
-            export FREETYPE_LIBS=$(pkg-config    --libs-only-l   --static freetype2 )
+            # export TIFF_CFLAGS=$(pkg-config  --cflags-only-I --static libtiff-4 )
+            # export TIFF_LIBS=$(pkg-config    --libs-only-l   --static libtiff-4 )
             
             #  HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
             #  HEIF_LIBS   linker flags for HEIF, overriding pkg-config
             #  JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
             #  JXL_LIBS    linker flags for JXL, overriding pkg-config
-
-            export LCMS2_CFLAGS=$(pkg-config  --cflags-only-I --static lcms2 )
-            export LCMS2_LIBS=$(pkg-config    --libs-only-l   --static lcms2 )
             
+            # export LCMS2_CFLAGS=$(pkg-config  --cflags-only-I --static lcms2 )
+            # export LCMS2_LIBS=$(pkg-config    --libs-only-l   --static lcms2 )
             
-            export LZMA_CFLAGS=$(pkg-config  --cflags-only-I --static liblzma )
-            export LZMA_LIBS=$(pkg-config    --libs-only-l   --static liblzma )
+            package_names="libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
+            package_names="\${package_names} libbrotlicommon libbrotlidec    libbrotlienc libcrypto libssl   openssl"
 
-            export PNG_CFLAGS=$(pkg-config  --cflags-only-I --static libpng )
-            export PNG_LIBS=$(pkg-config    --libs-only-l   --static libpng )
-            # export RAW_R_CFLAGS=$(pkg-config  --cflags-only-I --static libraw_r )
-            # export RAW_R_LIBS=$(pkg-config    --libs-only-l   --static libraw_r )
-            
-
-            export TIFF_CFLAGS=$(pkg-config  --cflags-only-I --static libtiff-4 )
-            export TIFF_LIBS=$(pkg-config    --libs-only-l   --static libtiff-4 )
-            export WEBP_CFLAGS=$(pkg-config  --cflags-only-I --static libwebp )
-            export WEBP_LIBS=$(pkg-config    --libs-only-l   --static libwebp )
-            export WEBPMUX_CFLAGS=$(pkg-config  --cflags-only-I --static libwebpmux )
-            export WEBPMUX_LIBS=$(pkg-config    --libs-only-l   --static libwebpmux )
-            export XML_CFLAGS=$(pkg-config  --cflags-only-I --static libxml-2.0 )
-            export XML_LIBS=$(pkg-config    --libs-only-l   --static libxml-2.0 )
-         
+            ZIP_CFLAGS=$(pkg-config  --cflags-only-I --static libzip ) \
+            ZIP_LIBS=$(pkg-config    --libs-only-l   --static libzip ) \
+            ZLIB_CFLAGS=$(pkg-config  --cflags-only-I --static zlib ) \
+            ZLIB_LIBS=$(pkg-config    --libs-only-l   --static zlib ) \
+            LIBZSTD_CFLAGS=$(pkg-config  --cflags-only-I --static libzstd ) \
+            LIBZSTD_LIBS=$(pkg-config    --libs-only-l   --static libzstd ) \
+            FREETYPE_CFLAGS=$(pkg-config  --cflags-only-I --static freetype2 ) \
+            FREETYPE_LIBS=$(pkg-config    --libs-only-l   --static freetype2 ) \
+            LZMA_CFLAGS=$(pkg-config  --cflags-only-I --static liblzma ) \
+            LZMA_LIBS=$(pkg-config    --libs-only-l   --static liblzma ) \
+            PNG_CFLAGS=$(pkg-config  --cflags-only-I --static libpng ) \
+            PNG_LIBS=$(pkg-config    --libs-only-l   --static libpng ) \
+            WEBP_CFLAGS=$(pkg-config  --cflags-only-I --static libwebp ) \
+            WEBP_LIBS=$(pkg-config    --libs-only-l   --static libwebp )  \
+            WEBPMUX_CFLAGS=$(pkg-config  --cflags-only-I --static libwebpmux ) \
+            WEBPMUX_LIBS=$(pkg-config    --libs-only-l   --static libwebpmux ) \
+            XML_CFLAGS=$(pkg-config  --cflags-only-I --static libxml-2.0 ) \
+            XML_LIBS=$(pkg-config    --libs-only-l   --static libxml-2.0 ) \
+            CPPFLAGS="\$(pkg-config --cflags-only-I --static \$package_names ) -I{$bzip2_prefix}/include" \
+            LDFLAGS="\$(pkg-config  --libs-only-L   --static \$package_names ) -L{$bzip2_prefix}/lib"  \
+            LIBS="\$(pkg-config     --libs-only-l   --static \$package_names ) -lbz2" \
             ./configure \
             --prefix={$imagemagick_prefix} \
             --enable-shared=no \
@@ -402,14 +397,13 @@ function install_imagemagick(Preprocessor $p)
             --with-jpeg \
             --with-png \
             --with-webp \
-            --without-raw \
-            --with-tiff \
             --with-xml \
             --with-freetype \
-            --with-lcms \
+            --without-raw \
+            --without-tiff \
+            --without-lcms \
             --enable-zero-configuration \
             --enable-bounds-checking \
-            --with-utilities \
             --enable-hdri \
             --disable-dependency-tracking \
             --without-perl \
@@ -429,10 +423,11 @@ function install_imagemagick(Preprocessor $p)
             --without-jbig \
             --without-x \
             --with-modules \
-            --without-magick-plus-plus
+            --without-magick-plus-plus \
+            --without-utilities 
 EOF
             )
-            ->withPkgName('ImageMagick')
+            ->withPkgName('ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand ')
             ->withBinPath($imagemagick_prefix . '/bin/')
             ->depends(
                 'libxml2',

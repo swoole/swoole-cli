@@ -229,6 +229,13 @@ make_config() {
 
 EOF
 
+    export   OPENSSL_CFLAGS=$(pkg-config --cflags --static libcrypto libssl    openssl)
+    export   OPENSSL_LIBS=$(pkg-config   --libs   --static libcrypto libssl    openssl)
+
+    export   NCURSES_CFLAGS=$(pkg-config --cflags --static  ncurses ncursesw);
+    export   NCURSES_LIBS=$(pkg-config  --libs --static ncurses ncursesw);
+    export   READLINE_CFLAGS=$(pkg-config --cflags --static readline)  ;
+    export   READLINE_LIBS=$(pkg-config  --libs --static readline)  ;
 
     export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
     export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
@@ -258,12 +265,15 @@ EOF
     # export CFLAGS="-static"
     # export CFLAGS="-std=gnu11 -g -Wall -O3 -fPIE"
     # export CFLAGS="-Wno-error=implicit-function-declaration"
+    #  -std=gnu++ -fno-common -DPIC -static
 
     package_names=''
-    package_names="ImageMagick-7.Q16HDRI ImageMagick    MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand"
-    package_names="${package_names}  libtiff-4 lcms2"
+    package_names="ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand "
+    # package_names="${package_names}  libtiff-4 lcms2"
     package_names="${package_names}  libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
-    package_names="${package_names}  ncurses readline  "
+    package_names="${package_names}  libjpeg  libturbojpeg  "
+    package_names="${package_names}  libpng16  "
+    package_names="${package_names}  ncurses ncursesw readline  "
     package_names="${package_names}  icu-i18n  icu-io  icu-uc "
     package_names="${package_names}  libcrypto libssl    openssl"
     package_names="${package_names}  libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc"
@@ -273,6 +283,8 @@ EOF
     package_names="${package_names}  libexslt libxslt"
     package_names="${package_names}  libsodium"
     package_names="${package_names}  libzip"
+    package_names="${package_names}  libzip"
+    package_names="${package_names}  yaml-0.1"
     # package_names="${package_names}  libpq"
     # package_names=" libpq"
 
@@ -297,13 +309,13 @@ EOF
         LIBS="$LIBS -lc++"  # libc++
 <?php endif; ?>
 
-        export  CPPFLAGS="$CPPFLAGS "
-        export  LDFLAGS="$LDFLAGS "
-        export  LIBS="$LIBS  "
+        # export  CPPFLAGS="$CPPFLAGS "
+        # export  LDFLAGS="$LDFLAGS "
+        # export  LIBS="$LIBS  "
 
-        # export EXTRA_INCLUDES="$CPPFLAGS"
-        # export EXTRA_LDFLAGS="$LDFLAGS "
-        # export EXTRA_LIBS="$LIBS"
+        export EXTRA_INCLUDES="$CPPFLAGS"
+        export EXTRA_LDFLAGS="$LDFLAGS "
+        export EXTRA_LIBS="$LIBS"
 
     fi
 

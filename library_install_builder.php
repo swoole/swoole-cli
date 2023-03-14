@@ -965,8 +965,10 @@ function install_libffi($p)
 function install_bison(Preprocessor $p)
 {
     $bison_prefix = BISON_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
+    $readline_prefix = READLINE_PREFIX;
     $p->addLibrary(
-        (new Library('bison', ))
+        (new Library('bison'))
             ->withHomePage('https://www.gnu.org/software/bison/')
             ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
             ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
@@ -975,15 +977,23 @@ function install_bison(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($bison_prefix)
             ->withScriptBeforeConfigure(<<<'EOF'
-            export PATH=$SYSTEM_PATH
-            export PKG_CONFIG_PATH=$SYSTEM_PKG_CONFIG_PATH
+            export PATH=$SYSTEM_ORIGIN_PATH
+            export PKG_CONFIG_PATH=$SYSTEM_ORIGIN_PKG_CONFIG_PATH
 EOF
             )
             ->withConfigure(
                 "
              ./configure --help
-             ./configure --prefix={$bison_prefix}
+            
+             ./configure --prefix={$bison_prefix} \
+             --enable-silent-rules \
+             --disable-dependency-tracking
             "
+            )
+            ->withScriptAfterInstall(<<<'EOF'
+            export PATH=$SWOOLE_CLI_PATH
+            export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
+EOF
             )
             ->withBinPath($bison_prefix.'/bin/')
             ->withPkgName('bision')
