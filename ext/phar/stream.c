@@ -234,7 +234,7 @@ static php_stream * phar_wrapper_open_url(php_stream_wrapper *wrapper, const cha
 		if (opened_path) {
 			*opened_path = strpprintf(MAXPATHLEN, "phar://%s/%s", idata->phar->fname, idata->internal_file->filename);
 		}
-		if (is_file_exec_self(ZSTR_VAL(resource->host))) {
+		if (is_file_exec_self(idata->phar->fname)) {
 			init_phar_stream_seek(fpf);
 		}
 		return fpf;
@@ -341,7 +341,7 @@ idata_error:
 	efree(internal_file);
 phar_stub:
 	fpf = php_stream_alloc(&phar_ops, idata, NULL, mode);
-	if (is_file_exec_self(ZSTR_VAL(resource->host))) {
+	if (is_file_exec_self(idata->phar->fname)) {
 		init_phar_stream_seek(fpf);
 	}
 	return fpf;
@@ -607,7 +607,7 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 		/* root directory requested */
 		phar_dostat(phar, NULL, ssb, 1);
 		php_url_free(resource);
-		if (is_file_exec_self(ZSTR_VAL(resource->host))) {
+		if (is_file_exec_self(phar->fname)) {
 			ssb->sb.st_size -= get_sfx_filesize();
 		}
 		return SUCCESS;
@@ -621,7 +621,7 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 	if (NULL != (entry = zend_hash_str_find_ptr(&phar->manifest, internal_file, internal_file_len))) {
 		phar_dostat(phar, entry, ssb, 0);
 		php_url_free(resource);
-		if (is_file_exec_self(ZSTR_VAL(resource->host))) {
+		if (is_file_exec_self(phar->fname)) {
 			ssb->sb.st_size -= get_sfx_filesize();
 		}
 		return SUCCESS;
@@ -629,7 +629,7 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 	if (zend_hash_str_exists(&(phar->virtual_dirs), internal_file, internal_file_len)) {
 		phar_dostat(phar, NULL, ssb, 1);
 		php_url_free(resource);
-		if (is_file_exec_self(ZSTR_VAL(resource->host))) {
+		if (is_file_exec_self(phar->fname)) {
 			ssb->sb.st_size -= get_sfx_filesize();
 		}
 		return SUCCESS;
@@ -668,7 +668,7 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 				}
 				phar_dostat(phar, entry, ssb, 0);
 				php_url_free(resource);
-				if (is_file_exec_self(ZSTR_VAL(resource->host))) {
+				if (is_file_exec_self(phar->fname)) {
 					ssb->sb.st_size -= get_sfx_filesize();
 				}
 				return SUCCESS;

@@ -26,11 +26,16 @@ jobs:
             ./bin/swoole-cli ./bin/pack.php ./tests/test.php ./bin/swoole-cli-test
             ./bin/swoole-cli-test ./tests/test.php
             ./bin/swoole-cli-test --self
+
             ./bin/swoole-cli -dphar.readonly=0 ./tests/build-phar.php
 
             ./bin/swoole-cli tests/test-none.phar
             ./bin/swoole-cli bin/pack.php tests/test-none.phar ./bin/swoole-cli-test-phar
             ./bin/swoole-cli-test-phar --self
+
+            ./bin/swoole-cli tests/test-alias.phar
+            ./bin/swoole-cli bin/pack.php tests/test-alias.phar ./bin/swoole-cli-test-phar-alias
+            ./bin/swoole-cli-test-phar-alias --self
 
             ./bin/swoole-cli tests/test-gz.phar
             ./bin/swoole-cli bin/pack.php tests/test-gz.phar ./bin/swoole-cli-test-phar-gz
