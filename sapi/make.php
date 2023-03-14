@@ -268,16 +268,22 @@ EOF
     # macOS clang llvm 不支持  -static
     # export CFLAGS="-static"
     # export CFLAGS="-std=gnu11 -g -Wall -O3 -fPIE"
+    # -std=gnu++ -fno-common -DPIC -static
+    # package_names="${package_names}  libtiff-4 lcms2"
     # export CFLAGS="-Wno-error=implicit-function-declaration"
-    #  -std=gnu++ -fno-common -DPIC -static
+
 
     package_names=''
-    package_names="ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand "
-    # package_names="${package_names}  libtiff-4 lcms2"
+    imagemagick="ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand "
+<?php if ($this->getOsType() == 'linux') : ?>
+    package_names="${package_names}  libpq"
+    package_names="${imagemagick}"
+ <?php endif; ?>
+
     package_names="${package_names}  libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
     package_names="${package_names}  libjpeg  libturbojpeg  "
     package_names="${package_names}  libpng16  "
-    package_names="${package_names}  ncurses ncursesw readline  "
+    package_names="${package_names}  ncurses ncursesw readline "
     package_names="${package_names}  icu-i18n  icu-io  icu-uc "
     package_names="${package_names}  libcrypto libssl    openssl"
     package_names="${package_names}  libcares  libidn2  libzstd libbrotlicommon  libbrotlidec  libbrotlienc libidn2"
@@ -290,8 +296,7 @@ EOF
     package_names="${package_names}  libzip"
     package_names="${package_names}  yaml-0.1"
     package_names="${package_names}  libcurl"
-    package_names="${package_names}  libpq"
-    # package_names=" libpq"
+
 
    if [ ! -z "$package_names" ] ;then
         CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
@@ -313,13 +318,36 @@ EOF
         LIBS="$LIBS -lc++"  # libc++
 <?php endif; ?>
 
+
+
+<?php if ($this->getOsType() == 'linux') : ?>
         export  CPPFLAGS="$CPPFLAGS "
         export  LDFLAGS="$LDFLAGS "
         export  LIBS="$LIBS  "
+<?php endif; ?>
 
+<?php if ($this->getOsType() == 'macos') : ?>
+        #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
+        #  ll /Library/Developer/CommandLineTools/
+        #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+
+        export  CPPFLAGS="$CPPFLAGS "
+        # export  LDFLAGS=$(pkg-config   --libs-only-L   --static libpq)
+        # export  LIBS=$(pkg-config      --libs-only-l   --static libpq)
+
+        imagemagick_LDFLAGS=$(pkg-config   --libs-only-L   --static $imagemagick )
+        imagemagick_LIBS=$(pkg-config      --libs-only-l   --static $imagemagick )
         # export EXTRA_INCLUDES="$CPPFLAGS"
-        # export EXTRA_LDFLAGS="$LDFLAGS "
-        # export EXTRA_LIBS="$LIBS"
+        # export EXTRA_LDFLAGS="${imagemagick_LDFLAGS}"
+        export EXTRA_LDFLAGS="$LDFLAGS "
+        # export EXTRA_LIBS=" ${imagemagick_LIBS}"
+        export EXTRA_LIBS="${LIBS}"
+
+
+<?php endif; ?>
+
+
+
 
     fi
 
