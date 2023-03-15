@@ -29,10 +29,10 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
             ./configure --help
-
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib openssl libcares)" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static zlib openssl libcares)" \
-            LIBS="$(pkg-config      --libs-only-l    --static zlib openssl libcares)" \
+            package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc'
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$package_name)" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$package_name)" \
+            LIBS="$(pkg-config      --libs-only-l    --static \$package_name)" \
             ./configure --prefix={$curl_prefix}  \
             --enable-static \
             --disable-shared \
@@ -66,7 +66,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libcurl')
-            ->depends('openssl', 'cares', 'zlib')
+            ->depends('openssl', 'cares', 'zlib', 'brotli')
     );
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
 };
