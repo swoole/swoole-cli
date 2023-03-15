@@ -24,13 +24,27 @@ return function (Preprocessor $p) {
     }
     $p->addLibrary($lib);
 
+    $libpng_prefix = PNG_PREFIX;
+    $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('libpng'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
-            ->withPrefix(PNG_PREFIX)
-            ->withConfigure('./configure --prefix=' . PNG_PREFIX . ' --enable-static --disable-shared')
-            ->withPkgName('libpng16')
+            ->withPrefix($libpng_prefix)
+            ->withConfigure(
+                <<<EOF
+                ./configure --help
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
+                LDFLAGS="$(pkg-config   --libs-only-L    --static zlib )" \
+                LIBS="$(pkg-config      --libs-only-l    --static zlib )" \
+                ./configure --prefix={$libpng_prefix} \
+                --enable-static --disable-shared \
+                --with-zlib-prefix={$libzlib_prefix} \
+                --with-binconfigs
+EOF
+            )
+            ->withPkgName('libpng libpng16')
+            ->withBinPath($libpng_prefix . '/bin')
             ->depends('zlib')
     );
 
@@ -41,7 +55,8 @@ return function (Preprocessor $p) {
             ->withPrefix(GIF_PREFIX)
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
-            ->withScriptAfterInstall(<<<EOF
+            ->withScriptAfterInstall(
+                <<<EOF
                 if [ ! -d {$gif_prefix}/lib ]; then
                     mkdir -p {$gif_prefix}/lib
                 fi
@@ -56,49 +71,79 @@ return function (Preprocessor $p) {
             ->withPkgName('')
             ->withPkgConfig('')
     );
+
+    $libwebp_prefix = WEBP_PREFIX;
+    $libpng_prefix = PNG_PREFIX;
+    $libjpeg_prefix = JPEG_PREFIX;
+    $libgif_prefix = GIF_PREFIX;
+    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $p->addLibrary(
         (new Library('libwebp'))
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
             ->withFile('libwebp-1.2.1.tar.gz')
             ->withHomePage('https://github.com/webmproject/libwebp')
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
-            ->withPrefix(WEBP_PREFIX)
-            ->withConfigure('./autogen.sh && ./configure --prefix=' . WEBP_PREFIX . ' --enable-static --disable-shared ' .
-                '--enable-libwebpdecoder ' .
-                '--enable-libwebpextras ' .
-                '--with-pngincludedir=' . PNG_PREFIX . '/include ' .
-                '--with-pnglibdir=' . PNG_PREFIX . '/lib ' .
-                '--with-jpegincludedir=' . JPEG_PREFIX . '/include ' .
-                '--with-jpeglibdir=' . JPEG_PREFIX . ' ' .
-                '--with-gifincludedir=' . GIF_PREFIX . '/include ' .
-                '--with-giflibdir=' . GIF_PREFIX . '/lib'
+            ->withPrefix($libwebp_prefix)
+            ->withConfigure(
+                <<<EOF
+                ./autogen.sh
+                ./configure --help
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
+                LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
+                LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
+                ./configure --prefix={$libwebp_prefix} \
+                --enable-static --disable-shared \
+                --enable-libwebpdecoder \
+                --enable-libwebpextras \
+                --with-pngincludedir={$libpng_prefix}/include \
+                --with-pnglibdir={$libpng_prefix}/lib \
+                --with-jpegincludedir={$libjpeg_prefix}/include \
+                --with-jpeglibdir={$jpeg_lib_dir} \
+                --with-gifincludedir={$libgif_prefix}/include \
+                --with-giflibdir={$libgif_prefix}/lib
+EOF
             )
             ->withPkgName('libwebp')
             ->withLdflags('-L' . WEBP_PREFIX . '/lib -lwebpdemux -lwebpmux')
             ->depends('libpng', 'libjpeg', 'libgif')
     );
+
+    $freetype_prefix = FREETYPE_PREFIX;
+    $bzip2_prefix = BZIP2_PREFIX;
+    $libpng_prefix = PNG_PREFIX;
+    $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('freetype'))
-            ->withPrefix(FREETYPE_PREFIX)
+            ->withPrefix($freetype_prefix)
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
-            ->withLicense('https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT', Library::LICENSE_SPEC)
-            ->withConfigure('BZIP2_CFLAGS="-I' . BZIP2_PREFIX . '/include" \\' . PHP_EOL .
-                'BZIP2_LIBS="-L' . BZIP2_PREFIX . '/lib -lbz2" \\' . PHP_EOL .
-                './configure --prefix=' . FREETYPE_PREFIX . ' \\' . PHP_EOL .
-                '--enable-static \\' . PHP_EOL .
-                '--disable-shared \\' . PHP_EOL .
-                '--with-zlib=yes \\' . PHP_EOL .
-                '--with-bzip2=yes \\' . PHP_EOL .
-                '--with-png=yes \\' . PHP_EOL .
-                '--with-harfbuzz=no \\' . PHP_EOL .
-                '--with-brotli=no' . PHP_EOL
+            ->withLicense(
+                'https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT',
+                Library::LICENSE_SPEC
+            )
+            ->withConfigure(
+                <<<EOF
+            ./configure --help
+            BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
+            BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
+            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  )" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  )" \
+            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  )" \
+            ./configure --prefix={$freetype_prefix} \
+            --enable-static \
+            --disable-shared \
+            --with-zlib=yes \
+            --with-bzip2=yes \
+            --with-png=yes \
+            --with-harfbuzz=no  \
+            --with-brotli=no
+EOF
             )
             ->withHomePage('https://freetype.org/')
             ->withPkgName('freetype2')
-            ->depends('zlib', 'libpng')
+            ->depends('zlib', 'bzip2', 'libpng')
     );
-
-    $p->addExtension((new Extension('gd'))
+    $p->addExtension(
+        (new Extension('gd'))
         ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp')
         ->depends('libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
     );
