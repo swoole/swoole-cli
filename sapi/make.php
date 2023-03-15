@@ -140,7 +140,7 @@ make_config() {
     package_names="${package_names}  libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
     package_names="${package_names}  libjpeg  libturbojpeg  "
     package_names="${package_names}  libpng16  "
-    package_names="${package_names}  ncurses ncursesw readline "
+    package_names="${package_names}  ncursesw readline "
     package_names="${package_names}  icu-i18n  icu-io  icu-uc "
     package_names="${package_names}  libcrypto libssl    openssl"
     package_names="${package_names}  libcares  libzstd  libzstd libbrotlicommon  libbrotlidec  libbrotlienc "
@@ -189,6 +189,7 @@ make_config() {
 <?php if ($this->getOsType() == 'macos') : ?>
 
         export  CPPFLAGS="$CPPFLAGS "
+
 
         imagemagick_LDFLAGS=$(pkg-config   --libs-only-L   --static $imagemagick )
         imagemagick_LIBS=$(pkg-config      --libs-only-l   --static $imagemagick )
