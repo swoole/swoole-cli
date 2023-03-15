@@ -100,7 +100,8 @@ EOF
             )
     );
 
-    $p->addExtension((new Extension('imagick'))
+    $p->addExtension(
+        (new Extension('imagick'))
         ->withOptions('--with-imagick=' . IMAGEMAGICK_PREFIX)
         ->withPeclVersion('3.6.0')
         ->withHomePage('https://github.com/Imagick/imagick')
