@@ -13,11 +13,32 @@
 ./prepare.php +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
 ```
 
+参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}` ，需要将参数的中横线`-`替换为下划线`_`，例如：
+
+```shell
+./prepare.php --skip-download
+```
+
+也可以写作：
+```shell
+SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php
+```
+
+> 参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --skip-download=no`，有效的值为：`--skip-download=no`，环境变量 `SWOOLE_CLI_SKIP_DOWNLOAD=yes` 无效
+
 skip-download
 ----
 跳过下载依赖库
+
+> 会自动生成，待下载链接地址
+> 链接地址生成在 项目根目录下的 `var` 目录
+
 ```shell
 ./prepare.php --skip-download
+
+# 构建依赖库之前，批量下载依赖库和扩展的脚本
+sh sapi/download-dependencies-use-aria2.sh
+
 ```
 
 with-brotli

@@ -4,13 +4,13 @@ use SwooleCli\Preprocessor;
 
 $p = Preprocessor::getInstance();
 // MUST be in the /usr directory
-define("JPEG_PREFIX", $p->getGlobalPrefix());
-define("GIF_PREFIX", $p->getGlobalPrefix());
-define("ZIP_PREFIX", $p->getGlobalPrefix());
+define("JPEG_PREFIX", $p->getGlobalPrefix() . '/libjpeg');
+define("GIF_PREFIX", $p->getGlobalPrefix() . '/libgif');
+define("ZIP_PREFIX", $p->getGlobalPrefix() . '/libzip');
 // FIXME: libpng
-define("ZLIB_PREFIX", $p->getGlobalPrefix());
+define("ZLIB_PREFIX", $p->getGlobalPrefix() . '/zlib');
 // FIXME: ImageMagick
-define("BZIP2_PREFIX", $p->getGlobalPrefix());
+define("BZIP2_PREFIX", $p->getGlobalPrefix() . '/bzip2');
 // ========================================================
 define("FREETYPE_PREFIX", $p->getGlobalPrefix() . '/freetype');
 define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');
@@ -33,4 +33,13 @@ define("SQLITE3_PREFIX", $p->getGlobalPrefix() . '/sqlite3');
 define("LIBSODIUM_PREFIX", $p->getGlobalPrefix() . '/libsodium');
 define("LIBEDIT_PREFIX", $p->getGlobalPrefix() . '/libedit');
 define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
+
+define("LIBLZ4_PREFIX", $p->getGlobalPrefix() . '/liblz4');
+define("LIBLZMA_PREFIX", $p->getGlobalPrefix() . '/liblzma');
+define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
+define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
+define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
+define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
+
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
+
