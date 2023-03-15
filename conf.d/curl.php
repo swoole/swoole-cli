@@ -29,7 +29,8 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
             ./configure --help
-            package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc'
+
+            package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd'
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$package_name)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$package_name)" \
             LIBS="$(pkg-config      --libs-only-l    --static \$package_name)" \
@@ -66,7 +67,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libcurl')
-            ->depends('openssl', 'cares', 'zlib', 'brotli')
+            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd')
     );
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
 };
