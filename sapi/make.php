@@ -152,6 +152,7 @@ make_config() {
     package_names="${package_names}  libzip"
     package_names="${package_names}  yaml-0.1"
     package_names="${package_names}  libcurl"
+    package_names="${package_names}  gmp"
 
     imagemagick="ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand "
 <?php if ($this->getOsType() == 'linux') : ?>
@@ -165,7 +166,7 @@ make_config() {
         CPPFLAGS="$CPPFLAGS "
 
         LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
-        # <?= $this->configureVarables ?>" ${LDFLAGS}"
+        <?= $this->configureVarables ?>" ${LDFLAGS}"
         LDFLAGS="$LDFLAGS -L<?= ICONV_PREFIX ?>/lib -L<?= BZIP2_PREFIX ?>/lib"
         LDFLAGS="$LDFLAGS"
 
@@ -187,15 +188,15 @@ make_config() {
 
 <?php if ($this->getOsType() == 'macos') : ?>
 
-    export  CPPFLAGS="$CPPFLAGS "
+        export  CPPFLAGS="$CPPFLAGS "
 
-    imagemagick_LDFLAGS=$(pkg-config   --libs-only-L   --static $imagemagick )
-    imagemagick_LIBS=$(pkg-config      --libs-only-l   --static $imagemagick )
-    # export EXTRA_INCLUDES="$CPPFLAGS"
-    # export EXTRA_LDFLAGS="${imagemagick_LDFLAGS}"
-    export EXTRA_LDFLAGS="$LDFLAGS "
-    # export EXTRA_LIBS=" ${imagemagick_LIBS}"
-    export EXTRA_LIBS="${LIBS}"
+        imagemagick_LDFLAGS=$(pkg-config   --libs-only-L   --static $imagemagick )
+        imagemagick_LIBS=$(pkg-config      --libs-only-l   --static $imagemagick )
+        # export EXTRA_INCLUDES="$CPPFLAGS"
+        # export EXTRA_LDFLAGS="${imagemagick_LDFLAGS}"
+        export EXTRA_LDFLAGS="$LDFLAGS "
+        # export EXTRA_LIBS=" ${imagemagick_LIBS}"
+        export EXTRA_LIBS="${LIBS}"
 
 
 <?php endif; ?>
