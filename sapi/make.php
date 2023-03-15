@@ -166,7 +166,7 @@ make_config() {
         CPPFLAGS="$CPPFLAGS "
 
         LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
-        <?= $this->configureVarables ?>" ${LDFLAGS}"
+        # <?= $this->configureVarables ?>" ${LDFLAGS}"
         LDFLAGS="$LDFLAGS -L<?= ICONV_PREFIX ?>/lib -L<?= BZIP2_PREFIX ?>/lib"
         LDFLAGS="$LDFLAGS"
 
