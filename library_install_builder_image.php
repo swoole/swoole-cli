@@ -184,12 +184,13 @@ function install_freetype(Preprocessor $p)
     $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('freetype'))
-            ->withPrefix($freetype_prefix)
+            ->withHomePage('https://freetype.org/')
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withLicense(
-                'https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT',
-                Library::LICENSE_SPEC
+                'https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/GPLv2.TXT',
+                Library::LICENSE_GPL
             )
+            ->withPrefix($freetype_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($freetype_prefix)
             ->withConfigure(
@@ -210,7 +211,7 @@ function install_freetype(Preprocessor $p)
             --with-brotli=yes
 EOF
             )
-            ->withHomePage('https://freetype.org/')
+
             ->withPkgName('freetype2')
             ->depends('zlib', 'bzip2', 'libpng', 'brotli')
     );
