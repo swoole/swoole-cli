@@ -382,11 +382,16 @@ static ssize_t phar_stream_read(php_stream *stream, char *buf, size_t count) /* 
 		return -1;
 	}
 
+	size_t sfx_filesize = 0;
+	if (is_file_exec_self(data->phar->fname) && !(entry->flags & PHAR_ENT_COMPRESSION_MASK)) {
+		sfx_filesize = get_sfx_filesize();
+	}
+
 	/* use our proxy position */
-	php_stream_seek(data->fp, data->position + data->zero, SEEK_SET);
+	php_stream_seek(data->fp, data->position + data->zero + sfx_filesize, SEEK_SET);
 
 	got = php_stream_read(data->fp, buf, MIN(count, (size_t)(entry->uncompressed_filesize - data->position)));
-	data->position = php_stream_tell(data->fp) - data->zero;
+	data->position = php_stream_tell(data->fp) - data->zero - sfx_filesize;
 	stream->eof = (data->position == (zend_off_t) entry->uncompressed_filesize);
 
 	return got;
@@ -409,12 +414,9 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 		entry = data->internal_file;
 	}
 
-	size_t sfx_size = 0;
+	size_t sfx_filesize = 0;
 	if (is_file_exec_self(data->phar->fname) && !(entry->flags & PHAR_ENT_COMPRESSION_MASK)) {
-		sfx_size = get_sfx_filesize();
-		if (offset < 0) {
-			offset -= get_sfx_end_size();
-		}
+		sfx_filesize = get_sfx_filesize();
 	}
 
 	switch (whence) {
@@ -430,8 +432,8 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 		default:
 			temp = 0;
 	}
-	temp = temp + sfx_size;
-	if (temp > data->zero + (zend_off_t) entry->uncompressed_filesize + sfx_size) {
+	temp = temp + sfx_filesize;
+	if (temp > data->zero + (zend_off_t) entry->uncompressed_filesize + sfx_filesize) {
 		*newoffset = -1;
 		return -1;
 	}
@@ -441,6 +443,7 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 	}
 	res = php_stream_seek(data->fp, temp, SEEK_SET);
 	*newoffset = php_stream_tell(data->fp) - data->zero;
+	*newoffset -= sfx_filesize;
 	data->position = *newoffset;
 	return res;
 }
@@ -607,9 +610,6 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 		/* root directory requested */
 		phar_dostat(phar, NULL, ssb, 1);
 		php_url_free(resource);
-		if (is_file_exec_self(phar->fname)) {
-			ssb->sb.st_size -= get_sfx_filesize();
-		}
 		return SUCCESS;
 	}
 	if (!HT_IS_INITIALIZED(&phar->manifest)) {
@@ -621,17 +621,11 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 	if (NULL != (entry = zend_hash_str_find_ptr(&phar->manifest, internal_file, internal_file_len))) {
 		phar_dostat(phar, entry, ssb, 0);
 		php_url_free(resource);
-		if (is_file_exec_self(phar->fname)) {
-			ssb->sb.st_size -= get_sfx_filesize();
-		}
 		return SUCCESS;
 	}
 	if (zend_hash_str_exists(&(phar->virtual_dirs), internal_file, internal_file_len)) {
 		phar_dostat(phar, NULL, ssb, 1);
 		php_url_free(resource);
-		if (is_file_exec_self(phar->fname)) {
-			ssb->sb.st_size -= get_sfx_filesize();
-		}
 		return SUCCESS;
 	}
 	/* check for mounted directories */
@@ -668,9 +662,6 @@ static int phar_wrapper_stat(php_stream_wrapper *wrapper, const char *url, int f
 				}
 				phar_dostat(phar, entry, ssb, 0);
 				php_url_free(resource);
-				if (is_file_exec_self(phar->fname)) {
-					ssb->sb.st_size -= get_sfx_filesize();
-				}
 				return SUCCESS;
 			}
 		} ZEND_HASH_FOREACH_END();
