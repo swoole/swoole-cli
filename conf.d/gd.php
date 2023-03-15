@@ -5,22 +5,24 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+    $libjpeg_prefix = JPEG_PREFIX;
     $lib = new Library('libjpeg');
     $lib->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
         ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
-        ->withPrefix(JPEG_PREFIX)
-        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . JPEG_PREFIX . ' .')
-        ->withPkgName('libjpeg');
+        ->withPrefix($libjpeg_prefix)
+        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
+        ->withPkgName('libjpeg')
+        ->withBinPath($libjpeg_prefix . '/bin/');
 
     // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
-    $jpeg_lib_dir = JPEG_PREFIX . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
-    $gif_prefix = GIF_PREFIX;
+    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
+
     $lib->withLdflags('-L' . $jpeg_lib_dir)
         ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
     if ($p->getOsType() === 'macos') {
-        $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
+        $lib->withScriptAfterInstall('find ' . $libjpeg_prefix . ' -name \*.dylib | xargs rm -f');
     }
     $p->addLibrary($lib);
 
@@ -48,34 +50,35 @@ EOF
             ->depends('zlib')
     );
 
+    $libgif_prefix = GIF_PREFIX;
     $p->addLibrary(
         (new Library('libgif'))
             ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
             ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
-            ->withPrefix(GIF_PREFIX)
+            ->withPrefix($libgif_prefix)
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
             ->withScriptAfterInstall(
                 <<<EOF
-                if [ ! -d {$gif_prefix}/lib ]; then
-                    mkdir -p {$gif_prefix}/lib
+                if [ ! -d {$libgif_prefix}/lib ]; then
+                    mkdir -p {$libgif_prefix}/lib
                 fi
-                if [ ! -d {$gif_prefix}/include ]; then
-                    mkdir -p {$gif_prefix}/include
+                if [ ! -d {$libgif_prefix}/include ]; then
+                    mkdir -p {$libgif_prefix}/include
                 fi
-                cp libgif.a {$gif_prefix}/lib/libgif.a
-                cp gif_lib.h {$gif_prefix}/include/gif_lib.h
+                cp libgif.a {$libgif_prefix}/lib/libgif.a
+                cp gif_lib.h {$libgif_prefix}/include/gif_lib.h
                 EOF
             )
-            ->withLdflags('-L' . GIF_PREFIX . '/lib')
+            ->withLdflags('-L' . $libgif_prefix . '/lib')
             ->withPkgName('')
             ->withPkgConfig('')
     );
 
     $libwebp_prefix = WEBP_PREFIX;
-    $libpng_prefix = PNG_PREFIX;
-    $libjpeg_prefix = JPEG_PREFIX;
-    $libgif_prefix = GIF_PREFIX;
+    # $libpng_prefix = PNG_PREFIX;
+    # $libjpeg_prefix = JPEG_PREFIX;
+    # $libgif_prefix = GIF_PREFIX;
     $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $p->addLibrary(
         (new Library('libwebp'))
@@ -100,34 +103,36 @@ EOF
                 --with-jpegincludedir={$libjpeg_prefix}/include \
                 --with-jpeglibdir={$jpeg_lib_dir} \
                 --with-gifincludedir={$libgif_prefix}/include \
-                --with-giflibdir={$libgif_prefix}/lib
+                --with-giflibdir={$libgif_prefix}/lib \
+                --disable-tiff
 EOF
             )
             ->withPkgName('libwebp')
-            ->withLdflags('-L' . WEBP_PREFIX . '/lib -lwebpdemux -lwebpmux')
+            ->withLdflags('-L' . $libwebp_prefix . '/lib -lwebpdemux -lwebpmux')
             ->depends('libpng', 'libjpeg', 'libgif')
     );
 
     $freetype_prefix = FREETYPE_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
-    $libpng_prefix = PNG_PREFIX;
-    $libzlib_prefix = ZLIB_PREFIX;
+    # $libpng_prefix = PNG_PREFIX;
+    # $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('freetype'))
-            ->withPrefix($freetype_prefix)
+            ->withHomePage('https://freetype.org/')
             ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withLicense(
-                'https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT',
-                Library::LICENSE_SPEC
+                'https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/GPLv2.TXT',
+                Library::LICENSE_GPL
             )
+            ->withPrefix($freetype_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
             BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
             BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
-            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  )" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  )" \
-            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  )" \
+            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
+            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
             ./configure --prefix={$freetype_prefix} \
             --enable-static \
             --disable-shared \
@@ -135,13 +140,14 @@ EOF
             --with-bzip2=yes \
             --with-png=yes \
             --with-harfbuzz=no  \
-            --with-brotli=no
+            --with-brotli=yes
 EOF
             )
-            ->withHomePage('https://freetype.org/')
+
             ->withPkgName('freetype2')
-            ->depends('zlib', 'bzip2', 'libpng')
+            ->depends('zlib', 'bzip2', 'libpng', 'brotli')
     );
+
     $p->addExtension(
         (new Extension('gd'))
         ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp')
