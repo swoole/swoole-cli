@@ -117,23 +117,97 @@ make_all_library() {
 
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+    set -exu
+    export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
+    export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
 
-    export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
-    export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
+    export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
+    export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
+    export   EXSLT_CFLAGS=$(pkg-config  --cflags --static libexslt)
+    export   EXSLT_LIBS=$(pkg-config    --libs   --static libexslt)
+
     export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
     export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
+
     export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
     export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
-    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
-    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
+
+    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
+    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
+
+
+    package_names=''
+    package_names="${package_names}  libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
+    package_names="${package_names}  libjpeg  libturbojpeg  "
+    package_names="${package_names}  libpng16  "
+    package_names="${package_names}  ncurses ncursesw readline "
+    package_names="${package_names}  icu-i18n  icu-io  icu-uc "
+    package_names="${package_names}  libcrypto libssl    openssl"
+    package_names="${package_names}  libcares  libzstd  libzstd libbrotlicommon  libbrotlidec  libbrotlienc "
+    package_names="${package_names}  sqlite3 "
+    package_names="${package_names}  libxml-2.0"
+    package_names="${package_names}  libexslt libxslt"
+    package_names="${package_names}  libsodium"
+    package_names="${package_names}  libzip"
+    package_names="${package_names}  libzip"
+    package_names="${package_names}  yaml-0.1"
+    package_names="${package_names}  libcurl"
+
+    imagemagick="ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand "
+<?php if ($this->getOsType() == 'linux') : ?>
+    package_names=" ${package_names} ${imagemagick}"
+<?php endif; ?>
+
+    if [ ! -z "$package_names" ] ;then
+    {
+        CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
+        CPPFLAGS="$CPPFLAGS -I<?= ICONV_PREFIX ?>/include -I<?= BZIP2_PREFIX ?>/include"
+        CPPFLAGS="$CPPFLAGS "
+
+        LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
+        # <?= $this->configureVarables ?>" ${LDFLAGS}"
+        LDFLAGS="$LDFLAGS -L<?= ICONV_PREFIX ?>/lib -L<?= BZIP2_PREFIX ?>/lib"
+        LDFLAGS="$LDFLAGS"
+
+        LIBS=$(pkg-config      --libs-only-l   --static $package_names )
+        LIBS="$LIBS -lbz2"
+<?php if ($this->getOsType() == 'linux') : ?>
+        LIBS="$LIBS -lstdc++"
+<?php endif; ?>
+<?php if ($this->getOsType() == 'macos') : ?>
+        LIBS="$LIBS -lc++"
+<?php endif; ?>
+
 
 <?php if ($this->getOsType() == 'linux') : ?>
-    export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
-    export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
-    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc)
-    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc)
-    export LIBS="$LIBS -L/usr/lib -lstdc++"
+        export  CPPFLAGS="$CPPFLAGS "
+        export  LDFLAGS="$LDFLAGS "
+        export  LIBS="$LIBS  "
 <?php endif; ?>
+
+<?php if ($this->getOsType() == 'macos') : ?>
+
+    export  CPPFLAGS="$CPPFLAGS "
+
+    imagemagick_LDFLAGS=$(pkg-config   --libs-only-L   --static $imagemagick )
+    imagemagick_LIBS=$(pkg-config      --libs-only-l   --static $imagemagick )
+    # export EXTRA_INCLUDES="$CPPFLAGS"
+    # export EXTRA_LDFLAGS="${imagemagick_LDFLAGS}"
+    export EXTRA_LDFLAGS="$LDFLAGS "
+    # export EXTRA_LIBS=" ${imagemagick_LIBS}"
+    export EXTRA_LIBS="${LIBS}"
+
+
+<?php endif; ?>
+
+
+
+    }
+    fi
+
+
+
+    # exit 3
 
     test -f ./configure &&  rm ./configure
     ./buildconf --force
