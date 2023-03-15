@@ -277,7 +277,7 @@ EOF
     imagemagick="ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand "
 <?php if ($this->getOsType() == 'linux') : ?>
     package_names="${package_names}  libpq"
-    package_names="${imagemagick}"
+    package_names=" ${package_names} ${imagemagick}"
  <?php endif; ?>
 
     package_names="${package_names}  libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
