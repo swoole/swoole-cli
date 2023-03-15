@@ -3,7 +3,6 @@
 use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
-
 /*
             ZIP_CFLAGS=$(pkg-config --cflags libzip) ;
             ZIP_LIBS=$(pkg-config --libs libzip) ;
@@ -39,7 +38,8 @@ function install_libgcrypt_error(Preprocessor $p)
             ->withPrefix($libgcrypt_error_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libgcrypt_error_prefix)
-            ->withConfigure(<<<EOF
+            ->withConfigure(
+                <<<EOF
             ./configure --help 
             ./configure \
             --prefix={$libgcrypt_error_prefix} \
@@ -51,8 +51,6 @@ function install_libgcrypt_error(Preprocessor $p)
             --disable-tests 
 
 EOF
-
-
             )
             ->withBinPath($libgcrypt_error_prefix . '/bin')
             ->withPkgName('gpg-error')
@@ -71,7 +69,8 @@ function install_libgcrypt(Preprocessor $p)
             ->withPrefix($libgcrypt_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libgcrypt_prefix)
-            ->withConfigure(<<<EOF
+            ->withConfigure(
+                <<<EOF
             ./configure --help 
             ./configure \
             --prefix={$libgcrypt_prefix} \
@@ -79,8 +78,6 @@ function install_libgcrypt(Preprocessor $p)
             --enable-shared=no \
 
 EOF
-
-
             )
             ->withPkgName('libgcrypt')
             ->withBinPath($libgcrypt_prefix . '/bin/')
@@ -104,11 +101,10 @@ function install_gnupg(Preprocessor $p)
             ->withPrefix($gnupg_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($gnupg_prefix)
-            ->withBuildScript(<<<EOF
+            ->withBuildScript(
+                <<<EOF
             ./configure --help 
 EOF
-
-
             )
             ->withPkgName('gnupg')
     );
@@ -219,7 +215,8 @@ function install_libraw(Preprocessor $p)
 EOF
         )
         ->withPkgName('libraw  libraw_r')
-        ->withScriptAfterInstall(<<<EOF
+        ->withScriptAfterInstall(
+            <<<EOF
         ls -lh {$libraw_prefix}/lib/pkgconfig/libraw.pc
         ls -lh {$libraw_prefix}/lib/pkgconfig/libraw_r.pc
         # sed  "s/-lstdc++/-lc++/g" '{$libraw_prefix}/lib/pkgconfig/libraw.pc'
@@ -1564,7 +1561,7 @@ EOF
     );
 }
 
-function  install_capstone(Preprocessor $p)
+function install_capstone(Preprocessor $p)
 {
     $capstone_prefix = $p->getGlobalPrefix() . '/capstone';
     $p->addLibrary(
@@ -1589,7 +1586,8 @@ function  install_capstone(Preprocessor $p)
 
 EOF
             )
-            ->withScriptAfterInstall(<<<EOF
+            ->withScriptAfterInstall(
+                <<<EOF
              rm -rf {$capstone_prefix}/lib/*.dylib
 EOF
             )
@@ -1598,7 +1596,7 @@ EOF
     );
 }
 
-function  install_dynasm(Preprocessor $p)
+function install_dynasm(Preprocessor $p)
 {
     $dynasm_prefix = $p->getGlobalPrefix() . '/dynasm';
     $p->addLibrary(

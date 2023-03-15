@@ -138,6 +138,8 @@ function install_brotli(Preprocessor $p)
     $brotli_prefix = BROTLI_PREFIX;
     $p->addLibrary(
         (new Library('brotli'))
+            ->withHomePage('https://github.com/google/brotli')
+            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withManual('https://github.com/google/brotli')//有多种构建方式，选择cmake 构建
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
             ->withFile('brotli-1.0.9.tar.gz')
@@ -168,8 +170,6 @@ EOF
 EOF
             )
             ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
-            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/google/brotli')
             ->withBinPath($brotli_prefix . '/bin/')
     );
 }
