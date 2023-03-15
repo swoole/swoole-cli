@@ -13,6 +13,17 @@
 ./prepare.php +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
 ```
 
+参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}` ，需要将参数的中横线`-`替换为下划线`_`，例如：
+
+```shell
+./prepare.php --skip-download
+```
+
+也可以写作：
+```shell
+SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php
+```
+
 skip-download
 ----
 跳过下载依赖库
