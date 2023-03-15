@@ -29,6 +29,7 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
             ./configure --help
+
             package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd'
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$package_name)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$package_name)" \
