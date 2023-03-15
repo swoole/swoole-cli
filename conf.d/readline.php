@@ -8,11 +8,14 @@ return function (Preprocessor $p) {
     $ncurses_prefix = NCURSES_PREFIX;
     $p->addLibrary(
         (new Library('ncurses'))
+            ->withHomePage('https://github.com/projectceladon/libncurses')
+            ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
-            ->withPrefix(NCURSES_PREFIX)
-            ->withConfigure(<<<EOF
+            ->withPrefix($ncurses_prefix)
+            ->withConfigure(
+                <<<EOF
             mkdir -p {$ncurses_prefix}/lib/pkgconfig
             ./configure \
             --prefix={$ncurses_prefix} \
@@ -55,8 +58,8 @@ EOF
                 ln -s ' . NCURSES_PREFIX . '/lib/libticw.a ' . NCURSES_PREFIX . '/lib/libtic.a ;
             ')
             ->withPkgName('ncursesw')
-            ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/projectceladon/libncurses')
+            ->withBinPath($ncurses_prefix . '/bin/')
+
     );
     if (0) {
         $p->addLibrary(
@@ -76,7 +79,8 @@ EOF
                 ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
                 ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
                 ->withPrefix(READLINE_PREFIX)
-                ->withConfigure(<<<EOF
+                ->withConfigure(
+                    <<<EOF
                 ./configure \
                 --prefix={$readline_prefix} \
                 --enable-static \
@@ -92,7 +96,8 @@ EOF
                 ->depends('ncurses')
         );
     }
-    $p->addExtension((new Extension('readline'))
+    $p->addExtension(
+        (new Extension('readline'))
         ->withOptions('--with-readline=' . READLINE_PREFIX)
         ->depends('ncurses', 'readline')
     );

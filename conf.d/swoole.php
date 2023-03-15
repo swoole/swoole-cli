@@ -48,6 +48,6 @@ EOF
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
-        ->depends('curl', 'openssl', 'cares', 'zlib' , 'brotli')
+        ->depends('curl', 'openssl', 'cares', 'zlib', 'brotli')
     );
 };

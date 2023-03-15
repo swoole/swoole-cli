@@ -66,6 +66,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libcurl')
+            ->withBinPath($curl_prefix . '/bin/')
             ->depends('openssl', 'cares', 'zlib')
     );
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
