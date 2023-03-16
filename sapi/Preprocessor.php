@@ -535,9 +535,7 @@ class Preprocessor
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-                if (!is_dir($dst_dir)) {
-                    echo `mkdir -p $dst_dir`;
-                }
+                $this->mkdirIfNotExists($dst_dir, 0777, true);
 
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
@@ -658,6 +656,13 @@ class Preprocessor
         $this->libraryList = $libraryList;
     }
 
+    protected function mkdirIfNotExists(string $dir, int $permissions = 0777, bool $recursive = false)
+    {
+        if (!is_dir($dir)) {
+            mkdir($dir, $permissions, $recursive);
+        }
+    }
+
     /**
      * Scan and load config files in directory
      */
@@ -692,12 +697,8 @@ class Preprocessor
         if (empty($this->extensionDir)) {
             $this->extensionDir = $this->rootDir . '/pool/ext';
         }
-        if (!is_dir($this->libraryDir)) {
-            mkdir($this->libraryDir, 0777, true);
-        }
-        if (!is_dir($this->extensionDir)) {
-            mkdir($this->extensionDir, 0777, true);
-        }
+        $this->mkdirIfNotExists($this->libraryDir, 0777, true);
+        $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
 
         $extAvailabled = [];
@@ -744,9 +745,7 @@ class Preprocessor
 
         ob_start();
         include __DIR__ . '/license.php';
-        if (!$this->rootDir . '/bin') {
-            mkdir($this->rootDir . '/bin');
-        }
+        $this->mkdirIfNotExists($this->rootDir . '/bin');
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
 
         ob_start();
@@ -772,11 +771,9 @@ class Preprocessor
         }
     }
 
-    protected function generateLibraryDownloadLinks():void
+    protected function generateLibraryDownloadLinks(): void
     {
-        if(!is_dir($this->getWorkDir() . '/var/')){
-            mkdir($this->getWorkDir() . '/var/',0755,true);
-        }
+        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
 
         $download_urls=[];
         foreach ($this->libraryList as $item) {
