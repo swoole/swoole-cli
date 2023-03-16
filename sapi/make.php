@@ -167,7 +167,7 @@ make_config() {
     package_names="${package_names}  <?= implode(' ', $this->extensionDependPkgNameList) ?> "
     imagemagick=""
 <?php if (isset($this->extensionDependPkgNameMap['imagick'])) :?>
-    imagemagick="<?= $this->getPkgNameByLibraryName('imagemagick') ?>"
+    # imagemagick="<?= $this->getPkgNameByLibraryName('imagemagick') ?>"
 <?php endif; ?>
 
 <?php if ($this->getOsType() == 'linux') : ?>
