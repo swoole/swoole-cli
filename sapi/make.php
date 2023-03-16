@@ -118,6 +118,7 @@ make_all_library() {
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     set -exu
+
     export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
     export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
 
@@ -137,15 +138,30 @@ make_config() {
 
 
     package_names=''
-<?php foreach($this->extensionDependPkgNamesMap as $package) { ?>
-    <?php if (! empty($package) ): ?> <?= PHP_EOL ?>
-    package_names="${package_names}  <?= implode(' ',$package) ?> "
-    <?php endif ; ?>
-<?php } ?> <?= PHP_EOL ?>
+<?php
+
+   foreach($this->extensionDependPkgNamesMap as $extension_name => $package) {
+        if (empty($package)) {
+            continue;
+        }
+        if ($extension_name == 'imagick') {
+            echo "    # ${extension_name} : ";
+            echo PHP_EOL;
+            echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
+            echo PHP_EOL;
+        } else {
+            echo "    # ${extension_name} depend : ";
+            echo PHP_EOL;
+            echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
+            echo PHP_EOL;
+        }
+   }
+?>
 
     package_names="${package_names}  <?= implode(' ',$this->extensionDependPkgNames) ?> "
 
-    imagemagick="ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand "
+    # imagemagick="<?= implode(' ', $this->extensionDependPkgNamesMap['imagick']) ?>"
+    imagemagick="<?= $this->getPkgNameByLibraryName('imagemagick') ?>"
 <?php if ($this->getOsType() == 'linux') : ?>
     package_names=" ${package_names} ${imagemagick}"
 <?php endif; ?>
