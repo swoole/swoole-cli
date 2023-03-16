@@ -691,6 +691,8 @@ class Preprocessor
         $extension_deps = [];
         $extension_depend_pkg_name = [];
         foreach ($this->extensionList as $extension) {
+            echo $extension->name . PHP_EOL;
+
             if (empty($extension->deps)) {
                 $extension_depend_pkg_name[$extension->name] = [];
             } else {
@@ -700,14 +702,19 @@ class Preprocessor
 
         foreach ($extension_deps as $extension_name => $depends)
         {
+            $pkg_name_arr = [];
+
             foreach ($depends as $library_name)
             {
                 $packages = '';
                 $this->getDeppendPkgNameByLibraryName($library_name,$packages);
                 $packages_arr = array_filter( explode(' ',$packages), fn($ele)=>trim($ele) );
-                $extension_depend_pkg_name[$extension_name] =  $packages_arr;
+                $pkg_name_arr = array_merge($packages_arr,$pkg_name_arr);
             }
+            $extension_depend_pkg_name[$extension_name] =  $pkg_name_arr;
         }
+
+
         $this->extensionDependPkgNamesMap = $extension_depend_pkg_name;
 
         $pkg_names = [];
