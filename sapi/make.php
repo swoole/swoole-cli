@@ -139,23 +139,20 @@ make_config() {
 
     package_names=''
 <?php
-
-   foreach($this->extensionDependPkgNamesMap as $extension_name => $package) {
+    foreach ($this->extensionDependPkgNamesMap as $extension_name => $package) {
         if (empty($package)) {
             continue;
         }
         if ($extension_name == 'imagick') {
-            echo "    # ${extension_name} : ";
-            echo PHP_EOL;
-            echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
-            echo PHP_EOL;
+            echo "    # {$extension_name} : ";
         } else {
-            echo "    # ${extension_name} depend : ";
-            echo PHP_EOL;
-            echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
-            echo PHP_EOL;
+            echo "    # {$extension_name} depend : ";
         }
-   }
+        echo PHP_EOL;
+        echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
+        echo PHP_EOL;
+    }
+
 ?>
 
     package_names="${package_names}  <?= implode(' ',$this->extensionDependPkgNames) ?> "

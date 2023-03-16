@@ -1,6 +1,7 @@
 {
   "require": {
-    "marcj/topsort": "^2.0"
+    "marcj/topsort": "^2.0",
+    "ext-posix": "*"
   },
   "autoload": {
     "psr-4": {
