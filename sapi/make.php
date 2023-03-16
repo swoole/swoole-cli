@@ -136,26 +136,21 @@ make_config() {
     export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
     export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
 
-
     package_names=''
 <?php
-
-   foreach($this->extensionDependPkgNamesMap as $extension_name => $package) {
-        if (empty($package)) {
-            continue;
-        }
-        if ($extension_name == 'imagick') {
-            echo "    # ${extension_name} : ";
-            echo PHP_EOL;
-            echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
-            echo PHP_EOL;
-        } else {
-            echo "    # ${extension_name} depend : ";
-            echo PHP_EOL;
-            echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
-            echo PHP_EOL;
-        }
-   }
+foreach ($this->extensionDependPkgNamesMap as $extension_name => $package) {
+    if (empty($package)) {
+        continue;
+    }
+    if ($extension_name == 'imagick') {
+        echo "    # {$extension_name} : ";
+    } else {
+        echo "    # {$extension_name} depend : ";
+    }
+    echo PHP_EOL;
+    echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
+    echo PHP_EOL;
+}
 ?>
 
     package_names="${package_names}  <?= implode(' ',$this->extensionDependPkgNames) ?> "
