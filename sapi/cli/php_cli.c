@@ -665,7 +665,6 @@ static int do_cli(int argc, char **argv) /* {{{ */
 	char *exec_direct=NULL, *exec_run=NULL, *exec_begin=NULL, *exec_end=NULL;
 	char *arg_free=NULL, **arg_excp=&arg_free;
 	char *script_file=NULL, *translated_path = NULL;
-	char *tmp_script_file = NULL;
 	bool exec_self = 0;
 	int interactive=0;
 	const char *param_error=NULL;
@@ -944,15 +943,16 @@ do_repeat:
 		}
 		if (exec_self) {
 			if (PG(php_binary)) {
-				tmp_script_file = estrdup(PG(php_binary));
 				if (script_file) {
 					--php_optind;
 				}
-				script_file = tmp_script_file;
+				script_file = PG(php_binary);
 			} else {
 				php_printf("Could not get PHP_BINARY.\n");
 				exit(1);
 			}
+		} else if(script_file && PG(php_binary) && 0 == strcmp(script_file, PG(php_binary))) {
+			exec_self = 1;
 		}
 		if (script_file) {
 			virtual_cwd_activate();
@@ -1202,9 +1202,6 @@ out:
 	if (translated_path) {
 		free(translated_path);
 	}
-	if (tmp_script_file) {
-		efree(tmp_script_file);
-	}
 	/* Don't repeat fork()ed processes. */
 	if (--num_repeats && pid == getpid()) {
 		fprintf(stdout, "Finished execution, repeating...\n");
@@ -1213,9 +1210,6 @@ out:
 	}
 	return EG(exit_status);
 err:
-	if (tmp_script_file) {
-		efree(tmp_script_file);
-	}
 	sapi_deactivate();
 	zend_ini_deactivate();
 	EG(exit_status) = 1;
