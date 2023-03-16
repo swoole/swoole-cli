@@ -117,23 +117,106 @@ make_all_library() {
 
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+    set -exu
 
-    export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
-    export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
+    export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
+    export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
+
+    export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
+    export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
+    export   EXSLT_CFLAGS=$(pkg-config  --cflags --static libexslt)
+    export   EXSLT_LIBS=$(pkg-config    --libs   --static libexslt)
+
     export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
     export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
+
     export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
     export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
-    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
-    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
+
+    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
+    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
+
+
+    package_names=''
+<?php
+
+   foreach($this->extensionDependPkgNamesMap as $extension_name => $package) {
+        if (empty($package)) {
+            continue;
+        }
+        if ($extension_name == 'imagick') {
+            echo "    # ${extension_name} : ";
+            echo PHP_EOL;
+            echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
+            echo PHP_EOL;
+        } else {
+            echo "    # ${extension_name} depend : ";
+            echo PHP_EOL;
+            echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
+            echo PHP_EOL;
+        }
+   }
+?>
+
+    package_names="${package_names}  <?= implode(' ',$this->extensionDependPkgNames) ?> "
+
+    # imagemagick="<?= implode(' ', $this->extensionDependPkgNamesMap['imagick']) ?>"
+    imagemagick="<?= $this->getPkgNameByLibraryName('imagemagick') ?>"
+<?php if ($this->getOsType() == 'linux') : ?>
+    package_names=" ${package_names} ${imagemagick}"
+<?php endif; ?>
+
+    if [ ! -z "$package_names" ] ;then
+    {
+        CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names )
+        CPPFLAGS="$CPPFLAGS -I<?= ICONV_PREFIX ?>/include -I<?= BZIP2_PREFIX ?>/include"
+        CPPFLAGS="$CPPFLAGS "
+
+        LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names )
+        # <?= $this->configureVarables ?>" ${LDFLAGS}"
+        LDFLAGS="$LDFLAGS -L<?= ICONV_PREFIX ?>/lib -L<?= BZIP2_PREFIX ?>/lib"
+        LDFLAGS="$LDFLAGS"
+
+        LIBS=$(pkg-config      --libs-only-l   --static $package_names )
+        LIBS="$LIBS -lbz2"
+<?php if ($this->getOsType() == 'linux') : ?>
+        LIBS="$LIBS -lstdc++"
+<?php endif; ?>
+<?php if ($this->getOsType() == 'macos') : ?>
+        LIBS="$LIBS -lc++"
+<?php endif; ?>
+
 
 <?php if ($this->getOsType() == 'linux') : ?>
-    export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
-    export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
-    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc)
-    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc)
-    export LIBS="$LIBS -L/usr/lib -lstdc++"
+        export  CPPFLAGS="$CPPFLAGS "
+        export  LDFLAGS="$LDFLAGS "
+        export  LIBS="$LIBS  "
 <?php endif; ?>
+
+<?php if ($this->getOsType() == 'macos') : ?>
+
+        export  CPPFLAGS="$CPPFLAGS "
+
+
+        imagemagick_LDFLAGS=$(pkg-config   --libs-only-L   --static $imagemagick )
+        imagemagick_LIBS=$(pkg-config      --libs-only-l   --static $imagemagick )
+        # export EXTRA_INCLUDES="$CPPFLAGS"
+        # export EXTRA_LDFLAGS="${imagemagick_LDFLAGS}"
+        export EXTRA_LDFLAGS="$LDFLAGS "
+        # export EXTRA_LIBS=" ${imagemagick_LIBS}"
+        export EXTRA_LIBS="${LIBS}"
+
+
+<?php endif; ?>
+
+
+
+    }
+    fi
+
+
+
+    # exit 3
 
     test -f ./configure &&  rm ./configure
     ./buildconf --force

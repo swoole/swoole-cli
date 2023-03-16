@@ -682,6 +682,69 @@ class Preprocessor
         }
     }
 
+    public $extensionDependPkgNamesMap = [];
+
+    public $extensionDependPkgNames = [];
+
+    protected function getExtensionDependPkgNames ():void
+   {
+        $extension_deps = [];
+        $extension_depend_pkg_name = [];
+        foreach ($this->extensionList as $extension) {
+            if (empty($extension->deps)) {
+                $extension_depend_pkg_name[$extension->name] = [];
+            } else {
+                $extension_deps[$extension->name] = $extension->deps;
+            }
+        }
+
+        foreach ($extension_deps as $extension_name => $depends)
+        {
+            foreach ($depends as $library_name)
+            {
+                $packages = '';
+                $this->getDeppendPkgNameByLibraryName($library_name,$packages);
+                $packages_arr = array_filter( explode(' ',$packages), fn($ele)=>trim($ele) );
+                $extension_depend_pkg_name[$extension_name] =  $packages_arr;
+            }
+        }
+        $this->extensionDependPkgNamesMap = $extension_depend_pkg_name;
+
+        $pkg_names = [];
+        foreach($extension_depend_pkg_name as $extension_name => $pkg_name)
+        {
+            if($extension_name == 'imagick') {
+               continue;
+            }
+            $pkg_names =array_merge($pkg_names,$pkg_name);
+        }
+        $this->extensionDependPkgNames = array_values(array_unique($pkg_names));
+
+   }
+
+   protected function getDeppendPkgNameByLibraryName ($library_name,&$packages)
+   {
+       $lib = $this->libraryMap[$library_name];
+       $packages .= ' ' . $lib->pkgName;
+       if (empty($lib->deps)) {
+           return  null;
+       } else {
+           foreach ($lib->deps as $library_name){
+               $this->getDeppendPkgNameByLibraryName($library_name,$packages);
+           }
+       }
+   }
+
+   protected function getPkgNameByLibraryName($library_name):string
+   {
+       if (isset($this->libraryMap[$library_name]))
+       {
+           return $this->libraryMap[$library_name]->pkgName;
+       } else {
+           return '';
+       }
+
+   }
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -734,6 +797,7 @@ class Preprocessor
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
         $this->sortLibrary();
+        $this->getExtensionDependPkgNames();
 
         if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();
