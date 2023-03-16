@@ -705,7 +705,14 @@ class Preprocessor
             foreach ($depends as $library_name) {
                 $packages = '';
                 $this->getDependPkgNameByLibraryName($library_name, $packages);
-                $pkgNames = array_filter(explode(' ', $packages), fn($element) => trim($element) ?: false );
+                $packages_arr = explode(' ', $packages);
+                foreach ($packages_arr as $item) {
+                    if (empty($item)) {
+                        continue;
+                    } else {
+                        $pkgNames[] = trim($item);
+                    }
+                }
             }
             $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
         }
