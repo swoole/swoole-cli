@@ -137,22 +137,13 @@ make_config() {
 
 
     package_names=''
-    package_names="${package_names}  libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
-    package_names="${package_names}  libjpeg  libturbojpeg  "
-    package_names="${package_names}  libpng16  "
-    package_names="${package_names}  ncursesw readline "
-    package_names="${package_names}  icu-i18n  icu-io  icu-uc "
-    package_names="${package_names}  libcrypto libssl    openssl"
-    package_names="${package_names}  libcares  libzstd  libzstd libbrotlicommon  libbrotlidec  libbrotlienc "
-    package_names="${package_names}  sqlite3 "
-    package_names="${package_names}  libxml-2.0"
-    package_names="${package_names}  libexslt libxslt"
-    package_names="${package_names}  libsodium"
-    package_names="${package_names}  libzip"
-    package_names="${package_names}  libzip"
-    package_names="${package_names}  yaml-0.1"
-    package_names="${package_names}  libcurl"
-    package_names="${package_names}  gmp"
+<?php foreach($this->extensionDependPkgNamesMap as $package) { ?>
+    <?php if (! empty($package) ): ?> <?= PHP_EOL ?>
+    package_names="${package_names}  <?= implode(' ',$package) ?> "
+    <?php endif ; ?>
+<?php } ?> <?= PHP_EOL ?>
+
+    package_names="${package_names}  <?= implode(' ',$this->extensionDependPkgNames) ?> "
 
     imagemagick="ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand "
 <?php if ($this->getOsType() == 'linux') : ?>
