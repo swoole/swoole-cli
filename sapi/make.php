@@ -290,6 +290,7 @@ help() {
     echo "./make.sh [library-name]"
     echo  "./make.sh clean-[library-name]"
     echo  "./make.sh clean-[library-name]-cached"
+    echo  "./make.sh clean"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -392,6 +393,16 @@ elif [ "$1" = "list-extension" ] ;then
     echo "<?= $item->name ?>"
 <?php endforeach; ?>
     exit 0
+elif [ "$1" = "clean" ] ;then
+    find . -path "./thirdparty" -name \*.gcno -o -name \*.gcda | xargs rm -f
+    find . -path "./thirdparty" -name \*.lo -o -name \*.o -o -name \*.dep | xargs rm -f
+    find . -path "./thirdparty" -name \*.la -o -name \*.a | xargs rm -f
+    find . -path "./thirdparty" -name \*.so | xargs rm -f
+    find . -path "./thirdparty" -name .libs -a -type d | xargs rm -rf
+    rm -f libphp.la bin/swoole-cli     modules/* libs/*
+    rm -f ext/opcache/jit/zend_jit_x86.c
+    rm -f ext/opcache/jit/zend_jit_arm64.c
+    rm -f ext/opcache/minilua
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM
