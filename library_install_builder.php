@@ -355,6 +355,7 @@ function install_bzip2(Preprocessor $p)
             ->withHomePage('https://www.sourceware.org/bzip2/')
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
             ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
+            ->withManual('https://sourceware.org/git/bzip2.git')
             ->withPrefix($libbzip2_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libbzip2_prefix)
@@ -1114,6 +1115,7 @@ function install_minizip(Preprocessor $p)
     $libminzip_prefix = LIBMINZIP_PREFIX;
     $libzip2_prefix = BZIP2_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
     $lib = new Library('libminizip');
     $lib->withHomePage('https://github.com/zlib-ng/minizip-ng')
         ->withLicense('https://github.com/zlib-ng/minizip-ng/blob/master/LICENSE', Library::LICENSE_SPEC)
@@ -1126,7 +1128,8 @@ function install_minizip(Preprocessor $p)
         ->withBuildScript(
             <<<EOF
             # -Wno-dev 
-            cmake -Wno-dev  -S . -B build \
+
+            cmake   -S . -B build \
             -D CMAKE_INSTALL_PREFIX={$libminzip_prefix} \
             -D MZ_ZLIB=ON \
             -D MZ_BZIP2=ON \
@@ -1136,7 +1139,9 @@ function install_minizip(Preprocessor $p)
             -D MZ_COMPAT=ON \
             -D MZ_ICONV=ON \
             -D MZ_FETCH_LIBS=OFF \
-            -D MZ_BUILD_TESTS=ON 
+            -D MZ_BUILD_TESTS=ON \
+            -D ZLIB_ROOT={$zlib_prefix} \
+            -D BZIP2_ROOT={$libzip2_prefix} \
 
             cmake --build build  --config Release --target install
 EOF
