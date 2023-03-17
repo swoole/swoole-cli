@@ -149,6 +149,13 @@ make_config() {
     export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
 <?php endif; ?>
 
+<?php if (isset($this->extensionDependPkgNameMap['mongodb']))  :?>
+    export   PHP_MONGODB_SSL_CFLAGS=$(pkg-config --cflags --static libcrypto libssl  openssl)
+    export   PHP_MONGODB_SSL_LIBS=$(pkg-config   --libs   --static libcrypto libssl  openssl)
+    export   PHP_MONGODB_ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io  icu-uc)
+    export   PHP_MONGODB_ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io  icu-uc)
+<?php endif; ?>
+
 
     package_names=''
 <?php
@@ -248,6 +255,8 @@ EOF
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
+    ./configure --help | grep -e 'MONGO'
+    # exit 3 ;
     ./configure $OPTIONS
 }
 
