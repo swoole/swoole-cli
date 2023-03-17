@@ -254,7 +254,7 @@ EOF
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-
+    ./configure --help
     ./configure $OPTIONS
 }
 
