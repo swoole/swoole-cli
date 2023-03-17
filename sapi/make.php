@@ -227,8 +227,8 @@ make_config() {
         export EXTRA_LIBS="$LIBS "
 
 <?php if (isset($this->extensionDependPkgNameMap['imagick'])) :?>
-        IMAGICK_LDFLAGS=$(pkg-config   --cflags-only-I   --static $imagemagick )
-        IMAGICK_LIBS=$(pkg-config      --libs-only-l     --static $imagemagick )
+        # IMAGICK_LDFLAGS=$(pkg-config   --cflags-only-I   --static $imagemagick )
+        # IMAGICK_LIBS=$(pkg-config      --libs-only-l     --static $imagemagick )
 <?php endif; ?>
 
 <?php endif; ?>
