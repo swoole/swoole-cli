@@ -254,11 +254,7 @@ EOF
 <?php endif; ?>
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-<<<<<<< HEAD
-    ./configure --help | grep -e 'MONGO'
-    # exit 3 ;
-=======
->>>>>>> main
+
     ./configure $OPTIONS
 }
 
