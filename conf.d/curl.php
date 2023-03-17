@@ -37,7 +37,9 @@ EOF
             mv     {$brotli_prefix}/lib/libbrotlidec-static.a    {$brotli_prefix}/lib/libbrotlidec.a
 EOF
             )
-            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
+            ->withPkgName('libbrotlicommon')
+            ->withPkgName('libbrotlidec')
+            ->withPkgName('libbrotlienc')
             ->withBinPath($brotli_prefix . '/bin/')
     );
 
@@ -99,7 +101,8 @@ EOF
             --with-default-ssl-backend=openssl \
             --without-nghttp2 \
             --without-ngtcp2 \
-            --without-nghttp3
+            --without-nghttp3 \
+            --without-libidn2
 EOF
             )
             ->withPkgName('libcurl')

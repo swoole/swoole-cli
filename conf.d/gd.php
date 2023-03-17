@@ -45,7 +45,8 @@ return function (Preprocessor $p) {
                 --with-binconfigs
 EOF
             )
-            ->withPkgName('libpng libpng16')
+            ->withPkgName('libpng')
+            ->withPkgName('libpng16')
             ->withBinPath($libpng_prefix . '/bin')
             ->depends('zlib')
     );
@@ -71,8 +72,6 @@ EOF
                 EOF
             )
             ->withLdflags('-L' . $libgif_prefix . '/lib')
-            ->withPkgName('')
-            ->withPkgConfig('')
     );
 
     $libwebp_prefix = WEBP_PREFIX;

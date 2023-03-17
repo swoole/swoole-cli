@@ -121,5 +121,7 @@ EOF
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
             ->depends('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
     );
+    $p->setVarable('LIBZIP_CFLAGS', '$(pkg-config --cflags --static libzip)');
+    $p->setVarable('LIBZIP_LIBS', '$(pkg-config   --libs   --static libzip)');
     $p->addExtension((new Extension('zip'))->withOptions('--with-zip')->depends('libzip'));
 };

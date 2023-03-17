@@ -33,9 +33,14 @@ return function (Preprocessor $p) {
             --without-debugger
 EOF
             )
-            ->withPkgName('libexslt libxslt')
+            ->withPkgName('libexslt')
+            ->withPkgName('libxslt')
             ->withBinPath($libxslt_prefix . '/bin/')
             ->depends('libxml2', 'libiconv')
     );
+    $p->setVarable('XSL_CFLAGS', '$(pkg-config    --cflags --static libxslt)');
+    $p->setVarable('XSL_LIBS', '$(pkg-config      --libs   --static libxslt)');
+    $p->setVarable('EXSLT_CFLAGS', '$(pkg-config  --cflags --static libexslt)');
+    $p->setVarable('EXSLT_LIBS', '$(pkg-config    --libs   --static libexslt)');
     $p->addExtension((new Extension('xsl'))->withOptions('--with-xsl')->depends('libxslt'));
 };
