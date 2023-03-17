@@ -2,6 +2,8 @@
 /**
  * @var $this SwooleCli\Preprocessor
  */
+
+use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
@@ -118,131 +120,15 @@ make_all_library() {
     return 0
 }
 
+export_variables() {
+<?php foreach ($this->varables as $name => $value) : ?>
+    export <?= $name ?>="<?= $value ?>"
+<?php endforeach; ?>
+}
+
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     set -exu
-
-<?php if (isset($this->extensionDependPkgNameMap['intl']) || isset($this->extensionDependPkgNameMap['mongodb'])) :?>
-    export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
-    export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['xsl']))  :?>
-    export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
-    export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
-    export   EXSLT_CFLAGS=$(pkg-config  --cflags --static libexslt)
-    export   EXSLT_LIBS=$(pkg-config    --libs   --static libexslt)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['mbstring']))  :?>
-    export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
-    export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['sodium']))  :?>
-    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
-    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['zip']))  :?>
-    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
-    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['mongodb']))  :?>
-    export   PHP_MONGODB_SSL_CFLAGS=$(pkg-config --cflags --static libcrypto libssl  openssl)
-    export   PHP_MONGODB_SSL_LIBS=$(pkg-config   --libs   --static libcrypto libssl  openssl)
-    export   PHP_MONGODB_ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io  icu-uc)
-    export   PHP_MONGODB_ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io  icu-uc)
-<?php endif; ?>
-
-    package_names=''
-<?php
-
-    foreach ($this->extensionDependPkgNameMap as $extensionName => $package) {
-        if (empty($package)) {
-            continue;
-        }
-        echo "    # {$extensionName} : ";
-        echo PHP_EOL;
-        echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
-        echo PHP_EOL;
-    }
-
-?>
-    package_names="${package_names}  <?= implode(' ', $this->extensionDependPkgNameList) ?> "
-    imagemagick=""
-<?php if (isset($this->extensionDependPkgNameMap['imagick'])) :?>
-    imagemagick="<?= $this->getPkgNameByLibraryName('imagemagick') ?>"
-<?php endif; ?>
-
-<?php if ($this->getOsType() == 'linux') : ?>
-    package_names=" ${package_names} ${imagemagick}"
-<?php endif; ?>
-
-    CPPFLAGS=""
-    LDFLAGS=""
-    LIBS=""
-<?php if (isset($this->extensionDependPkgNameMap['iconv'])) : ?>
-    CPPFLAGS="$CPPFLAGS -I<?= ICONV_PREFIX ?>/include "
-    LDFLAGS="$LDFLAGS   -L<?= ICONV_PREFIX ?>/lib"
-    LIBS="$LIBS -liconv"
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['bz2'])) : ?>
-    CPPFLAGS="$CPPFLAGS -I<?= BZIP2_PREFIX ?>/include"
-    LDFLAGS="$LDFLAGS   -L<?= BZIP2_PREFIX ?>/lib"
-    LIBS="$LIBS -lbz2"
-<?php endif; ?>
-
-<?php if (!empty($this->configureVarables)) :?>
-    <?= $this->configureVarables ?>" ${LDFLAGS}"
-<?php endif; ?>
-
-    if <?= !empty($this->extensionDependPkgNameList) ? 'true' : 'false' ; ?> ;then
-        CPPFLAGS="$(pkg-config  --cflags-only-I --static ${package_names} ) $CPPFLAGS"
-        LDFLAGS="$(pkg-config   --libs-only-L   --static ${package_names} ) $LDFLAGS"
-        LIBS="$(pkg-config      --libs-only-l   --static ${package_names} ) $LIBS"
-    fi
-
-    if [ -n  "$CPPFLAGS" ] ;then
-
-<?php if ($this->getOsType() == 'linux') : ?>
-        LIBS="$LIBS -lstdc++"
-<?php endif; ?>
-<?php if ($this->getOsType() == 'macos') : ?>
-        LIBS="$LIBS -lc++"
-<?php endif; ?>
-
-<?php if ($this->getOsType() == 'linux') : ?>
-        export  CPPFLAGS="$CPPFLAGS "
-        export  LDFLAGS="$LDFLAGS "
-        export  LIBS="$LIBS  "
-<?php endif; ?>
-
-<?php if ($this->getOsType() == 'macos') : ?>
-        export CPPFLAGS="$CPPFLAGS "
-        export EXTRA_LDFLAGS="$LDFLAGS "
-        export EXTRA_LIBS="$LIBS "
-
-<?php if (isset($this->extensionDependPkgNameMap['imagick'])) :?>
-        IMAGICK_LDFLAGS=$(pkg-config   --cflags-only-I   --static $imagemagick )
-        IMAGICK_LIBS=$(pkg-config      --libs-only-l     --static $imagemagick )
-<?php endif; ?>
-
-<?php endif; ?>
-
-    fi
-
-:<<'EOF'
-    # 更多配置
-    export EXTRA_INCLUDES=
-    export EXTRA_CFLAGS
-    export EXTRA_LDFLAGS=
-    export EXTRA_LDFLAGS_PROGRAM=
-    export EXTRA_LIBS=
-    export ZEND_EXTRA_LIBS=
-EOF
 
     test -f ./configure &&  rm ./configure
     ./buildconf --force
@@ -252,14 +138,15 @@ EOF
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
-    echo $OPTIONS
-    echo $PKG_CONFIG_PATH
+
     ./configure --help
+    export_variables
     ./configure $OPTIONS
 }
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+    export_variables
     make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
@@ -388,8 +275,12 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
-<?php if(!empty($item->pkgName)) :?>
-    pkg-config --libs <?= $item->pkgName . PHP_EOL ?>
+<?php if(!empty($item->pkgNames)) :?>
+<?php foreach ($item->pkgNames as $item) : ?>
+    pkg-config --libs-only-L <?= $item . PHP_EOL ?>
+    pkg-config --libs-only-l <?= $item . PHP_EOL ?>
+    pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
+<?php endforeach; ?>
 <?php else :?>
     echo "no PKG_CONFIG !"
 <?php endif ?>

@@ -71,7 +71,7 @@ class Library extends Project
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
     public string $pkgConfig = '';
-    public string $pkgName = '';
+    public array $pkgNames = [];
     public string $prefix = '/usr';
 
     public string $binPath = '';
@@ -168,7 +168,7 @@ class Library extends Project
 
     function withPkgName(string $pkgName): static
     {
-        $this->pkgName = $pkgName;
+        $this->pkgNames[] = $pkgName;
         return $this;
     }
 
@@ -256,7 +256,7 @@ class Preprocessor
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
     protected string $extraCflags = '';
-    protected string $configureVarables = '';
+    protected array $varables = [];
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
@@ -554,6 +554,25 @@ class Preprocessor
         return $this->libraryMap[$name];
     }
 
+    function getLibraryPackages(): array
+    {
+        $packages = [];
+        /**
+         * @var $item Library
+         */
+        foreach ($this->libraryList as $item) {
+            if (!empty($item->pkgNames)) {
+                $packages = array_merge($packages, $item->pkgNames);
+            }
+        }
+        return $packages;
+    }
+
+    function setVarable(string $key, string $value): void
+    {
+        $this->varables[$key] = $value;
+    }
+
     function getExtension(string $name): ?Extension
     {
         if (!isset($this->extensionMap[$name])) {
@@ -685,71 +704,6 @@ class Preprocessor
         }
     }
 
-    public $extensionDependPkgNameMap = [];
-
-    public $extensionDependPkgNameList = [];
-
-    protected function setExtensionDependPkgNameMap(): void
-    {
-        $extensionDepsMap = [];
-        foreach ($this->extensionList as $extension) {
-            if (empty($extension->deps)) {
-                $this->extensionDependPkgNameMap[$extension->name] = [];
-            } else {
-                $extensionDepsMap[$extension->name] = $extension->deps;
-            }
-        }
-
-        foreach ($extensionDepsMap as $extension_name => $depends) {
-            $pkgNames = [];
-            foreach ($depends as $library_name) {
-                $packages = '';
-                $this->getDependPkgNameByLibraryName($library_name, $packages);
-                $packages_arr = explode(' ', $packages);
-                foreach ($packages_arr as $item) {
-                    if (empty($item)) {
-                        continue;
-                    } else {
-                        $pkgNames[] = trim($item);
-                    }
-                }
-            }
-            $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
-        }
-
-        $pkgNames = [];
-        foreach ($this->extensionDependPkgNameMap as $extension_name => $pkgName) {
-            if ($extension_name == 'imagick') {
-                //imagick 需要特别处理，主要是为了兼容macOS 环境下 imagick 扩展的启用
-                continue;
-            }
-            $pkgNames = array_merge($pkgNames, $pkgName);
-        }
-        $this->extensionDependPkgNameList = array_unique(array_values($pkgNames));
-    }
-
-    private function getDependPkgNameByLibraryName($library_name, &$packages)
-    {
-        $lib = $this->libraryMap[$library_name];
-        $packages .= ' ' . $lib->pkgName;
-        if (empty($lib->deps)) {
-            return null;
-        } else {
-            foreach ($lib->deps as $library_name) {
-                $this->getDependPkgNameByLibraryName($library_name, $packages);
-            }
-        }
-    }
-
-    protected function getPkgNameByLibraryName($library_name): string
-    {
-        if (isset($this->libraryMap[$library_name])) {
-            return $this->libraryMap[$library_name]->pkgName;
-        } else {
-            return '';
-        }
-    }
-
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -799,10 +753,21 @@ class Preprocessor
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
+        if ($this->getOsType() == 'macos') {
+            $libcpp = '-lc++';
+        } else {
+            $libcpp = '-lstdc++';
+        }
+
+        $packages = implode(' ', $this->getLibraryPackages());
+        $this->setVarable('PACKAGES', $packages);
+        $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
+        $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
+        $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
+
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
         $this->sortLibrary();
-        $this->setExtensionDependPkgNameMap();
 
         if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();

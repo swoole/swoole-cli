@@ -84,7 +84,12 @@ return function (Preprocessor $p) {
             --without-utilities
 EOF
             )
-            ->withPkgName('ImageMagick-7.Q16HDRI ImageMagick  MagickCore-7.Q16HDRI  MagickCore   MagickWand-7.Q16HDRI  MagickWand ')
+            ->withPkgName('ImageMagick-7.Q16HDRI')
+            ->withPkgName('ImageMagick')
+            ->withPkgName('MagickCore-7.Q16HDRI')
+            ->withPkgName('MagickCore')
+            ->withPkgName('MagickWand-7.Q16HDRI')
+            ->withPkgName('MagickWand')
             ->withBinPath($imagemagick_prefix . '/bin/')
             ->depends(
                 'libxml2',
