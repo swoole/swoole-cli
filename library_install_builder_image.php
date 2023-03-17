@@ -333,6 +333,8 @@ function install_imagemagick(Preprocessor $p)
             ->withManual('https://github.com/ImageMagick/ImageMagick.git')
             ->withFile('ImageMagick-v7.1.0-62.tar.gz')
             ->withPrefix($imagemagick_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($imagemagick_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
