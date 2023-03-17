@@ -871,27 +871,28 @@ EOF
 
 function install_libexpat($p)
 {
-    $Libexpat_prefix = LIBEXPAT_PREFIX;
+    $libexpat_prefix = LIBEXPAT_PREFIX;
     $p->addLibrary(
         (new Library('libexpat'))
             ->withHomePage('https://github.com/libexpat/libexpat')
             ->withLicense('https://github.com/libexpat/libexpat/blob/master/COPYING', Library::LICENSE_MIT)
             ->withManual('https://libexpat.github.io/doc/')
             ->withUrl('https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-2.5.0.tar.gz')
-            ->withPrefix($Libexpat_prefix)
+            ->withPrefix($libexpat_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($Libexpat_prefix)
+            ->withCleanPreInstallDirectory($libexpat_prefix)
             ->withConfigure(
                 <<<EOF
              ./configure --help
 
             ./configure \
-            --prefix={$Libexpat_prefix} \
+            --prefix={$libexpat_prefix} \
             --enable-static=yes \
             --enable-shared=no
 EOF
             )
             ->withPkgName('expat')
+            ->withBinPath($libexpat_prefix . '/bin')
     );
 }
 

@@ -35,10 +35,7 @@ function install_openssl(Preprocessor $p)
             ->withPkgName('libcrypto libssl   openssl')
             ->withBinPath($openssl_prefix . '/bin/')
     );
-
 }
-
-
 
 
 function install_libiconv(Preprocessor $p)
@@ -568,7 +565,7 @@ EOF
 
 function install_sqlite3(Preprocessor $p)
 {
-    $sqlite_prefix = SQLITE3_PREFIX ;
+    $sqlite_prefix = SQLITE3_PREFIX;
     $p->addLibrary(
         (new Library('sqlite3'))
             ->withUrl('https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz')
@@ -623,7 +620,9 @@ function install_oniguruma(Preprocessor $p)
         (new Library('oniguruma'))
             ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
             ->withPrefix($oniguruma_prefix)
-            ->withConfigure('./autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared')
+            ->withConfigure(
+                './autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared'
+            )
             ->withFile('oniguruma-6.9.7.tar.gz')
             ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPkgName('oniguruma')
@@ -820,7 +819,7 @@ EOF
 
 function install_pgsql(Preprocessor $p): void
 {
-    $pgsql_prefix = PGSQL_PREFIX ;
+    $pgsql_prefix = PGSQL_PREFIX;
 
     $openssl_prefix = OPENSSL_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
@@ -830,7 +829,7 @@ function install_pgsql(Preprocessor $p): void
     $zlib_prefix = ZLIB_PREFIX;
 
 
-    $includes=<<<EOF
+    $includes = <<<EOF
 {$openssl_prefix}/include/:
 {$libxml2_prefix}/include/:
 {$libxslt_prefix}/include:
@@ -841,8 +840,8 @@ function install_pgsql(Preprocessor $p): void
 
 EOF;
 
-    $includes=trim(str_replace(PHP_EOL, '', $includes));
-    $libraries=<<<EOF
+    $includes = trim(str_replace(PHP_EOL, '', $includes));
+    $libraries = <<<EOF
 {$openssl_prefix}/lib/:
 {$libxml2_prefix}/lib/:
 {$libxslt_prefix}/lib:
@@ -852,7 +851,7 @@ EOF;
 /usr/lib
 EOF;
 
-    $libraries=trim(str_replace(PHP_EOL, '', $libraries));
+    $libraries = trim(str_replace(PHP_EOL, '', $libraries));
 
     $link_cpp = $p->getOsType() == 'macos' ? '-lc++' : '-lstdc++';
     $p->addLibrary(
@@ -884,7 +883,7 @@ EOF;
             CPPFLAGS="$(pkg-config  --cflags-only-I --static $package_names )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static $package_names )" \
 EOF
-               . PHP_EOL .  <<<EOF
+                . PHP_EOL . <<<EOF
             LIBS="\$(pkg-config      --libs-only-l   --static \$package_names ) $link_cpp" \
             ./configure  --prefix={$pgsql_prefix} \
             --enable-coverage=no \
@@ -955,7 +954,7 @@ EOF
 
 function install_libffi($p)
 {
-    $libffi_prefix = LIBFFI_PREFIX ;
+    $libffi_prefix = LIBFFI_PREFIX;
     $p->addLibrary(
         (new Library('libffi'))
             ->withHomePage('https://sourceware.org/libffi/')
@@ -1014,7 +1013,7 @@ EOF
             export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
 EOF
             )
-            ->withBinPath($bison_prefix.'/bin/')
+            ->withBinPath($bison_prefix . '/bin/')
             ->withPkgName('bision')
     );
 }
@@ -1077,7 +1076,7 @@ EOF
 function install_libxlsxwriter(Preprocessor $p)
 {
     $libxlsxwriter_prefix = LIBXLSXWRITER_PREFIX;
-    $zlib_prefix =  ZLIB_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
     $lib = new Library('libxlsxwriter');
     $lib->withHomePage('https://libxlsxwriter.github.io/')
         ->withLicense('https://github.com/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_BSD)
@@ -1110,10 +1109,52 @@ EOF
     $p->addLibrary($lib);
 }
 
+function install_minizip(Preprocessor $p)
+{
+    $libminzip_prefix = LIBMINZIP_PREFIX;
+    $libzip2_prefix = BZIP2_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
+    $lib = new Library('libminizip');
+    $lib->withHomePage('https://github.com/zlib-ng/minizip-ng')
+        ->withLicense('https://github.com/zlib-ng/minizip-ng/blob/master/LICENSE', Library::LICENSE_SPEC)
+        ->withUrl('https://github.com/zlib-ng/minizip-ng/archive/refs/tags/3.0.9.tar.gz')
+        ->withFile('minizip-ng-3.0.9.tar.gz')
+        ->withManual('https://github.com/zlib-ng/minizip-ng')
+        ->withPrefix($libminzip_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libminzip_prefix)
+        ->withBuildScript(
+            <<<EOF
+            # -Wno-dev 
+            cmake -Wno-dev  -S . -B build \
+            -D CMAKE_INSTALL_PREFIX={$libminzip_prefix} \
+            -D MZ_ZLIB=ON \
+            -D MZ_BZIP2=ON \
+            -D MZ_LZMA=ON \
+            -D MZ_ZSTD=ON \
+            -D MZ_OPENSSL=ON \
+            -D MZ_COMPAT=ON \
+            -D MZ_ICONV=ON \
+            -D MZ_FETCH_LIBS=OFF \
+            -D MZ_BUILD_TESTS=ON 
+
+            cmake --build build  --config Release --target install
+EOF
+        )
+        ->depends('zlib', 'bzip2', 'liblzma', 'libzstd', 'openssl', 'libiconv')
+        ->withBinPath($libminzip_prefix . '/bin/')
+        ->withPkgName('minizip');
+
+    $p->addLibrary($lib);
+}
+
 function install_libxlsxio(Preprocessor $p)
 {
-
     $libxlsxio_prefix = LIBXLSXIO_PREFIX;
+    $libminizip_prefix = LIBMINZIP_PREFIX;
+    $libzip_prefix = ZIP_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $libexpat_prefix = LIBEXPAT_PREFIX;
     $lib = new Library('libxlsxio');
     $lib->withHomePage('https://github.com/brechtsanders/xlsxio.git')
         ->withLicense('https://github.com/brechtsanders/xlsxio/blob/master/LICENSE.txt', Library::LICENSE_MIT)
@@ -1121,22 +1162,32 @@ function install_libxlsxio(Preprocessor $p)
         ->withFile('libxlsxio-0.2.34.tar.gz')
         ->withManual('https://brechtsanders.github.io/xlsxio/')
         ->withPrefix($libxlsxio_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libxlsxio_prefix)
         ->withConfigure(
             <<<EOF
-                mkdir -p build
-                cd build
-                cmake -G"Unix Makefiles" ..  \
-                -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
-                -DBUILD_STATIC=ON \
-                -DBUILD_SHARED=OFF \
-                -DBUILD_TOOLS=OFF \
-                -DBUILD_EXAMPLES=OFF \
-                -DWITH_LIBZIP=ON \
-                -DWITH_WIDE=ON \
+            # apk add graphviz  doxygen
+            # export CFLAGS="$(pkg-config  --cflags --static expat minizip ) " 
+          
+            cmake -G"Unix Makefiles" .  \
+            -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
+            -DBUILD_STATIC=ON \
+            -DBUILD_SHARED=OFF \
+            -DBUILD_TOOLS=OFF \
+            -DBUILD_EXAMPLES=OFF \
+            -DWITH_WIDE=ON \
+            -DMINIZIP_DIR={$libminizip_prefix} \
+            -DZLIB_DIR={$zlib_prefix} \
+            -DWITH_LIBZIP=ON \
+            -DLIBZIP_DIR={$libzip_prefix} \
+            -DEXPAT_DIR={$libexpat_prefix} \
+            -DBUILD_DOCUMENTATION=OFF
 
-    EOF
+
+
+EOF
         )
-        ->depends('zlib', 'libzip')
+        ->depends('zlib', 'libzip' )
         ->withPkgName('libxlsxio');
 
     $p->addLibrary($lib);

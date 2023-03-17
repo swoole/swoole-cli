@@ -19,6 +19,8 @@ export SYSTEM_ORIGIN_PATH=$PATH
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 export SWOOLE_CLI_PATH=$PATH
 
+# 参考： https://www.php.net/manual/en/install.pecl.static.php
+
 OPTIONS="--disable-all \
 --enable-shared=no \
 --enable-static=yes \
