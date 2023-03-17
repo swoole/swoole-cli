@@ -50,7 +50,9 @@ function libraries_builder($p)
     //扩展不兼容本项目
     //install_libmcrypt($p); //无 pkg-config 配置
     //扩展参数还需要调试
-    //install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
     //扩展不兼容本项目
     //install_libevent($p);
     //install_libuv($p);
@@ -167,7 +169,7 @@ function libraries_builder($p)
         install_nettle($p); //加密库
         install_jansson($p);
         install_libtasn1($p);
-        install_libexpat($p);
+        //install_libexpat($p);
         install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
         install_p11_kit($p);
         # TLS/ESNI/ECH/DoT/DoH/  参考文档https://zhuanlan.zhihu.com/p/572101957

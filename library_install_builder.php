@@ -1079,8 +1079,9 @@ function install_libxlsxwriter(Preprocessor $p)
     $libxlsxwriter_prefix = LIBXLSXWRITER_PREFIX;
     $zlib_prefix =  ZLIB_PREFIX;
     $lib = new Library('libxlsxwriter');
-    $lib->withHomePage('https://sourceforge.net/projects/mcrypt/files/Libmcrypt/')
-        ->withLicense('https://github.com/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_LGPL)
+    $lib->withHomePage('https://libxlsxwriter.github.io/')
+        ->withLicense('https://github.com/jmcnamara/libxlsxwriter/blob/main/License.txt', Library::LICENSE_BSD)
+        ->withLicense('https://libxlsxwriter.github.io/license.html', Library::LICENSE_BSD)
         ->withUrl('https://github.com/jmcnamara/libxlsxwriter/archive/refs/tags/RELEASE_1.1.5.tar.gz')
         ->withFile('libxlsxwriter-1.1.5.tar.gz')
         ->withManual('http://libxlsxwriter.github.io/getting_started.html')
@@ -1094,7 +1095,7 @@ function install_libxlsxwriter(Preprocessor $p)
             cd build
             cmake .. -DCMAKE_INSTALL_PREFIX={$libxlsxwriter_prefix} \
             -DCMAKE_BUILD_TYPE=Release \
-            -DZLIB_ROOT:STRING={$zlib_prefix} \
+            -DZLIB_ROOT={$zlib_prefix} \
             -DBUILD_TESTS=OFF \
             -DBUILD_EXAMPLES=OFF \
             -DUSE_STANDARD_TMPFILE=ON \
@@ -1105,6 +1106,39 @@ EOF
         )
         ->depends('zlib')
         ->withPkgName('xlsxwriter');
+
+    $p->addLibrary($lib);
+}
+
+function install_libxlsxio(Preprocessor $p)
+{
+
+    $libxlsxio_prefix = LIBXLSXIO_PREFIX;
+    $libzip_prefix = ZIP_PREFIX;
+    $lib = new Library('libxlsxio');
+    $lib->withHomePage('https://github.com/brechtsanders/xlsxio.git')
+        ->withLicense('https://github.com/brechtsanders/xlsxio/blob/master/LICENSE.txt', Library::LICENSE_MIT)
+        ->withUrl('https://github.com/brechtsanders/xlsxio/archive/refs/tags/0.2.34.tar.gz')
+        ->withFile('libxlsxio-0.2.34.tar.gz')
+        ->withManual('https://brechtsanders.github.io/xlsxio/')
+        ->withPrefix($libxlsxio_prefix)
+        ->withConfigure(
+            <<<EOF
+                mkdir -p build
+                cd build
+                cmake -G"Unix Makefiles" ..  \
+                -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
+                -DBUILD_STATIC=ON \
+                -DBUILD_SHARED=OFF \
+                -DBUILD_TOOLS=OFF \
+                -DBUILD_EXAMPLES=OFF \
+                -DWITH_LIBZIP=ON \
+                -DWITH_WIDE=ON \
+
+    EOF
+        )
+        ->depends('zlib', 'libzip')
+        ->withPkgName('libxlsxio');
 
     $p->addLibrary($lib);
 }
