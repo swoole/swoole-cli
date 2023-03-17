@@ -519,7 +519,7 @@ function install_libzip(Preprocessor $p)
         (new Library('libzip'))
             //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
             ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
-            ->withManual('https://libzip.org')
+            ->withManual('https://libzip.org/')
             ->withPrefix($libzip_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libzip_prefix)
@@ -1114,7 +1114,6 @@ function install_libxlsxio(Preprocessor $p)
 {
 
     $libxlsxio_prefix = LIBXLSXIO_PREFIX;
-    $libzip_prefix = ZIP_PREFIX;
     $lib = new Library('libxlsxio');
     $lib->withHomePage('https://github.com/brechtsanders/xlsxio.git')
         ->withLicense('https://github.com/brechtsanders/xlsxio/blob/master/LICENSE.txt', Library::LICENSE_MIT)

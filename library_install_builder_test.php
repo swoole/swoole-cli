@@ -114,7 +114,7 @@ function install_libyuv(Preprocessor $p)
 {
     $libyuv_prefix = "/usr/libyuv";
     $libjpeg_prefix = JPEG_PREFIX;
-    $libjpeg_lib_dir = $p->getOsType()== 'linux' ? $libjpeg_prefix .'/lib64/' : $libjpeg_prefix .'/lib/';
+    $libjpeg_lib_dir = $p->getOsType() == 'linux' ? $libjpeg_prefix . '/lib64/' : $libjpeg_prefix . '/lib/';
     $p->addLibrary(
         (new Library('libyuv'))
             ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
@@ -178,8 +178,6 @@ EOF
 }
 
 
-
-
 function install_libraw(Preprocessor $p)
 {
     $link_cpp = $p->getOsType() == 'macos' ? '-lc++' : '-lstdc++';
@@ -223,8 +221,7 @@ EOF
         # sed  "s/-lstdc++/-lc++/g" '{$libraw_prefix}/lib/pkgconfig/libraw_r.pc'
 EOF
         )
-        ->withBinPath($libraw_prefix . '/bin/')
-    ;
+        ->withBinPath($libraw_prefix . '/bin/');
 
     $p->addLibrary($lib);
 }
@@ -273,7 +270,6 @@ function install_libde265(Preprocessor $p)
         ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
         ->withUrl('https://github.com/strukturag/libde265/archive/refs/tags/v1.0.11.tar.gz')
         ->withFile('libde265-v1.0.11.tar.gz')
-
         ->withPrefix($libde265_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libde265_prefix)
@@ -298,7 +294,6 @@ function install_libheif(Preprocessor $p)
     $lib->withHomePage('https://github.com/strukturag/libheif.git')
         ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
         ->withUrl('https://github.com/strukturag/libheif/releases/download/v1.15.1/libheif-1.15.1.tar.gz')
-
         ->withPrefix($libheif_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libheif_prefix)
@@ -383,6 +378,7 @@ function install_libfribidi(Preprocessor $p)
             ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
     );
 }
+
 function install_harfbuzz(Preprocessor $p)
 {
     $harfbuzz_prefix = HARFBUZZ_PREFIX;
@@ -450,7 +446,7 @@ function install_libgd2($p)
 
         echo $LIBS
 
-EOF . PHP_EOL . <<<EOF
+EOF. PHP_EOL . <<<EOF
         ./configure \
         --prefix={$libgd_prefix} \
         --enable-shared=no \
@@ -496,7 +492,9 @@ function install_GraphicsMagick($p)
     $lib = new Library('GraphicsMagick');
     $lib->withHomePage('http://www.graphicsmagick.org/index.html')
         ->withLicense('https://github.com/libgd/libgd/blob/master/COPYING', Library::LICENSE_SPEC)
-        ->withUrl('https://jaist.dl.sourceforge.net/project/graphicsmagick/graphicsmagick/1.3.40/GraphicsMagick-1.3.40.tar.gz')
+        ->withUrl(
+            'https://jaist.dl.sourceforge.net/project/graphicsmagick/graphicsmagick/1.3.40/GraphicsMagick-1.3.40.tar.gz'
+        )
         ->withManual('http://www.graphicsmagick.org/README.html')
         ->withManual('http://www.graphicsmagick.org/INSTALL-unix.html')
         ->withPrefix($GraphicsMagick_prefix)
@@ -513,7 +511,7 @@ function install_GraphicsMagick($p)
 
         echo $LIBS
 
-EOF . PHP_EOL . <<<EOF
+EOF. PHP_EOL . <<<EOF
         ./configure \
         --prefix={$GraphicsMagick_prefix} \
         --enable-shared=no \
@@ -529,7 +527,6 @@ EOF
 
     $p->addLibrary($lib);
 }
-
 
 
 function install_libXpm(Preprocessor $p)
@@ -570,7 +567,6 @@ EOF
 }
 
 
-
 function install_libOpenEXR(Preprocessor $p)
 {
     $libOpenEXR_prefix = '/usr/libOpenEXR';
@@ -593,8 +589,7 @@ function install_libOpenEXR(Preprocessor $p)
 EOF
         )
         ->withPkgName('Imath OpenEXR')
-        ->withBinPath('$libOpenEXR_prefix' . '/bin')
-    ;
+        ->withBinPath('$libOpenEXR_prefix' . '/bin');
 
     $p->addLibrary($lib);
 }
@@ -616,7 +611,6 @@ function install_highway(Preprocessor $p)
         ->withPrefix($highway_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($highway_prefix)
-
         ->withConfigure(
             <<<EOF
 # -DHWY_CMAKE_ARM7:BOOL=ON
@@ -681,6 +675,7 @@ EOF
 
     $p->addLibrary($lib);
 }
+
 function install_openssl_v3(Preprocessor $p)
 {
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
@@ -746,7 +741,6 @@ function install_libedit(Preprocessor $p)
 }
 
 
-
 function install_libdeflate(Preprocessor $p)
 {
     $libdeflate_prefix = '/usr/libdeflate';
@@ -804,7 +798,6 @@ function install_bzip2_dev_latest(Preprocessor $p)
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
     );
 }
-
 
 
 function install_libev($p)
@@ -878,7 +871,7 @@ EOF
 
 function install_libexpat($p)
 {
-    $Libexpat_prefix = LIBEXPAT_PREFIX ;
+    $Libexpat_prefix = LIBEXPAT_PREFIX;
     $p->addLibrary(
         (new Library('libexpat'))
             ->withHomePage('https://github.com/libexpat/libexpat')
@@ -889,14 +882,14 @@ function install_libexpat($p)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($Libexpat_prefix)
             ->withConfigure(
-                '
+                <<<EOF
              ./configure --help
 
             ./configure \
-            --prefix=/usr/libexpat/ \
+            --prefix={$Libexpat_prefix} \
             --enable-static=yes \
             --enable-shared=no
-            '
+EOF
             )
             ->withPkgName('expat')
     );
@@ -1098,6 +1091,7 @@ EOF
         //->withSkipBuildInstall()
     );
 }
+
 function install_libressl($p)
 {
     $libressl_prefix = '/usr/libressl';
@@ -1445,7 +1439,6 @@ function install_libunwind($p)
 }
 
 
-
 function install_jemalloc($p)
 {
     // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
@@ -1505,7 +1498,6 @@ function install_tcmalloc($p)
             ->withSkipBuildInstall()
     );
 }
-
 
 
 function install_libelf(Preprocessor $p)
@@ -1775,7 +1767,6 @@ function install_p11_kit(Preprocessor $p)
 
             '
             )
-
             ->withPkgName('p11_kit')
     );
 }
@@ -2148,9 +2139,6 @@ EOF;
 }
 
 
-
-
-
 function install_libgomp(Preprocessor $p)
 {
     $libgomp_prefix = '/usr/libgomp';
@@ -2261,7 +2249,6 @@ function install_unixodbc(Preprocessor $p)
             ->withManual('https://github.com/lurcher/unixODBC.git')
             ->withLabel('build_env_bin')
             ->withCleanBuildDirectory()
-
             ->withConfigure(
                 "
                 autoreconf -fi
@@ -2275,7 +2262,7 @@ function install_unixodbc(Preprocessor $p)
              --enable-threads
             "
             )
-            ->withBinPath($unixODBC_prefix .'/bin/')
+            ->withBinPath($unixODBC_prefix . '/bin/')
             ->disablePkgName()
     );
 }

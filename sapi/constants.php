@@ -61,7 +61,6 @@ define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 
 
-
 //  test
 define("LIBDE265_PREFIX", $p->getGlobalPrefix() . '/libde265');
 define("LIBHEIF_PREFIX", $p->getGlobalPrefix() . '/libheif');
@@ -82,7 +81,6 @@ define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
 
 define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
-
 
 
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
