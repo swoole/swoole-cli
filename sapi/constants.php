@@ -10,7 +10,6 @@ define("ZIP_PREFIX", $p->getGlobalPrefix() . '/libzip');
 define("ZLIB_PREFIX", $p->getGlobalPrefix() . '/zlib');
 define("BZIP2_PREFIX", $p->getGlobalPrefix() . '/bzip2');
 
-
 // ========================================================
 define("FREETYPE_PREFIX", $p->getGlobalPrefix() . '/freetype');
 define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');

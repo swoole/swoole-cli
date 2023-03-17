@@ -343,9 +343,7 @@ class Preprocessor
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-                if (!is_dir($dst_dir)) {
-                    echo `mkdir -p $dst_dir`;
-                }
+                $this->mkdirIfNotExists($dst_dir, 0777, true);
 
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
@@ -460,9 +458,19 @@ class Preprocessor
 
         $libraryList = [];
         foreach ($sorted_list as $name) {
+            if (empty($name)) {
+                continue;
+            }
             $libraryList[] = $libs[$name];
         }
         $this->libraryList = $libraryList;
+    }
+
+    protected function mkdirIfNotExists(string $dir, int $permissions = 0777, bool $recursive = false)
+    {
+        if (!is_dir($dir)) {
+            mkdir($dir, $permissions, $recursive);
+        }
     }
 
     /**
@@ -484,6 +492,71 @@ class Preprocessor
         }
     }
 
+    public $extensionDependPkgNameMap = [];
+
+    public $extensionDependPkgNameList = [];
+
+    protected function setExtensionDependPkgNameMap(): void
+    {
+        $extensionDepsMap = [];
+        foreach ($this->extensionList as $extension) {
+            if (empty($extension->deps)) {
+                $this->extensionDependPkgNameMap[$extension->name] = [];
+            } else {
+                $extensionDepsMap[$extension->name] = $extension->deps;
+            }
+        }
+
+        foreach ($extensionDepsMap as $extension_name => $depends) {
+            $pkgNames = [];
+            foreach ($depends as $library_name) {
+                $packages = '';
+                $this->getDependPkgNameByLibraryName($library_name, $packages);
+                $packages_arr = explode(' ', $packages);
+                foreach ($packages_arr as $item) {
+                    if (empty($item)) {
+                        continue;
+                    } else {
+                        $pkgNames[] = trim($item);
+                    }
+                }
+            }
+            $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
+        }
+
+        $pkgNames = [];
+        foreach ($this->extensionDependPkgNameMap as $extension_name => $pkgName) {
+            if ($extension_name == 'imagick') {
+                //imagick 需要特别处理，主要是为了兼容macOS 环境下 imagick 扩展的启用
+                continue;
+            }
+            $pkgNames = array_merge($pkgNames, $pkgName);
+        }
+        $this->extensionDependPkgNameList = array_unique(array_values($pkgNames));
+    }
+
+    private function getDependPkgNameByLibraryName($library_name, &$packages)
+    {
+        $lib = $this->libraryMap[$library_name];
+        $packages .= ' ' . $lib->pkgName;
+        if (empty($lib->deps)) {
+            return null;
+        } else {
+            foreach ($lib->deps as $library_name) {
+                $this->getDependPkgNameByLibraryName($library_name, $packages);
+            }
+        }
+    }
+
+    protected function getPkgNameByLibraryName($library_name): string
+    {
+        if (isset($this->libraryMap[$library_name])) {
+            return $this->libraryMap[$library_name]->pkgName;
+        } else {
+            return '';
+        }
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -499,12 +572,8 @@ class Preprocessor
         if (empty($this->extensionDir)) {
             $this->extensionDir = $this->rootDir . '/pool/ext';
         }
-        if (!is_dir($this->libraryDir)) {
-            mkdir($this->libraryDir, 0777, true);
-        }
-        if (!is_dir($this->extensionDir)) {
-            mkdir($this->extensionDir, 0777, true);
-        }
+        $this->mkdirIfNotExists($this->libraryDir, 0777, true);
+        $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
         //构建依赖库安装脚本
         libraries_builder($this);
@@ -541,11 +610,10 @@ class Preprocessor
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
 
+
         //暂时由手工维护，依赖关系
         // $this->sortLibrary();
-
-        $this->binPaths[] = '$PATH';
-        $this->binPaths = array_unique($this->binPaths);
+        $this->setExtensionDependPkgNameMap();
 
 
         if ($this->getInputOption('skip-download')) {
@@ -558,9 +626,7 @@ class Preprocessor
 
         ob_start();
         include __DIR__ . '/license.php';
-        if (!$this->rootDir . '/bin') {
-            mkdir($this->rootDir . '/bin');
-        }
+        $this->mkdirIfNotExists($this->rootDir . '/bin');
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
 
         ob_start();
@@ -587,10 +653,7 @@ class Preprocessor
 
     protected function generateLibraryDownloadLinks(): void
     {
-        if (!is_dir($this->getWorkDir() . '/var/')) {
-            mkdir($this->getWorkDir() . '/var/', 0755, true);
-        }
-
+        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
         $download_urls=[];
         foreach ($this->libraryList as $item) {
             if (empty($item->url)) {

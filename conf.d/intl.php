@@ -6,5 +6,4 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $p->addExtension((new Extension('intl'))->withOptions('--enable-intl')->depends('icu'));
-
 };

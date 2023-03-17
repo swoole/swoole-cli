@@ -33,7 +33,9 @@ function install_openssl(Preprocessor $p)
             )
             ->withMakeInstallCommand('install_sw')
             ->withPkgName('libcrypto libssl   openssl')
+            ->withBinPath($openssl_prefix . '/bin/')
     );
+
 }
 
 
@@ -588,12 +590,10 @@ function install_icu(Preprocessor $p)
     $os = $p->getOsType() == 'macos' ? 'MacOSX' : 'Linux';
     $p->addLibrary(
         (new Library('icu'))
+            ->withHomePage('https://icu.unicode.org/')
+            ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-            //->withUrl('https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz')
-            ->withManual("https://unicode-org.github.io/icu/userguide/icu4c/build.html")
             ->withPrefix($icu_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($icu_prefix)
             ->withConfigure(
                 <<<EOF
              export CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1"
@@ -613,8 +613,6 @@ EOF
             )
             ->withPkgName('icu-i18n  icu-io   icu-uc')
             ->withBinPath($icu_prefix . '/bin/')
-            ->withHomePage('https://icu.unicode.org/')
-            ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
     );
 }
 
@@ -625,11 +623,7 @@ function install_oniguruma(Preprocessor $p)
         (new Library('oniguruma'))
             ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
             ->withPrefix($oniguruma_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($oniguruma_prefix)
-            ->withConfigure(
-                './autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared'
-            )
+            ->withConfigure('./autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared')
             ->withFile('oniguruma-6.9.7.tar.gz')
             ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPkgName('oniguruma')
