@@ -9,6 +9,8 @@
 
 ## 依赖库镜像验证
 
+> 本地浏览器打开地址：   [`http://0.0.0.0:8000`](http://0.0.0.0:8000)  即可查看镜像服务器
+
 ```bash 
 sh sapi/download-box/download-box-server-run.sh
 ```
