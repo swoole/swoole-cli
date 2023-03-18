@@ -89,3 +89,8 @@ define("GNUPG_PREFIX", $p->getGlobalPrefix() . '/gnupg');
 define("BOOST_PREFIX", $p->getGlobalPrefix() . '/boost');
 define("BORINGSSL_PREFIX", $p->getGlobalPrefix() . '/boringssl');
 define("WOLFSSL_PREFIX", $p->getGlobalPrefix() . '/wolfssl');
+define("VALGRIND_PREFIX", $p->getGlobalPrefix() . '/valgrind');
+define("CAPSTONE_PREFIX", $p->getGlobalPrefix() . '/capstone');
+define("DYNASM_PREFIX", $p->getGlobalPrefix() . '/dynasm');
+
+define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');

@@ -269,6 +269,7 @@ _____EO_____
     echo $PKG_CONFIG_PATH
 
     ./configure --help
+
     export_variables
 
     ./configure $OPTIONS

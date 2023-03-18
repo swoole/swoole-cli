@@ -1013,7 +1013,7 @@ EOF;
 
             '
             )->withPkgName('gnutls')
-        //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
+    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
 }
 
@@ -1054,7 +1054,7 @@ function install_boringssl($p)
 EOF
             )
             ->disableDefaultPkgConfig()
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1084,7 +1084,7 @@ function install_wolfssl($p)
 EOF
             )
             ->withPkgName('wolfssl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1112,7 +1112,7 @@ function install_libressl($p)
 EOF
             )
             ->withPkgName('libressl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1571,7 +1571,7 @@ EOF
 
 function install_capstone(Preprocessor $p)
 {
-    $capstone_prefix = $p->getGlobalPrefix() . '/capstone';
+    $capstone_prefix = CAPSTONE_PREFIX;
     $p->addLibrary(
         (new Library('capstone'))
             ->withHomePage('http://www.capstone-engine.org/')
@@ -1606,7 +1606,7 @@ EOF
 
 function install_dynasm(Preprocessor $p)
 {
-    $dynasm_prefix = $p->getGlobalPrefix() . '/dynasm';
+    $dynasm_prefix = DYNASM_PREFIX;
     $p->addLibrary(
         (new Library('dynasm'))
             ->withHomePage('https://luajit.org/dynasm.html')
@@ -1627,38 +1627,48 @@ function install_dynasm(Preprocessor $p)
 
 function install_valgrind(Preprocessor $p)
 {
+    $valgrind_prefix = VALGRIND_PREFIX;
     $p->addLibrary(
         (new Library('valgrind'))
             ->withHomePage('https://valgrind.org/')
-            ->withLicense('https://github.com/libbpf/libbpf/blob/master/LICENSE.BSD-2-Clause', Library::LICENSE_LGPL)
+            ->withLicense('http://www.gnu.org/licenses/gpl-2.0.html', Library::LICENSE_LGPL)
             ->withUrl('https://sourceware.org/pub/valgrind/valgrind-3.20.0.tar.bz2')
             ->withManual('https://valgrind.org/docs/man')
-            ->withPrefix('/usr/valgrind')
+            ->withPrefix($valgrind_prefix)
             ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($valgrind_prefix)
             ->withConfigure(
                 <<<EOF
-
-./autogen.sh
-./configure --prefix=/usr/valgrind
-
+                export PATH=\$SYSTEM_ORIGIN_PATH
+                export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
+  
+                ./autogen.sh
+                ./configure \
+                --prefix={$valgrind_prefix}
 
 EOF
             )
+            ->withScriptAfterInstall(<<<EOF
+                export PATH=\$SWOOLE_CLI_PATH
+                export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
+EOF
+)
             ->withPkgName('valgrind')
-            ->withBinPath('/usr/valgrind/bin/')
+            ->withBinPath($valgrind_prefix . '/bin/')
     );
 }
 
 function install_snappy(Preprocessor $p)
 {
+    $snappy_prefix = SNAPPY_PREFIX;
     $p->addLibrary(
-        (new Library('valgrind'))
+        (new Library('snappy'))
             ->withHomePage('https://github.com/google/snappy')
             ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
             ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.9.tar.gz')
             ->withFile('snappy-1.1.9.tar.gz')
             ->withManual('https://github.com/google/snappy/blob/main/README.md')
-            ->withPrefix('/usr/snappy')
+            ->withPrefix($snappy_prefix)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF
@@ -1671,7 +1681,7 @@ cd build && cmake ../ && make
 EOF
             )
             ->withPkgName('snappy')
-            ->withBinPath('/usr/snappy/bin/')
+            ->withBinPath($snappy_prefix . '/bin/')
     );
 }
 
@@ -1960,10 +1970,10 @@ install-libpq5555.a: install-lib-static install-lib-pc
                 '
             '
             )
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -1992,10 +2002,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2019,9 +2029,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2048,9 +2058,9 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2246,7 +2256,7 @@ EOF
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->withSkipBuildLicense()
-        // ->withSkipBuildInstall()
+    // ->withSkipBuildInstall()
     );
 }
 

@@ -20,7 +20,9 @@ function libraries_builder($p)
     install_libyaml($p);
     install_libsodium($p);
 
-    install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令  BZIP2_LIBS=-L/usr/bizp2/lib -lbz2  BZIP2_CFLAGS="-I/usr/bizp2/include"
+    install_bzip2(
+        $p
+    );//没有 libbz2.pc 文件，不能使用 pkg-config 命令  BZIP2_LIBS=-L/usr/bizp2/lib -lbz2  BZIP2_CFLAGS="-I/usr/bizp2/include"
     install_zlib($p);
     install_liblz4($p); //有多种安装方式，选择cmake方式安装
     install_libzstd($p); //zstd 依赖 lz4
@@ -38,9 +40,13 @@ function libraries_builder($p)
     install_libwebp($p); //依赖 libgif libpng libjpeg
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
 
-    install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma bzlib2  lcms(默认不启用) libraw(默认不启用) libtiff(默认不启用) libjxl(默认不启用)
+    install_imagemagick(
+        $p
+    );//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma bzlib2  lcms(默认不启用) libraw(默认不启用) libtiff(默认不启用) libjxl(默认不启用)
 
-    install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
+    install_libidn2(
+        $p
+    );//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
 
 
     install_nghttp2($p); //依赖 install_nghttp2($p);
@@ -124,7 +130,6 @@ function libraries_builder($p)
         install_php_extension_micro($p);
         install_php_extension_zookeeper($p);
         install_php_extension_wasm($p);
-
         // install_php_extension_fastdfs($p);
     }
 
@@ -208,7 +213,6 @@ function libraries_builder($p)
 
         install_jemalloc($p);
         install_tcmalloc($p);
-
 
 
         install_libelf($p);
@@ -301,6 +305,12 @@ function libraries_builder($p)
         //原理： 类似 SwarmAgent  （Agent/Coordinator ）  //https://docs.unrealengine.com/5.1/en-US/unreal-swarm-in-unreal-engine/
     }
 
+    if ($p->getInputOption('with-build-type') == 'debug') {
+
+        install_capstone($p);
+        install_valgrind($p); //Valgrind是一款用于内存调试、内存泄漏检测以及性能分析的软件开发工具。
+    }
+
     if (0) {
         //apk add ninja
         //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
@@ -359,7 +369,7 @@ function libraries_builder($p)
     if (0) {
         //申明式  和 命令式
 
-         //一个为异构并行计算平台编写程序的工业标准  https://www.intel.com/content/www/us/en/docs/programmable/683846/22-1/opencl-library.html
+        //一个为异构并行计算平台编写程序的工业标准  https://www.intel.com/content/www/us/en/docs/programmable/683846/22-1/opencl-library.html
         install_opencl($p); //OpenCL全称为Open Computing Language（开放计算语言） OpenCL不但支持数据并行，还支持任务并行
         //用于共享内存并行系统的多处理器程序设
 
@@ -368,4 +378,15 @@ function libraries_builder($p)
 
         //并发编程：SIMD 介绍  https://zhuanlan.zhihu.com/p/416172020
     }
+    /*
+    export PATH=$SYSTEM_ORIGIN_PATH
+    export PKG_CONFIG_PATH=$SYSTEM_ORIGIN_PKG_CONFIG_PATH
+    # 执行构建前
+
+    # 执行构建操作
+
+    # 执行构建后
+    export PATH=$SWOOLE_CLI_PATH
+    export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
+    */
 }
