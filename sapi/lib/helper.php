@@ -47,7 +47,7 @@ function swoole_cli_self_update()
         echo `cd /tmp && tar xvf {$newVersion->filename}`, PHP_EOL;
 
         $tmpBinFile = '/tmp/swoole-cli';
-        if (!is_file($tmpBinFile) or filesize($tmpBinFile) != 0) {
+        if (!is_file($tmpBinFile) or filesize($tmpBinFile) == 0) {
             echo "Failed to decompress archive {$newVersion->filename}\n";
             return;
         }

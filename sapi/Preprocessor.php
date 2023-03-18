@@ -71,7 +71,7 @@ class Library extends Project
     public string $beforeInstallScript = '';
     public string $afterInstallScript = '';
     public string $pkgConfig = '';
-    public string $pkgName = '';
+    public array $pkgNames = [];
     public string $prefix = '/usr';
 
     public string $binPath = '';
@@ -168,7 +168,7 @@ class Library extends Project
 
     function withPkgName(string $pkgName): static
     {
-        $this->pkgName = $pkgName;
+        $this->pkgNames[] = $pkgName;
         return $this;
     }
 
@@ -256,7 +256,7 @@ class Preprocessor
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
     protected string $extraCflags = '';
-    protected string $configureVarables = '';
+    protected array $varables = [];
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
@@ -535,9 +535,7 @@ class Preprocessor
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-                if (!is_dir($dst_dir)) {
-                    echo `mkdir -p $dst_dir`;
-                }
+                $this->mkdirIfNotExists($dst_dir, 0777, true);
 
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
@@ -554,6 +552,25 @@ class Preprocessor
             return null;
         }
         return $this->libraryMap[$name];
+    }
+
+    function getLibraryPackages(): array
+    {
+        $packages = [];
+        /**
+         * @var $item Library
+         */
+        foreach ($this->libraryList as $item) {
+            if (!empty($item->pkgNames)) {
+                $packages = array_merge($packages, $item->pkgNames);
+            }
+        }
+        return $packages;
+    }
+
+    function setVarable(string $key, string $value): void
+    {
+        $this->varables[$key] = $value;
     }
 
     function getExtension(string $name): ?Extension
@@ -653,9 +670,19 @@ class Preprocessor
 
         $libraryList = [];
         foreach ($sorted_list as $name) {
+            if (empty($name)) {
+                continue;
+            }
             $libraryList[] = $libs[$name];
         }
         $this->libraryList = $libraryList;
+    }
+
+    protected function mkdirIfNotExists(string $dir, int $permissions = 0777, bool $recursive = false)
+    {
+        if (!is_dir($dir)) {
+            mkdir($dir, $permissions, $recursive);
+        }
     }
 
     /**
@@ -692,12 +719,8 @@ class Preprocessor
         if (empty($this->extensionDir)) {
             $this->extensionDir = $this->rootDir . '/pool/ext';
         }
-        if (!is_dir($this->libraryDir)) {
-            mkdir($this->libraryDir, 0777, true);
-        }
-        if (!is_dir($this->extensionDir)) {
-            mkdir($this->extensionDir, 0777, true);
-        }
+        $this->mkdirIfNotExists($this->libraryDir, 0777, true);
+        $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
 
         $extAvailabled = [];
@@ -730,6 +753,18 @@ class Preprocessor
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
+        if ($this->getOsType() == 'macos') {
+            $libcpp = '-lc++';
+        } else {
+            $libcpp = '-lstdc++';
+        }
+
+        $packages = implode(' ', $this->getLibraryPackages());
+        $this->setVarable('PACKAGES', $packages);
+        $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
+        $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
+        $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
+
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
         $this->sortLibrary();
@@ -744,9 +779,7 @@ class Preprocessor
 
         ob_start();
         include __DIR__ . '/license.php';
-        if (!$this->rootDir . '/bin') {
-            mkdir($this->rootDir . '/bin');
-        }
+        $this->mkdirIfNotExists($this->rootDir . '/bin');
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
 
         ob_start();
@@ -772,11 +805,9 @@ class Preprocessor
         }
     }
 
-    protected function generateLibraryDownloadLinks():void
+    protected function generateLibraryDownloadLinks(): void
     {
-        if(!is_dir($this->getWorkDir() . '/var/')){
-            mkdir($this->getWorkDir() . '/var/',0755,true);
-        }
+        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
 
         $download_urls=[];
         foreach ($this->libraryList as $item) {

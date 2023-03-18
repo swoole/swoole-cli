@@ -14,7 +14,8 @@ return function (Preprocessor $p) {
             ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
             ->withHomePage('https://pyyaml.org/wiki/LibYAML')
     );
-    $p->addExtension((new Extension('yaml'))
+    $p->addExtension(
+        (new Extension('yaml'))
         ->withOptions('--with-yaml=' . LIBYAML_PREFIX)
         ->withPeclVersion('2.2.2')
         ->withHomePage('https://github.com/php/pecl-file_formats-yaml')
