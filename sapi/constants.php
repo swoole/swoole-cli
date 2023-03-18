@@ -3,15 +3,11 @@
 use SwooleCli\Preprocessor;
 
 $p = Preprocessor::getInstance();
-// MUST be in the /usr directory
-define("JPEG_PREFIX", $p->getGlobalPrefix());
-define("GIF_PREFIX", $p->getGlobalPrefix());
-define("ZIP_PREFIX", $p->getGlobalPrefix());
-// FIXME: libpng
-define("ZLIB_PREFIX", $p->getGlobalPrefix());
-// FIXME: ImageMagick
-define("BZIP2_PREFIX", $p->getGlobalPrefix());
-// ========================================================
+define("JPEG_PREFIX", $p->getGlobalPrefix() . '/libjpeg');
+define("GIF_PREFIX", $p->getGlobalPrefix() . '/libgif');
+define("ZIP_PREFIX", $p->getGlobalPrefix() . '/libzip');
+define("ZLIB_PREFIX", $p->getGlobalPrefix() . '/zlib');
+define("BZIP2_PREFIX", $p->getGlobalPrefix() . '/bzip2');
 define("FREETYPE_PREFIX", $p->getGlobalPrefix() . '/freetype');
 define("PNG_PREFIX", $p->getGlobalPrefix() . '/libpng');
 define("WEBP_PREFIX", $p->getGlobalPrefix() . '/libwebp');

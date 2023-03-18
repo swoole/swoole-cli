@@ -2,6 +2,8 @@
 /**
  * @var $this SwooleCli\Preprocessor
  */
+
+use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
@@ -12,6 +14,8 @@ export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
+--enable-shared=no \
+--enable-static=yes \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
 <?php endforeach; ?>
@@ -113,27 +117,18 @@ make_all_library() {
 <?php foreach ($this->libraryList as $item) : ?>
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 <?php endforeach; ?>
+    return 0
+}
+
+export_variables() {
+<?php foreach ($this->varables as $name => $value) : ?>
+    export <?= $name ?>="<?= $value ?>"
+<?php endforeach; ?>
 }
 
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-
-    export   ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io   icu-uc)
-    export   ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io   icu-uc)
-    export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
-    export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
-    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
-    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
-    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip) ;
-    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip) ;
-
-<?php if ($this->getOsType() == 'linux') : ?>
-    export   XSL_CFLAGS=$(pkg-config --cflags --static libxslt) ;
-    export   XSL_LIBS=$(pkg-config   --libs   --static libxslt) ;
-    export   CPPFLAGS=$(pkg-config  --cflags --static libcares readline icu-i18n  icu-io   icu-uc)
-    LIBS=$(pkg-config               --libs   --static libcares readline icu-i18n  icu-io   icu-uc)
-    export LIBS="$LIBS -L/usr/lib -lstdc++"
-<?php endif; ?>
+    set -exu
 
     test -f ./configure &&  rm ./configure
     ./buildconf --force
@@ -143,13 +138,15 @@ make_config() {
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
-    echo $OPTIONS
-    echo $PKG_CONFIG_PATH
-    <?= $this->configureVarables ?> ./configure $OPTIONS
+
+    ./configure --help
+    export_variables
+    ./configure $OPTIONS
 }
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+    export_variables
     make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
@@ -157,6 +154,19 @@ make_build() {
             echo ' ';
         }
     } ?>'  -j <?= $this->maxJob ?> && echo ""
+}
+
+make_clean() {
+    set -ex
+    find . -name \*.gcno -o -name \*.gcda | grep -v "^\./thirdparty" | xargs rm -f
+    find . -name \*.lo -o -name \*.o -o -name \*.dep | grep -v "^\./thirdparty" | xargs rm -f
+    find . -name \*.la -o -name \*.a | grep -v "^\./thirdparty" | xargs rm -f
+    find . -name \*.so | grep -v "^\./thirdparty" | xargs rm -f
+    find . -name .libs -a -type d | grep -v "^./thirdparty" | xargs rm -rf
+    rm -f libphp.la bin/swoole-cli     modules/* libs/*
+    rm -f ext/opcache/jit/zend_jit_x86.c
+    rm -f ext/opcache/jit/zend_jit_arm64.c
+    rm -f ext/opcache/minilua
 }
 
 help() {
@@ -180,6 +190,7 @@ help() {
     echo "./make.sh [library-name]"
     echo  "./make.sh clean-[library-name]"
     echo  "./make.sh clean-[library-name]-cached"
+    echo  "./make.sh clean"
 }
 
 if [ "$1" = "docker-build" ] ;then
@@ -245,11 +256,13 @@ elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"
 <?php endforeach; ?>
+    exit 0
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed"
     rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
 <?php endforeach; ?>
+    exit 0
 elif [ "$1" = "diff-configure" ] ;then
     meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "list-swoole-branch" ] ;then
@@ -262,21 +275,30 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
-<?php if(!empty($item->pkgName)) :?>
-    pkg-config --libs <?= $item->pkgName . PHP_EOL ?>
+<?php if(!empty($item->pkgNames)) :?>
+<?php foreach ($item->pkgNames as $item) : ?>
+    pkg-config --libs-only-L <?= $item . PHP_EOL ?>
+    pkg-config --libs-only-l <?= $item . PHP_EOL ?>
+    pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
+<?php endforeach; ?>
 <?php else :?>
     echo "no PKG_CONFIG !"
 <?php endif ?>
     echo "==========================================================="
 <?php endforeach; ?>
+    exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "<?= $item->name ?>"
 <?php endforeach; ?>
+    exit 0
 elif [ "$1" = "list-extension" ] ;then
 <?php foreach ($this->extensionList as $item) : ?>
     echo "<?= $item->name ?>"
 <?php endforeach; ?>
+    exit 0
+elif [ "$1" = "clean" ] ;then
+    make_clean
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM
