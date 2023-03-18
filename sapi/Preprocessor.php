@@ -6,6 +6,310 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 
+
+abstract class Project
+{
+    public string $name;
+    public string $manual = '';
+    public string $homePage = '';
+    public string $license = '';
+    public string $prefix = '';
+    public array $deps = [];
+    public int $licenseType = self::LICENSE_SPEC;
+
+    const LICENSE_SPEC = 0;
+    const LICENSE_APACHE2 = 1;
+    const LICENSE_BSD = 2;
+    const LICENSE_GPL = 3;
+    const LICENSE_LGPL = 4;
+    const LICENSE_MIT = 5;
+    const LICENSE_PHP = 6;
+
+    function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
+    {
+        $this->license = $license;
+        $this->licenseType = $licenseType;
+        return $this;
+    }
+
+    function withHomePage(string $homePage): static
+    {
+        $this->homePage = $homePage;
+        return $this;
+    }
+
+    public function withManual(string $manual): static
+    {
+        $this->manual = $manual;
+        return $this;
+    }
+
+    function depends(string ...$libs): static
+    {
+        $this->deps += $libs;
+        return $this;
+    }
+}
+
+class Library extends Project
+{
+    public string $url;
+    public array $mirrorUrls = [];
+    public string $configure = '';
+    public string $file = '';
+    public string $ldflags = '';
+
+
+    public bool $cleanBuildDirectory = false;
+
+    public bool $cleanPreInstallDirectory = false;
+
+    public string $preInstallDirectory = '';
+
+    public bool $skipBuildLicense = false;
+
+    public bool $skipDownload = false;
+
+    public bool $skipBuildInstall = false;
+
+    public string $untarArchiveCommand = 'tar';
+
+    public string $label = '';
+    public string $buildScript = '';
+    public string $makeOptions = '';
+    public string $makeVariables = '';
+    public string $makeInstallCommand = 'install';
+    public string $makeInstallOptions = '';
+    public string $beforeInstallScript = '';
+    public string $afterInstallScript = '';
+    public string $pkgConfig = '';
+    public array $pkgNames = [];
+
+    public string $prefix = '/usr';
+
+    public string $binPath = '';
+
+    function withUrl(string $url): static
+    {
+        $this->url = $url;
+        return $this;
+    }
+    public function withMirrorUrl(string $url):static
+    {
+        $this->mirrorUrls[] = $url;
+        return $this;
+    }
+
+    function withPrefix(string $prefix): static
+    {
+        $this->prefix = $prefix;
+        $this->withLdflags('-L' . $prefix . '/lib');
+        $this->withPkgConfig($prefix . '/lib/pkgconfig');
+        return $this;
+    }
+
+    function getPrefix(): string
+    {
+        return $this->prefix;
+    }
+
+    function withFile(string $file): static
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    public function withBuildScript(string $script):static
+    {
+        $this->buildScript = $script;
+        return $this;
+    }
+
+    function withConfigure(string $configure): static
+    {
+        $this->configure = $configure;
+        return $this;
+    }
+
+    function withLdflags(string $ldflags): static
+    {
+        $this->ldflags = $ldflags;
+        return $this;
+    }
+
+    function withMakeVariables(string $variables): static
+    {
+        $this->makeVariables = $variables;
+        return $this;
+    }
+
+    function withMakeOptions(string $makeOptions): static
+    {
+        $this->makeOptions = $makeOptions;
+        return $this;
+    }
+
+    function withScriptBeforeInstall(string $script): static
+    {
+        $this->beforeInstallScript = $script;
+        return $this;
+    }
+
+    function withScriptAfterInstall(string $script): static
+    {
+        $this->afterInstallScript = $script;
+        return $this;
+    }
+
+    public function withMakeInstallCommand(string $makeInstallCommand): static
+    {
+        $this->makeInstallCommand = $makeInstallCommand;
+        return $this;
+    }
+
+    function withMakeInstallOptions(string $makeInstallOptions): static
+    {
+        $this->makeInstallOptions = $makeInstallOptions;
+        return $this;
+    }
+
+    function withPkgConfig(string $pkgConfig): static
+    {
+        $this->pkgConfig = $pkgConfig;
+        return $this;
+    }
+
+    function withPkgName(string $pkgName): static
+    {
+        $this->pkgNames[] = $pkgName;
+        return $this;
+    }
+
+    public function withBinPath(string $path): static
+    {
+        $this->binPath = $path;
+        return $this;
+    }
+
+
+    public function withCleanBuildDirectory(): static
+    {
+        if (!SWOOLE_CLI_BUILD_TYPE) {
+            $this->cleanBuildDirectory = true;
+        }
+        return $this;
+    }
+
+    public function withCleanPreInstallDirectory(string $pre_install_dir): static
+    {
+        if (!empty($this->prefix) && ($this->prefix != '/usr') && !empty($pre_install_dir)) {
+            if (!SWOOLE_CLI_BUILD_TYPE) {
+                $this->cleanPreInstallDirectory = true;
+                $this->preInstallDirectory = $pre_install_dir;
+            }
+        }
+        return $this;
+    }
+
+    public function withUntarArchiveCommand(string $command): static
+    {
+        $this->untarArchiveCommand = $command;
+        return $this;
+    }
+
+
+    public function withSkipBuildLicense(): static
+    {
+        $this->skipBuildLicense = true;
+        return $this;
+    }
+
+    public function withSkipDownload(): static
+    {
+        $this->skipDownload = true;
+        return $this;
+    }
+
+    public function getSkipDownload()
+    {
+        return $this->skipDownload;
+    }
+
+    public function disableDefaultLdflags(): static
+    {
+        $this->ldflags = '';
+        return $this;
+    }
+
+    public function withSkipBuildInstall(): static
+    {
+        $this->skipBuildInstall = true;
+        $this->skipBuildLicense = true;
+        $this->withBinPath('');
+        $this->disableDefaultPkgConfig();
+        $this->disablePkgName();
+        $this->disableDefaultLdflags();
+        return $this;
+    }
+
+
+    public function disableDefaultPkgConfig(): static
+    {
+        $this->pkgConfig = '';
+        return $this;
+    }
+
+    public function disablePkgName(): static
+    {
+        $this->pkgNames = [];
+        return $this;
+    }
+
+    public function withLabel(string $label): static
+    {
+        $this->label = $label;
+        return $this;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+}
+
+class Extension extends Project
+{
+    public string $url;
+    public string $options = '';
+    public string $peclVersion = '';
+    public string $file = '';
+    public string $path = '';
+
+    function withOptions(string $options): static
+    {
+        $this->options = $options;
+        return $this;
+    }
+
+    function withUrl(string $url): static
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    function withPeclVersion(string $peclVersion): static
+    {
+        $this->peclVersion = $peclVersion;
+        return $this;
+    }
+}
+
 class Preprocessor
 {
     public const VERSION = '1.6';
@@ -56,7 +360,7 @@ class Preprocessor
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
     protected string $extraCflags = '';
-    protected string $configureVarables = '';
+    protected array $varables = [];
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
@@ -361,7 +665,26 @@ class Preprocessor
         return $this->libraryMap[$name];
     }
 
-    public function getExtension(string $name): ?Extension
+    function getLibraryPackages(): array
+    {
+        $packages = [];
+        /**
+         * @var $item Library
+         */
+        foreach ($this->libraryList as $item) {
+            if (!empty($item->pkgNames)) {
+                $packages = array_merge($packages, $item->pkgNames);
+            }
+        }
+        return $packages;
+    }
+
+    function setVarable(string $key, string $value): void
+    {
+        $this->varables[$key] = $value;
+    }
+
+    function getExtension(string $name): ?Extension
     {
         if (!isset($this->extensionMap[$name])) {
             return null;
@@ -492,71 +815,6 @@ class Preprocessor
         }
     }
 
-    public $extensionDependPkgNameMap = [];
-
-    public $extensionDependPkgNameList = [];
-
-    protected function setExtensionDependPkgNameMap(): void
-    {
-        $extensionDepsMap = [];
-        foreach ($this->extensionList as $extension) {
-            if (empty($extension->deps)) {
-                $this->extensionDependPkgNameMap[$extension->name] = [];
-            } else {
-                $extensionDepsMap[$extension->name] = $extension->deps;
-            }
-        }
-
-        foreach ($extensionDepsMap as $extension_name => $depends) {
-            $pkgNames = [];
-            foreach ($depends as $library_name) {
-                $packages = '';
-                $this->getDependPkgNameByLibraryName($library_name, $packages);
-                $packages_arr = explode(' ', $packages);
-                foreach ($packages_arr as $item) {
-                    if (empty($item)) {
-                        continue;
-                    } else {
-                        $pkgNames[] = trim($item);
-                    }
-                }
-            }
-            $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
-        }
-
-        $pkgNames = [];
-        foreach ($this->extensionDependPkgNameMap as $extension_name => $pkgName) {
-            if ($extension_name == 'imagick') {
-                //imagick 需要特别处理，主要是为了兼容macOS 环境下 imagick 扩展的启用
-                continue;
-            }
-            $pkgNames = array_merge($pkgNames, $pkgName);
-        }
-        $this->extensionDependPkgNameList = array_unique(array_values($pkgNames));
-    }
-
-    private function getDependPkgNameByLibraryName($library_name, &$packages)
-    {
-        $lib = $this->libraryMap[$library_name];
-        $packages .= ' ' . $lib->pkgName;
-        if (empty($lib->deps)) {
-            return null;
-        } else {
-            foreach ($lib->deps as $library_name) {
-                $this->getDependPkgNameByLibraryName($library_name, $packages);
-            }
-        }
-    }
-
-    protected function getPkgNameByLibraryName($library_name): string
-    {
-        if (isset($this->libraryMap[$library_name])) {
-            return $this->libraryMap[$library_name]->pkgName;
-        } else {
-            return '';
-        }
-    }
-
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -607,13 +865,24 @@ class Preprocessor
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
+        if ($this->getOsType() == 'macos') {
+            $libcpp = '-lc++';
+        } else {
+            $libcpp = '-lstdc++';
+        }
+
+        $packages = implode(' ', $this->getLibraryPackages());
+        $this->setVarable('PACKAGES', $packages);
+        $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
+        # $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
+        # $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
+        $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) ');
+        $this->setVarable('LIBS', '$(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
 
-
         //暂时由手工维护，依赖关系
         // $this->sortLibrary();
-        $this->setExtensionDependPkgNameMap();
 
 
         if ($this->getInputOption('skip-download')) {

@@ -118,7 +118,8 @@ function install_libxslt(Preprocessor $p)
             --without-debugger
 EOF
             )
-            ->withPkgName('libexslt libxslt')
+            ->withPkgName('libexslt')
+            ->withPkgName('libxslt')
             ->withBinPath($libxslt_prefix . '/bin/')
             ->depends('libxml2', 'libiconv')
     );
@@ -168,7 +169,9 @@ EOF
             mv     {$brotli_prefix}/lib/libbrotlidec-static.a    {$brotli_prefix}/lib/libbrotlidec.a
 EOF
             )
-            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
+            ->withPkgName('libbrotlicommon')
+            ->withPkgName('libbrotlidec')
+            ->withPkgName('libbrotlienc')
             ->withBinPath($brotli_prefix . '/bin/')
     );
 }
@@ -609,7 +612,9 @@ function install_icu(Preprocessor $p)
              --enable-samples=no
 EOF
             )
-            ->withPkgName('icu-i18n  icu-io   icu-uc')
+            ->withPkgName('icu-i18n')
+            ->withPkgName('icu-io')
+            ->withPkgName('icu-uc')
             ->withBinPath($icu_prefix . '/bin/')
     );
 }
@@ -648,6 +653,7 @@ function install_mimalloc(Preprocessor $p)
             ->withLicense('https://github.com/microsoft/mimalloc/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withHomePage('https://microsoft.github.io/mimalloc/')
             ->withLdflags('-L' . $mimalloc_prefix . '/lib -lmimalloc')
+            ->disablePkgName()
     );
 }
 
@@ -947,13 +953,13 @@ EOF
             rm -rf {$pgsql_prefix}/lib/*.dylib
 EOF
             )
-            ->withPkgName('libecpg  libecpg_compat libpgtypes  libpq')
+            ->withPkgName('libpq')
             ->withBinPath($pgsql_prefix . '/bin/')
     );
 }
 
 
-function install_libffi($p)
+function install_libffi($p): void
 {
     $libffi_prefix = LIBFFI_PREFIX;
     $p->addLibrary(
@@ -1192,7 +1198,7 @@ function install_libxlsxio(Preprocessor $p)
 
 EOF
         )
-        ->depends('zlib', 'libzip' )
+        ->depends('zlib', 'libzip')
         ->withPkgName('libxlsxio');
 
     $p->addLibrary($lib);
