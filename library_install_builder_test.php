@@ -1828,7 +1828,7 @@ EOF
             //->withPkgConfig(PCRE2_PREFIX . '')
             ->disableDefaultPkgConfig()
             //->withPkgName("libpcre2-16")
-            //->withPkgName("libpcre2-32l")
+     
             //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
             //->withPkgName("libpcre2-16 libpcre2-32 libpcre2 -8 ibpcre2-posix")
             ->disablePkgName()
