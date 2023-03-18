@@ -633,7 +633,6 @@ function install_oniguruma(Preprocessor $p)
             ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPkgName('oniguruma')
             ->withBinPath($oniguruma_prefix . '/bin/')
-
     );
 }
 
@@ -654,6 +653,7 @@ function install_mimalloc(Preprocessor $p)
             ->withLicense('https://github.com/microsoft/mimalloc/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withHomePage('https://microsoft.github.io/mimalloc/')
             ->withLdflags('-L' . $mimalloc_prefix . '/lib -lmimalloc')
+            ->disablePkgName()
     );
 }
 
@@ -953,13 +953,13 @@ EOF
             rm -rf {$pgsql_prefix}/lib/*.dylib
 EOF
             )
-            ->withPkgName('libecpg  libecpg_compat libpgtypes  libpq')
+            ->withPkgName('libpq')
             ->withBinPath($pgsql_prefix . '/bin/')
     );
 }
 
 
-function install_libffi($p)
+function install_libffi($p): void
 {
     $libffi_prefix = LIBFFI_PREFIX;
     $p->addLibrary(
@@ -1198,7 +1198,7 @@ function install_libxlsxio(Preprocessor $p)
 
 EOF
         )
-        ->depends('zlib', 'libzip' )
+        ->depends('zlib', 'libzip')
         ->withPkgName('libxlsxio');
 
     $p->addLibrary($lib);

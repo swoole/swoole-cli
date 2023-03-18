@@ -207,7 +207,7 @@ class Library extends Project
 
     public function withCleanPreInstallDirectory(string $pre_install_dir): static
     {
-        if (!empty($this->prefix) && ($this->prefix != '/usr') &&  !empty($pre_install_dir)) {
+        if (!empty($this->prefix) && ($this->prefix != '/usr') && !empty($pre_install_dir)) {
             if (!SWOOLE_CLI_BUILD_TYPE) {
                 $this->cleanPreInstallDirectory = true;
                 $this->preInstallDirectory = $pre_install_dir;
@@ -237,7 +237,7 @@ class Library extends Project
 
     public function getSkipDownload()
     {
-        return $this->skipDownload ;
+        return $this->skipDownload;
     }
 
     public function disableDefaultLdflags(): static
@@ -266,7 +266,7 @@ class Library extends Project
 
     public function disablePkgName(): static
     {
-        $this->pkgName = '';
+        $this->pkgNames = [];
         return $this;
     }
 
@@ -874,9 +874,10 @@ class Preprocessor
         $packages = implode(' ', $this->getLibraryPackages());
         $this->setVarable('PACKAGES', $packages);
         $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
-        $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
-        $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
-
+        # $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
+        # $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
+        $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) ');
+        $this->setVarable('LIBS', '$(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
 
