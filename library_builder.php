@@ -41,11 +41,14 @@ function libraries_builder($p)
     install_imagemagick($p);//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma bzlib2  lcms(默认不启用) libraw(默认不启用) libtiff(默认不启用) libjxl(默认不启用)
 
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
-    install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3
+
+
+    install_nghttp2($p); //依赖 install_nghttp2($p);
+    install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3(暂不启用)
 
     //参考 https://github.com/docker-library/php/issues/221
     install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt liblzma libiconv
-    install_libffi($p);
+    //install_libffi($p);
 
     //扩展不兼容本项目
     //install_libmcrypt($p); //无 pkg-config 配置
@@ -168,7 +171,7 @@ function libraries_builder($p)
 
 
         install_nettle($p); //加密库
-        install_jansson($p);
+
         install_libtasn1($p);
         //install_libexpat($p);
         install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
@@ -180,6 +183,8 @@ function libraries_builder($p)
         install_wolfssl($p);//
         install_libressl($p);//
 
+        install_jansson($p); //c json 库
+
         //参考 ：HTTP3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
         install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
         install_ngtcp2($p); //依赖gnutls nghttp3
@@ -188,7 +193,6 @@ function libraries_builder($p)
         install_quiche($p); // 依赖 boringssl ，需要 rust ；
         install_msh3($p);  //需要安装库 bsd-compat-headers 解决 sys/queue.h 不存在的问题
 
-        install_nghttp2($p);
 
         install_coreutils($p);
         install_gnulib($p);
@@ -348,6 +352,9 @@ function libraries_builder($p)
     if (0) {
         install_grpc($p); //use protobuf  https://github.com/grpc/grpc.git
         install_thrift($p); //https://thrift.apache.org/
+    }
+    if (1){
+        install_boost($p);
     }
     if (0) {
         //申明式  和 命令式

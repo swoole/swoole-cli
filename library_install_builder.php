@@ -747,9 +747,10 @@ function install_curl(Preprocessor $p)
             ->withCleanPreInstallDirectory($curl_prefix)
             ->withConfigure(
                 <<<EOF
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
-            LDFLAGS="$(pkg-config --libs-only-L      --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
-            LIBS="$(pkg-config --libs-only-l         --static zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 )" \
+            packages="zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 libnghttp2"
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )" \
+            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )" \
+            LIBS="$(pkg-config --libs-only-l         --static \$packages )" \
             ./configure --prefix={$curl_prefix}  \
             --enable-static \
             --disable-shared \
@@ -780,14 +781,14 @@ function install_curl(Preprocessor $p)
             --enable-ares={$cares_prefix} \
             --with-brotli={$brotli_prefix} \
             --with-default-ssl-backend=openssl \
-            --without-nghttp2 \
+            --with-nghttp2 \
             --without-ngtcp2 \
             --without-nghttp3
 EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'libidn2')
+            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'libidn2', 'libnghttp2')
 
 
         #--with-gnutls=GNUTLS_PREFIX

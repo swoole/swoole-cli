@@ -203,6 +203,8 @@ make_config() {
     # -g是生成调试信息
     # -Wall 是打开警告开关,-O代表默认优化,可选：-O0不优化,-O1低级优化,-O2中级优化,-O3高级优化,-Os代码空间优化
 
+    # PKG_CONFIG_LIBDIR
+
     # 更多配置
     export EXTRA_INCLUDES=
     export EXTRA_CFLAGS

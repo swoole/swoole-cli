@@ -1285,28 +1285,44 @@ function install_nghttp2(Preprocessor $p): void
         (new Library('nghttp2'))
             ->withHomePage('https://github.com/nghttp2/nghttp2.git')
             ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
-            ->withCleanBuildDirectory()
             ->withPrefix($nghttp2_prefix)
+            ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($nghttp2_prefix)
             ->withConfigure(
                 <<<EOF
+            # automake # for git 
+            # autoconf # for git 
             ./configure --help
-
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libxml-2.0 jansson  libcares openssl )"  \
-            LDFLAGS="$(pkg-config --libs-only-L      --static zlib libxml-2.0 jansson  libcares openssl )"  \
-            LIBS="$(pkg-config --libs-only-l         --static zlib libxml-2.0 jansson  libcares openssl )"  \
+            packages="zlib libxml-2.0 libcares openssl" # jansson  libev 
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
+            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
+            LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
             ./configure --prefix={$nghttp2_prefix} \
             --enable-static=yes \
             --enable-shared=no \
             --enable-lib-only \
-            --enable-python-bindings=no \
             --with-libxml2  \
-            --with-jansson  \
             --with-zlib \
-            --with-libcares
+            --with-libcares \
+            --with-openssl \
+            --disable-http3 \
+            --disable-python-bindings  \
+            --without-jansson  \
+            --without-libevent-openssl \
+            --without-libev \
+            --without-cunit \
+            --without-jemalloc \
+            --without-mruby \
+            --without-neverbleed \
+            --without-cython \
+            --without-libngtcp2 \
+            --without-libnghttp3  \
+            --without-libbpf   \
+            --with-boost=no
 EOF
             )
             ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
+            ->withPkgName('libnghttp2')
             ->depends('openssl', 'zlib', 'libxml2', 'jansson', 'cares')
     );
 }
@@ -2356,6 +2372,38 @@ EOF
 EOF
         )
         ->withPkgName('opencv');
+
+    $p->addLibrary($lib);
+}
+
+function install_boost(Preprocessor $p)
+{
+    $boost_prefix = BOOST_PREFIX;
+    $lib = new Library('boost');
+    $lib->withHomePage('https://www.boost.org/')
+        ->withLicense('https://www.boost.org/users/license.html', Library::LICENSE_SPEC)
+        ->withUrl('https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.tar.gz')
+        ->withManual('https://www.boost.org/doc/libs/1_81_0/more/getting_started/index.html')
+        ->withManual('https://github.com/boostorg/wiki/wiki/')
+        ->withManual('https://github.com/boostorg/wiki/wiki/Getting-Started%3A-Overview')
+        ->withManual('https://www.boost.org/build/')
+        ->withManual('https://www.boost.org/build/doc/html/index.html')
+        ->withPrefix($boost_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($boost_prefix)
+        ->withBuildScript(
+            <<<EOF
+            export PATH=\$SYSTEM_ORIGIN_PATH
+            export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
+            ./bootstrap.sh
+            ./b2 headers
+            ./b2 --release install --prefix={$boost_prefix}
+            
+            export PATH=\$SWOOLE_CLI_PATH
+            export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
+EOF
+        )
+        ->withPkgName('boost');
 
     $p->addLibrary($lib);
 }

@@ -86,3 +86,4 @@ define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
 
 define("GNUPG_PREFIX", $p->getGlobalPrefix() . '/gnupg');
+define("BOOST_PREFIX", $p->getGlobalPrefix() . '/boost');
