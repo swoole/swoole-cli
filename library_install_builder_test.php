@@ -1797,15 +1797,22 @@ function install_p11_kit(Preprocessor $p)
 
 function install_pcre2(Preprocessor $p)
 {
+    $pcre2_prefix = PCRE2_PREFIX;
     $p->addLibrary(
-        (new Library('pcre2', '/usr/pcre2'))
+        (new Library('pcre2'))
+
+            ->withHomePage('https://github.com/PCRE2Project/pcre2.git')
             ->withUrl('https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz')
+            ->withLicense(
+                'https://github.com/PCRE2Project/pcre2/blob/master/COPYING',
+                Library::LICENSE_SPEC
+            ) //PCRE2 LICENCE
             ->withFile('pcre2-10.42.tar.gz')
-            ->withSkipInstall()
             //  CFLAGS='-static -O2 -Wall'
-            ->withConfigure(
+            ->withConfigure(<<<EOF
                 "
             ./configure --help
+            exit 0 
             ./configure \
             --prefix=/usr/pcre2 \
             --enable-static \
@@ -1813,21 +1820,21 @@ function install_pcre2(Preprocessor $p)
             --enable-pcre2-16 \
             --enable-pcre2-32 \
             --enable-jit \
-            --enable-unicode
+            --enable-unicode 
+EOF
          "
             )
             ->withMakeInstallOptions('install ')
-            //->withPkgConfig('/usr/pcre2/lib/pkgconfig')
+            //->withPkgConfig(PCRE2_PREFIX . '')
             ->disableDefaultPkgConfig()
+            //->withPkgName("libpcre2-16     ")
+            //->withPkgName("libpcre2-16     libpcre2-32    libpcre2-8      libpcre2-posix")
+            //->withPkgName("libpcre2-16     libpcre2-32    libpcre2-8      libpcre2-posix")
             //->withPkgName("libpcre2-16     libpcre2-32    libpcre2-8      libpcre2-posix")
             ->disablePkgName()
             //->withLdflags('-L/usr/pcre2/lib')
             ->disableDefaultLdflags()
-            ->withLicense(
-                'https://github.com/PCRE2Project/pcre2/blob/master/COPYING',
-                Library::LICENSE_PCRE2
-            ) //PCRE2 LICENCE
-            ->withHomePage('https://github.com/PCRE2Project/pcre2.git')
+
     );
 }
 

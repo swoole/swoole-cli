@@ -221,7 +221,7 @@ function libraries_builder($p)
         install_snappy($p);
         install_kerberos($p);
         install_fontconfig($p);
-        install_pcre2($p);
+        //install_pcre2($p);
         install_pgsql_test($p);
         install_libgomp($p); //压缩算法
         install_libzip_ng($p); //zlib next
@@ -234,6 +234,11 @@ function libraries_builder($p)
     if (0) {
         install_aria2($p); //依赖libuv openssl zlib libxml2 sqlite3 openssl c-ares
         install_socat($p); //依赖 readline openssl
+    }
+    if (1) {
+        install_pcre2($p);
+        install_nginx($p);
+
     }
 
     if (0) {

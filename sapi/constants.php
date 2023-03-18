@@ -94,3 +94,5 @@ define("CAPSTONE_PREFIX", $p->getGlobalPrefix() . '/capstone');
 define("DYNASM_PREFIX", $p->getGlobalPrefix() . '/dynasm');
 
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
+define("NGINX_PREFIX", $p->getGlobalPrefix() . '/nginx');
+define("PCRE2_PREFIX", $p->getGlobalPrefix() . 'PCRE2' );
