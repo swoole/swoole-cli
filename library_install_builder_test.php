@@ -1020,6 +1020,7 @@ EOF;
 
 function install_boringssl($p)
 {
+    $boringssl_prefix = BORINGSSL_PREFIX;
     $p->addLibrary(
         (new Library('boringssl'))
             ->withHomePage('https://boringssl.googlesource.com/boringssl/')
@@ -1035,25 +1036,22 @@ function install_boringssl($p)
             ->withManual('https://boringssl.googlesource.com/boringssl/+/refs/heads/master/BUILDING.md')
             ->withUntarArchiveCommand('unzip')
             ->withCleanBuildDirectory()
-            ->withPrefix('/usr/boringssl')
-            ->withScriptBeforeConfigure(
-                '
-                 test -d /usr/boringssl && rm -rf /usr/boringssl
-                '
-            )
+            ->withPrefix($boringssl_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($boringssl_prefix)
             ->withBuildScript(
-                '
+                <<<EOF
                 cd boringssl-master
                 mkdir build
                 cd build
-                cmake -GNinja .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=0 -DCMAKE_INSTALL_PREFIX=/usr/boringssl
+                cmake -GNinja .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=0 -DCMAKE_INSTALL_PREFIX=$boringssl_prefix
 
                 cd ..
                 # ninja
                 ninja -C build
 
                 ninja -C build install
-            '
+EOF
             )
             ->disableDefaultPkgConfig()
         //->withSkipBuildInstall()
@@ -1062,6 +1060,7 @@ function install_boringssl($p)
 
 function install_wolfssl($p)
 {
+    $wolfssl_prefix = WOLFSSL_PREFIX;
     $p->addLibrary(
         (new Library('wolfssl'))
             ->withHomePage('https://github.com/wolfSSL/wolfssl.git')
@@ -1069,13 +1068,9 @@ function install_wolfssl($p)
             ->withUrl('https://github.com/wolfSSL/wolfssl/archive/refs/tags/v5.5.4-stable.tar.gz')
             ->withFile('wolfssl-v5.5.4-stable.tar.gz')
             ->withManual('https://wolfssl.com/wolfSSL/Docs.html')
+            ->withPrefix($wolfssl_prefix)
             ->withCleanBuildDirectory()
-            ->withPrefix('/usr/wolfssl')
-            ->withScriptBeforeConfigure(
-                '
-                 test -d /usr/wolfssl && rm -rf /usr/wolfssl
-                '
-            )
+            ->withCleanPreInstallDirectory($wolfssl_prefix)
             ->withBuildScript(
                 <<<EOF
                 ./autogen.sh
@@ -1134,8 +1129,8 @@ function install_nghttp3(Preprocessor $p)
             ->withPrefix('/usr/nghttp3')
             ->withConfigure(
                 '
-                export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
-                export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
+            export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
+            export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
 
             autoreconf -fi
             ./configure --help
@@ -1209,7 +1204,7 @@ function install_quiche(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withUntarArchiveCommand('unzip')
             ->withPrefix('/usr/quiche')
-            ->withScriptBeforeConfigure(
+            ->withBuildScript(
                 '
              test  -d /usr/quiche && rm -rf /usr/quiche
              # export RUSTUP_DIST_SERVER=https://mirrors.tuna.edu.cn/rustup
@@ -1254,7 +1249,7 @@ function install_msh3(Preprocessor $p)
             //->withCleanBuildDirectory()
             ->withUntarArchiveCommand('')
             ->withPrefix('/usr/msh3')
-            ->withScriptBeforeConfigure(
+            ->withBuildScript(
                 '
               cp -rf /work/pool/lib/msh3 /work/thirdparty/msh3
               apk add bsd-compat-headers
@@ -1499,6 +1494,8 @@ function install_tcmalloc($p)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 '
+                # apk add bazel
+                # https://pkgs.alpinelinux.org/packages?name=bazel*&branch=edge&repo=testing&arch=&maintainer= 
             cd  tcmalloc-master/
             bazel help
             bazel build
