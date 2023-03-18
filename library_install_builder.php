@@ -118,7 +118,8 @@ function install_libxslt(Preprocessor $p)
             --without-debugger
 EOF
             )
-            ->withPkgName('libexslt libxslt')
+            ->withPkgName('libexslt')
+            ->withPkgName('libxslt')
             ->withBinPath($libxslt_prefix . '/bin/')
             ->depends('libxml2', 'libiconv')
     );
@@ -168,7 +169,9 @@ EOF
             mv     {$brotli_prefix}/lib/libbrotlidec-static.a    {$brotli_prefix}/lib/libbrotlidec.a
 EOF
             )
-            ->withPkgName('libbrotlicommon libbrotlidec libbrotlienc')
+            ->withPkgName('libbrotlicommon')
+            ->withPkgName('libbrotlidec')
+            ->withPkgName('libbrotlienc')
             ->withBinPath($brotli_prefix . '/bin/')
     );
 }
@@ -609,7 +612,9 @@ function install_icu(Preprocessor $p)
              --enable-samples=no
 EOF
             )
-            ->withPkgName('icu-i18n  icu-io   icu-uc')
+            ->withPkgName('icu-i18n')
+            ->withPkgName('icu-io')
+            ->withPkgName('icu-uc')
             ->withBinPath($icu_prefix . '/bin/')
     );
 }
@@ -628,6 +633,7 @@ function install_oniguruma(Preprocessor $p)
             ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPkgName('oniguruma')
             ->withBinPath($oniguruma_prefix . '/bin/')
+
     );
 }
 

@@ -2,6 +2,8 @@
 /**
  * @var $this SwooleCli\Preprocessor
  */
+
+use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 ?>
 
@@ -178,12 +180,19 @@ make_all_library() {
 }
 
 
+export_variables() {
+<?php foreach ($this->varables as $name => $value) : ?>
+    export <?= $name ?>="<?= $value ?>"
+<?php endforeach; ?>
+}
+
+
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 
     set -uex
 
-:<<'EOF'
+:<<'_____EO_____'
     = 是最基本的赋值
     := 是覆盖之前的值
     ?= 是如果没有被赋值过就赋予等号后面的值
@@ -194,12 +203,14 @@ make_config() {
     # -g是生成调试信息
     # -Wall 是打开警告开关,-O代表默认优化,可选：-O0不优化,-O1低级优化,-O2中级优化,-O3高级优化,-Os代码空间优化
 
+    # 更多配置
     export EXTRA_INCLUDES=
     export EXTRA_CFLAGS
     export EXTRA_LDFLAGS=
     export EXTRA_LDFLAGS_PROGRAM=
     export EXTRA_LIBS=
     export ZEND_EXTRA_LIBS=
+
 
     export   CAPSTONE_CFLAGS="<?=$this->getGlobalPrefix()?>/capstone/include"
     export   CAPSTONE_LIBS="<?=$this->getGlobalPrefix()?>/capstone/lib"
@@ -214,9 +225,9 @@ make_config() {
 
     export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static libpq)
     export   LIBPQ_LIBS=$(pkg-config    --libs   --static libpq)
-EOF
 
-    #  -lmcrypt
+
+    # -lmcrypt
     # -lm  math.h 链接数学库， -lptread 链接线程库
 
     # macOS clang llvm 不支持  -static
@@ -225,134 +236,22 @@ EOF
     # -std=gnu++ -fno-common -DPIC -static
     # package_names="${package_names}  libtiff-4 lcms2"
     # export CFLAGS="-Wno-error=implicit-function-declaration"
+    CPPFLAGS="$(pkg-config  --cflags-only-I --static ${package_names} ) $CPPFLAGS"
+    LDFLAGS="$(pkg-config   --libs-only-L   --static ${package_names} ) $LDFLAGS"
+    LIBS="$(pkg-config      --libs-only-l   --static ${package_names} ) $LIBS"
 
+    # macOS
+    #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
+    #  ll /Library/Developer/CommandLineTools/
+    #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
 
-<?php if (isset($this->extensionDependPkgNameMap['intl']) || isset($this->extensionDependPkgNameMap['mongodb'])) :?>
-    export   ICU_CFLAGS=$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)
-    export   ICU_LIBS=$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['xsl']))  :?>
-    export   XSL_CFLAGS=$(pkg-config    --cflags --static libxslt)
-    export   XSL_LIBS=$(pkg-config      --libs   --static libxslt)
-    export   EXSLT_CFLAGS=$(pkg-config  --cflags --static libexslt)
-    export   EXSLT_LIBS=$(pkg-config    --libs   --static libexslt)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['mbstring']))  :?>
-    export   ONIG_CFLAGS=$(pkg-config --cflags --static oniguruma)
-    export   ONIG_LIBS=$(pkg-config   --libs   --static oniguruma)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['sodium']))  :?>
-    export   LIBSODIUM_CFLAGS=$(pkg-config --cflags --static libsodium)
-    export   LIBSODIUM_LIBS=$(pkg-config   --libs   --static libsodium)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['zip']))  :?>
-    export   LIBZIP_CFLAGS=$(pkg-config --cflags --static libzip)
-    export   LIBZIP_LIBS=$(pkg-config   --libs   --static libzip)
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['mongodb']))  :?>
-    export   PHP_MONGODB_SSL_CFLAGS=$(pkg-config --cflags --static libcrypto libssl  openssl)
-    export   PHP_MONGODB_SSL_LIBS=$(pkg-config   --libs   --static libcrypto libssl  openssl)
-    export   PHP_MONGODB_ICU_CFLAGS=$(pkg-config --cflags --static icu-i18n  icu-io  icu-uc)
-    export   PHP_MONGODB_ICU_LIBS=$(pkg-config   --libs   --static icu-i18n  icu-io  icu-uc)
-<?php endif; ?>
-
-    package_names=''
-<?php
-
-    foreach ($this->extensionDependPkgNameMap as $extensionName => $package) {
-        if (empty($package)) {
-            continue;
-        }
-        echo "    # {$extensionName} : ";
-        echo PHP_EOL;
-        echo '    # package_names="${package_names} ' . implode(' ', $package) . '" ';
-        echo PHP_EOL;
-    }
-
-?>
-    package_names="${package_names}  <?= implode(' ', $this->extensionDependPkgNameList) ?> "
-    imagemagick=""
-<?php if (isset($this->extensionDependPkgNameMap['imagick'])) :?>
-    imagemagick="<?= $this->getPkgNameByLibraryName('imagemagick') ?>"
-<?php endif; ?>
-
-<?php if ($this->getOsType() == 'linux') : ?>
-    package_names=" ${package_names} ${imagemagick}"
-<?php endif; ?>
-
-    CPPFLAGS=""
-    LDFLAGS=""
-    LIBS=""
-<?php if (isset($this->extensionDependPkgNameMap['iconv'])) : ?>
-    CPPFLAGS="$CPPFLAGS -I<?= ICONV_PREFIX ?>/include "
-    LDFLAGS="$LDFLAGS   -L<?= ICONV_PREFIX ?>/lib"
-    LIBS="$LIBS -liconv"
-<?php endif; ?>
-
-<?php if (isset($this->extensionDependPkgNameMap['bz2'])) : ?>
-    CPPFLAGS="$CPPFLAGS -I<?= BZIP2_PREFIX ?>/include"
-    LDFLAGS="$LDFLAGS   -L<?= BZIP2_PREFIX ?>/lib"
-    LIBS="$LIBS -lbz2"
-<?php endif; ?>
-
-<?php if (!empty($this->configureVarables)) :?>
-    <?= $this->configureVarables ?>" ${LDFLAGS}"
-<?php endif; ?>
-
-    if <?= !empty($this->extensionDependPkgNameList) ? 'true' : 'false' ; ?> ;then
-        CPPFLAGS="$(pkg-config  --cflags-only-I --static ${package_names} ) $CPPFLAGS"
-        LDFLAGS="$(pkg-config   --libs-only-L   --static ${package_names} ) $LDFLAGS"
-        LIBS="$(pkg-config      --libs-only-l   --static ${package_names} ) $LIBS"
-    fi
-
-    if [ -n  "$CPPFLAGS" ] ;then
-
-<?php if ($this->getOsType() == 'linux') : ?>
-        LIBS="$LIBS -lstdc++"
-<?php endif; ?>
-<?php if ($this->getOsType() == 'macos') : ?>
-        LIBS="$LIBS -lc++"
-<?php endif; ?>
-
-<?php if ($this->getOsType() == 'linux') : ?>
-        export  CPPFLAGS="$CPPFLAGS "
-        export  LDFLAGS="$LDFLAGS "
-        export  LIBS="$LIBS  "
-<?php endif; ?>
-
-<?php if ($this->getOsType() == 'macos') : ?>
-
-        #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
-        #  ll /Library/Developer/CommandLineTools/
-        #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
-
-        export CPPFLAGS="$CPPFLAGS "
-        export EXTRA_LDFLAGS="$LDFLAGS "
-        export EXTRA_LIBS="$LIBS "
-
-<?php if (isset($this->extensionDependPkgNameMap['imagick'])) :?>
-        IMAGICK_LDFLAGS=$(pkg-config   --cflags-only-I   --static $imagemagick )
-        IMAGICK_LIBS=$(pkg-config      --libs-only-l     --static $imagemagick )
-<?php endif; ?>
-
-<?php endif; ?>
-
-    fi
-
-:<<'EOF'
-    # 更多配置
-    export EXTRA_INCLUDES=
-    export EXTRA_CFLAGS
-    export EXTRA_LDFLAGS=
-    export EXTRA_LDFLAGS_PROGRAM=
-    export EXTRA_LIBS=
-    export ZEND_EXTRA_LIBS=
-EOF
+    ./configure --help
+    ./configure --help | grep -e '--enable'
+    ./configure --help | grep -e '--with'
+    ./configure --help | grep -e '--disable'
+    ./configure --help | grep -e '--without'
+    ./configure --help | grep -e 'jit'
+_____EO_____
 
 
     test -f ./configure &&  rm ./configure
@@ -363,23 +262,18 @@ EOF
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
+
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
 
     ./configure --help
-    ./configure --help | grep -e '--enable'
-    ./configure --help | grep -e '--with'
-    ./configure --help | grep -e '--disable'
-    ./configure --help | grep -e '--without'
-    ./configure --help | grep -e 'jit'
-
+    export_variables
     ./configure $OPTIONS
 
 }
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-
 
     make -j <?= $this->maxJob ?> <?= PHP_EOL ?>
     return 0
@@ -388,6 +282,8 @@ make_build() {
    # export EXTRA_LDFLAGS_PROGRAM=""
    # EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident '
 
+
+    export_variables
     make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
     EXTRA_LDFLAGS_PROGRAM=' <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
@@ -519,8 +415,12 @@ elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if(!empty($item->pkgName)): ?>
     echo "[<?= $item->name ?>]"
-<?php if(!empty($item->pkgName)) :?>
-    pkg-config --libs <?= $item->pkgName . PHP_EOL ?>
+<?php if(!empty($item->pkgNames)) :?>
+<?php foreach ($item->pkgNames as $item) : ?>
+    pkg-config --libs-only-L <?= $item . PHP_EOL ?>
+    pkg-config --libs-only-l <?= $item . PHP_EOL ?>
+    pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
+<?php endforeach; ?>
 <?php else :?>
     echo "no PKG_CONFIG !"
 <?php endif ?>
