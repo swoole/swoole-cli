@@ -19,6 +19,7 @@ return function (Preprocessor $p) {
                 )
                 ->withBinPath($bison_prefix.'/bin/')
                 ->withPkgName('bision')
+                ->disablePkgNames()
         );
     }
 };
