@@ -479,7 +479,8 @@ class Preprocessor
 
     protected function downloadFile(string $url, string $file)
     {
-        echo `wget {$url} -O {$file}`;
+        echo $cmd="wget --max-redirect 5 -t 5 -T 15   {$url}  -O {$file}";
+        `$cmd`;
         if (!is_file($file) or filesize($file) == 0) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
@@ -499,8 +500,13 @@ class Preprocessor
         if (!$skip_download) {
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
+                DOWNLOAD_LIBRARY:
                 $this->downloadFile($lib->url, "{$this->libraryDir}/{$lib->file}");
             } else {
+                if (filesize("{$this->libraryDir}/{$lib->file}") == 0) {
+                    echo `rm -f "{$this->libraryDir}/{$lib->file}"`;
+                    goto DOWNLOAD_LIBRARY;
+                }
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
         }
@@ -519,7 +525,7 @@ class Preprocessor
         $this->libraryMap[$lib->name] = $lib;
     }
 
-    function addExtension(Extension $ext)
+    public function addExtension(Extension $ext)
     {
         if ($ext->peclVersion) {
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
@@ -529,9 +535,13 @@ class Preprocessor
             if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path)) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                    DOWNLOAD_EXTENSION:
                     $this->downloadFile($ext->url, $ext->path);
                 } else {
-                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                    if (filesize($ext->path) == 0) {
+                        echo `rm -f $ext->path`;
+                        goto DOWNLOAD_EXTENSION;
+                    }
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
