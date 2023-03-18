@@ -1821,7 +1821,7 @@ function install_pcre2(Preprocessor $p)
             --enable-pcre2-32 \
             --enable-jit \
             --enable-unicode 
-EOF
+
          "
             )
             ->withMakeInstallOptions('install ')
@@ -1834,7 +1834,7 @@ EOF
             ->disablePkgName()
             //->withLdflags('-L/usr/pcre2/lib')
             ->disableDefaultLdflags()
-
+    EOF
     );
 }
 
