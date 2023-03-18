@@ -480,7 +480,7 @@ class Preprocessor
     protected function downloadFile(string $url, string $file)
     {
         echo $cmd="wget --max-redirect 5 -t 5 -T 15   {$url}  -O {$file}";
-        `$cmd`;
+        echo `$cmd`;
         if (!is_file($file) or filesize($file) == 0) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
