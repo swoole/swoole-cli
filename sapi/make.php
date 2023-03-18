@@ -270,6 +270,7 @@ _____EO_____
 
     ./configure --help
     export_variables
+
     ./configure $OPTIONS
 
 }
@@ -277,8 +278,8 @@ _____EO_____
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 
-    make -j <?= $this->maxJob ?> <?= PHP_EOL ?>
-    return 0
+    # make -j <?= $this->maxJob ?> <?= PHP_EOL ?>
+    # return 0
 
    # export EXTRA_LDFLAGS="$(pkg-config   --libs-only-L   --static openssl libraw_r )"
    # export EXTRA_LDFLAGS_PROGRAM=""

@@ -788,7 +788,7 @@ EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'libidn2', 'libnghttp2')
+            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'libidn2', 'nghttp2')
 
 
         #--with-gnutls=GNUTLS_PREFIX

@@ -815,6 +815,70 @@ class Preprocessor
         }
     }
 
+    public array $extensionDependPkgNameMap = [];
+
+    public array $extensionDependPkgNameList = [];
+
+    protected function setExtensionDependPkgNameMap(): void
+    {
+        $extensionDepsMap = [];
+        foreach ($this->extensionList as $extension) {
+            if (empty($extension->deps)) {
+                $this->extensionDependPkgNameMap[$extension->name] = [];
+            } else {
+                $extensionDepsMap[$extension->name] = $extension->deps;
+            }
+        }
+
+        foreach ($extensionDepsMap as $extension_name => $depends) {
+            $pkgNames = [];
+            foreach ($depends as $library_name) {
+                $packages = [];
+                $this->getDependPkgNameByLibraryName($library_name, $packages);
+                foreach ($packages as $item) {
+                    if (empty($item)) {
+                        continue;
+                    } else {
+                        $pkgNames[] = trim($item);
+                    }
+                }
+            }
+            $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
+        }
+
+        $pkgNames = [];
+        foreach ($this->extensionDependPkgNameMap as $extension_name => $pkgName) {
+            if ($extension_name == 'imagick') {
+                //imagick 需要特别处理，主要是为了兼容macOS 环境下 imagick 扩展的启用
+                continue;
+            }
+            $pkgNames = array_merge($pkgNames, $pkgName);
+        }
+        $this->extensionDependPkgNameList = array_unique(array_values($pkgNames));
+    }
+
+    private function getDependPkgNameByLibraryName($library_name, &$packages)
+    {
+        $lib = $this->libraryMap[$library_name];
+        $packages = array_merge($packages, $lib->pkgNames);
+        if (empty($lib->deps)) {
+            return null;
+        } else {
+            foreach ($lib->deps as $library_name) {
+                $this->getDependPkgNameByLibraryName($library_name, $packages);
+            }
+        }
+    }
+
+    protected function getPkgNamesByLibraryName($library_name): array
+    {
+        if (isset($this->libraryMap[$library_name])) {
+            return $this->libraryMap[$library_name]->pkgNames;
+        } else {
+            return [];
+        }
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -864,6 +928,11 @@ class Preprocessor
 
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+        $this->binPaths[] = '$PATH';
+        $this->binPaths = array_unique($this->binPaths);
+        //暂时由手工维护，依赖关系
+        // $this->sortLibrary();
+        $this->setExtensionDependPkgNameMap();
 
         if ($this->getOsType() == 'macos') {
             $libcpp = '-lc++';
@@ -871,18 +940,20 @@ class Preprocessor
             $libcpp = '-lstdc++';
         }
 
-        $packages = implode(' ', $this->getLibraryPackages());
-        $this->setVarable('PACKAGES', $packages);
-        $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
+        # $packages = implode(' ', $this->getLibraryPackages());
+        # $this->setVarable('PACKAGES', $packages);
+        # $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
         # $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
         # $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
-        $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) ');
-        $this->setVarable('LIBS', '$(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
-        $this->binPaths[] = '$PATH';
-        $this->binPaths = array_unique($this->binPaths);
 
-        //暂时由手工维护，依赖关系
-        // $this->sortLibrary();
+        $packages = implode(' ', $this->extensionDependPkgNameList);
+        $this->setVarable('packages', $packages);
+        $this->setVarable('CPPFLAGS', '$(pkg-config  --cflags-only-I --static ${packages}  ) ');
+        $this->setVarable('LDFLAGS', '$(pkg-config  --libs-only-L --static ${packages}  ) ');
+        # $this->setVarable('EXTRA_LDFLAGS_PROGRAM=', '$(pkg-config --libs-only-L --static ${packages}  ) ');
+        $this->setVarable('LIBS', '$(pkg-config  --libs-only-l --static  ${packages}  ) ' . $libcpp);
+
+
 
 
         if ($this->getInputOption('skip-download')) {

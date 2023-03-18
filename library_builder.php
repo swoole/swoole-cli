@@ -353,7 +353,7 @@ function libraries_builder($p)
         install_grpc($p); //use protobuf  https://github.com/grpc/grpc.git
         install_thrift($p); //https://thrift.apache.org/
     }
-    if (1){
+    if (0) {
         install_boost($p);
     }
     if (0) {
