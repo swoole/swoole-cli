@@ -250,6 +250,8 @@ function libraries_builder($p)
     //排版相关
     if (0) {
         install_graphviz($p); //依赖git libwbp freetype
+        //networkx    //https://github.com/networkx/networkx.git
+        // 工业级的还得用neo4j搭配graphx  面对巨量数据   https://www.cnblogs.com/jingjingxyk/p/16826546.html
         install_TeX($p); //排版系统
     }
     if (0) {
@@ -267,7 +269,7 @@ function libraries_builder($p)
         */
     }
     if (0) {
-        install_rav1e($p);
+        install_rav1e($p); //https://github.com/videolan/dav1d.git //https://www.cnblogs.com/eguid/p/16015446.html
         install_aom($p);
         install_av1($p);
         install_libvpx($p);
@@ -310,13 +312,16 @@ function libraries_builder($p)
         //原理： 类似 SwarmAgent  （Agent/Coordinator ）  //https://docs.unrealengine.com/5.1/en-US/unreal-swarm-in-unreal-engine/
     }
 
-    if ($p->getInputOption('with-build-type') == 'debug') {
-
-        install_capstone($p);
+    if ($p->getInputOption('with-valgrind') == 'yes') {
         install_valgrind($p); //Valgrind是一款用于内存调试、内存泄漏检测以及性能分析的软件开发工具。
+    }
+    if ($p->getInputOption('with-capstone') == 'yes') {
+        install_capstone($p);
     }
 
     if (0) {
+        // brew  //  https://mirrors.tuna.tsinghua.edu.cn/help/homebrew
+        // brew  //  https://github.com/Homebrew/brew.git
         //apk add ninja
         //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
         install_depot_tools($p); //依赖python
