@@ -479,8 +479,10 @@ class Preprocessor
 
     protected function downloadFile(string $url, string $file)
     {
-        echo $cmd="wget --max-redirect 5 -t 5 -T 15   {$url}  -O {$file}";
+        echo $cmd = "wget --max-redirect 5 -t 5 -T 15   {$url}  -O {$file}";
+        echo PHP_EOL;
         echo `$cmd`;
+        echo PHP_EOL;
         if (!is_file($file) or filesize($file) == 0) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
@@ -490,7 +492,7 @@ class Preprocessor
      * @param Library $lib
      * @throws \RuntimeException
      */
-    function addLibrary(Library $lib)
+    public function addLibrary(Library $lib): void
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
@@ -498,9 +500,9 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
+            DOWNLOAD_LIBRARY:
             if (!is_file($this->libraryDir . '/' . $lib->file)) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                DOWNLOAD_LIBRARY:
                 $this->downloadFile($lib->url, "{$this->libraryDir}/{$lib->file}");
             } else {
                 if (filesize("{$this->libraryDir}/{$lib->file}") == 0) {
@@ -525,7 +527,7 @@ class Preprocessor
         $this->libraryMap[$lib->name] = $lib;
     }
 
-    public function addExtension(Extension $ext)
+    public function addExtension(Extension $ext): void
     {
         if ($ext->peclVersion) {
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
@@ -533,15 +535,16 @@ class Preprocessor
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!$this->getInputOption('skip-download')) {
+                DOWNLOAD_EXTENSION:
                 if (!is_file($ext->path)) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    DOWNLOAD_EXTENSION:
                     $this->downloadFile($ext->url, $ext->path);
                 } else {
                     if (filesize($ext->path) == 0) {
                         echo `rm -f $ext->path`;
                         goto DOWNLOAD_EXTENSION;
                     }
+                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
