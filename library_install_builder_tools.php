@@ -225,6 +225,15 @@ function install_bazel(Preprocessor $p)
 
 
                 exit 0
+                export PATH=$SYSTEM_ORIGIN_PATH
+                export PKG_CONFIG_PATH=$SYSTEM_ORIGIN_PKG_CONFIG_PATH
+                # 执行构建前    
+                
+                # 执行构建 
+                
+                # 执行构建后
+                export PATH=$SWOOLE_CLI_PATH
+                export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
 
 
                 mv bazel /usr/bazel/bin/
