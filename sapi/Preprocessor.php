@@ -9,11 +9,18 @@ use MJS\TopSort\Implementations\StringSort;
 abstract class Project
 {
     public string $name;
+
     public string $manual = '';
     public string $homePage = '';
+
     public string $license = '';
+
     public string $prefix = '';
+
     public array $deps = [];
+
+    public string $md5sum = '';
+
     public int $licenseType = self::LICENSE_SPEC;
 
     const LICENSE_SPEC = 0;
@@ -53,6 +60,13 @@ abstract class Project
         $this->deps += $libs;
         return $this;
     }
+
+    public function withMd5sum(string $md5sum): static
+    {
+        $this->md5sum = $md5sum;
+        return $this;
+    }
+
 }
 
 class Library extends Project
@@ -479,11 +493,17 @@ class Preprocessor
 
     protected function downloadFile(string $url, string $file)
     {
-        echo $cmd = "wget --max-redirect 5 -t 5 -T 15   {$url}  -O {$file}";
+        $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
+        $user_agent = DOWNLOAD_FILE_USER_AGENT;
+        $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
+        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 --user-agent='{$user_agent}'";
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
-        if (!is_file($file) or filesize($file) == 0) {
+        if (is_file($file) && (filesize($file) == 0)) {
+            echo `rm -f "{$file}"`;
+        }
+        if (!is_file($file)) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
     }
@@ -500,16 +520,15 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            DOWNLOAD_LIBRARY:
-            if (!is_file($this->libraryDir . '/' . $lib->file)) {
-                echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, "{$this->libraryDir}/{$lib->file}");
+            $file = $this->libraryDir . '/' . $lib->file;
+            if (is_file($file) && ((!empty($lib->md5sum) && $lib->md5sum = !md5($file)) || (filesize($file) == 0))) {
+                echo `rm -f "{$file}"`;
+            }
+            if (!is_file($file)) {
+                echo "[Library] { $file } not found, downloading: " . $lib->url . PHP_EOL;
+                $this->downloadFile($lib->url, $file);
             } else {
-                if (filesize("{$this->libraryDir}/{$lib->file}") == 0) {
-                    echo `rm -f "{$this->libraryDir}/{$lib->file}"`;
-                    goto DOWNLOAD_LIBRARY;
-                }
-                echo "[Library] file cached: " . $lib->file . PHP_EOL;
+                echo "[Library] file cached: " . $file . PHP_EOL;
             }
         }
 
@@ -535,18 +554,19 @@ class Preprocessor
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!$this->getInputOption('skip-download')) {
-                DOWNLOAD_EXTENSION:
-                if (!is_file($ext->path)) {
-                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path);
-                } else {
-                    if (filesize($ext->path) == 0) {
-                        echo `rm -f $ext->path`;
-                        goto DOWNLOAD_EXTENSION;
-                    }
-                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                $file = $this->extensionDir . '/' . $ext->file;
+                if (
+                    is_file($file) &&
+                    ((!empty($ext->md5sum) && $ext->md5sum = !md5($file)) || (filesize($file) == 0))
+                ) {
+                    echo `rm -f "{$file}"`;
                 }
-
+                if (!is_file($file)) {
+                    echo "[Extension] {$file} not found, downloading: " . $ext->url . PHP_EOL;
+                    $this->downloadFile($ext->url, $file);
+                } else {
+                    echo "[Extension] file cached: " . $file . PHP_EOL;
+                }
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
 
