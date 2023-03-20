@@ -10,10 +10,14 @@ use MJS\TopSort\Implementations\StringSort;
 abstract class Project
 {
     public string $name;
+
     public string $manual = '';
     public string $homePage = '';
+
     public string $license = '';
+
     public string $prefix = '';
+
     public array $deps = [];
 
     public string $md5sum = '';
@@ -60,7 +64,6 @@ abstract class Project
         return $this;
     }
 
-
     public function withMd5sum(string $md5sum): static
     {
         $this->md5sum = $md5sum;
@@ -72,6 +75,7 @@ abstract class Project
         $this->gnupg = $gpg;
         return $this;
     }
+
 }
 
 class Library extends Project
@@ -601,12 +605,21 @@ class Preprocessor
 
     protected function downloadFile(string $url, string $file)
     {
-        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
-        echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
-        if (!is_file($file) or filesize($file) == 0) {
-            if (is_file($file) && (filesize($file) == 0)) {
-                `test -d $file && rm -rf $file`;
-            }
+
+        # $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
+        # echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
+
+        $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
+        $user_agent = DOWNLOAD_FILE_USER_AGENT;
+        $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
+        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 --user-agent='{$user_agent}'";
+        echo PHP_EOL;
+        echo `$cmd`;
+        echo PHP_EOL;
+        if (is_file($file) && (filesize($file) == 0)) {
+            echo `rm -f "{$file}"`;
+        }
+        if (!is_file($file)) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
     }
@@ -615,7 +628,7 @@ class Preprocessor
      * @param Library $lib
      * @throws \RuntimeException
      */
-    public function addLibrary(Library $lib)
+    public function addLibrary(Library $lib): void
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
@@ -625,11 +638,15 @@ class Preprocessor
         $skip_download = ($this->getInputOption('skip-download') ||  $lib->getSkipDownload());
         if (!$skip_download) {
             $file=$this->libraryDir . '/' . $lib->file;
-            if (!is_file($this->libraryDir . '/' . $lib->file)) {
-                echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, "{$file}");
+            if (is_file($file) && ((!empty($lib->md5sum) && $lib->md5sum = !md5($file)) || (filesize($file) == 0))) {
+                echo `rm -f "{$file}"`;
+            }
+            if (!is_file($file)) {
+                echo "[Library] { $file } not found, downloading: " . $lib->url . PHP_EOL;
+                $this->downloadFile($lib->url, $file);
+
             } else {
-                echo "[Library] file cached: " . $lib->file . PHP_EOL;
+                echo "[Library] file cached: " . $file . PHP_EOL;
             }
         }
 
@@ -649,7 +666,7 @@ class Preprocessor
         $this->libraryMap[$lib->name] = $lib;
     }
 
-    public function addExtension(Extension $ext)
+    public function addExtension(Extension $ext): void
     {
         if ($ext->peclVersion) {
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
@@ -657,13 +674,19 @@ class Preprocessor
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!$this->getInputOption('skip-download')) {
-                if (!is_file($ext->path)) {
-                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path);
-                } else {
-                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                $file = $this->extensionDir . '/' . $ext->file;
+                if (
+                    is_file($file) &&
+                    ((!empty($ext->md5sum) && $ext->md5sum = !md5($file)) || (filesize($file) == 0))
+                ) {
+                    echo `rm -f "{$file}"`;
                 }
-
+                if (!is_file($file)) {
+                    echo "[Extension] {$file} not found, downloading: " . $ext->url . PHP_EOL;
+                    $this->downloadFile($ext->url, $file);
+                } else {
+                    echo "[Extension] file cached: " . $file . PHP_EOL;
+                }
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
 
