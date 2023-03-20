@@ -184,6 +184,7 @@ export_variables() {
 <?php foreach ($this->varables as $name => $value) : ?>
     export <?= $name ?>="<?= $value ?>"
 <?php endforeach; ?>
+    return 0
 }
 
 

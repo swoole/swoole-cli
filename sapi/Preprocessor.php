@@ -112,6 +112,8 @@ class Library extends Project
     public string $pkgConfig = '';
     public array $pkgNames = [];
 
+    public string $enablePkgNames = 'yes';
+
     public string $prefix = '/usr';
 
     public string $binPath = '';
@@ -121,7 +123,8 @@ class Library extends Project
         $this->url = $url;
         return $this;
     }
-    public function withMirrorUrl(string $url):static
+
+    public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
         return $this;
@@ -146,7 +149,7 @@ class Library extends Project
         return $this;
     }
 
-    public function withBuildScript(string $script):static
+    public function withBuildScript(string $script): static
     {
         $this->buildScript = $script;
         return $this;
@@ -209,6 +212,12 @@ class Library extends Project
     function withPkgName(string $pkgName): static
     {
         $this->pkgNames[] = $pkgName;
+        return $this;
+    }
+
+    public function disablePkgNames(): static
+    {
+        $this->enablePkgNames = 'no';
         return $this;
     }
 
@@ -605,7 +614,6 @@ class Preprocessor
 
     protected function downloadFile(string $url, string $file)
     {
-
         # $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
         # echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
 
@@ -720,14 +728,14 @@ class Preprocessor
         return $this->libraryMap[$name];
     }
 
-    function getLibraryPackages(): array
+    public function getLibraryPackages(): array
     {
         $packages = [];
         /**
          * @var $item Library
          */
         foreach ($this->libraryList as $item) {
-            if (!empty($item->pkgNames)) {
+            if (!empty($item->pkgNames) && ($item->enablePkgNames == 'yes')) {
                 $packages = array_merge($packages, $item->pkgNames);
             }
         }
@@ -938,7 +946,8 @@ class Preprocessor
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
      */
-    public function execute()
+    public function execute(): void
+
     {
         if (empty($this->rootDir)) {
             $this->rootDir = dirname(__DIR__);
@@ -995,6 +1004,7 @@ class Preprocessor
             $libcpp = '-lstdc++';
         }
 
+
         # $packages = implode(' ', $this->getLibraryPackages());
         # $this->setVarable('PACKAGES', $packages);
         # $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
@@ -1007,8 +1017,6 @@ class Preprocessor
         $this->setVarable('LDFLAGS', '$(pkg-config  --libs-only-L --static ${packages}  ) ');
         # $this->setVarable('EXTRA_LDFLAGS_PROGRAM=', '$(pkg-config --libs-only-L --static ${packages}  ) ');
         $this->setVarable('LIBS', '$(pkg-config  --libs-only-l --static  ${packages}  ) ' . $libcpp);
-
-
 
 
         if ($this->getInputOption('skip-download')) {
@@ -1049,26 +1057,26 @@ class Preprocessor
     protected function generateLibraryDownloadLinks(): void
     {
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
-        $download_urls=[];
+        $download_urls = [];
         foreach ($this->libraryList as $item) {
             if (empty($item->url)) {
                 continue;
             }
-            $url='';
-            $item->mirrorUrls[]=$item->url;
+            $url = '';
+            $item->mirrorUrls[] = $item->url;
             if (!empty($item->mirrorUrls)) {
-                $newMirrorUrls= [];
+                $newMirrorUrls = [];
                 foreach ($item->mirrorUrls as $value) {
-                    $newMirrorUrls[] =trim($value);
+                    $newMirrorUrls[] = trim($value);
                 }
-                $url =implode("\t", $newMirrorUrls);
+                $url = implode("\t", $newMirrorUrls);
             }
-            $download_urls[]= $url . PHP_EOL. " out=".$item->file;
+            $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
         file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
-        $download_urls=[];
+        $download_urls = [];
         foreach ($this->downloadExtensionList as $item) {
-            $download_urls[]= $item['url'] . PHP_EOL . " out=".$item['file'];
+            $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
         }
         file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
