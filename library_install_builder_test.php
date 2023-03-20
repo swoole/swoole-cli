@@ -678,26 +678,32 @@ EOF
 
 function install_openssl_v3(Preprocessor $p)
 {
+    $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
     $p->addLibrary(
-        (new Library('openssl_v3', '/usr/openssl'))
+        (new Library('openssl'))
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            ->withHomePage('https://www.openssl.org/')
             ->withUrl('https://www.openssl.org/source/openssl-3.0.7.tar.gz')
             ->withFile('openssl-3.0.7.tar.gz')
+            ->withPrefix($openssl_prefix)
             ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($openssl_prefix)
             ->withConfigure(
                 <<<EOF
             # ./config $static \
             ./Configure   $static  \
-            no-shared --release --prefix=/usr/openssl_v3
+            no-shared --release --prefix=$openssl_prefix
 EOF
             )
             ->withMakeOptions('build_sw')
             ->withMakeInstallOptions('install_sw')
-            ->withPkgConfig('/usr/openssl_v3/lib64/pkgconfig')
-            ->withPkgName('libcrypto libssl openssl')
-            ->withLdflags('-L/usr/openssl_v3/lib64')
-            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
-            ->withHomePage('https://www.openssl.org/')
+            ->withPkgConfig($openssl_prefix . '/lib64/pkgconfig')
+            ->withPkgName('libcrypto')
+            ->withPkgName('libssl')
+            ->withPkgName('openssl')
+            ->withLdflags('-L' . $openssl_prefix . '/lib64')
+
     );
 }
 
