@@ -12,8 +12,8 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 IMAGE="docker.io/phpswoole/swoole-cli-builder:donload-box-v5.0.2"
-IMAGE="docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230319T172427Z"
-ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-download-box-nginx-alpine-20230319T172427Z"
+IMAGE="docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230320T064451Z"
+ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-download-box-nginx-alpine-20230320T064451Z"
 
 cd ${__PROJECT__}/var
 

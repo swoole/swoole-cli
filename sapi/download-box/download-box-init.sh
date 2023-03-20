@@ -16,7 +16,7 @@ cd ${__PROJECT__}
 export SWOOLE_CLI_SKIP_DOWNLOAD=1
 export SWOOLE_CLI_WITHOUT_DOCKER=1
 
-php prepare.php --with-build-type=release +ds +inotify +apcu
+php prepare.php  --with-build-type=release --skip-download=1 +ds +inotify +apcu
 
 cd ${__PROJECT__}
 
