@@ -29,6 +29,8 @@ function libraries_builder($p)
 
     install_sqlite3($p);
     install_icu($p); //依赖 linux : -lstdc++ ; macOS:  libc++ //注意事项：https://www.zhihu.com/question/343205052
+                     //CLDR 是 i18n 的一套核心规范( Common Locale Data Respository ) 即 通用的本地化数据存储库
+                     //https://cldr.unicode.org/
     install_oniguruma($p);
     install_mimalloc($p);
 
