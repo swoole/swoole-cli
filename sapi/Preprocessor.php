@@ -642,11 +642,7 @@ class Preprocessor
             $lib->file = basename($lib->url);
         }
 
-        if (
-            $this->getInputOption('enable-download-mirror')
-            &&
-            !empty($this->getInputOption('with-download-mirror-url'))
-        ) {
+        if (!empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
         }
         $skip_download = ($this->getInputOption('skip-download') || $lib->getSkipDownload());
@@ -686,15 +682,9 @@ class Preprocessor
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
-
-            if (
-                $this->getInputOption('enable-download-mirror')
-                &&
-                !empty($this->getInputOption('with-download-mirror-url'))
-            ) {
+            if (!empty($this->getInputOption('with-download-mirror-url'))) {
                 $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
             }
-
             if (!$this->getInputOption('skip-download')) {
                 $file = $this->extensionDir . '/' . $ext->file;
                 if (

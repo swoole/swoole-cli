@@ -50,7 +50,7 @@ sh sapi/download-dependencies-use-aria2.sh
 
 ```shell
 
-./prepare.php --without-docker --enable-download-mirror --with-download-mirror-url=http://127.0.0.1:8000
+./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:8000
 
 ```
 
