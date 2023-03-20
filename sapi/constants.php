@@ -36,6 +36,6 @@ define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
 define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
-
+define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 
