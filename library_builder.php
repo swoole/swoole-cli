@@ -31,6 +31,9 @@ function libraries_builder($p)
     install_icu($p); //依赖 linux : -lstdc++ ; macOS:  libc++ //注意事项：https://www.zhihu.com/question/343205052
                      //CLDR 是 i18n 的一套核心规范( Common Locale Data Respository ) 即 通用的本地化数据存储库
                      //https://cldr.unicode.org/
+
+                    // php composer 依赖的扩展 ： https://github.com/composer/composer/blob/c23beac9c508b701bb481d1c5269e7a2a79e0b60/src/Composer/Repository/PlatformRepository.php#L203
+
     install_oniguruma($p);
     install_mimalloc($p);
 
@@ -250,9 +253,13 @@ function libraries_builder($p)
 
     //排版相关
     if (0) {
-        install_graphviz($p); //依赖git libwbp freetype
+        # pip3 install graphviz
+
+        install_graphviz($p); //依赖git libwbp freetype  // https://www.graphviz.org/doc/info/lang.html
         //networkx    //https://github.com/networkx/networkx.git
         // 工业级的还得用neo4j搭配graphx  面对巨量数据   https://www.cnblogs.com/jingjingxyk/p/16826546.html
+        // draw.io  https://app.diagrams.net/
+
         install_TeX($p); //排版系统
     }
     if (0) {
