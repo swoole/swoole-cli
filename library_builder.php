@@ -239,7 +239,7 @@ function libraries_builder($p)
         install_aria2($p); //依赖libuv openssl zlib libxml2 sqlite3 openssl c-ares
         install_socat($p); //依赖 readline openssl
     }
-    if (0) {
+    if (1) {
         install_pcre2($p);
         install_nginx($p);
     }

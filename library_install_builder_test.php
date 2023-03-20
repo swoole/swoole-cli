@@ -1814,9 +1814,12 @@ function install_pcre2(Preprocessor $p)
                 Library::LICENSE_SPEC
             ) //PCRE2 LICENCE
             ->withFile('pcre2-10.42.tar.gz')
+            ->withPrefix($pcre2_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($pcre2_prefix)
             //  CFLAGS='-static -O2 -Wall'
             ->withConfigure(<<<EOF
-                "
+            ls -lh .
             ./configure --help
             exit 0 
             ./configure \
@@ -1828,7 +1831,7 @@ function install_pcre2(Preprocessor $p)
             --enable-jit \
             --enable-unicode 
 
-         "
+         
  EOF
             )
             ->withMakeInstallOptions('install ')
