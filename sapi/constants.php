@@ -46,6 +46,7 @@ define("LIBLZMA_PREFIX", $p->getGlobalPrefix() . '/liblzma');
 define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
 
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
+define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
@@ -75,7 +76,6 @@ define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
 
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
 define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
-define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
@@ -96,3 +96,6 @@ define("DYNASM_PREFIX", $p->getGlobalPrefix() . '/dynasm');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("NGINX_PREFIX", $p->getGlobalPrefix() . '/nginx');
 define("PCRE2_PREFIX", $p->getGlobalPrefix() . 'PCRE2' );
+
+
+
