@@ -20,19 +20,20 @@ function libraries_builder($p)
     install_libyaml($p);
     install_libsodium($p);
 
-    install_bzip2($p );//没有 libbz2.pc 文件，不能使用 pkg-config 命令
-                       // 使用时类似： BZIP2_LIBS=-L/usr/bizp2/lib -lbz2  BZIP2_CFLAGS="-I/usr/bizp2/include"
+    install_bzip2($p);//没有 libbz2.pc 文件，不能使用 pkg-config 命令
+    // 使用时类似： BZIP2_LIBS=-L/usr/bizp2/lib -lbz2  BZIP2_CFLAGS="-I/usr/bizp2/include"
     install_zlib($p);
     install_liblz4($p); //有多种安装方式，选择cmake方式安装
     install_libzstd($p); //zstd 依赖 lz4
     install_libzip($p); //zip 依赖 openssl zlib bzip2  liblzma zstd
 
     install_sqlite3($p);
-    install_icu($p); //依赖 linux : -lstdc++ ; macOS:  libc++ //注意事项：https://www.zhihu.com/question/343205052
-                     //CLDR 是 i18n 的一套核心规范( Common Locale Data Respository ) 即 通用的本地化数据存储库
-                     //https://cldr.unicode.org/
+    install_icu($p);
+    //依赖 linux : -lstdc++ ; macOS:  libc++ //注意事项：https://www.zhihu.com/question/343205052
+    //CLDR 是 i18n 的一套核心规范( Common Locale Data Respository ) 即 通用的本地化数据存储库
+    //https://cldr.unicode.org/
 
-                    // php composer 依赖的扩展 ： https://github.com/composer/composer/blob/c23beac9c508b701bb481d1c5269e7a2a79e0b60/src/Composer/Repository/PlatformRepository.php#L203
+    // php composer 依赖的扩展 ： https://github.com/composer/composer/blob/c23beac9c508b701bb481d1c5269e7a2a79e0b60/src/Composer/Repository/PlatformRepository.php#L203
 
     install_oniguruma($p);
     install_mimalloc($p);
@@ -44,13 +45,12 @@ function libraries_builder($p)
     install_libwebp($p); //依赖 libgif libpng libjpeg
     install_freetype($p); //依赖 zlib bzip2 libpng  brotli  HarfBuzz  (HarfBuzz暂不启用，启用需要安装ninja meson python3 pip3 进行构建)
 
-    install_imagemagick(
-        $p
-    );//依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma bzlib2  lcms(默认不启用) libraw(默认不启用) libtiff(默认不启用) libjxl(默认不启用)
+    install_imagemagick($p);
+    //依赖 freetype2 libjpeg  libpng libwebp libxml2 libzip zlib libzstd liblzma bzlib2
+    //  lcms(默认不启用) libraw(默认不启用) libtiff(默认不启用) libjxl(默认不启用)
 
-    install_libidn2(
-        $p
-    );//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring ); //解决依赖 apk add  gettext  coreutils
+    install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring );
+    // //解决依赖 apk add  gettext  coreutils
 
 
     install_nghttp2($p); //依赖 install_nghttp2($p);
@@ -239,10 +239,9 @@ function libraries_builder($p)
         install_aria2($p); //依赖libuv openssl zlib libxml2 sqlite3 openssl c-ares
         install_socat($p); //依赖 readline openssl
     }
-    if (1) {
+    if (0) {
         install_pcre2($p);
         install_nginx($p);
-
     }
 
     if (0) {
