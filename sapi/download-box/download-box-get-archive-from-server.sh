@@ -15,7 +15,7 @@ test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
 cd ${__PROJECT__}/var
 
-DOMAIN='http://127.0.0.1:8015'
+DOMAIN='http://127.0.0.1:8000'
 QUERY_STRING="${DOMAIN}/all-archive.zip"
 URL="${domain}${DOMAIN}"
 
