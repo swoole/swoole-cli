@@ -1,5 +1,3 @@
-
-
 预处理参数
 =====
 
@@ -9,6 +7,7 @@
 * `--` 参数设置
 
 示例：
+
 ```shell
 ./prepare.php +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
 ```
@@ -20,11 +19,14 @@
 ```
 
 也可以写作：
+
 ```shell
 SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php
 ```
 
-> 参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --skip-download=no`，有效的值为：`--skip-download=no`，环境变量 `SWOOLE_CLI_SKIP_DOWNLOAD=yes` 无效
+>
+参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --skip-download=no`
+，有效的值为：`--skip-download=no`，环境变量 `SWOOLE_CLI_SKIP_DOWNLOAD=yes` 无效
 
 skip-download
 ----
@@ -38,6 +40,17 @@ skip-download
 
 # 构建依赖库之前，批量下载依赖库和扩展的脚本
 sh sapi/download-dependencies-use-aria2.sh
+
+```
+
+----
+使用镜像地址下载
+
+> 使用镜像地址下载下载前，需要准备镜像服务器 例如： `sh sapi/download-box/download-box-server-run.sh`
+
+```shell
+
+./prepare.php --without-docker --enable-download-mirror --with-download-mirror-url=http://127.0.0.1:8000
 
 ```
 

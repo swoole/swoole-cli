@@ -634,17 +634,23 @@ class Preprocessor
             $lib->file = basename($lib->url);
         }
 
+        if (
+            $this->getInputOption('enable-download-mirror')
+            &&
+            !empty($this->getInputOption('with-download-mirror-url'))
+        ) {
+            $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
+        }
+        $skip_download = ($this->getInputOption('skip-download') || $lib->getSkipDownload());
 
-        $skip_download = ($this->getInputOption('skip-download') ||  $lib->getSkipDownload());
         if (!$skip_download) {
-            $file=$this->libraryDir . '/' . $lib->file;
+            $file = $this->libraryDir . '/' . $lib->file;
             if (is_file($file) && ((!empty($lib->md5sum) && $lib->md5sum = !md5($file)) || (filesize($file) == 0))) {
                 echo `rm -f "{$file}"`;
             }
             if (!is_file($file)) {
                 echo "[Library] { $file } not found, downloading: " . $lib->url . PHP_EOL;
                 $this->downloadFile($lib->url, $file);
-
             } else {
                 echo "[Library] file cached: " . $file . PHP_EOL;
             }
@@ -672,6 +678,14 @@ class Preprocessor
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
+
+            if (
+                $this->getInputOption('enable-download-mirror')
+                &&
+                !empty($this->getInputOption('with-download-mirror-url'))
+            ) {
+                $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
+            }
 
             if (!$this->getInputOption('skip-download')) {
                 $file = $this->extensionDir . '/' . $ext->file;
