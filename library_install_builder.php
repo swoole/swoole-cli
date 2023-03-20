@@ -587,6 +587,15 @@ function install_sqlite3(Preprocessor $p)
 
 function install_icu(Preprocessor $p)
 {
+    /*
+     --with-data-packaging     specify how to package ICU data. Possible values:
+
+        files    raw files (.res, etc)
+        archive  build a single icudtXX.dat file
+        library  shared library (.dll/.so/etc.)
+        static   static library (.a/.lib/etc.)
+        auto     build shared if possible (default)
+    */
     $icu_prefix = ICU_PREFIX;
     $os = $p->getOsType() == 'macos' ? 'MacOSX' : 'Linux';
     $p->addLibrary(
