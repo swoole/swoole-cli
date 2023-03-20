@@ -501,7 +501,7 @@ class Preprocessor
         echo `$cmd`;
         echo PHP_EOL;
         if (is_file($file) && (filesize($file) == 0)) {
-            echo `rm -f "{$file}"`;
+            unlink($file);
         }
         if (!is_file($file)) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
@@ -521,14 +521,18 @@ class Preprocessor
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
             $file = $this->libraryDir . '/' . $lib->file;
-            if (is_file($file) && ((!empty($lib->md5sum) && $lib->md5sum = !md5($file)) || (filesize($file) == 0))) {
-                echo `rm -f "{$file}"`;
+            if (
+                is_file($file)
+                &&
+                ((!empty($lib->md5sum) && ($lib->md5sum != md5_file($file))) || (filesize($file) == 0))
+            ) {
+                unlink($file);
             }
             if (!is_file($file)) {
                 echo "[Library] { $file } not found, downloading: " . $lib->url . PHP_EOL;
                 $this->downloadFile($lib->url, $file);
             } else {
-                echo "[Library] file cached: " . $file . PHP_EOL;
+                echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
         }
 
@@ -554,18 +558,17 @@ class Preprocessor
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!$this->getInputOption('skip-download')) {
-                $file = $this->extensionDir . '/' . $ext->file;
                 if (
-                    is_file($file) &&
-                    ((!empty($ext->md5sum) && $ext->md5sum = !md5($file)) || (filesize($file) == 0))
+                    is_file($ext->path) &&
+                    ((!empty($ext->md5sum) && $ext->md5sum != md5_file($ext->path)) || (filesize($ext->path) == 0))
                 ) {
-                    echo `rm -f "{$file}"`;
+                    unlink($ext->path);
                 }
-                if (!is_file($file)) {
-                    echo "[Extension] {$file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $file);
+                if (!is_file($ext->path)) {
+                    echo "[Extension] {$ext->path} not found, downloading: " . $ext->url . PHP_EOL;
+                    $this->downloadFile($ext->url, $ext->path);
                 } else {
-                    echo "[Extension] file cached: " . $file . PHP_EOL;
+                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
