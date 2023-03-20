@@ -565,7 +565,7 @@ class Preprocessor
                     unlink($ext->path);
                 }
                 if (!is_file($ext->path)) {
-                    echo "[Extension] {$ext->path} not found, downloading: " . $ext->url . PHP_EOL;
+                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                     $this->downloadFile($ext->url, $ext->path);
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
@@ -845,28 +845,27 @@ class Preprocessor
     {
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
 
-        $download_urls=[];
+        $download_urls = [];
         foreach ($this->libraryList as $item) {
-            if(empty($item->url))
-            {
+            if (empty($item->url)) {
                 continue;
             }
-            $url='';
-            $item->mirrorUrls[]=$item->url;
-            if(!empty($item->mirrorUrls)){
-                $newMirrorUrls= [];
-                foreach ($item->mirrorUrls as $value){
-                    $newMirrorUrls[] =trim($value);
+            $url = '';
+            $item->mirrorUrls[] = $item->url;
+            if (!empty($item->mirrorUrls)) {
+                $newMirrorUrls = [];
+                foreach ($item->mirrorUrls as $value) {
+                    $newMirrorUrls[] = trim($value);
                 }
-                $url =implode("\t",$newMirrorUrls);
+                $url = implode("\t", $newMirrorUrls);
             }
-            $download_urls[]= $url . PHP_EOL." out=".$item->file;
+            $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
-        $download_urls=[];
+        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        $download_urls = [];
         foreach ($this->downloadExtensionList as $item) {
-            $download_urls[]= $item['url'] . PHP_EOL . " out=".$item['file'];
+            $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
         }
-        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt',implode(PHP_EOL,$download_urls));
+        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
 }
