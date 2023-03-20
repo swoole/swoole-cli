@@ -1823,6 +1823,7 @@ function install_pcre2(Preprocessor $p)
             --enable-unicode 
 
          "
+ EOF
             )
             ->withMakeInstallOptions('install ')
             //->withPkgConfig(PCRE2_PREFIX . '')
@@ -1834,7 +1835,7 @@ function install_pcre2(Preprocessor $p)
             ->disablePkgName()
             //->withLdflags('-L/usr/pcre2/lib')
             ->disableDefaultLdflags()
-    EOF
+
     );
 }
 

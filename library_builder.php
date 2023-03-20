@@ -20,9 +20,8 @@ function libraries_builder($p)
     install_libyaml($p);
     install_libsodium($p);
 
-    install_bzip2(
-        $p
-    );//没有 libbz2.pc 文件，不能使用 pkg-config 命令  BZIP2_LIBS=-L/usr/bizp2/lib -lbz2  BZIP2_CFLAGS="-I/usr/bizp2/include"
+    install_bzip2($p );//没有 libbz2.pc 文件，不能使用 pkg-config 命令
+                       // 使用时类似： BZIP2_LIBS=-L/usr/bizp2/lib -lbz2  BZIP2_CFLAGS="-I/usr/bizp2/include"
     install_zlib($p);
     install_liblz4($p); //有多种安装方式，选择cmake方式安装
     install_libzstd($p); //zstd 依赖 lz4
