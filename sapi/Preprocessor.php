@@ -15,6 +15,11 @@ abstract class Project
     public string $license = '';
     public string $prefix = '';
     public array $deps = [];
+
+    public string $md5sum = '';
+
+    public string $gnupg = '';
+
     public int $licenseType = self::LICENSE_SPEC;
 
     const LICENSE_SPEC = 0;
@@ -52,6 +57,19 @@ abstract class Project
     function depends(string ...$libs): static
     {
         $this->deps += $libs;
+        return $this;
+    }
+
+
+    public function withMd5sum(string $md5sum): static
+    {
+        $this->md5sum = $md5sum;
+        return $this;
+    }
+
+    public function withGnuPG(string $gpg): static
+    {
+        $this->gnupg = $gpg;
         return $this;
     }
 }
