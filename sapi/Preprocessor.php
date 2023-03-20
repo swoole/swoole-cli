@@ -529,7 +529,7 @@ class Preprocessor
                 unlink($file);
             }
             if (!is_file($file)) {
-                echo "[Library] { $file } not found, downloading: " . $lib->url . PHP_EOL;
+                echo "[Library] { $lib->file } not found, downloading: " . $lib->url . PHP_EOL;
                 $this->downloadFile($lib->url, $file);
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
