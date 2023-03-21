@@ -32,7 +32,7 @@ git submodule update --init
 ## 生成构建脚本
 
 ```shell
-compser install
+composer install
 php prepare.php
 php prepare.php +inotify +mongodb
 ```
