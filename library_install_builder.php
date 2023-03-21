@@ -1224,10 +1224,14 @@ function install_libxlsxio(Preprocessor $p)
             -DBUILD_DOCUMENTATION=OFF \
             -DWITH_WIDE=ON \
             -DZLIB_DIR={$zlib_prefix} \
+            -DZLIB_ROOT={$zlib_prefix} \
             -DEXPATW_DIR={$zlib_prefix} \
+            -DEXPATW_ROOT={$zlib_prefix} \
             -DEXPATW_LIBRARIES={$libexpat_prefix}/lib \
             -DWITH_LIBZIP=ON \
-            -DLIBZIP_DIR={$libzip_prefix} 
+            -DLIBZIP_DIR={$libzip_prefix} \
+            -DLIBZIP_ROOT={$libzip_prefix} \
+            -DLIBZIP_LIBRARIES={$libzip_prefix}/lib \
             
             
             # -DMINIZIP_DIR={$libminizip_prefix} \
