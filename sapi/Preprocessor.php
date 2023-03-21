@@ -12,6 +12,12 @@ abstract class Project
     public string $name;
 
     public string $manual = '';
+
+    public string $wiki = '';
+
+    public string $docs = '';
+
+    public string $documentation =  '' ;
     public string $homePage = '';
 
     public string $license = '';
@@ -58,7 +64,13 @@ abstract class Project
         return $this;
     }
 
-    function depends(string ...$libs): static
+    public function withDocumentation(string $documentation): static
+    {
+        $this->documentation = $documentation;
+        return $this;
+    }
+
+    public function depends(string ...$libs): static
     {
         $this->deps += $libs;
         return $this;
@@ -230,7 +242,7 @@ class Library extends Project
 
     public function withCleanBuildDirectory(): static
     {
-        if (!SWOOLE_CLI_BUILD_TYPE) {
+        if (SWOOLE_CLI_BUILD_TYPE != 'release') {
             $this->cleanBuildDirectory = true;
         }
         return $this;
@@ -239,7 +251,7 @@ class Library extends Project
     public function withCleanPreInstallDirectory(string $pre_install_dir): static
     {
         if (!empty($this->prefix) && ($this->prefix != '/usr') && !empty($pre_install_dir)) {
-            if (!SWOOLE_CLI_BUILD_TYPE) {
+            if (SWOOLE_CLI_BUILD_TYPE != 'release') {
                 $this->cleanPreInstallDirectory = true;
                 $this->preInstallDirectory = $pre_install_dir;
             }

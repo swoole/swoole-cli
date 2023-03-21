@@ -161,30 +161,41 @@ function install_nginx($p)
     $nginx_prefix = NGINX_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
+    $pcre2_prefix = PCRE2_PREFIX;
 
     $p->addLibrary(
         (new Library('nginx'))
-            ->withHomePage('https://nginx.org/en/docs/')
+            ->withHomePage('https://nginx.org/')
             ->withLicense('https://github.com/nginx/nginx/blob/master/docs/text/LICENSE', Library::LICENSE_SPEC)
             ->withUrl('https://nginx.org/download/nginx-1.23.3.tar.gz')
             ->withManual('https://github.com/nginx/nginx')
-            ->withManual('https://nginx.org/en/docs/')
+            ->withManual('http://nginx.org/en/docs/configure.html')
+            ->withDocumentation('https://nginx.org/en/docs/')
             ->withPrefix($nginx_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($nginx_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
-            exit 0 
+            set -uex 
+            packages="zlib  openssl libxml-2.0 libexslt libxslt libpcre2-16  libpcre2-32 libpcre2-8  libpcre2-posix "
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )" 
+            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )" 
+            LIBS="$(pkg-config --libs-only-l         --static \$packages )" 
+       
             ./configure \
             --prefix={$nginx_prefix} \
             --with-http_ssl_module \
             --with-openssl={$openssl_prefix} \
-            --with-pcre=../pcre2-10.39 \
+            --with-pcre={$pcre2_prefix} \
             --with-zlib={$zlib_prefix} \
             --with-http_gzip_static_module \
-            --with-cc-opt="-O2" \
-            --with-ld-opt="-s -static"
+            --with-http_xslt_module \
+            --with-cc-opt="\$CPPFLAGS" 
+            # --with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS" 
+            
+            # --with-ld-opt=parameters — sets additional parameters that will be used during linking. 
+            # --with-cc-opt=parameters — sets additional parameters that will be added to the CFLAGS variable. 
 EOF
 
             )

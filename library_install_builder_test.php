@@ -1654,11 +1654,12 @@ function install_valgrind(Preprocessor $p)
 
 EOF
             )
-            ->withScriptAfterInstall(<<<EOF
+            ->withScriptAfterInstall(
+                <<<EOF
                 export PATH=\$SWOOLE_CLI_PATH
                 export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
 EOF
-)
+            )
             ->withPkgName('valgrind')
             ->withBinPath($valgrind_prefix . '/bin/')
     );
@@ -1806,44 +1807,35 @@ function install_pcre2(Preprocessor $p)
     $pcre2_prefix = PCRE2_PREFIX;
     $p->addLibrary(
         (new Library('pcre2'))
-
             ->withHomePage('https://github.com/PCRE2Project/pcre2.git')
             ->withUrl('https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz')
+            ->withDocumentation('https://pcre2project.github.io/pcre2/doc/html/index.html')
+            ->withManual('https://github.com/PCRE2Project/pcre2.git')
             ->withLicense(
                 'https://github.com/PCRE2Project/pcre2/blob/master/COPYING',
                 Library::LICENSE_SPEC
-            ) //PCRE2 LICENCE
+            )
             ->withFile('pcre2-10.42.tar.gz')
             ->withPrefix($pcre2_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($pcre2_prefix)
-            //  CFLAGS='-static -O2 -Wall'
-            ->withConfigure(<<<EOF
-            ls -lh .
-            ./configure --help
-            exit 0 
-            ./configure \
-            --prefix=/usr/pcre2 \
-            --enable-static \
-            --disable-shared \
-            --enable-pcre2-16 \
-            --enable-pcre2-32 \
-            --enable-jit \
-            --enable-unicode 
+            ->withConfigure(
+                <<<EOF
+                ./configure --help
+
+                ./configure \
+                --prefix=$pcre2_prefix \
+                --enable-shared=no \
+                --enable-static=yes \
+                --enable-pcre2-16 \
+                --enable-pcre2-32 \
+                --enable-jit \
+                --enable-unicode 
 
          
  EOF
             )
-            ->withMakeInstallOptions('install ')
-            //->withPkgConfig(PCRE2_PREFIX . '')
-            ->disableDefaultPkgConfig()
-            //->withPkgName("libpcre2-16")
-     
             //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
-            //->withPkgName("libpcre2-16 libpcre2-32 libpcre2 -8 ibpcre2-posix")
-            ->disablePkgName()
-            //->withLdflags('-L/usr/pcre2/lib')
-            ->disableDefaultLdflags()
 
     );
 }

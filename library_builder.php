@@ -87,6 +87,9 @@ function libraries_builder($p)
 
     /**
      * # 需要特别设置的地方
+     *   //  CFLAGS='-static -O2 -Wall'
+     *     直接编译可执行文件 -fPIE
+    *      直接编译成库      -fPIC
      *
      * export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
      * LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
@@ -406,4 +409,12 @@ function libraries_builder($p)
     export PATH=$SWOOLE_CLI_PATH
     export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
     */
+
+    /*
+     * 交叉编译
+        --build=BUILD           configure for building on BUILD [BUILD=HOST]
+        --host=HOST             configure for HOST [guessed]
+        --target=TARGET         configure for TARGET [TARGET=HOST]
+
+     */
 }

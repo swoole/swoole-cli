@@ -96,7 +96,7 @@ define("DYNASM_PREFIX", $p->getGlobalPrefix() . '/dynasm');
 
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("NGINX_PREFIX", $p->getGlobalPrefix() . '/nginx');
-define("PCRE2_PREFIX", $p->getGlobalPrefix() . 'PCRE2' );
+define("PCRE2_PREFIX", $p->getGlobalPrefix() . '/pcre2' );
 
 
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;
