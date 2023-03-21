@@ -63,10 +63,11 @@ function libraries_builder($p)
     //扩展不兼容本项目
     //install_libmcrypt($p); //无 pkg-config 配置
     //扩展参数还需要调试
-    //install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
-    //install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
     //install_minizip($p);
-    //install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
+                           // Use libzip instead of Minizip
     //扩展不兼容本项目
     //install_libevent($p);
     //install_libuv($p);
@@ -242,7 +243,7 @@ function libraries_builder($p)
         install_aria2($p); //依赖libuv openssl zlib libxml2 sqlite3 openssl c-ares
         install_socat($p); //依赖 readline openssl
     }
-    if (1) {
+    if (0) {
         install_pcre2($p);
         install_nginx($p);
     }
@@ -363,8 +364,8 @@ function libraries_builder($p)
         //nm  结果参考 https://www.cnblogs.com/vaughnhuang/p/15771582.html
 
         //gdb bin/swoole-cli
-        //set args -m
-        //run
+            //set args -m
+            //run
 
 
         //下载 boringssl 镜像地址 https://source.codeaurora.org/quic/lc
@@ -377,6 +378,8 @@ function libraries_builder($p)
         // 动态链接库和静态链接库 https://www.cnblogs.com/Blog-c/p/7811190.html
         // .la 为libtool生成的共享库，其实是个配置文档。可以用file或者vim查看。
         // .ko 文件是Linux内核使用的动态链接文件后缀，属于模块文件，用在Linux系统启动时加载内核模块
+
+       //  gcov是一个测试代码覆盖率的工具。 https://zhuanlan.zhihu.com/p/410077415
     }
 
     if (0) {
@@ -434,6 +437,35 @@ function libraries_builder($p)
             SYSTEM=`uname -s 2>/dev/null`
             RELEASE=`uname -r 2>/dev/null`
             MACHINE=`uname -m 2>/dev/null`
+
             PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+     */
+
+    /**
+     *     export CFLAGS="$(pkg-config  --cflags --static expat minizip ) "
+
+           SET (CMAKE_EXE_LINKER_FLAGS "-static")
+
+            target
+                    ARCHIVE 静态库
+                    LIBRARY 动态库
+                    RUNTIME  可执行二进制文件
+
+            # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
+                      -D 从外部传入搜索路径：
+                            <PackageName>_ROOT
+                            <PackageName>_DIR
+
+
+            # CMAKE_BUILD_TYPE=Debug Release
+
+            cmake -G"Unix Makefiles" .  \
+            -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
+            -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
+            -DBUILD_STATIC_LIBS=ON \
+            -DCMAKE_COLOR_MAKEFILE=ON
+
      */
 }

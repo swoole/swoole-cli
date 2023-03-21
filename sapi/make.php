@@ -181,8 +181,14 @@ make_all_library() {
 
 
 export_variables() {
-<?php foreach ($this->varables as $name => $value) : ?>
-    export <?= $name ?>="<?= $value ?>"
+    SWOOLE_CLI_EXTRA_CPPLAGS='';
+    SWOOLE_CLI_EXTRA_LDLAGS='';
+    SWOOLE_CLI_EXTRA_LIBS='';
+<?php foreach ($this->exportVarable as $element) : ?>
+    <?= key($element) ?>="<?= current($element) ?>"
+<?php endforeach; ?>
+<?php foreach ($this->varables as $element) : ?>
+    export <?= key($element) ?>="<?= current($element) ?>"
 <?php endforeach; ?>
     return 0
 }

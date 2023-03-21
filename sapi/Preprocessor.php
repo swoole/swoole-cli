@@ -6,7 +6,6 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 
-
 abstract class Project
 {
     public string $name;
@@ -17,7 +16,7 @@ abstract class Project
 
     public string $docs = '';
 
-    public string $documentation =  '' ;
+    public string $documentation = '';
     public string $homePage = '';
 
     public string $license = '';
@@ -32,27 +31,27 @@ abstract class Project
 
     public int $licenseType = self::LICENSE_SPEC;
 
-    const LICENSE_SPEC = 0;
-    const LICENSE_APACHE2 = 1;
-    const LICENSE_BSD = 2;
-    const LICENSE_GPL = 3;
-    const LICENSE_LGPL = 4;
-    const LICENSE_MIT = 5;
-    const LICENSE_PHP = 6;
+    public const LICENSE_SPEC = 0;
+    public const LICENSE_APACHE2 = 1;
+    public const LICENSE_BSD = 2;
+    public const LICENSE_GPL = 3;
+    public const LICENSE_LGPL = 4;
+    public const LICENSE_MIT = 5;
+    public const LICENSE_PHP = 6;
 
-    function __construct(string $name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
-    function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
+    public function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
     {
         $this->license = $license;
         $this->licenseType = $licenseType;
         return $this;
     }
 
-    function withHomePage(string $homePage): static
+    public function withHomePage(string $homePage): static
     {
         $this->homePage = $homePage;
         return $this;
@@ -87,7 +86,6 @@ abstract class Project
         $this->gnupg = $gpg;
         return $this;
     }
-
 }
 
 class Library extends Project
@@ -130,7 +128,7 @@ class Library extends Project
 
     public string $binPath = '';
 
-    function withUrl(string $url): static
+    public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
@@ -142,7 +140,7 @@ class Library extends Project
         return $this;
     }
 
-    function withPrefix(string $prefix): static
+    public function withPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
         $this->withLdflags('-L' . $prefix . '/lib');
@@ -150,12 +148,12 @@ class Library extends Project
         return $this;
     }
 
-    function getPrefix(): string
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    function withFile(string $file): static
+    public function withFile(string $file): static
     {
         $this->file = $file;
         return $this;
@@ -167,37 +165,37 @@ class Library extends Project
         return $this;
     }
 
-    function withConfigure(string $configure): static
+    public function withConfigure(string $configure): static
     {
         $this->configure = $configure;
         return $this;
     }
 
-    function withLdflags(string $ldflags): static
+    public function withLdflags(string $ldflags): static
     {
         $this->ldflags = $ldflags;
         return $this;
     }
 
-    function withMakeVariables(string $variables): static
+    public function withMakeVariables(string $variables): static
     {
         $this->makeVariables = $variables;
         return $this;
     }
 
-    function withMakeOptions(string $makeOptions): static
+    public function withMakeOptions(string $makeOptions): static
     {
         $this->makeOptions = $makeOptions;
         return $this;
     }
 
-    function withScriptBeforeInstall(string $script): static
+    public function withScriptBeforeInstall(string $script): static
     {
         $this->beforeInstallScript = $script;
         return $this;
     }
 
-    function withScriptAfterInstall(string $script): static
+    public function withScriptAfterInstall(string $script): static
     {
         $this->afterInstallScript = $script;
         return $this;
@@ -209,19 +207,19 @@ class Library extends Project
         return $this;
     }
 
-    function withMakeInstallOptions(string $makeInstallOptions): static
+    public function withMakeInstallOptions(string $makeInstallOptions): static
     {
         $this->makeInstallOptions = $makeInstallOptions;
         return $this;
     }
 
-    function withPkgConfig(string $pkgConfig): static
+    public function withPkgConfig(string $pkgConfig): static
     {
         $this->pkgConfig = $pkgConfig;
         return $this;
     }
 
-    function withPkgName(string $pkgName): static
+    public function withPkgName(string $pkgName): static
     {
         $this->pkgNames[] = $pkgName;
         return $this;
@@ -323,7 +321,6 @@ class Library extends Project
     {
         return $this->label;
     }
-
 }
 
 class Extension extends Project
@@ -334,19 +331,19 @@ class Extension extends Project
     public string $file = '';
     public string $path = '';
 
-    function withOptions(string $options): static
+    public function withOptions(string $options): static
     {
         $this->options = $options;
         return $this;
     }
 
-    function withUrl(string $url): static
+    public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
     }
 
-    function withPeclVersion(string $peclVersion): static
+    public function withPeclVersion(string $peclVersion): static
     {
         $this->peclVersion = $peclVersion;
         return $this;
@@ -747,12 +744,19 @@ class Preprocessor
         return $packages;
     }
 
-    function setVarable(string $key, string $value): void
+    public function setVarable(string $key, string $value): void
     {
-        $this->varables[$key] = $value;
+        $this->varables[] = [$key => $value];
     }
 
-    function getExtension(string $name): ?Extension
+    public $exportVarable = [];
+
+    public function setExportVarable(string $key, string $value): void
+    {
+        $this->exportVarable[] = [$key => $value];
+    }
+
+    public function getExtension(string $name): ?Extension
     {
         if (!isset($this->extensionMap[$name])) {
             return null;
@@ -928,7 +932,9 @@ class Preprocessor
     private function getDependPkgNameByLibraryName($library_name, &$packages)
     {
         $lib = $this->libraryMap[$library_name];
-        $packages = array_merge($packages, $lib->pkgNames);
+        if (!empty($lib->pkgNames)) {
+            $packages = array_merge($packages, $lib->pkgNames);
+        }
         if (empty($lib->deps)) {
             return null;
         } else {
@@ -952,7 +958,6 @@ class Preprocessor
      * @throws ElementNotFoundException
      */
     public function execute(): void
-
     {
         if (empty($this->rootDir)) {
             $this->rootDir = dirname(__DIR__);
@@ -1016,12 +1021,20 @@ class Preprocessor
         # $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
         # $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
 
-        $packages = implode(' ', $this->extensionDependPkgNameList);
-        $this->setVarable('packages', $packages);
-        $this->setVarable('CPPFLAGS', '$(pkg-config  --cflags-only-I --static ${packages}  ) ');
-        $this->setVarable('LDFLAGS', '$(pkg-config  --libs-only-L --static ${packages}  ) ');
-        # $this->setVarable('EXTRA_LDFLAGS_PROGRAM=', '$(pkg-config --libs-only-L --static ${packages}  ) ');
-        $this->setVarable('LIBS', '$(pkg-config  --libs-only-l --static  ${packages}  ) ' . $libcpp);
+        $extenstionDepends = $this->extensionDependPkgNameList;
+        if (!empty($extenstionDepends)) {
+            $packages = implode(' ', $this->extensionDependPkgNameList);
+            $this->setVarable('packages', $packages);
+            $this->setVarable('CPPFLAGS', '$(pkg-config  --cflags-only-I --static ${packages}  ) ');
+            $this->setVarable('LDFLAGS', '$(pkg-config  --libs-only-L --static ${packages}  ) ');
+            # $this->setVarable('EXTRA_LDFLAGS_PROGRAM=', '$(pkg-config --libs-only-L --static ${packages}  ) ');
+            $this->setVarable('LIBS', '$(pkg-config  --libs-only-l --static  ${packages}  ) ' . $libcpp);
+
+            $this->setVarable('CPPFLAGS', '$CPPFLAGS $SWOOLE_CLI_EXTRA_CPPLAGS');
+            $this->setVarable('LDFLAGS', '$LDFLAGS $SWOOLE_CLI_EXTRA_LDLAGS');
+            # $this->setVarable('EXTRA_LDFLAGS_PROGRAM=', '$(pkg-config --libs-only-L --static ${packages}  ) ');
+            $this->setVarable('LIBS', '$LIBS $SWOOLE_CLI_EXTRA_LIBS');
+        }
 
 
         if ($this->getInputOption('skip-download')) {

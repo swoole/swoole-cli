@@ -1146,20 +1146,32 @@ function install_minizip(Preprocessor $p)
             # -Wno-dev 
 
             cmake   -S . -B build \
-            -D CMAKE_INSTALL_PREFIX={$libminzip_prefix} \
-            -D MZ_ZLIB=ON \
-            -D MZ_BZIP2=ON \
-            -D MZ_LZMA=ON \
-            -D MZ_ZSTD=ON \
-            -D MZ_OPENSSL=ON \
-            -D MZ_COMPAT=ON \
-            -D MZ_ICONV=ON \
-            -D MZ_FETCH_LIBS=OFF \
-            -D MZ_BUILD_TESTS=ON \
-            -D ZLIB_ROOT={$zlib_prefix} \
-            -D BZIP2_ROOT={$libzip2_prefix} \
-
+            -DCMAKE_INSTALL_PREFIX={$libminzip_prefix} \
+            -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
+            -DMZ_ZLIB=ON \
+            -DMZ_BZIP2=ON \
+            -DMZ_LZMA=ON \
+            -DMZ_ZSTD=ON \
+            -DMZ_OPENSSL=ON \
+            -DMZ_COMPAT=ON \
+            -DMZ_ICONV=ON \
+            -DMZ_FETCH_LIBS=OFF \
+            -DMZ_FORCE_FETCH_LIBS=OFF \
+            -DMZ_BUILD_TESTS=ON \
+            -DZLIB_ROOT={$zlib_prefix}  
+            
+            # -DBZIP2_INCLUDE_DIR={$libzip2_prefix}/include \
+            # -DBZIP2_LIBRARIES="{$libzip2_prefix}/lib"  \
+            # -DBZIP2_LIBRARY={$libzip2_prefix}/lib 
+            
+            # -DBZIP2_INCLUDE_DIRS={$libzip2_prefix}/include  \
+            # -DBZIP2_LIBRARY_DIRS={$libzip2_prefix}/lib 
+            
             cmake --build build  --config Release --target install
+            mkdir -p {$libzip2_prefix}/include/minizip
+            cp -f {$libzip2_prefix}/include/*.h {$libzip2_prefix}/include/minizip
 EOF
         )
         ->depends('zlib', 'bzip2', 'liblzma', 'libzstd', 'openssl', 'libiconv')
@@ -1176,8 +1188,10 @@ function install_libxlsxio(Preprocessor $p)
     $libzip_prefix = ZIP_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $libexpat_prefix = LIBEXPAT_PREFIX;
-    $lib = new Library('libxlsxio');
-    $lib->withHomePage('https://github.com/brechtsanders/xlsxio.git')
+
+    $p->addLibrary(
+        (new Library('libxlsxio'))
+    ->withHomePage('https://github.com/brechtsanders/xlsxio.git')
         ->withLicense('https://github.com/brechtsanders/xlsxio/blob/master/LICENSE.txt', Library::LICENSE_MIT)
         ->withUrl('https://github.com/brechtsanders/xlsxio/archive/refs/tags/0.2.34.tar.gz')
         ->withFile('libxlsxio-0.2.34.tar.gz')
@@ -1187,31 +1201,48 @@ function install_libxlsxio(Preprocessor $p)
         ->withCleanPreInstallDirectory($libxlsxio_prefix)
         ->withConfigure(
             <<<EOF
-            # apk add graphviz  doxygen
+            # apk add graphviz  doxygen  // 能看到常见安装的依赖库
+            
             # export CFLAGS="$(pkg-config  --cflags --static expat minizip ) " 
-          
+            
+            #  SET (CMAKE_EXE_LINKER_FLAGS "-static")
+            
+
+        
+            # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
+        
+            # CMAKE_BUILD_TYPE =  Debug Release 
+            
             cmake -G"Unix Makefiles" .  \
             -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
-            -DBUILD_STATIC=ON \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_SHARED=OFF \
+            -DBUILD_STATIC=ON \
             -DBUILD_TOOLS=OFF \
             -DBUILD_EXAMPLES=OFF \
+            -DBUILD_DOCUMENTATION=OFF \
             -DWITH_WIDE=ON \
-            -DMINIZIP_DIR={$libminizip_prefix} \
             -DZLIB_DIR={$zlib_prefix} \
+            -DEXPATW_DIR={$zlib_prefix} \
+            -DEXPATW_LIBRARIES={$libexpat_prefix}/lib \
             -DWITH_LIBZIP=ON \
-            -DLIBZIP_DIR={$libzip_prefix} \
-            -DEXPAT_DIR={$libexpat_prefix} \
-            -DBUILD_DOCUMENTATION=OFF
+            -DLIBZIP_DIR={$libzip_prefix} 
+            
+            
+            # -DMINIZIP_DIR={$libminizip_prefix} \
+            # -DMINIZIP_LIBRARIES={$libminizip_prefix}/lib \
+            # -DMINIZIP_INCLUDE_DIRS='{$libminizip_prefix}/include/' \
 
 
 
 EOF
         )
-        ->depends('zlib', 'libzip')
-        ->withPkgName('libxlsxio');
-
-    $p->addLibrary($lib);
+        ->depends('zlib', 'libzip', 'expat')
+        ->withPkgName('libxlsxio_read')
+        ->withPkgName('libxlsxio_readw')
+        ->withPkgName('libxlsxio_write')
+    );
 }
 
 
