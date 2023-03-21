@@ -1024,16 +1024,12 @@ class Preprocessor
         $extenstionDepends = $this->extensionDependPkgNameList;
         if (!empty($extenstionDepends)) {
             $packages = implode(' ', $this->extensionDependPkgNameList);
-            $this->setVarable('packages', $packages);
-            $this->setVarable('CPPFLAGS', '$(pkg-config  --cflags-only-I --static ${packages}  ) ');
-            $this->setVarable('LDFLAGS', '$(pkg-config  --libs-only-L --static ${packages}  ) ');
+            $this->setExportVarable('packages', $packages);
+            $this->setVarable('CPPFLAGS', '$(pkg-config  --cflags-only-I --static ${packages}  ) $SWOOLE_CLI_EXTRA_CPPLAGS');
+            $this->setVarable('LDFLAGS', '$(pkg-config  --libs-only-L --static ${packages}  ) $SWOOLE_CLI_EXTRA_LDLAGS');
             # $this->setVarable('EXTRA_LDFLAGS_PROGRAM=', '$(pkg-config --libs-only-L --static ${packages}  ) ');
-            $this->setVarable('LIBS', '$(pkg-config  --libs-only-l --static  ${packages}  ) ' . $libcpp);
+            $this->setVarable('LIBS', '$(pkg-config  --libs-only-l --static  ${packages}  ) ' . $libcpp . ' $SWOOLE_CLI_EXTRA_LIBS');
 
-            $this->setVarable('CPPFLAGS', '$CPPFLAGS $SWOOLE_CLI_EXTRA_CPPLAGS');
-            $this->setVarable('LDFLAGS', '$LDFLAGS $SWOOLE_CLI_EXTRA_LDLAGS');
-            # $this->setVarable('EXTRA_LDFLAGS_PROGRAM=', '$(pkg-config --libs-only-L --static ${packages}  ) ');
-            $this->setVarable('LIBS', '$LIBS $SWOOLE_CLI_EXTRA_LIBS');
         }
 
 
