@@ -410,11 +410,30 @@ function libraries_builder($p)
     export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
     */
 
-    /*
+    /**
      * 交叉编译
         --build=BUILD           configure for building on BUILD [BUILD=HOST]
         --host=HOST             configure for HOST [guessed]
         --target=TARGET         configure for TARGET [TARGET=HOST]
 
+     */
+
+    /**
+     * BIO 全称Block-IO 是一种阻塞同步的通信模式 BIO 全称Block-IO 是一种阻塞同步的通信模式。我们常说的Stock IO 一般指的是BIO。是一个比较传统的通信方式，模式简单，使用方便。但并发处理能力低，通信耗时，依赖网速。
+     * NIO 全称New IO，也叫Non-Block IO 是一种非阻塞同步的通信模式。
+     * AIO 也叫NIO2.0 是一种非阻塞异步的通信模式。在NIO的基础上引入了新的异步通道的概念，并提供了异步文件通道和异步套接字通道的实现。
+     * AIO 并没有采用NIO的多路复用器，而是使用异步通道的概念
+     *
+     */
+
+    /**
+     * LC_ALL=C 是为了去除所有本地化的设置
+     */
+
+    /**
+            SYSTEM=`uname -s 2>/dev/null`
+            RELEASE=`uname -r 2>/dev/null`
+            MACHINE=`uname -m 2>/dev/null`
+            PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
      */
 }
