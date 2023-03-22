@@ -5,10 +5,15 @@ namespace SwooleCli;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
+use RuntimeException;
 
 abstract class Project
 {
     public string $name;
+    public string $url;
+    public string $path = '';
+    public string $file = '';
+    public string $md5sum = '';
 
     public string $manual = '';
     public string $homePage = '';
@@ -18,8 +23,6 @@ abstract class Project
     public string $prefix = '';
 
     public array $deps = [];
-
-    public string $md5sum = '';
 
     public int $licenseType = self::LICENSE_SPEC;
 
@@ -71,10 +74,8 @@ abstract class Project
 
 class Library extends Project
 {
-    public string $url;
     public array $mirrorUrls = [];
     public string $configure = '';
-    public string $file = '';
     public string $ldflags = '';
 
     public string $buildScript = '';
@@ -195,11 +196,8 @@ class Library extends Project
 
 class Extension extends Project
 {
-    public string $url;
     public string $options = '';
     public string $peclVersion = '';
-    public string $file = '';
-    public string $path = '';
 
     function withOptions(string $options): static
     {
@@ -491,7 +489,13 @@ class Preprocessor
         $this->installLibrary = false;
     }
 
-    protected function downloadFile(string $url, string $file)
+    /**
+     * @param string $url
+     * @param string $file
+     * @param string $md5sum
+     * @throws RuntimeException
+     */
+    protected function downloadFile(string $url, string $file, string $md5sum)
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $user_agent = DOWNLOAD_FILE_USER_AGENT;
@@ -503,14 +507,33 @@ class Preprocessor
         if (is_file($file) && (filesize($file) == 0)) {
             unlink($file);
         }
-        if (!is_file($file)) {
-            throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
+        // 下载失败
+        if (!is_file($file) or filesize($file) == 0) {
+            throw new RuntimeException("Downloading file[$file] from url[$url] failed");
+        }
+        // 下载文件的 MD5 不一致
+        if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
+            throw new RuntimeException("The md5 of downloaded file[$file] is inconsistent with the configuration");
         }
     }
 
     /**
+     * @param string $path
+     * @param string $md5
+     * @return bool
+     */
+    protected function checkFileMd5sum(string $path, string $md5) {
+        // md5 不匹配，删除文件
+        if ($md5 != md5_file($path)) {
+            unlink($path);
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @param Library $lib
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function addLibrary(Library $lib): void
     {
@@ -518,19 +541,17 @@ class Preprocessor
             $lib->file = basename($lib->url);
         }
 
+        $lib->path = $this->libraryDir . '/' . $lib->file;
+        if (!empty($lib->md5sum) or is_file($lib->path)) {
+            // 本地文件被修改，MD5 不一致，删除后重新下载
+            $this->checkFileMd5sum($lib->path, $lib->md5sum);
+        }
+
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            $file = $this->libraryDir . '/' . $lib->file;
-            if (
-                is_file($file)
-                &&
-                ((!empty($lib->md5sum) && ($lib->md5sum != md5_file($file))) || (filesize($file) == 0))
-            ) {
-                unlink($file);
-            }
-            if (!is_file($file)) {
-                echo "[Library] { $lib->file } not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, $file);
+            if (!is_file($lib->path)) {
+                echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
+                $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -543,7 +564,7 @@ class Preprocessor
             $this->binPaths[] = $lib->binPath;
         }
         if (empty($lib->license)) {
-            throw new \RuntimeException("require license");
+            throw new RuntimeException("require license");
         }
 
         $this->libraryList[] = $lib;
@@ -557,16 +578,16 @@ class Preprocessor
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
+            // 检查文件的 MD5，若不一致删除后重新下载
+            if (!empty($ext->md5sum) or is_file($ext->path)) {
+                // 本地文件被修改，MD5 不一致，删除后重新下载
+                $this->checkFileMd5sum($ext->path, $ext->md5sum);
+            }
+
             if (!$this->getInputOption('skip-download')) {
-                if (
-                    is_file($ext->path) &&
-                    ((!empty($ext->md5sum) && $ext->md5sum != md5_file($ext->path)) || (filesize($ext->path) == 0))
-                ) {
-                    unlink($ext->path);
-                }
                 if (!is_file($ext->path)) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path);
+                    $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
@@ -698,7 +719,7 @@ class Preprocessor
             if ($item->deps) {
                 foreach ($item->deps as $lib) {
                     if (!isset($libs[$lib])) {
-                        throw new \RuntimeException("The ext-{$item->name} depends on $lib, but it does not exist");
+                        throw new RuntimeException("The ext-{$item->name} depends on $lib, but it does not exist");
                     }
                 }
             }
