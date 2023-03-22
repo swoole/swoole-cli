@@ -541,6 +541,10 @@ class Preprocessor
             $lib->file = basename($lib->url);
         }
 
+        if (!empty($this->getInputOption('with-download-mirror-url'))) {
+            $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
+        }
+
         $lib->path = $this->libraryDir . '/' . $lib->file;
         if (!empty($lib->md5sum) or is_file($lib->path)) {
             // 本地文件被修改，MD5 不一致，删除后重新下载
@@ -577,6 +581,10 @@ class Preprocessor
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
+            
+            if (!empty($this->getInputOption('with-download-mirror-url'))) {
+                $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
+            }
 
             // 检查文件的 MD5，若不一致删除后重新下载
             if (!empty($ext->md5sum) or is_file($ext->path)) {
