@@ -58,7 +58,6 @@
 #include "php_phar.h"
 #include "ext/hash/php_hash.h"
 #include "ext/hash/php_hash_sha.h"
-#include "ext/swoole_cli/hook_stream.h"
 
 /* PHP_ because this is public information via MINFO */
 #define PHP_PHAR_API_VERSION      "1.1.1"
@@ -617,3 +616,5 @@ typedef enum {
 phar_path_check_result phar_path_check(char **p, size_t *len, const char **error);
 
 END_EXTERN_C()
+
+#include "ext/swoole_cli/hook_stream.h"

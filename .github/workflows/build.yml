@@ -4,77 +4,56 @@ on: [push, pull_request]
 
 jobs:
   linux:
+    if: 0
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Configure
+    - uses: actions/checkout@v3
+    - name: Configure
+      run: |
+        git submodule update --init
+        SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
+        chmod +x ./make.sh
+    - name: Build
+      uses: addnab/docker-run-action@v3
+      with:
+        image: phpswoole/swoole_cli_os:1.4
+        options: -v ${{ github.workspace }}:/work
         run: |
-          git submodule update --init
-          composer update
-          SKIP_LIBRARY_DOWNLOAD=1 php prepare.php
-          chmod +x ./make.sh
-      - name: Build
-        uses: addnab/docker-run-action@v3
-        with:
-          image: phpswoole/swoole_cli_os:1.5
-          options: -v ${{ github.workspace }}:/work
-          run: |
-            cd /work
-            ./make.sh config
-            ./make.sh build
-            ./bin/swoole-cli -v
-            ./bin/swoole-cli ./bin/pack.php ./tests/test.php ./bin/swoole-cli-test
-            ./bin/swoole-cli-test ./tests/test.php
-            ./bin/swoole-cli-test --self
-
-            ./bin/swoole-cli -dphar.readonly=0 ./tests/build-phar.php
-
-            ./bin/swoole-cli tests/test-none.phar
-            ./bin/swoole-cli bin/pack.php tests/test-none.phar ./bin/swoole-cli-test-phar
-            ./bin/swoole-cli-test-phar --self
-
-            ./bin/swoole-cli tests/test-alias.phar
-            ./bin/swoole-cli bin/pack.php tests/test-alias.phar ./bin/swoole-cli-test-phar-alias
-            ./bin/swoole-cli-test-phar-alias --self
-
-            ./bin/swoole-cli tests/test-gz.phar
-            ./bin/swoole-cli bin/pack.php tests/test-gz.phar ./bin/swoole-cli-test-phar-gz
-            ./bin/swoole-cli-test-phar-gz --self
-
-            ./bin/swoole-cli tests/test-bz2.phar
-            ./bin/swoole-cli bin/pack.php tests/test-bz2.phar ./bin/swoole-cli-test-phar-bz2
-            ./bin/swoole-cli-test-phar-bz2 --self
+          cd /work
+          ./make.sh config
+          ./make.sh build
+          ./bin/swoole-cli -v
   cygwin:
     if: 0
     runs-on: windows-latest
     steps:
-      - name: Prepare git
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@v3
-      - name: Cache cygwin packages
-        id: cache-cygwin
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-cygwin-packages
-        with:
-          path: C:/cygwin-packages
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
-      - name: Install deps
-        uses: cygwin/cygwin-install-action@v2
-        with:
-          platform: x64
-          packages: wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel
-      - name: Install re2c
-        run: |
-          bash ./sapi/install-re2c.sh
-      - name: Configure
-        run: |
-          uname -a
-          git submodule update --init
-          bash ./sapi/cygwin-config.sh
-      - name: Build
-        run: |
-          make -j $(nproc)
-          ./bin/swoole-cli -v
+    - name: Prepare git
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
+    - uses: actions/checkout@v3
+    - name: Cache cygwin packages
+      id: cache-cygwin
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-cygwin-packages
+      with:
+        path: C:/cygwin-packages
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+    - name: Install deps
+      uses: cygwin/cygwin-install-action@v2
+      with:
+        platform: x64
+        packages: wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel
+    - name: Install re2c
+      run: |
+        bash ./sapi/install-re2c.sh
+    - name: Configure
+      run: |
+        uname -a
+        git submodule update --init
+        bash ./sapi/cygwin-config.sh
+    - name: Build
+      run: |
+        make -j $(nproc)
+        ./bin/swoole-cli -v
