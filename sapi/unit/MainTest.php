@@ -9,6 +9,9 @@ use imagick;
 use ImagickPixel;
 use ImagickDraw;
 
+use function Swoole\Coroutine\run;
+use function Swoole\Coroutine\go;
+
 final class MainTest extends TestCase
 {
     public function testExtesnions(): void
@@ -152,14 +155,42 @@ final class MainTest extends TestCase
             ]
         );
         curl_setopt($ch2, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
-        curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch2, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_MAXREDIRS, 5);
         curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, true);
         curl_exec($ch2);
-        $responseHheader = curl_getinfo($ch2);
+        $responseheader = curl_getinfo($ch2);
+        $errno = curl_errno($ch2);
+        $error = curl_error($ch2);
         curl_close($ch2);
-        $this->assertGreaterThanOrEqual(2, $responseHheader['protocol'], 'no support http2');
+        $this->assertGreaterThanOrEqual(
+            2,
+            $responseheader['protocol'],
+            'no support http2; ' . $errno . ':' . $error
+        );
+    }
+
+    public function testSwoole(): void
+    {
+        run(function () {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://www.swoole.com/');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
+            curl_exec($ch);
+            $responseheader = curl_getinfo($ch);
+            $errno = curl_errno($ch);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            $this->assertGreaterThanOrEqual(
+                2,
+                $responseheader['protocol'],
+                'no support http2 ; ' . $errno . ':' . $error
+            );
+        });
     }
 }
