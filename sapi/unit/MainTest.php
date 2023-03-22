@@ -151,6 +151,7 @@ final class MainTest extends TestCase
                 'Content-Type: text/html'
             ]
         );
+        curl_setopt($ch2, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
         curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch2, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
