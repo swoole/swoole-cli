@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace SwooleCli\UnitTest;
 
@@ -87,5 +89,76 @@ final class MainTest extends TestCase
             intl_is_failure($r->getErrorCode()),
             'error_code: ' . $r->getErrorCode() . ':' . $r->getErrorMessage()
         );
+    }
+
+    public function testCurl(): void
+    {
+        $reflector = new \ReflectionExtension('curl');
+        ob_start();
+        $reflector->info();
+        $output = strip_tags(ob_get_clean());
+        preg_match('/^AsynchDNS (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: c-ares no found');
+        preg_match('/^IDN (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: libidn2 no found');
+        preg_match('/^libz (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: zlib no found');
+        preg_match('/^SSL (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: openssl no found');
+        preg_match('/^HTTP2 (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: nghttp2 no found');
+        preg_match('/^BROTLI (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: brotli no found');
+
+
+        $url1 = "http://国家电网.网址";
+        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+        $ch1 = curl_init();
+        curl_setopt($ch1, CURLOPT_URL, $url1);
+        curl_setopt($ch1, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($ch1, CURLOPT_FILETIME, true);
+        curl_setopt(
+            $ch1,
+            CURLOPT_HTTPHEADER,
+            [
+                'User-Agent: ' . $userAgent,
+                'Referer: https://www.baidu.com',
+                'Content-Type: text/html'
+            ]
+        );
+        curl_setopt($ch1, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch1, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch1, CURLOPT_MAXREDIRS, 5);
+        curl_setopt($ch1, CURLOPT_FOLLOWLOCATION, false);
+        curl_exec($ch1);
+        $responseHheader = curl_getinfo($ch1);
+        curl_close($ch1);
+
+        $this->assertGreaterThanOrEqual(200, $responseHheader['http_code'], 'curl no support IDNA');
+
+        $url2 = 'https://www.swoole.com/';
+        $userAgent = 'swoole-cli-test';
+        $ch2 = curl_init();
+        curl_setopt($ch2, CURLOPT_URL, $url2);
+        curl_setopt($ch2, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($ch2, CURLOPT_FILETIME, true);
+        curl_setopt(
+            $ch2,
+            CURLOPT_HTTPHEADER,
+            [
+                'User-Agent: ' . $userAgent,
+                'Content-Type: text/html'
+            ]
+        );
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch2, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch2, CURLOPT_MAXREDIRS, 5);
+        curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch2);
+        $responseHheader = curl_getinfo($ch2);
+        curl_close($ch2);
+        $this->assertGreaterThanOrEqual(2, $responseHheader['protocol'], 'no support http2');
     }
 }
