@@ -39,3 +39,8 @@ define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 
+
+const DOWNLOAD_FILE_RETRY_NUMBE = 5;
+const DOWNLOAD_FILE_WAIT_RETRY = 5 ;
+const DOWNLOAD_FILE_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+

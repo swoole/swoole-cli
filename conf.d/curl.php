@@ -63,10 +63,6 @@ EOF
             ->withConfigure(
                 <<<EOF
             ./configure --help
-
-            # 依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring )
-            # 解决依赖  apk add  gettext  coreutils
-
             ./configure --prefix={$libidn2_prefix} \
             enable_static=yes \
             enable_shared=no \
@@ -76,12 +72,6 @@ EOF
 
 EOF
             )
-            ->withScriptAfterInstall("
-            # 查看是否有动态链接库 (已确认，无动态链接库）
-            # nm -D {$libidn2_prefix}/lib/libidn2.a
-            # nm {$libidn2_prefix}/lib/libidn2.a
-            # ar -t {$libidn2_prefix}/lib/libidn2.a
-            ")
             ->withPkgName('libidn2')
             ->depends('libiconv')
     );
@@ -184,7 +174,7 @@ EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'nghttp2','libidn2')
+            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'nghttp2', 'libidn2')
 
     );
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
