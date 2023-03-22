@@ -120,7 +120,7 @@ EOF
             --with-openssl \
             --disable-http3 \
             --disable-python-bindings  \
-            --without-jansson  \
+            --with-jansson  \
             --without-libevent-openssl \
             --without-libev \
             --without-cunit \
@@ -136,7 +136,7 @@ EOF
             )
             ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
             ->withPkgName('libnghttp2')
-            ->depends('openssl', 'zlib', 'libxml2', 'cares')
+            ->depends('openssl', 'zlib', 'libxml2', 'cares', 'jansson')
     );
 
 
