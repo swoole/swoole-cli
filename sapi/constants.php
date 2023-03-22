@@ -38,6 +38,7 @@ define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
+define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
 
 
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;

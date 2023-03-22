@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e48401bc6efe97b5836cfdd335274e3",
+    "content-hash": "b968b0a4192c35de3a91089327041e3b",
     "packages": [
         {
             "name": "marcj/topsort",
@@ -1809,6 +1809,8 @@
     "platform": {
         "ext-posix": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {
+        "ext-curl": "*"
+    },
     "plugin-api-version": "2.3.0"
 }
