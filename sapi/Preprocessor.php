@@ -546,7 +546,7 @@ class Preprocessor
         }
 
         $lib->path = $this->libraryDir . '/' . $lib->file;
-        if (!empty($lib->md5sum) or is_file($lib->path)) {
+        if (!empty($lib->md5sum) and is_file($lib->path)) {
             // 本地文件被修改，MD5 不一致，删除后重新下载
             $this->checkFileMd5sum($lib->path, $lib->md5sum);
         }
@@ -587,7 +587,7 @@ class Preprocessor
             }
 
             // 检查文件的 MD5，若不一致删除后重新下载
-            if (!empty($ext->md5sum) or is_file($ext->path)) {
+            if (!empty($ext->md5sum) and is_file($ext->path)) {
                 // 本地文件被修改，MD5 不一致，删除后重新下载
                 $this->checkFileMd5sum($ext->path, $ext->md5sum);
             }
