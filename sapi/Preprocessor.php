@@ -9,11 +9,18 @@ use MJS\TopSort\Implementations\StringSort;
 abstract class Project
 {
     public string $name;
+
     public string $manual = '';
     public string $homePage = '';
+
     public string $license = '';
+
     public string $prefix = '';
+
     public array $deps = [];
+
+    public string $md5sum = '';
+
     public int $licenseType = self::LICENSE_SPEC;
 
     const LICENSE_SPEC = 0;
@@ -53,6 +60,13 @@ abstract class Project
         $this->deps += $libs;
         return $this;
     }
+
+    public function withMd5sum(string $md5sum): static
+    {
+        $this->md5sum = $md5sum;
+        return $this;
+    }
+
 }
 
 class Library extends Project
@@ -479,8 +493,17 @@ class Preprocessor
 
     protected function downloadFile(string $url, string $file)
     {
-        echo `wget {$url} -O {$file}`;
-        if (!is_file($file) or filesize($file) == 0) {
+        $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
+        $user_agent = DOWNLOAD_FILE_USER_AGENT;
+        $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
+        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 --user-agent='{$user_agent}'";
+        echo PHP_EOL;
+        echo `$cmd`;
+        echo PHP_EOL;
+        if (is_file($file) && (filesize($file) == 0)) {
+            unlink($file);
+        }
+        if (!is_file($file)) {
             throw new \RuntimeException("Downloading file[$file] from url[$url] failed");
         }
     }
@@ -489,7 +512,7 @@ class Preprocessor
      * @param Library $lib
      * @throws \RuntimeException
      */
-    function addLibrary(Library $lib)
+    public function addLibrary(Library $lib): void
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
@@ -497,9 +520,17 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            if (!is_file($this->libraryDir . '/' . $lib->file)) {
-                echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, "{$this->libraryDir}/{$lib->file}");
+            $file = $this->libraryDir . '/' . $lib->file;
+            if (
+                is_file($file)
+                &&
+                ((!empty($lib->md5sum) && ($lib->md5sum != md5_file($file))) || (filesize($file) == 0))
+            ) {
+                unlink($file);
+            }
+            if (!is_file($file)) {
+                echo "[Library] { $lib->file } not found, downloading: " . $lib->url . PHP_EOL;
+                $this->downloadFile($lib->url, $file);
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -519,7 +550,7 @@ class Preprocessor
         $this->libraryMap[$lib->name] = $lib;
     }
 
-    function addExtension(Extension $ext)
+    public function addExtension(Extension $ext): void
     {
         if ($ext->peclVersion) {
             $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
@@ -527,13 +558,18 @@ class Preprocessor
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!$this->getInputOption('skip-download')) {
+                if (
+                    is_file($ext->path) &&
+                    ((!empty($ext->md5sum) && $ext->md5sum != md5_file($ext->path)) || (filesize($ext->path) == 0))
+                ) {
+                    unlink($ext->path);
+                }
                 if (!is_file($ext->path)) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                     $this->downloadFile($ext->url, $ext->path);
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
-
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
 
@@ -809,28 +845,27 @@ class Preprocessor
     {
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
 
-        $download_urls=[];
+        $download_urls = [];
         foreach ($this->libraryList as $item) {
-            if(empty($item->url))
-            {
+            if (empty($item->url)) {
                 continue;
             }
-            $url='';
-            $item->mirrorUrls[]=$item->url;
-            if(!empty($item->mirrorUrls)){
-                $newMirrorUrls= [];
-                foreach ($item->mirrorUrls as $value){
-                    $newMirrorUrls[] =trim($value);
+            $url = '';
+            $item->mirrorUrls[] = $item->url;
+            if (!empty($item->mirrorUrls)) {
+                $newMirrorUrls = [];
+                foreach ($item->mirrorUrls as $value) {
+                    $newMirrorUrls[] = trim($value);
                 }
-                $url =implode("\t",$newMirrorUrls);
+                $url = implode("\t", $newMirrorUrls);
             }
-            $download_urls[]= $url . PHP_EOL." out=".$item->file;
+            $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt',implode(PHP_EOL,$download_urls));
-        $download_urls=[];
+        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        $download_urls = [];
         foreach ($this->downloadExtensionList as $item) {
-            $download_urls[]= $item['url'] . PHP_EOL . " out=".$item['file'];
+            $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
         }
-        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt',implode(PHP_EOL,$download_urls));
+        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
 }
