@@ -43,5 +43,4 @@ sh sapi/download-box/download-box-server-run.sh
 
 ```bash
     ./prepare.php --without-docker --with-download-mirror=http://127.0.0.1:8000
-
 ```
