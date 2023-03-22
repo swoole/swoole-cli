@@ -362,6 +362,7 @@ function libraries_builder($p)
         //OProfile是Linux内核支持的一种性能分析机制。 它在时钟中断处理入口处建立监测点，记录被中断的上下文现场，由配套的用户态的工具oprof_start负责在用户态收集数据
 
         //nm  结果参考 https://www.cnblogs.com/vaughnhuang/p/15771582.html
+        // gcc的ar,nm,objdump,objcopy
 
         //gdb bin/swoole-cli
             //set args -m
