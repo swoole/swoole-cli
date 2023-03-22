@@ -305,7 +305,6 @@ class Preprocessor
         'yaml',
         'imagick',
         'mongodb',
-        'swoole_cli'
     ];
 
     protected array $endCallbacks = [];

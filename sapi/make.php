@@ -335,7 +335,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/ext/pdo_mysql/ ./ext
   cp -r $SRC/ext/pdo_sqlite/ ./ext
   cp -r $SRC/ext/phar/ ./ext
-  echo -e '\n#include "ext/swoole_cli/hook_stream.h"' >> ext/phar/phar_internal.h
+  echo -e '\n#include "sapi/cli/sfx/hook_stream.h"' >> ext/phar/phar_internal.h
   cp -r $SRC/ext/posix/ ./ext
   cp -r $SRC/ext/readline/ ./ext
   cp -r $SRC/ext/reflection/ ./ext

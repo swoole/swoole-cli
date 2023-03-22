@@ -1,5 +1,5 @@
 #include "hook_cli.h"
-#include "util.h"
+#include "sapi/cli/util.h"
 #include "sfx.h"
 
 static size_t zend_stream_fsize(zend_file_handle *file_handle) /* {{{ */

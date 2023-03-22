@@ -1,5 +1,5 @@
 #include "sfx.h"
-#include "util.h"
+#include "sapi/cli/util.h"
 
 swoole_cli_sfx_size swoole_cli_get_sfx_filesize(void) {
     static int sfx_filesize_inited = 0;

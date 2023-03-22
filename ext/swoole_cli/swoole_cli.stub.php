@@ -1,3 +1,0 @@
-<?php
-
-/** @generate-class-entries */

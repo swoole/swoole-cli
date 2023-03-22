@@ -1,5 +1,4 @@
 #include "hook_phar.h"
-#include "util.h"
 
 int hook_plain_stream_seek(php_stream *stream, zend_off_t offset, int whence, zend_off_t *newoffset) {
     int ret = -1;

@@ -94,7 +94,7 @@ extern void swoole_cli_self_update(void);
 # include "openssl/applink.c"
 #endif
 
-#include "ext/swoole_cli/hook_cli.h"
+#include "sfx/hook_cli.h"
 
 PHPAPI extern char *php_ini_opened_path;
 PHPAPI extern char *php_ini_scanned_path;
