@@ -64,7 +64,6 @@ typedef struct _zend_file_handle {
 
 BEGIN_EXTERN_C()
 ZEND_API void zend_stream_init_fp(zend_file_handle *handle, FILE *fp, const char *filename);
-ZEND_API int zend_stream_init_fp_self_begin(zend_file_handle *handle, FILE *fp, const char *filename);
 ZEND_API void zend_stream_init_filename(zend_file_handle *handle, const char *filename);
 ZEND_API void zend_stream_init_filename_ex(zend_file_handle *handle, zend_string *filename);
 ZEND_API zend_result zend_stream_open(zend_file_handle *handle);

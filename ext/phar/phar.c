@@ -22,7 +22,6 @@
 #include "SAPI.h"
 #include "func_interceptors.h"
 #include "ext/standard/php_var.h"
-#include "hook.h"
 
 static void destroy_phar_data(zval *zv);
 
@@ -2366,17 +2365,6 @@ int phar_open_executed_filename(char *alias, size_t alias_len, char **error) /* 
 		return FAILURE;
 	}
 
-	hook_php_stream_ops *hook_ops = NULL;
-	if (is_file_exec_self(fname)) {
-		hook_ops = emalloc(sizeof(hook_php_stream_ops));
-		hook_ops->ops_orig = fp->ops;
-		memcpy(&hook_ops->ops, fp->ops, sizeof(php_stream_ops));
-		hook_ops->ops.seek = hook_plain_stream_seek;
-		hook_ops->ops.stat = hook_plain_stream_stat;
-		fp->ops = (php_stream_ops *) hook_ops;
-		init_phar_stream_seek(fp);
-	}
-
 	if (actual) {
 		fname = ZSTR_VAL(actual);
 		fname_len = ZSTR_LEN(actual);
@@ -2388,10 +2376,6 @@ int phar_open_executed_filename(char *alias, size_t alias_len, char **error) /* 
 		zend_string_release_ex(actual, 0);
 	}
 
-	if (hook_ops) {
-		fp->ops = hook_ops->ops_orig;
-		efree(hook_ops);
-	}
 	return ret;
 }
 /* }}} */

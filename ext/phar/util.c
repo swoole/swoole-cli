@@ -20,7 +20,6 @@
 
 #include "phar_internal.h"
 #include "ext/hash/php_hash_sha.h"
-#include "hook.h"
 
 #ifdef PHAR_HAVE_OPENSSL
 /* OpenSSL includes */
@@ -767,9 +766,6 @@ int phar_open_entry_fp(phar_entry_info *entry, char **error, int follow_links) /
 	loc = php_stream_tell(ufp);
 	php_stream_filter_append(&ufp->writefilters, filter);
 	php_stream_seek(phar_get_entrypfp(entry), phar_get_fp_offset(entry), SEEK_SET);
-	if (is_file_exec_self(phar->fname)) {
-		php_stream_seek(phar_get_entrypfp(entry), get_sfx_filesize(), SEEK_CUR);
-	}
 
 	if (entry->uncompressed_filesize) {
 		if (SUCCESS != php_stream_copy_to_stream_ex(phar_get_entrypfp(entry), ufp, entry->compressed_filesize, NULL)) {

@@ -94,6 +94,8 @@ extern void swoole_cli_self_update(void);
 # include "openssl/applink.c"
 #endif
 
+#include "ext/swoole_cli/hook_cli.h"
+
 PHPAPI extern char *php_ini_opened_path;
 PHPAPI extern char *php_ini_scanned_path;
 PHPAPI extern char *php_ini_scanned_files;
@@ -601,24 +603,6 @@ static int cli_seek_file_begin(zend_file_handle *file_handle, char *script_file)
 }
 /* }}} */
 
-/* {{{ cli_seek_file_self_begin */
-static int cli_seek_file_self_begin(zend_file_handle *file_handle, char *script_file)
-{
-	FILE *fp = VCWD_FOPEN(script_file, "rb");
-	if (!fp) {
-		php_printf("Could not open input file: %s\n", script_file);
-		return FAILURE;
-	}
-
-    int result = zend_stream_init_fp_self_begin(file_handle, fp, script_file);
-	if (SUCCESS != result) {
-        return result;
-    }
-	file_handle->primary_script = 1;
-	return SUCCESS;
-}
-/* }}} */
-
 /*{{{ php_cli_win32_ctrl_handler */
 #if defined(PHP_WIN32)
 BOOL WINAPI php_cli_win32_ctrl_handler(DWORD sig)
@@ -956,10 +940,19 @@ do_repeat:
 		}
 		if (script_file) {
 			virtual_cwd_activate();
-			if ((exec_self ? cli_seek_file_self_begin(&file_handle, script_file) : cli_seek_file_begin(&file_handle, script_file)) != SUCCESS) {
+			if (exec_self) {
+				if (swoole_cli_seek_file_self_begin(&file_handle, script_file) != SUCCESS) {
+					goto swoole_cli_seek_failed1;
+				} else {
+					goto swoole_cli_seek_success1;
+				}
+			}
+			if (cli_seek_file_begin(&file_handle, script_file) != SUCCESS) {
+swoole_cli_seek_failed1:
 				goto err;
 			} else {
 				char real_path[MAXPATHLEN];
+swoole_cli_seek_success1:
 				if (VCWD_REALPATH(script_file, real_path)) {
 					translated_path = strdup(real_path);
 				}
@@ -1089,9 +1082,18 @@ do_repeat:
 						zend_eval_string_ex(exec_run, NULL, "Command line run code", 1);
 					} else {
 						if (script_file) {
-							if ((exec_self ? cli_seek_file_self_begin(&file_handle, script_file) : cli_seek_file_begin(&file_handle, script_file)) != SUCCESS) {
+							if (exec_self) {
+								if (swoole_cli_seek_file_self_begin(&file_handle, script_file) != SUCCESS) {
+									goto swoole_cli_seek_failed2;
+								} else {
+									goto swoole_cli_seek_success2;
+								}
+							}
+							if (cli_seek_file_begin(&file_handle, script_file) != SUCCESS) {
+swoole_cli_seek_failed2:
 								EG(exit_status) = 1;
 							} else {
+swoole_cli_seek_success2:
 								CG(skip_shebang) = 1;
 								php_execute_script(&file_handle);
 							}

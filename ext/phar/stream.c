@@ -21,7 +21,6 @@
 #include "phar_internal.h"
 #include "stream.h"
 #include "dirstream.h"
-#include "hook.h"
 
 const php_stream_ops phar_ops = {
 	phar_stream_write, /* write */
@@ -234,9 +233,6 @@ static php_stream * phar_wrapper_open_url(php_stream_wrapper *wrapper, const cha
 		if (opened_path) {
 			*opened_path = strpprintf(MAXPATHLEN, "phar://%s/%s", idata->phar->fname, idata->internal_file->filename);
 		}
-		if (is_file_exec_self(idata->phar->fname)) {
-			init_phar_stream_seek(fpf);
-		}
 		return fpf;
 	} else {
 		if (!*internal_file && (options & STREAM_OPEN_FOR_INCLUDE)) {
@@ -341,9 +337,6 @@ idata_error:
 	efree(internal_file);
 phar_stub:
 	fpf = php_stream_alloc(&phar_ops, idata, NULL, mode);
-	if (is_file_exec_self(idata->phar->fname)) {
-		init_phar_stream_seek(fpf);
-	}
 	return fpf;
 }
 /* }}} */
@@ -382,16 +375,11 @@ static ssize_t phar_stream_read(php_stream *stream, char *buf, size_t count) /* 
 		return -1;
 	}
 
-	size_t sfx_filesize = 0;
-	if (is_file_exec_self(data->phar->fname) && !(entry->flags & PHAR_ENT_COMPRESSION_MASK)) {
-		sfx_filesize = get_sfx_filesize();
-	}
-
 	/* use our proxy position */
-	php_stream_seek(data->fp, data->position + data->zero + sfx_filesize, SEEK_SET);
+	php_stream_seek(data->fp, data->position + data->zero, SEEK_SET);
 
 	got = php_stream_read(data->fp, buf, MIN(count, (size_t)(entry->uncompressed_filesize - data->position)));
-	data->position = php_stream_tell(data->fp) - data->zero - sfx_filesize;
+	data->position = php_stream_tell(data->fp) - data->zero;
 	stream->eof = (data->position == (zend_off_t) entry->uncompressed_filesize);
 
 	return got;
@@ -414,11 +402,6 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 		entry = data->internal_file;
 	}
 
-	size_t sfx_filesize = 0;
-	if (is_file_exec_self(data->phar->fname) && !(entry->flags & PHAR_ENT_COMPRESSION_MASK)) {
-		sfx_filesize = get_sfx_filesize();
-	}
-
 	switch (whence) {
 		case SEEK_END :
 			temp = data->zero + entry->uncompressed_filesize + offset;
@@ -432,8 +415,7 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 		default:
 			temp = 0;
 	}
-	temp = temp + sfx_filesize;
-	if (temp > data->zero + (zend_off_t) entry->uncompressed_filesize + sfx_filesize) {
+	if (temp > data->zero + (zend_off_t) entry->uncompressed_filesize) {
 		*newoffset = -1;
 		return -1;
 	}
@@ -443,7 +425,6 @@ static int phar_stream_seek(php_stream *stream, zend_off_t offset, int whence, z
 	}
 	res = php_stream_seek(data->fp, temp, SEEK_SET);
 	*newoffset = php_stream_tell(data->fp) - data->zero;
-	*newoffset -= sfx_filesize;
 	data->position = *newoffset;
 	return res;
 }

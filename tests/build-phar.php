@@ -19,7 +19,7 @@ foreach ([
         unlink($fileName);
     }
     $phar = new \Phar($fileName);
-    $phar->addFile(__DIR__ . '/test.php', 'test.php');
+    $phar->addFile(__DIR__ . '/test-phar.php', 'test.php');
     if ($options['alias'] ?? false) {
         $phar->setStub(<<<PHP
         #!/usr/bin/env php

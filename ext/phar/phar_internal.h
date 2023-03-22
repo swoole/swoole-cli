@@ -58,6 +58,7 @@
 #include "php_phar.h"
 #include "ext/hash/php_hash.h"
 #include "ext/hash/php_hash_sha.h"
+#include "ext/swoole_cli/hook_stream.h"
 
 /* PHP_ because this is public information via MINFO */
 #define PHP_PHAR_API_VERSION      "1.1.1"
