@@ -1,5 +1,6 @@
 工具
 ----
+- make
 - autoconf
 - automake
 - libtool
@@ -37,6 +38,8 @@ libMagick-devel
 libzstd-devel
 libbrotli-devel
 libreadline-devel
+libintl-devel
+libpq-devel (如果编译pgsql扩展)
 ```
 
 构建
@@ -56,3 +59,4 @@ git clone --recursive git@github.com:swoole/swoole-cli.git
 ----
 1. Cygwin 下不支持 `mongodb` 扩展，参考：[https://github.com/mongodb/mongo-php-driver/issues/1381](https://github.com/mongodb/mongo-php-driver/issues/1381)
 
+2. 编译pgsql扩展，在`./sapi/cygwin-build.sh`脚本 `./configure` 后面增加一行： `--with-pgsql --with-pdo-pgsql \`，并将相同版本（如8.1.12）php-src中`ext`目录下的`pgsql` `pdo_pgsql`两个文件夹拷贝到当前项目的ext目录下，再执行构建脚本
