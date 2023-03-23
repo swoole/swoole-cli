@@ -851,6 +851,8 @@ class Preprocessor
         include __DIR__ . '/credits.php';
         file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
+        copy($this->rootDir . '/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
+
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
