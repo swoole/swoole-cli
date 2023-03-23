@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace SwooleCli\UnitTest;
 
-use PHPUnit\Framework\TestCase;
 use imagick;
-use ImagickPixel;
 use ImagickDraw;
+use ImagickPixel;
+use PHPUnit\Framework\TestCase;
+use Swoole\Coroutine\Http2\Client;
+use Swoole\Http2\Request;
 
 use function Swoole\Coroutine\run;
-use function Swoole\Coroutine\go;
+
 
 final class MainTest extends TestCase
 {
@@ -114,21 +116,7 @@ final class MainTest extends TestCase
         $this->assertEquals('Yes', trim($matches[1]), 'library: brotli no found');
 
 
-        echo PHP_EOL;
-        echo "==================";
-        echo PHP_EOL;
-        echo 'curl.cainfo=' . ini_get('curl.cainfo');
-        echo PHP_EOL;
-        echo 'openssl.cafile=' . ini_get('openssl.cafile');
-        echo PHP_EOL;
-        echo "==================";
-        echo PHP_EOL;
-
-        #  mkdir -p /tmp/ssl/
-        #  wget  -O /tmp/ssl/cacert.pem https://curl.se/ca/cacert.pem
-
-
-        $url = 'https://www.cloudflare.com/';
+        $url = 'https://www.jingjingxyk.com/';
         $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -163,27 +151,33 @@ final class MainTest extends TestCase
         );
     }
 
-    public function testSwoole(): void
+    public function testSwooleHttp2(): void
     {
+        ini_set('default_socket_timeout', 60);
         run(function () {
-            $url = 'https://www.cloudflare.com/';
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_HEADER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_exec($ch);
-            $responseHeader = curl_getinfo($ch);
-            $errno = curl_errno($ch);
-            $error = curl_error($ch);
-            curl_close($ch);
-            $this->assertEquals(0, $errno, $error);
-            $this->assertGreaterThanOrEqual(
-                2,
-                $responseHeader['protocol'],
-                'no support http2 ; ' . $errno . ':' . $error
-            );
+            $domain = 'www.jingjingxyk.com';
+            $cli = new Client($domain, 443, true);
+            $cli->set([
+                'timeout' => 15,
+                'ssl_host_name' => $domain,
+                //'ssl_verify_peer' => true,
+                //'ssl_cafile' => '/tmp/ssl/cacert.pem',
+            ]);
+            $cli->connect();
+
+            $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+            $req = new Request();
+            $req->method = 'GET';
+            $req->path = '/';
+            $req->headers = [
+                'host' => $domain,
+                'user-agent' => $userAgent,
+                'accept' => 'text/html,application/xhtml+xml,application/xml',
+                'accept-encoding' => 'gzip'
+            ];
+            $cli->send($req);
+            $response = $cli->recv();
+            $this->assertEquals(200, $response->statusCode, "no support http2");
         });
     }
 }

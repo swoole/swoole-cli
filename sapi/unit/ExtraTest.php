@@ -6,12 +6,9 @@ namespace SwooleCli\UnitTest;
 
 use PHPUnit\Framework\TestCase;
 
-use function Swoole\Coroutine\run;
-use function Swoole\Coroutine\go;
 
 class ExtraTest extends TestCase
 {
-
 
     public function testCurlIDN2(): void
     {
