@@ -76,27 +76,6 @@ EOF
             ->depends('libiconv')
     );
 
-    $jansson_prefix = JANSSON_PREFIX;
-    $p->addLibrary(
-        (new Library('jansson'))
-            ->withHomePage('http://www.digip.org/jansson/')
-            ->withUrl('https://github.com/akheron/jansson/archive/refs/tags/v2.14.tar.gz')
-            ->withFile('jansson-v2.14.tar.gz')
-            ->withManual('https://github.com/akheron/jansson.git')
-            ->withLicense('https://github.com/akheron/jansson/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withPrefix($jansson_prefix)
-            ->withConfigure(
-                <<<EOF
-             autoreconf -fi
-            ./configure --help
-            ./configure \
-            --prefix={$jansson_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
-EOF
-            )
-            ->withPkgName('jansson')
-    );
     $nghttp2_prefix = NGHTTP2_PREFIX;
     $p->addLibrary(
         (new Library('nghttp2'))
@@ -106,7 +85,7 @@ EOF
             ->withConfigure(
                 <<<EOF
             ./configure --help
-            packages="zlib libxml-2.0 libcares openssl jansson" # jansson  libev 
+            packages="zlib libxml-2.0 libcares openssl " # jansson   libev 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
             LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
             LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
@@ -120,7 +99,7 @@ EOF
             --with-openssl \
             --disable-http3 \
             --disable-python-bindings  \
-            --with-jansson  \
+            --without-jansson  \
             --without-libevent-openssl \
             --without-libev \
             --without-cunit \

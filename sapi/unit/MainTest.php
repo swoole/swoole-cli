@@ -135,13 +135,29 @@ final class MainTest extends TestCase
         curl_setopt($ch1, CURLOPT_MAXREDIRS, 5);
         curl_setopt($ch1, CURLOPT_FOLLOWLOCATION, false);
         curl_exec($ch1);
-        $responseHheader = curl_getinfo($ch1);
+        $responseheader = curl_getinfo($ch1);
+        $errno = curl_errno($ch1);
+        $error = curl_error($ch1);
         curl_close($ch1);
+        $this->assertEquals(0,$errno,$error);
+        $this->assertGreaterThanOrEqual(200, $responseheader['http_code'], 'curl no support IDNA');
 
-        $this->assertGreaterThanOrEqual(200, $responseHheader['http_code'], 'curl no support IDNA');
+        echo PHP_EOL;
+        echo "==================";
+        echo PHP_EOL;
+        echo 'curl.cainfo=' . ini_get('curl.cainfo');
+        echo PHP_EOL;
+        echo 'openssl.cafile=' . ini_get('openssl.cafile');
+        echo PHP_EOL;
+        echo "==================";
+        echo PHP_EOL;
 
-        $url2 = 'https://www.swoole.com/';
-        $userAgent = 'swoole-cli-test';
+        #  mkdir -p /tmp/ssl/
+        #  wget  -O /tmp/ssl/cacert.pem https://curl.se/ca/cacert.pem
+
+
+        $url2 = 'https://www.cloudflare.com/';
+        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
         $ch2 = curl_init();
         curl_setopt($ch2, CURLOPT_URL, $url2);
         curl_setopt($ch2, CURLOPT_USERAGENT, $userAgent);
@@ -154,19 +170,23 @@ final class MainTest extends TestCase
                 'Content-Type: text/html'
             ]
         );
+        # $ca='/tmp/ssl/cacert.pem';
+        # curl_setopt($ch2, CURLOPT_CAINFO, $ca);
         curl_setopt($ch2, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
         curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch2, CURLOPT_MAXREDIRS, 5);
         curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, true);
         curl_exec($ch2);
-        $responseheader = curl_getinfo($ch2);
+        $responseHeader = curl_getinfo($ch2);
         $errno = curl_errno($ch2);
         $error = curl_error($ch2);
         curl_close($ch2);
+
+        $this->assertEquals(0,$errno,$error);
         $this->assertGreaterThanOrEqual(
             2,
-            $responseheader['protocol'],
+            $responseHeader['protocol'],
             'no support http2; ' . $errno . ':' . $error
         );
     }
@@ -174,21 +194,22 @@ final class MainTest extends TestCase
     public function testSwoole(): void
     {
         run(function () {
+            $url= 'https://www.cloudflare.com/';
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://www.swoole.com/');
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
             curl_exec($ch);
-            $responseheader = curl_getinfo($ch);
+            $responseHeader = curl_getinfo($ch);
             $errno = curl_errno($ch);
             $error = curl_error($ch);
             curl_close($ch);
-
+            $this->assertEquals(0,$errno,$error);
             $this->assertGreaterThanOrEqual(
                 2,
-                $responseheader['protocol'],
+                $responseHeader['protocol'],
                 'no support http2 ; ' . $errno . ':' . $error
             );
         });
