@@ -540,6 +540,7 @@ if test "$PHP_CLI" != "no"; then
   PHP_ADD_BUILD_DIR([sapi/cli])
   PHP_ADD_BUILD_DIR(sapi/cli/fpm)
   PHP_ADD_BUILD_DIR(sapi/cli/fpm/events)
+  PHP_ADD_BUILD_DIR(sapi/cli/sfx)
   
   if test "$fpm_trace_type" && test -f "$abs_srcdir/sapi/cli/fpm/fpm_trace_$fpm_trace_type.c"; then
     PHP_FPM_TRACE_FILES="fpm/fpm_trace.c fpm/fpm_trace_$fpm_trace_type.c"
@@ -581,8 +582,12 @@ if test "$PHP_CLI" != "no"; then
 	fpm/events/devpoll.c \
 	fpm/events/port.c \
   "
+
+  PHP_SFX_FILES="sfx/hook_cli.c \
+  sfx/hook_phar.c \
+  sfx/sfx.c"
   
-  PHP_SELECT_CLI_SAPI(cli, program, $PHP_CLI_FILES $PHP_FPM_FILES $PHP_FPM_TRACE_FILES, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1, '$(SAPI_CLI_PATH)')
+  PHP_SELECT_CLI_SAPI(cli, program, $PHP_CLI_FILES $PHP_FPM_FILES $PHP_SFX_FILES $PHP_FPM_TRACE_FILES, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1, '$(SAPI_CLI_PATH)')
 
   case $host_alias in
   *aix*)
