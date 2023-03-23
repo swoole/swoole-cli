@@ -10,7 +10,6 @@ use ImagickPixel;
 use PHPUnit\Framework\TestCase;
 use Swoole\Coroutine\Http2\Client;
 use Swoole\Http2\Request;
-
 use function Swoole\Coroutine\run;
 
 
