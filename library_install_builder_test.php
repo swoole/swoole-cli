@@ -1553,7 +1553,7 @@ function install_libbpf(Preprocessor $p)
             ->withLicense('https://github.com/libbpf/libbpf/blob/master/LICENSE.BSD-2-Clause', Library::LICENSE_LGPL)
             ->withUrl('https://github.com/libbpf/libbpf/archive/refs/tags/v1.1.0.tar.gz')
             ->withFile('libbpf-v1.1.0.tar.gz')
-            ->withManual('https://libbpf.readthedocs.io/en/latest/api.html')
+            ->withManual('https://libbpf.readthedocs.io/en/latest/libbpf_build.html')
             ->withPrefix('/usr/libbpf')
             ->withCleanBuildDirectory()
             ->withConfigure(
@@ -1562,7 +1562,11 @@ function install_libbpf(Preprocessor $p)
                 BUILD_STATIC_ONLY=y  make
                 exit 0
                 mkdir build /usr/libbpf
-                BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR=/usr/libbpf make install
+                PKG_CONFIG_PATH=/usr/libbpf/lib64/pkgconfig
+                BUILD_STATIC_ONLY=y \
+                OBJDIR=build \
+                DESTDIR=/usr/libbpf \
+                make install
                 eixt 0
 
 EOF

@@ -679,11 +679,10 @@ function install_libidn2(Preprocessor $p)
             ->withCleanPreInstallDirectory($libidn2_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help
-
-            #  intl  依赖  gettext
+            # 依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring )
             # 解决依赖  apk add  gettext  coreutils
-
+            
+            ./configure --help
             ./configure --prefix={$libidn2_prefix} \
             enable_static=yes \
             enable_shared=no \
@@ -693,6 +692,12 @@ function install_libidn2(Preprocessor $p)
 
 EOF
             )
+            ->withScriptAfterInstall("
+            # 查看是否有动态链接库 (已确认，无动态链接库）
+            # nm -D {$libidn2_prefix}/lib/libidn2.a
+            # nm {$libidn2_prefix}/lib/libidn2.a
+            # ar -t {$libidn2_prefix}/lib/libidn2.a
+            ")
             ->withPkgName('libidn2')
             ->withBinPath($libidn2_prefix . '/bin/')
             ->depends('libiconv')
