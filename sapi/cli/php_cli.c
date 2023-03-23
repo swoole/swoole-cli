@@ -94,6 +94,8 @@ extern void swoole_cli_self_update(void);
 # include "openssl/applink.c"
 #endif
 
+#include "sfx/hook_cli.h"
+
 PHPAPI extern char *php_ini_opened_path;
 PHPAPI extern char *php_ini_scanned_path;
 PHPAPI extern char *php_ini_scanned_files;
@@ -182,6 +184,7 @@ const opt_struct OPTIONS[] = {
 	/* Internal testing option -- may be changed or removed without notice,
 	 * including in patch releases. */
 	{16,  1, "repeat"},
+	{127, 0, "self"},
 	{'-', 0, NULL} /* end of args */
 };
 
@@ -532,6 +535,7 @@ static void php_cli_usage(char *argv0)
 				"  --re <name>      Show information about extension <name>.\n"
 				"  --rz <name>      Show information about Zend extension <name>.\n"
 				"  --ri <name>      Show configuration for extension <name>.\n"
+				"  --self           Parse and execute self file.\n"
 				"\n"
 				, prog, prog, prog, prog, prog, prog, prog, prog);
 }
@@ -645,6 +649,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 	char *exec_direct=NULL, *exec_run=NULL, *exec_begin=NULL, *exec_end=NULL;
 	char *arg_free=NULL, **arg_excp=&arg_free;
 	char *script_file=NULL, *translated_path = NULL;
+	bool exec_self = 0;
 	int interactive=0;
 	const char *param_error=NULL;
 	int hide_argv = 0;
@@ -871,6 +876,9 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			case 16:
 				num_repeats = atoi(php_optarg);
 				break;
+			case 127:
+				exec_self = 1;
+				break;
 			default:
 				break;
 			}
@@ -917,12 +925,34 @@ do_repeat:
 			script_file=argv[php_optind];
 			php_optind++;
 		}
+		if (exec_self) {
+			if (PG(php_binary)) {
+				if (script_file) {
+					--php_optind;
+				}
+				script_file = PG(php_binary);
+			} else {
+				php_printf("Could not get PHP_BINARY.\n");
+				exit(1);
+			}
+		} else if(script_file && PG(php_binary) && 0 == strcmp(script_file, PG(php_binary))) {
+			exec_self = 1;
+		}
 		if (script_file) {
 			virtual_cwd_activate();
+			if (exec_self) {
+				if (swoole_cli_seek_file_self_begin(&file_handle, script_file) != SUCCESS) {
+					goto swoole_cli_seek_failed1;
+				} else {
+					goto swoole_cli_seek_success1;
+				}
+			}
 			if (cli_seek_file_begin(&file_handle, script_file) != SUCCESS) {
+swoole_cli_seek_failed1:
 				goto err;
 			} else {
 				char real_path[MAXPATHLEN];
+swoole_cli_seek_success1:
 				if (VCWD_REALPATH(script_file, real_path)) {
 					translated_path = strdup(real_path);
 				}
@@ -1052,9 +1082,18 @@ do_repeat:
 						zend_eval_string_ex(exec_run, NULL, "Command line run code", 1);
 					} else {
 						if (script_file) {
+							if (exec_self) {
+								if (swoole_cli_seek_file_self_begin(&file_handle, script_file) != SUCCESS) {
+									goto swoole_cli_seek_failed2;
+								} else {
+									goto swoole_cli_seek_success2;
+								}
+							}
 							if (cli_seek_file_begin(&file_handle, script_file) != SUCCESS) {
+swoole_cli_seek_failed2:
 								EG(exit_status) = 1;
 							} else {
+swoole_cli_seek_success2:
 								CG(skip_shebang) = 1;
 								php_execute_script(&file_handle);
 							}
