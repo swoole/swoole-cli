@@ -85,7 +85,7 @@ EOF
             ->withConfigure(
                 <<<EOF
             ./configure --help
-            packages="zlib libxml-2.0 libcares openssl " # jansson   libev 
+            packages="zlib libxml-2.0 libcares openssl "  # jansson  libev libbpf libelf libngtcp2 libnghttp3
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
             LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
             LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
