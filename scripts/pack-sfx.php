@@ -19,7 +19,7 @@ if (!copy(PHP_BINARY, $target)) {
     exit(1);
 }
 
-exec(sprintf('chmod +x %s', $target), $output, $status);
+exec($cmd = sprintf('chmod +x %s', $target), $output, $status);
 if (0 !== $status) {
     echo sprintf('Exec cmd %s failed!', $cmd), PHP_EOL;
     exit(1);
@@ -31,7 +31,7 @@ if (false === $phpFileSize) {
     exit(1);
 }
 
-exec(sprintf('cat %s >> %s', $phpFile, $target), $output, $status);
+exec($cmd = sprintf('cat %s >> %s', $phpFile, $target), $output, $status);
 if (0 !== $status) {
     echo sprintf('Exec cmd %s failed!', $cmd), PHP_EOL;
     exit(1);
