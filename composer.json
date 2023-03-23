@@ -28,7 +28,8 @@
     "phpunit/phpunit": "^9.6",
     "friendsofphp/php-cs-fixer": "^3.13.1",
     "phpstan/phpstan": "^1.9.4",
-    "squizlabs/php_codesniffer": "*"
+    "squizlabs/php_codesniffer": "*",
+    "ext-curl": "*"
   },
   "scripts": {
     "test": "phpunit",
