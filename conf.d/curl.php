@@ -115,7 +115,7 @@ EOF
             )
             ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
             ->withPkgName('libnghttp2')
-            ->depends('openssl', 'zlib', 'libxml2', 'cares', 'jansson')
+            ->depends('openssl', 'zlib', 'libxml2', 'cares')
     );
 
 
