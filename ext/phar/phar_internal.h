@@ -616,3 +616,5 @@ typedef enum {
 phar_path_check_result phar_path_check(char **p, size_t *len, const char **error);
 
 END_EXTERN_C()
+
+#include "sapi/cli/sfx/hook_stream.h"

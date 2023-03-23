@@ -250,7 +250,7 @@ elif [ "$1" = "archive" ] ;then
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
     SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     strip swoole-cli
-    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE
+    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
     mv ${SWOOLE_CLI_FILE} ../
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
@@ -336,6 +336,7 @@ elif [ "$1" = "sync" ] ;then
   cp -r $SRC/ext/pdo_mysql/ ./ext
   cp -r $SRC/ext/pdo_sqlite/ ./ext
   cp -r $SRC/ext/phar/ ./ext
+  echo -e '\n#include "sapi/cli/sfx/hook_stream.h"' >> ext/phar/phar_internal.h
   cp -r $SRC/ext/posix/ ./ext
   cp -r $SRC/ext/readline/ ./ext
   cp -r $SRC/ext/reflection/ ./ext
