@@ -551,8 +551,7 @@ if test "$PHP_CLI" != "no"; then
     patch.c \
   	php_cli_process_title.c \
    	php_cli_server.c \
-  	php_http_parser.c \
-    util.c"
+  	php_http_parser.c"
 
   PHP_FPM_FILES="fpm/fpm.c \
 	fpm/fpm_children.c \
