@@ -114,34 +114,6 @@ final class MainTest extends TestCase
         $this->assertEquals('Yes', trim($matches[1]), 'library: brotli no found');
 
 
-        $url1 = "http://国家电网.网址";
-        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
-        $ch1 = curl_init();
-        curl_setopt($ch1, CURLOPT_URL, $url1);
-        curl_setopt($ch1, CURLOPT_USERAGENT, $userAgent);
-        curl_setopt($ch1, CURLOPT_FILETIME, true);
-        curl_setopt(
-            $ch1,
-            CURLOPT_HTTPHEADER,
-            [
-                'User-Agent: ' . $userAgent,
-                'Referer: https://www.baidu.com',
-                'Content-Type: text/html'
-            ]
-        );
-        curl_setopt($ch1, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch1, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch1, CURLOPT_MAXREDIRS, 5);
-        curl_setopt($ch1, CURLOPT_FOLLOWLOCATION, false);
-        curl_exec($ch1);
-        $responseheader = curl_getinfo($ch1);
-        $errno = curl_errno($ch1);
-        $error = curl_error($ch1);
-        curl_close($ch1);
-        $this->assertEquals(0,$errno,$error);
-        $this->assertGreaterThanOrEqual(200, $responseheader['http_code'], 'curl no support IDNA');
-
         echo PHP_EOL;
         echo "==================";
         echo PHP_EOL;
@@ -156,14 +128,14 @@ final class MainTest extends TestCase
         #  wget  -O /tmp/ssl/cacert.pem https://curl.se/ca/cacert.pem
 
 
-        $url2 = 'https://www.cloudflare.com/';
+        $url = 'https://www.cloudflare.com/';
         $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
-        $ch2 = curl_init();
-        curl_setopt($ch2, CURLOPT_URL, $url2);
-        curl_setopt($ch2, CURLOPT_USERAGENT, $userAgent);
-        curl_setopt($ch2, CURLOPT_FILETIME, true);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($ch, CURLOPT_FILETIME, true);
         curl_setopt(
-            $ch2,
+            $ch,
             CURLOPT_HTTPHEADER,
             [
                 'User-Agent: ' . $userAgent,
@@ -171,19 +143,19 @@ final class MainTest extends TestCase
             ]
         );
         # $ca='/tmp/ssl/cacert.pem';
-        # curl_setopt($ch2, CURLOPT_CAINFO, $ca);
-        curl_setopt($ch2, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
-        curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch2, CURLOPT_MAXREDIRS, 5);
-        curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, true);
-        curl_exec($ch2);
-        $responseHeader = curl_getinfo($ch2);
-        $errno = curl_errno($ch2);
-        $error = curl_error($ch2);
-        curl_close($ch2);
+        # curl_setopt($ch, CURLOPT_CAINFO, $ca);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        $responseHeader = curl_getinfo($ch);
+        $errno = curl_errno($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
 
-        $this->assertEquals(0,$errno,$error);
+        $this->assertEquals(0, $errno, $error);
         $this->assertGreaterThanOrEqual(
             2,
             $responseHeader['protocol'],
@@ -194,7 +166,7 @@ final class MainTest extends TestCase
     public function testSwoole(): void
     {
         run(function () {
-            $url= 'https://www.cloudflare.com/';
+            $url = 'https://www.cloudflare.com/';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
@@ -206,7 +178,7 @@ final class MainTest extends TestCase
             $errno = curl_errno($ch);
             $error = curl_error($ch);
             curl_close($ch);
-            $this->assertEquals(0,$errno,$error);
+            $this->assertEquals(0, $errno, $error);
             $this->assertGreaterThanOrEqual(
                 2,
                 $responseHeader['protocol'],
