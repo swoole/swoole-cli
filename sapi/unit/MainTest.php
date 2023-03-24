@@ -1,11 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace SwooleCli\UnitTest;
 
-use PHPUnit\Framework\TestCase;
 use imagick;
-use ImagickPixel;
 use ImagickDraw;
+use ImagickPixel;
+use PHPUnit\Framework\TestCase;
+use Swoole\Coroutine\Http2\Client;
+use Swoole\Http2\Request;
+use function Swoole\Coroutine\run;
+
 
 final class MainTest extends TestCase
 {
@@ -87,5 +93,90 @@ final class MainTest extends TestCase
             intl_is_failure($r->getErrorCode()),
             'error_code: ' . $r->getErrorCode() . ':' . $r->getErrorMessage()
         );
+    }
+
+    public function testCurl(): void
+    {
+        $reflector = new \ReflectionExtension('curl');
+        ob_start();
+        $reflector->info();
+        $output = strip_tags(ob_get_clean());
+        preg_match('/^AsynchDNS (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: c-ares no found');
+        preg_match('/^IDN (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: libidn2 no found');
+        preg_match('/^libz (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: zlib no found');
+        preg_match('/^SSL (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: openssl no found');
+        preg_match('/^HTTP2 (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: nghttp2 no found');
+        preg_match('/^BROTLI (?:=>)?(.*)$/m', $output, $matches);
+        $this->assertEquals('Yes', trim($matches[1]), 'library: brotli no found');
+
+
+        $url = 'https://www.jingjingxyk.com/';
+        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($ch, CURLOPT_FILETIME, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            [
+                'User-Agent: ' . $userAgent,
+                'Content-Type: text/html'
+            ]
+        );
+        # $ca='/tmp/ssl/cacert.pem';
+        # curl_setopt($ch, CURLOPT_CAINFO, $ca);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        $responseHeader = curl_getinfo($ch);
+        $errno = curl_errno($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        $this->assertEquals(0, $errno, $error);
+        $this->assertGreaterThanOrEqual(
+            2,
+            $responseHeader['protocol'],
+            'no support http2; ' . $errno . ':' . $error
+        );
+    }
+
+    public function testSwooleHttp2(): void
+    {
+        ini_set('default_socket_timeout', 60);
+        run(function () {
+            $domain = 'www.jingjingxyk.com';
+            $cli = new Client($domain, 443, true);
+            $cli->set([
+                'timeout' => 15,
+                'ssl_host_name' => $domain,
+                //'ssl_verify_peer' => true,
+                //'ssl_cafile' => '/tmp/ssl/cacert.pem',
+            ]);
+            $cli->connect();
+
+            $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+            $req = new Request();
+            $req->method = 'GET';
+            $req->path = '/';
+            $req->headers = [
+                'host' => $domain,
+                'user-agent' => $userAgent,
+                'accept' => 'text/html,application/xhtml+xml,application/xml',
+                'accept-encoding' => 'gzip'
+            ];
+            $cli->send($req);
+            $response = $cli->recv();
+            $this->assertEquals(200, $response->statusCode, "no support http2");
+        });
     }
 }
