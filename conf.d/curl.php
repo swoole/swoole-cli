@@ -62,7 +62,7 @@ EOF
             ->withConfigure(
                 <<<EOF
             ./configure --help
-            packages="zlib libxml-2.0 libcares openssl" # jansson  libev 
+            packages="zlib libxml-2.0 libcares  openssl " # jansson  libev 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
             LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
             LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
@@ -95,91 +95,6 @@ EOF
             ->depends('openssl', 'zlib', 'libxml2', 'cares')
     );
 
-    $nettle_prefix = NETTLE_PREFIX;
-    $p->addLibrary(
-        (new Library('nettle'))
-            ->withHomePage('https://www.lysator.liu.se/~nisse/nettle/')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-            ->withUrl('https://ftp.gnu.org/gnu/nettle/nettle-3.8.tar.gz')
-            ->withFile('nettle-3.8.tar.gz')
-            ->withPrefix($nettle_prefix)
-            ->withConfigure(
-                <<<EOF
-             ./configure --help
-            ./configure \
-            --prefix={$nettle_prefix} \
-            --enable-static \
-            --disable-shared \
-            --enable-mini-gmp
-EOF
-            )
-            ->withPkgName('nettle')
-            ->depends('gmp')
-    );
-
-    $libtasn1_prefix = LIBTASN1_PREFIX;
-    $p->addLibrary(
-        (new Library('libtasn1'))
-            ->withHomePage('https://www.gnu.org/software/libtasn1/')
-            ->withLicense('https://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-            ->withManual('https://www.gnu.org/software/libtasn1/manual/')
-            ->withUrl('https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.19.0.tar.gz')
-            ->withPrefix($libtasn1_prefix)
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
-            ./configure \
-            --prefix={$libtasn1_prefix} \
-            --enable-static=yes \
-            --enable-shared=no
-EOF
-            )
-            ->withPkgName('libtasn1')
-    );
-
-    $gnutls_prefix = GNUTLS_PREFIX;
-    $iconv_prefix = ICONV_PREFIX;
-    $zlib_prefix = ZLIB_PREFIX;
-    $p->addLibrary(
-        (new Library('gnutls'))
-            ->withHomePage('https://www.gnutls.org/')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-            ->withUrl('https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.8.tar.xz')
-            ->withManual('https://gitlab.com/gnutls/gnutls.git')
-            ->withManual('https://www.gnutls.org/download.html')
-            ->withPrefix($gnutls_prefix)
-            ->withConfigure(
-                <<<EOF
-            packages="gmp  libtasn1 libbrotlienc libbrotlidec libzstd nettle"
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
-            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
-            LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
-            ./configure \
-            --prefix={$gnutls_prefix} \
-            --enable-static=yes \
-            --enable-shared=no \
-            --with-zstd \
-            --with-brotli \
-            --with-libiconv-prefix={$iconv_prefix} \
-            --with-libz-prefix={$zlib_prefix} \
-            --with-nettle-mini \
-            --with-libintl-prefix \
-            --with-included-unistring \
-            --with-included-libtasn1 \
-            --without-tpm2 \
-            --without-tpm \
-            --disable-doc \
-            --disable-tests \
-            --enable-openssl-compatibility \
-            --without-p11-kit \
-            --without-libseccomp-prefix \
-            --without-libcrypto-prefix \
-            --without-librt-prefix 
-            # --with-libev-prefix=/usr/libev \
-EOF
-            )->withPkgName('gnutls')
-            ->withBinPath($gnutls_prefix . '/bin/')
-    );
     $nghttp3_prefix = NGHTTP3_PREFIX;
     $p->addLibrary(
         (new Library('nghttp3'))
@@ -217,7 +132,7 @@ EOF
                 <<<EOF
                 autoreconf -fi
                 ./configure --help
-                packages="gnutls libnghttp3 "
+                packages="openssl libnghttp3 "
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
                 LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
                 LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
@@ -226,14 +141,20 @@ EOF
                 --enable-shared=no \
                 --enable-static=yes \
                 --enable-lib-only \
-                --with-gnutls=yes \
+                --without-libev \
+                --with-openssl \
                 --with-libnghttp3=yes \
-                --without-libev
+                --without-gnutls \
+                --without-boringssl \
+                --without-picotls \
+                --without-wolfssl \
+                --without-cunit  \
+                --without-jemalloc
 EOF
             )
             ->withPkgName('libngtcp2')
-            ->withPkgName('libngtcp2_crypto_gnutls')
-            ->depends('gnutls', 'nghttp3')
+            ->withPkgName('libngtcp2_crypto_openssl')
+            ->depends('openssl', 'nghttp3')
     );
 
     $curl_prefix = CURL_PREFIX;
@@ -251,7 +172,8 @@ EOF
                 <<<EOF
             ./configure --help
 
-            package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2'
+            package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 '
+            package_name="\$package_name  libnghttp3 libngtcp2  libngtcp2_crypto_openssl"
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$package_name)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$package_name)" \
             LIBS="$(pkg-config      --libs-only-l    --static \$package_name)" \
@@ -279,18 +201,28 @@ EOF
             --enable-progress-meter \
             --enable-optimize \
             --with-zlib={$zlib_prefix} \
-            --with-openssl={$openssl_prefix} \
             --enable-ares={$cares_prefix} \
-            --with-default-ssl-backend=openssl \
             --with-nghttp2 \
-            --without-ngtcp2 \
-            --without-nghttp3 \
-            --without-libidn2
+            --with-ngtcp2 \
+            --with-nghttp3 \
+            --without-gnutls \
+            --without-libidn2 \
+            --with-openssl={$openssl_prefix}  \
+            --with-default-ssl-backend=openssl 
 EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'nghttp2')
+            ->depends(
+                'openssl',
+                'cares',
+                'zlib',
+                'brotli',
+                'libzstd',
+                'nghttp2',
+                'nghttp3',
+                'ngtcp2'
+            )
     );
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
 };
