@@ -807,45 +807,53 @@ function install_bzip2_dev_latest(Preprocessor $p)
 
 function install_libev($p)
 {
+    $libev_prefix = LIBEV_PREFIX;
     $p->addLibrary(
         (new Library('libev'))
             ->withHomePage('http://software.schmorp.de/pkg/libev.html')
-            ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withLicense('http://cvs.schmorp.de/libev/README', Library::LICENSE_BSD)
             ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
             ->withManual('http://cvs.schmorp.de/libev/README')
-            ->withPrefix('/usr/libev')
+            ->withPrefix($libev_prefix)
             ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libev_prefix)
             ->withConfigure(
                 <<<EOF
-            ls -lh
             ./configure --help
-            ./configure --prefix=/usr/libev \
+            ./configure \
+            --prefix={$libev_prefix} \
             --enable-shared=no \
             --enable-static=yes
-
 EOF
             )
-            ->withPkgName('libev')
     );
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . LIBEV_PREFIX . '/include');
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . LIBEV_PREFIX . '/lib');
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lev');
+
 }
 
 function install_nettle($p)
 {
+    $nettle_prefix = NETTLE_PREFIX;
     $p->addLibrary(
         (new Library('nettle'))
             ->withHomePage('https://www.lysator.liu.se/~nisse/nettle/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
             ->withUrl('https://ftp.gnu.org/gnu/nettle/nettle-3.8.tar.gz')
             ->withFile('nettle-3.8.tar.gz')
-            ->withPrefix('/usr/nettle/')
+            ->withPrefix($nettle_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($nettle_prefix)
             ->withConfigure(
-                '
+                <<<EOF
              ./configure --help
             ./configure \
-            --prefix=/usr/nettle \
+            --prefix={$nettle_prefix} \
             --enable-static \
-            --disable-shared
-            '
+            --disable-shared \
+            --enable-mini-gmp
+EOF
             )
             ->withPkgName('nettle')
     );
@@ -951,7 +959,9 @@ function install_gnutls($p)
         libunbound for DNSSEC/DANE functionality
 EOF;
 
-
+    $gnutls_prefix = GNUTLS_PREFIX;
+    $iconv_prefix = ICONV_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('gnutls'))
             ->withHomePage('https://www.gnutls.org/')
@@ -959,11 +969,12 @@ EOF;
             ->withUrl('https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.8.tar.xz')
             ->withManual('https://gitlab.com/gnutls/gnutls.git')
             ->withManual('https://www.gnutls.org/download.html')
+            ->withPrefix($gnutls_prefix)
             ->withCleanBuildDirectory()
-            ->withPrefix('/usr/gnutls')
+            ->withCleanPreInstallDirectory($gnutls_prefix)
             ->withConfigure(
-                '
-                 test -d /usr/gnutls && rm -rf /usr/gnutls
+                <<<EOF
+       
                  set -uex
                 export GMP_CFLAGS=$(pkg-config  --cflags --static gmp)
                 export GMP_LIBS=$(pkg-config    --libs   --static gmp)
@@ -982,9 +993,13 @@ EOF;
 
                 export LIBZSTD_CFLAGS=$(pkg-config  --cflags --static libzstd)
                 export LIBZSTD_LIBS=$(pkg-config    --libs   --static libzstd)
+                export NETTLE_CFLAGS=$(pkg-config  --cflags --static nettle)
+                export NETTLE_LIBS=$(pkg-config    --libs   --static nettle)
+                export LIBIDN2_CFLAGS=$(pkg-config  --cflags --static libidn2)
+                export LIBIDN2_LIBS=$(pkg-config    --libs   --static libidn2)
 
-                export P11_KIT_CFLAGS=$(pkg-config  --cflags --static p11-kit-1)
-                export P11_KIT_LIBS=$(pkg-config    --libs   --static p11-kit-1)
+                # export P11_KIT_CFLAGS=$(pkg-config  --cflags --static p11-kit-1)
+                # export P11_KIT_LIBS=$(pkg-config    --libs   --static p11-kit-1)
 
 
 
@@ -992,29 +1007,36 @@ EOF;
                 export LIBS=$(pkg-config        --libs     --static libbrotlicommon libbrotlienc libbrotlidec)
                  //  exit 0
                 # ./bootstrap
-                ./configure --help
-
+                ./configure --help | grep -e '--without'
+                ./configure --help | grep -e '--with-'
+               
+                
 
                 ./configure \
-                --prefix=/usr/gnutls \
+                --prefix={$gnutls_prefix} \
                 --enable-static=yes \
                 --enable-shared=no \
                 --with-zstd \
                 --with-brotli \
-                --with-libiconv-prefix=/usr/libiconv \
-                --with-libz-prefix=/usr/zlib \
+                --with-libiconv-prefix={$iconv_prefix} \
+                --with-libz-prefix={$zlib_prefix} \
+                --with-nettle-mini \
                 --with-libintl-prefix \
                 --with-included-unistring \
-                --with-nettle-mini  \
                 --with-included-libtasn1 \
                 --without-tpm2 \
                 --without-tpm \
                 --disable-doc \
-                --disable-tests
-               # --with-libev-prefix=/usr/libev \
-
-            '
+                --disable-tests \
+                --enable-openssl-compatibility \
+                --without-p11-kit \
+                --without-libseccomp-prefix \
+                --without-libcrypto-prefix \
+                --without-librt-prefix 
+                # --with-libev-prefix=/usr/libev \
+EOF
             )->withPkgName('gnutls')
+            ->withBinPath($gnutls_prefix . '/bin/')
         //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
 }
@@ -1120,78 +1142,85 @@ EOF
 
 function install_nghttp3(Preprocessor $p)
 {
+    $nghttp3_prefix = NGHTTP3_PREFIX;
     $p->addLibrary(
         (new Library('nghttp3'))
             ->withHomePage('https://github.com/ngtcp2/nghttp3')
+            ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
             ->withManual('https://nghttp2.org/nghttp3/')
-            ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/tags/v0.8.0.tar.gz')
+            ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/tags/v0.9.0.tar.gz')
             //->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/heads/main.zip')
-            ->withFile('nghttp3-v0.8.0.tar.gz')
+            ->withFile('nghttp3-v0.9.0.tar.gz')
+            ->withPrefix($nghttp3_prefix)
             ->withCleanBuildDirectory()
-            ->withPrefix('/usr/nghttp3')
+            ->withCleanPreInstallDirectory($nghttp3_prefix)
             ->withConfigure(
-                '
-            export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
-            export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
-
+                <<<EOF
             autoreconf -fi
             ./configure --help
-
-            ./configure --prefix=/usr/nghttp3 --enable-lib-only \
+            ./configure --prefix={$nghttp3_prefix} \
+            --enable-lib-only \
             --enable-shared=no \
             --enable-static=yes
-
-        '
+EOF
             )
-            ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
             ->withPkgName('libnghttp3')
     );
 }
 
 function install_ngtcp2(Preprocessor $p)
 {
-    //libexpat pcre2 libidn2 brotli
-
+    $ngtcp2_prefix = NGTCP2_PREFIX;
+    $libev_prefix = LIBEV_PREFIX;
     $p->addLibrary(
         (new Library('ngtcp2'))
             ->withHomePage('https://github.com/ngtcp2/ngtcp2')
+            ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
             ->withManual('https://curl.se/docs/http3.html')
             ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/tags/v0.13.1.tar.gz')
             ->withFile('ngtcp2-v0.13.1.tar.gz')
+
+            ->withPrefix($ngtcp2_prefix)
             ->withCleanBuildDirectory()
-            ->withPrefix('/usr/ngtcp2')
+            ->withCleanPreInstallDirectory($ngtcp2_prefix)
             ->withConfigure(
-                '
+                <<<EOF
 
             # openssl does not have QUIC interface, disabling it
             #
             # OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
             # OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
-
-
+            
             export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
             export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
             export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
             export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
 
-            export LIBEV_CFLAGS="-I/usr/libev/include"
-            export LIBEV_LIBS="-L/usr/libev/lib -lev"
+            export LIBEV_CFLAGS="-I{$libev_prefix}/include"
+            export LIBEV_LIBS="-L{$libev_prefix}/lib -lev"
 
              autoreconf -fi
             ./configure --help
-
+              
             ./configure \
-            --prefix=/usr/ngtcp2 \
+            --prefix=$ngtcp2_prefix \
             --enable-shared=no \
             --enable-static=yes \
+            --enable-lib-only \
             --with-gnutls=yes \
             --with-libnghttp3=yes \
             --with-libev=yes
-            '
+EOF
             )
-            ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
-            ->withPkgName('libngtcp2  libngtcp2_crypto_gnutls')
+
+            ->withPkgName('libngtcp2')
+            ->withPkgName('libngtcp2_crypto_gnutls')
+            ->depends('gnutls', 'nghttp3', 'libev')
     );
+
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . LIBEV_PREFIX . '/include');
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . LIBEV_PREFIX . '/lib');
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lev');
 }
 
 

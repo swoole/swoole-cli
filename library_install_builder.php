@@ -52,6 +52,9 @@ function install_libiconv(Preprocessor $p)
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withBinPath($libiconv_prefix . '/bin/')
     );
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . ICONV_PREFIX . '/include');
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . ICONV_PREFIX . '/lib');
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -liconv');
 }
 
 
@@ -366,6 +369,9 @@ function install_bzip2(Preprocessor $p)
             ->withMakeInstallOptions('PREFIX=' . $libbzip2_prefix)
             ->withBinPath($libbzip2_prefix . '/bin/')
     );
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . BZIP2_PREFIX . '/include');
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . BZIP2_PREFIX . '/lib');
+    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lbz2');
 }
 
 function install_zlib(Preprocessor $p)
@@ -692,15 +698,54 @@ function install_libidn2(Preprocessor $p)
 
 EOF
             )
-            ->withScriptAfterInstall("
+            ->withScriptAfterInstall(
+                "
             # 查看是否有动态链接库 (已确认，无动态链接库）
             # nm -D {$libidn2_prefix}/lib/libidn2.a
             # nm {$libidn2_prefix}/lib/libidn2.a
-            # ar -t {$libidn2_prefix}/lib/libidn2.a
-            ")
+            ar -t {$libidn2_prefix}/lib/libidn2.a
+            "
+            )
             ->withPkgName('libidn2')
             ->withBinPath($libidn2_prefix . '/bin/')
             ->depends('libiconv')
+    );
+}
+
+function install_libssh2(Preprocessor $p)
+{
+    $libssh2_prefix = LIBSSH2_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $p->addLibrary(
+        (new Library('libssh2'))
+            ->withHomePage('https://www.libssh2.org/')
+            ->withUrl('https://www.libssh2.org/download/libssh2-1.10.0.tar.gz')
+            ->withLicense('https://www.libssh2.org/license.html', Library::LICENSE_SPEC)
+            ->withManual('https://github.com/libssh2/libssh2.git')
+            ->withManual('https://github.com/libssh2/libssh2/blob/master/docs/INSTALL_CMAKE.md')
+            ->withPrefix($libssh2_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libssh2_prefix)
+            ->withBuildScript(
+                <<<EOF
+              mkdir -p build
+              cd build
+              cmake .. \
+              -DCMAKE_INSTALL_PREFIX={$libssh2_prefix} \
+              -DCMAKE_BUILD_TYPE=Release  \
+              -DBUILD_STATIC_LIBS=ON \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DENABLE_ZLIB_COMPRESSION=ON  \
+              -DZLIB_ROOT={$zlib_prefix} \
+              -DCLEAR_MEMORY=ON  \
+              -DENABLE_GEX_NEW=ON  \  \
+              -DENABLE_CRYPT_NONE=OFF
+              -DCRYPTO_BACKEND=OpenSSL
+              cmake --build . --target install
+EOF
+            )
+            ->withPkgName('libssh2')
+            ->depends('zlib')
     );
 }
 
@@ -750,6 +795,8 @@ function install_curl(Preprocessor $p)
     $libzstd_prefix = LIBZSTD_PREFIX;
     $cares_prefix = CARES_PREFIX;
     $brotli_prefix = BROTLI_PREFIX;
+    $gnutls_prefix = GNUTLS_PREFIX;
+    $libssh2_prefix = LIBSSH2_PREFIX;
     $p->addLibrary(
         (new Library('curl'))
             ->withHomePage('https://curl.se/')
@@ -761,7 +808,10 @@ function install_curl(Preprocessor $p)
             ->withCleanPreInstallDirectory($curl_prefix)
             ->withConfigure(
                 <<<EOF
-            packages="zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 libnghttp2"
+            ./configure --help
+           
+            packages="zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 libnghttp2 "
+            packages="\$packages  libnghttp3 libngtcp2 libngtcp2_crypto_gnutls gnutls"
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )" \
             LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )" \
             LIBS="$(pkg-config --libs-only-l         --static \$packages )" \
@@ -795,26 +845,39 @@ function install_curl(Preprocessor $p)
             --enable-ares={$cares_prefix} \
             --with-brotli={$brotli_prefix} \
             --with-default-ssl-backend=openssl \
+            --with-libssh2={$libssh2_prefix} \
             --with-nghttp2 \
-            --without-ngtcp2 \
-            --without-nghttp3
+            --with-nghttp3 \
+            --with-gnutls
+            # --with-gnutls={$gnutls_prefix}
+            # --with-ngtcp2 \
+            # --with-ca-bundle=
 EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'libidn2', 'nghttp2')
-
-
-        #--with-gnutls=GNUTLS_PREFIX
-        #--with-nghttp3=NGHTTP3_PREFIX
-        #--with-ngtcp2=NGTCP2_PREFIX
-        #--with-nghttp2=NGHTTP2_PREFIX
-        #--without-brotli
-        #--disable-ares
-
-        #--with-ngtcp2=/usr/ngtcp2 \
-        #--with-quiche=/usr/quiche
-        #--with-msh3=PATH
+            ->depends(
+                'openssl',
+                'cares',
+                'zlib',
+                'brotli',
+                'libzstd',
+                'libidn2',
+                'nghttp2',
+                'libssh2',
+                'nghttp3',
+                'ngtcp2',
+                'gnutls'
+            )
+    #--with-gnutls=GNUTLS_PREFIX
+    #--with-nghttp3=NGHTTP3_PREFIX
+    #--with-ngtcp2=NGTCP2_PREFIX
+    #--with-nghttp2=NGHTTP2_PREFIX
+    #--without-brotli
+    #--disable-ares
+    #--with-ngtcp2=/usr/ngtcp2 \
+    #--with-quiche=/usr/quiche
+    #--with-msh3=PATH
     );
     /**
      * configure: pkg-config: SSL_LIBS: "-lssl -lcrypto"
@@ -1111,6 +1174,7 @@ function install_libxlsxwriter(Preprocessor $p)
         ->withCleanPreInstallDirectory($libxlsxwriter_prefix)
         ->withBuildScript(
             <<<EOF
+            
             # 启用DBUILD_TESTS 需要安装python3 pytest
             mkdir -p build
             cd build
@@ -1196,16 +1260,16 @@ function install_libxlsxio(Preprocessor $p)
 
     $p->addLibrary(
         (new Library('libxlsxio'))
-    ->withHomePage('https://github.com/brechtsanders/xlsxio.git')
-        ->withLicense('https://github.com/brechtsanders/xlsxio/blob/master/LICENSE.txt', Library::LICENSE_MIT)
-        ->withUrl('https://github.com/brechtsanders/xlsxio/archive/refs/tags/0.2.34.tar.gz')
-        ->withFile('libxlsxio-0.2.34.tar.gz')
-        ->withManual('https://brechtsanders.github.io/xlsxio/')
-        ->withPrefix($libxlsxio_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libxlsxio_prefix)
-        ->withConfigure(
-            <<<EOF
+            ->withHomePage('https://github.com/brechtsanders/xlsxio.git')
+            ->withLicense('https://github.com/brechtsanders/xlsxio/blob/master/LICENSE.txt', Library::LICENSE_MIT)
+            ->withUrl('https://github.com/brechtsanders/xlsxio/archive/refs/tags/0.2.34.tar.gz')
+            ->withFile('libxlsxio-0.2.34.tar.gz')
+            ->withManual('https://brechtsanders.github.io/xlsxio/')
+            ->withPrefix($libxlsxio_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libxlsxio_prefix)
+            ->withConfigure(
+                <<<EOF
             # apk add graphviz  doxygen  // 能看到常见安装的依赖库
             
             # export CFLAGS="$(pkg-config  --cflags --static expat minizip ) " 
@@ -1246,11 +1310,11 @@ function install_libxlsxio(Preprocessor $p)
 
 
 EOF
-        )
-        ->depends('zlib', 'libzip', 'expat')
-        ->withPkgName('libxlsxio_read')
-        ->withPkgName('libxlsxio_readw')
-        ->withPkgName('libxlsxio_write')
+            )
+            ->depends('zlib', 'libzip', 'expat')
+            ->withPkgName('libxlsxio_read')
+            ->withPkgName('libxlsxio_readw')
+            ->withPkgName('libxlsxio_write')
     );
 }
 

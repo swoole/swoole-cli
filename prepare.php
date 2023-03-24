@@ -25,7 +25,6 @@ if ($p->getOsType() == 'macos') {
 }
 
 
-
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
@@ -36,27 +35,28 @@ if ($p->getOsType() == 'macos') {
 //SWOOLE_CLI_SKIP_DEPEND_DOWNLOAD
 //SWOOLE_CLI_BUILD_TYPE=release
 if ($p->getInputOption('with-build-type') == 'release') {
-    define('SWOOLE_CLI_BUILD_TYPE', 1);
+    define('SWOOLE_CLI_BUILD_TYPE', 'release');
+} elseif ($p->getInputOption('with-build-type') == 'debug') {
+    define('SWOOLE_CLI_BUILD_TYPE', 'debug');
 } else {
-    define('SWOOLE_CLI_BUILD_TYPE', 0);
+    define('SWOOLE_CLI_BUILD_TYPE', 'dev');
 }
 
 if ($p->getOsType() == 'macos') {
     $p->addEndCallback(function () use ($p) {
-        $header=<<<'EOF'
+        $header = <<<'EOF'
 export PATH=/opt/homebrew/bin/:/usr/local/bin/:$PATH
 EOF;
-        $command= file_get_contents(__DIR__ . '/make.sh');
-        $command=$header.PHP_EOL.$command;
+        $command = file_get_contents(__DIR__ . '/make.sh');
+        $command = $header . PHP_EOL . $command;
         file_put_contents(__DIR__ . '/make.sh', $command);
     });
 }
 
 
-
-$cmd ='';
+$cmd = '';
 if ($p->getOsType() == 'macos') {
-    $cmd .=<<<'EOF'
+    $cmd .= <<<'EOF'
 brew=$(which brew  | wc -l)
 if test $brew -eq 1 ;then
 {
@@ -77,7 +77,7 @@ fi
 EOF;
 }
 if ($p->getOsType() == 'linux') {
-    $cmd .=<<<'EOF'
+    $cmd .= <<<'EOF'
 if test -f /etc/os-release; then
 {
     alpine=$(cat /etc/os-release | grep "ID=alpine" | wc -l)
@@ -101,7 +101,7 @@ EOF;
 
 
 $p->addEndCallback(function () use ($p, $cmd) {
-    $header=<<<'EOF'
+    $header = <<<'EOF'
 #!/bin/env sh
 
 PKG_CONFIG_PATH='/usr/lib/pkgconfig'
@@ -115,15 +115,13 @@ cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 
 EOF;
 
-    $command= file_get_contents(__DIR__ . '/make.sh');
-    $command= $header. PHP_EOL . $cmd . PHP_EOL . $command ;
+    $command = file_get_contents(__DIR__ . '/make.sh');
+    $command = $header . PHP_EOL . $cmd . PHP_EOL . $command;
     file_put_contents(__DIR__ . '/make.sh', $command);
 });
 
 
 $p->setExtraCflags('-fno-ident -Os');
-
-
 
 
 // Generate make.sh

@@ -36,7 +36,7 @@ function libraries_builder($p)
     // php composer 依赖的扩展 ： https://github.com/composer/composer/blob/c23beac9c508b701bb481d1c5269e7a2a79e0b60/src/Composer/Repository/PlatformRepository.php#L203
 
     install_oniguruma($p);
-    install_mimalloc($p);
+    //install_mimalloc($p);
 
     install_libjpeg($p);
     install_libgif($p);//没有 libgif.pc 文件，不能使用 pkg-config 命令
@@ -52,7 +52,14 @@ function libraries_builder($p)
     install_libidn2($p);//依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring );
     // //解决依赖 apk add  gettext  coreutils
 
+    install_libssh2($p);
 
+    install_nettle($p); //加密库
+    install_libtasn1($p);
+    install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
+    install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
+    install_libev($p); //无 pkg-config
+    install_ngtcp2($p); //依赖gnutls nghttp3
     install_nghttp2($p); //依赖 install_nghttp2($p);
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3(暂不启用)
 
@@ -63,7 +70,7 @@ function libraries_builder($p)
     //扩展不兼容本项目
     //install_libmcrypt($p); //无 pkg-config 配置
     //扩展参数还需要调试
-    install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    //install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
     install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
     //install_minizip($p);
     //install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
@@ -183,15 +190,11 @@ function libraries_builder($p)
         install_bzip2_dev_latest($p);
 
 
-        install_nettle($p); //加密库
-
-        install_libtasn1($p);
-        //install_libexpat($p);
         install_unbound($p); //依赖 libsodium nghttp2 nettle openssl ibtasn1 libexpat
         install_p11_kit($p);
         # TLS/ESNI/ECH/DoT/DoH/  参考文档https://zhuanlan.zhihu.com/p/572101957
         # SSL 比较 https://curl.se/docs/ssl-compared.html
-        install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
+
         install_boringssl($p);//需要 golang
         install_wolfssl($p);//
         install_libressl($p);//
@@ -199,8 +202,7 @@ function libraries_builder($p)
         install_jansson($p); //c json 库
 
         //参考 ：HTTP3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
-        install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
-        install_ngtcp2($p); //依赖gnutls nghttp3
+
 
 
         install_quiche($p); // 依赖 boringssl ，需要 rust ；
@@ -236,9 +238,9 @@ function libraries_builder($p)
     }
 
 
-    if (0) {
-        install_libev($p); //无 pkg-config
-    }
+
+
+
     if (0) {
         install_aria2($p); //依赖libuv openssl zlib libxml2 sqlite3 openssl c-ares
         install_socat($p); //依赖 readline openssl
@@ -365,8 +367,8 @@ function libraries_builder($p)
         // gcc的ar,nm,objdump,objcopy
 
         //gdb bin/swoole-cli
-            //set args -m
-            //run
+        //set args -m
+        //run
 
 
         //下载 boringssl 镜像地址 https://source.codeaurora.org/quic/lc
@@ -380,7 +382,7 @@ function libraries_builder($p)
         // .la 为libtool生成的共享库，其实是个配置文档。可以用file或者vim查看。
         // .ko 文件是Linux内核使用的动态链接文件后缀，属于模块文件，用在Linux系统启动时加载内核模块
 
-       //  gcov是一个测试代码覆盖率的工具。 https://zhuanlan.zhihu.com/p/410077415
+        //  gcov是一个测试代码覆盖率的工具。 https://zhuanlan.zhihu.com/p/410077415
     }
 
     if (0) {

@@ -49,11 +49,13 @@ define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
+define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 
 
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
+define("LIBEV_PREFIX", $p->getGlobalPrefix() . '/libev');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("LIBUV_PREFIX", $p->getGlobalPrefix() . '/libuv');
 
@@ -77,6 +79,7 @@ define("LIBFRIBIDI_PREFIX", $p->getGlobalPrefix() . '/libfribidi');
 define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
 
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
+define("NETTLE_PREFIX", $p->getGlobalPrefix() . '/nettle');
 define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
 define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');

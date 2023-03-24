@@ -52,6 +52,12 @@ function install_php_internal_extensions($p)
 
                     test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
                     cp -rf  ext/pgsql {$workDir}/ext/
+                    
+                    test -d {$workDir}/library && rm -rf {$workDir}/library
+                    test -d {$workDir}/ext/xlswriter/library && cp -rf {$workDir}/ext/xlswriter/library  {$workDir}/
+                    test -d {$workDir}/kernel && rm -rf {$workDir}/kernel
+                    test -d {$workDir}/ext/xlswriter/kernel && cp -rf {$workDir}/ext/xlswriter/kernel  {$workDir}/
+                    
 EOF
             )
             ->withSkipDownload()
