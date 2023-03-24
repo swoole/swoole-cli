@@ -39,3 +39,9 @@ define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;
 const DOWNLOAD_FILE_WAIT_RETRY = 5 ;
 const DOWNLOAD_FILE_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+
+define("NETTLE_PREFIX", $p->getGlobalPrefix() . '/nettle');
+define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
+define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
+define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
+define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
