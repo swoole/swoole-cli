@@ -54,13 +54,7 @@ function libraries_builder($p)
 
     install_libssh2($p);
 
-    install_nettle($p); //加密库
-    install_libtasn1($p);
-    install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
-    install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
-    install_libev($p); //无 pkg-config
-    install_ngtcp2($p); //依赖gnutls nghttp3
-    install_nghttp2($p); //依赖 install_nghttp2($p);
+
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3(暂不启用)
 
     //参考 https://github.com/docker-library/php/issues/221
@@ -194,7 +188,13 @@ function libraries_builder($p)
         install_p11_kit($p);
         # TLS/ESNI/ECH/DoT/DoH/  参考文档https://zhuanlan.zhihu.com/p/572101957
         # SSL 比较 https://curl.se/docs/ssl-compared.html
-
+        install_nettle($p); //加密库
+        install_libtasn1($p);
+        install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
+        install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
+        install_libev($p); //无 pkg-config
+        install_ngtcp2($p); //依赖gnutls nghttp3
+        install_nghttp2($p); //依赖 install_nghttp2($p);
         install_boringssl($p);//需要 golang
         install_wolfssl($p);//
         install_libressl($p);//
