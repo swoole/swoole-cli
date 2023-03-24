@@ -839,16 +839,16 @@ function install_curl(Preprocessor $p)
             --enable-progress-meter \
             --enable-optimize \
             --with-zlib={$zlib_prefix} \
-            --with-openssl={$openssl_prefix} \
             --with-libidn2={$libidn2_prefix} \
             --with-zstd={$libzstd_prefix} \
             --enable-ares={$cares_prefix} \
             --with-brotli={$brotli_prefix} \
-            --with-default-ssl-backend=openssl \
             --with-libssh2={$libssh2_prefix} \
             --with-nghttp2 \
             --with-nghttp3 \
-            --with-gnutls
+            --with-gnutls \
+            --with-openssl={$openssl_prefix} \
+            --with-default-ssl-backend=openssl 
             # --with-gnutls={$gnutls_prefix}
             # --with-ngtcp2 \
             # --with-ca-bundle=
