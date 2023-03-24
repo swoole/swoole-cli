@@ -29,6 +29,7 @@ define("SQLITE3_PREFIX", $p->getGlobalPrefix() . '/sqlite3');
 define("LIBSODIUM_PREFIX", $p->getGlobalPrefix() . '/libsodium');
 define("LIBEDIT_PREFIX", $p->getGlobalPrefix() . '/libedit');
 define("BROTLI_PREFIX", $p->getGlobalPrefix() . '/brotli');
+
 define("LIBLZ4_PREFIX", $p->getGlobalPrefix() . '/liblz4');
 define("LIBLZMA_PREFIX", $p->getGlobalPrefix() . '/liblzma');
 define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
@@ -36,6 +37,9 @@ define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
+define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
+
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;
 const DOWNLOAD_FILE_WAIT_RETRY = 5 ;
 const DOWNLOAD_FILE_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+
