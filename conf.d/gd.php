@@ -74,6 +74,10 @@ EOF
             ->withLdflags('-L' . $libgif_prefix . '/lib')
     );
 
+    $p->setVarable('cppflags', '$cppflags -I' . $libgif_prefix . '/include');
+    $p->setVarable('ldflags', '$ldflags -L' . $libgif_prefix . '/lib');
+    $p->setVarable('libs', '$libs -lgif');
+
     $libwebp_prefix = WEBP_PREFIX;
     # $libpng_prefix = PNG_PREFIX;
     # $libjpeg_prefix = JPEG_PREFIX;
@@ -143,14 +147,13 @@ EOF
             --with-brotli=yes
 EOF
             )
-
             ->withPkgName('freetype2')
             ->depends('zlib', 'bzip2', 'libpng', 'brotli')
     );
 
     $p->addExtension(
         (new Extension('gd'))
-        ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp')
-        ->depends('libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
+            ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp')
+            ->depends('libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
     );
 };

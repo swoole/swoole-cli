@@ -121,9 +121,18 @@ make_all_library() {
 }
 
 export_variables() {
+    cppflags=""
+    cflags=""
+    ldflags=""
+    libs=""
 <?php foreach ($this->varables as $name => $value) : ?>
-    export <?= $name ?>="<?= $value ?>"
+    <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+<?php foreach ($this->exportVarables as $value) : ?>
+    export  <?= key($value) ?>="<?= current($value) ?>"
+<?php endforeach; ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE]" && exit  $result_code;
     return 0
 }
 

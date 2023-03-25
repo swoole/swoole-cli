@@ -269,6 +269,8 @@ class Preprocessor
     protected string $extraOptions = '';
     protected string $extraCflags = '';
     protected array $varables = [];
+
+    protected array $exportVarables = [];
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
@@ -633,9 +635,14 @@ class Preprocessor
         return $packages;
     }
 
-    function setVarable(string $key, string $value): void
+    public function setVarable(string $key, string $value): void
     {
-        $this->varables[$key] = $value;
+        $this->varables[] = [$key => $value];
+    }
+
+    public function setExportVarable(string $key, string $value): void
+    {
+        $this->exportVarables[] = [$key => $value];
     }
 
     function getExtension(string $name): ?Extension
@@ -824,11 +831,20 @@ class Preprocessor
             $libcpp = '-lstdc++';
         }
 
-        $packages = implode(' ', $this->getLibraryPackages());
-        $this->setVarable('PACKAGES', $packages);
-        $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
-        $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
-        $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
+
+        $packagesArr = $this->getLibraryPackages();
+        if(!empty($packagesArr)){
+            $packages = implode(' ',  $packagesArr);
+            $this->setVarable('packages',  $packages);
+            $this->setVarable('cppflags', '$cppflags $(pkg-config --cflags-only-I --static $packages ) ');
+            $this->setVarable('ldflags', '$ldflags $(pkg-config --libs-only-L --static $packages ) ');
+            $this->setVarable('libs', '$libs $(pkg-config --libs-only-l --static $packages ) ' . $libcpp);
+        }
+        if(!empty($this->varables)  || !empty($packagesArr)){
+            $this->setExportVarable('CPPFLAGS', '$cppflags');
+            $this->setExportVarable('LDFLAGS', '$ldflags');
+            $this->setExportVarable('LIBS', '$libs');
+        }
 
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
