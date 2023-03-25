@@ -827,10 +827,11 @@ function install_libev($p)
 EOF
             )
     );
+
+
     $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . LIBEV_PREFIX . '/include');
     $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . LIBEV_PREFIX . '/lib');
     $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lev');
-
 }
 
 function install_nettle($p)
@@ -920,7 +921,6 @@ function install_unbound($p)
             ->withPrefix('/usr/unbound/')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory('/usr/unbound/')
-
             ->withConfigure(
                 '
              ./configure --help
@@ -1037,7 +1037,7 @@ EOF;
 EOF
             )->withPkgName('gnutls')
             ->withBinPath($gnutls_prefix . '/bin/')
-        //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
+    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
 }
 
@@ -1078,7 +1078,7 @@ function install_boringssl($p)
 EOF
             )
             ->disableDefaultPkgConfig()
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1108,7 +1108,7 @@ function install_wolfssl($p)
 EOF
             )
             ->withPkgName('wolfssl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1136,7 +1136,7 @@ function install_libressl($p)
 EOF
             )
             ->withPkgName('libressl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1164,13 +1164,11 @@ EOF
             )
             ->withPkgName('libnghttp3')
     );
-
 }
 
 function install_ngtcp2(Preprocessor $p)
 {
     $libev_prefix = LIBEV_PREFIX;
-
 
 
     $ngtcp2_prefix = NGTCP2_PREFIX;
@@ -1220,11 +1218,6 @@ EOF
             ->withPkgName('libngtcp2_crypto_openssl')
             ->depends('openssl', 'nghttp3')
     );
-
-
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . LIBEV_PREFIX . '/include');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . LIBEV_PREFIX . '/lib');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lev');
 }
 
 
@@ -1310,7 +1303,6 @@ EOF
 
 function install_nghttp2(Preprocessor $p): void
 {
-
     $nghttp2_prefix = NGHTTP2_PREFIX;
     $p->addLibrary(
         (new Library('nghttp2'))
@@ -1352,7 +1344,6 @@ EOF
             ->withPkgName('libnghttp2')
             ->depends('openssl', 'zlib', 'libxml2', 'cares')
     );
-
 }
 
 
@@ -1866,7 +1857,7 @@ function install_pcre2(Preprocessor $p)
          
  EOF
             )
-        //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
+    //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
     );
 }
 
@@ -2009,10 +2000,10 @@ install-libpq5555.a: install-lib-static install-lib-pc
                 '
             '
             )
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2041,10 +2032,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2068,9 +2059,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2097,9 +2088,9 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2295,7 +2286,7 @@ EOF
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->withSkipBuildLicense()
-        // ->withSkipBuildInstall()
+    // ->withSkipBuildInstall()
     );
 }
 
