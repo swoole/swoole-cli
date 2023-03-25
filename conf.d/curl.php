@@ -8,28 +8,6 @@ return function (Preprocessor $p) {
 
     $libidn2_prefix = LIBIDN2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
-    $p->addLibrary(
-        (new Library('libidn2'))
-            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            ->withPrefix($libidn2_prefix)
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
-            ./configure --prefix={$libidn2_prefix} \
-            enable_static=yes \
-            enable_shared=no \
-            --disable-doc \
-            --with-libiconv-prefix={$libiconv_prefix} \
-            --with-libintl-prefix 
-
-EOF
-            )
-            ->withPkgName('libidn2')
-            ->depends('libiconv')
-    );
-
-
     $curl_prefix = CURL_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
