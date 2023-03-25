@@ -53,6 +53,29 @@ EOF
             ->withHomePage('https://c-ares.org/')
     );
 
+    $libidn2_prefix = LIBIDN2_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
+    $p->addLibrary(
+        (new Library('libidn2'))
+            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
+            ->withPrefix($libidn2_prefix)
+            ->withConfigure(
+                <<<EOF
+            ./configure --help
+            ./configure --prefix={$libidn2_prefix} \
+            enable_static=yes \
+            enable_shared=no \
+            --disable-doc \
+            --with-libiconv-prefix={$libiconv_prefix} \
+            --with-libintl-prefix
+
+EOF
+            )
+            ->withPkgName('libidn2')
+            ->depends('libiconv')
+    );
+
     $nghttp2_prefix = NGHTTP2_PREFIX;
     $p->addLibrary(
         (new Library('nghttp2'))
@@ -62,7 +85,7 @@ EOF
             ->withConfigure(
                 <<<EOF
             ./configure --help
-            packages="zlib libxml-2.0 libcares openssl" # jansson  libev 
+            packages="zlib libxml-2.0 libcares openssl "  # jansson  libev libbpf libelf libngtcp2 libnghttp3
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
             LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
             LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
@@ -95,10 +118,12 @@ EOF
             ->depends('openssl', 'zlib', 'libxml2', 'cares')
     );
 
+
     $curl_prefix = CURL_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $cares_prefix = CARES_PREFIX;
+
     $p->addLibrary(
         (new Library('curl'))
             ->withHomePage('https://curl.se/')
@@ -110,7 +135,7 @@ EOF
                 <<<EOF
             ./configure --help
 
-            package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2'
+            package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 libidn2'
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$package_name)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$package_name)" \
             LIBS="$(pkg-config      --libs-only-l    --static \$package_name)" \
@@ -141,15 +166,17 @@ EOF
             --with-openssl={$openssl_prefix} \
             --enable-ares={$cares_prefix} \
             --with-default-ssl-backend=openssl \
+            --with-libidn2 \
             --with-nghttp2 \
             --without-ngtcp2 \
-            --without-nghttp3 \
-            --without-libidn2
+            --without-nghttp3 
+            
 EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'nghttp2')
+            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'nghttp2', 'libidn2')
+
     );
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
 };
