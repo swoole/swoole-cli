@@ -1152,8 +1152,6 @@ function install_nghttp3(Preprocessor $p)
             //->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/heads/main.zip')
             ->withFile('nghttp3-v0.9.0.tar.gz')
             ->withPrefix($nghttp3_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($nghttp3_prefix)
             ->withConfigure(
                 <<<EOF
             autoreconf -fi
@@ -1161,18 +1159,22 @@ function install_nghttp3(Preprocessor $p)
             ./configure --prefix={$nghttp3_prefix} \
             --enable-lib-only \
             --enable-shared=no \
-            --enable-static=yes
+            --enable-static=yes 
 EOF
             )
             ->withPkgName('libnghttp3')
     );
+
 }
 
 function install_ngtcp2(Preprocessor $p)
 {
+    $libev_prefix = LIBEV_PREFIX;
+
+
 
     $ngtcp2_prefix = NGTCP2_PREFIX;
-    $libev_prefix = LIBEV_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
     $p->addLibrary(
         (new Library('ngtcp2'))
             ->withHomePage('https://github.com/ngtcp2/ngtcp2')
@@ -1180,44 +1182,45 @@ function install_ngtcp2(Preprocessor $p)
             ->withManual('https://curl.se/docs/http3.html')
             ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/tags/v0.13.1.tar.gz')
             ->withFile('ngtcp2-v0.13.1.tar.gz')
-
             ->withPrefix($ngtcp2_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($ngtcp2_prefix)
             ->withConfigure(
                 <<<EOF
+                autoreconf -fi
+                ./configure --help
 
-            # openssl does not have QUIC interface, disabling it
-            #
-            # OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
-            # OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
-            
-            export GNUTLS_CFLAGS=$(pkg-config  --cflags --static gnutls)
-            export GNUTLS_LIBS=$(pkg-config    --libs   --static gnutls)
-            export LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags --static libnghttp3)
-            export LIBNGHTTP3_LIBS=$(pkg-config    --libs   --static libnghttp3)
+                # OPENSSL_CFLAGS=$(pkg-config     --cflags  --static openssl) \
+                # OPENSSL_LIBS=$(pkg-config       --libss   --static openssl) \
+                # LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags  --static libnghttp3) \
+                # LIBNGHTTP3_LIBS=$(pkg-config    --libss   --static libnghttp3) \
+                
+                export LIBEV_CFLAGS="-I{$libev_prefix}/include"
+                export LIBEV_LIBS="-L{$libev_prefix}/lib -lev"
 
-            export LIBEV_CFLAGS="-I{$libev_prefix}/include"
-            export LIBEV_LIBS="-L{$libev_prefix}/lib -lev"
-
-             autoreconf -fi
-            ./configure --help
-              
-            ./configure \
-            --prefix=$ngtcp2_prefix \
-            --enable-shared=no \
-            --enable-static=yes \
-            --enable-lib-only \
-            --with-gnutls=yes \
-            --with-libnghttp3=yes \
-            --with-libev=yes
+                packages="openssl libnghttp3 "
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
+                LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
+                LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
+                ./configure \
+                --prefix=$ngtcp2_prefix \
+                --enable-shared=no \
+                --enable-static=yes \
+                --enable-lib-only \
+                --without-libev \
+                --with-openssl={$openssl_prefix} \
+                --with-libnghttp3=yes \
+                --without-gnutls \
+                --without-boringssl \
+                --without-picotls \
+                --without-wolfssl \
+                --without-cunit  \
+                --without-jemalloc
 EOF
             )
-
             ->withPkgName('libngtcp2')
-            ->withPkgName('libngtcp2_crypto_gnutls')
-            ->depends('gnutls', 'nghttp3', 'libev')
+            ->withPkgName('libngtcp2_crypto_openssl')
+            ->depends('openssl', 'nghttp3')
     );
+
 
     $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . LIBEV_PREFIX . '/include');
     $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . LIBEV_PREFIX . '/lib');
@@ -1307,20 +1310,17 @@ EOF
 
 function install_nghttp2(Preprocessor $p): void
 {
+
     $nghttp2_prefix = NGHTTP2_PREFIX;
     $p->addLibrary(
         (new Library('nghttp2'))
             ->withHomePage('https://github.com/nghttp2/nghttp2.git')
             ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
             ->withPrefix($nghttp2_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($nghttp2_prefix)
             ->withConfigure(
                 <<<EOF
-            # automake # for git 
-            # autoconf # for git 
             ./configure --help
-            packages="zlib libxml-2.0 libcares openssl" # jansson  libev 
+            packages="zlib libxml-2.0 libcares openssl "  # jansson  libev libbpf libelf libngtcp2 libnghttp3
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
             LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
             LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
@@ -1352,6 +1352,7 @@ EOF
             ->withPkgName('libnghttp2')
             ->depends('openssl', 'zlib', 'libxml2', 'cares')
     );
+
 }
 
 

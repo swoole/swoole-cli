@@ -49,6 +49,7 @@ define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
+
 define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 
 
@@ -101,8 +102,6 @@ define("DYNASM_PREFIX", $p->getGlobalPrefix() . '/dynasm');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("NGINX_PREFIX", $p->getGlobalPrefix() . '/nginx');
 define("PCRE2_PREFIX", $p->getGlobalPrefix() . '/pcre2');
-
-
 
 
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;
