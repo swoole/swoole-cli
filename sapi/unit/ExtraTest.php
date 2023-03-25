@@ -36,12 +36,14 @@ class ExtraTest extends TestCase
         $response = curl_exec($ch);
         $responseHeader = curl_getinfo($ch);
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        $errno = curl_errno($ch);
-        $error = curl_error($ch);
+        if ($response !== false) {
+            $errno = curl_errno($ch);
+            $error = curl_error($ch);
 
-        # list($header, $body) = explode("\r\n\r\n", $response, 2);
-        $header = substr($response, 0, $header_size);
-        $body = substr($response, $header_size);
+            # list($header, $body) = explode("\r\n\r\n", $response, 2);
+            $header = substr($response, 0, $header_size);
+            $body = substr($response, $header_size);
+        }
         curl_close($ch);
 
         $this->assertGreaterThanOrEqual(200, $responseHeader['http_code'], 'curl no support IDNA');
