@@ -58,6 +58,9 @@ function install_libgif(Preprocessor $p)
             ->withPkgName('')
             ->withPkgConfig('')
     );
+    $p->setVarable('cppflags', '$cppflags -I' . $libgif_prefix . '/include');
+    $p->setVarable('ldflags', '$ldflags -L' . $libgif_prefix . '/lib');
+    $p->setVarable('libs', '$libs -lgif');
     if (0) {
         $p->addLibrary(
             (new Library('giflib'))
@@ -65,7 +68,7 @@ function install_libgif(Preprocessor $p)
                 ->withLicense('http://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
                 ->withCleanBuildDirectory()
                 ->withPrefix('/usr/giflib')
-                ->withScriptBeforeConfigure(
+                ->withBuildScript(
                     '
 
                 default_prefix_dir="/ u s r" # 阻止 macos 系统下编译路径被替换

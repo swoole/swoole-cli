@@ -680,55 +680,59 @@ function install_openssl_v3(Preprocessor $p)
 {
     $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    //openssl v3 库 linux 位于 lib64 目录, macOS 位于 lib 目录；
+    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
     $p->addLibrary(
         (new Library('openssl'))
-            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withHomePage('https://www.openssl.org/')
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withUrl('https://www.openssl.org/source/openssl-3.0.7.tar.gz')
             ->withFile('openssl-3.0.7.tar.gz')
             ->withPrefix($openssl_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-            # ./config $static \
-            ./Configure   $static  \
-            no-shared --release --prefix=$openssl_prefix
+                 # ./Configure LIST 
+                ./config {$static} no-shared  enable-tls1_3 --release --prefix={$openssl_prefix}
 EOF
             )
             ->withMakeOptions('build_sw')
-            ->withMakeInstallOptions('install_sw')
-            ->withPkgConfig($openssl_prefix . '/lib64/pkgconfig')
+            ->withMakeInstallCommand('install_sw')
             ->withPkgName('libcrypto')
             ->withPkgName('libssl')
             ->withPkgName('openssl')
-            ->withLdflags('-L' . $openssl_prefix . '/lib64')
+            ->withLdflags('-L' . $openssl_lib)
+            ->withPkgConfig($openssl_lib . '/pkgconfig')
+            ->withBinPath($openssl_prefix . '/bin/')
     );
 }
 
 function install_openssl_v3_quic(Preprocessor $p)
 {
+    $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    //openssl v3 库 linux 位于 lib64 目录, macOS 位于 lib 目录；
+    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
     $p->addLibrary(
-        (new Library('openssl_v3_quic', '/usr/openssl'))
-            ->withUrl('https://www.openssl.org/source/openssl-3.0.7.tar.gz')
-            //https://github.com/quictls/openssl
-            ->withFile('openssl-3.0.7.tar.gz')
-            ->withCleanBuildDirectory()
+        (new Library('openssl'))
+            ->withHomePage('https://www.openssl.org/')
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            #->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
+            ->withUrl('https://github.com/quictls/openssl/archive/refs/tags/openssl-3.0.8-quic1.tar.gz')
+            ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-            # ./config $static \
-            ./Configure   $static  \
-            no-shared --release --prefix=/usr/openssl_v3_quic
+                 # ./Configure LIST 
+                ./config {$static} no-shared  enable-tls1_3 --release --prefix={$openssl_prefix}
 EOF
             )
             ->withMakeOptions('build_sw')
-            ->withMakeInstallOptions('install_sw')
-            ->withPkgConfig('/usr/openssl_v3_quic/lib64/pkgconfig')
-            ->withPkgName('libcrypto libssl openssl')
-            ->withLdflags('-L/usr/openssl_v3_quic/lib64')
-            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
-            ->withHomePage('https://curl.se/docs/http3.html')
+            ->withMakeInstallCommand('install_sw')
+            ->withPkgName('libcrypto')
+            ->withPkgName('libssl')
+            ->withPkgName('openssl')
+            ->withLdflags('-L' . $openssl_lib)
+            ->withPkgConfig($openssl_lib . '/pkgconfig')
+            ->withBinPath($openssl_prefix . '/bin/')
     );
 }
 
@@ -1037,7 +1041,7 @@ EOF;
 EOF
             )->withPkgName('gnutls')
             ->withBinPath($gnutls_prefix . '/bin/')
-    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
+        //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
 }
 
@@ -1078,7 +1082,7 @@ function install_boringssl($p)
 EOF
             )
             ->disableDefaultPkgConfig()
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -1108,7 +1112,7 @@ function install_wolfssl($p)
 EOF
             )
             ->withPkgName('wolfssl')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -1136,7 +1140,7 @@ function install_libressl($p)
 EOF
             )
             ->withPkgName('libressl')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -1857,7 +1861,7 @@ function install_pcre2(Preprocessor $p)
          
  EOF
             )
-    //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
+        //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
     );
 }
 
@@ -2000,10 +2004,10 @@ install-libpq5555.a: install-lib-static install-lib-pc
                 '
             '
             )
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->withSkipInstall()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -2032,10 +2036,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->withSkipInstall()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -2059,9 +2063,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -2088,9 +2092,9 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -2286,7 +2290,7 @@ EOF
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->withSkipBuildLicense()
-    // ->withSkipBuildInstall()
+        // ->withSkipBuildInstall()
     );
 }
 

@@ -32,13 +32,13 @@ function install_openssl(Preprocessor $p)
                 ) === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=' . $openssl_prefix
             )
             ->withMakeInstallCommand('install_sw')
-            ->withPkgName('libcrypto libssl   openssl')
+            ->withPkgName('openssl')
             ->withBinPath($openssl_prefix . '/bin/')
     );
 }
 
 
-function install_libiconv(Preprocessor $p)
+function install_libiconv(Preprocessor $p): void
 {
     $libiconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
@@ -52,9 +52,9 @@ function install_libiconv(Preprocessor $p)
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withBinPath($libiconv_prefix . '/bin/')
     );
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . ICONV_PREFIX . '/include');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . ICONV_PREFIX . '/lib');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -liconv');
+    $p->setVarable('cppflags', '$cppflags -I' . ICONV_PREFIX . '/include');
+    $p->setVarable('ldflags', '$ldflags -L' . ICONV_PREFIX . '/lib');
+    $p->setVarable('libs', '$libs -liconv');
 }
 
 
@@ -126,6 +126,10 @@ EOF
             ->withBinPath($libxslt_prefix . '/bin/')
             ->depends('libxml2', 'libiconv')
     );
+    $p->setExportVarable('XSL_CFLAGS', '$(pkg-config    --cflags --static libxslt)');
+    $p->setExportVarable('XSL_LIBS', '$(pkg-config      --libs   --static libxslt)');
+    $p->setExportVarable('EXSLT_CFLAGS', '$(pkg-config  --cflags --static libexslt)');
+    $p->setExportVarable('EXSLT_LIBS', '$(pkg-config    --libs   --static libexslt)');
 }
 
 
@@ -351,6 +355,8 @@ function install_libsodium(Preprocessor $p)
             ->withConfigure('./configure --prefix=' . $libsodium_prefix . ' --enable-static --disable-shared')
             ->withPkgName('libsodium')
     );
+    $p->setExportVarable('LIBSODIUM_CFLAGS', '$(pkg-config --cflags --static libsodium)');
+    $p->setExportVarable('LIBSODIUM_LIBS', '$(pkg-config   --libs   --static libsodium)');
 }
 
 function install_bzip2(Preprocessor $p)
@@ -369,9 +375,9 @@ function install_bzip2(Preprocessor $p)
             ->withMakeInstallOptions('PREFIX=' . $libbzip2_prefix)
             ->withBinPath($libbzip2_prefix . '/bin/')
     );
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . BZIP2_PREFIX . '/include');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . BZIP2_PREFIX . '/lib');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lbz2');
+    $p->setVarable('cppflags', '$cppflags -I' . $bzip2_prefix . '/include');
+    $p->setVarable('ldflags', '$ldflags -L' . $bzip2_prefix . '/lib');
+    $p->setVarable('libs', '$libs -lbz2');
 }
 
 function install_zlib(Preprocessor $p)
@@ -570,6 +576,8 @@ EOF
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
             ->depends('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
     );
+    $p->setExportVarable('LIBZIP_CFLAGS', '$(pkg-config --cflags --static libzip)');
+    $p->setExportVarable('LIBZIP_LIBS', '$(pkg-config   --libs   --static libzip)');
 }
 
 
@@ -632,6 +640,8 @@ EOF
             ->withPkgName('icu-uc')
             ->withBinPath($icu_prefix . '/bin/')
     );
+    $p->setExportVarable('ICU_CFLAGS', '$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)');
+    $p->setExportVarable('ICU_LIBS', '$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)');
 }
 
 function install_oniguruma(Preprocessor $p)
@@ -649,6 +659,8 @@ function install_oniguruma(Preprocessor $p)
             ->withPkgName('oniguruma')
             ->withBinPath($oniguruma_prefix . '/bin/')
     );
+    $p->setExportVarable('ONIG_CFLAGS', '$(pkg-config --cflags --static oniguruma)');
+    $p->setExportVarable('ONIG_LIBS', '$(pkg-config   --libs   --static oniguruma)');
 }
 
 function install_mimalloc(Preprocessor $p)
@@ -810,8 +822,8 @@ function install_curl(Preprocessor $p)
                 <<<EOF
             ./configure --help
            
-            packages="zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 libnghttp2 "
-            packages="\$packages  libnghttp3 libngtcp2 libngtcp2_crypto_gnutls gnutls"
+            packages="zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 libssh2  "
+            packages="\$packages libnghttp2" #  libnghttp3 libngtcp2 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )" \
             LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )" \
             LIBS="$(pkg-config --libs-only-l         --static \$packages )" \
@@ -845,8 +857,8 @@ function install_curl(Preprocessor $p)
             --with-brotli={$brotli_prefix} \
             --with-libssh2={$libssh2_prefix} \
             --with-nghttp2 \
-            --with-nghttp3 \
-            --with-gnutls \
+            --without-nghttp3 \
+            --without-gnutls \
             --with-openssl={$openssl_prefix} \
             --with-default-ssl-backend=openssl 
             # --with-gnutls={$gnutls_prefix}
@@ -864,10 +876,7 @@ EOF
                 'libzstd',
                 'libidn2',
                 'nghttp2',
-                'libssh2',
-                'nghttp3',
-                'ngtcp2',
-                'gnutls'
+                'libssh2'
             )
     #--with-gnutls=GNUTLS_PREFIX
     #--with-nghttp3=NGHTTP3_PREFIX

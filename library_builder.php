@@ -54,8 +54,8 @@ function libraries_builder($p)
 
     install_libssh2($p);
     install_nghttp2($p); //依赖 install_nghttp2($p);
-    install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
-    install_ngtcp2($p); //依赖gnutls nghttp3
+    //install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
+    //install_ngtcp2($p); //依赖gnutls nghttp3
 
 
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3(暂不启用)
@@ -68,10 +68,11 @@ function libraries_builder($p)
     //install_libmcrypt($p); //无 pkg-config 配置
     //扩展参数还需要调试
     //install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
-    install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    //install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
     //install_minizip($p);
     //install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
-                           // Use libzip instead of Minizip
+    // Use libzip instead of Minizip
+
     //扩展不兼容本项目
     //install_libevent($p);
     //install_libuv($p);

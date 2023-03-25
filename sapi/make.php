@@ -181,15 +181,18 @@ make_all_library() {
 
 
 export_variables() {
-    SWOOLE_CLI_EXTRA_CPPLAGS='';
-    SWOOLE_CLI_EXTRA_LDLAGS='';
-    SWOOLE_CLI_EXTRA_LIBS='';
-<?php foreach ($this->exportVarable as $element) : ?>
-    <?= key($element) ?>="<?= current($element) ?>"
+    cppflags=""
+    cflags=""
+    ldflags=""
+    libs=""
+<?php foreach ($this->varables as $name => $value) : ?>
+    <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
-<?php foreach ($this->varables as $element) : ?>
-    export <?= key($element) ?>="<?= current($element) ?>"
+<?php foreach ($this->exportVarables as $value) : ?>
+    export  <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE]" && exit  $result_code;
     return 0
 }
 

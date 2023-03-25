@@ -398,6 +398,8 @@ class Preprocessor
     protected string $extraOptions = '';
     protected string $extraCflags = '';
     protected array $varables = [];
+
+    protected array $exportVarables = [];
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
@@ -770,11 +772,9 @@ class Preprocessor
         $this->varables[] = [$key => $value];
     }
 
-    public $exportVarable = [];
-
     public function setExportVarable(string $key, string $value): void
     {
-        $this->exportVarable[] = [$key => $value];
+        $this->exportVarables[] = [$key => $value];
     }
 
     public function getExtension(string $name): ?Extension
@@ -1036,22 +1036,25 @@ class Preprocessor
         }
 
 
+        $packagesArr = $this->getLibraryPackages();
+        if (!empty($packagesArr)) {
+            $packages = implode(' ', $packagesArr);
+            $this->setVarable('packages', $packages);
+            $this->setVarable('cppflags', '$cppflags $(pkg-config --cflags-only-I --static $packages ) ');
+            $this->setVarable('ldflags', '$ldflags $(pkg-config --libs-only-L --static $packages ) ');
+            $this->setVarable('libs', '$libs $(pkg-config --libs-only-l --static $packages ) ' . $libcpp);
+        }
+        if (!empty($this->varables) || !empty($packagesArr)) {
+            $this->setExportVarable('CPPFLAGS', '$cppflags');
+            $this->setExportVarable('LDFLAGS', '$ldflags');
+            $this->setExportVarable('LIBS', '$libs');
+        }
+
         # $packages = implode(' ', $this->getLibraryPackages());
         # $this->setVarable('PACKAGES', $packages);
         # $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
         # $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
         # $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
-
-        $extenstionDepends = $this->extensionDependPkgNameList;
-        if (!empty($extenstionDepends)) {
-            $packages = implode(' ', $this->extensionDependPkgNameList);
-            $this->setExportVarable('packages', $packages);
-            $this->setVarable('CPPFLAGS', '$(pkg-config  --cflags-only-I --static ${packages}  ) $SWOOLE_CLI_EXTRA_CPPLAGS');
-            $this->setVarable('LDFLAGS', '$(pkg-config  --libs-only-L --static ${packages}  ) $SWOOLE_CLI_EXTRA_LDLAGS');
-            # $this->setVarable('EXTRA_LDFLAGS_PROGRAM=', '$(pkg-config --libs-only-L --static ${packages}  ) ');
-            $this->setVarable('LIBS', '$(pkg-config  --libs-only-l --static  ${packages}  ) ' . $libcpp . ' $SWOOLE_CLI_EXTRA_LIBS');
-
-        }
 
 
         if ($this->getInputOption('skip-download')) {
