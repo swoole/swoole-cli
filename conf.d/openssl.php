@@ -7,6 +7,7 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
     $p->addLibrary(
         (new Library('openssl'))
             ->withHomePage('https://www.openssl.org/')
@@ -25,10 +26,11 @@ EOF
             ->withPkgName('libcrypto')
             ->withPkgName('libssl')
             ->withPkgName('openssl')
-            ->withLdflags('-L'. $openssl_prefix . '/lib64/')
-            ->withPkgConfig($openssl_prefix . '/lib64/pkgconfig')
+            ->withLdflags('-L' . $openssl_lib)
+            ->withPkgConfig($openssl_lib . '/pkgconfig')
             ->withBinPath($openssl_prefix . '/bin/')
     );
+
     $p->addExtension(
         (new Extension('openssl'))
             ->withOptions('--with-openssl --with-openssl-dir=' . OPENSSL_PREFIX)
