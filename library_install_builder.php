@@ -52,9 +52,9 @@ function install_libiconv(Preprocessor $p)
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withBinPath($libiconv_prefix . '/bin/')
     );
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . ICONV_PREFIX . '/include');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . ICONV_PREFIX . '/lib');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -liconv');
+    $p->setVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . ICONV_PREFIX . '/include');
+    $p->setVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . ICONV_PREFIX . '/lib');
+    $p->setVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -liconv');
 }
 
 
@@ -369,9 +369,9 @@ function install_bzip2(Preprocessor $p)
             ->withMakeInstallOptions('PREFIX=' . $libbzip2_prefix)
             ->withBinPath($libbzip2_prefix . '/bin/')
     );
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . BZIP2_PREFIX . '/include');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . BZIP2_PREFIX . '/lib');
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lbz2');
+    $p->setVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . BZIP2_PREFIX . '/include');
+    $p->setVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . BZIP2_PREFIX . '/lib');
+    $p->setVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lbz2');
 }
 
 function install_zlib(Preprocessor $p)
