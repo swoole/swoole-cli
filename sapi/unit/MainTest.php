@@ -101,7 +101,6 @@ final class MainTest extends TestCase
         ob_start();
         $reflector->info();
         $output = strip_tags(ob_get_clean());
-        echo $output;
         preg_match('/^AsynchDNS (?:=>)?(.*)$/m', $output, $matches);
         $this->assertEquals('Yes', trim($matches[1]), 'library: c-ares no found');
         preg_match('/^IDN (?:=>)?(.*)$/m', $output, $matches);
