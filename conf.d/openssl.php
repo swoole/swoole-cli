@@ -7,6 +7,7 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    //openssl v3 库 linux 位于 lib64 目录, macOS 位于 lib 目录；
     $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
     $p->addLibrary(
         (new Library('openssl'))
@@ -17,7 +18,7 @@ return function (Preprocessor $p) {
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-                 ./Configure LIST 
+                 # ./Configure LIST 
                 ./config {$static} no-shared  enable-tls1_3 --release --prefix={$openssl_prefix}
 EOF
             )
