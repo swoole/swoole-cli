@@ -76,7 +76,7 @@ function install_libxml2(Preprocessor $p)
             --with-iconv=$iconv_prefix \
             --enable-static=yes \
             --enable-shared=no \
-            --without-python
+            --without-python 
 EOF
             )
             ->withPkgName('libxml-2.0')
@@ -118,7 +118,7 @@ function install_libxslt(Preprocessor $p)
             --without-crypto \
             --without-profiler \
             --without-plugins \
-            --without-debugger
+            --without-debugger 
 EOF
             )
             ->withPkgName('libexslt')
@@ -162,7 +162,7 @@ function install_brotli(Preprocessor $p)
             -DBROTLI_DISABLE_TESTS=OFF \
             -DBROTLI_BUNDLED_MODE=OFF \
             && \
-            cmake --build . --config Release --target install
+            cmake --build . --config Release --target install 
 EOF
             )
             ->withScriptAfterInstall(
@@ -173,7 +173,7 @@ EOF
             cp  -f {$brotli_prefix}/lib/libbrotlicommon-static.a {$brotli_prefix}/lib/libbrotli.a
             mv     {$brotli_prefix}/lib/libbrotlicommon-static.a {$brotli_prefix}/lib/libbrotlicommon.a
             mv     {$brotli_prefix}/lib/libbrotlienc-static.a    {$brotli_prefix}/lib/libbrotlienc.a
-            mv     {$brotli_prefix}/lib/libbrotlidec-static.a    {$brotli_prefix}/lib/libbrotlidec.a
+            mv     {$brotli_prefix}/lib/libbrotlidec-static.a    {$brotli_prefix}/lib/libbrotlidec.a 
 EOF
             )
             ->withPkgName('libbrotlicommon')
@@ -215,7 +215,7 @@ function install_gmp(Preprocessor $p)
             ./configure \
             --prefix=$gmp_prefix \
             --enable-static=yes \
-            --enable-static=no
+            --enable-static=no 
 EOF
             )
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
@@ -265,7 +265,7 @@ function install_ncurses(Preprocessor $p)
             --without-tests \
             --without-dlsym \
             --without-debug \
-            --enable-symlinks
+            --enable-symlinks 
 EOF
             )
             ->withScriptBeforeInstall(
@@ -311,7 +311,7 @@ function install_readline(Preprocessor $p)
                 --enable-static \
                 --disable-shared \
                 --with-curses \
-                --enable-multibyte
+                --enable-multibyte 
 EOF
             )
             ->withPkgName('readline')
@@ -375,8 +375,8 @@ function install_bzip2(Preprocessor $p)
             ->withMakeInstallOptions('PREFIX=' . $libbzip2_prefix)
             ->withBinPath($libbzip2_prefix . '/bin/')
     );
-    $p->setVarable('cppflags', '$cppflags -I' . $bzip2_prefix . '/include');
-    $p->setVarable('ldflags', '$ldflags -L' . $bzip2_prefix . '/lib');
+    $p->setVarable('cppflags', '$cppflags -I' . $libbzip2_prefix . '/include');
+    $p->setVarable('ldflags', '$ldflags -L' . $libbzip2_prefix . '/lib');
     $p->setVarable('libs', '$libs -lbz2');
 }
 
@@ -415,7 +415,7 @@ function install_liblz4(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
             cd build/cmake/
-            cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON
+            cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON 
 EOF
             )
             ->withPkgName('liblz4')
@@ -476,7 +476,7 @@ function install_libzstd(Preprocessor $p)
             -DZSTD_BUILD_PROGRAMS=ON \
             -DZSTD_BUILD_SHARED=OFF \
             -DZSTD_BUILD_TESTS=OFF \
-            -DZSTD_LEGACY_SUPPORT=ON
+            -DZSTD_LEGACY_SUPPORT=ON 
 EOF
             )
             ->withMakeOptions('lib')

@@ -938,16 +938,13 @@ class Preprocessor
             }
             $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
         }
-
         $pkgNames = [];
-        foreach ($this->extensionDependPkgNameMap as $extension_name => $pkgName) {
-            if ($extension_name == 'imagick') {
-                //imagick 需要特别处理，主要是为了兼容macOS 环境下 imagick 扩展的启用
-                continue;
-            }
-            $pkgNames = array_merge($pkgNames, $pkgName);
+        $extensions = [];
+        foreach ($this->extensionDependPkgNameMap as $extension_name => $value) {
+            $pkgNames = array_merge($pkgNames, $value);
+            $extensions[] = $extension_name;
         }
-        $this->extensionDependPkgNameList = array_unique(array_values($pkgNames));
+        $this->extensionDependPkgNameList = array_values(array_unique($pkgNames));
     }
 
     private function getDependPkgNameByLibraryName($library_name, &$packages)
@@ -1036,7 +1033,8 @@ class Preprocessor
         }
 
 
-        $packagesArr = $this->getLibraryPackages();
+        //$packagesArr = $this->getLibraryPackages();
+        $packagesArr = $this->extensionDependPkgNameList;
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);
             $this->setVarable('packages', $packages);
