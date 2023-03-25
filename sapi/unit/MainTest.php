@@ -10,8 +10,8 @@ use ImagickPixel;
 use PHPUnit\Framework\TestCase;
 use Swoole\Coroutine\Http2\Client;
 use Swoole\Http2\Request;
-use function Swoole\Coroutine\run;
 
+use function Swoole\Coroutine\run;
 
 final class MainTest extends TestCase
 {
@@ -95,12 +95,13 @@ final class MainTest extends TestCase
         );
     }
 
-    public function testCurl(): void
+    public function testCurlFeature(): void
     {
         $reflector = new \ReflectionExtension('curl');
         ob_start();
         $reflector->info();
         $output = strip_tags(ob_get_clean());
+        echo $output;
         preg_match('/^AsynchDNS (?:=>)?(.*)$/m', $output, $matches);
         $this->assertEquals('Yes', trim($matches[1]), 'library: c-ares no found');
         preg_match('/^IDN (?:=>)?(.*)$/m', $output, $matches);
@@ -113,10 +114,18 @@ final class MainTest extends TestCase
         $this->assertEquals('Yes', trim($matches[1]), 'library: nghttp2 no found');
         preg_match('/^BROTLI (?:=>)?(.*)$/m', $output, $matches);
         $this->assertEquals('Yes', trim($matches[1]), 'library: brotli no found');
+        preg_match('/^libSSH (?:Version =>)?(.*)$/m', $output, $matches);
+        $this->assertTrue((strpos(trim($matches[1]), 'libssh2') !== false), 'library: libSSH no found');
+        preg_match('/^ZLib (?:Version =>)?(.*)$/m', $output, $matches);
+        $this->assertNotEmpty(trim($matches[1]), 'library: ZLib no found');
+    }
 
+    public $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
 
+    public function testCurlHTTP2Client(): void
+    {
         $url = 'https://www.jingjingxyk.com/';
-        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+        $userAgent = $this->userAgent;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
@@ -150,7 +159,8 @@ final class MainTest extends TestCase
         );
     }
 
-    public function testSwooleHttp2(): void
+
+    public function testSwooleHttp2Client(): void
     {
         ini_set('default_socket_timeout', 60);
         run(function () {
@@ -164,7 +174,7 @@ final class MainTest extends TestCase
             ]);
             $cli->connect();
 
-            $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+            $userAgent = $this->userAgent;
             $req = new Request();
             $req->method = 'GET';
             $req->path = '/';
