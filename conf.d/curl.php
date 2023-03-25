@@ -144,6 +144,7 @@ EOF
 
 
     $ngtcp2_prefix = NGTCP2_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
     $p->addLibrary(
         (new Library('ngtcp2'))
             ->withHomePage('https://github.com/ngtcp2/ngtcp2')
@@ -156,6 +157,12 @@ EOF
                 <<<EOF
                 autoreconf -fi
                 ./configure --help
+
+                # OPENSSL_CFLAGS=$(pkg-config     --cflags  --static openssl) \
+                # OPENSSL_LIBS=$(pkg-config       --libss   --static openssl) \
+                # LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags  --static libnghttp3) \
+                # LIBNGHTTP3_LIBS=$(pkg-config    --libss   --static libnghttp3) \
+                
                 packages="openssl libnghttp3 "
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
                 LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
@@ -166,7 +173,7 @@ EOF
                 --enable-static=yes \
                 --enable-lib-only \
                 --without-libev \
-                --with-openssl \
+                --with-openssl={$openssl_prefix} \
                 --with-libnghttp3=yes \
                 --without-gnutls \
                 --without-boringssl \
