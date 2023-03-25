@@ -58,9 +58,7 @@ function install_libgif(Preprocessor $p)
             ->withPkgName('')
             ->withPkgConfig('')
     );
-    $p->setVarable('cppflags', '$cppflags -I' . $libgif_prefix . '/include');
-    $p->setVarable('ldflags', '$ldflags -L' . $libgif_prefix . '/lib');
-    $p->setVarable('libs', '$libs -lgif');
+
     if (0) {
         $p->addLibrary(
             (new Library('giflib'))
