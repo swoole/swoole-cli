@@ -831,16 +831,15 @@ class Preprocessor
             $libcpp = '-lstdc++';
         }
 
-
         $packagesArr = $this->getLibraryPackages();
-        if(!empty($packagesArr)){
-            $packages = implode(' ',  $packagesArr);
-            $this->setVarable('packages',  $packages);
+        if (!empty($packagesArr)) {
+            $packages = implode(' ', $packagesArr);
+            $this->setVarable('packages', $packages);
             $this->setVarable('cppflags', '$cppflags $(pkg-config --cflags-only-I --static $packages ) ');
             $this->setVarable('ldflags', '$ldflags $(pkg-config --libs-only-L --static $packages ) ');
             $this->setVarable('libs', '$libs $(pkg-config --libs-only-l --static $packages ) ' . $libcpp);
         }
-        if(!empty($this->varables)  || !empty($packagesArr)){
+        if (!empty($this->varables) || !empty($packagesArr)) {
             $this->setExportVarable('CPPFLAGS', '$cppflags');
             $this->setExportVarable('LDFLAGS', '$ldflags');
             $this->setExportVarable('LIBS', '$libs');
