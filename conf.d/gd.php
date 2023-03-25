@@ -6,6 +6,8 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $libjpeg_prefix = JPEG_PREFIX;
+    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
+    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $lib = new Library('libjpeg');
     $lib->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
@@ -14,12 +16,8 @@ return function (Preprocessor $p) {
         ->withPrefix($libjpeg_prefix)
         ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
         ->withPkgName('libjpeg')
-        ->withBinPath($libjpeg_prefix . '/bin/');
-
-    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
-    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
-
-    $lib->withLdflags('-L' . $jpeg_lib_dir)
+        ->withBinPath($libjpeg_prefix . '/bin/')
+        ->withLdflags('-L' . $jpeg_lib_dir)
         ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
     if ($p->getOsType() === 'macos') {
         $lib->withScriptAfterInstall('find ' . $libjpeg_prefix . ' -name \*.dylib | xargs rm -f');
@@ -143,14 +141,13 @@ EOF
             --with-brotli=yes
 EOF
             )
-
             ->withPkgName('freetype2')
             ->depends('zlib', 'bzip2', 'libpng', 'brotli')
     );
 
     $p->addExtension(
         (new Extension('gd'))
-        ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp')
-        ->depends('libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
+            ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp')
+            ->depends('libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif')
     );
 };

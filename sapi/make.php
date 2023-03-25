@@ -124,6 +124,8 @@ export_variables() {
 <?php foreach ($this->varables as $name => $value) : ?>
     export <?= $name ?>="<?= $value ?>"
 <?php endforeach; ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE]" && exit  $result_code;
     return 0
 }
 
