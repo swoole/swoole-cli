@@ -274,7 +274,7 @@ function install_libavif(Preprocessor $p): void
     $p->addLibrary(
         (new Library('libavif'))
             ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
-            ->withFile('libavif-v0.11.1.tar.g')
+            ->withFile('libavif-v0.11.1.tar.gz')
             ->withHomePage('https://aomediacodec.github.io/av1-avif/')
             ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
             ->withManual('https://github.com/AOMediaCodec/libavif')
