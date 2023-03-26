@@ -297,6 +297,17 @@ function libraries_builder($p)
         install_libx265($p);
         install_mp3lame($p);
         install_ffmpeg($p);
+        /*
+        ffmpeg -encoders
+        ffmpeg -decoders
+        ffmpeg -codecs
+        ffmpeg -formats
+        ffmpeg -muxers
+        ffmpeg -demuxers
+        ffmpeg -protocols
+        ffmpeg -filters
+        */
+
         // install_librabbitmq($p);
         install_opencv_contrib($p);
         install_opencv($p); //构建过程中，会去github.com 下载 ippicv xfeatures2d wechat_qrcode unifont  face_landmark_model.dat

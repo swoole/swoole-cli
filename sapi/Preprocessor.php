@@ -330,6 +330,8 @@ class Library extends Project
         return $this->label;
     }
 
+
+
 }
 
 class Extension extends Project
@@ -352,6 +354,12 @@ class Extension extends Project
     public function withPeclVersion(string $peclVersion): static
     {
         $this->peclVersion = $peclVersion;
+        return $this;
+    }
+
+    public function withFile(string $file): static
+    {
+        $this->file = $file;
         return $this;
     }
 
@@ -755,35 +763,54 @@ EOF;
 
     public function addExtension(Extension $ext): void
     {
-        if ($ext->peclVersion) {
-            $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-            $ext->path = $this->extensionDir . '/' . $ext->file;
-            $ext->url = "https://pecl.php.net/get/{$ext->file}";
-            
-            if (!empty($this->getInputOption('with-download-mirror-url'))) {
-                $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
-            }
+        if ($ext->peclVersion || !empty($ext->downloadScript)) {
+            if (!empty($ext->downloadScript)) {
+                $ext->path = $this->extensionDir . '/' . $ext->name;
+                if (!file_exists($ext->path)) {
+                    $cacheDir = $this->getWorkDir() . '/var/tmp';
+                    $workDir = $this->getWorkDir();
 
-            // 检查文件的 MD5，若不一致删除后重新下载
-            if (!empty($ext->md5sum) and is_file($ext->path)) {
-                // 本地文件被修改，MD5 不一致，删除后重新下载
-                $this->checkFileMd5sum($ext->path, $ext->md5sum);
-            }
+                    $ext->downloadScript = <<<EOF
+                        cd {$cacheDir}
+                        test -d {$ext->file} && rm -rf {$ext->file}
+                        {$ext->downloadScript}
+                        test -d {$workDir}/pool/ext/{$ext->name} || mv {$ext->file} {$workDir}/pool/ext/{$ext->name}
+                        test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
+                        cp -rfa $ext->path/ {$workDir}/ext/{$ext->name}/
+                        cd {$workDir}
+EOF;
 
-
-            if (!$this->getInputOption('skip-download')) {
-                if (!is_file($ext->path)) {
-                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
-                } else {
-                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                    $this->runDownloadScript($cacheDir, $ext->path, $ext->file, $ext->downloadScript);
                 }
-                $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-                $this->mkdirIfNotExists($dst_dir, 0777, true);
+            } else {
+                $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+                $ext->path = $this->extensionDir . '/' . $ext->file;
+                $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
-                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+                if (!empty($this->getInputOption('with-download-mirror-url'))) {
+                    $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
+                }
+
+                // 检查文件的 MD5，若不一致删除后重新下载
+                if (!empty($ext->md5sum) and is_file($ext->path)) {
+                    // 本地文件被修改，MD5 不一致，删除后重新下载
+                    $this->checkFileMd5sum($ext->path, $ext->md5sum);
+                }
+
+                if (!$this->getInputOption('skip-download')) {
+                    if (!is_file($ext->path)) {
+                        echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                        $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
+                    } else {
+                        echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                    }
+                    $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
+                    $this->mkdirIfNotExists($dst_dir, 0777, true);
+
+                    echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+                }
+                $this->downloadExtensionList[] = ['url' => $ext->url, 'file' => $ext->file];
             }
-            $this->downloadExtensionList[] = ['url' => $ext->url, 'file' => $ext->file];
         }
         $this->extensionList[] = $ext;
         $this->extensionMap[$ext->name] = $ext;
