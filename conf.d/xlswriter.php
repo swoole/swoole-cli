@@ -9,35 +9,33 @@ return function (Preprocessor $p) {
 
     $options = '--with-xlswriter';
     $options .= ' --enable-reader';
-    /*
+
     $options .= ' --with-libxlsxwriter=' . LIBXLSXWRITER_PREFIX;
-    $options .= ' --with-libxlsxio=' . LIBXLSXIO_PREFIX;
     $options .= ' --with-expat=' . LIBEXPAT_PREFIX;
-    */
-    # $options .= ' --with-libxlsxwriter=' . LIBXLSXWRITER_PREFIX;
-    # $options .= ' --with-libxlsxio=' . $workDir . '/ext/xlswriter/library/libxlsxio/';
-    # $options .= ' --with-expat=' . $workDir . '/ext/xlswriter/library/libexpat/expat/lib';
-    # $options .= ' --with-expat=' . LIBEXPAT_PREFIX;
+    $options .= ' --with-libxlsxio=' . LIBXLSXIO_PREFIX;
 
 
-    $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . $workDir . '/ext/xlswriter/include');
-    # $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . $workDir . '/ext/xlswriter/');
-    # $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . $workDir . '/ext/xlswriter/library/libxlsxwriter/include');
-    # $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . $workDir . '/ext/xlswriter/library/libxlsxwriter/third_party/md5/');
-    # $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . $workDir . '/ext/xlswriter/library/libexpat/expat/lib');
-    # $p->setExportVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . $workDir . '/ext/xlswriter/library/libxlsxio/include');
 
-    # $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . $workDir . '/ext/xlswriter/library/libexpat/expat/lib');
-    # $p->setExportVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . $workDir . '/ext/xlswriter/library/libxlsxio/lib');
-    # $p->setExportVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -liconv');
+    # $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/xlswriter/include');
+    # $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/xlswriter/library/libxlsxwriter/include');
+    # $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/xlswriter/library/libxlsxwriter/include/xlsxwriter');
+    # $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/xlswriter/library/libxlsxwriter/include/xlsxwriter/third_party');
+    # $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/xlswriter/library/libxlsxio/include');
+    # $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/xlswriter/library/libexpat/expat/lib');
+    # $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/xlswriter/');
+    #   $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/xlswriter/library/libxlsxwriter/third_party/md5');
+    # $p->setVarable('ldflags', '$ldflags -L' . ICONV_PREFIX . '/lib');
+    # $p->setVarable('libs', '$libs -liconv');
+
 
     $p->addExtension(
         (new Extension('xlswriter'))
             ->withOptions($options)
-            ->withPeclVersion('1.5.2')
+            ->withPeclVersion('1.5.4')
             ->withHomePage('https://github.com/viest/php-ext-xlswriter')
             ->withLicense('https://github.com/viest/php-ext-xlswriter/blob/master/LICENSE', Extension::LICENSE_BSD)
             # ->depends('libexpat')
+            ->depends('zlib', 'libxlsxwriter', 'libexpat')
         //->depends('libxlsxwriter', 'libexpat', 'libxlsxio')
     );
 };

@@ -67,10 +67,10 @@ function libraries_builder($p)
     //扩展不兼容本项目
     //install_libmcrypt($p); //无 pkg-config 配置
     //扩展参数还需要调试
-    //install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
-    //install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
-    //install_minizip($p);
-    //install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    install_minizip($p);
+    install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
     // Use libzip instead of Minizip
 
     //扩展不兼容本项目
@@ -145,7 +145,10 @@ function libraries_builder($p)
         install_php_extension_wasm($p);
         // install_php_extension_fastdfs($p);
     }
-
+    install_nasm($p);
+    install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
+    install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
+    install_libavif($p); //依赖 libyuv dav1d
 
     if (0) {
         install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
@@ -159,8 +162,7 @@ function libraries_builder($p)
         install_libde265($p);
         install_libheif($p); //依赖 libde265
 
-        install_libyuv($p);
-        install_libavif($p); //依赖 libyuv
+
         install_libOpenEXR($p); // 依赖Imath，不存在，会自动到github.com 下载
         install_highway($p);
         install_libjxl($p); //libgif libjpeg libopenexr libpng libwebp libbrotli highway
@@ -286,7 +288,7 @@ function libraries_builder($p)
         */
     }
     if (0) {
-        install_rav1e($p); //https://github.com/videolan/dav1d.git //https://www.cnblogs.com/eguid/p/16015446.html
+        install_rav1e($p);  //https://www.cnblogs.com/eguid/p/16015446.html
         install_aom($p);
         install_av1($p);
         install_libvpx($p);
@@ -335,13 +337,13 @@ function libraries_builder($p)
     if ($p->getInputOption('with-capstone') == 'yes') {
         install_capstone($p);
     }
-
+    install_depot_tools($p); //依赖python
     if (0) {
         // brew  //  https://mirrors.tuna.tsinghua.edu.cn/help/homebrew
         // brew  //  https://github.com/Homebrew/brew.git
         //apk add ninja
         //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
-        install_depot_tools($p); //依赖python
+        //install_depot_tools($p); //依赖python
         //install_gn($p);//依赖python
         //install_gn_test($p);//源码编译GN
 

@@ -72,7 +72,12 @@ define("LIBDE265_PREFIX", $p->getGlobalPrefix() . '/libde265');
 define("LIBHEIF_PREFIX", $p->getGlobalPrefix() . '/libheif');
 define("LIBJXL_PREFIX", $p->getGlobalPrefix() . '/libjxl');
 define("LIBGD_PREFIX", $p->getGlobalPrefix() . '/libgd');
+define("DAV1D_PREFIX", $p->getGlobalPrefix() . '/dav1d');
 define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
+define("NASM_PREFIX", $p->getGlobalPrefix() . '/nasm');
+define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
+define("DEPOT_TOOLS_PREFIX", $p->getGlobalPrefix() . '/depot_tools');
+
 
 define("HARFBUZZ_PREFIX", $p->getGlobalPrefix() . '/harfbuzz');
 define("LIBFRIBIDI_PREFIX", $p->getGlobalPrefix() . '/libfribidi');

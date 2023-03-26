@@ -112,39 +112,44 @@ EOF
 
 function install_libyuv(Preprocessor $p)
 {
-    $libyuv_prefix = "/usr/libyuv";
+    $libyuv_prefix = LIBYUV_PREFIX;
     $libjpeg_prefix = JPEG_PREFIX;
     $libjpeg_lib_dir = $p->getOsType() == 'linux' ? $libjpeg_prefix . '/lib64/' : $libjpeg_prefix . '/lib/';
     $p->addLibrary(
         (new Library('libyuv'))
             ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
             ->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
-            ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
-            ->withManual('https://https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
-            ->withSkipDownload()
-            ->withUntarArchiveCommand('mv')
+            ->withLicense('https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
+            ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
+            ->withDownloadScript(
+                <<<EOF
+            git clone -b main --depth=1 https://chromium.googlesource.com/libyuv/libyuv
+EOF
+            )
+            ->withUntarArchiveCommand('cp')
             ->withPrefix($libyuv_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libyuv_prefix)
             ->withBuildScript(
                 <<<EOF
-            set -uex
-            pwd
-            ls -lh .
-            cd libyuv
-
-
-            ls -lh .
-
-            make -f linux.mk
-            mkdir -p $libyuv_prefix/lib
-            cp -rf libyuv.a  $libyuv_prefix/lib
-            cp -rf include $libyuv_prefix/
-
-            exit  0
+                mkdir -p  out
+                cd out
+                cmake -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
+                -DBUILD_STATIC_LIBS=ON \
+                -DBUILD_SHARED_LIBS=OFF  \
+                -DCMAKE_BUILD_TYPE="Release" ..
+                cmake --build . --config Release
+                cmake --build . --target install --config Release
+:<<'_____EOF_____'
+            make V=1 -f linux.mk
+            make V=1 -f linux.mk clean
+            make V=1 -f linux.mk CXX=clang++ CC=clang
+            exit 0 
             gn gen out/Release "--args=is_debug=false"
-
+            gn gen out/Debug "--args=is_debug=true"
             ninja -v -C out/Release
+            ninja -v -C out/Debug
+            
             exit  0
 
 
@@ -170,10 +175,11 @@ function install_libyuv(Preprocessor $p)
             cmake --build . --config Release
             cmake --build . --target install --config Release
 
-
+_____EOF_____
 EOF
             )
             ->withPkgName('')
+            ->withBinPath($libyuv_prefix . '/bin/')
     );
 }
 
@@ -226,9 +232,45 @@ EOF
     $p->addLibrary($lib);
 }
 
-function install_libavif(Preprocessor $p)
+function install_dav1d(Preprocessor $p)
+{
+    $dav1d_prefix = DAV1D_PREFIX;
+    $p->addLibrary(
+        (new Library('dav1d'))
+            ->withHomePage('https://code.videolan.org/videolan/dav1d/')
+            ->withLicense('https://code.videolan.org/videolan/dav1d/-/blob/master/COPYING', Library::LICENSE_BSD)
+            ->withUrl('https://code.videolan.org/videolan/dav1d/-/archive/1.1.0/dav1d-1.1.0.tar.gz')
+            ->withFile('dav1d-1.1.0.tar.gz')
+            ->withManual('https://code.videolan.org/videolan/dav1d')
+            ->withPrefix($dav1d_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($dav1d_prefix)
+            ->withBuildScript(
+                <<<EOF
+           
+                mkdir -p build 
+                cd build
+                meson setup \
+                --backend=ninja \
+                --prefix={$dav1d_prefix} \
+                --default-library=static \
+                ..  
+                ninja
+                ninja install
+
+                
+EOF
+            )
+            ->withPkgName('dav1d')
+            ->withBinPath($dav1d_prefix . '/bin/')
+    );
+}
+
+function install_libavif(Preprocessor $p): void
 {
     $libavif_prefix = LIBAVIF_PREFIX;
+    $libyuv_prefix = LIBYUV_PREFIX;
+    $dav1d_prefix = DAV1D_PREFIX;
     $p->addLibrary(
         (new Library('libavif'))
             ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
@@ -241,23 +283,51 @@ function install_libavif(Preprocessor $p)
             ->withCleanPreInstallDirectory($libavif_prefix)
             ->withConfigure(
                 <<<EOF
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
-            LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
-            LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg dav1d)" 
+            LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg dav1d)" 
+            LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg dav1d )" 
             cmake .  \
             -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
-            -DAVIF_BUILD_EXAMPLES=ON \
+            -DAVIF_BUILD_EXAMPLES=OFF \
+            -DLIBYUV_ROOT={$libyuv_prefix} \
+            -DDAV1D_ROOT={$dav1d_prefix} \
             -DBUILD_SHARED_LIBS=OFF \
-            -DAVIF_CODEC_AOM=OFF \
-            -DAVIF_CODEC_DAV1D=OFF \
-            -DAVIF_CODEC_LIBGAV1=OFF \
-            -DAVIF_CODEC_RAV1E=OFF
+            -DAVIF_CODEC_AOM=ON \
+            -DAVIF_CODEC_DAV1D=ON \
+            -DAVIF_CODEC_LIBGAV1=ON \
+            -DAVIF_CODEC_RAV1E=ON
             exit 0
 
 EOF
             )
             ->withPkgName('libavif')
             ->withLdflags('')
+    );
+}
+
+function install_nasm(Preprocessor $p)
+{
+    $nasm_prefix = NASM_PREFIX;
+    $p->addLibrary(
+        (new Library('nasm'))
+            ->withHomePage('https://www.nasm.us/')
+            ->withUrl('https://www.nasm.us/pub/nasm/releasebuilds/2.16.01/nasm-2.16.01.tar.gz')
+            ->withLicense('http://opensource.org/licenses/BSD-2-Clause', Library::LICENSE_BSD)
+            ->withManual('https://github.com/netwide-assembler/nasm.git')
+            ->withPrefix($nasm_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($nasm_prefix)
+            ->withConfigure(
+                <<<EOF
+                sh autogen.sh
+                sh configure --help
+                sh configure --prefix={$nasm_prefix}
+          
+EOF
+            )
+            ->withPkgName('')
+            ->withLdflags('')
+            ->withBinPath($nasm_prefix . '/bin/')
     );
 }
 
@@ -393,7 +463,7 @@ function install_harfbuzz(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($harfbuzz_prefix)
             ->withBuildScript(
-                "
+                <<<EOF
                 meson help
                 meson setup --help
 
@@ -411,9 +481,9 @@ function install_harfbuzz(Preprocessor $p)
                 meson compile -C build
                 meson install -C build
                 # ninja -C build
-                # ninja -C build install
+                # ninja -C build install 
 
-            "
+EOF
             )
             ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
     );

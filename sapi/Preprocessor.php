@@ -11,6 +11,8 @@ abstract class Project
 {
     public string $name;
     public string $url;
+    public string $downloadScript = '';
+
     public string $path = '';
     public string $file = '';
     public string $md5sum = '';
@@ -88,6 +90,7 @@ abstract class Project
         $this->gnupg = $gpg;
         return $this;
     }
+
 }
 
 class Library extends Project
@@ -321,6 +324,12 @@ class Library extends Project
     {
         return $this->label;
     }
+
+    public function withDownloadScript(string $script): static
+    {
+        $this->downloadScript = $script;
+        return $this;
+    }
 }
 
 class Extension extends Project
@@ -343,6 +352,12 @@ class Extension extends Project
     public function withPeclVersion(string $peclVersion): static
     {
         $this->peclVersion = $peclVersion;
+        return $this;
+    }
+
+    public function withDownloadScript(string $script): static
+    {
+        $this->downloadScript = $script;
         return $this;
     }
 }
@@ -621,6 +636,26 @@ class Preprocessor
     }
 
     /**
+     * @param string $path
+     * @param string $file
+     * @param string $downloadScript
+     * @return void
+     */
+    protected function runDownloadScript(string $cacheDir,string $path, string $file, string $downloadScript): void
+    {
+        echo $file;
+        echo PHP_EOL;
+        echo $path;
+        echo PHP_EOL;
+        echo $downloadScript;
+        echo PHP_EOL;
+        $this->mkdirIfNotExists($cacheDir);
+        echo $downloadScript;
+        echo `$downloadScript`;
+        echo PHP_EOL;
+    }
+
+    /**
      * @param string $url
      * @param string $file
      * @param string $md5sum
@@ -685,11 +720,25 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            if (!is_file($lib->path)) {
-                echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
-            } else {
+            if (file_exists($lib->path)) {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
+            } else {
+                if (!empty($lib->downloadScript)) {
+                    $cacheDir = $this->getWorkDir() . '/var/tmp';
+                    $workDir = $this->getWorkDir();
+                    $lib->downloadScript = <<<EOF
+                cd {$cacheDir}
+                test -d {$lib->file} && rm -rf {$lib->file}
+                {$lib->downloadScript}
+                test -d {$workDir}/pool/lib/{$lib->file} || mv {$lib->file} {$workDir}/pool/lib/
+                cd {$workDir}
+EOF;
+
+                    $this->runDownloadScript($cacheDir,$lib->path, $lib->file, $lib->downloadScript);
+                } else {
+                    echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
+                    $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
+                }
             }
         }
 
