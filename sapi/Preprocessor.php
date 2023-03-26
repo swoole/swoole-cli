@@ -1138,6 +1138,19 @@ EOF;
 
     protected function generateLibraryDownloadLinks(): void
     {
+        $shell_cmd_header=<<<'EOF'
+#!/bin/bash
+
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+
+cd ${__DIR__}
+mkdir -p ${__DIR__}/var/tmp
+
+EOF;
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
         $download_urls = [];
         $download_scripts = [];
@@ -1146,8 +1159,8 @@ EOF;
                 continue;
             }
             if (!empty($item->downloadScript)) {
-                $cacheDir = 'var/tmp';
-                $workDir = 'var';
+                $cacheDir = '${__DIR__}/var/tmp';
+                $workDir = '${__DIR__}/var';
                 $downloadScript = <<<EOF
                 cd {$cacheDir}
                 test -d {$item->file} && rm -rf {$item->file}
@@ -1173,14 +1186,14 @@ EOF;
         file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
         file_put_contents(
             $this->getWorkDir() . '/var/download_library_use_git.sh',
-            'mkdir -p var/tmp' . PHP_EOL . implode(PHP_EOL, $download_scripts)
+            $shell_cmd_header . PHP_EOL . implode(PHP_EOL, $download_scripts)
         );
         $download_urls = [];
         $download_scripts = [];
         foreach ($this->downloadExtensionList as $item) {
             if (!empty($item->downloadScript)) {
-                $cacheDir = 'var/tmp';
-                $workDir = 'var';
+                $cacheDir = '${__DIR__}/var/tmp';
+                $workDir = '${__DIR__}/var';
                 $downloadScript = <<<EOF
                 cd {$cacheDir}
                 test -d {$item->file} && rm -rf {$item->file}
@@ -1196,9 +1209,11 @@ EOF;
             }
         }
         file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
+
+
         file_put_contents(
             $this->getWorkDir() . '/var/download_extension_use_git.sh',
-            'mkdir -p var/tmp' . PHP_EOL . implode(PHP_EOL, $download_scripts)
+            $shell_cmd_header . PHP_EOL . implode(PHP_EOL, $download_scripts)
         );
     }
 }
