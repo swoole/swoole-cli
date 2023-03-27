@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $p->setExportVarable('LIBSODIUM_CFLAGS', '$(pkg-config --cflags --static libsodium)');
-    $p->setExportVarable('LIBSODIUM_LIBS', '$(pkg-config   --libs   --static libsodium)');
+    $p->withExportVariable('LIBSODIUM_CFLAGS', '$(pkg-config --cflags --static libsodium)');
+    $p->withExportVariable('LIBSODIUM_LIBS', '$(pkg-config   --libs   --static libsodium)');
     $p->addExtension((new Extension('sodium'))->withOptions('--with-sodium'));
 };
