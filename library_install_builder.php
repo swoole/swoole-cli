@@ -1142,7 +1142,7 @@ function install_re2c(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 "
-                autoreconf -i -W all
+              autoreconf -i -W all
              ./configure --help
              ./configure --prefix=/usr/re2c
             "
