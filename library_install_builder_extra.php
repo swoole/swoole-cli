@@ -18,13 +18,9 @@ function install_ovs(Preprocessor $p)
         ->withPrefix($ovs_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovs_prefix)
-        ->withScriptBeforeConfigure(
-            <<<EOF
-          # apk add python3 
-EOF
-        )
         ->withConfigure(
             <<<EOF
+  # apk add python3 
         ./boot.sh
         ./configure --help
 
@@ -56,11 +52,6 @@ function install_ovn(Preprocessor $p)
         ->withPrefix($ovn_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovn_prefix)
-        ->withScriptBeforeConfigure(
-            <<<EOF
-          
-EOF
-        )
         ->withConfigure(
             <<<EOF
         sh ./boot.sh
@@ -243,16 +234,11 @@ function install_dpdk(Preprocessor $p): void
             ->withManual('https://core.dpdk.org/doc/quick-start/')
             ->withUntarArchiveCommand('xz')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                <<<EOF
-            apk add python3 py3-pip 
-            pip3 install meson pyelftools -i https://pypi.tuna.tsinghua.edu.cn/simple
-            # pip3 install meson pyelftools -ihttps://pypi.python.org/simple
-EOF
-            )
             ->withConfigure(
                 <<<EOF
-               
+                           apk add python3 py3-pip 
+            pip3 install meson pyelftools -i https://pypi.tuna.tsinghua.edu.cn/simple
+            # pip3 install meson pyelftools -ihttps://pypi.python.org/simple
             meson  build
             ninja -C build
             ninja -C build
@@ -276,15 +262,9 @@ function install_xdp(Preprocessor $p): void
             ->withFile('xdp-v1.3.1.tar.gz')
             ->withManual('https://github.com/xdp-project/xdp-tutorial')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                <<<EOF
-            apk add llvm bpftool
-           
-EOF
-            )
             ->withConfigure(
                 <<<EOF
-
+ apk add llvm bpftool
 EOF
             )
             ->withBinPath($xdp_prefix . '/bin/')

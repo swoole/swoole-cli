@@ -15,11 +15,6 @@ function install_php_parser($p)
             ->withManual('https://www.php.net/docs.php')
             ->withLabel('php_internal_extension')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                <<<EOF
-】
-EOF
-            )
             ->withConfigure('return 0')
             ->withSkipDownload()
             ->disablePkgName()
@@ -80,7 +75,6 @@ function install_php_extension_micro(Preprocessor $p)
             ->withLabel('php_extension')
             ->withCleanBuildDirectory()
             ->withUntarArchiveCommand('unzip')
-            ->withScriptBeforeConfigure('return 0')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()

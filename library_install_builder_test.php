@@ -611,16 +611,12 @@ function install_libXpm(Preprocessor $p)
         ->withPrefix($libXpm_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libXpm_prefix)
-        ->withScriptBeforeConfigure(
+        ->withConfigure(
             <<<EOF
-         # 依赖 xorg-macros
+      # 依赖 xorg-macros
          # 解决依赖
          # apk add util-macros
          # apk add libxpm-dev
-EOF
-        )
-        ->withConfigure(
-            <<<EOF
             ./autogen.sh
             ./configure --help
             ./configure --prefix={$libXpm_prefix} \
@@ -855,13 +851,6 @@ function install_bzip2_dev_latest(Preprocessor $p)
         (new Library('bzip2', '/usr/bzip2'))
             ->withUrl('https://gitlab.com/bzip2/bzip2/-/archive/master/bzip2-master.tar.gz')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                '
-              test -d /usr/bzip2 && rm -rf /usr/bzip2 ;
-              apk add python3 py3-pip && python3 -m pip install pytest ;
-              mkdir build && cd build ;
-            '
-            )
             ->withConfigure(
                 '
                     cmake .. -DCMAKE_BUILD_TYPE="Release" \
@@ -1489,14 +1478,6 @@ function install_libunistring($p)
             ->withUrl('https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.1.1.tar.gz')
             ->withFile('libunistring-0.9.1.1.tar.gz')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                '
-
-            apk add coreutils
-
-            test -d /usr/libunistring && rm -rf /usr/libunistring
-            '
-            )
             ->withConfigure(
                 '
              ./configure --help
@@ -1938,11 +1919,7 @@ function install_pgsql_test(Preprocessor $p)
             //https://www.postgresql.org/docs/devel/install-make.html#INSTALL-PROCEDURE-MAKE
             ->withManual('https://www.postgresql.org/docs/')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                '
-               test -d /usr/pgsql && rm -rf /usr/pgsql
-            '
-            )
+
             ->withConfigure(
                 '
              # src/Makefile.shlib 有静态配置
@@ -2082,9 +2059,7 @@ function install_fastdfs($p)
             ->withUrl('https://github.com/happyfish100/fastdfs/archive/refs/tags/V6.9.4.tar.gz')
             ->withFile('fastdfs-V6.9.4.tar.gz')
             ->withPrefix('/usr/fastdfs/')
-            ->withScriptBeforeConfigure(
-                'test -d /usr/fastdfs/ && rm -rf /usr/fastdfs/'
-            )
+
             ->withConfigure(
                 '
             export DESTDIR=/usr/libserverframe/
@@ -2113,9 +2088,7 @@ function install_libserverframe($p)
             ->withUrl('https://github.com/happyfish100/libserverframe/archive/refs/tags/V1.1.25.tar.gz')
             ->withFile('libserverframe-V1.1.25.tar.gz')
             ->withPrefix('/usr/libserverframe/')
-            ->withScriptBeforeConfigure(
-                'test -d /usr/libserverframe/ && rm -rf /usr/libserverframe/'
-            )
+
             ->withConfigure(
                 '
                 export DESTDIR=/usr/libserverframe/
@@ -2140,9 +2113,7 @@ function install_libfastcommon($p)
             ->withFile('libfastcommon-V1.0.66.tar.gz')
             ->withPrefix('/usr/libfastcommon/')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                'test -d /usr/libfastcommon/ && rm -rf /usr/libfastcommon/'
-            )
+
             ->withConfigure(
                 '
              export DESTDIR=/usr/libfastcommon
@@ -2169,11 +2140,6 @@ function install_gettext(Preprocessor $p)
             ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/gettext')
-            ->withScriptBeforeConfigure(
-                '
-            test -d /usr/gettext && rm -rf /usr/gettext
-            '
-            )
             ->withConfigure(
                 '
             ./configure --help
@@ -2249,7 +2215,6 @@ EOF;
             ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
             ->withManual('https://www.php.net/docs.php')
             ->withLabel('php_extension_patch')
-            ->withScriptBeforeConfigure($command)
             ->withConfigure('return 0 ')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()

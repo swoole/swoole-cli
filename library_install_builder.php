@@ -1108,14 +1108,10 @@ function install_bison(Preprocessor $p)
             ->withLabel('build_env_bin')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($bison_prefix)
-            ->withScriptBeforeConfigure(
-                <<<'EOF'
-            export PATH=$SYSTEM_ORIGIN_PATH
-            export PKG_CONFIG_PATH=$SYSTEM_ORIGIN_PKG_CONFIG_PATH
-EOF
-            )
             ->withConfigure(
                 "
+                            export PATH=\$SYSTEM_ORIGIN_PATH
+            export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
              ./configure --help
 
              ./configure --prefix={$bison_prefix} \
@@ -1144,13 +1140,9 @@ function install_re2c(Preprocessor $p)
             ->withManual('https://re2c.org/build/build.html')
             ->withLabel('build_env_bin')
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                '
-             autoreconf -i -W all
-            '
-            )
             ->withConfigure(
                 "
+                autoreconf -i -W all
              ./configure --help
              ./configure --prefix=/usr/re2c
             "

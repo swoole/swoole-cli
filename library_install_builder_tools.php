@@ -30,12 +30,6 @@ function install_qemu(Preprocessor $p): void
             ->withUntarArchiveCommand('xz')
             ->withPrefix($qemu_prefix)
             ->withCleanBuildDirectory()
-            ->withScriptBeforeConfigure(
-                <<<EOF
-
-
-EOF
-            )
             ->withConfigure(
                 <<<EOF
             set -eux
