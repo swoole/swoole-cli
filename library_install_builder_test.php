@@ -122,6 +122,7 @@ function install_libyuv(Preprocessor $p)
             ->withLicense('https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
             ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
             ->withDownloadScript(
+                'libyuv',
                 <<<EOF
             git clone -b main --depth=1 https://chromium.googlesource.com/libyuv/libyuv
 EOF
@@ -805,7 +806,6 @@ EOF
             ->withPkgConfig($openssl_lib . '/pkgconfig')
             ->withBinPath($openssl_prefix . '/bin/')
     );
-
 }
 
 function install_libedit(Preprocessor $p)
@@ -1283,7 +1283,6 @@ EOF
             ->withPkgName('libngtcp2_crypto_openssl')
             ->depends('openssl', 'nghttp3')
     );
-
 }
 
 

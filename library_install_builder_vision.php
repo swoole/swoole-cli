@@ -283,7 +283,7 @@ function install_ffmpeg(Preprocessor $p)
 {
     // 查看更多 https://git.ffmpeg.org/gitweb
 
-    $ffmpeg_prefix = '/usr/ffmpeg';
+    $ffmpeg_prefix = FFMPEG_PREFIX;
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
         ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
@@ -292,8 +292,10 @@ function install_ffmpeg(Preprocessor $p)
         ->withFile('ffmpeg')
         ->withManual('https://trac.ffmpeg.org/wiki/CompilationGuide')
         ->withDownloadScript(
+            'FFmpeg',
             <<<EOF
-            git clone --depth=1  --single-branch  https://git.ffmpeg.org/ffmpeg.git
+            # git clone --depth=1  --single-branch  https://git.ffmpeg.org/ffmpeg.git
+            git clone --depth=1  --single-branch  https://github.com/FFmpeg/FFmpeg.git
 EOF
         )
         ->withPrefix($ffmpeg_prefix)

@@ -110,7 +110,7 @@ function install_depot_tools(Preprocessor $p): void
             ->withLicense('https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
             ->withUrl('https://chromium.googlesource.com/chromium/tools/depot_tools')
             ->withManual('https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up')
-            ->withDownloadScript(
+            ->withDownloadScript('depot_tools',
                 <<<EOF
                 git clone -b main  --single-branch  --depth=1  https://chromium.googlesource.com/chromium/tools/depot_tools
 EOF

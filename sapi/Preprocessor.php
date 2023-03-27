@@ -12,6 +12,9 @@ abstract class Project
     public string $name;
     public string $url;
     public string $downloadScript = '';
+    public string $downloadScriptDir = '';
+
+    public bool $enableDownloadScript = false;
 
     public string $path = '';
     public string $file = '';
@@ -91,9 +94,12 @@ abstract class Project
         return $this;
     }
 
-    public function withDownloadScript(string $script): static
+
+    public function withDownloadScript(string $name, string $script): static
     {
+        $this->enableDownloadScript = true;
         $this->downloadScript = $script;
+        $this->downloadScriptDir = $name;
         return $this;
     }
 }
@@ -645,16 +651,12 @@ class Preprocessor
      * @param string $downloadScript
      * @return void
      */
-    protected function runDownloadScript(string $cacheDir, string $path, string $file, string $downloadScript): void
+    protected function runDownloadScript(string $cacheDir, string $downloadScript): void
     {
-        echo $file;
-        echo PHP_EOL;
-        echo $path;
         echo PHP_EOL;
         echo $downloadScript;
         echo PHP_EOL;
         $this->mkdirIfNotExists($cacheDir);
-        echo $downloadScript;
         echo `$downloadScript`;
         echo PHP_EOL;
     }
@@ -728,18 +730,18 @@ class Preprocessor
             if (file_exists($lib->path)) {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
-                if (!empty($lib->downloadScript)) {
+                if ($lib->enableDownloadScript) {
                     $cacheDir = $this->getWorkDir() . '/var/tmp';
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
                 cd {$cacheDir}
-                test -d {$lib->file} && rm -rf {$lib->file}
+                test -d {$lib->downloadScriptDir} && rm -rf {$lib->downloadScriptDir}
                 {$lib->downloadScript}
-                test -d {$workDir}/pool/lib/{$lib->file} || mv {$lib->file} {$workDir}/pool/lib/
+                test -d {$workDir}/pool/lib/{$lib->name} || mv {$lib->downloadScriptDir} {$workDir}/pool/lib/{$lib->name}
                 cd {$workDir} 
 EOF;
 
-                    $this->runDownloadScript($cacheDir, $lib->path, $lib->file, $lib->downloadScript);
+                    $this->runDownloadScript($cacheDir, $lib->downloadScript);
                 } else {
                     echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
                     $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
@@ -765,25 +767,23 @@ EOF;
 
     public function addExtension(Extension $ext): void
     {
-
-        if ($ext->peclVersion || !empty($ext->downloadScript)) {
-            if (!empty($ext->downloadScript)) {
+        if ($ext->peclVersion || $ext->enableDownloadScript) {
+            if ($ext->enableDownloadScript) {
                 $ext->path = $this->extensionDir . '/' . $ext->name;
+                $workDir = $this->getWorkDir();
                 if (!file_exists($ext->path)) {
                     $cacheDir = $this->getWorkDir() . '/var/tmp';
-                    $workDir = $this->getWorkDir();
-
                     $ext->downloadScript = <<<EOF
                         cd {$cacheDir}
-                        test -d {$ext->file} && rm -rf {$ext->file}
+                        test -d {$ext->downloadScriptDir} && rm -rf {$ext->downloadScriptDir}
                         {$ext->downloadScript}
-                        test -d {$workDir}/pool/ext/{$ext->name} || mv {$ext->file} {$workDir}/pool/ext/{$ext->name}
+                        test -d {$workDir}/pool/ext/{$ext->name} || mv {$ext->downloadScriptDir} {$workDir}/pool/ext/{$ext->name}
                         test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
-                        cp -rfa $ext->path/ {$workDir}/ext/{$ext->name}/
+                        `cp -rfa {$ext->path}/ {$workDir}/ext/{$ext->name}/`;
                         cd {$workDir} 
 EOF;
 
-                    $this->runDownloadScript($cacheDir, $ext->path, $ext->file, $ext->downloadScript);
+                    $this->runDownloadScript($cacheDir, $ext->downloadScript);
                 }
             } else {
                 $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';

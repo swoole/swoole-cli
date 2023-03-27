@@ -543,8 +543,8 @@ function install_libzip(Preprocessor $p)
 {
     $openssl_prefix = OPENSSL_PREFIX;
     $libzip_prefix = ZIP_PREFIX;
-    # $liblzma_prefix = LIBLZMA_PREFIX;
-    # $libzstd_prefix = LIBZSTD_PREFIX;
+    $liblzma_prefix = LIBLZMA_PREFIX;
+    $libzstd_prefix = LIBZSTD_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
