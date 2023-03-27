@@ -1196,7 +1196,7 @@ EOF;
                 {$item->downloadScript}
                 
                 test -f {$workDir}/libraries/{$item->name}.tar.gz || tar -czvf {$item->name}.tar.gz {$item->downloadName}/*  
-                cp -f {$item->name}.tar.gz '\${__DIR__}/libraries/'
+                cp -f {$item->name}.tar.gz "\${__DIR__}/libraries/"
                 cd {$workDir}
 EOF;
 
@@ -1230,7 +1230,7 @@ EOF;
                 test -d {$item->downloadName} && rm -rf {$item->downloadName}
                 {$item->downloadScript}
                 test -f {$workDir}/extensions/{$item->name}.tar.gz || tar -czvf   {$item->name}.tar.gz {$item->downloadName}/*
-                cp -f {$item->name}.tar.gz '\${__DIR__}/extensions/'
+                cp -f {$item->name}.tar.gz "\${__DIR__}/extensions/"
                 cd {$workDir}
                 
 EOF;
