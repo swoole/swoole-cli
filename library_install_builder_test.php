@@ -769,6 +769,8 @@ EOF
             ->withMakeOptions('build_sw')
             ->withMakeInstallCommand('install_sw')
             ->withPkgName('openssl')
+            ->withPkgName('libcrypto')
+            ->withPkgName('libssl')
             ->withLdflags('-L' . $openssl_lib)
             ->withPkgConfig($openssl_lib . '/pkgconfig')
             ->withBinPath($openssl_prefix . '/bin/')

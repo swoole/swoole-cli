@@ -181,6 +181,7 @@ function libraries_builder($p)
     }
 
     if (0) {
+        install_openssl_v1($p);
         install_openssl_v3($p);
         install_openssl_v3_quic($p);
         install_libedit($p);
@@ -477,7 +478,7 @@ function libraries_builder($p)
                             <PackageName>_ROOT
                             <PackageName>_DIR
 
-
+             c++(CMake篇)  https://zhuanlan.zhihu.com/p/470681241
             # CMAKE_BUILD_TYPE=Debug Release
 
             cmake -G"Unix Makefiles" .  \
