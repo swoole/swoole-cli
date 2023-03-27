@@ -117,6 +117,7 @@ final class MainTest extends TestCase
         $this->assertTrue((strpos(trim($matches[1]), 'libssh2') !== false), 'library: libSSH no found');
         preg_match('/^ZLib (?:Version =>)?(.*)$/m', $output, $matches);
         $this->assertNotEmpty(trim($matches[1]), 'library: ZLib no found');
+
     }
 
     public $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';

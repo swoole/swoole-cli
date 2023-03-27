@@ -5,6 +5,7 @@
 
 use SwooleCli\Library;
 use SwooleCli\Preprocessor;
+
 ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
@@ -121,8 +122,15 @@ make_all_library() {
 }
 
 export_variables() {
-<?php foreach ($this->varables as $name => $value) : ?>
-    export <?= $name ?>="<?= $value ?>"
+    CPPFLAGS=""
+    CFLAGS=""
+    LDFLAGS=""
+    LIBS=""
+<?php foreach ($this->variables as $name => $value) : ?>
+    <?= key($value) ?>="<?= current($value) ?>"
+<?php endforeach; ?>
+<?php foreach ($this->exportVariables as $value) : ?>
+    export  <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE]" && exit  $result_code;

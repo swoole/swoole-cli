@@ -118,6 +118,40 @@ EOF
             ->depends('openssl', 'zlib', 'libxml2', 'cares')
     );
 
+    $libssh2_prefix = LIBSSH2_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $p->addLibrary(
+        (new Library('libssh2'))
+            ->withHomePage('https://www.libssh2.org/')
+            ->withUrl('https://www.libssh2.org/download/libssh2-1.10.0.tar.gz')
+            ->withLicense('https://www.libssh2.org/license.html', Library::LICENSE_SPEC)
+            ->withManual('https://github.com/libssh2/libssh2.git')
+            ->withManual('https://github.com/libssh2/libssh2/blob/master/docs/INSTALL_CMAKE.md')
+            ->withPrefix($libssh2_prefix)
+            ->withBuildScript(
+                <<<EOF
+              mkdir -p build
+              cd build
+              cmake .. \
+              -DCMAKE_INSTALL_PREFIX={$libssh2_prefix} \
+              -DCMAKE_BUILD_TYPE=Release  \
+              -DBUILD_STATIC_LIBS=ON \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DENABLE_ZLIB_COMPRESSION=ON  \
+              -DZLIB_ROOT={$zlib_prefix} \
+              -DCLEAR_MEMORY=ON  \
+              -DENABLE_GEX_NEW=ON  \  \
+              -DENABLE_CRYPT_NONE=OFF
+              -DCRYPTO_BACKEND=OpenSSL \
+              -DBUILD_TESTING=OFF \
+              -DBUILD_EXAMPLES=OFF 
+              cmake --build . --target install
+EOF
+            )
+            ->withPkgName('libssh2')
+            ->depends('zlib')
+    );
+
 
     $nghttp3_prefix = NGHTTP3_PREFIX;
     $p->addLibrary(
@@ -158,22 +192,17 @@ EOF
                 autoreconf -fi
                 ./configure --help
 
-                # OPENSSL_CFLAGS=$(pkg-config     --cflags  --static openssl) \
-                # OPENSSL_LIBS=$(pkg-config       --libss   --static openssl) \
-                # LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags  --static libnghttp3) \
-                # LIBNGHTTP3_LIBS=$(pkg-config    --libss   --static libnghttp3) \
-                
-                packages="openssl libnghttp3 "
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
-                LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
-                LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
+                PACKAGES="openssl libnghttp3 "
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES )"  \
+                LDFLAGS="$(pkg-config --libs-only-L      --static \$PACKAGES )"  \
+                LIBS="$(pkg-config --libs-only-l         --static \$PACKAGES )"  \
                 ./configure \
                 --prefix=$ngtcp2_prefix \
                 --enable-shared=no \
                 --enable-static=yes \
                 --enable-lib-only \
                 --without-libev \
-                --with-openssl={$openssl_prefix} \
+                --with-openssl  \
                 --with-libnghttp3=yes \
                 --without-gnutls \
                 --without-boringssl \
@@ -188,39 +217,6 @@ EOF
             ->depends('openssl', 'nghttp3')
     );
 
-    $libssh2_prefix = LIBSSH2_PREFIX;
-    $zlib_prefix = ZLIB_PREFIX;
-    $p->addLibrary(
-        (new Library('libssh2'))
-            ->withHomePage('https://www.libssh2.org/')
-            ->withUrl('https://www.libssh2.org/download/libssh2-1.10.0.tar.gz')
-            ->withLicense('https://www.libssh2.org/license.html', Library::LICENSE_SPEC)
-            ->withManual('https://github.com/libssh2/libssh2.git')
-            ->withManual('https://github.com/libssh2/libssh2/blob/master/docs/INSTALL_CMAKE.md')
-            ->withPrefix($libssh2_prefix)
-            ->withBuildScript(
-                <<<EOF
-              mkdir -p build
-              cd build
-              cmake .. \
-              -DCMAKE_INSTALL_PREFIX={$libssh2_prefix} \
-              -DCMAKE_BUILD_TYPE=Release  \
-              -DBUILD_STATIC_LIBS=ON \
-              -DBUILD_SHARED_LIBS=OFF \
-              -DENABLE_ZLIB_COMPRESSION=ON  \
-              -DZLIB_ROOT={$zlib_prefix} \
-              -DCLEAR_MEMORY=ON  \
-              -DENABLE_GEX_NEW=ON  \  \
-              -DENABLE_CRYPT_NONE=OFF
-              -DCRYPTO_BACKEND=OpenSSL \
-              -DBUILD_TESTING=OFF \
-              -DBUILD_EXAMPLES=OFF 
-              cmake --build . --target install
-EOF
-            )
-            ->withPkgName('libssh2')
-            ->depends('zlib')
-    );
 
     $curl_prefix = CURL_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
@@ -238,12 +234,11 @@ EOF
                 <<<EOF
             ./configure --help
 
-            package_name='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libidn2 libssh2'
-            package_name="\$package_name  libnghttp2 libnghttp3 libngtcp2  libngtcp2_crypto_openssl"
-
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$package_name)" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$package_name)" \
-            LIBS="$(pkg-config      --libs-only-l    --static \$package_name)" \
+            PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 '
+            PACKAGES="\$PACKAGES libidn2 libssh2 libnghttp3 libngtcp2  libngtcp2_crypto_openssl"
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             ./configure --prefix={$curl_prefix}  \
             --enable-static \
             --disable-shared \
@@ -273,8 +268,8 @@ EOF
             --with-ngtcp2 \
             --with-nghttp3 \
             --with-libidn2 \
-            --with-libssh2={$libssh2_prefix} \
-            --with-openssl={$openssl_prefix}  \
+            --with-libssh2 \
+            --with-openssl  \
             --with-default-ssl-backend=openssl \
             --without-gnutls \
             --without-mbedtls \

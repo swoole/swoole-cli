@@ -16,4 +16,3 @@ return function (Preprocessor $p) {
             ->withLdflags('-L' . MIMALLOC_PREFIX . '/lib -lmimalloc')
     );
 };
-
