@@ -209,7 +209,6 @@ EOF
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
             ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'nghttp2', 'libidn2', 'libssh2')
-
     );
     $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
 };

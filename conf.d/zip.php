@@ -22,7 +22,6 @@ EOF
             )
             ->withBinPath($liblz4_prefix . '/bin')
             ->withPkgName('liblz4')
-
     );
     $liblzma_prefix = LIBLZMA_PREFIX;
     $p->addLibrary(
