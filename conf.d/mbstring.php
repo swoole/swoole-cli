@@ -10,17 +10,19 @@ return function (Preprocessor $p) {
         (new Library('oniguruma'))
             ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
             ->withPrefix($oniguruma_prefix)
-            ->withConfigure('./autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared')
+            ->withConfigure(
+                './autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared'
+            )
             ->withFile('oniguruma-6.9.7.tar.gz')
             ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPkgName('oniguruma')
             ->withBinPath($oniguruma_prefix . '/bin/')
     );
-    $p->setVarable('ONIG_CFLAGS', '$(pkg-config --cflags --static oniguruma)');
-    $p->setVarable('ONIG_LIBS', '$(pkg-config   --libs   --static oniguruma)');
+    $p->withExportVariable('ONIG_CFLAGS', '$(pkg-config --cflags --static oniguruma)');
+    $p->withExportVariable('ONIG_LIBS', '$(pkg-config   --libs   --static oniguruma)');
     $p->addExtension(
         (new Extension('mbstring'))
-        ->withOptions('--enable-mbstring')
-        ->depends('oniguruma')
+            ->withOptions('--enable-mbstring')
+            ->depends('oniguruma')
     );
 };

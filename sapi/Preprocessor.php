@@ -268,7 +268,10 @@ class Preprocessor
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
     protected string $extraCflags = '';
-    protected array $varables = [];
+
+    protected array $variables = [];
+
+    protected array $exportVariables = [];
     protected int $maxJob = 8;
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
@@ -633,9 +636,14 @@ class Preprocessor
         return $packages;
     }
 
-    function setVarable(string $key, string $value): void
+    public function withVariable(string $key, string $value): void
     {
-        $this->varables[$key] = $value;
+        $this->variables[] = [$key => $value];
+    }
+
+    public function withExportVariable(string $key, string $value): void
+    {
+        $this->exportVariables[] = [$key => $value];
     }
 
     function getExtension(string $name): ?Extension
@@ -773,7 +781,7 @@ class Preprocessor
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
      */
-    function execute()
+    public function execute():void
     {
         if (empty($this->rootDir)) {
             $this->rootDir = dirname(__DIR__);
@@ -824,11 +832,19 @@ class Preprocessor
             $libcpp = '-lstdc++';
         }
 
-        $packages = implode(' ', $this->getLibraryPackages());
-        $this->setVarable('PACKAGES', $packages);
-        $this->setVarable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
-        $this->setVarable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
-        $this->setVarable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
+        $packagesArr = $this->getLibraryPackages();
+        if (!empty($packagesArr)) {
+            $packages = implode(' ', $packagesArr);
+            $this->withVariable('PACKAGES', $packages);
+            $this->withVariable('CPPFLAGS', '$CPPFLAGS $(pkg-config --cflags-only-I --static $PACKAGES ) ');
+            $this->withVariable('LDFLAGS', '$LDFLAGS $(pkg-config --libs-only-L --static $PACKAGES ) ');
+            $this->withVariable('LIBS', '$LIBS $(pkg-config --libs-only-l --static $PACKAGES ) ' . $libcpp);
+        }
+        if (!empty($this->varables) || !empty($packagesArr)) {
+            $this->withExportVariable('CPPFLAGS', '$CPPFLAGS');
+            $this->withExportVariable('LDFLAGS', '$LDFLAGS');
+            $this->withExportVariable('LIBS', '$LIBS');
+        }
 
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);

@@ -34,7 +34,9 @@ EOF
             ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
             ->withFile('xz-5.4.1.tar.gz')
             ->withPrefix($liblzma_prefix)
-            ->withConfigure('./configure --prefix=' .$liblzma_prefix . ' --enable-static  --disable-shared --disable-doc')
+            ->withConfigure(
+                './configure --prefix=' . $liblzma_prefix . ' --enable-static  --disable-shared --disable-doc'
+            )
             ->withPkgName('liblzma')
             ->withBinPath($liblzma_prefix . '/bin/')
     );
@@ -121,7 +123,7 @@ EOF
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
             ->depends('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
     );
-    $p->setVarable('LIBZIP_CFLAGS', '$(pkg-config --cflags --static libzip)');
-    $p->setVarable('LIBZIP_LIBS', '$(pkg-config   --libs   --static libzip)');
+    $p->withExportVariable('LIBZIP_CFLAGS', '$(pkg-config --cflags --static libzip)');
+    $p->withExportVariable('LIBZIP_LIBS', '$(pkg-config   --libs   --static libzip)');
     $p->addExtension((new Extension('zip'))->withOptions('--with-zip')->depends('libzip'));
 };

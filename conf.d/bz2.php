@@ -16,5 +16,8 @@ return function (Preprocessor $p) {
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
             ->withBinPath($bzip2_prefix . '/bin/')
     );
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $bzip2_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $bzip2_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -lbz2');
     $p->addExtension((new Extension('bz2'))->withOptions('--with-bz2=' . BZIP2_PREFIX)->depends('bzip2'));
 };
