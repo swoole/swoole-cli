@@ -1195,8 +1195,8 @@ EOF;
                 test -d {$item->downloadName} && rm -rf {$item->downloadName}
                 {$item->downloadScript}
                 
-                test -d {$workDir}/libraries/{$item->name}.zip || zip -rf {$item->downloadName}/*  {$item->name}.zip
-                cp -f {$item->name}.zip {$workDir}/libraries/
+                test -f {$workDir}/libraries/{$item->name}.tar.gz || tar -czvf {$item->name}.tar.gz {$item->downloadName}/*  
+                cp -f {$item->name}.tar.gz '\${__DIR__}/libraries/'
                 cd {$workDir}
 EOF;
 
@@ -1229,8 +1229,8 @@ EOF;
                 cd {$cacheDir}
                 test -d {$item->downloadName} && rm -rf {$item->downloadName}
                 {$item->downloadScript}
-                test -f {$workDir}/extensions/{$item->name}.zip || zip -rf {$item->downloadName}/*  {$item->name}.zip
-                cp -f {$item->name}.zip {$workDir}/extensions/
+                test -f {$workDir}/extensions/{$item->name}.tar.gz || tar -czvf   {$item->name}.tar.gz {$item->downloadName}/*
+                cp -f {$item->name}.tar.gz '\${__DIR__}/extensions/'
                 cd {$workDir}
                 
 EOF;
