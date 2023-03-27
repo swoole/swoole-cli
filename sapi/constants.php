@@ -50,7 +50,6 @@ define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 
-define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 
 
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
@@ -87,8 +86,7 @@ define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
 define("NETTLE_PREFIX", $p->getGlobalPrefix() . '/nettle');
 define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
-define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
-define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
+
 define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
 
 define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
