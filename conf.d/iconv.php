@@ -14,8 +14,8 @@ return function (Preprocessor $p) {
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withBinPath($libiconv_prefix . '/bin/')
     );
-    $p->setVarable('cppflags', '$cppflags -I' . ICONV_PREFIX . '/include');
-    $p->setVarable('ldflags', '$ldflags -L' . ICONV_PREFIX . '/lib');
-    $p->setVarable('libs', '$libs -liconv');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . ICONV_PREFIX . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . ICONV_PREFIX . '/lib');
+    $p->withVariable('LIBS', '$LIBS -liconv');
     $p->addExtension((new Extension('iconv'))->withOptions('--with-iconv=' . $libiconv_prefix));
 };

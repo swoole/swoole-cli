@@ -121,14 +121,14 @@ make_all_library() {
 }
 
 export_variables() {
-    cppflags=""
-    cflags=""
-    ldflags=""
-    libs=""
-<?php foreach ($this->varables as $name => $value) : ?>
+    CPPFLAGS=""
+    CFLAGS=""
+    LDFLAGS=""
+    LIBS=""
+<?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
-<?php foreach ($this->exportVarables as $value) : ?>
+<?php foreach ($this->exportVariables as $value) : ?>
     export  <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
     result_code=$?

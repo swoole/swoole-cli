@@ -74,9 +74,9 @@ EOF
             ->withLdflags('-L' . $libgif_prefix . '/lib')
     );
 
-    $p->setVarable('cppflags', '$cppflags -I' . $libgif_prefix . '/include');
-    $p->setVarable('ldflags', '$ldflags -L' . $libgif_prefix . '/lib');
-    $p->setVarable('libs', '$libs -lgif');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libgif_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libgif_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -lgif');
 
     $libwebp_prefix = WEBP_PREFIX;
     # $libpng_prefix = PNG_PREFIX;
@@ -107,7 +107,7 @@ EOF
                 --with-jpeglibdir={$jpeg_lib_dir} \
                 --with-gifincludedir={$libgif_prefix}/include \
                 --with-giflibdir={$libgif_prefix}/lib \
-                --disable-tiff
+                --disable-tiff 
 EOF
             )
             ->withPkgName('libwebp')
@@ -144,7 +144,7 @@ EOF
             --with-bzip2=yes \
             --with-png=yes \
             --with-harfbuzz=no  \
-            --with-brotli=yes
+            --with-brotli=yes 
 EOF
             )
             ->withPkgName('freetype2')
