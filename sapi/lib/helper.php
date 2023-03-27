@@ -1,4 +1,5 @@
 <?php
+
 const DEFAULT_URL = 'https://www.swoole.com/download?out=json&limit=20';
 
 function swoole_cli_self_update()

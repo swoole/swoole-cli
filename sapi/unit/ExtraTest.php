@@ -6,10 +6,8 @@ namespace SwooleCli\UnitTest;
 
 use PHPUnit\Framework\TestCase;
 
-
 class ExtraTest extends TestCase
 {
-
     public function testCurlIDN2(): void
     {
         $url1 = "http://国家电网.网址";
