@@ -975,6 +975,7 @@ EOF;
                 $this->scanConfigFiles($path, $extAvailabled);
             } else {
                 $extAvailabled[basename($f, '.php')] = require $path;
+                echo basename($f, '.php') . PHP_EOL;
             }
         }
     }
@@ -1077,8 +1078,9 @@ EOF;
                 $this->scanConfigFiles($dir, $extAvailabled);
             }
         }
-        $this->extEnabled = array_unique($this->extEnabled);
+
         foreach ($this->extEnabled as $ext) {
+            echo $ext . PHP_EOL;
             if (!isset($extAvailabled[$ext])) {
                 echo "unsupported extension[$ext]\n";
                 continue;

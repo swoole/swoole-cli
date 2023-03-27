@@ -287,6 +287,7 @@ function libraries_builder($p)
             pjproject
         */
     }
+    install_ffmpeg($p);
     if (0) {
         install_rav1e($p);  //https://www.cnblogs.com/eguid/p/16015446.html
         install_aom($p);
@@ -482,10 +483,12 @@ function libraries_builder($p)
             cmake -G"Unix Makefiles" .  \
             -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
             -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
+            -DCMAKE_INSTALL_INCLUDEDIR={$libminzip_prefix}/include \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
             -DCMAKE_COLOR_MAKEFILE=ON
+
 
      */
 }
