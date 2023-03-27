@@ -1178,6 +1178,8 @@ __DIR__=$(
 
 cd ${__DIR__}
 mkdir -p ${__DIR__}/var/tmp
+mkdir -p ${__DIR__}/libraries
+mkdir -p ${__DIR__}/extensions
 
 EOF;
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
