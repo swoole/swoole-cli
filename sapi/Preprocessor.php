@@ -1227,7 +1227,7 @@ EOF;
                 $workDir = '${__DIR__}/var';
                 $downloadScript = <<<EOF
                 cd {$cacheDir}
-                test -d {$item->file} && rm -rf {$item->file}
+                test -d {$item->downloadName} && rm -rf {$item->downloadName}
                 {$item->downloadScript}
                 test -f {$workDir}/extensions/{$item->name}.zip || zip -rf {$item->downloadName}/*  {$item->name}.zip
                 cp -f {$item->name}.zip {$workDir}/extensions/
