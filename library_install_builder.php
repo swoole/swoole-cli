@@ -834,12 +834,12 @@ function install_curl(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
             ./configure --help
-           
-            packages="zlib libbrotlicommon  libbrotlidec  libbrotlienc openssl libcares libidn2 libssh2  "
-            packages="\$packages libnghttp2" #  libnghttp3 libngtcp2 
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )" \
-            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )" \
-            LIBS="$(pkg-config --libs-only-l         --static \$packages )" \
+            
+            PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 '
+            PACKAGES="\$PACKAGES libidn2 libssh2" #  libnghttp3 libngtcp2 
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             ./configure --prefix={$curl_prefix}  \
             --enable-static \
             --disable-shared \

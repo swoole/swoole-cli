@@ -693,7 +693,8 @@ class Preprocessor
      * @param string $md5
      * @return bool
      */
-    protected function checkFileMd5sum(string $path, string $md5) {
+    protected function checkFileMd5sum(string $path, string $md5)
+    {
         // md5 不匹配，删除文件
         if ($md5 != md5_file($path)) {
             unlink($path);
@@ -735,7 +736,7 @@ class Preprocessor
                 test -d {$lib->file} && rm -rf {$lib->file}
                 {$lib->downloadScript}
                 test -d {$workDir}/pool/lib/{$lib->file} || mv {$lib->file} {$workDir}/pool/lib/
-                cd {$workDir}
+                cd {$workDir} 
 EOF;
 
                     $this->runDownloadScript($cacheDir, $lib->path, $lib->file, $lib->downloadScript);
@@ -764,6 +765,7 @@ EOF;
 
     public function addExtension(Extension $ext): void
     {
+
         if ($ext->peclVersion || !empty($ext->downloadScript)) {
             if (!empty($ext->downloadScript)) {
                 $ext->path = $this->extensionDir . '/' . $ext->name;
@@ -778,7 +780,7 @@ EOF;
                         test -d {$workDir}/pool/ext/{$ext->name} || mv {$ext->file} {$workDir}/pool/ext/{$ext->name}
                         test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
                         cp -rfa $ext->path/ {$workDir}/ext/{$ext->name}/
-                        cd {$workDir}
+                        cd {$workDir} 
 EOF;
 
                     $this->runDownloadScript($cacheDir, $ext->path, $ext->file, $ext->downloadScript);
@@ -976,7 +978,6 @@ EOF;
                 $this->scanConfigFiles($path, $extAvailabled);
             } else {
                 $extAvailabled[basename($f, '.php')] = require $path;
-                echo basename($f, '.php') . PHP_EOL;
             }
         }
     }
@@ -1081,7 +1082,6 @@ EOF;
         }
 
         foreach ($this->extEnabled as $ext) {
-            echo $ext . PHP_EOL;
             if (!isset($extAvailabled[$ext])) {
                 echo "unsupported extension[$ext]\n";
                 continue;
@@ -1105,7 +1105,6 @@ EOF;
         } else {
             $libcpp = '-lstdc++';
         }
-
 
         //$packagesArr = $this->getLibraryPackages();
         $packagesArr = $this->extensionDependPkgNameList;

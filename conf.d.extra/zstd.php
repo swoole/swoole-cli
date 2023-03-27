@@ -5,8 +5,6 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-
-    var_dump(__FILE__);
     $p->addExtension(
         (new Extension('zstd'))
             ->withOptions('--enable-zstd')
