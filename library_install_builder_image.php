@@ -7,21 +7,20 @@ use SwooleCli\Preprocessor;
 function install_libjpeg(Preprocessor $p)
 {
     $libjpeg_prefix = JPEG_PREFIX;
+    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
+    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $lib = new Library('libjpeg');
     $lib->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
         ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withPrefix($libjpeg_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libjpeg_prefix)
-        ->withConfigure('cmake -G"Unix Makefiles" -DENABLE_STATIC=1 -DENABLE_SHARED=0  -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
+        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
         ->withPkgName('libjpeg')
         ->withBinPath($libjpeg_prefix . '/bin/')
-    ;
+        ->withLdflags('-L' . $jpeg_lib_dir)
+        ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
 
-    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
-    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $lib->withLdflags('-L' . $jpeg_lib_dir)
         ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
     if ($p->getOsType() === 'macos') {
@@ -177,7 +176,6 @@ EOF
 }
 
 
-
 function install_freetype(Preprocessor $p)
 {
     $freetype_prefix = FREETYPE_PREFIX;
@@ -213,12 +211,10 @@ function install_freetype(Preprocessor $p)
             --with-brotli=yes
 EOF
             )
-
             ->withPkgName('freetype2')
             ->depends('zlib', 'bzip2', 'libpng', 'brotli')
     );
 }
-
 
 
 function install_libtiff(Preprocessor $p)
@@ -261,7 +257,6 @@ EOF
 }
 
 
-
 function install_lcms2(Preprocessor $p)
 {
     $lcms2_prefix = LCMS2_PREFIX;
@@ -297,7 +292,6 @@ EOF
 
     $p->addLibrary($lib);
 }
-
 
 
 /**

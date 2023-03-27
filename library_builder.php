@@ -54,8 +54,8 @@ function libraries_builder($p)
 
     install_libssh2($p);
     install_nghttp2($p); //依赖 install_nghttp2($p);
-    //install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
-    //install_ngtcp2($p); //依赖gnutls nghttp3
+    install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
+    install_ngtcp2($p); //依赖gnutls nghttp3
 
 
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3(暂不启用)

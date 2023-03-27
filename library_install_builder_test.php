@@ -805,6 +805,7 @@ EOF
             ->withPkgConfig($openssl_lib . '/pkgconfig')
             ->withBinPath($openssl_prefix . '/bin/')
     );
+
 }
 
 function install_libedit(Preprocessor $p)
@@ -1243,9 +1244,6 @@ EOF
 
 function install_ngtcp2(Preprocessor $p)
 {
-    $libev_prefix = LIBEV_PREFIX;
-
-
     $ngtcp2_prefix = NGTCP2_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $p->addLibrary(
@@ -1261,38 +1259,31 @@ function install_ngtcp2(Preprocessor $p)
                 autoreconf -fi
                 ./configure --help
 
-                # OPENSSL_CFLAGS=$(pkg-config     --cflags  --static openssl) \
-                # OPENSSL_LIBS=$(pkg-config       --libss   --static openssl) \
-                # LIBNGHTTP3_CFLAGS=$(pkg-config  --cflags  --static libnghttp3) \
-                # LIBNGHTTP3_LIBS=$(pkg-config    --libss   --static libnghttp3) \
-                
-                export LIBEV_CFLAGS="-I{$libev_prefix}/include"
-                export LIBEV_LIBS="-L{$libev_prefix}/lib -lev"
-
-                packages="openssl libnghttp3 "
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
-                LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
-                LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
+                PACKAGES="openssl libnghttp3 "
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES )"  \
+                LDFLAGS="$(pkg-config --libs-only-L      --static \$PACKAGES )"  \
+                LIBS="$(pkg-config --libs-only-l         --static \$PACKAGES )"  \
                 ./configure \
                 --prefix=$ngtcp2_prefix \
                 --enable-shared=no \
                 --enable-static=yes \
                 --enable-lib-only \
                 --without-libev \
-                --with-openssl={$openssl_prefix} \
+                --with-openssl  \
                 --with-libnghttp3=yes \
                 --without-gnutls \
                 --without-boringssl \
                 --without-picotls \
                 --without-wolfssl \
                 --without-cunit  \
-                --without-jemalloc
+                --without-jemalloc 
 EOF
             )
             ->withPkgName('libngtcp2')
             ->withPkgName('libngtcp2_crypto_openssl')
             ->depends('openssl', 'nghttp3')
     );
+
 }
 
 

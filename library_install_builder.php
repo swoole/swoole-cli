@@ -814,7 +814,7 @@ function install_curl(Preprocessor $p)
     //http3 有多个实现
     //参考文档： https://curl.se/docs/http3.html
     //https://curl.se/docs/protdocs.html
-    $curl_prefix = CURL_PREFIX;
+
     $openssl_prefix = OPENSSL_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
 
@@ -824,6 +824,11 @@ function install_curl(Preprocessor $p)
     $brotli_prefix = BROTLI_PREFIX;
     $gnutls_prefix = GNUTLS_PREFIX;
     $libssh2_prefix = LIBSSH2_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $cares_prefix = CARES_PREFIX;
+
+    $curl_prefix = CURL_PREFIX;
     $p->addLibrary(
         (new Library('curl'))
             ->withHomePage('https://curl.se/')
@@ -831,14 +836,12 @@ function install_curl(Preprocessor $p)
             ->withManual('https://curl.se/docs/install.html')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPrefix($curl_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($curl_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
-            
+
             PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 '
-            PACKAGES="\$PACKAGES libidn2 libssh2" #  libnghttp3 libngtcp2 
+            PACKAGES="\$PACKAGES libidn2 libssh2 " #libnghttp3 libngtcp2  libngtcp2_crypto_openssl
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
@@ -866,19 +869,19 @@ function install_curl(Preprocessor $p)
             --enable-progress-meter \
             --enable-optimize \
             --with-zlib={$zlib_prefix} \
-            --with-libidn2={$libidn2_prefix} \
-            --with-zstd={$libzstd_prefix} \
             --enable-ares={$cares_prefix} \
-            --with-brotli={$brotli_prefix} \
-            --with-libssh2={$libssh2_prefix} \
             --with-nghttp2 \
+            --without-ngtcp2 \
             --without-nghttp3 \
+            --with-libidn2 \
+            --with-libssh2 \
+            --with-openssl  \
+            --with-default-ssl-backend=openssl \
             --without-gnutls \
-            --with-openssl={$openssl_prefix} \
-            --with-default-ssl-backend=openssl 
-            # --with-gnutls={$gnutls_prefix}
-            # --with-ngtcp2 \
-            # --with-ca-bundle=
+            --without-mbedtls \
+            --without-wolfssl \
+            --without-bearssl \
+            --without-rustls
 EOF
             )
             ->withPkgName('libcurl')
@@ -891,18 +894,22 @@ EOF
                 'libzstd',
                 'libidn2',
                 'nghttp2',
+                // 'nghttp3',
+                //'ngtcp2',
                 'libssh2'
             )
-        #--with-gnutls=GNUTLS_PREFIX
-        #--with-nghttp3=NGHTTP3_PREFIX
-        #--with-ngtcp2=NGTCP2_PREFIX
-        #--with-nghttp2=NGHTTP2_PREFIX
-        #--without-brotli
-        #--disable-ares
-        #--with-ngtcp2=/usr/ngtcp2 \
-        #--with-quiche=/usr/quiche
-        #--with-msh3=PATH
     );
+
+    #--with-gnutls=GNUTLS_PREFIX
+    #--with-nghttp3=NGHTTP3_PREFIX
+    #--with-ngtcp2=NGTCP2_PREFIX
+    #--with-nghttp2=NGHTTP2_PREFIX
+    #--without-brotli
+    #--disable-ares
+    #--with-ngtcp2=/usr/ngtcp2 \
+    #--with-quiche=/usr/quiche
+    #--with-msh3=PATH
+
     /**
      * configure: pkg-config: SSL_LIBS: "-lssl -lcrypto"
      * configure: pkg-config: SSL_LDFLAGS: "-L/usr/openssl/lib"
