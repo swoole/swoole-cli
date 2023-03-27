@@ -543,33 +543,35 @@ function install_libzip(Preprocessor $p)
 {
     $openssl_prefix = OPENSSL_PREFIX;
     $libzip_prefix = ZIP_PREFIX;
-    $liblzma_prefix = LIBLZMA_PREFIX;
-    $libzstd_prefix = LIBZSTD_PREFIX;
+    # $liblzma_prefix = LIBLZMA_PREFIX;
+    # $libzstd_prefix = LIBZSTD_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
+    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
     $p->addLibrary(
         (new Library('libzip'))
             //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
             ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
-            ->withManual('https://libzip.org/')
+            ->withManual('https://libzip.org')
             ->withPrefix($libzip_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libzip_prefix)
             ->withConfigure(
                 <<<EOF
-            cmake -Wno-dev .  \
+            # -Wno-dev
+            cmake  .  \
             -DCMAKE_INSTALL_PREFIX={$libzip_prefix} \
-            -DCMAKE_BUILD_TYPE=optimized \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_TOOLS=OFF \
+            -DBUILD_REGRESS=OFF \
             -DBUILD_EXAMPLES=OFF \
             -DBUILD_DOC=OFF \
             -DLIBZIP_DO_INSTALL=ON \
-            -DBUILD_SHARED_LIBS=OFF \
             -DENABLE_GNUTLS=OFF  \
             -DENABLE_MBEDTLS=OFF \
+            -DENABLE_COMMONCRYPTO=OFF \
             -DENABLE_OPENSSL=ON \
             -DOPENSSL_USE_STATIC_LIBS=TRUE \
-            -DOPENSSL_LIBRARIES={$openssl_prefix}/lib \
+            -DOPENSSL_LIBRARIES={$openssl_lib} \
             -DOPENSSL_INCLUDE_DIR={$openssl_prefix}/include \
             -DZLIB_LIBRARY={$zlib_prefix}/lib \
             -DZLIB_INCLUDE_DIR={$zlib_prefix}/include \
@@ -586,7 +588,7 @@ function install_libzip(Preprocessor $p)
             -DLIBLZMA_HAS_LZMA_PRESET=ON \
             -DENABLE_ZSTD=ON \
             -DZstd_LIBRARY={$libzstd_prefix}/lib \
-            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include
+            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include 
 EOF
             )
             ->withMakeOptions('VERBOSE=1')
