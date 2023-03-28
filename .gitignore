@@ -320,3 +320,4 @@ var/
 /.phpunit.result.cache
 /samples/sfx/*.phar
 composer.lock
+.php-cs-fixer.cache

@@ -11,13 +11,16 @@ abstract class Project
 {
     public string $name;
     public string $url;
+
+    public string $path = '';
+    public string $file = '';
+
     public string $downloadScript = '';
+
     public string $downloadName = '';
 
     public bool $enableDownloadScript = false;
 
-    public string $path = '';
-    public string $file = '';
     public string $md5sum = '';
     public string $gnupg = '';
 
@@ -88,12 +91,12 @@ abstract class Project
         return $this;
     }
 
+
     public function withGnuPG(string $gpg): static
     {
         $this->gnupg = $gpg;
         return $this;
     }
-
 
     public function withDownloadScript(string $name, string $script): static
     {
@@ -643,21 +646,6 @@ class Preprocessor
         $this->installLibrary = false;
     }
 
-    /**
-     * @param string $path
-     * @param string $file
-     * @param string $downloadScript
-     * @return void
-     */
-    protected function runDownloadScript(string $cacheDir, string $downloadScript): void
-    {
-        echo PHP_EOL;
-        echo $downloadScript;
-        echo PHP_EOL;
-        $this->mkdirIfNotExists($cacheDir);
-        echo `$downloadScript`;
-        echo PHP_EOL;
-    }
 
     /**
      * @param string $url
@@ -686,6 +674,21 @@ class Preprocessor
         if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
             throw new RuntimeException("The md5 of downloaded file[$file] is inconsistent with the configuration");
         }
+    }
+
+    /**
+     * @param string $cacheDir
+     * @param string $downloadScript
+     * @return void
+     */
+    protected function runDownloadScript(string $cacheDir, string $downloadScript): void
+    {
+        echo PHP_EOL;
+        echo $downloadScript;
+        echo PHP_EOL;
+        $this->mkdirIfNotExists($cacheDir);
+        echo `$downloadScript`;
+        echo PHP_EOL;
     }
 
     /**
@@ -741,7 +744,7 @@ class Preprocessor
                 {$lib->downloadScript}
                 # test -d {$workDir}/pool/lib/{$lib->name} || mv {$lib->downloadName} {$workDir}/pool/lib/{$lib->name}
                 test -f {$lib->path} || tar -zcf {$lib->path} {$lib->downloadName}
-                cd {$workDir} 
+                cd {$workDir}  
 EOF;
 
                     $this->runDownloadScript($cacheDir, $lib->downloadScript);
@@ -805,8 +808,8 @@ EOF;
                                 # test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
                                 # `cp -rfa {$ext->path}/ {$workDir}/ext/{$ext->name}/`;
                                 test -f {$ext->path} || tar -zcf {$ext->path} {$ext->downloadName}
-                                cd {$workDir} 
-        EOF;
+                                cd {$workDir}  
+EOF;
 
                         $this->runDownloadScript($cacheDir, $ext->downloadScript);
                     } else {
@@ -1181,6 +1184,7 @@ EOF;
         }
     }
 
+
     protected function generateLibraryDownloadLinks(): void
     {
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
@@ -1208,7 +1212,7 @@ EOF;
                 continue;
             }
             $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
-            $item->path = $this->extensionDir . '/' .$item->file;
+            $item->path = $this->extensionDir . '/' . $item->file;
             $item->url = "https://pecl.php.net/get/{$item->file}";
             $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
         }
@@ -1248,7 +1252,7 @@ EOF;
             
             test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadName}/*  
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir}
+            cd {$workDir} 
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -1276,7 +1280,7 @@ EOF;
                 {$item->downloadScript}
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadName}/*
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir}
+                cd {$workDir} 
                 
 EOF;
 
