@@ -711,10 +711,14 @@ class Preprocessor
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
+            if ($lib->enableDownloadScript) {
+                $lib->file = $lib->name . '.tar.gz';
+            }
         }
 
         if (!empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
+            $lib->enableDownloadScript = false;
         }
 
         $lib->path = $this->libraryDir . '/' . $lib->file;
@@ -725,7 +729,7 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            if (file_exists($lib->path)) {
+            if (is_file($lib->path)) {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
@@ -735,7 +739,8 @@ class Preprocessor
                 cd {$cacheDir}
                 test -d {$lib->downloadName} && rm -rf {$lib->downloadName}
                 {$lib->downloadScript}
-                test -d {$workDir}/pool/lib/{$lib->name} || mv {$lib->downloadName} {$workDir}/pool/lib/{$lib->name}
+                # test -d {$workDir}/pool/lib/{$lib->name} || mv {$lib->downloadName} {$workDir}/pool/lib/{$lib->name}
+                test -f {$lib->path} || tar -zcf {$lib->path} {$lib->downloadName}
                 cd {$workDir} 
 EOF;
 
@@ -765,51 +770,65 @@ EOF;
 
     public function addExtension(Extension $ext): void
     {
-        if ($ext->peclVersion || $ext->enableDownloadScript) {
-            if ($ext->enableDownloadScript) {
-                $ext->path = $this->extensionDir . '/' . $ext->name;
-                $workDir = $this->getWorkDir();
-                if (!file_exists($ext->path)) {
-                    $cacheDir = $this->getWorkDir() . '/var/tmp';
-                    $ext->downloadScript = <<<EOF
-                        cd {$cacheDir}
-                        test -d {$ext->downloadName} && rm -rf {$ext->downloadName}
-                        {$ext->downloadScript}
-                        test -d {$workDir}/pool/ext/{$ext->name} || mv {$ext->downloadName} {$workDir}/pool/ext/{$ext->name}
-                        test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
-                        `cp -rfa {$ext->path}/ {$workDir}/ext/{$ext->name}/`;
-                        cd {$workDir} 
-EOF;
-
-                    $this->runDownloadScript($cacheDir, $ext->downloadScript);
+        if (!$this->getInputOption('skip-download')) {
+            if ($ext->peclVersion || $ext->enableDownloadScript) {
+                if ($ext->enableDownloadScript) {
+                    if (!empty($ext->peclVersion)) {
+                        $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+                    }
+                    if (empty($ext->peclVersion) && empty($ext->file)) {
+                        $ext->file = $ext->name . '.tgz';
+                    }
+                    $ext->path = $this->extensionDir . '/' . $ext->file;
+                } else {
+                    $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+                    $ext->path = $this->extensionDir . '/' . $ext->file;
+                    $ext->url = "https://pecl.php.net/get/{$ext->file}";
                 }
-            } else {
-                $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-                $ext->path = $this->extensionDir . '/' . $ext->file;
-                $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
                 if (!empty($this->getInputOption('with-download-mirror-url'))) {
                     $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
-                }
-
-                // 检查文件的 MD5，若不一致删除后重新下载
-                if (!empty($ext->md5sum) and is_file($ext->path)) {
-                    // 本地文件被修改，MD5 不一致，删除后重新下载
-                    $this->checkFileMd5sum($ext->path, $ext->md5sum);
-                }
-
-                if (!$this->getInputOption('skip-download')) {
-                    if (!is_file($ext->path)) {
-                        echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                        $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
-                    } else {
-                        echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                    if ($ext->enableDownloadScript) {
+                        $ext->enableDownloadScript = false;
                     }
-                    $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-                    $this->mkdirIfNotExists($dst_dir, 0777, true);
-
-                    echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
                 }
+
+                $workDir = $this->getWorkDir();
+                if (!file_exists($ext->path)) {
+                    if ($ext->enableDownloadScript) {
+                        $cacheDir = $this->getWorkDir() . '/var/tmp';
+                        $ext->downloadScript = <<<EOF
+                                cd {$cacheDir}
+                                test -d {$ext->downloadName} && rm -rf {$ext->downloadName}
+                                {$ext->downloadScript}
+                                # test -d {$workDir}/pool/ext/{$ext->name} || mv {$ext->downloadName} {$workDir}/pool/ext/{$ext->name}
+                                # test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
+                                # `cp -rfa {$ext->path}/ {$workDir}/ext/{$ext->name}/`;
+                                test -f {$ext->path} || tar -zcvf {$ext->path} {$ext->downloadName}
+                                cd {$workDir} 
+        EOF;
+
+                        $this->runDownloadScript($cacheDir, $ext->downloadScript);
+                    } else {
+                        // 检查文件的 MD5，若不一致删除后重新下载
+                        if (!empty($ext->md5sum) and is_file($ext->path)) {
+                            // 本地文件被修改，MD5 不一致，删除后重新下载
+                            $this->checkFileMd5sum($ext->path, $ext->md5sum);
+                        }
+
+                        if (!is_file($ext->path)) {
+                            echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                            $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
+                        }
+                    }
+                } else {
+                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                }
+
+                $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
+                $this->mkdirIfNotExists($dst_dir, 0777, true);
+
+                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
         }
         $this->extensionList[] = $ext;
@@ -1188,6 +1207,9 @@ EOF;
             if (empty($item->peclVersion) || $item->enableDownloadScript) {
                 continue;
             }
+            $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
+            $item->path = $this->extensionDir . '/' .$item->file;
+            $item->url = "https://pecl.php.net/get/{$item->file}";
             $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
         }
         file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
@@ -1214,6 +1236,9 @@ EOF;
             if (!$item->enableDownloadScript) {
                 continue;
             }
+            if (empty($item->file)) {
+                $item->file = $item->name . '.tar.gz';
+            }
             $cacheDir = '${__DIR__}/var/tmp';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
@@ -1221,8 +1246,8 @@ EOF;
             test -d {$item->downloadName} && rm -rf {$item->downloadName}
             {$item->downloadScript}
             
-            test -f {$workDir}/libraries/{$item->name}.tar.gz || tar -czvf {$item->name}.tar.gz {$item->downloadName}/*  
-            cp -f {$item->name}.tar.gz "\${__DIR__}/libraries/"
+            test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadName}/*  
+            cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
             cd {$workDir}
 EOF;
 
@@ -1237,14 +1262,20 @@ EOF;
             if (!$item->enableDownloadScript) {
                 continue;
             }
+            if (!empty($item->peclVersion)) {
+                $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
+            }
+            if (empty($item->peclVersion) && empty($item->file)) {
+                $item->file = $item->name . '.tgz';
+            }
             $cacheDir = '${__DIR__}/var/tmp';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
                 cd {$cacheDir}
                 test -d {$item->downloadName} && rm -rf {$item->downloadName}
                 {$item->downloadScript}
-                test -f {$workDir}/extensions/{$item->name}.tar.gz || tar -czvf   {$item->name}.tar.gz {$item->downloadName}/*
-                cp -f {$item->name}.tar.gz "\${__DIR__}/extensions/"
+                test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadName}/*
+                cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
                 cd {$workDir}
                 
 EOF;
