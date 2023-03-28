@@ -15,11 +15,14 @@ return function (Preprocessor $p) {
             ->withOptions('--enable-swow  --enable-swow-ssl --enable-swow-curl ')
             ->withHomePage('https://github.com/swow/swow')
             ->withLicense('https://github.com/swow/swow/blob/develop/LICENSE', Extension::LICENSE_APACHE2)
-            ->withDownloadScript(
+            //->withFile('swow-v1.2.0.tar')
+            ->withPeclVersion('1.2.0')
+            ->withDownloadScript("swow",
                 <<<EOF
-                mkdir -p swow-v1.2.0
-                git clone -b v1.2.0 https://github.com/swow/swow.git swow-v1.2.0
-                mv swow-v1.2.0/ext  swow 
+                git clone -b v1.2.0 https://github.com/swow/swow.git
+                mv swow swow-t 
+                mv swow-t/ext  swow 
+                rm -rf swow-t
 EOF
             )
     );

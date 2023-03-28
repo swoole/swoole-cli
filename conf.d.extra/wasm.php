@@ -10,15 +10,18 @@ return function (Preprocessor $p) {
             ->withOptions('--enable-wasm')
             ->withHomePage('https://github.com/wasmerio/php-ext-wasm')
             ->withLicense('https://github.com/wasmerio/wasmer-php/blob/master/LICENSE', Extension::LICENSE_MIT)
-            ->withPeclVersion('0.5.0')
-            ->withFile('wasm')
+            //->withFile('wasm-0.1.1.tgz')
+            ->withPeclVersion('1.2.1')
             ->withDownloadScript(
+                'wasmer-php',
                 <<<EOF
             git clone -b master --depth=1 https://github.com/wasmerio/wasmer-php 
             mv wasmer-php/ext wasm
+            rm -rf wasmer-php 
+            mv wasm wasmer-php 
 EOF
             )
     );
     $workDir = $p->getWorkDir();
-    $p->setVarable('cppflags', '$cppflags -I' . $workDir . '/ext/wasm/include');
+    $p->withVariable('cppflags', '$cppflags -I' . $workDir . '/ext/wasm/include');
 };

@@ -804,7 +804,7 @@ EOF;
                                 # test -d {$workDir}/pool/ext/{$ext->name} || mv {$ext->downloadName} {$workDir}/pool/ext/{$ext->name}
                                 # test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
                                 # `cp -rfa {$ext->path}/ {$workDir}/ext/{$ext->name}/`;
-                                test -f {$ext->path} || tar -zcvf {$ext->path} {$ext->downloadName}
+                                test -f {$ext->path} || tar -zcf {$ext->path} {$ext->downloadName}
                                 cd {$workDir} 
         EOF;
 
