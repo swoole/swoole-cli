@@ -44,8 +44,8 @@ make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
 <?php if($item->cleanBuildDirectory): ?>
-    # If the build directory exist, clean the build directory
-    test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
+     # If the build directory exist, clean the build directory
+     test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
 <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
@@ -82,13 +82,12 @@ make_<?=$item->name?>() {
         return 0
     fi
 
-    cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
-
 <?php if($item->cleanPreInstallDirectory): ?>
     # If the install directory exist, clean the install directory
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
 <?php endif; ?>
 
+    cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
 <?php if(empty($item->buildScript)): ?>
 
@@ -98,8 +97,6 @@ make_<?=$item->name?>() {
     result_code=$?
     [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
 <?php endif; ?>
-
-    cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
     # configure
 <?php if (!empty($item->configure)): ?>

@@ -8,6 +8,7 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+
 // Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
 
@@ -17,6 +18,20 @@ if ($p->getInputOption('without-docker')) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
     $p->setGlobalPrefix($homeDir . '/.swoole-cli');
 }
+
+//release 版本，屏蔽这两个函数，使其不生效
+// ->withCleanBuildDirectory()
+// ->withCleanPreInstallDirectory($prefix)
+//SWOOLE_CLI_SKIP_DEPEND_DOWNLOAD
+//SWOOLE_CLI_BUILD_TYPE=release
+
+$build_type = $p->getInputOption('with-build-type');
+if (!in_array($build_type, ['dev', 'debug'])) {
+    $build_type = 'release';
+}
+define('SWOOLE_CLI_BUILD_TYPE', $build_type);
+define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
+
 
 if ($p->getOsType() == 'macos') {
     // -lintl -Wl,-framework -Wl,CoreFoundation
@@ -29,18 +44,8 @@ if ($p->getOsType() == 'macos') {
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
 
-//release 版本，屏蔽这两个函数，使其不生效
-// ->withCleanBuildDirectory()
-// ->withCleanPreInstallDirectory($prefix)
-//SWOOLE_CLI_SKIP_DEPEND_DOWNLOAD
-//SWOOLE_CLI_BUILD_TYPE=release
-if ($p->getInputOption('with-build-type') == 'release') {
-    define('SWOOLE_CLI_BUILD_TYPE', 'release');
-} elseif ($p->getInputOption('with-build-type') == 'debug') {
-    define('SWOOLE_CLI_BUILD_TYPE', 'debug');
-} else {
-    define('SWOOLE_CLI_BUILD_TYPE', 'dev');
-}
+
+
 
 if ($p->getOsType() == 'macos') {
     $p->addEndCallback(function () use ($p) {

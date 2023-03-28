@@ -114,12 +114,6 @@ class Library extends Project
     public string $ldflags = '';
 
 
-    public bool $cleanBuildDirectory = false;
-
-    public bool $cleanPreInstallDirectory = false;
-
-    public string $preInstallDirectory = '';
-
     public bool $skipBuildLicense = false;
 
     public bool $skipDownload = false;
@@ -144,6 +138,12 @@ class Library extends Project
     public string $prefix = '/usr';
 
     public string $binPath = '';
+
+    public bool $cleanBuildDirectory = false;
+
+    public bool $cleanPreInstallDirectory = false;
+
+    public string $preInstallDirectory = '';
 
     public function withUrl(string $url): static
     {
@@ -254,21 +254,20 @@ class Library extends Project
         return $this;
     }
 
-
     public function withCleanBuildDirectory(): static
     {
-        if (SWOOLE_CLI_BUILD_TYPE != 'release') {
+        if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
             $this->cleanBuildDirectory = true;
         }
         return $this;
     }
 
-    public function withCleanPreInstallDirectory(string $pre_install_dir): static
+    public function withCleanPreInstallDirectory(string $preInstallDir): static
     {
-        if (!empty($this->prefix) && ($this->prefix != '/usr') && !empty($pre_install_dir)) {
-            if (SWOOLE_CLI_BUILD_TYPE != 'release') {
+        if (!empty($preInstallDir) && (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0)) {
+            if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
                 $this->cleanPreInstallDirectory = true;
-                $this->preInstallDirectory = $pre_install_dir;
+                $this->preInstallDirectory = $preInstallDir;
             }
         }
         return $this;
@@ -338,8 +337,6 @@ class Library extends Project
     {
         return $this->label;
     }
-
-
 
 }
 

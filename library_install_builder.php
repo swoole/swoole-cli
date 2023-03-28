@@ -29,6 +29,8 @@ function install_openssl(Preprocessor $p)
             ->withUrl('https://www.openssl.org/source/openssl-3.0.8.tar.gz')
             ->withFile('openssl-3.0.8.tar.gz')
             ->withPrefix($openssl_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($openssl_prefix)
             ->withConfigure(
                 <<<EOF
                 # ./Configure LIST 
@@ -836,6 +838,8 @@ function install_curl(Preprocessor $p)
             ->withManual('https://curl.se/docs/install.html')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPrefix($curl_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($curl_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
