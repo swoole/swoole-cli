@@ -230,6 +230,12 @@ class Extension extends Project
         $this->peclVersion = $peclVersion;
         return $this;
     }
+
+    public function withFile(string $file): static
+    {
+        $this->file = $file;
+        return $this;
+    }
 }
 
 class Preprocessor
