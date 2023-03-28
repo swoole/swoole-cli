@@ -32,7 +32,6 @@ if (!in_array($build_type, ['dev', 'debug'])) {
 define('SWOOLE_CLI_BUILD_TYPE', $build_type);
 define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
-
 if ($p->getOsType() == 'macos') {
     // -lintl -Wl,-framework -Wl,CoreFoundation
     //$p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup');
@@ -43,7 +42,6 @@ if ($p->getOsType() == 'macos') {
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
-
 
 
 
