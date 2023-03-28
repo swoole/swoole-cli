@@ -254,21 +254,20 @@ class Library extends Project
         return $this;
     }
 
-
     public function withCleanBuildDirectory(): static
     {
-        if (SWOOLE_CLI_BUILD_TYPE != 'release') {
+        if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
             $this->cleanBuildDirectory = true;
         }
         return $this;
     }
 
-    public function withCleanPreInstallDirectory(string $pre_install_dir): static
+    public function withCleanPreInstallDirectory(string $preInstallDir): static
     {
-        if (!empty($this->prefix) && ($this->prefix != '/usr') && !empty($pre_install_dir)) {
+        if (!empty($preInstallDir) && (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0)) {
             if (SWOOLE_CLI_BUILD_TYPE != 'release') {
                 $this->cleanPreInstallDirectory = true;
-                $this->preInstallDirectory = $pre_install_dir;
+                $this->preInstallDirectory = $preInstallDir;
             }
         }
         return $this;
