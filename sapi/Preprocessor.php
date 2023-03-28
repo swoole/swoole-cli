@@ -90,6 +90,12 @@ class Library extends Project
 
     public string $binPath = '';
 
+    public bool $cleanBuildDirectory = false;
+
+    public bool $cleanPreInstallDirectory = false;
+
+    public string $preInstallDirectory = '';
+
     public function withUrl(string $url): static
     {
         $this->url = $url;
@@ -191,6 +197,26 @@ class Library extends Project
         $this->binPath = $path;
         return $this;
     }
+
+    public function withCleanBuildDirectory(): static
+    {
+        if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
+            $this->cleanBuildDirectory = true;
+        }
+        return $this;
+    }
+
+    public function withCleanPreInstallDirectory(string $preInstallDir): static
+    {
+        if (!empty($preInstallDir) && (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0)) {
+            if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
+                $this->cleanPreInstallDirectory = true;
+                $this->preInstallDirectory = $preInstallDir;
+            }
+        }
+        return $this;
+    }
+
 }
 
 class Extension extends Project
