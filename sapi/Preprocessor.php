@@ -210,7 +210,7 @@ class Library extends Project
     {
         if (
             !empty($preInstallDir) &&
-            preg_match(strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0) &&
+            (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0) &&
             ((strlen($preInstallDir) - strlen(SWOOLE_CLI_GLOBAL_PREFIX)) > 1)
         ) {
             if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
