@@ -208,7 +208,11 @@ class Library extends Project
 
     public function withCleanPreInstallDirectory(string $preInstallDir): static
     {
-        if (!empty($preInstallDir) && (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0)) {
+        if (
+            !empty($preInstallDir) &&
+            preg_match(strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0) &&
+            ((strlen($preInstallDir) - strlen(SWOOLE_CLI_GLOBAL_PREFIX)) > 1)
+        ) {
             if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
                 $this->cleanPreInstallDirectory = true;
                 $this->preInstallDirectory = $preInstallDir;
