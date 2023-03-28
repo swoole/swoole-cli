@@ -33,6 +33,8 @@
   },
   "scripts": {
     "test": "phpunit",
-    "format-code": "php-cs-fixer  fix ./library_install_builder.php --rules=@PSR12"
+    "format-code": "php-cs-fixer  fix ./library_install_builder.php --rules=@PSR12",
+    "format-sapi": "vendor/bin/php-cs-fixer fix sapi/",
+    "format-conf.d": "vendor/bin/php-cs-fixer fix conf.d"
   }
 }
