@@ -387,8 +387,6 @@ class Preprocessor
     protected string $cppCompiler = 'clang++';
     protected string $lld = 'ld.lld';
 
-    protected array $downloadExtensionList = [];
-
     protected array $libraryMap = [];
     protected array $extensionMap = [];
     /**
@@ -813,7 +811,6 @@ EOF;
                     echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
                 }
             }
-            $this->downloadExtensionList[] = $ext;
         }
         $this->extensionList[] = $ext;
         $this->extensionMap[$ext->name] = $ext;
@@ -1167,7 +1164,36 @@ EOF;
 
     protected function generateLibraryDownloadLinks(): void
     {
-        $shell_cmd_header=<<<'EOF'
+        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
+        $download_urls = [];
+        foreach ($this->libraryList as $item) {
+            if (empty($item->url) || $item->enableDownloadScript) {
+                continue;
+            }
+            $url = '';
+            $item->mirrorUrls[] = $item->url;
+            if (!empty($item->mirrorUrls)) {
+                $newMirrorUrls = [];
+                foreach ($item->mirrorUrls as $value) {
+                    $newMirrorUrls[] = trim($value);
+                }
+                $url = implode("\t", $newMirrorUrls);
+            }
+            $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
+        }
+        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+
+        $download_urls = [];
+        foreach ($this->extensionMap as $item) {
+            if (empty($item->peclVersion) || $item->enableDownloadScript) {
+                continue;
+            }
+            $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
+        }
+        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
+
+
+        $shell_cmd_header = <<<'EOF'
 #!/bin/bash
 
 set -exu
@@ -1182,52 +1208,38 @@ mkdir -p ${__DIR__}/libraries
 mkdir -p ${__DIR__}/extensions
 
 EOF;
-        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
-        $download_urls = [];
+
         $download_scripts = [];
         foreach ($this->libraryList as $item) {
-            if (empty($item->url)) {
+            if (!$item->enableDownloadScript) {
                 continue;
             }
-            if (!empty($item->enableDownloadScript)) {
-                $cacheDir = '${__DIR__}/var/tmp';
-                $workDir = '${__DIR__}/var';
-                $downloadScript = <<<EOF
-                cd {$cacheDir}
-                test -d {$item->downloadName} && rm -rf {$item->downloadName}
-                {$item->downloadScript}
-                
-                test -f {$workDir}/libraries/{$item->name}.tar.gz || tar -czvf {$item->name}.tar.gz {$item->downloadName}/*  
-                cp -f {$item->name}.tar.gz "\${__DIR__}/libraries/"
-                cd {$workDir}
+            $cacheDir = '${__DIR__}/var/tmp';
+            $workDir = '${__DIR__}/var';
+            $downloadScript = <<<EOF
+            cd {$cacheDir}
+            test -d {$item->downloadName} && rm -rf {$item->downloadName}
+            {$item->downloadScript}
+            
+            test -f {$workDir}/libraries/{$item->name}.tar.gz || tar -czvf {$item->name}.tar.gz {$item->downloadName}/*  
+            cp -f {$item->name}.tar.gz "\${__DIR__}/libraries/"
+            cd {$workDir}
 EOF;
 
-                $download_scripts[] = $downloadScript . PHP_EOL;
-            } else {
-                $url = '';
-                $item->mirrorUrls[] = $item->url;
-                if (!empty($item->mirrorUrls)) {
-                    $newMirrorUrls = [];
-                    foreach ($item->mirrorUrls as $value) {
-                        $newMirrorUrls[] = trim($value);
-                    }
-                    $url = implode("\t", $newMirrorUrls);
-                }
-                $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
-            }
+            $download_scripts[] = $downloadScript . PHP_EOL;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
         file_put_contents(
             $this->getWorkDir() . '/var/download_library.sh',
             $shell_cmd_header . PHP_EOL . implode(PHP_EOL, $download_scripts)
         );
-        $download_urls = [];
         $download_scripts = [];
-        foreach ($this->downloadExtensionList as $item) {
-            if ($item->enableDownloadScript) {
-                $cacheDir = '${__DIR__}/var/tmp';
-                $workDir = '${__DIR__}/var';
-                $downloadScript = <<<EOF
+        foreach ($this->extensionMap as $item) {
+            if (!$item->enableDownloadScript) {
+                continue;
+            }
+            $cacheDir = '${__DIR__}/var/tmp';
+            $workDir = '${__DIR__}/var';
+            $downloadScript = <<<EOF
                 cd {$cacheDir}
                 test -d {$item->downloadName} && rm -rf {$item->downloadName}
                 {$item->downloadScript}
@@ -1237,14 +1249,8 @@ EOF;
                 
 EOF;
 
-                $download_scripts[] = $downloadScript . PHP_EOL;
-            } else {
-                $download_urls[] = $item->url  . PHP_EOL . " out=" . $item->file;
-            }
+            $download_scripts[] = $downloadScript . PHP_EOL;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
-
-
         file_put_contents(
             $this->getWorkDir() . '/var/download_extension.sh',
             $shell_cmd_header . PHP_EOL . implode(PHP_EOL, $download_scripts)

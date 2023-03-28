@@ -418,6 +418,8 @@ function libraries_builder($p)
         install_opencl($p); //OpenCL全称为Open Computing Language（开放计算语言） OpenCL不但支持数据并行，还支持任务并行
         //用于共享内存并行系统的多处理器程序设
 
+        //metal，opencl   vulkan和metal除了通用计算，还能做渲染  ; 更多信息 https://www.zhihu.com/question/481772259/answer/2762594628
+
         //Openmp和thread都是共享一个进程内存的并行，openmp最显著的特点是命令式(directive-based)语言
         //install_openmp($p);
 
