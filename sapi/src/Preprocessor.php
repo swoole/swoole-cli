@@ -378,7 +378,7 @@ class Preprocessor
                 {$lib->downloadScript}
                 # test -d {$workDir}/pool/lib/{$lib->name} || mv {$lib->downloadName} {$workDir}/pool/lib/{$lib->name}
                 test -f {$lib->path} || tar -zcf {$lib->path} {$lib->downloadName}
-                cd {$workDir}  
+                cd {$workDir}   
 EOF;
 
                     $this->runDownloadScript($cacheDir, $lib->downloadScript);
@@ -442,7 +442,7 @@ EOF;
                                 # test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
                                 # `cp -rfa {$ext->path}/ {$workDir}/ext/{$ext->name}/`;
                                 test -f {$ext->path} || tar -zcf {$ext->path} {$ext->downloadName}
-                                cd {$workDir}  
+                                cd {$workDir}   
 EOF;
 
                         $this->runDownloadScript($cacheDir, $ext->downloadScript);
@@ -868,7 +868,7 @@ __DIR__=$(
 cd ${__DIR__}
 mkdir -p ${__DIR__}/var/tmp
 mkdir -p ${__DIR__}/libraries
-mkdir -p ${__DIR__}/extensions
+mkdir -p ${__DIR__}/extensions 
 
 EOF;
 
@@ -889,7 +889,7 @@ EOF;
             
             test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadName}/*  
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir}  
+            cd {$workDir}   
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -917,7 +917,7 @@ EOF;
                 {$item->downloadScript}
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadName}/*
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir}  
+                cd {$workDir}   
                 
 EOF;
 

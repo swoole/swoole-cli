@@ -21,6 +21,25 @@ class Library extends Project
 
     public string $binPath = '';
 
+    public bool $cleanBuildDirectory = false;
+
+    public bool $cleanPreInstallDirectory = false;
+
+    public string $preInstallDirectory = '';
+
+    public bool $skipBuildLicense = false;
+
+    public bool $skipDownload = false;
+
+    public bool $skipBuildInstall = false;
+
+    public string $untarArchiveCommand = 'tar';
+
+    public string $label = '';
+
+    public string $enablePkgNames = 'yes';
+
+
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
@@ -118,34 +137,6 @@ class Library extends Project
         return $this;
     }
 
-
-    public bool $skipBuildLicense = false;
-
-    public bool $skipDownload = false;
-
-    public bool $skipBuildInstall = false;
-
-    public string $untarArchiveCommand = 'tar';
-
-    public string $label = '';
-
-
-
-    public string $enablePkgNames = 'yes';
-
-    public bool $cleanBuildDirectory = false;
-
-    public bool $cleanPreInstallDirectory = false;
-
-    public string $preInstallDirectory = '';
-
-
-    public function disablePkgNames(): static
-    {
-        $this->enablePkgNames = 'no';
-        return $this;
-    }
-
     public function withCleanBuildDirectory(): static
     {
         if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
@@ -156,8 +147,7 @@ class Library extends Project
 
     public function withCleanPreInstallDirectory(string $preInstallDir): static
     {
-        if (
-            !empty($preInstallDir) &&
+        if (!empty($preInstallDir) &&
             (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0) &&
             ((strlen($preInstallDir) - strlen(SWOOLE_CLI_GLOBAL_PREFIX)) > 1)
         ) {
@@ -168,6 +158,13 @@ class Library extends Project
         }
         return $this;
     }
+
+    public function disablePkgNames(): static
+    {
+        $this->enablePkgNames = 'no';
+        return $this;
+    }
+
 
     public function withUntarArchiveCommand(string $command): static
     {
