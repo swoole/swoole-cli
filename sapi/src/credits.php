@@ -21,13 +21,13 @@
 <div class="product">
     <span class="title">musl-libc</span>
     <span class="homepage">
-        <a href="http://www.musl-libc.org/"
+        <a href="https://www.musl-libc.org/"
            target="_blank"
            rel="noopener noreferrer"
         >homepage</a>
     </span>
     <span class="manual">
-        <a href="http://musl.libc.org/manual.html"
+        <a href="https://musl.libc.org/manual.html"
            target="_blank"
            rel="noopener noreferrer"
         >manual</a>
@@ -36,9 +36,9 @@
     <label class="show" tabindex="0"></label>
     <span class="licence">
         <a
-                href="http://git.musl-libc.org/cgit/musl/tree/COPYRIGHT"
-                target="_blank"
-                rel="noopener noreferrer"
+            href="https://git.musl-libc.org/cgit/musl/tree/COPYRIGHT"
+            target="_blank"
+            rel="noopener noreferrer"
         >licence</a>
     </span>
 </div>
@@ -46,88 +46,91 @@
     <span class="title">php</span>
     <span class="homepage"><a href="https://www.php.net/">homepage</a></span>
     <span class="manual"><a
-                href="https://www.php.net/docs.php"
-                target="_blank"
-                rel="noopener noreferrer"
+            href="https://www.php.net/docs.php"
+            target="_blank"
+            rel="noopener noreferrer"
         >manual</a>
     </span>
     <input type="checkbox" hidden="hidden" id=""/>
     <label class="show" tabindex="0"></label>
     <span class="licence"><a
-                href="https://github.com/php/php-src/blob/master/LICENSE"
-                target="_blank"
-                rel="noopener noreferrer"
+            href="https://github.com/php/php-src/blob/master/LICENSE"
+            target="_blank"
+            rel="noopener noreferrer"
         >licence</a>
     </span>
 </div>
 <?php
 
-foreach ($this->libraryList as $item) {
+foreach ($this->libraryList as $item) :
     if ($item->skipBuildLicense || $item->skipBuildInstall || empty($item->license)) {
         continue;
-    } else {
-        ?>
-        <div class="product">
-            <span class="title"><?= $item->name ?></span>
+    }
+    ?>
+    <div class="product">
+        <span class="title"><?= $item->name ?></span>
+        <?php if ($item->homePage) : ?>
             <span class="homepage">
-            <a
-                    href="<?= $item->homePage ?>"
-                    target="_blank"
-                    rel="noopener noreferrer"
-            >homepage</a>
-        </span>
+                <a href="<?= $item->homePage ?>"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                >homepage</a>
+            </span>
+        <?php endif; ?>
+        <?php if ($item->manual) : ?>
             <span class="manual">
-
             <a
                     href="<?= $item->manual ?>"
                     target="_blank"
                     rel="noopener noreferrer"
             >manual</a>
-        </span>
+            </span>
 
             <input type="checkbox" hidden="hidden" id=""/>
             <label class="show" tabindex="0"></label>
             <span class="licence">
-            <a
+            </span>
+        <?php endif; ?>
+        <?php if ($item->license) : ?>
+            <span class="licence">
+                <a href="<?= $item->license ?>"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                >licence</a>
+            </span>
+        <?php endif; ?>
+    </div>
+<?php
+endforeach;
+
+foreach ($this->extensionList as $item):
+
+    if (empty($item->license)) {
+        continue;
+    }
+    ?>
+    <div class="product">
+        <span class="title">php-ext-<?= $item->name ?></span>
+        <span class="homepage"></span>
+        <span class="manual">
+                <a
+                    href="<?= $item->manual ?>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >manual</a>
+            </span>
+        <input type="checkbox" hidden="hidden" id=""/>
+        <label class="show" tabindex="0"></label>
+        <span class="licence">
+                <a
                     href="<?= $item->license ?>"
                     target="_blank"
                     rel="noopener noreferrer"
-            >licence</a>
-        </span>
-        </div>
-
-        <?php
-    }
-}
-
-foreach ($this->extensionList as $item) {
-    if (empty($item->license)) {
-        continue;
-    } else {
-        ?>
-        <div class="product">
-            <span class="title">php-ext-<?= $item->name ?></span>
-            <span class="homepage"></span>
-            <span class="manual">
-                <a
-                        href="<?= $item->manual ?>"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                >manual</a>
-            </span>
-            <input type="checkbox" hidden="hidden" id=""/>
-            <label class="show" tabindex="0"></label>
-            <span class="licence">
-                <a
-                        href="<?= $item->license ?>"
-                        target="_blank"
-                        rel="noopener noreferrer"
                 >licence</a>
             </span>
-        </div>
-        <?php
-    }
-}
+    </div>
+<?php
+endforeach;
 ?>
 
 </body>

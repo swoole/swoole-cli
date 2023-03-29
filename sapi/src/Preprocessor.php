@@ -7,374 +7,6 @@ use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
 
-abstract class Project
-{
-    public string $name;
-    public string $url;
-
-    public string $path = '';
-    public string $file = '';
-
-    public string $downloadScript = '';
-
-    public string $downloadName = '';
-
-    public bool $enableDownloadScript = false;
-
-    public string $md5sum = '';
-    public string $gnupg = '';
-
-    public string $manual = '';
-
-    public string $wiki = '';
-
-    public string $docs = '';
-
-    public string $documentation = '';
-    public string $homePage = '';
-
-    public string $license = '';
-
-    public string $prefix = '';
-
-    public array $deps = [];
-
-    public int $licenseType = self::LICENSE_SPEC;
-
-    public const LICENSE_SPEC = 0;
-    public const LICENSE_APACHE2 = 1;
-    public const LICENSE_BSD = 2;
-    public const LICENSE_GPL = 3;
-    public const LICENSE_LGPL = 4;
-    public const LICENSE_MIT = 5;
-    public const LICENSE_PHP = 6;
-
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function withLicense(string $license, int $licenseType = self::LICENSE_SPEC): static
-    {
-        $this->license = $license;
-        $this->licenseType = $licenseType;
-        return $this;
-    }
-
-    public function withHomePage(string $homePage): static
-    {
-        $this->homePage = $homePage;
-        return $this;
-    }
-
-    public function withManual(string $manual): static
-    {
-        $this->manual = $manual;
-        return $this;
-    }
-
-    public function withDocumentation(string $documentation): static
-    {
-        $this->documentation = $documentation;
-        return $this;
-    }
-
-    public function depends(string ...$libs): static
-    {
-        $this->deps += $libs;
-        return $this;
-    }
-
-    public function withMd5sum(string $md5sum): static
-    {
-        $this->md5sum = $md5sum;
-        return $this;
-    }
-
-
-    public function withGnuPG(string $gpg): static
-    {
-        $this->gnupg = $gpg;
-        return $this;
-    }
-
-    public function withDownloadScript(string $name, string $script): static
-    {
-        $this->enableDownloadScript = true;
-        $this->downloadScript = $script;
-        $this->downloadName = $name;
-        return $this;
-    }
-}
-
-class Library extends Project
-{
-    public array $mirrorUrls = [];
-    public string $configure = '';
-    public string $ldflags = '';
-
-
-    public bool $skipBuildLicense = false;
-
-    public bool $skipDownload = false;
-
-    public bool $skipBuildInstall = false;
-
-    public string $untarArchiveCommand = 'tar';
-
-    public string $label = '';
-    public string $buildScript = '';
-    public string $makeOptions = '';
-    public string $makeVariables = '';
-    public string $makeInstallCommand = 'install';
-    public string $makeInstallOptions = '';
-    public string $beforeInstallScript = '';
-    public string $afterInstallScript = '';
-    public string $pkgConfig = '';
-    public array $pkgNames = [];
-
-    public string $enablePkgNames = 'yes';
-
-    public string $prefix = '/usr';
-
-    public string $binPath = '';
-
-    public bool $cleanBuildDirectory = false;
-
-    public bool $cleanPreInstallDirectory = false;
-
-    public string $preInstallDirectory = '';
-
-    public function withUrl(string $url): static
-    {
-        $this->url = $url;
-        return $this;
-    }
-
-    public function withMirrorUrl(string $url): static
-    {
-        $this->mirrorUrls[] = $url;
-        return $this;
-    }
-
-    public function withPrefix(string $prefix): static
-    {
-        $this->prefix = $prefix;
-        $this->withLdflags('-L' . $prefix . '/lib');
-        $this->withPkgConfig($prefix . '/lib/pkgconfig');
-        return $this;
-    }
-
-    public function getPrefix(): string
-    {
-        return $this->prefix;
-    }
-
-    public function withFile(string $file): static
-    {
-        $this->file = $file;
-        return $this;
-    }
-
-    public function withBuildScript(string $script): static
-    {
-        $this->buildScript = $script;
-        return $this;
-    }
-
-    public function withConfigure(string $configure): static
-    {
-        $this->configure = $configure;
-        return $this;
-    }
-
-    public function withLdflags(string $ldflags): static
-    {
-        $this->ldflags = $ldflags;
-        return $this;
-    }
-
-    public function withMakeVariables(string $variables): static
-    {
-        $this->makeVariables = $variables;
-        return $this;
-    }
-
-    public function withMakeOptions(string $makeOptions): static
-    {
-        $this->makeOptions = $makeOptions;
-        return $this;
-    }
-
-    public function withScriptBeforeInstall(string $script): static
-    {
-        $this->beforeInstallScript = $script;
-        return $this;
-    }
-
-    public function withScriptAfterInstall(string $script): static
-    {
-        $this->afterInstallScript = $script;
-        return $this;
-    }
-
-    public function withMakeInstallCommand(string $makeInstallCommand): static
-    {
-        $this->makeInstallCommand = $makeInstallCommand;
-        return $this;
-    }
-
-    public function withMakeInstallOptions(string $makeInstallOptions): static
-    {
-        $this->makeInstallOptions = $makeInstallOptions;
-        return $this;
-    }
-
-    public function withPkgConfig(string $pkgConfig): static
-    {
-        $this->pkgConfig = $pkgConfig;
-        return $this;
-    }
-
-    public function withPkgName(string $pkgName): static
-    {
-        $this->pkgNames[] = $pkgName;
-        return $this;
-    }
-
-    public function disablePkgNames(): static
-    {
-        $this->enablePkgNames = 'no';
-        return $this;
-    }
-
-    public function withBinPath(string $path): static
-    {
-        $this->binPath = $path;
-        return $this;
-    }
-
-    public function withCleanBuildDirectory(): static
-    {
-        if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
-            $this->cleanBuildDirectory = true;
-        }
-        return $this;
-    }
-
-    public function withCleanPreInstallDirectory(string $preInstallDir): static
-    {
-        if (
-            !empty($preInstallDir) &&
-            (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0) &&
-            ((strlen($preInstallDir) - strlen(SWOOLE_CLI_GLOBAL_PREFIX)) > 1)
-        ) {
-            if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
-                $this->cleanPreInstallDirectory = true;
-                $this->preInstallDirectory = $preInstallDir;
-            }
-        }
-        return $this;
-    }
-
-    public function withUntarArchiveCommand(string $command): static
-    {
-        $this->untarArchiveCommand = $command;
-        return $this;
-    }
-
-
-    public function withSkipBuildLicense(): static
-    {
-        $this->skipBuildLicense = true;
-        return $this;
-    }
-
-    public function withSkipDownload(): static
-    {
-        $this->skipDownload = true;
-        return $this;
-    }
-
-    public function getSkipDownload()
-    {
-        return $this->skipDownload;
-    }
-
-    public function disableDefaultLdflags(): static
-    {
-        $this->ldflags = '';
-        return $this;
-    }
-
-    public function withSkipBuildInstall(): static
-    {
-        $this->skipBuildInstall = true;
-        $this->skipBuildLicense = true;
-        $this->withBinPath('');
-        $this->disableDefaultPkgConfig();
-        $this->disablePkgName();
-        $this->disableDefaultLdflags();
-        return $this;
-    }
-
-
-    public function disableDefaultPkgConfig(): static
-    {
-        $this->pkgConfig = '';
-        return $this;
-    }
-
-    public function disablePkgName(): static
-    {
-        $this->pkgNames = [];
-        return $this;
-    }
-
-    public function withLabel(string $label): static
-    {
-        $this->label = $label;
-        return $this;
-    }
-
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-}
-
-class Extension extends Project
-{
-    public string $options = '';
-    public string $peclVersion = '';
-
-    public function withOptions(string $options): static
-    {
-        $this->options = $options;
-        return $this;
-    }
-
-    public function withUrl(string $url): static
-    {
-        $this->url = $url;
-        return $this;
-    }
-
-    public function withPeclVersion(string $peclVersion): static
-    {
-        $this->peclVersion = $peclVersion;
-        return $this;
-    }
-
-    public function withFile(string $file): static
-    {
-        $this->file = $file;
-        return $this;
-    }
-
-}
-
 class Preprocessor
 {
     public const VERSION = '1.6';
@@ -479,6 +111,7 @@ class Preprocessor
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
+    protected string $configureVarables;
 
     protected function __construct()
     {
@@ -652,7 +285,7 @@ class Preprocessor
      * @param string $url
      * @param string $file
      * @param string $md5sum
-     * @throws RuntimeException
+     * @throws Exception
      */
     protected function downloadFile(string $url, string $file, string $md5sum)
     {
@@ -669,11 +302,11 @@ class Preprocessor
 
         // 下载失败
         if (!is_file($file) or filesize($file) == 0) {
-            throw new RuntimeException("Downloading file[$file] from url[$url] failed");
+            throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
         }
         // 下载文件的 MD5 不一致
         if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
-            throw new RuntimeException("The md5 of downloaded file[$file] is inconsistent with the configuration");
+            throw new Exception("The md5 of downloaded file[$file] is inconsistent with the configuration");
         }
     }
 
@@ -697,7 +330,7 @@ class Preprocessor
      * @param string $md5
      * @return bool
      */
-    protected function checkFileMd5sum(string $path, string $md5)
+    protected function checkFileMd5sum(string $path, string $md5): bool
     {
         // md5 不匹配，删除文件
         if ($md5 != md5_file($path)) {
@@ -709,7 +342,7 @@ class Preprocessor
 
     /**
      * @param Library $lib
-     * @throws RuntimeException
+     * @throws Exception
      */
     public function addLibrary(Library $lib): void
     {
@@ -765,7 +398,7 @@ EOF;
         }
 
         if (empty($lib->license)) {
-            throw new RuntimeException("require license");
+            throw new Exception("require license");
         }
 
         $this->libraryList[] = $lib;
@@ -960,7 +593,7 @@ EOF;
             if ($item->deps) {
                 foreach ($item->deps as $lib) {
                     if (!isset($libs[$lib])) {
-                        throw new RuntimeException("The ext-{$item->name} depends on $lib, but it does not exist");
+                        throw new Exception("The ext-{$item->name} depends on $lib, but it does not exist");
                     }
                 }
             }
@@ -1044,7 +677,7 @@ EOF;
     private function getDependPkgNameByLibraryName($library_name, &$packages)
     {
         if (!isset($this->libraryMap[$library_name])) {
-            throw new RuntimeException( 'library ' . $library_name . ' no found');
+            throw new RuntimeException('library ' . $library_name . ' no found');
         }
         $lib = $this->libraryMap[$library_name];
         if (!empty($lib->pkgNames)) {
@@ -1075,7 +708,7 @@ EOF;
     public function execute(): void
     {
         if (empty($this->rootDir)) {
-            $this->rootDir = dirname(__DIR__);
+            $this->rootDir = dirname(__DIR__, 2);
         }
         if (empty($this->libraryDir)) {
             $this->libraryDir = $this->rootDir . '/pool/lib';
@@ -1168,7 +801,7 @@ EOF;
         include __DIR__ . '/credits.php';
         file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
-        copy($this->rootDir . '/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
+        copy($this->rootDir . '/sapi/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
 
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
@@ -1256,7 +889,7 @@ EOF;
             
             test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadName}/*  
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir} 
+            cd {$workDir}  
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -1284,7 +917,7 @@ EOF;
                 {$item->downloadScript}
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadName}/*
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir} 
+                cd {$workDir}  
                 
 EOF;
 
