@@ -215,7 +215,7 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-    cd <?=$this->getRootDir()?>/sapi
+    cd <?=$this->getRootDir()?>/sapi/docker
     docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f <?= $this->getBaseImageDockerFile() ?>  .
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
