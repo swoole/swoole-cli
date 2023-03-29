@@ -19,6 +19,12 @@ abstract class Project
 
     public array $deps = [];
 
+    public string $downloadScript = '';
+
+    public string $downloadDirName = '';
+
+    public bool $enableDownloadScript = false;
+
     public int $licenseType = self::LICENSE_SPEC;
 
     public const LICENSE_SPEC = 0;
@@ -77,11 +83,13 @@ abstract class Project
         return $this;
     }
 
-    public string $downloadScript = '';
-
-    public string $downloadName = '';
-
-    public bool $enableDownloadScript = false;
+    public function withDownloadScript(string $downloadDirName, string $script): static
+    {
+        $this->enableDownloadScript = true;
+        $this->downloadScript = $script;
+        $this->downloadDirName = $downloadDirName;
+        return $this;
+    }
 
     public string $gnupg = '';
 
@@ -103,11 +111,4 @@ abstract class Project
         return $this;
     }
 
-    public function withDownloadScript(string $name, string $script): static
-    {
-        $this->enableDownloadScript = true;
-        $this->downloadScript = $script;
-        $this->downloadName = $name;
-        return $this;
-    }
 }

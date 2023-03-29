@@ -315,7 +315,7 @@ class Preprocessor
      * @param string $downloadScript
      * @return void
      */
-    protected function runDownloadScript(string $cacheDir, string $downloadScript): void
+    protected function execDownloadScript(string $cacheDir, string $downloadScript): void
     {
         echo PHP_EOL;
         echo $downloadScript;
@@ -374,14 +374,14 @@ class Preprocessor
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
                 cd {$cacheDir}
-                test -d {$lib->downloadName} && rm -rf {$lib->downloadName}
+                test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
                 {$lib->downloadScript}
-                # test -d {$workDir}/pool/lib/{$lib->name} || mv {$lib->downloadName} {$workDir}/pool/lib/{$lib->name}
-                test -f {$lib->path} || tar -zcf {$lib->path} {$lib->downloadName}
-                cd {$workDir}   
+                test -f {$lib->path} || tar -zcf {$lib->path} {$lib->downloadDirName}
+                cd {$workDir}  
+
 EOF;
 
-                    $this->runDownloadScript($cacheDir, $lib->downloadScript);
+                    $this->execDownloadScript($cacheDir, $lib->downloadScript);
                 } else {
                     echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
                     $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
@@ -436,16 +436,14 @@ EOF;
                         $cacheDir = $this->getWorkDir() . '/var/tmp';
                         $ext->downloadScript = <<<EOF
                                 cd {$cacheDir}
-                                test -d {$ext->downloadName} && rm -rf {$ext->downloadName}
+                                test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
-                                # test -d {$workDir}/pool/ext/{$ext->name} || mv {$ext->downloadName} {$workDir}/pool/ext/{$ext->name}
-                                # test -d {$workDir}/ext/{$ext->name} &&  rm -rf {$workDir}/ext/{$ext->name}
-                                # `cp -rfa {$ext->path}/ {$workDir}/ext/{$ext->name}/`;
-                                test -f {$ext->path} || tar -zcf {$ext->path} {$ext->downloadName}
-                                cd {$workDir}   
+                                test -f {$ext->path} || tar -zcf {$ext->path} {$ext->downloadDirName}
+                                cd {$workDir}  
+
 EOF;
 
-                        $this->runDownloadScript($cacheDir, $ext->downloadScript);
+                        $this->execDownloadScript($cacheDir, $ext->downloadScript);
                     } else {
                         // 检查文件的 MD5，若不一致删除后重新下载
                         if (!empty($ext->md5sum) and is_file($ext->path)) {
@@ -868,7 +866,7 @@ __DIR__=$(
 cd ${__DIR__}
 mkdir -p ${__DIR__}/var/tmp
 mkdir -p ${__DIR__}/libraries
-mkdir -p ${__DIR__}/extensions 
+mkdir -p ${__DIR__}/extensions  
 
 EOF;
 
@@ -884,18 +882,18 @@ EOF;
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
             cd {$cacheDir}
-            test -d {$item->downloadName} && rm -rf {$item->downloadName}
+            test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
             {$item->downloadScript}
-            
-            test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadName}/*  
+            test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadDirName}/*  
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir}   
+            cd {$workDir}
+            
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
         }
         file_put_contents(
-            $this->getWorkDir() . '/var/download_library.sh',
+            $this->getWorkDir() . '/var/download_library_use_git.sh',
             $shell_cmd_header . PHP_EOL . implode(PHP_EOL, $download_scripts)
         );
         $download_scripts = [];
@@ -913,18 +911,18 @@ EOF;
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
                 cd {$cacheDir}
-                test -d {$item->downloadName} && rm -rf {$item->downloadName}
+                test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
                 {$item->downloadScript}
-                test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadName}/*
+                test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadDirName}/*
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
                 cd {$workDir}   
-                
+              
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
         }
         file_put_contents(
-            $this->getWorkDir() . '/var/download_extension.sh',
+            $this->getWorkDir() . '/var/download_extension_use_git.sh',
             $shell_cmd_header . PHP_EOL . implode(PHP_EOL, $download_scripts)
         );
     }
