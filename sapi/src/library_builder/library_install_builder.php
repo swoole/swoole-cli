@@ -1021,7 +1021,7 @@ EOF;
             ->withCleanPreInstallDirectory($pgsql_prefix)
             ->withBuildScript(
                 <<<EOF
-
+            set -uex 
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
 
             # 替换指定行内容
@@ -1034,10 +1034,9 @@ EOF;
             # --with-libraries="{$libraries}"
             PACKAGES="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib libxslt liblz4 libzstd"
 
-            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
-            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES )" \
-
-            LIBS="\$(pkg-config      --libs-only-l   --static \$package_names ) $link_cpp" \
+            CPPFLAGS="\$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
+            LDFLAGS="\$(pkg-config   --libs-only-L   --static \$PACKAGES )" \
+            LIBS="\$(pkg-config     --libs-only-l   --static \$package_names ) $link_cpp" \
             ./configure  --prefix={$pgsql_prefix} \
             --enable-coverage=no \
             --with-ssl=openssl  \
