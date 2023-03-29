@@ -58,6 +58,7 @@ function install_libgif(Preprocessor $p)
             ->withPkgConfig('')
     );
 
+
     if (0) {
         $p->addLibrary(
             (new Library('giflib'))

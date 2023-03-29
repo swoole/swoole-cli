@@ -107,7 +107,7 @@ $p->addEndCallback(function () use ($p, $cmd) {
     $header = <<<'EOF'
 #!/bin/env sh
 
-PKG_CONFIG_PATH='/usr/lib/pkgconfig'
+PKG_CONFIG_PATH='/lib/pkgconfig:/usr/lib/pkgconfig'
 test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 test -d /usr/local/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
 test -d /usr/local/lib/pkgconfig/ && PKG_CONFIG_PATH="/usr/local/lib/pkgconfig/:$PKG_CONFIG_PATH" ;

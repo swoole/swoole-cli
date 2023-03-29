@@ -969,8 +969,7 @@ function install_libexpat($p)
             --enable-static=yes \
             --enable-shared=no
 EOF
-            )
-            ->withPkgName('expat')
+            )->withPkgName('expat')
             ->withBinPath($libexpat_prefix . '/bin')
     );
 }

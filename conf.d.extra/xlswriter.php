@@ -34,8 +34,6 @@ return function (Preprocessor $p) {
             ->withPeclVersion('1.5.4')
             ->withHomePage('https://github.com/viest/php-ext-xlswriter')
             ->withLicense('https://github.com/viest/php-ext-xlswriter/blob/master/LICENSE', Extension::LICENSE_BSD)
-            # ->depends('libexpat')
-            ->depends('zlib', 'libxlsxwriter', 'libexpat')
-        //->depends('libxlsxwriter', 'libexpat', 'libxlsxio')
+            ->depends('libxlsxwriter', 'libexpat', 'libxlsxio')
     );
 };

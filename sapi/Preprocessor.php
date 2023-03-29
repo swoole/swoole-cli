@@ -1043,6 +1043,9 @@ EOF;
 
     private function getDependPkgNameByLibraryName($library_name, &$packages)
     {
+        if (!isset($this->libraryMap[$library_name])) {
+            throw new RuntimeException( 'library ' . $library_name . ' no found');
+        }
         $lib = $this->libraryMap[$library_name];
         if (!empty($lib->pkgNames)) {
             $packages = array_merge($packages, $lib->pkgNames);

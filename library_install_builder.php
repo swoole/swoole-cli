@@ -399,6 +399,7 @@ function install_bzip2(Preprocessor $p)
             ->withMakeInstallOptions('PREFIX=' . $libbzip2_prefix)
             ->withBinPath($libbzip2_prefix . '/bin/')
     );
+
 }
 
 function install_zlib(Preprocessor $p)
@@ -1335,7 +1336,7 @@ function install_libxlsxio(Preprocessor $p)
 
 EOF
             )
-            ->depends('zlib', 'libzip', 'expat')
+            ->depends('zlib', 'libzip')
             ->withPkgName('libxlsxio_read')
             ->withPkgName('libxlsxio_readw')
             ->withPkgName('libxlsxio_write')
