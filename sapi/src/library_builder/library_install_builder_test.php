@@ -127,7 +127,7 @@ function install_libyuv(Preprocessor $p)
             git clone -b main --depth=1 https://chromium.googlesource.com/libyuv/libyuv
 EOF
             )
-            ->withUntarArchiveCommand('cp')
+            //->withUntarArchiveCommand('cp')
             ->withPrefix($libyuv_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libyuv_prefix)

@@ -1096,6 +1096,7 @@ EOF
             )
             ->withPkgName('libpq')
             ->withBinPath($pgsql_prefix . '/bin/')
+            ->depends('libxml2','liblz4','libzstd','')
     );
 }
 

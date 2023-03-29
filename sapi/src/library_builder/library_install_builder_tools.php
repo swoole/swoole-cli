@@ -111,14 +111,15 @@ function install_depot_tools(Preprocessor $p): void
                 git clone -b main  --single-branch  --depth=1  https://chromium.googlesource.com/chromium/tools/depot_tools
 EOF
             )
-            ->withUntarArchiveCommand('cp')
+            //->withUntarArchiveCommand('cp')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($depot_tools_prefix)
             ->withBuildScript("
                 mkdir -p $depot_tools_prefix
+                cd ..
                 cp -rf depot_tools/* $depot_tools_prefix
             ")
-            ->withBinPath($depot_tools_prefix . '/bin/')
+            ->withBinPath($depot_tools_prefix)
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()

@@ -61,7 +61,7 @@ function libraries_builder($p)
     install_curl($p); //curl 依赖 openssl c-ares brotli libzstd idn(暂不启用) libidn2 libnghttp2 libnghttp3(暂不启用)
 
     //参考 https://github.com/docker-library/php/issues/221
-    install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt liblzma libiconv
+    //install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt liblzma libiconv
     //install_libffi($p);
 
     //扩展不兼容本项目
@@ -145,12 +145,14 @@ function libraries_builder($p)
         install_php_extension_wasm($p);
         // install_php_extension_fastdfs($p);
     }
-    install_nasm($p);
-    install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
-    install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
-    install_libavif($p); //依赖 libyuv dav1d
+
 
     if (0) {
+        install_nasm($p);
+        install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
+        install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
+        install_libavif($p); //依赖 libyuv dav1d
+
         install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
         install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
         install_libraw($p);  //依赖 zlib  libjpeg liblcms2
@@ -288,7 +290,7 @@ function libraries_builder($p)
             pjproject
         */
     }
-    install_ffmpeg($p);
+
     if (0) {
         install_rav1e($p);  //https://www.cnblogs.com/eguid/p/16015446.html
         install_aom($p);
