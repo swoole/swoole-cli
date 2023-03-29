@@ -850,6 +850,7 @@ function install_curl(Preprocessor $p)
     //http3 有多个实现
     //参考文档： https://curl.se/docs/http3.html
     //https://curl.se/docs/protdocs.html
+    // curl 依赖库 https://curl.se/docs/libs.html
 
     $openssl_prefix = OPENSSL_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
