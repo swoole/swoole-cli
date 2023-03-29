@@ -1,7 +1,9 @@
 {
   "require": {
     "marcj/topsort": "^2.0",
-    "ext-posix": "*"
+    "ext-posix": "*",
+    "ext-curl": "*",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {
@@ -10,9 +12,12 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.6",
-    "ext-curl": "*"
+    "friendsofphp/php-cs-fixer": "^3.15",
+    "squizlabs/php_codesniffer": "^3.7"
   },
   "scripts": {
-    "test": "phpunit"
+    "test": "phpunit",
+    "format-src": "vendor/bin/php-cs-fixer fix sapi/src/ --rules=@PSR12 --verbose -vvv",
+    "format-conf.d": "vendor/bin/php-cs-fixer fix conf.d --rules=@PSR12 --verbose -vvv"
   }
 }
