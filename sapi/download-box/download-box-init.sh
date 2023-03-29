@@ -16,10 +16,10 @@ cd ${__PROJECT__}
 export SWOOLE_CLI_SKIP_DOWNLOAD=1
 export SWOOLE_CLI_WITHOUT_DOCKER=1
 
-php prepare.php  --with-build-type=release --skip-download=1 +ds +inotify +apcu
+php prepare.php  --with-build-type=release --skip-download=1 +ds +inotify +apcu +protobuf
 
 cd ${__PROJECT__}
 
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
-sh sapi/download-dependencies-use-aria2.sh
+sh sapi/scripts/download-dependencies-use-aria2.sh
