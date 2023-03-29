@@ -313,3 +313,4 @@ tmp-php.ini
 /ext/ds
 /.phpunit.result.cache
 /samples/sfx/*.phar
+composer.lock
