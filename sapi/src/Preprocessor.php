@@ -5,7 +5,6 @@ namespace SwooleCli;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
-use RuntimeException;
 
 class Preprocessor
 {
@@ -113,6 +112,7 @@ class Preprocessor
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
+    protected string $configureVarables;
 
     protected function __construct()
     {
@@ -285,7 +285,7 @@ class Preprocessor
      * @param string $url
      * @param string $file
      * @param string $md5sum
-     * @throws RuntimeException
+     * @throws Exception
      */
     protected function downloadFile(string $url, string $file, string $md5sum)
     {
@@ -301,11 +301,11 @@ class Preprocessor
         }
         // 下载失败
         if (!is_file($file) or filesize($file) == 0) {
-            throw new RuntimeException("Downloading file[" . basename($file) . "] from url[$url] failed");
+            throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
         }
         // 下载文件的 MD5 不一致
         if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
-            throw new RuntimeException("The md5 of downloaded file[$file] is inconsistent with the configuration");
+            throw new Exception("The md5 of downloaded file[$file] is inconsistent with the configuration");
         }
     }
 
@@ -314,7 +314,7 @@ class Preprocessor
      * @param string $md5
      * @return bool
      */
-    protected function checkFileMd5sum(string $path, string $md5)
+    protected function checkFileMd5sum(string $path, string $md5): bool
     {
         // md5 不匹配，删除文件
         if ($md5 != md5_file($path)) {
@@ -326,7 +326,7 @@ class Preprocessor
 
     /**
      * @param Library $lib
-     * @throws RuntimeException
+     * @throws Exception
      */
     public function addLibrary(Library $lib): void
     {
@@ -361,7 +361,7 @@ class Preprocessor
             $this->binPaths[] = $lib->binPath;
         }
         if (empty($lib->license)) {
-            throw new RuntimeException("require license");
+            throw new Exception("require license");
         }
 
         $this->libraryList[] = $lib;
@@ -525,7 +525,7 @@ class Preprocessor
             if ($item->deps) {
                 foreach ($item->deps as $lib) {
                     if (!isset($libs[$lib])) {
-                        throw new RuntimeException("The ext-{$item->name} depends on $lib, but it does not exist");
+                        throw new Exception("The ext-{$item->name} depends on $lib, but it does not exist");
                     }
                 }
             }
