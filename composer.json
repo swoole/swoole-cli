@@ -10,14 +10,14 @@
       "SwooleCli\\": "sapi/src"
     },
     "files": [
-      "library_builder.php",
-      "library_install_builder.php",
-      "library_install_builder_test.php",
-      "library_install_builder_image.php",
-      "library_install_builder_vision.php",
-      "library_install_builder_extra.php",
-      "library_install_builder_extensions.php",
-      "library_install_builder_tools.php"
+      "sapi/src/library_builder/library_builder.php",
+      "sapi/src/library_builder/library_install_builder.php",
+      "sapi/src/library_builder/library_install_builder_test.php",
+      "sapi/src/library_builder/library_install_builder_image.php",
+      "sapi/src/library_builder/library_install_builder_vision.php",
+      "sapi/src/library_builder/library_install_builder_extra.php",
+      "sapi/src/library_builder/library_install_builder_extensions.php",
+      "sapi/src/library_builder/library_install_builder_tools.php"
     ]
   },
   "repositories": {
@@ -33,8 +33,8 @@
   },
   "scripts": {
     "test": "phpunit",
-    "format-code": "php-cs-fixer  fix ./library_install_builder.php --rules=@PSR12",
-    "format-sapi": "vendor/bin/php-cs-fixer fix sapi/",
-    "format-conf.d": "vendor/bin/php-cs-fixer fix conf.d"
+    "format-library_builder": "php-cs-fixer  fix sapi/src/library_builder --rules=@PSR12 --verbose -vvv",
+    "format-src": "vendor/bin/php-cs-fixer fix sapi/src/ --rules=@PSR12 --verbose -vvv",
+    "format-conf.d": "vendor/bin/php-cs-fixer fix conf.d --rules=@PSR12 --verbose -vvv"
   }
 }

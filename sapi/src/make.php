@@ -53,7 +53,7 @@ make_<?=$item->name?>() {
         mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
     fi
 
-<?php if($item->untarArchiveCommand == 'tar' ):?>
+<?php if($item->untarArchiveCommand == 'tar'):?>
     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
     result_code=$?
     if [ $result_code -ne 0 ]; then
@@ -67,7 +67,7 @@ make_<?=$item->name?>() {
 <?php endif ; ?>
 <?php if($item->untarArchiveCommand == 'xz'):?>
    xz -f -d -k   <?=$this->workDir?>/pool/lib/<?=$item->file?>    <?= PHP_EOL; ?>
-   tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?= rtrim($this->workDir . '/pool/lib/' . $item->file,'.xz') . PHP_EOL?>
+   tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?= rtrim($this->workDir . '/pool/lib/' . $item->file, '.xz') . PHP_EOL?>
 <?php endif ; ?>
 <?php if($item->untarArchiveCommand == 'cp'):?>
         cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?>/* <?=$this->getBuildDir()?>/<?=$item->name?>/   <?= PHP_EOL; ?>
@@ -153,7 +153,7 @@ __EOF__
 
 clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?> && echo "clean <?=$item->name?>"
-<?php if( ($item->getLabel() == 'php_internal_extension') || ($item->getLabel() == 'php_extension' )) : ?>
+<?php if(($item->getLabel() == 'php_internal_extension') || ($item->getLabel() == 'php_extension')) : ?>
     cd <?=$this->getBuildDir()?>/<?= $item->name . PHP_EOL ?>
 <?php else: ?>
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean

@@ -110,5 +110,4 @@ abstract class Project
         $this->downloadName = $name;
         return $this;
     }
-
 }

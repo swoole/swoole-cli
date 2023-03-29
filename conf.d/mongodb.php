@@ -17,6 +17,5 @@ return function (Preprocessor $p) {
             ->withUrl('https://github.com/mongodb/mongo-php-driver.git')
             ->withLicense('https://github.com/mongodb/mongo-php-driver/blob/master/LICENSE')
             ->depends('icu', 'openssl', 'zlib', 'libzstd')
-
     );
 };

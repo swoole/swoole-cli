@@ -233,5 +233,4 @@ class Library extends Project
     {
         return $this->label;
     }
-
 }

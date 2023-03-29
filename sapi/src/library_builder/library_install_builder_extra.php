@@ -215,7 +215,6 @@ function install_nginx($p)
             # --with-ld-opt=parameters — sets additional parameters that will be used during linking. 
             # --with-cc-opt=parameters — sets additional parameters that will be added to the CFLAGS variable. 
 EOF
-
             )
             //->withMakeOptions('CFLAGS="-O2 -s" LDFLAGS="-static"')
             ->withBinPath($nginx_prefix . '/bin/')
@@ -271,4 +270,3 @@ EOF
             ->withSkipBuildInstall()
     );
 }
-

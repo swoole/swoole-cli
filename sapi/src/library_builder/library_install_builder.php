@@ -18,35 +18,7 @@ use SwooleCli\Preprocessor;
 
 function install_openssl(Preprocessor $p)
 {
-    $openssl_prefix = OPENSSL_PREFIX;
-    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
-    # openssl v3.0 ； linux 位于 lib64 目录, macOS 位于 lib 目录；
-    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
-    $p->addLibrary(
-        (new Library('openssl'))
-            ->withHomePage('https://www.openssl.org/')
-            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
-            ->withUrl('https://www.openssl.org/source/openssl-3.0.8.tar.gz')
-            ->withFile('openssl-3.0.8.tar.gz')
-            ->withPrefix($openssl_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($openssl_prefix)
-            ->withConfigure(
-                <<<EOF
-                # ./Configure LIST 
-                # INSTALL help info
-                ./config {$static} no-shared  --release --prefix={$openssl_prefix}
-EOF
-            )
-            ->withMakeOptions('build_sw')
-            ->withMakeInstallCommand('install_sw')
-            ->withPkgName('openssl')
-            ->withPkgName('libcrypto')
-            ->withPkgName('libssl')
-            ->withLdflags('-L' . $openssl_lib)
-            ->withPkgConfig($openssl_lib . '/pkgconfig')
-            ->withBinPath($openssl_prefix . '/bin/')
-    );
+    install_openssl_v3_quic($p);
 }
 
 function install_openssl_v1(Preprocessor $p)
@@ -70,6 +42,67 @@ function install_openssl_v1(Preprocessor $p)
     );
 }
 
+function install_openssl_v3(Preprocessor $p)
+{
+    $openssl_prefix = OPENSSL_PREFIX;
+    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    # openssl v3.0 ； linux 位于 lib64 目录, macOS 位于 lib 目录；
+    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
+    $p->addLibrary(
+        (new Library('openssl'))
+            ->withHomePage('https://www.openssl.org/')
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            ->withUrl('https://www.openssl.org/source/openssl-3.0.8.tar.gz')
+            ->withFile('openssl-3.0.8.tar.gz')
+            ->withPrefix($openssl_prefix)
+            ->withConfigure(
+                <<<EOF
+                # ./Configure LIST 
+                # INSTALL help info
+                ./config {$static} no-shared  --release --prefix={$openssl_prefix}
+EOF
+            )
+            ->withMakeOptions('build_sw')
+            ->withMakeInstallCommand('install_sw')
+            ->withPkgName('openssl')
+            ->withPkgName('libcrypto')
+            ->withPkgName('libssl')
+            ->withLdflags('-L' . $openssl_lib)
+            ->withPkgConfig($openssl_lib . '/pkgconfig')
+            ->withBinPath($openssl_prefix . '/bin/')
+    );
+}
+function install_openssl_v3_quic(Preprocessor $p)
+{
+    $openssl_prefix = OPENSSL_PREFIX;
+    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    //openssl v3 库 linux 位于 lib64 目录, macOS 位于 lib 目录；
+    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
+    $p->addLibrary(
+        (new Library('openssl'))
+            ->withHomePage('https://www.openssl.org/')
+            ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            #->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
+            ->withUrl('https://github.com/quictls/openssl/archive/refs/tags/openssl-3.0.8-quic1.tar.gz')
+            ->withPrefix($openssl_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($openssl_prefix)
+            ->withConfigure(
+                <<<EOF
+                 # ./Configure LIST 
+                ./config {$static} no-shared  enable-tls1_3 --release --prefix={$openssl_prefix}
+EOF
+            )
+            ->withMakeOptions('build_sw')
+            ->withMakeInstallCommand('install_sw')
+            ->withPkgName('libcrypto')
+            ->withPkgName('libssl')
+            ->withPkgName('openssl')
+            ->withLdflags('-L' . $openssl_lib)
+            ->withPkgConfig($openssl_lib . '/pkgconfig')
+            ->withBinPath($openssl_prefix . '/bin/')
+    );
+}
 
 function install_libiconv(Preprocessor $p): void
 {
@@ -399,7 +432,6 @@ function install_bzip2(Preprocessor $p)
             ->withMakeInstallOptions('PREFIX=' . $libbzip2_prefix)
             ->withBinPath($libbzip2_prefix . '/bin/')
     );
-
 }
 
 function install_zlib(Preprocessor $p)
@@ -557,6 +589,8 @@ function install_libzip(Preprocessor $p)
             ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
             ->withManual('https://libzip.org')
             ->withPrefix($libzip_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libzip_prefix)
             ->withConfigure(
                 <<<EOF
             # -Wno-dev
@@ -642,12 +676,11 @@ function install_icu(Preprocessor $p)
             ->withPrefix($icu_prefix)
             ->withConfigure(
                 <<<EOF
-             export CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1"
+             CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1" \
              source/runConfigureICU $os --prefix={$icu_prefix} \
-             --enable-icu-config=yes \
              --enable-static=yes \
              --enable-shared=no \
-             --with-data-packaging=archive \
+             --with-data-packaging=static \
              --enable-release=yes \
              --enable-extras=yes \
              --enable-icuio=yes \
@@ -987,7 +1020,7 @@ EOF;
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($pgsql_prefix)
             ->withBuildScript(
-                <<<'EOF'
+                <<<EOF
 
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
 
@@ -999,12 +1032,11 @@ EOF;
 
             # --with-includes="{$includes}"
             # --with-libraries="{$libraries}"
-            package_names="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib libxslt liblz4 libzstd"
+            PACKAGES="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib libxslt liblz4 libzstd"
 
-            CPPFLAGS="$(pkg-config  --cflags-only-I --static $package_names )" \
-            LDFLAGS="$(pkg-config   --libs-only-L   --static $package_names )" \
-EOF
-                . PHP_EOL . <<<EOF
+            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES )" \
+
             LIBS="\$(pkg-config      --libs-only-l   --static \$package_names ) $link_cpp" \
             ./configure  --prefix={$pgsql_prefix} \
             --enable-coverage=no \
@@ -1020,14 +1052,10 @@ EOF
             --without-perl \
             --without-systemd
 
+            result_code=\$?
+            [[ \$result_code -ne 0 ]] && echo "[make FAILURE]" && exit \$result_code;
 
-
-EOF
-                . PHP_EOL . <<<'EOF'
-            result_code=$?
-            [[ $result_code -ne 0 ]] && echo "[make FAILURE]" && exit $result_code;
-
-            # make -j $cpu_nums
+            # make -j \$cpu_nums
             # make -C  src/bin/pg_config install
             # make install
 
@@ -1037,25 +1065,25 @@ EOF
 
             make -C  src/bin/pg_config install
 
-            make -C  src/common -j $cpu_nums all
+            make -C  src/common -j \$cpu_nums all
             make -C  src/common install
 
 
-            make -C  src/port -j $cpu_nums all
+            make -C  src/port -j \$cpu_nums all
             make -C  src/port install
 
 
-            make -C  src/backend/libpq -j $cpu_nums all
+            make -C  src/backend/libpq -j \$cpu_nums all
             make -C  src/backend/libpq install
 
 
-            make -C src/interfaces/ecpg   -j $cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
+            make -C src/interfaces/ecpg   -j \$cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
             make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
 
 
             # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
 
-            make -C src/interfaces/libpq  -j $cpu_nums # soname=true
+            make -C src/interfaces/libpq  -j \$cpu_nums # soname=true
             make -C src/interfaces/libpq  install
 
 EOF
