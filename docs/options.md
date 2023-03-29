@@ -46,7 +46,7 @@ sh sapi/download-dependencies-use-aria2.sh
 ----
 使用镜像地址下载
 
-> 使用镜像地址下载下载前，需要准备镜像服务器 例如： `sh sapi/download-box/download-box-server-run.sh`
+> 使用镜像地址下载下载前，需要准备镜像服务器 例如： `sh sapi/scripts/download-box/download-box-server-run.sh`
 
 ```shell
 
