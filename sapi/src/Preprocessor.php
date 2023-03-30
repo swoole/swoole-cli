@@ -353,7 +353,7 @@ class Preprocessor
             }
         }
 
-        if (!empty($this->getInputOption('with-download-mirror-url'))) {
+        if ($lib->enableWithDownloadMirrorURL && !empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
             $lib->enableDownloadScript = false;
         }
@@ -423,7 +423,7 @@ EOF;
                     $ext->url = "https://pecl.php.net/get/{$ext->file}";
                 }
 
-                if (!empty($this->getInputOption('with-download-mirror-url'))) {
+                if ($ext->enableWithDownloadMirrorURL && !empty($this->getInputOption('with-download-mirror-url'))) {
                     $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
                     if ($ext->enableDownloadScript) {
                         $ext->enableDownloadScript = false;

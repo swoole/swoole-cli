@@ -7,6 +7,7 @@ return function (Preprocessor $p) {
     $p->addExtension((new Extension('protobuf'))
         ->withOptions('--enable-protobuf')
         ->withPeclVersion('3.22.0')
+        ->disableWithDownloadMirrorURL()
         ->withLicense('https://github.com/protocolbuffers/protobuf/blob/main/LICENSE', Extension::LICENSE_BSD)
         ->withHomePage('https://developers.google.com/protocol-buffers'));
 

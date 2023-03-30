@@ -258,7 +258,7 @@ EOF
 }
 
 
-function install_lcms2(Preprocessor $p)
+function install_lcms2(Preprocessor $p): void
 {
     $lcms2_prefix = LCMS2_PREFIX;
     $libjpeg_prefix = JPEG_PREFIX;
@@ -315,11 +315,28 @@ EOF
  * 谷歌将专注于最终进一步推进 WebP 和 AVIF 图像格式
  *
  *  颜色管理引擎 https://littlecms.com/color-engine/
+ *
  * @param Preprocessor $p
  * @return void
  */
-function install_imagemagick(Preprocessor $p)
+function install_imagemagick(Preprocessor $p): void
 {
+    /**
+    # lcms2 libtiff-4 libraw libraw_r
+    # export RAW_R_CFLAGS=$(pkg-config  --cflags-only-I --static libraw_r )
+    # export RAW_R_LIBS=$(pkg-config    --libs-only-l   --static libraw_r )
+
+    # export TIFF_CFLAGS=$(pkg-config  --cflags-only-I --static libtiff-4 )
+    # export TIFF_LIBS=$(pkg-config    --libs-only-l   --static libtiff-4 )
+
+    #  HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
+    #  HEIF_LIBS   linker flags for HEIF, overriding pkg-config
+    #  JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
+    #  JXL_LIBS    linker flags for JXL, overriding pkg-config
+
+    # export LCMS2_CFLAGS=$(pkg-config  --cflags-only-I --static lcms2 )
+    # export LCMS2_LIBS=$(pkg-config    --libs-only-l   --static lcms2 )
+     */
     $bzip2_prefix = BZIP2_PREFIX;
     $imagemagick_prefix = IMAGEMAGICK_PREFIX;
     $p->addLibrary(
@@ -331,26 +348,10 @@ function install_imagemagick(Preprocessor $p)
             ->withFile('ImageMagick-v7.1.0-62.tar.gz')
             ->withMd5sum('37b896e9eecd379a6cd0d6359b9f525a')
             ->withPrefix($imagemagick_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($imagemagick_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
-            # lcms2 libtiff-4 libraw libraw_r
-            # export RAW_R_CFLAGS=$(pkg-config  --cflags-only-I --static libraw_r )
-            # export RAW_R_LIBS=$(pkg-config    --libs-only-l   --static libraw_r )
 
-            # export TIFF_CFLAGS=$(pkg-config  --cflags-only-I --static libtiff-4 )
-            # export TIFF_LIBS=$(pkg-config    --libs-only-l   --static libtiff-4 )
-
-            #  HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
-            #  HEIF_LIBS   linker flags for HEIF, overriding pkg-config
-            #  JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
-            #  JXL_LIBS    linker flags for JXL, overriding pkg-config
-
-            # export LCMS2_CFLAGS=$(pkg-config  --cflags-only-I --static lcms2 )
-            # export LCMS2_LIBS=$(pkg-config    --libs-only-l   --static lcms2 )
-            
             package_names="libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  "
             package_names="\${package_names} libbrotlicommon libbrotlidec    libbrotlienc libcrypto libssl   openssl"
 
@@ -411,7 +412,7 @@ function install_imagemagick(Preprocessor $p)
             --without-pango \
             --without-jbig \
             --without-x \
-            --with-modules \
+            --without-modules \
             --without-magick-plus-plus \
             --without-utilities 
 EOF

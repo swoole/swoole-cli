@@ -1158,6 +1158,7 @@ function install_nghttp3(Preprocessor $p)
             ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/tags/v0.9.0.tar.gz')
             //->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/heads/main.zip')
             ->withFile('nghttp3-v0.9.0.tar.gz')
+            ->disableWithDownloadMirrorURL()
             ->withPrefix($nghttp3_prefix)
             ->withConfigure(
                 <<<EOF
@@ -1184,6 +1185,7 @@ function install_ngtcp2(Preprocessor $p)
             ->withManual('https://curl.se/docs/http3.html')
             ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/tags/v0.13.1.tar.gz')
             ->withFile('ngtcp2-v0.13.1.tar.gz')
+            ->disableWithDownloadMirrorURL()
             ->withPrefix($ngtcp2_prefix)
             ->withConfigure(
                 <<<EOF

@@ -67,10 +67,10 @@ function libraries_builder($p)
     //扩展不兼容本项目
     //install_libmcrypt($p); //无 pkg-config 配置
     //扩展参数还需要调试
-    install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
-    install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    //install_libxlsxwriter($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    //install_libexpat($p); //依赖zlib openssl （使用cmake，便于配置参数)
     //install_minizip($p);
-    install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
+    //install_libxlsxio($p); //依赖zlib openssl （使用cmake，便于配置参数)
     // Use libzip instead of Minizip
 
     //扩展不兼容本项目
@@ -113,7 +113,7 @@ function libraries_builder($p)
         install_php_parser($p); //imagemagick 安装过程中需要
     }
 
-    if (1) {
+    if (0) {
         install_php_internal_extensions($p); //安装内置扩展; ffi  pgsql pdo_pgsql
     }
 
@@ -353,7 +353,7 @@ function libraries_builder($p)
     if ($p->getInputOption('with-capstone') == 'yes') {
         install_capstone($p);
     }
-    install_depot_tools($p); //依赖python
+    //install_depot_tools($p); //依赖python
     if (0) {
         // brew  //  https://mirrors.tuna.tsinghua.edu.cn/help/homebrew
         // brew  //  https://github.com/Homebrew/brew.git

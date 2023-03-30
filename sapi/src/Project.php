@@ -19,12 +19,6 @@ abstract class Project
 
     public array $deps = [];
 
-    public string $downloadScript = '';
-
-    public string $downloadDirName = '';
-
-    public bool $enableDownloadScript = false;
-
     public int $licenseType = self::LICENSE_SPEC;
 
     public const LICENSE_SPEC = 0;
@@ -99,6 +93,14 @@ abstract class Project
 
     public string $documentation = '';
 
+    public string $downloadScript = '';
+
+    public string $downloadDirName = '';
+
+    public bool $enableDownloadScript = false;
+
+    public bool $enableWithDownloadMirrorURL = true;
+
     public function withDocumentation(string $documentation): static
     {
         $this->documentation = $documentation;
@@ -111,4 +113,9 @@ abstract class Project
         return $this;
     }
 
+    public function disableWithDownloadMirrorURL(): static
+    {
+        $this->enableWithDownloadMirrorURL = false;
+        return $this;
+    }
 }
