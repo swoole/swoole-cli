@@ -6,7 +6,7 @@ __DIR__=$(
   pwd
 )
 __PROJECT__=$(
-  cd ${__DIR__}/../
+  cd ${__DIR__}/../../
   pwd
 )
 cd ${__DIR__}
@@ -21,8 +21,8 @@ cd ${__DIR__}
 cd ${__DIR__}
 default_image=docker.io/jingjingxyk/build-swoole-cli:build-dev-2-alpine-edge-20230307T045956Z
 
-test -f swoole-cli-build-dev-2-container.txt && image=$(cat container/swoole-cli-build-dev-2-container.txt)
-test -f swoole-cli-build-dev-2-container.txt || image=$default_image
+test -f ${__PROJECT__}/var/container/swoole-cli-build-dev-2-container.txt && image=$(cat ${__PROJECT__}/var/container/swoole-cli-build-dev-2-container.txt)
+test -f ${__PROJECT__}/var/container/swoole-cli-build-dev-2-container.txt || image=$default_image
 
 
 cd ${__DIR__}
