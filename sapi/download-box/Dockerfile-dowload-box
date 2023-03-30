@@ -5,3 +5,5 @@ ADD  ./default.conf /etc/nginx/conf.d/default.conf
 ADD  ./extensions  /usr/share/nginx/html/extensions
 ADD  ./libraries  /usr/share/nginx/html/libraries
 ADD  ./all-archive.zip  /usr/share/nginx/html/
+ADD  ./credits.html  /usr/share/nginx/html/
+ADD  ./LICENSE  /usr/share/nginx/html/

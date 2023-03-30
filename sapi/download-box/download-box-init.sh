@@ -22,4 +22,7 @@ cd ${__PROJECT__}
 
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
+cp -f ${__PROJECT__}/bin/LICENSE ${__PROJECT__}/var
+cp -f ${__PROJECT__}/bin/credits.html ${__PROJECT__}/var
+
 sh sapi/scripts/download-dependencies-use-aria2.sh
