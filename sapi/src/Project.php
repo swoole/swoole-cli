@@ -99,7 +99,7 @@ abstract class Project
 
     public bool $enableDownloadScript = false;
 
-    public bool $enableWithDownloadMirrorURL = true;
+    public bool $enableDownloadWithMirrorURL = true;
 
     public function withDocumentation(string $documentation): static
     {
@@ -113,9 +113,9 @@ abstract class Project
         return $this;
     }
 
-    public function disableWithDownloadMirrorURL(): static
+    public function disableDownloadWithMirrorURL(): static
     {
-        $this->enableWithDownloadMirrorURL = false;
+        $this->enableDownloadWithMirrorURL = false;
         return $this;
     }
 }
