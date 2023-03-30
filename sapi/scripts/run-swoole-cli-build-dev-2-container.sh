@@ -19,7 +19,7 @@ cd ${__DIR__}
   echo $?
 }
 cd ${__DIR__}
-default_image=docker.io/jingjingxyk/build-swoole-cli:build-dev-2-alpine-edge-20230307T045956Z
+default_image=docker.io/jingjingxyk/build-swoole-cli:build-dev-2-alpine-edge-20230221T040643Z
 
 test -f ${__PROJECT__}/var/container/swoole-cli-build-dev-2-container.txt && image=$(cat ${__PROJECT__}/var/container/swoole-cli-build-dev-2-container.txt)
 test -f ${__PROJECT__}/var/container/swoole-cli-build-dev-2-container.txt || image=$default_image
