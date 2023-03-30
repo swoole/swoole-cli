@@ -24,19 +24,26 @@ case $PLATFORM in
     'Linux:x86_64')
       bash ${__DIR__}/prepare-php-runtime-linux-x86_64.sh
       ;;
+    'Darwin:x86_64')
+      bash ${__DIR__}/prepare-php-runtime-macos-x86_64.sh
+    ;;
+   *)
+     echo '未匹配的 OS '
+     exit 0
+    ;;
 esac
 
-
+echo $PATH
+which php
 composer suggests --all
 composer dump-autoload
-
 
 # proxy_url='http://192.168.3.26:8015'
 # export http_proxy=$proxy_url
 # export https_proxy=$proxy_url
 
 composer list
-composer dump-autoload
+
 composer update
 
 :<<'EOF'
@@ -56,14 +63,16 @@ cd ${__PROJECT__}
 export SWOOLE_CLI_SKIP_DOWNLOAD=1
 # export SWOOLE_CLI_BUILD_TYPE=1
 
-chown -R 1000:1000 ${__PROJECT__}
+cd ${__PROJECT__}
 
 # --skip-download=1
 # php prepare.php   --with-build-type=release -soap -mysqli
 # --skip-download=1
 # --conf-path="/work/conf.d.extra"
 
-php prepare.php  --with-build-type=release  +ds +inotify +apcu  --with-download-mirror-url=https://swoole-cli.jingjingxyk.com
+#  +inotify
+
+php prepare.php  --with-build-type=release  +ds +apcu  --with-download-mirror-url=https://swoole-cli.jingjingxyk.com
 
 
 exit 0
