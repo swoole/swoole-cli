@@ -1,0 +1,190 @@
+#!/bin/bash
+
+set -exu
+
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+__PROJECT__=$(
+  cd ${__DIR__}/../../
+  pwd
+)
+cd ${__DIR__}
+cd ${__PROJECT__}
+
+SYSTEM=`uname -s 2>/dev/null`
+RELEASE=`uname -r 2>/dev/null`
+MACHINE=`uname -m 2>/dev/null`
+PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+PLATFORM="$SYSTEM:$MACHINE";
+echo $PLATFORM
+
+case $PLATFORM in
+    'Linux:x86_64')
+      bash ${__DIR__}/prepare-php-runtime-linux-x86_64.sh
+      ;;
+esac
+
+
+composer suggests --all
+composer dump-autoload
+
+
+# proxy_url='http://192.168.3.26:8015'
+# export http_proxy=$proxy_url
+# export https_proxy=$proxy_url
+
+composer list
+composer dump-autoload
+composer update
+
+:<<'EOF'
+set +ex
+git config --global --add safe.directory /work/ext/swoole
+git submodule update
+cd ext/swoole/
+git clean -fd
+git checkout master
+git  pull origin master
+
+
+EOF
+
+set -exu
+cd ${__PROJECT__}
+export SWOOLE_CLI_SKIP_DOWNLOAD=1
+# export SWOOLE_CLI_BUILD_TYPE=1
+
+chown -R 1000:1000 ${__PROJECT__}
+
+# --skip-download=1
+# php prepare.php   --with-build-type=release -soap -mysqli
+# --skip-download=1
+# --conf-path="/work/conf.d.extra"
+
+php prepare.php  --with-build-type=release  +ds +inotify +apcu  --with-download-mirror-url=https://swoole-cli.jingjingxyk.com
+
+
+exit 0
+
+php prepare.php  --conf-path="/work/conf.d.test"  --with-build-type=dev  +ds +apcu +ds +inotify  -wasm -swow
+php prepare.php  --conf-path="/work/conf.d.extra"  --with-build-type=debug  +ds +apcu +ds +inotify  +wasm +swow
+
+exit 0
+
+ php prepare.php   --with-build-type=release --conf-path="/work/conf.d.extra"  --with-valgrind=yes -soap -mysqli +xlswriter -wasm -swow --with-valgrind=0  \
+-apcu \
+-ds -inotify \
+-imagick \
+-zstd \
+-event \
+-mcrypt \
+-mysqli \
+-phar \
+-mongodb \
+-redis \
+-pdo_mysql -mysqli  -mysqlnd \
+-sqlite3 -pdo_sqlite \
+-gd -exif \
+-pcntl  -tokenizer \
+ -yaml     \
+-sodium \
+-gmp  -bcmath \
+-phar -mbstring \
+-inotify \
+-ds   -posix   -soap   \
+-sockets \
+-intl \
+-xsl \
+-readline \
+-openssl \
+-swoole \
+-xml \
+-curl
+exit 0
+
+
+
+
+ php prepare.php  --with-brotli=1 \
+  +pgsql +pdo_pgsql \
+  +apcu +ffi \
+  +ds +inotify \
+  +zstd \
+  -gd
+  exit 0
+
+
+proxy_url='http://192.168.3.26:8015'
+  export http_proxy=$proxy_url
+  export https_proxy=$proxy_url
+
+  git config --global --add safe.directory '*'
+  git submodule update --init --recursive
+  # SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
+  # php prepare.php  +mongodb +inotify
+  # php prepare.php   -inotify -imagick -gd -intl -posix -mysqli -soap -exif  -opcache -pcntl
+:<<'EOF'
+ php prepare.php   \
+  +pgsql +pdo_pgsql \
+  +apcu +ffi \
+  +ds +inotify \
+  +mimalloc \
+   +protobuf
+EOF
+
+
+:<<'EOF'
+  exit 0
+  php prepare.php   \
+  +pgsql +pdo_pgsql \
+  +apcu +ffi \
+  -pdo_mysql -mysqli  -mysqlnd \
+  -sqlite3 -pdo_sqlite \
+  -mongodb \
+  -redis \
+  -intl \
+  -imagick -gd -exif \
+  -bz2 -zlib -zip \
+  -pcntl  -tokenizer \
+  -swoole  -yaml   -opcache  \
+  -sodium \
+  -gmp  -bcmath \
+  -phar -mbstring \
+  -inotify \
+  -ds   -posix   -soap   \
+  -sockets
+
+
+EOF
+
+
+git config --global --add safe.directory '*'
+git submodule update --init --recursive
+# SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
+# php prepare.php  +mongodb +inotify
+php prepare.php   +inotify
+
+
+
+
+
+
+
+chmod a+x ./make.sh
+
+# chown -R 1000:1000 .
+
+:<<'EOF'
+cho -e "Enter numbers 1-4" \c"
+read NUM
+case $NUM in
+    1) echo "one";;
+    2) echo "two";;
+    3) echo "three";;
+    4) echo "four";;
+    *) echo "invalid answer"
+       exit 1;;
+esac
+EOF

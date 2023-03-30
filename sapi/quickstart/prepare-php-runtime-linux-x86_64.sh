@@ -22,4 +22,9 @@ test -f swoole-cli ||  tar -xvf swoole-cli-v5.0.2-linux-x64.tar
 chmod a+x swoole-cli
 
 test -f composer.phar ||  wget -O composer.phar https://getcomposer.org/download/2.5.5/composer.phar
+chmod a+x composer.phar
 
+ln -sf ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/var/runtime/php
+ln -sf ${__PROJECT__}/var/runtime/composer.phar ${__PROJECT__}/var/runtime/composer
+
+export PATH=${__PROJECT__}/var/runtime:$PATH
