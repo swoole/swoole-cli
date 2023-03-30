@@ -15,7 +15,7 @@
 参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}` ，需要将参数的中横线`-`替换为下划线`_`，例如：
 
 ```shell
-./prepare.php --skip-download
+./prepare.php --skip-download=1
 ```
 
 也可以写作：
@@ -36,22 +36,24 @@ skip-download
 > 链接地址生成在 项目根目录下的 `var` 目录
 
 ```shell
-./prepare.php --skip-download
+./prepare.php --skip-download=yes
 
 # 构建依赖库之前，批量下载依赖库和扩展的脚本
-sh sapi/download-dependencies-use-aria2.sh
+sh sapi/scripts/download-dependencies-use-aria2.sh
 
 ```
 
 ----
 使用镜像地址下载
 
-> 使用镜像地址下载下载前，需要准备镜像服务器 例如： `sh sapi/download-box/download-box-server-run.sh`
+> 使用镜像地址下载下载前，需要准备镜像服务器 例如： `sh sapi/scripts/download-box/download-box-server-run.sh`
 
 ```shell
-
+# 演示例子
 ./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:8000
 
+# 可用镜像
+./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 ```
 
 with-brotli

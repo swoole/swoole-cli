@@ -59,7 +59,6 @@ EOF
             ')
             ->withPkgName('ncursesw')
             ->withBinPath($ncurses_prefix . '/bin/')
-
     );
     if (0) {
         $p->addLibrary(

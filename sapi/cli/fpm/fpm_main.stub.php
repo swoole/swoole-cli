@@ -2,11 +2,19 @@
 
 /** @generate-class-entries */
 
-function fastcgi_finish_request(): bool {}
+function fastcgi_finish_request(): bool
+{
+}
 
-function apache_request_headers(): array {}
+function apache_request_headers(): array
+{
+}
 
 /** @alias apache_request_headers */
-function getallheaders(): array {}
+function getallheaders(): array
+{
+}
 
-function fpm_get_status(): array|false {}
+function fpm_get_status(): array|false
+{
+}

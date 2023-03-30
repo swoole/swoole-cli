@@ -1,4 +1,5 @@
 <?php
+
 $src = dirname(__DIR__);
 $name = "swoole-cli-v".SWOOLE_VERSION."-cygwin-x64";
 $dst = "/tmp/{$name}";
@@ -19,7 +20,7 @@ if (!is_dir($dst.'/etc')) {
     mkdir($dst.'/etc');
 }
 
-foreach($match[2] as $file) {
+foreach ($match[2] as $file) {
     if (str_starts_with($file, '/cygdrive/')) {
         continue;
     }
@@ -44,4 +45,3 @@ echo `$move`;
 
 echo "clean..." . PHP_EOL;
 echo `rm -rf {$dst}`;
-
