@@ -353,7 +353,7 @@ class Preprocessor
             }
         }
 
-        if ($lib->enableDownloadWithMirrorURL && !empty($this->getInputOption('with-download-mirror-url'))) {
+        if ($lib->enableDownloadWithMirrorURL &&  !empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
             $lib->enableDownloadScript = false;
         }
@@ -439,7 +439,7 @@ EOF;
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
                                 test -f {$ext->path} || tar -zcf {$ext->path} {$ext->downloadDirName}
-                                cd {$workDir}  
+                                cd {$workDir}   
 
 EOF;
 
@@ -825,7 +825,11 @@ EOF;
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
         $download_urls = [];
         foreach ($this->libraryList as $item) {
-            if (empty($item->url) || $item->enableDownloadScript) {
+            if (!$item->enableDownloadWithMirrorURL) {
+                continue;
+            }
+
+            if (empty($item->url)  || $item->enableDownloadScript) {
                 continue;
             }
             $url = '';
@@ -843,12 +847,16 @@ EOF;
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
+            if (!$item->enableDownloadWithMirrorURL) {
+                continue;
+            }
             if (empty($item->peclVersion) || $item->enableDownloadScript) {
                 continue;
             }
             $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
             $item->path = $this->extensionDir . '/' . $item->file;
             $item->url = "https://pecl.php.net/get/{$item->file}";
+
             $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
         }
         file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
@@ -872,6 +880,10 @@ EOF;
 
         $download_scripts = [];
         foreach ($this->libraryList as $item) {
+            if (!$item->enableDownloadWithMirrorURL) {
+                continue;
+            }
+
             if (!$item->enableDownloadScript) {
                 continue;
             }
@@ -886,7 +898,7 @@ EOF;
             {$item->downloadScript}
             test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadDirName}/*  
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir}
+            cd {$workDir} 
             
 EOF;
 
@@ -898,6 +910,10 @@ EOF;
         );
         $download_scripts = [];
         foreach ($this->extensionMap as $item) {
+            if (!$item->enableDownloadWithMirrorURL) {
+                continue;
+            }
+
             if (!$item->enableDownloadScript) {
                 continue;
             }
@@ -915,7 +931,7 @@ EOF;
                 {$item->downloadScript}
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadDirName}/*
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir}   
+                cd {$workDir} 
               
 EOF;
 

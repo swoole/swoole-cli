@@ -29,6 +29,8 @@ abstract class Project
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
+    public bool $enableDownloadWithMirrorURL = true;
+
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -71,6 +73,12 @@ abstract class Project
         return $this;
     }
 
+    public function disableDownloadWithMirrorURL(): static
+    {
+        $this->enableDownloadWithMirrorURL = false;
+        return $this;
+    }
+
     public function withFile(string $file): static
     {
         $this->file = $file;
@@ -99,7 +107,6 @@ abstract class Project
 
     public bool $enableDownloadScript = false;
 
-    public bool $enableDownloadWithMirrorURL = true;
 
     public function withDocumentation(string $documentation): static
     {
@@ -110,12 +117,6 @@ abstract class Project
     public function withGnuPG(string $gpg): static
     {
         $this->gnupg = $gpg;
-        return $this;
-    }
-
-    public function disableDownloadWithMirrorURL(): static
-    {
-        $this->enableDownloadWithMirrorURL = false;
         return $this;
     }
 }
