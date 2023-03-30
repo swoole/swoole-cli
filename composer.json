@@ -16,6 +16,8 @@
     "squizlabs/php_codesniffer": "^3.7"
   },
   "scripts": {
-    "test": "phpunit"
+    "test": "phpunit",
+    "format-src": "vendor/bin/php-cs-fixer fix sapi/src/ --rules=@PSR12 --verbose -vvv",
+    "format-conf.d": "vendor/bin/php-cs-fixer fix conf.d --rules=@PSR12 --verbose -vvv"
   }
 }
