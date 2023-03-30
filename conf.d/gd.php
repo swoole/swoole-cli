@@ -88,9 +88,6 @@ EOF
     $p->withVariable('LIBS', '$LIBS -lgif');
 
     $libwebp_prefix = WEBP_PREFIX;
-    $libpng_prefix = PNG_PREFIX;
-    $libjpeg_prefix = JPEG_PREFIX;
-    $libgif_prefix = GIF_PREFIX;
     $p->addLibrary(
         (new Library('libwebp'))
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
@@ -126,8 +123,6 @@ EOF
 
     $freetype_prefix = FREETYPE_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
-    # $libpng_prefix = PNG_PREFIX;
-    # $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('freetype'))
             ->withHomePage('https://freetype.org/')
