@@ -80,7 +80,7 @@ return function (Preprocessor $p) {
             --without-pango \
             --without-jbig \
             --without-x \
-            --with-modules \
+            --without-modules \
             --without-magick-plus-plus \
             --without-utilities
 EOF
