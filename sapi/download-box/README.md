@@ -1,13 +1,13 @@
 # 创建依赖库镜像 和 使用依赖库的镜像
 
-## 依赖库镜像创建
+## 创建依赖库镜像
 
 ```bash 
     sh sapi/download-box/download-box-init.sh
     sh sapi/download-box/download-box-build.sh
 ```
 
-## 依赖库镜像验证
+## 部署依赖库镜像
 
 ```bash 
 sh sapi/download-box/download-box-server-run.sh
@@ -24,14 +24,18 @@ sh sapi/download-box/download-box-server-run.sh
 
 ### 方式一（来自容器分发）：
 
+> 原理：  `docker cp [container_id]:dir dest_dir`
+
 ```bash
     sh sapi/download-box/download-box-get-archive-from-container.sh
 ```
 
 ### 方式二（来自web服务器）：
 
-> 原理： 下载：` http://127.0.0.1:8000/all-archive.zip`
+> 原理： 下载：`http://127.0.0.1:8000/all-archive.zip`
 > 自动解压，并自动拷贝到 `pool/` 目录
+
+> 真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
 
 ```bash
     sh sapi/download-box/download-box-get-archive-from-server.sh
@@ -42,5 +46,9 @@ sh sapi/download-box/download-box-server-run.sh
 > 指定镜像地址 单个下载逐步
 
 ```bash
+    # 演示例子
     ./prepare.php --without-docker --with-download-mirror=http://127.0.0.1:8000
+    
+    # 真实可用的依赖库镜像 
+    ./prepare.php --without-docker --with-download-mirror=https://swoole-cli.jingjingxyk.com/
 ```
