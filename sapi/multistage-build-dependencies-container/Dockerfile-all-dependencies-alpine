@@ -1,0 +1,139 @@
+FROM alpine:3.17 as builder-all-library
+
+# setup source repo, install dependencies
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN apk update
+
+RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
+RUN apk add flex  pkgconf ca-certificates
+RUN apk add bash
+RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
+WORKDIR /work
+
+
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+
+
+
+ADD ./runtime/swoole-cli  /usr/local/bin/
+ADD ./runtime/composer.phar  /usr/local/bin/
+ADD ./swoole-cli  /work
+
+RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
+RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
+RUN chmod a+x /usr/local/bin/swoole-cli
+RUN chmod a+x /usr/local/bin/composer.phar
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+RUN composer update --no-dev --optimize-autoloader
+
+WORKDIR /work
+
+
+RUN php prepare.php  --with-build-type=release --skip-download=1
+RUN sh make.sh list-library
+
+# RUN sh make.sh all-library
+
+RUN sh make.sh brotli
+RUN sh make.sh cares
+RUN sh make.sh libiconv
+RUN sh make.sh libidn2
+RUN sh make.sh openssl
+RUN sh make.sh libxml2
+RUN sh make.sh bzip2
+RUN sh make.sh zlib
+RUN sh make.sh nghttp2
+RUN sh make.sh libssh2
+RUN sh make.sh liblz4
+RUN sh make.sh liblzma
+RUN sh make.sh libzstd
+RUN sh make.sh curl
+RUN sh make.sh oniguruma
+RUN sh make.sh libzip
+RUN sh make.sh sqlite3
+RUN sh make.sh icu
+RUN sh make.sh libxslt
+RUN sh make.sh gmp
+RUN sh make.sh libsodium
+RUN sh make.sh ncurses
+RUN sh make.sh readline
+RUN sh make.sh libjpeg
+RUN sh make.sh libpng
+RUN sh make.sh libgif
+RUN sh make.sh libwebp
+RUN sh make.sh freetype
+RUN sh make.sh libyaml
+RUN sh make.sh imagemagick
+
+
+FROM alpine:3.17
+
+# setup source repo, install dependencies
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN apk update
+
+RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
+RUN apk add bash
+RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
+WORKDIR /work
+
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY --from=builder-all-library /usr/local/bin/swoole-cli /usr/local/bin/swoole-cli
+COPY --from=builder-all-library /usr/local/bin/composer.phar /usr/local/bin/composer.phar
+RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
+RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
+RUN chmod a+x /usr/local/bin/swoole-cli
+RUN chmod a+x /usr/local/bin/composer.phar
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+COPY --from=builder-all-library  /usr/brotli/ /usr/brotli/
+COPY --from=builder-all-library  /usr/cares /usr/cares
+COPY --from=builder-all-library /usr/libiconv /usr/libiconv
+COPY --from=builder-all-library /usr/libidn2 /usr/libidn2
+COPY --from=builder-all-library /usr/openssl/ /usr/openssl/
+
+COPY --from=builder-all-library /usr/libxml2/ /usr/libxml2/
+COPY --from=builder-all-library /usr/libxslt/ /usr/libxslt/
+
+COPY --from=builder-all-library  /usr/bzip2 /usr/bzip2
+COPY --from=builder-all-library  /usr/zlib /usr/zlib
+
+COPY --from=builder-all-library  /usr/nghttp2 /usr/nghttp2
+COPY --from=builder-all-library  /usr/libssh2 /usr/libssh2
+
+COPY --from=builder-all-library  /usr/liblz4 /usr/liblz4
+COPY --from=builder-all-library  /usr/liblzma /usr/liblzma
+COPY --from=builder-all-library  /usr/libzstd /usr/libzstd
+COPY --from=builder-all-library  /usr/libzip/ /usr/libzip/
+
+COPY --from=builder-all-library  /usr/curl/ /usr/curl/
+COPY --from=builder-all-library  /usr/oniguruma/ /usr/oniguruma/
+COPY --from=builder-all-library  /usr/sqlite3/ /usr/sqlite3/
+
+COPY --from=builder-all-library  /usr/icu/ /usr/icu/
+
+COPY --from=builder-all-library  /usr/gmp/ /usr/gmp/
+COPY --from=builder-all-library  /usr/libsodium/ /usr/libsodium/
+COPY --from=builder-all-library  /usr/ncurses /usr/ncurses
+COPY --from=builder-all-library  /usr/readline /usr/readline
+
+
+COPY --from=builder-all-library  /usr/libjpeg /usr/libjpeg
+COPY --from=builder-all-library  /usr/libpng /usr/libpng
+COPY --from=builder-all-library  /usr/libgif /usr/libgif
+COPY --from=builder-all-library  /usr/libwebp /usr/libwebp
+COPY --from=builder-all-library  /usr/freetype /usr/freetype
+
+COPY --from=builder-all-library  /usr/libyaml /usr/libyaml
+COPY --from=builder-all-library  /usr/imagemagick /usr/imagemagick
+
+# RUN cp -f /etc/apk/repositories.save /etc/apk/repositories
+
+RUN rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
