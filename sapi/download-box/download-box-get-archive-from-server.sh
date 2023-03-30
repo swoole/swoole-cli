@@ -22,7 +22,7 @@ URL="${DOMAIN}/all-archive.zip"
 
 test -f all-archive.zip || wget -O all-archive.zip ${URL}
 
-unzip all-archive.zip
+unzip -o all-archive.zip
 
 cd ${__PROJECT__}/
 
