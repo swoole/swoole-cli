@@ -22,8 +22,6 @@ class Preprocessor
     protected string $cppCompiler = 'clang++';
     protected string $lld = 'ld.lld';
 
-    protected array $downloadExtensionList = [];
-
     protected array $libraryMap = [];
     protected array $extensionMap = [];
     /**
@@ -334,7 +332,7 @@ class Preprocessor
             $lib->file = basename($lib->url);
         }
 
-        if (!empty($this->getInputOption('with-download-mirror-url'))) {
+        if ($lib->enableDownloadWithMirrorURL &&  !empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
         }
 
@@ -375,7 +373,7 @@ class Preprocessor
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
-            if (!empty($this->getInputOption('with-download-mirror-url'))) {
+            if ($ext->enableDownloadWithMirrorURL && !empty($this->getInputOption('with-download-mirror-url'))) {
                 $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
             }
 
@@ -397,7 +395,6 @@ class Preprocessor
 
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
-            $this->downloadExtensionList[] = ['url' => $ext->url, 'file' => $ext->file];
         }
 
         $this->extensionList[] = $ext;
@@ -684,7 +681,7 @@ class Preprocessor
 
         $download_urls = [];
         foreach ($this->libraryList as $item) {
-            if (empty($item->url)) {
+            if (empty($item->url) || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             $url = '';
@@ -700,8 +697,11 @@ class Preprocessor
         }
         file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
         $download_urls = [];
-        foreach ($this->downloadExtensionList as $item) {
-            $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
+        foreach ($this->extensionMap as $item) {
+            if (empty($item->peclVersion) || !$item->enableDownloadWithMirrorURL) {
+                continue;
+            }
+            $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
         }
         file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
