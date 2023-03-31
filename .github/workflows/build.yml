@@ -58,7 +58,7 @@ jobs:
             -   name: download cygwin
                 shell: pwsh
                 run: |
-                    curl  -o  "setup-x86_64.exe" "https://cygwin.com/setup-x86_64.exe"
+                    curl  -o  setup-x86_64.exe "https://cygwin.com/setup-x86_64.exe"
 
             -   name: install cygwin
                 run: |
