@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libgif_prefix . '/include');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libgif_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lgif');
+
     $p->addExtension(
         (new Extension('gd'))
             ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp ')
