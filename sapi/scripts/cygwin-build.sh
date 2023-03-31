@@ -1,4 +1,15 @@
-ROOT=$(pwd)
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+__PROJECT__=$(
+  cd ${__DIR__}/../../
+  pwd
+)
+cd ${__PROJECT__}
+
+ROOT=${__PROJECT__}
 REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
