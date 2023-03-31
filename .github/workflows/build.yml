@@ -39,6 +39,13 @@ jobs:
           ./make.sh config
           ./make.sh build
           ./bin/swoole-cli -v
+          ./make.sh archive
+    -   name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-swoole-cli
+          path: |
+            bin/swoole-cli-*.xz
   cygwin:
     if: 0
     runs-on: windows-latest
@@ -75,9 +82,6 @@ jobs:
         ./bin/swoole-cli -v
   macos:
     if: 1
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-latest ]
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
