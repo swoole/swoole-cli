@@ -75,11 +75,14 @@ jobs:
                 run: |
                     uname -a
                     git submodule update --init
-                    bash ./sapi/scripts/cygwin-config.sh
+                    bash ./sapi/scripts/cygwin-build.sh
             -   name: Build
                 run: |
                     make -j $(nproc)
                     ./bin/swoole-cli -v
+            -   name: archive
+                run: |
+                    bin/swoole-cli sapi/scripts/cygwin-pack.php
     macos:
         if: 1
         runs-on: macos-latest
@@ -167,3 +170,20 @@ jobs:
                     name: dist-swoole-cli
                     path: |
                         bin/swoole-cli-*.xz
+    macos-arm64:
+        if: 1
+        runs-on: macos-latest
+        strategy:
+            matrix:
+                arch: ["aarch64", "armv7l" ]
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Configure
+                run: |
+                    git submodule update --init
+                    SYSTEM=`uname -s 2>/dev/null`
+                    RELEASE=`uname -r 2>/dev/null`
+                    MACHINE=`uname -m 2>/dev/null`
+                    PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+                    PLATFORM="$SYSTEM:$MACHINE";
+                    echo $PLATFORM
