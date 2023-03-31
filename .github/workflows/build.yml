@@ -100,14 +100,14 @@ jobs:
                     # ctr info
                     brew install bison wget curl 
                     which glibtool
-            -   name: Cache Gradle packages
+            -   name: Cache
                 uses: actions/cache@v3
                 id: all-archive-cache
                 with:
                     path: |
-                        pool/
-                        var/all-archive.zip
-                        var/runtime
+                        ${RUNNER_WORKSPACE}/pool/
+                        ${RUNNER_WORKSPACE}/var/all-archive.zip
+                        ${RUNNER_WORKSPACE}/var/runtime
                     key: all-archive-${{ hashFiles('sapi/download-box/download-box-get-archive-from-container.sh') }}
 
             -   name: Prepare
