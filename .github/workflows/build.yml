@@ -138,7 +138,7 @@ jobs:
                     php -v 
                     php --ri curl 
                     sudo composer update --no-dev  --optimize-autoloader
-                    sudo php prepare.php --skip-download=1  +ds +apcu
+                    sudo php prepare.php --without-docker --skip-download=1  +ds +apcu
                     sudo chmod a+x ./make.sh
                     sudo ./make.sh all-library
                     sudo ./make.sh config
