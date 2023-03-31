@@ -55,14 +55,6 @@ jobs:
                     git config --global core.autocrlf false
                     git config --global core.eol lf
             -   uses: actions/checkout@v3
-            -   name: download cygwin
-                shell: pwsh
-                run: |
-                    curl  -o  setup-x86_64.exe "https://cygwin.com/setup-x86_64.exe"
-
-            -   name: install cygwin
-                run: |
-                    setup-x86_64.exe --no-shortcuts  --quiet-mode  --disable-buggy-antivirus   --packages wget tar libtool re2c bison gcc-g++ autoconf automake openssl
             -   name: Cache cygwin packages
                 id: cache-cygwin
                 uses: actions/cache@v3
@@ -78,6 +70,11 @@ jobs:
                 with:
                     platform: x64
                     packages: wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils
+            -   name: Install deps 2
+                uses: cygwin/cygwin-install-action@v2
+                with:
+                    platform: x64
+                    packages: wget tar libtool re2c bison gcc-g++ autoconf automake openssl  coreutils
             -   name: Install re2c
                 run: |
                     env
