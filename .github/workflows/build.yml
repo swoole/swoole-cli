@@ -111,7 +111,7 @@ jobs:
                         ${GITHUB_WORKSPACE}/var/runtime
                     key: all-archive-${{ hashFiles('sapi/download-box/download-box-get-archive-from-container.sh') }}
 
-            -   name: Prepare
+            -   name: Prepare-cache
                 if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
                 run: |
                     sudo mkdir -p ${GITHUB_WORKSPACE}/pool/lib
@@ -132,8 +132,7 @@ jobs:
                     sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
                     sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
                     cd ${GITHUB_WORKSPACE}
-
-            -   name: Build
+            -   name: prepare
                 run: |
                     export PATH=${GITHUB_WORKSPACE}/var/runtime:$PATH
                     env
@@ -142,6 +141,8 @@ jobs:
                     sudo composer update --no-dev  --optimize-autoloader
                     sudo php prepare.php --without-docker --skip-download=1  +ds +apcu
                     sudo chmod a+x ./make.sh
+            -   name: Build
+                run: |
                     sudo ./make.sh all-library
                     sudo ./make.sh config
                     sudo ./make.sh build
