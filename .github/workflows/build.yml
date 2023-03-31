@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
     linux:
-        if: 1
+        if: 0
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
@@ -100,6 +100,7 @@ jobs:
                     brew install bison wget curl  libtool automake
                     which glibtool
                     env
+                    exit 3
             -   name: Cache
                 uses: actions/cache@v3
                 id: all-archive-cache
@@ -108,9 +109,7 @@ jobs:
                         ~/cache/var/all-archive.zip
                         ~/cache/var/runtime/swoole-cli
                         ~/cache/var/runtime/composer.phar
-                    key: all-archive-${{ hashFiles('sapi/download-box/download-box-get-archive-from-container.sh') }}
-                    restore-keys: |
-                        all-archive-${{ hashFiles('sapi/download-box/download-box-get-archive-from-container.sh') }}
+                    key: all-archive
             -   name: prepare-cache
                 if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
                 run: |
@@ -168,7 +167,7 @@ jobs:
                 with:
                     name: dist-swoole-cli
                     path: |
-                        bin/swoole-cli-*.xz
+                        bin/swoole-cli
     macos-arm64:
         if: 1
         runs-on: macos-latest
