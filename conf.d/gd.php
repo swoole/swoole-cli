@@ -12,18 +12,27 @@ return function (Preprocessor $p) {
         ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withPrefix($libjpeg_prefix)
-        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
+        ->withConfigure(
+            <<<EOF
+            cmake -G"Unix Makefiles"   . \
+            -DCMAKE_INSTALL_PREFIX={$libjpeg_prefix} \
+            -DCMAKE_INSTALL_LIBDIR={$libjpeg_prefix}/lib \
+            -DCMAKE_INSTALL_INCLUDEDIR={$libjpeg_prefix}/include \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
+            -DBUILD_STATIC_LIBS=ON 
+EOF
+        )
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$libjpeg_prefix}/lib/*.so.*
+            rm -rf {$libjpeg_prefix}/lib/*.so
+            rm -rf {$libjpeg_prefix}/lib/*.dylib
+EOF
+        )
         ->withPkgName('libjpeg')
+        ->withPkgName('libturbojpeg')
         ->withBinPath($libjpeg_prefix . '/bin/');
-
-    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
-    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
-
-    $lib->withLdflags('-L' . $jpeg_lib_dir)
-        ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
-    if ($p->getOsType() === 'macos') {
-        $lib->withScriptAfterInstall('find ' . $libjpeg_prefix . ' -name \*.dylib | xargs rm -f');
-    }
     $p->addLibrary($lib);
 
     $libpng_prefix = PNG_PREFIX;
@@ -79,10 +88,6 @@ EOF
     $p->withVariable('LIBS', '$LIBS -lgif');
 
     $libwebp_prefix = WEBP_PREFIX;
-    # $libpng_prefix = PNG_PREFIX;
-    # $libjpeg_prefix = JPEG_PREFIX;
-    # $libgif_prefix = GIF_PREFIX;
-    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $p->addLibrary(
         (new Library('libwebp'))
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
@@ -104,7 +109,7 @@ EOF
                 --with-pngincludedir={$libpng_prefix}/include \
                 --with-pnglibdir={$libpng_prefix}/lib \
                 --with-jpegincludedir={$libjpeg_prefix}/include \
-                --with-jpeglibdir={$jpeg_lib_dir} \
+                --with-jpeglibdir={$libjpeg_prefix}/lib \
                 --with-gifincludedir={$libgif_prefix}/include \
                 --with-giflibdir={$libgif_prefix}/lib \
                 --disable-tiff 
@@ -118,8 +123,6 @@ EOF
 
     $freetype_prefix = FREETYPE_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
-    # $libpng_prefix = PNG_PREFIX;
-    # $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('freetype'))
             ->withHomePage('https://freetype.org/')
