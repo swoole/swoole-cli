@@ -96,8 +96,10 @@ jobs:
           echo $PLATFORM
           # brew install lima
           # limactl start
-          brew install containerd
-          ctr info
+          # brew install containerd
+          # ctr info
+          brew install bison 
+          which glibtool
       - name: Prepare-2
         run: |
           sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
@@ -106,4 +108,10 @@ jobs:
           # lima nerdctl cp $container_id:/usr/share/nginx/html/extensions extensions
           # lima nerdctl cp $container_id:/usr/share/nginx/html/libraries libraries
           # lima nerdctl rm $container_id
-             
+      - name: Build
+        run: |
+          env 
+          # export PATH=
+          # composer update 
+          # php prepare.php --skip-download=1   +inotify  +ds +apcu
+          # chmod a+x ./make.sh
