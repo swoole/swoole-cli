@@ -151,6 +151,8 @@ jobs:
                 run: |
                     
                     cd ${GITHUB_WORKSPACE}/
+                    ln -sf /opt/homebrew/bin/glibtool /opt/homebrew/bin/libtool
+                    ln -sf /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
                     export PATH=${GITHUB_WORKSPACE}/var/runtime:$PATH
                     env
                     php -v 
