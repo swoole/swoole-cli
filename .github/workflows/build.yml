@@ -97,7 +97,7 @@ jobs:
                     PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
                     PLATFORM="$SYSTEM:$MACHINE";
                     echo $PLATFORM
-                    brew install bison wget curl 
+                    brew install bison wget curl  libtool
                     which glibtool
                     env
             -   name: Cache
