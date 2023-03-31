@@ -64,7 +64,6 @@ jobs:
                     path: C:/cygwin-packages
                     key: ${{ runner.os }}-build-${{ env.cache-name }}
             -   name: Install deps 1
-                if: ${{ steps.cache-cygwin.outputs.cache-hit != 'true' }}
                 uses: cygwin/cygwin-install-action@v2
                 with:
                     platform: x64
