@@ -121,8 +121,8 @@ jobs:
                     
                     cd ${GITHUB_WORKSPACE}
                     sudo sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
-                    sudo cp -f var/runtime/swoole-cli  ~/cache/var/
-                    sudo cp -f var/runtime/composer.phar  ~/cache/var/
+                    sudo cp -f var/runtime/swoole-cli  ~/cache/var/runtime/
+                    sudo cp -f var/runtime/composer.phar  ~/cache/var/runtime/
 
                     cd ${GITHUB_WORKSPACE}/var
                     sudo test -f all-archive.zip || sudo wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
