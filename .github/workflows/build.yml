@@ -124,7 +124,7 @@ jobs:
                     sudo mkdir -p pool/ext
                     sudo mkdir -p var/
                     cd ${RUNNER_WORKSPACE}/var
-                    sudo tes -f all-archive.zip || wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
+                    sudo test -f all-archive.zip || wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
                     sudo unzip -o all-archive.zip
                     cd ${RUNNER_WORKSPACE}
                     sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
