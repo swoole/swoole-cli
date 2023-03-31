@@ -112,6 +112,9 @@ jobs:
         run: |
           env 
           export PATH=$(pwd)/var/runtime:$PATH
+          php -v 
+          php --ri curl 
+          php --ri swoole 
           composer update 
           # php prepare.php --skip-download=1   +inotify  +ds +apcu
           # chmod a+x ./make.sh
