@@ -99,8 +99,9 @@ jobs:
                     echo $PLATFORM
                     brew install bison wget curl  libtool automake
                     which glibtool
+                    ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
+                    ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
                     env
-                    exit 3
             -   name: Cache
                 uses: actions/cache@v3
                 id: all-archive-cache
