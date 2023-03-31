@@ -138,5 +138,16 @@ jobs:
                     php -v 
                     php --ri curl 
                     composer update 
-                    # php prepare.php --skip-download=1   +inotify  +ds +apcu
-                    # chmod a+x ./make.sh
+                    php prepare.php --skip-download=1   +inotify  +ds +apcu
+                    chmod a+x ./make.sh
+                    ./make.sh all-library
+                    ./make.sh config
+                    ./make.sh build
+                    ./bin/swoole-cli -v
+                    ./make.sh archive
+            -   name: Archive production artifacts
+                uses: actions/upload-artifact@v3
+                with:
+                    name: dist-swoole-cli
+                    path: |
+                        bin/swoole-cli-*.xz
