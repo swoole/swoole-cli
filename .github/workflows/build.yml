@@ -121,7 +121,8 @@ jobs:
                     sudo cp -f var/runtime/composer.phar  ~/cache/var/runtime/
 
                     cd ${GITHUB_WORKSPACE}/var
-                    sudo test -f all-archive.zip || sudo wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
+                    # sudo test -f all-archive.zip || sudo wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
+                    sudo test -f all-archive.zip || sudo wget -O all-archive.zip https://http-proxy.xiaoshuogeng.com/cloud-soft/all-archive.zip
                     sudo cp -f all-archive.zip  ~/cache/var/
                     cd ${GITHUB_WORKSPACE}
 
