@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
     linux:
-        if: 1
+        if: 0
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
@@ -47,7 +47,7 @@ jobs:
                     path: |
                         bin/swoole-cli
     cygwin:
-        if: 0
+        if: 1
         runs-on: windows-latest
         steps:
             -   name: Prepare git
@@ -84,7 +84,7 @@ jobs:
                 run: |
                     bin/swoole-cli sapi/scripts/cygwin-pack.php
     macos:
-        if: 1
+        if: 0
         runs-on: macos-latest
         steps:
             -   uses: actions/checkout@v3
@@ -171,8 +171,8 @@ jobs:
                     name: dist-swoole-cli
                     path: |
                         bin/swoole-cli
-    macos-arm64:
-        if: 1
+    macos-arm:
+        if: 0
         runs-on: macos-latest
         strategy:
             matrix:
