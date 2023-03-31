@@ -60,6 +60,8 @@ set +eux
 make clean
 set -exu
 ./configure --prefix=/usr --disable-all \
+    --enable-shared=no \
+    --enable-static=yes \
     --disable-fiber-asm \
     --enable-opcache \
     --without-pcre-jit \
