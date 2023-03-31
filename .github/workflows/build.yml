@@ -126,7 +126,7 @@ jobs:
                     cd ${GITHUB_WORKSPACE}
 
                     cd ${GITHUB_WORKSPACE}/var
-                    sudo test -f all-archive.zip || wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
+                    sudo test -f all-archive.zip || sudo wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
                     sudo unzip -o all-archive.zip
                     cd ${GITHUB_WORKSPACE}
                     sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
