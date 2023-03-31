@@ -106,34 +106,46 @@ jobs:
                 id: all-archive-cache
                 with:
                     path: |
-                        ${GITHUB_WORKSPACE}/pool/
-                        ${GITHUB_WORKSPACE}/var/all-archive.zip
-                        ${GITHUB_WORKSPACE}/var/runtime
+                        ~/cache/var/all-archive.zip
+                        ~/cache/var/runtime/swoole-cli
+                        ~/cache/var/runtime/composer.phar
                     key: all-archive-${{ hashFiles('sapi/download-box/download-box-get-archive-from-container.sh') }}
-
-            -   name: Prepare-cache
+                    restore-keys: |
+                        all-archive-${{ hashFiles('sapi/download-box/download-box-get-archive-from-container.sh') }}
+            -   name: prepare-cache
                 if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
                 run: |
-                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/lib
-                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/ext
-                    sudo mkdir -p ${GITHUB_WORKSPACE}/var/
-                    sudo sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
-                    # IMAGE=docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230329T114730Z
-                    # container_id=$(lima nerdctl create $IMAGE) # returns container ID
-                    # lima nerdctl cp $container_id:/usr/share/nginx/html/extensions extensions
-                    # lima nerdctl cp $container_id:/usr/share/nginx/html/libraries libraries
-                    # lima nerdctl rm $container_id/
                     cd ${GITHUB_WORKSPACE}
+                    sudo mkdir -p ${GITHUB_WORKSPACE}/var/
+                    sudo mkdir -p ~/cache/var/runtime/
+                    
+                    cd ${GITHUB_WORKSPACE}
+                    sudo sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
+                    sudo cp -f var/runtime/swoole-cli  ~/cache/var/
+                    sudo cp -f var/runtime/composer.phar  ~/cache/var/
 
                     cd ${GITHUB_WORKSPACE}/var
                     sudo test -f all-archive.zip || sudo wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
-                    sudo unzip -o all-archive.zip
+                    sudo cp -f all-archive.zip  ~/cache/var/
                     cd ${GITHUB_WORKSPACE}
-                    sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
-                    sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
-                    cd ${GITHUB_WORKSPACE}
+
             -   name: prepare
                 run: |
+                    cd ${GITHUB_WORKSPACE}
+                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/lib
+                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/ext
+                    sudo mkdir -p ${GITHUB_WORKSPACE}/var/runtime/
+                    
+                    sudo cp -f ~/cache/var/all-archive.zip        ${GITHUB_WORKSPACE}/var/
+                    sudo cp -f ~/cache/var/runtime/swoole-cli     ${GITHUB_WORKSPACE}/var/runtime/
+                    sudo cp -f ~/cache/var/runtime/composer.phar  ${GITHUB_WORKSPACE}/var/runtime/
+                    sudo unzip -o all-archive.zip
+                    
+                    
+                    cd ${GITHUB_WORKSPACE}
+                    sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
+                    sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext" ; print "n" |cmd; }'
+                    
                     export PATH=${GITHUB_WORKSPACE}/var/runtime:$PATH
                     env
                     php -v 
