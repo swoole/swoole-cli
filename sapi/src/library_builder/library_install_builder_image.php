@@ -7,25 +7,33 @@ use SwooleCli\Preprocessor;
 function install_libjpeg(Preprocessor $p)
 {
     $libjpeg_prefix = JPEG_PREFIX;
-    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
-    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $lib = new Library('libjpeg');
     $lib->withHomePage('https://libjpeg-turbo.org/')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
         ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
         ->withPrefix($libjpeg_prefix)
-        ->withConfigure('cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=' . $libjpeg_prefix . ' .')
+        ->withConfigure(
+            <<<EOF
+            cmake -G"Unix Makefiles"   . \
+            -DCMAKE_INSTALL_PREFIX={$libjpeg_prefix} \
+            -DCMAKE_INSTALL_LIBDIR={$libjpeg_prefix}/lib \
+            -DCMAKE_INSTALL_INCLUDEDIR={$libjpeg_prefix}/include \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
+            -DBUILD_STATIC_LIBS=ON 
+EOF
+        )
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$libjpeg_prefix}/lib/*.so.*
+            rm -rf {$libjpeg_prefix}/lib/*.so
+            rm -rf {$libjpeg_prefix}/lib/*.dylib
+EOF
+        )
         ->withPkgName('libjpeg')
-        ->withBinPath($libjpeg_prefix . '/bin/')
-        ->withLdflags('-L' . $jpeg_lib_dir)
-        ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
-
-    $lib->withLdflags('-L' . $jpeg_lib_dir)
-        ->withPkgConfig($jpeg_lib_dir . '/pkgconfig');
-    if ($p->getOsType() === 'macos') {
-        $lib->withScriptAfterInstall('find ' . $lib->prefix . ' -name \*.dylib | xargs rm -f');
-    }
+        ->withPkgName('libturbojpeg')
+        ->withBinPath($libjpeg_prefix . '/bin/');
     $p->addLibrary($lib);
 }
 
@@ -129,12 +137,11 @@ EOF
 
 function install_libwebp(Preprocessor $p)
 {
+    $libtiff_prefix = LIBTIFF_PREFIX;
     $libwebp_prefix = WEBP_PREFIX;
     $libpng_prefix = PNG_PREFIX;
     $libjpeg_prefix = JPEG_PREFIX;
     $libgif_prefix = GIF_PREFIX;
-    $libtiff_prefix = LIBTIFF_PREFIX;
-    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $p->addLibrary(
         (new Library('libwebp'))
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
@@ -142,16 +149,10 @@ function install_libwebp(Preprocessor $p)
             ->withHomePage('https://github.com/webmproject/libwebp')
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
             ->withPrefix($libwebp_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libwebp_prefix)
             ->withConfigure(
                 <<<EOF
                 ./autogen.sh
                 ./configure --help
-                ./configure --help | grep -e '--disable'
-                ./configure --help | grep -e '--enable'
-                ./configure --help | grep -e '--with'
-
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
                 LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
                 LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
@@ -162,16 +163,15 @@ function install_libwebp(Preprocessor $p)
                 --with-pngincludedir={$libpng_prefix}/include \
                 --with-pnglibdir={$libpng_prefix}/lib \
                 --with-jpegincludedir={$libjpeg_prefix}/include \
-                --with-jpeglibdir={$jpeg_lib_dir} \
+                --with-jpeglibdir={$libjpeg_prefix}/lib \
                 --with-gifincludedir={$libgif_prefix}/include \
                 --with-giflibdir={$libgif_prefix}/lib \
-                --disable-tiff
-
+                --disable-tiff 
 EOF
             )
             ->withPkgName('libwebp')
             ->withLdflags('-L' . $libwebp_prefix . '/lib -lwebpdemux -lwebpmux')
-            ->withBinPath($libwebp_prefix . '/bin')
+            ->withBinPath($libwebp_prefix . '/bin/')
             ->depends('libpng', 'libjpeg', 'libgif')
     );
 }
