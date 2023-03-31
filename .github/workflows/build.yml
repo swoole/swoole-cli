@@ -79,8 +79,7 @@ jobs:
                 run: |
                     env
                     ls C:/
-                    ls C:/cygwin-packages
-                    ls C:/Users
+                    ls C:/cygwin/
                     bash ./sapi/scripts/install-re2c.sh
             -   name: Configure
                 run: |
