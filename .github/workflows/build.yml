@@ -64,6 +64,7 @@ jobs:
                     path: C:/cygwin-packages
                     key: ${{ runner.os }}-build-${{ env.cache-name }}
             -   name: Install deps
+                if: ${{ steps.cache-cygwin.outputs.cache-hit != 'true' }}
                 uses: cygwin/cygwin-install-action@v2
                 with:
                     platform: x64
@@ -71,18 +72,7 @@ jobs:
             -   name: Install re2c
                 run: |
                     bash ./sapi/scripts/install-re2c.sh
-            -   name: Configure
-                run: |
-                    uname -a
-                    git submodule update --init
-                    bash ./sapi/scripts/cygwin-build.sh
-            -   name: Build
-                run: |
-                    make -j $(nproc)
-                    ./bin/swoole-cli -v
-            -   name: archive
-                run: |
-                    bin/swoole-cli sapi/scripts/cygwin-pack.php
+
     macos:
         if: 0
         runs-on: macos-latest
