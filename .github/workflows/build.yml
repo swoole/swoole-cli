@@ -45,9 +45,9 @@ jobs:
                 with:
                     name: dist-swoole-cli
                     path: |
-                        bin/swoole-cli-*.xz
+                        bin/swoole-cli
     cygwin:
-        if: 1
+        if: 0
         runs-on: windows-latest
         steps:
             -   name: Prepare git
@@ -97,7 +97,7 @@ jobs:
                     PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
                     PLATFORM="$SYSTEM:$MACHINE";
                     echo $PLATFORM
-                    brew install bison wget curl  libtool
+                    brew install bison wget curl  libtool automake
                     which glibtool
                     env
             -   name: Cache
