@@ -99,6 +99,7 @@ jobs:
                     echo $PLATFORM
                     brew install bison wget curl  libtool automake
                     which glibtool
+                    ls -lh /opt/homebrew/bin/glibtool
                     ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
                     ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
                     env
