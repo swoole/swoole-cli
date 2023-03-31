@@ -90,7 +90,7 @@ jobs:
           PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
           PLATFORM="$SYSTEM:$MACHINE";
           echo $PLATFORM
-          brew install lima
+          # brew install lima
           # limactl start
       - name: Prepare-2
         run: |
