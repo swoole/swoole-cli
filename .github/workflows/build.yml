@@ -139,13 +139,13 @@ jobs:
                     sudo cp -f ~/cache/var/all-archive.zip        ${GITHUB_WORKSPACE}/var/
                     sudo cp -f ~/cache/var/runtime/swoole-cli     ${GITHUB_WORKSPACE}/var/runtime/
                     sudo cp -f ~/cache/var/runtime/composer.phar  ${GITHUB_WORKSPACE}/var/runtime/
+                    
+                    cd ${GITHUB_WORKSPACE}/var
                     sudo unzip -o all-archive.zip
-                    
-                    
-                    cd ${GITHUB_WORKSPACE}
                     sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
                     sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext" ; print "n" |cmd; }'
                     
+                    cd ${GITHUB_WORKSPACE}/
                     export PATH=${GITHUB_WORKSPACE}/var/runtime:$PATH
                     env
                     php -v 
