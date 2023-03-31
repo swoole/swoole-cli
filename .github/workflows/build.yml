@@ -96,11 +96,13 @@ jobs:
           echo $PLATFORM
           # brew install lima
           # limactl start
+          brew install containerd
+          ctr info
       - name: Prepare-2
         run: |
           sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
           IMAGE=docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230329T114730Z
-          container_id=$(lima nerdctl create $IMAGE) # returns container ID
+          # container_id=$(lima nerdctl create $IMAGE) # returns container ID
           # lima nerdctl cp $container_id:/usr/share/nginx/html/extensions extensions
           # lima nerdctl cp $container_id:/usr/share/nginx/html/libraries libraries
           # lima nerdctl rm $container_id
