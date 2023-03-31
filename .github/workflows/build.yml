@@ -72,7 +72,7 @@ jobs:
             -   name: Install re2c
                 run: |
                     env
-                    ls -lh C:/
+                    ls C:/
                     bash ./sapi/scripts/install-re2c.sh
             -   name: Configure
                 run: |
