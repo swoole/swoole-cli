@@ -27,7 +27,7 @@ jobs:
                     image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-20230330T153237Z
                     options: -v ${{ github.workspace }}:/work -w /work
                     run: |
-                        composer update composer update --no-dev  --optimize-autoloader
+                        composer update --no-dev  --optimize-autoloader
                         php prepare.php  +inotify  +ds +apcu
                         chmod a+x ./make.sh
             -   name: Build
