@@ -47,7 +47,7 @@ jobs:
                     path: |
                         bin/swoole-cli-*.xz
     cygwin:
-        if: 0
+        if: 1
         runs-on: windows-latest
         steps:
             -   name: Prepare git
@@ -70,12 +70,12 @@ jobs:
                     packages: wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel
             -   name: Install re2c
                 run: |
-                    bash ./sapi/install-re2c.sh
+                    bash ./sapi/scripts/install-re2c.sh
             -   name: Configure
                 run: |
                     uname -a
                     git submodule update --init
-                    bash ./sapi/cygwin-config.sh
+                    bash ./sapi/scripts/cygwin-config.sh
             -   name: Build
                 run: |
                     make -j $(nproc)
