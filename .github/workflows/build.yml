@@ -111,7 +111,7 @@ jobs:
       - name: Build
         run: |
           env 
-          # export PATH=
-          # composer update 
+          export PATH=$(pwd)/var/runtime:$PATH
+          composer update 
           # php prepare.php --skip-download=1   +inotify  +ds +apcu
           # chmod a+x ./make.sh
