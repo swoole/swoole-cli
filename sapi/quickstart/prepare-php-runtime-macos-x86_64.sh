@@ -19,7 +19,8 @@ cd ${__PROJECT__}/var/runtime
 test -f swoole-cli-v5.0.2-macos-x64.tar.xz || wget -O swoole-cli-v5.0.2-macos-x64.tar.xz  https://github.com/swoole/swoole-src/releases/download/v5.0.2/swoole-cli-v5.0.2-macos-x64.tar.xz
 test -f  swoole-cli-v5.0.2-macos-x64.tar ||  xz -d -k swoole-cli-v5.0.2-macos-x64.tar.xz
 test -f swoole-cli ||  tar -xvf  swoole-cli-v5.0.2-macos-x64.tar
-chmod a+x swoole-cli
+sudo xattr -d com.apple.quarantine  ./swoole-cli
+chmod a+x ./swoole-cli
 
 test -f composer.phar ||  wget -O composer.phar https://getcomposer.org/download/2.5.5/composer.phar
 chmod a+x composer.phar
