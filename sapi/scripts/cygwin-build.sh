@@ -54,7 +54,7 @@ if [ ! -d $ROOT/ext/imagick ]; then
 fi
 
 cd $ROOT
-
+ls -lh ext
 ./buildconf --force
 set +eux
 make clean
