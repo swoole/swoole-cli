@@ -120,15 +120,15 @@ jobs:
                     # lima nerdctl cp $container_id:/usr/share/nginx/html/libraries libraries
                     # lima nerdctl rm $container_id/
                     cd ${RUNNER_WORKSPACE}
-                    mkdir -p pool/lib
-                    mkdir -p pool/ext
-                    mkdir -p var/
+                    sudo mkdir -p pool/lib
+                    sudo mkdir -p pool/ext
+                    sudo mkdir -p var/
                     cd ${RUNNER_WORKSPACE}/var
-                    tes -f all-archive.zip || wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
-                    unzip -o all-archive.zip
+                    sudo tes -f all-archive.zip || wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
+                    sudo unzip -o all-archive.zip
                     cd ${RUNNER_WORKSPACE}
-                    awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
-                    awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
+                    sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
+                    sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
                     cd ${RUNNER_WORKSPACE}
 
             -   name: Build
@@ -137,12 +137,12 @@ jobs:
                     export PATH=${RUNNER_WORKSPACE}/var/runtime:$PATH
                     php -v 
                     php --ri curl 
-                    composer update --no-dev  --optimize-autoloader
-                    php prepare.php --skip-download=1  +ds +apcu
-                    chmod a+x ./make.sh
-                    ./make.sh all-library
-                    ./make.sh config
-                    ./make.sh build
+                    sudo composer update --no-dev  --optimize-autoloader
+                    sudo php prepare.php --skip-download=1  +ds +apcu
+                    sudo chmod a+x ./make.sh
+                    sudo ./make.sh all-library
+                    sudo ./make.sh config
+                    sudo ./make.sh build
                     ./bin/swoole-cli -v
                     ./make.sh archive
             -   name: Archive production artifacts
