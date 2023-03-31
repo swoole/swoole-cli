@@ -80,6 +80,7 @@ jobs:
                     uname -a
                     git submodule update --init
                     ls ext
+                    ls ext/swoole
                     bash ./sapi/scripts/cygwin-build.sh
             -   name: Build
                 run: |
