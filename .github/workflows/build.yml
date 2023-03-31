@@ -106,37 +106,37 @@ jobs:
                 id: all-archive-cache
                 with:
                     path: |
-                        ${RUNNER_WORKSPACE}/pool/
-                        ${RUNNER_WORKSPACE}/var/all-archive.zip
-                        ${RUNNER_WORKSPACE}/var/runtime
+                        ${GITHUB_WORKSPACE}/pool/
+                        ${GITHUB_WORKSPACE}/var/all-archive.zip
+                        ${GITHUB_WORKSPACE}/var/runtime
                     key: all-archive-${{ hashFiles('sapi/download-box/download-box-get-archive-from-container.sh') }}
 
             -   name: Prepare
                 if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
                 run: |
-                    sudo mkdir -p pool/lib
-                    sudo mkdir -p pool/ext
-                    sudo mkdir -p var/
+                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/lib
+                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/ext
+                    sudo mkdir -p ${GITHUB_WORKSPACE}/var/
                     sudo sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
                     # IMAGE=docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230329T114730Z
                     # container_id=$(lima nerdctl create $IMAGE) # returns container ID
                     # lima nerdctl cp $container_id:/usr/share/nginx/html/extensions extensions
                     # lima nerdctl cp $container_id:/usr/share/nginx/html/libraries libraries
                     # lima nerdctl rm $container_id/
-                    cd ${RUNNER_WORKSPACE}
+                    cd ${GITHUB_WORKSPACE}
 
-                    cd ${RUNNER_WORKSPACE}/var
+                    cd ${GITHUB_WORKSPACE}/var
                     sudo test -f all-archive.zip || wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
                     sudo unzip -o all-archive.zip
-                    cd ${RUNNER_WORKSPACE}
+                    cd ${GITHUB_WORKSPACE}
                     sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
                     sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
-                    cd ${RUNNER_WORKSPACE}
+                    cd ${GITHUB_WORKSPACE}
 
             -   name: Build
                 run: |
-                    env 
-                    export PATH=${RUNNER_WORKSPACE}/var/runtime:$PATH
+                    export PATH=${GITHUB_WORKSPACE}/var/runtime:$PATH
+                    env
                     php -v 
                     php --ri curl 
                     sudo composer update --no-dev  --optimize-autoloader
