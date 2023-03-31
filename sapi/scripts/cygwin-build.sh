@@ -56,7 +56,9 @@ fi
 cd $ROOT
 
 ./buildconf --force
+set +eux
 make clean
+set -exu
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --enable-opcache \
