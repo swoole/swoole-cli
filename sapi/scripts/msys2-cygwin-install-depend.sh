@@ -26,13 +26,20 @@ pacman -Ss icu
 
 # https://packages.msys2.org/search?t=pkg&q=zlib-devel
 
-pacman -Syy  wget tar libtool re2c bison gcc autoconf automake openssl
+pacman -Sy --noconfirm  wget tar libtool re2c bison gcc autoconf automake openssl
 
-pacman -Syy pcre2-devel openssl-devel libcurl-devel libxml2-devel libxslt-devel gmp-devel libsqlite-devel zlib-devel libbz2-devel \
+pacman -Sy --noconfirm pcre2-devel openssl-devel libcurl-devel libxml2-devel libxslt-devel gmp-devel libsqlite-devel zlib-devel libbz2-devel \
            liblz4-devel liblzma-devel icu-devel libcares-devel libyaml-devel libzstd-devel brotli-devel libreadline-devel  libintl \
            libssh2-devel  libidn2-devel gettext-devel coreutils
 
-pacman -Syy  zip gzip lzip p7zip zlib bzip2 unzip
+pacman -Sy --noconfirm zip gzip lzip p7zip zlib bzip2 unzip
 
+:<<'EOF'
+# 这些包找不到
 
+     ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel  \
+     libzip-devel  libonig-devel  libsodium-devel  libMagick-devel     libpq-devel
 
+EOF
+
+pacman -Ss  zip
