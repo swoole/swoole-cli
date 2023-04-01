@@ -62,7 +62,7 @@ jobs:
             -   name: CI-Build
                 run: |
                     echo 'Running in MSYS2!'
-                    bash ./sapi/script/msys2-cygwin-install-depend.sh
+                    bash ./sapi/scripts/msys2-cygwin-install-depend.sh
     macos:
         if: 0
         runs-on: macos-latest
