@@ -57,7 +57,8 @@ jobs:
                     env
                     curl -V 
                     ls 
-                    ls  C:\cygwin\bin\
+                    # ls  C:\cygwin\bin\
+                    ls  C:\msys64
                     pwd 
                     curl -o setup-x86_64.exe https://cygwin.com/setup-x86_64.exe
                     ls  setup-x86_64.exe
