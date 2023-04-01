@@ -108,5 +108,5 @@ set -exu
     --with-readline
 EOF
 which make
-# make -j $(nproc)
+make -j $(nproc)
 # ./bin/swoole-cli -v

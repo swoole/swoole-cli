@@ -74,6 +74,9 @@ ${CYGWIN_CMD}   --packages     coreutils
 
 
 exit 0
+
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages     vim
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages     make
 lynx -source rawgit.com/transcode-open/apt-cyg/master/apt-cyg > apt-cyg
 install apt-cyg /bin
 apt-cyg --help
