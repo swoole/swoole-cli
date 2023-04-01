@@ -67,8 +67,10 @@ jobs:
             -   name: Configure
                 run: |
                     uname -a
+                    pwd
                     git submodule update --init
-                    # bash ./sapi/scripts/cygwin-config.sh
+                    bash ./sapi/scripts/cygwin-config.sh
+                    exit 3 
                     bash ./sapi/scripts/cygwin-build.sh
             -   name: Build
                 run: |

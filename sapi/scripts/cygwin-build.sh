@@ -9,6 +9,7 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+:<<'EOF'
 ROOT=${__PROJECT__}
 REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
@@ -101,6 +102,7 @@ set -exu
     --with-imagick \
     --with-yaml \
     --with-readline
+EOF
 
 make -j $(nproc)
 ./bin/swoole-cli -v
