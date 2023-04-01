@@ -71,16 +71,17 @@ jobs:
                     bash ./sapi/scripts/install-re2c.sh
             -   name: Install ext
                 run: |
-                    bash ./sapi/scripts/cygwin-config.sh
+                    bash ./sapi/scripts/cygwin-config-ext.sh
             -   name: Configure php
                 run: |
                     uname -a
                     pwd
-                    bash ./sapi/scripts/cygwin-build.sh
+                    bash ./sapi/scripts/cygwin-config.sh
             -   name: Build
                 run: |
-                    make -j $(nproc)
-                    ./bin/swoole-cli -v
+                    uname -a
+                    pwd
+                    bash ./sapi/scripts/cygwin-build.sh
     macos:
         if: 0
         runs-on: macos-latest
