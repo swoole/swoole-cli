@@ -27,52 +27,52 @@ cd ${__PROJECT__}
 # curl -Lo apt-cyg rawgit.com/transcode-open/apt-cyg/master/apt-cyg
 
 
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  git
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  curl
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  wget
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  tar
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  libtool
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  re2c
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   bison
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  gcc-g++
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   autoconf
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    automake
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   openssl
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libpcre2-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libssl-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libcurl-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libxml2-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libxslt-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libgmp-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    ImageMagick
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libpng-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libjpeg-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libfreetype-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libwebp-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libsqlite3-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   zlib-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libbz2-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   liblz4-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    liblzma-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  libzip-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libicu-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libonig-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libcares-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libsodium-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libyaml-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libMagick-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libzstd-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libbrotli-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libreadline-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libintl-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libpq-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libssh2-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libidn2-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages     gettext-devel
-setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages     coreutils
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  git
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  curl
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  wget
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  tar
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  libtool
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  re2c
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   bison
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  gcc-g++
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   autoconf
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    automake
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   openssl
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libpcre2-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libssl-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libcurl-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libxml2-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libxslt-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libgmp-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    ImageMagick
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libpng-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libjpeg-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libfreetype-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libwebp-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libsqlite3-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   zlib-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libbz2-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   liblz4-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    liblzma-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages  libzip-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libicu-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libonig-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libcares-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libsodium-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libyaml-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libMagick-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libzstd-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libbrotli-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libreadline-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libintl-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libpq-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages   libssh2-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages    libidn2-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages     gettext-devel
+./setup-x86_64.exe  --no-shortcuts  -q   -s http://mirrors.ustc.edu.cn/cygwin/   --packages     coreutils
 
 
-exit 3
+exit 0
 lynx -source rawgit.com/transcode-open/apt-cyg/master/apt-cyg > apt-cyg
 install apt-cyg /bin
 apt-cyg --help
