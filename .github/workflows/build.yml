@@ -58,7 +58,7 @@ jobs:
                 with:
                     msystem: MSYS
                     update: true
-                    install: git wget tar libtool re2c bison gcc-g++ autoconf automake openssl
+                    install: git wget tar libtool re2c bison gcc autoconf automake openssl
             -   name: CI-Build
                 run: |
                     echo 'Running in MSYS2!'
