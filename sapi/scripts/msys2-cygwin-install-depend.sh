@@ -41,6 +41,10 @@ pacman -Sy --noconfirm zip gzip lzip p7zip zlib bzip2 unzip
      ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel  \
      libzip-devel  libonig-devel  libsodium-devel  libMagick-devel     libpq-devel
 
+
+     github action ci
+     https://www.msys2.org/docs/ci/
+
 EOF
 
 pacman -Ss  zip

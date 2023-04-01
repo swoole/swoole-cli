@@ -62,7 +62,7 @@ cd $ROOT
 ls -lh ext
 ./buildconf --force
 set +eux
-make clean
+# make clean
 set -exu
 ./configure --prefix=/usr --disable-all \
     --enable-shared=no \
