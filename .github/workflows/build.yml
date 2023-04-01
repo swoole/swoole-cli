@@ -63,14 +63,20 @@ jobs:
             -   name: Install re2c
                 run: |
                     bash ./sapi/scripts/install-re2c.sh
-            -   name: Configure
+            -   name: Install ext
+                run: |
+                    bash ./sapi/scripts/cygwin-config.sh
+            -   name: prepare swoole
                 run: |
                     uname -a
                     pwd
                     git submodule update --init
                     git -C ext/swoole pull
-                    bash ./sapi/scripts/cygwin-config.sh
-                    exit 3 
+
+            -   name: Configure php
+                run: |
+                    uname -a
+                    pwd
                     bash ./sapi/scripts/cygwin-build.sh
             -   name: Build
                 run: |

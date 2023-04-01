@@ -55,4 +55,4 @@ fi
 
 cd $ROOT
 ls -lh ext
-git -C ext/swoole pull
+
