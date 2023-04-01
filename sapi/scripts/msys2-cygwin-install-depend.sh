@@ -35,6 +35,7 @@ pacman -Sy --noconfirm pcre2-devel openssl-devel libcurl-devel libxml2-devel lib
 pacman -Sy --noconfirm zip gzip lzip p7zip zlib bzip2 unzip
 
 :<<'EOF'
+
 # 这些包找不到
 
      ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel  \
