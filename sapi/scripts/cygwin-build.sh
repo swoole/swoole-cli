@@ -107,6 +107,6 @@ set -exu
     --with-yaml \
     --with-readline
 
-
-make -j $(nproc)
-./bin/swoole-cli -v
+which make
+# make -j $(nproc)
+# ./bin/swoole-cli -v
