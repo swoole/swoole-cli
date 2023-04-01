@@ -54,6 +54,8 @@ if [ ! -d $ROOT/ext/imagick ]; then
     mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
 fi
 
+EOF
+
 cd $ROOT
 ls -lh ext
 ./buildconf --force
@@ -102,7 +104,7 @@ set -exu
     --with-imagick \
     --with-yaml \
     --with-readline
-EOF
+
 
 make -j $(nproc)
 ./bin/swoole-cli -v
