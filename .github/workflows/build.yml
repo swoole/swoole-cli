@@ -55,6 +55,13 @@ jobs:
                     git config --global core.autocrlf false
                     git config --global core.eol lf
             -   uses: actions/checkout@v3
+            -   name: prepare swoole
+                run: |
+                    uname -a
+                    pwd
+                    git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
+                    git submodule update --init
+                    git -C ext/swoole pull
             -   name: Install deps
                 uses: cygwin/cygwin-install-action@v2
                 with:
@@ -66,12 +73,7 @@ jobs:
             -   name: Install ext
                 run: |
                     bash ./sapi/scripts/cygwin-config.sh
-            -   name: prepare swoole
-                run: |
-                    uname -a
-                    pwd
-                    git submodule update --init
-                    git -C ext/swoole pull
+
 
             -   name: Configure php
                 run: |
