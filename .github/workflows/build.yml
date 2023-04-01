@@ -63,7 +63,8 @@ jobs:
                     curl -o setup-x86_64.exe https://cygwin.com/setup-x86_64.exe
                     ls  setup-x86_64.exe
                     # ${GITHUB_WORKSPACE}\setup-x86_64.exe --help
-                    
+                    pacman -Sy wget openssl 
+
                     exit 3
             -   uses: actions/checkout@v3
             -   name: Cache cygwin packages
