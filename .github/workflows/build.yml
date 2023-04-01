@@ -56,8 +56,8 @@ jobs:
                     git config --global core.eol lf
                     env
                     curl -V 
-                    ls -lh 
-                    ls -lh C:\cygwin\bin\
+                    ls 
+                    ls  C:\cygwin\bin\
                     pwd 
                     curl -o setup-x86_64.exe https://cygwin.com/setup-x86_64.exe
                     ls  setup-x86_64.exe
