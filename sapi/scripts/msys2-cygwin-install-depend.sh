@@ -28,9 +28,8 @@ pacman -Ss icu
 
 pacman -Sy  wget tar libtool re2c bison gcc autoconf automake openssl
 
-pacman -Sy pcre2-devel openssl-devel libcurl-devel libxml2-devel libxslt-devel gmp-devel libsqlite-devel zlib-devel libbz2-devel \
+pacman -Syy pcre2-devel openssl-devel libcurl-devel libxml2-devel libxslt-devel gmp-devel libsqlite-devel zlib-devel libbz2-devel \
            liblz4-devel liblzma-devel icu-devel libcares-devel libyaml-devel libzstd-devel brotli-devel libreadline-devel  libintl \
            libssh2-devel  libidn2-devel gettext-devel coreutils
 
-pacman -Sy  zip gzip lzip p7zip zlib bzip2 unzip
-
+pacman -Syy  zip gzip lzip p7zip zlib bzip2 unzip
