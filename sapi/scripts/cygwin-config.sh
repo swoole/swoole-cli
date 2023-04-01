@@ -93,7 +93,7 @@ ls -lh ext
     --with-sodium \
     --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
     --enable-gd --with-jpeg  --with-freetype \
-    --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
+    --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares --with-brotli-dir=/usr/  \
     --enable-redis \
     --with-imagick \
     --with-yaml \
