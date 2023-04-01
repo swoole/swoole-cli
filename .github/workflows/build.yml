@@ -58,6 +58,7 @@ jobs:
                     curl -V 
                     pwd 
                     curl -o setup-x86_64.exe https://cygwin.com/setup-x86_64.exe
+                    setup-x86_64.exe --help
                     
                     exit 3
             -   uses: actions/checkout@v3
