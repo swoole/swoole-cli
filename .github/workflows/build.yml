@@ -64,6 +64,16 @@ jobs:
             -   name: Install re2c
                 run: |
                     bash ./sapi/scripts/install-re2c.sh
+            -   name: Configure
+                run: |
+                    uname -a
+                    git submodule update --init
+                    # bash ./sapi/scripts/cygwin-config.sh
+                    bash ./sapi/scripts/cygwin-build.sh
+            -   name: Build
+                run: |
+                    make -j $(nproc)
+                    ./bin/swoole-cli -v
     macos:
         if: 0
         runs-on: macos-latest
