@@ -54,8 +54,11 @@ exit 0
 
 C:\cygwin\bin\bash.exe --norc --noprofile
 
-mv C:/Users/biubiu/Downloads/setup-x86_64.exe C:/cygwin64/
+mv  c:/cygdrive/c/Users/biubiu/Downloads/setup-x86_64.exe C:/cygwin64/bin/
 
+
+move  C:\Users\biubiu\Downloads\setup-x86_64.exe C:\cygwin64\bin
+dir C:\cygwin64\bin\setup-x86_64.exe
 # cmd 需要使用该管理员权限运行
 
 # add alias to bash_aliases
