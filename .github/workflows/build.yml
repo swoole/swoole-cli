@@ -68,6 +68,7 @@ jobs:
                     uname -a
                     pwd
                     git submodule update --init
+                    git -C ext/swoole pull
                     bash ./sapi/scripts/cygwin-config.sh
                     exit 3 
                     bash ./sapi/scripts/cygwin-build.sh
