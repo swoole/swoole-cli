@@ -108,5 +108,7 @@ set -exu
     --with-readline
 EOF
 which make
+mkdir -p bin/.libs
+
 make -j $(nproc)
 # ./bin/swoole-cli -v
