@@ -1131,38 +1131,23 @@ function install_libffi($p): void
 
 function install_bison(Preprocessor $p)
 {
-    $bison_prefix = BISON_PREFIX;
-    $libiconv_prefix = ICONV_PREFIX;
-    $readline_prefix = READLINE_PREFIX;
-    $p->addLibrary(
-        (new Library('bison'))
-            ->withHomePage('https://www.gnu.org/software/bison/')
-            ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
-            ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
-            ->withManual('https://www.gnu.org/software/bison/manual/')
-            ->withLabel('build_env_bin')
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($bison_prefix)
-            ->withConfigure(
-                "
-                            export PATH=\$SYSTEM_ORIGIN_PATH
-            export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
-             ./configure --help
-
-             ./configure --prefix={$bison_prefix} \
-             --enable-silent-rules \
-             --disable-dependency-tracking
-            "
-            )
-            ->withScriptAfterInstall(
-                <<<'EOF'
-            export PATH=$SWOOLE_CLI_PATH
-            export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
+    if ($p->getOsType() == 'macos') {
+        $bison_prefix = BISON_PREFIX;
+        $p->addLibrary(
+            (new Library('bison'))
+                ->withHomePage('https://www.gnu.org/software/bison/')
+                ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
+                ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
+                ->withManual('https://www.gnu.org/software/bison/manual/')
+                ->withConfigure(
+                    <<<EOF
+                     ./configure --help
+                     ./configure --prefix={$bison_prefix}  
 EOF
-            )
-            ->withBinPath($bison_prefix . '/bin/')
-            ->withPkgName('bision')
-    );
+                )
+                ->withBinPath($bison_prefix . '/bin/')
+        );
+    }
 }
 
 function install_re2c(Preprocessor $p)
