@@ -54,9 +54,9 @@ jobs:
             -   name: Configure
                 run: |
                     git submodule update --init
-            -  name: prepare-docker-multiarch-arm64
-               run: |
-                   docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            -   name: prepare-docker-multiarch-arm64
+                run: |
+                    docker run --rm --privileged multiarch/qemu-user-static:register --reset
 
             -   name: prepare-1
                 uses: addnab/docker-run-action@v3
@@ -92,11 +92,18 @@ jobs:
                         echo $PLATFORM
                         echo $PATH
                         bash ./make.sh all-library
+
+            -   name: build
+                if: 0
+                with:
+                    name: swoole-cli-build
+                    path: |
                         bash ./make.sh config
                         bash ./make.sh build
                         ./bin/swoole-cli -v
                         bash ./make.sh archive
             -   name: Archive production artifacts
+                if: 0
                 uses: actions/upload-artifact@v3
                 with:
                     name: dist-swoole-cli
@@ -209,7 +216,7 @@ jobs:
                      cd ${GITHUB_WORKSPACE}
                     sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
                     sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext" ; print "n" |cmd; }'
-                    
+
 
             -   name: Build
                 run: |
@@ -238,7 +245,7 @@ jobs:
         runs-on: macos-latest
         strategy:
             matrix:
-                arch: ["aarch64", "armv7l" ]
+                arch: [ "aarch64", "armv7l" ]
         steps:
             -   uses: actions/checkout@v3
             -   name: Configure
@@ -256,7 +263,7 @@ jobs:
         runs-on: macos-latest
         strategy:
             matrix:
-                arch: ["aarch64"]
+                arch: [ "aarch64" ]
         steps:
             -   uses: actions/checkout@v3
             -   name: Configure
