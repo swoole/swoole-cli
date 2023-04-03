@@ -47,7 +47,7 @@ jobs:
                     path: |
                         bin/swoole-cli
     linux-arm64:
-        if: 1
+        if: 0
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
@@ -233,8 +233,8 @@ jobs:
                     name: dist-swoole-cli
                     path: |
                         bin/swoole-cli
-    macos-arm:
-        if: 0
+    macos-arm64:
+        if: 1
         runs-on: macos-latest
         strategy:
             matrix:
@@ -250,3 +250,4 @@ jobs:
                     PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
                     PLATFORM="$SYSTEM:$MACHINE";
                     echo $PLATFORM
+                    brew install qemu
