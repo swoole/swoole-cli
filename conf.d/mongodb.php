@@ -19,7 +19,6 @@ return function (Preprocessor $p) {
                     "
                 )
                 ->withBinPath($bison_prefix . '/bin/')
-                ->withPkgName('bision')
         );
     }
     $p->withExportVariable('PHP_MONGODB_SSL_CFLAGS', '$(pkg-config --cflags --static libcrypto libssl  openssl)');
