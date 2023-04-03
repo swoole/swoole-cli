@@ -91,11 +91,11 @@ jobs:
                         PLATFORM="$SYSTEM:$MACHINE";
                         echo $PLATFORM
                         echo $PATH
-                        ./make.sh all-library
-                        ./make.sh config
-                        ./make.sh build
+                        bash ./make.sh all-library
+                        bash ./make.sh config
+                        bash ./make.sh build
                         ./bin/swoole-cli -v
-                        ./make.sh archive
+                        bash ./make.sh archive
             -   name: Archive production artifacts
                 uses: actions/upload-artifact@v3
                 with:
