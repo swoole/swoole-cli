@@ -54,9 +54,9 @@ jobs:
             -   name: Configure
                 run: |
                     git submodule update --init
-            -  name: prepare-docker-multiarch-arm64
-               run: |
-                   docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            -   name: prepare-docker-multiarch-arm64
+                run: |
+                    docker run --rm --privileged multiarch/qemu-user-static:register --reset
 
             -   name: prepare-1
                 uses: addnab/docker-run-action@v3
@@ -77,7 +77,7 @@ jobs:
                         composer update --no-dev  --optimize-autoloader
                         php prepare.php  +inotify  +ds +apcu
                         chmod a+x ./make.sh
-            -   name: Build
+            -   name: Build all library
                 uses: addnab/docker-run-action@v3
                 with:
                     image: docker.io/jingjingxyk/build-swoole-cli:alpine-arm64-20230403T073941Z
@@ -92,11 +92,16 @@ jobs:
                         echo $PLATFORM
                         echo $PATH
                         bash ./make.sh all-library
+
+            -   name: build
+                if: 0
+                run: |
                         bash ./make.sh config
                         bash ./make.sh build
                         ./bin/swoole-cli -v
                         bash ./make.sh archive
             -   name: Archive production artifacts
+                if: 0
                 uses: actions/upload-artifact@v3
                 with:
                     name: dist-swoole-cli
@@ -233,12 +238,12 @@ jobs:
                     name: dist-swoole-cli
                     path: |
                         bin/swoole-cli
-    macos-arm:
-        if: 0
+    macos-arm64:
+        if: 1
         runs-on: macos-latest
         strategy:
             matrix:
-                arch: [ "aarch64", "armv7l" ]
+                arch: [ "aarch64"]
         steps:
             -   uses: actions/checkout@v3
             -   name: Configure
@@ -250,3 +255,4 @@ jobs:
                     PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
                     PLATFORM="$SYSTEM:$MACHINE";
                     echo $PLATFORM
+                    brew install qemu
