@@ -8,11 +8,8 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
+
 ROOT=${__PROJECT__}
-
-
-:<<'EOF'
-
 REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
@@ -56,60 +53,6 @@ if [ ! -d $ROOT/ext/imagick ]; then
     mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
 fi
 
-
-
 cd $ROOT
 ls -lh ext
-./buildconf --force
-set +eux
-# make clean
-set -exu
-./configure --prefix=/usr --disable-all \
-    --enable-shared=no \
-    --enable-static=yes \
-    --disable-fiber-asm \
-    --enable-opcache \
-    --without-pcre-jit \
-    --with-openssl --enable-openssl \
-    --with-curl \
-    --with-iconv \
-    --enable-intl \
-    --with-bz2 \
-    --enable-bcmath \
-    --enable-filter \
-    --enable-session \
-    --enable-tokenizer \
-    --enable-mbstring \
-    --enable-ctype \
-    --with-zlib \
-    --with-zip \
-    --enable-posix \
-    --enable-sockets \
-    --enable-pdo \
-    --with-sqlite3 \
-    --enable-phar \
-    --enable-pcntl \
-    --enable-mysqlnd \
-    --with-mysqli \
-    --enable-fileinfo \
-    --with-pdo_mysql \
-    --with-pdo-sqlite \
-    --enable-soap \
-    --with-xsl \
-    --with-gmp \
-    --enable-exif \
-    --with-sodium \
-    --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
-    --enable-gd --with-jpeg  --with-freetype \
-    --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
-    --enable-redis \
-    --with-imagick \
-    --with-yaml \
-    --with-readline
-EOF
-which make
-mkdir -p bin/.libs
-
-make -j $(nproc)
-./bin/swoole-cli -v
 
