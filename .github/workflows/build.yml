@@ -47,7 +47,7 @@ jobs:
                     path: |
                         bin/swoole-cli
     linux-arm64:
-        if: 0
+        if: 1
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
@@ -77,7 +77,7 @@ jobs:
                         composer update --no-dev  --optimize-autoloader
                         php prepare.php  +inotify  +ds +apcu
                         chmod a+x ./make.sh
-            -   name: Build
+            -   name: Build all library
                 uses: addnab/docker-run-action@v3
                 with:
                     image: docker.io/jingjingxyk/build-swoole-cli:alpine-arm64-20230403T073941Z
@@ -238,30 +238,9 @@ jobs:
                     name: dist-swoole-cli
                     path: |
                         bin/swoole-cli
-    macos-test:
-        if: 0
-        runs-on: macos-latest
-        strategy:
-            matrix:
-                arch: [ "aarch64", "armv7l" ]
-        steps:
-            -   uses: actions/checkout@v3
-            -   name: Configure
-                run: |
-                    git submodule update --init
-                    SYSTEM=`uname -s 2>/dev/null`
-                    RELEASE=`uname -r 2>/dev/null`
-                    MACHINE=`uname -m 2>/dev/null`
-                    PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
-                    PLATFORM="$SYSTEM:$MACHINE";
-                    echo $PLATFORM
-                    brew install qemu
     macos-arm64:
         if: 1
         runs-on: macos-latest
-        strategy:
-            matrix:
-                arch: [ "aarch64" ]
         steps:
             -   uses: actions/checkout@v3
             -   name: Configure
