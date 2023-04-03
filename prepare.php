@@ -39,7 +39,7 @@ $p->setExtraCflags('-fno-ident -Os');
 // Generate make.sh
 $p->execute();
 
-function install_libraries($p):void
+function install_libraries($p): void
 {
     $p->addLibrary(
         (new Library('php_src'))
@@ -47,5 +47,6 @@ function install_libraries($p):void
             ->withPrefix($p->getGlobalPrefix() .'/php-8.2')
             ->withHomePage('https://www.php.net/')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
+            ->withBuildScript('return 0')
     );
 }
