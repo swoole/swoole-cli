@@ -233,12 +233,30 @@ jobs:
                     name: dist-swoole-cli
                     path: |
                         bin/swoole-cli
+    macos-test:
+        if: 0
+        runs-on: macos-latest
+        strategy:
+            matrix:
+                arch: ["aarch64", "armv7l" ]
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Configure
+                run: |
+                    git submodule update --init
+                    SYSTEM=`uname -s 2>/dev/null`
+                    RELEASE=`uname -r 2>/dev/null`
+                    MACHINE=`uname -m 2>/dev/null`
+                    PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+                    PLATFORM="$SYSTEM:$MACHINE";
+                    echo $PLATFORM
+                    brew install qemu
     macos-arm64:
         if: 1
         runs-on: macos-latest
         strategy:
             matrix:
-                arch: ["aarch64", "armv7l" ]
+                arch: ["aarch64"]
         steps:
             -   uses: actions/checkout@v3
             -   name: Configure
