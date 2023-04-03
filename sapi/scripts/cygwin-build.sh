@@ -111,4 +111,5 @@ which make
 mkdir -p bin/.libs
 
 make -j $(nproc)
-# ./bin/swoole-cli -v
+./bin/swoole-cli -v
+

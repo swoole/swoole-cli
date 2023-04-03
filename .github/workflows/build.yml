@@ -82,6 +82,13 @@ jobs:
                     uname -a
                     pwd
                     bash ./sapi/scripts/cygwin-build.sh
+                    bin/swoole-cli ./sapi/scripts/cygwin-build.sh
+            -   name: Archive production artifacts
+                uses: actions/upload-artifact@v3
+                with:
+                    name: dist-swoole-cli
+                    path: |
+                        bin/swoole-cli
     macos:
         if: 0
         runs-on: macos-latest
