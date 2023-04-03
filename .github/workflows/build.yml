@@ -83,6 +83,13 @@ jobs:
                     image: docker.io/jingjingxyk/build-swoole-cli:alpine-arm64-20230403T073941Z
                     options: -v ${{ github.workspace }}:/work -w /work
                     run: |
+                        git submodule update --init
+                        SYSTEM=`uname -s 2>/dev/null`
+                        RELEASE=`uname -r 2>/dev/null`
+                        MACHINE=`uname -m 2>/dev/null`
+                        PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+                        PLATFORM="$SYSTEM:$MACHINE";
+                        echo $PLATFORM
                         ./make.sh all-library
                         ./make.sh config
                         ./make.sh build
