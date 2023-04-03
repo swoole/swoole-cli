@@ -497,6 +497,16 @@ function libraries_builder($p)
             -DCMAKE_COLOR_MAKEFILE=ON
 
 
+            cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+            cmake --build .
+            cmake --install .
+
+            cmake -G 'Visual Studio 17 2022' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+            cmake --build . --config Release
+            cmake --install . --config Release
+
+           CURL ARCHITECTURE   https://curl.se/docs/install.html#:~:text=26%20CPU%20Architectures
+           CURL Cross compile  https://curl.se/docs/install.html#:~:text=Cross%20compile
      */
 
 
