@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
     linux:
-        if: 1
+        if: 0
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
@@ -40,6 +40,62 @@ jobs:
                         ./make.sh build
                         ./bin/swoole-cli -v
                         ./make.sh archive
+            -   name: Archive production artifacts
+                uses: actions/upload-artifact@v3
+                with:
+                    name: dist-swoole-cli
+                    path: |
+                        bin/swoole-cli
+    linux-arm64:
+        if: 1
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Configure
+                run: |
+                    git submodule update --init
+            -  name: prepare-docker-multiarch-arm64
+               run: |
+                   docker run --rm --privileged multiarch/qemu-user-static:register --reset
+
+            -   name: prepare-1
+                uses: addnab/docker-run-action@v3
+                with:
+                    image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230329T114730Z
+                    options: -v ${{ github.workspace }}:/work -w /work
+                    run: |
+                        mkdir -p /work/pool/lib
+                        mkdir -p /work/pool/ext
+                        cp -rf /usr/share/nginx/html/extensions/* /work/pool/ext
+                        cp -rf /usr/share/nginx/html/libraries/*  /work/pool/lib
+            -   name: prepare-2
+                uses: addnab/docker-run-action@v3
+                with:
+                    image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-20230330T153237Z
+                    options: -v ${{ github.workspace }}:/work -w /work
+                    run: |
+                        composer update --no-dev  --optimize-autoloader
+                        php prepare.php  +inotify  +ds +apcu
+                        chmod a+x ./make.sh
+            -   name: Build
+                uses: addnab/docker-run-action@v3
+                with:
+                    image: docker.io/jingjingxyk/build-swoole-cli:alpine-arm64-20230403T073941Z
+                    options: -v ${{ github.workspace }}:/work -w /work
+                    run: |
+                        env
+                        SYSTEM=`uname -s 2>/dev/null`
+                        RELEASE=`uname -r 2>/dev/null`
+                        MACHINE=`uname -m 2>/dev/null`
+                        PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+                        PLATFORM="$SYSTEM:$MACHINE";
+                        echo $PLATFORM
+                        echo $PATH
+                        bash ./make.sh all-library
+                        bash ./make.sh config
+                        bash ./make.sh build
+                        ./bin/swoole-cli -v
+                        bash ./make.sh archive
             -   name: Archive production artifacts
                 uses: actions/upload-artifact@v3
                 with:
@@ -90,7 +146,7 @@ jobs:
                 run: |
                     bin/swoole-cli sapi/scripts/cygwin-pack.php
     macos:
-        if: 1
+        if: 0
         runs-on: macos-latest
         steps:
             -   uses: actions/checkout@v3
