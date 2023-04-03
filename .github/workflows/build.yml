@@ -95,9 +95,7 @@ jobs:
 
             -   name: build
                 if: 0
-                with:
-                    name: swoole-cli-build
-                    path: |
+                run: |
                         bash ./make.sh config
                         bash ./make.sh build
                         ./bin/swoole-cli -v
