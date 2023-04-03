@@ -350,7 +350,7 @@ class Preprocessor
             }
         }
 
-        if (!empty($this->getInputOption('with-download-mirror-url'))) {
+        if ($lib->enableDownloadWithMirrorURL && !empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
             $lib->enableDownloadScript = false;
         }
@@ -435,7 +435,7 @@ EOF;
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
                                 test -f {$ext->path} || tar -zcf {$ext->path} {$ext->downloadDirName}
-                                cd {$workDir}  
+                                cd {$workDir}   
 EOF;
 
                         $this->execDownloadScript($cacheDir, $ext->downloadScript);
@@ -745,7 +745,7 @@ EOF;
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
         $download_urls = [];
         foreach ($this->libraryList as $item) {
-            if (empty($item->url) || $item->enableDownloadScript) {
+            if (empty($item->url) || $item->enableDownloadScript || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             $url = '';
@@ -763,7 +763,7 @@ EOF;
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
-            if (empty($item->peclVersion) || $item->enableDownloadScript) {
+            if (empty($item->peclVersion) || $item->enableDownloadScript || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
@@ -792,7 +792,7 @@ EOF;
 
         $download_scripts = [];
         foreach ($this->libraryList as $item) {
-            if (!$item->enableDownloadScript) {
+            if (!$item->enableDownloadScript || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             if (empty($item->file)) {
@@ -806,7 +806,7 @@ EOF;
             {$item->downloadScript}
             test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadDirName}/*  
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir} 
+            cd {$workDir}  
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -817,7 +817,7 @@ EOF;
         );
         $download_scripts = [];
         foreach ($this->extensionMap as $item) {
-            if (!$item->enableDownloadScript) {
+            if (!$item->enableDownloadScript || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             if (!empty($item->peclVersion)) {
@@ -834,7 +834,7 @@ EOF;
                 {$item->downloadScript}
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadDirName}/*
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir} 
+                cd {$workDir}  
                 
 EOF;
 
