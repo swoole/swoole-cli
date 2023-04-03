@@ -241,6 +241,9 @@ jobs:
     macos-arm64:
         if: 0
         runs-on: macos-latest
+        strategy:
+            matrix:
+                arch: [ "aarch64"]
         steps:
             -   uses: actions/checkout@v3
             -   name: Configure
