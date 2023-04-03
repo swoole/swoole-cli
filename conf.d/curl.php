@@ -140,8 +140,8 @@ EOF
               -DENABLE_ZLIB_COMPRESSION=ON  \
               -DZLIB_ROOT={$zlib_prefix} \
               -DCLEAR_MEMORY=ON  \
-              -DENABLE_GEX_NEW=ON  \  \
-              -DENABLE_CRYPT_NONE=OFF
+              -DENABLE_GEX_NEW=ON  \
+              -DENABLE_CRYPT_NONE=OFF  \
               -DCRYPTO_BACKEND=OpenSSL
               cmake --build . --target install
 EOF
