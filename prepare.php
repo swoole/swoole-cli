@@ -51,6 +51,10 @@ function install_libraries($p): void
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
             ->withPrefix($php_install_prefix)
             ->withCleanBuildDirectory()
-            ->withBuildScript('return 0')
+            ->withBuildScript(
+                <<<EOF
+            ./configure --help
+EOF
+            )
     );
 }
