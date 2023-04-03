@@ -11,7 +11,7 @@ $p->parseArguments($argc, $argv);
 
 
 // Sync code from php-src
-$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
+//$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker')) {
@@ -41,12 +41,16 @@ $p->execute();
 
 function install_libraries($p): void
 {
+    $p->setPhpSrcDir($p->getbuildDir() . '/php_src');
+    $php_install_prefix = $p->getGlobalPrefix() .'/php';
     $p->addLibrary(
         (new Library('php_src'))
             ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.2.4.tar.gz')
-            ->withPrefix($p->getGlobalPrefix() .'/php-8.2')
+
             ->withHomePage('https://www.php.net/')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
+            ->withPrefix($php_install_prefix)
+            ->withCleanBuildDirectory()
             ->withBuildScript('return 0')
     );
 }
