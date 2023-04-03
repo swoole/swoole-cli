@@ -108,7 +108,7 @@ jobs:
                     path: |
                         bin/swoole-cli
     cygwin:
-        if: 1
+        if: 0
         runs-on: windows-latest
         steps:
             -   name: Prepare git
@@ -239,7 +239,7 @@ jobs:
                     path: |
                         bin/swoole-cli
     macos-arm64:
-        if: 1
+        if: 0
         runs-on: macos-latest
         strategy:
             matrix:
