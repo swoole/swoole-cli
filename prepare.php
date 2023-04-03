@@ -34,13 +34,18 @@ if ($p->getOsType() == 'macos') {
 
 $p->setExtraCflags('-fno-ident -Os');
 
-$p->addLibrary(
-    (new Library('php_src'))
-        ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.2.4.tar.gz')
-        ->withPrefix($p->getGlobalPrefix() .'/php-8.2')
-        ->withHomePage('https://www.php.net/')
-        ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
-);
+
 
 // Generate make.sh
 $p->execute();
+
+function install_libraries($p):void
+{
+    $p->addLibrary(
+        (new Library('php_src'))
+            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.2.4.tar.gz')
+            ->withPrefix($p->getGlobalPrefix() .'/php-8.2')
+            ->withHomePage('https://www.php.net/')
+            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
+    );
+}
