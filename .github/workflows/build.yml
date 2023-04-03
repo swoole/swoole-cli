@@ -54,6 +54,10 @@ jobs:
             -   name: Configure
                 run: |
                     git submodule update --init
+            -  name: prepare-docker-multiarch-arm64
+               run: |
+                   docker run --rm --privileged multiarch/qemu-user-static:register --reset
+
             -   name: prepare-1
                 uses: addnab/docker-run-action@v3
                 with:
@@ -76,9 +80,10 @@ jobs:
             -   name: Build
                 uses: addnab/docker-run-action@v3
                 with:
-                    image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-20230330T153237Z
+                    image: docker.io/jingjingxyk/build-swoole-cli:alpine-arm64-20230403T073941Z
                     options: -v ${{ github.workspace }}:/work -w /work
                     run: |
+                        ./make.sh all-library
                         ./make.sh config
                         ./make.sh build
                         ./bin/swoole-cli -v
