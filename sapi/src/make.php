@@ -266,7 +266,7 @@ elif [ "$1" = "test" ] ;then
 elif [ "$1" = "archive" ] ;then
     cd <?= PHP_INSTALL_PREFIX ?>/bin
     PHP_VERSION=$(./php -r "echo PHP_VERSION;")
-    PHP_CLI_FILE=php-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     strip php
     tar -cJvf ${PHP_CLI_FILE} PHP_CLI_FILE
     mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
