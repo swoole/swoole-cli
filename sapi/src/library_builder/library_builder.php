@@ -147,11 +147,15 @@ function libraries_builder($p)
     }
 
 
+    install_nasm($p);
+    install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
+    install_libgav1($p);
+    install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
+    install_aom($p);
+    install_libavif($p); //依赖 libyuv dav1d
+
     if (0) {
-        install_nasm($p);
-        install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
-        install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
-        install_libavif($p); //依赖 libyuv dav1d
+
 
         install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
         install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
@@ -183,6 +187,21 @@ function libraries_builder($p)
     }
 
     if (0) {
+        /*
+
+        crates.io mirror
+
+        https://mirrors.tuna.tsinghua.edu.cn/help/crates.io-index.git/
+
+        cat > ~/.cargo/config <<_EOF_
+[source.crates-io]
+replace-with = 'mirror'
+
+[source.mirror]
+registry = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
+_EOF_
+
+         */
         install_openssl_v1($p);
         install_openssl_v3($p);
         install_openssl_v3_quic($p);
@@ -204,7 +223,7 @@ function libraries_builder($p)
         install_libev($p); //无 pkg-config
         install_ngtcp2($p); //依赖gnutls nghttp3
         install_nghttp2($p); //依赖 install_nghttp2($p);
-        install_boringssl($p);//需要 golang
+        install_boringssl($p);//需要 golang rust
         install_wolfssl($p);//
         install_libressl($p);//
 
@@ -353,7 +372,10 @@ function libraries_builder($p)
     if ($p->getInputOption('with-capstone') == 'yes') {
         install_capstone($p);
     }
-    //install_depot_tools($p); //依赖python
+    install_rust($p); //依赖python
+    install_nodejs($p); //依赖python
+    install_golang($p); //依赖python
+    install_depot_tools($p); //依赖python
     if (0) {
         // brew  //  https://mirrors.tuna.tsinghua.edu.cn/help/homebrew
         // brew  //  https://github.com/Homebrew/brew.git
@@ -496,6 +518,8 @@ function libraries_builder($p)
             -DBUILD_STATIC_LIBS=ON \
             -DCMAKE_COLOR_MAKEFILE=ON
 
+            set(libgav1_root "${CMAKE_CURRENT_SOURCE_DIR}")
+            set(libgav1_build "${CMAKE_BINARY_DIR}")
 
             cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
             cmake --build .
@@ -511,4 +535,11 @@ function libraries_builder($p)
 
 
     //Hot Module Replacement（以下简称 HMR） inotify
+
+    /*
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg dav1d libgav1)" \
+            LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg dav1d libgav1)" \
+            LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg dav1d libgav1)" \
+
+     */
 }

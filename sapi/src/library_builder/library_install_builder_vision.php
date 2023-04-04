@@ -6,20 +6,35 @@ use SwooleCli\Preprocessor;
 
 function install_rav1e(Preprocessor $p)
 {
-    $rav1e_prefix = '/usr/rav1e';
+    $rav1e_prefix = RAV1E_PREFIX;
     $lib = new Library('rav1e');
     $lib->withHomePage('https://github.com/xiph/rav1e.git')
         ->withLicense('https://github.com/xiph/rav1e/blob/master/LICENSE', Library::LICENSE_BSD)
+        ->withManual('https://github.com/xiph/rav1e/blob/master/README.md')
         ->withUrl('github.com/xiph/rav1e/archive/refs/tags/p20230221.tar.gz')
         ->withFile('rav1e-p20230221.tar.gz')
-        ->withSkipDownload()
-        ->withManual('https://github.com/xiph/rav1e.git')
+        ->withFile('rav1e-v0.6.3.tar.gz')
+        ->disableDownloadWithMirrorURL()
+        ->withDownloadScript(
+            'rav1e',
+            <<<EOF
+             git clone -b v0.6.3 --depth=1 https://github.com/xiph/rav1e.git
+EOF
+        )
+
         ->withPrefix($rav1e_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($rav1e_prefix)
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
-exit 0 
+        export RUSTUP_DIST_SERVER="https://mirrors.tuna.tsinghua.edu.cn/rustup rustup install stable " 
+        export RUSTUP_UPDATE_ROOT="https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup" 
+        
+        export RUSTUP_HOME=/root/.rustup
+        export CARGO_HOME=/root/.cargo
+        cargo --list
+        cargo install cargo-c
+        cargo cinstall --release
 
 EOF
         )
@@ -30,24 +45,39 @@ EOF
 
 function install_aom(Preprocessor $p)
 {
-    $aom_prefix = '/usr/aom';
+    $aom_prefix = AOM_PREFIX;
     $lib = new Library('aom');
     $lib->withHomePage('https://aomedia.googlesource.com/aom')
-        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
-        ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
-        ->withFile('ffmpeg-n6.0.tar.gz')
-        ->withSkipDownload()
+        ->withLicense('https://aomedia.googlesource.com/aom/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
         ->withManual('https://aomedia.googlesource.com/aom')
+        ->withUrl('https://aomedia.googlesource.com/aom')
+        ->withFile('aom.tar.gz')
+        ->disableDownloadWithMirrorURL()
+        ->withDownloadScript(
+            'aom',
+            <<<EOF
+       git clone -b main --depth=1  https://aomedia.googlesource.com/aom
+EOF
+        )
+
         ->withPrefix($aom_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($aom_prefix)
         ->withConfigure(
             <<<EOF
-exit 0 
-
+            mkdir -p build 
+            cd build 
+             cmake ..  \
+            -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
+            -DBUILD_STATIC_LIBS=ON \
+            -DENABLE_DOCS=0 \
+            -DENABLE_TESTS=0 
 EOF
         )
-        ->withPkgName('');
+        ->withBinPath($aom_prefix . '/bin/')
+        ->withPkgName('aom');
 
     $p->addLibrary($lib);
 }

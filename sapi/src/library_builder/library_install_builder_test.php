@@ -114,13 +114,13 @@ function install_libyuv(Preprocessor $p)
 {
     $libyuv_prefix = LIBYUV_PREFIX;
     $libjpeg_prefix = JPEG_PREFIX;
-    $libjpeg_lib_dir = $p->getOsType() == 'linux' ? $libjpeg_prefix . '/lib64/' : $libjpeg_prefix . '/lib/';
     $p->addLibrary(
         (new Library('libyuv'))
             ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
             ->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
             ->withLicense('https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
             ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
+            ->disableDownloadWithMirrorURL()
             ->withDownloadScript(
                 'libyuv',
                 <<<EOF
@@ -135,12 +135,18 @@ EOF
                 <<<EOF
                 mkdir -p  out
                 cd out
-                cmake -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
+                cmake .. \
+                -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
+                -DJPEG_ROOT={$libjpeg_prefix} \
                 -DBUILD_STATIC_LIBS=ON \
                 -DBUILD_SHARED_LIBS=OFF  \
-                -DCMAKE_BUILD_TYPE="Release" ..
+                -DCMAKE_BUILD_TYPE="Release" 
                 cmake --build . --config Release
                 cmake --build . --target install --config Release
+                return 0 
+                rm -rf {$libyuv_prefix}/lib/*.so.*
+                rm -rf {$libyuv_prefix}/lib/*.so
+                rm -rf {$libyuv_prefix}/lib/*.dylib
 :<<'_____EOF_____'
             make V=1 -f linux.mk
             make V=1 -f linux.mk clean
@@ -162,7 +168,7 @@ EOF
             # -DJPEG_LIBRARY_RELEASE={$libjpeg_prefix}/lib/libjpeg.a
             # CMAKE_INCLUDE_PATH 和 CMAKE_LIBRARY_PATH
 
-            # -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
+            # -DJPEG_LIBRARY:PATH={$libjpeg_prefix}/lib/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
 
             mkdir -p build
             cd build
@@ -170,7 +176,7 @@ EOF
             -Wno-dev \
             -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
             -DCMAKE_BUILD_TYPE="Release"  \
-            -DJPEG_LIBRARY:PATH={$libjpeg_lib_dir}/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
+            -DJPEG_LIBRARY:PATH={$libjpeg_prefix}/lib/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
             -DBUILD_SHARED_LIBS=OFF  ..
 
             cmake --build . --config Release
@@ -219,7 +225,8 @@ function install_libraw(Preprocessor $p)
             
 EOF
         )
-        ->withPkgName('libraw  libraw_r')
+        ->withPkgName('libraw')
+        ->withPkgName('libraw_r')
         ->withScriptAfterInstall(
             <<<EOF
         ls -lh {$libraw_prefix}/lib/pkgconfig/libraw.pc
@@ -243,6 +250,7 @@ function install_dav1d(Preprocessor $p)
             ->withUrl('https://code.videolan.org/videolan/dav1d/-/archive/1.1.0/dav1d-1.1.0.tar.gz')
             ->withFile('dav1d-1.1.0.tar.gz')
             ->withManual('https://code.videolan.org/videolan/dav1d')
+            ->disableDownloadWithMirrorURL()
             ->withPrefix($dav1d_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($dav1d_prefix)
@@ -267,11 +275,54 @@ EOF
     );
 }
 
+function install_libgav1(Preprocessor $p)
+{
+    $libgav1_prefix = LIBGAV1_PREFIX;
+    $p->addLibrary(
+        (new Library('libgav1'))
+            ->withHomePage('https://chromium.googlesource.com/codecs/libgav1')
+            ->withLicense('https://chromium.googlesource.com/codecs/libgav1/+/refs/heads/main/LICENSE', Library::LICENSE_APACHE2)
+            ->withFile('libgav1.tar.gz')
+            ->withManual('https://chromium.googlesource.com/codecs/libgav1/+/refs/heads/main')
+            ->withDownloadScript(
+                'libgav1',
+                <<<EOF
+                git clone --depth 1  https://chromium.googlesource.com/codecs/libgav1
+                mkdir -p libgav1/third_party/abseil-cpp
+                git clone -b 20220623.0 --depth 1 https://github.com/abseil/abseil-cpp.git libgav1/third_party/abseil-cpp
+EOF
+            )
+            ->disableDownloadWithMirrorURL()
+            ->withPrefix($libgav1_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libgav1_prefix)
+            ->withConfigure(
+                <<<EOF
+                mkdir -p build 
+                cd build
+                # 查看更多选项 
+                # cmake .. -LH
+                cmake -G "Unix Makefiles" .. \
+                -DCMAKE_INSTALL_PREFIX={$libgav1_prefix} \
+                -DCMAKE_BUILD_TYPE=Release  \
+                -DBUILD_SHARED_LIBS=OFF  \
+                -DBUILD_STATIC_LIBS=ON \
+                -DLIBGAV1_ENABLE_TESTS=OFF 
+            
+EOF
+            )
+            ->withPkgName('libgav1')
+            ->withBinPath($libgav1_prefix . '/bin/')
+    );
+}
+
 function install_libavif(Preprocessor $p): void
 {
     $libavif_prefix = LIBAVIF_PREFIX;
     $libyuv_prefix = LIBYUV_PREFIX;
     $dav1d_prefix = DAV1D_PREFIX;
+    $libgav1_prefix = LIBGAV1_PREFIX;
+    $aom_prefix = AOM_PREFIX;
     $p->addLibrary(
         (new Library('libavif'))
             ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
@@ -279,25 +330,25 @@ function install_libavif(Preprocessor $p): void
             ->withHomePage('https://aomediacodec.github.io/av1-avif/')
             ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
             ->withManual('https://github.com/AOMediaCodec/libavif')
+            ->disableDownloadWithMirrorURL()
             ->withPrefix($libavif_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libavif_prefix)
             ->withConfigure(
                 <<<EOF
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg dav1d)" 
-            LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg dav1d)" 
-            LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg dav1d )" 
+
             cmake .  \
             -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
             -DAVIF_BUILD_EXAMPLES=OFF \
             -DLIBYUV_ROOT={$libyuv_prefix} \
             -DDAV1D_ROOT={$dav1d_prefix} \
+            -DLIBGAV1_ROOT={$libgav1_prefix} \
             -DBUILD_SHARED_LIBS=OFF \
             -DAVIF_CODEC_AOM=ON \
             -DAVIF_CODEC_DAV1D=ON \
             -DAVIF_CODEC_LIBGAV1=ON \
-            -DAVIF_CODEC_RAV1E=ON
-            exit 0
+            -DAVIF_CODEC_RAV1E=OFF
+            
 
 EOF
             )
@@ -315,6 +366,8 @@ function install_nasm(Preprocessor $p)
             ->withUrl('https://www.nasm.us/pub/nasm/releasebuilds/2.16.01/nasm-2.16.01.tar.gz')
             ->withLicense('http://opensource.org/licenses/BSD-2-Clause', Library::LICENSE_BSD)
             ->withManual('https://github.com/netwide-assembler/nasm.git')
+            ->withMd5sum('42c4948349d01662811c8641fad4494c')
+            ->disableDownloadWithMirrorURL()
             ->withPrefix($nasm_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($nasm_prefix)

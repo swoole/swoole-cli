@@ -94,6 +94,105 @@ function install_ninja(Preprocessor $p)
 }
 
 
+function install_rust(Preprocessor $p): void
+{
+    $workDir = $p->getWorkDir();
+    $p->addLibrary(
+        (new Library('rust_lang'))
+            ->withHomePage('https://www.rust-lang.org')
+            ->withLicense('https://github.com/rust-lang/rust/blob/master/LICENSE-APACHE', Library::LICENSE_APACHE2)
+            ->withUrl('https://sh.rustup.rs')
+            ->withManual('https://www.rust-lang.org/tools/install')
+            ->withFile('rustup.sh')
+            ->disableDownloadWithMirrorURL()
+            ->withUntarArchiveCommand('mv')
+            ->withCleanBuildDirectory()
+            ->withBuildScript(
+                <<<EOF
+            
+            ls -lh 
+             # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+            RUSTUP_DIST_SERVER="https://mirrors.tuna.tsinghua.edu.cn/rustup rustup install stable " \
+            RUSTUP_UPDATE_ROOT="https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup" \
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+            exit 0 
+            RUSTUP_HOME=/root/.rustup
+            CARGO_HOME=/root/.cargo
+            /root/.rustup
+            /root/.cargo
+            /root/.cargo/bin
+            source "\$HOME/.cargo/env"
+
+EOF
+            )
+            ->withBinPath('$HOME/.cargo/bin')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
+
+function install_nodejs(Preprocessor $p): void
+{
+    $workDir = $p->getWorkDir();
+    $nodejs_prefix = NODEJS_PREFIX;
+    $p->addLibrary(
+        (new Library('nodejs_lang'))
+            ->withHomePage('https://www.rust-lang.org')
+            ->withLicense('https://github.com/rust-lang/rust/blob/master/LICENSE-APACHE', Library::LICENSE_SPEC)
+            ->withUrl('https://nodejs.org/dist/v18.15.0/node-v18.15.0-linux-x64.tar.xz')
+            ->withManual('https://nodejs.org/en/docs')
+            ->withFile('node-v18.15.0-linux-x64.tar.xz')
+            ->disableDownloadWithMirrorURL()
+            ->withUntarArchiveCommand('mv')
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($nodejs_prefix)
+            ->withBuildScript(
+                <<<EOF
+            
+            ls -lh 
+            xz -d node-v18.15.0-linux-x64.tar.xz
+            tar -xvf node-v18.15.0-linux-x64.tar
+            mv node-v18.15.0-linux-x64 /usr/nodejs
+
+EOF
+            )
+            ->withBinPath($nodejs_prefix . '/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
+
+function install_golang(Preprocessor $p): void
+{
+    $golang_prefix = GOLANG_PREFIX;
+    $workDir = $p->getWorkDir();
+    $p->addLibrary(
+        (new Library('golang'))
+            ->withHomePage('https://www.rust-lang.org')
+            ->withLicense('https://github.com/golang/go/blob/master/LICENSE', Library::LICENSE_BSD)
+            ->withUrl('https://golang.google.cn/dl/go1.20.2.linux-amd64.tar.gz')
+            ->withManual('https://golang.google.cn/doc/')
+            ->withFile('go1.20.2.linux-amd64.tar.gz')
+            ->disableDownloadWithMirrorURL()
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($golang_prefix)
+            ->withBuildScript(
+                <<<EOF
+            
+            ls -lh 
+            mkdir -p {$golang_prefix}
+            cp -rf . {$golang_prefix}
+
+EOF
+            )
+            ->withBinPath($golang_prefix . '/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
 function install_depot_tools(Preprocessor $p): void
 {
     $depot_tools_prefix = DEPOT_TOOLS_PREFIX;
@@ -105,6 +204,7 @@ function install_depot_tools(Preprocessor $p): void
             ->withUrl('https://chromium.googlesource.com/chromium/tools/depot_tools')
             ->withManual('https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up')
             ->withFile('depot_tools.tar.gz')
+            ->disableDownloadWithMirrorURL()
             ->withDownloadScript(
                 'depot_tools',
                 <<<EOF
