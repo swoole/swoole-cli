@@ -665,7 +665,7 @@ EOF;
                 $this->scanConfigFiles($dir, $extAvailabled);
             }
         }
-
+        install_libraries($this);
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {

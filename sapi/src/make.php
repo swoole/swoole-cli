@@ -14,7 +14,7 @@ export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
-OPTIONS="--disable-all \
+OPTIONS="--prefix=<?= $this->getGlobalPrefix(). '/php/' ?> --disable-all \
 --enable-shared=no \
 --enable-static=yes \
 <?php foreach ($this->extensionList as $item) : ?>
@@ -147,26 +147,21 @@ export_variables() {
     return 0
 }
 
-make_config() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-    set -exu
 
+make_config() {
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+    set -exu
+    cp -rf <?= $this->rootDir ?>/ext/* <?= $this->phpSrcDir ?>/ext/
     test -f ./configure &&  rm ./configure
     ./buildconf --force
-<?php if ($this->osType !== 'macos') : ?>
-    mv main/php_config.h.in /tmp/cnt
-    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
-    cat /tmp/cnt >> main/php_config.h.in
-    echo -ne '\n#endif\n' >> main/php_config.h.in
-<?php endif; ?>
 
     ./configure --help
-    export_variables
+     export_variables
     ./configure $OPTIONS
 }
 
 make_build() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
     make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
@@ -175,6 +170,8 @@ make_build() {
             echo ' ';
         }
     } ?>'  -j <?= $this->maxJob ?> && echo ""
+
+    make install
 }
 
 make_clean() {
