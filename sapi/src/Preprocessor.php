@@ -194,7 +194,7 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
-    public function getPhpSrcDir():string
+    public function getPhpSrcDir(): string
     {
         return $this->phpSrcDir;
     }
