@@ -20,7 +20,6 @@ function install_ovs(Preprocessor $p)
         ->withCleanPreInstallDirectory($ovs_prefix)
         ->withConfigure(
             <<<EOF
-  # apk add python3 
         ./boot.sh
         ./configure --help
 
@@ -32,7 +31,10 @@ function install_ovs(Preprocessor $p)
 
 EOF
         )
-        ->withPkgName('libofproto  libopenvswitch libovsdb  libsflow')
+        ->withPkgName('libofproto')
+        ->withPkgName('libopenvswitch')
+        ->withPkgName('libovsdb')
+        ->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/');
 
     $p->addLibrary($lib);
@@ -259,7 +261,12 @@ function install_xdp(Preprocessor $p): void
             ->withLicense('https://github.com/xdp-project/xdp-tools/blob/master/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/xdp-project/xdp-tools/archive/refs/tags/v1.3.1.tar.gz')
             ->withFile('xdp-v1.3.1.tar.gz')
+            ->withFile('')
             ->withManual('https://github.com/xdp-project/xdp-tutorial')
+            ->withDownloadScript('xdp-tutorial',<<<EOF
+https://github.com/xdp-project/xdp-tutorial.git
+EOF
+)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF
