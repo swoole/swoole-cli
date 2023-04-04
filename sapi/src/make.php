@@ -268,7 +268,7 @@ elif [ "$1" = "archive" ] ;then
     PHP_VERSION=$(./php -r "echo PHP_VERSION;")
     PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     strip php
-    tar -cJvf ${PHP_CLI_FILE} PHP_CLI_FILE
+    tar -cJvf ${PHP_CLI_FILE} php
     mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
