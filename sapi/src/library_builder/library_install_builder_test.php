@@ -1113,23 +1113,29 @@ function install_boringssl($p)
                 Library::LICENSE_BSD
             )
             ->withUrl('https://github.com/google/boringssl/archive/refs/heads/master.zip')
-            ->withFile('latest-boringssl.zip')
-            ->withSkipDownload()
+            ->withFile('boringssl-latest.tar.gz')
+            ->disableDownloadWithMirrorURL()
+            ->withDownloadScript(
+                'boringssl',
+                <<<EOF
+            git clone -b master --depth=1 https://boringssl.googlesource.com/boringssl
+EOF
+            )
             ->withMirrorUrl('https://boringssl.googlesource.com/boringssl')
-            ->withMirrorUrl('https://github.com/google/boringssl.git')
             ->withManual('https://boringssl.googlesource.com/boringssl/+/refs/heads/master/BUILDING.md')
-            ->withUntarArchiveCommand('unzip')
-            ->withCleanBuildDirectory()
             ->withPrefix($boringssl_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($boringssl_prefix)
             ->withBuildScript(
                 <<<EOF
-                cd boringssl-master
-                mkdir build
+          
+                mkdir -p build
                 cd build
-                cmake -GNinja .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=0 -DCMAKE_INSTALL_PREFIX=$boringssl_prefix
-
+                cmake -GNinja .. \
+                -DCMAKE_INSTALL_PREFIX=$boringssl_prefix
+                -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_SHARED_LIBS=OFF 
+                 
                 cd ..
                 # ninja
                 ninja -C build

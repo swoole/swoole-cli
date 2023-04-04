@@ -170,7 +170,7 @@ function install_golang(Preprocessor $p): void
     $workDir = $p->getWorkDir();
     $p->addLibrary(
         (new Library('golang'))
-            ->withHomePage('https://www.rust-lang.org')
+            ->withHomePage('https://golang.org')
             ->withLicense('https://github.com/golang/go/blob/master/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://golang.google.cn/dl/go1.20.2.linux-amd64.tar.gz')
             ->withManual('https://golang.google.cn/doc/')
@@ -184,6 +184,7 @@ function install_golang(Preprocessor $p): void
             ls -lh 
             mkdir -p {$golang_prefix}
             cp -rf . {$golang_prefix}
+            chmod a+x {$golang_prefix}/bin
 
 EOF
             )

@@ -147,15 +147,14 @@ function libraries_builder($p)
     }
 
 
-    install_nasm($p);
-    install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
-    install_libgav1($p);
-    install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
-    install_aom($p);
-    install_libavif($p); //依赖 libyuv dav1d
 
     if (0) {
-
+        install_nasm($p);
+        install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
+        install_libgav1($p);
+        install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
+        install_aom($p);
+        install_libavif($p); //依赖 libyuv dav1d
 
         install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
         install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
@@ -223,7 +222,8 @@ _EOF_
         install_libev($p); //无 pkg-config
         install_ngtcp2($p); //依赖gnutls nghttp3
         install_nghttp2($p); //依赖 install_nghttp2($p);
-        install_boringssl($p);//需要 golang rust
+        install_boringssl($p);//需要golang
+
         install_wolfssl($p);//
         install_libressl($p);//
 
@@ -372,14 +372,15 @@ _EOF_
     if ($p->getInputOption('with-capstone') == 'yes') {
         install_capstone($p);
     }
-    install_rust($p); //依赖python
-    install_nodejs($p); //依赖python
-    install_golang($p); //依赖python
-    install_depot_tools($p); //依赖python
+
     if (0) {
         // brew  //  https://mirrors.tuna.tsinghua.edu.cn/help/homebrew
         // brew  //  https://github.com/Homebrew/brew.git
         //apk add ninja
+        install_rust($p);
+        install_nodejs($p);
+        install_golang($p);
+        install_depot_tools($p); //依赖python
         //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
         //install_depot_tools($p); //依赖python
         //install_gn($p);//依赖python
