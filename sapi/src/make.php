@@ -262,14 +262,14 @@ elif [ "$1" = "config" ] ;then
 elif [ "$1" = "build" ] ;then
     make_build
 elif [ "$1" = "test" ] ;then
-    ./bin/swoole-cli vendor/bin/phpunit
+    <?= PHP_INSTALL_PREFIX ?>/bin/php vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
-    cd bin
-    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
-    strip swoole-cli
-    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
-    mv ${SWOOLE_CLI_FILE} ../
+    cd <?= PHP_INSTALL_PREFIX ?>/bin
+    PHP_VERSION=$(./php -r "echo PHP_VERSION;")
+    PHP_CLI_FILE=php-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    strip php
+    tar -cJvf ${PHP_CLI_FILE} PHP_CLI_FILE
+    mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
