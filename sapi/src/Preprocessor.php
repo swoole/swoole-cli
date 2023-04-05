@@ -811,7 +811,8 @@ EOF;
             cd {$cacheDir}
             test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
             {$item->downloadScript}
-            test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadDirName}/*  
+            cd {$item->downloadDirName}
+            test -f {$workDir}/libraries/{$item->file} || tar --exclude='{$item->file}' -czf {$workDir}/{$item->file} .[!.]* * 
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
             cd {$workDir}  
 EOF;
@@ -839,7 +840,8 @@ EOF;
                 cd {$cacheDir}
                 test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
                 {$item->downloadScript}
-                test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadDirName}/*
+                cd {$item->downloadDirName}
+                test -f {$workDir}/extensions/{$item->file} || tar --exclude='{$item->file}' -czf  {$workDir}/{$item->file} .[!.]* * 
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
                 cd {$workDir}  
                 
