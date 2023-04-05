@@ -752,7 +752,7 @@ EOF;
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
         $download_urls = [];
         foreach ($this->libraryList as $item) {
-            if (empty($item->url) || $item->enableDownloadScript ) {
+            if (empty($item->url) || $item->enableDownloadScript || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             $url = '';
@@ -770,7 +770,7 @@ EOF;
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
-            if (empty($item->peclVersion) || $item->enableDownloadScript ) {
+            if (empty($item->peclVersion) || $item->enableDownloadScript || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
