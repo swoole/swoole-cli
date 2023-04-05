@@ -377,7 +377,8 @@ class Preprocessor
                 cd {$cacheDir}
                 test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
                 {$lib->downloadScript}
-                test -f {$lib->path} || tar -zcf {$lib->path} {$lib->downloadDirName}
+                cd {$lib->downloadDirName}
+                test -f {$lib->path} || tar --exclude='{$lib->file}'  -zcf {$lib->path} .[!.]* * 
                 cd {$workDir}  
 EOF;
 
@@ -438,8 +439,10 @@ EOF;
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
-                                test -f {$ext->path} || tar -zcf {$ext->path} {$ext->downloadDirName}
-                                cd {$workDir}   
+                                cd {$ext->downloadDirName}
+                                test -f {$ext->path} ||  tar --exclude='{$ext->file}' -zcf {$ext->path} .[!.]* * 
+                                cd {$workDir}  
+
 EOF;
 
                         $this->execDownloadScript($cacheDir, $ext->downloadScript);
