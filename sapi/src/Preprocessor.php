@@ -195,6 +195,10 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
+    public function getPhpSrcDir():string
+    {
+        return $this->phpSrcDir;
+    }
 
     public function setGlobalPrefix(string $prefix)
     {
@@ -353,7 +357,7 @@ class Preprocessor
             }
         }
 
-        if ($lib->enableDownloadWithMirrorURL &&  !empty($this->getInputOption('with-download-mirror-url'))) {
+        if ($lib->enableDownloadWithMirrorURL && !empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
             $lib->enableDownloadScript = false;
         }
@@ -442,7 +446,7 @@ EOF;
                                 cd {$ext->downloadDirName}
                                 test -f {$ext->path} ||  tar --exclude='{$ext->file}' -zcf {$ext->path} .[!.]* * 
                                 cd {$workDir}
-                                
+
 EOF;
 
                         $this->execDownloadScript($cacheDir, $ext->downloadScript);
@@ -827,11 +831,7 @@ EOF;
         $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
         $download_urls = [];
         foreach ($this->libraryList as $item) {
-            if (!$item->enableDownloadWithMirrorURL) {
-                continue;
-            }
-
-            if (empty($item->url)  || $item->enableDownloadScript) {
+            if (empty($item->url) || $item->enableDownloadScript ) {//|| !$item->enableDownloadWithMirrorURL
                 continue;
             }
             $url = '';
@@ -849,16 +849,12 @@ EOF;
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
-            if (!$item->enableDownloadWithMirrorURL) {
-                continue;
-            }
-            if (empty($item->peclVersion) || $item->enableDownloadScript) {
+            if (empty($item->peclVersion) || $item->enableDownloadScript ) { //|| !$item->enableDownloadWithMirrorURL
                 continue;
             }
             $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
             $item->path = $this->extensionDir . '/' . $item->file;
             $item->url = "https://pecl.php.net/get/{$item->file}";
-
             $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
         }
         file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
@@ -882,11 +878,7 @@ EOF;
 
         $download_scripts = [];
         foreach ($this->libraryList as $item) {
-            if (!$item->enableDownloadWithMirrorURL) {
-                continue;
-            }
-
-            if (!$item->enableDownloadScript) {
+            if (!$item->enableDownloadScript || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             if (empty($item->file)) {
@@ -898,9 +890,10 @@ EOF;
             cd {$cacheDir}
             test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
             {$item->downloadScript}
-            test -f {$workDir}/libraries/{$item->file} || tar -czf {$workDir}/{$item->file} {$item->downloadDirName}/*  
+            cd {$item->downloadDirName}
+            test -f {$workDir}/libraries/{$item->file} || tar --exclude='{$item->file}' -czf {$workDir}/{$item->file} .[!.]* * 
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir} 
+            cd {$workDir}
             
 EOF;
 
@@ -912,11 +905,7 @@ EOF;
         );
         $download_scripts = [];
         foreach ($this->extensionMap as $item) {
-            if (!$item->enableDownloadWithMirrorURL) {
-                continue;
-            }
-
-            if (!$item->enableDownloadScript) {
+            if (!$item->enableDownloadScript || !$item->enableDownloadWithMirrorURL) {
                 continue;
             }
             if (!empty($item->peclVersion)) {
@@ -931,10 +920,10 @@ EOF;
                 cd {$cacheDir}
                 test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
                 {$item->downloadScript}
-                test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} {$item->downloadDirName}/*
+                cd {$item->downloadDirName}
+                test -f {$workDir}/extensions/{$item->file} || tar --exclude='{$item->file}' -czf  {$workDir}/{$item->file} .[!.]* * 
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir} 
-              
+                cd {$workDir}
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
