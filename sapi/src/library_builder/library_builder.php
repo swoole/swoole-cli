@@ -184,7 +184,8 @@ function libraries_builder($p)
         //GraphicsMagick  http://www.graphicsmagick.org/index.html
         install_GraphicsMagick($p);
     }
-
+    install_xorgproto($p); //依赖 xorg-macros
+    install_libXpm($p); //依赖 xorg-macros  xorgproto
     if (0) {
         /*
 
@@ -544,4 +545,17 @@ _EOF_
             LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg dav1d libgav1)" \
 
      */
+    /*
+         # https://mesonbuild.com/Builtin-options.html#build-type-options
+         # meson configure build
+
+        meson setup  build \
+        -Dprefix={$xorgproto_prefix} \
+        -Dbackend=ninja \
+        -Dbuildtype=release \
+        -Ddefault_library=static \
+        -Db_staticpic=true \
+        -Db_pie=true \
+        -Dprefer_static=true
+    */
 }

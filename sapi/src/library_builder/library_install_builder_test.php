@@ -2357,32 +2357,41 @@ function install_unixodbc(Preprocessor $p)
 
 function install_xorgproto(Preprocessor $p)
 {
-    $xproto_prefix = LIBXPM_PREFIX;
-    $xorgproto_prefix = '/usr/xorgproto';
+
+    $xorgproto_prefix = XORGPROTO_PREFIX;
     $lib = new Library('xorgproto');
     $lib->withHomePage('xorgproto')
         ->withLicense('https://gitlab.freedesktop.org/xorg/proto/xorgproto', Library::LICENSE_SPEC)
+        ->withManual('https://gitlab.freedesktop.org/xorg/proto/xorgproto/-/blob/master/INSTALL')
         ->withUrl('https://gitlab.freedesktop.org/xorg/proto/xorgproto/-/archive/master/xorgproto-master.tar.gz')
+        ->withFile('xorgproto-2022.2.tar.gz')
+        ->withDownloadScript(
+            'xorgproto',
+            <<<EOF
+            git clone -b xorgproto-2022.2 --depth=1  https://gitlab.freedesktop.org/xorg/proto/xorgproto.git
+EOF
+        )
         ->withPrefix($xorgproto_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($xorgproto_prefix)
         ->withBuildScript(
             <<<EOF
-         # https://mesonbuild.com/Builtin-options.html#build-type-options
-         # meson configure build
-        meson setup  \
-        -Dprefix={$xorgproto_prefix} \
-        -Dbackend=ninja \
-        -Dbuildtype=release \
-        -Ddefault_library=static \
-        -Db_staticpic=true \
-        -Db_pie=true \
-        -Dprefer_static=true \
-        build
+            ls -lha .
 
+            
+            # https://mesonbuild.com/Builtin-options.html#build-type-options
+            # meson configure build
+            meson setup  build \
+            -Dprefix={$xorgproto_prefix} \
+            -Dbuildtype=release \
+            -Ddefault_library=static \
+            -Db_staticpic=true \
+            -Db_pie=true \
+            -Dprefer_static=true 
+            
+            meson configure build
+            meson -C build install
 
-        ninja -C build
-        ninja -C build install
 EOF
         )
         ->withConfigure(

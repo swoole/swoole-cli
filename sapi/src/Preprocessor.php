@@ -381,7 +381,7 @@ class Preprocessor
                 test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
                 {$lib->downloadScript}
                 cd {$lib->downloadDirName}
-                test -f {$lib->path} || tar --exclude='{$lib->file}'  -zcf {$lib->path} .[!.]* * 
+                test -f {$lib->path} || tar --exclude='{$lib->file}'  -zcf {$lib->path} ./
                 cd {$workDir}  
 
 EOF;

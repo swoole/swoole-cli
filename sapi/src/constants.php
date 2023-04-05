@@ -84,7 +84,7 @@ define("DEPOT_TOOLS_PREFIX", $p->getGlobalPrefix() . '/depot_tools');
 define("HARFBUZZ_PREFIX", $p->getGlobalPrefix() . '/harfbuzz');
 define("LIBFRIBIDI_PREFIX", $p->getGlobalPrefix() . '/libfribidi');
 
-define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
+
 
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
 define("NETTLE_PREFIX", $p->getGlobalPrefix() . '/nettle');
@@ -121,3 +121,7 @@ define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 define("FFMPEG_PREFIX", $p->getGlobalPrefix() . '/ffmpeg');
 define("NODEJS_PREFIX", $p->getGlobalPrefix() . '/nodejs');
 define("GOLANG_PREFIX", $p->getGlobalPrefix() . '/golang');
+
+
+define("XORGPROTO_PREFIX", $p->getGlobalPrefix() . '/xorgproto');
+define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
