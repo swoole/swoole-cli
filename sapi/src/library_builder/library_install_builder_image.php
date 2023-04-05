@@ -229,19 +229,15 @@ function install_libtiff(Preprocessor $p)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libtiff_prefix)
         ->withConfigure(
-            <<<'EOF'
+            <<<EOF
             ./configure --help
             ./configure --help | grep -e '--enable'
             ./configure --help | grep -e '--disable'
 
-            package_names="zlib libjpeg libturbojpeg liblzma  libzstd "
-
-            CPPFLAGS=$(pkg-config  --cflags-only-I --static $package_names ) \
-            LDFLAGS=$(pkg-config   --libs-only-L   --static $package_names ) \
-            LIBS=$(pkg-config      --libs-only-l   --static $package_names ) \
-EOF
-            . PHP_EOL .
-            <<<EOF
+            PACKAGES="zlib libjpeg libturbojpeg liblzma  libzstd "
+            CPPFLAGS=$(pkg-config  --cflags-only-I --static \$PACKAGES ) \
+            LDFLAGS=$(pkg-config   --libs-only-L   --static \$PACKAGES ) \
+            LIBS=$(pkg-config      --libs-only-l   --static \$PACKAGES ) \
             ./configure --prefix={$libtiff_prefix} \
             --enable-shared=no \
             --enable-static=yes \
@@ -252,7 +248,7 @@ EOF
 EOF
         )
         ->withBinPath($libtiff_prefix . '/bin')
-        ->withPkgName('libtiff');
+        ->withPkgName('libtiff-4');
 
     $p->addLibrary($lib);
 }

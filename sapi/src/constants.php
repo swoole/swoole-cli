@@ -68,6 +68,10 @@ define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 
 //  test
 define("LIBDE265_PREFIX", $p->getGlobalPrefix() . '/libde265');
+define("LIBX264_PREFIX", $p->getGlobalPrefix() . '/libx264');
+define("NUMA_PREFIX", $p->getGlobalPrefix() . '/numa');
+define("LIBX265_PREFIX", $p->getGlobalPrefix() . '/libx265');
+define("SVT_AV1_PREFIX", $p->getGlobalPrefix() . '/svt_av1');
 define("LIBHEIF_PREFIX", $p->getGlobalPrefix() . '/libheif');
 define("LIBJXL_PREFIX", $p->getGlobalPrefix() . '/libjxl');
 define("LIBGD_PREFIX", $p->getGlobalPrefix() . '/libgd');
@@ -123,5 +127,7 @@ define("NODEJS_PREFIX", $p->getGlobalPrefix() . '/nodejs');
 define("GOLANG_PREFIX", $p->getGlobalPrefix() . '/golang');
 
 
+define("XORG_MACROS_PREFIX", $p->getGlobalPrefix() . '/xorg_macros');
 define("XORGPROTO_PREFIX", $p->getGlobalPrefix() . '/xorgproto');
+define("LIBX11_PREFIX", $p->getGlobalPrefix() . '/libX11');
 define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');

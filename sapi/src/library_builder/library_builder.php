@@ -146,15 +146,21 @@ function libraries_builder($p)
         // install_php_extension_fastdfs($p);
     }
 
-
-
+    install_nasm($p);
+    install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
+    install_libgav1($p);
+    install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
+    install_aom($p);
+    install_libavif($p); //依赖 libyuv dav1d
+    install_libx264($p);
+    install_numa($p); //把NUMA看作集群运算的一个紧密耦合的形式 https://baike.baidu.com/item/NUMA/6906025
+    install_libx265($p);
+    install_libde265($p);
+    install_svt_av1($p);
+    install_libheif($p); //依赖 libde265
+    install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
+    install_libgd2($p);
     if (0) {
-        install_nasm($p);
-        install_dav1d($p); //AV1解码器dav1d  依赖 nasm : apk add nasm   //https://github.com/videolan/dav1d.git
-        install_libgav1($p);
-        install_libyuv($p); //libyuv是Google开源的yuv图像处理库，实现对各种yuv数据之间的转换，包括数据转换，裁剪，缩放，旋转
-        install_aom($p);
-        install_libavif($p); //依赖 libyuv dav1d
 
         install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
         install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
@@ -177,31 +183,19 @@ function libraries_builder($p)
 
         if (0) {
             install_xorgproto($p); //依赖 xorg-macros
-            install_libXpm($p); //依赖 xorg-macros  xorgproto
+            //install_xorg_macros($p);
+            //install_xorgproto($p);
+            //install_libX11($p);
+            install_libXpm($p); //依赖 xorg-macros  xorgproto libx11 # apk add util-macros xorgproto libx11
         }
 
-        install_libgd2($p);
+
         //GraphicsMagick  http://www.graphicsmagick.org/index.html
         install_GraphicsMagick($p);
     }
-    install_xorgproto($p); //依赖 xorg-macros
-    install_libXpm($p); //依赖 xorg-macros  xorgproto
+
     if (0) {
-        /*
 
-        crates.io mirror
-
-        https://mirrors.tuna.tsinghua.edu.cn/help/crates.io-index.git/
-
-        cat > ~/.cargo/config <<_EOF_
-[source.crates-io]
-replace-with = 'mirror'
-
-[source.mirror]
-registry = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
-_EOF_
-
-         */
         install_openssl_v1($p);
         install_openssl_v3($p);
         install_openssl_v3_quic($p);
@@ -311,8 +305,9 @@ _EOF_
         */
     }
 
+    install_rav1e($p);  //https://www.cnblogs.com/eguid/p/16015446.html
     if (0) {
-        install_rav1e($p);  //https://www.cnblogs.com/eguid/p/16015446.html
+
         install_aom($p);
         install_av1($p);
         install_libvpx($p);
@@ -321,6 +316,7 @@ _EOF_
         install_libx265($p);
         install_mp3lame($p);
         install_ffmpeg($p);
+        install_vlc($p);
         /*
         ffmpeg -encoders
         ffmpeg -decoders
@@ -374,7 +370,7 @@ _EOF_
     if ($p->getInputOption('with-capstone') == 'yes') {
         install_capstone($p);
     }
-
+    install_rust($p);
     if (0) {
         // brew  //  https://mirrors.tuna.tsinghua.edu.cn/help/homebrew
         // brew  //  https://github.com/Homebrew/brew.git
@@ -383,6 +379,7 @@ _EOF_
         install_nodejs($p);
         install_golang($p);
         install_depot_tools($p); //依赖python
+
         //install_ninja($p); //源码编译ninja，alpine 默认没有提供源；默认不安装 //依赖python
         //install_depot_tools($p); //依赖python
         //install_gn($p);//依赖python
@@ -548,7 +545,7 @@ _EOF_
     /*
          # https://mesonbuild.com/Builtin-options.html#build-type-options
          # meson configure build
-
+         # meson wrap --help
         meson setup  build \
         -Dprefix={$xorgproto_prefix} \
         -Dbackend=ninja \
@@ -558,4 +555,14 @@ _EOF_
         -Db_pie=true \
         -Dprefer_static=true
     */
+
+    /*
+        NUMA（Non Uniform Memory Access）技术可以使众多服务器像单一系统那样运转，同时保留小系统便于编程和管理的优点
+
+    计算平台的体系结构  https://baike.baidu.com/item/NUMA/6906025
+        当今数据计算领域的主要应用程序和模型可大致分为
+        联机事务处理（OLTP）、
+        决策支持系统（DSS）和企业信息通讯（BusinessCommunications）三大类。
+        而小型独立服务器模式、SMP（对称多处理）模式、MPP（大规模并行处理）模式和NUMA模式，则是上述3类系统设计人员在计算平台的体系结构方面可以采用的选择。
+     */
 }

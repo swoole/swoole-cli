@@ -23,18 +23,19 @@ EOF
         )
 
         ->withPrefix($rav1e_prefix)
-        ->withCleanBuildDirectory()
+        //->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($rav1e_prefix)
         ->withBuildScript(
             <<<EOF
-        export RUSTUP_DIST_SERVER="https://mirrors.tuna.tsinghua.edu.cn/rustup rustup install stable " 
-        export RUSTUP_UPDATE_ROOT="https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup" 
-        
+        export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+        export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+        # /root/.cargo/bin
         export RUSTUP_HOME=/root/.rustup
         export CARGO_HOME=/root/.cargo
-        cargo --list
-        cargo install cargo-c
-        cargo cinstall --release
+        #cargo --list
+        cargo install cargo-c 
+        cargo cbuild --release --prefix={$rav1e_prefix} --libdir={$rav1e_prefix}/lib  -C link-arg=-lz -vv
+        cargo cinstall 
 
 EOF
         )
@@ -157,7 +158,7 @@ EOF
 
 function install_libx264(Preprocessor $p)
 {
-    $libx264_prefix = '/usr/libx264';
+    $libx264_prefix = LIBX264_PREFIX;
     $lib = new Library('libx264');
     $lib->withHomePage('https://www.videolan.org/developers/x264.html')
         ->withLicense('https://code.videolan.org/videolan/x264/-/blob/master/COPYING', Library::LICENSE_LGPL)
@@ -170,11 +171,45 @@ function install_libx264(Preprocessor $p)
         ->withCleanPreInstallDirectory($libx264_prefix)
         ->withConfigure(
             <<<EOF
-exit 0 
+        ./configure --help
+        ./configure \
+        --prefix={$libx264_prefix} \
+        --enable-static 
 
 EOF
         )
-        ->withPkgName('libx264');
+        ->withPkgName('x264')
+        ->withBinPath($libx264_prefix . '/bin/');
+
+    $p->addLibrary($lib);
+}
+
+function install_numa(Preprocessor $p)
+{
+    $numa_prefix = NUMA_PREFIX;
+    $lib = new Library('numa');
+    $lib->withHomePage('https://github.com/numactl/numactl.git')
+        ->withLicense('https://github.com/numactl/numactl/blob/master/LICENSE.GPL2', Library::LICENSE_GPL)
+        ->withUrl('https://github.com/numactl/numactl/archive/refs/tags/v2.0.16.tar.gz')
+        ->withFile('numa-v2.0.16.tar.gz')
+        ->withManual('https://code.videolan.org/videolan/x264.git')
+        ->withPrefix($numa_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($numa_prefix)
+        ->withConfigure(
+            <<<EOF
+            ./autogen.sh
+            ./configure --help
+            
+            ./configure \
+            --prefix={$numa_prefix} \
+            --enable-shared=no \
+            --enable-static=yes \
+
+EOF
+        )
+        ->withPkgName('numa')
+        ->withBinPath($numa_prefix . '/bin/');
 
     $p->addLibrary($lib);
 }
@@ -211,7 +246,9 @@ EOF
 
 function install_libx265(Preprocessor $p)
 {
-    $libx265_prefix = '/usr/libx265';
+    $libx265_prefix = LIBX265_PREFIX;
+    $numa_prefix = NUMA_PREFIX;
+    $nasm_prefix = NASM_PREFIX;
     $lib = new Library('libx265');
     $lib->withHomePage('https://www.videolan.org/developers/x265.html')
         ->withLicense('https://bitbucket.org/multicoreware/x265_git/src/master/COPYING', Library::LICENSE_LGPL)
@@ -224,11 +261,24 @@ function install_libx265(Preprocessor $p)
         ->withCleanPreInstallDirectory($libx265_prefix)
         ->withConfigure(
             <<<EOF
-exit 0 
+            mkdir -p out
+            cd out 
+            
+            cmake \
+            -G"Unix Makefiles" ../source  \
+            -DCMAKE_INSTALL_PREFIX={$libx265_prefix} \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
+            -DBUILD_STATIC_LIBS=ON \
+            -DENABLE_LIBNUMA=ON \
+            -DNuma_ROOT={$numa_prefix} \
+            -DNasm_ROOT={$nasm_prefix}
+          
 
 EOF
         )
-        ->withPkgName('libx265');
+        ->withPkgName('x265')
+        ->withBinPath($libx265_prefix . '/bin/');
 
     $p->addLibrary($lib);
 }
@@ -335,7 +385,8 @@ EOF
         # 汇编编译器
         # apk add yasm nasm
         ./configure --help
-        ./configure  --prefix=$ffmpeg_prefix
+        ./configure  --prefix=$ffmpeg_prefix \
+        --enable-libsvtav1
 
 EOF
         )
@@ -345,6 +396,7 @@ EOF
 
     $p->addLibrary($lib);
 }
+
 
 function install_graphviz(Preprocessor $p)
 {

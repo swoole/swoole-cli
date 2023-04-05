@@ -140,7 +140,8 @@ EOF
                 -DJPEG_ROOT={$libjpeg_prefix} \
                 -DBUILD_STATIC_LIBS=ON \
                 -DBUILD_SHARED_LIBS=OFF  \
-                -DCMAKE_BUILD_TYPE="Release" 
+                -DCMAKE_BUILD_TYPE="Release" \
+                -DTEST=OFF 
                 cmake --build . --config Release
                 cmake --build . --target install --config Release
                 return 0 
@@ -403,10 +404,42 @@ function install_libde265(Preprocessor $p)
         ./configure --help
         ./configure --prefix={$libde265_prefix} \
         --enable-shared=no \
-        --enable-static=yes
+        --enable-static=yes \
+        --with-pic
 EOF
         )
         ->withPkgName('libde265');
+
+    $p->addLibrary($lib);
+}
+
+function install_svt_av1(Preprocessor $p)
+{
+    $svt_av1_prefix = SVT_AV1_PREFIX;
+    $lib = new Library('svt_av1');
+    $lib->withHomePage('https://gitlab.com/AOMediaCodec/SVT-AV1/')
+        ->withLicense('https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md', Library::LICENSE_BSD)
+        ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Build-Guide.md')
+        ->withUrl('https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v1.4.1/SVT-AV1-v1.4.1.tar.gz')
+        ->withFile('SVT-AV1-v1.4.1.tar.gz')
+        ->withPrefix($svt_av1_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($svt_av1_prefix)
+        ->withConfigure(
+            <<<EOF
+        cd SVT-AV1
+        cd Build
+        cmake .. -G"Unix Makefiles" \
+        -DCMAKE_INSTALL_PREFIX={$svt_av1_prefix} \
+        -DCMAKE_BUILD_TYPE=Release  \
+        -DBUILD_SHARED_LIBS=OFF  \
+        -DBUILD_STATIC_LIBS=ON 
+
+EOF
+        )
+        ->withPkgName('SvtAv1Dec')
+        ->withPkgName('SvtAv1Enc')
+        ->withBinPath($svt_av1_prefix . '/bin/');
 
     $p->addLibrary($lib);
 }
@@ -422,20 +455,15 @@ function install_libheif(Preprocessor $p)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libheif_prefix)
         ->withConfigure(
-            <<<'EOF'
-            ./configure --help
-
-            libde265_CFLAGS=$(pkg-config  --cflags --static libde265 ) \
-            libde265_LIBS=$(pkg-config    --libs   --static libde265 ) \
-            libpng_CFLAGS=$(pkg-config  --cflags --static libpng ) \
-            libpng_LIBS=$(pkg-config    --libs   --static libpng ) \
-EOF
-            . PHP_EOL .
             <<<EOF
-            ./configure \
-            --prefix={$libheif_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
+        mkdir -p build 
+        cd build 
+        cmake .. -G"Unix Makefiles" \
+        -DCMAKE_INSTALL_PREFIX={$libheif_prefix} \
+        -DCMAKE_BUILD_TYPE=Release  \
+        -DBUILD_SHARED_LIBS=OFF  \
+        -DBUILD_STATIC_LIBS=ON \
+        -DWITH_EXAMPLES=OFF
 EOF
         )
         ->withPkgName('libheif');
@@ -550,6 +578,9 @@ function install_libgd2($p)
 {
     $libgd_prefix = LIBGD_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
+    $zlib_prefix= ZLIB_PREFIX;
+    $webp_prefix = WEBP_PREFIX;
+    $iconv_prefix = ICONV_PREFIX;
     $lib = new Library('libgd2');
     $lib->withHomePage('https://www.libgd.org/')
         ->withLicense('https://github.com/libgd/libgd/blob/master/COPYING', Library::LICENSE_SPEC)
@@ -560,26 +591,7 @@ function install_libgd2($p)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libgd_prefix)
         ->withConfigure(
-            <<<'EOF'
-        # 下载依赖
-         ./configure --help
-         # -lbrotlicommon-static -lbrotlidec-static -lbrotlienc-static
-        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-        export LDFLAGS="$(pkg-config   --libs-only-L    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-        export LIBS="$(pkg-config      --libs-only-l    --static zlib libpng freetype2 libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libbrotlicommon  libbrotlidec  libbrotlienc ) " \
-
-        echo $LIBS
-
-EOF. PHP_EOL . <<<EOF
-        ./configure \
-        --prefix={$libgd_prefix} \
-        --enable-shared=no \
-        --enable-static=yes \
-        --without-freetype \
-        --with-libiconv-prefix={$libiconv_prefix}
-         # --with-freetype=/usr/freetype \
-
-:<<'_EOF_'
+            <<<EOF
         mkdir -p build
         cd build
         cmake   ..  \
@@ -589,16 +601,41 @@ EOF. PHP_EOL . <<<EOF
         -DENABLE_JPEG=1 \
         -DENABLE_TIFF=1 \
         -DENABLE_ICONV=1 \
-        -DENABLE_FREETYPE=1 \
-        -DENABLE_FONTCONFIG=1 \
+        -DENABLE_FREETYPE=0 \
+        -DENABLE_FONTCONFIG=0 \
         -DENABLE_WEBP=1 \
         -DENABLE_HEIF=1 \
         -DENABLE_AVIF=1 \
-        -DENABLE_WEBP=1
+        -DENABLE_WEBP=1 \
+        -DZLIB_ROOT={$zlib_prefix} \
+        -DWEBP_ROOT={$webp_prefix} \
+        -DICONV_ROOT={$iconv_prefix} 
 
         cmake --build . -- -j$(nproc)
-        exit 0
         cmake --install .
+
+     
+
+:<<'_EOF_'
+
+        
+        
+        ./configure --help
+        # freetype2 libbrotlicommon libbrotlidec  libbrotlienc
+        PACKAGES='zlib libpng  libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libtiff-4 libavif ' 
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES ) " \
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES ) " \
+        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES ) " \
+        ./configure \
+        --prefix={$libgd_prefix} \
+        --enable-shared=no \
+        --enable-static=yes \
+        --with-libiconv-prefix={$libiconv_prefix} \
+        --without-freetype 
+        # --with-freetype=/usr/freetype \
+        # --without-freetype 
+        
+        
 _EOF_
 
 EOF
@@ -666,18 +703,16 @@ function install_libXpm(Preprocessor $p)
         ->withCleanPreInstallDirectory($libXpm_prefix)
         ->withConfigure(
             <<<EOF
-      # 依赖 xorg-macros
+         
          # 解决依赖
-         # apk add util-macros
-         # apk add libxpm-dev
+         apk add util-macros xorgproto libx11
+   
             ./autogen.sh
             ./configure --help
-            ./configure --prefix={$libXpm_prefix} \
+            ./configure \
+            --prefix={$libXpm_prefix} \
             --enable-shared=no \
-            --enable-static=yes \
-            --disable-docs \
-            --disable-tests \
-            --enable-strict-compilation
+            --enable-static=yes 
 
 EOF
         )
@@ -2355,6 +2390,39 @@ function install_unixodbc(Preprocessor $p)
 }
 
 
+function install_xorg_macros(Preprocessor $p)
+{
+
+    $xorg_macros_prefix = XORG_MACROS_PREFIX;
+    $lib = new Library('xorg_macros');
+    $lib->withHomePage('https://github.com/freedesktop/xorg-macros.git')
+        ->withLicense('https://github.com/freedesktop/xorg-macros/blob/master/COPYING', Library::LICENSE_SPEC)
+        ->withManual('https://gitlab.freedesktop.org/xorg/util/macros/-/blob/util-macros-1.20.0/INSTALL')
+        ->withUrl('https://gitlab.freedesktop.org/xorg/util/macros/-/archive/util-macros-1.20.0/macros-util-macros-1.20.0.tar.gz')
+        ->withFile('util-macros-1.20.0.tar.gz')
+        ->withDownloadScript(
+            'macros',
+            <<<EOF
+            git clone -b util-macros-1.20.0 --depth=1  https://gitlab.freedesktop.org/xorg/util/macros.git
+EOF
+        )
+        ->withPrefix($xorg_macros_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($xorg_macros_prefix)
+        ->withConfigure(
+            <<<EOF
+            ls -lha .
+             ./autogen.sh
+             ./configure --help
+             ./configure \
+             --prefix={$xorg_macros_prefix} 
+           
+EOF
+        )
+        ->withLdflags('');
+
+    $p->addLibrary($lib);
+}
 function install_xorgproto(Preprocessor $p)
 {
 
@@ -2381,32 +2449,56 @@ EOF
             
             # https://mesonbuild.com/Builtin-options.html#build-type-options
             # meson configure build
+            # meson wrap --help
+            # --backend=ninja \
+            
             meson setup  build \
             -Dprefix={$xorgproto_prefix} \
+            -Dbackend=ninja \
             -Dbuildtype=release \
             -Ddefault_library=static \
             -Db_staticpic=true \
             -Db_pie=true \
             -Dprefer_static=true 
-            
-            meson configure build
-            meson -C build install
+
+            # meson configure build
+            # meson -C build install
+
+            ninja  -C build
+            ninja  -C build install
 
 EOF
         )
+        ->withLdflags('');
+
+    $p->addLibrary($lib);
+}
+
+function install_libX11(Preprocessor $p)
+{
+
+    $libX11_prefix = LIBX11_PREFIX;
+    $lib = new Library('libX11');
+    $lib->withHomePage('http://www.x.org/releases/current/doc/libX11/libX11/libX11.html')
+        ->withLicense('https://github.com/mirror/libX11/blob/master/COPYING', Library::LICENSE_SPEC)
+        ->withManual('http://www.x.org/releases/current/doc/libX11/libX11/libX11.html')
+        ->withUrl('https://github.com/mirror/libX11/archive/refs/tags/libX11-1.8.4.tar.gz')
+        ->withFile('libX11-1.8.4.tar.gz')
+        ->withPrefix($libX11_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($libX11_prefix)
         ->withConfigure(
             <<<EOF
-            autoreconf -ivf
-            ./configure --help
-
-            LDFLAGS="-static " \
-            ./configure --prefix={$xorgproto_prefix} \
-            --enable-legacy \
-            --enable-strict-compilation
-
+        ./autogen.sh
+        ./configure --help 
+        ./configure \
+        --prefix={$libX11_prefix} \
+        --enable-shared=no \
+        --enable-static=yes 
 EOF
         )
-        ->withPkgName('xproto');
+
+        ->withLdflags('');
 
     $p->addLibrary($lib);
 }
