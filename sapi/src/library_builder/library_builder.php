@@ -282,13 +282,38 @@ function libraries_builder($p)
     //排版相关
     if (0) {
         # pip3 install graphviz
-
+        //plantuml
         install_graphviz($p); //依赖git libwbp freetype  // https://www.graphviz.org/doc/info/lang.html
         //networkx    //https://github.com/networkx/networkx.git
+        //graphviz 是一个专门用于可视化图状数据结构的工具包，而networkx是专门用于表示图状数据结构以及操作图状数据结构的工具包。
         // 工业级的还得用neo4j搭配graphx  面对巨量数据   https://www.cnblogs.com/jingjingxyk/p/16826546.html
         // draw.io  https://app.diagrams.net/
 
+        // ASCIIFlow Infinity  https://asciiflow.com/
+        // flowchart.js        http://flowchart.js.org/
+        // js-sequence-diagrams by bramp  https://bramp.github.io/js-sequence-diagrams/
+
         install_TeX($p); //排版系统
+
+
+        /*
+            UML - Unified modeling language UML 统一建模语言
+
+            泛化（Generalizations），聚合（aggregations）和关联（associations）
+            分栏（Rectangle）
+
+            依赖（Dependencies）
+
+            跟踪（Traces）
+            实现（Realizations）
+            嵌套（Nestings）
+
+         */
+        /*
+           生成器（iterabler)
+           生成器（Generator)
+
+         */
     }
     if (0) {
         /*
@@ -565,4 +590,5 @@ function libraries_builder($p)
         决策支持系统（DSS）和企业信息通讯（BusinessCommunications）三大类。
         而小型独立服务器模式、SMP（对称多处理）模式、MPP（大规模并行处理）模式和NUMA模式，则是上述3类系统设计人员在计算平台的体系结构方面可以采用的选择。
      */
+
 }
