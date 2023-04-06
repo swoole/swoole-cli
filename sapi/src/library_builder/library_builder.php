@@ -281,9 +281,12 @@ function libraries_builder($p)
 
     //排版相关
     if (0) {
-        # pip3 install graphviz
+        # apk add graphviz
+        # pip3 install graphviz   -i https://pypi.tuna.tsinghua.edu.cn/simple
         //plantuml
-        install_graphviz($p); //依赖git libwbp freetype  // https://www.graphviz.org/doc/info/lang.html
+        // https://www.graphviz.org/documentation/
+        // https://www.graphviz.org/doc/info/lang.html
+        install_graphviz($p); //依赖git libwbp freetype
         //networkx    //https://github.com/networkx/networkx.git
         //graphviz 是一个专门用于可视化图状数据结构的工具包，而networkx是专门用于表示图状数据结构以及操作图状数据结构的工具包。
         // 工业级的还得用neo4j搭配graphx  面对巨量数据   https://www.cnblogs.com/jingjingxyk/p/16826546.html
@@ -313,6 +316,9 @@ function libraries_builder($p)
            生成器（iterabler)
            生成器（Generator)
 
+         */
+        /*
+           享有数据分析“三剑客之一”的盛名（NumPy、Matplotlib、Pandas）
          */
     }
     if (0) {
@@ -357,6 +363,9 @@ function libraries_builder($p)
         install_opencv_contrib($p);
         install_opencv($p); //构建过程中，会去github.com 下载 ippicv xfeatures2d wechat_qrcode unifont  face_landmark_model.dat
         //依赖ffmpeg zlib ninja zlib libjpeg libwebp freetype
+
+        //A free, open source XR platform
+        install_monado($p);// https://gitlab.freedesktop.org/monado/monado
     }
     if (0) {
         // 改善iptables/netfilter的规模瓶颈，提高Linux内核协议栈IO性能
@@ -369,10 +378,17 @@ function libraries_builder($p)
         //  XDP 是Linux 内核中提供高性能、可编程的网络数据包处理框架。
         //  eBPF/XDP
 
+        //SDN（Software Defined Networking） 它将网络控制层和数据层分离，使得网络可以通过软件进行灵活的配置和管理。
+        //DPDK（Data Plane Development Kit） 它提供了一套高性能的数据包处理库和驱动程序，可以让应用程序直接访问网络设备，绕过操作系统的开销。
+        // VPP（Vector Packet Processing）它基于DPDK实现了一个高性能的软件路由器和交换机，可以支持多种协议和功能。
+        // FRR（Free Range Routing）是一个开源项目，它提供了一套路由协议的实现，包括BGP、OSPF、IS-IS等，可以与VPP集成，实现动态路由功能。
         install_dpdk($p); //ninja
         install_xdp($p);  //依赖 llvm bpftool
+        //Underlay/Overlay 新技术
         install_ovs($p);  //依赖 openssl python3  ; 网络优化以来 dpdk
         install_ovn($p);
+        install_FRR($p);  //路由协议栈 实现和管理各种 IPv4 和 IPv6 路由协议的免费软件 //https://github.com/FRRouting/frr.git
+        //'https://www.bianyuanyun.com/wp-content/uploads/2021/06/whitepaper-未来网络白皮书——白盒交换机技术白皮书.pdf'
     }
 
     if (0) {
