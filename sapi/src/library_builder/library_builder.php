@@ -281,6 +281,9 @@ function libraries_builder($p)
 
     //排版相关
     if (0) {
+        //Linux_kernel_diagram   // https://makelinux.github.io/kernel/diagram/
+        //  panzoom  用于向元素添加平移和缩放功能 https://timmywil.com/panzoom/demo/
+
         # apk add graphviz
         # pip3 install graphviz   -i https://pypi.tuna.tsinghua.edu.cn/simple
         //plantuml

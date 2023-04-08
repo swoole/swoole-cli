@@ -643,6 +643,7 @@ EOF;
     public array $extensionDependPkgNameMap = [];
 
     public array $extensionDependPkgNameList = [];
+    public array $extensionDependLibList = [];
 
     protected function setExtensionDependPkgNameMap(): void
     {
@@ -667,6 +668,7 @@ EOF;
                         $pkgNames[] = trim($item);
                     }
                 }
+                $this->extensionDependLibList[$extension_name][]=$library_name;
             }
             $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
         }
@@ -674,7 +676,6 @@ EOF;
         $extensions = [];
         foreach ($this->extensionDependPkgNameMap as $extension_name => $value) {
             $pkgNames = array_merge($pkgNames, $value);
-            $extensions[] = $extension_name;
         }
         $this->extensionDependPkgNameList = array_values(array_unique($pkgNames));
     }
@@ -760,7 +761,18 @@ EOF;
         //暂时由手工维护，依赖关系
         // $this->sortLibrary();
         $this->setExtensionDependPkgNameMap();
+        if ($this->getInputOption('with-dependency-graph')) {
+            foreach ($this->extensionDependLibList as $extension_name => $libs) {
+                //echo $extension_name . ' '  . implode(' ',$libs) . PHP_EOL;
+                $content = '';
+                foreach ($libs as $lib_name) {
+                    $content .= "        {$extension_name} -> {$lib_name}" . PHP_EOL;
+                }
 
+                echo "    subgraph {$extension_name} {" . PHP_EOL . $content . PHP_EOL . '    }' . PHP_EOL;
+            }
+            return;
+        }
         if ($this->getOsType() == 'macos') {
             $libcpp = '-lc++';
         } else {
