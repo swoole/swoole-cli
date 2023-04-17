@@ -400,13 +400,21 @@ EOF
 
 function install_graphviz(Preprocessor $p)
 {
-    $graphviz_prefix = '/usr/graphviz';
+    $graphviz_prefix = GRAPHVIZ_PREFIX;
     $lib = new Library('graphviz');
     $lib->withHomePage('https://www.graphviz.org/about/')
         ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
         ->withUrl('https://gitlab.com/graphviz/graphviz/-/archive/main/graphviz-main.tar.gz')
+        ->withUrl('https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/8.0.2/graphviz-8.0.2.tar.gz')
         ->withManual('https://www.graphviz.org/download/')
         ->withManual('https://www.graphviz.org/documentation/')
+        ->withFile('graphviz-8.0.2.tar.gz')
+        ->withDownloadScript(
+            'graphviz',
+            <<<EOF
+        git clone -b 8.0.2 --depth=1 --progress https://gitlab.com/graphviz/graphviz.git
+EOF
+        )
         ->withPrefix($graphviz_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($graphviz_prefix)
@@ -415,14 +423,20 @@ function install_graphviz(Preprocessor $p)
         ./autogen.sh
         ./configure --help
 
-        ./configure  --prefix=$graphviz_prefix \
+        ./configure \
+         --prefix=$graphviz_prefix \
         --enable-static=yes \
         --enable-shared=no
 
-
 EOF
         )
-        ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
+        ->withPkgName('libcdt')
+        ->withPkgName('libcgraph')
+        ->withPkgName('libgvc')
+        ->withPkgName('libgvpr')
+        ->withPkgName('liblab_gamut')
+        ->withPkgName('libpathplan')
+        ->withPkgName('libxdot')
         ->withBinPath($graphviz_prefix . '/bin/')
     ;
 

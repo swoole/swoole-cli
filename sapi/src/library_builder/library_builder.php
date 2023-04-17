@@ -286,9 +286,10 @@ function libraries_builder($p)
 
         # apk add graphviz
         # pip3 install graphviz   -i https://pypi.tuna.tsinghua.edu.cn/simple
-        //plantuml
-        // https://www.graphviz.org/documentation/
-        // https://www.graphviz.org/doc/info/lang.html
+        //plantuml  https://plantuml.com/zh/
+
+        //graphviz  https://www.graphviz.org/documentation/
+        //graphviz  https://www.graphviz.org/doc/info/lang.html
         install_graphviz($p); //依赖git libwbp freetype
         //networkx    //https://github.com/networkx/networkx.git
         //graphviz 是一个专门用于可视化图状数据结构的工具包，而networkx是专门用于表示图状数据结构以及操作图状数据结构的工具包。
@@ -301,6 +302,7 @@ function libraries_builder($p)
 
         install_TeX($p); //排版系统
 
+        // geogebra 数学套件 https://www.geogebra.org/
 
         /*
             UML - Unified modeling language UML 统一建模语言
@@ -608,6 +610,20 @@ function libraries_builder($p)
         联机事务处理（OLTP）、
         决策支持系统（DSS）和企业信息通讯（BusinessCommunications）三大类。
         而小型独立服务器模式、SMP（对称多处理）模式、MPP（大规模并行处理）模式和NUMA模式，则是上述3类系统设计人员在计算平台的体系结构方面可以采用的选择。
+
+        icecream
+        SwarmAgent
      */
 
+    /*
+       debian 容器精简版本
+       debian:bullseye-slim 或者 debian:stable-slim
+
+     */
+    /*
+       linux内置的沙盒:Seccomp-bpf  内核安全技术,支持创建沙盒来限制进程可以进行的系统调用
+
+    seccomp与capabilities的区别
+         seccomp是比capabilities 更细粒度的capabilities权限限制系统内核提供的能力。
+     */
 }

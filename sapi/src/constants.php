@@ -131,3 +131,4 @@ define("XORG_MACROS_PREFIX", $p->getGlobalPrefix() . '/xorg_macros');
 define("XORGPROTO_PREFIX", $p->getGlobalPrefix() . '/xorgproto');
 define("LIBX11_PREFIX", $p->getGlobalPrefix() . '/libX11');
 define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
+define("GRAPHVIZ_PREFIX", $p->getGlobalPrefix() . '/graphviz');

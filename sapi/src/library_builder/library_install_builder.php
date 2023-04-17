@@ -18,12 +18,14 @@ use SwooleCli\Preprocessor;
 
 function install_openssl(Preprocessor $p)
 {
+    //install_openssl_v1($p);
     install_openssl_v3_quic($p);
 }
 
 function install_openssl_v1(Preprocessor $p)
 {
     $openssl_prefix = OPENSSL_PREFIX;
+    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
     $p->addLibrary(
         (new Library('openssl'))
             ->withHomePage('https://www.openssl.org/')
@@ -33,8 +35,9 @@ function install_openssl_v1(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($openssl_prefix)
             ->withConfigure(
-                './config' . ($p->getOsType(
-                ) === 'macos' ? '' : ' -static --static') . ' no-shared --prefix=' . $openssl_prefix
+                <<<EOF
+                ./config {$static} no-shared --prefix=${openssl_prefix} --libdir=${openssl_prefix}/lib
+EOF
             )
             ->withMakeInstallCommand('install_sw')
             ->withPkgName('openssl')
@@ -47,7 +50,7 @@ function install_openssl_v3(Preprocessor $p)
     $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
     # openssl v3.0 ； linux 位于 lib64 目录, macOS 位于 lib 目录；
-    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
+    # $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
     $p->addLibrary(
         (new Library('openssl'))
             ->withHomePage('https://www.openssl.org/')
@@ -59,7 +62,7 @@ function install_openssl_v3(Preprocessor $p)
                 <<<EOF
                 # ./Configure LIST 
                 # INSTALL help info
-                ./config {$static} no-shared  --release --prefix={$openssl_prefix}
+                ./config {$static} no-shared  --release --prefix={$openssl_prefix} --libdir=${openssl_prefix}/lib
 EOF
             )
             ->withMakeOptions('build_sw')
@@ -67,8 +70,8 @@ EOF
             ->withPkgName('openssl')
             ->withPkgName('libcrypto')
             ->withPkgName('libssl')
-            ->withLdflags('-L' . $openssl_lib)
-            ->withPkgConfig($openssl_lib . '/pkgconfig')
+            //->withLdflags('-L' . $openssl_lib)
+            //->withPkgConfig($openssl_lib . '/pkgconfig')
             ->withBinPath($openssl_prefix . '/bin/')
     );
 }
@@ -91,7 +94,7 @@ function install_openssl_v3_quic(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
                  # ./Configure LIST 
-                ./config {$static} no-shared  enable-tls1_3 --release --prefix={$openssl_prefix}
+                ./config {$static} no-shared  enable-tls1_3 --release --prefix={$openssl_prefix} --libdir=${openssl_prefix}/lib
 EOF
             )
             ->withMakeOptions('build_sw')
@@ -99,8 +102,8 @@ EOF
             ->withPkgName('libcrypto')
             ->withPkgName('libssl')
             ->withPkgName('openssl')
-            ->withLdflags('-L' . $openssl_lib)
-            ->withPkgConfig($openssl_lib . '/pkgconfig')
+            # ->withLdflags('-L' . $openssl_lib)
+            # ->withPkgConfig($openssl_lib . '/pkgconfig')
             ->withBinPath($openssl_prefix . '/bin/')
     );
 }
@@ -1098,7 +1101,7 @@ EOF
             )
             ->withPkgName('libpq')
             ->withBinPath($pgsql_prefix . '/bin/')
-            ->depends('libxml2','liblz4','libzstd','')
+            ->depends('libxml2', 'liblz4', 'libzstd', '')
     );
 }
 

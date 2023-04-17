@@ -195,7 +195,7 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
-    public function getPhpSrcDir():string
+    public function getPhpSrcDir(): string
     {
         return $this->phpSrcDir;
     }
@@ -761,18 +761,14 @@ EOF;
         //暂时由手工维护，依赖关系
         // $this->sortLibrary();
         $this->setExtensionDependPkgNameMap();
-        if ($this->getInputOption('with-dependency-graph')) {
-            foreach ($this->extensionDependLibList as $extension_name => $libs) {
-                //echo $extension_name . ' '  . implode(' ',$libs) . PHP_EOL;
-                $content = '';
-                foreach ($libs as $lib_name) {
-                    $content .= "        {$extension_name} -> {$lib_name}" . PHP_EOL;
-                }
 
-                echo "    subgraph {$extension_name} {" . PHP_EOL . $content . PHP_EOL . '    }' . PHP_EOL;
-            }
-            return;
+        if ($this->getInputOption('with-dependency-graph')) {
+
+            ob_start();
+            include __DIR__ . '/../dependency-graph-visualization/input.template.php';
+            file_put_contents($this->rootDir . '/sapi/dependency-graph-visualization/input.template.dot', ob_get_clean());
         }
+
         if ($this->getOsType() == 'macos') {
             $libcpp = '-lc++';
         } else {
