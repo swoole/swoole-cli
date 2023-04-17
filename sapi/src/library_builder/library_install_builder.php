@@ -586,7 +586,6 @@ function install_libzip(Preprocessor $p)
     $libzstd_prefix = LIBZSTD_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
-    $openssl_lib = $p->getOsType() === 'linux' ? $openssl_prefix . '/lib64' : $openssl_prefix . '/lib';
     $p->addLibrary(
         (new Library('libzip'))
             //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
@@ -612,7 +611,7 @@ function install_libzip(Preprocessor $p)
             -DENABLE_COMMONCRYPTO=OFF \
             -DENABLE_OPENSSL=ON \
             -DOPENSSL_USE_STATIC_LIBS=TRUE \
-            -DOPENSSL_LIBRARIES={$openssl_lib} \
+            -DOPENSSL_LIBRARIES={$openssl_prefix}/lib \
             -DOPENSSL_INCLUDE_DIR={$openssl_prefix}/include \
             -DZLIB_LIBRARY={$zlib_prefix}/lib \
             -DZLIB_INCLUDE_DIR={$zlib_prefix}/include \
