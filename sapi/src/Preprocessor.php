@@ -668,7 +668,7 @@ EOF;
                         $pkgNames[] = trim($item);
                     }
                 }
-                $this->extensionDependLibList[$extension_name][]=$library_name;
+                $this->extensionDependLibList[$extension_name][] = $library_name;
             }
             $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
         }
@@ -763,10 +763,12 @@ EOF;
         $this->setExtensionDependPkgNameMap();
 
         if ($this->getInputOption('with-dependency-graph')) {
-
             ob_start();
             include __DIR__ . '/../dependency-graph-visualization/input.template.php';
-            file_put_contents($this->rootDir . '/sapi/dependency-graph-visualization/input.template.dot', ob_get_clean());
+            file_put_contents(
+                $this->rootDir . '/sapi/dependency-graph-visualization/input.template.dot',
+                ob_get_clean()
+            );
         }
 
         if ($this->getOsType() == 'macos') {
