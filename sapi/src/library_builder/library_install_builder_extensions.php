@@ -83,8 +83,6 @@ function install_php_extension_micro(Preprocessor $p)
 }
 
 
-
-
 function install_php_extension_swow(Preprocessor $p)
 {
     $workDir = $p->getWorkDir();
@@ -110,6 +108,7 @@ EOF
             ->disablePkgName()
     );
 }
+
 function install_php_extension_wasm(Preprocessor $p)
 {
     $workDir = $p->getWorkDir();
@@ -123,17 +122,21 @@ function install_php_extension_wasm(Preprocessor $p)
             ->withManual('https://github.com/wasmerio/wasmer-php.git')
             ->withLabel('php_extension')
             ->withCleanBuildDirectory()
-            ->withBuildScript("
+            ->withBuildScript(
+                "
               ls -lh ./ext
               pwd
               cp -rf ext  {$workDir}/ext/wasm
-            ")
+            "
+            )
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
-}function install_php_extension_zookeeper(Preprocessor $p)
+}
+
+function install_php_extension_zookeeper(Preprocessor $p)
 {
     $workDir = $p->getWorkDir();
     $buildDir = $p->getBuildDir();
@@ -146,14 +149,16 @@ function install_php_extension_wasm(Preprocessor $p)
             ->withManual('https://github.com/wasmerio/wasmer-php.git')
             ->withLabel('php_extension')
             ->withCleanBuildDirectory()
-            ->withBuildScript("
+            ->withBuildScript(
+                "
               ls -lh ./ext
               pwd
               cp -rf ext  {$workDir}/ext/wasm
-            ")
+            "
+            )
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }

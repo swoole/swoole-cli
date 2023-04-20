@@ -11,6 +11,8 @@ return function (Preprocessor $p) {
     $p->withExportVariable('PHP_MONGODB_ICU_LIBS', '$(pkg-config   --libs   --static icu-i18n  icu-io  icu-uc)');
     $p->addExtension(
         (new Extension('mongodb'))
+            ->withHomePage('https://www.php.net/mongodb')
+            ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
             ->withOptions('--enable-mongodb --with-mongodb-system-libs=no --with-mongodb-ssl=openssl')
             ->withPeclVersion('1.14.2')
             ->withManual('https://www.php.net/mongodb')

@@ -32,5 +32,9 @@ return function (Preprocessor $p) {
         $options .= ' --enable-gcov ';
     }
 
-    $p->addExtension((new Extension('opcache'))->withOptions($options));
+    $p->addExtension(
+        (new Extension('opcache'))
+            ->withHomePage('https://www.php.net/opcache')
+            ->withOptions($options)
+    );
 };

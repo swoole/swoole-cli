@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
     $p->withExportVariable('ONIG_LIBS', '$(pkg-config   --libs   --static oniguruma)');
     $p->addExtension(
         (new Extension('mbstring'))
+            ->withHomePage('https://www.php.net/mbstring')
             ->withOptions('--enable-mbstring')
             ->depends('oniguruma')
     );

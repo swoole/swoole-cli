@@ -151,14 +151,14 @@ function install_aria2($p)
 
 function install_nginx($p)
 {
-    $builderDir=$p->getBuildDir();
-    $workDir=$p->getWorkDir();
+    $builderDir = $p->getBuildDir();
+    $workDir = $p->getWorkDir();
 
     $nginx_prefix = NGINX_PREFIX;
 
-    $openssl=$p->getLibrary('openssl');
-    $zlib= $p->getLibrary('zlib');
-    $pcre2=$p->getLibrary('pcre2');
+    $openssl = $p->getLibrary('openssl');
+    $zlib = $p->getLibrary('zlib');
+    $pcre2 = $p->getLibrary('pcre2');
 
     $p->addLibrary(
         (new Library('nginx'))
@@ -263,10 +263,12 @@ function install_xdp(Preprocessor $p): void
             ->withFile('xdp-v1.3.1.tar.gz')
             ->withFile('')
             ->withManual('https://github.com/xdp-project/xdp-tutorial')
-            ->withDownloadScript('xdp-tutorial',<<<EOF
+            ->withDownloadScript(
+                'xdp-tutorial',
+                <<<EOF
 https://github.com/xdp-project/xdp-tutorial.git
 EOF
-)
+            )
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF

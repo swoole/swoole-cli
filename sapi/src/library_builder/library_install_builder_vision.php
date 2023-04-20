@@ -21,7 +21,6 @@ function install_rav1e(Preprocessor $p)
              git clone -b v0.6.3 --depth=1 https://github.com/xiph/rav1e.git
 EOF
         )
-
         ->withPrefix($rav1e_prefix)
         //->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($rav1e_prefix)
@@ -60,7 +59,6 @@ function install_aom(Preprocessor $p)
        git clone -b main --depth=1  https://aomedia.googlesource.com/aom
 EOF
         )
-
         ->withPrefix($aom_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($aom_prefix)
@@ -89,7 +87,10 @@ function install_av1(Preprocessor $p)
     $av1_prefix = '/usr/av1';
     $lib = new Library('av1');
     $lib->withHomePage('https://gitlab.com/AOMediaCodec/SVT-AV1.git')
-        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
+        ->withLicense(
+            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
+            Library::LICENSE_LGPL
+        )
         ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
         ->withFile('ffmpeg-n6.0.tar.gz')
         ->withSkipDownload()
@@ -113,7 +114,10 @@ function install_libvpx(Preprocessor $p)
     $libvpx_prefix = '/usr/libvpx';
     $lib = new Library('libvpx');
     $lib->withHomePage('https://chromium.googlesource.com/webm/libvpx')
-        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
+        ->withLicense(
+            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
+            Library::LICENSE_LGPL
+        )
         ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
         ->withFile('ffmpeg-n6.0.tar.gz')
         ->withSkipDownload()
@@ -219,7 +223,10 @@ function install_mp3lame(Preprocessor $p)
     $mp3lame_prefix = '/usr/mp3lame';
     $lib = new Library('mp3lame');
     $lib->withHomePage('https://ffmpeg.org/')
-        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
+        ->withLicense(
+            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
+            Library::LICENSE_LGPL
+        )
         ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
         ->withFile('ffmpeg-n6.0.tar.gz')
         ->withSkipDownload()
@@ -366,7 +373,10 @@ function install_ffmpeg(Preprocessor $p)
     $ffmpeg_prefix = FFMPEG_PREFIX;
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
-        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
+        ->withLicense(
+            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
+            Library::LICENSE_LGPL
+        )
         ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
         ->withFile('ffmpeg-n6.0.tar.gz')
         ->withManual('https://trac.ffmpeg.org/wiki/CompilationGuide')
@@ -391,8 +401,7 @@ EOF
 EOF
         )
         ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
-        ->withBinPath($ffmpeg_prefix . '/bin/')
-    ;
+        ->withBinPath($ffmpeg_prefix . '/bin/');
 
     $p->addLibrary($lib);
 }
@@ -403,9 +412,14 @@ function install_graphviz(Preprocessor $p)
     $graphviz_prefix = GRAPHVIZ_PREFIX;
     $lib = new Library('graphviz');
     $lib->withHomePage('https://www.graphviz.org/about/')
-        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_LGPL)
+        ->withLicense(
+            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
+            Library::LICENSE_LGPL
+        )
         ->withUrl('https://gitlab.com/graphviz/graphviz/-/archive/main/graphviz-main.tar.gz')
-        ->withUrl('https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/8.0.2/graphviz-8.0.2.tar.gz')
+        ->withUrl(
+            'https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/8.0.2/graphviz-8.0.2.tar.gz'
+        )
         ->withManual('https://www.graphviz.org/download/')
         ->withManual('https://www.graphviz.org/documentation/')
         ->withFile('graphviz-8.0.2.tar.gz')
@@ -437,8 +451,7 @@ EOF
         ->withPkgName('liblab_gamut')
         ->withPkgName('libpathplan')
         ->withPkgName('libxdot')
-        ->withBinPath($graphviz_prefix . '/bin/')
-    ;
+        ->withBinPath($graphviz_prefix . '/bin/');
 
     $p->addLibrary($lib);
 }
@@ -450,7 +463,10 @@ function install_TeX(Preprocessor $p)
     $TeX_prefix = '/usr/TeX';
     $lib = new Library('TeX');
     $lib->withHomePage('https://www.ctan.org/')
-        ->withLicense('https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md', Library::LICENSE_SPEC)
+        ->withLicense(
+            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
+            Library::LICENSE_SPEC
+        )
         ->withUrl('https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet/install-tl.zip')
         ->withManual('https://www.graphviz.org/download/')
         ->withManual('https://www.graphviz.org/documentation/')
@@ -465,10 +481,8 @@ function install_TeX(Preprocessor $p)
         perl install-tl --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet
 EOF
         )
-
         ->withPkgName('')
-        ->withBinPath($TeX_prefix . '/bin/')
-    ;
+        ->withBinPath($TeX_prefix . '/bin/');
 
     $p->addLibrary($lib);
 }

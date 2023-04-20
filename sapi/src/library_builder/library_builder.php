@@ -95,7 +95,7 @@ function libraries_builder($p)
      * # 需要特别设置的地方
      *   //  CFLAGS='-static -O2 -Wall'
      *     直接编译可执行文件 -fPIE
-    *      直接编译成库      -fPIC
+     *      直接编译成库      -fPIC
      *
      * export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
      * LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
@@ -161,7 +161,6 @@ function libraries_builder($p)
     install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
     install_libgd2($p);
     if (0) {
-
         install_libtiff($p); //依赖  zlib libjpeg liblzma  libzstd
         install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
         install_libraw($p);  //依赖 zlib  libjpeg liblcms2
@@ -195,7 +194,6 @@ function libraries_builder($p)
     }
 
     if (0) {
-
         install_openssl_v1($p);
         install_openssl_v3($p);
         install_openssl_v3_quic($p);
@@ -225,7 +223,6 @@ function libraries_builder($p)
         install_jansson($p); //c json 库
 
         //参考 ：HTTP3 and QUIC 有多种实现   curl 使用 http3 参考： https://curl.se/docs/http3.html
-
 
 
         install_quiche($p); // 依赖 boringssl ，需要 rust ；
@@ -259,9 +256,6 @@ function libraries_builder($p)
         install_libgomp($p); //压缩算法
         install_libzip_ng($p); //zlib next
     }
-
-
-
 
 
     if (0) {
@@ -343,7 +337,6 @@ function libraries_builder($p)
 
     install_rav1e($p);  //https://www.cnblogs.com/eguid/p/16015446.html
     if (0) {
-
         install_aom($p);
         install_av1($p);
         install_libvpx($p);
@@ -513,10 +506,9 @@ function libraries_builder($p)
 
     /**
      * 交叉编译
-        --build=BUILD           configure for building on BUILD [BUILD=HOST]
-        --host=HOST             configure for HOST [guessed]
-        --target=TARGET         configure for TARGET [TARGET=HOST]
-
+     * --build=BUILD           configure for building on BUILD [BUILD=HOST]
+     * --host=HOST             configure for HOST [guessed]
+     * --target=TARGET         configure for TARGET [TARGET=HOST]
      */
 
     /**
@@ -532,53 +524,53 @@ function libraries_builder($p)
      */
 
     /**
-            SYSTEM=`uname -s 2>/dev/null`
-            RELEASE=`uname -r 2>/dev/null`
-            MACHINE=`uname -m 2>/dev/null`
-
-            PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+     * SYSTEM=`uname -s 2>/dev/null`
+     * RELEASE=`uname -r 2>/dev/null`
+     * MACHINE=`uname -m 2>/dev/null`
+     *
+     * PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
      */
 
     /**
      *     export CFLAGS="$(pkg-config  --cflags --static expat minizip ) "
-
-           SET (CMAKE_EXE_LINKER_FLAGS "-static")
-
-            target
-                    ARCHIVE 静态库
-                    LIBRARY 动态库
-                    RUNTIME  可执行二进制文件
-
-            # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
-                      -D 从外部传入搜索路径：
-                            <PackageName>_ROOT
-                            <PackageName>_DIR
-
-             c++(CMake篇)  https://zhuanlan.zhihu.com/p/470681241
-            # CMAKE_BUILD_TYPE=Debug Release
-
-            cmake -G"Unix Makefiles" .  \
-            -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
-            -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
-            -DCMAKE_INSTALL_INCLUDEDIR={$libminzip_prefix}/include \
-            -DCMAKE_BUILD_TYPE=Release  \
-            -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON \
-            -DCMAKE_COLOR_MAKEFILE=ON
-
-            set(libgav1_root "${CMAKE_CURRENT_SOURCE_DIR}")
-            set(libgav1_build "${CMAKE_BINARY_DIR}")
-
-            cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-            cmake --build .
-            cmake --install .
-
-            cmake -G 'Visual Studio 17 2022' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-            cmake --build . --config Release
-            cmake --install . --config Release
-
-           CURL ARCHITECTURE   https://curl.se/docs/install.html#:~:text=26%20CPU%20Architectures
-           CURL Cross compile  https://curl.se/docs/install.html#:~:text=Cross%20compile
+     *
+     * SET (CMAKE_EXE_LINKER_FLAGS "-static")
+     *
+     * target
+     * ARCHIVE 静态库
+     * LIBRARY 动态库
+     * RUNTIME  可执行二进制文件
+     *
+     * # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
+     * -D 从外部传入搜索路径：
+     * <PackageName>_ROOT
+     * <PackageName>_DIR
+     *
+     * c++(CMake篇)  https://zhuanlan.zhihu.com/p/470681241
+     * # CMAKE_BUILD_TYPE=Debug Release
+     *
+     * cmake -G"Unix Makefiles" .  \
+     * -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
+     * -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
+     * -DCMAKE_INSTALL_INCLUDEDIR={$libminzip_prefix}/include \
+     * -DCMAKE_BUILD_TYPE=Release  \
+     * -DBUILD_SHARED_LIBS=OFF  \
+     * -DBUILD_STATIC_LIBS=ON \
+     * -DCMAKE_COLOR_MAKEFILE=ON
+     *
+     * set(libgav1_root "${CMAKE_CURRENT_SOURCE_DIR}")
+     * set(libgav1_build "${CMAKE_BINARY_DIR}")
+     *
+     * cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+     * cmake --build .
+     * cmake --install .
+     *
+     * cmake -G 'Visual Studio 17 2022' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+     * cmake --build . --config Release
+     * cmake --install . --config Release
+     *
+     * CURL ARCHITECTURE   https://curl.se/docs/install.html#:~:text=26%20CPU%20Architectures
+     * CURL Cross compile  https://curl.se/docs/install.html#:~:text=Cross%20compile
      */
 
 

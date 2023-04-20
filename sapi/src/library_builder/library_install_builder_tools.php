@@ -47,10 +47,9 @@ EOF
 }
 
 
-
 function install_ninja(Preprocessor $p)
 {
-    $ninja_prefix = '/usr/ninja' ;
+    $ninja_prefix = '/usr/ninja';
     $p->addLibrary(
         $lib = (new Library('ninja'))
             ->withHomePage('https://ninja-build.org/')
@@ -194,6 +193,7 @@ EOF
             ->disablePkgName()
     );
 }
+
 function install_depot_tools(Preprocessor $p): void
 {
     $depot_tools_prefix = DEPOT_TOOLS_PREFIX;
@@ -201,9 +201,14 @@ function install_depot_tools(Preprocessor $p): void
     $p->addLibrary(
         (new Library('depot_tools'))
             ->withHomePage('https://chromium.googlesource.com/chromium/tools/depot_tools')
-            ->withLicense('https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
+            ->withLicense(
+                'https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main/LICENSE',
+                Library::LICENSE_SPEC
+            )
             ->withUrl('https://chromium.googlesource.com/chromium/tools/depot_tools')
-            ->withManual('https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up')
+            ->withManual(
+                'https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up'
+            )
             ->withFile('depot_tools.tar.gz')
             ->disableDownloadWithMirrorURL()
             ->withDownloadScript(
@@ -215,11 +220,13 @@ EOF
             //->withUntarArchiveCommand('cp')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($depot_tools_prefix)
-            ->withBuildScript("
+            ->withBuildScript(
+                "
                 mkdir -p $depot_tools_prefix
                 cd ..
                 cp -rf depot_tools/* $depot_tools_prefix
-            ")
+            "
+            )
             ->withBinPath($depot_tools_prefix)
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
@@ -229,12 +236,12 @@ EOF
 
 function install_gn_test(Preprocessor $p): void
 {
-    $file='';
+    $file = '';
     if ($p->getOsType() == 'linux') {
-        $file='https://chrome-infra-packages.appspot.com/dl/gn/gn/linux-amd64/+/latest';
+        $file = 'https://chrome-infra-packages.appspot.com/dl/gn/gn/linux-amd64/+/latest';
     }
     if ($p->getOsType() == 'macos') {
-        $file='https:chrome-infra-packages.appspot.com/dl/gn/gn/mac-amd64/+/latest';
+        $file = 'https:chrome-infra-packages.appspot.com/dl/gn/gn/mac-amd64/+/latest';
     }
 
     $gn_prefix = '/usr/gn';
@@ -248,17 +255,20 @@ function install_gn_test(Preprocessor $p): void
             ->withUntarArchiveCommand('unzip')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($gn_prefix)
-            ->withBuildScript("
+            ->withBuildScript(
+                "
                chmod a+x gn
                mkdir -p $gn_prefix/bin/
                cp -rf gn $gn_prefix/bin/
-            ")
+            "
+            )
             ->withBinPath($gn_prefix . '/bin/')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
     );
 }
+
 function install_gn(Preprocessor $p): void
 {
     $gn_prefix = '/usr/gn';
@@ -275,7 +285,8 @@ function install_gn(Preprocessor $p): void
             ->withUntarArchiveCommand('cp')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($gn_prefix)
-            ->withBuildScript("
+            ->withBuildScript(
+                "
                 cd gn
                 ls -lha .
 
@@ -284,7 +295,8 @@ function install_gn(Preprocessor $p): void
                 exit 0
                 mkdir -p $gn_prefix
                 cp -rf gn/* $gn_prefix
-            ")
+            "
+            )
             ->withBinPath($gn_prefix . '/bin/')
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
@@ -309,7 +321,9 @@ function install_bazel(Preprocessor $p)
             //->withUrl('https://github.com/bazelbuild/bazel/releases/download/6.0.0/bazel-6.0.0-linux-x86_64')
             //->withUrl('https://github.com/bazelbuild/bazel/archive/refs/tags/6.0.0.tar.gz')
             //->withFile('bazel-6.0.0.tar.gz')
-            ->withUrl('https://github.com/bazelbuild/bazel/releases/download/7.0.0-pre.20230215.2/bazel-7.0.0-pre.20230215.2-dist.zip')
+            ->withUrl(
+                'https://github.com/bazelbuild/bazel/releases/download/7.0.0-pre.20230215.2/bazel-7.0.0-pre.20230215.2-dist.zip'
+            )
             ->withUntarArchiveCommand('unzip')
             ->withManual('https://bazel.build/install')
             ->withManual('https://bazel.build/install/compile-source')

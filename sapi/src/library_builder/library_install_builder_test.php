@@ -118,7 +118,10 @@ function install_libyuv(Preprocessor $p)
         (new Library('libyuv'))
             ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
             ->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
-            ->withLicense('https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
+            ->withLicense(
+                'https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE',
+                Library::LICENSE_SPEC
+            )
             ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
             ->disableDownloadWithMirrorURL()
             ->withDownloadScript(
@@ -282,7 +285,10 @@ function install_libgav1(Preprocessor $p)
     $p->addLibrary(
         (new Library('libgav1'))
             ->withHomePage('https://chromium.googlesource.com/codecs/libgav1')
-            ->withLicense('https://chromium.googlesource.com/codecs/libgav1/+/refs/heads/main/LICENSE', Library::LICENSE_APACHE2)
+            ->withLicense(
+                'https://chromium.googlesource.com/codecs/libgav1/+/refs/heads/main/LICENSE',
+                Library::LICENSE_APACHE2
+            )
             ->withFile('libgav1.tar.gz')
             ->withManual('https://chromium.googlesource.com/codecs/libgav1/+/refs/heads/main')
             ->withDownloadScript(
@@ -578,7 +584,7 @@ function install_libgd2($p)
 {
     $libgd_prefix = LIBGD_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
-    $zlib_prefix= ZLIB_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
     $webp_prefix = WEBP_PREFIX;
     $iconv_prefix = ICONV_PREFIX;
     $lib = new Library('libgd2');
@@ -830,9 +836,6 @@ EOF
 
     $p->addLibrary($lib);
 }
-
-
-
 
 
 function install_libedit(Preprocessor $p)
@@ -1132,7 +1135,7 @@ EOF;
 EOF
             )->withPkgName('gnutls')
             ->withBinPath($gnutls_prefix . '/bin/')
-        //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
+    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
 }
 
@@ -1179,7 +1182,7 @@ EOF
 EOF
             )
             ->disableDefaultPkgConfig()
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1209,7 +1212,7 @@ function install_wolfssl($p)
 EOF
             )
             ->withPkgName('wolfssl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1237,7 +1240,7 @@ function install_libressl($p)
 EOF
             )
             ->withPkgName('libressl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1941,7 +1944,7 @@ function install_pcre2(Preprocessor $p)
          
  EOF
             )
-        //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
+    //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
     );
 }
 
@@ -1957,7 +1960,6 @@ function install_pgsql_test(Preprocessor $p)
             //https://www.postgresql.org/docs/devel/install-make.html#INSTALL-PROCEDURE-MAKE
             ->withManual('https://www.postgresql.org/docs/')
             ->withCleanBuildDirectory()
-
             ->withConfigure(
                 '
              # src/Makefile.shlib 有静态配置
@@ -2080,10 +2082,10 @@ install-libpq5555.a: install-lib-static install-lib-pc
                 '
             '
             )
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2097,7 +2099,6 @@ function install_fastdfs($p)
             ->withUrl('https://github.com/happyfish100/fastdfs/archive/refs/tags/V6.9.4.tar.gz')
             ->withFile('fastdfs-V6.9.4.tar.gz')
             ->withPrefix('/usr/fastdfs/')
-
             ->withConfigure(
                 '
             export DESTDIR=/usr/libserverframe/
@@ -2110,10 +2111,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2126,7 +2127,6 @@ function install_libserverframe($p)
             ->withUrl('https://github.com/happyfish100/libserverframe/archive/refs/tags/V1.1.25.tar.gz')
             ->withFile('libserverframe-V1.1.25.tar.gz')
             ->withPrefix('/usr/libserverframe/')
-
             ->withConfigure(
                 '
                 export DESTDIR=/usr/libserverframe/
@@ -2135,9 +2135,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2151,7 +2151,6 @@ function install_libfastcommon($p)
             ->withFile('libfastcommon-V1.0.66.tar.gz')
             ->withPrefix('/usr/libfastcommon/')
             ->withCleanBuildDirectory()
-
             ->withConfigure(
                 '
              export DESTDIR=/usr/libfastcommon
@@ -2162,9 +2161,9 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -2354,7 +2353,7 @@ EOF
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->withSkipBuildLicense()
-        // ->withSkipBuildInstall()
+    // ->withSkipBuildInstall()
     );
 }
 
@@ -2392,13 +2391,14 @@ function install_unixodbc(Preprocessor $p)
 
 function install_xorg_macros(Preprocessor $p)
 {
-
     $xorg_macros_prefix = XORG_MACROS_PREFIX;
     $lib = new Library('xorg_macros');
     $lib->withHomePage('https://github.com/freedesktop/xorg-macros.git')
         ->withLicense('https://github.com/freedesktop/xorg-macros/blob/master/COPYING', Library::LICENSE_SPEC)
         ->withManual('https://gitlab.freedesktop.org/xorg/util/macros/-/blob/util-macros-1.20.0/INSTALL')
-        ->withUrl('https://gitlab.freedesktop.org/xorg/util/macros/-/archive/util-macros-1.20.0/macros-util-macros-1.20.0.tar.gz')
+        ->withUrl(
+            'https://gitlab.freedesktop.org/xorg/util/macros/-/archive/util-macros-1.20.0/macros-util-macros-1.20.0.tar.gz'
+        )
         ->withFile('util-macros-1.20.0.tar.gz')
         ->withDownloadScript(
             'macros',
@@ -2423,9 +2423,9 @@ EOF
 
     $p->addLibrary($lib);
 }
+
 function install_xorgproto(Preprocessor $p)
 {
-
     $xorgproto_prefix = XORGPROTO_PREFIX;
     $lib = new Library('xorgproto');
     $lib->withHomePage('xorgproto')
@@ -2476,7 +2476,6 @@ EOF
 
 function install_libX11(Preprocessor $p)
 {
-
     $libX11_prefix = LIBX11_PREFIX;
     $lib = new Library('libX11');
     $lib->withHomePage('http://www.x.org/releases/current/doc/libX11/libX11/libX11.html')
@@ -2497,7 +2496,6 @@ function install_libX11(Preprocessor $p)
         --enable-static=yes 
 EOF
         )
-
         ->withLdflags('');
 
     $p->addLibrary($lib);

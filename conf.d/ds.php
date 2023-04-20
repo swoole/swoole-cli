@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
             ->withOptions(' --enable-ds')
             ->withPeclVersion('1.4.0')
             ->withHomePage('https://github.com/php-ds/ext-ds')
+            ->withManual('https://www.php.net/ds')
             ->withLicense('https://github.com/php-ds/ext-ds/blob/master/LICENSE', Extension::LICENSE_MIT)
     );
 };

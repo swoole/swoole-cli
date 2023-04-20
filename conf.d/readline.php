@@ -7,6 +7,7 @@ use SwooleCli\Library;
 return function (Preprocessor $p) {
     $p->addExtension(
         (new Extension('readline'))
+            ->withHomePage('https://www.php.net/readline')
             ->withOptions('--with-readline=' . READLINE_PREFIX)
             ->depends('ncurses', 'readline')
     );

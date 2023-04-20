@@ -75,6 +75,7 @@ EOF
             ->withBinPath($openssl_prefix . '/bin/')
     );
 }
+
 function install_openssl_v3_quic(Preprocessor $p)
 {
     $openssl_prefix = OPENSSL_PREFIX;
@@ -113,13 +114,14 @@ function install_libiconv(Preprocessor $p): void
     $libiconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('libiconv'))
+            ->withHomePage('https://www.gnu.org/software/libiconv/')
+            ->withManual('https://www.gnu.org/software/libiconv/')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz')
             ->withPrefix($libiconv_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libiconv_prefix)
-            ->withPkgConfig('')
             ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withBinPath($libiconv_prefix . '/bin/')
     );
 }
@@ -209,13 +211,11 @@ function install_brotli(Preprocessor $p)
     $p->addLibrary(
         (new Library('brotli'))
             ->withHomePage('https://github.com/google/brotli')
-            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withManual('https://github.com/google/brotli')//有多种构建方式，选择cmake 构建
+            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
             ->withFile('brotli-1.0.9.tar.gz')
             ->withPrefix($brotli_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($brotli_prefix)
             ->withBuildScript(
                 <<<EOF
             cmake . -DCMAKE_BUILD_TYPE=Release \
@@ -225,7 +225,7 @@ function install_brotli(Preprocessor $p)
             -DBROTLI_DISABLE_TESTS=OFF \
             -DBROTLI_BUNDLED_MODE=OFF \
             && \
-            cmake --build . --config Release --target install 
+            cmake --build . --config Release --target install
 EOF
             )
             ->withScriptAfterInstall(
@@ -236,7 +236,7 @@ EOF
             cp  -f {$brotli_prefix}/lib/libbrotlicommon-static.a {$brotli_prefix}/lib/libbrotli.a
             mv     {$brotli_prefix}/lib/libbrotlicommon-static.a {$brotli_prefix}/lib/libbrotlicommon.a
             mv     {$brotli_prefix}/lib/libbrotlienc-static.a    {$brotli_prefix}/lib/libbrotlienc.a
-            mv     {$brotli_prefix}/lib/libbrotlidec-static.a    {$brotli_prefix}/lib/libbrotlidec.a 
+            mv     {$brotli_prefix}/lib/libbrotlidec-static.a    {$brotli_prefix}/lib/libbrotlidec.a
 EOF
             )
             ->withPkgName('libbrotlicommon')
@@ -251,14 +251,13 @@ function install_cares(Preprocessor $p)
     $cares_prefix = CARES_PREFIX;
     $p->addLibrary(
         (new Library('cares'))
+            ->withHomePage('https://c-ares.org/')
+            ->withManual('https://c-ares.org/')
+            ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
             ->withUrl('https://c-ares.org/download/c-ares-1.19.0.tar.gz')
             ->withPrefix($cares_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($cares_prefix)
-            ->withConfigure("./configure --prefix={$cares_prefix} --enable-static --disable-shared")
+            ->withConfigure('./configure --prefix=' . $cares_prefix . ' --enable-static --disable-shared')
             ->withPkgName('libcares')
-            ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
-            ->withHomePage('https://c-ares.org/')
     );
 }
 
@@ -268,20 +267,20 @@ function install_gmp(Preprocessor $p)
     $gmp_prefix = GMP_PREFIX;
     $p->addLibrary(
         (new Library('gmp'))
+            ->withHomePage('https://gmplib.org/')
+            ->withManual('https://gmplib.org/')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withUrl('https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz')
             ->withPrefix($gmp_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($gmp_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help
+            ./configure --help 
             ./configure \
             --prefix=$gmp_prefix \
             --enable-static=yes \
-            --enable-static=no 
+            --enable-shared=no 
 EOF
             )
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withPkgName('gmp')
     );
 }
@@ -297,12 +296,13 @@ function install_ncurses(Preprocessor $p)
     $ncurses_prefix = NCURSES_PREFIX;
     $p->addLibrary(
         (new Library('ncurses'))
+            ->withHomePage('https://invisible-island.net/ncurses/')
+            ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
+            ->withManual('https://invisible-island.net/ncurses/')
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withPrefix($ncurses_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($ncurses_prefix)
             ->withConfigure(
                 <<<EOF
             mkdir -p {$ncurses_prefix}/lib/pkgconfig
@@ -328,29 +328,27 @@ function install_ncurses(Preprocessor $p)
             --without-tests \
             --without-dlsym \
             --without-debug \
-            --enable-symlinks 
+            --enable-symlinks
 EOF
             )
             ->withScriptBeforeInstall(
                 '
-                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/formw.pc ' . $ncurses_prefix . '/lib/pkgconfig/form.pc ;
-                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/menuw.pc ' . $ncurses_prefix . '/lib/pkgconfig/menu.pc ;
-                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/ncurses++w.pc ' . $ncurses_prefix . '/lib/pkgconfig/ncurses++.pc ;
-                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/ncursesw.pc ' . $ncurses_prefix . '/lib/pkgconfig/ncurses.pc ;
-                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/panelw.pc ' . $ncurses_prefix . '/lib/pkgconfig/panel.pc ;
-                ln -s ' . $ncurses_prefix . '/lib/pkgconfig/ticw.pc ' . $ncurses_prefix . '/lib/pkgconfig/tic.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/formw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/form.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/menuw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/menu.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++w.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncursesw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/panelw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/panel.pc ;
+                ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ticw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/tic.pc ;
 
-                ln -s ' . $ncurses_prefix . '/lib/libformw.a ' . $ncurses_prefix . '/lib/libform.a ;
-                ln -s ' . $ncurses_prefix . '/lib/libmenuw.a ' . $ncurses_prefix . '/lib/libmenu.a ;
-                ln -s ' . $ncurses_prefix . '/lib/libncurses++w.a ' . $ncurses_prefix . '/lib/libncurses++.a ;
-                ln -s ' . $ncurses_prefix . '/lib/libncursesw.a ' . $ncurses_prefix . '/lib/libncurses.a ;
-                ln -s ' . $ncurses_prefix . '/lib/libpanelw.a  ' . $ncurses_prefix . '/lib/libpanel.a ;
-                ln -s ' . $ncurses_prefix . '/lib/libticw.a ' . $ncurses_prefix . '/lib/libtic.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libformw.a ' . NCURSES_PREFIX . '/lib/libform.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libmenuw.a ' . NCURSES_PREFIX . '/lib/libmenu.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libncurses++w.a ' . NCURSES_PREFIX . '/lib/libncurses++.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libncursesw.a ' . NCURSES_PREFIX . '/lib/libncurses.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libpanelw.a  ' . NCURSES_PREFIX . '/lib/libpanel.a ;
+                ln -s ' . NCURSES_PREFIX . '/lib/libticw.a ' . NCURSES_PREFIX . '/lib/libtic.a ;
             '
             )
             ->withPkgName('ncursesw')
-            ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/projectceladon/libncurses')
             ->withBinPath($ncurses_prefix . '/bin/')
     );
 }
@@ -361,12 +359,12 @@ function install_readline(Preprocessor $p)
     $readline_prefix = READLINE_PREFIX;
     $p->addLibrary(
         (new Library('readline'))
+            ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
+            ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
             ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
-            ->withPrefix($readline_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($readline_prefix)
+            ->withPrefix(READLINE_PREFIX)
             ->withConfigure(
                 <<<EOF
                 ./configure \
@@ -374,14 +372,11 @@ function install_readline(Preprocessor $p)
                 --enable-static \
                 --disable-shared \
                 --with-curses \
-                --enable-multibyte 
+                --enable-multibyte
 EOF
             )
             ->withPkgName('readline')
-            ->withLdflags('-L' . $readline_prefix . '/lib')
-            ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
-            ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
-            ->withBinPath($readline_prefix . '/bin/')
+            ->withLdflags('-L' . READLINE_PREFIX . '/lib')
             ->depends('ncurses')
     );
 }
@@ -392,14 +387,15 @@ function install_libyaml(Preprocessor $p): void
     $libyaml_prefix = LIBYAML_PREFIX;
     $p->addLibrary(
         (new Library('libyaml'))
+            ->withHomePage('https://pyyaml.org/wiki/LibYAML')
+            ->withManual('https://pyyaml.org/wiki/LibYAML')
+            ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
             ->withUrl('https://pyyaml.org/download/libyaml/yaml-0.2.5.tar.gz')
-            ->withPrefix($libyaml_prefix)
+            ->withPrefix(LIBYAML_PREFIX)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libyaml_prefix)
-            ->withConfigure('./configure --prefix=' . $libyaml_prefix . ' --enable-static --disable-shared')
+            ->withConfigure('./configure --prefix=' . LIBYAML_PREFIX . ' --enable-static --disable-shared')
             ->withPkgName('yaml-0.1')
-            ->withLicense('https://pyyaml.org/wiki/LibYAML', Library::LICENSE_MIT)
-            ->withHomePage('https://pyyaml.org/wiki/LibYAML')
     );
 }
 
@@ -443,14 +439,13 @@ function install_zlib(Preprocessor $p)
     $zlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('zlib'))
-            //->withUrl('https://zlib.net/zlib-1.2.13.tar.gz')
-            ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
-            ->withPrefix($zlib_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($zlib_prefix)
-            ->withConfigure('./configure --prefix=' . $zlib_prefix . ' --static')
             ->withHomePage('https://zlib.net/')
             ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
+            ->withUrl('https://udomain.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz')
+            ->withPrefix(ZLIB_PREFIX)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($zlib_prefix)
+            ->withConfigure('./configure --prefix=' . ZLIB_PREFIX . ' --static')
             ->withPkgName('zlib')
             ->depends('libxml2', 'bzip2')
     );
@@ -705,6 +700,7 @@ function install_oniguruma(Preprocessor $p)
     $oniguruma_prefix = ONIGURUMA_PREFIX;
     $p->addLibrary(
         (new Library('oniguruma'))
+            ->withHomePage('https://github.com/kkos/oniguruma.git')
             ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
             ->withPrefix($oniguruma_prefix)
             ->withConfigure(
@@ -744,36 +740,24 @@ function install_libidn2(Preprocessor $p)
     $libiconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('libidn2'))
-            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
+            ->withHomePage('https://gitlab.com/libidn/libidn2')
+            ->withManual('https://www.gnu.org/software/libidn/libidn2/manual/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
+            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
             ->withPrefix($libidn2_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libidn2_prefix)
             ->withConfigure(
                 <<<EOF
-            # 依赖 intl libunistring ； (gettext库包含intl 、coreutils库包含libunistring )
-            # 解决依赖  apk add  gettext  coreutils
-            
             ./configure --help
             ./configure --prefix={$libidn2_prefix} \
             enable_static=yes \
             enable_shared=no \
             --disable-doc \
             --with-libiconv-prefix={$libiconv_prefix} \
-            --with-libintl-prefix
+            --with-libintl-prefix 
 
 EOF
             )
-            ->withScriptAfterInstall(
-                "
-            # 查看是否有动态链接库 (已确认，无动态链接库）
-            # nm -D {$libidn2_prefix}/lib/libidn2.a
-            # nm {$libidn2_prefix}/lib/libidn2.a
-            ar -t {$libidn2_prefix}/lib/libidn2.a
-            "
-            )
             ->withPkgName('libidn2')
-            ->withBinPath($libidn2_prefix . '/bin/')
             ->depends('libiconv')
     );
 }
@@ -951,7 +935,6 @@ EOF
     #--with-ngtcp2=/usr/ngtcp2 \
     #--with-quiche=/usr/quiche
     #--with-msh3=PATH
-
     /**
      * configure: pkg-config: SSL_LIBS: "-lssl -lcrypto"
      * configure: pkg-config: SSL_LDFLAGS: "-L/usr/openssl/lib"

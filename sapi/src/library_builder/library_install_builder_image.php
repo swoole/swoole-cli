@@ -7,8 +7,10 @@ use SwooleCli\Preprocessor;
 function install_libjpeg(Preprocessor $p)
 {
     $libjpeg_prefix = JPEG_PREFIX;
+
     $lib = new Library('libjpeg');
     $lib->withHomePage('https://libjpeg-turbo.org/')
+        ->withManual('https://libjpeg-turbo.org/Documentation/Documentation')
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
         ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
@@ -42,11 +44,11 @@ function install_libgif(Preprocessor $p)
     $libgif_prefix = GIF_PREFIX;
     $p->addLibrary(
         (new Library('libgif'))
-            ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
+            ->withHomePage('https://giflib.sourceforge.net/')
+            ->withManual('https://giflib.sourceforge.net/intro.html')
             ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
+            ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
             ->withPrefix($libgif_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libgif_prefix)
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
             ->withScriptAfterInstall(
@@ -62,8 +64,6 @@ function install_libgif(Preprocessor $p)
                 EOF
             )
             ->withLdflags('-L' . $libgif_prefix . '/lib')
-            ->withPkgName('')
-            ->withPkgConfig('')
     );
 
 
@@ -109,23 +109,20 @@ function install_libpng(Preprocessor $p)
     $libzlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('libpng'))
-            ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
+            ->withHomePage('http://www.libpng.org/pub/png/libpng.html')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
+            ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withPrefix($libpng_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libpng_prefix)
             ->withConfigure(
                 <<<EOF
                 ./configure --help
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
-                LDFLAGS="$(pkg-config --libs-only-L      --static zlib )" \
-                LIBS="$(pkg-config --libs-only-l         --static zlib )" \
-                ./configure \
-                --prefix={$libpng_prefix} \
-                --enable-static \
-                --disable-shared \
+                LDFLAGS="$(pkg-config   --libs-only-L    --static zlib )" \
+                LIBS="$(pkg-config      --libs-only-l    --static zlib )" \
+                ./configure --prefix={$libpng_prefix} \
+                --enable-static --disable-shared \
                 --with-zlib-prefix={$libzlib_prefix} \
-                --with-binconfigs
+                --with-binconfigs  
 EOF
             )
             ->withPkgName('libpng')
@@ -144,10 +141,11 @@ function install_libwebp(Preprocessor $p)
     $libgif_prefix = GIF_PREFIX;
     $p->addLibrary(
         (new Library('libwebp'))
+            ->withHomePage('https://chromium.googlesource.com/webm/libwebp')
+            ->withManual('https://chromium.googlesource.com/webm/libwebp/+/HEAD/doc/building.md')
+            ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
             ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
             ->withFile('libwebp-1.2.1.tar.gz')
-            ->withHomePage('https://github.com/webmproject/libwebp')
-            ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
             ->withPrefix($libwebp_prefix)
             ->withConfigure(
                 <<<EOF
@@ -166,7 +164,7 @@ function install_libwebp(Preprocessor $p)
                 --with-jpeglibdir={$libjpeg_prefix}/lib \
                 --with-gifincludedir={$libgif_prefix}/include \
                 --with-giflibdir={$libgif_prefix}/lib \
-                --disable-tiff 
+                --disable-tiff  
 EOF
             )
             ->withPkgName('libwebp')
@@ -186,14 +184,13 @@ function install_freetype(Preprocessor $p)
     $p->addLibrary(
         (new Library('freetype'))
             ->withHomePage('https://freetype.org/')
-            ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
+            ->withManual('https://freetype.org/freetype2/docs/documentation.html')
             ->withLicense(
                 'https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/GPLv2.TXT',
                 Library::LICENSE_GPL
             )
+            ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
             ->withPrefix($freetype_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($freetype_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
@@ -209,7 +206,7 @@ function install_freetype(Preprocessor $p)
             --with-bzip2=yes \
             --with-png=yes \
             --with-harfbuzz=no  \
-            --with-brotli=yes
+            --with-brotli=yes  
 EOF
             )
             ->withPkgName('freetype2')
@@ -318,20 +315,20 @@ EOF
 function install_imagemagick(Preprocessor $p): void
 {
     /**
-    # lcms2 libtiff-4 libraw libraw_r
-    # export RAW_R_CFLAGS=$(pkg-config  --cflags-only-I --static libraw_r )
-    # export RAW_R_LIBS=$(pkg-config    --libs-only-l   --static libraw_r )
-
-    # export TIFF_CFLAGS=$(pkg-config  --cflags-only-I --static libtiff-4 )
-    # export TIFF_LIBS=$(pkg-config    --libs-only-l   --static libtiff-4 )
-
-    #  HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
-    #  HEIF_LIBS   linker flags for HEIF, overriding pkg-config
-    #  JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
-    #  JXL_LIBS    linker flags for JXL, overriding pkg-config
-
-    # export LCMS2_CFLAGS=$(pkg-config  --cflags-only-I --static lcms2 )
-    # export LCMS2_LIBS=$(pkg-config    --libs-only-l   --static lcms2 )
+     * # lcms2 libtiff-4 libraw libraw_r
+     * # export RAW_R_CFLAGS=$(pkg-config  --cflags-only-I --static libraw_r )
+     * # export RAW_R_LIBS=$(pkg-config    --libs-only-l   --static libraw_r )
+     *
+     * # export TIFF_CFLAGS=$(pkg-config  --cflags-only-I --static libtiff-4 )
+     * # export TIFF_LIBS=$(pkg-config    --libs-only-l   --static libtiff-4 )
+     *
+     * #  HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
+     * #  HEIF_LIBS   linker flags for HEIF, overriding pkg-config
+     * #  JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
+     * #  JXL_LIBS    linker flags for JXL, overriding pkg-config
+     *
+     * # export LCMS2_CFLAGS=$(pkg-config  --cflags-only-I --static lcms2 )
+     * # export LCMS2_LIBS=$(pkg-config    --libs-only-l   --static lcms2 )
      */
     $bzip2_prefix = BZIP2_PREFIX;
     $imagemagick_prefix = IMAGEMAGICK_PREFIX;
