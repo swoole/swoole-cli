@@ -148,12 +148,12 @@ EOF
               -DENABLE_CRYPT_NONE=OFF
               -DCRYPTO_BACKEND=OpenSSL \
               -DBUILD_TESTING=OFF \
-              -DBUILD_EXAMPLES=OFF 
+              -DBUILD_EXAMPLES=OFF
               cmake --build . --target install
 EOF
             )
             ->withPkgName('libssh2')
-            ->depends('zlib')
+            ->depends('zlib', 'openssl')
     );
 
 
@@ -280,6 +280,7 @@ EOF
             --without-wolfssl \
             --without-bearssl \
             --without-rustls
+
 EOF
             )
             ->withPkgName('libcurl')
