@@ -6,6 +6,6 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $p->addExtension(
         (new Extension('swoole_loader'))
-        ->withOptions('--disable-data_encrypt --enable-static-compile')
+            ->withOptions('--disable-data_encrypt --enable-static-compile')
     );
 };
