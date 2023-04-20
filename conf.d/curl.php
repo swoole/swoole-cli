@@ -9,8 +9,8 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('brotli'))
             ->withHomePage('https://github.com/google/brotli')
-            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withManual('https://github.com/google/brotli')//有多种构建方式，选择cmake 构建
+            ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
             ->withFile('brotli-1.0.9.tar.gz')
             ->withPrefix($brotli_prefix)
@@ -45,20 +45,23 @@ EOF
 
     $p->addLibrary(
         (new Library('cares'))
+            ->withHomePage('https://c-ares.org/')
+            ->withManual('https://c-ares.org/')
+            ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
             ->withUrl('https://c-ares.org/download/c-ares-1.19.0.tar.gz')
             ->withPrefix(CARES_PREFIX)
             ->withConfigure('./configure --prefix=' . CARES_PREFIX . ' --enable-static --disable-shared')
             ->withPkgName('libcares')
-            ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
-            ->withHomePage('https://c-ares.org/')
     );
 
     $libidn2_prefix = LIBIDN2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('libidn2'))
-            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
+            ->withHomePage('https://gitlab.com/libidn/libidn2')
+            ->withManual('https://www.gnu.org/software/libidn/libidn2/manual/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
+            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
             ->withPrefix($libidn2_prefix)
             ->withConfigure(
                 <<<EOF
@@ -80,6 +83,8 @@ EOF
     $p->addLibrary(
         (new Library('nghttp2'))
             ->withHomePage('https://github.com/nghttp2/nghttp2.git')
+            ->withManual('https://nghttp2.org/')
+            ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
             ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
             ->withPrefix($nghttp2_prefix)
             ->withConfigure(
@@ -113,7 +118,6 @@ EOF
             --with-boost=no
 EOF
             )
-            ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
             ->withPkgName('libnghttp2')
             ->depends('openssl', 'zlib', 'libxml2', 'cares')
     );
@@ -123,10 +127,10 @@ EOF
     $p->addLibrary(
         (new Library('libssh2'))
             ->withHomePage('https://www.libssh2.org/')
-            ->withUrl('https://www.libssh2.org/download/libssh2-1.10.0.tar.gz')
             ->withLicense('https://www.libssh2.org/license.html', Library::LICENSE_SPEC)
             ->withManual('https://github.com/libssh2/libssh2.git')
             ->withManual('https://github.com/libssh2/libssh2/blob/master/docs/INSTALL_CMAKE.md')
+            ->withUrl('https://www.libssh2.org/download/libssh2-1.10.0.tar.gz')
             ->withPrefix($libssh2_prefix)
             ->withBuildScript(
                 <<<EOF
@@ -158,9 +162,9 @@ EOF
     $p->addLibrary(
         (new Library('curl'))
             ->withHomePage('https://curl.se/')
-            ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
             ->withManual('https://curl.se/docs/install.html')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
+            ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
             ->withPrefix($curl_prefix)
             ->withConfigure(
                 <<<EOF
@@ -210,5 +214,10 @@ EOF
             ->withBinPath($curl_prefix . '/bin/')
             ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'nghttp2', 'libidn2', 'libssh2')
     );
-    $p->addExtension((new Extension('curl'))->withOptions('--with-curl')->depends('curl'));
+    $p->addExtension(
+        (new Extension('curl'))
+            ->withHomePage('https://www.php.net/curl')
+            ->withOptions('--with-curl')
+            ->depends('curl')
+    );
 };

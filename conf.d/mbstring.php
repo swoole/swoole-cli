@@ -8,6 +8,7 @@ return function (Preprocessor $p) {
     $oniguruma_prefix = ONIGURUMA_PREFIX;
     $p->addLibrary(
         (new Library('oniguruma'))
+            ->withHomePage('https://github.com/kkos/oniguruma.git')
             ->withUrl('https://codeload.github.com/kkos/oniguruma/tar.gz/refs/tags/v6.9.7')
             ->withPrefix($oniguruma_prefix)
             ->withConfigure(
@@ -22,6 +23,7 @@ return function (Preprocessor $p) {
     $p->withExportVariable('ONIG_LIBS', '$(pkg-config   --libs   --static oniguruma)');
     $p->addExtension(
         (new Extension('mbstring'))
+            ->withHomePage('https://www.php.net/mbstring')
             ->withOptions('--enable-mbstring')
             ->depends('oniguruma')
     );

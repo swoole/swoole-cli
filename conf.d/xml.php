@@ -9,6 +9,9 @@ return function (Preprocessor $p) {
     $iconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('libxml2'))
+            ->withHomePage('https://gitlab.gnome.org/GNOME/libxml2/')
+            ->withManual('https://gitlab.gnome.org/GNOME/libxml2/-/wikis')
+            ->withLicense('https://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
             ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.10/libxml2-v2.9.10.tar.gz')
             ->withPrefix($libxml2_prefix)
             ->withConfigure(
@@ -17,13 +20,15 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libxml-2.0')
-            ->withLicense('https://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
             ->depends('libiconv')
             ->withBinPath($libxml2_prefix . '/bin/')
     );
     $p->addExtension(
         (new Extension('xml'))
-        ->withOptions('--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml')
-        ->depends('libxml2')
+            ->withHomePage('https://www.php.net/xml')
+            ->withOptions(
+                '--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml'
+            )
+            ->depends('libxml2')
     );
 };
