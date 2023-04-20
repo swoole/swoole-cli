@@ -531,7 +531,7 @@ EOF;
 
     public array $extensionDependentPackageNameMap = [];
 
-    public array $extensionDependsPackageNames = [];
+    public array $extensionDependentPackageNames = [];
 
     public function setExtensionDependency(): void
     {
@@ -563,10 +563,9 @@ EOF;
         $pkgNames = [];
         foreach ($this->extensionDependentPackageNameMap as $extensionName => $value) {
             $pkgNames = array_merge($pkgNames, $value);
-            //去重
-            $this->extensionDependentPackageNameMap[$extensionName] = array_values(array_unique($pkgNames));
+            $this->extensionDependentPackageNameMap[$extensionName] = array_values(array_unique($value));
         }
-        $this->extensionDependsPackageNames = array_values(array_unique($pkgNames));
+        $this->extensionDependentPackageNames = array_values(array_unique($pkgNames));
     }
 
     private function getLibraryDependenciesByName($libraryName, &$packages): void
@@ -760,7 +759,7 @@ EOF;
         }
 
         //$packagesArr = $this->getLibraryPackages();
-        $packagesArr = $this->extensionDependsPackageNames;
+        $packagesArr = $this->extensionDependentPackageNames;
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);
             $this->withVariable('PACKAGES', $packages);
