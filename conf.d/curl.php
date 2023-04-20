@@ -151,7 +151,7 @@ EOF
 EOF
             )
             ->withPkgName('libssh2')
-            ->depends('zlib')
+            ->depends('zlib', 'openssl')
     );
 
     $curl_prefix = CURL_PREFIX;
@@ -206,8 +206,8 @@ EOF
             --with-libssh2 \
             --with-nghttp2 \
             --without-ngtcp2 \
-            --without-nghttp3 
-            
+            --without-nghttp3
+
 EOF
             )
             ->withPkgName('libcurl')
