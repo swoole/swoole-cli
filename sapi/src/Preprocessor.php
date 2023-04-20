@@ -459,6 +459,8 @@ class Preprocessor
 
     public array $extensionDependentPackageNameMap = [];
 
+    public array $extensionDependentPackageNames = [];
+
     public function setExtensionDependency(): void
     {
         $extensionDepsMap = [];
@@ -487,10 +489,11 @@ class Preprocessor
             $this->extensionDependentPackageNameMap[$extensionName] = $pkgNames;
         }
         $pkgNames = [];
-        foreach ($this->extensionDependentPackageNameMap as $value) {
+        foreach ($this->extensionDependentPackageNameMap as $extensionName => $value) {
             $pkgNames = array_merge($pkgNames, $value);
+            $this->extensionDependentPackageNameMap[$extensionName] = array_values(array_unique($value));
         }
-        $this->extensionDependentPackageNameMap = array_values(array_unique($pkgNames));
+        $this->extensionDependentPackageNames = array_values(array_unique($pkgNames));
     }
 
     private function getLibraryDependenciesByName($libraryName, &$packages): void
