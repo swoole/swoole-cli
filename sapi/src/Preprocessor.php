@@ -5,6 +5,7 @@ namespace SwooleCli;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
+use RuntimeException;
 
 class Preprocessor
 {
@@ -522,6 +523,63 @@ EOF;
         return isset($this->extensionMap[$name]);
     }
 
+    public array $extensionDependentLibraryMap = [];
+
+    public array $extensionDependentPackageNameMap = [];
+
+    public array $extensionDependentPackageNames = [];
+
+    public function setExtensionDependency(): void
+    {
+        $extensionDepsMap = [];
+        foreach ($this->extensionList as $extension) {
+            if (empty($extension->deps)) {
+                $this->extensionDependentLibraryMap[$extension->name] = [];
+            } else {
+                $extensionDepsMap[$extension->name] = $extension->deps;
+            }
+        }
+
+        foreach ($extensionDepsMap as $extensionName => $deps) {
+            $pkgNames = [];
+            foreach ($deps as $libraryName) {
+                $packages = [];
+                $this->getLibraryDependenciesByName($libraryName, $packages);
+                foreach ($packages as $item) {
+                    if (empty($item)) {
+                        continue;
+                    } else {
+                        $pkgNames[] = trim($item);
+                    }
+                }
+                $this->extensionDependentLibraryMap[$extensionName][] = $libraryName;
+            }
+            $this->extensionDependentPackageNameMap[$extensionName] = $pkgNames;
+        }
+        $pkgNames = [];
+        foreach ($this->extensionDependentPackageNameMap as $extensionName => $value) {
+            $pkgNames = array_merge($pkgNames, $value);
+            $this->extensionDependentPackageNameMap[$extensionName] = array_values(array_unique($value));
+        }
+        $this->extensionDependentPackageNames = array_values(array_unique($pkgNames));
+    }
+
+    private function getLibraryDependenciesByName($libraryName, &$packages): void
+    {
+        if (!isset($this->libraryMap[$libraryName])) {
+            throw new RuntimeException('library ' . $libraryName . ' no found');
+        }
+        $lib = $this->libraryMap[$libraryName];
+        if (!empty($lib->pkgNames)) {
+            $packages = array_merge($packages, $lib->pkgNames);
+        }
+        if (!empty($lib->deps)) {
+            foreach ($lib->deps as $name) {
+                $this->getLibraryDependenciesByName($name, $packages);
+            }
+        }
+    }
+
     public function addEndCallback($fn)
     {
         $this->endCallbacks[] = $fn;
@@ -707,6 +765,7 @@ EOF;
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
         $this->sortLibrary();
+        $this->setExtensionDependency();
 
         if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();
@@ -726,6 +785,15 @@ EOF;
         file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
         copy($this->rootDir . '/sapi/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
+
+        if ($this->getInputOption('with-dependency-graph')) {
+            ob_start();
+            include __DIR__ . '/ExtensionDependencyGraph.php';
+            file_put_contents(
+                $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot',
+                ob_get_clean()
+            );
+        }
 
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
