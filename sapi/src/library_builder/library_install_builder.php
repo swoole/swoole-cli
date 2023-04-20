@@ -60,7 +60,7 @@ function install_openssl_v3(Preprocessor $p)
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-                # ./Configure LIST 
+                # ./Configure LIST
                 # INSTALL help info
                 ./config {$static} no-shared  --release --prefix={$openssl_prefix} --libdir=${openssl_prefix}/lib
 EOF
@@ -94,7 +94,7 @@ function install_openssl_v3_quic(Preprocessor $p)
             ->withCleanPreInstallDirectory($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-                 # ./Configure LIST 
+                 # ./Configure LIST
                 ./config {$static} no-shared  enable-tls1_3 --release --prefix={$openssl_prefix} --libdir=${openssl_prefix}/lib
 EOF
             )
@@ -145,7 +145,7 @@ function install_libxml2(Preprocessor $p)
             --with-iconv=$iconv_prefix \
             --enable-static=yes \
             --enable-shared=no \
-            --without-python 
+            --without-python
 EOF
             )
             ->withPkgName('libxml-2.0')
@@ -187,7 +187,7 @@ function install_libxslt(Preprocessor $p)
             --without-crypto \
             --without-profiler \
             --without-plugins \
-            --without-debugger 
+            --without-debugger
 EOF
             )
             ->withPkgName('libexslt')
@@ -274,11 +274,11 @@ function install_gmp(Preprocessor $p)
             ->withPrefix($gmp_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help 
+            ./configure --help
             ./configure \
             --prefix=$gmp_prefix \
             --enable-static=yes \
-            --enable-shared=no 
+            --enable-shared=no
 EOF
             )
             ->withPkgName('gmp')
@@ -468,7 +468,7 @@ function install_liblz4(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
             cd build/cmake/
-            cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON 
+            cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON
 EOF
             )
             ->withPkgName('liblz4')
@@ -529,7 +529,7 @@ function install_libzstd(Preprocessor $p)
             -DZSTD_BUILD_PROGRAMS=ON \
             -DZSTD_BUILD_SHARED=OFF \
             -DZSTD_BUILD_TESTS=OFF \
-            -DZSTD_LEGACY_SUPPORT=ON 
+            -DZSTD_LEGACY_SUPPORT=ON
 EOF
             )
             ->withMakeOptions('lib')
@@ -623,7 +623,7 @@ function install_libzip(Preprocessor $p)
             -DLIBLZMA_HAS_LZMA_PRESET=ON \
             -DENABLE_ZSTD=ON \
             -DZstd_LIBRARY={$libzstd_prefix}/lib \
-            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include 
+            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include
 EOF
             )
             ->withMakeOptions('VERBOSE=1')
@@ -753,7 +753,7 @@ function install_libidn2(Preprocessor $p)
             enable_shared=no \
             --disable-doc \
             --with-libiconv-prefix={$libiconv_prefix} \
-            --with-libintl-prefix 
+            --with-libintl-prefix
 
 EOF
             )
@@ -897,8 +897,8 @@ function install_curl(Preprocessor $p)
             --with-zlib={$zlib_prefix} \
             --enable-ares={$cares_prefix} \
             --with-nghttp2 \
-            --without-ngtcp2 \
-            --without-nghttp3 \
+            --with-ngtcp2 \
+            --with-nghttp3 \
             --with-libidn2 \
             --with-libssh2 \
             --with-openssl  \
@@ -1008,7 +1008,7 @@ EOF;
             ->withCleanPreInstallDirectory($pgsql_prefix)
             ->withBuildScript(
                 <<<EOF
-            set -uex 
+            set -uex
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
 
             # 替换指定行内容
@@ -1127,7 +1127,7 @@ function install_bison(Preprocessor $p)
                 ->withConfigure(
                     <<<EOF
                      ./configure --help
-                     ./configure --prefix={$bison_prefix}  
+                     ./configure --prefix={$bison_prefix}
 EOF
                 )
                 ->withBinPath($bison_prefix . '/bin/')
@@ -1202,7 +1202,7 @@ function install_libxlsxwriter(Preprocessor $p)
         ->withCleanPreInstallDirectory($libxlsxwriter_prefix)
         ->withBuildScript(
             <<<EOF
-            
+
             # 启用DBUILD_TESTS 需要安装python3 pytest
             mkdir -p build
             cd build
@@ -1217,7 +1217,7 @@ function install_libxlsxwriter(Preprocessor $p)
             -DUSE_OPENSSL_MD5=OFF \
             -DUSE_NO_MD5=OFF \
             -DUSE_SYSTEM_MINIZIP=OFF \
-            -DUSE_STANDARD_TMPFILE=OFF 
+            -DUSE_STANDARD_TMPFILE=OFF
 
             cmake --build . --config Release --target install
 EOF
@@ -1245,7 +1245,7 @@ function install_minizip(Preprocessor $p)
         ->withCleanPreInstallDirectory($libminzip_prefix)
         ->withBuildScript(
             <<<EOF
-            # -Wno-dev 
+            # -Wno-dev
 
             cmake   -S . -B build \
             -DCMAKE_INSTALL_PREFIX={$libminzip_prefix} \
@@ -1264,8 +1264,8 @@ function install_minizip(Preprocessor $p)
             -DMZ_BUILD_TESTS=ON \
             -DZLIB_ROOT={$zlib_prefix}  \
             -DBZIP2_ROOT={$libzip2_prefix}
-            
-            
+
+
             cmake --build build  --config Release --target install
             # mkdir -p {$libzip2_prefix}/include/minizip
             # cp -f {$libzip2_prefix}/include/*.h {$libzip2_prefix}/include/minizip
@@ -1299,14 +1299,14 @@ function install_libxlsxio(Preprocessor $p)
             ->withConfigure(
                 <<<EOF
             # apk add graphviz  doxygen  // 能看到常见安装的依赖库
-            
-            # export CFLAGS="$(pkg-config  --cflags --static expat minizip ) " 
+
+            # export CFLAGS="$(pkg-config  --cflags --static expat minizip ) "
             #  SET (CMAKE_EXE_LINKER_FLAGS "-static")
-        
+
             # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
-        
-            # CMAKE_BUILD_TYPE =  Debug Release 
-            
+
+            # CMAKE_BUILD_TYPE =  Debug Release
+
             cmake -G"Unix Makefiles" .  \
             -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
@@ -1326,8 +1326,8 @@ function install_libxlsxio(Preprocessor $p)
             -DLIBZIP_DIR={$libzip_prefix} \
             -DLIBZIP_ROOT={$libzip_prefix} \
             -DLIBZIP_LIBRARIES={$libzip_prefix}/lib \
-            
-            
+
+
             # -DMINIZIP_DIR={$libminizip_prefix} \
             # -DMINIZIP_LIBRARIES={$libminizip_prefix}/lib \
             # -DMINIZIP_INCLUDE_DIRS='{$libminizip_prefix}/include/' \
