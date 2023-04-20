@@ -527,6 +527,64 @@ EOF;
         return isset($this->extensionMap[$name]);
     }
 
+    public array $extensionDependentLibraryMap = [];
+
+    public array $extensionDependentPackageNameMap = [];
+
+    public array $extensionDependsPackageNames = [];
+
+    public function setExtensionDependency(): void
+    {
+        $extensionDepsMap = [];
+        foreach ($this->extensionList as $extension) {
+            if (empty($extension->deps)) {
+                $this->extensionDependentLibraryMap[$extension->name] = [];
+            } else {
+                $extensionDepsMap[$extension->name] = $extension->deps;
+            }
+        }
+
+        foreach ($extensionDepsMap as $extensionName => $deps) {
+            $pkgNames = [];
+            foreach ($deps as $libraryName) {
+                $packages = [];
+                $this->getLibraryDependenciesByName($libraryName, $packages);
+                foreach ($packages as $item) {
+                    if (empty($item)) {
+                        continue;
+                    } else {
+                        $pkgNames[] = trim($item);
+                    }
+                }
+                $this->extensionDependentLibraryMap[$extensionName][] = $libraryName;
+            }
+            $this->extensionDependentPackageNameMap[$extensionName] = $pkgNames;
+        }
+        $pkgNames = [];
+        foreach ($this->extensionDependentPackageNameMap as $extensionName => $value) {
+            $pkgNames = array_merge($pkgNames, $value);
+            //去重
+            $this->extensionDependentPackageNameMap[$extensionName] = array_values(array_unique($pkgNames));
+        }
+        $this->extensionDependsPackageNames = array_values(array_unique($pkgNames));
+    }
+
+    private function getLibraryDependenciesByName($libraryName, &$packages): void
+    {
+        if (!isset($this->libraryMap[$libraryName])) {
+            throw new RuntimeException('library ' . $libraryName . ' no found');
+        }
+        $lib = $this->libraryMap[$libraryName];
+        if (!empty($lib->pkgNames)) {
+            $packages = array_merge($packages, $lib->pkgNames);
+        }
+        if (!empty($lib->deps)) {
+            foreach ($lib->deps as $name) {
+                $this->getLibraryDependenciesByName($name, $packages);
+            }
+        }
+    }
+
     public function addEndCallback($fn)
     {
         $this->endCallbacks[] = $fn;
@@ -640,73 +698,6 @@ EOF;
         }
     }
 
-    public array $extensionDependPkgNameMap = [];
-
-    public array $extensionDependPkgNameList = [];
-    public array $extensionDependLibList = [];
-
-    protected function setExtensionDependPkgNameMap(): void
-    {
-        $extensionDepsMap = [];
-        foreach ($this->extensionList as $extension) {
-            if (empty($extension->deps)) {
-                $this->extensionDependPkgNameMap[$extension->name] = [];
-            } else {
-                $extensionDepsMap[$extension->name] = $extension->deps;
-            }
-        }
-
-        foreach ($extensionDepsMap as $extension_name => $depends) {
-            $pkgNames = [];
-            foreach ($depends as $library_name) {
-                $packages = [];
-                $this->getDependPkgNameByLibraryName($library_name, $packages);
-                foreach ($packages as $item) {
-                    if (empty($item)) {
-                        continue;
-                    } else {
-                        $pkgNames[] = trim($item);
-                    }
-                }
-                $this->extensionDependLibList[$extension_name][] = $library_name;
-            }
-            $this->extensionDependPkgNameMap[$extension_name] = $pkgNames;
-        }
-        $pkgNames = [];
-        $extensions = [];
-        foreach ($this->extensionDependPkgNameMap as $extension_name => $value) {
-            $pkgNames = array_merge($pkgNames, $value);
-        }
-        $this->extensionDependPkgNameList = array_values(array_unique($pkgNames));
-    }
-
-    private function getDependPkgNameByLibraryName($library_name, &$packages)
-    {
-        if (!isset($this->libraryMap[$library_name])) {
-            throw new RuntimeException('library ' . $library_name . ' no found');
-        }
-        $lib = $this->libraryMap[$library_name];
-        if (!empty($lib->pkgNames)) {
-            $packages = array_merge($packages, $lib->pkgNames);
-        }
-        if (empty($lib->deps)) {
-            return null;
-        } else {
-            foreach ($lib->deps as $library_name) {
-                $this->getDependPkgNameByLibraryName($library_name, $packages);
-            }
-        }
-    }
-
-    protected function getPkgNamesByLibraryName($library_name): array
-    {
-        if (isset($this->libraryMap[$library_name])) {
-            return $this->libraryMap[$library_name]->pkgNames;
-        } else {
-            return [];
-        }
-    }
-
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -759,17 +750,8 @@ EOF;
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
         //暂时由手工维护，依赖关系
-        // $this->sortLibrary();
-        $this->setExtensionDependPkgNameMap();
-
-        if ($this->getInputOption('with-dependency-graph')) {
-            ob_start();
-            include __DIR__ . '/../dependency-graph-visualization/input.template.php';
-            file_put_contents(
-                $this->rootDir . '/sapi/dependency-graph-visualization/input.template.dot',
-                ob_get_clean()
-            );
-        }
+        //$this->sortLibrary();
+        $this->setExtensionDependency();
 
         if ($this->getOsType() == 'macos') {
             $libcpp = '-lc++';
@@ -778,7 +760,7 @@ EOF;
         }
 
         //$packagesArr = $this->getLibraryPackages();
-        $packagesArr = $this->extensionDependPkgNameList;
+        $packagesArr = $this->extensionDependsPackageNames;
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);
             $this->withVariable('PACKAGES', $packages);
@@ -792,11 +774,16 @@ EOF;
             $this->withExportVariable('LIBS', '$LIBS');
         }
 
+
         # $packages = implode(' ', $this->getLibraryPackages());
         # $this->withVariable('PACKAGES', $packages);
         # $this->withVariable('CPPFLAGS', '$(pkg-config --cflags-only-I --static ' . $packages . ' ) ');
         # $this->withVariable('CFLAGS', '$(pkg-config  --cflags-only-I --static ' . $packages . ' )');
         # $this->withVariable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
+
+
+        $this->binPaths[] = '$PATH';
+        $this->binPaths = array_unique($this->binPaths);
 
 
         if ($this->getInputOption('skip-download')) {
@@ -817,6 +804,15 @@ EOF;
         file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
         copy($this->rootDir . '/sapi/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
+
+        if ($this->getInputOption('with-dependency-graph')) {
+            ob_start();
+            include __DIR__ . '/ExtensionDependencyGraph.php';
+            file_put_contents(
+                $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot',
+                ob_get_clean()
+            );
+        }
 
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);

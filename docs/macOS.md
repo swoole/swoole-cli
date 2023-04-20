@@ -39,6 +39,12 @@ ln -s /opt/homebrew/bin/glibtool /opt/homebrew/bin/libtool
 ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
 ```
 
+## 缺少`gettext coreutils`
+
+```shell
+ brew intall gettext coreutils
+```
+
 ## curl configure 检测不通过
 
 修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
@@ -71,8 +77,13 @@ export LIBSODIUM_CFLAGS=$(pkg-config --cflags libsodium)
 export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```
 
+
 ## 下载 macOS 版本 运行无权限，解决方案
 
+>  Mac安装应用“提示文件已损坏”或“来自身份不明开发者”解决方法
+> 
+> 解压以后执行如下命令：
+
 ```bash
-sudo xattr -d com.apple.quarantine  ./swoole-cli 
+  sudo xattr -d com.apple.quarantine  ./swoole-cli 
 ```
