@@ -10,9 +10,9 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('libxslt'))
             ->withHomePage('https://gitlab.gnome.org/GNOME/libxslt/-/wikis/home')
-            ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
-            //https://download.gnome.org/sources/libxslt/1.1/
+            ->withManual('https://gitlab.gnome.org/GNOME/libxslt/-/wikis/home')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
+            ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
             ->withPrefix($libxslt_prefix)
             ->withConfigure(
                 <<<EOF
@@ -42,5 +42,10 @@ EOF
     $p->withExportVariable('XSL_LIBS', '$(pkg-config      --libs   --static libxslt)');
     $p->withExportVariable('EXSLT_CFLAGS', '$(pkg-config  --cflags --static libexslt)');
     $p->withExportVariable('EXSLT_LIBS', '$(pkg-config    --libs   --static libexslt)');
-    $p->addExtension((new Extension('xsl'))->withOptions('--with-xsl')->depends('libxslt'));
+    $p->addExtension(
+        (new Extension('xsl'))
+            ->withHomePage('https://www.php.net/xsl')
+            ->withOptions('--with-xsl')
+            ->depends('libxslt')
+    );
 };

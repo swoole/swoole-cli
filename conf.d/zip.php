@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('liblz4'))
             ->withHomePage('http://www.lz4.org')
+            ->withManual('http://www.lz4.org')
             ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
             ->withFile('lz4-v1.9.4.tar.gz')
@@ -28,8 +29,6 @@ EOF
         (new Library('liblzma'))
             ->withHomePage('https://tukaani.org/xz/')
             ->withLicense('https://github.com/tukaani-project/xz/blob/master/COPYING.GPLv3', Library::LICENSE_LGPL)
-            //->withUrl('https://tukaani.org/xz/xz-5.2.9.tar.gz')
-            //->withFile('xz-5.2.9.tar.gz')
             ->withUrl('https://github.com/tukaani-project/xz/releases/download/v5.4.1/xz-5.4.1.tar.gz')
             ->withFile('xz-5.4.1.tar.gz')
             ->withPrefix($liblzma_prefix)
@@ -78,7 +77,8 @@ EOF
     $bzip2_prefix = BZIP2_PREFIX;
     $p->addLibrary(
         (new Library('libzip'))
-            //->withUrl('https://libzip.org/download/libzip-1.8.0.tar.gz')
+            ->withHomePage('https://libzip.org/')
+            ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
             ->withUrl('https://libzip.org/download/libzip-1.9.2.tar.gz')
             ->withManual('https://libzip.org')
             ->withPrefix($libzip_prefix)
@@ -121,11 +121,14 @@ EOF
             )
             ->withMakeOptions('VERBOSE=1')
             ->withPkgName('libzip')
-            ->withHomePage('https://libzip.org/')
-            ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
             ->depends('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
     );
     $p->withExportVariable('LIBZIP_CFLAGS', '$(pkg-config --cflags --static libzip)');
     $p->withExportVariable('LIBZIP_LIBS', '$(pkg-config   --libs   --static libzip)');
-    $p->addExtension((new Extension('zip'))->withOptions('--with-zip')->depends('libzip'));
+    $p->addExtension(
+        (new Extension('zip'))
+            ->withHomePage('https://www.php.net/zip')
+            ->withOptions('--with-zip')
+            ->depends('libzip')
+    );
 };
