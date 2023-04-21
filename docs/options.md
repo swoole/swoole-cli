@@ -78,5 +78,20 @@ without-docker
 
 with-dependency-graph
 ----
+生成扩展依赖图
 
-> 生成扩展依赖图 
+> 依赖 graphviz
+
+```shell
+brew install graphviz 
+```
+
+> 生成扩展依赖库
+
+```shell
+./prepare.php with-dependency-graph=1 
+
+ sh sapi/scripts/generate-dependency-graph.sh
+ 
+```
+
