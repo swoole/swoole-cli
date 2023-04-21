@@ -165,7 +165,7 @@ function libraries_builder($p)
         install_lcms2($p); //lcms2  //依赖libtiff libjpeg zlib
         install_libraw($p);  //依赖 zlib  libjpeg liblcms2
         install_librsvg($p);
-        install_libfribidi($p); //以来c2man
+        install_libfribidi($p); //依赖 c2man
         //文本绘制引擎
         install_harfbuzz($p); //依赖ninja icu
 
@@ -180,18 +180,20 @@ function libraries_builder($p)
         install_graphite2($p);
         install_harfbuzz($p); //依赖ninja icu zlib glib
 
-        if (0) {
-            install_xorgproto($p); //依赖 xorg-macros
-            //install_xorg_macros($p);
-            //install_xorgproto($p);
-            //install_libX11($p);
-            install_libXpm($p); //依赖 xorg-macros  xorgproto libx11 # apk add util-macros xorgproto libx11
-        }
 
 
         //GraphicsMagick  http://www.graphicsmagick.org/index.html
         install_GraphicsMagick($p);
     }
+
+    if (0) {
+        install_xorgproto($p); //依赖 xorg-macros
+        //install_xorg_macros($p);
+        install_xorgproto($p);
+        install_libX11($p);
+        install_libXpm($p); //依赖 xorg-macros  xorgproto libx11 # apk add util-macros xorgproto libx11
+    }
+
 
     if (0) {
         install_openssl_v1($p);

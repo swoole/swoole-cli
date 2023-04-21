@@ -40,7 +40,7 @@ function install_libgcrypt_error(Preprocessor $p)
             ->withCleanPreInstallDirectory($libgcrypt_error_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help 
+            ./configure --help
             ./configure \
             --prefix={$libgcrypt_error_prefix} \
             --enable-static=yes \
@@ -48,7 +48,7 @@ function install_libgcrypt_error(Preprocessor $p)
             --with-libiconv-prefix={$libiconv_prefix} \
             --with-libintl-prefix  \
             --disable-doc \
-            --disable-tests 
+            --disable-tests
 
 EOF
             )
@@ -71,7 +71,7 @@ function install_libgcrypt(Preprocessor $p)
             ->withCleanPreInstallDirectory($libgcrypt_prefix)
             ->withConfigure(
                 <<<EOF
-            ./configure --help 
+            ./configure --help
             ./configure \
             --prefix={$libgcrypt_prefix} \
             --enable-static=yes \
@@ -103,7 +103,7 @@ function install_gnupg(Preprocessor $p)
             ->withCleanPreInstallDirectory($gnupg_prefix)
             ->withBuildScript(
                 <<<EOF
-            ./configure --help 
+            ./configure --help
 EOF
             )
             ->withPkgName('gnupg')
@@ -144,10 +144,10 @@ EOF
                 -DBUILD_STATIC_LIBS=ON \
                 -DBUILD_SHARED_LIBS=OFF  \
                 -DCMAKE_BUILD_TYPE="Release" \
-                -DTEST=OFF 
+                -DTEST=OFF
                 cmake --build . --config Release
                 cmake --build . --target install --config Release
-                return 0 
+                return 0
                 rm -rf {$libyuv_prefix}/lib/*.so.*
                 rm -rf {$libyuv_prefix}/lib/*.so
                 rm -rf {$libyuv_prefix}/lib/*.dylib
@@ -155,12 +155,12 @@ EOF
             make V=1 -f linux.mk
             make V=1 -f linux.mk clean
             make V=1 -f linux.mk CXX=clang++ CC=clang
-            exit 0 
+            exit 0
             gn gen out/Release "--args=is_debug=false"
             gn gen out/Debug "--args=is_debug=true"
             ninja -v -C out/Release
             ninja -v -C out/Debug
-            
+
             exit  0
 
 
@@ -210,10 +210,10 @@ function install_libraw(Preprocessor $p)
             <<<EOF
             ./configure --help
             echo {$link_cpp}
-    
-            set -uex 
+
+            set -uex
             package_names="zlib libjpeg libturbojpeg lcms2"
-     
+
             CPPFLAGS="\$(pkg-config  --cflags-only-I --static \$package_names )" \
             LDFLAGS="\$(pkg-config   --libs-only-L   --static \$package_names )" \
             LIBS="\$(pkg-config      --libs-only-l   --static \$package_names ) {$link_cpp}" \
@@ -226,7 +226,7 @@ function install_libraw(Preprocessor $p)
             --enable-lcms \
             --disable-jasper  \
             --disable-openmp
-            
+
 EOF
         )
         ->withPkgName('libraw')
@@ -260,18 +260,18 @@ function install_dav1d(Preprocessor $p)
             ->withCleanPreInstallDirectory($dav1d_prefix)
             ->withBuildScript(
                 <<<EOF
-           
-                mkdir -p build 
+
+                mkdir -p build
                 cd build
                 meson setup \
                 --backend=ninja \
                 --prefix={$dav1d_prefix} \
                 --default-library=static \
-                ..  
+                ..
                 ninja
                 ninja install
 
-                
+
 EOF
             )
             ->withPkgName('dav1d')
@@ -305,17 +305,17 @@ EOF
             ->withCleanPreInstallDirectory($libgav1_prefix)
             ->withConfigure(
                 <<<EOF
-                mkdir -p build 
+                mkdir -p build
                 cd build
-                # 查看更多选项 
+                # 查看更多选项
                 # cmake .. -LH
                 cmake -G "Unix Makefiles" .. \
                 -DCMAKE_INSTALL_PREFIX={$libgav1_prefix} \
                 -DCMAKE_BUILD_TYPE=Release  \
                 -DBUILD_SHARED_LIBS=OFF  \
                 -DBUILD_STATIC_LIBS=ON \
-                -DLIBGAV1_ENABLE_TESTS=OFF 
-            
+                -DLIBGAV1_ENABLE_TESTS=OFF
+
 EOF
             )
             ->withPkgName('libgav1')
@@ -355,7 +355,7 @@ function install_libavif(Preprocessor $p): void
             -DAVIF_CODEC_DAV1D=ON \
             -DAVIF_CODEC_LIBGAV1=ON \
             -DAVIF_CODEC_RAV1E=OFF
-            
+
 
 EOF
             )
@@ -383,7 +383,7 @@ function install_nasm(Preprocessor $p)
                 sh autogen.sh
                 sh configure --help
                 sh configure --prefix={$nasm_prefix}
-          
+
 EOF
             )
             ->withPkgName('')
@@ -439,7 +439,7 @@ function install_svt_av1(Preprocessor $p)
         -DCMAKE_INSTALL_PREFIX={$svt_av1_prefix} \
         -DCMAKE_BUILD_TYPE=Release  \
         -DBUILD_SHARED_LIBS=OFF  \
-        -DBUILD_STATIC_LIBS=ON 
+        -DBUILD_STATIC_LIBS=ON
 
 EOF
         )
@@ -462,8 +462,8 @@ function install_libheif(Preprocessor $p)
         ->withCleanPreInstallDirectory($libheif_prefix)
         ->withConfigure(
             <<<EOF
-        mkdir -p build 
-        cd build 
+        mkdir -p build
+        cd build
         cmake .. -G"Unix Makefiles" \
         -DCMAKE_INSTALL_PREFIX={$libheif_prefix} \
         -DCMAKE_BUILD_TYPE=Release  \
@@ -569,7 +569,7 @@ function install_harfbuzz(Preprocessor $p)
                 meson compile -C build
                 meson install -C build
                 # ninja -C build
-                # ninja -C build install 
+                # ninja -C build install
 
 EOF
             )
@@ -615,20 +615,20 @@ function install_libgd2($p)
         -DENABLE_WEBP=1 \
         -DZLIB_ROOT={$zlib_prefix} \
         -DWEBP_ROOT={$webp_prefix} \
-        -DICONV_ROOT={$iconv_prefix} 
+        -DICONV_ROOT={$iconv_prefix}
 
         cmake --build . -- -j$(nproc)
         cmake --install .
 
-     
+
 
 :<<'_EOF_'
 
-        
-        
+
+
         ./configure --help
         # freetype2 libbrotlicommon libbrotlidec  libbrotlienc
-        PACKAGES='zlib libpng  libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libtiff-4 libavif ' 
+        PACKAGES='zlib libpng  libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux libtiff-4 libavif '
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES ) " \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES ) " \
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES ) " \
@@ -637,11 +637,11 @@ function install_libgd2($p)
         --enable-shared=no \
         --enable-static=yes \
         --with-libiconv-prefix={$libiconv_prefix} \
-        --without-freetype 
+        --without-freetype
         # --with-freetype=/usr/freetype \
-        # --without-freetype 
-        
-        
+        # --without-freetype
+
+
 _EOF_
 
 EOF
@@ -709,16 +709,16 @@ function install_libXpm(Preprocessor $p)
         ->withCleanPreInstallDirectory($libXpm_prefix)
         ->withConfigure(
             <<<EOF
-         
+
          # 解决依赖
          apk add util-macros xorgproto libx11
-   
+
             ./autogen.sh
             ./configure --help
             ./configure \
             --prefix={$libXpm_prefix} \
             --enable-shared=no \
-            --enable-static=yes 
+            --enable-static=yes
 
 EOF
         )
@@ -1072,7 +1072,7 @@ EOF;
             ->withCleanPreInstallDirectory($gnutls_prefix)
             ->withConfigure(
                 <<<EOF
-       
+
                  set -uex
                 export GMP_CFLAGS=$(pkg-config  --cflags --static gmp)
                 export GMP_LIBS=$(pkg-config    --libs   --static gmp)
@@ -1107,8 +1107,8 @@ EOF;
                 # ./bootstrap
                 ./configure --help | grep -e '--without'
                 ./configure --help | grep -e '--with-'
-               
-                
+
+
 
                 ./configure \
                 --prefix={$gnutls_prefix} \
@@ -1130,7 +1130,7 @@ EOF;
                 --without-p11-kit \
                 --without-libseccomp-prefix \
                 --without-libcrypto-prefix \
-                --without-librt-prefix 
+                --without-librt-prefix
                 # --with-libev-prefix=/usr/libev \
 EOF
             )->withPkgName('gnutls')
@@ -1166,14 +1166,14 @@ EOF
             ->withCleanPreInstallDirectory($boringssl_prefix)
             ->withBuildScript(
                 <<<EOF
-          
+
                 mkdir -p build
                 cd build
                 cmake -GNinja .. \
                 -DCMAKE_INSTALL_PREFIX=$boringssl_prefix
                 -DCMAKE_BUILD_TYPE=Release \
-                -DBUILD_SHARED_LIBS=OFF 
-                 
+                -DBUILD_SHARED_LIBS=OFF
+
                 cd ..
                 # ninja
                 ninja -C build
@@ -1264,7 +1264,7 @@ function install_nghttp3(Preprocessor $p)
             ./configure --prefix={$nghttp3_prefix} \
             --enable-lib-only \
             --enable-shared=no \
-            --enable-static=yes 
+            --enable-static=yes
 EOF
             )
             ->withPkgName('libnghttp3')
@@ -1306,7 +1306,7 @@ function install_ngtcp2(Preprocessor $p)
                 --without-picotls \
                 --without-wolfssl \
                 --without-cunit  \
-                --without-jemalloc 
+                --without-jemalloc
 EOF
             )
             ->withPkgName('libngtcp2')
@@ -1606,7 +1606,7 @@ function install_tcmalloc($p)
             ->withConfigure(
                 '
                 # apk add bazel
-                # https://pkgs.alpinelinux.org/packages?name=bazel*&branch=edge&repo=testing&arch=&maintainer= 
+                # https://pkgs.alpinelinux.org/packages?name=bazel*&branch=edge&repo=testing&arch=&maintainer=
             cd  tcmalloc-master/
             bazel help
             bazel build
@@ -1698,7 +1698,7 @@ function install_capstone(Preprocessor $p)
             ->withCleanPreInstallDirectory($capstone_prefix)
             ->withConfigure(
                 <<<EOF
-             set -uex 
+             set -uex
              cmake . \
             -DCMAKE_INSTALL_PREFIX="{$capstone_prefix}" \
             -DCAPSTONE_BUILD_STATIC_RUNTIME=ON \
@@ -1756,7 +1756,7 @@ function install_valgrind(Preprocessor $p)
                 <<<EOF
                 export PATH=\$SYSTEM_ORIGIN_PATH
                 export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
-  
+
                 ./autogen.sh
                 ./configure \
                 --prefix={$valgrind_prefix}
@@ -1939,9 +1939,9 @@ function install_pcre2(Preprocessor $p)
                 --enable-pcre2-16 \
                 --enable-pcre2-32 \
                 --enable-jit \
-                --enable-unicode 
+                --enable-unicode
 
-         
+
  EOF
             )
     //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
@@ -2415,11 +2415,12 @@ EOF
              ./autogen.sh
              ./configure --help
              ./configure \
-             --prefix={$xorg_macros_prefix} 
-           
+             --prefix={$xorg_macros_prefix}
+
 EOF
         )
-        ->withLdflags('');
+        ->withMakeOptions('all')
+    ;
 
     $p->addLibrary($lib);
 }
@@ -2446,12 +2447,12 @@ EOF
             <<<EOF
             ls -lha .
 
-            
+
             # https://mesonbuild.com/Builtin-options.html#build-type-options
             # meson configure build
             # meson wrap --help
             # --backend=ninja \
-            
+
             meson setup  build \
             -Dprefix={$xorgproto_prefix} \
             -Dbackend=ninja \
@@ -2459,7 +2460,7 @@ EOF
             -Ddefault_library=static \
             -Db_staticpic=true \
             -Db_pie=true \
-            -Dprefer_static=true 
+            -Dprefer_static=true
 
             # meson configure build
             # meson -C build install
@@ -2489,11 +2490,11 @@ function install_libX11(Preprocessor $p)
         ->withConfigure(
             <<<EOF
         ./autogen.sh
-        ./configure --help 
+        ./configure --help
         ./configure \
         --prefix={$libX11_prefix} \
         --enable-shared=no \
-        --enable-static=yes 
+        --enable-static=yes
 EOF
         )
         ->withLdflags('');
@@ -2567,7 +2568,7 @@ function install_boost(Preprocessor $p)
             ./bootstrap.sh
             ./b2 headers
             ./b2 --release install --prefix={$boost_prefix}
-            
+
             export PATH=\$SWOOLE_CLI_PATH
             export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
 EOF
