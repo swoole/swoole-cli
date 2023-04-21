@@ -86,7 +86,7 @@ with-dependency-graph
 brew install graphviz 
 ```
 
-> 生成扩展依赖库
+> 生成扩展依赖库 图 步骤
 
 ```shell
 ./prepare.php with-dependency-graph=1 
