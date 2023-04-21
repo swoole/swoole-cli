@@ -23,5 +23,6 @@ return function (Preprocessor $p) {
         (new Extension('iconv'))
             ->withHomePage('https://www.php.net/iconv')
             ->withOptions('--with-iconv=' . $libiconv_prefix)
+            ->depends('libiconv')
     );
 };
