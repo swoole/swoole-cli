@@ -89,7 +89,7 @@ brew install graphviz
 > 生成扩展依赖库 图 步骤
 
 ```shell
-./prepare.php with-dependency-graph=1 
+./prepare.php --with-dependency-graph=1 
 
  sh sapi/scripts/generate-dependency-graph.sh
  
