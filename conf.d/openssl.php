@@ -21,6 +21,8 @@ EOF
             )
             ->withMakeInstallCommand('install_sw')
             ->withPkgName('openssl')
+            ->withPkgName('libcrypto')
+            ->withPkgName('libssl')
             ->withBinPath($openssl_prefix . '/bin/')
     );
     $p->addExtension(
