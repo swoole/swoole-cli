@@ -9,19 +9,19 @@
 示例：
 
 ```shell
-./prepare.php +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
+./prepare.php --without-docker +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
 ```
 
 参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}` ，需要将参数的中横线`-`替换为下划线`_`，例如：
 
 ```shell
-./prepare.php --skip-download=1
+./prepare.php --without-docker --skip-download=1
 ```
 
 也可以写作：
 
 ```shell
-SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php
+SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
 ```
 
 >
@@ -36,7 +36,7 @@ skip-download
 > 链接地址生成在 项目根目录下的 `var` 目录
 
 ```shell
-./prepare.php --skip-download=yes
+./prepare.php --skip-download=yes --without-docker
 
 # 构建依赖库之前，批量下载依赖库和扩展的脚本
 sh sapi/scripts/download-dependencies-use-aria2.sh
@@ -66,7 +66,7 @@ conf-path
 多个目录使用`:`冒号分割。
 
 ```shell
-./prepare.php -conf-path="/tmp/swoole-cli/conf1:/tmp/swoole-cli/conf2"
+./prepare.php --conf-path="/tmp/swoole-cli/conf1:/tmp/swoole-cli/conf2"
 ```
 
 without-docker
@@ -79,4 +79,20 @@ without-docker
 with-dependency-graph
 ----
 
-> 生成扩展依赖图 
+生成扩展依赖图
+
+> 依赖 graphviz
+
+```shell
+brew install graphviz
+```
+
+> 生成扩展依赖库 图 步骤
+
+```shell
+php ./prepare.php --without-docker --with-dependency-graph=1
+
+ sh sapi/scripts/generate-dependency-graph.sh
+
+```
+
