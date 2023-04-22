@@ -23,7 +23,9 @@ function install_libjpeg(Preprocessor $p)
             -DCMAKE_INSTALL_INCLUDEDIR={$libjpeg_prefix}/include \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON 
+            -DBUILD_STATIC_LIBS=ON   \
+            -DENABLE_SHARED=OFF  \
+            -DENABLE_STATIC=ON
 EOF
         )
         ->withScriptAfterInstall(
@@ -122,7 +124,7 @@ function install_libpng(Preprocessor $p)
                 ./configure --prefix={$libpng_prefix} \
                 --enable-static --disable-shared \
                 --with-zlib-prefix={$libzlib_prefix} \
-                --with-binconfigs  
+                --with-binconfigs
 EOF
             )
             ->withPkgName('libpng')
@@ -164,7 +166,7 @@ function install_libwebp(Preprocessor $p)
                 --with-jpeglibdir={$libjpeg_prefix}/lib \
                 --with-gifincludedir={$libgif_prefix}/include \
                 --with-giflibdir={$libgif_prefix}/lib \
-                --disable-tiff  
+                --disable-tiff
 EOF
             )
             ->withPkgName('libwebp')
@@ -206,7 +208,7 @@ function install_freetype(Preprocessor $p)
             --with-bzip2=yes \
             --with-png=yes \
             --with-harfbuzz=no  \
-            --with-brotli=yes  
+            --with-brotli=yes
 EOF
             )
             ->withPkgName('freetype2')
@@ -407,7 +409,7 @@ function install_imagemagick(Preprocessor $p): void
             --without-x \
             --without-modules \
             --without-magick-plus-plus \
-            --without-utilities 
+            --without-utilities
 EOF
             )
             ->withPkgName('ImageMagick-7.Q16HDRI')
