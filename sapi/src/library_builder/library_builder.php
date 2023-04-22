@@ -181,7 +181,6 @@ function libraries_builder($p)
         install_harfbuzz($p); //依赖ninja icu zlib glib
 
 
-
         //GraphicsMagick  http://www.graphicsmagick.org/index.html
         install_GraphicsMagick($p);
     }
@@ -413,7 +412,13 @@ function libraries_builder($p)
     if ($p->getInputOption('with-capstone') == 'yes') {
         install_capstone($p);
     }
-    install_rust($p);
+
+
+    install_musl($p); //https://musl.libc.org/
+    //解决依赖 apt install git build-essential
+    // Automated cross toolchain builde
+    install_musl_cross_make($p);
+
     if (0) {
         // brew  //  https://mirrors.tuna.tsinghua.edu.cn/help/homebrew
         // brew  //  https://github.com/Homebrew/brew.git

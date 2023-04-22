@@ -132,3 +132,5 @@ define("XORGPROTO_PREFIX", $p->getGlobalPrefix() . '/xorgproto');
 define("LIBX11_PREFIX", $p->getGlobalPrefix() . '/libX11');
 define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
 define("GRAPHVIZ_PREFIX", $p->getGlobalPrefix() . '/graphviz');
+define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
+define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');

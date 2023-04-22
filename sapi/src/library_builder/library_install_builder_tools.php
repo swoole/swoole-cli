@@ -93,6 +93,76 @@ function install_ninja(Preprocessor $p)
 }
 
 
+function install_musl(Preprocessor $p): void
+{
+    $workDir = $p->getWorkDir();
+    $musl_libc_prefix= MUSL_LIBC_PREFIX;
+    $p->addLibrary(
+        (new Library('musl_libc'))
+            ->withHomePage('https://musl.libc.org/')
+            ->withLicense('https://git.musl-libc.org/cgit/musl/tree/COPYRIGHT', Library::LICENSE_MIT)
+            ->withManual('https://musl.libc.org/manual.html')
+            ->withUrl('https://musl.libc.org/releases/musl-1.2.3.tar.gz')
+            ->disableDownloadWithMirrorURL()
+            ->withPrefix($musl_libc_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($musl_libc_prefix)
+            ->withBuildScript(
+                <<<EOF
+             // sudo apt install git build-essential
+             ./configure --prefix={$musl_libc_prefix} \
+             --disable-shared
+
+EOF
+            )
+            ->withBinPath('$HOME/.cargo/bin')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
+function install_musl_cross_make(Preprocessor $p): void
+{
+    $workDir = $p->getWorkDir();
+    $musl_cross_make_prefix= MUSL_CROSS_MAKE_PREFIX;
+    $p->addLibrary(
+        (new Library('musl_cross_make'))
+            ->withHomePage('https://musl.libc.org/')
+            ->withLicense('https://git.musl-libc.org/cgit/musl/tree/COPYRIGHT', Library::LICENSE_MIT)
+            ->withManual('https://musl.libc.org/manual.html')
+            ->withUrl('https://github.com/richfelker/musl-cross-make/archive/refs/tags/v0.9.9.tar.gz')
+            ->withFile('musl-cross-make-v0.9.9.tar.gz')
+            ->withDownloadScript(
+                'musl-cross-make',
+                <<<EOF
+            git clone -b master --depth=1 https://github.com/richfelker/musl-cross-make.git
+EOF
+            )
+            ->disableDownloadWithMirrorURL()
+            ->withPrefix($musl_cross_make_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($musl_cross_make_prefix)
+            ->withBuildScript(
+                <<<EOF
+             cp config.mak.dist config.mak
+
+            cat >> config.mak <<_EOF_
+TARGET = x86_64-linux-musl
+GCC_VER = 11.2.0
+COMMON_CONFIG += CFLAGS="-g0 -O3" CXXFLAGS="-g0 -O3" LDFLAGS="-s"
+GCC_CONFIG += --enable-default-pie --enable-static-pie
+_EOF_
+
+
+EOF
+            )
+            ->withBinPath($musl_cross_make_prefix . '/bin/')
+            ->disableDefaultPkgConfig()
+            ->disableDefaultLdflags()
+            ->disablePkgName()
+    );
+}
+
 function install_rust(Preprocessor $p): void
 {
     $workDir = $p->getWorkDir();
@@ -108,13 +178,13 @@ function install_rust(Preprocessor $p): void
             ->withCleanBuildDirectory()
             ->withBuildScript(
                 <<<EOF
-            
-            ls -lh 
+
+            ls -lh
              # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
             RUSTUP_DIST_SERVER="https://mirrors.tuna.tsinghua.edu.cn/rustup rustup install stable " \
             RUSTUP_UPDATE_ROOT="https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup" \
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-            exit 0 
+            exit 0
             RUSTUP_HOME=/root/.rustup
             CARGO_HOME=/root/.cargo
             /root/.rustup
@@ -148,8 +218,8 @@ function install_nodejs(Preprocessor $p): void
             ->withCleanPreInstallDirectory($nodejs_prefix)
             ->withBuildScript(
                 <<<EOF
-            
-            ls -lh 
+
+            ls -lh
             xz -d node-v18.15.0-linux-x64.tar.xz
             tar -xvf node-v18.15.0-linux-x64.tar
             mv node-v18.15.0-linux-x64 /usr/nodejs
@@ -179,8 +249,8 @@ function install_golang(Preprocessor $p): void
             ->withCleanPreInstallDirectory($golang_prefix)
             ->withBuildScript(
                 <<<EOF
-            
-            ls -lh 
+
+            ls -lh
             mkdir -p {$golang_prefix}
             cp -rf . {$golang_prefix}
             chmod a+x {$golang_prefix}/bin
@@ -342,10 +412,10 @@ function install_bazel(Preprocessor $p)
                 exit 0
                 export PATH=$SYSTEM_ORIGIN_PATH
                 export PKG_CONFIG_PATH=$SYSTEM_ORIGIN_PKG_CONFIG_PATH
-                # 执行构建前    
-                
-                # 执行构建 
-                
+                # 执行构建前
+
+                # 执行构建
+
                 # 执行构建后
                 export PATH=$SWOOLE_CLI_PATH
                 export PKG_CONFIG_PATH=$SWOOLE_CLI_PKG_CONFIG_PATH
