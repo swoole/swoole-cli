@@ -42,7 +42,7 @@ ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
 ## 缺少`gettext coreutils`
 
 ```shell
- brew intall gettext coreutils
+ brew install gettext coreutils re2c
 ```
 
 ## curl configure 检测不通过
