@@ -39,7 +39,7 @@ ln -s /opt/homebrew/bin/glibtool /opt/homebrew/bin/libtool
 ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
 ```
 
-## 缺少`gettext coreutils`
+## 缺少`gettext coreutils re2c`
 
 ```shell
  brew install gettext coreutils re2c
