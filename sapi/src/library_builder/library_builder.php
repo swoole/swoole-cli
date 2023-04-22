@@ -573,6 +573,9 @@ function libraries_builder($p)
      *
      * CURL ARCHITECTURE   https://curl.se/docs/install.html#:~:text=26%20CPU%20Architectures
      * CURL Cross compile  https://curl.se/docs/install.html#:~:text=Cross%20compile
+     *
+     *   cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_C_COMPILER=clang -DCMAKE_C_FLAGS_RELWITHDEBINFO="-O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer" -DENABLE_SHARED=0 ..
+     *   export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
      */
 
 
