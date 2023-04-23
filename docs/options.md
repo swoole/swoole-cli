@@ -74,3 +74,9 @@ without-docker
 直接在宿主机中构建，不使用 docker
 
 > 在 `macOS` 系统无法使用 `docker`，需指定此参数
+
+
+with-dependency-graph
+----
+
+> 生成扩展依赖图 
