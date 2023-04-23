@@ -31,7 +31,8 @@ EOF
 EOF
         )
         ->withPkgName('libjpeg')
-        ->withPkgName('libturbojpeg');
+        ->withPkgName('libturbojpeg')
+        ->withBinPath($libjpeg_prefix . '/bin/');
 
     $p->addLibrary($lib);
 
