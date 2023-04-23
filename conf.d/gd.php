@@ -6,8 +6,6 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $libjpeg_prefix = JPEG_PREFIX;
-    // linux 系统中是保存在 /usr/lib64 目录下的，而 macos 是放在 /usr/lib 目录中的，不清楚这里是什么原因？
-    $jpeg_lib_dir = $libjpeg_prefix . '/' . ($p->getOsType() === 'macos' ? 'lib' : 'lib64');
     $lib = new Library('libjpeg');
     $lib->withHomePage('https://libjpeg-turbo.org/')
         ->withManual('https://libjpeg-turbo.org/Documentation/Documentation')
@@ -26,6 +24,7 @@ return function (Preprocessor $p) {
             -DBUILD_STATIC_LIBS=ON \
             -DENABLE_SHARED=OFF  \
             -DENABLE_STATIC=ON
+
 EOF
         )
         ->withScriptAfterInstall(
@@ -58,6 +57,8 @@ EOF
                 --enable-static --disable-shared \
                 --with-zlib-prefix={$libzlib_prefix} \
                 --with-binconfigs
+
+
 EOF
             )
             ->withPkgName('libpng')
@@ -86,7 +87,9 @@ EOF
                 fi
                 cp libgif.a {$libgif_prefix}/lib/libgif.a
                 cp gif_lib.h {$libgif_prefix}/include/gif_lib.h
-                EOF
+
+
+EOF
             )
             ->withLdflags('-L' . $libgif_prefix . '/lib')
     );
@@ -122,6 +125,8 @@ EOF
                 --with-gifincludedir={$libgif_prefix}/include \
                 --with-giflibdir={$libgif_prefix}/lib \
                 --disable-tiff
+
+
 
 EOF
             )
@@ -159,6 +164,8 @@ EOF
             --with-png=yes \
             --with-harfbuzz=no  \
             --with-brotli=yes
+
+
 
 EOF
             )
