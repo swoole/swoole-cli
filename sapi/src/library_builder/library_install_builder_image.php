@@ -23,7 +23,7 @@ function install_libjpeg(Preprocessor $p)
             -DCMAKE_INSTALL_INCLUDEDIR={$libjpeg_prefix}/include \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON   \
+            -DBUILD_STATIC_LIBS=ON \
             -DENABLE_SHARED=OFF  \
             -DENABLE_STATIC=ON
 EOF
