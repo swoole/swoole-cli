@@ -457,7 +457,7 @@ function libraries_builder($p)
 
         //nm  结果参考 https://www.cnblogs.com/vaughnhuang/p/15771582.html
         // gcc的ar,nm,objdump,objcopy
-
+        // gcc -Wall -Wextra -pedantic -pthread    # -pedanti 编译器严格遵守 C++ 标准 ； -Wextra（启用额外的警告信息，提高代码质量和安全性）
         //gdb bin/swoole-cli
         //set args -m
         //run
