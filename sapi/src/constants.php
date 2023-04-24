@@ -134,3 +134,4 @@ define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
 define("GRAPHVIZ_PREFIX", $p->getGlobalPrefix() . '/graphviz');
 define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
+define('LIBRSVG_PREFIX',$p->getGlobalPrefix() . '/librsvg');

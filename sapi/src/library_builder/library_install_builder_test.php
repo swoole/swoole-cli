@@ -651,6 +651,36 @@ EOF
 
     $p->addLibrary($lib);
 }
+function install_librsvg($p)
+{
+    $librsvg_prefix = LIBRSVG_PREFIX;
+
+    $lib = new Library('librsvg');
+    $lib->withHomePage('https://gitlab.gnome.org/GNOME/librsvg')
+        ->withLicense('https://gitlab.gnome.org/GNOME/librsvg/-/blob/main/COPYING.LIB', Library::LICENSE_LGPL)
+        ->withUrl('https://gitlab.gnome.org/GNOME/librsvg')
+        ->withManual('https://gitlab.gnome.org/GNOME/librsvg')
+        ->withFile('librsvg-v2.56.0')
+        ->withDownloadScript(
+            'librsvg',
+            <<<EOF
+            git clone -b 2.56.0 --depth=1 https://gitlab.gnome.org/GNOME/librsvg.git
+EOF
+        )
+        ->withPrefix($librsvg_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($librsvg_prefix)
+        ->withConfigure(
+            <<<EOF
+            ./configure \
+            --prefix=$librsvg_prefix
+EOF
+        )
+
+        ->withPkgName('librsvg');
+
+    $p->addLibrary($lib);
+}
 
 function install_GraphicsMagick($p)
 {
@@ -1135,7 +1165,7 @@ EOF;
 EOF
             )->withPkgName('gnutls')
             ->withBinPath($gnutls_prefix . '/bin/')
-    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
+        //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
 }
 
@@ -1182,7 +1212,7 @@ EOF
 EOF
             )
             ->disableDefaultPkgConfig()
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -1212,7 +1242,7 @@ function install_wolfssl($p)
 EOF
             )
             ->withPkgName('wolfssl')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -1240,7 +1270,7 @@ function install_libressl($p)
 EOF
             )
             ->withPkgName('libressl')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -1944,7 +1974,7 @@ function install_pcre2(Preprocessor $p)
 
  EOF
             )
-    //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
+        //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
     );
 }
 
@@ -2082,10 +2112,10 @@ install-libpq5555.a: install-lib-static install-lib-pc
                 '
             '
             )
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->withSkipInstall()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -2111,10 +2141,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->withSkipInstall()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -2135,9 +2165,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -2161,9 +2191,9 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -2353,7 +2383,7 @@ EOF
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->withSkipBuildLicense()
-    // ->withSkipBuildInstall()
+        // ->withSkipBuildInstall()
     );
 }
 
