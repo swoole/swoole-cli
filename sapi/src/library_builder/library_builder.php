@@ -491,6 +491,8 @@ function libraries_builder($p)
         // gcc -idirafter dir 在 -I 的目录里面查找失败, 讲到这个目录里面查找。
 
         // gcc -iprefix prefix  -iwithprefix dir 一般一起使用, 当 -I 的目录查找失败, 会到 prefix+dir 下查找
+        // gcc -nostdinc -nostdinc++ 不搜索默认路径头文件
+        // gcc -nostdlib 不使用标准库
     }
 
     if (0) {
