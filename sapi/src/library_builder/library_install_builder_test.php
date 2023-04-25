@@ -1811,18 +1811,31 @@ function install_snappy(Preprocessor $p)
         (new Library('snappy'))
             ->withHomePage('https://github.com/google/snappy')
             ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.9.tar.gz')
-            ->withFile('snappy-1.1.9.tar.gz')
+            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
+            ->withFile('snappy-1.1.10.tar.gz')
             ->withManual('https://github.com/google/snappy/blob/main/README.md')
+            ->withDownloadScript(
+                'snappy',
+                <<<EOF
+                git clone -b 1.1.10 --depth 1  --recursive  https://github.com/google/snappy
+
+
+EOF
+            )
             ->withPrefix($snappy_prefix)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF
 
-git submodule update --init
-mkdir build
-cd build && cmake ../ && make
-
+                mkdir -p build
+                cd build
+                cmake .. \
+                -DCMAKE_INSTALL_PREFIX={$snappy_prefix} \
+                -DCMAKE_INSTALL_LIBDIR={$snappy_prefix}/lib \
+                -DCMAKE_INSTALL_INCLUDEDIR={$snappy_prefix}/include \
+                -DCMAKE_BUILD_TYPE=Release  \
+                -DBUILD_SHARED_LIBS=OFF  \
+                -DBUILD_STATIC_LIBS=ON
 
 EOF
             )

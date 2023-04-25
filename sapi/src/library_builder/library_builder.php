@@ -259,7 +259,7 @@ function libraries_builder($p)
         install_libgomp($p); //压缩算法
         install_libzip_ng($p); //zlib next
     }
-
+    install_snappy($p);
 
     if (0) {
         install_aria2($p); //依赖libuv openssl zlib libxml2 sqlite3 openssl c-ares
