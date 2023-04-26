@@ -18,7 +18,7 @@ OPTIONS="--prefix=<?= PHP_INSTALL_PREFIX ?> --disable-all \
 --enable-shared=no \
 --enable-static=yes \
 <?php foreach ($this->extensionList as $item) : ?>
-<?=$item->options?> \
+    <?=$item->options?> \
 <?php endforeach; ?>
 <?=$this->extraOptions?>
 "
@@ -27,10 +27,10 @@ OPTIONS="--prefix=<?= PHP_INSTALL_PREFIX ?> --disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
-<?php if($item->cleanBuildDirectory): ?>
+    <?php if ($item->cleanBuildDirectory) : ?>
      # If the build directory exist, clean the build directory
      test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
-<?php endif; ?>
+    <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
@@ -50,24 +50,24 @@ make_<?=$item->name?>() {
         return 0
     fi
 
-<?php if($item->cleanPreInstallDirectory): ?>
+    <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
-<?php endif; ?>
+    <?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
     # use build script replace  configure、make、make install
-<?php if(empty($item->buildScript)): ?>
+    <?php if (empty($item->buildScript)) : ?>
     # configure
-<?php if (!empty($item->configure)): ?>
+        <?php if (!empty($item->configure)) : ?>
 cat <<'__EOF__'
-    <?= $item->configure . PHP_EOL ?>
+            <?= $item->configure . PHP_EOL ?>
 __EOF__
-    <?=$item->configure . PHP_EOL ?>
+            <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
-<?php endif; ?>
+        <?php endif; ?>
 
     # make
     make -j <?= $this->maxJob ?> <?= $item->makeOptions . PHP_EOL ?>
@@ -75,33 +75,33 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
 
     # before make install
-<?php if ($item->beforeInstallScript): ?>
-    <?=$item->beforeInstallScript . PHP_EOL ?>
+        <?php if ($item->beforeInstallScript) : ?>
+            <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ before make install script FAILURE]" && exit  $result_code;
-<?php endif; ?>
+        <?php endif; ?>
 
     # make install
-<?php if ($item->makeInstallCommand): ?>
+        <?php if ($item->makeInstallCommand) : ?>
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
-<?php endif; ?>
-<?php else: ?>
+        <?php endif; ?>
+    <?php else : ?>
     cat <<'__EOF__'
-    <?= $item->buildScript . PHP_EOL ?>
+        <?= $item->buildScript . PHP_EOL ?>
 __EOF__
-    <?= $item->buildScript . PHP_EOL ?>
+        <?= $item->buildScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
-<?php endif; ?>
+    <?php endif; ?>
 
     # after make install
-<?php if ($item->afterInstallScript): ?>
-    <?=$item->afterInstallScript . PHP_EOL ?>
+    <?php if ($item->afterInstallScript) : ?>
+        <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
-<?php endif; ?>
+    <?php endif; ?>
 
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
 
@@ -121,7 +121,7 @@ clean_<?=$item->name?>_cached() {
     rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
 }
 
-<?php echo str_repeat(PHP_EOL, 1);?>
+    <?php echo str_repeat(PHP_EOL, 1);?>
 <?php endforeach; ?>
 
 make_all_library() {
@@ -147,12 +147,34 @@ export_variables() {
     return 0
 }
 
+make_extensions(){
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+
+<?php
+foreach ($this->extensionMap as $extension) {
+    if ($extension->peclVersion || $extension->enableDownloadScript) {
+        echo <<<EOF
+    if [[ -d {$this->phpSrcDir}/ext/{$extension->name}/ ]]
+    then
+        rm -rf {$this->phpSrcDir}/ext/{$extension->name}/
+    fi
+    cp -rf {$this->rootDir}/ext/{$extension->name} {$this->phpSrcDir}/ext/
+EOF;
+        echo PHP_EOL;
+        echo PHP_EOL;
+    }
+}
+
+?>
+}
 
 make_config() {
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
     set -exu
-    # 执行 sh make.sh php_src 时已经执行此项
-    # cp -rf <?= $this->rootDir ?>/ext/* <?= $this->phpSrcDir ?>/ext/
+<?php if ($this->getInputOption('with-build-type') != 'release') : ?>
+    make_php_src
+<?php endif ;?>
+    make_extensions
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 
@@ -164,14 +186,15 @@ make_config() {
 make_build() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
-    make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
-    EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
-        if (!empty($item->ldflags)) {
-            echo $item->ldflags;
-            echo ' ';
-        }
-    } ?>'  -j <?= $this->maxJob ?> && echo ""
-
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
+    export EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?>
+<?php foreach ($this->libraryList as $item) {
+    if (!empty($item->ldflags)) {
+        echo $item->ldflags;
+        echo ' ';
+    }
+} ?>'
+    make -j <?= $this->maxJob  ?> cli
     make install
 }
 
@@ -294,15 +317,15 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
-<?php if(!empty($item->pkgNames)) :?>
-<?php foreach ($item->pkgNames as $item) : ?>
+    <?php if (!empty($item->pkgNames)) :?>
+        <?php foreach ($item->pkgNames as $item) : ?>
     pkg-config --libs-only-L <?= $item . PHP_EOL ?>
     pkg-config --libs-only-l <?= $item . PHP_EOL ?>
     pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
-<?php endforeach; ?>
-<?php else :?>
+        <?php endforeach; ?>
+    <?php else :?>
     echo "no PKG_CONFIG !"
-<?php endif ?>
+    <?php endif ?>
     echo "==========================================================="
 <?php endforeach; ?>
     exit 0
