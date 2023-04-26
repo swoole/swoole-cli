@@ -126,8 +126,6 @@ EOF
                 --with-giflibdir={$libgif_prefix}/lib \
                 --disable-tiff
 
-
-
 EOF
             )
             ->withPkgName('libwebp')
@@ -164,8 +162,6 @@ EOF
             --with-png=yes \
             --with-harfbuzz=no  \
             --with-brotli=yes
-
-
 
 EOF
             )
