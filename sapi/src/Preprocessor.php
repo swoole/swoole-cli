@@ -373,6 +373,7 @@ class Preprocessor
             } else {
                 if ($lib->enableDownloadScript) {
                     $cacheDir = $this->getWorkDir() . '/var/tmp';
+                    $this->mkdirIfNotExists( $cacheDir, 0777, true);
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
                 cd {$cacheDir}
@@ -380,7 +381,7 @@ class Preprocessor
                 {$lib->downloadScript}
                 cd {$lib->downloadDirName}
                 test -f {$lib->path} || tar   -zcf {$lib->path} ./
-                cd {$workDir}  
+                cd {$workDir}
 EOF;
 
                     $this->execDownloadScript($cacheDir, $lib->downloadScript);
@@ -436,13 +437,14 @@ EOF;
                 if (!file_exists($ext->path)) {
                     if ($ext->enableDownloadScript) {
                         $cacheDir = $this->getWorkDir() . '/var/tmp';
+                        $this->mkdirIfNotExists( $cacheDir, 0777, true);
                         $ext->downloadScript = <<<EOF
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
                                 cd {$ext->downloadDirName}
                                 test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
-                                cd {$workDir}  
+                                cd {$workDir}
 
 EOF;
 
@@ -882,7 +884,7 @@ EOF;
             cd {$item->downloadDirName}
             test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir}  
+            cd {$workDir}
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -911,8 +913,8 @@ EOF;
                 cd {$item->downloadDirName}
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} ./
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir}  
-                
+                cd {$workDir}
+
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
