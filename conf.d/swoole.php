@@ -24,5 +24,12 @@ return function (Preprocessor $p) {
             ->depends('curl', 'openssl', 'cares', 'zlib', 'brotli')
             ->withHomePage('https://github.com/swoole/swoole-src')
             ->depends('curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2')
+            ->withFile('swoole-v5.0.3.tar.gz')
+            ->withDownloadScript(
+                'swoole-src',
+                <<<EOF
+            git clone -b v5.0.3 --depth=1 https://github.com/swoole/swoole-src
+EOF
+            )
     );
 };

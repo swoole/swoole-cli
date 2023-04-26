@@ -11,18 +11,9 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+export PATH=${__PROJECT__}/bin/runtime:$PATH
 
-chmod +x bin/spc
+# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+composer update
 
-./bin/spc fetch --all --debug
-
-./bin/spc list-ext
-
-
-#./bin/spc build "bcmath,openssl,tokenizer,sqlite3,pdo,pdo_sqlite,ftp,curl" --cc=gcc --cxx=g++  --debug
-
-./bin/spc build "bcmath,openssl,tokenizer,sqlite3,pdo,pdo_sqlite,ftp,curl" --cc=clang --cxx=clang++  --debug
-
-
-./bin/spc build gd --debug --cc=clang --cxx=clang++
+php prepare.php  --with-build-type=release +apcu +ds

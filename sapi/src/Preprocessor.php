@@ -377,13 +377,18 @@ class Preprocessor
                     $cacheDir = $this->getWorkDir() . '/var/tmp';
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
+                mkdir -p {$cacheDir}
                 cd {$cacheDir}
                 test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
                 {$lib->downloadScript}
                 cd {$lib->downloadDirName}
                 test -f {$lib->path} || tar   -zcf {$lib->path} ./
-                cd {$workDir}  
+<<<<<<< HEAD
+                cd {$workDir}
 
+=======
+                cd {$workDir}
+>>>>>>> new_main
 EOF;
 
                     $this->execDownloadScript($cacheDir, $lib->downloadScript);
@@ -440,13 +445,18 @@ EOF;
                     if ($ext->enableDownloadScript) {
                         $cacheDir = $this->getWorkDir() . '/var/tmp';
                         $ext->downloadScript = <<<EOF
+                                mkdir -p {$cacheDir}
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
                                 cd {$ext->downloadDirName}
                                 test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
-                                cd {$workDir}  
-                                
+<<<<<<< HEAD
+                                cd {$workDir}
+
+=======
+                                cd {$workDir}
+>>>>>>> new_main
 
 EOF;
 
@@ -878,7 +888,7 @@ __DIR__=$(
 cd ${__DIR__}
 mkdir -p ${__DIR__}/var/tmp
 mkdir -p ${__DIR__}/libraries
-mkdir -p ${__DIR__}/extensions  
+mkdir -p ${__DIR__}/extensions
 
 EOF;
 
@@ -900,7 +910,7 @@ EOF;
             test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
             cd {$workDir}
-            
+
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -930,6 +940,7 @@ EOF;
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} ./
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
                 cd {$workDir}
+
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
