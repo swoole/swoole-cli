@@ -373,9 +373,9 @@ class Preprocessor
             } else {
                 if ($lib->enableDownloadScript) {
                     $cacheDir = $this->getWorkDir() . '/var/tmp';
-                    $this->mkdirIfNotExists( $cacheDir, 0777, true);
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
+                mkdir -p {$cacheDir}
                 cd {$cacheDir}
                 test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
                 {$lib->downloadScript}
@@ -437,8 +437,8 @@ EOF;
                 if (!file_exists($ext->path)) {
                     if ($ext->enableDownloadScript) {
                         $cacheDir = $this->getWorkDir() . '/var/tmp';
-                        $this->mkdirIfNotExists( $cacheDir, 0777, true);
                         $ext->downloadScript = <<<EOF
+                                mkdir -p {$cacheDir}
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
