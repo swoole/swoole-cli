@@ -4,8 +4,8 @@
 是全部静态编译打包的，不依赖任何操作系统的`so`动态链接库，具备非常好的移植性，可以在任意 `Linux`/`macOS`/`Windows(CygWin)`
 系统之间复制，下载即可使用。
 
-> 作为 PHP 开发者都应该知道 PHP 有两种运行模式：php-fpm和php-cli，那么在 Swoole 5.0中将迎来一种新的运行模式：swoole-cli。   
-> <strong>Swoole 将像node.js这样作为独立程序提供给用户，而不是作为PHP的一个扩展</strong>。   
+> 作为 PHP 开发者都应该知道 PHP 有两种运行模式：php-fpm和php-cli，那么在 Swoole 5.0中将迎来一种新的运行模式：swoole-cli。
+> <strong>Swoole 将像node.js这样作为独立程序提供给用户，而不是作为PHP的一个扩展</strong>。
 > 除此之外swoole-cli会尽可能地对php-src进行裁剪，移除一些不用的机制、模块、扩展、函数、类型、常量、代码，使得整个程序可以在几分钟之内编译完成。
 
 ## 相关文章
@@ -41,6 +41,12 @@ git clone --recursive git@github.com:swoole/swoole-cli.git
 ```shell
 git clone git@github.com:swoole/swoole-cli.git
 git submodule update --init
+```
+
+## [快速开始 进入构建环境 ](sapi/qquickstart)
+```shell
+# linux
+
 ```
 
 ## 生成构建脚本
