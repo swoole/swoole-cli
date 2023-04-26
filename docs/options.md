@@ -78,7 +78,6 @@ without-docker
 
 with-dependency-graph
 ----
-
 生成扩展依赖图
 
 > 依赖 graphviz
@@ -95,4 +94,5 @@ php ./prepare.php --without-docker --with-dependency-graph=1
  sh sapi/scripts/generate-dependency-graph.sh
 
 ```
+
 
