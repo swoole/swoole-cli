@@ -58,9 +58,7 @@ function install_libraries($p): void
             ->withCleanBuildDirectory()
             ->withBuildScript(
                 <<<EOF
-            cp -rf {$p->getRootDir()}/ext/* {$p->getPhpSrcDir()}/ext/
-            ./buildconf --force
-            ./configure --help
+                return 0
 EOF
             )
     );
