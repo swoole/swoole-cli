@@ -878,6 +878,7 @@ EOF;
             $cacheDir = '${__DIR__}/var/tmp';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
+            mkdir -p {$cacheDir}
             cd {$cacheDir}
             test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
             {$item->downloadScript}
@@ -907,6 +908,7 @@ EOF;
             $cacheDir = '${__DIR__}/var/tmp';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
+                mkdir -p {$cacheDir}
                 cd {$cacheDir}
                 test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
                 {$item->downloadScript}
