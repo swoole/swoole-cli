@@ -457,9 +457,11 @@ function libraries_builder($p)
 
         //OProfile是Linux内核支持的一种性能分析机制。 它在时钟中断处理入口处建立监测点，记录被中断的上下文现场，由配套的用户态的工具oprof_start负责在用户态收集数据
 
+        //alpine 上默认的 gcc 就是 musl-gcc
         //nm  结果参考 https://www.cnblogs.com/vaughnhuang/p/15771582.html
         // binutils 二进制工具集   gcc的ar,nm,objdump,objcopy
         // gcc -Wall -Wextra -pedantic -pthread    # -pedanti 编译器严格遵守 C++ 标准 ； -Wextra（启用额外的警告信息，提高代码质量和安全性）
+
         //gdb bin/swoole-cli
         //set args -m
         //run
@@ -493,6 +495,8 @@ function libraries_builder($p)
         // gcc -iprefix prefix  -iwithprefix dir 一般一起使用, 当 -I 的目录查找失败, 会到 prefix+dir 下查找
         // gcc -nostdinc -nostdinc++ 不搜索默认路径头文件
         // gcc -nostdlib 不使用标准库
+
+        //clang main.c -static -nostdinc -nostdlib -I/usr/include/x86_64-linux-musl -L/usr/lib/x86_64-linux-musl
     }
 
     if (0) {
