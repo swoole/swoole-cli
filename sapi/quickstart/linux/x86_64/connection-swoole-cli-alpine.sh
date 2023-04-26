@@ -8,4 +8,5 @@ __DIR__=$(
 
 cd ${__DIR__}
 
-docker exec -it static-php-cli-dev-1 sh
+docker exec -it swoole-cli-dev sh
+
