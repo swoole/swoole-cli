@@ -84,19 +84,16 @@ EOF
             ->withPrefix($libzip_prefix)
             ->withConfigure(
                 <<<EOF
-            # -Wno-dev
-            cmake  .  \
+            cmake -Wno-dev .  \
             -DCMAKE_INSTALL_PREFIX={$libzip_prefix} \
-            -DCMAKE_BUILD_TYPE=Release  \
-            -DBUILD_SHARED_LIBS=OFF  \
+            -DCMAKE_BUILD_TYPE=optimized \
             -DBUILD_TOOLS=OFF \
-            -DBUILD_REGRESS=OFF \
             -DBUILD_EXAMPLES=OFF \
             -DBUILD_DOC=OFF \
             -DLIBZIP_DO_INSTALL=ON \
+            -DBUILD_SHARED_LIBS=OFF \
             -DENABLE_GNUTLS=OFF  \
             -DENABLE_MBEDTLS=OFF \
-            -DENABLE_COMMONCRYPTO=OFF \
             -DENABLE_OPENSSL=ON \
             -DOPENSSL_USE_STATIC_LIBS=TRUE \
             -DOPENSSL_LIBRARIES={$openssl_prefix}/lib \
@@ -116,7 +113,7 @@ EOF
             -DLIBLZMA_HAS_LZMA_PRESET=ON \
             -DENABLE_ZSTD=ON \
             -DZstd_LIBRARY={$libzstd_prefix}/lib \
-            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include 
+            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include
 EOF
             )
             ->withMakeOptions('VERBOSE=1')
