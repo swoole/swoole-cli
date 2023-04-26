@@ -375,12 +375,13 @@ class Preprocessor
                     $cacheDir = $this->getWorkDir() . '/var/tmp';
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
+                mkdir -p {$cacheDir}
                 cd {$cacheDir}
                 test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
                 {$lib->downloadScript}
                 cd {$lib->downloadDirName}
                 test -f {$lib->path} || tar   -zcf {$lib->path} ./
-                cd {$workDir}  
+                cd {$workDir}
 EOF;
 
                     $this->execDownloadScript($cacheDir, $lib->downloadScript);
@@ -437,12 +438,13 @@ EOF;
                     if ($ext->enableDownloadScript) {
                         $cacheDir = $this->getWorkDir() . '/var/tmp';
                         $ext->downloadScript = <<<EOF
+                                mkdir -p {$cacheDir}
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
                                 cd {$ext->downloadDirName}
                                 test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
-                                cd {$workDir}  
+                                cd {$workDir}
 
 EOF;
 
@@ -876,13 +878,14 @@ EOF;
             $cacheDir = '${__DIR__}/var/tmp';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
+            mkdir -p {$cacheDir}
             cd {$cacheDir}
             test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
             {$item->downloadScript}
             cd {$item->downloadDirName}
             test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir}  
+            cd {$workDir}
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -905,14 +908,15 @@ EOF;
             $cacheDir = '${__DIR__}/var/tmp';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
+                mkdir -p {$cacheDir}
                 cd {$cacheDir}
                 test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
                 {$item->downloadScript}
                 cd {$item->downloadDirName}
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} ./
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir}  
-                
+                cd {$workDir}
+
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
