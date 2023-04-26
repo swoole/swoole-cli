@@ -10,9 +10,9 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('imagemagick'))
             ->withHomePage('https://imagemagick.org/index.php')
-            ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
-            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
             ->withManual('https://github.com/ImageMagick/ImageMagick.git')
+            ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
+            ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-62.tar.gz')
             ->withFile('ImageMagick-v7.1.0-62.tar.gz')
             ->withMd5sum('37b896e9eecd379a6cd0d6359b9f525a')
             ->withPrefix($imagemagick_prefix)
