@@ -1542,26 +1542,26 @@ function install_gnulib($p)
 
 function install_libunistring($p)
 {
+    $iconv_prefix = ICONV_PREFIX;
+    $libunistring_prefix = LIBUNISTRING_PREFIX;
     $p->addLibrary(
         (new Library('libunistring'))
             ->withHomePage('https://www.gnu.org/software/libunistring/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-            ->withUrl('https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.1.1.tar.gz')
-            ->withFile('libunistring-0.9.1.1.tar.gz')
+            ->withUrl('https://ftp.gnu.org/gnu/libunistring/libunistring-1.1.tar.gz')
+            ->withPrefix($libunistring_prefix)
             ->withCleanBuildDirectory()
             ->withConfigure(
-                '
-             ./configure --help
-
+                <<<EOF
+            ./configure --help
             ./configure \
-            --prefix=/usr/libunistring \
+            --prefix={$libunistring_prefix} \
+            --with-libiconv-prefix={$iconv_prefix} \
             --enable-static \
-            --disable-shared \
-             --with-libiconv-prefix=/usr/libiconv
-            '
+            --disable-shared
+EOF
             )
-            ->withPkgConfig('/usr/libunistring/lib/pkgconfig')
-            ->withPkgName('libunistringe')
+            ->withPkgName('libunistring')
     );
 }
 
@@ -2213,6 +2213,11 @@ function install_libfastcommon($p)
 
 function install_gettext(Preprocessor $p)
 {
+    $gettext_prefix = GETTEXT_PREFIX ;
+    $libunistring_prefix = LIBUNISTRING_PREFIX;
+    $iconv_prefix = ICONV_PREFIX;
+    $libxml2_prefix = LIBXML2_PREFIX;
+    $ncurses_prefix = NCURSES_PREFIX;
     $p->addLibrary(
         (new Library('gettext'))
             ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.21.1.tar.gz')
@@ -2221,19 +2226,34 @@ function install_gettext(Preprocessor $p)
             ->withCleanBuildDirectory()
             ->withPrefix('/usr/gettext')
             ->withConfigure(
-                '
+                <<<EOF
             ./configure --help
 
-            ./configure --prefix=/usr/gettext enable_static=yes enable_shared=no \
-             --disable-java \
-             --without-git \
-             --with-libiconv-prefix=/usr/libiconv \
-             --with-libncurses-prefix=/usr/ncurses \
-             --with-libxml2-prefix=/usr/libxml2/ \
-             --with-libunistring-prefix \
-             --with-libintl-prefix
+            ./configure \
+            --prefix={$gettext_prefix} \
+             --enable-shared=yes \
+             --enable-static=no \
+             --enable-relocatable \
+             --with-libiconv-prefix=${iconv_prefix} \
+             --with-libncurses-prefix=${ncurses_prefix} \
+             --with-libxml2-prefix=${libxml2_prefix} \
+             --with-libunistring-prefix=${libunistring_prefix} \
+             --without-libintl-prefix \
+             --without-libtermcap-prefix \
+             --without-emacs \
+             --without-lispdir \
+             --without-cvs \
+              --without-included-regex \
+              --without-libtextstyle-prefix \
+              --disable-openmp \
+              --disable-acl \
+              --disable-java \
+              --disable-csharp \
+               --without-git \
+               --disable-nls \
+               --disable-namespacing
 
-            '
+EOF
             )
             ->withPkgName('gettext')
     );

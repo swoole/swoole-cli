@@ -93,10 +93,10 @@ if test -f /etc/os-release; then
         meson=$(which meson | wc -l )
         if test $meson -ne 1 ;then
         {
-             apk add ninja python3 py3-pip gn zip unzip 7zip lzip  go flex
+             apk add ninja python3 py3-pip gn zip unzip p7zip lzip  go flex
              pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
-             # git config --global --add safe.directory /work     
-             
+             # git config --global --add safe.directory /work
+
         }
         fi
     }

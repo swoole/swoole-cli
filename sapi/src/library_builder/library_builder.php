@@ -234,6 +234,7 @@ function libraries_builder($p)
 
         install_coreutils($p);
         install_gnulib($p);
+
         install_libunistring($p); //coreutils 包含  libiconv
         install_gettext($p);// gettext 包含 intl
 
