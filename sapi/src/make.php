@@ -183,9 +183,14 @@ make_config() {
     if [[ $PHP_VERSION -lt 80000 ]] ; then
         echo "only support PHP >= 8.0 "
     else
-
-        cp -rf <?= $this->buildDir ?>/php_patch_sfx_micro/ sapi/micro
-        patch -p1 < sapi/micro/patches/phar.patch
+        if [[ -f touch php-sfx-micro.cached ]] ; then
+            cp -rf <?= $this->buildDir ?>/php_patch_sfx_micro/ sapi/micro
+            patch -p1 < sapi/micro/patches/phar.patch
+            touch php-sfx-micro.cached
+            echo "php-sfx-micro patch ok "
+        else
+            echo "php-sfx-micro patch exists !"
+        fi
     fi
 <?php endif ;?>
 
