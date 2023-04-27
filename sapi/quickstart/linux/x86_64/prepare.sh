@@ -16,4 +16,9 @@ export PATH=${__PROJECT__}/bin/runtime:$PATH
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 composer update
 
+
 php prepare.php  --with-build-type=release +apcu +ds
+
+exit 0
+# use sfx micro
+php prepare.php  --with-build-type=release +apcu +ds --with-php-sfx-micro=1

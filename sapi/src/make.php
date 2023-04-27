@@ -183,7 +183,7 @@ make_config() {
     if [[ $PHP_VERSION -lt 80000 ]] ; then
         echo "only support PHP >= 8.0 "
     else
-        if [[ -f touch php-sfx-micro.cached ]] ; then
+        if [[ -f php-sfx-micro.cached ]] ; then
             cp -rf <?= $this->buildDir ?>/php_patch_sfx_micro/ sapi/micro
             patch -p1 < sapi/micro/patches/phar.patch
             touch php-sfx-micro.cached
@@ -222,9 +222,19 @@ make_build() {
             echo $item->ldflags;
             echo ' ';
         }
-    } ?>'
-    make -j <?= $this->maxJob  ?> cli
-    make install
+    }
+echo "'";
+echo PHP_EOL;
+if ($this->getInputOption('with-php-sfx-micro')) {
+    echo "    make -j " . $this->maxJob . ' micro' ;
+} else {
+    echo "    make -j " . $this->maxJob . ' cli' ;
+    echo PHP_EOL;
+    echo "    make install " ;
+}
+
+?>
+
 }
 
 make_clean() {
