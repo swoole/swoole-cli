@@ -172,7 +172,6 @@ EOF;
 make_config() {
     set -exu
     cd <?= $this->phpSrcDir . PHP_EOL ?>
-
 <?php if ($this->getInputOption('with-build-type') != 'release') : ?>
     make_php_src
 <?php endif ;?>
@@ -184,7 +183,9 @@ make_config() {
     if [[ $PHP_VERSION -lt 80000 ]] ; then
         echo "only support PHP >= 8.0 "
     else
-        patch -p1 < <?= $this->buildDir ?>/php_patch_sfx_micro/patches/phar.patch
+
+        cp -rf <?= $this->buildDir ?>/php_patch_sfx_micro/ sapi/micro
+        patch -p1 < sapi/micro/patches/phar.patch
     fi
 <?php endif ;?>
 
