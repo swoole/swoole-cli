@@ -42,7 +42,7 @@ ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
 ## 缺少`gettext coreutils re2c`
 
 ```shell
- brew install gettext coreutils re2c
+ brew install gettext coreutils re2c libunistring
 ```
 
 ## curl configure 检测不通过
@@ -85,5 +85,5 @@ export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 > 解压以后执行如下命令：
 
 ```bash
-  sudo xattr -d com.apple.quarantine  ./swoole-cli 
+  sudo xattr -d com.apple.quarantine  ./swoole-cli
 ```

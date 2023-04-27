@@ -3,256 +3,155 @@ name: build-swoole-cli
 on: [ push, pull_request ]
 
 jobs:
-    linux:
-        if: 0
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v3
-            -   name: Configure
-                run: |
-                    git submodule update --init
-            -   name: prepare-1
-                uses: addnab/docker-run-action@v3
-                with:
-                    image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230329T114730Z
-                    options: -v ${{ github.workspace }}:/work -w /work
-                    run: |
-                        mkdir -p /work/pool/lib
-                        mkdir -p /work/pool/ext
-                        cp -rf /usr/share/nginx/html/extensions/* /work/pool/ext
-                        cp -rf /usr/share/nginx/html/libraries/*  /work/pool/lib
-            -   name: prepare-2
-                uses: addnab/docker-run-action@v3
-                with:
-                    image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-20230330T153237Z
-                    options: -v ${{ github.workspace }}:/work -w /work
-                    run: |
-                        composer update --no-dev  --optimize-autoloader
-                        php prepare.php  +inotify  +ds +apcu
-                        chmod a+x ./make.sh
-            -   name: Build
-                uses: addnab/docker-run-action@v3
-                with:
-                    image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-20230330T153237Z
-                    options: -v ${{ github.workspace }}:/work -w /work
-                    run: |
-                        ./make.sh config
-                        ./make.sh build
-                        ./bin/swoole-cli -v
-                        ./make.sh archive
-            -   name: Archive production artifacts
-                uses: actions/upload-artifact@v3
-                with:
-                    name: dist-swoole-cli
-                    path: |
-                        bin/swoole-cli
-    linux-arm64:
-        if: 0
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v3
-            -   name: Configure
-                run: |
-                    git submodule update --init
-            -   name: prepare-docker-multiarch-arm64
-                run: |
-                    docker run --rm --privileged multiarch/qemu-user-static:register --reset
-
-            -   name: prepare-1
-                uses: addnab/docker-run-action@v3
-                with:
-                    image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230329T114730Z
-                    options: -v ${{ github.workspace }}:/work -w /work
-                    run: |
-                        mkdir -p /work/pool/lib
-                        mkdir -p /work/pool/ext
-                        cp -rf /usr/share/nginx/html/extensions/* /work/pool/ext
-                        cp -rf /usr/share/nginx/html/libraries/*  /work/pool/lib
-            -   name: prepare-2
-                uses: addnab/docker-run-action@v3
-                with:
-                    image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-20230330T153237Z
-                    options: -v ${{ github.workspace }}:/work -w /work
-                    run: |
-                        composer update --no-dev  --optimize-autoloader
-                        php prepare.php  +inotify  +ds +apcu
-                        chmod a+x ./make.sh
-            -   name: Build all library
-                uses: addnab/docker-run-action@v3
-                with:
-                    image: docker.io/jingjingxyk/build-swoole-cli:alpine-arm64-20230403T073941Z
-                    options: -v ${{ github.workspace }}:/work -w /work
-                    run: |
-                        env
-                        SYSTEM=`uname -s 2>/dev/null`
-                        RELEASE=`uname -r 2>/dev/null`
-                        MACHINE=`uname -m 2>/dev/null`
-                        PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
-                        PLATFORM="$SYSTEM:$MACHINE";
-                        echo $PLATFORM
-                        echo $PATH
-                        bash ./make.sh all-library
-
-            -   name: build
-                if: 0
-                run: |
-                        bash ./make.sh config
-                        bash ./make.sh build
-                        ./bin/swoole-cli -v
-                        bash ./make.sh archive
-            -   name: Archive production artifacts
-                if: 0
-                uses: actions/upload-artifact@v3
-                with:
-                    name: dist-swoole-cli
-                    path: |
-                        bin/swoole-cli
-    cygwin:
-        if: 0
-        runs-on: windows-latest
-        steps:
-            -   name: Prepare git
-                run: |
-                    git config --global core.autocrlf false
-                    git config --global core.eol lf
-            -   uses: actions/checkout@v3
-            -   name: prepare swoole
-                run: |
-                    uname -a
-                    pwd
-                    git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
-                    git submodule update --init
-            -   name: Install deps
-                uses: cygwin/cygwin-install-action@v2
-                with:
-                    platform: x64
-                    packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel
-            -   name: Install re2c
-                run: |
-                    bash ./sapi/scripts/install-re2c.sh
-            -   name: Install ext
-                run: |
-                    bash ./sapi/scripts/cygwin-config-ext.sh
-            -   name: Configure php
-                run: |
-                    uname -a
-                    pwd
-                    bash ./sapi/scripts/cygwin-config.sh
-            -   name: Build
-                run: |
-                    uname -a
-                    pwd
-                    bash ./sapi/scripts/cygwin-build.sh
-                    bin/swoole-cli ./sapi/scripts/cygwin-build.sh
-            -   name: Archive production artifacts
-                uses: actions/upload-artifact@v3
-                with:
-                    name: dist-swoole-cli
-                    path: |
-                        bin/swoole-cli
+  linux:
+    if: 0
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure
+        run: |
+          git submodule update --init
+          SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
+          chmod +x ./make.sh
+      - name: Build
+        uses: addnab/docker-run-action@v3
+        with:
+          image: phpswoole/swoole_cli_os:1.4
+          options: -v ${{ github.workspace }}:/work
+          run: |
+            cd /work
+            ./make.sh config
+            ./make.sh build
+            ./bin/swoole-cli -v
+  cygwin:
+    if: 0
+    runs-on: windows-latest
+    steps:
+      - name: Prepare git
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@v3
+      - name: Cache cygwin packages
+        id: cache-cygwin
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-cygwin-packages
+        with:
+          path: C:/cygwin-packages
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+      - name: Install deps
+        uses: cygwin/cygwin-install-action@v2
+        with:
+          platform: x64
+          packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel
+      - name: Install re2c
+        run: |
+          bash ./sapi/scripts/cygwin/install-re2c.sh
+      - name: Configure
+        run: |
+          uname -a
+          git submodule update --init
+          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
+          bash ./sapi/scripts/cygwin/cygwin-config.sh
+      - name: Build
+        run: |
+          bash ./sapi/scripts/cygwin/cygwin-build.sh
+          ./bin/swoole-cli -v
+      - name: Archive
+        run: |
+          bash ./sapi/scripts/cygwin/cygwin-archive.sh
+      - name: production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: cygwin-swoole-cli-dist
+          path: |
+            bin/swoole-cli.exe
+      - name: gh release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: swoole-cli-*-cygwin-x64.zip
+          draft: true
+          prerelease: true
     macos:
-        if: 0
-        runs-on: macos-latest
-        steps:
-            -   uses: actions/checkout@v3
-            -   name: Configure
-                run: |
-                    git submodule update --init
-                    SYSTEM=`uname -s 2>/dev/null`
-                    RELEASE=`uname -r 2>/dev/null`
-                    MACHINE=`uname -m 2>/dev/null`
-                    PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
-                    PLATFORM="$SYSTEM:$MACHINE";
-                    echo $PLATFORM
-                    brew install bison wget curl  libtool automake re2c 
-                    which glibtool
-                    ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
-                    ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/lib
-                    sudo wget http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz -O ${GITHUB_WORKSPACE}/pool/lib/bison-3.8.tar.gz
-                    env
-            -   name: Cache
-                uses: actions/cache@v3
-                id: all-archive-cache
-                with:
-                    path: |
-                        ~/cache/var/all-archive.zip
-                        ~/cache/var/runtime/swoole-cli
-                        ~/cache/var/runtime/composer.phar
-                    key: all-archive
-            -   name: prepare-cache
-                if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
-                run: |
-                    cd ${GITHUB_WORKSPACE}
-                    sudo mkdir -p ${GITHUB_WORKSPACE}/var/
-                    sudo mkdir -p ~/cache/var/runtime/
-                    
-                    cd ${GITHUB_WORKSPACE}
-                    sudo sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
-                    sudo cp -f var/runtime/swoole-cli  ~/cache/var/runtime/
-                    sudo cp -f var/runtime/composer.phar  ~/cache/var/runtime/
+      if: 0
+      runs-on: macos-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Configure
+          run: |
+            git submodule update --init
 
-                    cd ${GITHUB_WORKSPACE}/var
-                    # sudo test -f all-archive.zip || sudo wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
-                    sudo test -f all-archive.zip || sudo wget -O all-archive.zip https://http-proxy.xiaoshuogeng.com/cloud-soft/all-archive.zip
-                    sudo cp -f all-archive.zip  ~/cache/var/
-                    cd ${GITHUB_WORKSPACE}
+            brew install  wget curl  libtool automake gettext coreutils re2c
+            which glibtool
+            ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
+            ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
+            sudo mkdir -p pool/lib
+        - name: Cache
+          uses: actions/cache@v3
+          id: all-archive-cache
+          with:
+            path: |
+              ${GITHUB_WORKSPACE}/var/all-archive.zip
+              ${GITHUB_WORKSPACE}/bin/runtime/swoole-cli
+              ${GITHUB_WORKSPACE}/bin/runtime/composer.phar
+            key: all-archive
+        - name: Prepare runtime
+          if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
+          run: |
+            sudo mkdir -p var/
+            sudo mkdir -p bin/runtime
 
-            -   name: prepare
-                run: |
-                    cd ${GITHUB_WORKSPACE}
-                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/lib
-                    sudo mkdir -p ${GITHUB_WORKSPACE}/pool/ext
-                    sudo mkdir -p ${GITHUB_WORKSPACE}/var/runtime/
-                    
-                    sudo cp -f ~/cache/var/all-archive.zip        ${GITHUB_WORKSPACE}/var/
-                    sudo cp -f ~/cache/var/runtime/swoole-cli     ${GITHUB_WORKSPACE}/var/runtime/
-                    sudo cp -f ~/cache/var/runtime/composer.phar  ${GITHUB_WORKSPACE}/var/runtime/
-                    
-                    cd ${GITHUB_WORKSPACE}/var
-                    sudo unzip -o all-archive.zip
-                     cd ${GITHUB_WORKSPACE}
-                    sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
-                    sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext" ; print "n" |cmd; }'
+            cd ${GITHUB_WORKSPACE}
+            sudo sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
+            export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+
+            cd ${GITHUB_WORKSPACE}/var
+            test -f all-archive.zip || sudo wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
+
+            cd ${GITHUB_WORKSPACE}
+
+        - name: prepare
+          run: |
+            cd ${GITHUB_WORKSPACE}
+            sudo mkdir -p pool/lib
+            sudo mkdir -p pool/ext
 
 
-            -   name: Build
-                run: |
-                    cd ${GITHUB_WORKSPACE}/
-                    export PATH=${GITHUB_WORKSPACE}/var/runtime:$PATH
-                    env
-                    php -v 
-                    php --ri curl 
-                    sudo composer update --no-dev  --optimize-autoloader
-                    sudo php prepare.php --without-docker   +ds +apcu
-                    sudo chmod a+x ./make.sh
-                    
-                    sudo ./make.sh all-library
-                    sudo ./make.sh config
-                    sudo ./make.sh build
-                    ./bin/swoole-cli -v
-                    ./make.sh archive
-            -   name: Archive production artifacts
-                uses: actions/upload-artifact@v3
-                with:
-                    name: dist-swoole-cli
-                    path: |
-                        bin/swoole-cli
-    macos-arm64:
-        if: 0
-        runs-on: macos-latest
-        strategy:
-            matrix:
-                arch: [ "aarch64"]
-        steps:
-            -   uses: actions/checkout@v3
-            -   name: Configure
-                run: |
-                    git submodule update --init
-                    SYSTEM=`uname -s 2>/dev/null`
-                    RELEASE=`uname -r 2>/dev/null`
-                    MACHINE=`uname -m 2>/dev/null`
-                    PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
-                    PLATFORM="$SYSTEM:$MACHINE";
-                    echo $PLATFORM
-                    brew install qemu
+            cd ${GITHUB_WORKSPACE}/var
+            sudo unzip -o all-archive.zip
+
+            cd ${GITHUB_WORKSPACE}
+            sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
+            sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext" ; print "n" |cmd; }'
+            sudo composer update --no-dev  --optimize-autoloader
+            sudo php prepare.php --without-docker
+
+        - name: Build
+          run: |
+            cd ${GITHUB_WORKSPACE}/
+
+            sudo chmod a+x ./make.sh
+            sudo ./make.sh all-library
+            sudo ./make.sh config
+            sudo ./make.sh build
+            ./bin/swoole-cli -v
+            ./make.sh archive
+        - name: Archive production artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: macos-x86_64-swoole-cli-dist
+            path: |
+              bin/swoole-cli
+        - name: gh release
+          uses: softprops/action-gh-release@v1
+          if: startsWith(github.ref, 'refs/tags/')
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            files: swoole-cli-v*-macos-x64.tar.xz
+            draft: true
+            prerelease: true
