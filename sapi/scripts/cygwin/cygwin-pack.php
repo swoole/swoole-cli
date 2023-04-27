@@ -1,6 +1,6 @@
 <?php
 
-$src = dirname(__DIR__);
+$src = realpath(dirname(__DIR__) . '/../../../');
 $name = "swoole-cli-v".SWOOLE_VERSION."-cygwin-x64";
 $dst = "/tmp/{$name}";
 if (!is_dir($dst)) {
