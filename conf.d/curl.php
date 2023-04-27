@@ -54,8 +54,26 @@ EOF
             ->withPkgName('libcares')
     );
 
-    $libidn2_prefix = LIBIDN2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
+    $libunistring_prefix = LIBUNISTRING_PREFIX;
+    $p->addLibrary(
+        (new Library('libunistring'))
+            ->withHomePage('https://www.gnu.org/software/libunistring/')
+            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+            ->withUrl('https://ftp.gnu.org/gnu/libunistring/libunistring-1.1.tar.gz')
+            ->withPrefix($libunistring_prefix)
+            ->withConfigure(
+                <<<EOF
+            ./configure --help
+            ./configure \
+            --prefix={$libunistring_prefix} \
+            --with-libiconv-prefix={$libiconv_prefix} \
+            --enable-static \
+            --disable-shared
+EOF
+            )
+    );
+    $libidn2_prefix = LIBIDN2_PREFIX;
     $p->addLibrary(
         (new Library('libidn2'))
             ->withHomePage('https://gitlab.com/libidn/libidn2')
@@ -71,12 +89,13 @@ EOF
             --enable-shared=no \
             --disable-doc \
             --with-libiconv-prefix={$libiconv_prefix} \
-            --with-libintl-prefix
+            --with-libunistring-prefix={$libunistring_prefix} \
+            --without-libintl-prefix
 
 EOF
             )
             ->withPkgName('libidn2')
-            ->depends('libiconv')
+            ->depends('libiconv', 'libunistring')
     );
 
     $nghttp2_prefix = NGHTTP2_PREFIX;
