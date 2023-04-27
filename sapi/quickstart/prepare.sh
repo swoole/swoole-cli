@@ -6,14 +6,21 @@ __DIR__=$(
   pwd
 )
 __PROJECT__=$(
-  cd ${__DIR__}/../../../../
+  cd ${__DIR__}/../../
   pwd
 )
 cd ${__PROJECT__}
 
-export PATH=${__PROJECT__}/bin/runtime:$PATH
+OS=$(uname -s)
+ARCH=$(uname -m)
 
-# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
+export PATH=${__PROJECT__}/bin/runtime:$PATH
+php -v
+
+
+# composer config  repo.packagist composer https://mirrors.aliyun.com/composer/
+
 composer update
 
 php prepare.php  --with-build-type=release +apcu +ds
