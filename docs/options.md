@@ -91,8 +91,20 @@ brew install graphviz
 ```shell
 php ./prepare.php --without-docker --with-dependency-graph=1
 
- sh sapi/scripts/generate-dependency-graph.sh
+sh sapi/scripts/generate-dependency-graph.sh
 
 ```
+
+with-php-sfx-micro
+----
+
+> 自执行
+
+```shell
+
+php prepare.php  --with-build-type=release +apcu +ds --with-php-sfx-micro=1
+
+```
+
 
 
