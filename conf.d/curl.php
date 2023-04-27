@@ -67,8 +67,8 @@ EOF
                 <<<EOF
             ./configure --help
             ./configure --prefix={$libidn2_prefix} \
-            enable_static=yes \
-            enable_shared=no \
+            --enable-static=yes \
+            --enable-shared=no \
             --disable-doc \
             --with-libiconv-prefix={$libiconv_prefix} \
             --with-libintl-prefix
@@ -151,7 +151,7 @@ EOF
               -DOpenSSL_ROOT={$openssl_prefix} \
               -DCRYPTO_BACKEND=OpenSSL \
               -DBUILD_TESTING=OFF \
-              -DBUILD_EXAMPLES=OFF 
+              -DBUILD_EXAMPLES=OFF
               cmake --build . --target install
 EOF
             )
