@@ -22,7 +22,7 @@ case $OS in
   OS="macos"
   ;;
 *)
-  echo '暂未配置的 ARCH '
+  echo '暂未配置的 OS '
   exit 0
   ;;
 
