@@ -25,4 +25,3 @@ ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
 
 cd ${__PROJECT__}/
 php -v
-
