@@ -14,13 +14,11 @@ cd ${__PROJECT__}
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-
 export PATH=${__PROJECT__}/bin/runtime:$PATH
 php -v
-
 
 # composer config  repo.packagist composer https://mirrors.aliyun.com/composer/
 
 composer update
 
-php prepare.php  --with-build-type=release +apcu +ds
+php prepare.php --with-build-type=release +apcu +ds
