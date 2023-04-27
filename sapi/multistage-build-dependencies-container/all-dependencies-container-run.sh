@@ -14,7 +14,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}/
 
 
-TAG='all-dependencies-alpine-20230330T153237Z'
+TAG='all-dependencies-alpine-20230427T114837Z'
 
 IMAGE="phpswoole/swoole-cli-builder:1.6"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
