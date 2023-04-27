@@ -732,6 +732,8 @@ function install_libidn2(Preprocessor $p)
 {
     $libidn2_prefix = LIBIDN2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
+    $libunistring_prefix= LIBUNISTRING_PREFIX;
+    $gettext_prefix = GETTEXT_PREFIX;
     $p->addLibrary(
         (new Library('libidn2'))
             ->withHomePage('https://gitlab.com/libidn/libidn2')
@@ -739,15 +741,18 @@ function install_libidn2(Preprocessor $p)
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz')
             ->withPrefix($libidn2_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libidn2_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
             ./configure --prefix={$libidn2_prefix} \
-            enable_static=yes \
-            enable_shared=no \
+            --enable-static=yes \
+            --enable-shared=no \
             --disable-doc \
             --with-libiconv-prefix={$libiconv_prefix} \
-            --with-libintl-prefix
+            --with-libintl-prefix={$gettext_prefix} \
+            --with-libunistring-prefix={$libunistring_prefix}
 
 EOF
             )

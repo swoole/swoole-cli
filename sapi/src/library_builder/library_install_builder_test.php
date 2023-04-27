@@ -1830,6 +1830,7 @@ EOF
                 mkdir -p build
                 cd build
                 cmake .. \
+                -Werror -Wsign-compare \
                 -DCMAKE_INSTALL_PREFIX={$snappy_prefix} \
                 -DCMAKE_INSTALL_LIBDIR={$snappy_prefix}/lib \
                 -DCMAKE_INSTALL_INCLUDEDIR={$snappy_prefix}/include \
@@ -2224,7 +2225,7 @@ function install_gettext(Preprocessor $p)
             ->withHomePage('https://www.gnu.org/software/gettext/')
             ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
             ->withCleanBuildDirectory()
-            ->withPrefix('/usr/gettext')
+            ->withPrefix($gettext_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help

@@ -195,6 +195,8 @@ function libraries_builder($p)
         install_libXpm($p); //依赖 xorg-macros  xorgproto libx11 # apk add util-macros xorgproto libx11
     }
 
+    install_libunistring($p); //coreutils 包含  libiconv
+    install_gettext($p);// gettext 包含 intl
 
     if (0) {
         install_openssl_v1($p);
@@ -235,8 +237,6 @@ function libraries_builder($p)
         install_coreutils($p);
         install_gnulib($p);
 
-        install_libunistring($p); //coreutils 包含  libiconv
-        install_gettext($p);// gettext 包含 intl
 
         install_libfastcommon($p);
         install_libserverframe($p);
