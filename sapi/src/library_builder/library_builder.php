@@ -668,4 +668,14 @@ function libraries_builder($p)
             （6）-lpthread：链接到pthread的库
              (7) -lresolv DNS
      */
+    /*
+     *
+        debian 使用 libc编译器
+        组合一： musl-gcc g++
+        组合二： clang clang++
+
+        alpine 使用 libc编译器
+        组合一： gcc g++   (gcc 默认就是musl-gcc)
+        组合二： clang clang++
+     */
 }
