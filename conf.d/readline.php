@@ -8,8 +8,9 @@ return function (Preprocessor $p) {
     $ncurses_prefix = NCURSES_PREFIX;
     $p->addLibrary(
         (new Library('ncurses'))
-            ->withHomePage('https://github.com/projectceladon/libncurses')
+            ->withHomePage('https://invisible-island.net/ncurses/')
             ->withLicense('https://github.com/projectceladon/libncurses/blob/master/README', Library::LICENSE_MIT)
+            ->withManual('https://invisible-island.net/ncurses/')
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
@@ -42,7 +43,8 @@ return function (Preprocessor $p) {
             --enable-symlinks
 EOF
             )
-            ->withScriptBeforeInstall('
+            ->withScriptBeforeInstall(
+                '
                 ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/formw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/form.pc ;
                 ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/menuw.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/menu.pc ;
                 ln -s ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++w.pc ' . NCURSES_PREFIX . '/lib/pkgconfig/ncurses++.pc ;
@@ -56,7 +58,8 @@ EOF
                 ln -s ' . NCURSES_PREFIX . '/lib/libncursesw.a ' . NCURSES_PREFIX . '/lib/libncurses.a ;
                 ln -s ' . NCURSES_PREFIX . '/lib/libpanelw.a  ' . NCURSES_PREFIX . '/lib/libpanel.a ;
                 ln -s ' . NCURSES_PREFIX . '/lib/libticw.a ' . NCURSES_PREFIX . '/lib/libtic.a ;
-            ')
+            '
+            )
             ->withPkgName('ncursesw')
             ->withBinPath($ncurses_prefix . '/bin/')
     );
@@ -74,6 +77,8 @@ EOF
         $readline_prefix = READLINE_PREFIX;
         $p->addLibrary(
             (new Library('readline'))
+                ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
+                ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
                 ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
                 ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
                 ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
@@ -90,14 +95,13 @@ EOF
                 )
                 ->withPkgName('readline')
                 ->withLdflags('-L' . READLINE_PREFIX . '/lib')
-                ->withLicense('https://www.gnu.org/licenses/gpl.html', Library::LICENSE_GPL)
-                ->withHomePage('https://tiswww.case.edu/php/chet/readline/rltop.html')
                 ->depends('ncurses')
         );
     }
     $p->addExtension(
         (new Extension('readline'))
-        ->withOptions('--with-readline=' . READLINE_PREFIX)
-        ->depends('ncurses', 'readline')
+            ->withHomePage('https://www.php.net/readline')
+            ->withOptions('--with-readline=' . READLINE_PREFIX)
+            ->depends('ncurses', 'readline')
     );
 };
