@@ -12,8 +12,7 @@ jobs:
         run: |
           bash sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-
-          chmod +x ./make.sh
+          env
       - name: Prepare Libraries and Extensions
         uses: addnab/docker-run-action@v3
         with:
