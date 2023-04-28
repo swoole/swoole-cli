@@ -294,7 +294,8 @@ EOF
             --with-nghttp2 \
             --with-ngtcp2 \
             --with-nghttp3 \
-            --with-libidn2 \
+            --with-default-ssl-backend=openssl \
+            --without-libidn2 \
             --with-libssh2 \
             --with-openssl  \
             --with-default-ssl-backend=openssl \
