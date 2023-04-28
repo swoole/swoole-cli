@@ -7,6 +7,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
+set -uex
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 export CC=<?= $this->cCompiler . PHP_EOL ?>
