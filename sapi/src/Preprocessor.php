@@ -671,6 +671,7 @@ EOF;
 
     protected function mkdirIfNotExists(string $dir, int $permissions = 0777, bool $recursive = false)
     {
+        var_dump(func_get_args());
         if (!is_dir($dir)) {
             mkdir($dir, $permissions, $recursive);
         }
