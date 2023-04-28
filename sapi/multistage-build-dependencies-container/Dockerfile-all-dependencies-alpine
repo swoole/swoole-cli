@@ -36,40 +36,10 @@ RUN composer update --no-dev --optimize-autoloader
 
 
 RUN php prepare.php  --with-build-type=release --skip-download=1
-RUN sh make.sh list-library
 
-# RUN sh make.sh all-library
+RUN sh make.sh all-library
 
-RUN sh make.sh brotli
-RUN sh make.sh cares
-RUN sh make.sh libiconv
-# RUN sh make.sh libidn2
-RUN sh make.sh openssl
-RUN sh make.sh libxml2
-RUN sh make.sh bzip2
-RUN sh make.sh zlib
-RUN sh make.sh nghttp2
-RUN sh make.sh libssh2
-RUN sh make.sh liblz4
-RUN sh make.sh liblzma
-RUN sh make.sh libzstd
-RUN sh make.sh curl
-RUN sh make.sh oniguruma
-RUN sh make.sh libzip
-RUN sh make.sh sqlite3
-RUN sh make.sh icu
-RUN sh make.sh libxslt
-RUN sh make.sh gmp
-RUN sh make.sh libsodium
-RUN sh make.sh ncurses
-RUN sh make.sh readline
-RUN sh make.sh libjpeg
-RUN sh make.sh libpng
-RUN sh make.sh libgif
-RUN sh make.sh libwebp
-RUN sh make.sh freetype
-RUN sh make.sh libyaml
-RUN sh make.sh imagemagick
+
 
 
 FROM alpine:3.17
@@ -108,8 +78,8 @@ COPY --from=builder-all-library  /usr/zlib /usr/zlib
 
 # COPY --from=builder-all-library /usr/libidn2 /usr/libidn2
 COPY --from=builder-all-library  /usr/nghttp2 /usr/nghttp2
-COPY --from=builder-all-library  /usr/nghttp2 /usr/nghttp3
-COPY --from=builder-all-library  /usr/nghttp2 /usr/ngtcp2
+COPY --from=builder-all-library  /usr/nghttp3 /usr/nghttp3
+COPY --from=builder-all-library  /usr/ngtcp2 /usr/ngtcp2
 COPY --from=builder-all-library  /usr/libssh2 /usr/libssh2
 
 COPY --from=builder-all-library  /usr/liblz4 /usr/liblz4
