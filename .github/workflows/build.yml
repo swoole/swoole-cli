@@ -43,6 +43,7 @@ jobs:
             chmod a+x make.sh
             head -n 20 make.sh
             sh make.sh php_src
+            ls -lh /usr/
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
