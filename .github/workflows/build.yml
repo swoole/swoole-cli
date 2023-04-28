@@ -14,6 +14,9 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           env
           docker info
+          id -u
+          id -g
+          who
       - name: Prepare Libraries and Extensions
         uses: addnab/docker-run-action@v3
         with:
@@ -28,9 +31,9 @@ jobs:
       - name: Prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          composer update --no-dev  --optimize-autoloader
-          php prepare.php  +inotify +apcu +ds -mysqli -soap
-          chmod a+x make.sh
+          sudo composer update --no-dev  --optimize-autoloader
+          sudo php prepare.php  +inotify +apcu +ds -mysqli -soap
+          sudo chmod a+x make.sh
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
