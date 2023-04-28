@@ -137,3 +137,4 @@ define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
 define('LIBRSVG_PREFIX',$p->getGlobalPrefix() . '/librsvg');
 define('LIBUNISTRING_PREFIX',$p->getGlobalPrefix() . '/libunistring');
 define('GETTEXT_PREFIX',$p->getGlobalPrefix() . '/gettext');
+

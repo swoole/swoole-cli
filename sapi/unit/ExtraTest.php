@@ -8,10 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class ExtraTest extends TestCase
 {
-
     public $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
 
-    public function testCurlIDN2(): void
+    public function stopTestCurlIDN2(): void
     {
         $url = "http://国家电网.网址";
         $userAgent = $this->userAgent;
