@@ -23,15 +23,14 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230428T123458Z
           options: -v ${{ github.workspace }}:/work
           run: |
-            cd /work
             set -eux
-            pwd
-            ls -lha .
+            cd /work
             mkdir -p pool/lib
             mkdir -p pool/ext
             mkdir -p ext
-            cp -rf /usr/share/nginx/html/extensions/* pool/lib
-            cp -rf /usr/share/nginx/html/libraries/* pool/ext
+            cp -rf /usr/share/nginx/html/extensions/* pool/ext
+            cp -rf /usr/share/nginx/html/libraries/* pool/lib
+            ls -lha .
       - name: Prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
