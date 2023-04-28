@@ -97,7 +97,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY --from=builder-all-library  /usr/brotli/ /usr/brotli/
 COPY --from=builder-all-library  /usr/cares /usr/cares
 COPY --from=builder-all-library /usr/libiconv /usr/libiconv
-COPY --from=builder-all-library /usr/libidn2 /usr/libidn2
+# COPY --from=builder-all-library /usr/libidn2 /usr/libidn2
 COPY --from=builder-all-library /usr/openssl/ /usr/openssl/
 
 COPY --from=builder-all-library /usr/libxml2/ /usr/libxml2/

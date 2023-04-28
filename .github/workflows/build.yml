@@ -4,19 +4,35 @@ on: [ push, pull_request ]
 
 jobs:
   linux:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Configure
+      - name: Prepare Source Code
         run: |
-          git submodule update --init
-          SKIP_LIBRARY_DOWNLOAD=1 php prepare.php +mongodb +inotify
+          bash sapi/quickstart/setup-php-runtime.sh
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+
           chmod +x ./make.sh
+      - name: Prepare Libraries and Extensions
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230428T123458Z
+          options: -v ${{ github.workspace }}:/work
+          run: |
+            mkdir -p pool/lib
+            mkdir -p pool/ext
+            mkdir -p ext
+            cp -rf /usr/share/nginx/html/extensions/* pool/lib
+            cp -rf $container_id:/usr/share/nginx/html/libraries/* pool/ext
+      - name: Prepare
+        run: |
+          php prepare.php  +inotify +apcu +ds -mysqli -soap
+          chmod a+x make.sh
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: phpswoole/swoole_cli_os:1.4
+          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230428T131833Z
           options: -v ${{ github.workspace }}:/work
           run: |
             cd /work
