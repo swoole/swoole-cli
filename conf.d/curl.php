@@ -315,7 +315,6 @@ EOF
                 'zlib',
                 'brotli',
                 'libzstd',
-                'libidn2',
                 'nghttp2',
                 'nghttp3',
                 'ngtcp2',

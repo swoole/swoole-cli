@@ -29,7 +29,9 @@ RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
 WORKDIR /work
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer config repo.packagist composer https://mirrors.aliyun.com/composer/
+RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+RUN ls -lh .
+RUN curl -v   https://www.baidu.com
 RUN composer update --no-dev --optimize-autoloader
 
 
@@ -41,7 +43,7 @@ RUN sh make.sh list-library
 RUN sh make.sh brotli
 RUN sh make.sh cares
 RUN sh make.sh libiconv
-RUN sh make.sh libidn2
+# RUN sh make.sh libidn2
 RUN sh make.sh openssl
 RUN sh make.sh libxml2
 RUN sh make.sh bzip2

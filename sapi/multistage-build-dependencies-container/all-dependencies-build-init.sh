@@ -10,6 +10,36 @@ __PROJECT__=$(
   pwd
 )
 
+OS=$(uname -s)
+ARCH=$(uname -m)
+
+case $OS in
+'Linux')
+  OS="linux"
+  ;;
+'Darwin')
+  OS="macos"
+  ;;
+*)
+  echo '暂未配置的 OS '
+  exit 0
+  ;;
+
+esac
+
+case $ARCH in
+'x86_64')
+  ARCH="x64"
+  ;;
+*)
+  echo '暂未配置的 ARCH '
+  exit 0
+  ;;
+esac
+
+VERSION='v5.0.2'
+SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-${OS}-${ARCH}"
+
 mkdir -p ${__PROJECT__}/var/runtime
 cd ${__PROJECT__}/var
 
@@ -20,12 +50,39 @@ test -d swoole-cli &&  git -C swoole-cli  pull --depth=1
 mkdir -p  ${__PROJECT__}/var/runtime
 cd ${__PROJECT__}/var/runtime
 
-test -f swoole-cli-v5.0.3-linux-x64.tar.xz || wget -O swoole-cli-v5.0.3-linux-x64.tar.xz  https://github.com/swoole/swoole-src/releases/download/v5.0.3/swoole-cli-v5.0.3-linux-x64.tar.xz
-test -f swoole-cli-v5.0.3-linux-x64.tar ||  xz -d -k swoole-cli-v5.0.3-linux-x64.tar.xz
-test -f swoole-cli ||  tar -xvf swoole-cli-v5.0.3-linux-x64.tar
+SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
+COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
+
+mirror=''
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    mirror="$2"
+    shift
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+case "$mirror" in
+china)
+  SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
+  COMPOSER_DOWNLOAD_URL="https://mirrors.aliyun.com/composer/composer.phar"
+  ;;
+
+esac
+
+test -f ${SWOOLE_CLI_RUNTIME}.tar.xz || wget -O ${SWOOLE_CLI_RUNTIME}.tar.xz ${SWOOLE_CLI_DOWNLOAD_URL}
+test -f ${SWOOLE_CLI_RUNTIME}.tar || xz -d -k ${SWOOLE_CLI_RUNTIME}.tar.xz
+test -f swoole-cli || tar -xvf ${SWOOLE_CLI_RUNTIME}.tar
 chmod a+x swoole-cli
 
-test -f composer.phar ||  wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
+test -f composer.phar || wget -O composer.phar ${COMPOSER_DOWNLOAD_URL}
+chmod a+x composer.phar
+
 
 
 cd ${__PROJECT__}/var
