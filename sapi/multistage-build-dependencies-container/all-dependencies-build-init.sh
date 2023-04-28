@@ -41,13 +41,6 @@ VERSION='v5.0.2'
 SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-${OS}-${ARCH}"
 
 mkdir -p ${__PROJECT__}/var/runtime
-cd ${__PROJECT__}/var
-
-
-test -d swoole-cli || git clone -b build_native_php  --depth=1 --single-branch  https://github.com/jingjingxyk/swoole-cli.git
-test -d swoole-cli &&  git -C swoole-cli  pull --depth=1 --rebase=true
-
-mkdir -p  ${__PROJECT__}/var/runtime
 cd ${__PROJECT__}/var/runtime
 
 SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
@@ -83,7 +76,9 @@ chmod a+x swoole-cli
 test -f composer.phar || wget -O composer.phar ${COMPOSER_DOWNLOAD_URL}
 chmod a+x composer.phar
 
-
+cd ${__PROJECT__}/var/
+test -d swoole-cli || git clone -b build_native_php  --depth=1 --single-branch  https://github.com/jingjingxyk/swoole-cli.git
+test -d swoole-cli &&  git -C swoole-cli  pull --depth=1 --rebase=true
 
 cd ${__PROJECT__}/var
 

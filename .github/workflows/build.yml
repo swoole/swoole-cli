@@ -32,7 +32,7 @@ jobs:
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230428T131833Z
+          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230428T164512Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             pwd
@@ -46,7 +46,7 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230428T131833Z
+          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230428T164512Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             ./make.sh config
