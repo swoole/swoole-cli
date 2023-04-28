@@ -11,7 +11,7 @@ __PROJECT__=$(
 )
 cd ${__DIR__}
 
-sh prepare-php-runtime.sh
+sh setup-php-runtime.sh
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 
