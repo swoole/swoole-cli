@@ -24,6 +24,7 @@ jobs:
           options: -v ${{ github.workspace }}:/work
           run: |
             cd /work
+            set -eux
             pwd
             ls -lha .
             mkdir -p pool/lib
