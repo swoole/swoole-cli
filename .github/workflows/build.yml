@@ -23,6 +23,7 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230428T123458Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            echo "Running Script"
             pwd
             mkdir -p pool/lib
             mkdir -p pool/ext
