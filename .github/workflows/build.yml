@@ -25,6 +25,7 @@ jobs:
           run: |
             echo "Running Script"
             pwd
+            ls -lha .
             mkdir -p pool/lib
             mkdir -p pool/ext
             mkdir -p ext
