@@ -41,6 +41,7 @@ jobs:
             composer update --no-dev  --optimize-autoloader
             php prepare.php  +inotify +apcu +ds -mysqli -soap
             chmod a+x make.sh
+            head -n 20 make.sh
             sh make.sh php_src
       - name: Build
         uses: addnab/docker-run-action@v3
