@@ -7,7 +7,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
-set -uex
+set -x
 if [[ -z $PKG_CONFIG_PATH ]];then export PKG_CONFIG_PATH='';fi
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
