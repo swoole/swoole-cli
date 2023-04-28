@@ -383,12 +383,8 @@ class Preprocessor
                 {$lib->downloadScript}
                 cd {$lib->downloadDirName}
                 test -f {$lib->path} || tar   -zcf {$lib->path} ./
-<<<<<<< HEAD
                 cd {$workDir}
 
-=======
-                cd {$workDir}
->>>>>>> new_main
 EOF;
 
                     $this->execDownloadScript($cacheDir, $lib->downloadScript);
@@ -451,12 +447,8 @@ EOF;
                                 {$ext->downloadScript}
                                 cd {$ext->downloadDirName}
                                 test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
-<<<<<<< HEAD
                                 cd {$workDir}
 
-=======
-                                cd {$workDir}
->>>>>>> new_main
 
 EOF;
 

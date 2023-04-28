@@ -1472,74 +1472,6 @@ EOF
 }
 
 
-function install_coreutils($p)
-{
-    /*
-        glibc是一个核心C运行时库.它提供了像printf(3)和的东西fopen(3).
-
-        glib 是一个用C编写的基于对象的事件循环和实用程序库.
-
-        gnulib 是一个库,提供从POSIX API到本机API的适配器.
-
-     */
-    $p->addLibrary(
-        (new Library('gnu_coreutils'))
-            ->withHomePage('https://www.gnu.org/software/coreutils/')
-            ->withLicense('https://www.gnu.org/licenses/gpl-2.0.html', Library::LICENSE_LGPL)
-            ->withManual('https://www.gnu.org/software/coreutils/')
-            ->withUrl('https://mirrors.aliyun.com/gnu/coreutils/coreutils-9.1.tar.gz')
-            ->withFile('coreutils-9.1.tar.gz')
-            ->withCleanBuildDirectory()
-            ->withBuildScript(
-                '
-                ./bootstrap
-                ./configure --help
-                exit 0
-                  export FORCE_UNSAFE_CONFIGURE=1
-                  ./configure --prefix=/usr/gnu_coreutils \
-                  --with-openssl=yes \
-                  --with-libiconv-prefix=/usr/libiconv \
-                  --with-libintl-prefix
-
-
-            '
-            )
-            ->withPkgConfig('')
-            ->withPkgName('')
-    );
-}
-
-function install_gnulib($p)
-{
-    /*
-        glibc是一个核心C运行时库.它提供了像printf(3)和的东西fopen(3).
-
-        glib 是一个用C编写的基于对象的事件循环和实用程序库.
-
-        gnulib 是一个库,提供从POSIX API到本机API的适配器.
-
-     */
-    $p->addLibrary(
-        (new Library('gnulib'))
-            ->withHomePage('https://www.gnu.org/software/gnulib/')
-            ->withLicense('https://www.gnu.org/licenses/gpl-2.0.html', Library::LICENSE_LGPL)
-            ->withManual('https://www.gnu.org/software/gnulib/manual/')
-            ->withUrl('https://github.com/coreutils/gnulib/archive/refs/heads/master.zip')
-            ->withFile('latest-gnulib.zip')
-            ->withCleanBuildDirectory()
-            ->withUntarArchiveCommand('unzip')
-            ->withBuildScript(
-                '
-               cd gnulib-master
-             ./gnulib-tool --help
-             return 0 ;
-            '
-            )
-            ->withPkgConfig('')
-            ->withPkgName('')
-    );
-}
-
 function install_libunistring($p)
 {
     $iconv_prefix = ICONV_PREFIX;
@@ -1564,6 +1496,199 @@ EOF
             ->withPkgName('libunistring')
     );
 }
+
+function install_libintl(Preprocessor $p)
+{
+    $gettext_prefix = GETTEXT_PREFIX ;
+    $libunistring_prefix = LIBUNISTRING_PREFIX;
+    $iconv_prefix = ICONV_PREFIX;
+    $libxml2_prefix = LIBXML2_PREFIX;
+    $ncurses_prefix = NCURSES_PREFIX;
+    $libintl_prefix =  LIBINTL_PREFIX;
+    $p->addLibrary(
+        (new Library('libintl'))
+            ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.21.1.tar.gz')
+            ->withHomePage('https://www.gnu.org/software/gettext/')
+            ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
+            ->withCleanBuildDirectory()
+            ->withPrefix($libintl_prefix)
+            ->withConfigure(
+                <<<EOF
+             cd gettext-runtime/
+
+            ./configure \
+            --prefix={$libintl_prefix} \
+             --enable-shared=yes \
+             --enable-static=no \
+             --enable-relocatable \
+             --with-libiconv-prefix=${iconv_prefix} \
+             --with-libncurses-prefix=${ncurses_prefix} \
+             --with-libxml2-prefix=${libxml2_prefix} \
+             --with-libunistring-prefix=${libunistring_prefix} \
+             --without-libintl-prefix \
+             --without-libtermcap-prefix \
+             --without-emacs \
+             --without-lispdir \
+             --without-cvs \
+              --without-included-regex \
+              --without-libtextstyle-prefix \
+              --disable-libasprintf \
+              --disable-openmp \
+              --disable-acl \
+              --disable-java \
+              --disable-csharp \
+               --without-git \
+               --disable-nls \
+               --disable-namespacing
+
+EOF
+            )
+            ->withPkgName('gettext')
+            ->withMakeInstallOptions('DESTDIR=' . $libintl_prefix)
+    );
+}
+function install_gettext(Preprocessor $p)
+{
+    $gettext_prefix = GETTEXT_PREFIX ;
+    $libunistring_prefix = LIBUNISTRING_PREFIX;
+    $iconv_prefix = ICONV_PREFIX;
+    $libxml2_prefix = LIBXML2_PREFIX;
+    $ncurses_prefix = NCURSES_PREFIX;
+    $p->addLibrary(
+        (new Library('gettext'))
+            ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.21.1.tar.gz')
+            ->withHomePage('https://www.gnu.org/software/gettext/')
+            ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
+            ->withManual('https://www.jiangguo.net/c/1q/nZW.html')
+            ->withCleanBuildDirectory()
+            ->withPrefix($gettext_prefix)
+            ->withConfigure(
+                <<<EOF
+            cd gettext-tools
+            ./configure --help
+            exit 3
+            ./configure \
+            --prefix={$gettext_prefix} \
+             --enable-shared=yes \
+             --enable-static=no \
+             --enable-relocatable \
+             --with-libiconv-prefix=${iconv_prefix} \
+             --with-libncurses-prefix=${ncurses_prefix} \
+             --with-libxml2-prefix=${libxml2_prefix} \
+             --with-libunistring-prefix=${libunistring_prefix} \
+             --without-libintl-prefix \
+             --without-libtermcap-prefix \
+             --without-emacs \
+             --without-lispdir \
+             --without-cvs \
+              --without-included-regex \
+              --without-libtextstyle-prefix \
+              --disable-libasprintf \
+              --disable-openmp \
+              --disable-acl \
+              --disable-java \
+              --disable-csharp \
+               --without-git \
+               --disable-nls \
+               --disable-namespacing
+
+              # make -C lib
+              # make -C src msgfmt
+EOF
+            )
+            ->withPkgName('gettext')
+            ->withMakeOptions("lib")
+            ->withMakeInstallOptions('lib')
+    );
+}
+
+function install_coreutils($p): void
+{
+    /*
+        glibc是一个核心C运行时库.它提供了像printf(3)和的东西fopen(3).
+
+        glib 是一个用C编写的基于对象的事件循环和实用程序库.
+
+        gnulib 是一个库,提供从POSIX API到本机API的适配器.
+
+        coreutils    包括常用的命令，如 cat、ls、rm、chmod、mkdir、wc、whoami 和许多其他命令
+
+     */
+    $iconv_prefix = ICONV_PREFIX;
+    $gmp_prefix = GMP_PREFIX;
+    $libintl_prefix = LIBINTL_PREFIX ;
+    $p->addLibrary(
+        (new Library('coreutils'))
+            ->withHomePage('https://www.gnu.org/software/coreutils/')
+            ->withLicense('https://www.gnu.org/licenses/gpl-2.0.html', Library::LICENSE_LGPL)
+            ->withManual('https://www.gnu.org/software/coreutils/')
+            ->withUrl('https://mirrors.aliyun.com/gnu/coreutils/coreutils-9.1.tar.gz')
+            ->withFile('coreutils-9.1.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withBuildScript(
+                <<<EOF
+
+                ./configure --help
+
+                ./bootstrap
+                ./configure \
+                --prefix=/usr/coreutils \
+                --with-openssl=yes \
+                --with-libiconv-prefix={$iconv_prefix} \
+                --with-libgmp-prefix={$gmp_prefix} \
+                --with-libintl-prefix={ $libintl_prefix}
+
+EOF
+            )
+            ->withPkgConfig('')
+            ->withPkgName('')
+    );
+}
+
+function install_gnulib($p)
+{
+    /*
+        glibc是一个核心C运行时库.它提供了像printf(3)和的东西fopen(3).
+
+        glib 是一个用C编写的基于对象的事件循环和实用程序库.
+
+        gnulib 是一个库,提供从POSIX API到本机API的适配器.
+
+       Gnulib，也称为GNU Portability Library，是 GNU 代码的集合，用于帮助编写可移植代码。
+
+     */
+    $p->addLibrary(
+        (new Library('gnulib'))
+            ->withHomePage('https://www.gnu.org/software/gnulib/')
+            ->withLicense('https://www.gnu.org/licenses/gpl-2.0.html', Library::LICENSE_LGPL)
+            ->withManual('https://www.gnu.org/software/gnulib/manual/')
+            ->withManual('https://www.gnu.org/software/gnulib/manual/html_node/Building-gnulib.html')
+            ->withUrl('https://github.com/coreutils/gnulib/archive/refs/heads/master.zip')
+            ->withDownloadScript(
+                'gnulib',
+                <<<EOF
+              git clone --depth 1 --single-branch  https://git.savannah.gnu.org/git/gnulib.git
+EOF
+            )
+            ->withFile('gnulib-latest.tar.gz')
+            ->withCleanBuildDirectory()
+            ->withBuildScript(
+                <<<EOF
+
+                ./gnulib-tool --help
+                exit 3
+                gnulib-tool --create-megatestdir --with-tests --dir=...
+                ./configure
+                make dist
+                ./do-autobuild
+                             return 0 ;
+EOF
+            )
+            ->withPkgConfig('')
+            ->withPkgName('')
+    );
+}
+
 
 
 function install_libunwind($p)
@@ -2212,53 +2337,7 @@ function install_libfastcommon($p)
 }
 
 
-function install_gettext(Preprocessor $p)
-{
-    $gettext_prefix = GETTEXT_PREFIX ;
-    $libunistring_prefix = LIBUNISTRING_PREFIX;
-    $iconv_prefix = ICONV_PREFIX;
-    $libxml2_prefix = LIBXML2_PREFIX;
-    $ncurses_prefix = NCURSES_PREFIX;
-    $p->addLibrary(
-        (new Library('gettext'))
-            ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.21.1.tar.gz')
-            ->withHomePage('https://www.gnu.org/software/gettext/')
-            ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
-            ->withCleanBuildDirectory()
-            ->withPrefix($gettext_prefix)
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
 
-            ./configure \
-            --prefix={$gettext_prefix} \
-             --enable-shared=yes \
-             --enable-static=no \
-             --enable-relocatable \
-             --with-libiconv-prefix=${iconv_prefix} \
-             --with-libncurses-prefix=${ncurses_prefix} \
-             --with-libxml2-prefix=${libxml2_prefix} \
-             --with-libunistring-prefix=${libunistring_prefix} \
-             --without-libintl-prefix \
-             --without-libtermcap-prefix \
-             --without-emacs \
-             --without-lispdir \
-             --without-cvs \
-              --without-included-regex \
-              --without-libtextstyle-prefix \
-              --disable-openmp \
-              --disable-acl \
-              --disable-java \
-              --disable-csharp \
-               --without-git \
-               --disable-nls \
-               --disable-namespacing
-
-EOF
-            )
-            ->withPkgName('gettext')
-    );
-}
 
 
 function install_jansson(Preprocessor $p)
