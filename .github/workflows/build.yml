@@ -23,7 +23,7 @@ jobs:
             mkdir -p pool/ext
             mkdir -p ext
             cp -rf /usr/share/nginx/html/extensions/* pool/lib
-            cp -rf $container_id:/usr/share/nginx/html/libraries/* pool/ext
+            cp -rf /usr/share/nginx/html/libraries/* pool/ext
       - name: Prepare
         run: |
           php prepare.php  +inotify +apcu +ds -mysqli -soap
