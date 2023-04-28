@@ -14,7 +14,7 @@ export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
-OPTIONS="--prefix=<?= PHP_INSTALL_PREFIX ?> --disable-all \
+OPTIONS="--prefix=<?= BUILD_PHP_INSTALL_PREFIX ?> --disable-all \
 --enable-shared=no \
 --enable-static=yes \
 <?php foreach ($this->extensionList as $item) : ?>
@@ -324,9 +324,9 @@ elif [ "$1" = "config" ] ;then
 elif [ "$1" = "build" ] ;then
     make_build
 elif [ "$1" = "test" ] ;then
-    <?= PHP_INSTALL_PREFIX ?>/bin/php vendor/bin/phpunit
+    <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
-    cd <?= PHP_INSTALL_PREFIX ?>/bin
+    cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
     PHP_VERSION=$(./php -r "echo PHP_VERSION;")
     PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     strip php
