@@ -13,11 +13,12 @@ jobs:
           bash sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           env
+          docker info
       - name: Prepare Libraries and Extensions
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230428T123458Z
-          options: -v ${{ github.workspace }}:/work
+          options: -v ${{ github.workspace }}:/work --workdir /work
           run: |
             mkdir -p pool/lib
             mkdir -p pool/ext
