@@ -322,7 +322,7 @@ class Preprocessor
         echo PHP_EOL;
         echo $downloadScript;
         echo PHP_EOL;
-        $this->mkdirIfNotExists($cacheDir);
+        $this->mkdirIfNotExists($cacheDir, 0777, true);
         echo `$downloadScript`;
         echo PHP_EOL;
     }
