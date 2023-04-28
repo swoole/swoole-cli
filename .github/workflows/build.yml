@@ -21,8 +21,9 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230428T123458Z
-          options: -v ${{ github.workspace }}:/work --workdir /work
+          options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            pwd
             mkdir -p pool/lib
             mkdir -p pool/ext
             mkdir -p ext
