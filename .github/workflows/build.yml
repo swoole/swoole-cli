@@ -26,6 +26,7 @@ jobs:
             cp -rf /usr/share/nginx/html/libraries/* pool/ext
       - name: Prepare
         run: |
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           php prepare.php  +inotify +apcu +ds -mysqli -soap
           chmod a+x make.sh
       - name: Build
