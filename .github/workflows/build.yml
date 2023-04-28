@@ -37,7 +37,7 @@ jobs:
           run: |
             pwd
             set -uex
-            export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+            export PATH=/work/bin/runtime:$PATH
             composer update --no-dev  --optimize-autoloader
             php prepare.php  +inotify +apcu +ds -mysqli -soap
             chmod a+x make.sh
