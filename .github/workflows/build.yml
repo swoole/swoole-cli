@@ -4,7 +4,7 @@ on: [ push ]
 
 jobs:
   linux:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -54,7 +54,7 @@ jobs:
             ./make.sh config
             ./make.sh build
             ./make.sh archive
-            ./sapi/cli/php -v
+            ./thirdparty/php_src/sapi/cli/php -v
             mkdir -p bin
             cp thirdparty/php_src/sapi/cli/php ./bin
             strip ./bin/php
@@ -62,8 +62,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: linux-php-cli-dist
-          path: |
-            bin/php
+          retention-days: 7
+          path: bin/php
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -123,7 +123,7 @@ jobs:
           draft: true
           prerelease: true
   macos:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -136,62 +136,56 @@ jobs:
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo mkdir -p pool/lib
+          sudo mkdir -p pool/ext
       - name: Cache
         uses: actions/cache@v3
         id: all-archive-cache
         with:
           path: |
             ${GITHUB_WORKSPACE}/var/all-archive.zip
-            ${GITHUB_WORKSPACE}/bin/runtime/swoole-cli
-            ${GITHUB_WORKSPACE}/bin/runtime/composer.phar
+            ${GITHUB_WORKSPACE}/bin/runtime/php
+            ${GITHUB_WORKSPACE}/bin/runtime/composer
           key: all-archive
       - name: Prepare runtime
         if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
         run: |
-          sudo mkdir -p var/
+          sudo mkdir -p pool/lib
+          sudo mkdir -p pool/ext
           sudo mkdir -p bin/runtime
 
-          cd ${GITHUB_WORKSPACE}
-          sudo sh  sapi/quickstart/prepare-php-runtime-macos-x86_64.sh
+          sudo sh  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          sudo sh sapi/download-box/download-box-get-archive-from-server.sh
 
-          cd ${GITHUB_WORKSPACE}/var
-          test -f all-archive.zip || sudo wget -O all-archive.zip https://swoole-cli.jingjingxyk.com/all-archive.zip
-
-          cd ${GITHUB_WORKSPACE}
 
       - name: prepare
         run: |
-          cd ${GITHUB_WORKSPACE}
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
+          sudo mkdir -p bin/runtime
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          sudo sh sapi/download-box/download-box-get-archive-from-server.sh
 
-
-          cd ${GITHUB_WORKSPACE}/var
-          sudo unzip -o all-archive.zip
-
-          cd ${GITHUB_WORKSPACE}
-          sudo awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
-          sudo awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext" ; print "n" |cmd; }'
           sudo composer update --no-dev  --optimize-autoloader
-          sudo php prepare.php --without-docker
+          sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
 
       - name: Build
         run: |
-          cd ${GITHUB_WORKSPACE}/
-
-          sudo chmod a+x ./make.sh
-          sudo ./make.sh all-library
-          sudo ./make.sh config
-          sudo ./make.sh build
-          ./bin/swoole-cli -v
+          chmod a+x ./make.sh
+          ./make.sh all-library
+          ./make.sh config
+          ./make.sh build
           ./make.sh archive
+          ./thirdparty/php_src/sapi/cli/php -v
+          mkdir -p bin
+          cp thirdparty/php_src/sapi/cli/php ./bin
+          strip ./bin/php
+
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: macos-x86_64-swoole-cli-dist
-          path: |
-            bin/swoole-cli
+          path: bin/php
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
