@@ -34,8 +34,9 @@ EOF
 
 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
 
+# --user-agent=$user_agent
 
-test -f download_library_urls.txt  && aria2c -c -j 10 -s 10 -x 8 -k 10M --allow-overwrite=true --max-tries=30  --retry-wait=15 --user-agent=$user_agent \
+test -f download_library_urls.txt  && aria2c -c -j 10 -s 10 -x 8 -k 10M --allow-overwrite=true --max-tries=30  --retry-wait=15  \
  -d libraries --input-file=download_library_urls.txt
 
 

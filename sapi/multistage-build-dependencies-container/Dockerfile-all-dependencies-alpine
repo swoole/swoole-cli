@@ -21,7 +21,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 
 ADD ./runtime/swoole-cli  /usr/local/bin/
 ADD ./runtime/composer.phar  /usr/local/bin/
-ADD ./swoole-cli  /work
+COPY ./swoole-cli  /work
 
 RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
 RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
