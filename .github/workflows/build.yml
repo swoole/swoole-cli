@@ -40,7 +40,7 @@ jobs:
             set -uex
             export PATH=/work/bin/runtime:$PATH
             composer update --no-dev  --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds -mysqli -soap
+            php prepare.php  +inotify +apcu +ds -mysqli -soap -mongodb
             chmod a+x make.sh
             head -n 20 make.sh
             sh make.sh php_src
