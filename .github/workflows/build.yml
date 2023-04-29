@@ -4,7 +4,7 @@ on: [ push ]
 
 jobs:
   linux:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -61,16 +61,16 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: linux-php-cli-dist
+          name: linux-php-cli-v8.2.4-dist
           retention-days: 7
-          path: bin/php
+          path: /work/bin/php-8.2.4/bin/php
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: php-cli-v8.2.4-linux-x64.tar.xz
   cygwin:
-    if: 1
+    if: 0
     runs-on: windows-latest
     steps:
       - name: Prepare git
