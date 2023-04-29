@@ -62,7 +62,7 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: linux-php-cli-v8.2.4-dist
+          name: linux-php-cli-v8.2.4-x264.zip
           retention-days: 7
           path: php-cli-8.2.4.zip
       - name: Release
@@ -176,7 +176,12 @@ jobs:
           sudo ./make.sh build
           sudo ./make.sh archive
           # sudo ./thirdparty/php_src/sapi/cli/php -v
-          zip php-cli-macos-8.2.4.zip  ./bin/php-8.2.4/bin/php
+          cp ./bin/php-8.2.4/bin/php /tmp
+          cp ./bin/LICENSE /tmp
+          cd /tmp
+          zip php-cli-macos-8.2.4.zip  ./php
+          zip -u php-cli-macos-8.2.4.zip  ./LICENSE
+          cd ${GITHUB_WORKSPACE}
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3

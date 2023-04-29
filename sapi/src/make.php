@@ -174,10 +174,13 @@ EOF;
 make_config() {
     set -x
     cd <?= $this->phpSrcDir . PHP_EOL ?>
+    if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
+        rm -rf <?= $this->buildDir ?>/php_src/
+    fi
 <?php if ($this->getInputOption('with-build-type') != 'release') : ?>
-    make_php_src
-<?php endif ;?>
 
+<?php endif ;?>
+    make_php_src
     prepare_extensions
 
 <?php if ($this->getInputOption('with-php-sfx-micro')) : ?>
