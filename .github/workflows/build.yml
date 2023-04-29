@@ -57,7 +57,7 @@ jobs:
 
       - name: Create Artifact
         run: |
-          sudo apt install zip xz
+          sudo apt install zip xz-utils
           cp -f ./bin/php-8.2.4/bin/php /tmp
           cp -f ./bin/LICENSE /tmp
           cp -f ./bin/credits.html /tmp
@@ -132,7 +132,7 @@ jobs:
           draft: true
           prerelease: true
   macos:
-    if: 1
+    if: 0
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
