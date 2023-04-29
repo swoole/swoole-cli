@@ -176,20 +176,21 @@ jobs:
 
           sudo composer update --no-dev  --optimize-autoloader
           sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
-
-      - name: Build
+      - name: Build all-library
         run: |
           sudo chmod a+x ./make.sh
           sudo ./make.sh all-library
+      - name: Build
+        run: |
           sudo ./make.sh config
           sudo ./make.sh build
           sudo ./make.sh archive
           # sudo ./thirdparty/php_src/sapi/cli/php -v
           cp ./bin/php-8.2.4/bin/php /tmp
-          cp ./bin/LICENSE /tmp
-          cp ./bin/credits.html /tmp
+          cp ./bin/LICENSE           /tmp
+          cp ./bin/credits.html      /tmp
           cd /tmp
-          zip php-cli-macos-x64-8.2.4.zip  ./php
+          zip php-cli-macos-x64-8.2.4.zip     ./php
           zip -u php-cli-macos-x64-8.2.4.zip  ./LICENSE
           zip -u php-cli-macos-x64-8.2.4.zip  ./credits.html
           mv php-cli-macos-x64-8.2.4.zip ${GITHUB_WORKSPACE}
