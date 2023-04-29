@@ -70,7 +70,7 @@ jobs:
         with:
           files: php-cli-v8.2.4-linux-x64.tar.xz
   cygwin:
-    if: 1
+    if: 0
     runs-on: windows-latest
     steps:
       - name: Prepare git
