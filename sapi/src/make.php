@@ -331,6 +331,7 @@ elif [ "$1" = "archive" ] ;then
     cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
     PHP_VERSION=$(./php -r "echo PHP_VERSION;")
     PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    cp -f php php-dbg
     strip php
     tar -cJvf ${PHP_CLI_FILE} php
     mv ${PHP_CLI_FILE} <?= $this->workDir ?>/

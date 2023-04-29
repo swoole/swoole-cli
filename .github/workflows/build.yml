@@ -40,7 +40,7 @@ jobs:
             set -uex
             export PATH=/work/bin/runtime:$PATH
             composer update --no-dev  --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds -mysqli -soap -mongodb
+            php prepare.php  +inotify +apcu +ds -mysqli -soap
             chmod a+x make.sh
             head -n 20 make.sh
             sh make.sh php_src
@@ -61,9 +61,9 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: linux-swoole-cli-dist
+          name: linux-php-cli-dist
           path: |
-            bin/php
+            php-cli-v*-linux-x64.tar.xz
   cygwin:
     if: 0
     runs-on: windows-latest
