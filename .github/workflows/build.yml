@@ -52,7 +52,14 @@ jobs:
           run: |
             ./make.sh config
             ./make.sh build
+            ./make.sh archive
             ./bin/swoole-cli -v
+      - name: production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-swoole-cli-dist
+          path: |
+            bin/swoole-cli
   cygwin:
     if: 0
     runs-on: windows-latest
