@@ -92,3 +92,7 @@ cd ${__PROJECT__}/var
 awk 'BEGIN { cmd="cp -ri libraries/* swoole-cli/pool/lib"  ; print "n" |cmd; }'
 awk 'BEGIN { cmd="cp -ri extensions/* swoole-cli/pool/ext"; print "n" |cmd; }'
 
+cd ${__PROJECT__}/var/swoole-cli
+composer update --no-dev
+php prepare.php  --with-build-type=dev --with-dependency-graph=1 +apcu +ds +inotify --without-docker
+php prepare.php  --with-build-type=dev --with-dependency-graph=1 +apcu +ds @macos   --without-docker
