@@ -10,7 +10,7 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-
+cd ${__PROJECT__}/thirdparty/php_src
 
 ./buildconf --force
 make clean

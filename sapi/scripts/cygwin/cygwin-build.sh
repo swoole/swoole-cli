@@ -10,9 +10,12 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-
+cd ${__PROJECT__}/thirdparty/php_src
 
 mkdir -p bin/.libs
 
-make -j $(nproc)
-./bin/swoole-cli -v
+make -j $(nproc) cli
+
+${__PROJECT__}/thirdparty/php_src/sapi/cli/php -v
+
+cp -f sapi/cli/php.exe  ${__PROJECT__}/bin/
