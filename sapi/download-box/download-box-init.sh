@@ -24,3 +24,4 @@ cd ${__PROJECT__}
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
 sh sapi/scripts/download-dependencies-use-aria2.sh
+sh sapi/scripts/download-dependencies-use-git.sh
