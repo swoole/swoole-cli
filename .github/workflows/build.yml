@@ -59,7 +59,7 @@ jobs:
       - name: Create Artifact
         run: |
           sudo apt install zip xz-utils
-          readelf -h /bin/php-8.2.4/bin/php
+          readelf -h ./bin/php-8.2.4/bin/php
           cp -f ./bin/php-8.2.4/bin/php /tmp
           cp -f ./bin/LICENSE /tmp
           cp -f ./bin/credits.html /tmp
