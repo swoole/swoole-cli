@@ -24,7 +24,7 @@ OPTIONS="--prefix=<?= BUILD_PHP_INSTALL_PREFIX ?> --disable-all \
 <?php endforeach; ?>
 <?=$this->extraOptions?>
 "
-
+set +x
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
@@ -172,7 +172,7 @@ EOF;
 }
 
 make_config() {
-    set -exu
+    set -x
     cd <?= $this->phpSrcDir . PHP_EOL ?>
 <?php if ($this->getInputOption('with-build-type') != 'release') : ?>
     make_php_src
