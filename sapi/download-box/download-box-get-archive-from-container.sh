@@ -40,6 +40,8 @@ docker cp $container_id:/usr/share/nginx/html/libraries libraries
 docker rm $container_id
 
 cd ${__PROJECT__}/
+mkfit -p pool/lib
+mkfit -p pool/ext
 
 awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
 awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
