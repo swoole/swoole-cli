@@ -10,12 +10,15 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-cd ${__PROJECT__}/thirdparty/php_src
+cd ${__PROJECT__}/php-src
 
-mkdir -p bin/.libs
 
 make -j $(nproc) cli
 
-${__PROJECT__}/thirdparty/php_src/sapi/cli/php -v
+
+cd ${__PROJECT__}
+mkdir -p bin/.libs
+
+${__PROJECT__}/php-src/sapi/cli/php -v
 
 cp -f sapi/cli/php.exe  ${__PROJECT__}/bin/

@@ -10,7 +10,12 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-cd ${__PROJECT__}/thirdparty/php_src
+VERSION=8.2.4
+
+test -f php-${VERSION}.tar.gz ||  wget -O php-${VERSION}.tar.gz  https://github.com/php/php-src/archive/refs/tags/php-${VERSION}.tar.gz
+tar -zxvf php-${VERSION}.tar.gz
+
+cd ${__PROJECT__}/php-src
 
 ./buildconf --force
 make clean
