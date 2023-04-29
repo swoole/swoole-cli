@@ -38,7 +38,7 @@ case $ARCH in
   ;;
 esac
 
-VERSION='v5.0.1'
+VERSION='v5.0.2'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
