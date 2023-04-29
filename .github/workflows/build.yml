@@ -103,7 +103,7 @@ jobs:
       - name: Build
         run: |
           bash ./sapi/scripts/cygwin/cygwin-build.sh
-          ./bin/swoole-cli.exe -v
+          ./bin/php-cli.exe -v
       - name: Archive
         run: |
           bash ./sapi/scripts/cygwin/cygwin-archive.sh
