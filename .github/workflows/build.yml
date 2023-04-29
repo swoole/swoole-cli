@@ -170,15 +170,15 @@ jobs:
 
       - name: Build
         run: |
-          chmod a+x ./make.sh
-          ./make.sh all-library
-          ./make.sh config
-          ./make.sh build
-          ./make.sh archive
-          ./thirdparty/php_src/sapi/cli/php -v
-          mkdir -p bin
-          cp thirdparty/php_src/sapi/cli/php ./bin
-          strip ./bin/php
+          sudo chmod a+x ./make.sh
+          sudo ./make.sh all-library
+          sudo ./make.sh config
+          sudo ./make.sh build
+          sudo ./make.sh archive
+          sudo ./thirdparty/php_src/sapi/cli/php -v
+          sudo mkdir -p bin
+          sudo cp thirdparty/php_src/sapi/cli/php ./bin
+          sudo strip ./bin/php
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
