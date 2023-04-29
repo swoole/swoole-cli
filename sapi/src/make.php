@@ -17,8 +17,11 @@ export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--prefix=<?= BUILD_PHP_INSTALL_PREFIX ?> --disable-all \
+--disable-cgi  \
+--disable-phpdbg \
 --enable-shared=no \
 --enable-static=yes \
+--enable-cli  \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
@@ -221,7 +224,7 @@ make_build() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
-    export EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?>
+    export EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -fuse-ld=lld <?= $this->extraLdflags ?>
 <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
             echo $item->ldflags;
@@ -234,7 +237,7 @@ if ($this->getInputOption('with-php-sfx-micro')) {
     echo "    make -j " . $this->maxJob . ' micro' ;
 } else {
     echo "    make -j " . $this->maxJob . ' cli' ;
-    echo "elfedit --output-osabi linux sapi/cli/php";
+    echo "    elfedit --output-osabi linux sapi/cli/php";
     echo PHP_EOL;
     echo "    make install " ;
 }
