@@ -17,11 +17,11 @@ test -f php-${VERSION}.tar.gz ||  wget -O php-${VERSION}.tar.gz  https://github.
 mkdir -p php-src
 tar --strip-components=1 -C php-src -xf  php-${VERSION}.tar.gz
 
+mkdir -p ${__PROJECT__}/bin/
 cd ${__PROJECT__}/php-src
 
 ./buildconf --force
-make clean
-./configure --prefix=/usr --disable-all \
+./configure --prefix=${__PROJECT__}/bin/${VERSION} --disable-all \
     --disable-fiber-asm \
     --enable-opcache \
     --without-pcre-jit \
