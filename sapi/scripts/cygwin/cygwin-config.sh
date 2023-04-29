@@ -13,7 +13,9 @@ cd ${__PROJECT__}
 VERSION=8.2.4
 
 test -f php-${VERSION}.tar.gz ||  wget -O php-${VERSION}.tar.gz  https://github.com/php/php-src/archive/refs/tags/php-${VERSION}.tar.gz
-tar -zxvf php-${VERSION}.tar.gz
+
+mkdir -p php-src
+tar --strip-components=1 -C php-src -xf  php-${VERSION}.tar.gz
 
 cd ${__PROJECT__}/php-src
 
