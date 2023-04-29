@@ -28,6 +28,7 @@ jobs:
             mkdir -p ext
             cp -rf /usr/share/nginx/html/extensions/* pool/ext
             cp -rf /usr/share/nginx/html/libraries/* pool/lib
+            cat semicolon_delimited_script
             ls -lha .
       - name: Prepare
         uses: addnab/docker-run-action@v3
