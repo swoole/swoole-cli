@@ -46,7 +46,7 @@ function install_libraries($p): void
     //设置PHP 安装目录和版本号
     $version = '8.2.4';
     define("BUILD_PHP_VERSION", $version);
-    define("BUILD_PHP_INSTALL_PREFIX", $p->getGlobalPrefix() . '/php-' . $version);
+    define("BUILD_PHP_INSTALL_PREFIX", $p->getWorkDir() . '/bin/php-' . $version);
 
     $php_install_prefix = BUILD_PHP_INSTALL_PREFIX;
     $p->addLibrary(

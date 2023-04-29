@@ -54,13 +54,16 @@ jobs:
             ./make.sh config
             ./make.sh build
             ./make.sh archive
-            ./bin/swoole-cli -v
+            ./sapi/cli/php -v
+            mkdir -p bin
+            cp /sapi/cli/php ./bin
+            strip ./bin/php
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: linux-swoole-cli-dist
           path: |
-            bin/swoole-cli
+            bin/php
   cygwin:
     if: 0
     runs-on: windows-latest
