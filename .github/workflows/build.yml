@@ -132,7 +132,7 @@ jobs:
           draft: true
           prerelease: true
   macos:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
