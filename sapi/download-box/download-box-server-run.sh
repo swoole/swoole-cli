@@ -12,7 +12,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 
-TAG='download-box-nginx-alpine-20230429T041304Z'
+TAG='download-box-nginx-alpine-20230429T061856Z'
 
 IMAGE="docker.io/phpswoole/swoole-cli-builder:donload-box-v5.0.2"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"

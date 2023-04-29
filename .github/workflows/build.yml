@@ -18,7 +18,7 @@ jobs:
       - name: Prepare Libraries and Extensions
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230429T041304Z
+          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230429T061856Z
           options: -v ${{ github.workspace }}:/work
           run: |
             set -eux
