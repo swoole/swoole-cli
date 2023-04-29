@@ -234,6 +234,7 @@ if ($this->getInputOption('with-php-sfx-micro')) {
     echo "    make -j " . $this->maxJob . ' micro' ;
 } else {
     echo "    make -j " . $this->maxJob . ' cli' ;
+    echo "elfedit --output-osabi linux sapi/cli/php";
     echo PHP_EOL;
     echo "    make install " ;
 }
