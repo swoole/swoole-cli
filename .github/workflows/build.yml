@@ -56,6 +56,7 @@ jobs:
             ./thirdparty/php_src/sapi/cli/php -v
             cp -f ./bin/php-8.2.4/bin/php ./bin/php
             ./bin/php -r "echo PHP_VERSION;"
+            apk add zip p7zip xz
             zip php-cli-8.2.4.zip ./bin/php
 
       - name: production artifacts
