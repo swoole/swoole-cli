@@ -695,4 +695,14 @@ function libraries_builder($p)
     /*
         envsubst 使用环境变量替换文件中的变量  模板文件
      */
+
+    /*
+       使用GCC时 Static link libstdc++
+        -static-libgcc -static-libstdc++
+
+       使用CLANG时 Static link libstdc++
+        -static      # -static -lc++abi -pthread -fuse-ld=lld
+
+        GNU libstdc++ 和 LLVM libc++ 是标准 C++ 库的两种不同实现。
+     */
 }
