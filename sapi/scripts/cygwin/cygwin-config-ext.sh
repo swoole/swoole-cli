@@ -17,6 +17,7 @@ REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+SWOOLE_VERSION=v5.0.3
 
 if [ ! -d pool/ext ]; then
     mkdir -p pool/ext
@@ -56,6 +57,13 @@ if [ ! -d $ROOT/ext/imagick ]; then
     fi
     tar xvf imagick-${IMAGICK_VERSION}.tgz
     mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
+fi
+if [ ! -d $ROOT/ext/swoole ]; then
+    if [ ! -f swoole-${SWOOLE_VERSION}.tar.gz ]; then
+        wget -O swoole-${SWOOLE_VERSION}.tar.gz https://github.com/swoole/swoole-src/archive/refs/tags/v5.0.3.tar.gz
+    fi
+    tar xvf swoole-${SWOOLE_VERSION}.tar.gz
+    mv swoole-${SWOOLE_VERSION}.tar.gz $ROOT/ext/swoole
 fi
 
 cd $ROOT
