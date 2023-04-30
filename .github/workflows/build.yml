@@ -4,7 +4,7 @@ on: [ push ]
 
 jobs:
   linux:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -121,14 +121,14 @@ jobs:
           draft: true
           prerelease: true
   macos:
-    if: 1
+    if: 0
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - name: Configure
         run: |
 
-          brew install  wget curl  libtool automake gettext coreutils re2c
+          brew install  wget curl  libtool automake gettext coreutils re2c binutils
           which glibtool
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
@@ -176,7 +176,7 @@ jobs:
           sudo ./make.sh archive
           # sudo ./thirdparty/php_src/sapi/cli/php -v
           file ./bin/php-8.2.4/bin/php
-          readelf -h ./bin/php-8.2.4/bin/php
+          greadelf -h ./bin/php-8.2.4/bin/php
           ./bin/php-8.2.4/bin/php -r "echo PHP_VERSION;"
 
       - name: Archive production artifacts

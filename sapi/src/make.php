@@ -203,11 +203,15 @@ make_config() {
     else
         make_php_patch_sfx_micro
         cd <?= $this->phpSrcDir . PHP_EOL ?>
-        cp -rf <?= $this->buildDir ?>/php_patch_sfx_micro/ sapi/micro
-        patch -p1 < sapi/micro/patches/phar.patch
-        touch php-sfx-micro.cached
-        echo "php-sfx-micro patch ok "
+        if [[ ! -f php-sfx-micro.cached ]] ;then
+            cp -rf <?= $this->buildDir ?>/php_patch_sfx_micro/ sapi/micro
+            patch -p1 < sapi/micro/patches/phar.patch
+            touch php-sfx-micro.cached
+            echo "php-sfx-micro patch ok "
 
+        fi
+
+        OPTIONS="${OPTIONS} --enable-micro=all-static "
     fi
 
 <?php endif ;?>
@@ -223,14 +227,14 @@ make_config() {
 
     fi
 <?php endif ;?>
-
+    echo $OPTIONS
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 
     ./configure --help
      export_variables
     ./configure $OPTIONS
-    # sed -i 's/-export-dynamic/-all-static/g' Makefile
+    sed -i 's/-export-dynamic/-all-static/g' Makefile
 }
 
 make_build() {
@@ -249,6 +253,7 @@ echo "'";
 echo PHP_EOL;
 if ($this->getInputOption('with-php-sfx-micro')) {
     echo "    make -j " . $this->maxJob . ' micro' ;
+
 } else {
     echo "    make -j " . $this->maxJob . ' cli' ;
     echo PHP_EOL;
@@ -357,6 +362,14 @@ elif [ "$1" = "archive" ] ;then
     cp -f php php-dbg
     strip php
     tar -cJvf ${PHP_CLI_FILE} php
+    mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
+    cd -
+elif [ "$1" = "archive-sfx-micro" ] ;then
+    cd <?= $this->phpSrcDir ?>/sapi/micro/
+    # sapi/micro/micro.sfx
+    PHP_VERSION=<?= BUILD_PHP_VERSION . PHP_EOL ?>
+    PHP_CLI_FILE=php-sfx-micro-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    tar -cJvf ${PHP_CLI_FILE} micro.sfx
     mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
