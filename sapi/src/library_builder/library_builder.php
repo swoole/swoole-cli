@@ -705,4 +705,10 @@ function libraries_builder($p)
 
         GNU libstdc++ 和 LLVM libc++ 是标准 C++ 库的两种不同实现。
      */
+
+    /*
+
+       alias sh="bash"
+
+     */
 }
