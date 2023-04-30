@@ -22,6 +22,8 @@ if [ ! -d pool/ext ]; then
     mkdir -p pool/ext
 fi
 
+mkdir -p pool/ext
+mkdir -p ext
 cd pool/ext
 
 if [ ! -d $ROOT/ext/redis ]; then
