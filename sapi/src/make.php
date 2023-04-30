@@ -141,7 +141,7 @@ export_variables() {
     # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
 <?php if($this->cCompiler=='clang') : ?>
-    CFLAGS="-static"
+    CFLAGS="" # -static
 <?php else :?>
     CFLAGS="-static-libgcc -static-libstdc++"
 <?php endif ;?>
