@@ -4,7 +4,7 @@ on: [ push ]
 
 jobs:
   linux:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -121,7 +121,7 @@ jobs:
           draft: true
           prerelease: true
   macos:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -175,22 +175,16 @@ jobs:
           sudo ./make.sh build
           sudo ./make.sh archive
           # sudo ./thirdparty/php_src/sapi/cli/php -v
-          cp ./bin/php-8.2.4/bin/php /tmp
-          cp ./bin/LICENSE           /tmp
-          cp ./bin/credits.html      /tmp
-          cd /tmp
-          zip php-cli-macos-x64-8.2.4.zip     ./php
-          zip -u php-cli-macos-x64-8.2.4.zip  ./LICENSE
-          zip -u php-cli-macos-x64-8.2.4.zip  ./credits.html
-          mv php-cli-macos-x64-8.2.4.zip ${GITHUB_WORKSPACE}
-          cd ${GITHUB_WORKSPACE}
+          file ./bin/php-8.2.4/bin/php
+          readelf -h ./bin/php-8.2.4/bin/php
+          ./bin/php-8.2.4/bin/php -r "echo PHP_VERSION;"
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-macos-x64-8.2.4.zip
+          name: php-cli-macos-x64-8.2.4
           retention-days: 7
-          path: php-cli-macos-x64-8.2.4.zip
+          path: ./bin/php-8.2.4/bin/php
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
