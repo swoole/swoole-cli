@@ -146,7 +146,7 @@ jobs:
           draft: true
           prerelease: true
   macos:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -159,6 +159,8 @@ jobs:
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
+          echo 'export PATH="/usr/local/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
+          source ~/.bash_profile
           env
       - name: Cache
         uses: actions/cache@v3
