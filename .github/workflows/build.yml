@@ -4,7 +4,7 @@ on: [ push ]
 
 jobs:
   linux:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -189,10 +189,6 @@ jobs:
 
           sudo composer update --no-dev  --optimize-autoloader
           sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
-      - name: Build all-library
-        run: |
-          sudo chmod a+x ./make.sh
-          sudo ./make.sh all-library
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
@@ -200,7 +196,7 @@ jobs:
           path: |
             ${HOME}/.swoole-cli
           key: all-library-cache
-      - name: prepare all-library
+      - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           sudo chmod a+x ./make.sh
