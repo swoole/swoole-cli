@@ -42,7 +42,6 @@ jobs:
             php prepare.php  +inotify +apcu +ds -mysqli -soap -mongodb
             chmod a+x make.sh
             head -n 20 make.sh
-            sh make.sh php_src
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
@@ -56,18 +55,44 @@ jobs:
             file ./bin/php-8.2.4/bin/php
             readelf -h ./bin/php-8.2.4/bin/php
             ./bin/php-8.2.4/bin/php -r "echo PHP_VERSION;"
-
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: php-cli-linux-x64-8.2.4
           retention-days: 7
           path: ./bin/php-8.2.4/bin/php
+      - name: Prepare sfx micro
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230429T064207Z
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            set -eux
+            export PATH=/work/bin/runtime:$PATH
+            php prepare.php  +inotify +apcu +ds -mysqli -soap -mongodb --with-php-sfx-micro=1
+            chmod a+x make.sh
+      - name: Build sfx micro
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230429T064207Z
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            ./make.sh config
+            ./make.sh build
+            ./make.sh archive-sfx-micro
+      - name: production artifacts sfx micro
+        uses: actions/upload-artifact@v3
+        with:
+          name: php-sfx-mricro-linux-x64-8.2.4
+          retention-days: 7
+          path: ./thirdparty/php_src/sapi/micro/micro.sfx
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: php-cli-v8.2.4-linux-x64.tar.xz
+          files: |
+            php-cli-v8.2.4-linux-x64.tar.xz
+            php-sfx-micro-v8.2.4-linux-x64.tar.xz
   cygwin:
     if: 0
     runs-on: windows-latest
