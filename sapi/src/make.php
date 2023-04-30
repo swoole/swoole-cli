@@ -260,7 +260,7 @@ if ($this->getInputOption('with-php-sfx-micro')) {
 } else {
     echo "    make -j " . $this->maxJob . ' cli' ;
     echo PHP_EOL;
-    echo "    elfedit --output-osabi linux sapi/cli/php";
+    //echo "    elfedit --output-osabi linux sapi/cli/php";
     echo PHP_EOL;
     echo "    make install " ;
     echo PHP_EOL;
