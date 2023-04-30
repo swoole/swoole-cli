@@ -137,9 +137,14 @@ make_all_library() {
 }
 
 export_variables() {
+    # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
-    CFLAGS=""
-    LDFLAGS=""
+<?php if($this->cCompiler=='clang') : ?>
+    CFLAGS="-static"
+<?php else :?>
+    CFLAGS="-static-libgcc -static-libstdc++"
+<?php endif ;?>
+    LDFLAGS="" # -all-static
     LIBS=""
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
@@ -218,6 +223,7 @@ make_config() {
     ./configure --help
      export_variables
     ./configure $OPTIONS
+    # sed -i 's/-export-dynamic/-all-static/g' Makefile
 }
 
 make_build() {
@@ -237,9 +243,11 @@ if ($this->getInputOption('with-php-sfx-micro')) {
     echo "    make -j " . $this->maxJob . ' micro' ;
 } else {
     echo "    make -j " . $this->maxJob . ' cli' ;
+    echo PHP_EOL;
     echo "    elfedit --output-osabi linux sapi/cli/php";
     echo PHP_EOL;
     echo "    make install " ;
+    echo PHP_EOL;
 }
 
 ?>
