@@ -708,7 +708,7 @@ function libraries_builder($p)
 
     /*
 
-       alias sh="bash"
+       export alias sh='bash'
 
      */
 }
