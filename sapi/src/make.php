@@ -7,6 +7,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
+#!/usr/bin/env bash
 set -x
 if [[ -z $PKG_CONFIG_PATH ]];then export PKG_CONFIG_PATH=' ';fi
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
@@ -144,7 +145,7 @@ export_variables() {
 <?php else :?>
     CFLAGS="-static-libgcc -static-libstdc++"
 <?php endif ;?>
-    LDFLAGS="" # -all-static
+    LDFLAGS=""
     LIBS=""
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
@@ -229,7 +230,8 @@ make_config() {
 make_build() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
-    export EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
+    export LDFLAGS="$LDFLAGS -all-static"
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     export EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -fuse-ld=lld <?= $this->extraLdflags ?>
 <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {

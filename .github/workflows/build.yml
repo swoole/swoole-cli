@@ -39,7 +39,7 @@ jobs:
             set -uex
             export PATH=/work/bin/runtime:$PATH
             composer update --no-dev  --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds -mysqli -soap -mongodb
+            php prepare.php  +inotify +apcu +ds -mysqli -soap
             chmod a+x make.sh
             head -n 20 make.sh
             sh make.sh php_src
@@ -53,29 +53,16 @@ jobs:
             ./make.sh build
             ./make.sh archive
             ./thirdparty/php_src/sapi/cli/php -v
-            ./bin/php-8.2.4/bin/php
+            file ./bin/php-8.2.4/bin/php
+            readelf -h ./bin/php-8.2.4/bin/php
             ./bin/php-8.2.4/bin/php -r "echo PHP_VERSION;"
-
-      - name: Create Artifact
-        run: |
-          sudo apt install zip xz-utils
-          readelf -h ./bin/php-8.2.4/bin/php
-          cp -f ./bin/php-8.2.4/bin/php /tmp
-          cp -f ./bin/LICENSE /tmp
-          cp -f ./bin/credits.html /tmp
-          cd /tmp
-          zip php-cli-linux-x64-8.2.4.zip  ./php
-          zip -u php-cli-linux-x64-8.2.4.zip  ./LICENSE
-          zip -u php-cli-linux-x64-8.2.4.zip  ./credits.html
-          mv php-cli-linux-x64-8.2.4.zip  ${GITHUB_WORKSPACE}
-          cd ${GITHUB_WORKSPACE}
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-linux-x64-8.2.4.zip
+          name: php-cli-linux-x64-8.2.4
           retention-days: 7
-          path: php-cli-linux-x64-8.2.4.zip
+          path: ./bin/php-8.2.4/bin/php
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
