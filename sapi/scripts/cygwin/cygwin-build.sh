@@ -19,6 +19,8 @@ make -j $(nproc) cli
 cd ${__PROJECT__}
 mkdir -p bin/.libs
 
+make -j $(nproc)
+
 ${__PROJECT__}/php-src/sapi/cli/php-cli.exe -v
 
 cp -f ${__PROJECT__}/bin/${VERSION}/php.exe  ${__PROJECT__}/bin/
