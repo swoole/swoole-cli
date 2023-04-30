@@ -83,7 +83,7 @@ jobs:
       - name: production artifacts sfx micro
         uses: actions/upload-artifact@v3
         with:
-          name: php-sfx-mricro-linux-x64-8.2.4
+          name: php-sfx-micro-linux-x64-8.2.4
           retention-days: 7
           path: ./thirdparty/php_src/sapi/micro/micro.sfx
       - name: Release
@@ -159,6 +159,7 @@ jobs:
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
+          env
       - name: Cache
         uses: actions/cache@v3
         id: all-archive-cache
@@ -178,8 +179,6 @@ jobs:
           sudo sh  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           sudo sh sapi/download-box/download-box-get-archive-from-server.sh
-
-
       - name: prepare
         run: |
           sudo mkdir -p pool/lib
@@ -194,8 +193,22 @@ jobs:
         run: |
           sudo chmod a+x ./make.sh
           sudo ./make.sh all-library
+      - name: Cache all-library
+        uses: actions/cache@v3
+        id: all-library-cache
+        with:
+          path: |
+            ${HOME}/.swoole-cli
+          key: all-library-cache
+      - name: prepare all-library
+        if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
+        run: |
+          sudo chmod a+x ./make.sh
+          sudo ./make.sh all-library
+
       - name: Build
         run: |
+          sudo chmod a+x ./make.sh
           sudo ./make.sh config
           sudo ./make.sh build
           sudo ./make.sh archive

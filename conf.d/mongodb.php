@@ -5,7 +5,7 @@ use SwooleCli\Library;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    if ($p->getOsType() == 'macos') {
+    if (1 || $p->getOsType() == 'macos') {
         $bison_prefix = BISON_PREFIX;
         $p->addLibrary(
             (new Library('bison'))
