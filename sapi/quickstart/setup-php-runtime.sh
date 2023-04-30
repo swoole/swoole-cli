@@ -42,7 +42,7 @@ esac
 VERSION='v5.0.3'
 
 if [[ $OS = 'macos' ]] ;then
-  VERSION='v4.8.13'
+  VERSION='v5.0.0'
 fi
 
 mkdir -p bin/runtime
