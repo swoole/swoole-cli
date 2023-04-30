@@ -22,6 +22,8 @@ cp -f ${__PROJECT__}/php-src/ext/openssl/config0.m4  ${__PROJECT__}/php-src/ext/
 
 cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
 
+cd ${__PROJECT__}/php-src/
+
 ./buildconf --force
 ./configure --prefix=${__PROJECT__}/bin/${VERSION} --disable-all \
     --disable-fiber-asm \
@@ -64,3 +66,4 @@ cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
     --with-yaml \
     --with-readline
 
+sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
