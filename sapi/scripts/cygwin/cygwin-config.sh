@@ -21,7 +21,7 @@ mkdir -p ${__PROJECT__}/bin/
 cp -f ${__PROJECT__}/php-src/ext/openssl/config0.m4  ${__PROJECT__}/php-src/ext/openssl/config.m4
 
 cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
-${__PROJECT__}/php-src/ext/
+
 ./buildconf --force
 ./configure --prefix=${__PROJECT__}/bin/${VERSION} --disable-all \
     --disable-fiber-asm \
