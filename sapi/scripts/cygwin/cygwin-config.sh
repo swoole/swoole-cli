@@ -18,7 +18,7 @@ mkdir -p php-src
 tar --strip-components=1 -C php-src -xf  php-${VERSION}.tar.gz
 
 mkdir -p ${__PROJECT__}/bin/
-cp -f ${__PROJECT__}/php-src/openssl/config0.m4  ${__PROJECT__}/php-src/openssl/config.m4
+cp -f ${__PROJECT__}/php-src/ext/openssl/config0.m4  ${__PROJECT__}/php-src/ext/openssl/config.m4
 
 cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
 ${__PROJECT__}/php-src/ext/
