@@ -186,25 +186,33 @@ make_config() {
     if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
         rm -rf <?= $this->buildDir ?>/php_src/
     fi
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
 <?php if ($this->getInputOption('with-build-type') != 'release') : ?>
 
 <?php endif ;?>
     make_php_src
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+
     prepare_extensions
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
 
 <?php if ($this->getInputOption('with-php-sfx-micro')) : ?>
     PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
     if [[ $PHP_VERSION -lt 80000 ]] ; then
         echo "only support PHP >= 8.0 "
     else
-
+        make_php_patch_sfx_micro
+        cd <?= $this->phpSrcDir . PHP_EOL ?>
         cp -rf <?= $this->buildDir ?>/php_patch_sfx_micro/ sapi/micro
         patch -p1 < sapi/micro/patches/phar.patch
         touch php-sfx-micro.cached
         echo "php-sfx-micro patch ok "
 
     fi
+
 <?php endif ;?>
+
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
 
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
     PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
