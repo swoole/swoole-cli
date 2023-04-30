@@ -94,7 +94,7 @@ jobs:
             php-cli-v8.2.4-linux-x64.tar.xz
             php-sfx-micro-v8.2.4-linux-x64.tar.xz
   cygwin:
-    if: 0
+    if: 1
     runs-on: windows-latest
     steps:
       - name: Prepare git
@@ -146,7 +146,7 @@ jobs:
           draft: true
           prerelease: true
   macos:
-    if: 1
+    if: 0
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
