@@ -182,16 +182,15 @@ EOF;
 
 make_config() {
     set -x
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
+
     if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
-        rm -rf <?= $this->buildDir ?>/php_src/
+        rm -rf <?= $this->buildDir ?>/php_src/.completed
     fi
+    make_php_src
     cd <?= $this->phpSrcDir . PHP_EOL ?>
 <?php if ($this->getInputOption('with-build-type') != 'release') : ?>
 
 <?php endif ;?>
-    make_php_src
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
 
     prepare_extensions
     cd <?= $this->phpSrcDir . PHP_EOL ?>
