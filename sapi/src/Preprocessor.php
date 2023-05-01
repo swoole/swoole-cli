@@ -297,9 +297,8 @@ class Preprocessor
         # echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
 
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
-        $user_agent = DOWNLOAD_FILE_USER_AGENT;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
-        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 --user-agent='{$user_agent}'";
+        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 ";
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
@@ -324,7 +323,7 @@ class Preprocessor
         echo PHP_EOL;
         echo $downloadScript;
         echo PHP_EOL;
-        $this->mkdirIfNotExists($cacheDir);
+        $this->mkdirIfNotExists($cacheDir,0777, true);
         echo `$downloadScript`;
         echo PHP_EOL;
     }

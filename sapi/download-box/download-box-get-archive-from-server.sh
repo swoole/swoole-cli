@@ -11,6 +11,9 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+mkdir -p  pool/lib
+mkdir -p  pool/ext
+
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
 cd ${__PROJECT__}/var
