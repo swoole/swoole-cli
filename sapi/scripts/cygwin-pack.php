@@ -1,6 +1,6 @@
 <?php
 
-$src = dirname(__DIR__);
+$src = realpath(__DIR__ . '/../../');
 $name = "swoole-cli-v".SWOOLE_VERSION."-cygwin-x64";
 $dst = "/tmp/{$name}";
 if (!is_dir($dst)) {
@@ -30,7 +30,7 @@ foreach ($match[2] as $file) {
 
 echo `chmod a+x {$src}/bin/swoole-cli.exe`;
 copy("{$src}/bin/swoole-cli.exe", $dst."/bin/swoole-cli.exe");
-copy("{$src}/bin/LICENSE", $dst."/LICENSE");
+#copy("{$src}/bin/LICENSE", $dst."/LICENSE");
 echo `cp -rL /etc/pki/ {$dst}/etc`;
 echo "done.\n";
 
