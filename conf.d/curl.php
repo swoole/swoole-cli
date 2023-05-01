@@ -227,7 +227,7 @@ EOF
             --with-openssl={$openssl_prefix} \
             --enable-ares={$cares_prefix} \
             --with-default-ssl-backend=openssl \
-            --with-libidn2 \
+            --without-libidn2 \
             --with-libssh2 \
             --with-nghttp2 \
             --without-ngtcp2 \
