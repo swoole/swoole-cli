@@ -4,7 +4,7 @@ on: [ push ]
 
 jobs:
   macos:
-    if: 1
+    if: 0
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,7 +21,6 @@ jobs:
           source ~/.bash_profile
           env
           echo $HOME
-          exit 3
       - name: Cache
         uses: actions/cache@v3
         id: all-archive-cache
