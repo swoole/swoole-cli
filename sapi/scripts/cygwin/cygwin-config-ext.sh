@@ -63,7 +63,7 @@ if [ ! -d $ROOT/ext/imagick ]; then
 fi
 if [ ! -d $ROOT/ext/swoole ]; then
     if [ ! -f swoole-${SWOOLE_VERSION}.tar.gz ]; then
-        wget -O swoole-${SWOOLE_VERSION}.tar.gz https://github.com/swoole/swoole-src/archive/refs/tags/v5.0.3.tar.gz
+        wget -O swoole-${SWOOLE_VERSION}.tar.gz https://github.com/swoole/swoole-src/archive/refs/tags/${SWOOLE_VERSION}.tar.gz
     fi
     mkdir -p swoole-temp
     tar --strip-components=1 -C swoole-temp -xf swoole-${SWOOLE_VERSION}.tar.gz
