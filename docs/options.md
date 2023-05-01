@@ -45,7 +45,7 @@ sh sapi/scripts/download-dependencies-use-aria2.sh
 
 ```
 
-[使用镜像地址下载](sapi/download-box/README.md)
+[使用镜像地址下载](/sapi/download-box/README.md)
 ----
 
 > 使用镜像地址下载下载前，需要准备镜像服务器
