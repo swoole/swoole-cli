@@ -711,4 +711,7 @@ function libraries_builder($p)
        export alias sh='bash'
 
      */
+    /**
+        php static compile
+     */
 }
