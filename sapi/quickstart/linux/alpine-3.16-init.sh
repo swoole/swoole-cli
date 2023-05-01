@@ -8,7 +8,7 @@ __DIR__=$(
 cd ${__DIR__}
 
 # use china mirror
-# bash sapi/quickstart/linux/x86_64/alpine-3.16-init.sh --mirror china
+# bash sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
 
 mirror=''
 while [ $# -gt 0 ]; do
@@ -38,10 +38,3 @@ apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld li
 apk add bash
 
 apk add wget git curl
-
-exit 0
-apk add php php-iconv php-mbstring php-phar php-openssl php-posix php-curl php-tokenizer php-dom php-xmlwriter php-xml php-simplexml
-
-
-
-
