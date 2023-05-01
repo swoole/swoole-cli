@@ -32,6 +32,9 @@ case $ARCH in
 'x86_64')
   ARCH="x64"
   ;;
+'aarch64')
+  ARCH="arm64"
+  ;;
 *)
   echo '暂未配置的 ARCH '
   exit 0
