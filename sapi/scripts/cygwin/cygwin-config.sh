@@ -25,8 +25,9 @@ cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
 cd ${__PROJECT__}/php-src/
 
 export CPPFLAGS="-I/usr/include"
-export LDFLAGS="-L/usr/lib -all-static"
-export EXTRA_LDFLAGS_PROGRAM="-all-static  -L/usr/lib"
+export CFLAGS=""
+export LDFLAGS="-L/usr/lib"
+
 
 ./buildconf --force
 ./configure --prefix=${__PROJECT__}/bin/${VERSION} --disable-all \
