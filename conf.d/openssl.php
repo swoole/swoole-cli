@@ -12,12 +12,14 @@ return function (Preprocessor $p) {
         (new Library('openssl'))
             ->withHomePage('https://www.openssl.org/')
             ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
+            ->withManual('https://www.openssl.org/docs/')
             ->withUrl('https://github.com/quictls/openssl/archive/refs/tags/openssl-3.0.8-quic1.tar.gz')
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF
                  # ./Configure LIST
-                ./config {$static} no-shared  enable-tls1_3 --release --prefix={$openssl_prefix}
+                ./config {$static} no-shared  enable-tls1_3 --release --prefix=${openssl_prefix} --libdir=${openssl_prefix}/lib
+
 
 EOF
             )
@@ -31,6 +33,7 @@ EOF
 
     $p->addExtension(
         (new Extension('openssl'))
+            ->withHomePage('https://www.php.net/openssl')
             ->withOptions('--with-openssl --with-openssl-dir=' . OPENSSL_PREFIX)
             ->depends('openssl')
     );

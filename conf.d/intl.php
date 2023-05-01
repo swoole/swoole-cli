@@ -11,8 +11,10 @@ return function (Preprocessor $p) {
         (new Library('icu'))
             ->withHomePage('https://icu.unicode.org/')
             ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
+            ->withManual(
+                'https://unicode-org.github.io/icu/userguide/icu_data/#:~:text=Building%20and%20Linking%20against%20ICU%20data'
+            )
             ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-            ->withManual('https://unicode-org.github.io/icu/userguide/icu_data/#:~:text=Building%20and%20Linking%20against%20ICU%20data')
             ->withManual('https://unicode-org.github.io/icu/userguide/icu_data/#overview')
             ->withPrefix($icu_prefix)
             ->withConfigure(
@@ -38,5 +40,10 @@ EOF
     );
     $p->withExportVariable('ICU_CFLAGS', '$(pkg-config  --cflags --static icu-i18n  icu-io   icu-uc)');
     $p->withExportVariable('ICU_LIBS', '$(pkg-config    --libs   --static icu-i18n  icu-io   icu-uc)');
-    $p->addExtension((new Extension('intl'))->withOptions('--enable-intl')->depends('icu'));
+    $p->addExtension(
+        (new Extension('intl'))
+            ->withHomePage('https://www.php.net/intl')
+            ->withOptions('--enable-intl')
+            ->depends('icu')
+    );
 };
