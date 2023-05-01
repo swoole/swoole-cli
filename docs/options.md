@@ -12,7 +12,8 @@
 ./prepare.php --without-docker +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
 ```
 
-参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}` ，需要将参数的中横线`-`替换为下划线`_`，例如：
+参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}`
+，需要将参数的中横线`-`替换为下划线`_`，例如：
 
 ```shell
 ./prepare.php --without-docker --skip-download=1
@@ -32,7 +33,7 @@ skip-download
 ----
 跳过下载依赖库
 
-> 会自动生成，待下载链接地址
+> 会自动生成，待下载链接地址 （依赖 aria2 )
 > 链接地址生成在 项目根目录下的 `var` 目录
 
 ```shell
@@ -44,9 +45,10 @@ sh sapi/scripts/download-dependencies-use-aria2.sh
 ```
 
 ----
-使用镜像地址下载
+[使用镜像地址下载](sapi/download-box/README.md)
 
-> 使用镜像地址下载下载前，需要准备镜像服务器 例如： `sh sapi/scripts/download-box/download-box-server-run.sh`
+> 使用镜像地址下载下载前，需要准备镜像服务器
+> 例如： `sh sapi/scripts/download-box/download-box-server-run.sh`
 
 ```shell
 # 演示例子
@@ -55,10 +57,6 @@ sh sapi/scripts/download-dependencies-use-aria2.sh
 # 可用镜像
 ./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 ```
-
-with-brotli
-----
-是否开启`brotli`压缩
 
 conf-path
 ----
@@ -83,15 +81,15 @@ with-dependency-graph
 > 依赖 graphviz
 
 ```shell
-brew install graphviz 
+brew install graphviz
 ```
 
 > 生成扩展依赖库 图 步骤
 
 ```shell
-php ./prepare.php --without-docker --with-dependency-graph=1 
+php ./prepare.php --without-docker --with-dependency-graph=1
 
  sh sapi/scripts/generate-dependency-graph.sh
- 
+
 ```
 

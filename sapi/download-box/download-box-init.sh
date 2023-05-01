@@ -20,10 +20,8 @@ export SWOOLE_CLI_SKIP_DOWNLOAD=1
 export SWOOLE_CLI_WITHOUT_DOCKER=1
 
 php prepare.php  --with-build-type=release  +ds +inotify +apcu +protobuf
-cd ${__PROJECT__}
 sh sapi/scripts/download-dependencies-use-aria2.sh
 
 # for macos
 php prepare.php  --with-build-type=release  +ds +apcu +protobuf +protobuf  @macos
-cd ${__PROJECT__}
 sh sapi/scripts/download-dependencies-use-aria2.sh
