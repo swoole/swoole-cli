@@ -140,12 +140,12 @@ make_all_library() {
 export_variables() {
     # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
+    CFLAGS=""
 <?php if($this->cCompiler=='clang') : ?>
-    CFLAGS="" # -static
+    LDFLAGS="-static"
 <?php else :?>
-    CFLAGS="-static-libgcc -static-libstdc++"
+    LDFLAGS="-static-libgcc -static-libstdc++"
 <?php endif ;?>
-    LDFLAGS=""
     LIBS=""
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
