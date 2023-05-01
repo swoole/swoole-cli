@@ -19,6 +19,9 @@ make -j $(nproc) cli
 cd ${__PROJECT__}
 mkdir -p bin/.libs
 
+export CPPFLAGS="-I/usr/include"
+export LDFLAGS="-L/usr/lib -all-static"
+
 make -j $(nproc) cli
 
 ${__PROJECT__}/php-src/sapi/cli/php.exe -v
