@@ -40,7 +40,8 @@ if [ ! -d $ROOT/ext/mongodb ]; then
         wget https://pecl.php.net/get/mongodb-${MONGODB_VERSION}.tgz
     fi
     tar xvf mongodb-${MONGODB_VERSION}.tgz
-    mv mongodb-${MONGODB_VERSION} $ROOT/ext/mongodb
+    # mv mongodb-${MONGODB_VERSION} $ROOT/ext/mongodb
+    # mongodb no support cygwin
 fi
 
 if [ ! -d $ROOT/ext/yaml ]; then
