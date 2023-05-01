@@ -93,9 +93,11 @@ apk add graphviz
 > 生成扩展依赖库 图 步骤
 
 ```shell
+# 生成扩展依赖图模板
 php ./prepare.php --without-docker --with-dependency-graph=1
 
- sh sapi/scripts/generate-dependency-graph.sh
+# 生成扩展依赖图
+sh sapi/scripts/generate-dependency-graph.sh
 
 ```
 

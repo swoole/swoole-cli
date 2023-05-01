@@ -25,3 +25,6 @@ sh sapi/scripts/download-dependencies-use-aria2.sh
 # for macos
 php prepare.php  --with-build-type=release  +ds +apcu +protobuf +protobuf  @macos --with-dependency-graph=1
 sh sapi/scripts/download-dependencies-use-aria2.sh
+
+# 生成扩展依赖图
+sh sapi/scripts/generate-dependency-graph.sh
