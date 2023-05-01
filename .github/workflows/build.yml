@@ -146,7 +146,7 @@ jobs:
           draft: true
           prerelease: true
   macos:
-    if: 1
+    if: 0
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
