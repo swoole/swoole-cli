@@ -8,7 +8,7 @@ __DIR__=$(
 cd ${__DIR__}
 
 # use china mirror
-# bash sapi/quickstart/linux/x86_64/alpine-3.16-init.sh --mirror china
+# bash sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
 
 mirror=''
 while [ $# -gt 0 ]; do
