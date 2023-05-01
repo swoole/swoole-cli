@@ -22,7 +22,7 @@ mkdir -p bin/.libs
 export CPPFLAGS="-I/usr/include"
 export LDFLAGS="-L/usr/lib -all-static"
 export EXTRA_LDFLAGS_PROGRAM="-all-static  -L/usr/lib"
-env
+
 make -j $(nproc) cli
 
 ${__PROJECT__}/php-src/sapi/cli/php.exe -v

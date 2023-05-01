@@ -38,3 +38,10 @@ apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld li
 apk add bash
 
 apk add wget git curl
+
+exit 0
+apk add php php-iconv php-mbstring php-phar php-openssl php-posix php-curl php-tokenizer php-dom php-xmlwriter php-xml php-simplexml
+
+
+
+
