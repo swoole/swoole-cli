@@ -40,8 +40,6 @@ RUN php prepare.php  --with-build-type=release --skip-download=1
 RUN sh make.sh all-library
 
 
-
-
 FROM alpine:3.17
 
 # setup source repo, install dependencies

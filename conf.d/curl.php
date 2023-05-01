@@ -172,6 +172,7 @@ EOF
               -DCRYPTO_BACKEND=OpenSSL \
               -DBUILD_TESTING=OFF \
               -DBUILD_EXAMPLES=OFF
+
               cmake --build . --target install
 EOF
             )
@@ -187,7 +188,6 @@ EOF
             ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
             ->withManual('https://nghttp2.org/nghttp3/')
             ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/tags/v0.9.0.tar.gz')
-            //->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/heads/main.zip')
             ->withFile('nghttp3-v0.9.0.tar.gz')
             ->withPrefix($nghttp3_prefix)
             ->withConfigure(
@@ -294,7 +294,6 @@ EOF
             --with-nghttp2 \
             --with-ngtcp2 \
             --with-nghttp3 \
-            --with-default-ssl-backend=openssl \
             --without-libidn2 \
             --with-libssh2 \
             --with-openssl  \
@@ -320,6 +319,7 @@ EOF
                 'ngtcp2',
                 'libssh2'
             )  # 'libidn2',
+
     );
     $p->addExtension(
         (new Extension('curl'))

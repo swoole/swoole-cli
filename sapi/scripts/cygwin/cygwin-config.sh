@@ -30,7 +30,6 @@ export LDFLAGS="-L/usr/lib"
 
 
 ./buildconf --force
-make clean
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --enable-opcache \

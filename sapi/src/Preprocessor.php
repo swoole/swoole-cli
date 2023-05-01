@@ -382,6 +382,7 @@ class Preprocessor
                 cd {$lib->downloadDirName}
                 test -f {$lib->path} || tar   -zcf {$lib->path} ./
                 cd {$workDir}
+
 EOF;
 
                     $this->execDownloadScript($cacheDir, $lib->downloadScript);
@@ -445,6 +446,7 @@ EOF;
                                 cd {$ext->downloadDirName}
                                 test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
                                 cd {$workDir}
+
 
 EOF;
 
@@ -885,7 +887,9 @@ EOF;
             cd {$item->downloadDirName}
             test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
             cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir}
+            cd {$workDir}/
+
+
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -915,7 +919,9 @@ EOF;
                 cd {$item->downloadDirName}
                 test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} ./
                 cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir}
+                cd {$workDir}/
+
+
 
 EOF;
 
