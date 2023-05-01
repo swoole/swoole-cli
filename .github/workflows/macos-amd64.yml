@@ -20,6 +20,8 @@ jobs:
           echo 'export PATH="/usr/local/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
           source ~/.bash_profile
           env
+          echo $HOME
+          exit 3
       - name: Cache
         uses: actions/cache@v3
         id: all-archive-cache
