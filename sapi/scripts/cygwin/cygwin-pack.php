@@ -30,7 +30,7 @@ foreach ($match[2] as $file) {
 
 echo `chmod a+x {$src}/bin/swoole-cli.exe`;
 copy("{$src}/bin/swoole-cli.exe", $dst."/bin/swoole-cli.exe");
-copy("{$src}/bin/LICENSE", $dst."/LICENSE");
+#copy("{$src}/bin/LICENSE", $dst."/LICENSE");
 echo `cp -rL /etc/pki/ {$dst}/etc`;
 echo "done.\n";
 
