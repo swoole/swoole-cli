@@ -14,6 +14,8 @@ cd ${__PROJECT__}
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
 cd ${__PROJECT__}/var
+mkdir -p pool/lib
+mkdir -p pool/ext
 
 
 DOMAIN='http://127.0.0.1:8000'
