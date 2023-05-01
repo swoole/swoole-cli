@@ -62,9 +62,9 @@ function install_libraries($p): void
                 <<<EOF
                 cd ..
                 if test -d {$php_src} ; then
-                       rm -rf {$php_src}
-                       cp -rf php_src {$php_src}
+                    rm -rf {$php_src}
                 fi
+                cp -rf php_src {$php_src}
                 cd {$build_dir}/php_src
 EOF
             )
