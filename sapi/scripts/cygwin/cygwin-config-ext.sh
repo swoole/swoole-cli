@@ -23,6 +23,7 @@ if [ ! -d pool/ext ]; then
     mkdir -p pool/ext
 fi
 
+test -d ext && rm -rf ext
 mkdir -p pool/ext
 mkdir -p ext
 cd pool/ext
