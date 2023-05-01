@@ -30,7 +30,8 @@ export LDFLAGS="-L/usr/lib"
 
 
 ./buildconf --force
-./configure --prefix=${__PROJECT__}/bin/${VERSION} --disable-all \
+make clean
+./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --enable-opcache \
     --without-pcre-jit \
