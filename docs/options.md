@@ -33,8 +33,9 @@ skip-download
 ----
 跳过下载依赖库
 
-> 会自动生成，待下载链接地址 （依赖 aria2 )
+> 会自动生成，待下载链接地址
 > 链接地址生成在 项目根目录下的 `var` 目录
+> 依赖 aria2
 
 ```shell
 ./prepare.php --skip-download=yes --without-docker
@@ -44,8 +45,8 @@ sh sapi/scripts/download-dependencies-use-aria2.sh
 
 ```
 
-----
 [使用镜像地址下载](sapi/download-box/README.md)
+----
 
 > 使用镜像地址下载下载前，需要准备镜像服务器
 > 例如： `sh sapi/scripts/download-box/download-box-server-run.sh`
@@ -81,7 +82,12 @@ with-dependency-graph
 > 依赖 graphviz
 
 ```shell
+# macos
 brew install graphviz
+# debian
+apt install -y graphviz
+# alpine
+apk add graphviz
 ```
 
 > 生成扩展依赖库 图 步骤
