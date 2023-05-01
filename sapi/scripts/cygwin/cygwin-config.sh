@@ -54,3 +54,4 @@ cd ${__PROJECT__}
     --with-yaml \
     --with-readline
 
+sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
