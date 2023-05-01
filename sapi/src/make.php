@@ -146,6 +146,8 @@ export_variables() {
 <?php else :?>
     LDFLAGS="-static-libgcc -static-libstdc++"
 <?php endif ;?>
+
+    LDFLAGS=""
     LIBS=""
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
