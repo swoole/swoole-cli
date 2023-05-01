@@ -1,4 +1,4 @@
-name: build-swoole-cli
+name: build-php-cli-macos-amd64
 
 on: [ push ]
 

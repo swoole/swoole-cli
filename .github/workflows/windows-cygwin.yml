@@ -1,10 +1,10 @@
-name: build-swoole-cli
+name: build-php-cli-windows-cygwin
 
 on: [ push ]
 
 jobs:
   cygwin:
-    if: 1
+    if: 0
     runs-on: windows-latest
     steps:
       - name: Prepare git
