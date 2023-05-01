@@ -13,7 +13,6 @@ cd ${__PROJECT__}
 
 
 ./buildconf --force
-make clean
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --enable-opcache \
