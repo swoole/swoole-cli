@@ -55,6 +55,11 @@ while [ $# -gt 0 ]; do
     mirror="$2"
     shift
     ;;
+  --proxy)
+    export http_proxy="$2"
+    export https_proxy="$2"
+    shift
+    ;;
   --*)
     echo "Illegal option $1"
     ;;
