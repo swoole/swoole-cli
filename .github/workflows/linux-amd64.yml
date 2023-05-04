@@ -54,7 +54,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230429T064207Z
-          options: -v ${{ github.workspace }}:/work -w /work -e "BUILD_PHP_VERSION=${{ BUILD_PHP_VERSION }}"
+          options: -v ${{ github.workspace }}:/work -w /work -e "BUILD_PHP_VERSION=${ BUILD_PHP_VERSION }"
           run: |
             ./make.sh config
             ./make.sh build
