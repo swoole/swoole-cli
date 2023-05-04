@@ -13,8 +13,9 @@ __PROJECT__=$(
 
 cd ${__PROJECT__}/
 
+ARCH=$(uname -m)
 
-TAG='all-dependencies-alpine-x86_64-20230504T074925Z'
+TAG="all-dependencies-alpine-$(ARCH)-20230504T074925Z"
 
 IMAGE="phpswoole/swoole-cli-builder:1.6"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
