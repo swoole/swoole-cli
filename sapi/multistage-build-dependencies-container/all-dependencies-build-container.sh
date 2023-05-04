@@ -14,12 +14,9 @@ mkdir -p ${__PROJECT__}/var
 
 # export DOCKER_BUILDKIT=1
 
+TIME=$(date -u '+%Y%m%dT%H%M%SZ')
+TAG="native-php-all-dependencies-alpine-php-8.2.4-$(uname -m)-${TIME}"
 
-TIME=`date -u '+%Y%m%dT%H%M%SZ'`
-TAG="native-php-all-dependencies-alpine-$(uname -m)-${TIME}"
-
-
-SWOOLE_CLI_IMAGE="docker.io/phpswoole/swoole-cli-builder:1.6"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${TAG}"
 
@@ -33,10 +30,7 @@ cd ${__PROJECT__}/var
 
 echo ${IMAGE} >swoole-cli-build-all-dependencies-container.txt
 
-docker tag ${IMAGE} ${SWOOLE_CLI_IMAGE}
 docker tag ${IMAGE} ${ALIYUN_IMAGE}
 
 docker push ${ALIYUN_IMAGE}
 docker push ${IMAGE}
-
-docker push ${SWOOLE_CLI_IMAGE}
