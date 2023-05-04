@@ -21,4 +21,8 @@ php -v
 
 composer update
 
+# macos
+php prepare.php --with-build-type=release +apcu +ds @macos
+
+# linux
 php prepare.php --with-build-type=release +apcu +ds

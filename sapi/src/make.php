@@ -247,17 +247,19 @@ make_build() {
     export LDFLAGS="$LDFLAGS -all-static"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     export EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -fuse-ld=lld <?= $this->extraLdflags ?>
-<?php foreach ($this->libraryList as $item) {
-        if (!empty($item->ldflags)) {
-            echo $item->ldflags;
-            echo ' ';
-        }
+<?php
+foreach ($this->libraryList as $item) {
+    if (!empty($item->ldflags)) {
+        echo $item->ldflags;
+        echo ' ';
     }
+}
 echo "'";
+
 echo PHP_EOL;
+
 if ($this->getInputOption('with-php-sfx-micro')) {
     echo "    make -j " . $this->maxJob . ' micro' ;
-
 } else {
     echo "    make -j " . $this->maxJob . ' cli' ;
     echo PHP_EOL;

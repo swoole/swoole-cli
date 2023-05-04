@@ -1,7 +1,7 @@
 <?php
 
-$src = realpath(__DIR__ . '/../../../');
 
+$src = realpath(__DIR__ . '/../../../');
 $name = "php-cli-v" . PHP_VERSION . "-cygwin-x64";
 
 $dst = "/tmp/{$name}";
@@ -33,7 +33,9 @@ foreach ($match[2] as $file) {
 
 echo `chmod a+x {$src}/bin/php-cli.exe`;
 copy("{$src}/bin/php-cli.exe", $dst . "/bin/php-cli.exe");
-#copy("{$src}/bin/LICENSE", $dst."/LICENSE");
+if (is_file("{$src}/bin/LICENSE")) {
+    copy("{$src}/bin/LICENSE", $dst . "/LICENSE");
+}
 
 echo `cp -rL /etc/pki/ {$dst}/etc`;
 echo "done.\n";
