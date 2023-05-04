@@ -88,16 +88,6 @@ sh sapi/download-box/download-box-get-archive-from-server.sh
 
 ```
 
-## 准备 swoole 源码
-
-> 拉取 swoole-cli 源码时没有拉取子模块，就需要执行这一步
-
-```bash
-
-git submodule update --init
-
-```
-
 
 ## 准备构建脚本
 
@@ -105,6 +95,10 @@ git submodule update --init
 
 # compser 使用阿里云镜像
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
+# 使用代理
+# export http_proxy=http://192.168.3.26:8015
+# export https_proxy=http://192.168.3.26:8015
 
 composer update --no-dev  --optimize-autoloader
 
