@@ -25,7 +25,7 @@ jobs:
           uname -s
           uname -m
           uname -r
-
+          # echo "BUILD_PHP_VERSION=8.2.4" >> "$GITHUB_ENV"
       - name: Prepare Libraries and Extensions
         uses: addnab/docker-run-action@v3
         with:
@@ -54,21 +54,21 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230429T064207Z
-          options: -v ${{ github.workspace }}:/work -w /work -e "BUILD_PHP_VERSION=${ BUILD_PHP_VERSION }"
+          options: -v ${{ github.workspace }}:/work -w /work -e "BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }}"
           run: |
             ./make.sh config
             ./make.sh build
             ./make.sh archive
             ./thirdparty/php_src/sapi/cli/php -v
-            file ./bin/php-${BUILD_PHP_VERSION}/bin/php
-            readelf -h ./bin/php-${BUILD_PHP_VERSION}/bin/php
-            ./bin/php-${BUILD_PHP_VERSION}/bin/php -r "echo PHP_VERSION;"
+            file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+            readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-linux-x64-${{BUILD_PHP_VERSION}}
+          name: php-cli-linux-x64-${{ env.BUILD_PHP_VERSION }}
           retention-days: 7
-          path: ./bin/php-${{BUILD_PHP_VERSION}}/bin/php
+          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
       - name: Prepare sfx micro
         uses: addnab/docker-run-action@v3
         with:
@@ -91,7 +91,7 @@ jobs:
       - name: production artifacts sfx micro
         uses: actions/upload-artifact@v3
         with:
-          name: php-sfx-micro-linux-x64-${{BUILD_PHP_VERSION}}
+          name: php-sfx-micro-linux-x64-${{ env.BUILD_PHP_VERSION }}
           retention-days: 7
           path: ./thirdparty/php_src/sapi/micro/micro.sfx
       - name: Release sfx micro
@@ -99,5 +99,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            php-cli-v${{BUILD_PHP_VERSION}}-linux-x64.tar.xz
-            php-sfx-micro-v${{BUILD_PHP_VERSION}}-linux-x64.tar.xz
+            php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-x64.tar.xz
+            php-sfx-micro-v${{ env.BUILD_PHP_VERSION }}-linux-x64.tar.xz
