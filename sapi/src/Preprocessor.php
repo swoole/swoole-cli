@@ -291,9 +291,8 @@ class Preprocessor
     protected function downloadFile(string $url, string $file, string $md5sum)
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
-        $user_agent = DOWNLOAD_FILE_USER_AGENT;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
-        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 --user-agent='{$user_agent}'";
+        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 ";
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
