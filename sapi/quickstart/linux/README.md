@@ -110,8 +110,11 @@ composer update --no-dev  --optimize-autoloader
 
 php prepare.php  +inotify +apcu +ds -mysqli -soap
 
+# 不起用 mysqli soap
+# php prepare.php  +inotify +apcu +ds -mysqli -soap
+
 # macos
-# php prepare.php  +inotify +apcu +ds -mysqli -soap --without-docker=1
+# php prepare.php  +inotify +apcu +ds  --without-docker=1
 
 ```
 
