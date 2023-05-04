@@ -13,7 +13,6 @@ cd ${__PROJECT__}
 
 
 ./buildconf --force
-make clean
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --enable-opcache \
@@ -55,3 +54,4 @@ make clean
     --with-yaml \
     --with-readline
 
+sed -i.backup 's/-export-dynamic/-all-static/g' Makefile

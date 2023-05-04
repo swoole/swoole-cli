@@ -717,5 +717,6 @@ function libraries_builder($p)
     /*
        在Linux下，如何强制让GCC静态链接？
        https://www.zhihu.com/question/22940048
+      https://zhuanlan.zhihu.com/p/377651202
      */
 }
