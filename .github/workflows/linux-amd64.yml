@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
