@@ -57,18 +57,18 @@ bash make.sh build
 
 cd var
 
-docker save -o "all-dependencies-container-image-$(uname -m).tar" $(cat swoole-cli-build-all-dependencies-container.txt)
+docker save -o "all-dependencies-container-image-php-8.2.4-$(uname -m).tar" $(cat swoole-cli-build-all-dependencies-container.txt)
 
 
 # xz 并行压缩 -T cpu核数 -k 保持源文件
-xz -9 -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar"
+xz -9 -T$(nproc) -k "all-dependencies-container-image-php-8.2.4-$(uname -m).tar"
 
 # xz 解压
-xz -d -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar.xz"
+xz -d -T$(nproc) -k "all-dependencies-container-image-php-8.2.4-$(uname -m).tar.xz"
 
 # 从文件导入容器镜像
 
-docker load -i  "all-dependencies-container-image-$(uname -m).tar"
+docker load -i  "all-dependencies-container-image-php-8.2.4-$(uname -m).tar"
 
 ```
 
