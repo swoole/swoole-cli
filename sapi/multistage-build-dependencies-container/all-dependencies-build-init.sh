@@ -19,10 +19,12 @@ test -d swoole-cli && git -C swoole-cli pull --depth=1
 mkdir -p ${__PROJECT__}/var/runtime
 cd ${__PROJECT__}/var/runtime
 
+set +x
 if [[ ! -f swoole-cli ]] || [[ ! -f composer.phar ]]; then
   echo "please run ： sh sapi/quickstart/setup-php-runtime.sh "
   exit 0
 fi
+set -x
 chmod a+x swoole-cli
 chmod a+x composer.phar
 
