@@ -88,10 +88,22 @@ sh sapi/download-box/download-box-get-archive-from-server.sh
 
 ```
 
+## 准备 swoole 源码
+
+> 拉取 swoole-cli 源码时没有拉取子模块，就需要执行这一步
+
+```bash
+
+git submodule update --init
+
+```
+
+
 ## 准备构建脚本
 
 ```bash
 
+# compser 使用阿里云镜像
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 composer update --no-dev  --optimize-autoloader
@@ -103,12 +115,16 @@ php prepare.php  +inotify +apcu +ds -mysqli -soap
 
 ```
 
+
+
 ## 构建依赖库 、构建swoole 、打包
 
 ```bash
 
 chmod a+x ./make.sh
+
 bash make.sh all-library
+
 bash make.sh config
 bash make.sh build
 bash make.sh archive
