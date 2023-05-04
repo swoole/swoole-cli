@@ -66,7 +66,7 @@ sh sapi/quickstart/setup-php-runtime.sh
 sh sapi/quickstart/setup-php-runtime.sh --proxy http://192.168.3.26:8015
 
 # 准备PHP 运行时 使用镜像 （镜像源 https://www.swoole.com/download）
-sh sapi/quickstart/setup-php-runtime.sh --mirror chian
+sh sapi/quickstart/setup-php-runtime.sh --mirror china
 
 
 sh sapi/quickstart/setup-php-runtime-in-docker.sh
