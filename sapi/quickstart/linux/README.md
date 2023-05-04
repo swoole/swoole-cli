@@ -108,7 +108,7 @@ git submodule update --init
 
 composer update --no-dev  --optimize-autoloader
 
-php prepare.php  +inotify +apcu +ds -mysqli -soap
+php prepare.php  +inotify +apcu +ds
 
 # 不起用 mysqli soap
 # php prepare.php  +inotify +apcu +ds -mysqli -soap
