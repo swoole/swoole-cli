@@ -11,6 +11,7 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+mkdir -p ${__PROJECT__}/var/runtime
 cd ${__PROJECT__}/var/runtime
 
 set +x
