@@ -9,8 +9,7 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 
-// Sync code from php-src
-$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
+
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker')) {
@@ -18,6 +17,10 @@ if ($p->getInputOption('without-docker')) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
     $p->setGlobalPrefix($homeDir . '/.swoole-cli');
 }
+
+// Sync code from php-src
+//重新设置 PHP 源码所在目录
+$p->setPhpSrcDir($p->getWorkDir() . '/php-src');
 
 $build_type = $p->getInputOption('with-build-type');
 if (!in_array($build_type, ['dev', 'debug'])) {
@@ -39,8 +42,7 @@ $p->execute();
 
 function install_libraries($p): void
 {
-    //重新设置 PHP 源码所在目录
-    $p->setPhpSrcDir($p->getWorkDir() . '/php-src');
+
 
     //设置PHP 安装目录和版本号
     $version = '8.2.4';
