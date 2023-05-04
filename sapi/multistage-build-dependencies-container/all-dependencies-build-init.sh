@@ -16,7 +16,6 @@ cd ${__PROJECT__}/var
 test -d swoole-cli || git clone -b main --depth=1 --single-branch https://github.com/swoole/swoole-cli.git
 test -d swoole-cli && git -C swoole-cli pull --depth=1
 
-mkdir -p ${__PROJECT__}/var/runtime
 cd ${__PROJECT__}/var/runtime
 
 set +x
@@ -41,6 +40,7 @@ cd swoole-cli
 mkdir -p pool/lib
 mkdir -p pool/ext
 
+cd ${__PROJECT__}
 sh sapi/download-box/download-box-get-archive-from-container.sh
 
-cd ${__PROJECT__}/var
+cd ${__PROJECT__}
