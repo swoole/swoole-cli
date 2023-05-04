@@ -55,9 +55,21 @@ bash make.sh build
 ## 为了方便分发，把容器镜像导出为文件
 ```bash
 
+cd var
+
 docker save -o "all-dependencies-container-image-$(uname -m).tar" $(cat swoole-cli-build-all-dependencies-container.txt)
 
+
+# xz 并行压缩 -T cpu核数 -k 保持源文件
+xz -9 -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar"
+
+# xz 解压
+xz -d -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar.xz"
+
+# 从文件导入容器镜像
+
 docker load -i  "all-dependencies-container-image-$(uname -m).tar"
+
 ```
 
 ## 容器多阶段构建镜像参考文档
