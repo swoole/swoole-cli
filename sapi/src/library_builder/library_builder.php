@@ -711,7 +711,11 @@ function libraries_builder($p)
        export alias sh='bash'
 
      */
-    /**
+    /*
         php static compile
+     */
+    /*
+       在Linux下，如何强制让GCC静态链接？
+       https://www.zhihu.com/question/22940048
      */
 }
