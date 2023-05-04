@@ -22,19 +22,20 @@ bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh
 ## 执行构建依赖库容器
 
 ```bash
-  sh sapi/multi-stage-build-dependencies/build-all-dependencies-container.sh
+
+bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh
+
 ```
 
 ## 使用提前构建好的依赖库
 
 ```bash
 
-sh sapi/multistage-build-dependencies-container/all-dependencies-container-run.sh
+bash sapi/multistage-build-dependencies-container/all-dependencies-container-run.sh
 
 
 # 新开终端进入容器
 docker exec -it swoole-cli-all-dependencies-container sh
-
 
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 composer update --no-dev --optimize-autoloader
@@ -45,10 +46,18 @@ php prepare.php --with-build-type=release  +ds +inotify +apcu --with-download-mi
 # 这里可以直接跳过步骤 sh make.sh all-library
 
 # 执行 PHP 构建预处理
-sh make.sh config
+bash make.sh config
 # 执行 PHP 构建
-sh make.sh build
+bash make.sh build
 
+```
+
+## 为了方便分发，把容器镜像导出为文件
+```bash
+
+docker save -o "all-dependencies-container-image-$(uname -m).tar" $(cat swoole-cli-build-all-dependencies-container.txt)
+
+docker load -i  "all-dependencies-container-image-$(uname -m).tar"
 ```
 
 ## 容器多阶段构建镜像参考文档

@@ -21,7 +21,13 @@ cd ${__PROJECT__}/var/runtime
 
 set +x
 if [[ ! -f swoole-cli ]] || [[ ! -f composer.phar ]]; then
-  echo "please run ： sh sapi/quickstart/setup-php-runtime.sh "
+  echo ""
+  echo ""
+  echo "please run： bash sapi/quickstart/setup-php-runtime.sh "
+  echo ""
+  echo ""
+  echo ""
+  echo ""
   exit 0
 fi
 set -x
