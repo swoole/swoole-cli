@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   macos:
-    if: 0
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
