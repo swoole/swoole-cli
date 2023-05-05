@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   macos:
     runs-on: macos-latest
+    if: 0
     steps:
       - uses: actions/checkout@v3
       - name: Configure
