@@ -28,7 +28,7 @@ jobs:
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
           bash sapi/quickstart/setup-php-runtime.sh
-          export PATH=${{ GITHUB_WORKSPACE}}/bin/runtime:$PATH
+          export PATH=${{ GITHUB_WORKSPACE }}/bin/runtime:$PATH
           composer update --no-dev  --optimize-autoloader  --without-docker=1
           php prepare.php  +inotify +apcu +ds
           sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
