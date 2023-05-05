@@ -76,8 +76,8 @@ COPY --from=builder-all-library  /usr/bzip2 /usr/bzip2
 COPY --from=builder-all-library  /usr/zlib /usr/zlib
 
 COPY --from=builder-all-library  /usr/nghttp2 /usr/nghttp2
-COPY --from=builder-all-library  /usr/nghttp2 /usr/nghttp3
-COPY --from=builder-all-library  /usr/nghttp2 /usr/ngtcp2
+COPY --from=builder-all-library  /usr/nghttp3 /usr/nghttp3
+COPY --from=builder-all-library  /usr/ngtcp2 /usr/ngtcp2
 COPY --from=builder-all-library  /usr/libssh2 /usr/libssh2
 
 COPY --from=builder-all-library  /usr/liblz4 /usr/liblz4

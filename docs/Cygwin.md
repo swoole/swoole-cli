@@ -1,4 +1,3 @@
-
 # cygwin 环境下构建 swoole-cli
 
 ## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
