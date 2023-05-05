@@ -39,8 +39,8 @@ jobs:
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
-          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
+          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
@@ -52,8 +52,8 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
-          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
+          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             bash ./make.sh config
