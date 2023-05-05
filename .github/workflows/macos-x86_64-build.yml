@@ -1,6 +1,6 @@
 name: build-swoole-cli-macos-amd64
 
-on: [ push ]
+on: [ push, pull_request ]
 
 jobs:
   macos:
