@@ -1,4 +1,27 @@
-工具
+
+# cygwin 环境下构建 swoole-cli
+
+## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
+```bash
+
+# download cygwin  下载安装 cygwin (用浏览器下载就行。没有 wget 可以先用 [msys2](https://www.msys2.org/docs/environments/))
+ wget https://cygwin.com/setup-x86_64.exe
+
+# cygwin 移动到 bin 目录
+mv setup-x86_64.exe C:/cygwin64/bin/setup-x86_64.exe
+
+```
+
+## 安装工具列表和依赖
+```bash
+setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  http://mirrors.ustc.edu.cn/cygwin/ --packages make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl,libpcre2-devel,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel,libgmp-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel,libsqlite3-devel,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel,libMagick-devel,libzstd-devel,libbrotli-devel,libreadline-devel,libintl-devel,libpq-devel,libssh2-devel,libidn2-devel,gettext-devel,coreutils,openssl-devel
+
+setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  http://mirrors.ustc.edu.cn/cygwin/ --packages zip unzip
+
+
+```
+
+工具列表
 ----
 - make
 - autoconf

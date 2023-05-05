@@ -1,4 +1,5 @@
-name: windows-cygwin-swoole-cli
+name: build-swoole-cli-windows-cygwin
+
 
 on: [ push, pull_request ]
 

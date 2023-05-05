@@ -11,7 +11,6 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-
 mkdir -p bin/.libs
 export LDFLAGS="-all-static"
 make -j $(nproc)
