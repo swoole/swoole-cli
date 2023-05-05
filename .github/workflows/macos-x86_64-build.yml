@@ -18,7 +18,6 @@ jobs:
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
-          echo 'export PATH="/usr/local/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
           git submodule update --init
       - name: Cache
         uses: actions/cache@v3
@@ -68,7 +67,6 @@ jobs:
           sudo ./make.sh config
           sudo ./make.sh build
           sudo ./make.sh archive
-          export PATH="/usr/local/opt/binutils/bin:$PATH"
           file ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
 
