@@ -34,12 +34,12 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-
 cd ${__PROJECT__}/var
 
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 
 docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR=${USE_COMPOSER_MIRROR}
+
 cd ${__PROJECT__}/var
 
 echo ${IMAGE} >swoole-cli-build-all-dependencies-container.txt

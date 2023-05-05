@@ -18,9 +18,9 @@ if [[ ! -f swoole-cli ]] || [[ ! -f composer.phar ]]; then
   echo ""
   echo ""
   echo "please run： bash sapi/quickstart/setup-php-runtime.sh "
-  echo "or "
+  echo "or use mirror "
   echo "please run： bash sapi/quickstart/setup-php-runtime.sh --mirror china "
-  echo "or "
+  echo "or use proxy "
   echo "please run： bash sapi/quickstart/setup-php-runtime.sh --proxy http://127.0.0.1:1080 "
   echo ""
   exit 0
@@ -54,7 +54,7 @@ done
 cd ${__PROJECT__}/var
 
 GIT_BRANCH=main
-test -d swoole-cli && git -C swoole-cli pull origin ${GIT_BRANCH} --depth=1 --progress --rebase=true
+test -d swoole-cli && git -C swoole-cli pull origin ${GIT_BRANCH} --depth=1 --progress --rebase=true --allow-unrelated-histories
 test -d swoole-cli || git clone -b ${GIT_BRANCH} --depth=1 https://github.com/swoole/swoole-cli.git
 
 cd ${__PROJECT__}/var/swoole-cli

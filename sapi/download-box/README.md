@@ -47,8 +47,21 @@ sh sapi/download-box/download-box-server-run.sh
 
 ```bash
     # 演示例子
-    ./prepare.php --without-docker --with-download-mirror=http://127.0.0.1:8000
+    ./prepare.php --without-docker=1 --with-download-mirror-url=http://127.0.0.1:8000
 
     # 真实可用的依赖库镜像
-    ./prepare.php --without-docker --with-download-mirror=https://swoole-cli.jingjingxyk.com/
+    ./prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+```
+
+### 完整例子
+```bash
+
+php prepare.php \
+--with-build-type=dev \
+--with-dependency-graph=1 \
++apcu +ds +inotify \
+--without-docker=1 \
+--with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+
+
 ```
