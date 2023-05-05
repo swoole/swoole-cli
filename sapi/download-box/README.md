@@ -1,10 +1,32 @@
 # 创建依赖库镜像 和 使用依赖库的镜像
 
+## 系统准备
+
+> 系统 需要 安装 `aria2 ` 用于批量下载
+> 系统 需要 安装 `graphviz` 用于生成扩展依赖图
+
+### 系统要求
+
+```bash
+# macos
+brew install graphviz aria2
+
+# debian
+apt install -y graphviz aria2
+
+# alpine
+apk add graphviz aria2
+
+```
+
 ## 创建依赖库容器镜像
 
 ```bash
 
+# 准备依赖库源码包，使用 aria2 批量下载
 bash sapi/download-box/download-box-init.sh
+
+# 将源码包 ，扩展依赖图 打包到容器中
 bash sapi/download-box/download-box-build.sh
 
 ```
@@ -41,7 +63,8 @@ bash sapi/download-box/download-box-get-archive-from-container.sh
 > 原理： 下载：`http://127.0.0.1:8000/all-archive.zip`
 > 自动解压，并自动拷贝到 `pool/` 目录
 
-> 真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
+>
+真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
 
 ```bash
 
@@ -65,6 +88,7 @@ bash  sapi/download-box/download-box-get-archive-from-server.sh
 ```
 
 ### 完整例子
+
 ```bash
 
 php prepare.php \

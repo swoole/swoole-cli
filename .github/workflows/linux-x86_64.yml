@@ -1,0 +1,76 @@
+name: build-swoole-cli-linux-amd64
+
+on: [ push, pull_request ]
+
+jobs:
+  linux:
+    if: 1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prepare Source Code
+        run: |
+          lscpu
+          echo $PATH
+          env
+          docker info
+          id -u
+          id -g
+          who
+          cat /etc/os-release
+          hostnamectl
+          uname -s
+          uname -m
+          uname -r
+          git submodule update --init
+      - name: Prepare Libraries and Extensions
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230505T112517Z
+          # image: phpswoole/swoole-cli-builder:download-box-nginx-alpine-20230505T112517Z
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            set -eux
+            mkdir -p pool/lib
+            mkdir -p pool/ext
+            mkdir -p ext
+            cp -rf /usr/share/nginx/html/extensions/* pool/ext
+            cp -rf /usr/share/nginx/html/libraries/* pool/lib
+      - name: Prepare
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
+          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            set -eux
+            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
+            composer update --no-dev  --optimize-autoloader
+            php prepare.php  +inotify +apcu +ds
+            chmod a+x make.sh
+            head -n 20 make.sh
+      - name: Build
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
+          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            bash ./make.sh config
+            bash ./make.sh build
+            bash ./make.sh archive
+            ./bin/swoole-cli -v
+            file ./bin/swoole-cli
+            readelf -h ./bin/swoole-cli
+            ./bin/swoole-cli -r "echo PHP_VERSION;"
+      - name: production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: swoole-cli
+          retention-days: 7
+          path: ./bin/swoole-cli
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: swoole-cli-*-linux-x64.tar.xz
