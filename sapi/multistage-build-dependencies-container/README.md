@@ -40,7 +40,6 @@ bash  sapi/multistage-build-dependencies-container/all-dependencies-build-contai
 
 bash sapi/multistage-build-dependencies-container/all-dependencies-run-container.sh
 
-
 # 新开终端进入容器
 docker exec -it swoole-cli-all-dependencies-container sh
 
@@ -57,15 +56,19 @@ php prepare.php --with-build-type=release  +ds +inotify +apcu --with-download-mi
 sh make.sh config
 # 执行 PHP 构建
 sh make.sh build
+
 ```
 
 ## 为了方便分发，把容器镜像导出为文件
+
+> 使用 抢占式 高配置 的云服务器 来构建
+> 目的：节省网络流量 （单个容器网络流量超过 1GB）
+
 ```bash
 
 cd var
 
 docker save -o "all-dependencies-container-image-swoole-cli-$(uname -m).tar" $(cat swoole-cli-build-all-dependencies-container.txt)
-
 
 # xz 并行压缩 -T cpu核数 -k 保持源文件
 xz -9 -T$(nproc) -k "all-dependencies-container-image-swoole-cli-$(uname -m).tar"
@@ -76,7 +79,6 @@ xz -d -T$(nproc) -k "all-dependencies-container-image-swoole-cli-$(uname -m).tar
 # 从文件导入容器镜像
 
 docker load -i  "all-dependencies-container-image-swoole-cli-$(uname -m).tar"
-
 
 ```
 
