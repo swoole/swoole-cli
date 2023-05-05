@@ -1,6 +1,6 @@
 name: build-swoole-cli-linux-amd64
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   linux:
@@ -26,7 +26,8 @@ jobs:
       - name: Prepare Libraries and Extensions
         uses: addnab/docker-run-action@v3
         with:
-          image: phpswoole/swoole-cli-builder:download-box-nginx-alpine-20230504T085104Z
+          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230505T112517Z
+          # image: phpswoole/swoole-cli-builder:download-box-nginx-alpine-20230505T112517Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
@@ -38,7 +39,8 @@ jobs:
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
+          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
