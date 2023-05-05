@@ -58,11 +58,7 @@ sh sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
 
 ```
 
-<<<<<<< HEAD
-## 准备 PHP 运行环境
-=======
 ## 准备 PHP 运行时
->>>>>>> main
 
 ```bash
 
