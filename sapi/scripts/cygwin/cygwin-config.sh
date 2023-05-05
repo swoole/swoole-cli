@@ -56,4 +56,4 @@ test -f Makefile && make clean
     --with-yaml \
     --with-readline
 
-
+sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
