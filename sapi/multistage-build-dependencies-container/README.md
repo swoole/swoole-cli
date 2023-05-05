@@ -8,8 +8,11 @@
 ## 构建依赖库容器镜像的2种方式说明
 
 > 通过 docker commit 生成 比如 `phpswoole/swoole-cli-builder:1.6`
+
 > 通过 Dockerfile 多阶段构建生成
+
 > 比如 `docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine`
+
 > 二者容器镜像是一样的
 
 ## 准备 swoole-cli源码和依赖库源码

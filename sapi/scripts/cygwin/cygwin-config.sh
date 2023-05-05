@@ -12,7 +12,9 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 
+
 ./buildconf --force
+test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --enable-opcache \
