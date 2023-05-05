@@ -7,6 +7,7 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+
     $p->addLibrary(
         (new Library('openssl'))
             ->withHomePage('https://www.openssl.org/')

@@ -15,7 +15,7 @@ mkdir -p ${__PROJECT__}/var
 # export DOCKER_BUILDKIT=1
 
 TIME=$(date -u '+%Y%m%dT%H%M%SZ')
-TAG="all-dependencies-alpine-$(uname -m)-${TIME}"
+TAG="all-dependencies-alpine-swoole-cli-$(uname -m)-${TIME}"
 
 SWOOLE_CLI_IMAGE="docker.io/phpswoole/swoole-cli-builder:1.6"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"

@@ -37,6 +37,7 @@ EOF
         ->withPkgName('libjpeg')
         ->withPkgName('libturbojpeg')
         ->withBinPath($libjpeg_prefix . '/bin/');
+
     $p->addLibrary($lib);
 
     $libpng_prefix = PNG_PREFIX;
@@ -89,7 +90,6 @@ EOF
                 fi
                 cp libgif.a {$libgif_prefix}/lib/libgif.a
                 cp gif_lib.h {$libgif_prefix}/include/gif_lib.h
-
 
 EOF
             )
