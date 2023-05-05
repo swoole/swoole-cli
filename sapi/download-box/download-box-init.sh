@@ -18,6 +18,9 @@ test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 export SWOOLE_CLI_SKIP_DOWNLOAD=1
 export SWOOLE_CLI_WITHOUT_DOCKER=1
 
+export COMPOSER_ALLOW_SUPERUSER=1
+composer update --no-dev --optimize-autoloader
+
 php prepare.php --with-build-type=release +ds +inotify +apcu +protobuf
 sh sapi/scripts/download-dependencies-use-aria2.sh
 
