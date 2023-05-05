@@ -10,7 +10,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Configure
         run: |
-
+          env
+          echo $HOME
           brew install  wget curl  libtool automake gettext coreutils re2c binutils
           which glibtool
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
@@ -18,9 +19,7 @@ jobs:
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
           echo 'export PATH="/usr/local/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
-          source ~/.bash_profile
-          env
-          echo $HOME
+          git submodule update --init
       - name: Cache
         uses: actions/cache@v3
         id: all-archive-cache
