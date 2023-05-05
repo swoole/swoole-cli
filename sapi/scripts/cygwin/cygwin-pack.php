@@ -1,6 +1,5 @@
 <?php
 
-
 $src = realpath(__DIR__ . '/../../../');
 $name = "swoole-cli-v" . SWOOLE_VERSION . "-cygwin-x64";
 
