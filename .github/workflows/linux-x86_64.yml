@@ -50,17 +50,9 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T110540Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
-            bash ./make.sh openssl
-            bash ./make.sh libzip
-            bash ./make.sh nghttp2
-            bash ./make.sh nghttp3
-            bash ./make.sh ngtcp2
-            bash ./make.sh libssh2
-            bash ./make.sh curl
-            bash ./make.sh imagemagick
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
