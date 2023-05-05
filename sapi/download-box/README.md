@@ -3,14 +3,18 @@
 ## 创建依赖库容器镜像
 
 ```bash
-    sh sapi/download-box/download-box-init.sh
-    sh sapi/download-box/download-box-build.sh
+
+bash sapi/download-box/download-box-init.sh
+bash sapi/download-box/download-box-build.sh
+
 ```
 
 ## 部署依赖库容器镜像
 
 ```bash
-sh sapi/download-box/download-box-server-run.sh
+
+bash sapi/download-box/download-box-server-run.sh
+
 ```
 
 > 本地浏览器打开地址：   [`http://0.0.0.0:8000`](http://0.0.0.0:8000)  即可查看镜像服务器
@@ -27,7 +31,9 @@ sh sapi/download-box/download-box-server-run.sh
 > 原理：  `docker cp [container_id]:dir dest_dir`
 
 ```bash
-    sh sapi/download-box/download-box-get-archive-from-container.sh
+
+bash sapi/download-box/download-box-get-archive-from-container.sh
+
 ```
 
 ### 方式二（来自web服务器）：
@@ -38,7 +44,9 @@ sh sapi/download-box/download-box-server-run.sh
 > 真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
 
 ```bash
-    sh sapi/download-box/download-box-get-archive-from-server.sh
+
+bash  sapi/download-box/download-box-get-archive-from-server.sh
+
 ```
 
 ### 方式三（来自web服务器）：
@@ -46,11 +54,14 @@ sh sapi/download-box/download-box-server-run.sh
 > 指定镜像地址 单个下载逐步
 
 ```bash
-    # 演示例子
-    ./prepare.php --without-docker=1 --with-download-mirror-url=http://127.0.0.1:8000
 
-    # 真实可用的依赖库镜像
-    ./prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+# 演示例子
+./prepare.php --without-docker=1 --with-download-mirror-url=http://127.0.0.1:8000
+
+# 真实可用的依赖库镜像
+./prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+
+
 ```
 
 ### 完整例子

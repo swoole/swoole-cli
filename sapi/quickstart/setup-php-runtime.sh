@@ -98,7 +98,7 @@ set +x
 
 echo " "
 echo " "
-echo " use  PHP  rumtime :"
+echo " USE  PHP  rumtime :"
 echo " "
 echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
 echo " "
