@@ -24,6 +24,7 @@ return function (Preprocessor $p) {
             -DBUILD_STATIC_LIBS=ON \
             -DENABLE_SHARED=OFF  \
             -DENABLE_STATIC=ON
+
 EOF
         )
         ->withScriptAfterInstall(
@@ -36,6 +37,7 @@ EOF
         ->withPkgName('libjpeg')
         ->withPkgName('libturbojpeg')
         ->withBinPath($libjpeg_prefix . '/bin/');
+
     $p->addLibrary($lib);
 
     $libpng_prefix = PNG_PREFIX;
@@ -86,7 +88,7 @@ EOF
                 fi
                 cp libgif.a {$libgif_prefix}/lib/libgif.a
                 cp gif_lib.h {$libgif_prefix}/include/gif_lib.h
-                EOF
+EOF
             )
             ->withLdflags('-L' . $libgif_prefix . '/lib')
     );
@@ -122,6 +124,7 @@ EOF
                 --with-gifincludedir={$libgif_prefix}/include \
                 --with-giflibdir={$libgif_prefix}/lib \
                 --disable-tiff
+
 EOF
             )
             ->withPkgName('libwebp')
@@ -158,6 +161,7 @@ EOF
             --with-png=yes \
             --with-harfbuzz=no  \
             --with-brotli=yes
+
 EOF
             )
             ->withPkgName('freetype2')

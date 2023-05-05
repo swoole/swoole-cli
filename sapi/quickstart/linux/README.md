@@ -33,6 +33,7 @@ sh sapi/quickstart/linux/connection-swoole-cli-debian.sh
 # 准备构建基础软件
 sh sapi/quickstart/linux/debian-11-init.sh
 
+
 # 准备构建基础软件 使用中科大镜像源
 sh sapi/quickstart/linux/debian-11-init.sh --mirror china
 ```
@@ -50,7 +51,9 @@ sh sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 # 准备构建基础软件
 sh sapi/quickstart/linux/alpine-3.16-init.sh
 
+
 # 准备构建基础软件 使用中科大镜像源
+
 sh sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
 
 ```
@@ -98,7 +101,6 @@ git submodule update --init
 
 ```
 
-
 ## 准备构建脚本
 
 ```bash
@@ -118,8 +120,6 @@ php prepare.php  +inotify +apcu +ds
 
 ```
 
-
-
 ## 构建依赖库 、构建swoole 、打包
 
 ```bash
@@ -133,4 +133,9 @@ bash make.sh build
 bash make.sh archive
 
 ```
+
+## c c++编译器
+
+- 组合一 clang clang++
+- 组合二 musl-gcc g++
 
