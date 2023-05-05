@@ -1,4 +1,18 @@
-ROOT=$(pwd)
+#!/usr/bin/env bash
+
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+__PROJECT__=$(
+  cd ${__DIR__}/../../../
+  pwd
+)
+cd ${__PROJECT__}
+ROOT=${__PROJECT__}
+
+
 RE2C_VERSION=3.0
 
 wget https://github.com/swoole/swoole-cli/releases/download/v5.0.1/re2c.exe
