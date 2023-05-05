@@ -15,6 +15,9 @@ test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
 cp -f ${__DIR__}/Dockerfile-dowload-box ${__PROJECT__}/var
 cp -f ${__DIR__}/default.conf ${__PROJECT__}/var
+cp -f ${__DIR__}/bin/LICENSE ${__PROJECT__}/var
+cp -f ${__DIR__}/bin/credits.html ${__PROJECT__}/var
+cp -f ${__DIR__}/bin/ext-dependency-graph.pdf ${__PROJECT__}/var
 
 cd ${__PROJECT__}/var
 
