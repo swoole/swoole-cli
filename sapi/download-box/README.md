@@ -1,15 +1,15 @@
 # 创建依赖库镜像 和 使用依赖库的镜像
 
-## 创建依赖库镜像
+## 创建依赖库容器镜像
 
-```bash 
+```bash
     sh sapi/download-box/download-box-init.sh
     sh sapi/download-box/download-box-build.sh
 ```
 
-## 部署依赖库镜像
+## 部署依赖库容器镜像
 
-```bash 
+```bash
 sh sapi/download-box/download-box-server-run.sh
 ```
 
@@ -47,8 +47,21 @@ sh sapi/download-box/download-box-server-run.sh
 
 ```bash
     # 演示例子
-    ./prepare.php --without-docker --with-download-mirror=http://127.0.0.1:8000
-    
-    # 真实可用的依赖库镜像 
-    ./prepare.php --without-docker --with-download-mirror=https://swoole-cli.jingjingxyk.com/
+    ./prepare.php --without-docker=1 --with-download-mirror-url=http://127.0.0.1:8000
+
+    # 真实可用的依赖库镜像
+    ./prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+```
+
+### 完整例子
+```bash
+
+php prepare.php \
+--with-build-type=dev \
+--with-dependency-graph=1 \
++apcu +ds +inotify \
+--without-docker=1 \
+--with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+
+
 ```
