@@ -31,3 +31,5 @@ cd ${__PROJECT__}/
 
 awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
 awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
+
+echo "download all-archive.zip ok ！"
