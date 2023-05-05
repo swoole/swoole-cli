@@ -53,9 +53,13 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            bash ./make.sh openssl
+            bash ./make.sh libzip
+            bash ./make.sh nghttp3
             bash ./make.sh nghttp3
             bash ./make.sh ngtcp2
             bash ./make.sh curl
+            bash ./make.sh imagemagick
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
