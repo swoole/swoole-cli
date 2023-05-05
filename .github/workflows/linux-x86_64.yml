@@ -42,7 +42,7 @@ jobs:
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
-            export PATH=/work/bin/runtime:$PATH
+            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
             composer update --no-dev  --optimize-autoloader
             php prepare.php  +inotify +apcu +ds
             chmod a+x make.sh
