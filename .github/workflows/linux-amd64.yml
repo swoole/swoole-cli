@@ -38,7 +38,7 @@ jobs:
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-x86_64-20230504T074925Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
@@ -50,7 +50,7 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-x86_64-20230504T074925Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             bash ./make.sh nghttp3
