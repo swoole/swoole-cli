@@ -44,7 +44,7 @@ jobs:
             set -eux
             export PATH=/work/bin/runtime:$PATH
             composer update --no-dev  --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds -mysqli -soap -mongodb
+            php prepare.php  +inotify +apcu +ds
             chmod a+x make.sh
             head -n 20 make.sh
       - name: Build
@@ -53,6 +53,9 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-x86_64-20230504T074925Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            bash ./make.sh nghttp3
+            bash ./make.sh ngtcp2
+            bash ./make.sh curl
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
