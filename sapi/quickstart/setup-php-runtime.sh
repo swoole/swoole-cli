@@ -39,7 +39,9 @@ case $ARCH in
 esac
 
 VERSION='v5.0.3'
-
+if [[ $OS = 'macos' ]]; then
+  VERSION='v5.0.1'
+fi
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
