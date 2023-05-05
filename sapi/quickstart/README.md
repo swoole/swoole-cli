@@ -5,7 +5,7 @@
 ```bash
 
 # 准备PHP 运行时
-sh sapi/quickstart/setup-php-runtime.sh
+bash sapi/quickstart/setup-php-runtime.sh
 
 # 准备PHP 运行时 使用代理 （需提前准备好代理)
 sh sapi/quickstart/setup-php-runtime.sh --proxy http://192.168.3.26:8015
