@@ -1,0 +1,58 @@
+name: build-swoole-cli-windows-cygwin
+
+on: [ push, pull_request ]
+
+jobs:
+  cygwin:
+    if: 1
+    runs-on: windows-latest
+    steps:
+      - name: Prepare git
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@v3
+      - name: Cache cygwin packages
+        id: cache-cygwin
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-cygwin-packages
+        with:
+          path: C:/cygwin-packages
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+      - name: Install deps
+        uses: cygwin/cygwin-install-action@v2
+        with:
+          platform: x64
+          packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel zip unzip
+      - name: Install re2c
+        run: |
+          bash ./sapi/scripts/cygwin/install-re2c.sh
+      - name: Configure
+        run: |
+          uname -a
+          git submodule update --init
+          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
+          bash ./sapi/scripts/cygwin/cygwin-config.sh
+      - name: Build
+        run: |
+          bash ./sapi/scripts/cygwin/cygwin-build.sh
+          ./bin/swoole-cli -v
+      - name: Archive
+        run: |
+          bash ./sapi/scripts/cygwin/cygwin-archive.sh
+      - name: production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: cygwin-swoole-cli-dist
+          path: |
+            bin/swoole-cli.exe
+      - name: gh release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: swoole-cli-*-cygwin-x64.zip
+          draft: true
+          prerelease: true

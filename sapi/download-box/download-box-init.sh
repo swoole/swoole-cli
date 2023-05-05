@@ -15,15 +15,17 @@ cd ${__PROJECT__}
 
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
-
 export SWOOLE_CLI_SKIP_DOWNLOAD=1
 export SWOOLE_CLI_WITHOUT_DOCKER=1
 
-php prepare.php  --with-build-type=release  +ds +inotify +apcu +protobuf
+export COMPOSER_ALLOW_SUPERUSER=1
+composer update --no-dev --optimize-autoloader
+
+php prepare.php --with-build-type=release +ds +inotify +apcu +protobuf
 sh sapi/scripts/download-dependencies-use-aria2.sh
 
 # for macos
-php prepare.php  --with-build-type=release  +ds +apcu +protobuf +protobuf  @macos --with-dependency-graph=1
+php prepare.php --with-build-type=release +ds +apcu +protobuf +protobuf @macos --with-dependency-graph=1
 sh sapi/scripts/download-dependencies-use-aria2.sh
 
 # 生成扩展依赖图
