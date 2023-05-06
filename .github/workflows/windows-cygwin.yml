@@ -3,7 +3,7 @@ name: build-php-cli-windows-cygwin
 on: [ push ]
 
 jobs:
-  cygwin:
+  windows-cygwin:
     if: 0
     runs-on: windows-latest
     steps:

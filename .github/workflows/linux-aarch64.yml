@@ -3,7 +3,7 @@ name: build-swoole-cli-linux-aarch64
 on: [ push, pull_request ]
 
 jobs:
-  linux:
+  linux-aarch64:
     if: 0
     runs-on: ubuntu-latest
     steps:
