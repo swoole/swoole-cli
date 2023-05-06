@@ -13,10 +13,10 @@ cd ${__PROJECT__}
 ROOT=${__PROJECT__}
 
 # download cygwin
-#wget https://cygwin.com/setup-x86_64.exe
+# wget https://cygwin.com/setup-x86_64.exe
 
 # cygwin 移动到 bin 目录
-#mv setup-x86_64.exe C:/cygwin64/bin/setup-x86_64.exe
+# mv setup-x86_64.exe C:/cygwin64/bin/setup-x86_64.exe
 
 ## 设置 站点镜像 地址 为
 ##  http://mirrors.ustc.edu.cn/cygwin/
