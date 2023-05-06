@@ -8,44 +8,80 @@
 ## 构建依赖库容器镜像的2种方式说明
 
 > 通过 docker commit 生成 比如 `phpswoole/swoole-cli-builder:1.6`
-> 通过 Dockerfile 多阶段构建生成 比如 `docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine`
+
+> 通过 Dockerfile 多阶段构建生成
+
+> 比如 `docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine`
+
 > 二者容器镜像是一样的
 
 ## 准备 swoole-cli源码和依赖库源码
 
 ```bash
-    sh sapi/multi-stage-build-dependencies/build-all-dependencies-init.sh
+
+bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh
+
+## 使用代理
+bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh --proxy http://127.0.0.1:1080
+
 ```
 
 ## 执行构建依赖库容器
 
 ```bash
-  sh sapi/multi-stage-build-dependencies/build-all-dependencies-container.sh
+
+bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh
+
+## composer 使用阿里运镜像
+bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --composer_mirror
+
 ```
 
-## 使用提前构建好的依赖库
+## 验证提前构建好的依赖库
 
 ```bash
 
-sh sapi/multistage-build-dependencies-container/all-dependencies-container-run.sh
-
+bash sapi/multistage-build-dependencies-container/all-dependencies-run-container.sh
 
 # 新开终端进入容器
-docker exec -it swoole-cli-all-dependencies-container sh 
-
+docker exec -it swoole-cli-all-dependencies-container sh
 
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 composer update --no-dev --optimize-autoloader
 
 # 生成构建脚本
-php prepare.php --with-build-type=release  +ds +inotify +apcu --with-download-mirror=https://swoole-cli.jingjingxyk.com/
+php prepare.php --with-build-type=release  +ds +inotify +apcu --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 
-# 这里可以直接跳过步骤 sh make.sh all-library 
+# 这里可以直接跳过步骤
+# sh make.sh all-library
 
 # 执行 PHP 构建预处理
-sh make.sh config 
+sh make.sh config
 # 执行 PHP 构建
-sh make.sh build 
+sh make.sh build
+
+```
+
+## 为了方便分发，把容器镜像导出为文件
+
+> 使用 抢占式 高配置 的云服务器 来构建
+> 目的：节省网络流量 （单个容器网络流量超过 1GB）
+
+```bash
+
+cd var
+
+docker save -o "all-dependencies-container-image-swoole-cli-$(uname -m).tar" $(cat swoole-cli-build-all-dependencies-container.txt)
+
+# xz 并行压缩 -T cpu核数 -k 保持源文件
+xz -9 -T$(nproc) -k "all-dependencies-container-image-swoole-cli-$(uname -m).tar"
+
+# xz 解压
+xz -d -T$(nproc) -k "all-dependencies-container-image-swoole-cli-$(uname -m).tar.xz"
+
+# 从文件导入容器镜像
+
+docker load -i  "all-dependencies-container-image-swoole-cli-$(uname -m).tar"
 
 ```
 
