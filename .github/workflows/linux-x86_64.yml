@@ -1,9 +1,9 @@
-name: build-swoole-cli-linux-amd64
+name: build-swoole-cli-linux-x86_64
 
 on: [ push, pull_request ]
 
 jobs:
-  linux:
+  linux-x86_64:
     if: 0
     runs-on: ubuntu-latest
     steps:
