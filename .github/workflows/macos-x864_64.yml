@@ -1,7 +1,6 @@
-name: build-swoole-cli-macos-amd64
+name: build-php-cli-macos-x86_64
 
-
-on: [push, pull_request]
+on: [ push ]
 
 jobs:
   macos:
@@ -11,15 +10,17 @@ jobs:
       - uses: actions/checkout@v3
       - name: Configure
         run: |
-          env
-          echo $HOME
+
           brew install  wget curl  libtool automake gettext coreutils re2c binutils
           which glibtool
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
-          git submodule update --init
+          echo 'export PATH="/usr/local/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
+          source ~/.bash_profile
+          env
+          echo $HOME
       - name: Cache
         uses: actions/cache@v3
         id: all-archive-cache
@@ -68,19 +69,22 @@ jobs:
           sudo ./make.sh config
           sudo ./make.sh build
           sudo ./make.sh archive
-          file ./bin/swoole-cli
-          ./bin/swoole-cli -r "echo PHP_VERSION;"
+          # sudo ./thirdparty/php_src/sapi/cli/php -v
+          export PATH="/usr/local/opt/binutils/bin:$PATH"
+          file ./bin/php-8.2.4/bin/php
+          # greadelf -h ./bin/php-8.2.4/bin/php
+          ./bin/php-8.2.4/bin/php -r "echo PHP_VERSION;"
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: swoole-cli-macos-x64
+          name: php-cli-macos-x64-8.2.4
           retention-days: 7
-          path: ./bin/swoole-cli
+          path: ./bin/php-8.2.4/bin/php
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-*-x64.tar.xz
+          files: php-cli-v8.2.4-macos-x64.tar.xz
           draft: true
           prerelease: true

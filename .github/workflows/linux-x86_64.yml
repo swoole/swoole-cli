@@ -1,4 +1,4 @@
-name: build-php-cli-linux-amd64
+name: build-php-cli-linux-x86_64
 
 on: [ push, pull_request ]
 
@@ -7,7 +7,7 @@ env:
 
 jobs:
   linux:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
