@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   cygwin:
-    if: 0
+    if: 1
     runs-on: windows-latest
     steps:
       - name: Prepare git
