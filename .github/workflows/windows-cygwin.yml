@@ -3,7 +3,7 @@ name: build-swoole-cli-windows-cygwin
 on: [ push, pull_request ]
 
 jobs:
-  cygwin:
+  windows-cygwin:
     if: 1
     runs-on: windows-latest
     steps:
