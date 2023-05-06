@@ -24,3 +24,6 @@ composer update --no-dev  --optimize-autoloader
 
 
 php prepare.php  +inotify +apcu +ds -mysqli -soap
+
+# build swow
+# php prepare.php  +inotify +apcu +ds -swoole +swow
