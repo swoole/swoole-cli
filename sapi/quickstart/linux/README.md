@@ -8,10 +8,10 @@
 ```bash
 
 curl -fsSL https://get.docker.com -o get-docker.sh
-sh get-docker.sh
+bash get-docker.sh
 
 # 使用镜像
-sh get-docker.sh --mirror Aliyun
+bash get-docker.sh --mirror Aliyun
 
 ```
 
@@ -25,17 +25,17 @@ sh get-docker.sh --mirror Aliyun
 ```bash
 
 # 启动 debian 11 容器环境
-sh sapi/quickstart/linux/run-debian-11-container.sh
+bash sapi/quickstart/linux/run-debian-11-container.sh
 
 # 进入容器
-sh sapi/quickstart/linux/connection-swoole-cli-debian.sh
+bash sapi/quickstart/linux/connection-swoole-cli-debian.sh
 
 # 准备构建基础软件
-sh sapi/quickstart/linux/debian-11-init.sh
+bash sapi/quickstart/linux/debian-11-init.sh
 
 
 # 准备构建基础软件 使用中科大镜像源
-sh sapi/quickstart/linux/debian-11-init.sh --mirror china
+bash sapi/quickstart/linux/debian-11-init.sh --mirror china
 ```
 
 ## aline 构建环境
@@ -43,18 +43,18 @@ sh sapi/quickstart/linux/debian-11-init.sh --mirror china
 ```bash
 
 # 启动 alpine 容器环境
-sh sapi/quickstart/linux/run-alpine-3.16-container.sh
+bash sapi/quickstart/linux/run-alpine-3.16-container.sh
 
 # 进入容器
-sh sapi/quickstart/linux/connection-swoole-cli-alpine.sh
+bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 
 # 准备构建基础软件
-sh sapi/quickstart/linux/alpine-3.16-init.sh
+bash sapi/quickstart/linux/alpine-3.16-init.sh
 
 
 # 准备构建基础软件 使用中科大镜像源
 
-sh sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
+bash sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
 
 ```
 
@@ -63,16 +63,16 @@ sh sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
 ```bash
 
 # 准备PHP 运行时
-sh sapi/quickstart/setup-php-runtime.sh
+bash sapi/quickstart/setup-php-runtime.sh
 
 # 准备PHP 运行时 使用代理 （需提前准备好代理)
-sh sapi/quickstart/setup-php-runtime.sh --proxy http://192.168.3.26:8015
+bash sapi/quickstart/setup-php-runtime.sh --proxy http://192.168.3.26:8015
 
 # 准备PHP 运行时 使用镜像 （镜像源 https://www.swoole.com/download）
-sh sapi/quickstart/setup-php-runtime.sh --mirror china
+bash sapi/quickstart/setup-php-runtime.sh --mirror china
 
 
-sh sapi/quickstart/setup-php-runtime-in-docker.sh
+bash sapi/quickstart/setup-php-runtime-in-docker.sh
 
 php -v
 compoer -v
@@ -87,7 +87,7 @@ compoer -v
 
 ```bash
 
-sh sapi/download-box/download-box-get-archive-from-server.sh
+bash sapi/download-box/download-box-get-archive-from-server.sh
 
 ```
 
@@ -134,8 +134,4 @@ bash make.sh archive
 
 ```
 
-## c c++编译器
-
-- 组合一 clang clang++
-- 组合二 musl-gcc g++
 
