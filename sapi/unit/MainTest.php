@@ -95,7 +95,7 @@ final class MainTest extends TestCase
         );
     }
 
-    public function testCurl(): void
+    public function testCurlFeature(): void
     {
         $reflector = new \ReflectionExtension('curl');
         ob_start();
@@ -118,8 +118,14 @@ final class MainTest extends TestCase
         preg_match('/^ZLib (?:Version =>)?(.*)$/m', $output, $matches);
         $this->assertNotEmpty(trim($matches[1]), 'library: ZLib no found');
 
+    }
+
+    public $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+
+    public function testCurlHTTP2Client(): void
+    {
         $url = 'https://www.jingjingxyk.com/';
-        $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+        $userAgent = $this->userAgent;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
@@ -153,7 +159,8 @@ final class MainTest extends TestCase
         );
     }
 
-    public function testSwooleHttp2(): void
+
+    public function testSwooleHttp2Client(): void
     {
         ini_set('default_socket_timeout', 60);
         run(function () {
@@ -167,7 +174,7 @@ final class MainTest extends TestCase
             ]);
             $cli->connect();
 
-            $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
+            $userAgent = $this->userAgent;
             $req = new Request();
             $req->method = 'GET';
             $req->path = '/';

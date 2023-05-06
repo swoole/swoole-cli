@@ -172,12 +172,78 @@ EOF
               -DCRYPTO_BACKEND=OpenSSL \
               -DBUILD_TESTING=OFF \
               -DBUILD_EXAMPLES=OFF
+
               cmake --build . --target install
 EOF
             )
             ->withPkgName('libssh2')
             ->depends('zlib', 'openssl')
     );
+
+
+    $nghttp3_prefix = NGHTTP3_PREFIX;
+    $p->addLibrary(
+        (new Library('nghttp3'))
+            ->withHomePage('https://github.com/ngtcp2/nghttp3')
+            ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
+            ->withManual('https://nghttp2.org/nghttp3/')
+            ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/tags/v0.9.0.tar.gz')
+            ->withFile('nghttp3-v0.9.0.tar.gz')
+            ->withPrefix($nghttp3_prefix)
+            ->withConfigure(
+                <<<EOF
+            autoreconf -fi
+            ./configure --help
+            ./configure --prefix={$nghttp3_prefix} \
+            --enable-lib-only \
+            --enable-shared=no \
+            --enable-static=yes
+EOF
+            )
+            ->withPkgName('libnghttp3')
+    );
+
+
+    $ngtcp2_prefix = NGTCP2_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
+    $p->addLibrary(
+        (new Library('ngtcp2'))
+            ->withHomePage('https://github.com/ngtcp2/ngtcp2')
+            ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
+            ->withManual('https://curl.se/docs/http3.html')
+            ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/tags/v0.13.1.tar.gz')
+            ->withFile('ngtcp2-v0.13.1.tar.gz')
+            ->withPrefix($ngtcp2_prefix)
+            ->withConfigure(
+                <<<EOF
+                autoreconf -fi
+                ./configure --help
+
+                PACKAGES="openssl libnghttp3 "
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES )"  \
+                LDFLAGS="$(pkg-config --libs-only-L      --static \$PACKAGES )"  \
+                LIBS="$(pkg-config --libs-only-l         --static \$PACKAGES )"  \
+                ./configure \
+                --prefix=$ngtcp2_prefix \
+                --enable-shared=no \
+                --enable-static=yes \
+                --enable-lib-only \
+                --without-libev \
+                --with-openssl  \
+                --with-libnghttp3=yes \
+                --without-gnutls \
+                --without-boringssl \
+                --without-picotls \
+                --without-wolfssl \
+                --without-cunit  \
+                --without-jemalloc
+EOF
+            )
+            ->withPkgName('libngtcp2')
+            ->withPkgName('libngtcp2_crypto_openssl')
+            ->depends('openssl', 'nghttp3')
+    );
+
 
     $curl_prefix = CURL_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
@@ -196,7 +262,8 @@ EOF
             ./configure --help
 
             PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 '
-            PACKAGES="\$PACKAGES  libssh2" # libidn2
+            PACKAGES="\$PACKAGES  libssh2 libnghttp3 libngtcp2  libngtcp2_crypto_openssl" # libidn2
+
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
@@ -224,20 +291,35 @@ EOF
             --enable-progress-meter \
             --enable-optimize \
             --with-zlib={$zlib_prefix} \
-            --with-openssl={$openssl_prefix} \
             --enable-ares={$cares_prefix} \
-            --with-default-ssl-backend=openssl \
+            --with-nghttp2 \
+            --with-ngtcp2 \
+            --with-nghttp3 \
             --without-libidn2 \
             --with-libssh2 \
-            --with-nghttp2 \
-            --without-ngtcp2 \
-            --without-nghttp3
+            --with-openssl  \
+            --with-default-ssl-backend=openssl \
+            --without-gnutls \
+            --without-mbedtls \
+            --without-wolfssl \
+            --without-bearssl \
+            --without-rustls
 
 EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends('openssl', 'cares', 'zlib', 'brotli', 'libzstd', 'nghttp2', 'libssh2') #'libidn2',
+            ->depends(
+                'openssl',
+                'cares',
+                'zlib',
+                'brotli',
+                'libzstd',
+                'nghttp2',
+                'nghttp3',
+                'ngtcp2',
+                'libssh2'
+            ) # 'libidn2',
     );
     $p->addExtension(
         (new Extension('curl'))
