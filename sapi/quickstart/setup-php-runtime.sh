@@ -32,6 +32,9 @@ case $ARCH in
 'x86_64')
   ARCH="x64"
   ;;
+'aarch64')
+  ARCH="arm64"
+  ;;
 *)
   echo '暂未配置的 ARCH '
   exit 0
@@ -49,6 +52,10 @@ cd ${__PROJECT__}/var/runtime
 
 SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
+
+if [[ $ARCH = 'arm64'  ]] && [[ $OS = 'linux' ]]; then
+  SWOOLE_CLI_DOWNLOAD_URL='https://github.com/jingjingxyk/swoole-cli/releases/download/build-native-php-v0.1.1/swoole-cli-v5.0.3-linux-arm64.tar.xz'
+fi
 
 mirror=''
 while [ $# -gt 0 ]; do

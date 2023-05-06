@@ -15,6 +15,7 @@ cd ${__PROJECT__}
 
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
+
 export COMPOSER_ALLOW_SUPERUSER=1
 composer update --no-dev --optimize-autoloader
 
