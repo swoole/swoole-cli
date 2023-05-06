@@ -13,8 +13,11 @@ cd ${__PROJECT__}
 
 
 mkdir -p ${__PROJECT__}/var/
+mkdir -p  ${__PROJECT__}/var/libraries/
+mkdir -p  ${__PROJECT__}/var/extensions/
 
 cd ${__PROJECT__}/var/
+
 
 # https://aria2.github.io/manual/en/html/aria2c.html#http-ftp-segmented-downloads
 # https://aria2.github.io/manual/en/html/aria2c.html

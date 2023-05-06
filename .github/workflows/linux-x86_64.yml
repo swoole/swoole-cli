@@ -1,6 +1,6 @@
 name: build-swoole-cli-linux-amd64
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   linux:
@@ -26,7 +26,8 @@ jobs:
       - name: Prepare Libraries and Extensions
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230504T085104Z
+          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230505T112517Z
+          # image: phpswoole/swoole-cli-builder:download-box-nginx-alpine-20230505T112517Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
@@ -38,11 +39,12 @@ jobs:
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
+          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
-            export PATH=/work/bin/runtime:$PATH
+            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
             composer update --no-dev  --optimize-autoloader
             php prepare.php  +inotify +apcu +ds
             chmod a+x make.sh
@@ -50,17 +52,10 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
+          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
-            bash ./make.sh openssl
-            bash ./make.sh libzip
-            bash ./make.sh nghttp2
-            bash ./make.sh nghttp3
-            bash ./make.sh ngtcp2
-            bash ./make.sh libssh2
-            bash ./make.sh curl
-            bash ./make.sh imagemagick
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive

@@ -12,7 +12,9 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 
+
 ./buildconf --force
+test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --enable-opcache \
@@ -53,5 +55,3 @@ cd ${__PROJECT__}
     --with-imagick \
     --with-yaml \
     --with-readline
-
-sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
