@@ -13,7 +13,10 @@ cd ${__PROJECT__}
 
 TAG='download-box-nginx-alpine-20230429T061856Z'
 
-IMAGE="docker.io/phpswoole/swoole-cli-builder:donload-box-v5.0.2"
+TAG='download-box-nginx-alpine-20230504T085104Z'
+TAG='download-box-nginx-alpine-20230505T112517Z'
+
+IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${TAG}"
 

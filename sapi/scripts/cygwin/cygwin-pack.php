@@ -1,6 +1,5 @@
 <?php
 
-
 $src = realpath(__DIR__ . '/../../../');
 $name = "php-cli-v" . PHP_VERSION . "-cygwin-x64";
 

@@ -29,7 +29,9 @@ export CFLAGS=""
 export LDFLAGS="-L/usr/lib"
 
 
+
 ./buildconf --force
+test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
     --enable-opcache \
@@ -70,5 +72,3 @@ export LDFLAGS="-L/usr/lib"
     --with-imagick \
     --with-yaml \
     --with-readline
-
-sed -i.backup 's/-export-dynamic/-all-static/g' Makefile

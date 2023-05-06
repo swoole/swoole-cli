@@ -19,9 +19,10 @@ if [[ ! -f swoole-cli ]] || [[ ! -f composer.phar ]]; then
   echo ""
   echo ""
   echo "please run： bash sapi/quickstart/setup-php-runtime.sh "
-  echo ""
-  echo ""
-  echo ""
+  echo "or use mirror "
+  echo "please run： bash sapi/quickstart/setup-php-runtime.sh --mirror china "
+  echo "or use proxy "
+  echo "please run： bash sapi/quickstart/setup-php-runtime.sh --proxy http://127.0.0.1:1080 "
   echo ""
   exit 0
 fi
@@ -34,7 +35,7 @@ set -x
 cd ${__PROJECT__}
 
 ## 借助 download-box 获得已经准备好的 依赖库源码 ，缩减下载时间  存放于 var目录
-sh sapi/download-box/download-box-get-archive-from-server.sh
+bash sapi/download-box/download-box-get-archive-from-server.sh
 
 cd ${__PROJECT__}
 
@@ -42,7 +43,8 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --proxy)
     export http_proxy="$2"
-    export http_proxy="$2"
+    export https_proxy="$2"
+    export no_proxy="0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
     shift
     ;;
   --*)
@@ -54,8 +56,9 @@ done
 
 cd ${__PROJECT__}/var
 
-test -d swoole-cli || git clone -b build_native_php --depth=1 --single-branch https://github.com/jingjingxyk/swoole-cli.git
-test -d swoole-cli && git -C swoole-cli pull --depth=1
+GIT_BRANCH=main
+test -d swoole-cli && git -C swoole-cli pull origin ${GIT_BRANCH} --depth=1 --progress --rebase=true --allow-unrelated-histories
+test -d swoole-cli || git clone -b ${GIT_BRANCH} --depth=1 https://github.com/swoole/swoole-cli.git
 
 cd ${__PROJECT__}/var/swoole-cli
 
@@ -68,8 +71,10 @@ awk 'BEGIN { cmd="cp -ri libraries/* swoole-cli/pool/lib"  ; print "n" |cmd; }'
 awk 'BEGIN { cmd="cp -ri extensions/* swoole-cli/pool/ext"; print "n" |cmd; }'
 
 cd ${__PROJECT__}/var/swoole-cli
-composer update --no-dev
+
+export COMPOSER_ALLOW_SUPERUSER=1
+composer update --no-dev --optimize-autoloader
+
 php prepare.php --with-build-type=dev --with-dependency-graph=1 +apcu +ds +inotify --without-docker
-php prepare.php --with-build-type=dev --with-dependency-graph=1 +apcu +ds @macos --without-docker
 
 cd ${__PROJECT__}/

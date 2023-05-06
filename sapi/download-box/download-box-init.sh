@@ -33,21 +33,18 @@ cd ${__PROJECT__}
 
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
-composer update --no-dev
+export COMPOSER_ALLOW_SUPERUSER=1
+composer update --no-dev --optimize-autoloader
 
-export SWOOLE_CLI_SKIP_DOWNLOAD=1
-export SWOOLE_CLI_WITHOUT_DOCKER=1
-
-php prepare.php --with-build-type=release --skip-download=1 +ds +inotify +apcu +protobuf +protobuf --without-docker=1
-sh sapi/scripts/download-dependencies-use-aria2.sh
-sh sapi/scripts/download-dependencies-use-git.sh
+php prepare.php --with-build-type=release +ds +inotify +apcu --without-docker=1 --skip-download=1
+bash sapi/scripts/download-dependencies-use-aria2.sh
+bash sapi/scripts/download-dependencies-use-git.sh
 
 # for macos
-php prepare.php --with-build-type=release --skip-download=1 +ds +apcu +protobuf +protobuf --without-docker=1 @macos --with-dependency-graph=1
-sh sapi/scripts/download-dependencies-use-aria2.sh
-sh sapi/scripts/download-dependencies-use-git.sh
+php prepare.php --with-build-type=release +ds +apcu +protobuf @macos --with-dependency-graph=1 --without-docker=1 --skip-download=1
+bash sapi/scripts/download-dependencies-use-aria2.sh
+bash sapi/scripts/download-dependencies-use-git.sh
 
-# 系统环境需要提前安装好 graphviz
 # 生成扩展依赖图
 
 bash sapi/scripts/generate-dependency-graph.sh

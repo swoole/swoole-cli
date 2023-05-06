@@ -29,9 +29,9 @@ RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
 WORKDIR /work
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-RUN ls -lh .
-RUN curl -v   https://www.baidu.com
+ARG USE_COMPOSER_MIRROR
+RUN if [ $USE_COMPOSER_MIRROR -eq 1 ]; then { composer config repo.packagist composer https://mirrors.aliyun.com/composer/ ; } fi
+RUN composer suggest --no-dev
 RUN composer update --no-dev --optimize-autoloader
 
 
