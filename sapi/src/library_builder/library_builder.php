@@ -719,4 +719,10 @@ function libraries_builder($p)
        https://www.zhihu.com/question/22940048
       https://zhuanlan.zhihu.com/p/377651202
      */
+    /*
+
+
+            ROS 2指南（十一）——交叉编译
+            https://zhuanlan.zhihu.com/p/380174726
+     */
 }
