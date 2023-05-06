@@ -2,6 +2,9 @@ name: build-php-cli-windows-cygwin
 
 on: [ push ]
 
+env:
+  BUILD_PHP_VERSION: 8.2.4
+
 jobs:
   windows-cygwin:
     if: 0

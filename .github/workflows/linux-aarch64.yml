@@ -2,6 +2,9 @@ name: build-swoole-cli-linux-aarch64
 
 on: [ push, pull_request ]
 
+env:
+  BUILD_PHP_VERSION: 8.2.4
+
 jobs:
   linux-aarch64:
     if: 0
