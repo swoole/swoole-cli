@@ -1,9 +1,10 @@
-name: build-swoole-cli-macos-amd64
+name: build-swoole-cli-macos-x86_64
 
 on: [push, pull_request]
 
 jobs:
-  macos:
+  macos-x86_64:
+    if: 0
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
