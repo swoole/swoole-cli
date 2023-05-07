@@ -27,6 +27,6 @@ TAG="all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${TAG}"
 
-IMAGE=alpine:3.16
+#IMAGE=alpine:3.16
 cd ${__DIR__}
 docker run --rm --name swoole-cli-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
