@@ -13,13 +13,18 @@ __PROJECT__=$(
 
 cd ${__PROJECT__}
 
-export SWOOLE_CLI_SKIP_DOWNLOAD=1
-export SWOOLE_CLI_WITHOUT_DOCKER=1
-
-php prepare.php  --with-build-type=release --skip-download=1 +ds +inotify +apcu +protobuf
-
-cd ${__PROJECT__}
-
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
+
+export COMPOSER_ALLOW_SUPERUSER=1
+composer update --no-dev --optimize-autoloader
+
+php prepare.php --with-build-type=release +ds +inotify +apcu --without-docker=1 --skip-download=1
 sh sapi/scripts/download-dependencies-use-aria2.sh
+
+# for macos
+php prepare.php --with-build-type=release +ds +apcu +protobuf @macos --with-dependency-graph=1 --without-docker=1 --skip-download=1
+sh sapi/scripts/download-dependencies-use-aria2.sh
+
+# 生成扩展依赖图
+sh sapi/scripts/generate-dependency-graph.sh
