@@ -84,21 +84,19 @@ function install_socat($p)
             ->withLicense('http://www.dest-unreach.org/socat/doc/README', Library::LICENSE_GPL)
             ->withUrl('http://www.dest-unreach.org/socat/download/socat-1.7.4.4.tar.gz')
             ->withConfigure(
-                '
+                <<<EOF
             pkg-config --cflags --static readline
             pkg-config  --libs --static readline
             ./configure --help ;
-            CFLAGS=$(pkg-config --cflags --static  libcrypto  libssl    openssl readline)
-            export CFLAGS="-static -O2 -Wall -fPIC $CFLAGS "
-            export LDFLAGS=$(pkg-config --libs --static libcrypto  libssl    openssl readline)
-            # LIBS="-static -Wall -O2 -fPIC  -lcrypt  -lssl   -lreadline"
-            # CFLAGS="-static -Wall -O2 -fPIC"
-            ' . PHP_EOL .
-                <<<EOF
+            PACKAGES='openssl readline'
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
+            CFLAGS="-static -O2 -Wall -fPIC  -DWITH_OPENSSL" \
             ./configure \
             --prefix=/usr/socat \
             --enable-readline \
-            --enable-openssl-base={ $openssl_prefix}
+            --enable-openssl-base={$openssl_prefix}
 EOF
             )
             ->withBinPath($socat_prefix . '/bin/')
@@ -122,15 +120,15 @@ function install_aria2($p)
             # export LDFLAGS=$(pkg-config --libs --static libcrypto  libssl    openssl readline)
             # LIBS="-static -Wall -O2 -fPIC  -lcrypt  -lssl   -lreadline"
             # CFLAGS="-static -Wall -O2 -fPIC"
-            
+
             export ZLIB_CFLAGS=$(pkg-config --cflags --static zlib) ;
             export ZLIB_LIBS=$(pkg-config   --libs  --static zlib) ;
-            
+
             export LIBUV_CFLAGS=$(pkg-config --cflags --static libuv) ;
             export LIBUV_LIBS=$(pkg-config   --libs   --static libuv) ;
 
             ./configure --help ;
-         
+
              ARIA2_STATIC=yes ./configure \
             --with-ca-bundle="/etc/ssl/certs/ca-certificates.crt" \
             --prefix=/usr/aria2 \
@@ -173,11 +171,11 @@ function install_nginx($p)
             ->withCleanPreInstallDirectory($nginx_prefix)
             ->withConfigure(
                 <<<EOF
-             set -uex 
+             set -uex
             # sed -i "50i echo 'stop preprocessor'; exit 3 " ./configure
-            
+
             ./configure --help
- 
+
             # 使用 zlib openssl pcre2 新的源码目录
             mkdir -p {$builderDir}/nginx/openssl
             mkdir -p {$builderDir}/nginx/zlib
@@ -185,13 +183,13 @@ function install_nginx($p)
             tar --strip-components=1 -C {$builderDir}/nginx/openssl -xf  {$workDir}/pool/lib/{$openssl->file}
             tar --strip-components=1 -C {$builderDir}/nginx/zlib    -xf  {$workDir}/pool/lib/{$zlib->file}
             tar --strip-components=1 -C {$builderDir}/nginx/pcre2   -xf  {$workDir}/pool/lib/{$pcre2->file}
-            
+
             packages="libxml-2.0 libexslt libxslt "
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )" 
-            CFLAGS="$(pkg-config    --cflags-only-I  --static \$packages )" 
-            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )" 
-            LIBS="$(pkg-config --libs-only-l         --static \$packages )" 
-            
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"
+            CFLAGS="$(pkg-config    --cflags-only-I  --static \$packages )"
+            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"
+            LIBS="$(pkg-config --libs-only-l         --static \$packages )"
+
             ./configure \
             --prefix={$nginx_prefix} \
             --with-openssl={$builderDir}/nginx/openssl \
@@ -211,11 +209,11 @@ function install_nginx($p)
             --with-threads \
             --with-cc-opt="\$CPPFLAGS -static -O2" \
             --with-ld-opt="\$LDFLAGS -s -static"
-            
-       
-            #--with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS" 
-            # --with-ld-opt=parameters — sets additional parameters that will be used during linking. 
-            # --with-cc-opt=parameters — sets additional parameters that will be added to the CFLAGS variable. 
+
+
+            #--with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS"
+            # --with-ld-opt=parameters — sets additional parameters that will be used during linking.
+            # --with-cc-opt=parameters — sets additional parameters that will be added to the CFLAGS variable.
 EOF
             )
             //->withMakeOptions('CFLAGS="-O2 -s" LDFLAGS="-static"')
@@ -237,7 +235,7 @@ function install_dpdk(Preprocessor $p): void
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF
-                           apk add python3 py3-pip 
+                           apk add python3 py3-pip
             pip3 install meson pyelftools -i https://pypi.tuna.tsinghua.edu.cn/simple
             # pip3 install meson pyelftools -ihttps://pypi.python.org/simple
             meson  build
