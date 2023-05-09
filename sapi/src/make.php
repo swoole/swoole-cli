@@ -149,7 +149,6 @@ make_config() {
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
-
     ./configure --help
     export_variables
     ./configure $OPTIONS
