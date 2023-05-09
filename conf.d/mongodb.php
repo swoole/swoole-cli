@@ -36,13 +36,14 @@ return function (Preprocessor $p) {
                 mkdir -p build
                 cd build
                 cmake .. \
-                -Werror -Wsign-compare \
                 -DCMAKE_INSTALL_PREFIX={$snappy_prefix} \
                 -DCMAKE_INSTALL_LIBDIR={$snappy_prefix}/lib \
                 -DCMAKE_INSTALL_INCLUDEDIR={$snappy_prefix}/include \
                 -DCMAKE_BUILD_TYPE=Release  \
                 -DBUILD_SHARED_LIBS=OFF  \
-                -DBUILD_STATIC_LIBS=ON
+                -DBUILD_STATIC_LIBS=ON \
+                -DSNAPPY_BUILD_TESTS=OFF \
+                -DSNAPPY_BUILD_BENCHMARKS=OFF \
 
 EOF
             )
@@ -54,7 +55,7 @@ EOF
     $p->withExportVariable('PHP_MONGODB_ICU_CFLAGS', '$(pkg-config --cflags --static icu-i18n  icu-io  icu-uc)');
     $p->withExportVariable('PHP_MONGODB_ICU_LIBS', '$(pkg-config   --libs   --static icu-i18n  icu-io  icu-uc)');
     $options =' --enable-mongodb --with-mongodb-system-libs=no --with-mongodb-ssl=openssl  ';
-    $options .=' --with-mongodb-sasl=no';
+
 
     $p->addExtension(
         (new Extension('mongodb'))
