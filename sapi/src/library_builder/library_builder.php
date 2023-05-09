@@ -466,6 +466,8 @@ function libraries_builder($p)
         // ar rcs $@ $^
 
         // gcc -Wall -Wextra -pedantic -pthread    # -pedanti 编译器严格遵守 C++ 标准 ； -Wextra（启用额外的警告信息，提高代码质量和安全性）
+        //   -fno-ident  忽略`#ident'指令.
+
 
         //gdb bin/swoole-cli
         //set args -m
