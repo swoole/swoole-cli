@@ -74,8 +74,8 @@ EOF
 
 EOF
             )
-            ->withPkgName('snappy')
-            ->withBinPath($libsasl_prefix  . '/bin/')
+            ->withPkgName('libsasl2')
+            ->withBinPath($libsasl_prefix  . '/sbin/')
     );
     $p->withExportVariable('PHP_MONGODB_SSL_CFLAGS', '$(pkg-config --cflags --static libcrypto libssl  openssl)');
     $p->withExportVariable('PHP_MONGODB_SSL_LIBS', '$(pkg-config   --libs   --static libcrypto libssl  openssl)');
