@@ -15,12 +15,12 @@ return function (Preprocessor $p) {
         $options .= ' --enable-swoole-pgsql';
         $depends[] = 'pgsql';
     }
-
-    $p->addExtension(
-        (new Extension('swoole'))
-            ->withOptions($options)
-            ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
-            ->withHomePage('https://github.com/swoole/swoole-src')
-            ->depends($depends)
-    );
+    $ext = (new Extension('swoole'))
+        ->withOptions($options)
+        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
+        ->withHomePage('https://github.com/swoole/swoole-src');
+    foreach ($depends as $value) {
+        $ext->depends($value);
+    }
+    $p->addExtension($ext);
 };

@@ -60,8 +60,9 @@ EOF
             ->withPkgName('libpq')
             ->withScriptAfterInstall(
                 <<<EOF
-             rm -rf {$pgsql_prefix}/lib/*.so.*
-             rm -rf {$pgsql_prefix}/lib/*.so
+            rm -rf {$pgsql_prefix}/lib/*.so.*
+            rm -rf {$pgsql_prefix}/lib/*.so
+            rm -rf {$pgsql_prefix}/lib/*.dylib
 EOF
             )
             ->depends('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
