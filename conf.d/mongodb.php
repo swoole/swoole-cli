@@ -21,17 +21,18 @@ return function (Preprocessor $p) {
                 ->withBinPath($bison_prefix . '/bin/')
         );
     }
-    $snappy_prefix = SNAPPY_PREFIX;
-    $p->addLibrary(
-        (new Library('snappy'))
-            ->withHomePage('https://github.com/google/snappy')
-            ->withManual('https://github.com/google/snappy/blob/main/README.md')
-            ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
-            ->withFile('snappy-1.1.10.tar.gz')
-            ->withPrefix($snappy_prefix)
-            ->withConfigure(
-                <<<EOF
+    if (0) {
+        $snappy_prefix = SNAPPY_PREFIX;
+        $p->addLibrary(
+            (new Library('snappy'))
+                ->withHomePage('https://github.com/google/snappy')
+                ->withManual('https://github.com/google/snappy/blob/main/README.md')
+                ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
+                ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
+                ->withFile('snappy-1.1.10.tar.gz')
+                ->withPrefix($snappy_prefix)
+                ->withConfigure(
+                    <<<EOF
 
                 mkdir -p build
                 cd build
@@ -46,15 +47,16 @@ return function (Preprocessor $p) {
                 -DSNAPPY_BUILD_BENCHMARKS=OFF \
 
 EOF
-            )
-            ->withPkgName('snappy')
-            ->withBinPath($snappy_prefix . '/bin/')
-    );
+                )
+                ->withPkgName('snappy')
+                ->withBinPath($snappy_prefix . '/bin/')
+        );
+    }
     $p->withExportVariable('PHP_MONGODB_SSL_CFLAGS', '$(pkg-config --cflags --static libcrypto libssl  openssl)');
     $p->withExportVariable('PHP_MONGODB_SSL_LIBS', '$(pkg-config   --libs   --static libcrypto libssl  openssl)');
     $p->withExportVariable('PHP_MONGODB_ICU_CFLAGS', '$(pkg-config --cflags --static icu-i18n  icu-io  icu-uc)');
     $p->withExportVariable('PHP_MONGODB_ICU_LIBS', '$(pkg-config   --libs   --static icu-i18n  icu-io  icu-uc)');
-    $options =' --enable-mongodb --with-mongodb-system-libs=no --with-mongodb-ssl=openssl  ';
+    $options = ' --enable-mongodb --with-mongodb-system-libs=no --with-mongodb-ssl=openssl  ';
 
 
     $p->addExtension(
@@ -65,6 +67,6 @@ EOF
                 $options
             )
             ->withPeclVersion('1.14.2')
-            ->depends('icu', 'openssl', 'zlib', 'libzstd', 'snappy')
+            ->depends('icu', 'openssl', 'zlib', 'libzstd')
     );
 };
