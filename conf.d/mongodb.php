@@ -52,6 +52,31 @@ EOF
                 ->withBinPath($snappy_prefix . '/bin/')
         );
     }
+    $libsasl_prefix = LIBSASL_PREFIX;
+    $p->addLibrary(
+        (new Library('libsasl'))
+            ->withHomePage('https://www.cyrusimap.org/sasl/')
+            ->withManual('https://www.cyrusimap.org/sasl/sasl/installation.html#installation')
+            ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
+            ->withUrl('https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.28/cyrus-sasl-2.1.28.tar.gz')
+            ->withFile('cyrus-sasl-2.1.28.tar.gz')
+            ->withPrefix($libsasl_prefix)
+            ->withConfigure(
+                <<<EOF
+
+                ./configure --help
+                # 支持很多参数，按需要启用
+                ./configure \
+                --prefix={$libsasl_prefix} \
+                 --enable-static=yes \
+                 --enable-shared=no \
+
+
+EOF
+            )
+            ->withPkgName('snappy')
+            ->withBinPath($libsasl_prefix  . '/bin/')
+    );
     $p->withExportVariable('PHP_MONGODB_SSL_CFLAGS', '$(pkg-config --cflags --static libcrypto libssl  openssl)');
     $p->withExportVariable('PHP_MONGODB_SSL_LIBS', '$(pkg-config   --libs   --static libcrypto libssl  openssl)');
     $p->withExportVariable('PHP_MONGODB_ICU_CFLAGS', '$(pkg-config --cflags --static icu-i18n  icu-io  icu-uc)');
