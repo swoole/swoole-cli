@@ -462,6 +462,9 @@ function libraries_builder($p)
         //alpine 上默认的 gcc 就是 musl-gcc
         //nm  结果参考 https://www.cnblogs.com/vaughnhuang/p/15771582.html
         // binutils 二进制工具集   gcc的ar,nm,objdump,objcopy
+        // ar 参数： -c 告诉 ar 创建文件 (libsnappy.a)； -r 告诉 arto 替换可能重复的符号。（仅重新编译一些 .o 时有用）-s 相当于库上的ranlib
+        // ar rcs $@ $^
+
         // gcc -Wall -Wextra -pedantic -pthread    # -pedanti 编译器严格遵守 C++ 标准 ； -Wextra（启用额外的警告信息，提高代码质量和安全性）
 
         //gdb bin/swoole-cli
