@@ -10,12 +10,11 @@ return function (Preprocessor $p) {
     $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
+
     if ($p->getInputOption('with-libpg')) {
         $options .= ' --enable-swoole-pgsql';
-
         $depends[] = 'pgsql';
     }
-
 
     $p->addExtension(
         (new Extension('swoole'))

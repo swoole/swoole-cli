@@ -37,7 +37,10 @@ define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
+
+define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
+
 
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;
 const DOWNLOAD_FILE_WAIT_RETRY = 5;
