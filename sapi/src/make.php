@@ -17,7 +17,6 @@ export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
 --enable-shared=no \
 --enable-static=yes \
---without-capstone \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
 <?php endforeach; ?>
