@@ -6,6 +6,8 @@ namespace SwooleCli\UnitTest;
 
 use PHPUnit\Framework\TestCase;
 use Swoole\Coroutine\PostgreSQL;
+use Swoole\Coroutine\MySQL;
+use Swoole\Coroutine\Redis;
 
 use function Swoole\Coroutine\run;
 
@@ -32,8 +34,31 @@ class DataBaseTest extends TestCase
             $arr = $stmt->fetchAll();
             var_dump($arr);
         });
+    }
 
-        $this->assertGreaterThanOrEqual(200, 200, 'curl no support IDNA');
+    public function testSwooleMysql()
+    {
+        run(function () {
+            $swoole_mysql = new MySQL();
+            $swoole_mysql->connect([
+                'host'     => '127.0.0.1',
+                'port'     => 3306,
+                'user'     => 'user',
+                'password' => 'pass',
+                'database' => 'test',
+            ]);
+            $res = $swoole_mysql->query('select sleep(1)');
+            var_dump($res);
+        });
+    }
+
+    public function testSwooleRedis()
+    {
+        run(function () {
+            $redis = new Redis();
+            $redis->connect('127.0.0.1', 6379);
+            $val = $redis->get('key');
+        });
     }
 
 }
