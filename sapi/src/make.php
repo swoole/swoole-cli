@@ -17,6 +17,7 @@ export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
 --enable-shared=no \
 --enable-static=yes \
+--without-capstone \
 <?php foreach ($this->extensionList as $item) : ?>
 <?=$item->options?> \
 <?php endforeach; ?>
@@ -152,12 +153,24 @@ make_config() {
 
     ./configure --help
     export_variables
+    echo $LDFLAGS > a.log
     ./configure $OPTIONS
+    sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 }
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
+    export LDFLAGS="$LDFLAGS -all-static -fno-ident <?= $this->extraLdflags ?>"
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
+    make -j <?= $this->maxJob ?> ;
+<?php if ($this->osType == 'macos') : ?>
+    otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
+<?php else: ?>
+    file <?= $this->getWorkDir() ?>/bin/swoole-cli
+    readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
+<?php endif; ?>
+    return 0
     make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
