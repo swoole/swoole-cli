@@ -13,12 +13,20 @@ jobs:
           env
           echo $HOME
           brew install  wget curl  libtool automake gettext coreutils re2c binutils
+          brew uninstall --ignore-dependencies oniguruma
+          brew uninstall --ignore-dependencies brotli
+          brew uninstall --ignore-dependencies freetype
+          brew uninstall --ignore-dependencies zstd
+          brew uninstall --ignore-dependencies capstone
           which glibtool
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
+          sudo  xcode-select --switch /Applications/Xcode.app
+          # export MACOSX_DEPLOYMENT_TARGET=12.6
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
           git submodule update --init
+
       - name: Cache
         uses: actions/cache@v3
         id: all-archive-cache
@@ -68,6 +76,7 @@ jobs:
           sudo ./make.sh build
           sudo ./make.sh archive
           file ./bin/swoole-cli
+          otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
 
       - name: Archive production artifacts
