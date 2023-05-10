@@ -158,6 +158,10 @@ make_config() {
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
+    export LDFLAGS="$LDFLAGS -all-static -fno-ident <?= $this->extraLdflags ?>"
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
+    make -j <?= $this->maxJob ?> ;
+    return 0
     make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
     EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
         if (!empty($item->ldflags)) {
