@@ -1,0 +1,35 @@
+version: "3"
+services:
+    postgresql-server:
+        image: postgres:15-alpine
+        container_name: postgres
+        hostname: "postgresql"
+        ports:
+            - "5432:5432"
+        environment:
+            - "POSTGRES_PASSWORD=example"
+        # 容器内数据目录 /var/lib/postgresql/data
+    mysql-server:
+        image: mysql:8-debian
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        container_name: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: "example"
+        ports:
+            - "3306:3306"
+        # 容器内数据目录 /var/lib/mysql
+    redis-server:
+        image: redis:7-alpine
+        ports:
+            - "6379:6379"
+        container_name: redis-server
+        # 容器内数据目录 /data
+    mongodb-server:
+        image: mongo:latest
+        container_name: mongodb
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+        ports:
+            - "27017:27017"
+        # 容器内数据目录 /data/db
