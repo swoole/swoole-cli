@@ -315,3 +315,5 @@ tmp-php.ini
 /samples/sfx/*.phar
 composer.lock
 .php-cs-fixer.cache
+ldflags.log
+cppflags.log

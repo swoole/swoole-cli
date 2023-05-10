@@ -16,7 +16,19 @@ return function (Preprocessor $p) {
             ->withPrefix($libxml2_prefix)
             ->withConfigure(
                 <<<EOF
-./autogen.sh && ./configure --prefix=$libxml2_prefix --with-iconv=$iconv_prefix --enable-static=yes --enable-shared=no --without-python
+                    ./autogen.sh
+                    ./configure --help
+                    ./configure \
+                    --prefix=$libxml2_prefix \
+                    --with-iconv=$iconv_prefix \
+                    --enable-static=yes \
+                    --enable-shared=no \
+                    --without-python \
+                    --without-zlib \
+                    --without-lzma \
+                    --without-debug \
+                    --without-icu
+
 EOF
             )
             ->withPkgName('libxml-2.0')

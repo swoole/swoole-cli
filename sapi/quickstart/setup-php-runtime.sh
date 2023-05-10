@@ -42,9 +42,7 @@ case $ARCH in
 esac
 
 VERSION='v5.0.3'
-if [[ $OS = 'macos' ]]; then
-  VERSION='v5.0.1'
-fi
+
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
@@ -53,9 +51,7 @@ cd ${__PROJECT__}/var/runtime
 SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
 
-if [[ $ARCH = 'arm64'  ]] && [[ $OS = 'linux' ]]; then
-  SWOOLE_CLI_DOWNLOAD_URL='https://github.com/jingjingxyk/swoole-cli/releases/download/build-native-php-v0.1.1/swoole-cli-v5.0.3-linux-arm64.tar.xz'
-fi
+
 
 mirror=''
 while [ $# -gt 0 ]; do
