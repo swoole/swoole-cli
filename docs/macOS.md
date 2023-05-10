@@ -84,3 +84,7 @@ export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```bash
   sudo xattr -d com.apple.quarantine  ./swoole-cli
 ```
+
+## [在macOS上不能创建静态链接的可执行文件](https://developer.apple.com/library/archive/qa/qa1118/_index.html)
+
+> 参考文档： https://blog.csdn.net/EvianZhang/article/details/125301503

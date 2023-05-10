@@ -69,6 +69,7 @@ jobs:
           sudo ./make.sh archive
           file ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
+          otool -L ./bin/swoole-cli
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3

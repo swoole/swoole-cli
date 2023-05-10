@@ -24,3 +24,4 @@ composer update --no-dev  --optimize-autoloader
 
 
 php prepare.php  +inotify +apcu +ds -mysqli -soap
+php prepare.php  +inotify +apcu +ds -mysqli -soap --conf-path="./conf.d.extra" +pdo_pgsql
