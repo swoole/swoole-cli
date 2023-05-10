@@ -153,7 +153,8 @@ make_config() {
 
     ./configure --help
     export_variables
-    echo $LDFLAGS > a.log
+    echo $LDFLAGS > ldflags.log
+    echo $CPPFLAGS > cppflags.log
     ./configure $OPTIONS
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 }

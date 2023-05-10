@@ -19,10 +19,8 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
             ./configure --help
-
-
             PACKAGES_NAMES="libjpeg  libturbojpeg libwebp  libwebpdecoder  libwebpdemux  libwebpmux  libpng freetype2"
-            PACKAGES_NAMES="\${PACKAGES_NAMES} libbrotlicommon libbrotlidec    libbrotlienc libzip zlib libzstd  liblzma"
+            PACKAGES_NAMES="\${PACKAGES_NAMES} libbrotlicommon libbrotlidec libbrotlienc libzip  zlib  libzstd  liblzma"
             PACKAGES_NAMES="\${PACKAGES_NAMES} libcrypto libssl   openssl"
             PACKAGES_NAMES="\${PACKAGES_NAMES} libxml-2.0"
             CPPFLAGS="\$(pkg-config --cflags-only-I --static \$PACKAGES_NAMES ) -I{$bzip2_prefix}/include" \
@@ -91,6 +89,7 @@ EOF
                 'libxml2',
                 'libzip',
                 'zlib',
+                'liblzma',
                 'libjpeg',
                 'freetype',
                 'libwebp',
