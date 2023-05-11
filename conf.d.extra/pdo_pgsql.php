@@ -32,11 +32,8 @@ return function (Preprocessor $p) {
             --without-ldap \
             --with-libxml  \
             --with-libxslt
-<<<<<<< HEAD:conf.d/pdo_pgsql.php
 
-=======
 :<<'==EOF=='
->>>>>>> feature_libpq:conf.d.extra/pdo_pgsql.php
             result_code=$?
             [[ \$result_code -ne 0 ]] && echo "[make FAILURE]" && exit \$result_code;
             make -C src/include install
@@ -59,10 +56,8 @@ return function (Preprocessor $p) {
 
             make -C src/interfaces/libpq  -j \$cpu_nums # soname=true
             make -C src/interfaces/libpq  install
-<<<<<<< HEAD:conf.d/pdo_pgsql.php
-=======
 ==EOF==
->>>>>>> feature_libpq:conf.d.extra/pdo_pgsql.php
+
 EOF
             )
             ->withPkgName('libpq')
@@ -75,10 +70,6 @@ EOF
             )
             ->depends('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
     );
-
-<<<<<<< HEAD:conf.d/pdo_pgsql.php
     // $p->addExtension((new Extension('pdo_pgsql'))->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)->depends('pgsql'));
-=======
-   // $p->addExtension((new Extension('pdo_pgsql'))->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)->depends('pgsql'));
->>>>>>> feature_libpq:conf.d.extra/pdo_pgsql.php
+
 };
