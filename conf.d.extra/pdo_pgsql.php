@@ -70,9 +70,19 @@ EOF
             )
             ->depends('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
     );
+    $pdo_pgsql_version=$p::SWOOLE_CLI_PHP_VERSION;
     $p->addExtension(
         (new Extension('pdo_pgsql'))
             ->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)
+            ->withPeclVersion($pdo_pgsql_version)
+            ->withDownloadScript(
+                "pdo_pgsql",
+                <<<EOF
+                test -d php-src && rm -rf php-src
+                git clone -b php-{$pdo_pgsql_version} --depth=1 https://github.com/php/php-src.git
+                cp -rf php-src/ext/pdo_pgsql pdo_pgsql
+EOF
+            )
             ->depends('pgsql')
     );
 };

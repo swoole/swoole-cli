@@ -10,6 +10,8 @@ use RuntimeException;
 class Preprocessor
 {
     public const VERSION = '1.6';
+
+    public const SWOOLE_CLI_PHP_VERSION='8.1.12';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
     public const CONTAINER_NAME = 'swoole-cli-builder';
 
