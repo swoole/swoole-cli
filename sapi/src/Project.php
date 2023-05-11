@@ -19,6 +19,12 @@ abstract class Project
 
     public array $deps = [];
 
+    public string $downloadScript = '';
+
+    public string $downloadDirName = '';
+
+    public bool $enableDownloadScript = false;
+
     public int $licenseType = self::LICENSE_SPEC;
 
     public const LICENSE_SPEC = 0;
@@ -68,6 +74,20 @@ abstract class Project
     public function withUrl(string $url): static
     {
         $this->url = $url;
+        return $this;
+    }
+
+    public function withFile(string $file): static
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    public function withDownloadScript(string $downloadDirName, string $script): static
+    {
+        $this->enableDownloadScript = true;
+        $this->downloadScript = $script;
+        $this->downloadDirName = $downloadDirName;
         return $this;
     }
 }
