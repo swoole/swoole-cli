@@ -70,6 +70,9 @@ EOF
             )
             ->depends('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
     );
-    // $p->addExtension((new Extension('pdo_pgsql'))->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)->depends('pgsql'));
-
+    $p->addExtension(
+        (new Extension('pdo_pgsql'))
+            ->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)
+            ->depends('pgsql')
+    );
 };
