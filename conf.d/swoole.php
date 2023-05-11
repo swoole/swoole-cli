@@ -19,8 +19,7 @@ return function (Preprocessor $p) {
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src');
-    foreach ($depends as $value) {
-        $ext->depends($value);
-    }
+
+    call_user_func_array([$ext, 'depends'], $depends);
     $p->addExtension($ext);
 };

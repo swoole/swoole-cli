@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
             ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
             ->withPrefix($pgsql_prefix)
-            ->withBuildScript(
+            ->withconfigure(
                 <<<EOF
             ./configure --help
 
@@ -22,7 +22,7 @@ return function (Preprocessor $p) {
             package_names="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$package_names )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$package_names )" \
-            LIBS="$(pkg-config      --libs-only-l   --static \$package_names )" \
+            LIBS="$(pkg-config      --libs-only-l   --static \$package_names ) -lstdc++" \
             ./configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
@@ -32,7 +32,11 @@ return function (Preprocessor $p) {
             --without-ldap \
             --with-libxml  \
             --with-libxslt
+<<<<<<< HEAD:conf.d/pdo_pgsql.php
 
+=======
+:<<'==EOF=='
+>>>>>>> feature_libpq:conf.d.extra/pdo_pgsql.php
             result_code=$?
             [[ \$result_code -ne 0 ]] && echo "[make FAILURE]" && exit \$result_code;
             make -C src/include install
@@ -55,6 +59,10 @@ return function (Preprocessor $p) {
 
             make -C src/interfaces/libpq  -j \$cpu_nums # soname=true
             make -C src/interfaces/libpq  install
+<<<<<<< HEAD:conf.d/pdo_pgsql.php
+=======
+==EOF==
+>>>>>>> feature_libpq:conf.d.extra/pdo_pgsql.php
 EOF
             )
             ->withPkgName('libpq')
@@ -68,5 +76,9 @@ EOF
             ->depends('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
     );
 
+<<<<<<< HEAD:conf.d/pdo_pgsql.php
     // $p->addExtension((new Extension('pdo_pgsql'))->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)->depends('pgsql'));
+=======
+   // $p->addExtension((new Extension('pdo_pgsql'))->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)->depends('pgsql'));
+>>>>>>> feature_libpq:conf.d.extra/pdo_pgsql.php
 };
