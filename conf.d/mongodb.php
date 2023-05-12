@@ -21,36 +21,21 @@ return function (Preprocessor $p) {
                 ->withBinPath($bison_prefix . '/bin/')
         );
     }
-    if (1) {
-        $snappy_prefix = SNAPPY_PREFIX;
-        $p->addLibrary(
-            (new Library('snappy'))
-                ->withHomePage('https://github.com/google/snappy')
-                ->withManual('https://github.com/google/snappy/blob/main/README.md')
-                ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
-                ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
-                ->withFile('snappy-1.1.10.tar.gz')
-                ->withDownloadScript(
-                    'snappy',
-                    <<<EOF
-                    # git clone -b 1.1.10 --depth=1  https://github.com/google/snappy.git
-                    git clone -b main  https://github.com/google/snappy.git
-
-                    git reset --hard  30326e5b8cae9b5f2ea640d74beb2562ced44219
-                    cd snappy
-                    git submodule update --init
-                    cd ..
-EOF
-                )
-                ->withPrefix($snappy_prefix)
-                ->withConfigure(
-                    <<<EOF
-                test -d build && rm -rf build
+    $snappy_prefix = SNAPPY_PREFIX;
+    $p->addLibrary(
+        (new Library('snappy'))
+            ->withHomePage('https://github.com/google/snappy')
+            ->withManual('https://github.com/google/snappy/blob/main/README.md')
+            ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
+            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
+            ->withFile('snappy-1.1.10.tar.gz')
+            ->withPrefix($snappy_prefix)
+            ->withConfigure(
+                <<<EOF
                 mkdir -p build
-
                 cd build
                 cmake .. \
-                -DCMAKE_CXX_FLAGS=-Wno-sign-compare \
+                -Wsign-compare \
                 -DCMAKE_INSTALL_PREFIX={$snappy_prefix} \
                 -DCMAKE_INSTALL_LIBDIR={$snappy_prefix}/lib \
                 -DCMAKE_INSTALL_INCLUDEDIR={$snappy_prefix}/include \
@@ -58,21 +43,26 @@ EOF
                 -DBUILD_SHARED_LIBS=OFF  \
                 -DBUILD_STATIC_LIBS=ON \
                 -DSNAPPY_BUILD_TESTS=OFF \
-                -DSNAPPY_BUILD_BENCHMARKS=OFF \
+                -DSNAPPY_BUILD_BENCHMARKS=OFF
 
 EOF
-                )
-                ->withPkgName('snappy')
-                ->withBinPath($snappy_prefix . '/bin/')
-        );
-    }
+            )
+            ->withBinPath($snappy_prefix . '/bin/')
+    );
+
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . SNAPPY_PREFIX . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . SNAPPY_PREFIX . '/lib');
+    $p->withVariable('LIBS', '$LIBS -liconv');
+
     $libsasl_prefix = LIBSASL_PREFIX;
     $p->addLibrary(
         (new Library('libsasl'))
             ->withHomePage('https://www.cyrusimap.org/sasl/')
             ->withManual('https://www.cyrusimap.org/sasl/sasl/installation.html#installation')
             ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.28/cyrus-sasl-2.1.28.tar.gz')
+            ->withUrl(
+                'https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.28/cyrus-sasl-2.1.28.tar.gz'
+            )
             ->withFile('cyrus-sasl-2.1.28.tar.gz')
             ->withPrefix($libsasl_prefix)
             ->withConfigure(
@@ -89,7 +79,7 @@ EOF
 EOF
             )
             ->withPkgName('libsasl2')
-            ->withBinPath($libsasl_prefix  . '/sbin/')
+            ->withBinPath($libsasl_prefix . '/sbin/')
     );
     $p->withExportVariable('PHP_MONGODB_SSL_CFLAGS', '$(pkg-config --cflags --static libcrypto libssl  openssl)');
     $p->withExportVariable('PHP_MONGODB_SSL_LIBS', '$(pkg-config   --libs   --static libcrypto libssl  openssl)');
