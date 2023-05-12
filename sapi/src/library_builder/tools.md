@@ -29,3 +29,9 @@ git fsck --lost-found  # 查看记录
 git merge --squash branch_name
 
 ```
+
+## 当前分支 hash
+```bash
+git rev-parse HEAD
+
+```
