@@ -461,6 +461,7 @@ function libraries_builder($p)
 
         //alpine 上默认的 gcc 就是 musl-gcc
         //nm  结果参考 https://www.cnblogs.com/vaughnhuang/p/15771582.html
+        // Linux库文件与可执行文件辅助工具集 https://juejin.cn/post/6844904150568796168
         // binutils 二进制工具集   gcc的ar,nm,objdump,objcopy
         // ar 参数： -c 告诉 ar 创建文件 (libsnappy.a)； -r 告诉 arto 替换可能重复的符号。（仅重新编译一些 .o 时有用）-s 相当于库上的ranlib
         // ar rcs $@ $^
