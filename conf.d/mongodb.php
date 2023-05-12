@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
                 ->withBinPath($bison_prefix . '/bin/')
         );
     }
-    if (0) {
+    if (1) {
         $snappy_prefix = SNAPPY_PREFIX;
         $p->addLibrary(
             (new Library('snappy'))
@@ -30,13 +30,27 @@ return function (Preprocessor $p) {
                 ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
                 ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
                 ->withFile('snappy-1.1.10.tar.gz')
+                ->withDownloadScript(
+                    'snappy',
+                    <<<EOF
+                    # git clone -b 1.1.10 --depth=1  https://github.com/google/snappy.git
+                    git clone -b main  https://github.com/google/snappy.git
+
+                    git reset --hard  30326e5b8cae9b5f2ea640d74beb2562ced44219
+                    cd snappy
+                    git submodule update --init
+                    cd ..
+EOF
+                )
                 ->withPrefix($snappy_prefix)
                 ->withConfigure(
                     <<<EOF
-
+                test -d build && rm -rf build
                 mkdir -p build
+
                 cd build
                 cmake .. \
+                -DCMAKE_CXX_FLAGS=-Wno-sign-compare \
                 -DCMAKE_INSTALL_PREFIX={$snappy_prefix} \
                 -DCMAKE_INSTALL_LIBDIR={$snappy_prefix}/lib \
                 -DCMAKE_INSTALL_INCLUDEDIR={$snappy_prefix}/include \
