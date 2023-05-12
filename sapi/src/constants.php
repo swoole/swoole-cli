@@ -48,3 +48,5 @@ define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
+define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
+define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
