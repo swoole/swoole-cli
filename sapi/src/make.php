@@ -138,6 +138,7 @@ export_variables() {
 }
 
 make_ext_hook() {
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
 <?php foreach ($this->extCallbacks as $name=>$value) : ?>
     # <?= $name ?>:
       <?= ($this->extCallbacks[$name])($this) . PHP_EOL ?>
