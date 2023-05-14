@@ -15,7 +15,8 @@ return function (Preprocessor $p) {
                 <<<EOF
             test -d php-ext-xlswriter && rm -rf php-ext-xlswriter
             # git clone -b v1.5.4 --depth=1 --recursive https://github.com/viest/php-ext-xlswriter.git
-            git clone -b dev --depth=1 --recursive https://github.com/jingjingxyk/php-ext-xlswriter.git
+            # git clone -b dev --depth=1 --recursive https://github.com/jingjingxyk/php-ext-xlswriter.git
+            git clone -b main_static_built --depth=1 --recursive https://github.com/viest/php-ext-xlswriter.git
             mv php-ext-xlswriter xlswriter
 EOF
             )

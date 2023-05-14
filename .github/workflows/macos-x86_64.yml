@@ -55,7 +55,7 @@ jobs:
           sudo sh sapi/download-box/download-box-get-archive-from-server.sh
 
           sudo composer update --no-dev  --optimize-autoloader
-          sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
+          sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu +xlswriter
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
