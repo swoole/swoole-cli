@@ -31,10 +31,7 @@ jobs:
         uses: actions/cache@v3
         id: all-archive-cache
         with:
-          path: |
-            ${GITHUB_WORKSPACE}/var/all-archive.zip
-            ${GITHUB_WORKSPACE}/bin/runtime/php
-            ${GITHUB_WORKSPACE}/bin/runtime/composer
+          path: ${GITHUB_WORKSPACE}/var/all-archive.zip
           key: all-archive
       - name: Prepare runtime
         if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
@@ -60,9 +57,8 @@ jobs:
         uses: actions/cache@v3
         id: all-library-cache
         with:
-          path: |
-            ${HOME}/.swoole-cli
-          key: all-library-cache
+          path: ~/.swoole-cli
+          key: ${{ runner.os }}-build-all-library
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
