@@ -36,6 +36,7 @@ jobs:
           sudo bash sapi/download-box/download-box-get-archive-from-server.sh
       - name: prepare
         run: |
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           sudo composer update --no-dev  --optimize-autoloader
           sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
       - name: Cache all-library
