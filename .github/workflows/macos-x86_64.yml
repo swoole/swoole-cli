@@ -1,6 +1,6 @@
 name: build-swoole-cli-macos-x86_64
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
@@ -8,7 +8,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Configure
+      - name: Prepare build environment
         run: |
           env
           echo $HOME
@@ -57,6 +57,9 @@ jobs:
           sudo ./make.sh config
           sudo ./make.sh build
           sudo ./make.sh archive
+
+      - name: Show Build Result
+        run: |
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
