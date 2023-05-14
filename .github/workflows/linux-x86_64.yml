@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-x86_64:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -59,10 +59,14 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-            ./bin/swoole-cli -v
-            file ./bin/swoole-cli
-            readelf -h ./bin/swoole-cli
-            ./bin/swoole-cli -r "echo PHP_VERSION;"
+
+      - name: Show Build Result
+        run: |
+          ./bin/swoole-cli -v
+          file ./bin/swoole-cli
+          readelf -h ./bin/swoole-cli
+          ./bin/swoole-cli -r "echo PHP_VERSION;"
+
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
