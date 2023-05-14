@@ -16,13 +16,14 @@ return function (Preprocessor $p) {
                     test -d php-ext-xlswriter && rm -rf php-ext-xlswriter
 
                     # git clone -b v1.5.4 --depth=1 --recursive https://github.com/viest/php-ext-xlswriter.git
-                    git clone -b feature_openssl_dir --depth=1 --recursive https://github.com/jingjingxyk/php-ext-xlswriter.git
-
+                    # git clone -b feature_openssl_dir --depth=1 --recursive https://github.com/jingjingxyk/php-ext-xlswriter.git
                     # git clone -b main_static_built --depth=1 --recursive https://github.com/viest/php-ext-xlswriter.git
+
+                    git clone -b dev --depth=1 --recursive https://github.com/viest/php-ext-xlswriter.git
                     mv php-ext-xlswriter xlswriter
 EOF
             )
-            ->withOptions(' --with-xlswriter --enable-reader --with-openssl-dir=' . OPENSSL_PREFIX)
+            ->withOptions(' --with-xlswriter --enable-reader --with-openssl=' . OPENSSL_PREFIX)
     );
     //--with-openssl-md5 使用Openssl MD5
     //--with-bundled-md5 使用内置MD5
