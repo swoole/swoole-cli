@@ -14,8 +14,10 @@ return function (Preprocessor $p) {
                 'xlswriter',
                 <<<EOF
             test -d php-ext-xlswriter && rm -rf php-ext-xlswriter
+
             # git clone -b v1.5.4 --depth=1 --recursive https://github.com/viest/php-ext-xlswriter.git
             # git clone -b dev --depth=1 --recursive https://github.com/jingjingxyk/php-ext-xlswriter.git
+
             git clone -b main_static_built --depth=1 --recursive https://github.com/viest/php-ext-xlswriter.git
             mv php-ext-xlswriter xlswriter
 EOF
@@ -23,19 +25,19 @@ EOF
             ->withOptions(' --with-xlswriter --enable-reader')
     );
 
-    $p->setExtCallback('xlswriter', function (Preprocessor $p){
+    $p->setExtCallback('xlswriter', function (Preprocessor $p) {
         $work_dir=$p->getWorkDir();
         $cmd=<<<EOF
           cd {$work_dir}/ext/xlswriter
           if [[ ! -f config.m4.backup ]] ;then
                 # 替换为空行
-                # sed -i.backup "42s/.*//" config.m4
-                # sed -i.backup "187s/.*//" config.m4
+                sed -i.backup "42s/.*//" config.m4
+                sed -i.backup "187s/.*//" config.m4
                 # 删除行
-                sed '42,187d' config.m4
+                # sed -i '42,187d' config.m4
           fi
           cd {$work_dir}/
 EOF;
-         return $cmd;
+        return $cmd;
     });
 };

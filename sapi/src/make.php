@@ -137,7 +137,7 @@ export_variables() {
     return 0
 }
 
-make_ext() {
+make_ext_hook() {
 <?php foreach ($this->extCallbacks as $name=>$value) : ?>
     # <?= $name ?>:
       <?= ($this->extCallbacks[$name])($this) . PHP_EOL ?>
@@ -147,7 +147,7 @@ make_ext() {
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     set -exu
-    make_ext
+    make_ext_hook
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
