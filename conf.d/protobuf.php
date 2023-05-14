@@ -13,12 +13,20 @@ return function (Preprocessor $p) {
     );
 
     $p->setExtCallback('protobuf', function (Preprocessor $p) {
+        $work_dir=$p->getWorkDir();
+
+        $cmd=" cd {$work_dir}/ext/xlswriter " . PHP_EOL;
+
         // compatible with redis
         if ($p->getOsType() === 'macos') {
-            echo `sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
-            echo `find ext/protobuf/ -name \*.bak | xargs rm -f`;
+            $cmd .="sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc " . PHP_EOL ;
+            $cmd .="find ext/protobuf/ -name \*.bak | xargs rm -f " . PHP_EOL ;
         } else {
-            echo `sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
+            $cmd .="sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc " . PHP_EOL ;
         }
+
+        $cmd .= $cmd . PHP_EOL . "cd {$work_dir}/" .PHP_EOL;
+
+        return $cmd;
     });
 };

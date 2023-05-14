@@ -22,10 +22,11 @@ EOF
             )
             ->withOptions(' --with-xlswriter --enable-reader')
     );
-    $build_dir=$p->getBuildDir();
-    $p->setExtCallback('xlswriter', function (Preprocessor $p) use ($build_dir) {
+
+    $p->setExtCallback('xlswriter', function (Preprocessor $p){
+        $work_dir=$p->getWorkDir();
         $cmd=<<<EOF
-          cd {$build_dir}/ext/xlswriter
+          cd {$work_dir}/ext/xlswriter
           if [[ ! -f config.m4.backup ]] ;then
                 # 替换为空行
                 # sed -i.backup "42s/.*//" config.m4
@@ -33,7 +34,8 @@ EOF
                 # 删除行
                 sed '42,187d' config.m4
           fi
+          cd {$work_dir}/
 EOF;
-        `$cmd`;
+         return $cmd;
     });
 };

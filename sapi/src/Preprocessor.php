@@ -721,6 +721,7 @@ EOF;
             }
         }
 
+
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
@@ -729,7 +730,7 @@ EOF;
             }
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
-                ($this->extCallbacks[$ext])($this);
+               // $extCallback .= ($this->extCallbacks[$ext])($this);
             }
         }
 
