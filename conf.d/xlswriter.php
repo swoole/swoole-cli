@@ -22,7 +22,7 @@ return function (Preprocessor $p) {
             mv php-ext-xlswriter xlswriter
 EOF
             )
-            ->withOptions(' --with-xlswriter --enable-reader')
+            ->withOptions(' --with-xlswriter --enable-reader --enable-md5=no')
     );
 
     $p->setExtCallback('xlswriter', function (Preprocessor $p) {
@@ -38,6 +38,7 @@ EOF
           fi
           cd {$work_dir}/
 EOF;
+        $cmd='';
         return $cmd;
     });
 };
