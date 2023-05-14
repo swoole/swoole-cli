@@ -10,6 +10,8 @@ return function (Preprocessor $p) {
             ->withPeclVersion('1.4')
             ->withHomePage('https://github.com/php/pecl-networking-ssh2')
             ->withManual('https://www.php.net/ssh2')
-            ->withLicense('https://php.net/license/3_01.txt', Extension::LICENSE_PHP)
+            ->withLicense('https://www.php.net/license/', Extension::LICENSE_PHP)
+            ->depends('libssh2')
+
     );
 };

@@ -1,6 +1,6 @@
 name: build-php-cli-macos-x86_64
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 env:
   BUILD_PHP_VERSION: 8.2.4
@@ -15,26 +15,21 @@ jobs:
         run: |
 
           brew install  wget curl  libtool automake gettext coreutils re2c binutils
+          brew uninstall --ignore-dependencies oniguruma
+          brew uninstall --ignore-dependencies brotli
+          brew uninstall --ignore-dependencies freetype
+          brew uninstall --ignore-dependencies zstd
+          brew uninstall --ignore-dependencies capstone
           which glibtool
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-          sudo mkdir -p pool/lib
-          sudo mkdir -p pool/ext
+          sudo  xcode-select --switch /Applications/Xcode.app
+          # export MACOSX_DEPLOYMENT_TARGET=12.6
           echo 'export PATH="/usr/local/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
-          source ~/.bash_profile
           env
           echo $HOME
-      - name: Cache
-        uses: actions/cache@v3
-        id: all-archive-cache
-        with:
-          path: |
-            ${GITHUB_WORKSPACE}/var/all-archive.zip
-            ${GITHUB_WORKSPACE}/bin/runtime/php
-            ${GITHUB_WORKSPACE}/bin/runtime/composer
-          key: all-archive
+
       - name: Prepare runtime
-        if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
         run: |
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
@@ -45,12 +40,7 @@ jobs:
           sudo sh sapi/download-box/download-box-get-archive-from-server.sh
       - name: prepare
         run: |
-          sudo mkdir -p pool/lib
-          sudo mkdir -p pool/ext
-          sudo mkdir -p bin/runtime
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          sudo sh sapi/download-box/download-box-get-archive-from-server.sh
-
           sudo composer update --no-dev  --optimize-autoloader
           sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
       - name: Cache all-library

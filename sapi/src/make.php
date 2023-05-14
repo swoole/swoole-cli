@@ -234,6 +234,8 @@ make_config() {
 
     ./configure --help
      export_variables
+    echo $LDFLAGS > ldflags.log
+    echo $CPPFLAGS > cppflags.log
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
@@ -244,17 +246,20 @@ make_config() {
 make_build() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
-    export LDFLAGS="$LDFLAGS -all-static"
+
+
+    export LDFLAGS="$LDFLAGS -all-static -fno-ident <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
-    export EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident -fuse-ld=lld <?= $this->extraLdflags ?>
+    make -j <?= $this->maxJob ?> ;
+
+<?php if ($this->osType == 'macos') : ?>
+    otool -L <?= $this->getWorkDir() ?>/sapi/cli/php
+<?php else : ?>
+    file <?= $this->getWorkDir() ?>/sapi/cli/php
+    readelf -h <?= $this->getWorkDir() ?>/sapi/cli/php
+<?php endif; ?>
+    return 0
 <?php
-foreach ($this->libraryList as $item) {
-    if (!empty($item->ldflags)) {
-        echo $item->ldflags;
-        echo ' ';
-    }
-}
-echo "'";
 
 echo PHP_EOL;
 
@@ -270,6 +275,9 @@ if ($this->getInputOption('with-php-sfx-micro')) {
 }
 
 ?>
+
+
+
 
 }
 

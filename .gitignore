@@ -316,3 +316,6 @@ tmp-php.ini
 composer.lock
 .php-cs-fixer.cache
 /php-src
+ldflags.log
+cppflags.log
+
