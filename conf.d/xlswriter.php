@@ -22,9 +22,10 @@ return function (Preprocessor $p) {
             mv php-ext-xlswriter xlswriter
 EOF
             )
-            ->withOptions(' --with-xlswriter --enable-reader --enable-md5=no')
+            ->withOptions(' --with-xlswriter --enable-reader --with-openssl-md5')
     );
-
+    //--with-openssl-md5 使用Openssl MD5
+    //--with-bundled-md5 使用内置MD5
     $p->setExtCallback('xlswriter', function (Preprocessor $p) {
         $work_dir=$p->getWorkDir();
         $cmd=<<<EOF
