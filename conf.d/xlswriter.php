@@ -22,7 +22,7 @@ return function (Preprocessor $p) {
                     mv php-ext-xlswriter xlswriter
 EOF
             )
-            ->withOptions(' --with-xlswriter --enable-reader --with-openssl-md5=yes')
+            ->withOptions(' --with-xlswriter --enable-reader --with-openssl-dir=' . OPENSSL_PREFIX)
     );
     //--with-openssl-md5 使用Openssl MD5
     //--with-bundled-md5 使用内置MD5
