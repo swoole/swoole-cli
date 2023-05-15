@@ -372,12 +372,13 @@ class Preprocessor
                     $cacheDir = $this->getWorkDir() . '/var/tmp';
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
-                cd {$cacheDir}
-                test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
-                {$lib->downloadScript}
-                cd {$lib->downloadDirName}
-                test -f {$lib->path} || tar   -zcf {$lib->path} ./
-                cd {$workDir}
+                        mkdir -p {$cacheDir}
+                        cd {$cacheDir}
+                        test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
+                        {$lib->downloadScript}
+                        cd {$lib->downloadDirName}
+                        test -f {$lib->path} || tar   -zcf {$lib->path} ./
+                        cd {$workDir}
 EOF;
 
                     $this->execDownloadScript($cacheDir, $lib->downloadScript);
@@ -434,6 +435,7 @@ EOF;
                     if ($ext->enableDownloadScript) {
                         $cacheDir = $this->getWorkDir() . '/var/tmp';
                         $ext->downloadScript = <<<EOF
+                                mkdir -p {$cacheDir}
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                                 {$ext->downloadScript}
