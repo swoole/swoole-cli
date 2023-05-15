@@ -68,13 +68,14 @@ EOF;
             $cacheDir = '${__DIR__}/var/tmp';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
-            cd {$cacheDir}
-            test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
-            {$item->downloadScript}
-            cd {$item->downloadDirName}
-            test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
-            cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-            cd {$workDir}
+                mkdir -p {$cacheDir}
+                cd {$cacheDir}
+                test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
+                {$item->downloadScript}
+                cd {$item->downloadDirName}
+                test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
+                cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
+                cd {$workDir}
 EOF;
 
             $download_scripts[] = $downloadScript . PHP_EOL;
@@ -97,6 +98,7 @@ EOF;
             $cacheDir = '${__DIR__}/var/tmp';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
+                mkdir -p {$cacheDir}
                 cd {$cacheDir}
                 test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
                 {$item->downloadScript}

@@ -23,7 +23,9 @@ jobs:
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
+
           git submodule update --init
+
       - name: Prepare runtime
         run: |
           sudo mkdir -p pool/lib
