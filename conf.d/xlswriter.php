@@ -10,14 +10,6 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/viest/php-ext-xlswriter')
             ->withLicense('https://github.com/viest/php-ext-xlswriter/blob/master/LICENSE', Extension::LICENSE_BSD)
             ->withPeclVersion('1.5.5')
-            ->withDownloadScript(
-                'xlswriter',
-                <<<EOF
-                    test -d php-ext-xlswriter && rm -rf php-ext-xlswriter
-                    git clone -b master --depth=1 --recursive https://github.com/viest/php-ext-xlswriter.git
-                    mv php-ext-xlswriter xlswriter
-EOF
-            )
             ->withOptions(' --with-xlswriter --enable-reader --with-openssl=' . OPENSSL_PREFIX)
     );
 };
