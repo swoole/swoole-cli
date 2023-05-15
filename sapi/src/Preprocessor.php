@@ -113,6 +113,9 @@ class Preprocessor
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
+
+    protected array $extHooks = [];
+
     protected string $configureVarables;
 
     protected function __construct()
@@ -591,6 +594,11 @@ EOF;
     public function setExtCallback($name, $fn)
     {
         $this->extCallbacks[$name] = $fn;
+    }
+
+    public function setExtHook($name, $fn)
+    {
+        $this->extHooks[$name]=$fn;
     }
 
     public function parseArguments(int $argc, array $argv)
