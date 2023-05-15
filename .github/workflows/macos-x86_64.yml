@@ -1,14 +1,14 @@
 name: build-swoole-cli-macos-x86_64
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Configure
+      - name: Prepare build environment
         run: |
           env
           echo $HOME
@@ -23,46 +23,27 @@ jobs:
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
-          sudo mkdir -p pool/lib
-          sudo mkdir -p pool/ext
           git submodule update --init
 
-      - name: Cache
-        uses: actions/cache@v3
-        id: all-archive-cache
-        with:
-          path: |
-            ${GITHUB_WORKSPACE}/var/all-archive.zip
-            ${GITHUB_WORKSPACE}/bin/runtime/php
-            ${GITHUB_WORKSPACE}/bin/runtime/composer
-          key: all-archive
       - name: Prepare runtime
-        if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
         run: |
           sudo mkdir -p pool/lib
           sudo mkdir -p pool/ext
           sudo mkdir -p bin/runtime
-
-          sudo sh  sapi/quickstart/setup-php-runtime.sh
+          sudo bash  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          sudo sh sapi/download-box/download-box-get-archive-from-server.sh
+          sudo bash sapi/download-box/download-box-get-archive-from-server.sh
       - name: prepare
         run: |
-          sudo mkdir -p pool/lib
-          sudo mkdir -p pool/ext
-          sudo mkdir -p bin/runtime
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          sudo sh sapi/download-box/download-box-get-archive-from-server.sh
-
           sudo composer update --no-dev  --optimize-autoloader
           sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
-          path: |
-            ${HOME}/.swoole-cli
-          key: all-library-cache
+          path: ~/.swoole-cli
+          key: ${{ runner.os }}-build-all-library
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
@@ -75,6 +56,9 @@ jobs:
           sudo ./make.sh config
           sudo ./make.sh build
           sudo ./make.sh archive
+
+      - name: Show Build Result
+        run: |
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"

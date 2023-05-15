@@ -131,6 +131,7 @@ make_all_library() {
     return 0
 }
 
+
 export_variables() {
     CPPFLAGS=""
     CFLAGS=""
@@ -150,7 +151,6 @@ export_variables() {
 make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     set -exu
-
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
