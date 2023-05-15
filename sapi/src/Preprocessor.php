@@ -113,6 +113,9 @@ class Preprocessor
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
+
+    protected array $extHooks = [];
+
     protected string $configureVarables;
 
     protected function __construct()
@@ -377,13 +380,14 @@ class Preprocessor
                     $cacheDir = $this->getWorkDir() . '/var/tmp';
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
-                mkdir -p {$cacheDir}
-                cd {$cacheDir}
-                test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
-                {$lib->downloadScript}
-                cd {$lib->downloadDirName}
-                test -f {$lib->path} || tar   -zcf {$lib->path} ./
-                cd {$workDir}
+                        mkdir -p {$cacheDir}
+                        cd {$cacheDir}
+                        test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
+                        {$lib->downloadScript}
+                        cd {$lib->downloadDirName}
+                        test -f {$lib->path} || tar   -zcf {$lib->path} ./
+                        cd {$workDir}
+
 
 EOF;
 
@@ -594,6 +598,11 @@ EOF;
     public function setExtCallback($name, $fn)
     {
         $this->extCallbacks[$name] = $fn;
+    }
+
+    public function setExtHook($name, $fn)
+    {
+        $this->extHooks[$name]=$fn;
     }
 
     public function parseArguments(int $argc, array $argv)

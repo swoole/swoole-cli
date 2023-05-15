@@ -137,6 +137,36 @@ make_all_library() {
     return 0
 }
 
+prepare_extensions() {
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+
+<?php
+foreach ($this->extensionMap as $extension) {
+    if ($extension->peclVersion || $extension->enableDownloadScript) {
+        echo <<<EOF
+    if [[ -d {$this->phpSrcDir}/ext/{$extension->name}/ ]]
+    then
+        rm -rf {$this->phpSrcDir}/ext/{$extension->name}/
+    fi
+    cp -rf {$this->rootDir}/ext/{$extension->name} {$this->phpSrcDir}/ext/
+EOF;
+        echo PHP_EOL;
+        echo PHP_EOL;
+    }
+}
+
+?>
+}
+
+make_ext_hook() {
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+<?php foreach ($this->extHooks as $name => $value) : ?>
+    # ext <?= $name ?> hook
+    <?= $value($this) . PHP_EOL ?>
+<?php endforeach; ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    return 0
+}
 
 export_variables() {
     # -all-static | -static | -static-libtool-libs
@@ -161,30 +191,9 @@ export_variables() {
     return 0
 }
 
-<<<<<<< HEAD
-
-prepare_extensions(){
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-
-<?php
-foreach ($this->extensionMap as $extension) {
-    if ($extension->peclVersion || $extension->enableDownloadScript) {
-        echo <<<EOF
-    if [[ -d {$this->phpSrcDir}/ext/{$extension->name}/ ]]
-    then
-        rm -rf {$this->phpSrcDir}/ext/{$extension->name}/
-    fi
-    cp -rf {$this->rootDir}/ext/{$extension->name} {$this->phpSrcDir}/ext/
-EOF;
-        echo PHP_EOL;
-        echo PHP_EOL;
-    }
-}
-
-?>
-}
 
 make_config() {
+
     set -x
 
     if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
@@ -195,9 +204,15 @@ make_config() {
 <?php if ($this->getInputOption('with-build-type') != 'release') : ?>
 
 <?php endif ;?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    make_ext_hook
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
 
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
     prepare_extensions
     cd <?= $this->phpSrcDir . PHP_EOL ?>
+
+
 
 <?php if ($this->getInputOption('with-php-sfx-micro')) : ?>
     PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
@@ -232,13 +247,16 @@ make_config() {
 <?php endif ;?>
     echo $OPTIONS
 
+
+
+
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 
     ./configure --help
      export_variables
-    echo $LDFLAGS > ldflags.log
-    echo $CPPFLAGS > cppflags.log
+     echo $LDFLAGS > ldflags.log
+     echo $CPPFLAGS > cppflags.log
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code

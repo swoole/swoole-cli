@@ -12,13 +12,21 @@ return function (Preprocessor $p) {
             ->withManual('https://protobuf.dev/reference/php/php-generated/')
     );
 
-    $p->setExtCallback('protobuf', function (Preprocessor $p) {
+    $p->setExtHook('protobuf', function (Preprocessor $p) {
         // compatible with redis
+        $workdir= $p->getWorkDir();
         if ($p->getOsType() === 'macos') {
-            echo `sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
-            echo `find ext/protobuf/ -name \*.bak | xargs rm -f`;
+            $cmd = <<<EOF
+                cd {$workdir}
+                sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc
+                find ext/protobuf/ -name \*.bak | xargs rm -f
+EOF;
         } else {
-            echo `sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc`;
+            $cmd = <<<EOF
+                cd {$workdir}
+                sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc
+EOF;
         }
+        return $cmd;
     });
 };
