@@ -127,6 +127,7 @@ make_ext_hook() {
     # ext <?= $name ?> hook
     <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
     return 0
 }
 

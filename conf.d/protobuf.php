@@ -14,13 +14,16 @@ return function (Preprocessor $p) {
 
     $p->setExtHook('protobuf', function (Preprocessor $p) {
         // compatible with redis
+        $workdir= $p->getWorkDir();
         if ($p->getOsType() === 'macos') {
             $cmd = <<<EOF
+                cd {$workdir}
                 sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc
                 find ext/protobuf/ -name \*.bak | xargs rm -f
 EOF;
         } else {
             $cmd = <<<EOF
+                cd {$workdir}
                 sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc
 EOF;
         }
