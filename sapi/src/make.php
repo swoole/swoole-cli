@@ -137,6 +137,7 @@ make_all_library() {
     return 0
 }
 
+
 export_variables() {
     # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
@@ -160,6 +161,7 @@ export_variables() {
     return 0
 }
 
+<<<<<<< HEAD
 
 prepare_extensions(){
     cd <?= $this->phpSrcDir . PHP_EOL ?>
@@ -229,6 +231,7 @@ make_config() {
     fi
 <?php endif ;?>
     echo $OPTIONS
+
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 

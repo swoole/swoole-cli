@@ -7,7 +7,7 @@ env:
 
 jobs:
   linux-x86_64:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -59,13 +59,17 @@ jobs:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work -e "BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }}"
           run: |
-            ./make.sh config
-            ./make.sh build
-            ./make.sh archive
-            ./thirdparty/php_src/sapi/cli/php -v
-            file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-            readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
+            bash ./make.sh config
+            bash ./make.sh build
+            bash ./make.sh archive
+
+      - name: Show Build Result
+        run: |
+          ./php_src/sapi/cli/php -v
+          file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
+
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:

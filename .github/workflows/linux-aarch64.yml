@@ -59,18 +59,22 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-            ./bin/swoole-cli -v
-            file ./bin/swoole-cli
-            readelf -h ./bin/swoole-cli
-            ./bin/swoole-cli -r "echo PHP_VERSION;"
+
+      - name: Show Build Result
+        run: |
+          ./php_src/sapi/cli/php -v
+          file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
+
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: swoole-cli
+          name: php-cli-linux-aarch64-${{ env.BUILD_PHP_VERSION }}
           retention-days: 7
-          path: ./bin/swoole-cli
+          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-*-linux-x64.tar.xz
+          files: swoole-cli-*-linux-arm64.tar.xz
