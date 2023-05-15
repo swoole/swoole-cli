@@ -124,8 +124,8 @@ make_all_library() {
 make_ext_hook() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 <?php foreach ($this->extHooks as $name => $value) : ?>
-    # extension <?php $name ?> hook
-    <?=$value($this) . PHP_EOL ?>
+    # ext <?= $name ?> hook
+    <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
     return 0
 }
@@ -147,8 +147,10 @@ export_variables() {
 }
 
 make_config() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
     set -exu
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    make_ext_hook
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>

@@ -524,7 +524,7 @@ class Preprocessor
         $this->extCallbacks[$name] = $fn;
     }
 
-    public function setExtHook($name,$fn)
+    public function setExtHook($name, $fn)
     {
         $this->extHooks[$name]=$fn;
     }
