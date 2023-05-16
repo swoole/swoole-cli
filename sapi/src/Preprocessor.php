@@ -15,6 +15,7 @@ class Preprocessor
 
     protected static ?Preprocessor $instance = null;
 
+    protected array $prepareArgs = [];
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
@@ -218,6 +219,10 @@ class Preprocessor
         return $this->rootDir;
     }
 
+    public function getPrepareArgs(): array {
+        return $this->prepareArgs;
+    }
+
     public function setLibraryDir(string $libraryDir)
     {
         $this->libraryDir = $libraryDir;
@@ -346,7 +351,7 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            if (!is_file($lib->path)) {
+            if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
                 $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
             } else {
@@ -386,7 +391,7 @@ class Preprocessor
             }
 
             if (!$this->getInputOption('skip-download')) {
-                if (!is_file($ext->path)) {
+                if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                     $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
                 } else {
@@ -523,6 +528,7 @@ class Preprocessor
 
     public function parseArguments(int $argc, array $argv)
     {
+        $this->prepareArgs = $argv;
         // parse the parameters passed in by the user
         for ($i = 1; $i < $argc; $i++) {
             $arg = $argv[$i];
