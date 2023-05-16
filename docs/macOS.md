@@ -15,13 +15,15 @@ brew uninstall --ignore-dependencies oniguruma
 brew uninstall --ignore-dependencies brotli
 brew uninstall --ignore-dependencies freetype
 brew uninstall --ignore-dependencies zstd
+brew uninstall --ignore-dependencies capstone
+
 ```
 
 # 问题
 
 ## 缺少 bison
 
-下载源代码，自行编译安装
+下载源代码，自行编译安装 (此问题已经决，安装依赖库时 已经包含bison源码编译)
 
 ## 缺少`libtool`
 

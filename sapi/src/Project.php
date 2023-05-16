@@ -119,4 +119,5 @@ abstract class Project
         $this->gnupg = $gpg;
         return $this;
     }
+
 }

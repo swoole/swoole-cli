@@ -48,11 +48,13 @@ define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
 
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
+
+define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 
 
 
-define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
+
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("LIBEV_PREFIX", $p->getGlobalPrefix() . '/libev');
@@ -109,7 +111,7 @@ define("VALGRIND_PREFIX", $p->getGlobalPrefix() . '/valgrind');
 define("CAPSTONE_PREFIX", $p->getGlobalPrefix() . '/capstone');
 define("DYNASM_PREFIX", $p->getGlobalPrefix() . '/dynasm');
 
-define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
+
 define("NGINX_PREFIX", $p->getGlobalPrefix() . '/nginx');
 define("PCRE2_PREFIX", $p->getGlobalPrefix() . '/pcre2');
 
@@ -122,6 +124,7 @@ const DOWNLOAD_FILE_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
 define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
+
 define("FFMPEG_PREFIX", $p->getGlobalPrefix() . '/ffmpeg');
 define("NODEJS_PREFIX", $p->getGlobalPrefix() . '/nodejs');
 define("GOLANG_PREFIX", $p->getGlobalPrefix() . '/golang');
@@ -134,8 +137,12 @@ define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
 define("GRAPHVIZ_PREFIX", $p->getGlobalPrefix() . '/graphviz');
 define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
-define('LIBRSVG_PREFIX',$p->getGlobalPrefix() . '/librsvg');
-define('LIBUNISTRING_PREFIX',$p->getGlobalPrefix() . '/libunistring');
-define('GETTEXT_PREFIX',$p->getGlobalPrefix() . '/gettext');
-define('LIBINTL_PREFIX',$p->getGlobalPrefix() . '/libintl');
+define('LIBRSVG_PREFIX', $p->getGlobalPrefix() . '/librsvg');
 
+define('GETTEXT_PREFIX', $p->getGlobalPrefix() . '/gettext');
+define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/libintl');
+
+
+define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
+define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
+define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');

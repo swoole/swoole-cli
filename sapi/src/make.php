@@ -28,7 +28,7 @@ OPTIONS="--disable-all \
 --enable-shared=no \
 --enable-static=yes \
 <?php foreach ($this->extensionList as $item) : ?>
-<?=$item->options?> \
+    <?=$item->options?> \
 <?php endforeach; ?>
 <?=$this->extraOptions?>
 "
@@ -89,6 +89,7 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
+<<<<<<< HEAD
 <?php if(empty($item->buildScript)): ?>
 
     # before configure
@@ -98,16 +99,24 @@ make_<?=$item->name?>() {
     [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
 <?php endif; ?>
 
+=======
+    # use build script replace  configure、make、make install
+    <?php if (empty($item->buildScript)) : ?>
+>>>>>>> new_main
     # configure
-<?php if (!empty($item->configure)): ?>
+        <?php if (!empty($item->configure)) : ?>
 cat <<'__EOF__'
-    <?= $item->configure . PHP_EOL ?>
+            <?= $item->configure . PHP_EOL ?>
 __EOF__
-    <?=$item->configure . PHP_EOL ?>
+            <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
+<<<<<<< HEAD
 
 <?php endif; ?>
+=======
+        <?php endif; ?>
+>>>>>>> new_main
 
     # make
     make -j <?= $this->maxJob ?> <?= $item->makeOptions . PHP_EOL ?>
@@ -115,34 +124,39 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make FAILURE]" && exit  $result_code;
 
     # before make install
-<?php if ($item->beforeInstallScript): ?>
-    <?=$item->beforeInstallScript . PHP_EOL ?>
+        <?php if ($item->beforeInstallScript) : ?>
+            <?=$item->beforeInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ before make install script FAILURE]" && exit  $result_code;
-<?php endif; ?>
+        <?php endif; ?>
 
     # make install
-<?php if ($item->makeInstallCommand): ?>
+        <?php if ($item->makeInstallCommand) : ?>
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
+<<<<<<< HEAD
 <?php endif; ?>
 <?php else: ?>
     # use build script replace  configure、make、make install
+=======
+        <?php endif; ?>
+    <?php else : ?>
+>>>>>>> new_main
     cat <<'__EOF__'
-    <?= $item->buildScript . PHP_EOL ?>
+        <?= $item->buildScript . PHP_EOL ?>
 __EOF__
-    <?= $item->buildScript . PHP_EOL ?>
+        <?= $item->buildScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
-<?php endif; ?>
+    <?php endif; ?>
 
     # after make install
-<?php if ($item->afterInstallScript): ?>
-    <?=$item->afterInstallScript . PHP_EOL ?>
+    <?php if ($item->afterInstallScript) : ?>
+        <?=$item->afterInstallScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
-<?php endif; ?>
+    <?php endif; ?>
 
     # build end
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
@@ -167,13 +181,24 @@ clean_<?=$item->name?>_cached() {
     rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
 }
 
-<?php echo str_repeat(PHP_EOL, 1);?>
+    <?php echo str_repeat(PHP_EOL, 1);?>
 <?php endforeach; ?>
 
 make_all_library() {
 <?php foreach ($this->libraryList as $item) : ?>
     make_<?= $item->name ?> && [[ $? -eq 0 ]] && echo "[SUCCESS] make <?= $item->name ?>"
 <?php endforeach; ?>
+    return 0
+}
+
+
+make_ext_hook() {
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+<?php foreach ($this->extHooks as $name => $value) : ?>
+    # ext <?= $name ?> hook
+    <?= $value($this) . PHP_EOL ?>
+<?php endforeach; ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
     return 0
 }
 
@@ -196,9 +221,8 @@ export_variables() {
 
 
 make_config() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
 
-    set -uex
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
 
 :<<'_____EO_____'
     = 是最基本的赋值
@@ -264,6 +288,11 @@ make_config() {
 _____EO_____
 
 
+    set -exu
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    make_ext_hook
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
@@ -275,27 +304,25 @@ _____EO_____
 
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-
     ./configure --help
-
     export_variables
-
+    echo $LDFLAGS > ldflags.log
+    echo $CPPFLAGS > cppflags.log
     ./configure $OPTIONS
+    sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 
 }
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 
-    # make -j <?= $this->maxJob ?> <?= PHP_EOL ?>
-    # return 0
 
    # export EXTRA_LDFLAGS="$(pkg-config   --libs-only-L   --static openssl libraw_r )"
    # export EXTRA_LDFLAGS_PROGRAM=""
    # EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident '
 
 
-    export_variables
+:<<'_____EO_____'
     export LDFLAGS="$LDFLAGS -all-static"
     make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
     EXTRA_LDFLAGS_PROGRAM=' <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
@@ -304,6 +331,20 @@ make_build() {
             echo ' ';
         }
     } ?>'  -j <?= $this->maxJob ?> && echo ""
+_____EO_____
+
+    export_variables
+    export LDFLAGS="$LDFLAGS -all-static -fno-ident <?= $this->extraLdflags ?>"
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
+    make -j <?= $this->maxJob ?> ;
+
+<?php if ($this->osType == 'macos') : ?>
+    otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
+<?php else : ?>
+    file <?= $this->getWorkDir() ?>/bin/swoole-cli
+    readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
+<?php endif; ?>
+
 }
 
 make_clean() {
@@ -428,15 +469,15 @@ elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if(!empty($item->pkgName)): ?>
     echo "[<?= $item->name ?>]"
-<?php if(!empty($item->pkgNames)) :?>
-<?php foreach ($item->pkgNames as $item) : ?>
+    <?php if (!empty($item->pkgNames)) :?>
+        <?php foreach ($item->pkgNames as $item) : ?>
     pkg-config --libs-only-L <?= $item . PHP_EOL ?>
     pkg-config --libs-only-l <?= $item . PHP_EOL ?>
     pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
-<?php endforeach; ?>
-<?php else :?>
+        <?php endforeach; ?>
+    <?php else :?>
     echo "no PKG_CONFIG !"
-<?php endif ?>
+    <?php endif ?>
     echo "==========================================================="
     <?php endif ?>
 <?php endforeach; ?>
