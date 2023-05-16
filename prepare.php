@@ -30,8 +30,8 @@ $build_type = $p->getInputOption('with-build-type');
 if (!in_array($build_type, ['dev', 'debug'])) {
     $build_type = 'release';
 }
-define('SWOOLE_CLI_BUILD_TYPE', $build_type);
-define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
+define('PHP_CLI_BUILD_TYPE', $build_type);
+define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
 
 if ($p->getOsType() == 'macos') {
@@ -68,23 +68,4 @@ EOF
             )
     );
 
-    $sfx_micro = $p->getInputOption('with-php-sfx-micro');
-    if ($sfx_micro) {
-        $p->addLibrary(
-            (new Library('php_patch_sfx_micro'))
-                ->withUrl('https://github.com/dixyes/phpmicro.git')
-                ->withHomePage('https://github.com/dixyes/phpmicro.git')
-                ->withManual('https://github.com/dixyes/phpmicro')
-                ->withLicense('https://github.com/dixyes/phpmicro/blob/master/LICENSE', Library::LICENSE_APACHE2)
-                ->withFile('phpmicro-master.tar.gz')
-                ->withDownloadScript(
-                    'phpmicro',
-                    <<<EOF
-                        git clone -b master --depth=1 https://github.com/dixyes/phpmicro.git
-EOF
-                )
-                ->withBuildScript('return 0')
-                ->withLdflags('')
-        );
-    }
 }

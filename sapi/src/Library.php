@@ -126,7 +126,7 @@ class Library extends Project
 
     public function withCleanBuildDirectory(): static
     {
-        if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
+        if (PHP_CLI_BUILD_TYPE == 'dev') {
             $this->cleanBuildDirectory = true;
         }
         return $this;
@@ -134,8 +134,8 @@ class Library extends Project
 
     public function withCleanPreInstallDirectory(string $preInstallDir): static
     {
-        if (!empty($preInstallDir) && (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0)) {
-            if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
+        if (!empty($preInstallDir) && (strpos($preInstallDir, PHP_CLI_GLOBAL_PREFIX) === 0)) {
+            if (PHP_CLI_BUILD_TYPE == 'dev') {
                 $this->cleanPreInstallDirectory = true;
                 $this->preInstallDirectory = $preInstallDir;
             }
