@@ -89,7 +89,7 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
-<<<<<<< HEAD
+
 <?php if(empty($item->buildScript)): ?>
 
     # before configure
@@ -99,10 +99,6 @@ make_<?=$item->name?>() {
     [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
 <?php endif; ?>
 
-=======
-    # use build script replace  configure、make、make install
-    <?php if (empty($item->buildScript)) : ?>
->>>>>>> new_main
     # configure
         <?php if (!empty($item->configure)) : ?>
 cat <<'__EOF__'
@@ -111,12 +107,8 @@ __EOF__
             <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
-<<<<<<< HEAD
-
-<?php endif; ?>
-=======
         <?php endif; ?>
->>>>>>> new_main
+
 
     # make
     make -j <?= $this->maxJob ?> <?= $item->makeOptions . PHP_EOL ?>
@@ -135,14 +127,11 @@ __EOF__
     make <?= $item->makeInstallCommand ?> <?= $item->makeInstallOptions ?> <?= PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
-<<<<<<< HEAD
-<?php endif; ?>
-<?php else: ?>
-    # use build script replace  configure、make、make install
-=======
+
         <?php endif; ?>
     <?php else : ?>
->>>>>>> new_main
+    # use build script replace  configure、make、make install
+
     cat <<'__EOF__'
         <?= $item->buildScript . PHP_EOL ?>
 __EOF__
