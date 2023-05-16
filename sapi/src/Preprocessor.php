@@ -52,7 +52,7 @@ class Preprocessor
      * 编译后.a静态库文件安装目录的全局前缀，在构建阶段使用
      * @var string
      */
-    protected string $globalPrefix = '/usr';
+    protected string $globalPrefix = '/usr/local/swoole-cli';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';

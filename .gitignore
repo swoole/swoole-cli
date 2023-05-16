@@ -317,3 +317,4 @@ composer.lock
 .php-cs-fixer.cache
 ldflags.log
 cppflags.log
+/packages
