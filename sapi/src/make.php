@@ -212,30 +212,6 @@ make_config() {
     prepare_extensions
     cd <?= $this->phpSrcDir . PHP_EOL ?>
 
-
-
-<?php if ($this->getInputOption('with-php-sfx-micro')) : ?>
-    PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
-    if [[ $PHP_VERSION -lt 80000 ]] ; then
-        echo "only support PHP >= 8.0 "
-    else
-        make_php_patch_sfx_micro
-        cd <?= $this->phpSrcDir . PHP_EOL ?>
-        if [[ ! -f php-sfx-micro.cached ]] ;then
-            cp -rf <?= $this->buildDir ?>/php_patch_sfx_micro/ sapi/micro
-            patch -p1 < sapi/micro/patches/phar.patch
-            touch php-sfx-micro.cached
-            echo "php-sfx-micro patch ok "
-
-        fi
-
-        OPTIONS="${OPTIONS} --enable-micro=all-static "
-    fi
-
-<?php endif ;?>
-
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
     PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
     if [[ $PHP_VERSION -lt 80000 ]] ; then
@@ -246,9 +222,6 @@ make_config() {
     fi
 <?php endif ;?>
     echo $OPTIONS
-
-
-
 
     test -f ./configure &&  rm ./configure
     ./buildconf --force
@@ -268,7 +241,6 @@ make_build() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
 
-
     export LDFLAGS="$LDFLAGS -all-static -fno-ident <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
@@ -280,26 +252,8 @@ make_build() {
     readelf -h <?= $this->getWorkDir() ?>/sapi/cli/php
 <?php endif; ?>
     return 0
-<?php
 
-echo PHP_EOL;
-
-if ($this->getInputOption('with-php-sfx-micro')) {
-    echo "    make -j " . $this->maxJob . ' micro' ;
-} else {
-    echo "    make -j " . $this->maxJob . ' cli' ;
-    echo PHP_EOL;
-    //echo "    elfedit --output-osabi linux sapi/cli/php";
-    echo PHP_EOL;
-    echo "    make install " ;
-    echo PHP_EOL;
-}
-
-?>
-
-
-
-
+   # elfedit --output-osabi linux sapi/cli/php
 }
 
 make_clean() {
@@ -398,14 +352,6 @@ elif [ "$1" = "archive" ] ;then
     cp -f php php-dbg
     strip php
     tar -cJvf ${PHP_CLI_FILE} php
-    mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
-    cd -
-elif [ "$1" = "archive-sfx-micro" ] ;then
-    cd <?= $this->phpSrcDir ?>/sapi/micro/
-    # sapi/micro/micro.sfx
-    PHP_VERSION=<?= BUILD_PHP_VERSION . PHP_EOL ?>
-    PHP_CLI_FILE=php-sfx-micro-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
-    tar -cJvf ${PHP_CLI_FILE} micro.sfx
     mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
