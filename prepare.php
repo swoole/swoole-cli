@@ -16,7 +16,9 @@ if ($p->getInputOption('without-docker')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
-
+if ($p->getInputOption('with-global-prefix')) {
+    $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
+}
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
 }
