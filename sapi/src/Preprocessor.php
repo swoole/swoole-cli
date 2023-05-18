@@ -128,6 +128,7 @@ class Preprocessor
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
+                $this->setLinker('ld64');
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -142,7 +143,10 @@ class Preprocessor
         }
         return self::$instance;
     }
-
+    public function  setLinker(string $ld)
+    {
+        $this->lld=$ld;
+    }
     protected function setOsType(string $osType)
     {
         $this->osType = $osType;
