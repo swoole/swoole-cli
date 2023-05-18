@@ -16,8 +16,8 @@ if ($p->getInputOption('without-docker')) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
-if ($p->getInputOption('with-install-prefix')) {
-    $p->setGlobalPrefix($p->getInputOption('with-install-prefix'));
+if ($p->getInputOption('with-global-install-prefix')) {
+    $p->setGlobalPrefix($p->getInputOption('with-global-install-prefix'));
 }else{
     $p->setGlobalPrefix('/usr/local/swoole-cli');
 }
