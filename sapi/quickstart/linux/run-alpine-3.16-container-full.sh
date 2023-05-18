@@ -38,7 +38,7 @@ case $ARCH in
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
   ;;
 'aarch64')
-  IMAGE=docker.io/docker pull phpswoole/swoole-cli-builder:1.7-arm64
+  IMAGE=docker.io/phpswoole/swoole-cli-builder:1.7-arm64
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
   ;;
 *)
