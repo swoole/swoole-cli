@@ -42,6 +42,21 @@ docker tag ${IMAGE} ${SWOOLE_CLI_IMAGE}
 echo ${IMAGE} >download-box.txt
 echo ${ALIYUN_IMAGE} >download-box-aliyun.txt
 
-docker push ${ALIYUN_IMAGE}
-docker push ${IMAGE}
-docker push ${SWOOLE_CLI_IMAGE}
+# 解决 没有推送权限时不报错 也不中断，继续往下执行
+{
+  docker push ${ALIYUN_IMAGE}
+} || {
+  echo $?
+}
+
+{
+  docker push ${IMAGE}
+} || {
+  echo $?
+}
+
+{
+  docker push ${SWOOLE_CLI_IMAGE}
+} || {
+  echo $?
+}
