@@ -42,7 +42,7 @@ jobs:
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230429T064207Z
+          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-php-8.2.4-x86_64-20230504T141620Z
           #image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
@@ -55,7 +55,7 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230429T064207Z
+          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-php-8.2.4-x86_64-20230504T141620Z
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work -e "BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }}"
           run: |
@@ -76,35 +76,10 @@ jobs:
           name: php-cli-linux-x64-${{ env.BUILD_PHP_VERSION }}
           retention-days: 7
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-      - name: Prepare sfx micro
-        uses: addnab/docker-run-action@v3
-        with:
-          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230429T064207Z
-          options: -v ${{ github.workspace }}:/work -w /work
-          run: |
-            set -eux
-            export PATH=/work/bin/runtime:$PATH
-            php prepare.php  +inotify +apcu +ds -mysqli -soap -mongodb --with-php-sfx-micro=1
-            chmod a+x make.sh
-      - name: Build sfx micro
-        uses: addnab/docker-run-action@v3
-        with:
-          image: docker.io/jingjingxyk/build-swoole-cli:native-php-all-dependencies-alpine-20230429T064207Z
-          options: -v ${{ github.workspace }}:/work -w /work
-          run: |
-            ./make.sh config
-            ./make.sh build
-            ./make.sh archive-sfx-micro
-      - name: production artifacts sfx micro
-        uses: actions/upload-artifact@v3
-        with:
-          name: php-sfx-micro-linux-x64-${{ env.BUILD_PHP_VERSION }}
-          retention-days: 7
-          path: ./thirdparty/php_src/sapi/micro/micro.sfx
-      - name: Release sfx micro
+
+      - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-x64.tar.xz
-            php-sfx-micro-v${{ env.BUILD_PHP_VERSION }}-linux-x64.tar.xz
