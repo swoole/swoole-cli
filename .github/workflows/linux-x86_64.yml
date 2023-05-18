@@ -65,6 +65,7 @@ jobs:
 
       - name: Show Build Result
         run: |
+          ls -lh php-src/sapi/cli
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
