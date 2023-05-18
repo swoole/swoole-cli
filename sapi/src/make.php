@@ -248,11 +248,12 @@ make_build() {
     make -j <?= $this->maxJob ?> ;
 
 <?php if ($this->osType == 'macos') : ?>
-    otool -L <?= $this->getWorkDir() ?>/sapi/cli/php
+    otool -L <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php else : ?>
-    file <?= $this->getWorkDir() ?>/sapi/cli/php
-    readelf -h <?= $this->getWorkDir() ?>/sapi/cli/php
+    file <?= $this->phpSrcDir  ?>/sapi/cli/php
+    readelf -h <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php endif; ?>
+    make install
     return 0
 
    # elfedit --output-osabi linux sapi/cli/php
