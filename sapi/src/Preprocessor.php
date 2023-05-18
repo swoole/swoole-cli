@@ -17,6 +17,7 @@ class Preprocessor
 
     protected static ?Preprocessor $instance = null;
 
+    protected array $prepareArgs = [];
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
@@ -52,7 +53,7 @@ class Preprocessor
      * 编译后.a静态库文件安装目录的全局前缀，在构建阶段使用
      * @var string
      */
-    protected string $globalPrefix = '/usr';
+    protected string $globalPrefix = '/usr/local/swoole-cli';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -225,6 +226,11 @@ class Preprocessor
         return $this->rootDir;
     }
 
+    public function getPrepareArgs(): array
+    {
+        return $this->prepareArgs;
+    }
+
     public function setLibraryDir(string $libraryDir)
     {
         $this->libraryDir = $libraryDir;
@@ -373,7 +379,7 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            if (is_file($lib->path)) {
+            if (is_file($lib->path) && (filesize($lib->path) != 0)) {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
@@ -464,7 +470,7 @@ EOF;
                             $this->checkFileMd5sum($ext->path, $ext->md5sum);
                         }
 
-                        if (!is_file($ext->path)) {
+                        if (!is_file($ext->path) || filesize($ext->path) === 0) {
                             echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                             $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
                         }
@@ -602,11 +608,12 @@ EOF;
 
     public function setExtHook($name, $fn)
     {
-        $this->extHooks[$name]=$fn;
+        $this->extHooks[$name] = $fn;
     }
 
     public function parseArguments(int $argc, array $argv)
     {
+        $this->prepareArgs = $argv;
         // parse the parameters passed in by the user
         for ($i = 1; $i < $argc; $i++) {
             $arg = $argv[$i];

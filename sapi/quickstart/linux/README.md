@@ -11,7 +11,7 @@
 curl -fsSL https://get.docker.com -o get-docker.sh
 bash get-docker.sh
 
-# 使用镜像
+# 使用 阿里云镜像
 bash get-docker.sh --mirror Aliyun
 
 ```
@@ -51,12 +51,13 @@ bash sapi/quickstart/linux/run-alpine-3.16-container.sh
 bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 
 # 准备构建基础软件
-sh sapi/quickstart/linux/alpine-3.16-init.sh
+sh  sapi/quickstart/linux/alpine-3.16-init.sh
+
 
 
 # 准备构建基础软件 使用中科大镜像源
+sh  sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
 
-sh sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
 
 ```
 
@@ -98,7 +99,7 @@ bash sapi/download-box/download-box-get-archive-from-server.sh
 
 ```bash
 
-# compser 使用阿里云镜像
+# composer 使用阿里云镜像
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 # 使用代理

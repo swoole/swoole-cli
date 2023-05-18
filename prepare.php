@@ -14,7 +14,6 @@ $p->parseArguments($argc, $argv);
 if ($p->getInputOption('without-docker')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
-    $p->setGlobalPrefix($homeDir . '/.swoole-cli');
 }
 
 // Sync code from php-src
