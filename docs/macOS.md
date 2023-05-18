@@ -1,7 +1,7 @@
 # 步骤
 
 0. 清理 `brew` 安装的软件
-1. 执行 `php prepare.php`
+1. 执行 `php prepare.php --without-docker=1`
 2. 编译所有依赖的库 `./make.sh all-library`
 3. 配置 `./make.sh config`
 4. 构建 `./make.sh build`
@@ -23,7 +23,7 @@ brew uninstall --ignore-dependencies capstone
 
 ## 缺少 bison
 
-下载源代码，自行编译安装
+下载源代码，自行编译安装 (此问题已经决，安装依赖库时 已经包含bison源码编译)
 
 ## 缺少`libtool`
 
@@ -47,11 +47,11 @@ ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
  brew install gettext coreutils re2c libunistring
 ```
 
-## curl configure 检测不通过
+## curl configure 检测不通过 (已经通过 pkg-config 解决)
 
 修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
 
-## `icu/oniguruma` 找不到
+## `icu/oniguruma` 找不到  (已经通过 pkg-config 解决)
 
 错误信息：
 
