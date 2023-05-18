@@ -15,7 +15,6 @@ $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-8.1.12');
 if ($p->getInputOption('without-docker')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
-    $p->setGlobalPrefix($homeDir . '/.swoole-cli');
 }
 
 if ($p->getOsType() == 'macos') {
