@@ -16,6 +16,15 @@ if ($p->getInputOption('without-docker')) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
+if ($p->getInputOption('with-install-prefix')) {
+    $p->setGlobalPrefix($p->getInputOption('with-install-prefix'));
+}else{
+    $p->setGlobalPrefix('/usr/local/swoole-cli');
+}
+
+
+
+
 // Sync code from php-src
 //重新设置 PHP 源码所在目录
 $p->setPhpSrcDir($p->getWorkDir() . '/php-src');

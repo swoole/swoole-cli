@@ -229,8 +229,9 @@ make_config() {
 
     ./configure --help
      export_variables
-     echo $LDFLAGS > ldflags.log
-     echo $CPPFLAGS > cppflags.log
+     echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
+     echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
+
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
