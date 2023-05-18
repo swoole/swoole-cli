@@ -5,7 +5,7 @@ use SwooleCli\Library;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    if ($p->getOsType() == 'macos') {
+    if (1 || $p->getOsType() == 'macos') {
         $bison_prefix = BISON_PREFIX;
         $p->addLibrary(
             (new Library('bison'))
@@ -92,7 +92,7 @@ EOF
         (new Extension('mongodb'))
             ->withHomePage('https://www.php.net/mongodb')
             ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
-            ->withPeclVersion('1.15.2')
+            ->withPeclVersion('1.15.3')
             ->withOptions(
                 $options
             )
