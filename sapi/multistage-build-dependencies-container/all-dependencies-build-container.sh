@@ -16,7 +16,9 @@ mkdir -p ${__PROJECT__}/var
 
 ARCH=$(uname -m)
 
-TAG="1.7-${ARCH}"
+TIME=$(date -u '+%Y%m%dT%H%M%SZ')
+VERSION="1.7"
+TAG="all-dependencies-alpine-${VERSION}-${ARCH}-${TIME}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
 USE_COMPOSER_MIRROR=0
