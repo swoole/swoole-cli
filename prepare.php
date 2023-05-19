@@ -5,7 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
-const BUILD_PHP_VERSION = '8.1.12';
+const BUILD_PHP_VERSION = '8.2.4';
 
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
