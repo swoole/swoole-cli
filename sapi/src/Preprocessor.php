@@ -126,7 +126,7 @@ class Preprocessor
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
-                $this->setLinker('ld64');
+                $this->setLinker('ld64.lld');
                 break;
             case 'WINNT':
                 $this->setOsType('win');
