@@ -137,6 +137,11 @@ class Preprocessor
         }
     }
 
+    public function  setLinker(string $ld): void
+    {
+        $this->lld=$ld;
+    }
+
     public static function getInstance(): static
     {
         if (!self::$instance) {
