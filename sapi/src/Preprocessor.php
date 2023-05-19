@@ -150,11 +150,6 @@ class Preprocessor
         return self::$instance;
     }
 
-    public function  setLinker(string $ld): void
-    {
-        $this->lld=$ld;
-    }
-
     protected function setOsType(string $osType)
     {
         $this->osType = $osType;
