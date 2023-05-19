@@ -44,8 +44,8 @@ jobs:
         uses: actions/cache@v3
         id: all-library-cache
         with:
-          # path: ~/.swoole-cli
-          path: /usr/local/swoole-cli
+          path: ~/.swoole-cli
+          # path: /usr/local/swoole-cli
           key: ${{ runner.os }}-build-all-library
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
