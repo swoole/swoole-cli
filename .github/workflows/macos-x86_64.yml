@@ -40,8 +40,8 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           sudo composer update --no-dev  --optimize-autoloader
-          # sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu --with-global-prefix=${HOME}/.swoole-cli
-          sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
+          sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu --with-global-prefix=${HOME}/.swoole-cli
+          # sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
@@ -58,6 +58,7 @@ jobs:
 
       - name: Build
         run: |
+          export MACOSX_DEPLOYMENT_TARGET=12.6
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           sudo chmod a+x ./make.sh
           sudo ./make.sh config
