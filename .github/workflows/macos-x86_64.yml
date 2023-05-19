@@ -12,7 +12,7 @@ jobs:
         run: |
           env
           echo $HOME
-          brew install  wget curl  libtool automake gettext coreutils re2c binutils
+          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm
           brew uninstall --ignore-dependencies oniguruma
           brew uninstall --ignore-dependencies brotli
           brew uninstall --ignore-dependencies freetype
@@ -37,21 +37,25 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           sudo composer update --no-dev  --optimize-autoloader
+          # sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu --with-global-prefix=${HOME}/.swoole-cli
           sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
-          path: ~/.swoole-cli
+          # path: ~/.swoole-cli
+          path: /usr/local/swoole-cli
           key: ${{ runner.os }}-build-all-library
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           sudo chmod a+x ./make.sh
           sudo ./make.sh all-library
 
       - name: Build
         run: |
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           sudo chmod a+x ./make.sh
           sudo ./make.sh config
           sudo ./make.sh build
