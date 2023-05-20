@@ -53,7 +53,8 @@ class Preprocessor
      * 编译后.a静态库文件安装目录的全局前缀，在构建阶段使用
      * @var string
      */
-    protected string $globalPrefix = '/usr/local/swoole-cli';
+    //protected string $globalPrefix = '/usr/local/swoole-cli';
+    protected string $globalPrefix = '/usr';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -219,7 +220,8 @@ class Preprocessor
         return $this->rootDir;
     }
 
-    public function getPrepareArgs(): array {
+    public function getPrepareArgs(): array
+    {
         return $this->prepareArgs;
     }
 
@@ -630,6 +632,28 @@ class Preprocessor
         }
     }
 
+    public function loadLibrary($library_name)
+    {
+        $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
+        if (!is_file($file)) {
+            return;
+        }
+        //skip  multi  load library
+        if (isset($this->libraryMap[$library_name])) {
+            return;
+        }
+        $func = require $file;
+        $func($this);
+        if (isset($this->libraryMap[$library_name])) {
+            $deps = $this->libraryMap[$library_name]->deps;
+            if (!empty($deps)) {
+                foreach ($deps as $library_name) {
+                    $this->loadLibrary($library_name);
+                }
+            }
+        }
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -673,6 +697,12 @@ class Preprocessor
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
+            }
+        }
+        // autoload  library
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->deps as $library_name) {
+                $this->loadLibrary($library_name);
             }
         }
 
