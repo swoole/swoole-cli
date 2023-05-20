@@ -55,7 +55,9 @@ abstract class Project
 
     public function depends(string ...$libs): static
     {
+
         $this->deps += $libs;
+        var_dump($libs, $this->deps);
         return $this;
     }
 

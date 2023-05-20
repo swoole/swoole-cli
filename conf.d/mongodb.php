@@ -16,9 +16,12 @@ return function (Preprocessor $p) {
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions($options)
         ->withPeclVersion('1.14.2')
-        ->depends('icu', 'openssl', 'zlib', 'libzstd');
+        ->depends('icu', 'openssl', 'zlib', 'libzstd', 'bison');
+
     if ($p->getOsType() == 'macos') {
-        $ext->depends('bison');
+       // call_user_func_array([$ext,'depends'], ['bison']);
+      // $ext->depends('bison');
     }
     $p->addExtension($ext);
+
 };
