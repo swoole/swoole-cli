@@ -25,6 +25,7 @@ jobs:
           # export MACOSX_DEPLOYMENT_TARGET=12.6
           UID=$(id -u)
           GID=$(id -g)
+          echo ${UID}:${GID}
           sudo mkdir -p /usr/local/swoole-cli
           sudo chown -R ${UID}:${GID} /usr/local/swoole-cli
           git submodule update --init
