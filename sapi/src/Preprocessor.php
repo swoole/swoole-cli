@@ -722,6 +722,27 @@ EOF;
         }
     }
 
+    public function loadLibrary($library_name)
+    {
+        if (!isset($this->libraryMap[$library_name])) {
+            $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
+            if (!is_file($file)) {
+                return;
+            }
+            $func = require $file;
+            $func($this);
+        }
+
+        if (isset($this->libraryMap[$library_name])) {
+            $deps = $this->libraryMap[$library_name]->deps;
+            if (!empty($deps)) {
+                foreach ($deps as $library_name) {
+                    $this->loadLibrary($library_name);
+                }
+            }
+        }
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -765,6 +786,12 @@ EOF;
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
+            }
+        }
+        // autoload  library
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->deps as $library_name) {
+                $this->loadLibrary($library_name);
             }
         }
 
