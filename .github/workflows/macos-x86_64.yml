@@ -23,11 +23,11 @@ jobs:
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
-          UID=$(id -u)
-          GID=$(id -g)
+          X_UID=$(id -u)
+          X_GID=$(id -g)
           echo ${UID}:${GID}
           sudo mkdir -p /usr/local/swoole-cli
-          sudo chown -R ${UID}:${GID} /usr/local/swoole-cli
+          sudo chown -R ${X_UID}:${X_GID} /usr/local/swoole-cli
           git submodule update --init
 
       - name: Prepare runtime
