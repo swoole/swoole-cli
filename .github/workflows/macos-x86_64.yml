@@ -23,7 +23,6 @@ jobs:
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
           sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
-          ls -lha .
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
           sudo mkdir -p /usr/local/swoole-cli
