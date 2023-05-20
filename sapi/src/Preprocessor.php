@@ -634,16 +634,15 @@ class Preprocessor
 
     public function loadLibrary($library_name)
     {
-        $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
-        if (!is_file($file)) {
-            return;
+        if (!isset($this->libraryMap[$library_name])) {
+            $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
+            if (!is_file($file)) {
+                return;
+            }
+            $func = require $file;
+            $func($this);
         }
-        //skip  multi  load library
-        if (isset($this->libraryMap[$library_name])) {
-            return;
-        }
-        $func = require $file;
-        $func($this);
+
         if (isset($this->libraryMap[$library_name])) {
             $deps = $this->libraryMap[$library_name]->deps;
             if (!empty($deps)) {
