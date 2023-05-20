@@ -57,7 +57,6 @@ abstract class Project
     {
 
         $this->deps += $libs;
-        var_dump($libs, $this->deps);
         return $this;
     }
 

@@ -700,10 +700,6 @@ class Preprocessor
         }
         // autoload  library
         foreach ($this->extensionMap as $ext) {
-            if($ext->name == 'mongodb'){
-                echo $ext->name . PHP_EOL;
-                var_dump($ext->deps);
-            }
             foreach ($ext->deps as $library_name) {
                 $this->loadLibrary($library_name);
             }
