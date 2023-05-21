@@ -137,7 +137,7 @@ class Preprocessor
         }
     }
 
-    public function  setLinker(string $ld): void
+    public function setLinker(string $ld): void
     {
         $this->lld=$ld;
     }
@@ -869,5 +869,4 @@ EOF;
             echo "{$item->name}\n";
         }
     }
-
 }
