@@ -74,6 +74,14 @@ without-docker
 
 > 在 `macOS` 系统无法使用 `docker`，需指定此参数
 
+with-global-prefix
+----
+设置依赖库安装目录前缀
+默认安装目录前缀： `/usr/local/swoole-cli/`
+
+```shell
+./prepare.php --with-global-prefix=/usr/local/swoole-cli/
+```
 
 with-dependency-graph
 ----
