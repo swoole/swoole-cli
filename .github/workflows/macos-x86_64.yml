@@ -12,7 +12,7 @@ jobs:
         run: |
           env
           echo $HOME
-          brew install  wget curl  libtool automake gettext coreutils re2c binutils
+          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm
           brew uninstall --ignore-dependencies oniguruma
           brew uninstall --ignore-dependencies brotli
           brew uninstall --ignore-dependencies freetype
@@ -52,11 +52,13 @@ jobs:
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           chmod a+x ./make.sh
           ./make.sh all-library
 
       - name: Build
         run: |
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           chmod a+x ./make.sh
           ./make.sh config
           ./make.sh build

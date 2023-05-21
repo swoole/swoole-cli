@@ -29,19 +29,10 @@ test -d extensions && test -d libraries && zip -6 -r all-archive.zip extensions 
 cd ${__PROJECT__}/var
 
 TIME=$(date -u '+%Y%m%dT%H%M%SZ')
-VERSION="download-box-nginx-alpine-"${TIME}
-SWOOLE_CLI_IMAGE="docker.io/phpswoole/swoole-cli-builder:donload-box-v5.0.2"
-IMAGE="docker.io/jingjingxyk/build-swoole-cli:${VERSION}"
-ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${VERSION}"
+VERSION="1.7"
+TAG="download-box-nginx-alpine-${VERSION}-${TIME}"
+IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
 docker build -t ${IMAGE} -f ./Dockerfile-dowload-box . --progress=plain
-
-docker tag ${IMAGE} ${ALIYUN_IMAGE}
-docker tag ${IMAGE} ${SWOOLE_CLI_IMAGE}
-
 echo ${IMAGE} >download-box.txt
-echo ${ALIYUN_IMAGE} >download-box-aliyun.txt
-
-docker push ${ALIYUN_IMAGE}
 docker push ${IMAGE}
-docker push ${SWOOLE_CLI_IMAGE}
