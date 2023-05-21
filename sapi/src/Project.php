@@ -55,7 +55,6 @@ abstract class Project
 
     public function depends(string ...$libs): static
     {
-
         $this->deps += $libs;
         return $this;
     }
