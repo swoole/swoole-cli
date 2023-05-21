@@ -198,6 +198,16 @@ export_variables() {
     CFLAGS=""
     LDFLAGS=""
     LIBS=""
+    <?php if ($this->getOsType() == 'macos') :?>
+    LDFLAGS="  -fuse-ld=lld"
+    LDFLAGS="  -fuse-ld=ld64.lld"
+    LDFLAGS="  -fuse-ld=ld"
+    #   LDFLAGS="-L/usr/local/opt/llvm/lib/c++ -Wl,-rpath,/usr/local/opt/llvm/lib/c++"
+    #   export LDFLAGS="-L/usr/local/opt/llvm/lib"
+    #   export CPPFLAGS="-I/usr/local/opt/llvm/include"
+    #   /usr/local/opt/llvm/bin
+    <?php endif;?>
+
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
