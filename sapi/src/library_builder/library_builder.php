@@ -731,4 +731,10 @@ function libraries_builder($p)
             ROS 2指南（十一）——交叉编译
             https://zhuanlan.zhihu.com/p/380174726
      */
+
+        /*
+        通过configure.ac文件生成copnfigure文件
+
+        https://blog.csdn.net/mao834099514/article/details/79544467
+        */
 }
