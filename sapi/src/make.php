@@ -161,7 +161,10 @@ make_config() {
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-    export LDFLAGS="$LDFLAGS -all-static -fno-ident <?= $this->extraLdflags ?>"
+    <?php if ($this->getOsType()=='linux'):?>
+    export LDFLAGS="$LDFLAGS -all-static "
+    <?php endif ;?>
+    export LDFLAGS="$LDFLAGS  <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
 
