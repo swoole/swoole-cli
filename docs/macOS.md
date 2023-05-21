@@ -23,7 +23,7 @@ brew uninstall --ignore-dependencies capstone
 
 ## 缺少 bison
 
-下载源代码，自行编译安装 (此问题已经决，安装依赖库时 已经包含bison源码编译)
+下载源代码，自行编译安装 (此问题已解决，安装依赖库时 已经包含bison源码编译)
 
 ## 缺少`libtool`
 
@@ -47,11 +47,11 @@ ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
  brew install gettext coreutils re2c libunistring
 ```
 
-## curl configure 检测不通过 (已经通过 pkg-config 解决)
+## curl configure 检测不通过
 
 修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
 
-## `icu/oniguruma` 找不到  (已经通过 pkg-config 解决)
+## `icu/oniguruma` 找不到
 
 错误信息：
 
