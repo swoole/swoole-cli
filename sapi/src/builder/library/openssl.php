@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
-    $static = $p->getOsType() === 'macos' ? '' : ' -static --static';
+    $static = $p->getOsType() === 'macos' ? '-static' : ' -static --static';
 
     $p->addLibrary(
         (new Library('openssl'))
