@@ -29,4 +29,8 @@ EOF
             )
             ->withLdflags('-L' . $libgif_prefix . '/lib')
     );
+
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libgif_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libgif_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -lgif');
 };
