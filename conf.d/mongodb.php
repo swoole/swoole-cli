@@ -15,10 +15,13 @@ return function (Preprocessor $p) {
     $ext->withHomePage('https://www.php.net/mongodb')
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions($options)
-        ->withPeclVersion('1.14.2')
-        ->depends('icu', 'openssl', 'zlib', 'libzstd');
+        ->withPeclVersion('1.14.2');
+    $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
+
     if ($p->getOsType() == 'macos') {
-        $ext->depends('bison');
+        $depends[] = 'bison';
     }
+    call_user_func_array([$ext, 'depends'], $depends);
+
     $p->addExtension($ext);
 };
