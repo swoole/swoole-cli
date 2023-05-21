@@ -129,7 +129,7 @@ class Preprocessor
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
-                $this->setLinker('ld64.lld');
+                $this->setLinker('ld');
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -139,7 +139,7 @@ class Preprocessor
 
     public function setLinker(string $ld): void
     {
-        $this->lld=$ld;
+        $this->lld = $ld;
     }
 
     public static function getInstance(): static
