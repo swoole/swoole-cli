@@ -16,6 +16,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions($options)
         ->withPeclVersion('1.14.2');
+
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
 
     if ($p->getOsType() == 'macos') {
