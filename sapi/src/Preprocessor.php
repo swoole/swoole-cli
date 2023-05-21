@@ -127,6 +127,10 @@ class Preprocessor
             case 'Darwin':
                 $this->setOsType('macos');
                 $this->setLinker('ld');
+                if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
+                    $this->binPaths[] = '/usr/local/opt/llvm/bin/';
+                    $this->setLinker('ld64.lld');
+                }
                 break;
             case 'WINNT':
                 $this->setOsType('win');
