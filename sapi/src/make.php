@@ -198,6 +198,12 @@ export_variables() {
     CFLAGS=""
     LDFLAGS=""
     LIBS=""
+    <?php if ($this->getOsType() == 'macos') :?>
+    LDFLAGS="  -fuse-ld=lld"
+    LDFLAGS="  -fuse-ld=ld64.lld"
+    LDFLAGS="  -fuse-ld=ld"
+    <?php endif;?>
+
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
