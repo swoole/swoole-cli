@@ -54,7 +54,6 @@ class Preprocessor
      * @var string
      */
     protected string $globalPrefix = '/usr/local/swoole-cli';
-    # protected string $globalPrefix = '/usr';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -135,9 +134,9 @@ class Preprocessor
         }
     }
 
-    public function  setLinker(string $ld): void
+    public function setLinker(string $ld): void
     {
-        $this->lld=$ld;
+        $this->lld = $ld;
     }
 
     public static function getInstance(): static
