@@ -12,7 +12,9 @@
 
 - [Swoole-Cli 介绍](https://zhuanlan.zhihu.com/p/581695339)
 - [Swoole-Cli 使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole v5.0 版本新特性预览之新的运行模式](https://zhuanlan.zhihu.com/p/459983471)
+- [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://zhuanlan.zhihu.com/p/459983471)
+- [Swoole-Cli v5.0.1 PHP 的二进制发行版](https://zhuanlan.zhihu.com/p/581695339)
+- [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://zhuanlan.zhihu.com/p/610014616)
 
 ## 下载`swoole-cli`发行版
 
