@@ -47,11 +47,11 @@ ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
  brew install gettext coreutils re2c libunistring
 ```
 
-## curl configure 检测不通过
+## curl configure 检测不通过 (已经通过 pkg-config 解决)
 
 修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
 
-## `icu/oniguruma` 找不到
+## `icu/oniguruma` 找不到  (已经通过 pkg-config 解决)
 
 错误信息：
 
@@ -83,7 +83,7 @@ export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ## 下载 macOS 版本 运行无权限，解决方案
 
 >  Mac安装应用“提示文件已损坏”或“来自身份不明开发者”解决方法
-> 
+>
 > 解压以后执行如下命令：
 
 ```bash

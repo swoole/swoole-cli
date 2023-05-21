@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $libgif_prefix= GIF_PREFIX;
+    $libgif_prefix = GIF_PREFIX;
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libgif_prefix . '/include');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libgif_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lgif');

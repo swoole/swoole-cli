@@ -29,6 +29,7 @@
 - [swoole-cli 构建选项文档](docs/options.md)
 - [打包成二进制可执行文件 文档](sapi/samples/sfx/README.md)
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
+- [快速开始构建环境](sapi/quickstart/README.md)
 
 ## Clone
 
