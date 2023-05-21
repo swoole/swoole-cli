@@ -155,16 +155,17 @@ make_config() {
     export_variables
     echo $LDFLAGS > ldflags.log
     echo $CPPFLAGS > cppflags.log
+
     ./configure $OPTIONS
 }
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType()=='linux'):?>
-    export LDFLAGS="$LDFLAGS -all-static "
+    <?php if ($this->getOsType()=='linux'): ?>
+    export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
-    export LDFLAGS="$LDFLAGS  <?= $this->extraLdflags ?>"
+    export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
 

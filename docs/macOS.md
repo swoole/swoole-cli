@@ -96,3 +96,5 @@ export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```bash
   sudo xattr -d com.apple.quarantine  ./swoole-cli
 ```
+
+## [macOS doesn't officially support fully static linking ](https://developer.apple.com/library/archive/qa/qa1118/_index.html)
