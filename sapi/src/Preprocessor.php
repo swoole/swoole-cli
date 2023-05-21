@@ -54,6 +54,7 @@ class Preprocessor
      * @var string
      */
     protected string $globalPrefix = '/usr/local/swoole-cli';
+    # protected string $globalPrefix = '/usr';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -226,7 +227,8 @@ class Preprocessor
         return $this->rootDir;
     }
 
-    public function getPrepareArgs(): array {
+    public function getPrepareArgs(): array
+    {
         return $this->prepareArgs;
     }
 
@@ -637,6 +639,27 @@ class Preprocessor
         }
     }
 
+    public function loadLibrary($library_name)
+    {
+        if (!isset($this->libraryMap[$library_name])) {
+            $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
+            if (!is_file($file)) {
+                return;
+            }
+            $func = require $file;
+            $func($this);
+        }
+
+        if (isset($this->libraryMap[$library_name])) {
+            $deps = $this->libraryMap[$library_name]->deps;
+            if (!empty($deps)) {
+                foreach ($deps as $library_name) {
+                    $this->loadLibrary($library_name);
+                }
+            }
+        }
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -680,6 +703,12 @@ class Preprocessor
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
+            }
+        }
+        // autoload  library
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->deps as $library_name) {
+                $this->loadLibrary($library_name);
             }
         }
 
