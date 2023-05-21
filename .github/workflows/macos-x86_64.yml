@@ -13,7 +13,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Prepare build environment
         run: |
+          env
+          echo $HOME
           brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm
+
           brew uninstall --ignore-dependencies oniguruma
           brew uninstall --ignore-dependencies brotli
           brew uninstall --ignore-dependencies freetype
