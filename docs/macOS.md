@@ -23,7 +23,7 @@ brew uninstall --ignore-dependencies capstone
 
 ## 缺少 bison
 
-下载源代码，自行编译安装 (此问题已经决，安装依赖库时 已经包含bison源码编译)
+下载源代码，自行编译安装 (此问题已解决，安装依赖库时 已经包含bison源码编译)
 
 ## 缺少`libtool`
 
