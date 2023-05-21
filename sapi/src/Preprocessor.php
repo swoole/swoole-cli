@@ -135,6 +135,7 @@ class Preprocessor
                 $this->setOsType('win');
                 break;
         }
+        $this->extEnabled=['common'];
     }
 
     public function setLinker(string $ld): void

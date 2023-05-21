@@ -38,6 +38,7 @@ define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
+$p->setGlobalPrefix('/usr');
 
 if ($p->getOsType() == 'macos') {
     // -lintl -Wl,-framework -Wl,CoreFoundation
