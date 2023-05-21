@@ -5,8 +5,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 RUN apk update
 
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-RUN apk add flex  pkgconf ca-certificates
-RUN apk add bash
+RUN apk add flex  pkgconf ca-certificates zip unzip 7zip lzip
 RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
 WORKDIR /work
 
@@ -47,7 +46,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 RUN apk update
 
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-RUN apk add flex  pkgconf ca-certificates
+RUN apk add flex  pkgconf ca-certificates zip unzip 7zip lzip
 RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
 WORKDIR /work
 
