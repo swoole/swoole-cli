@@ -17,6 +17,7 @@ class Preprocessor
 
     protected static ?Preprocessor $instance = null;
 
+    protected array $prepareArgs = [];
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
@@ -52,7 +53,8 @@ class Preprocessor
      * 编译后.a静态库文件安装目录的全局前缀，在构建阶段使用
      * @var string
      */
-    protected string $globalPrefix = '/usr';
+    protected string $globalPrefix = '/usr/local/swoole-cli';
+    # protected string $globalPrefix = '/usr';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -124,14 +126,21 @@ class Preprocessor
             default:
             case 'Linux':
                 $this->setOsType('linux');
+                $this->setLinker('ld.lld');
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
+                $this->setLinker('ld64.lld');
                 break;
             case 'WINNT':
                 $this->setOsType('win');
                 break;
         }
+    }
+
+    public function  setLinker(string $ld): void
+    {
+        $this->lld=$ld;
     }
 
     public static function getInstance(): static
@@ -219,6 +228,11 @@ class Preprocessor
     public function getRootDir(): string
     {
         return $this->rootDir;
+    }
+
+    public function getPrepareArgs(): array
+    {
+        return $this->prepareArgs;
     }
 
     public function setLibraryDir(string $libraryDir)
@@ -368,7 +382,7 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            if (is_file($lib->path)) {
+            if (is_file($lib->path) && (filesize($lib->path) != 0)) {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
@@ -434,7 +448,7 @@ EOF;
                 }
 
                 $workDir = $this->getWorkDir();
-                if (!file_exists($ext->path)) {
+                if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
                         $cacheDir = $this->getWorkDir() . '/var/tmp';
                         $ext->downloadScript = <<<EOF
@@ -598,6 +612,7 @@ EOF;
 
     public function parseArguments(int $argc, array $argv)
     {
+        $this->prepareArgs = $argv;
         // parse the parameters passed in by the user
         for ($i = 1; $i < $argc; $i++) {
             $arg = $argv[$i];
@@ -699,6 +714,27 @@ EOF;
         }
     }
 
+    public function loadLibrary($library_name)
+    {
+        if (!isset($this->libraryMap[$library_name])) {
+            $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
+            if (!is_file($file)) {
+                return;
+            }
+            $func = require $file;
+            $func($this);
+        }
+
+        if (isset($this->libraryMap[$library_name])) {
+            $deps = $this->libraryMap[$library_name]->deps;
+            if (!empty($deps)) {
+                foreach ($deps as $library_name) {
+                    $this->loadLibrary($library_name);
+                }
+            }
+        }
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -742,6 +778,12 @@ EOF;
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
+            }
+        }
+        // autoload  library
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->deps as $library_name) {
+                $this->loadLibrary($library_name);
             }
         }
 
