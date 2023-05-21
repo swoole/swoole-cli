@@ -17,11 +17,11 @@ return function (Preprocessor $p) {
         ->withOptions($options)
         ->withPeclVersion('1.14.2')
         ->depends('icu', 'openssl', 'zlib', 'libzstd', 'bison');
-
-    if ($p->getOsType() == 'macos') {
-       // call_user_func_array([$ext,'depends'], ['bison']);
-      // $ext->depends('bison');
-    }
+    /*
+        if (1 || $p->getOsType() == 'macos') {
+            call_user_func_array([$ext,'depends'], ['bison']);
+            $ext->depends('bison');
+        }
+    */
     $p->addExtension($ext);
-
 };

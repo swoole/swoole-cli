@@ -4,6 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
+    if ($p->getOsType() == 'macos') {
         $bison_prefix = BISON_PREFIX;
         $p->addLibrary(
             (new Library('bison'))
@@ -18,4 +19,5 @@ return function (Preprocessor $p) {
                 )
                 ->withBinPath($bison_prefix . '/bin/')
         );
+    }
 };
