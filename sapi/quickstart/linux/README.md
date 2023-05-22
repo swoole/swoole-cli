@@ -50,11 +50,13 @@ bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 
 # 准备构建基础软件
 
-sh sapi/quickstart/linux/alpine-3.16-init.sh
+sh  sapi/quickstart/linux/alpine-3.16-init.sh
+
 
 # 准备构建基础软件 使用中科大镜像源
 
-sh sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
+sh  sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
+
 
 ```
 
