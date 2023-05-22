@@ -36,13 +36,11 @@
 ## Clone
 
 ```shell
-git clone --recursive git@github.com:swoole/swoole-cli.git
+git clone --recursive https://github.com/swoole/swoole-cli.git
 ```
 
-或者
-
 ```shell
-git clone git@github.com:swoole/swoole-cli.git
+git clone https://github.com/swoole/swoole-cli.git
 git submodule update --init
 ```
 
