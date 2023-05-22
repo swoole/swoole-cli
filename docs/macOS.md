@@ -25,7 +25,7 @@ brew uninstall --ignore-dependencies capstone
 
 下载源代码，自行编译安装 (此问题已解决，安装依赖库时 已经包含bison源码编译)
 
-## llvm 连接器 ld6.lld 、 lld 找不到
+## llvm 连接器 ld64.lld 、 lld 找不到
 
 ```shell
     # 若目录不存在，可以先安装 llvm
