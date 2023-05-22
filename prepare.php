@@ -33,6 +33,9 @@ if ($p->getInputOption('with-global-prefix')) {
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
+    if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
+        $p->withPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
+    }
 }
 
 $p->setExtraCflags('-fno-ident -Os');

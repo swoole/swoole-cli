@@ -35,6 +35,6 @@ EOF
             ->withPkgName('icu-i18n')
             ->withPkgName('icu-io')
             ->withPkgName('icu-uc')
-            ->withBinPath($icu_prefix . '/bin/')
+            ->withBinPath($icu_prefix . '/bin/:' . $icu_prefix . "/sbin")
     );
 };
