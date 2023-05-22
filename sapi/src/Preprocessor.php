@@ -307,7 +307,12 @@ class Preprocessor
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
         $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
         echo PHP_EOL;
-        echo $cmd = "curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry}  -Lo '{$file}' '{$url}' ";
+        if ($this->getInputOption('with-downloader') === 'wget') {
+            $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T {$connect_timeout} ";
+        } else {
+            $cmd = "curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry}  -Lo '{$file}' '{$url}' ";
+        }
+        echo $cmd;
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
