@@ -11,10 +11,15 @@
 使用 `brew` 安装的库可能会干扰 `swoole-cli` 的编译，必须要在构建之前将关联的软件进行卸载。在构建完成后再重新安装。
 
 ```shell
-brew uninstall --ignore-dependencies oniguruma
+
+# 多数情况下，只需要卸载  snappy 和 capstone
+
+# brew uninstall --ignore-dependencies oniguruma
 # brew uninstall --ignore-dependencies brotli
-brew uninstall --ignore-dependencies freetype
+# brew uninstall --ignore-dependencies freetype
 # brew uninstall --ignore-dependencies zstd
+
+brew uninstall --ignore-dependencies snappy
 brew uninstall --ignore-dependencies capstone
 
 ```
