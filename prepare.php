@@ -12,7 +12,7 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 // Compile directly on the host machine, not in the docker container
-if ($p->getInputOption('without-docker')) {
+if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
