@@ -439,14 +439,22 @@ class Preprocessor
         return $packages;
     }
 
-    public function withVariable(string $key, string $value): void
+    public function withPath(string $path): static
     {
-        $this->variables[] = [$key => $value];
+        $this->binPath[] = $path;
+        return $this;
     }
 
-    public function withExportVariable(string $key, string $value): void
+    public function withVariable(string $key, string $value): static
+    {
+        $this->variables[] = [$key => $value];
+        return $this;
+    }
+
+    public function withExportVariable(string $key, string $value): static
     {
         $this->exportVariables[] = [$key => $value];
+        return $this;
     }
 
     public function getExtension(string $name): ?Extension
@@ -679,7 +687,7 @@ class Preprocessor
         include __DIR__ . '/constants.php';
 
         $extAvailabled = [];
-        $this->scanConfigFiles(__DIR__.'/builder/extension', $extAvailabled);
+        $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
 
         $confPath = $this->getInputOption('conf-path');
         if ($confPath) {
@@ -743,16 +751,16 @@ class Preprocessor
         }
 
         ob_start();
-        include __DIR__ . '/make.php';
+        include __DIR__ . '/template/make.php';
         file_put_contents($this->rootDir . '/make.sh', ob_get_clean());
 
         ob_start();
-        include __DIR__ . '/license.php';
+        include __DIR__ . '/template/license.php';
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
 
         ob_start();
-        include __DIR__ . '/credits.php';
+        include __DIR__ . '/template/credits.php';
         file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
 
         copy($this->rootDir . '/sapi/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
