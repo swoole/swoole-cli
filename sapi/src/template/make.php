@@ -231,7 +231,6 @@ make_config() {
      export_variables
      echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
      echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
-
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
@@ -242,8 +241,10 @@ make_config() {
 make_build() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
-
-    export LDFLAGS="$LDFLAGS -all-static -fno-ident <?= $this->extraLdflags ?>"
+    <?php if ($this->getOsType()=='linux'): ?>
+    export LDFLAGS="$LDFLAGS  -static -all-static "
+    <?php endif ;?>
+    export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
 
