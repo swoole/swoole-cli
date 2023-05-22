@@ -44,6 +44,9 @@ if ($p->getOsType() == 'macos') {
     // -lintl -Wl,-framework -Wl,CoreFoundation
     //$p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup');
     $p->setExtraLdflags('-undefined dynamic_lookup');
+    if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
+        $p->withPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
+    }
 }
 
 
