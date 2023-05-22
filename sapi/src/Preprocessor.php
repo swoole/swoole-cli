@@ -305,7 +305,9 @@ class Preprocessor
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
-        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 ";
+        # echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 ";
+        # echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
+        echo $cmd = "curl  --connect-timeout 15 --retry {$retry_number}  --retry-delay {$wait_retry}  -Lo '{$file}' '{$url}' ";
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
@@ -667,7 +669,7 @@ class Preprocessor
         }
     }
 
-    public function generateFile(string $templateFile, string $outFile): bool 
+    public function generateFile(string $templateFile, string $outFile): bool
     {
         if (!is_file($templateFile)) {
             return false;
@@ -769,7 +771,7 @@ class Preprocessor
 
         if ($this->getInputOption('with-dependency-graph')) {
             $this->generateFile(
-                __DIR__ . '/template/extension_ependency_graph.php', 
+                __DIR__ . '/template/extension_ependency_graph.php',
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
