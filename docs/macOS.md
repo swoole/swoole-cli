@@ -11,10 +11,15 @@
 使用 `brew` 安装的库可能会干扰 `swoole-cli` 的编译，必须要在构建之前将关联的软件进行卸载。在构建完成后再重新安装。
 
 ```shell
-brew uninstall --ignore-dependencies oniguruma
-brew uninstall --ignore-dependencies brotli
-brew uninstall --ignore-dependencies freetype
+
+# 多数情况下，只需要卸载  snappy 和 capstone
+
+# brew uninstall --ignore-dependencies oniguruma
+# brew uninstall --ignore-dependencies brotli
+# brew uninstall --ignore-dependencies freetype
 # brew uninstall --ignore-dependencies zstd
+
+brew uninstall --ignore-dependencies snappy
 brew uninstall --ignore-dependencies capstone
 
 ```
@@ -25,7 +30,7 @@ brew uninstall --ignore-dependencies capstone
 
 下载源代码，自行编译安装 (此问题已解决，安装依赖库时 已经包含bison源码编译)
 
-## llvm 连接器 ld6.lld 、 lld 找不到
+## llvm 连接器 ld64.lld 、 lld 找不到
 
 ```shell
     # 若目录不存在，可以先安装 llvm

@@ -1,7 +1,7 @@
 构建镜像
 ====
 `Linux` 下需要在容器中构建，因此需要先构建 `swoole-cli-builder:base` 基础镜像。
-基础镜像 `Dockerfile` 参考 [sapi/Dockerfile](/sapi/Dockerfile)
+基础镜像 `Dockerfile` 参考 [sapi/Dockerfile](/sapi/docker/Dockerfile)
 
 1. 构建基础镜像：`./make.sh docker-build`，也可以直接使用官方构建好的镜像 `docker pull phpswoole/swoole-cli-builder:base`
 1. 构建完成之后，使用 `./make.sh docker-bash` 进入容器

@@ -113,4 +113,11 @@ sh sapi/scripts/generate-dependency-graph.sh
 
 ```
 
+with-downloader
+----
+指定 `wget` 作为下载器 （默认使用`curl` 作为依赖库和扩展的下载器）
+
+```shell
+php ./prepare.php --with-downloader=wget
+```
 
