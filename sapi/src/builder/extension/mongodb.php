@@ -34,11 +34,6 @@ return function (Preprocessor $p) {
         ->withOptions($options)
         ->withPeclVersion('1.14.2');
 
-    //  PHP_ADD_EXTENSION_DEP(mongodb, date)
-    //  PHP_ADD_EXTENSION_DEP(mongodb, json)
-    //  PHP_ADD_EXTENSION_DEP(mongodb, spl)
-    //  PHP_ADD_EXTENSION_DEP(mongodb, standard)
-
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
 
     if ($p->getOsType() == 'macos') {
