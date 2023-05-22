@@ -15,4 +15,8 @@ return function (Preprocessor $p) {
             ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
             ->withBinPath($libiconv_prefix . '/bin/')
     );
+
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . ICONV_PREFIX . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . ICONV_PREFIX . '/lib');
+    $p->withVariable('LIBS', '$LIBS -liconv');
 };

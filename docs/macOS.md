@@ -14,7 +14,7 @@
 brew uninstall --ignore-dependencies oniguruma
 brew uninstall --ignore-dependencies brotli
 brew uninstall --ignore-dependencies freetype
-brew uninstall --ignore-dependencies zstd
+# brew uninstall --ignore-dependencies zstd
 brew uninstall --ignore-dependencies capstone
 
 ```
@@ -23,7 +23,17 @@ brew uninstall --ignore-dependencies capstone
 
 ## 缺少 bison
 
-下载源代码，自行编译安装 (此问题已经决，安装依赖库时 已经包含bison源码编译)
+下载源代码，自行编译安装 (此问题已解决，安装依赖库时 已经包含bison源码编译)
+
+## llvm 连接器 ld6.lld 、 lld 找不到
+
+```shell
+    # 若目录不存在，可以先安装 llvm
+    brew intall llvm
+
+    export PATH=/usr/local/opt/llvm/bin:$PATH
+
+```
 
 ## 缺少`libtool`
 
@@ -86,3 +96,5 @@ export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```bash
   sudo xattr -d com.apple.quarantine  ./swoole-cli
 ```
+
+## [macOS doesn't officially support fully static linking ](https://developer.apple.com/library/archive/qa/qa1118/_index.html)
