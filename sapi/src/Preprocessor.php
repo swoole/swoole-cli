@@ -127,10 +127,6 @@ class Preprocessor
             case 'Darwin':
                 $this->setOsType('macos');
                 $this->setLinker('ld');
-                if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
-                    $this->binPaths[] = '/usr/local/opt/llvm/bin/';
-                    $this->setLinker('ld64.lld');
-                }
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -683,9 +679,8 @@ class Preprocessor
         include __DIR__ . '/constants.php';
 
         $extAvailabled = [];
-        if (is_dir($this->rootDir . '/conf.d')) {
-            $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
-        }
+        $this->scanConfigFiles(__DIR__.'/builder/extension', $extAvailabled);
+
         $confPath = $this->getInputOption('conf-path');
         if ($confPath) {
             $confDirList = explode(':', $confPath);
