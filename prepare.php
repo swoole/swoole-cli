@@ -14,7 +14,7 @@ $p->parseArguments($argc, $argv);
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
 
 // Compile directly on the host machine, not in the docker container
-if ($p->getInputOption('without-docker')) {
+if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
