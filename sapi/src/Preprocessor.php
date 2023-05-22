@@ -126,7 +126,11 @@ class Preprocessor
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
-                $this->setLinker('ld64.lld');
+                $this->setLinker('ld');
+                if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
+                    $this->binPaths[] = '/usr/local/opt/llvm/bin/';
+                    $this->setLinker('ld64.lld');
+                }
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -134,9 +138,9 @@ class Preprocessor
         }
     }
 
-    public function  setLinker(string $ld): void
+    public function setLinker(string $ld): void
     {
-        $this->lld=$ld;
+        $this->lld = $ld;
     }
 
     public static function getInstance(): static
@@ -226,7 +230,8 @@ class Preprocessor
         return $this->rootDir;
     }
 
-    public function getPrepareArgs(): array {
+    public function getPrepareArgs(): array
+    {
         return $this->prepareArgs;
     }
 
@@ -637,6 +642,27 @@ class Preprocessor
         }
     }
 
+    public function loadLibrary($library_name)
+    {
+        if (!isset($this->libraryMap[$library_name])) {
+            $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
+            if (!is_file($file)) {
+                return;
+            }
+            $func = require $file;
+            $func($this);
+        }
+
+        if (isset($this->libraryMap[$library_name])) {
+            $deps = $this->libraryMap[$library_name]->deps;
+            if (!empty($deps)) {
+                foreach ($deps as $library_name) {
+                    $this->loadLibrary($library_name);
+                }
+            }
+        }
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -680,6 +706,12 @@ class Preprocessor
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
+            }
+        }
+        // autoload  library
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->deps as $library_name) {
+                $this->loadLibrary($library_name);
             }
         }
 
