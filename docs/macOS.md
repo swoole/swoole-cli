@@ -12,7 +12,7 @@
 
 ```shell
 brew uninstall --ignore-dependencies oniguruma
-brew uninstall --ignore-dependencies brotli
+# brew uninstall --ignore-dependencies brotli
 brew uninstall --ignore-dependencies freetype
 # brew uninstall --ignore-dependencies zstd
 brew uninstall --ignore-dependencies capstone
