@@ -305,7 +305,9 @@ class Preprocessor
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
-        echo $cmd = "curl  --connect-timeout 15 --retry {$retry_number}  --retry-delay {$wait_retry}  -Lo '{$file}' '{$url}' ";
+        $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
+        echo PHP_EOL;
+        echo $cmd = "curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry}  -Lo '{$file}' '{$url}' ";
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
