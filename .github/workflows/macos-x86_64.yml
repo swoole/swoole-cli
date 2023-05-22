@@ -12,51 +12,57 @@ jobs:
         run: |
           env
           echo $HOME
-          brew install  wget curl  libtool automake gettext coreutils re2c binutils
+          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm
           brew uninstall --ignore-dependencies oniguruma
           brew uninstall --ignore-dependencies brotli
           brew uninstall --ignore-dependencies freetype
-          brew uninstall --ignore-dependencies zstd
+          # brew uninstall --ignore-dependencies zstd
           brew uninstall --ignore-dependencies capstone
           which glibtool
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-          sudo  xcode-select --switch /Applications/Xcode.app
+          # sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
-
+          CURRENT_USER=$(whoami)
+          echo ${CURRENT_USER}
+          sudo mkdir -p /usr/local/swoole-cli
+          sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
           git submodule update --init
 
       - name: Prepare runtime
         run: |
-          sudo mkdir -p pool/lib
-          sudo mkdir -p pool/ext
-          sudo mkdir -p bin/runtime
-          sudo bash  sapi/quickstart/setup-php-runtime.sh
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
+          bash  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          sudo bash sapi/download-box/download-box-get-archive-from-server.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          sudo composer update --no-dev  --optimize-autoloader
-          sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
+          composer update --no-dev  --optimize-autoloader
+          php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
-          path: ~/.swoole-cli
+          # path: ~/.swoole-cli
+          path: /usr/local/swoole-cli
           key: ${{ runner.os }}-build-all-library
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
-          sudo chmod a+x ./make.sh
-          sudo ./make.sh all-library
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          chmod a+x ./make.sh
+          ./make.sh all-library
 
       - name: Build
         run: |
-          sudo chmod a+x ./make.sh
-          sudo ./make.sh config
-          sudo ./make.sh build
-          sudo ./make.sh archive
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          chmod a+x ./make.sh
+          ./make.sh config
+          ./make.sh build
+          ./make.sh archive
 
       - name: Show Build Result
         run: |
