@@ -8,7 +8,7 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('bison'))
             ->withHomePage('https://www.gnu.org/software/bison/')
-            ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
+            ->withUrl('https://ftpmirror.gnu.org/gnu/bison/bison-3.8.tar.gz')
             ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
             ->withConfigure(
                 "
