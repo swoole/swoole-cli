@@ -20,6 +20,6 @@ return function (Preprocessor $p) {
                 cp -rf php-src/ext/pdo_pgsql  pdo_pgsql
 EOF
             )
-            ->withOptions('--with-pgsql=' . PGSQL_PREFIX)->depends('pgsql')
+            ->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)->depends('pgsql')
     );
 };
