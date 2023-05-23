@@ -78,7 +78,7 @@ libpq-devel (如果编译pgsql扩展)
 到对应的分支，如 `4.8.x` 或 `master` (`5.0.x`)
 
 ```shell
-git clone --recursive git@github.com:swoole/swoole-cli.git
+git clone --recursive https://github.com:swoole/swoole-cli.git
 ```
 
 - 准备re2c：` bash ./sapi/scripts/cygwin/install-re2c.sh`
