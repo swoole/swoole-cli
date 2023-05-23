@@ -13,7 +13,7 @@ cd ${__PROJECT__}
 
 
 php prepare.php \
---conf-path="./conf.d.extra4" \
+--conf-path="./conf.d.extra" \
  --with-global-prefix=/usr \
 -opcache \
 -curl \

@@ -62,11 +62,11 @@ ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
  brew install gettext coreutils re2c libunistring
 ```
 
-## curl configure 检测不通过 (已经通过 pkg-config 解决)
+## curl configure 检测不通过
 
 修改 `ext/curl/config.m4` ，去掉 `HAVE_CURL` 检测
 
-## `icu/oniguruma` 找不到  (已经通过 pkg-config 解决)
+## `icu/oniguruma` 找不到
 
 错误信息：
 
