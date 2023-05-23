@@ -65,9 +65,10 @@ EOF;
             if (empty($item->file)) {
                 $item->file = $item->name . '.tar.gz';
             }
-            $cacheDir = '${__DIR__}/var/tmp';
+            $cacheDir = '${__DIR__}/var/tmp/download/lib';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
+                test -d {$cacheDir} && rm -rf {$cacheDir}
                 mkdir -p {$cacheDir}
                 cd {$cacheDir}
                 test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
@@ -95,9 +96,10 @@ EOF;
             if (empty($item->peclVersion) && empty($item->file)) {
                 $item->file = $item->name . '.tgz';
             }
-            $cacheDir = '${__DIR__}/var/tmp';
+            $cacheDir = '${__DIR__}/var/tmp/download/ext';
             $workDir = '${__DIR__}/var';
             $downloadScript = <<<EOF
+                test -d {$cacheDir} && rm -rf {$cacheDir}
                 mkdir -p {$cacheDir}
                 cd {$cacheDir}
                 test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}

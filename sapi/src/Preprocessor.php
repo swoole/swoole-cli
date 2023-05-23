@@ -393,9 +393,10 @@ class Preprocessor
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
-                    $cacheDir = $this->getWorkDir() . '/var/tmp';
+                    $cacheDir = $this->getWorkDir() . '/var/tmp/download/lib';
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
+                        test -d {$cacheDir} && rm -rf {$cacheDir}
                         mkdir -p {$cacheDir}
                         cd {$cacheDir}
                         test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
@@ -457,8 +458,9 @@ EOF;
                 $workDir = $this->getWorkDir();
                 if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
-                        $cacheDir = $this->getWorkDir() . '/var/tmp';
+                        $cacheDir = $this->getWorkDir() . '/var/tmp/download/ext';
                         $ext->downloadScript = <<<EOF
+                                test -d {$cacheDir} && rm -rf {$cacheDir}
                                 mkdir -p {$cacheDir}
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
