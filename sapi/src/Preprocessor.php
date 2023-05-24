@@ -653,7 +653,27 @@ class Preprocessor
         }
     }
 
-    public function loadLibrary($library_name)
+    public function loadDependExtension($extension_name)
+    {
+        if (!isset($this->extensionMap[$extension_name])) {
+            $file = realpath(__DIR__ . '/builder/extension/' . $extension_name . '.php');
+            if (!is_file($file)) {
+                return;
+            }
+            $func = require $file;
+            $func($this);
+        }
+        if (isset($this->extensionMap[$extension_name])) {
+            $deps = $this->extensionMap[$extension_name]->dependExtensions;
+            if (!empty($deps)) {
+                foreach ($deps as $extension_name) {
+                    $this->loadDependExtension($extension_name);
+                }
+            }
+        }
+    }
+
+    public function loadDependLibrary($library_name)
     {
         if (!isset($this->libraryMap[$library_name])) {
             $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
@@ -668,7 +688,7 @@ class Preprocessor
             $deps = $this->libraryMap[$library_name]->deps;
             if (!empty($deps)) {
                 foreach ($deps as $library_name) {
-                    $this->loadLibrary($library_name);
+                    $this->loadDependLibrary($library_name);
                 }
             }
         }
@@ -728,10 +748,18 @@ class Preprocessor
                 ($this->extCallbacks[$ext])($this);
             }
         }
-        // autoload  library
+
+        // autoload extension depend extension
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->dependExtensions as $extension_name) {
+                $this->loadDependExtension($extension_name);
+            }
+        }
+
+        // autoload  library depend library
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->deps as $library_name) {
-                $this->loadLibrary($library_name);
+                $this->loadDependLibrary($library_name);
             }
         }
 

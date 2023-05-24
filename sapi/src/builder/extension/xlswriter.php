@@ -12,5 +12,6 @@ return function (Preprocessor $p) {
             ->withPeclVersion('1.5.5')
             ->withOptions(' --with-xlswriter --enable-reader --with-openssl=' . OPENSSL_PREFIX)
             ->depends('openssl')
+            ->withDependExtension('openssl')
     );
 };
