@@ -147,3 +147,4 @@ define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/libintl');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
+define("LIBARCHIVE_PREFIX", $p->getGlobalPrefix() . '/libarchive');
