@@ -40,6 +40,8 @@ return function (Preprocessor $p) {
     if ($p->getOsType() == 'macos') {
         $depends[] = 'bison';
     }
+    //$depends[] = 'libsasl';
+    //$depends[] = 'snappy';
     call_user_func_array([$ext, 'depends'], $depends);
 
     $p->addExtension($ext);

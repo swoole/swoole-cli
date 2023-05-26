@@ -1,4 +1,4 @@
-name: build-swoole-cli-linux-aarch64
+name: build-php-cli-linux-aarch64
 
 on: [ push, pull_request ]
 
