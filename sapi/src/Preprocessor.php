@@ -393,9 +393,10 @@ class Preprocessor
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
-                    $cacheDir = $this->getWorkDir() . '/var/tmp';
+                    $cacheDir = $this->getWorkDir() . '/var/tmp/download/lib';
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
+                        test -d {$cacheDir} && rm -rf {$cacheDir}
                         mkdir -p {$cacheDir}
                         cd {$cacheDir}
                         test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
@@ -457,8 +458,9 @@ EOF;
                 $workDir = $this->getWorkDir();
                 if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
-                        $cacheDir = $this->getWorkDir() . '/var/tmp';
+                        $cacheDir = $this->getWorkDir() . '/var/tmp/download/ext';
                         $ext->downloadScript = <<<EOF
+                                test -d {$cacheDir} && rm -rf {$cacheDir}
                                 mkdir -p {$cacheDir}
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
@@ -729,7 +731,27 @@ EOF;
         }
     }
 
-    public function loadLibrary($library_name)
+    public function loadDependExtension($extension_name)
+    {
+        if (!isset($this->extensionMap[$extension_name])) {
+            $file = realpath(__DIR__ . '/builder/extension/' . $extension_name . '.php');
+            if (!is_file($file)) {
+                return;
+            }
+            $func = require $file;
+            $func($this);
+        }
+        if (isset($this->extensionMap[$extension_name])) {
+            $deps = $this->extensionMap[$extension_name]->dependExtensions;
+            if (!empty($deps)) {
+                foreach ($deps as $extension_name) {
+                    $this->loadDependExtension($extension_name);
+                }
+            }
+        }
+    }
+
+    public function loadDependLibrary($library_name)
     {
         if (!isset($this->libraryMap[$library_name])) {
             $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
@@ -744,7 +766,7 @@ EOF;
             $deps = $this->libraryMap[$library_name]->deps;
             if (!empty($deps)) {
                 foreach ($deps as $library_name) {
-                    $this->loadLibrary($library_name);
+                    $this->loadDependLibrary($library_name);
                 }
             }
         }
@@ -804,10 +826,18 @@ EOF;
                 ($this->extCallbacks[$ext])($this);
             }
         }
-        // autoload  library
+
+        // autoload extension depend extension
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->dependExtensions as $extension_name) {
+                $this->loadDependExtension($extension_name);
+            }
+        }
+
+        // autoload  library depend library
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->deps as $library_name) {
-                $this->loadLibrary($library_name);
+                $this->loadDependLibrary($library_name);
             }
         }
 
