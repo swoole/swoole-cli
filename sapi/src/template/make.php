@@ -23,6 +23,7 @@ OPTIONS="--disable-all \
 --enable-shared=no \
 --enable-static=yes \
 --enable-cli  \
+--disable-phpdbg \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
