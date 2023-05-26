@@ -198,7 +198,7 @@ make_config() {
     set -x
 
     if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
-        rm -rf <?= $this->buildDir ?>/php_src/.completed
+        rm -rf <?= $this->buildDir ?>/php_src/
     fi
     make_php_src
     cd <?= $this->phpSrcDir . PHP_EOL ?>
