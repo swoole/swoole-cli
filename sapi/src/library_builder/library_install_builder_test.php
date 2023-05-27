@@ -963,32 +963,6 @@ EOF
     $p->setVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lev');
 }
 
-function install_nettle($p)
-{
-    $nettle_prefix = NETTLE_PREFIX;
-    $p->addLibrary(
-        (new Library('nettle'))
-            ->withHomePage('https://www.lysator.liu.se/~nisse/nettle/')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-            ->withUrl('https://ftp.gnu.org/gnu/nettle/nettle-3.8.tar.gz')
-            ->withFile('nettle-3.8.tar.gz')
-            ->withPrefix($nettle_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($nettle_prefix)
-            ->withConfigure(
-                <<<EOF
-             ./configure --help
-            ./configure \
-            --prefix={$nettle_prefix} \
-            --enable-static \
-            --disable-shared \
-            --enable-mini-gmp
-EOF
-            )
-            ->withPkgName('nettle')
-    );
-}
-
 function install_libtasn1($p)
 {
     $libtasn1_prefix = LIBTASN1_PREFIX;
@@ -2077,43 +2051,6 @@ function install_p11_kit(Preprocessor $p)
             '
             )
             ->withPkgName('p11_kit')
-    );
-}
-
-function install_pcre2(Preprocessor $p)
-{
-    $pcre2_prefix = PCRE2_PREFIX;
-    $p->addLibrary(
-        (new Library('pcre2'))
-            ->withHomePage('https://github.com/PCRE2Project/pcre2.git')
-            ->withUrl('https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz')
-            ->withDocumentation('https://pcre2project.github.io/pcre2/doc/html/index.html')
-            ->withManual('https://github.com/PCRE2Project/pcre2.git')
-            ->withLicense(
-                'https://github.com/PCRE2Project/pcre2/blob/master/COPYING',
-                Library::LICENSE_SPEC
-            )
-            ->withFile('pcre2-10.42.tar.gz')
-            ->withPrefix($pcre2_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($pcre2_prefix)
-            ->withConfigure(
-                <<<EOF
-                ./configure --help
-
-                ./configure \
-                --prefix=$pcre2_prefix \
-                --enable-shared=no \
-                --enable-static=yes \
-                --enable-pcre2-16 \
-                --enable-pcre2-32 \
-                --enable-jit \
-                --enable-unicode
-
-
- EOF
-            )
-        //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
     );
 }
 

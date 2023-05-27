@@ -10,7 +10,6 @@ return function (Preprocessor $p) {
         'openssl'
     ];
     $ext = (new Extension('common'))
-        ->withOptions('')
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_GPL);

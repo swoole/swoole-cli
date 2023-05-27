@@ -321,58 +321,22 @@ _____EO_____
 
 
     set -exu
-
-    if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
-        rm -rf <?= $this->buildDir ?>/php_src/
-    fi
-    make_php_src
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
 <?php if ($this->getInputOption('with-build-type') != 'release') : ?>
 
 <?php endif ;?>
 
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-    make_ext_hook
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-    make_ext
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-
-    test -f ./configure &&  rm ./configure
-    ./buildconf --force
-<?php if ($this->osType !== 'macos') : ?>
-    mv main/php_config.h.in /tmp/cnt
-    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
-    cat /tmp/cnt >> main/php_config.h.in
-    echo -ne '\n#endif\n' >> main/php_config.h.in
-<?php endif; ?>
-
     echo $OPTIONS
     echo $PKG_CONFIG_PATH
-    ./configure --help
     export_variables
     echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
-
-<?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
-    PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
-    if [[ $PHP_VERSION -lt 80000 ]] ; then
-        echo "only support PHP >= 8.0 "
-    else
-        # 请把这个做成 patch  https://github.com/swoole/swoole-cli/pull/55/files
-
-    fi
-<?php endif ;?>
-
-    # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
-<?php if ($this->getOsType()=='linux'): ?>
-     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
-<?php endif ; ?>
-
-
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    make_ext_hook
 }
 
 make_build() {
-
+   exit 0
    # export EXTRA_LDFLAGS="$(pkg-config   --libs-only-L   --static openssl libraw_r )"
    # export EXTRA_LDFLAGS_PROGRAM=""
    # EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident '
@@ -390,7 +354,7 @@ make_build() {
 _____EO_____
 
 
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
     <?php if ($this->getOsType()=='linux'): ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "

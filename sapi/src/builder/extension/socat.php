@@ -5,14 +5,34 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $depends = [
-        'openssl',
         'socat'
     ];
     $ext = (new Extension('socat'))
-        ->withOptions('')
-        ->withHomePage('https://www.jingjingxyk.com')
-        ->withManual('https://developer.baidu.com/article/detail.html?id=293377') //如何选开源许可证？
-        ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_GPL);
+        ->withHomePage('http://www.dest-unreach.org/socat/')
+        ->withManual('http://www.dest-unreach.org/socat/')
+        ->withLicense('https://repo.or.cz/socat.git/blob/refs/heads/master:/COPYING', Extension::LICENSE_LGPL);
     call_user_func_array([$ext, 'depends'], $depends);
     $p->addExtension($ext);
+    $p->setExtHook('socat', function (Preprocessor $p) {
+        $workdir = $p->getWorkDir();
+        $builddir = $p->getBuildDir();
+        $cmd = <<<EOF
+                mkdir -p {$workdir}/bin/
+                cd {$builddir}/socat
+                cp -f socat {$workdir}/bin/
+
+
+EOF;
+        if ($p->getOsType() == 'macos') {
+            $cmd .= <<<EOF
+            otool -L {$workdir}/bin/socat
+EOF;
+        } else {
+            $cmd .= <<<EOF
+              file {$workdir}/bin/socat
+              readelf -h {$workdir}/bin/socat
+EOF;
+        }
+        return $cmd;
+    });
 };

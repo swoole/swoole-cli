@@ -49,7 +49,7 @@ define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 
-define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
+
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 
 
@@ -58,7 +58,6 @@ define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("LIBEV_PREFIX", $p->getGlobalPrefix() . '/libev');
-define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("LIBUV_PREFIX", $p->getGlobalPrefix() . '/libuv');
 
 define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
@@ -100,8 +99,6 @@ define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
 
 define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
 
-
-define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
 
 define("GNUPG_PREFIX", $p->getGlobalPrefix() . '/gnupg');
 define("BOOST_PREFIX", $p->getGlobalPrefix() . '/boost');
@@ -154,4 +151,6 @@ define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
 define("LIBARCHIVE_PREFIX", $p->getGlobalPrefix() . '/libarchive');
+
 define("SOCAT_PREFIX", $p->getGlobalPrefix() . '/socat');
+define("ARIA2_PREFIX", $p->getGlobalPrefix() . '/aria2');

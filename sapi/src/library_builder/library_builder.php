@@ -75,7 +75,6 @@ function libraries_builder($p)
 
     //扩展不兼容本项目
     //install_libevent($p);
-    //install_libuv($p);
 
 
     # 扩展 mbstring 依赖 oniguruma 库
@@ -215,7 +214,7 @@ function libraries_builder($p)
         install_p11_kit($p);
         # TLS/ESNI/ECH/DoT/DoH/  参考文档https://zhuanlan.zhihu.com/p/572101957
         # SSL 比较 https://curl.se/docs/ssl-compared.html
-        install_nettle($p); //加密库
+
         install_libtasn1($p);
         install_gnutls($p); //依赖 gmp libiconv  libtasn1 libzip  libzstd libbrotli libzlib
         install_nghttp3($p); // 使用 GnuTLS或者wolfss，这样就不用更换openssl版本了 ；
@@ -262,15 +261,6 @@ function libraries_builder($p)
         install_libzip_ng($p); //zlib next
     }
     install_snappy($p);
-
-    if (1) {
-        install_aria2($p); //依赖libuv openssl zlib libxml2 sqlite3 openssl c-ares
-        install_socat($p); //依赖 readline openssl
-    }
-    if (0) {
-        install_pcre2($p);
-        install_nginx($p);
-    }
 
     if (0) {
         //Wasm

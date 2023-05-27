@@ -812,7 +812,7 @@ EOF;
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
         //构建依赖库安装脚本
-        libraries_builder($this);
+        //libraries_builder($this);
         $extAvailabled = [];
         $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
 
