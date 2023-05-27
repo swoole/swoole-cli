@@ -763,6 +763,10 @@ class Preprocessor
             }
         }
 
+        if ($this->getOsType() == 'macos') {
+            $this->loadDependLibrary("bison");
+        }
+
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
