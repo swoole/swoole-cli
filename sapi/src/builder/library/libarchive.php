@@ -15,7 +15,8 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
                 sh build/autogen.sh
-                ./configure && make distcheck
+                ./configure --help
+                ./configure && make distcheck&& make distcheck
 
                 # cmake .
 EOF
