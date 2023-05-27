@@ -26,29 +26,37 @@ return function (Preprocessor $p) {
             ->withCleanPreInstallDirectory($nginx_prefix)
             ->withConfigure(
                 <<<EOF
-             set -uex
+             set -x
             # sed -i "50i echo 'stop preprocessor'; exit 3 " ./configure
 
             ./configure --help
-
+:<<'===EOF==='
             # 使用 zlib openssl pcre2 新的源码目录
             mkdir -p {$builderDir}/nginx/openssl
             mkdir -p {$builderDir}/nginx/zlib
             mkdir -p {$builderDir}/nginx/pcre2
-            tar --strip-components=1 -C {$builderDir}/nginx/openssl -xf  {$workDir}/pool/lib/{$openssl->file}
-            tar --strip-components=1 -C {$builderDir}/nginx/zlib    -xf  {$workDir}/pool/lib/{$zlib->file}
-            tar --strip-components=1 -C {$builderDir}/nginx/pcre2   -xf  {$workDir}/pool/lib/{$pcre2->file}
-
-            packages="libxml-2.0 libexslt libxslt "
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )" \
-            CFLAGS="$(pkg-config    --cflags-only-I  --static \$packages )" \
-            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )" \
-            LIBS="$(pkg-config --libs-only-l         --static \$packages )" \
+            tar --strip-components=1 -C {$builderDir}/nginx/openssl -xf  {$workDir}/pool/lib/openssl-3.0.8-quic1.tar.gz
+            tar --strip-components=1 -C {$builderDir}/nginx/zlib    -xf  {$workDir}/pool/lib/zlib-1.2.11.tar.gz
+            tar --strip-components=1 -C {$builderDir}/nginx/pcre2   -xf  {$workDir}/pool/lib/pcre2-10.42.tar.gz
+            PACKAGES=" libxml-2.0 libexslt libxslt openssl zlib"
+            PACKAGES="\$PACKAGES libpcre2-16  libpcre2-32  libpcre2-8   libpcre2-posix"
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
             ./configure \
             --prefix={$nginx_prefix} \
             --with-openssl={$builderDir}/nginx/openssl \
             --with-pcre={$builderDir}/nginx/pcre2 \
             --with-zlib={$builderDir}/nginx/zlib \
+===EOF===
+
+            PACKAGES=" libxml-2.0 libexslt libxslt openssl zlib"
+            PACKAGES="\$PACKAGES libpcre2-16  libpcre2-32  libpcre2-8   libpcre2-posix"
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+            ./configure \
+            --prefix={$nginx_prefix} \
             --with-http_ssl_module \
             --with-http_gzip_static_module \
             --with-http_stub_status_module \
@@ -61,8 +69,8 @@ return function (Preprocessor $p) {
             --with-stream_ssl_preread_module \
             --with-stream_ssl_module \
             --with-threads \
-            --with-cc-opt="\$CPPFLAGS -static -O2" \
-            --with-ld-opt="\$LDFLAGS -s -static"
+            --with-cc-opt="-static -O2   \$CPPFLAGS " \
+            --with-ld-opt=" -s -static  \$LDFLAGS "
 
 
             #--with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS"

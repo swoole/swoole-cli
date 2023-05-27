@@ -4,9 +4,9 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $pcre2_prefix = PCRE2_PREFIX;
+    $privoxy_prefix = PCRE2_PREFIX;
     $p->addLibrary(
-        (new Library('pcre2'))
+        (new Library('privoxy'))
             ->withHomePage('https://github.com/PCRE2Project/pcre2.git')
             ->withUrl('https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz')
             ->withDocumentation('https://pcre2project.github.io/pcre2/doc/html/index.html')
@@ -16,9 +16,9 @@ return function (Preprocessor $p) {
                 Library::LICENSE_SPEC
             )
             ->withFile('pcre2-10.42.tar.gz')
-            ->withPrefix($pcre2_prefix)
+            ->withPrefix($privoxy_prefix)
             ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($pcre2_prefix)
+            ->withCleanPreInstallDirectory($privoxy_prefix)
             ->withConfigure(
                 <<<EOF
                 ./configure --help
@@ -35,10 +35,6 @@ return function (Preprocessor $p) {
 
  EOF
             )
-            ->withBinPath($pcre2_prefix . '/bin/')
-            ->withPkgName("libpcre2-16")
-            ->withPkgName("libpcre2-32")
-            ->withPkgName("libpcre2-8")
-            ->withPkgName("libpcre2-posix")
+    //->withPkgName("libpcrelibpcre2-32libpcre2-8 libpcre2-posix")
     );
 };
