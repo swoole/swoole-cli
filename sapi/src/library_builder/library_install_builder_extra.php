@@ -76,14 +76,14 @@ EOF
 function install_socat($p)
 {
     // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
-    $socat_prefix = '/usr/socat';
+    $socat_prefix = SOCAT_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $p->addLibrary(
         (new Library('socat'))
             ->withHomePage('http://www.dest-unreach.org/socat/')
             ->withLicense('http://www.dest-unreach.org/socat/doc/README', Library::LICENSE_GPL)
             ->withUrl('http://www.dest-unreach.org/socat/download/socat-1.7.4.4.tar.gz')
-            ->withConfigure(
+            ->withBuildScript(
                 <<<EOF
             pkg-config --cflags --static readline
             pkg-config  --libs --static readline
@@ -94,9 +94,11 @@ function install_socat($p)
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             CFLAGS="-static -O2 -Wall -fPIC  -DWITH_OPENSSL" \
             ./configure \
-            --prefix=/usr/socat \
+            --prefix={$socat_prefix} \
             --enable-readline \
             --enable-openssl-base={$openssl_prefix}
+
+            make -j $(cpu_nums)
 EOF
             )
             ->withBinPath($socat_prefix . '/bin/')

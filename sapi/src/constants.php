@@ -154,3 +154,4 @@ define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
 define("LIBARCHIVE_PREFIX", $p->getGlobalPrefix() . '/libarchive');
+define("SOCAT_PREFIX", $p->getGlobalPrefix() . '/socat');
