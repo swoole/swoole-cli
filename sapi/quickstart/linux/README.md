@@ -1,6 +1,7 @@
 # 快速启动容器环境
 
 > 提供了 debian 11 构建 和 alpine 构建环境
+
 > 任意选一个就可以
 
 ## 快速初始化容器运行环境
@@ -18,6 +19,7 @@ bash get-docker.sh --mirror Aliyun
 ## 构建环境
 
 > debian 和 alpine 任意选一个
+
 > 推荐 alpine
 
 ## debian 11 构建环境
@@ -51,11 +53,8 @@ bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 # 准备构建基础软件
 sh  sapi/quickstart/linux/alpine-3.16-init.sh
 
-
-
 # 准备构建基础软件 使用中科大镜像源
 sh  sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
-
 
 ```
 
@@ -92,15 +91,6 @@ bash sapi/download-box/download-box-get-archive-from-server.sh
 
 ```
 
-## 准备 swoole 源码
-
-> 拉取 swoole-cli 源码时没有拉取子模块，就需要执行这一步
-
-```bash
-
-git submodule update --init
-
-```
 
 ## 准备构建脚本
 
@@ -108,6 +98,10 @@ git submodule update --init
 
 # composer 使用阿里云镜像
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
+# 使用代理
+# export http_proxy=http://192.168.3.26:8015
+# export https_proxy=http://192.168.3.26:8015
 
 composer update --no-dev  --optimize-autoloader
 

@@ -322,7 +322,9 @@ var/
 /samples/sfx/*.phar
 composer.lock
 .php-cs-fixer.cache
+/php-src
 ldflags.log
 cppflags.log
 /packages
 /conf.d.loader
+

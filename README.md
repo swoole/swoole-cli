@@ -44,11 +44,6 @@ git clone https://github.com/swoole/swoole-cli.git
 git submodule update --init
 ```
 
-## [快速开始 进入构建环境 ](sapi/qquickstart)
-```shell
-# linux
-
-```
 
 ## 生成构建脚本
 

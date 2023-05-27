@@ -316,6 +316,7 @@ class Preprocessor
         # echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
 
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
+        $user_agent = DOWNLOAD_FILE_USER_AGENT;//--user-agent='{$user_agent}'
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
         $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
         echo PHP_EOL;
@@ -399,9 +400,10 @@ class Preprocessor
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
-                    $cacheDir = $this->getWorkDir() . '/var/tmp';
+                    $cacheDir = $this->getWorkDir() . '/var/tmp/download/lib';
                     $workDir = $this->getWorkDir();
                     $lib->downloadScript = <<<EOF
+                        test -d {$cacheDir} && rm -rf {$cacheDir}
                         mkdir -p {$cacheDir}
                         cd {$cacheDir}
                         test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
@@ -463,10 +465,11 @@ EOF;
                 }
 
                 $workDir = $this->getWorkDir();
-                if (!file_exists($ext->path)) {
+                if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
-                        $cacheDir = $this->getWorkDir() . '/var/tmp';
+                        $cacheDir = $this->getWorkDir() . '/var/tmp/download/ext';
                         $ext->downloadScript = <<<EOF
+                                test -d {$cacheDir} && rm -rf {$cacheDir}
                                 mkdir -p {$cacheDir}
                                 cd {$cacheDir}
                                 test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
@@ -823,6 +826,8 @@ EOF;
                 $this->scanConfigFiles($dir, $extAvailabled);
             }
         }
+        install_libraries($this);
+        $this->extEnabled = array_unique($this->extEnabled);
 
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {

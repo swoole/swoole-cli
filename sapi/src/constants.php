@@ -145,6 +145,12 @@ define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/libintl');
 
 
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
+
+define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
+define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
+define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
+define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
+
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
 define("LIBARCHIVE_PREFIX", $p->getGlobalPrefix() . '/libarchive');

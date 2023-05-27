@@ -1,6 +1,9 @@
-name: build-swoole-cli-macos-x86_64
+name: build-php-cli-macos-x86_64
 
 on: [ push, pull_request ]
+
+env:
+  BUILD_PHP_VERSION: 8.2.4
 
 jobs:
   macos-x86_64:
@@ -30,12 +33,15 @@ jobs:
           # sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
 
+          echo 'export PATH="/usr/local/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
+
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
           sudo mkdir -p /usr/local/swoole-cli
           sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
 
           git submodule update --init
+
 
       - name: Prepare runtime
         run: |
@@ -74,20 +80,23 @@ jobs:
 
       - name: Show Build Result
         run: |
-          file ./bin/swoole-cli
-          otool -L ./bin/swoole-cli
-          ./bin/swoole-cli -r "echo PHP_VERSION;"
+          export PATH="/usr/local/opt/binutils/bin:$PATH"
+          ./php-src/sapi/cli/php -v
+          file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          otool -L ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: swoole-cli-macos-x64
+          name: php-cli-macos-x64-${{ env.BUILD_PHP_VERSION }}
           retention-days: 7
-          path: ./bin/swoole-cli
+          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-*-x64.tar.xz
+          files: php-cli-v${{ env.BUILD_PHP_VERSION }}-macos-x64.tar.xz
           draft: true
           prerelease: true

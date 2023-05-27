@@ -1,17 +1,15 @@
 <?php
+
 require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
+use SwooleCli\Library;
 
-const BUILD_PHP_VERSION = '8.1.12';
+const BUILD_PHP_VERSION = '8.2.4';
 
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
-
-
-// Sync code from php-src
-$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
@@ -19,6 +17,16 @@ if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
+// Sync code from php-src
+//设置 PHP 源码所在目录
+$p->setPhpSrcDir($p->getWorkDir() . '/php-src');
+
+//设置PHP 安装目录
+define("BUILD_PHP_INSTALL_PREFIX", $p->getWorkDir() . '/bin/php-' .BUILD_PHP_VERSION);
+
+if ($p->getInputOption('with-global-prefix')) {
+    $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
+}
 
 //release 版本，屏蔽这两个函数，使其不生效
 // ->withCleanBuildDirectory()
@@ -31,14 +39,14 @@ $build_type = $p->getInputOption('with-build-type');
 if (!in_array($build_type, ['dev', 'debug'])) {
     $build_type = 'release';
 }
-define('SWOOLE_CLI_BUILD_TYPE', $build_type);
-define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
-
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
 $p->setGlobalPrefix('/usr');
+
+define('PHP_CLI_BUILD_TYPE', $build_type);
+define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
 if ($p->getOsType() == 'macos') {
     // -lintl -Wl,-framework -Wl,CoreFoundation
@@ -145,3 +153,9 @@ $p->setExtraCflags('-fno-ident -Os');
 
 // Generate make.sh
 $p->execute();
+
+function install_libraries($p): void
+{
+
+
+}
