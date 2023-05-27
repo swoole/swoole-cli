@@ -35,6 +35,5 @@ esac
 apk update
 
 apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-apk add bash
-
+apk add bash 7zip zip unzip flex  pkgconf ca-certificates
 apk add wget git curl
