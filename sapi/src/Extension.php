@@ -7,6 +7,8 @@ class Extension extends Project
     public string $options = '';
     public string $peclVersion = '';
 
+    public array $dependExtensions = [];
+
     public function withOptions(string $options): static
     {
         $this->options = $options;
@@ -19,9 +21,9 @@ class Extension extends Project
         return $this;
     }
 
-    public function withUrl(string $url): static
+    public function withDependExtension(string ...$extensions): static
     {
-        $this->url = $url;
+        $this->dependExtensions += $extensions;
         return $this;
     }
 }
