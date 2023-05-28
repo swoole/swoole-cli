@@ -32,13 +32,14 @@
 - [打包成二进制可执行文件 文档](sapi/samples/sfx/README.md)
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
 - [快速初始化构建环境](sapi/quickstart/README.md)
-- [构建 PHP-CLI 版本](https://github.com/swoole/swoole-cli/tree/build_native_php)
+- [构建 PHP-CLI 版本 使用此分支](https://github.com/swoole/swoole-cli/tree/build_native_php)
 
 ## Clone
 
 ```shell
 git clone --recursive -b build_native_php  https://github.com/swoole/swoole-cli.git
 ```
+
 
 ## 生成构建脚本
 
