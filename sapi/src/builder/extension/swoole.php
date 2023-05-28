@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
+    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
