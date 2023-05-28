@@ -20,5 +20,6 @@ return function (Preprocessor $p) {
             ->withManual('http://docs.php.net/event')
             ->withPeclVersion('3.0.8')
             ->depends('libevent')
+            ->withDependExtension('sockets')
     );
 };
