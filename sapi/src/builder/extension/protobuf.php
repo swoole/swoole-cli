@@ -11,6 +11,7 @@ return function (Preprocessor $p) {
             ->withPeclVersion('3.23.2')
             ->withHomePage('https://developers.google.com/protocol-buffers')
             ->withManual('https://protobuf.dev/reference/php/php-generated/')
+            ->withDependExtension('sockets')
     );
 
     $p->setExtHook('protobuf', function (Preprocessor $p) {
