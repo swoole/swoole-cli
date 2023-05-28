@@ -54,7 +54,6 @@ class Preprocessor
      * @var string
      */
     protected string $globalPrefix = '/usr/local/swoole-cli';
-    # protected string $globalPrefix = '/usr';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -209,6 +208,10 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
+    public function getPhpSrcDir(): string
+    {
+        return $this->phpSrcDir;
+    }
 
     public function setGlobalPrefix(string $prefix)
     {
@@ -308,6 +311,7 @@ class Preprocessor
     protected function downloadFile(string $url, string $file, string $md5sum)
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
+        $user_agent = DOWNLOAD_FILE_USER_AGENT;//--user-agent='{$user_agent}'
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
         $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
         echo PHP_EOL;
@@ -376,7 +380,7 @@ class Preprocessor
             }
         }
 
-        if (!empty($this->getInputOption('with-download-mirror-url'))) {
+        if ($lib->enableDownloadWithMirrorURL && !empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
             $lib->enableDownloadScript = false;
         }
@@ -404,6 +408,8 @@ class Preprocessor
                         cd {$lib->downloadDirName}
                         test -f {$lib->path} || tar   -zcf {$lib->path} ./
                         cd {$workDir}
+
+
 EOF;
 
                     $this->execDownloadScript($cacheDir, $lib->downloadScript);
@@ -468,6 +474,8 @@ EOF;
                                 cd {$ext->downloadDirName}
                                 test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
                                 cd {$workDir}
+
+
 EOF;
 
                         $this->execDownloadScript($cacheDir, $ext->downloadScript);
@@ -478,7 +486,7 @@ EOF;
                             $this->checkFileMd5sum($ext->path, $ext->md5sum);
                         }
 
-                        if (!is_file($ext->path)) {
+                        if (!is_file($ext->path) || filesize($ext->path) === 0) {
                             echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                             $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
                         }
@@ -624,7 +632,7 @@ EOF;
 
     public function setExtHook($name, $fn)
     {
-        $this->extHooks[$name]=$fn;
+        $this->extHooks[$name] = $fn;
     }
 
     public function parseArguments(int $argc, array $argv)
@@ -814,7 +822,7 @@ EOF;
                 $this->scanConfigFiles($dir, $extAvailabled);
             }
         }
-
+        install_libraries($this);
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
@@ -839,6 +847,10 @@ EOF;
             foreach ($ext->deps as $library_name) {
                 $this->loadDependLibrary($library_name);
             }
+        }
+
+        if ($this->getOsType() == 'macos') {
+            $this->loadDependLibrary("bison");
         }
 
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';

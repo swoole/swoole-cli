@@ -20,7 +20,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 
 ADD ./runtime/swoole-cli  /usr/local/bin/
 ADD ./runtime/composer.phar  /usr/local/bin/
-ADD ./swoole-cli  /work
+COPY ./swoole-cli  /work
 
 RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
 RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
@@ -35,7 +35,6 @@ RUN composer update --no-dev --optimize-autoloader
 
 
 RUN php prepare.php  --with-build-type=release --skip-download=1
-RUN sh make.sh list-library
 
 RUN sh make.sh all-library
 

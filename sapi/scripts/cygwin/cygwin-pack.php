@@ -1,7 +1,7 @@
 <?php
 
 $src = realpath(__DIR__ . '/../../../');
-$name = "swoole-cli-v" . SWOOLE_VERSION . "-cygwin-x64";
+$name = "php-cli-v" . PHP_VERSION . "-cygwin-x64";
 
 $dst = "/tmp/{$name}";
 if (!is_dir($dst)) {
@@ -10,7 +10,7 @@ if (!is_dir($dst)) {
 
 $match = "";
 $patten = "#\s+(\S+)\s+\=\>\s+(\S+)\s+\(0x[a-f0-9]+\)#i";
-$list = `ldd {$src}/bin/swoole-cli.exe`;
+$list = `ldd {$src}/bin/php-cli.exe`;
 
 preg_match_all($patten, $list, $match);
 
@@ -29,9 +29,9 @@ foreach ($match[2] as $file) {
     copy($file, $dst . "/bin/" . basename($file));
 }
 
-echo `chmod a+x {$src}/bin/swoole-cli.exe`;
 
-copy("{$src}/bin/swoole-cli.exe", $dst . "/bin/swoole-cli.exe");
+echo `chmod a+x {$src}/bin/php-cli.exe`;
+copy("{$src}/bin/php-cli.exe", $dst . "/bin/php-cli.exe");
 if (is_file("{$src}/bin/LICENSE")) {
     copy("{$src}/bin/LICENSE", $dst . "/LICENSE");
 }
