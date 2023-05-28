@@ -47,7 +47,7 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           composer update --no-dev  --optimize-autoloader
-          php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
+          php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu +xlswriter +protobuf
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
@@ -65,6 +65,7 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           chmod a+x ./make.sh
+          ./make.sh curl
           ./make.sh config
           ./make.sh build
           ./make.sh archive
