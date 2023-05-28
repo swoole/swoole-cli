@@ -11,9 +11,11 @@ __PROJECT__=$(
 )
 
 cd ${__PROJECT__}/
+ARCH=$(uname -m)
 
-TAG="1.7-${ARCH}"
-TAG="all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z"
-IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
+TAG="native-php-all-dependencies-alpine-php-8.2.4-${ARCH}-20230428T164512Z"
+
+IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
+ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${TAG}"
 
 docker run --rm --name swoole-cli-all-dependencies-container -d -v ${__PROJECT__}:/work -w /work -ti --init ${IMAGE}

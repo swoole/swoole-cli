@@ -91,17 +91,20 @@ with-dependency-graph
 > 依赖 graphviz
 
 ```shell
+
 # macos
 brew install graphviz
 # debian
 apt install -y graphviz
 # alpine
 apk add graphviz
+
 ```
 
 > 生成扩展依赖库 图 步骤
 
 ```shell
+
 # 生成扩展依赖图模板
 php ./prepare.php --without-docker --with-dependency-graph=1
 
@@ -117,3 +120,6 @@ with-downloader
 ```shell
 php ./prepare.php --with-downloader=wget
 ```
+
+
+

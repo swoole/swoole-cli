@@ -8,6 +8,7 @@ return function (Preprocessor $p) {
         (new Extension('protobuf'))
             ->withOptions('--enable-protobuf')
             ->withPeclVersion('3.21.6')
+            ->withPeclVersion('3.23.2')
             ->withHomePage('https://developers.google.com/protocol-buffers')
             ->withManual('https://protobuf.dev/reference/php/php-generated/')
     );
@@ -27,6 +28,7 @@ EOF;
                 sed -i 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc
 EOF;
         }
+        return '';
         return $cmd;
     });
 };

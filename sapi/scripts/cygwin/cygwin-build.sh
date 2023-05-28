@@ -10,8 +10,15 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
+cd ${__PROJECT__}/php-src
 
 mkdir -p bin/.libs
-# export LDFLAGS="-all-static"
-make -j $(nproc)
-./bin/swoole-cli -v
+
+make -j $(nproc) cli
+
+${__PROJECT__}/php-src/sapi/cli/php.exe -v
+
+cp -f ${__PROJECT__}/php-src/sapi/cli/php.exe ${__PROJECT__}/bin/
+cp -f ${__PROJECT__}/php-src/sapi/cli/php.exe ${__PROJECT__}/bin/php-cli.exe
+
+${__PROJECT__}/bin/php-cli.exe -v

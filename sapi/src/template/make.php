@@ -7,6 +7,9 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
+#!/usr/bin/env bash
+set -x
+if [[ -z $PKG_CONFIG_PATH ]];then export PKG_CONFIG_PATH=' ';fi
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -16,17 +19,25 @@ export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
+--disable-cgi  \
 --enable-shared=no \
 --enable-static=yes \
+--enable-cli  \
+--disable-phpdbg \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
 <?=$this->extraOptions?>
 "
-
+set +x
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
+
+    <?php if ($item->cleanBuildDirectory) : ?>
+     # If the build directory exist, clean the build directory
+     test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
+    <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
@@ -45,6 +56,11 @@ make_<?=$item->name?>() {
         cd <?= $this->workDir ?>/
         return 0
     fi
+
+    <?php if ($item->cleanPreInstallDirectory) : ?>
+    # If the install directory exist, clean the install directory
+    test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
+    <?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
@@ -122,6 +138,27 @@ make_all_library() {
     return 0
 }
 
+make_ext() {
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+
+<?php
+foreach ($this->extensionMap as $extension) {
+    if ($extension->peclVersion || $extension->enableDownloadScript) {
+        echo <<<EOF
+    if [[ -d {$this->phpSrcDir}/ext/{$extension->name}/ ]]
+    then
+        rm -rf {$this->phpSrcDir}/ext/{$extension->name}/
+    fi
+    cp -rf {$this->rootDir}/ext/{$extension->name} {$this->phpSrcDir}/ext/
+EOF;
+        echo PHP_EOL;
+        echo PHP_EOL;
+    }
+}
+
+?>
+}
+
 make_ext_hook() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 <?php foreach ($this->extHooks as $name => $value) : ?>
@@ -133,8 +170,15 @@ make_ext_hook() {
 }
 
 export_variables() {
+    # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
     CFLAGS=""
+<?php if($this->cCompiler=='clang') : ?>
+    LDFLAGS="-static"
+<?php else :?>
+    LDFLAGS="-static-libgcc -static-libstdc++"
+<?php endif ;?>
+
     LDFLAGS=""
     LIBS=""
 <?php foreach ($this->variables as $name => $value) : ?>
@@ -148,30 +192,56 @@ export_variables() {
     return 0
 }
 
+
 make_config() {
-    set -exu
+
+    set -x
+
+    if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
+        rm -rf <?= $this->buildDir ?>/php_src/
+    fi
+    make_php_src
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+<?php if ($this->getInputOption('with-build-type') != 'release') : ?>
+
+<?php endif ;?>
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     make_ext_hook
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+    make_ext
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+
+<?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
+    PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
+    if [[ $PHP_VERSION -lt 80000 ]] ; then
+        echo "only support PHP >= 8.0 "
+    else
+        # 请把这个做成 patch  https://github.com/swoole/swoole-cli/pull/55/files
+
+    fi
+<?php endif ;?>
+    echo $OPTIONS
+
     test -f ./configure &&  rm ./configure
     ./buildconf --force
-<?php if ($this->osType !== 'macos') : ?>
-    mv main/php_config.h.in /tmp/cnt
-    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
-    cat /tmp/cnt >> main/php_config.h.in
-    echo -ne '\n#endif\n' >> main/php_config.h.in
-<?php endif; ?>
 
     ./configure --help
-    export_variables
-    echo $LDFLAGS > ldflags.log
-    echo $CPPFLAGS > cppflags.log
-
+     export_variables
+     echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
+     echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
     ./configure $OPTIONS
+
+    # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
+<?php if ($this->getOsType()=='linux'): ?>
+     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
+<?php endif ; ?>
+
 }
 
 make_build() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
     <?php if ($this->getOsType()=='linux'): ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
@@ -181,12 +251,16 @@ make_build() {
     make -j <?= $this->maxJob ?> ;
 
 <?php if ($this->osType == 'macos') : ?>
-    otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
+    otool -L <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php else : ?>
-    file <?= $this->getWorkDir() ?>/bin/swoole-cli
-    readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
+    file <?= $this->phpSrcDir  ?>/sapi/cli/php
+    readelf -h <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php endif; ?>
+    # make install
+    mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
+    cp -f <?= $this->phpSrcDir  ?>/sapi/cli/php <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
 
+    # elfedit --output-osabi linux sapi/cli/php
 }
 
 make_clean() {
@@ -211,6 +285,7 @@ help() {
     echo "./make.sh build"
     echo "./make.sh test"
     echo "./make.sh archive"
+    echo "./make.sh archive-sfx-micro"
     echo "./make.sh all-library"
     echo "./make.sh list-library"
     echo "./make.sh list-extension"
@@ -276,14 +351,15 @@ elif [ "$1" = "config" ] ;then
 elif [ "$1" = "build" ] ;then
     make_build
 elif [ "$1" = "test" ] ;then
-    ./bin/swoole-cli vendor/bin/phpunit
+    <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
-    cd bin
-    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
-    strip swoole-cli
-    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
-    mv ${SWOOLE_CLI_FILE} ../
+    cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
+    PHP_VERSION=$(./php -r "echo PHP_VERSION;")
+    PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    cp -f php php-dbg
+    strip php
+    tar -cJvf ${PHP_CLI_FILE} php
+    mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>

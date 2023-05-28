@@ -9,6 +9,7 @@ __PROJECT__=$(
   cd ${__DIR__}/../../
   pwd
 )
+cd ${__PROJECT__}
 
 mkdir -p ${__PROJECT__}/var/runtime
 cd ${__PROJECT__}/var/runtime
@@ -25,14 +26,16 @@ if [[ ! -f swoole-cli ]] || [[ ! -f composer.phar ]]; then
   echo ""
   exit 0
 fi
-set -x
+
 chmod a+x swoole-cli
 chmod a+x composer.phar
+
+set -x
 
 cd ${__PROJECT__}
 
 ## 借助 download-box 获得已经准备好的 依赖库源码 ，缩减下载时间  存放于 var目录
-sh sapi/download-box/download-box-get-archive-from-server.sh
+bash sapi/download-box/download-box-get-archive-from-server.sh
 
 cd ${__PROJECT__}
 

@@ -17,11 +17,16 @@ REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+SWOOLE_VERSION=v5.0.3
 
 if [ ! -d pool/ext ]; then
     mkdir -p pool/ext
 fi
 
+test -d ext && rm -rf ext
+test -d pool/ext && rm -rf pool/ext
+mkdir -p pool/ext
+mkdir -p ext
 cd pool/ext
 
 if [ ! -d $ROOT/ext/redis ]; then
@@ -36,8 +41,9 @@ if [ ! -d $ROOT/ext/mongodb ]; then
     if [ ! -f redis-${MONGODB_VERSION}.tgz ]; then
         wget https://pecl.php.net/get/mongodb-${MONGODB_VERSION}.tgz
     fi
-    tar xvf mongodb-${MONGODB_VERSION}.tgz
-    mv mongodb-${MONGODB_VERSION} $ROOT/ext/mongodb
+    # tar xvf mongodb-${MONGODB_VERSION}.tgz
+    # mv mongodb-${MONGODB_VERSION} $ROOT/ext/mongodb
+    # mongodb no support cygwin
 fi
 
 if [ ! -d $ROOT/ext/yaml ]; then
@@ -54,6 +60,15 @@ if [ ! -d $ROOT/ext/imagick ]; then
     fi
     tar xvf imagick-${IMAGICK_VERSION}.tgz
     mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
+fi
+if [ ! -d $ROOT/ext/swoole ]; then
+    if [ ! -f swoole-${SWOOLE_VERSION}.tar.gz ]; then
+        wget -O swoole-${SWOOLE_VERSION}.tar.gz https://github.com/swoole/swoole-src/archive/refs/tags/${SWOOLE_VERSION}.tar.gz
+    fi
+    mkdir -p swoole-temp
+    tar --strip-components=1 -C swoole-temp -xf swoole-${SWOOLE_VERSION}.tar.gz
+    mv swoole-temp $ROOT/ext/swoole
+
 fi
 
 cd $ROOT

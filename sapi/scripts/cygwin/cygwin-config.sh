@@ -10,6 +10,23 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
+VERSION=8.2.4
+
+test -f php-${VERSION}.tar.gz ||  wget -O php-${VERSION}.tar.gz  https://github.com/php/php-src/archive/refs/tags/php-${VERSION}.tar.gz
+
+mkdir -p php-src
+tar --strip-components=1 -C php-src -xf  php-${VERSION}.tar.gz
+
+mkdir -p ${__PROJECT__}/bin/
+# cp -f ${__PROJECT__}/php-src/ext/openssl/config0.m4  ${__PROJECT__}/php-src/ext/openssl/config.m4
+
+cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
+
+cd ${__PROJECT__}/php-src/
+
+export CPPFLAGS="-I/usr/include"
+export CFLAGS=""
+export LDFLAGS="-L/usr/lib"
 
 
 
