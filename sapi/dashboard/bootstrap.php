@@ -18,6 +18,7 @@ run(function () {
 EOF;
     printf($message);
 
+    $workdir = realpath(__DIR__ . "/../../");
     $server->handle('/', function ($request, $response) use ($server) {
         //https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 
@@ -176,7 +177,7 @@ EOF;
         }
     });
 
-    $server->handle('/websocket', function (Request $request, Response $ws) use ($server) {
+    $server->handle('/websocket', function (Request $request, Response $ws) use ($server, $workdir) {
         $ws->upgrade();
         while (true) {
             $frame = $ws->recv();
@@ -189,15 +190,17 @@ EOF;
                     $ws->close();
                     break;
                 } else {
+                    //参考 : https://wiki.swoole.com/#/websocket_server?id=%e6%95%b0%e6%8d%ae%e5%b8%a7%e7%b1%bb%e5%9e%8b
+
                     if ($frame->data == 'close' || get_class($frame) === CloseFrame::class) {
                         $ws->close();
                         break;
                     }
-                    $request=json_decode($frame->data, true);
+                    $request = json_decode($frame->data, true);
                     if (isset($request['action']) && isset($request['data'])) {
-                        $action=$request['action'];
-                        $cmd=$request['data'];
-                        if ($action=='preprocessor') {
+                        $action = $request['action'];
+                        $cmd = $request['data'];
+                        if ($action == 'preprocessor') {
                             echo $cmd;
                         }
                         $ws->push("run  preprocessor");
