@@ -11,7 +11,6 @@ use function Swoole\Coroutine\run;
 
 run(function () {
     $server = new Server('0.0.0.0', 9502, false);
-
     $message = <<<EOF
 
     dashboard  listen http://0.0.0.0:9502
@@ -57,11 +56,11 @@ EOF;
 
         $response->header('access-control-allow-methods', 'GET,HEAD,POST,OPTIONS');
         $response->header('access-control-allow-headers', 'content-type,Authorization');
+        $response->header('Access-Control-Allow-Private-Network', 'true');
         $origin = empty($request->header['origin']) ? '*' : $request->header['origin'];
         $response->header('access-control-allow-origin', $origin);
         $request_method = empty($request->header['request_method']) ? '' : $request->header['request_method'];
         if ($request_method == "OPTIONS") {
-            $response->header('Access-Control-Allow-Private-Network', 'true');
             $response->status(200);
             $response->end();
             return null;
@@ -77,10 +76,10 @@ EOF;
         $action = preg_match('/\w+/', $action) ? $action : 'index';
         $action = lcfirst($action) . 'Action';
 
-        var_dump($action);
+        //var_dump($action);
         $parameter = $request->getContent();
         $parameter = json_decode($parameter, true);
-        var_dump($parameter);
+        //var_dump($parameter);
 
         $word_dir = realpath(__DIR__ . '/../../');
         $runtime = realpath($word_dir . '/bin/runtime');
@@ -160,15 +159,6 @@ EOF;
                 $fp = null;
             }
         }
-
-        $cmd = <<<EOF
-        cd $word_dir
-        export PATH=${runtime}:\$PATH
-        php prepare.php --with-build-type=release +apcu +ds
-
-EOF;
-
-
         try {
             $response->end(
                 json_encode(
@@ -203,8 +193,18 @@ EOF;
                         $ws->close();
                         break;
                     }
-                    $ws->push("Hello {$frame->data}!");
-                    $ws->push("How are you, {$frame->data}?");
+                    $request=json_decode($frame->data, true);
+                    if (isset($request['action']) && isset($request['data'])) {
+                        $action=$request['action'];
+                        $cmd=$request['data'];
+                        if ($action=='preprocessor') {
+                            echo $cmd;
+                        }
+                        $ws->push("run  preprocessor");
+                    } else {
+                        $ws->push("Hello {$frame->data}!");
+                        $ws->push("How are you, {$frame->data}?");
+                    }
                 }
             }
         }
