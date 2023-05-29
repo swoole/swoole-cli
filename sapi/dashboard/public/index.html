@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>soft</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="keywords" content="swoole-cli ui"/>
+    <meta name="description" content="swoole-cli ui"/>
+    <link rel="stylesheet" type="text/css" href="/css/base.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/app.css"/>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <div class="main">
+        <div class="main-container">
+            <div class="container">
+                <header>
+                    <div>
+                        <label>
+                            <span>当前分支：</span>
+                            <select name="branch_list"></select>
+                        </label>
+                        <label>
+                            <span>构建环境 OS：</span>
+                            <select name="os">
+                                <option value="linux">linux</option>
+                                <option value="macos">macos</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span>是否容器环境：</span>
+                            <select name="without-docker">
+                                <option value="0">容器</option>
+                                <option value="1">不使用容器</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span>跳过下载依赖库：</span>
+                            <select name="skip-download">
+                                <option value="0">不跳过</option>
+                                <option value="1">跳过</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span>使用镜像库站下载依赖库：</span>
+                            <select name="with-download-mirror-url">
+                                <option value="0">不使用</option>
+                                <option value="https://swoole-cli.jingjingxyk.com/">使用</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span>生成扩展依赖图</span>
+                            <select name="with-dependency-graph">
+                                <option value="0">不生成</option>
+                                <option value="1">生成</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <button class="btn-success exec-button">运行</button>
+                    </div>
+                </header>
+                <section class="extension-list">
+                    <div>
+                        <label> 支持的扩展列表
+                            <ul name="all_extentions" class="all_extentions"></ul>
+                        </label>
+                    </div>
+                    <div>
+                        <label> 将编译的扩展</label>
+                        <ul name="ready_extentions" class="default_extensions"></ul>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/javascript" src="/js/Component/message.js"></script>
+<script type="module">
+    import app from '/js/app.js'
+
+    app()
+</script>
+</body>
+</html>

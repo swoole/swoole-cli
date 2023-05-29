@@ -6,10 +6,15 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
+use SwooleCli\Trait\DownloadBoxTrait;
+use SwooleCli\Trait\WebUITrait;
 
 class Preprocessor
 {
+
     use DownloadBoxTrait;
+
+    use WebUITrait;
 
     public const VERSION = '1.6';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
@@ -393,8 +398,8 @@ class Preprocessor
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
-                    $cacheDir = $this->getWorkDir() . '/var/tmp/download/lib';
-                    $workDir = $this->getWorkDir();
+                    $cacheDir = $this->rootDir . '/var/tmp/download/lib';
+                    $workDir = $this->rootDir;
                     $lib->downloadScript = <<<EOF
                         test -d {$cacheDir} && rm -rf {$cacheDir}
                         mkdir -p {$cacheDir}
@@ -455,10 +460,10 @@ EOF;
                     }
                 }
 
-                $workDir = $this->getWorkDir();
+                $workDir = $this->rootDir;
                 if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
-                        $cacheDir = $this->getWorkDir() . '/var/tmp/download/ext';
+                        $cacheDir = $this->rootDir . '/var/tmp/download/ext';
                         $ext->downloadScript = <<<EOF
                                 test -d {$cacheDir} && rm -rf {$cacheDir}
                                 mkdir -p {$cacheDir}
@@ -624,7 +629,7 @@ EOF;
 
     public function setExtHook($name, $fn)
     {
-        $this->extHooks[$name]=$fn;
+        $this->extHooks[$name] = $fn;
     }
 
     public function parseArguments(int $argc, array $argv)
@@ -886,7 +891,9 @@ EOF;
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
-
+        if ($this->getInputOption('with-web-ui')) {
+            $this->generateWebUIData();
+        }
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }

@@ -1,0 +1,13 @@
+.all_extentions,.default_extensions {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 400px;
+}
+.all_extentions li,.default_extensions li{
+    margin-bottom:30px;
+    margin-right:30px;
+}
+
+ul li label{
+    color: #1f2328;
+}
