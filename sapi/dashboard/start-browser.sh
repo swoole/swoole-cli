@@ -24,4 +24,6 @@ if [ $OS = 'Linux' ]; then
    # gnome-screenshot --help
    # gnome-screenshot -i
   }
+elif [ $OS = ''Darwin'' ]; then
+    open -a "Google Chrome"  "http://0.0.0.0:9502"
 fi
