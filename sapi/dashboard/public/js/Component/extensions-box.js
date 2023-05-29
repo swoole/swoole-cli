@@ -47,7 +47,6 @@ let inputCheckBoxBindEvent = (all_extension_box, ready_extension_list_box) => {
 
     all_extension_box.addEventListener('click', (event) => {
         if (event.target.nodeName === 'INPUT' || event.target.nodeName === 'LABEL') {
-            console.log(event.target.nodeName)
             let element = event.target
             if (element.nodeName === 'INPUT') {
                 if (element.checked) {

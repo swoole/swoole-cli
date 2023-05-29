@@ -4,6 +4,8 @@ let gen = (e) => {
 
     let os = document.querySelector('select[name="os"]')
     let with_docker = document.querySelector('select[name="without-docker"]')
+    let with_global_prefix = document.querySelector('input[name="with-global-prefix"]')
+    let with_downloader = document.querySelector('select[name="with-downloader"]')
     let skip_download = document.querySelector('select[name="skip-download"]')
     let with_download_mirror_url = document.querySelector('select[name="with-download-mirror-url"]')
     let with_dependecny_graph = document.querySelector('select[name="with-dependency-graph"]')
@@ -20,6 +22,13 @@ let gen = (e) => {
         if (os.value === 'macos') {
             cmd += "  --without-docker=1"
         }
+    }
+    if (with_global_prefix.value !== '/usr/local/swoole-cli') {
+        cmd += "  --with-global-prefix=" + with_global_prefix.value
+    }
+
+    if (with_downloader.value === 'wget') {
+        cmd += "  --with-downloader=" + with_downloader.value
     }
     if (skip_download.value === "1") {
         cmd += "  --skip-download=" + skip_download.value
@@ -44,31 +53,28 @@ let gen = (e) => {
 
         })
         let default_ready_extension_list = window['default_ready_exteion_list']
-        console.log(extension_list, default_ready_extension_list)
+
         //交集
         let intersect = extension_list.filter(x => default_ready_extension_list.includes(x))
-        console.log(intersect)
 
         //差集
         let minus = extension_list.filter(x => !default_ready_extension_list.includes(x))
-        console.log(minus)
         if (minus.length > 0) {
             minus.map((value, index, array) => {
                 cmd += " +" + value;
             })
-
         }
+        console.log(minus)
         //补集
         let complement = default_ready_extension_list.filter(x => !extension_list.includes(x))
-        console.log(complement)
         if (complement.length > 0) {
             complement.map((value, index, array) => {
                 cmd += " -" + value;
             })
         }
+        console.log(complement)
     }
 
-    console.log(cmd)
     let codeBox = document.querySelector('.preview-code .pre-code.preprocessor')
     codeBox.innerText = cmd;
     document.querySelector('.exec-button').setAttribute('data-cmd', cmd)
@@ -95,6 +101,9 @@ let selectedBindEvent = () => {
 
         }, false)
     }
+    document.querySelector('input[name="with-global-prefix"]').onchange = (event) => {
+        gen()
+    }
 
 }
 let runButtonBindEvent = () => {
@@ -102,9 +111,9 @@ let runButtonBindEvent = () => {
     run.addEventListener('click', (event) => {
         let cmd = event.target.getAttribute('data-cmd');
         console.log(cmd)
-        let message={
-            "action":"preprocessor",
-            "data":cmd
+        let message = {
+            "action": "preprocessor",
+            "data": cmd
         }
         send(JSON.stringify(message));
     })
