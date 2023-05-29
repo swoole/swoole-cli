@@ -52,6 +52,18 @@
                                     type="text"
                                     placeholder="/usr/local/swoole-cli"
                                     value="/usr/local/swoole-cli"
+                                    size="40"
+                                />
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🟪使用http代理：</span>
+                                <input
+                                    name="with-http-proxy"
+                                    type="text"
+                                    placeholder="例子：http://192.168.3.2:8015"
+                                    value=""
+                                    size="50"
                                 />
                             </label>
                             <br/>
@@ -69,6 +81,17 @@
                                     <option value="0" selected>不使用</option>
                                     <option value="https://swoole-cli.jingjingxyk.com/">使用</option>
                                 </select>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🟪使用项目外配置：</span>
+                                <input
+                                    name="conf-path"
+                                    type="text"
+                                    placeholder="例子： ~/swoole-cli/conf.d.extra"
+                                    value=""
+                                    size="80"
+                                />
                             </label>
                             <br/>
                             <label>
@@ -99,16 +122,15 @@
                 </header>
                 <section class="extension-list">
                     <div>
-                        <label> 支持的扩展列表
-                            <ul name="all_extentions" class="all_extentions"></ul>
-                        </label>
+                        支持的扩展列表 ：
+                       <ul class="all_extentions" id="all_extentions"></ul>
                     </div>
                 </section>
                 <section class="controller-gen">
                     <div>
                         <button class="btn-success generate-cmd-button">生成构建命令</button>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <button class="btn-success reset-cmd-button">停用默认扩展</button>
+                        <button class="btn-success reset-cmd-button" data-status="enable">停用默认扩展</button>
                         <br/>
                     </div>
                 </section>
