@@ -1,4 +1,3 @@
-
 let pc;
 let sendChannel;
 let receiveChannel;
@@ -21,7 +20,7 @@ signaling.onmessage = e => {
                 console.log('already in call, ignoring');
                 return;
             }
-            state_box.start=true;
+            state_box.start = true;
             break;
         case 'bye':
             if (pc) {
@@ -35,14 +34,14 @@ signaling.onmessage = e => {
 };
 signaling.postMessage({type: 'ready'});
 
-let state_box={
-    start:false,
-    close:false,
-    send:false
+let state_box = {
+    start: false,
+    close: false,
+    send: false
 }
 let init = async () => {
-    state_box.start=false;
-    close.close=true;
+    state_box.start = false;
+    close.close = true;
 
     await createPeerConnection();
     sendChannel = pc.createDataChannel('sendDataChannel');
@@ -68,8 +67,8 @@ async function hangup() {
     sendChannel = null;
     receiveChannel = null;
     console.log('Closed peer connections');
-    state_box.start=false;
-    state_box.send=false;
+    state_box.start = false;
+    state_box.send = false;
     startButton.disabled = false;
     sendButton.disabled = true;
     closeButton.disabled = true;
