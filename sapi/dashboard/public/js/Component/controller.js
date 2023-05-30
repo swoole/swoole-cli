@@ -1,4 +1,4 @@
-import {init, send} from "./message.js"
+// import {init, send} from "./message.js"
 
 let gen = (e) => {
 
@@ -133,7 +133,7 @@ let bindEvent = () => {
             "action": "preprocessor",
             "data": cmd
         }
-        send(JSON.stringify(message));
+        //send(JSON.stringify(message));
     })
 
 }
@@ -141,6 +141,6 @@ let bindEvent = () => {
 let show_controller = () => {
     bindEvent()
     gen()
-    init()
+    //init()
 }
 export {show_controller}
