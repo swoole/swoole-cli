@@ -23,10 +23,17 @@ return function (Preprocessor $p) {
                 -DCMAKE_INSTALL_PREFIX={$libevent_prefix} \
                 -DEVENT__DISABLE_DEBUG_MODE=ON \
                 -DCMAKE_BUILD_TYPE=Release \
-                -DEVENT__LIBRARY_TYPE=STATIC
+                -DEVENT__LIBRARY_TYPE=STATIC \
+                -DEVENT__DISABLE_OPENSSL=ON
 
 EOF
             )
             ->withPkgName('libevent')
+            ->withPkgName('libevent_core')
+            ->withPkgName('libevent_extra')
+            ->withPkgName('libevent_openssl')
+            ->withPkgName(' libevent_pthreads')
+            ->depends('openssl')
+            ->withBinPath($libevent_prefix . '/bin/')
     );
 };
