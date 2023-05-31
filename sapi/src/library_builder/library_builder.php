@@ -727,4 +727,30 @@ function libraries_builder($p)
 
         https://blog.csdn.net/mao834099514/article/details/79544467
         */
+    /*
+     *
+    Available event backends: EPOLL;SELECT;POLL
+
+    -- CMAKE_BINARY_DIR:         /work/thirdparty/libevent/build
+    -- CMAKE_CURRENT_BINARY_DIR: /work/thirdparty/libevent/build
+    -- CMAKE_SOURCE_DIR:         /work/thirdparty/libevent
+    -- CMAKE_CURRENT_SOURCE_DIR: /work/thirdparty/libevent
+    -- PROJECT_BINARY_DIR:       /work/thirdparty/libevent/build
+    -- PROJECT_SOURCE_DIR:       /work/thirdparty/libevent
+    -- CMAKE_MODULE_PATH:        /work/thirdparty/libevent/cmake/
+    -- CMAKE_COMMAND:            /usr/bin/cmake
+    -- CMAKE_ROOT:               /usr/share/cmake
+    -- CMAKE_SYSTEM:             Linux-5.15.0-72-generic
+    -- CMAKE_SYSTEM_NAME:        Linux
+    -- CMAKE_SYSTEM_VERSION:     5.15.0-72-generic
+    -- CMAKE_SYSTEM_PROCESSOR:   x86_64
+    -- CMAKE_SKIP_RPATH:         NO
+    -- CMAKE_VERBOSE_MAKEFILE:   FALSE
+    -- CMAKE_C_FLAGS:             -Wall -Wextra -Wno-unused-parameter -Wstrict-aliasing -Wstrict-prototypes -fno-strict-aliasing -Wmissing-prototypes -Winit-self -Wmissing-field-initializers -Wdeclaration-after-statement -Waddress -Woverride-init -Wwrite-strings -Wno-unused-function
+    -- CMAKE_BUILD_TYPE:         Release
+    -- CMAKE_C_COMPILER:         /usr/bin/clang (id Clang, clang 1, GNUC 1)
+    -- CMAKE_AR:                 /usr/bin/ar
+    -- CMAKE_RANLIB:             /usr/bin/ranlib
+
+     */
 }
