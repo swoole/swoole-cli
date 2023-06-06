@@ -56,6 +56,8 @@ jobs:
           # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            apk update
+            apk add libc++-static
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
