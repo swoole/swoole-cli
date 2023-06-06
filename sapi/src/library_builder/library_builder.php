@@ -728,6 +728,17 @@ function libraries_builder($p)
         https://blog.csdn.net/mao834099514/article/details/79544467
         */
     /*
+        gcc -ldl 选项作用  程序中使用dlopen、dlsym、dlclose、dlerror 显示加载动态库，需要设置链接选项 -ldl
+
+        -lz   压缩库（Z）
+        -lrt  实时库（real time）：shm_open系列
+        -lm   数学库（math
+        -lc   标准C库（C lib）
+        -ldl  是显式加载动态库的动态函数库
+
+    */
+
+    /*
      *
     Available event backends: EPOLL;SELECT;POLL
 
