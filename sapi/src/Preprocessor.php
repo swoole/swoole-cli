@@ -857,13 +857,13 @@ EOF;
         } else {
             $libcpp = '-lstdc++';
         }
-
+        $libcpp = '-lc++';
         $packagesArr = $this->getLibraryPackages();
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);
             $this->withVariable('PACKAGES', $packages);
-            $this->withVariable('CPPFLAGS', '$CPPFLAGS $(pkg-config --cflags-only-I --static $PACKAGES ) ');
-            $this->withVariable('LDFLAGS', '$LDFLAGS $(pkg-config --libs-only-L --static $PACKAGES ) ');
+            $this->withVariable('CPPFLAGS', '$CPPFLAGS $(pkg-config --cflags-only-I --static $PACKAGES ) -I/usr/include ');
+            $this->withVariable('LDFLAGS', '$LDFLAGS $(pkg-config --libs-only-L --static $PACKAGES ) -L/usr/lib ');
             $this->withVariable('LIBS', '$LIBS $(pkg-config --libs-only-l --static $PACKAGES ) ' . $libcpp);
         }
         if (!empty($this->varables) || !empty($packagesArr)) {
