@@ -764,4 +764,9 @@ function libraries_builder($p)
     -- CMAKE_RANLIB:             /usr/bin/ranlib
 
      */
+    /*
+     *
+        //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
+
+     */
 }
