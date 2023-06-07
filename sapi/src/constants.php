@@ -53,8 +53,6 @@ define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 
 
-
-
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("LIBEV_PREFIX", $p->getGlobalPrefix() . '/libev');
@@ -89,7 +87,6 @@ define("DEPOT_TOOLS_PREFIX", $p->getGlobalPrefix() . '/depot_tools');
 
 define("HARFBUZZ_PREFIX", $p->getGlobalPrefix() . '/harfbuzz');
 define("LIBFRIBIDI_PREFIX", $p->getGlobalPrefix() . '/libfribidi');
-
 
 
 define("JANSSON_PREFIX", $p->getGlobalPrefix() . '/jansson');
@@ -145,13 +142,16 @@ define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/libintl');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
+
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
 define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
+
 define("LIBARCHIVE_PREFIX", $p->getGlobalPrefix() . '/libarchive');
 
 define("SOCAT_PREFIX", $p->getGlobalPrefix() . '/socat');
 define("ARIA2_PREFIX", $p->getGlobalPrefix() . '/aria2');
+

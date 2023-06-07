@@ -319,7 +319,6 @@ make_config() {
     ./configure --help | grep -e 'jit'
 _____EO_____
 
-
     set -exu
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 <?php if ($this->getInputOption('with-build-type') != 'release') : ?>
@@ -356,7 +355,7 @@ _____EO_____
 
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType()=='linux'): ?>
+    <?php if ($this->getOsType()=='linux') : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"

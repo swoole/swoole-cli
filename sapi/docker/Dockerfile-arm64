@@ -19,4 +19,5 @@ RUN apk add --allow-untrusted bison
 RUN apk add --allow-untrusted re2c
 RUN apk add --allow-untrusted bash
 RUN apk add --allow-untrusted gettext coreutils
-WORKDIR /work
+RUN apk add --allow-untrusted libc++-static
+
