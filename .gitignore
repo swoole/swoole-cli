@@ -321,4 +321,5 @@ ldflags.log
 cppflags.log
 /packages
 /conf.d.loader
+/configure.backup
 

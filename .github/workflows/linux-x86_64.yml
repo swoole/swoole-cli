@@ -49,7 +49,7 @@ jobs:
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
             composer update --no-dev  --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds -mongodb --with-global-prefix=/usr
+            php prepare.php  +inotify +apcu +ds -mongodb --with-global-prefix=/usr +xlswriter +ssh2 +pgsql +pdo_pgsql --with-swoole-pgsql=1
             chmod a+x make.sh
             head -n 20 make.sh
       - name: Build
@@ -59,6 +59,9 @@ jobs:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work -e "BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }}"
           run: |
+            apk update
+            apk add libc++-static
+            bash ./make.sh pgsql
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
@@ -66,6 +69,7 @@ jobs:
       - name: Show Build Result
         run: |
           ./php-src/sapi/cli/php -v
+          ./php-src/sapi/cli/php -m
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php

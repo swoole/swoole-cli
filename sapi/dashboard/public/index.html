@@ -25,49 +25,93 @@
                 <header>
                     <div>
                         <label>
-                            <span>当前分支：</span>
+                            <span>📁当前分支：</span>
                             <select name="branch_list"></select>
                         </label>
                         <div class="options-list">
                             <label>
-                                <span>构建环境 OS：</span>
+                                <span>🛠️构建环境 OS：</span>
                                 <select name="os">
                                     <option value="linux" selected>linux</option>
                                     <option value="macos">macos</option>
                                 </select>
                             </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <label>
-                                <span>是否容器环境：</span>
+                                <span>🛠️是否容器环境：</span>
                                 <select name="without-docker">
                                     <option value="0" selected>容器</option>
                                     <option value="1">不使用容器</option>
                                 </select>
                             </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️依赖库安装目录：</span>
+                                <input
+                                    name="with-global-prefix"
+                                    type="text"
+                                    placeholder="/usr/local/swoole-cli"
+                                    value="/usr/local/swoole-cli"
+                                    size="40"
+                                />
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️使用http代理：</span>
+                                <input
+                                    name="with-http-proxy"
+                                    type="text"
+                                    placeholder="例子：http://192.168.3.2:8015"
+                                    value=""
+                                    size="50"
+                                />
+                            </label>
                             <br/>
                             <label>
-                                <span>跳过下载依赖库：</span>
+                                <span>🛠️跳过下载依赖库：</span>
                                 <select name="skip-download">
                                     <option value="0" selected>不跳过</option>
                                     <option value="1">跳过</option>
                                 </select>
                             </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
                             <label>
-                                <span>使用依赖库镜像站下载依赖：</span>
+                                <span>🛠️使用依赖库镜像站下载依赖：</span>
                                 <select name="with-download-mirror-url">
-                                    <option value="0">不使用</option>
+                                    <option value="0" selected>不使用</option>
                                     <option value="https://swoole-cli.jingjingxyk.com/">使用</option>
                                 </select>
                             </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️使用项目外配置：</span>
+                                <input
+                                    name="conf-path"
+                                    type="text"
+                                    placeholder="例子： ~/swoole-cli/conf.d.extra"
+                                    value=""
+                                    size="80"
+                                />
+                            </label>
                             <br/>
                             <label>
-                                <span>生成扩展依赖图</span>
+                                <span>🛠️生成扩展依赖图：</span>
                                 <select name="with-dependency-graph">
-                                    <option value="0">不生成</option>
+                                    <option value="0" selected>不生成</option>
                                     <option value="1">生成</option>
                                 </select>
                             </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
                             <label>
-                                <span>生成webUI必要数据</span>
+                                <span>🛠️依赖和扩展下载器：</span>
+                                <select name="with-downloader">
+                                    <option value="curl" selected>curl</option>
+                                    <option value="wget">wget</option>
+                                </select>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️生成webUI必要数据：</span>
                                 <select name="with-web-ui">
                                     <option value="0">不生成</option>
                                     <option value="1">生成</option>
@@ -78,16 +122,15 @@
                 </header>
                 <section class="extension-list">
                     <div>
-                        <label> 支持的扩展列表
-                            <ul name="all_extentions" class="all_extentions"></ul>
-                        </label>
+                        支持的扩展列表 ：
+                       <ul class="all_extentions" id="all_extentions"></ul>
                     </div>
                 </section>
                 <section class="controller-gen">
                     <div>
                         <button class="btn-success generate-cmd-button">生成构建命令</button>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <button class="btn-success reset-cmd-button">停用默认扩展</button>
+                        <button class="btn-success reset-cmd-button" data-status="enable">停用默认扩展</button>
                         <br/>
                     </div>
                 </section>

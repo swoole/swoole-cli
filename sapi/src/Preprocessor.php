@@ -839,6 +839,9 @@ EOF;
                 ($this->extCallbacks[$ext])($this);
             }
         }
+        if ($this->getOsType() == 'macos') {
+            $this->loadDependLibrary("bison");
+        }
 
         // autoload extension depend extension
         foreach ($this->extensionMap as $ext) {
@@ -862,11 +865,10 @@ EOF;
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
         if ($this->getOsType() == 'macos') {
-            $libcpp = '-lc++';
+            $libcpp = '-lc++ -lpthread';
         } else {
             $libcpp = '-lstdc++';
         }
-
         $packagesArr = $this->getLibraryPackages();
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);

@@ -1,4 +1,4 @@
-let git_branch_list = async () => {
+let git_branch_list = async() => {
     let response = await fetch('/api/branchList', {
         credentials: 'include',
         mode: 'cors',
@@ -11,30 +11,30 @@ let git_branch_list = async () => {
         //https://developer.chrome.com/blog/private-network-access-preflight/
     })
     let res = await response.json();
-    if (response.status === 200 && res) {
-        let branch_list = document.querySelector('select[name="branch_list"]')
-        if (branch_list) {
-            let children = ' <option value="" selected>请选择</option>'
-            let patt = /\* /
-            res['data'].map((value, index, array) => {
-                let selected = '';
-                if (patt.test(value)) {
-                    selected = "selected=selected";
-                }
-                children += `
-                <option value="${value}" ${selected} >${value}</option>
-                `
+if (response.status === 200 && res) {
+    let branch_list = document.querySelector('select[name="branch_list"]')
+    if (branch_list) {
+        let children = ' <option value="" selected>请选择</option>'
+        let patt = /\* /
+        res['data'].map((value, index, array) => {
+            let selected = '';
+            if (patt.test(value)) {
+                selected = "selected=selected";
+            }
+            children += `
+            <option value="${value}" ${selected} >${value}</option>
+            `
             });
 
-            branch_list.innerHTML = children;
+        branch_list.innerHTML = children;
 
-            branch_list.addEventListener('change', change_branch)
-        }
+        branch_list.addEventListener('change', change_branch)
     }
+}
 
 }
 
-let change_branch = async (event) => {
+let change_branch = async(event) => {
     console.log(event, event.target, event.target.value)
     let url = "/api/changeBranch"
     if (event.target.value) {
@@ -51,7 +51,8 @@ let change_branch = async (event) => {
 }
 
 // Example POST method implementation:
-async function postData(url = '', data = {}) {
+async function postData(url = '', data = {})
+{
     // Default options are marked with *
     const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
