@@ -46,7 +46,6 @@ return function (Preprocessor $p) {
             --without-ldap \
             --with-libxml  \
             --with-libxslt \
-            --with-ssl=openssl \
             --with-lz4 \
             --with-zstd \
             --without-perl \

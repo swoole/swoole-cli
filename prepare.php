@@ -30,7 +30,7 @@ if ($p->getOsType() == 'macos') {
     }
 }
 
-$p->setExtraCflags('-fno-ident -Os -Werror=implicit-function-declaration');
+$p->setExtraCflags('-Os');
 
 // Generate make.sh
 $p->execute();
