@@ -36,7 +36,7 @@ function install_openssl_v1(Preprocessor $p)
             ->withCleanPreInstallDirectory($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-                ./config {$static} no-shared --prefix=${openssl_prefix} --libdir=${openssl_prefix}/lib
+                ./config {$static} no-shared --prefix={$openssl_prefix} --libdir={$openssl_prefix}/lib
 EOF
             )
             ->withMakeInstallCommand('install_sw')
