@@ -123,10 +123,12 @@ class Preprocessor
             case 'Linux':
                 $this->setOsType('linux');
                 $this->setLinker('ld.lld');
+                $this->setMaxJob(`nproc 2> /dev/null`);
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
                 $this->setLinker('ld');
+                $this->setMaxJob(`sysctl -n hw.ncpu`);
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -802,7 +804,7 @@ class Preprocessor
 
     protected function generateLibraryDownloadLinks(): void
     {
-        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
+        $this->mkdirIfNotExists($this->rootDir . '/var/', 0755, true);
 
         $download_urls = [];
         foreach ($this->libraryList as $item) {
@@ -820,11 +822,11 @@ class Preprocessor
             }
             $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->rootDir . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
         $download_urls = [];
         foreach ($this->downloadExtensionList as $item) {
             $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
         }
-        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->rootDir . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
 }
