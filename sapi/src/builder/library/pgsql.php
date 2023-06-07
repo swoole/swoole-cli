@@ -15,6 +15,7 @@ return function (Preprocessor $p) {
             ->withPrefix($pgsql_prefix)
             ->withBuildScript(
                 <<<EOF
+            test -d build && rm -rf build
             mkdir -p build
             cd build
 
@@ -24,6 +25,7 @@ return function (Preprocessor $p) {
 
             # 静态链接方法一：
             # 121行 替换内容
+
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
 
             # 静态链接方法二：
@@ -33,10 +35,11 @@ return function (Preprocessor $p) {
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES )  " \
-            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) -pthread" \
             ../configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
+            --disable-thread-safety \
             --with-ssl=openssl  \
             --with-readline \
             --with-icu \

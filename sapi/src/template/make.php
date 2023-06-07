@@ -160,9 +160,16 @@ make_config() {
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
+<?php else: ?>
+
+    # sed -i.backup "s/HAVE_EXPLICIT_BZERO 1\" >>confdefs.h/HAVE_EXPLICIT_BZERO 1\" >>confdefs.hook.h/" ./configure
+    sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
+
 <?php endif; ?>
 
-    ./configure --help
+
+
+./configure --help
     export_variables
     echo $LDFLAGS > ldflags.log
     echo $CPPFLAGS > cppflags.log
