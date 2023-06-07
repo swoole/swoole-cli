@@ -832,6 +832,9 @@ EOF;
                 ($this->extCallbacks[$ext])($this);
             }
         }
+        if ($this->getOsType() == 'macos') {
+            $this->loadDependLibrary("bison");
+        }
 
         // autoload extension depend extension
         foreach ($this->extensionMap as $ext) {
