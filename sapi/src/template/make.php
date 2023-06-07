@@ -164,9 +164,7 @@ make_config() {
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
 <?php endif; ?>
 
-
-
-./configure --help
+   ./configure --help
     export_variables
     echo $LDFLAGS > ldflags.log
     echo $CPPFLAGS > cppflags.log
