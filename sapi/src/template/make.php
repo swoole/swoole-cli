@@ -161,10 +161,7 @@ make_config() {
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php else: ?>
-
-    # sed -i.backup "s/HAVE_EXPLICIT_BZERO 1\" >>confdefs.h/HAVE_EXPLICIT_BZERO 1\" >>confdefs.hook.h/" ./configure
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
-
 <?php endif; ?>
 
 
