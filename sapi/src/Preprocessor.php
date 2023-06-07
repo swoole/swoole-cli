@@ -854,7 +854,7 @@ EOF;
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
         if ($this->getOsType() == 'macos') {
-            $libcpp = '-lc++ -lpthread';
+            $libcpp = '-lc++';
         } else {
             $libcpp = '-lstdc++';
         }
