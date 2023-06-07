@@ -65,13 +65,13 @@ jobs:
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
           options: -v ${{ github.workspace }}:/work -w /work
-        run: |
-          ./bin/swoole-cli -v
-          ./bin/swoole-cli -m
-          ./bin/swoole-cli --ri swoole
-          file ./bin/swoole-cli
-          readelf -h ./bin/swoole-cli
-          ./bin/swoole-cli -r "echo PHP_VERSION;"
+          run: |
+            ./bin/swoole-cli -v
+            ./bin/swoole-cli -m
+            ./bin/swoole-cli --ri swoole
+            file ./bin/swoole-cli
+            readelf -h ./bin/swoole-cli
+            ./bin/swoole-cli -r "echo PHP_VERSION;"
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
