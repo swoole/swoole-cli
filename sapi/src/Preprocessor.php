@@ -131,10 +131,12 @@ class Preprocessor
             case 'Linux':
                 $this->setOsType('linux');
                 $this->setLinker('ld.lld');
+                $this->setMaxJob(`nproc 2> /dev/null`);
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
                 $this->setLinker('ld');
+                $this->setMaxJob(`sysctl -n hw.ncpu`);
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -911,4 +913,5 @@ EOF;
             echo "{$item->name}\n";
         }
     }
+
 }
