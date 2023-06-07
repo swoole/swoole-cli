@@ -46,7 +46,7 @@ jobs:
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
             composer update --no-dev  --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds --with-global-prefix=/usr
+            php prepare.php  +inotify +apcu +ds --with-global-prefix=/usr +xlswriter +ssh2 +pgsql +pdo_pgsql --with-swoole-pgsql=1
             chmod a+x make.sh
             head -n 20 make.sh
       - name: Build
@@ -56,6 +56,9 @@ jobs:
           # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            apk update
+            apk add libc++-static
+            bash ./make.sh pgsql
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
@@ -63,6 +66,8 @@ jobs:
       - name: Show Build Result
         run: |
           ./bin/swoole-cli -v
+          ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri swoole
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"

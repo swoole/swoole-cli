@@ -8,6 +8,7 @@ return function (Preprocessor $p) {
     $openssl_preifx = OPENSSL_PREFIX;
     $options = ' --with-event-core ';
     $options .= ' --with-event-extra=yes  ';
+    $options .= ' --with-event-pthreads  ';
     $options .= ' --with-event-openssl=yes ';
     $options .= ' --with-openssl-dir=' . $openssl_preifx;
     $options .= ' --enable-event-sockets=yes ';
@@ -20,5 +21,6 @@ return function (Preprocessor $p) {
             ->withManual('http://docs.php.net/event')
             ->withPeclVersion('3.0.8')
             ->depends('libevent')
+            ->withDependExtension('session', 'sockets')
     );
 };
