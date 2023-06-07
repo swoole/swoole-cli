@@ -47,7 +47,7 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           composer update --no-dev  --optimize-autoloader
-          php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
+          php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu +xlswriter +ssh2 +pgsql +pdo_pgsql --with-swoole-pgsql=1
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
@@ -66,12 +66,16 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           chmod a+x ./make.sh
           ./make.sh curl
+          ./make.sh pgsql
           ./make.sh config
           ./make.sh build
           ./make.sh archive
 
       - name: Show Build Result
         run: |
+          ./bin/swoole-cli -v
+          ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri swoole
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
