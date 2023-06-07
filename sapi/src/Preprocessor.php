@@ -13,7 +13,6 @@ class Preprocessor
 {
 
     use DownloadBoxTrait;
-
     use WebUITrait;
 
     public const VERSION = '1.6';
@@ -131,10 +130,12 @@ class Preprocessor
             case 'Linux':
                 $this->setOsType('linux');
                 $this->setLinker('ld.lld');
+                $this->setMaxJob(`nproc 2> /dev/null`);
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
                 $this->setLinker('ld');
+                $this->setMaxJob(`sysctl -n hw.ncpu`);
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -402,8 +403,8 @@ class Preprocessor
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
-                    $cacheDir = $this->rootDir . '/var/tmp/download/lib';
-                    $workDir = $this->rootDir;
+                    $cacheDir = $this->getRootDir() . '/var/tmp/download/lib';
+                    $workDir = $this->getRootDir();
                     $lib->downloadScript = <<<EOF
                         test -d {$cacheDir} && rm -rf {$cacheDir}
                         mkdir -p {$cacheDir}
@@ -466,10 +467,10 @@ EOF;
                     }
                 }
 
-                $workDir = $this->rootDir;
+                $workDir = $this->getRootDir();
                 if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
-                        $cacheDir = $this->rootDir . '/var/tmp/download/ext';
+                        $cacheDir =  $workDir . '/var/tmp/download/ext';
                         $ext->downloadScript = <<<EOF
                                 test -d {$cacheDir} && rm -rf {$cacheDir}
                                 mkdir -p {$cacheDir}
@@ -865,7 +866,7 @@ EOF;
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
         if ($this->getOsType() == 'macos') {
-            $libcpp = '-lc++ -lpthread';
+            $libcpp = '-lc++';
         } else {
             $libcpp = '-lstdc++';
         }
@@ -926,4 +927,5 @@ EOF;
             echo "{$item->name}\n";
         }
     }
+
 }

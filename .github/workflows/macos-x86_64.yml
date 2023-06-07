@@ -15,8 +15,7 @@ jobs:
         run: |
           env
           echo $HOME
-
-          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm
+          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm flex
 
           # brew uninstall --ignore-dependencies oniguruma
           # brew uninstall --ignore-dependencies brotli
@@ -55,7 +54,7 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           composer update --no-dev  --optimize-autoloader
-          php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu +xlswriter +ssh2 +pgsql +pdo_pgsql --with-swoole-pgsql=1
+          php prepare.php --without-docker=1  --with-build-type=release  +ds +apc --with-swoole-pgsql=1 +ds +apcu +xlswriter +ssh2 +pgsql +pdo_pgsql
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
