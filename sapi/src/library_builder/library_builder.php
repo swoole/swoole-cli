@@ -384,6 +384,9 @@ function libraries_builder($p)
         //'https://www.bianyuanyun.com/wp-content/uploads/2021/06/whitepaper-未来网络白皮书——白盒交换机技术白皮书.pdf'
 
         //dpi(deep packet inspection)是一种基于数据包的深度检测技术，通过对网络关键点处的流量和报文内容进行检测分析，根据事先定义的策略对检测流量进行过滤控制，完成所在链路的业务精细化识别、业务流量流向分析、业务流量占比统计、业务占比整形、以及应用层拒绝服务攻击、对病毒/木马进行过滤和滥用p2p的控制等功能
+
+        //eNSP(Enterprise Network Simulation Platform)是一款由华为提供的、可扩展的、图形化操作的网络仿真工具平台，主要对企业网络路由器、交换机进行软件仿真，完美呈现真实设备实景，支持大型网络模拟，让广大用户有机会在没有真实设备的情况下能够模拟演练，学习网络技术。
+
     }
 
     if (0) {

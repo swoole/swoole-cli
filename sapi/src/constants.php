@@ -156,3 +156,6 @@ define("LIBARCHIVE_PREFIX", $p->getGlobalPrefix() . '/libarchive');
 define("SOCAT_PREFIX", $p->getGlobalPrefix() . '/socat');
 define("ARIA2_PREFIX", $p->getGlobalPrefix() . '/aria2');
 
+define("OVS_PREFIX", $p->getGlobalPrefix() . '/ovs');
+define("OVN_PREFIX", $p->getGlobalPrefix() . '/ovn');
+
