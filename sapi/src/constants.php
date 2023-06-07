@@ -109,6 +109,7 @@ define("DYNASM_PREFIX", $p->getGlobalPrefix() . '/dynasm');
 
 define("NGINX_PREFIX", $p->getGlobalPrefix() . '/nginx');
 define("PCRE2_PREFIX", $p->getGlobalPrefix() . '/pcre2');
+define("PCRE_PREFIX", $p->getGlobalPrefix() . '/pcre');
 
 
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;
