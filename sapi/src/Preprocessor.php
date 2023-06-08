@@ -6,10 +6,14 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
+use SwooleCli\Trait\DownloadBoxTrait;
+use SwooleCli\Trait\WebUITrait;
 
 class Preprocessor
 {
+
     use DownloadBoxTrait;
+    use WebUITrait;
 
     public const VERSION = '1.6';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
@@ -126,10 +130,12 @@ class Preprocessor
             case 'Linux':
                 $this->setOsType('linux');
                 $this->setLinker('ld.lld');
+                $this->setMaxJob(`nproc 2> /dev/null`);
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
                 $this->setLinker('ld');
+                $this->setMaxJob(`sysctl -n hw.ncpu`);
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -397,8 +403,8 @@ class Preprocessor
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {
                 if ($lib->enableDownloadScript) {
-                    $cacheDir = $this->getWorkDir() . '/var/tmp/download/lib';
-                    $workDir = $this->getWorkDir();
+                    $cacheDir = $this->getRootDir() . '/var/tmp/download/lib';
+                    $workDir = $this->getRootDir();
                     $lib->downloadScript = <<<EOF
                         test -d {$cacheDir} && rm -rf {$cacheDir}
                         mkdir -p {$cacheDir}
@@ -461,10 +467,10 @@ EOF;
                     }
                 }
 
-                $workDir = $this->getWorkDir();
+                $workDir = $this->getRootDir();
                 if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
-                        $cacheDir = $this->getWorkDir() . '/var/tmp/download/ext';
+                        $cacheDir =  $workDir . '/var/tmp/download/ext';
                         $ext->downloadScript = <<<EOF
                                 test -d {$cacheDir} && rm -rf {$cacheDir}
                                 mkdir -p {$cacheDir}
@@ -834,6 +840,9 @@ EOF;
                 ($this->extCallbacks[$ext])($this);
             }
         }
+        if ($this->getOsType() == 'macos') {
+            $this->loadDependLibrary("bison");
+        }
 
         // autoload extension depend extension
         foreach ($this->extensionMap as $ext) {
@@ -861,7 +870,6 @@ EOF;
         } else {
             $libcpp = '-lstdc++';
         }
-
         $packagesArr = $this->getLibraryPackages();
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);
@@ -898,7 +906,9 @@ EOF;
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
-
+        if ($this->getInputOption('with-web-ui')) {
+            $this->generateWebUIData();
+        }
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
@@ -917,4 +927,5 @@ EOF;
             echo "{$item->name}\n";
         }
     }
+
 }

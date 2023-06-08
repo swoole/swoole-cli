@@ -231,6 +231,17 @@ make_config() {
      export_variables
      echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
      echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
+<?php if ($this->osType !== 'macos') : ?>
+    mv main/php_config.h.in /tmp/cnt
+    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
+    cat /tmp/cnt >> main/php_config.h.in
+    echo -ne '\n#endif\n' >> main/php_config.h.in
+<?php else : ?>
+    <?php if (isset($this->libraryMap['pgsql'])) : ?>
+    sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
+    <?php endif;?>
+<?php endif; ?>
+
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
@@ -243,7 +254,7 @@ make_config() {
 make_build() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType()=='linux'): ?>
+    <?php if ($this->getOsType()=='linux') : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
