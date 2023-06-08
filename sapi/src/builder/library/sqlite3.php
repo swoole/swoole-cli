@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
 
 EOF
             )
-            ->withBinPath($sqlite3_prefix)
+            ->withBinPath($sqlite3_prefix . '/bin/')
             ->withPkgName('sqlite3')
     );
 };

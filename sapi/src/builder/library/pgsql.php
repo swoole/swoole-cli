@@ -55,11 +55,17 @@ return function (Preprocessor $p) {
             --without-bonjour \
             --without-tcl
 
+
+
             make -C src/bin/pg_config install
             make -C src/include install
 
             make -C  src/common install
+
+            make -C  src/backend/port install
             make -C  src/port install
+
+            make -C  src/backend/libpq install
             make -C  src/interfaces/libpq install
 
 EOF

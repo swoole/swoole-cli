@@ -159,3 +159,8 @@ define("ARIA2_PREFIX", $p->getGlobalPrefix() . '/aria2');
 define("OVS_PREFIX", $p->getGlobalPrefix() . '/ovs');
 define("OVN_PREFIX", $p->getGlobalPrefix() . '/ovn');
 
+define("COTURN_PREFIX", $p->getGlobalPrefix() . '/coturn');
+define("COTURN_PREFIX", $p->getGlobalPrefix() . '/coturn');
+define("HIREDIS_PREFIX", $p->getGlobalPrefix() . '/hiredis');
+define("LIBMICROHTTP_PREFIX", $p->getGlobalPrefix() . '/libmicrohttp');
+
