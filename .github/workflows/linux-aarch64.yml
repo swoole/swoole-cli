@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-aarch64:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -43,7 +43,7 @@ jobs:
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
             composer update --no-dev  --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds --with-global-prefix=/usr
+            php prepare.php  +inotify +apcu +ds --with-global-prefix=/usr --with-swoole-pgsql=1 +xlswriter +ssh2 +pgsql +pdo_pgsql
             chmod a+x make.sh
             head -n 20 make.sh
       - name: Build
@@ -53,16 +53,28 @@ jobs:
           # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+
+
+            apk update
+            apk add libc++-static
+            bash ./make.sh pgsql
+            bash ./make.sh curl
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
 
       - name: Show Build Result
-        run: |
-          ./bin/swoole-cli -v
-          file ./bin/swoole-cli
-          readelf -h ./bin/swoole-cli
-          ./bin/swoole-cli -r "echo PHP_VERSION;"
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            ./bin/swoole-cli -v
+            ./bin/swoole-cli -m
+            ./bin/swoole-cli --ri swoole
+            file ./bin/swoole-cli
+            readelf -h ./bin/swoole-cli
+            ./bin/swoole-cli -r "echo PHP_VERSION;"
 
       - name: production artifacts
         uses: actions/upload-artifact@v3

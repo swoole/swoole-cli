@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace SwooleCli;
+namespace SwooleCli\Trait;
 
 trait DownloadBoxTrait
 {
-
     protected function generateLibraryDownloadLinks(): void
     {
-        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
+        $this->mkdirIfNotExists($this->getRootDir() . '/var/', 0755, true);
         $download_urls = [];
         foreach ($this->libraryList as $item) {
             if (empty($item->url) || $item->enableDownloadScript) {
@@ -26,7 +25,7 @@ trait DownloadBoxTrait
             }
             $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
@@ -38,8 +37,7 @@ trait DownloadBoxTrait
             $item->url = "https://pecl.php.net/get/{$item->file}";
             $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
-
+        file_put_contents($this->getRootDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
 
         $shell_cmd_header = <<<'EOF'
 #!/bin/bash
@@ -82,7 +80,7 @@ EOF;
             $download_scripts[] = $downloadScript . PHP_EOL;
         }
         file_put_contents(
-            $this->getWorkDir() . '/var/download_library_use_git.sh',
+            $this->rootDir . '/var/download_library_use_git.sh',
             $shell_cmd_header . PHP_EOL . implode(PHP_EOL, $download_scripts)
         );
         $download_scripts = [];
@@ -114,7 +112,7 @@ EOF;
             $download_scripts[] = $downloadScript . PHP_EOL;
         }
         file_put_contents(
-            $this->getWorkDir() . '/var/download_extension_use_git.sh',
+            $this->getRootDir() . '/var/download_extension_use_git.sh',
             $shell_cmd_header . PHP_EOL . implode(PHP_EOL, $download_scripts)
         );
     }

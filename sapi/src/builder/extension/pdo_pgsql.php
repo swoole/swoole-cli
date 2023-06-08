@@ -21,5 +21,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)->depends('pgsql')
+            ->withDependExtension('pdo')
     );
 };
