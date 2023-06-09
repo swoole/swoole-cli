@@ -6,6 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $coturn_prefix = COTURN_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
+    $openssl_prefix = OPENSSL_v1_PREFIX;
     $libevent_prefix = LIBEVENT_PREFIX;
     $pgsql_prefix = PGSQL_PREFIX;
     $sqlite3_prefix = SQLITE3_PREFIX;
@@ -44,6 +45,6 @@ EOF
 EOF
             )
             ->withBinPath($coturn_prefix . '/bin/')
-            ->depends('libevent', 'openssl', 'sqlite3') # 'hiredis'
+            ->depends('libevent', 'openssl_v1', 'sqlite3') # 'hiredis'
     );
 };

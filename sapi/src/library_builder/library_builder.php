@@ -772,4 +772,16 @@ function libraries_builder($p)
         //as epoll/kqueue/event ports/inotify/eventfd/signalfd support
 
      */
+
+    /*
+
+      cmake -G --help
+      cmake -G "Unix Makefiles"
+      cmake -G "Ninja"
+
+      # 查看可选项
+      cmake -LH ..
+
+    CMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE
+     */
 }

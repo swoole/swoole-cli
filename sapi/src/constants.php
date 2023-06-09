@@ -21,6 +21,7 @@ define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
 define("CURL_PREFIX", $p->getGlobalPrefix() . '/curl');
 define("CARES_PREFIX", $p->getGlobalPrefix() . '/cares');
 define("OPENSSL_PREFIX", $p->getGlobalPrefix() . '/openssl');
+define("OPENSSL_v1_PREFIX", $p->getGlobalPrefix() . '/openssl_v1');
 
 define("LIBGCRYPT_PREFIX", $p->getGlobalPrefix() . '/libgcrypt');
 define("LIBGCRYPT_ERROR_PREFIX", $p->getGlobalPrefix() . '/libgcrypt_error');
