@@ -46,7 +46,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libavif')
-        ->depends('libwebp', 'dav1d', 'aom', 'libgav1', 'svt_av1') # 'libyuv',  'libsharpyuv',
+            ->depends('libwebp', 'dav1d', 'aom', 'libgav1', 'svt_av1') # 'libyuv',  'libsharpyuv',
     );
     $p->withVariable('LIBS', '$LIBS -lbrotli');
 };

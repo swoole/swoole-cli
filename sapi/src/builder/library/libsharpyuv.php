@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     $libjpeg_prefix = JPEG_PREFIX;
     $libgif_prefix = GIF_PREFIX;
     $libtiff_prefix = LIBTIFF_PREFIX;
-    $libpng_prefix= PNG_PREFIX;
+    $libpng_prefix = PNG_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $p->addLibrary(
         (new Library('libsharpyuv'))

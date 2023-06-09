@@ -11,11 +11,10 @@ return function (Preprocessor $p) {
             'https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md',
             Library::LICENSE_BSD
         )
-        ->withDownloadScript('SVT-AV1',<<<EOF
+        ->withDownloadScript('SVT-AV1', <<<EOF
             git clone -b v1.5.0 --depth=1 https://gitlab.com/AOMediaCodec/SVT-AV1.git
 EOF
-)
-
+        )
         ->withFile('SVT-AV1-v1.5.0.tar.gz')
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1.git')
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Build-Guide.md')
