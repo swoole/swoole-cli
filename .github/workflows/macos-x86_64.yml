@@ -12,7 +12,7 @@ jobs:
         run: |
           env
           echo $HOME
-          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm flex
+          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm flex bison
 
           # brew uninstall --ignore-dependencies oniguruma
           # brew uninstall --ignore-dependencies brotli
@@ -28,6 +28,8 @@ jobs:
 
           # sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
+
+          ifconfig
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
@@ -47,7 +49,7 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           composer update --no-dev  --optimize-autoloader
-          php prepare.php --without-docker=1  --with-build-type=release  +ds +apc --with-swoole-pgsql=1 +ds +apcu +xlswriter +ssh2 +pgsql +pdo_pgsql
+          php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
@@ -78,6 +80,7 @@ jobs:
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
+
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
