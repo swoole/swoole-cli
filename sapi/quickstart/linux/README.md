@@ -1,6 +1,7 @@
 # 快速启动容器环境
 
 > 提供了 debian 11 构建 和 alpine 构建环境
+
 > 任意选一个就可以
 
 ## 快速初始化容器运行环境
@@ -18,6 +19,7 @@ bash get-docker.sh --mirror Aliyun
 ## 构建环境
 
 > debian 和 alpine 任意选一个
+
 > 推荐 alpine
 
 ## debian 11 构建环境
