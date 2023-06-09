@@ -1100,54 +1100,6 @@ EOF
     );
 }
 
-
-function install_libffi($p): void
-{
-    $libffi_prefix = LIBFFI_PREFIX;
-    $p->addLibrary(
-        (new Library('libffi'))
-            ->withHomePage('https://sourceware.org/libffi/')
-            ->withLicense('http://github.com/libffi/libffi/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/libffi/libffi/releases/download/v3.4.4/libffi-3.4.4.tar.gz')
-            ->withFile('libffi-3.4.4.tar.gz')
-            ->withPrefix($libffi_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libffi_prefix)
-            ->withConfigure(
-                "
-            ./configure --help ;
-            ./configure \
-            --prefix={$libffi_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
-            "
-            )
-            ->withPkgName('libffi')
-            ->withBinPath($libffi_prefix . '/bin/')
-    );
-}
-
-function install_bison(Preprocessor $p)
-{
-    if ($p->getOsType() == 'macos') {
-        $bison_prefix = BISON_PREFIX;
-        $p->addLibrary(
-            (new Library('bison'))
-                ->withHomePage('https://www.gnu.org/software/bison/')
-                ->withUrl('http://ftp.gnu.org/gnu/bison/bison-3.8.tar.gz')
-                ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
-                ->withManual('https://www.gnu.org/software/bison/manual/')
-                ->withConfigure(
-                    <<<EOF
-                     ./configure --help
-                     ./configure --prefix={$bison_prefix}
-EOF
-                )
-                ->withBinPath($bison_prefix . '/bin/')
-        );
-    }
-}
-
 function install_re2c(Preprocessor $p)
 {
     $p->addLibrary(

@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $coturn_prefix = COTURN_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
-    $openssl_prefix = OPENSSL_v1_PREFIX;
+    //$openssl_prefix = OPENSSL_v1_PREFIX;
     $libevent_prefix = LIBEVENT_PREFIX;
     $pgsql_prefix = PGSQL_PREFIX;
     $sqlite3_prefix = SQLITE3_PREFIX;
@@ -37,14 +37,14 @@ EOF
            -DOpenSSL_ROOT={$openssl_prefix} \
            -DLibevent_ROOT={$libevent_prefix} \
            -DSQLite_DIR={$sqlite3_prefix} \
-           -DBUILD_STATIC_LIBS=ON
+           -DBUILD_STATIC_LIBS=ON \
+           -DPostgreSQL_DIR={$pgsql_prefix} \
 
            #  hiredis
-           # -DPostgreSQL_DIR={$pgsql_prefix} \
            # -Dhiredis_DIR={$sqlite3_prefix} \
 EOF
             )
             ->withBinPath($coturn_prefix . '/bin/')
-            ->depends('libevent', 'openssl_v1', 'sqlite3') # 'hiredis'
+            ->depends('libevent', 'openssl', 'sqlite3', 'pgsql') # 'hiredis'
     );
 };

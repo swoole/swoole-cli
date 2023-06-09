@@ -7,7 +7,8 @@ return function (Preprocessor $p) {
     $depends = [
         'bzip2',
         'curl',
-        'openssl'
+        'openssl',
+        'libffi'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

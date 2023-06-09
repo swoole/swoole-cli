@@ -62,7 +62,7 @@ function libraries_builder($p)
 
     //参考 https://github.com/docker-library/php/issues/221
     //install_pgsql($p);//依赖 openssl libxml2 libxslt  zlib readline icu libxml2 libxslt liblzma libiconv
-    //install_libffi($p);
+
 
     //扩展不兼容本项目
     //install_libmcrypt($p); //无 pkg-config 配置
@@ -102,10 +102,6 @@ function libraries_builder($p)
      */
     if ($p->getOsType() == 'win') {
         install_re2c($p);
-    }
-
-    if ($p->getOsType() == 'macos') {
-        install_bison($p);  // 源码编译bison, mongodb 需要
     }
 
     if (0) {
