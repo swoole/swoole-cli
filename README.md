@@ -10,7 +10,7 @@
 > 那么在 Swoole 5.0 中将迎来一种新的运行模式：swoole-cli。<br/>
 > <strong>
 > Swoole将像node.js这样作为独立程序提供给用户，而不是作为PHP的一个扩展。
-> </strong>
+> </strong><br/>
 > 除此之外swoole-cli会尽可能地对php-src进行裁剪，<br/>
 > 移除一些不用的机制、模块、扩展、函数、类型、常量、代码，使得整个程序可以在几分钟之内编译完成。
 
