@@ -5,6 +5,10 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
+    $option = '';
+    if ($p->getOsType() == 'macos') {
+        $option = '--disable-thread-safety';
+    }
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
@@ -39,7 +43,7 @@ return function (Preprocessor $p) {
             ../configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
-            --disable-thread-safety \
+            {$option} \
             --with-ssl=openssl  \
             --with-readline \
             --with-icu \
@@ -55,11 +59,17 @@ return function (Preprocessor $p) {
             --without-bonjour \
             --without-tcl
 
+
+
             make -C src/bin/pg_config install
             make -C src/include install
 
             make -C  src/common install
+
+            make -C  src/backend/port install
             make -C  src/port install
+
+            make -C  src/backend/libpq install
             make -C  src/interfaces/libpq install
 
 EOF
