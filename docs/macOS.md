@@ -28,7 +28,9 @@ brew uninstall --ignore-dependencies capstone
 
 ```shell
 
-brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm flex
+brew install  wget curl  libtool automake  re2c llvm flex bison
+
+brew install  gettext coreutils binutils libunistring
 
 export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
 

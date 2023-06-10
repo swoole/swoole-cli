@@ -70,7 +70,7 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-
+            ./bin/swoole-cli vendor/bin/phpunit sapi/unit/MainTest.php
       - name: Show Build Result
         run: |
           ./bin/swoole-cli -v
