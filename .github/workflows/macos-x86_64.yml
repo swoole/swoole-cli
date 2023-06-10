@@ -63,7 +63,7 @@ jobs:
 
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
-          php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql
+          php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb
 
 
       - name: Cache all-library
