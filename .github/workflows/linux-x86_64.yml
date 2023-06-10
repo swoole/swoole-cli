@@ -67,8 +67,10 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
+            composer update --optimize-autoloader
             ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
             ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
+            composer update --no-dev --optimize-autoloader
       - name: Show Build Result
         run: |
           ./bin/swoole-cli -v
