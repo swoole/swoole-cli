@@ -90,6 +90,8 @@ jobs:
           bash ./make.sh brotli
           bash ./make.sh curl
           bash ./make.sh imagemagick
+          bash ./make.sh pgsql
+
           bash ./make.sh config
           bash ./make.sh build
           bash ./make.sh archive
