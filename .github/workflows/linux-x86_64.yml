@@ -57,7 +57,7 @@ jobs:
             composer update   --optimize-autoloader
             php prepare.php  --with-global-prefix=/usr +inotify +apcu +ds +xlswriter +ssh2
             chmod a+x make.sh
-
+            head -n 20 make.sh
             php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
             php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
 

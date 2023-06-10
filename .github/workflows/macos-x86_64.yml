@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -55,7 +55,8 @@ jobs:
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          composer update --no-dev  --optimize-autoloader
+          # composer update --no-dev  --optimize-autoloader
+          composer update  --optimize-autoloader
           php prepare.php --without-docker=1  --with-build-type=release  +apcu +ds +xlswriter +ssh2
       - name: Cache all-library
         uses: actions/cache@v3
@@ -77,7 +78,8 @@ jobs:
           ./make.sh config
           ./make.sh build
           ./make.sh archive
-          ./bin/swoole-cli vendor/bin/phpunit sapi/unit/MainTest.php
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
 
       - name: Show Build Result
         run: |
