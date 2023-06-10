@@ -116,8 +116,6 @@ class Preprocessor
     protected array $extCallbacks = [];
     protected string $configureVarables;
 
-    protected array $binPath = [];
-
     protected function __construct()
     {
         switch (PHP_OS) {
@@ -207,6 +205,11 @@ class Preprocessor
     public function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
+    }
+
+    public function getPhpSrcDir():string
+    {
+        return $this->phpSrcDir ;
     }
 
 
