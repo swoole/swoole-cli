@@ -15,8 +15,8 @@ return function (Preprocessor $p) {
             ->withPrefix($brotli_prefix)
             ->withBuildScript(
                 <<<EOF
-            mkdir -p build
-            cd build
+            mkdir -p build_dir
+            cd build_dir
             # cmake -LH ..
             cmake .. \
             -DCMAKE_INSTALL_PREFIX={$brotli_prefix} \

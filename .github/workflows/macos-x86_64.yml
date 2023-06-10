@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
-    if: 1
+    if: 0
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -12,7 +12,8 @@ jobs:
         run: |
           env
           echo $HOME
-          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm flex bison
+          brew install  wget curl  libtool automake  re2c llvm flex bison
+          brew install  gettext coreutils binutils libunistring
 
           # brew uninstall --ignore-dependencies oniguruma
           # brew uninstall --ignore-dependencies brotli
@@ -30,6 +31,12 @@ jobs:
           # export MACOSX_DEPLOYMENT_TARGET=12.6
 
           ifconfig
+          export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
+          export IPV4=$(ifconfig en0 | grep "inet " | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
+          echo $IPV4
+          echo $IPV6
+          echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
+          echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
@@ -48,8 +55,12 @@ jobs:
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          composer update --no-dev  --optimize-autoloader
+
+          # composer update --no-dev  --optimize-autoloader
+          composer update  --optimize-autoloader
           php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql
+
+
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
@@ -66,11 +77,20 @@ jobs:
       - name: Build
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          chmod a+x ./make.sh
-          ./make.sh pgsql
-          ./make.sh config
-          ./make.sh build
-          ./make.sh archive
+
+          bash ./make.sh liblz4
+          bash ./make.sh liblzma
+          bash ./make.sh libzstd
+          bash ./make.sh libzip
+          bash ./make.sh brotli
+          bash ./make.sh curl
+          bash ./make.sh imagemagick
+          bash ./make.sh config
+          bash ./make.sh build
+          bash ./make.sh archive
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
+
 
       - name: Show Build Result
         run: |
@@ -80,7 +100,6 @@ jobs:
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
-
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
