@@ -136,18 +136,24 @@ EOF
             ->withCleanPreInstallDirectory($libyuv_prefix)
             ->withBuildScript(
                 <<<EOF
-                mkdir -p  out
-                cd out
+
+                sed -i.backup "33c  " CMakeLists.txt
+                sed -i.backup "34c  " CMakeLists.txt
+                sed -i.backup "35c  " CMakeLists.txt
+                sed -i.backup "51c  " CMakeLists.txt
+                sed -i.backup "99c  " CMakeLists.txt
+                mkdir -p  build
+                cd build
                 cmake .. \
                 -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
+                -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
                 -DJPEG_ROOT={$libjpeg_prefix} \
                 -DBUILD_STATIC_LIBS=ON \
                 -DBUILD_SHARED_LIBS=OFF  \
-                -DCMAKE_BUILD_TYPE="Release" \
-                -DTEST=OFF
+                -DCMAKE_BUILD_TYPE="Release"
                 cmake --build . --config Release
                 cmake --build . --target install --config Release
-                return 0
+
                 rm -rf {$libyuv_prefix}/lib/*.so.*
                 rm -rf {$libyuv_prefix}/lib/*.so
                 rm -rf {$libyuv_prefix}/lib/*.dylib
@@ -246,122 +252,17 @@ EOF
 
 function install_dav1d(Preprocessor $p)
 {
-    $dav1d_prefix = DAV1D_PREFIX;
-    $p->addLibrary(
-        (new Library('dav1d'))
-            ->withHomePage('https://code.videolan.org/videolan/dav1d/')
-            ->withLicense('https://code.videolan.org/videolan/dav1d/-/blob/master/COPYING', Library::LICENSE_BSD)
-            ->withUrl('https://code.videolan.org/videolan/dav1d/-/archive/1.1.0/dav1d-1.1.0.tar.gz')
-            ->withFile('dav1d-1.1.0.tar.gz')
-            ->withManual('https://code.videolan.org/videolan/dav1d')
-            ->disableDownloadWithMirrorURL()
-            ->withPrefix($dav1d_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($dav1d_prefix)
-            ->withBuildScript(
-                <<<EOF
 
-                mkdir -p build
-                cd build
-                meson setup \
-                --backend=ninja \
-                --prefix={$dav1d_prefix} \
-                --default-library=static \
-                ..
-                ninja
-                ninja install
-
-
-EOF
-            )
-            ->withPkgName('dav1d')
-            ->withBinPath($dav1d_prefix . '/bin/')
-    );
 }
 
 function install_libgav1(Preprocessor $p)
 {
-    $libgav1_prefix = LIBGAV1_PREFIX;
-    $p->addLibrary(
-        (new Library('libgav1'))
-            ->withHomePage('https://chromium.googlesource.com/codecs/libgav1')
-            ->withLicense(
-                'https://chromium.googlesource.com/codecs/libgav1/+/refs/heads/main/LICENSE',
-                Library::LICENSE_APACHE2
-            )
-            ->withFile('libgav1.tar.gz')
-            ->withManual('https://chromium.googlesource.com/codecs/libgav1/+/refs/heads/main')
-            ->withDownloadScript(
-                'libgav1',
-                <<<EOF
-                git clone --depth 1  https://chromium.googlesource.com/codecs/libgav1
-                mkdir -p libgav1/third_party/abseil-cpp
-                git clone -b 20220623.0 --depth 1 https://github.com/abseil/abseil-cpp.git libgav1/third_party/abseil-cpp
-EOF
-            )
-            ->disableDownloadWithMirrorURL()
-            ->withPrefix($libgav1_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libgav1_prefix)
-            ->withConfigure(
-                <<<EOF
-                mkdir -p build
-                cd build
-                # 查看更多选项
-                # cmake .. -LH
-                cmake -G "Unix Makefiles" .. \
-                -DCMAKE_INSTALL_PREFIX={$libgav1_prefix} \
-                -DCMAKE_BUILD_TYPE=Release  \
-                -DBUILD_SHARED_LIBS=OFF  \
-                -DBUILD_STATIC_LIBS=ON \
-                -DLIBGAV1_ENABLE_TESTS=OFF
 
-EOF
-            )
-            ->withPkgName('libgav1')
-            ->withBinPath($libgav1_prefix . '/bin/')
-    );
 }
 
 function install_libavif(Preprocessor $p): void
 {
-    $libavif_prefix = LIBAVIF_PREFIX;
-    $libyuv_prefix = LIBYUV_PREFIX;
-    $dav1d_prefix = DAV1D_PREFIX;
-    $libgav1_prefix = LIBGAV1_PREFIX;
-    $aom_prefix = AOM_PREFIX;
-    $p->addLibrary(
-        (new Library('libavif'))
-            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
-            ->withFile('libavif-v0.11.1.tar.gz')
-            ->withHomePage('https://aomediacodec.github.io/av1-avif/')
-            ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
-            ->withManual('https://github.com/AOMediaCodec/libavif')
-            ->disableDownloadWithMirrorURL()
-            ->withPrefix($libavif_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libavif_prefix)
-            ->withConfigure(
-                <<<EOF
 
-            cmake .  \
-            -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
-            -DAVIF_BUILD_EXAMPLES=OFF \
-            -DLIBYUV_ROOT={$libyuv_prefix} \
-            -DDAV1D_ROOT={$dav1d_prefix} \
-            -DLIBGAV1_ROOT={$libgav1_prefix} \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DAVIF_CODEC_AOM=ON \
-            -DAVIF_CODEC_DAV1D=ON \
-            -DAVIF_CODEC_LIBGAV1=ON \
-            -DAVIF_CODEC_RAV1E=OFF
-
-
-EOF
-            )
-            ->withPkgName('libavif')
-            ->withLdflags('')
-    );
 }
 
 function install_nasm(Preprocessor $p)
