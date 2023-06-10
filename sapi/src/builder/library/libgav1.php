@@ -28,17 +28,21 @@ EOF
                 mkdir -p build
                 cd build
                 # 查看更多选项
-                # cmake .. -LH
+                cmake .. -LH
                 cmake -G "Unix Makefiles" .. \
                 -DCMAKE_INSTALL_PREFIX={$libgav1_prefix} \
                 -DCMAKE_BUILD_TYPE=Release  \
                 -DBUILD_SHARED_LIBS=OFF  \
                 -DBUILD_STATIC_LIBS=ON \
-                -DLIBGAV1_ENABLE_TESTS=OFF
+                -DLIBGAV1_ENABLE_TESTS=OFF \
+                -DABSL_ENABLE_INSTALL=OFF \
+                -DBUILD_TESTING=OFF \
+                -DLIBGAV1_ENABLE_EXAMPLES=OFF \
 
 EOF
             )
             ->withPkgName('libgav1')
             ->withBinPath($libgav1_prefix . '/bin/')
+            ->depends('absl')
     );
 };

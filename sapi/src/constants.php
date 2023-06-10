@@ -67,3 +67,5 @@ define("LIBSHARPYUV_PREFIX", $p->getGlobalPrefix() . '/libsharpyuv');
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
+
+define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');

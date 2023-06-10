@@ -25,20 +25,20 @@ return function (Preprocessor $p) {
 
             cmake ..  \
             -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
-            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
             -DAVIF_BUILD_EXAMPLES=OFF \
-            -DLIBYUV_ROOT={$libyuv_prefix} \
-            -DDAV1D_ROOT={$dav1d_prefix} \
-            -DLIBGAV1_ROOT={$libgav1_prefix} \
-            -DAOM_ROOT={$libgav1_prefix} \
+            -Dlibyuv_ROOT={$libyuv_prefix} \
+            -Ddav1d_ROOT={$dav1d_prefix} \
+            -Dlibgav1_ROOT={$libgav1_prefix} \
+            -Daom_ROOT={$libgav1_prefix} \
+            -Dsvt_ROOT={$libgav1_prefix} \
             -DBUILD_SHARED_LIBS=OFF \
             -DAVIF_CODEC_AOM=ON \
             -DAVIF_CODEC_DAV1D=ON \
             -DAVIF_CODEC_LIBGAV1=ON \
             -DAVIF_CODEC_RAV1E=OFF \
-            -DAVIF_CODEC_SVT=ON
-            # -DLIBYUV_INCLUDE_DIR={$libyuv_prefix}/include \
-            # -DLIBYUV_LIBRARY={$libyuv_prefix}/lib
+            -DAVIF_CODEC_SVT=ON \
+            -DLIBYUV_INCLUDE_DIR={$libyuv_prefix}/include \
+            -DLIBYUV_LIBRARY={$libyuv_prefix}/lib
             # -DLIBSHARPYUV_INCLUDE_DIR={$libwebp_prefix}/include \
             # -DLIBSHARPYUV_LIBRARY={$libwebp_prefix}/include
 
@@ -46,7 +46,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libavif')
-            ->depends('libwebp', 'dav1d', 'aom', 'libgav1', 'svt_av1') # 'libyuv',  'libsharpyuv',
+            ->depends('libwebp', 'dav1d', 'aom', 'libgav1', 'svt_av1','libyuv') # ,  'libsharpyuv',
     );
     $p->withVariable('LIBS', '$LIBS -lbrotli');
 };

@@ -22,6 +22,7 @@ return function (Preprocessor $p) {
             PACKAGES_NAMES="\${PACKAGES_NAMES} libbrotlicommon libbrotlidec libbrotlienc libzip  zlib  libzstd  liblzma"
             PACKAGES_NAMES="\${PACKAGES_NAMES} libcrypto libssl   openssl"
             PACKAGES_NAMES="\${PACKAGES_NAMES} libxml-2.0"
+            PACKAGES_NAMES="\${PACKAGES_NAMES} libtiff-4 lcms2"
             CPPFLAGS="\$(pkg-config --cflags-only-I --static \$PACKAGES_NAMES ) -I{$bzip2_prefix}/include" \
             LDFLAGS="\$(pkg-config  --libs-only-L   --static \$PACKAGES_NAMES ) -L{$bzip2_prefix}/lib"  \
             LIBS="\$(pkg-config     --libs-only-l   --static \$PACKAGES_NAMES ) -lbz2" \
@@ -38,9 +39,9 @@ return function (Preprocessor $p) {
             --with-webp \
             --with-xml \
             --with-freetype \
-            --without-raw \
-            --without-tiff \
-            --without-lcms \
+            --with-raw \
+            --with-tiff \
+            --with-lcms \
             --enable-zero-configuration \
             --enable-bounds-checking \
             --enable-hdri \
@@ -61,8 +62,8 @@ return function (Preprocessor $p) {
             --without-pango \
             --without-x \
             --without-modules \
-            --without-magick-plus-plus \
-            --without-utilities \
+            --with-magick-plus-plus \
+            --with-utilities \
             --without-gvc \
             --without-autotrace \
             --without-dps \
@@ -83,6 +84,8 @@ EOF
             ->withPkgName('MagickCore')
             ->withPkgName('MagickWand-7.Q16HDRI')
             ->withPkgName('MagickWand')
+            ->withPkgName('Magick++-7.Q16HDRI')
+            ->withPkgName('Magick++')
             ->withBinPath($imagemagick_prefix . '/bin/')
             ->depends(
                 'libxml2',
@@ -95,7 +98,10 @@ EOF
                 'libpng',
                 'libgif',
                 'openssl',
-                'libzstd'
+                'libzstd',
+                'lcms2',
+                'libtiff',
+                'libraw'
             )
     );
 };
