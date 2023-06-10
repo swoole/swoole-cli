@@ -17,8 +17,17 @@ return function (Preprocessor $p) {
             ->withPrefix($liblz4_prefix)
             ->withConfigure(
                 <<<EOF
-            cd build/cmake/
-            cmake . -DCMAKE_INSTALL_PREFIX={$liblz4_prefix}  -DBUILD_SHARED_LIBS=OFF  -DBUILD_STATIC_LIBS=ON
+                mkdir -p build/cmake/build
+                cd build/cmake/build
+                # cmake -LH ..
+                cmake .. \
+                -DCMAKE_INSTALL_PREFIX={$liblz4_prefix} \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_SHARED_LIBS=OFF \
+                -DBUILD_STATIC_LIBS=ON \
+                -DLZ4_POSITION_INDEPENDENT_LIB=ON \
+                -DLZ4_BUILD_LEGACY_LZ4C=ON \
+                -DLZ4_BUILD_CLI=ON
 EOF
             )
             ->withBinPath($liblz4_prefix . '/bin')

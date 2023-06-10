@@ -13,7 +13,15 @@ return function (Preprocessor $p) {
             ->withFile('xz-5.4.1.tar.gz')
             ->withPrefix($liblzma_prefix)
             ->withConfigure(
-                './configure --prefix=' . $liblzma_prefix . ' --enable-static  --disable-shared --disable-doc'
+                <<<EOF
+                mkdir -p build
+                cd build
+                cmake .. \
+                -DCMAKE_INSTALL_PREFIX={$liblzma_prefix} \
+                -DCMAKE_BUILD_TYPE=Release  \
+                -DBUILD_SHARED_LIBS=OFF  \
+                -DBUILD_STATIC_LIBS=ON
+EOF
             )
             ->withPkgName('liblzma')
             ->withBinPath($liblzma_prefix . '/bin/')

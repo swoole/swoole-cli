@@ -70,13 +70,23 @@ jobs:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
           options: -v ${{ github.workspace }}:/work -w /work -e "BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }}"
           run: |
+
             apk update
             apk add libc++-static
+
+            bash ./make.sh liblz4
+            bash ./make.sh liblzma
+            bash ./make.sh libzstd
+            bash ./make.sh libzip
+            bash ./make.sh brotli
+            bash ./make.sh curl
+            bash ./make.sh imagemagick
             bash ./make.sh pgsql
+
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-
+            ./bin/swoole-cli vendor/bin/phpunit sapi/unit/MainTest.php
       - name: Show Build Result
         run: |
           ./php-src/sapi/cli/php -v
