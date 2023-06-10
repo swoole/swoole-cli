@@ -63,7 +63,16 @@ jobs:
           run: |
             apk update
             apk add libc++-static
+
+            bash ./make.sh liblz4
+            bash ./make.sh liblzma
+            bash ./make.sh libzstd
+            bash ./make.sh libzip
+            bash ./make.sh brotli
+            bash ./make.sh curl
+            bash ./make.sh imagemagick
             bash ./make.sh pgsql
+
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
