@@ -64,10 +64,16 @@ jobs:
       - name: Build
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          chmod a+x ./make.sh
-          ./make.sh config
-          ./make.sh build
-          ./make.sh archive
+          bash ./make.sh liblz4
+          bash ./make.sh liblzma
+          bash ./make.sh libzstd
+          bash ./make.sh libzip
+          bash ./make.sh brotli
+          bash ./make.sh curl
+          bash ./make.sh imagemagick
+          bash ./make.sh config
+          bash ./make.sh build
+          bash ./make.sh archive
 
       - name: Show Build Result
         run: |
