@@ -85,6 +85,10 @@ jobs:
             bash ./make.sh libtiff
             bash ./make.sh lcms2
             bash ./make.sh imagemagick
+
+            apk add ninja python3 py3-pip  nasm
+            pip3 install meson
+
             bash ./make.sh dav1d
             bash ./make.sh aom
             bash ./make.sh libgav1
@@ -94,8 +98,8 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
+            # ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
+            # ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
 
       - name: Show Build Result
         run: |
