@@ -56,7 +56,9 @@ jobs:
             composer update --no-dev  --optimize-autoloader
             php prepare.php  --with-global-prefix=/usr +inotify +apcu +ds +xlswriter +ssh2
             chmod a+x make.sh
+            composer update --optimize-autoloader
             php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
+            composer update --no-dev  --optimize-autoloader
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
