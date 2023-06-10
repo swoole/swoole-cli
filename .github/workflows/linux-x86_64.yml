@@ -53,12 +53,14 @@ jobs:
           run: |
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
-            composer update --no-dev  --optimize-autoloader
+            # composer update --no-dev  --optimize-autoloader
+            composer update   --optimize-autoloader
             php prepare.php  --with-global-prefix=/usr +inotify +apcu +ds +xlswriter +ssh2
             chmod a+x make.sh
-            composer update --optimize-autoloader
+
             php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-            composer update --no-dev  --optimize-autoloader
+            php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
+
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
@@ -69,10 +71,9 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-            composer update --optimize-autoloader
             ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
             ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
-            composer update --no-dev --optimize-autoloader
+
       - name: Show Build Result
         run: |
           ./bin/swoole-cli -v
