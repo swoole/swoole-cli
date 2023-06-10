@@ -116,6 +116,8 @@ class Preprocessor
     protected array $extCallbacks = [];
     protected string $configureVarables;
 
+    protected array $binPath = [];
+
     protected function __construct()
     {
         switch (PHP_OS) {
@@ -448,9 +450,9 @@ class Preprocessor
         return $packages;
     }
 
-    public function withPath(string $path): static
+    public function withBinPath(string $path): static
     {
-        $this->binPath[] = $path;
+        $this->binPaths[] = $path;
         return $this;
     }
 
@@ -753,7 +755,7 @@ class Preprocessor
 
         if ($this->getOsType() == 'macos') {
             if (is_file('/usr/local/opt/bison/bin/bison')) {
-                $this->withPath('/usr/local/opt/bison/bin');
+                $this->withBinPath('/usr/local/opt/bison/bin');
             } else {
                 $this->loadDependLibrary("bison");
             }
