@@ -56,7 +56,7 @@ jobs:
             composer update --no-dev  --optimize-autoloader
             php prepare.php  --with-global-prefix=/usr +inotify +apcu +ds +xlswriter +ssh2
             chmod a+x make.sh
-            head -n 20 make.sh
+            php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
@@ -67,7 +67,8 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-            ./bin/swoole-cli vendor/bin/phpunit sapi/unit/MainTest.php
+            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
+            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
       - name: Show Build Result
         run: |
           ./bin/swoole-cli -v
