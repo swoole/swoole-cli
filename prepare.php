@@ -48,7 +48,7 @@ $p->setExtraCflags('-Os');
 // Generate make.sh
 $p->execute();
 
-function install_libraries($p): void
+function install_libraries(Preprocessor $p): void
 {
     $php_install_prefix = BUILD_PHP_INSTALL_PREFIX;
     $php_src = $p->getPhpSrcDir();
