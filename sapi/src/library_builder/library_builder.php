@@ -532,78 +532,78 @@ function libraries_builder($p)
 
     /**
      * 交叉编译
-     * --build=BUILD           configure for building on BUILD [BUILD=HOST]
-     * --host=HOST             configure for HOST [guessed]
-     * --target=TARGET         configure for TARGET [TARGET=HOST]
+      --build=BUILD           configure for building on BUILD [BUILD=HOST]
+      --host=HOST             configure for HOST [guessed]
+      --target=TARGET         configure for TARGET [TARGET=HOST]
      */
 
     /**
      * BIO 全称Block-IO 是一种阻塞同步的通信模式 BIO 全称Block-IO 是一种阻塞同步的通信模式。我们常说的Stock IO 一般指的是BIO。是一个比较传统的通信方式，模式简单，使用方便。但并发处理能力低，通信耗时，依赖网速。
-     * NIO 全称New IO，也叫Non-Block IO 是一种非阻塞同步的通信模式。
-     * AIO 也叫NIO2.0 是一种非阻塞异步的通信模式。在NIO的基础上引入了新的异步通道的概念，并提供了异步文件通道和异步套接字通道的实现。
-     * AIO 并没有采用NIO的多路复用器，而是使用异步通道的概念
-     *
+      NIO 全称New IO，也叫Non-Block IO 是一种非阻塞同步的通信模式。
+      AIO 也叫NIO2.0 是一种非阻塞异步的通信模式。在NIO的基础上引入了新的异步通道的概念，并提供了异步文件通道和异步套接字通道的实现。
+      AIO 并没有采用NIO的多路复用器，而是使用异步通道的概念
+
      */
 
     /**
-     * LC_ALL=C 是为了去除所有本地化的设置
+      LC_ALL=C 是为了去除所有本地化的设置
      */
 
     /**
-     * SYSTEM=`uname -s 2>/dev/null`
-     * RELEASE=`uname -r 2>/dev/null`
-     * MACHINE=`uname -m 2>/dev/null`
-     *
-     * PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+      SYSTEM=`uname -s 2>/dev/null`
+      RELEASE=`uname -r 2>/dev/null`
+      MACHINE=`uname -m 2>/dev/null`
+
+      PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
      */
 
     /**
-     *     export CFLAGS="$(pkg-config  --cflags --static expat minizip ) "
-     *
-     * SET (CMAKE_EXE_LINKER_FLAGS "-static")
-     *
-     * target
-     * ARCHIVE 静态库
-     * LIBRARY 动态库
-     * RUNTIME  可执行二进制文件
-     *
-     * # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
-     * -D 从外部传入搜索路径：
-     * <PackageName>_ROOT
-     * <PackageName>_DIR
-     *
-     * c++(CMake篇)  https://zhuanlan.zhihu.com/p/470681241
-     * # CMAKE_BUILD_TYPE=Debug Release
-     *
-     * cmake -G"Unix Makefiles" .  \
-     * -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
-     * -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
-     * -DCMAKE_INSTALL_INCLUDEDIR={$libminzip_prefix}/include \
-     * -DCMAKE_BUILD_TYPE=Release  \
-     * -DBUILD_SHARED_LIBS=OFF  \
-     * -DBUILD_STATIC_LIBS=ON \
-     * -DCMAKE_COLOR_MAKEFILE=ON
-     *
-     * set(libgav1_root "${CMAKE_CURRENT_SOURCE_DIR}")
-     * set(libgav1_build "${CMAKE_BINARY_DIR}")
-     *
-     * cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-     * cmake --build .
-     * cmake --install .
-     *
-     * cmake -G 'Visual Studio 17 2022' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-     * cmake --build . --config Release
-     * cmake --install . --config Release
-     *
-     * CURL ARCHITECTURE   https://curl.se/docs/install.html#:~:text=26%20CPU%20Architectures
-     * CURL Cross compile  https://curl.se/docs/install.html#:~:text=Cross%20compile
-     *
-     *   cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_C_COMPILER=clang -DCMAKE_C_FLAGS_RELWITHDEBINFO="-O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer" -DENABLE_SHARED=0 ..
-     *   export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
-     *
-     *
-     *
-     *   make install DESTDIR=/usr/libzip
+          export CFLAGS="$(pkg-config  --cflags --static expat minizip ) "
+
+      SET (CMAKE_EXE_LINKER_FLAGS "-static")
+
+      target
+      ARCHIVE 静态库
+      LIBRARY 动态库
+      RUNTIME  可执行二进制文件
+
+      # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
+      -D 从外部传入搜索路径：
+      <PackageName>_ROOT
+      <PackageName>_DIR
+
+      c++(CMake篇)  https://zhuanlan.zhihu.com/p/470681241
+      # CMAKE_BUILD_TYPE=Debug Release
+
+      cmake -G"Unix Makefiles" .  \
+      -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
+      -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
+      -DCMAKE_INSTALL_INCLUDEDIR={$libminzip_prefix}/include \
+      -DCMAKE_BUILD_TYPE=Release  \
+      -DBUILD_SHARED_LIBS=OFF  \
+      -DBUILD_STATIC_LIBS=ON \
+      -DCMAKE_COLOR_MAKEFILE=ON
+
+      set(libgav1_root "${CMAKE_CURRENT_SOURCE_DIR}")
+      set(libgav1_build "${CMAKE_BINARY_DIR}")
+
+      cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+      cmake --build .
+      cmake --install .
+
+      cmake -G 'Visual Studio 17 2022' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+      cmake --build . --config Release
+      cmake --install . --config Release
+
+      CURL ARCHITECTURE   https://curl.se/docs/install.html#:~:text=26%20CPU%20Architectures
+      CURL Cross compile  https://curl.se/docs/install.html#:~:text=Cross%20compile
+
+        cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_C_COMPILER=clang -DCMAKE_C_FLAGS_RELWITHDEBINFO="-O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer" -DENABLE_SHARED=0 ..
+        export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
+
+
+
+        make install DESTDIR=/usr/libzip
      */
 
 
@@ -779,5 +779,10 @@ function libraries_builder($p)
       cmake -LH ..
 
     CMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE
+     */
+    /*
+         #  cmake默认查找到的是动态库 ; cmake 优先使用静态库
+        #  参考 https://blog.csdn.net/10km/article/details/82931978
+
      */
 }

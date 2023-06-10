@@ -32,9 +32,9 @@ EOF
         export RUSTUP_HOME=/root/.rustup
         export CARGO_HOME=/root/.cargo
         #cargo --list
-        cargo install cargo-c 
+        cargo install cargo-c
         cargo cbuild --release --prefix={$rav1e_prefix} --libdir={$rav1e_prefix}/lib  -C link-arg=-lz -vv
-        cargo cinstall 
+        cargo cinstall
 
 EOF
         )
@@ -45,68 +45,12 @@ EOF
 
 function install_aom(Preprocessor $p)
 {
-    $aom_prefix = AOM_PREFIX;
-    $lib = new Library('aom');
-    $lib->withHomePage('https://aomedia.googlesource.com/aom')
-        ->withLicense('https://aomedia.googlesource.com/aom/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
-        ->withManual('https://aomedia.googlesource.com/aom')
-        ->withUrl('https://aomedia.googlesource.com/aom')
-        ->withFile('aom.tar.gz')
-        ->disableDownloadWithMirrorURL()
-        ->withDownloadScript(
-            'aom',
-            <<<EOF
-       git clone -b main --depth=1  https://aomedia.googlesource.com/aom
-EOF
-        )
-        ->withPrefix($aom_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($aom_prefix)
-        ->withConfigure(
-            <<<EOF
-            mkdir -p build 
-            cd build 
-             cmake ..  \
-            -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
-            -DCMAKE_BUILD_TYPE=Release  \
-            -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON \
-            -DENABLE_DOCS=0 \
-            -DENABLE_TESTS=0 
-EOF
-        )
-        ->withBinPath($aom_prefix . '/bin/')
-        ->withPkgName('aom');
 
-    $p->addLibrary($lib);
 }
 
 
 function install_av1(Preprocessor $p)
 {
-    $av1_prefix = '/usr/av1';
-    $lib = new Library('av1');
-    $lib->withHomePage('https://gitlab.com/AOMediaCodec/SVT-AV1.git')
-        ->withLicense(
-            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
-            Library::LICENSE_LGPL
-        )
-        ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
-        ->withFile('ffmpeg-n6.0.tar.gz')
-        ->withSkipDownload()
-        ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1.git')
-        ->withPrefix($av1_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($av1_prefix)
-        ->withConfigure(
-            <<<EOF
-exit 0 
-
-EOF
-        )
-        ->withPkgName('');
-
-    $p->addLibrary($lib);
 }
 
 function install_libvpx(Preprocessor $p)
@@ -127,7 +71,7 @@ function install_libvpx(Preprocessor $p)
         ->withCleanPreInstallDirectory($libvpx_prefix)
         ->withConfigure(
             <<<EOF
-exit 0 
+exit 0
 
 EOF
         )
@@ -151,7 +95,7 @@ function install_libopus(Preprocessor $p)
         ->withCleanPreInstallDirectory($libopus_prefix)
         ->withConfigure(
             <<<EOF
-exit 0 
+exit 0
 
 EOF
         )
@@ -178,7 +122,7 @@ function install_libx264(Preprocessor $p)
         ./configure --help
         ./configure \
         --prefix={$libx264_prefix} \
-        --enable-static 
+        --enable-static
 
 EOF
         )
@@ -204,7 +148,7 @@ function install_numa(Preprocessor $p)
             <<<EOF
             ./autogen.sh
             ./configure --help
-            
+
             ./configure \
             --prefix={$numa_prefix} \
             --enable-shared=no \
@@ -236,7 +180,7 @@ function install_mp3lame(Preprocessor $p)
         ->withCleanPreInstallDirectory($mp3lame_prefix)
         ->withConfigure(
             <<<EOF
-exit 0 
+exit 0
 ./configure --help
 test -d ffmpeg || git clone  https://github.com/FFmpeg/FFmpeg ffmpeg  --depth=1 --progress
 test -d ffmpeg  && git -C ffmpeg  pull  --depth=1 --progress --rebase=true
@@ -269,8 +213,8 @@ function install_libx265(Preprocessor $p)
         ->withConfigure(
             <<<EOF
             mkdir -p out
-            cd out 
-            
+            cd out
+
             cmake \
             -G"Unix Makefiles" ../source  \
             -DCMAKE_INSTALL_PREFIX={$libx265_prefix} \
@@ -280,7 +224,7 @@ function install_libx265(Preprocessor $p)
             -DENABLE_LIBNUMA=ON \
             -DNuma_ROOT={$numa_prefix} \
             -DNasm_ROOT={$nasm_prefix}
-          
+
 
 EOF
         )
@@ -335,15 +279,15 @@ function install_opencv(Preprocessor $p)
         ->withCleanPreInstallDirectory($opencv_prefix)
         ->withBuildScript(
             <<<EOF
- 
+
         test -d opencv || git clone -b 5.x  https://github.com/opencv/opencv.git --depth 1 --progress
-        
+
         opencv_contrib={$buildDir}/opencv/opencv_contrib
         cd opencv
         mkdir -p build
         cd  build
         pwd
-        
+
         cmake -G Ninja \
         -DCMAKE_INSTALL_PREFIX={$opencv_prefix} \
         -DOPENCV_EXTRA_MODULES_PATH="../../opencv_contrib/modules" \
@@ -356,7 +300,7 @@ function install_opencv(Preprocessor $p)
         -DBUILD_opencv_apps=OFF \
         -DBUILD_SHARED_LIBS=OFF \
         ..
-      
+
         ninja
         ninja install
 EOF
@@ -476,8 +420,8 @@ function install_TeX(Preprocessor $p)
         ->withCleanPreInstallDirectory($TeX_prefix)
         ->withBuildScript(
             <<<EOF
-        cd install-tl-* 
-        ls -lh 
+        cd install-tl-*
+        ls -lh
         perl install-tl --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet
 EOF
         )

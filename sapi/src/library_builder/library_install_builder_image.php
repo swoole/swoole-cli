@@ -219,74 +219,13 @@ EOF
 
 function install_libtiff(Preprocessor $p)
 {
-    $libtiff_prefix = LIBTIFF_PREFIX;
-    $lib = new Library('libtiff');
-    $lib->withHomePage('http://www.libtiff.org/')
-        ->withLicense('https://gitlab.com/libtiff/libtiff/-/blob/master/LICENSE.md', Library::LICENSE_SPEC)
-        ->withUrl('http://download.osgeo.org/libtiff/tiff-4.5.0.tar.gz')
-        ->withPrefix($libtiff_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libtiff_prefix)
-        ->withConfigure(
-            <<<EOF
-            ./configure --help
-            ./configure --help | grep -e '--enable'
-            ./configure --help | grep -e '--disable'
 
-            PACKAGES="zlib libjpeg libturbojpeg liblzma  libzstd "
-            CPPFLAGS=$(pkg-config  --cflags-only-I --static \$PACKAGES ) \
-            LDFLAGS=$(pkg-config   --libs-only-L   --static \$PACKAGES ) \
-            LIBS=$(pkg-config      --libs-only-l   --static \$PACKAGES ) \
-            ./configure --prefix={$libtiff_prefix} \
-            --enable-shared=no \
-            --enable-static=yes \
-            --disable-docs \
-            --disable-tests \
-            --disable-webp
-
-EOF
-        )
-        ->withBinPath($libtiff_prefix . '/bin')
-        ->withPkgName('libtiff-4');
-
-    $p->addLibrary($lib);
 }
 
 
 function install_lcms2(Preprocessor $p): void
 {
-    $lcms2_prefix = LCMS2_PREFIX;
-    $libjpeg_prefix = JPEG_PREFIX;
-    $libtiff_prefix = LIBTIFF_PREFIX;
-    $lib = new Library('lcms2');
-    $lib->withHomePage('https://littlecms.com/color-engine/')
-        ->withLicense('https://www.opensource.org/licenses/mit-license.php', Library::LICENSE_MIT)
-        ->withUrl('https://jaist.dl.sourceforge.net/project/lcms/lcms/2.15/lcms2-2.15.tar.gz')
-        ->withManual('https://lfs.lug.org.cn/blfs/view/10.0/general/lcms2.html')
-        ->withPrefix($lcms2_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($lcms2_prefix)
-        ->withConfigure(
-            <<<EOF
-            ./configure --help
 
-            package_names="zlib"
-            CPPFLAGS="\$(pkg-config  --cflags-only-I --static \$package_names )" \
-            LDFLAGS="\$(pkg-config   --libs-only-L   --static \$package_names )" \
-            LIBS="\$(pkg-config      --libs-only-l   --static \$package_names )" \
-            ./configure \
-            --prefix={$lcms2_prefix} \
-            --enable-shared=no \
-            --enable-static=yes \
-            --with-jpeg={$libjpeg_prefix} \
-            --with-tiff={$libtiff_prefix}
-
-EOF
-        )
-        ->withBinPath($lcms2_prefix . '/bin/')
-        ->withPkgName('lcms2');
-
-    $p->addLibrary($lib);
 }
 
 
