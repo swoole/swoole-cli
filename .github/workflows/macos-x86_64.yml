@@ -12,7 +12,8 @@ jobs:
         run: |
           env
           echo $HOME
-          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm flex bison
+          brew install  wget curl  libtool automake  re2c llvm flex bison
+          brew install  gettext coreutils binutils libunistring
 
           # brew uninstall --ignore-dependencies oniguruma
           # brew uninstall --ignore-dependencies brotli

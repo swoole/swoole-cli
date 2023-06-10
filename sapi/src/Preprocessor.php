@@ -750,8 +750,13 @@ class Preprocessor
                 ($this->extCallbacks[$ext])($this);
             }
         }
+
         if ($this->getOsType() == 'macos') {
-            $this->loadDependLibrary("bison");
+            if (is_file('/usr/local/opt/bison/bin/bison')) {
+                $this->withPath('/usr/local/opt/bison/bin');
+            } else {
+                $this->loadDependLibrary("bison");
+            }
         }
 
         // autoload extension depend extension
