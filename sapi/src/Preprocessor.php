@@ -11,7 +11,6 @@ use SwooleCli\Trait\WebUITrait;
 
 class Preprocessor
 {
-
     use DownloadBoxTrait;
     use WebUITrait;
 
@@ -214,9 +213,10 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
+
     public function getPhpSrcDir(): string
     {
-        return $this->phpSrcDir;
+        return $this->phpSrcDir ;
     }
 
     public function setGlobalPrefix(string $prefix)
@@ -533,9 +533,9 @@ EOF;
         return $packages;
     }
 
-    public function withPath(string $path): static
+    public function withBinPath(string $path): static
     {
-        $this->binPath[] = $path;
+        $this->binPaths[] = $path;
         return $this;
     }
 
@@ -840,8 +840,13 @@ EOF;
                 ($this->extCallbacks[$ext])($this);
             }
         }
+
         if ($this->getOsType() == 'macos') {
-            $this->loadDependLibrary("bison");
+            if (is_file('/usr/local/opt/bison/bin/bison')) {
+                $this->withBinPath('/usr/local/opt/bison/bin');
+            } else {
+                $this->loadDependLibrary("bison");
+            }
         }
 
         // autoload extension depend extension

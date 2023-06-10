@@ -37,12 +37,9 @@ return function (Preprocessor $p) {
 
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
 
-    if ($p->getOsType() == 'macos') {
-        $depends[] = 'bison';
-    }
     //$depends[] = 'libsasl';
     //$depends[] = 'snappy';
-    call_user_func_array([$ext, 'depends'], $depends);
 
+    call_user_func_array([$ext, 'depends'], $depends);
     $p->addExtension($ext);
 };
