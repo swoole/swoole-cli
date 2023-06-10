@@ -61,8 +61,8 @@ return function (Preprocessor $p) {
             --without-pango \
             --without-x \
             --without-modules \
-            --without-magick-plus-plus \
-            --without-utilities \
+            --with-magick-plus-plus \
+            --with-utilities \
             --without-gvc \
             --without-autotrace \
             --without-dps \
@@ -83,6 +83,8 @@ EOF
             ->withPkgName('MagickCore')
             ->withPkgName('MagickWand-7.Q16HDRI')
             ->withPkgName('MagickWand')
+            ->withPkgName('Magick++-7.Q16HDRI')
+            ->withPkgName('Magick++')
             ->withBinPath($imagemagick_prefix . '/bin/')
             ->depends(
                 'libxml2',
