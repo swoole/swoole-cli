@@ -43,6 +43,5 @@ EOF
             )
             ->withPkgName('libgav1')
             ->withBinPath($libgav1_prefix . '/bin/')
-            ->depends('absl')
     );
 };
