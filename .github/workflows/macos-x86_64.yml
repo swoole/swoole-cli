@@ -44,7 +44,7 @@ jobs:
           # export MACOSX_DEPLOYMENT_TARGET=12.6
 
           export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
-          brew bison --debug
+          # brew bison --debug
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
