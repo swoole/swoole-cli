@@ -12,6 +12,8 @@ jobs:
         run: |
           env
           echo $HOME
+          brew config
+
           brew install  wget curl  libtool automake  re2c llvm flex bison
           brew install  gettext coreutils binutils libunistring
 
@@ -27,6 +29,19 @@ jobs:
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
+          # sudo rm -rf /Library/Developer/CommandLineTools
+          # xcode-select --install
+
+
+          # sudo xcode-select --reset
+          # sudo xcode-select -switch /Library/Developer/CommandLineTools
+
+          # softwareupdate --list --verbose
+          # softwareupdate --install -a
+          # xcode-select --install
+
+          # export SDKROOT=$(xcrun --show-sdk-path)
+          ls -lh $(xcrun --show-sdk-path)
           # sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
 
@@ -37,6 +52,9 @@ jobs:
           echo $IPV6
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+          export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
+          brew bison --debug
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
@@ -59,7 +77,6 @@ jobs:
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
           php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql
-
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -92,7 +109,6 @@ jobs:
           bash ./make.sh archive
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
-
 
       - name: Show Build Result
         run: |
