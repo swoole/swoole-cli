@@ -21,10 +21,15 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 
 ADD ./runtime/swoole-cli  /usr/local/bin/
 ADD ./runtime/composer.phar  /usr/local/bin/
+ADD ./runtime/cacert.pem  /etc/ssl/certs/
 ADD ./swoole-cli  /work
 
 RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
 RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
+
+#RUN alias php='php -d curl.cainfo="/etc/ssl/certs/cacert.pem" -d openssl.cafile="/etc/ssl/certs/cacert.pem"'
+RUN alias php='php -d curl.cainfo="/etc/ssl/certs/ca-certificates.crt" -d openssl.cafile="/etc/ssl/certs/ca-certificates.crt"'
+
 RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
 WORKDIR /work
@@ -58,14 +63,19 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY --from=builder-all-library /usr/local/bin/swoole-cli /usr/local/bin/swoole-cli
 COPY --from=builder-all-library /usr/local/bin/composer.phar /usr/local/bin/composer.phar
+COPY --from=builder-all-library /etc/ssl/certs/cacert.pem /etc/ssl/certs/cacert.pem
 RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
 RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
+
+#RUN alias php='php -d curl.cainfo="/etc/ssl/certs/cacert.pem" -d openssl.cafile="/etc/ssl/certs/cacert.pem"'
+RUN alias php='php -d curl.cainfo="/etc/ssl/certs/ca-certificates.crt" -d openssl.cafile="/etc/ssl/certs/ca-certificates.crt"'
+
 RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 COPY --from=builder-all-library  /usr/local/swoole-cli /usr/local/swoole-cli
 
-# RUN cp -f /etc/apk/repositories.save /etc/apk/repositories
+RUN cp -f /etc/apk/repositories.save /etc/apk/repositories
 
 RUN rm -rf /var/cache/apk/* /tmp/* /var/tmp/*

@@ -50,7 +50,7 @@ cd ${__PROJECT__}/var/runtime
 
 SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
-
+CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
 
 mirror=''
@@ -90,10 +90,13 @@ chmod a+x swoole-cli
 test -f composer.phar || wget -O composer.phar ${COMPOSER_DOWNLOAD_URL}
 chmod a+x composer.phar
 
+test -f cacert.pem || wget -O cacert.pem ${CACERT_DOWNLOAD_URL}
+
 cd ${__PROJECT__}/var/runtime
 
 cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/php
 cp -f ${__PROJECT__}/var/runtime/composer.phar ${__PROJECT__}/bin/runtime/composer
+cp -f ${__PROJECT__}/var/runtime/cacert.pem ${__PROJECT__}/bin/runtime/cacert.pem
 
 cd ${__PROJECT__}/
 
@@ -104,6 +107,8 @@ echo " "
 echo " USE  PHP  rumtime :"
 echo " "
 echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
+echo " "
+echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem -d swoole.use_shortname=off' "
 echo " "
 echo " "
 
