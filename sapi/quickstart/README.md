@@ -47,6 +47,13 @@ git submodule update --init
 
 ```bash
 
+# 准备 php 运行环境
+# macos
+alias php='php -d curl.cainfo=/etc/ssl/cert.pem -d openssl.cafile=/etc/ssl/cert.pem'
+# linux
+alias php='php -d curl.cainfo=/etc/ssl/certs/ca-certificates.crt -d openssl.cafile=/etc/ssl/certs/ca-certificates.crt'
+
+
 # composer 使用阿里云镜像
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
