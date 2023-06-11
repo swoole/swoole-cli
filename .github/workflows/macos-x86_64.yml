@@ -54,12 +54,12 @@ jobs:
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
           export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
-          brew bison --debug
+          # brew bison --debug
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
           sudo mkdir -p /usr/local/swoole-cli
-          sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
+          CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
           git submodule update --init
 
       - name: Prepare runtime
@@ -88,22 +88,11 @@ jobs:
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          chmod a+x ./make.sh
-          ./make.sh all-library
+          bash ./make.sh all-library
 
       - name: Build
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-
-          bash ./make.sh liblz4
-          bash ./make.sh liblzma
-          bash ./make.sh libzstd
-          bash ./make.sh libzip
-          bash ./make.sh brotli
-          bash ./make.sh curl
-          bash ./make.sh imagemagick
-          bash ./make.sh pgsql
-
           bash ./make.sh config
           bash ./make.sh build
           bash ./make.sh archive

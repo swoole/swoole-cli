@@ -62,7 +62,7 @@ return function (Preprocessor $p) {
             --without-x \
             --without-modules \
             --with-magick-plus-plus \
-            --with-utilities \
+            --without-utilities \
             --without-gvc \
             --without-autotrace \
             --without-dps \
@@ -70,7 +70,6 @@ return function (Preprocessor $p) {
             --without-flif \
             --without-fpx \
             --without-gslib \
-            --without-ltdl \
             --without-perl \
             --without-raqm \
             --without-wmf

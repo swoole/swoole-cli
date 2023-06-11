@@ -1,14 +1,10 @@
 #!/bin/bash
 
-set -exu
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-__PROJECT__=$(
-  cd ${__DIR__}/../../
-  pwd
-)
+__PROJECT__=${__DIR__}
 cd ${__PROJECT__}
 
 OS=$(uname -s)
@@ -119,4 +115,3 @@ echo " OR "
 echo " alias php='php -c ${__PROJECT__}/bin/runtime/php.ini' "
 echo " "
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
-

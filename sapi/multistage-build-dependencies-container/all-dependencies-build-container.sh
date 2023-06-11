@@ -39,6 +39,7 @@ done
 cd ${__PROJECT__}/var
 
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
+cp -f ${__DIR__}/php.ini .
 
 docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR=${USE_COMPOSER_MIRROR}
 
