@@ -10,3 +10,4 @@ bash sapi/quickstart/macos/brew-install-dependency-init.sh --mirror china
 
 ```
 
+## [进入构建 PHP 环节](../README.md#构建依赖库-构建swoole-打包)

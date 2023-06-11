@@ -4,7 +4,7 @@
 
 ```bash
 
-# 准备PHP 运行时
+# 准备 PHP 运行时
 bash sapi/quickstart/setup-php-runtime.sh
 
 # 准备PHP 运行时 使用代理 （需提前准备好代理)
@@ -13,7 +13,7 @@ bash sapi/quickstart/setup-php-runtime.sh --proxy http://192.168.3.26:8015
 # 准备PHP 运行时 使用镜像 （镜像源 https://www.swoole.com/download）
 bash sapi/quickstart/setup-php-runtime.sh --mirror china
 
-
+# 容器内准备 PHP 运行时
 bash sapi/quickstart/setup-php-runtime-in-docker.sh
 
 # 验证
@@ -45,6 +45,8 @@ git submodule update --init
 
 ## 准备构建脚本（会自动下载依赖库源码包）
 
+> [ 构建参数选项 ](../../docs/options.md)
+
 ```bash
 
 # 准备 php 运行环境
@@ -69,20 +71,17 @@ php prepare.php  +inotify +apcu +ds
 
 ```
 
-## [linux 快速启动容器 构建环环境](linux/README.md)
+## 准备运行环境 (linux/macos/windows)
 
-## [linux](../../docs/linux.md)
-
-## [windows cygwin](../../docs/Cygwin.md)
-
-## [macos ](../../docs/macOS.md)
+1. [ linux 快速启动 容器 构建环环境 ](linux/README.md)
+1. [ windows cygwin 快速启动 构建环环境 ](windows/README.md)
+1. [ macos 快速启动 构建环环境 ](macos/README.md)
 
 ## 构建依赖库 、构建swoole 、打包
 
 ```bash
 
-chmod a+x ./make.sh
-
+# 构建所有依赖库
 bash make.sh all-library
 
 bash make.sh config
@@ -90,3 +89,11 @@ bash make.sh build
 bash make.sh archive
 
 ```
+
+## 更多构建参考文档
+
+1. [cygwin](../../docs/Cygwin.md)
+1. [linux](../../docs/linux.md)
+1. [macos](../../docs/macOS.md)
+1. [wsl](../../docs/wsl.md)
+2. [构建选项](../../docs/options.md)
