@@ -73,8 +73,7 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
+
 
       - name: Show Build Result
         run: |
@@ -84,6 +83,8 @@ jobs:
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
