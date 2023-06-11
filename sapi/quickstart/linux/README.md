@@ -28,17 +28,17 @@ bash get-docker.sh --mirror Aliyun
 ```bash
 
 # 启动 debian 11 容器环境
-bash sapi/quickstart/linux/run-debian-11-container.sh
+bash sapi/quickstart/linux/run-debian-container.sh
 
 # 进入容器
 bash sapi/quickstart/linux/connection-swoole-cli-debian.sh
 
 # 准备构建基础软件
-bash sapi/quickstart/linux/debian-11-init.sh
+bash sapi/quickstart/linux/debian-init.sh
 
 
 # 准备构建基础软件 使用中科大镜像源
-bash sapi/quickstart/linux/debian-11-init.sh --mirror china
+bash sapi/quickstart/linux/debian-init.sh --mirror china
 ```
 
 ## aline 构建环境
