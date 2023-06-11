@@ -17,7 +17,7 @@ RUN mkdir -p /usr/local/swoole-cli/etc/
 ADD ./runtime/swoole-cli  /usr/local/bin/
 ADD ./runtime/composer.phar  /usr/local/bin/
 ADD ./runtime/cacert.pem  /etc/ssl/certs/
-ADD ./runtime/php.ini  /usr/local/swoole-cli/etc/
+ADD ./php.ini  /usr/local/swoole-cli/etc/
 ADD ./swoole-cli  /work
 
 RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
