@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-aarch64:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -45,7 +45,8 @@ jobs:
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-aarch64-20230611T222545Z
+          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
           # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
@@ -61,22 +62,10 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-aarch64-20230611T222545Z
           # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
-            apk update
-            apk add libc++-static
-
-            bash ./make.sh liblz4
-            bash ./make.sh liblzma
-            bash ./make.sh libzstd
-            bash ./make.sh libzip
-            bash ./make.sh brotli
-            bash ./make.sh curl
-            bash ./make.sh imagemagick
-            bash ./make.sh pgsql
-
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
@@ -85,7 +74,7 @@ jobs:
       - name: Show Build Result
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-aarch64-20230611T222545Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             ./bin/swoole-cli -v
