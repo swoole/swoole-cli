@@ -53,7 +53,7 @@ jobs:
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
           export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
-          brew bison --debug
+          # brew bison --debug
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
