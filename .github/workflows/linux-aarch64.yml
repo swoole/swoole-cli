@@ -63,7 +63,6 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-aarch64-20230611T222545Z
-          # image: phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             bash ./make.sh config
