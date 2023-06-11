@@ -61,7 +61,10 @@ alias php='php -d curl.cainfo=/etc/ssl/certs/ca-certificates.crt -d openssl.cafi
 
 composer update --no-dev  --optimize-autoloader
 
-php prepare.php  +inotify +apcu +ds
+php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
+
+# 使用镜像下载依赖库源码
+php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 
 # 不启用用 mysqli soap
 # php prepare.php  +inotify +apcu +ds -mysqli -soap
