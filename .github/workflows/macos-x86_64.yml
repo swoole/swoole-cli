@@ -85,8 +85,7 @@ jobs:
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          chmod a+x ./make.sh
-          ./make.sh all-library
+          bash ./make.sh all-library
 
       - name: Build
         run: |
