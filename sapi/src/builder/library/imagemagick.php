@@ -70,7 +70,6 @@ return function (Preprocessor $p) {
             --without-flif \
             --without-fpx \
             --without-gslib \
-            --without-ltdl \
             --without-perl \
             --without-raqm \
             --without-wmf
