@@ -75,6 +75,6 @@ cd ${__PROJECT__}/var/swoole-cli
 export COMPOSER_ALLOW_SUPERUSER=1
 composer update --no-dev --optimize-autoloader
 
-php prepare.php --with-build-type=dev --with-dependency-graph=1 +apcu +ds +inotify --without-docker
+php prepare.php --with-build-type=dev --with-dependency-graph=1 --with-swoole-pgsql=1  +apcu +ds +inotify --without-docker
 
 cd ${__PROJECT__}/
