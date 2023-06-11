@@ -9,6 +9,7 @@
 ```bash
 
 curl -fsSL https://get.docker.com -o get-docker.sh
+
 bash get-docker.sh
 
 # 使用 阿里云镜像
@@ -45,18 +46,29 @@ bash sapi/quickstart/linux/debian-11-init.sh --mirror china
 ```bash
 
 # 启动 alpine 容器环境
-bash sapi/quickstart/linux/run-alpine-3.16-container.sh
+bash sapi/quickstart/linux/run-alpine-container.sh
+
 
 # 进入容器
 bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 
 # 准备构建基础软件
-sh  sapi/quickstart/linux/alpine-3.16-init.sh
+sh  sapi/quickstart/linux/alpine-init.sh
 
 
 # 准备构建基础软件 使用中科大镜像源
+sh  sapi/quickstart/linux/alpine-init.sh --mirror china
 
-sh  sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
+
+```
+
+## 体检构建好 所有依赖库的容器
+
+> 跳过依赖库构建
+
+```shell
+# 启动 alpine 容器环境 (容器内包含所有依赖库、php运行时、composer )
+bash sapi/quickstart/linux/run-alpine-container-full.sh
 
 ```
 
