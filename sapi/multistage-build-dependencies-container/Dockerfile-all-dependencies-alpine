@@ -15,8 +15,6 @@ ENV TZ=Etc/UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-
 
 
 ADD ./runtime/swoole-cli  /usr/local/bin/
@@ -40,10 +38,8 @@ RUN composer suggest --no-dev
 RUN composer update --no-dev --optimize-autoloader
 
 
-RUN php prepare.php  --with-build-type=release --skip-download=1
-RUN sh make.sh list-library
-
-RUN sh make.sh all-library
+RUN php prepare.php --with-build-type=dev  --with-swoole-pgsql=1
+RUN bash make.sh list-library
 
 
 FROM alpine:3.17
