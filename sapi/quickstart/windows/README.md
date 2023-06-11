@@ -4,7 +4,7 @@
 
 > 打开站点 https://www.msys2.org/ 下载 msys2 安装包
 
-> 镜像站点 https://mirror.tuna.tsinghua.edu.cn/help/msys2/  下载 msys2 安装包
+> 使用镜像站点 https://mirror.tuna.tsinghua.edu.cn/help/msys2/  下载 msys2 安装包
 
 > 安装 msys2
 

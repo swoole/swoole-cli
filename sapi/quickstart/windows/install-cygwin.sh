@@ -19,7 +19,7 @@ ROOT=${__PROJECT__}
 # mv setup-x86_64.exe C:/setup-x86_64.exe
 
 ## 设置 站点镜像 地址 为
-##  http://mirrors.ustc.edu.cn/cygwin/
+##  https://mirrors.ustc.edu.cn/cygwin/
 ##  或者
 ##  https://mirrors.tuna.tsinghua.edu.cn/cygwin/
 
