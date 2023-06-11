@@ -40,6 +40,7 @@ RUN composer update --no-dev --optimize-autoloader
 
 RUN php prepare.php --with-build-type=dev  --with-swoole-pgsql=1
 RUN bash make.sh list-library
+RUN bash make.sh all-library
 
 
 FROM alpine:3.17
