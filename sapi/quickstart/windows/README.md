@@ -23,7 +23,7 @@ pacman -Sy --noconfirm git curl wget openssl zip unzip xz
 
 ```
 
-## 准备 源码
+## 准备 swoole-cli源码
 
 > 打开 MSYS2 MSYS 控制台 拉取 swoole-cli 源码
 
