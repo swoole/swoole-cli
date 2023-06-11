@@ -18,6 +18,7 @@ export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
 --enable-shared=no \
 --enable-static=yes \
+--with-config-file-path=/usr/local/swoole-cli/etc/ \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
