@@ -1,7 +1,11 @@
 FROM alpine:3.17 as builder-all-library
 
 # setup source repo, install dependencies
+RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN apk update
 
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
@@ -11,10 +15,6 @@ RUN apk add libc++-static
 WORKDIR /work
 
 
-ENV TZ=Etc/UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
 
 
 ADD ./runtime/swoole-cli  /usr/local/bin/
@@ -46,7 +46,10 @@ RUN bash make.sh all-library
 FROM alpine:3.17
 
 # setup source repo, install dependencies
+RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apk update
 
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
@@ -55,8 +58,6 @@ RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
 RUN apk add libc++-static
 WORKDIR /work
 
-ENV TZ=Etc/UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY --from=builder-all-library /usr/local/bin/swoole-cli /usr/local/bin/swoole-cli
 COPY --from=builder-all-library /usr/local/bin/composer.phar /usr/local/bin/composer.phar
