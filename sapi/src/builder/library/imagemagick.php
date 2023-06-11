@@ -62,7 +62,7 @@ return function (Preprocessor $p) {
             --without-x \
             --without-modules \
             --with-magick-plus-plus \
-            --with-utilities \
+            --without-utilities \
             --without-gvc \
             --without-autotrace \
             --without-dps \
