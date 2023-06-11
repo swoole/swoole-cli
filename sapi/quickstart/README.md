@@ -45,7 +45,7 @@ git submodule update --init
 
 ## 准备构建脚本（会自动下载依赖库源码包）
 
-> > [ 构建参数选项 ](../../docs/options.md)
+> [ 构建参数选项 ](../../docs/options.md)
 
 ```bash
 
