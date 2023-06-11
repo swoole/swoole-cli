@@ -14,6 +14,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.postgresql.org/')
             ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
             ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
+            ->withUrl('https://ftp.mirrors.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
             ->withPrefix($pgsql_prefix)

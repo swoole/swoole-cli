@@ -36,6 +36,7 @@ case $ARCH in
 'x86_64')
   IMAGE=docker.io/phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-x86_64-20230611T164740Z
   ;;
 'aarch64')
   IMAGE=docker.io/phpswoole/swoole-cli-builder:1.7-arm64
