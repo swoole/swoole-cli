@@ -3,8 +3,11 @@
 ## 准备 msys2
 
 > 打开站点 https://www.msys2.org/ 下载 msys2 安装包
+
 > 镜像站点 https://mirror.tuna.tsinghua.edu.cn/help/msys2/  下载 msys2 安装包
+
 > 安装 msys2
+
 > 开始菜单，打开 MSYS2 MSYS 控制台
 
 ### msys2 准备必要依赖
@@ -42,8 +45,12 @@ mv setup-x86_64.exe ..
 ## 准备 cygwin 环境
 
 > 打开站点 https://cygwin.com/
-> 下载 [https://cygwin.com/setup-x86_64.exe](https://cygwin.com/setup-x86_64.exe)
+
+>
+下载 [https://cygwin.com/setup-x86_64.exe](https://cygwin.com/setup-x86_64.exe)
+
 > 安装包
+
 > 命令行 进入 `setup-x86_64.exe` 所在目录，执行下列命令初始安装cygwin
 
 ```shell
@@ -54,6 +61,7 @@ setup-x86_64.exe  --site https://mirrors.ustc.edu.cn/cygwin/
 ## 安装cygwin依赖
 
 > 开始菜单 打开 cmd
+
 > 命令行 进入 `setup-x86_64.exe` 所在目录，执行下列命令安装依赖
 
 ```shell
@@ -62,4 +70,4 @@ setup-x86_64.exe --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disab
 
 ```
 
-## [进入构建 PHP 环节](../../../docs/Cygwin.md)
+## [进入构建 PHP 环节](../../../docs/Cygwin.md#构建)
