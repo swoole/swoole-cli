@@ -12,6 +12,7 @@ jobs:
         run: |
           env
           echo $HOME
+          brew config
           brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm
 
           # brew uninstall --ignore-dependencies oniguruma
@@ -26,8 +27,24 @@ jobs:
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
+          # sudo rm -rf /Library/Developer/CommandLineTools
+          # xcode-select --install
+
+
+          # sudo xcode-select --reset
+          # sudo xcode-select -switch /Library/Developer/CommandLineTools
+
+          # softwareupdate --list --verbose
+          # softwareupdate --install -a
+          # xcode-select --install
+
+          # export SDKROOT=$(xcrun --show-sdk-path)
+          ls -lh $(xcrun --show-sdk-path)
           # sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
+
+          export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
+          brew bison --debug
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
