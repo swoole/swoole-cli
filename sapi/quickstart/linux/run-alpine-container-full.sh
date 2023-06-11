@@ -41,6 +41,7 @@ case $ARCH in
 'aarch64')
   IMAGE=docker.io/phpswoole/swoole-cli-builder:1.7-arm64
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-aarch64-20230611T222545Z
   ;;
 *)
   echo "此 ${ARCH} 架构的容器 容器未配置"
