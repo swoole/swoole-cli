@@ -12,8 +12,12 @@ jobs:
         run: |
           env
           echo $HOME
+<<<<<<< HEAD
           brew install  wget curl  libtool automake  re2c llvm flex bison
           brew install  gettext coreutils binutils libunistring
+=======
+          brew install  wget curl  libtool automake gettext coreutils re2c binutils llvm flex
+>>>>>>> feature_libpq
 
           # brew uninstall --ignore-dependencies oniguruma
           # brew uninstall --ignore-dependencies brotli
@@ -57,7 +61,7 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
-          php prepare.php --without-docker=1  --with-build-type=release  +apcu +ds +xlswriter +ssh2
+          php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +apcu +ds +xlswriter +ssh2
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
@@ -82,6 +86,7 @@ jobs:
             bash ./make.sh brotli
             bash ./make.sh curl
             bash ./make.sh imagemagick
+            bash ./make.sh pgsql
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive

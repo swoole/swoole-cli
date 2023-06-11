@@ -846,7 +846,6 @@ class Preprocessor
     protected function generateLibraryDownloadLinks(): void
     {
         $this->mkdirIfNotExists($this->getRootDir() . '/var/', 0755, true);
-
         $download_urls = [];
         foreach ($this->libraryList as $item) {
             if (empty($item->url)) {
