@@ -25,8 +25,13 @@ ADD ./swoole-cli  /work
 RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
 RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
 
+ENV CERT_FILE=/etc/ssl/certs/cacert.pem
 #RUN alias php='php -d curl.cainfo="/etc/ssl/certs/cacert.pem" -d openssl.cafile="/etc/ssl/certs/cacert.pem"'
 RUN alias php='php -d curl.cainfo="/etc/ssl/certs/ca-certificates.crt" -d openssl.cafile="/etc/ssl/certs/ca-certificates.crt"'
+RUN alias php='php -d curl.cainfo="${CERT_FILE}" -d openssl.cafile="${CERT_FILE}"'
+RUN alias
+RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\${CERT_FILE}\"'" >>/root/.bashrc
+RUN /bin/bash -c "source /root/.bashrc"
 
 RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
@@ -67,7 +72,7 @@ RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
 
 #RUN alias php='php -d curl.cainfo="/etc/ssl/certs/cacert.pem" -d openssl.cafile="/etc/ssl/certs/cacert.pem"'
 RUN alias php='php -d curl.cainfo="/etc/ssl/certs/ca-certificates.crt" -d openssl.cafile="/etc/ssl/certs/ca-certificates.crt"'
-
+RUN alias
 RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
 ENV COMPOSER_ALLOW_SUPERUSER=1
