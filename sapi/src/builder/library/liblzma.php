@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $liblzma_prefix = LIBLZMA_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('liblzma'))
             ->withHomePage('https://tukaani.org/xz/')
@@ -13,9 +14,19 @@ return function (Preprocessor $p) {
             ->withFile('xz-5.4.1.tar.gz')
             ->withPrefix($liblzma_prefix)
             ->withConfigure(
-                './configure --prefix=' . $liblzma_prefix . ' --enable-static  --disable-shared --disable-doc'
+                <<<EOF
+                ./configure --help
+                ./configure \
+                --prefix={$liblzma_prefix} \
+                --enable-static=yes  \
+                --enable-shared=no \
+                --with-libiconv-prefix={$libiconv_prefix} \
+                --without-libintl-prefix \
+                --disable-doc
+EOF
             )
             ->withPkgName('liblzma')
             ->withBinPath($liblzma_prefix . '/bin/')
+            ->depends('libiconv')
     );
 };

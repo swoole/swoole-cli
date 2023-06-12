@@ -123,10 +123,12 @@ class Preprocessor
             case 'Linux':
                 $this->setOsType('linux');
                 $this->setLinker('ld.lld');
+                $this->setMaxJob(`nproc 2> /dev/null`);
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
                 $this->setLinker('ld');
+                $this->setMaxJob(`sysctl -n hw.ncpu`);
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -203,6 +205,11 @@ class Preprocessor
     public function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
+    }
+
+    public function getPhpSrcDir():string
+    {
+        return $this->phpSrcDir ;
     }
 
 
@@ -446,9 +453,9 @@ class Preprocessor
         return $packages;
     }
 
-    public function withPath(string $path): static
+    public function withBinPath(string $path): static
     {
-        $this->binPath[] = $path;
+        $this->binPaths[] = $path;
         return $this;
     }
 
@@ -653,7 +660,27 @@ class Preprocessor
         }
     }
 
-    public function loadLibrary($library_name)
+    public function loadDependExtension($extension_name)
+    {
+        if (!isset($this->extensionMap[$extension_name])) {
+            $file = realpath(__DIR__ . '/builder/extension/' . $extension_name . '.php');
+            if (!is_file($file)) {
+                return;
+            }
+            $func = require $file;
+            $func($this);
+        }
+        if (isset($this->extensionMap[$extension_name])) {
+            $deps = $this->extensionMap[$extension_name]->dependExtensions;
+            if (!empty($deps)) {
+                foreach ($deps as $extension_name) {
+                    $this->loadDependExtension($extension_name);
+                }
+            }
+        }
+    }
+
+    public function loadDependLibrary($library_name)
     {
         if (!isset($this->libraryMap[$library_name])) {
             $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
@@ -668,7 +695,7 @@ class Preprocessor
             $deps = $this->libraryMap[$library_name]->deps;
             if (!empty($deps)) {
                 foreach ($deps as $library_name) {
-                    $this->loadLibrary($library_name);
+                    $this->loadDependLibrary($library_name);
                 }
             }
         }
@@ -728,10 +755,26 @@ class Preprocessor
                 ($this->extCallbacks[$ext])($this);
             }
         }
-        // autoload  library
+
+        if ($this->getOsType() == 'macos') {
+            if (is_file('/usr/local/opt/bison/bin/bison')) {
+                $this->withBinPath('/usr/local/opt/bison/bin');
+            } else {
+                $this->loadDependLibrary("bison");
+            }
+        }
+
+        // autoload extension depend extension
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->dependExtensions as $extension_name) {
+                $this->loadDependExtension($extension_name);
+            }
+        }
+
+        // autoload  library depend library
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->deps as $library_name) {
-                $this->loadLibrary($library_name);
+                $this->loadDependLibrary($library_name);
             }
         }
 
@@ -802,8 +845,7 @@ class Preprocessor
 
     protected function generateLibraryDownloadLinks(): void
     {
-        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
-
+        $this->mkdirIfNotExists($this->getRootDir() . '/var/', 0755, true);
         $download_urls = [];
         foreach ($this->libraryList as $item) {
             if (empty($item->url)) {
@@ -820,11 +862,11 @@ class Preprocessor
             }
             $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
         $download_urls = [];
         foreach ($this->downloadExtensionList as $item) {
             $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
         }
-        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
 }
