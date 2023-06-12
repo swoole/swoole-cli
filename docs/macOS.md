@@ -24,11 +24,31 @@ brew uninstall --ignore-dependencies capstone
 
 ```
 
+## 安装必要的软件 和 配置环境变量
+
+```shell
+
+brew install  wget curl  libtool automake  re2c llvm flex bison
+
+brew install  gettext coreutils binutils libunistring
+
+export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
+
+```
+
 # 问题
 
 ## 缺少 bison
 
-下载源代码，自行编译安装 (此问题已解决，安装依赖库时 已经包含bison源码编译)
+下载源代码，自行编译安装
+(此问题已解决，安装依赖库时 已经包含bison源码编译,或者如下操作)
+
+```shell
+    brew intall bison
+
+    export PATH=/usr/local/opt/bison/bin:$PATH
+
+```
 
 ## llvm 连接器 ld64.lld 、 lld 找不到
 
@@ -56,10 +76,12 @@ ln -s /opt/homebrew/bin/glibtool /opt/homebrew/bin/libtool
 ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
 ```
 
-## 缺少`gettext coreutils re2c`
+## 缺少`gettext coreutils re2c flex bison`
 
 ```shell
- brew install gettext coreutils re2c libunistring
+
+ brew install gettext coreutils re2c libunistring flex bison
+
 ```
 
 ## curl configure 检测不通过
