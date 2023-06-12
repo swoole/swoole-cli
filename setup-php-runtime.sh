@@ -5,10 +5,8 @@ __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-__PROJECT__=$(
-  cd ${__DIR__}/../../
-  pwd
-)
+__PROJECT__=${__DIR__}
+
 cd ${__PROJECT__}
 
 OS=$(uname -s)
@@ -22,10 +20,19 @@ case $OS in
   OS="macos"
   ;;
 *)
-  echo '暂未配置的 OS '
-  exit 0
+  case $OS in
+  'MSYS_NT'*)
+    OS="windows"
+    ;;
+  'MINGW64_NT'*)
+    OS="windows"
+    ;;
+  *)
+    echo '暂未配置的 OS '
+    exit 0
+    ;;
+  esac
   ;;
-
 esac
 
 case $ARCH in
@@ -52,6 +59,10 @@ SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
+if [ $OS = 'windows' ]; then
+  SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-cygwin-${ARCH}.zip"
+fi
+
 mirror=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -75,6 +86,9 @@ case "$mirror" in
 china)
   SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
   COMPOSER_DOWNLOAD_URL="https://mirrors.aliyun.com/composer/composer.phar"
+  if [ $OS = 'windows' ]; then
+    SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${VERSION}-cygwin-${ARCH}.zip"
+  fi
   ;;
 
 esac
@@ -86,11 +100,26 @@ test -f cacert.pem || wget -O cacert.pem ${CACERT_DOWNLOAD_URL}
 
 SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-${OS}-${ARCH}"
 
-test -f ${SWOOLE_CLI_RUNTIME}.tar.xz || wget -O ${SWOOLE_CLI_RUNTIME}.tar.xz ${SWOOLE_CLI_DOWNLOAD_URL}
-test -f ${SWOOLE_CLI_RUNTIME}.tar || xz -d -k ${SWOOLE_CLI_RUNTIME}.tar.xz
-test -f swoole-cli || tar -xvf ${SWOOLE_CLI_RUNTIME}.tar
-chmod a+x swoole-cli
-cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/php
+if [ $OS = 'windows' ]; then
+  {
+    SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-cygwin-${ARCH}"
+    test -f ${SWOOLE_CLI_RUNTIME}.zip || wget -O ${SWOOLE_CLI_RUNTIME}.zip ${SWOOLE_CLI_DOWNLOAD_URL}
+    test -d ${SWOOLE_CLI_RUNTIME} && rm -rf ${SWOOLE_CLI_RUNTIME}
+    unzip "${SWOOLE_CLI_RUNTIME}.zip"
+    test -d ${__PROJECT__}/${SWOOLE_CLI_RUNTIME} && rm -rf ${__PROJECT__}/${SWOOLE_CLI_RUNTIME}
+    cp -f composer.phar ${SWOOLE_CLI_RUNTIME}/bin/
+    #cp -f ${SWOOLE_CLI_RUNTIME}/bin/swoole-cli.exe ${SWOOLE_CLI_RUNTIME}/bin/php.exe
+    mv ${SWOOLE_CLI_RUNTIME} ${__PROJECT__}
+    echo
+    exit 0
+  }
+else
+  test -f ${SWOOLE_CLI_RUNTIME}.tar.xz || wget -O ${SWOOLE_CLI_RUNTIME}.tar.xz ${SWOOLE_CLI_DOWNLOAD_URL}
+  test -f ${SWOOLE_CLI_RUNTIME}.tar || xz -d -k ${SWOOLE_CLI_RUNTIME}.tar.xz
+  test -f swoole-cli || tar -xvf ${SWOOLE_CLI_RUNTIME}.tar
+  chmod a+x swoole-cli
+  cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/php
+fi
 
 cd ${__PROJECT__}/var/runtime
 

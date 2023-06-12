@@ -2,15 +2,16 @@
 
 ## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
 
-> 没有 wget 可以先用 [msys2](https://www.msys2.org/docs/environments/)
+> 没有 wget 可以先用 [msys2](https://www.msys2.org/docs/environments/) 环境安装
+> git wget curl
 
 ```bash
 
 # download cygwin  下载安装并安装 cygwin (用浏览器下载就行)
- wget https://cygwin.com/setup-x86_64.exe
+wget https://cygwin.com/setup-x86_64.exe
 
 # cygwin 移动到 bin 目录
-mv setup-x86_64.exe C:/cygwin64/bin/setup-x86_64.exe
+mv setup-x86_64.exe C:/setup-x86_64.exe
 
 ```
 
