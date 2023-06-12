@@ -21,8 +21,8 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
-        ->withDependExtension('curl', 'openssl', 'sockets', 'mysqlnd');
-
+        ->withDependExtension('curl', 'openssl', 'sockets', 'mysqlnd')
+    ;
     call_user_func_array([$ext, 'depends'], $depends);
     $p->addExtension($ext);
 };

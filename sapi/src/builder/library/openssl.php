@@ -17,8 +17,9 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
                  # ./Configure LIST
-                ./config {$static} no-shared  enable-tls1_3 --release --prefix=${openssl_prefix} --libdir=${openssl_prefix}/lib
-
+               ./config {$static} no-shared  enable-tls1_3 --release \
+               --prefix={$openssl_prefix} \
+               --libdir={$openssl_prefix}/lib
 
 EOF
             )

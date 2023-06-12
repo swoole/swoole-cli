@@ -12,8 +12,15 @@ __PROJECT__=$(
 
 cd ${__PROJECT__}/
 
-TAG="1.7-${ARCH}"
-TAG="all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z"
-IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
-
-docker run --rm --name swoole-cli-all-dependencies-container -d -v ${__PROJECT__}:/work -w /work -ti --init ${IMAGE}
+IMAGE_FILE="${__PROJECT__}/var/swoole-cli-build-all-dependencies-container.txt"
+if test -f $IMAGE_FILE; then
+  {
+    docker stop swoole-cli-dev
+    sleep 5
+  } || {
+    echo $?
+  }
+  docker run --rm --name swoole-cli-dev -d -v ${__PROJECT__}:/work -w /work -ti --init ${IMAGE}
+else
+  echo 'no  container image'
+fi
