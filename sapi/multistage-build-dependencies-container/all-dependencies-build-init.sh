@@ -53,9 +53,9 @@ done
 
 cd ${__PROJECT__}/var
 
-GIT_BRANCH=new_main
+GIT_BRANCH=main
 test -d swoole-cli && rm -rf swoole-cli
-git clone -b ${GIT_BRANCH} --depth=1  --recursive https://github.com/jingjingxyk/swoole-cli.git
+git clone -b ${GIT_BRANCH} --depth=1  --recursive https://github.com/swoole/swoole-cli.git
 
 cd ${__PROJECT__}/var/swoole-cli
 
