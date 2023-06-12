@@ -13,24 +13,9 @@ cd ${__PROJECT__}
 
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
-TAG='download-box-nginx-alpine-20230329T114730Z'
-TAG='download-box-nginx-alpine-20230504T085104Z'
 TAG='download-box-nginx-alpine-20230505T112517Z'
-
-IMAGE="docker.io/phpswoole/swoole-cli-builder:donload-box-v5.0.2"
+IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
-ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${TAG}"
-
-cd ${__PROJECT__}/var
-
-test -f download-box.txt && IMAGE=$(head -n 1 download-box.txt)
-
-test -f download-box-aliyun.txt && ALIYUN_IMAGE=$(head -n 1 download-box-aliyun.txt)
-
-echo $IMAGE
-echo $ALIYUN_IMAGE
-
-IMAGE=$ALIYUN_IMAGE
 
 cd ${__PROJECT__}/var
 
