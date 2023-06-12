@@ -23,7 +23,7 @@ env:
   BUILD_PHP_VERSION: 8.2.4
 
 jobs:
-  linux-x86_64:
+  linux-x86_64-latest-swoole:
     if: 1
     runs-on: ubuntu-latest
     steps:
