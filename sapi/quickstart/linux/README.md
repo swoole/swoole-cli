@@ -63,9 +63,9 @@ sh  sapi/quickstart/linux/alpine-init.sh --mirror china
 
 ```
 
-## 体检构建好 所有依赖库的容器
+## 使用已经构准好依赖库的容器
 
-> 跳过依赖库构建
+> 跳过构建依赖库 步骤
 
 ```shell
 # 启动 alpine 容器环境 (容器内包含所有依赖库、php运行时、composer )
