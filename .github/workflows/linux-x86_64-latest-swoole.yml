@@ -5,15 +5,16 @@ on:
     inputs:
       build_options:
         required: true
-        description: "定制构建选项，构建最新版的swoole,swow"
+        description: "定制构建选项: 构建最新版的 swoole 或者 swow （此二者扩展不能同时启用）"
         default: '-swoole +swoole_latest'
         type: choice
         options:
+          - '-swoole +swoole_latest'
           - '-swoole +swow_latest'
           - '-swoole +swow'
       build_type:
         required: true
-        description: "定制构建选项，指定构建类型"
+        description: "定制构建选项: 指定构建类型"
         default: '--with-build-type=release'
         type: choice
         options:
