@@ -82,7 +82,6 @@ jobs:
 
       - name: Show Build Result
         run: |
-<<<<<<< HEAD
           ./php-src/sapi/cli/php -v
           ./php-src/sapi/cli/php -m
           ./php-src/sapi/cli/php --ri swoole
