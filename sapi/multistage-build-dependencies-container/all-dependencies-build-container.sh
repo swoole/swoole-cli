@@ -19,6 +19,7 @@ ARCH=$(uname -m)
 TIME=$(date -u '+%Y%m%dT%H%M%SZ')
 VERSION="1.7.1"
 TAG="all-dependencies-alpine-${VERSION}-${ARCH}-${TIME}"
+IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
 USE_COMPOSER_MIRROR=0
