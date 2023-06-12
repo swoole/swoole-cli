@@ -15,13 +15,17 @@ return function (Preprocessor $p) {
             ->withPrefix($brotli_prefix)
             ->withBuildScript(
                 <<<EOF
-            cmake . -DCMAKE_BUILD_TYPE=Release \
+            mkdir -p build_dir
+            cd build_dir
+            # cmake -LH ..
+            cmake .. \
             -DCMAKE_INSTALL_PREFIX={$brotli_prefix} \
+            -DCMAKE_BUILD_TYPE=Release \
             -DBROTLI_SHARED_LIBS=OFF \
             -DBROTLI_STATIC_LIBS=ON \
             -DBROTLI_DISABLE_TESTS=OFF \
-            -DBROTLI_BUNDLED_MODE=OFF \
-            && \
+            -DBROTLI_BUNDLED_MODE=OFF
+
             cmake --build . --config Release --target install
 EOF
             )
@@ -41,4 +45,5 @@ EOF
             ->withPkgName('libbrotlienc')
             ->withBinPath($brotli_prefix . '/bin/')
     );
+    $p->withVariable('LIBS', '$LIBS -lbrotli');
 };
