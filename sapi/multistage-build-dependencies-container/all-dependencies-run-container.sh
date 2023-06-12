@@ -13,9 +13,15 @@ __PROJECT__=$(
 cd ${__PROJECT__}/
 ARCH=$(uname -m)
 
-TAG="native-php-all-dependencies-alpine-php-8.2.4-${ARCH}-20230428T164512Z"
-
-IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
-ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${TAG}"
-
-docker run --rm --name swoole-cli-all-dependencies-container -d -v ${__PROJECT__}:/work -w /work -ti --init ${IMAGE}
+IMAGE_FILE="${__PROJECT__}/var/swoole-cli-build-all-dependencies-container.txt"
+if test -f $IMAGE_FILE; then
+  {
+    docker stop swoole-cli-dev
+    sleep 5
+  } || {
+    echo $?
+  }
+  docker run --rm --name swoole-cli-dev -d -v ${__PROJECT__}:/work -w /work -ti --init ${IMAGE}
+else
+  echo 'no  container image'
+fi

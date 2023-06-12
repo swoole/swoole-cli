@@ -1,70 +1,97 @@
 FROM alpine:3.17 as builder-all-library
 
 # setup source repo, install dependencies
+RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apk update
-
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-RUN apk add flex  pkgconf ca-certificates zip unzip 7zip lzip
+RUN apk add flex  pkgconf ca-certificates zip unzip p7zip lzip
 RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
 RUN apk add libc++-static
 WORKDIR /work
 
-
-ENV TZ=Etc/UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-
-
+RUN mkdir -p /usr/local/swoole-cli/etc/
 
 ADD ./runtime/swoole-cli  /usr/local/bin/
 ADD ./runtime/composer.phar  /usr/local/bin/
-COPY ./swoole-cli  /work
+
+ADD ./runtime/cacert.pem  /etc/ssl/certs/
+ADD ./php.ini  /usr/local/swoole-cli/etc/
+ADD ./swoole-cli  /work
+
 
 RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
 RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
 RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
+
+ENV CERT_FILE=/etc/ssl/certs/cacert.pem
+# ENV CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV PHP_INI=/usr/local/swoole-cli/etc/php.ini
+
+RUN alias php='php -d curl.cainfo="${CERT_FILE}" -d openssl.cafile="${CERT_FILE}"'
+RUN alias
+RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\${CERT_FILE}\"'" >>/root/.bashrc
+
+
 WORKDIR /work
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ARG USE_COMPOSER_MIRROR
 RUN if [ $USE_COMPOSER_MIRROR -eq 1 ]; then { composer config repo.packagist composer https://mirrors.aliyun.com/composer/ ; } fi
-RUN composer suggest --no-dev
-RUN composer update --no-dev --optimize-autoloader
+RUN /bin/bash -c "source /root/.bashrc" && composer suggest --no-dev
+RUN /bin/bash -c "source /root/.bashrc" && composer update --no-dev --optimize-autoloader
 
 
-RUN php prepare.php  --with-build-type=release --skip-download=1
+RUN /bin/bash -c "source /root/.bashrc" && php prepare.php --with-build-type=dev  --with-swoole-pgsql=1
+RUN bash make.sh list-library
+RUN bash make.sh all-library
 
-RUN sh make.sh all-library
 
 
 FROM alpine:3.17
-
 # setup source repo, install dependencies
+RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apk update
-
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-RUN apk add flex  pkgconf ca-certificates zip unzip 7zip lzip
+RUN apk add flex  pkgconf ca-certificates zip unzip p7zip lzip
 RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
 RUN apk add libc++-static
 WORKDIR /work
 
-ENV TZ=Etc/UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN mkdir -p /usr/local/swoole-cli/etc/
+
 
 COPY --from=builder-all-library /usr/local/bin/swoole-cli /usr/local/bin/swoole-cli
 COPY --from=builder-all-library /usr/local/bin/composer.phar /usr/local/bin/composer.phar
+COPY --from=builder-all-library /etc/ssl/certs/cacert.pem /etc/ssl/certs/cacert.pem
+COPY --from=builder-all-library /usr/local/swoole-cli/etc/ /usr/local/swoole-cli/etc/
+
+
 RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
 RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
 RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
+
+ENV CERT_FILE=/etc/ssl/certs/cacert.pem
+# ENV CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV PHP_INI=/usr/local/swoole-cli/etc/php.ini
+
+
+RUN alias php='php -d curl.cainfo="${CERT_FILE}" -d openssl.cafile="${CERT_FILE}"'
+RUN alias
+RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\${CERT_FILE}\"'" >>/root/.bashrc
+
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 COPY --from=builder-all-library  /usr/local/swoole-cli /usr/local/swoole-cli
-
-# RUN cp -f /etc/apk/repositories.save /etc/apk/repositories
+RUN ls -lh /usr/local/swoole-cli
+RUN du -h -d 1  /usr/local/swoole-cli
+RUN ls -lh /usr/local/swoole-cli/etc/
+RUN cp -f /etc/apk/repositories.save /etc/apk/repositories
 
 RUN rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
