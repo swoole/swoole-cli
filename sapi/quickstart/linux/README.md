@@ -56,21 +56,19 @@ bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 sh  sapi/quickstart/linux/alpine-init.sh
 
 
-
 # 准备构建基础软件 使用中科大镜像源
 sh  sapi/quickstart/linux/alpine-init.sh --mirror china
 
 
 ```
 
-## 使用已经构准好依赖库的容器
+## 体检构建好 所有依赖库的容器
 
-> 跳过构建依赖库 步骤
+> 跳过依赖库构建
 
 ```shell
 # 启动 alpine 容器环境 (容器内包含所有依赖库、php运行时、composer )
 bash sapi/quickstart/linux/run-alpine-container-full.sh
-
 
 ```
 
