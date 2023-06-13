@@ -4,7 +4,7 @@ on: [ push, delete, create ]
 
 jobs:
   gitee:
-    if: "github.repository_owner == 'swoole'"
+    if: "github.repository_owner == 'swoole' && github.repository == 'swoole/swoole-cli'"
     runs-on: ubuntu-latest
     steps:
       - name: Configure Private Key
