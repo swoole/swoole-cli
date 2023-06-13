@@ -129,3 +129,10 @@ swoole 启用 --enable-swoole-pgsql
 php ./prepare.php --with-swoole-pgsql=1
 ```
 
+with-php-version
+----
+切换 PHP 版本
+
+```shell
+php ./prepare.php --with-php-version=8.1.18
+```
