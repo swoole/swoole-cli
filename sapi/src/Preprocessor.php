@@ -502,6 +502,9 @@ EOF;
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
+                if ($ext->aliasName) {
+                    $dst_dir = "{$this->rootDir}/ext/{$ext->aliasName}";
+                }
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
 
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;

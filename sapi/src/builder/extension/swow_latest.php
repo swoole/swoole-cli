@@ -22,5 +22,6 @@ return function (Preprocessor $p) {
                 rm -rf swow-t
 EOF
             )
+            ->withAliasName('swow')
     );
 };
