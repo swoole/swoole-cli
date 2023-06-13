@@ -78,7 +78,9 @@ jobs:
           run: |
             bash ./make.sh config
             bash ./make.sh build
+            ./php-src/sapi/cli/php -v
             bash ./make.sh archive
+
             # ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
             # ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
 
