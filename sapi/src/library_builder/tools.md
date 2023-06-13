@@ -41,3 +41,14 @@ git merge --squash branch_name
 git rev-parse HEAD
 
 ```
+
+```bash
+
+git config core.ignorecase false # 设置 Git 在 Windows 上也区分大小写
+
+git reflog # 查看所有的提交历史
+git reset --hard c761f5c # 回退到指定的版本
+
+```
+
+
