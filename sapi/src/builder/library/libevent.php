@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libevent_prefix = LIBEVENT_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
     $url = 'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz';
     $p->addLibrary(
         (new Library('libevent'))
@@ -24,7 +25,9 @@ return function (Preprocessor $p) {
                 -DEVENT__DISABLE_DEBUG_MODE=ON \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DEVENT__LIBRARY_TYPE=STATIC \
-                -DEVENT__DISABLE_OPENSSL=ON
+                -DEVENT__DISABLE_OPENSSL=OFF \
+                -DEVENT__DISABLE_THREAD_SUPPORT=OFF \
+                -DOpenSSL_ROOT={$openssl_prefix}
 
 EOF
             )
