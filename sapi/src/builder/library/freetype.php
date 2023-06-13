@@ -31,11 +31,13 @@ return function (Preprocessor $p) {
             --with-bzip2=yes \
             --with-png=yes \
             --with-harfbuzz=no  \
-            --with-brotli=yes
+            --with-brotli=yes \
+            --enable-freetype-config
 
 EOF
             )
             ->withPkgName('freetype2')
+            ->withBinPath($freetype_prefix . '/bin/')
             ->depends('zlib', 'bzip2', 'libpng', 'brotli')
     );
 };
