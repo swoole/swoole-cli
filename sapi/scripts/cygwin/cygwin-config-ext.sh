@@ -71,5 +71,14 @@ if [ ! -d $ROOT/ext/swoole ]; then
 
 fi
 
+if [ ! -d $ROOT/ext/swoole ]; then
+    if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
+        wget -O swoole-${SWOOLE_VERSION}.tgz  https://github.com/swoole/swoole-src/archive/refs/tags/${SWOOLE_VERSION}.tar.gz
+    fi
+    mkdir -p swoole-${SWOOLE_VERSION}
+    tar  --strip-components=1 -C swoole-${SWOOLE_VERSION} -xf swoole-${SWOOLE_VERSION}.tgz
+    mv swoole-${SWOOLE_VERSION} $ROOT/ext/swoole
+fi
+
 cd $ROOT
 
