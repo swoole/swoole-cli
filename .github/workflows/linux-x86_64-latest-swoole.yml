@@ -2,8 +2,6 @@ name: build-php-cli-linux-x86_64-latest-swoole
 
 on:
   workflow_dispatch:
-    branches:
-      - b
     inputs:
       build_latest_swoole_or_swow:
         required: true
@@ -63,18 +61,11 @@ jobs:
           # git submodule update --init
 
       - name: Prepare Libraries and Extensions
-        uses: addnab/docker-run-action@v3
-        with:
-          #image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230429T061856Z
-          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230505T112517Z
-          options: -v ${{ github.workspace }}:/work -w /work
-          run: |
-            set -x
-            mkdir -p pool/lib
-            mkdir -p pool/ext
-            mkdir -p ext
-            cp -rf /usr/share/nginx/html/extensions/* pool/ext
-            cp -rf /usr/share/nginx/html/libraries/* pool/lib
+        run: |
+          set -x
+          bash sapi/download-box/download-box-get-archive-from-container.sh
+          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
