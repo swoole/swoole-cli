@@ -3,6 +3,12 @@
 ## 删除子模块
 ```bash
 git submodule deinit ext/swoole
+
+git submodule deinit -f ext/swoole
+
+rm -rf .git/modules/ext/swoole/
+
+git rm -rf ext/swoole/
 ```
 
 ## 创建空的新分支
