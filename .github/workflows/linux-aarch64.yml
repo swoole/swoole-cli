@@ -29,7 +29,7 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          git submodule update --init
+          # git submodule update --init
 
       - name: Prepare Libraries and Extensions
         run: |
@@ -37,9 +37,6 @@ jobs:
           bash sapi/download-box/download-box-get-archive-from-container.sh
           bash sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          # composer update --no-dev  --optimize-autoloader
-          composer update --optimize-autoloader
-          php prepare.php  +inotify +apcu +ds --without-docker=1
           sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Prepare
@@ -65,6 +62,8 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-aarch64-20230611T222545Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            test -d /usr/local/swoole-cli/curl && rm -rf /usr/local/swoole-cli/curl
+            test -d thirdparty/curl && rm -rf thirdparty/curl
             bash ./make.sh curl
             bash ./make.sh config
             bash ./make.sh build

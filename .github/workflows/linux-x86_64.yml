@@ -29,7 +29,7 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          git submodule update --init
+          # git submodule update --init
 
       - name: Prepare Libraries and Extensions
         uses: addnab/docker-run-action@v3
@@ -70,6 +70,8 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-x86_64-20230611T164740Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            test -d /usr/local/swoole-cli/curl && rm -rf /usr/local/swoole-cli/curl
+            test -d thirdparty/curl && rm -rf thirdparty/curl
             bash ./make.sh curl
             bash ./make.sh config
             bash ./make.sh build
