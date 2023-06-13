@@ -10,7 +10,7 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-VERSION=8.2.4
+VERSION=8.1.20
 
 test -f php-${VERSION}.tar.gz ||  wget -O php-${VERSION}.tar.gz  https://github.com/php/php-src/archive/refs/tags/php-${VERSION}.tar.gz
 
