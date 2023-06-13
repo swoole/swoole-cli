@@ -92,6 +92,8 @@ jobs:
       - name: Build
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          test -d /usr/local/swoole-cli/curl && rm -rf /usr/local/swoole-cli/curl
+          test -d thirdparty/curl && rm -rf thirdparty/curl
           bash ./make.sh curl
           bash ./make.sh config
           bash ./make.sh build
