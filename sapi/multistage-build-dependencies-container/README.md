@@ -64,25 +64,25 @@ sh make.sh build
 
 ## 为了方便分发，把容器镜像导出为文件
 
-> 使用 抢占式 高配置 的云服务器 来构建
+> 使用 抢占式 高配置 云服务器 来加速构建
 > 目的：节省网络流量 （单个文件不压缩情况下，大小超过 1GB）
 
 ```bash
 
 cd var
 
-docker save -o "all-dependencies-container-image-php-8.2.4-$(uname -m).tar" $(cat swoole-cli-build-all-dependencies-container.txt)
+docker save -o "all-dependencies-container-image-php8-$(uname -m).tar" $(cat all-dependencies-container.txt)
 
 
 # xz 并行压缩 -T cpu核数 -k 保持源文件
-xz -9 -T$(nproc) -k "all-dependencies-container-image-php-8.2.4-$(uname -m).tar"
+xz -9 -T$(nproc) -k "all-dependencies-container-image-php8-$(uname -m).tar"
 
 # xz 解压
-xz -d -T$(nproc) -k "all-dependencies-container-image-php-8.2.4-$(uname -m).tar.xz"
+xz -d -T$(nproc) -k "all-dependencies-container-image-php8-$(uname -m).tar.xz"
 
 # 从文件导入容器镜像
 
-docker load -i  "all-dependencies-container-image-php-8.2.4-$(uname -m).tar"
+docker load -i  "all-dependencies-container-image-php8-$(uname -m).tar"
 
 ```
 
