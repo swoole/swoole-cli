@@ -25,7 +25,7 @@ fi
 
 IMAGE=$(cat all-dependencies-container.txt)
 
-MIRROR_IMAGE=$(echo ${IMAGE} | sed 's@docker.io/jingjingxyk/build-swoole-cli@registry-vpc.cn-beijing.aliyuncs.com/jingjingxyk-public/app@')
+MIRROR_IMAGE=$(echo ${IMAGE} | sed 's@docker.io/phpswoole/swoole-cli-builder@registry-vpc.cn-beijing.aliyuncs.com/jingjingxyk-public/app@')
 
 docker tag ${IMAGE} ${MIRROR_IMAGE}
 
