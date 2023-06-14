@@ -59,6 +59,7 @@ jobs:
           echo ${CURRENT_USER}
           sudo mkdir -p /usr/local/swoole-cli
           CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
+
           # git submodule update --init
 
       - name: Prepare runtime
