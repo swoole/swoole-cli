@@ -53,6 +53,6 @@ docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=pl
 
 cd ${__PROJECT__}/var
 
-echo ${IMAGE} >swoole-cli-build-all-dependencies-container.txt
+echo ${IMAGE} >all-dependencies-container.txt
 
 docker push ${IMAGE}
