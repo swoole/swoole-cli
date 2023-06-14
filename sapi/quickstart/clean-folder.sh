@@ -11,9 +11,13 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+if [[ -f /.dockerenv ]]; then
+  git config --global --add safe.directory ${__PROJECT__}
+fi
+
 GIT_BRANCH=$(git branch | grep '* ' | awk '{print $2}')
 echo $GIT_BRANCH
-ACTION=""
+ACTION="none"
 case $GIT_BRANCH in
 'build_native_php')
   ACTION="delete"
@@ -27,6 +31,9 @@ case $GIT_BRANCH in
 'build_php_7.3')
   ACTION="delete"
   ;;
+'build_php_7.2')
+  ACTION="delete"
+  ;;
 'build_native_php_sfx_micro')
   ACTION="delete"
   ;;
@@ -36,7 +43,8 @@ case $GIT_BRANCH in
 
 esac
 
-if [ $ACTION = "delete" ]; then
+if [[ $ACTION = "delete" ]]; then
+  cd ${__PROJECT__}
   test -d ext/ && rm -rf ext
 
   test -d Zend/ && rm -rf Zend/
@@ -52,5 +60,17 @@ if [ $ACTION = "delete" ]; then
   test -f configure.ac && rm -rf configure.ac
   test -f .gitmodules && rm -rf .gitmodules
   test -f buildconf && rm -rf buildconf
+  test -f cppflags.log && rm -rf cppflags.log
+  test -f ldflags.log && rm -rf ldflags.log
+  test -f Makefile && rm -rf Makefile
+  test -f Makefile.fragments && rm -rf Makefile.fragments
+  test -f Makefile.objects && rm -rf Makefile.objects
+  test -f config.log && rm -rf config.log
+  test -f config.nice && rm -rf config.nice
+  test -f config.status && rm -rf config.status
+  test -f libtool && rm -rf libtool
+  test -f conftest && rm -rf conftest
+  test -f conftest.c && rm -rf conftest.c
+  test -d scripts && rm -rf scripts
 
 fi
