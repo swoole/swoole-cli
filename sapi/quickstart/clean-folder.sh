@@ -11,7 +11,7 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-if [ -f /.dockerenv ]; then
+if [[ -f /.dockerenv ]]; then
   git config --global --add safe.directory ${__PROJECT__}
 fi
 
@@ -43,7 +43,7 @@ case $GIT_BRANCH in
 
 esac
 
-if [ $ACTION = "delete" ]; then
+if [[ $ACTION = "delete" ]]; then
   cd ${__PROJECT__}
   test -d ext/ && rm -rf ext
 
