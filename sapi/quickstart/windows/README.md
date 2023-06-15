@@ -1,6 +1,6 @@
 # windows 快速准备构建环境
 
-## 准备 msys2
+## 准备 msys2 (windows 系统上快速使用 linux 环境下的命令)
 
 > 打开站点 https://www.msys2.org/ 下载 msys2 安装包
 
@@ -8,12 +8,10 @@
 
 > 安装 msys2
 
-> 开始菜单，打开 MSYS2 MSYS 控制台
-
-### msys2 准备必要依赖
+> 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包,如下
 
 ```shell
-# 换源
+# 换源 （非中国大陆地区，不需要执行此条命令）
 sed -i "s#https\?://mirror.msys2.org/#https://mirrors.tuna.tsinghua.edu.cn/msys2/#g" /etc/pacman.d/mirrorlist*
 
 # 更新源
@@ -72,11 +70,32 @@ setup-x86_64.exe --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disab
 
 ## [进入构建 PHP 环节](../../../docs/Cygwin.md#构建)
 
+## 构建window  PHP (非 cygwin 环境）工具 和 参考
 
-VC++
-
-https://aka.ms/vs/16/release/VC_redist.x64.exe
-
-windows build
+windows build php 步骤
 https://wiki.php.net/internals/windows/stepbystepbuild
 
+```shell
+git config core.ignorecase false # 设置 Git 在 Windows 上也区分大小写
+```
+
+VC++
+https://learn.microsoft.com/en-AU/cpp/windows/latest-supported-vc-redist
+https://aka.ms/vs/16/release/VC_redist.x64.exe
+
+7zip
+https://7-zip.org/
+
+visualstudio
+https://visualstudio.microsoft.com/zh-hans/downloads/
+
+windows-sdk
+https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
+
+Windows PowerShell ISE 文本编辑器
+
+```shell
+
+VisualStudioSetup.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --includeRecommended
+
+```
