@@ -2,22 +2,47 @@
 
 ## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
 
-> 没有 wget 可以先用 [msys2](https://www.msys2.org/docs/environments/) 环境安装
-> git wget curl
+> 没有 wget 可以先安装 [msys2](https://www.msys2.org/docs/environments/) 环境,
 
-```bash
+> 使用 msys2 环境下包管理工具 `pacman`安装依赖软件更快捷
 
-# download cygwin  下载安装并安装 cygwin (用浏览器下载就行)
+> 点击打开 windows 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包
+
+> msys2 如果慢,可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
+
+> [为什么不使用 msys2 构建 swoole-cli,因为 msys2 环境缺失一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
+
+```shell
+
+pacman -Sy --noconfirm git curl wget openssl zip unzip xz
+
+# msys2 环境下 拉取 swoole-cli 源码
+git clone --recursive https://github.com:swoole/swoole-cli.git
+
+# msys2 环境下下载 cygwin (用浏览器下载就行) 安装包
 wget https://cygwin.com/setup-x86_64.exe
 
-# cygwin 移动到 bin 目录
+# 将 cygwin 安装包 移动到 window  指定盘符根目 （这里以 C盘为例）
 mv setup-x86_64.exe C:/setup-x86_64.exe
 
 ```
 
-## 安装工具列表和依赖
+## 安装 cygwin 环境下的工具列表和依赖
+
+> 点击打开 windows 开始菜单,点击打开 CMD 控制台，并安装必要的包
+
+> 打开 https://cygwin.com/
+
+> cygwin 搜索包 https://cygwin.com/cgi-bin2/package-grep.cgi?grep=openssl
+
+> cygwin 可用 换源地址 参考 https://mirrors.cernet.edu.cn/list/cygwin
 
 ```bash
+
+cd c:/
+
+# 安装cygwin 和 cygwin 依赖项
+
 setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  http://mirrors.ustc.edu.cn/cygwin/ --packages make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl,libpcre2-devel,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel,libgmp-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel,libsqlite3-devel,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel,libMagick-devel,libzstd-devel,libbrotli-devel,libreadline-devel,libintl-devel,libpq-devel,libssh2-devel,libidn2-devel,gettext-devel,coreutils,openssl-devel
 
 setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  http://mirrors.ustc.edu.cn/cygwin/ --packages zip unzip

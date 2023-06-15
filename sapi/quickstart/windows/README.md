@@ -1,6 +1,6 @@
 # windows 快速准备构建环境
 
-## 准备 msys2
+## 准备 msys2 (windows 系统上快速使用 linux 环境下的命令)
 
 > 打开站点 https://www.msys2.org/ 下载 msys2 安装包
 
@@ -8,12 +8,10 @@
 
 > 安装 msys2
 
-> 开始菜单，打开 MSYS2 MSYS 控制台
-
-### msys2 准备必要依赖
+> 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包,如下
 
 ```shell
-# 换源
+# 换源 （非中国大陆地区，不需要执行此条命令）
 sed -i "s#https\?://mirror.msys2.org/#https://mirrors.tuna.tsinghua.edu.cn/msys2/#g" /etc/pacman.d/mirrorlist*
 
 # 更新源

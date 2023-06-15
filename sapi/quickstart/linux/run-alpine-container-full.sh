@@ -34,22 +34,16 @@ ARCH=$(uname -m)
 
 case $ARCH in
 'x86_64')
-  IMAGE=docker.io/phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-x86_64-20230611T164740Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
   ;;
 'aarch64')
-  IMAGE=docker.io/phpswoole/swoole-cli-builder:1.7-arm64
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-aarch64-20230611T222545Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230614T152332Z
   ;;
 *)
   echo "此 ${ARCH} 架构的容器 容器未配置"
   exit 0
   ;;
 esac
-
-
 
 cd ${__DIR__}
 docker run --rm --name swoole-cli-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null

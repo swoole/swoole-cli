@@ -11,11 +11,6 @@ return function (Preprocessor $p) {
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
 
-    if ($p->getInputOption('with-swoole-pgsql')) {
-        $options .= ' --enable-swoole-pgsql';
-        $depends[] = 'pgsql';
-    }
-
     $ext = (new Extension('swoole'))
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
@@ -29,7 +24,8 @@ return function (Preprocessor $p) {
             <<<EOF
          git clone -b v4.8.13 --dept=1 https://github.com/swoole/swoole-src.git
 EOF
-        );
-    call_user_func_array([$ext, 'depends'], $depends);
+        )
+        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd');
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 };
