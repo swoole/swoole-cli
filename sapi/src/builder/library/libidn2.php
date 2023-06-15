@@ -29,7 +29,7 @@ return function (Preprocessor $p) {
 EOF
                 )
                 ->withPkgName('libidn2')
-                ->depends('libiconv', 'libunistring')
+                ->withDependentLibraries('libiconv', 'libunistring')
         );
     }
 };

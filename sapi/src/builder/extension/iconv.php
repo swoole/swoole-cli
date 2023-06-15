@@ -9,6 +9,6 @@ return function (Preprocessor $p) {
         (new Extension('iconv'))
             ->withHomePage('https://www.php.net/iconv')
             ->withOptions('--with-iconv=' . ICONV_PREFIX)
-            ->depends('libiconv')
+            ->withDependentLibraries('libiconv')
     );
 };

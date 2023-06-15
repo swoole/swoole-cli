@@ -30,6 +30,6 @@ EOF
             ->withMakeOptions('lib')
             ->withPkgName('libzstd')
             ->withBinPath($libzstd_prefix . '/bin')
-            ->depends('liblz4', 'liblzma')
+            ->withDependentLibraries('liblz4', 'liblzma')
     );
 };
