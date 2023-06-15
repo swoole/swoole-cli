@@ -13,7 +13,7 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 # 方法一：默认
 bash get-docker.sh
 
-# 方法二： 使用镜像地址替换 （使用中科大镜像) 推荐这个最快
+# 方法二： 使用镜像地址替换 （使用中科大镜像) 在中国大陆 推荐这个
 bash sapi/quickstart/linux/install-docker.sh --mirror china
 
 # 方法三： 使用 阿里云镜像
@@ -103,7 +103,7 @@ composer update --no-dev  --optimize-autoloader
 
 php prepare.php  +inotify +apcu +ds
 
-# 不起用 mysqli soap
+# 不启用 mysqli soap 例子
 # php prepare.php  +inotify +apcu +ds -mysqli -soap
 
 # macos
