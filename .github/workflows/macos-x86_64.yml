@@ -75,7 +75,8 @@ jobs:
 
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
-          php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql
+
+          php prepare.php --without-docker=1  --with-build-type=release  +apcu +ds +xlswriter +ssh2
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -105,6 +106,8 @@ jobs:
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
