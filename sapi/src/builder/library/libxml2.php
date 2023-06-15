@@ -31,7 +31,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libxml-2.0')
-            ->depends('libiconv')
+            ->withDependentLibraries('libiconv')
             ->withBinPath($libxml2_prefix . '/bin/')
     );
 };

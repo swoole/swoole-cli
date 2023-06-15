@@ -8,3 +8,4 @@ ADD  ./all-archive.zip  /usr/share/nginx/html/
 ADD  ./LICENSE /usr/share/nginx/html/
 ADD  ./credits.html /usr/share/nginx/html/
 ADD  ./ext-dependency-graph.pdf /usr/share/nginx/html/
+ADD  ./setup-php-runtime.sh /usr/share/nginx/html/
