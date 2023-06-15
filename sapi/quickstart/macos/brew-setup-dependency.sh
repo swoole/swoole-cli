@@ -27,7 +27,6 @@ done
 
 case "$mirror" in
 china)
-  export HOMEBREW_NO_ANALYTICS=1
 
   export HOMEBREW_INSTALL_FROM_API=1
   export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
