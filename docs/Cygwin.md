@@ -39,7 +39,7 @@ mv setup-x86_64.exe C:/setup-x86_64.exe
 
 ```bash
 
-cd c:
+cd c:/
 
 # 安装cygwin 和 cygwin 依赖项
 
