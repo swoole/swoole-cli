@@ -76,7 +76,6 @@ jobs:
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
           php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb
@@ -99,8 +98,6 @@ jobs:
           bash ./make.sh config
           bash ./make.sh build
           bash ./make.sh archive
-
-
 
       - name: Show Build Result
         run: |
