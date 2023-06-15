@@ -41,7 +41,7 @@ jobs:
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
-      - name: Prepare
+      - name: Prepare and Build
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/library/alpine:3.17
@@ -59,19 +59,7 @@ jobs:
             php prepare.php  --with-swoole-pgsql=1 +inotify +apcu +ds +xlswriter +ssh2
 
             chmod a+x make.sh
-            head -n 20 make.sh
-
-      - name: Build
-        uses: addnab/docker-run-action@v3
-        with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
-          options: -v ${{ github.workspace }}:/work -w /work -e BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }}
-          run: |
-            apk update
-            sh  sapi/quickstart/linux/alpine-init.sh
-            bash sapi/quickstart/setup-php-runtime.sh
-            export PATH=/work/bin/runtime:$PATH
-            alias php='php -c /work/bin/runtime/php.ini'
+            bash ./make.sh all-library
             bash ./make.sh config
             bash ./make.sh build
             ./php-src/sapi/cli/php -v
