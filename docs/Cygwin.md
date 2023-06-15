@@ -10,9 +10,11 @@
 
 > 安装必要的 linux 命令
 
+> msys2 如果慢,可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
+
 ```shell
 
-# msys2 如果慢可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
+
 
 pacman -Sy --noconfirm git curl wget openssl zip unzip xz
 
