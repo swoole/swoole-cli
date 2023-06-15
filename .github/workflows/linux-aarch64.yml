@@ -47,7 +47,7 @@ jobs:
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds --with-global-prefix=/usr --with-swoole-pgsql=1 +xlswriter +ssh2
+            php prepare.php   --with-swoole-pgsql=1  +inotify +apcu +ds +xlswriter +ssh2
 
             chmod a+x make.sh
             head -n 20 make.sh
@@ -57,7 +57,6 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230614T152332Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
-            bash ./make.sh pgsql
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
