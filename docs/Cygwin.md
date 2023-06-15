@@ -4,13 +4,15 @@
 
 > 没有 wget 可以先安装 [msys2](https://www.msys2.org/docs/environments/) 环境
 
-> 使用 `pacman` 快速安装依赖项
+> 使用 `pacman` 管理依赖依赖项
 
 > 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包
 
 > 安装必要的 linux 命令
 
 > msys2 如果慢,可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
+
+> [为什么不使用msys2 构建 swoole-cli,缺少一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
 
 ```shell
 
