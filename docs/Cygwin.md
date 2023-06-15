@@ -12,7 +12,6 @@
 
 > [为什么不使用 msys2 构建 swoole-cli,因为环境缺失一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
 
-
 ```shell
 
 pacman -Sy --noconfirm git curl wget openssl zip unzip xz
@@ -23,12 +22,14 @@ git clone --recursive https://github.com:swoole/swoole-cli.git
 # msys2 环境下 cygwin (用浏览器下载就行)
 wget https://cygwin.com/setup-x86_64.exe
 
-# cygwin 移动到 bin 目录
+# 将 cygwin 安装包 移动到 window  指定盘符根目 （这里以 C盘为例）
 mv setup-x86_64.exe C:/setup-x86_64.exe
 
 ```
 
-## 安装 cygwin 环境下工具列表和依赖
+## 安装 cygwin 环境下的工具列表和依赖
+
+> 点击打开 windows 开始菜单,点击打开 CMD 控制台，并安装必要的包
 
 > 打开 https://cygwin.com/
 
@@ -37,7 +38,6 @@ mv setup-x86_64.exe C:/setup-x86_64.exe
 > cygwin 可用 换源地址 参考 https://mirrors.cernet.edu.cn/list/cygwin
 
 ```bash
-# 点击打开 windows 开始菜单,点击打开 CMD 控制台，并安装必要的包
 
 cd c:
 
