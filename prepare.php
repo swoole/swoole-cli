@@ -48,11 +48,21 @@ if (!in_array($build_type, ['dev', 'debug'])) {
 define('PHP_CLI_BUILD_TYPE', $build_type);
 define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
+if ($p->getInputOption('with-parallel-jobs')) {
+    $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
+}
+
+
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
+    $p->setLinker('ld');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
     }
+    $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
+} else {
+    $p->setLinker('ld.lld');
+    $p->setLogicalProcessors('$(nproc 2> /dev/null)');
 }
 
 $p->setExtraCflags('-Os');
@@ -81,6 +91,7 @@ function install_libraries(Preprocessor $p): void
                 fi
                 cp -rf php_src {$php_src}
                 cd {$build_dir}/php_src
+
 EOF
             )
     );

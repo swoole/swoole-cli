@@ -85,7 +85,7 @@ EOF
             ->withPkgName('Magick++-7.Q16HDRI')
             ->withPkgName('Magick++')
             ->withBinPath($imagemagick_prefix . '/bin/')
-            ->depends(
+            ->withDependentLibraries(
                 'libxml2',
                 'libzip',
                 'zlib',

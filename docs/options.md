@@ -136,3 +136,12 @@ with-php-version
 ```shell
 php ./prepare.php --with-php-version=8.1.18
 ```
+
+with-parallel-jobs
+----
+构建时最大并发进程数；
+默认值是 CPU 逻辑处理器数
+
+```shell
+php ./prepare.php --with-parallel-jobs=8
+```

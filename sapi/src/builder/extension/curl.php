@@ -9,6 +9,6 @@ return function (Preprocessor $p) {
         (new Extension('curl'))
             ->withHomePage('https://www.php.net/curl')
             ->withOptions('--with-curl')
-            ->depends('curl')
+            ->withDependentLibraries('curl')
     );
 };
