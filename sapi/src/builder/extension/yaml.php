@@ -11,6 +11,6 @@ return function (Preprocessor $p) {
             ->withPeclVersion('2.2.2')
             ->withHomePage('https://github.com/php/pecl-file_formats-yaml')
             ->withLicense('https://github.com/php/pecl-file_formats-yaml/blob/php7/LICENSE', Extension::LICENSE_MIT)
-            ->depends('libyaml')
+            ->withDependentLibraries('libyaml')
     );
 };

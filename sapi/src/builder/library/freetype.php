@@ -38,6 +38,6 @@ EOF
             )
             ->withPkgName('freetype2')
             ->withBinPath($freetype_prefix . '/bin/')
-            ->depends('zlib', 'bzip2', 'libpng', 'brotli')
+            ->withDependentLibraries('zlib', 'bzip2', 'libpng', 'brotli')
     );
 };

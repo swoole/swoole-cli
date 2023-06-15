@@ -62,7 +62,17 @@ class Preprocessor
     protected array $variables = [];
 
     protected array $exportVariables = [];
-    protected int $maxJob = 8;
+    /**
+     * default value : CPU   logical processors
+     * @var string
+     */
+    protected string $maxJob = '${LOGICAL_PROCESSORS}';
+
+    /**
+     * CPU   logical processors
+     * @var string
+     */
+    protected string $logicalProcessors = '';
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
 
@@ -122,13 +132,9 @@ class Preprocessor
             default:
             case 'Linux':
                 $this->setOsType('linux');
-                $this->setLinker('ld.lld');
-                $this->setMaxJob(`nproc 2> /dev/null`);
                 break;
             case 'Darwin':
                 $this->setOsType('macos');
-                $this->setLinker('ld');
-                $this->setMaxJob(`sysctl -n hw.ncpu`);
                 break;
             case 'WINNT':
                 $this->setOsType('win');
@@ -136,9 +142,10 @@ class Preprocessor
         }
     }
 
-    public function setLinker(string $ld): void
+    public function setLinker(string $ld): static
     {
         $this->lld = $ld;
+        return $this;
     }
 
     public static function getInstance(): static
@@ -207,9 +214,9 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
-    public function getPhpSrcDir():string
+    public function getPhpSrcDir(): string
     {
-        return $this->phpSrcDir ;
+        return $this->phpSrcDir;
     }
 
 
@@ -290,11 +297,23 @@ class Preprocessor
 
     /**
      * make -j {$n}
-     * @param int $n
+     * @param string $n
      */
-    public function setMaxJob(int $n)
+    public function setMaxJob(int $n): static
     {
         $this->maxJob = $n;
+        return $this;
+    }
+
+    /**
+     * set CPU  logical processors
+     * @param string $logicalProcessors
+     * @return $this
+     */
+    public function setLogicalProcessors(string $logicalProcessors): static
+    {
+        $this->logicalProcessors = $logicalProcessors;
+        return $this;
     }
 
     public function donotInstallLibrary()
@@ -660,32 +679,32 @@ class Preprocessor
         }
     }
 
-    public function loadDependExtension($extension_name)
+    public function loadDependentExtension($extension_name)
     {
         if (!isset($this->extensionMap[$extension_name])) {
             $file = realpath(__DIR__ . '/builder/extension/' . $extension_name . '.php');
             if (!is_file($file)) {
-                return;
+                throw new Exception("The ext-$extension_name does not exist");
             }
             $func = require $file;
             $func($this);
         }
         if (isset($this->extensionMap[$extension_name])) {
-            $deps = $this->extensionMap[$extension_name]->dependExtensions;
+            $deps = $this->extensionMap[$extension_name]->dependentExtensions;
             if (!empty($deps)) {
                 foreach ($deps as $extension_name) {
-                    $this->loadDependExtension($extension_name);
+                    $this->loadDependentExtension($extension_name);
                 }
             }
         }
     }
 
-    public function loadDependLibrary($library_name)
+    public function loadDependentLibrary($library_name)
     {
         if (!isset($this->libraryMap[$library_name])) {
             $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
             if (!is_file($file)) {
-                return;
+                throw new Exception("The library-$library_name does not exist");
             }
             $func = require $file;
             $func($this);
@@ -695,7 +714,7 @@ class Preprocessor
             $deps = $this->libraryMap[$library_name]->deps;
             if (!empty($deps)) {
                 foreach ($deps as $library_name) {
-                    $this->loadDependLibrary($library_name);
+                    $this->loadDependentLibrary($library_name);
                 }
             }
         }
@@ -760,21 +779,21 @@ class Preprocessor
             if (is_file('/usr/local/opt/bison/bin/bison')) {
                 $this->withBinPath('/usr/local/opt/bison/bin');
             } else {
-                $this->loadDependLibrary("bison");
+                $this->loadDependentLibrary("bison");
             }
         }
 
         // autoload extension depend extension
         foreach ($this->extensionMap as $ext) {
-            foreach ($ext->dependExtensions as $extension_name) {
-                $this->loadDependExtension($extension_name);
+            foreach ($ext->dependentExtensions as $extension_name) {
+                $this->loadDependentExtension($extension_name);
             }
         }
 
         // autoload  library depend library
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->deps as $library_name) {
-                $this->loadDependLibrary($library_name);
+                $this->loadDependentLibrary($library_name);
             }
         }
 
@@ -800,7 +819,6 @@ class Preprocessor
             $this->withExportVariable('LDFLAGS', '$LDFLAGS');
             $this->withExportVariable('LIBS', '$LIBS');
         }
-
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
         $this->sortLibrary();

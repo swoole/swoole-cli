@@ -8,7 +8,7 @@ return function (Preprocessor $p) {
         (new Extension('pdo_sqlite'))
             ->withHomePage('https://www.php.net/pdo_sqlite')
             ->withOptions('--with-pdo-sqlite')
-            ->depends('sqlite3')
-            ->withDependExtension('pdo')
+            ->withDependentLibraries('sqlite3')
+            ->withDependentExtensions('pdo')
     );
 };

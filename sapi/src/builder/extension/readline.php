@@ -9,6 +9,6 @@ return function (Preprocessor $p) {
         (new Extension('readline'))
             ->withHomePage('https://www.php.net/readline')
             ->withOptions('--with-readline=' . READLINE_PREFIX)
-            ->depends('ncurses', 'readline')
+            ->withDependentLibraries('ncurses', 'readline')
     );
 };
