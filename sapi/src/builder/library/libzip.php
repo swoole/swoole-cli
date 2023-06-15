@@ -19,40 +19,37 @@ return function (Preprocessor $p) {
             ->withPrefix($libzip_prefix)
             ->withConfigure(
                 <<<EOF
-            cmake -Wno-dev .  \
+            mkdir -p build
+            cd build
+            # cmake -LH ..
+            cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libzip_prefix} \
-            -DCMAKE_BUILD_TYPE=optimized \
-            -DBUILD_TOOLS=OFF \
+            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DBUILD_TOOLS=ON \
             -DBUILD_EXAMPLES=OFF \
             -DBUILD_DOC=OFF \
             -DLIBZIP_DO_INSTALL=ON \
-            -DBUILD_SHARED_LIBS=OFF \
             -DENABLE_GNUTLS=OFF  \
             -DENABLE_MBEDTLS=OFF \
             -DENABLE_OPENSSL=ON \
             -DOPENSSL_USE_STATIC_LIBS=TRUE \
-            -DOPENSSL_LIBRARIES={$openssl_prefix}/lib \
-            -DOPENSSL_INCLUDE_DIR={$openssl_prefix}/include \
-            -DZLIB_LIBRARY={$zlib_prefix}/lib \
-            -DZLIB_INCLUDE_DIR={$zlib_prefix}/include \
             -DENABLE_BZIP2=ON \
-            -DBZIP2_LIBRARIES={$bzip2_prefix}/lib \
-            -DBZIP2_LIBRARY={$bzip2_prefix}/lib \
-            -DBZIP2_INCLUDE_DIR={$bzip2_prefix}/include \
-            -DBZIP2_NEED_PREFIX=ON \
-            -DENABLE_LZMA=ON  \
-            -DLIBLZMA_LIBRARY={$liblzma_prefix}/lib \
-            -DLIBLZMA_INCLUDE_DIR={$liblzma_prefix}/include \
-            -DLIBLZMA_HAS_AUTO_DECODER=ON  \
-            -DLIBLZMA_HAS_EASY_ENCODER=ON  \
-            -DLIBLZMA_HAS_LZMA_PRESET=ON \
+            -DENABLE_COMMONCRYPTO=OFF \
+            -DENABLE_LZMA=ON \
             -DENABLE_ZSTD=ON \
-            -DZstd_LIBRARY={$libzstd_prefix}/lib \
-            -DZstd_INCLUDE_DIR={$libzstd_prefix}/include
+            -DOpenSSL_ROOT={$openssl_prefix} \
+            -DZLIB_ROOT={$zlib_prefix} \
+            -DBZip2_ROOT={$bzip2_prefix} \
+            -DLibLZMA_ROOT={$liblzma_prefix} \
+            -DZstd_ROOT={$libzstd_prefix}
+
 EOF
             )
             ->withMakeOptions('VERBOSE=1')
             ->withPkgName('libzip')
+            ->withBinPath($libzip_prefix . '/bin/')
             ->withDependentLibraries('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
     );
 };

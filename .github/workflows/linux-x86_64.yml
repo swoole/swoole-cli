@@ -21,6 +21,7 @@ jobs:
           uname -s
           uname -m
           uname -r
+
           cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
           cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
           cat /proc/cpuinfo | grep "cpu cores" | uniq
@@ -40,6 +41,7 @@ jobs:
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
+
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
@@ -51,6 +53,7 @@ jobs:
 
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
+
             php prepare.php   +inotify +apcu +ds +xlswriter +ssh2
 
             chmod a+x make.sh
@@ -65,7 +68,6 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
-
 
       - name: Show Build Result
         run: |
