@@ -19,7 +19,7 @@ pacman -Sy --noconfirm git curl wget openssl zip unzip xz
 # msys2 环境下 拉取 swoole-cli 源码
 git clone --recursive https://github.com:swoole/swoole-cli.git
 
-# msys2 环境下 cygwin (用浏览器下载就行)
+# msys2 环境下下载 cygwin (用浏览器下载就行) 安装包
 wget https://cygwin.com/setup-x86_64.exe
 
 # 将 cygwin 安装包 移动到 window  指定盘符根目 （这里以 C盘为例）
