@@ -41,6 +41,6 @@ EOF
             )
             ->withPkgName('libngtcp2')
             ->withPkgName('libngtcp2_crypto_openssl')
-            ->depends('openssl', 'nghttp3')
+            ->withDependentLibraries('openssl', 'nghttp3')
     );
 };
