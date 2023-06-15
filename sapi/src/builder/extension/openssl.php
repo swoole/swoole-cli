@@ -9,6 +9,6 @@ return function (Preprocessor $p) {
         (new Extension('openssl'))
             ->withHomePage('https://www.php.net/openssl')
             ->withOptions('--with-openssl --with-openssl-dir=' . OPENSSL_PREFIX)
-            ->depends('openssl')
+            ->withDependentLibraries('openssl')
     );
 };

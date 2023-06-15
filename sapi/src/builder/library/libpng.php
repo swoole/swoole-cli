@@ -28,6 +28,6 @@ EOF
             ->withPkgName('libpng')
             ->withPkgName('libpng16')
             ->withBinPath($libpng_prefix . '/bin')
-            ->depends('zlib')
+            ->withDependentLibraries('zlib')
     );
 };

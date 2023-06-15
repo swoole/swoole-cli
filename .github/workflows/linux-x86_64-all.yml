@@ -1,16 +1,15 @@
-name: build-swoole-cli-linux-aarch64
+name: build-swoole-cli-linux-x86_64-all
 
 on: [ push, pull_request ]
 
 jobs:
-  linux-aarch64:
+  linux-x86_64:
     if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Prepare Source Code
         run: |
-          lscpu
           echo $PATH
           env
           docker info
@@ -22,6 +21,12 @@ jobs:
           uname -s
           uname -m
           uname -r
+          cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+          cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+          cat /proc/cpuinfo | grep "cpu cores" | uniq
+          cat /proc/cpuinfo| grep "processor"| wc -l
+          lscpu
+
           export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
           export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
           echo $IPV4
@@ -35,48 +40,41 @@ jobs:
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
-          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-
-      - name: Prepare
+      - name: Prepare and Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230614T152332Z
+          image: docker.io/library/alpine:3.17
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
-            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
+            apk update
+            sh  sapi/quickstart/linux/alpine-init.sh
+            bash sapi/quickstart/setup-php-runtime.sh
+            export PATH=/work/bin/runtime:$PATH
+            alias php='php -c /work/bin/runtime/php.ini'
 
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
-            php prepare.php    +inotify +apcu +ds +xlswriter +ssh2
+            php prepare.php   +inotify +apcu +ds +xlswriter +ssh2
 
             chmod a+x make.sh
-            head -n 20 make.sh
-      - name: Build
-        uses: addnab/docker-run-action@v3
-        with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230614T152332Z
-          options: -v ${{ github.workspace }}:/work -w /work
-          run: |
+
+            bash ./make.sh all-library
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
 
 
       - name: Show Build Result
-        uses: addnab/docker-run-action@v3
-        with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230614T152332Z
-          options: -v ${{ github.workspace }}:/work -w /work
-          run: |
-            ./bin/swoole-cli -v
-            ./bin/swoole-cli -m
-            ./bin/swoole-cli --ri swoole
-            file ./bin/swoole-cli
-            readelf -h ./bin/swoole-cli
-            ./bin/swoole-cli -r "echo PHP_VERSION;"
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+        run: |
+          ./bin/swoole-cli -v
+          ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri swoole
+          file ./bin/swoole-cli
+          readelf -h ./bin/swoole-cli
+          ./bin/swoole-cli -r "echo PHP_VERSION;"
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
