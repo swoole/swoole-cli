@@ -74,7 +74,7 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
-          php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +ds +apcu --with-swoole-pgsql=1 +xlswriter +ssh2
+          php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +ds +apcu  +xlswriter +ssh2
 
       - name: Cache all-library
         uses: actions/cache@v3

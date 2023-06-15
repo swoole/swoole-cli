@@ -53,7 +53,7 @@ jobs:
 
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
-            php prepare.php  +inotify +apcu +ds --with-global-prefix=/usr --with-swoole-pgsql=1 +xlswriter +ssh2
+            php prepare.php  +inotify +apcu +ds --with-swoole-pgsql=1 +xlswriter +ssh2
 
             chmod a+x make.sh
             head -n 20 make.sh
