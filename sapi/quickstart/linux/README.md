@@ -104,7 +104,7 @@ composer update --no-dev  --optimize-autoloader
 
 php prepare.php  +inotify +apcu +ds
 
-# 不起用 mysqli soap
+# 不启用 mysqli soap 例子
 # php prepare.php  +inotify +apcu +ds -mysqli -soap
 
 # macos
