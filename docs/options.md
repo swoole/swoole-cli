@@ -125,3 +125,12 @@ swoole 启用 --enable-swoole-pgsql
 ```shell
 php ./prepare.php --with-swoole-pgsql=1
 ```
+
+with-parallel-jobs
+----
+构建时最大并发进程数；
+默认值是 CPU 逻辑处理器数
+
+```shell
+php ./prepare.php --with-parallel-jobs=8
+```

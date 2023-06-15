@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SwooleCli\Unit;
+namespace SwooleCli\UnitTest;
 
 use imagick;
 use ImagickDraw;
