@@ -24,7 +24,9 @@ jobs:
           uname -s
           uname -m
           uname -r
+
           # echo "BUILD_PHP_VERSION=8.2.4" >> "$GITHUB_ENV"
+
           cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
           cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
           cat /proc/cpuinfo | grep "cpu cores" | uniq
@@ -72,7 +74,6 @@ jobs:
             bash ./make.sh build
             ./php-src/sapi/cli/php -v
             bash ./make.sh archive
-
 
       - name: Show Build Result
         run: |
