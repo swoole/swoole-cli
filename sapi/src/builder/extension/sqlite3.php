@@ -9,6 +9,6 @@ return function (Preprocessor $p) {
         (new Extension('sqlite3'))
             ->withHomePage(' https://www.php.net/sqlite3')
             ->withOptions('--with-sqlite3')
-            ->depends('sqlite3')
+            ->withDependentLibraries('sqlite3')
     );
 };

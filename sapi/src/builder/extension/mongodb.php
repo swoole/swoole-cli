@@ -39,6 +39,7 @@ return function (Preprocessor $p) {
     //$depends[] = 'libsasl';
     //$depends[] = 'snappy';
 
-    call_user_func_array([$ext, 'depends'], $depends);
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
+
     $p->addExtension($ext);
 };
