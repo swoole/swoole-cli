@@ -35,11 +35,6 @@ return function (Preprocessor $p) {
         ->withPeclVersion('1.14.2');
 
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
-
-    if ($p->getOsType() == 'macos') {
-        $depends[] = 'bison';
-    }
-    call_user_func_array([$ext, 'depends'], $depends);
-
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 };

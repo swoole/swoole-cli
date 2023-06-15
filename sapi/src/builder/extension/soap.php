@@ -8,6 +8,6 @@ return function (Preprocessor $p) {
         (new Extension('soap'))
             ->withHomePage('https://www.php.net/soap')
             ->withOptions('--enable-soap')
-            ->depends('libxml2')
+            ->withDependentLibraries('libxml2')
     );
 };
