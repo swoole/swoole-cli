@@ -2,9 +2,10 @@
 
 ## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
 
-> 没有 wget 可以先安装 [msys2](https://www.msys2.org/docs/environments/) 环境
+> 没有 wget 可以先安装 [msys2](https://www.msys2.org/docs/environments/) 环境,
 
-> 使用 `pacman` 管理依赖依赖项
+> 使用 msys2 环境下包管理工具 `pacman`，
+> 安装依赖库 ` git curl wget openssl zip unzip xz` 更快捷
 
 > 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包
 
@@ -12,11 +13,13 @@
 
 > msys2 如果慢,可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
 
-> [为什么不使用msys2 构建 swoole-cli,缺少一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
+> [为什么不使用 msys2 构建 swoole-cli,因为环境缺失一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
+
+> msys2 环境下 拉取 swoole-cli 源码以后，就可以安装愉快的 构建 cygwin 环境下的
+
+> swoole-cli
 
 ```shell
-
-
 
 pacman -Sy --noconfirm git curl wget openssl zip unzip xz
 
@@ -30,9 +33,13 @@ mv setup-x86_64.exe C:/setup-x86_64.exe
 
 ```
 
-## 安装工具列表和依赖
+## 安装 cygwin 环境下工具列表和依赖
 
-> cygwin 换源地址 参考 https://mirrors.cernet.edu.cn/list/cygwin
+> 打开 https://cygwin.com/
+
+> cygwin 搜索包 https://cygwin.com/cgi-bin2/package-grep.cgi?grep=openssl
+
+> cygwin 可用 换源地址 参考 https://mirrors.cernet.edu.cn/list/cygwin
 
 ```bash
 setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  http://mirrors.ustc.edu.cn/cygwin/ --packages make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl,libpcre2-devel,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel,libgmp-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel,libsqlite3-devel,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel,libMagick-devel,libzstd-devel,libbrotli-devel,libreadline-devel,libintl-devel,libpq-devel,libssh2-devel,libidn2-devel,gettext-devel,coreutils,openssl-devel
