@@ -2,10 +2,21 @@
 
 ## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
 
-> 没有 wget 可以先用 [msys2](https://www.msys2.org/docs/environments/) 环境安装
-> git wget curl
+> 没有 wget 可以先安装 [msys2](https://www.msys2.org/docs/environments/) 环境
 
-```bash
+> 使用 `pacman` 快速安装依赖项
+
+> 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包
+
+> 安装必要的 linux 命令
+
+```shell
+
+# msys2 如果慢可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
+
+pacman -Sy --noconfirm git curl wget openssl zip unzip xz
+
+git clone --recursive https://github.com:swoole/swoole-cli.git
 
 # download cygwin  下载安装并安装 cygwin (用浏览器下载就行)
 wget https://cygwin.com/setup-x86_64.exe
@@ -16,6 +27,8 @@ mv setup-x86_64.exe C:/setup-x86_64.exe
 ```
 
 ## 安装工具列表和依赖
+
+> cygwin 换源地址 参考 https://mirrors.cernet.edu.cn/list/cygwin
 
 ```bash
 setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  http://mirrors.ustc.edu.cn/cygwin/ --packages make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl,libpcre2-devel,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel,libgmp-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel,libsqlite3-devel,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel,libMagick-devel,libzstd-devel,libbrotli-devel,libreadline-devel,libintl-devel,libpq-devel,libssh2-devel,libidn2-devel,gettext-devel,coreutils,openssl-devel
