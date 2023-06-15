@@ -65,7 +65,6 @@ jobs:
             bash ./make.sh build
             bash ./make.sh archive
 
-
       - name: Show Build Result
         run: |
           ./bin/swoole-cli -v
