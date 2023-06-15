@@ -75,8 +75,8 @@ jobs:
             file ./bin/swoole-cli
             readelf -h ./bin/swoole-cli
             ./bin/swoole-cli -r "echo PHP_VERSION;"
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/unit/MainTest.php
+            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
