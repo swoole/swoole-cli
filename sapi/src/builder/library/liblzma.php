@@ -27,6 +27,6 @@ EOF
             )
             ->withPkgName('liblzma')
             ->withBinPath($liblzma_prefix . '/bin/')
-            ->depends('libiconv')
+            ->withDependentLibraries('libiconv')
     );
 };
