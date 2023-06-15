@@ -44,15 +44,19 @@ jobs:
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
-          options: -v ${{ github.workspace }}:/work -w /work -e BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }}
+          image: docker.io/library/alpine:3.17
+          options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
-            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
+            apk update
+            sh  sapi/quickstart/linux/alpine-init.sh
+            bash sapi/quickstart/setup-php-runtime.sh
+            export PATH=/work/bin/runtime:$PATH
+            alias php='php -c /work/bin/runtime/php.ini'
 
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
-            php prepare.php   --with-swoole-pgsql=1  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb
+            php prepare.php  --with-swoole-pgsql=1 +inotify +apcu +ds +xlswriter +ssh2
 
             chmod a+x make.sh
             head -n 20 make.sh
