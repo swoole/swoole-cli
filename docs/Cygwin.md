@@ -6,7 +6,7 @@
 
 > 使用 msys2 环境下包管理工具 `pacman`安装依赖软件更快捷
 
-> 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包
+> 点击打开 windows 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包
 
 > msys2 如果慢,可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
 
@@ -37,7 +37,7 @@ mv setup-x86_64.exe C:/setup-x86_64.exe
 > cygwin 可用 换源地址 参考 https://mirrors.cernet.edu.cn/list/cygwin
 
 ```bash
-# windows 开始菜单 CMD 控制台，并安装必要的包
+# 点击打开 windows 开始菜单,点击打开 CMD 控制台，并安装必要的包
 
 cd c:
 
