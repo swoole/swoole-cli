@@ -5,6 +5,7 @@
 > 没有 wget 可以先安装 [msys2](https://www.msys2.org/docs/environments/) 环境,
 
 > 使用 msys2 环境下包管理工具 `pacman`，
+
 > 安装依赖库 ` git curl wget openssl zip unzip xz` 更快捷
 
 > 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包
