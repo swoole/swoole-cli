@@ -21,7 +21,6 @@ return function (Preprocessor $p) {
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
         ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd');
-
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 };

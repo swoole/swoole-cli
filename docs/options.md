@@ -117,7 +117,6 @@ with-downloader
 php ./prepare.php --with-downloader=wget
 ```
 
-<<<<<<< HEAD
 with-swoole-pgsql
 ----
 swoole 启用 --enable-swoole-pgsql
@@ -133,5 +132,4 @@ with-parallel-jobs
 
 ```shell
 php ./prepare.php --with-parallel-jobs=8
-
 ```

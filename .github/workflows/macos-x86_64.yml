@@ -17,7 +17,6 @@ jobs:
           brew install  wget curl  libtool automake  re2c llvm flex bison
           brew install  gettext coreutils binutils libunistring
 
-
           # brew uninstall --ignore-dependencies oniguruma
           # brew uninstall --ignore-dependencies brotli
           # brew uninstall --ignore-dependencies freetype
@@ -73,6 +72,7 @@ jobs:
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
           php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +ds +apcu  +xlswriter +ssh2
