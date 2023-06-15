@@ -22,6 +22,12 @@ jobs:
           uname -s
           uname -m
           uname -r
+          cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+          cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+          cat /proc/cpuinfo | grep "cpu cores" | uniq
+          cat /proc/cpuinfo| grep "processor"| wc -l
+          lscpu
+
           export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
           export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
           echo $IPV4
@@ -32,24 +38,13 @@ jobs:
           git submodule update --init
 
       - name: Prepare Libraries and Extensions
-        uses: addnab/docker-run-action@v3
-        with:
-          image: docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-20230505T112517Z
-          # image: phpswoole/swoole-cli-builder:download-box-nginx-alpine-20230505T112517Z
-          options: -v ${{ github.workspace }}:/work -w /work
-          run: |
-            set -eux
-            mkdir -p pool/lib
-            mkdir -p pool/ext
-            mkdir -p ext
-            cp -rf /usr/share/nginx/html/extensions/* pool/ext
-            cp -rf /usr/share/nginx/html/libraries/* pool/lib
+        run: |
+          set -x
+          bash sapi/download-box/download-box-get-archive-from-container.sh
       - name: Prepare
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-x86_64-20230611T164740Z
-          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
-          # image: docker.io/phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
@@ -67,7 +62,7 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-1.7.1-x86_64-20230611T164740Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             bash ./make.sh config
