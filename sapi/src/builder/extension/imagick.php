@@ -12,6 +12,6 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/Imagick/imagick')
             ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withMd5sum('f7b5e9b23fb844e5eb035203d316bc63')
-            ->depends('imagemagick')
+            ->withDependentLibraries('imagemagick')
     );
 };

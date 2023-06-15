@@ -11,6 +11,6 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/viest/php-ext-xlswriter/blob/master/LICENSE', Extension::LICENSE_BSD)
             ->withPeclVersion('1.5.5')
             ->withOptions(' --with-xlswriter --enable-reader --with-openssl=' . OPENSSL_PREFIX)
-            ->depends('openssl')
+            ->withDependentLibraries('openssl')
     );
 };

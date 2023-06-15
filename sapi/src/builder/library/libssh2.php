@@ -39,6 +39,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libssh2')
-            ->depends('zlib', 'openssl')
+            ->withDependentLibraries('zlib', 'openssl')
     );
 };
