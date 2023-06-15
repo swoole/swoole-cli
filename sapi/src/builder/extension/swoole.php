@@ -30,7 +30,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withManual('https://wiki.swoole.com/#/')
-        ->withDependExtension('curl', 'openssl', 'sockets', 'mysqlnd')
+        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd')
         ->withUrl('https://github.com/swoole/swoole-src/archive/refs/tags/v5.0.3.tar.gz')
         ->withFile('swoole-v5.0.3.tar.gz')
         ->withDownloadScript(
@@ -39,6 +39,6 @@ EOF
          git clone -b v5.0.3 --dept=1 https://github.com/swoole/swoole-src.git
 EOF
         );
-    call_user_func_array([$ext, 'depends'], $depends);
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 };

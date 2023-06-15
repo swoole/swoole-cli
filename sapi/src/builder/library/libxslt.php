@@ -35,6 +35,6 @@ EOF
             ->withPkgName('libexslt')
             ->withPkgName('libxslt')
             ->withBinPath($libxslt_prefix . '/bin/')
-            ->depends('libxml2', 'libiconv')
+            ->withDependentLibraries('libxml2', 'libiconv')
     );
 };

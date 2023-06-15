@@ -11,7 +11,6 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/php/pecl-networking-ssh2')
             ->withManual('https://www.php.net/ssh2')
             ->withLicense('https://www.php.net/license/', Extension::LICENSE_PHP)
-            ->depends('libssh2')
-
+            ->withDependentLibraries('libssh2')
     );
 };

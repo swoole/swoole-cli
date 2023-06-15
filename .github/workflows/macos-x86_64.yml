@@ -112,8 +112,8 @@ jobs:
           otool -L ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
-          # ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-          # ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
+          ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3

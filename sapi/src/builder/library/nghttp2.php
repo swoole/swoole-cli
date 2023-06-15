@@ -44,6 +44,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libnghttp2')
-            ->depends('openssl', 'zlib', 'libxml2', 'cares')
+            ->withDependentLibraries('openssl', 'zlib', 'libxml2', 'cares')
     );
 };

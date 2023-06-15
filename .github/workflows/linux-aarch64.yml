@@ -65,9 +65,6 @@ jobs:
             bash ./make.sh build
             bash ./make.sh archive
 
-            # ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-            # ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
-
       - name: Show Build Result
         uses: addnab/docker-run-action@v3
         with:
@@ -80,9 +77,8 @@ jobs:
             file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
-            # ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-            # ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
-
+            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3

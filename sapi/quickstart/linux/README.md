@@ -13,11 +13,8 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 # 方法一：默认
 bash get-docker.sh
 
-# 方法二： 使用镜像地址替换 （中国大陆 ，提供了2种办法) 推荐这个最快
-sed -i "s@https://mirrors.aliyun.com/docker-ce@https://mirrors.tuna.tsinghua.edu.cn/docker-ce@g" get-docker.sh
-## 或者
-sed -i "s@https://mirrors.aliyun.com/docker-ce@https://mirrors.ustc.edu.cn/docker-ce@g" get-docker.sh
-bash get-docker.sh --mirror Aliyun
+# 方法二： 使用镜像地址替换 （中科大镜像) 推荐这个最快
+bash sapi/quickstart/linux/install-docker.sh --mirror china
 
 # 方法三： 使用 阿里云镜像
 bash get-docker.sh --mirror Aliyun

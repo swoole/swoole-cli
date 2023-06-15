@@ -1,42 +1,6 @@
-name: build-php-cli-linux-x86_64-latest-swoole
+name: build-swoole-cli-linux-x86_64-all
 
-on:
-  workflow_dispatch:
-    inputs:
-      build_latest_swoole_or_swow:
-        required: true
-        description: "定制构建选项: 构建最新版的 swoole 或者 swow （此二者扩展不能同时启用）"
-        default: '-swoole +swoole_latest'
-        type: choice
-        options:
-          - '-swoole +swoole_latest'
-          - '-swoole +swow_latest'
-          - '-swoole +swow'
-      build_type:
-        required: true
-        description: "定制构建选项: 指定构建类型"
-        default: '--with-build-type=release'
-        type: choice
-        options:
-          - '--with-build-type=release'
-          - '--with-build-type=dev'
-      php_verson:
-        required: true
-        description: "定制构建选项: 指定 PHP 版本"
-        default: '--with-php-version=8.2.7'
-        type: choice
-        options:
-          - '--with-php-version=8.0.29'
-          - '--with-php-version=8.1.20'
-          - '--with-php-version=8.2.7'
-      build_options:
-        required: false
-        description: "定制构建选项: 请查看 docs/options.md"
-        default: ' '
-        type: string
-
-env:
-  BUILD_PHP_VERSION: 8.2.7
+on: [ push, pull_request ]
 
 jobs:
   linux-x86_64:
@@ -46,7 +10,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Prepare Source Code
         run: |
-          lscpu
           echo $PATH
           env
           docker info
@@ -58,8 +21,11 @@ jobs:
           uname -s
           uname -m
           uname -r
-
-          # echo "BUILD_PHP_VERSION=8.2.4" >> "$GITHUB_ENV"
+          cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+          cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+          cat /proc/cpuinfo | grep "cpu cores" | uniq
+          cat /proc/cpuinfo| grep "processor"| wc -l
+          lscpu
 
           export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
           export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
@@ -68,13 +34,12 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          # git submodule update --init
+          git submodule update --init
 
       - name: Prepare Libraries and Extensions
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
-          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Prepare
         uses: addnab/docker-run-action@v3
@@ -87,11 +52,10 @@ jobs:
 
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
-            php prepare.php   --with-swoole-pgsql=1  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb -swoole ${{ inputs.build_latest_swoole_or_swow }} ${{ inputs.build_type }} ${{ inputs.build_options }}  ${{ inputs.php_verson }}
+            php prepare.php   --with-swoole-pgsql=1  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb
 
             chmod a+x make.sh
             head -n 20 make.sh
-
 
       - name: Build
         uses: addnab/docker-run-action@v3
@@ -120,13 +84,11 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-linux-x64-${{ env.BUILD_PHP_VERSION }}
+          name: swoole-cli
           retention-days: 7
-          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-
+          path: ./bin/swoole-cli
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-x64.tar.xz
+          files: swoole-cli-*-linux-x64.tar.xz

@@ -13,7 +13,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Prepare Source Code
         run: |
-          lscpu
           echo $PATH
           env
           docker info
@@ -25,8 +24,12 @@ jobs:
           uname -s
           uname -m
           uname -r
-
           # echo "BUILD_PHP_VERSION=8.2.4" >> "$GITHUB_ENV"
+          cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+          cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+          cat /proc/cpuinfo | grep "cpu cores" | uniq
+          cat /proc/cpuinfo| grep "processor"| wc -l
+          lscpu
 
           export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
           export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
@@ -37,13 +40,10 @@ jobs:
 
           # git submodule update --init
 
-
       - name: Prepare Libraries and Extensions
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
-          bash sapi/quickstart/setup-php-runtime.sh
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
 
       - name: Prepare
         uses: addnab/docker-run-action@v3
@@ -60,8 +60,6 @@ jobs:
 
             chmod a+x make.sh
             head -n 20 make.sh
-            php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-            php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
 
       - name: Build
         uses: addnab/docker-run-action@v3
@@ -74,8 +72,6 @@ jobs:
             ./php-src/sapi/cli/php -v
             bash ./make.sh archive
 
-            # ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-            # ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
 
       - name: Show Build Result
         run: |
@@ -86,9 +82,8 @@ jobs:
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
-          # ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-          # ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
-
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3

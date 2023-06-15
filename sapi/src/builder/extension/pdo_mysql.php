@@ -8,6 +8,6 @@ return function (Preprocessor $p) {
         (new Extension('pdo_mysql'))
             ->withHomePage('https://www.php.net/pdo_mysql')
             ->withOptions('--with-pdo_mysql')
-            ->withDependExtension('pdo', 'mysqlnd')
+            ->withDependentExtensions('pdo', 'mysqlnd')
     );
 };
