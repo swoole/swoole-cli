@@ -25,6 +25,6 @@ EOF
             )
             ->withPkgName('readline')
             ->withLdflags('-L' . READLINE_PREFIX . '/lib')
-            ->depends('ncurses')
+            ->withDependentLibraries('ncurses')
     );
 };

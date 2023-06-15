@@ -36,6 +36,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('freetype2')
-            ->depends('zlib', 'bzip2', 'libpng', 'brotli')
+            ->withDependentLibraries('zlib', 'bzip2', 'libpng', 'brotli')
     );
 };

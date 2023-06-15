@@ -84,7 +84,7 @@ EOF
             ->withPkgName('MagickWand-7.Q16HDRI')
             ->withPkgName('MagickWand')
             ->withBinPath($imagemagick_prefix . '/bin/')
-            ->depends(
+            ->withDependentLibraries(
                 'libxml2',
                 'libzip',
                 'zlib',

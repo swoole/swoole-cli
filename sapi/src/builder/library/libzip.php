@@ -53,6 +53,6 @@ EOF
             )
             ->withMakeOptions('VERBOSE=1')
             ->withPkgName('libzip')
-            ->depends('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
+            ->withDependentLibraries('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
     );
 };

@@ -9,6 +9,6 @@ return function (Preprocessor $p) {
         (new Extension('bz2'))
             ->withHomePage('http://php.net/bzip2')
             ->withManual('http://php.net/bzip2')
-            ->withOptions('--with-bz2=' . BZIP2_PREFIX)->depends('bzip2')
+            ->withOptions('--with-bz2=' . BZIP2_PREFIX)->withDependentLibraries('bzip2')
     );
 };
