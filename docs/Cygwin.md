@@ -10,7 +10,7 @@
 
 > msys2 如果慢,可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
 
-> [为什么不使用 msys2 构建 swoole-cli,因为环境缺失一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
+> [为什么不使用 msys2 构建 swoole-cli,因为 msys2 环境缺失一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
 
 ```shell
 
