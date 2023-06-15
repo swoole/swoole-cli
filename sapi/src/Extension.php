@@ -21,7 +21,7 @@ class Extension extends Project
         return $this;
     }
 
-    public function withDependentExtension(string ...$extensions): static
+    public function withDependentExtensions(string ...$extensions): static
     {
         $this->dependentExtensions += $extensions;
         return $this;
