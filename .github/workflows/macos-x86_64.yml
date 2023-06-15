@@ -74,6 +74,7 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
+
           php prepare.php --without-docker=1  --with-build-type=release --with-swoole-pgsql=1  +ds +apcu  +xlswriter +ssh2
 
       - name: Cache all-library
@@ -106,7 +107,6 @@ jobs:
 
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
-
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
