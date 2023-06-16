@@ -1,6 +1,6 @@
 # cygwin 环境下构建 swoole-cli
 
-## [快速 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
+## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
 
 > 没有 wget
 > 命令，可以先安装 [msys2环境](https://www.msys2.org/docs/environments/)
