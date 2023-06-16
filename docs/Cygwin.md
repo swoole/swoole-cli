@@ -1,16 +1,15 @@
 # cygwin 环境下构建 swoole-cli
 
-## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
+## [快速 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
 
-> 没有 wget 可以先安装 [msys2](https://www.msys2.org/docs/environments/) 环境,
+> 没有 wget
+> 命令，可以先安装 [msys2环境](https://www.msys2.org/docs/environments/)
 
-> 使用 msys2 环境下包管理工具 `pacman`安装依赖软件更快捷
+> 点击打开 windows 开始菜单，打开 MSYS2 MSYS 控制台
 
-> 点击打开 windows 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包
+> 使用`pacman`包管理工具，安装 git wget
 
 > msys2 如果慢,可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
-
-> [为什么不使用 msys2 构建 swoole-cli,因为 msys2 环境缺失一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
 
 ```shell
 
@@ -125,3 +124,7 @@ git clone --recursive https://github.com:swoole/swoole-cli.git
    后面增加一行： `--with-pgsql --with-pdo-pgsql \`
    ，并将相同版本（如8.1.12）php-src中`ext`目录下的`pgsql` `pdo_pgsql`
    两个文件夹拷贝到当前项目的ext目录下，再执行构建脚本
+
+# 问题
+
+## [为什么不使用 msys2 构建 swoole-cli,因为 msys2 环境缺失一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
