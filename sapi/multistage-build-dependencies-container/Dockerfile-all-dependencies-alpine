@@ -16,6 +16,7 @@ RUN mkdir -p /usr/local/swoole-cli/etc/
 
 ADD ./runtime/swoole-cli  /usr/local/bin/
 ADD ./runtime/composer.phar  /usr/local/bin/
+
 ADD ./runtime/cacert.pem  /etc/ssl/certs/
 ADD ./php.ini  /usr/local/swoole-cli/etc/
 ADD ./swoole-cli  /work
@@ -46,6 +47,7 @@ RUN /bin/bash -c "source /root/.bashrc" && composer update --no-dev --optimize-a
 RUN /bin/bash -c "source /root/.bashrc" && php prepare.php --with-build-type=dev  --with-swoole-pgsql=1
 RUN bash make.sh list-library
 RUN bash make.sh all-library
+
 
 
 FROM alpine:3.17

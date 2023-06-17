@@ -50,10 +50,6 @@ define("LIBZSTD_PREFIX", $p->getGlobalPrefix() . '/libzstd');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 
-
-define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
-
-
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("LIBEV_PREFIX", $p->getGlobalPrefix() . '/libev');
@@ -112,6 +108,7 @@ define("NGINX_PREFIX", $p->getGlobalPrefix() . '/nginx');
 define("PCRE2_PREFIX", $p->getGlobalPrefix() . '/pcre2');
 define("PCRE_PREFIX", $p->getGlobalPrefix() . '/pcre');
 
+define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;
 const DOWNLOAD_FILE_WAIT_RETRY = 5;
@@ -163,4 +160,3 @@ define("OVN_PREFIX", $p->getGlobalPrefix() . '/ovn');
 define("COTURN_PREFIX", $p->getGlobalPrefix() . '/coturn');
 define("HIREDIS_PREFIX", $p->getGlobalPrefix() . '/hiredis');
 define("LIBMICROHTTP_PREFIX", $p->getGlobalPrefix() . '/libmicrohttp');
-

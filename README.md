@@ -41,16 +41,12 @@
 - [打包成二进制可执行文件 文档](sapi/samples/sfx/README.md)
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
 - [快速初始化构建环境](sapi/quickstart/README.md)
+- [构建 PHP-CLI 版本 使用此分支](https://github.com/swoole/swoole-cli/tree/build_native_php)
 
 ## Clone
 
 ```shell
-git clone --recursive https://github.com/swoole/swoole-cli.git
-```
-
-```shell
-git clone https://github.com/swoole/swoole-cli.git
-git submodule update --init
+git clone --recursive -b build_native_php  https://github.com/swoole/swoole-cli.git
 ```
 
 
@@ -68,7 +64,15 @@ php prepare.php +inotify +mongodb -mysqli
 ## 进入 Docker Bash
 
 ```shell
-./make.sh docker-bash
+# 启动 alpine 容器环境
+bash sapi/quickstart/linux/run-alpine-3.16-container.sh
+
+# 进入容器
+bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
+
+# 准备构建基础软件
+sh  sapi/quickstart/linux/alpine-3.16-init.sh
+
 ```
 
 > 需要将 `swoole-cli` 的目录映射到容器的 `/work` 目录
@@ -85,13 +89,13 @@ php prepare.php +inotify +mongodb -mysqli
 ./make.sh config
 ```
 
-## 构建 swoole-cli
+## 构建 php-cli
 
 ```shell
 ./make.sh build
 ```
 
-> 编译成功后会生成`bin/swoole-cli`
+> 编译成功后会生成`bin/php-{version}/bin/php`
 
 ## 打包
 

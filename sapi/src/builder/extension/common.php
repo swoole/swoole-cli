@@ -14,6 +14,6 @@ return function (Preprocessor $p) {
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_GPL);
-    call_user_func_array([$ext, 'depends'], $depends);
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 };

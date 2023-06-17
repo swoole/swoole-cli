@@ -61,15 +61,14 @@ if [ ! -d $ROOT/ext/imagick ]; then
     tar xvf imagick-${IMAGICK_VERSION}.tgz
     mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
 fi
+
 if [ ! -d $ROOT/ext/swoole ]; then
-    if [ ! -f swoole-${SWOOLE_VERSION}.tar.gz ]; then
-        wget -O swoole-${SWOOLE_VERSION}.tar.gz https://github.com/swoole/swoole-src/archive/refs/tags/${SWOOLE_VERSION}.tar.gz
+    if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
+        wget -O swoole-${SWOOLE_VERSION}.tgz  https://github.com/swoole/swoole-src/archive/refs/tags/${SWOOLE_VERSION}.tar.gz
     fi
-    mkdir -p swoole-temp
-    tar --strip-components=1 -C swoole-temp -xf swoole-${SWOOLE_VERSION}.tar.gz
-    mv swoole-temp $ROOT/ext/swoole
-
+    mkdir -p swoole-${SWOOLE_VERSION}
+    tar  --strip-components=1 -C swoole-${SWOOLE_VERSION} -xf swoole-${SWOOLE_VERSION}.tgz
+    mv swoole-${SWOOLE_VERSION} $ROOT/ext/swoole
 fi
-
 
 cd ${ROOT}

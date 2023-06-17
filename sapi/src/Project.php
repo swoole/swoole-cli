@@ -5,6 +5,8 @@ namespace SwooleCli;
 abstract class Project
 {
     public string $name;
+    public string $aliasName = '';
+
     public string $url;
     public string $path = '';
     public string $file = '';
@@ -55,7 +57,7 @@ abstract class Project
         return $this;
     }
 
-    public function depends(string ...$libs): static
+    public function withDependentLibraries(string ...$libs): static
     {
         $this->deps += $libs;
         return $this;
@@ -70,12 +72,6 @@ abstract class Project
     public function withUrl(string $url): static
     {
         $this->url = $url;
-        return $this;
-    }
-
-    public function disableDownloadWithMirrorURL(): static
-    {
-        $this->enableDownloadWithMirrorURL = false;
         return $this;
     }
 
@@ -117,6 +113,18 @@ abstract class Project
     public function withGnuPG(string $gpg): static
     {
         $this->gnupg = $gpg;
+        return $this;
+    }
+
+    public function disableDownloadWithMirrorURL(): static
+    {
+        $this->enableDownloadWithMirrorURL = false;
+        return $this;
+    }
+
+    public function withAliasName(string $name): static
+    {
+        $this->aliasName = $name;
         return $this;
     }
 

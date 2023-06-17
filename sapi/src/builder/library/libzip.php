@@ -50,6 +50,6 @@ EOF
             ->withMakeOptions('VERBOSE=1')
             ->withPkgName('libzip')
             ->withBinPath($libzip_prefix . '/bin/')
-            ->depends('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
+            ->withDependentLibraries('openssl', 'zlib', 'bzip2', 'liblzma', 'libzstd')
     );
 };

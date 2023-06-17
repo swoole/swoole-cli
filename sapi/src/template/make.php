@@ -13,6 +13,9 @@ if [[ -z $PKG_CONFIG_PATH ]];then export PKG_CONFIG_PATH=' ';fi
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
+export LOGICAL_PROCESSORS=<?= trim($this->logicalProcessors). PHP_EOL ?>
+export CMAKE_BUILD_PARALLEL_LEVEL=<?= $this->maxJob. PHP_EOL ?>
+
 export CC=<?= $this->cCompiler . PHP_EOL ?>
 export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>
@@ -92,6 +95,7 @@ make_<?=$item->name?>() {
     # If the install directory exist, clean the install directory
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
     <?php endif; ?>
+
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
@@ -191,13 +195,18 @@ make_ext() {
 
 <?php
 foreach ($this->extensionMap as $extension) {
+    $name = $extension->name;
+    if ($extension->aliasName) {
+        $name = $extension->aliasName;
+    }
     if ($extension->peclVersion || $extension->enableDownloadScript) {
         echo <<<EOF
-    if [[ -d {$this->phpSrcDir}/ext/{$extension->name}/ ]]
+    if [[ -d {$this->phpSrcDir}/ext/{$name}/ ]]
     then
-        rm -rf {$this->phpSrcDir}/ext/{$extension->name}/
+        rm -rf {$this->phpSrcDir}/ext/{$name}/
     fi
-    cp -rf {$this->rootDir}/ext/{$extension->name} {$this->phpSrcDir}/ext/
+    cp -rf {$this->rootDir}/ext/{$name} {$this->phpSrcDir}/ext/
+
 EOF;
         echo PHP_EOL;
         echo PHP_EOL;
@@ -206,7 +215,6 @@ EOF;
 
 ?>
 }
-
 
 make_ext_hook() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
@@ -223,7 +231,7 @@ export_variables() {
     # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
     CFLAGS=""
-<?php if($this->cCompiler=='clang') : ?>
+<?php if ($this->cCompiler=='clang') : ?>
     LDFLAGS="-static"
 <?php else :?>
     LDFLAGS="-static-libgcc -static-libstdc++"
@@ -254,6 +262,7 @@ export_variables() {
 
 
 make_config() {
+
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 
 :<<'_____EO_____'
@@ -354,6 +363,65 @@ _____EO_____
 
 
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+
+
+    set -x
+
+    if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
+        rm -rf <?= $this->buildDir ?>/php_src/
+    fi
+    make_php_src
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+<?php if ($this->getInputOption('with-build-type') != 'release') : ?>
+<?php endif ;?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    make_ext_hook
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+    make_ext
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+
+<?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
+    PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
+    if [[ $PHP_VERSION -lt 80000 ]] ; then
+        echo "only support PHP >= 8.0 "
+    else
+        # 请把这个做成 patch  https://github.com/swoole/swoole-cli/pull/55/files
+
+    fi
+<?php endif ;?>
+    echo $OPTIONS
+
+    test -f ./configure &&  rm ./configure
+    ./buildconf --force
+
+    ./configure --help
+     export_variables
+     echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
+     echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
+<?php if ($this->osType !== 'macos') : ?>
+    mv main/php_config.h.in /tmp/cnt
+    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
+    cat /tmp/cnt >> main/php_config.h.in
+    echo -ne '\n#endif\n' >> main/php_config.h.in
+<?php else : ?>
+    <?php if (isset($this->libraryMap['pgsql'])) : ?>
+    sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
+    <?php endif;?>
+<?php endif; ?>
+
+    ./configure $OPTIONS
+
+    # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
+<?php if ($this->getOsType()=='linux') : ?>
+     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
+<?php endif ; ?>
+
+}
+
+make_build() {
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
     <?php if ($this->getOsType()=='linux') : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
@@ -398,6 +466,7 @@ help() {
     echo "./make.sh build"
     echo "./make.sh test"
     echo "./make.sh archive"
+    echo "./make.sh archive-sfx-micro"
     echo "./make.sh all-library"
     echo "./make.sh list-library"
     echo "./make.sh list-extension"

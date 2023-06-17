@@ -11,10 +11,15 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+# --with-swoole-pgsql=1
+# --with-php-version=8.1.20
+# --with-global-prefix=/usr \
+# @macos
+# --conf-path="./conf.d.extra"
 
 php prepare.php \
 --conf-path="./conf.d.extra" \
---with-global-prefix=/usr \
+--with-global-prefix=/usr/local/swoole-cli/ \
 -opcache \
 -curl \
 -iconv \
@@ -54,5 +59,8 @@ php prepare.php \
 -mongodb \
 -pgsql -pdo_pgsql \
 --with-swoole-pgsql=1 \
-+swoole
++swoole \
+--with-php-version=8.1.18 \
+
+
 

@@ -39,7 +39,6 @@ class Library extends Project
 
     public string $enablePkgNames = 'yes';
 
-
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;

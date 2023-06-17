@@ -10,6 +10,11 @@ __PROJECT__=$(
   pwd
 )
 
+if [[ -f /.dockerenv ]]; then
+  echo 'not in docker'
+  exit 0
+fi
+
 mkdir -p ${__PROJECT__}/var
 
 # export DOCKER_BUILDKIT=1
@@ -18,15 +23,12 @@ ARCH=$(uname -m)
 
 TIME=$(date -u '+%Y%m%dT%H%M%SZ')
 
-VERSION="1.7.1"
-
-TAG="all-dependencies-alpine-${VERSION}-${ARCH}-${TIME}"
-TAG="native-php-all-dependencies-alpine-php-8.2.4-${VERSION}-${ARCH}-${TIME}"
+VERSION="1.0.0"
+TAG="all-dependencies-alpine-3.17-php8-v${VERSION}-${ARCH}-${TIME}"
 
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${TAG}"
-
 
 USE_COMPOSER_MIRROR=0
 
@@ -52,7 +54,7 @@ docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=pl
 
 cd ${__PROJECT__}/var
 
-echo ${IMAGE} >swoole-cli-build-all-dependencies-container.txt
+echo ${IMAGE} >all-dependencies-container.txt
 
 docker tag ${IMAGE} ${ALIYUN_IMAGE}
 
