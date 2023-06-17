@@ -8,6 +8,8 @@ services:
         environment:
             - "POSTGRES_PASSWORD=example"
         # 容器内数据目录 /var/lib/postgresql/data
+        # auth_user: postgres
+        # auth_password: example
     mysql-server:
         image: mysql:8-debian
         command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
