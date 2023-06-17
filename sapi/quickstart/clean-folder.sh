@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -exu
+set -ex
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
@@ -10,6 +10,11 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
+
+if [ ! "$BASH_VERSION" ] ; then
+    echo "Please use bash to run this script (bash $0)" 1>&2
+    exit 1
+fi
 
 if [[ -f /.dockerenv ]]; then
   git config --global --add safe.directory ${__PROJECT__}
