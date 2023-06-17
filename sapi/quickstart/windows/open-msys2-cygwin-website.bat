@@ -1,5 +1,5 @@
 @echo off
 start https://www.msys2.org/
 start https://cygwin.com/
-start https://cygwin.com/setup-x86_64.exe
+start https://mirrors.tuna.tsinghua.edu.cn/help/msys2/
 
