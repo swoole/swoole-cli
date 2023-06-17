@@ -37,11 +37,13 @@ jobs:
 
           git submodule update --init
 
+          # 准备数据库容器
+          bash sapi/src/UnitTest/scripts/database/start.sh
+
       - name: Prepare Libraries and Extensions
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
-          bash sapi/src/UnitTest/scripts/database/start.sh
 
       - name: Prepare
         uses: addnab/docker-run-action@v3
