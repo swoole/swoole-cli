@@ -28,13 +28,13 @@ final class SwoolePGSQLTest extends TestCase
     }
 
 
-    public function createDataBase(): bool
+    public function createDataBase()
     {
 
         $pg = new PostgreSQL();
         $conn = $pg->connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=example");
         if (!$conn) {
-            $this->assertNotTrue($conn, 'erro_info' . $pg->error);
+            $this->assertNotTrue($conn, 'pgsql connection postgres error,error info :' . $pg->error);
             return false;
         }
         $this->pg_master = $pg;
@@ -54,13 +54,9 @@ CREATE DATABASE user_center
 EOF;
 
             $pg->query($sql);
+            $this->assertEquals(0, $pg->errCode, 'create database user_center  sucess' . $pg->error);
         }
-        if ($pg->errCode == 0) {
-            return true;
-        } else {
-            $this->assertNotEquals(0, $pg->errCode, $pg->error);
-            return false;
-        }
+
     }
 
     public function createTable()
@@ -107,7 +103,7 @@ alter table users alter column id set default nextval('users_id_seq');
 
 EOF;
             $pg->query($table);
-            $this->assertNotEquals(0, $pg->errCode, $pg->error);
+            $this->assertEquals(0, $pg->errCode, 'create table users sucess' . $pg->error);
         }
     }
 
@@ -154,7 +150,7 @@ EOF;
         echo $sql;
 
         $stmt = $this->pg->prepare($sql);
-        var_dump($this->pg->error);
+
         $i = 100;
         while ($i >= 1) {
             foreach ($list as $data) {
@@ -162,8 +158,7 @@ EOF;
             }
             $i--;
         }
-
-        var_dump($this->pg->error);
+        $this->assertGreaterThanOrEqual(1, $stmt->affectedRows(), 'insert data sucess' . $this->pg->error);
         var_dump($stmt->affectedRows());
     }
 
@@ -178,11 +173,8 @@ EOF;
         echo $sql;
 
         $stmt = $this->pg->query($sql);
-        var_dump($this->pg->error);
         $list = $stmt->fetchAll();
-        var_dump($list);
-
-        $this->assertGreaterThan(1, count($list), 'ok');
+        $this->assertGreaterThan(1, count($list), 'select data' . $this->pg->error);
     }
 
     public function deleteTableData()
@@ -196,24 +188,24 @@ EOF;
         echo $sql;
 
         $stmt = $this->pg->prepare($sql);
-        var_dump($stmt->error);
+
         $stmt->execute(['username2']);
-        var_dump($stmt->affectedRows());
-        $this->assertNotEmpty($stmt->affectedRows(), $this->pg->error);
+
+        $this->assertGreaterThan(10, $stmt->affectedRows(), 'delete data' . $this->pg->error);
     }
 
     public function dropTable()
     {
         $sql = <<<'EOF'
-DROP SEQUENCE users_id_seq
-DROP TABLE users
 
+DROP TABLE users ;
+DROP SEQUENCE users_id_seq ;
 EOF;
 
         echo $sql;
 
         $this->pg->query($sql);
-        var_dump($this->pg->error);
+        $this->assertEquals(0, $this->pg->errCode, 'drop table users' . $this->pg->error);
     }
 
     public function dropDatabase()
@@ -226,6 +218,7 @@ EOF;
         echo $sql;
 
         $this->pg_master->query($sql);
-        var_dump($this->pg->error);
+        echo PHP_EOL . $this->pg->error . PHP_EOL;
+        $this->assertEquals(0, $this->pg_master->errCode, 'drop database user_center' . $this->pg_master->error);
     }
 }
