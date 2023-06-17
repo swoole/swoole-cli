@@ -1,6 +1,6 @@
 name: build-swoole-cli-linux-x86_64-all
 
-on: [ push, pull_request ]
+on: [ pull_request ]
 
 jobs:
   linux-x86_64:
