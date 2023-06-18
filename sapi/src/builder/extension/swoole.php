@@ -8,6 +8,7 @@ return function (Preprocessor $p) {
     $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
+    $options .= ' --enable-http2  --enable-brotli  ';
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
 
