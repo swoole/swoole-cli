@@ -11,6 +11,6 @@ return function (Preprocessor $p) {
         (new Extension('mbstring'))
             ->withHomePage('https://www.php.net/mbstring')
             ->withOptions('--enable-mbstring')
-            ->depends('oniguruma')
+            ->withDependentLibraries('oniguruma')
     );
 };

@@ -1,4 +1,4 @@
-name: build-swoole-cli-linux-x86_64
+name: build-swoole-cli-linux-x86_64-all
 
 on: [ push, pull_request ]
 
@@ -21,7 +21,6 @@ jobs:
           uname -s
           uname -m
           uname -r
-
           cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
           cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
           cat /proc/cpuinfo | grep "cpu cores" | uniq
@@ -41,15 +40,18 @@ jobs:
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
-
-      - name: Prepare
+      - name: Prepare and Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
+          image: docker.io/library/alpine:3.17
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             set -eux
-            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
+            apk update
+            sh  sapi/quickstart/linux/alpine-init.sh
+            bash sapi/quickstart/setup-php-runtime.sh
+            export PATH=/work/bin/runtime:$PATH
+            alias php='php -c /work/bin/runtime/php.ini'
 
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
@@ -57,14 +59,8 @@ jobs:
             php prepare.php   +inotify +apcu +ds +xlswriter +ssh2
 
             chmod a+x make.sh
-            head -n 20 make.sh
 
-      - name: Build
-        uses: addnab/docker-run-action@v3
-        with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
-          options: -v ${{ github.workspace }}:/work -w /work
-          run: |
+            bash ./make.sh all-library
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive

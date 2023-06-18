@@ -23,11 +23,20 @@ if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
 
+if ($p->getInputOption('with-parallel-jobs')) {
+    $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
+}
+
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
+    $p->setLinker('ld');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
-        $p->withPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
+        $p->withBinPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
     }
+    $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
+} else {
+    $p->setLinker('ld.lld');
+    $p->setLogicalProcessors('$(nproc 2> /dev/null)');
 }
 
 $p->setExtraCflags('-fno-ident -Os');
