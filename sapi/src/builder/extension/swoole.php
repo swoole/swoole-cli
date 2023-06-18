@@ -16,14 +16,13 @@ return function (Preprocessor $p) {
         $options .= ' --enable-swoole-pgsql';
         $depends[] = 'pgsql';
     }
-
     $ext = (new Extension('swoole'))
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
-        ->withDependExtension('curl', 'openssl', 'sockets', 'mysqlnd');
+        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd');
 
-    call_user_func_array([$ext, 'depends'], $depends);
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 };

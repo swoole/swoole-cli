@@ -63,7 +63,7 @@ return function (Preprocessor $p) {
             --without-x \
             --without-modules \
             --with-magick-plus-plus \
-            --with-utilities \
+            --without-utilities \
             --without-gvc \
             --without-autotrace \
             --without-dps \
@@ -71,7 +71,6 @@ return function (Preprocessor $p) {
             --without-flif \
             --without-fpx \
             --without-gslib \
-            --without-ltdl \
             --without-perl \
             --without-raqm \
             --without-wmf
@@ -87,7 +86,7 @@ EOF
             ->withPkgName('Magick++-7.Q16HDRI')
             ->withPkgName('Magick++')
             ->withBinPath($imagemagick_prefix . '/bin/')
-            ->depends(
+            ->withDependentLibraries(
                 'libxml2',
                 'libzip',
                 'zlib',

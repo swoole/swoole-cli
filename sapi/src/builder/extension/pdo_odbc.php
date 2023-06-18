@@ -21,6 +21,6 @@ return function (Preprocessor $p) {
                 cp -rf php-src/ext/pdo_odbc  pdo_odbc
 EOF
             )
-            ->withOptions('./configure --with-pdo-odbc=unixODBC,' . $unixODBC_prefix)->depends('unixodbc')
+            ->withOptions('./configure --with-pdo-odbc=unixODBC,' . $unixODBC_prefix)->withDependentLibraries('unixodbc')
     );
 };

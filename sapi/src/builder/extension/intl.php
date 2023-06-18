@@ -11,6 +11,6 @@ return function (Preprocessor $p) {
         (new Extension('intl'))
             ->withHomePage('https://www.php.net/intl')
             ->withOptions('--enable-intl')
-            ->depends('icu')
+            ->withDependentLibraries('icu')
     );
 };
