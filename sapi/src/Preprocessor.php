@@ -6,9 +6,15 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
+use SwooleCli\Trait\DownloadBoxTrait;
+use SwooleCli\Trait\WebUITrait;
 
 class Preprocessor
 {
+
+    use DownloadBoxTrait;
+    use WebUITrait;
+
     public const VERSION = '1.6';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
     public const CONTAINER_NAME = 'swoole-cli-builder';
@@ -23,8 +29,6 @@ class Preprocessor
     protected string $cCompiler = 'clang';
     protected string $cppCompiler = 'clang++';
     protected string $lld = 'ld.lld';
-
-    protected array $downloadExtensionList = [];
 
     protected array $libraryMap = [];
     protected array $extensionMap = [];
@@ -54,6 +58,7 @@ class Preprocessor
      * @var string
      */
     protected string $globalPrefix = '/usr/local/swoole-cli';
+    # protected string $globalPrefix = '/usr';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -124,6 +129,9 @@ class Preprocessor
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
+
+    protected array $extHooks = [];
+
     protected string $configureVarables;
 
     protected function __construct()
@@ -356,6 +364,21 @@ class Preprocessor
     }
 
     /**
+     * @param string $cacheDir
+     * @param string $downloadScript
+     * @return void
+     */
+    protected function execDownloadScript(string $cacheDir, string $downloadScript): void
+    {
+        echo PHP_EOL;
+        echo $downloadScript;
+        echo PHP_EOL;
+        $this->mkdirIfNotExists($cacheDir, 0777, true);
+        echo `$downloadScript`;
+        echo PHP_EOL;
+    }
+
+    /**
      * @param string $path
      * @param string $md5
      * @return bool
@@ -378,10 +401,14 @@ class Preprocessor
     {
         if (empty($lib->file)) {
             $lib->file = basename($lib->url);
+            if ($lib->enableDownloadScript) {
+                $lib->file = $lib->name . '.tar.gz';
+            }
         }
 
         if (!empty($this->getInputOption('with-download-mirror-url'))) {
             $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
+            $lib->enableDownloadScript = false;
         }
 
         $lib->path = $this->libraryDir . '/' . $lib->file;
@@ -392,20 +419,39 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            if (!is_file($lib->path) or filesize($lib->path) === 0) {
-                echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
-            } else {
+            if (is_file($lib->path) && (filesize($lib->path) != 0)) {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
+            } else {
+                if ($lib->enableDownloadScript) {
+                    $cacheDir = $this->getRootDir() . '/var/tmp/download/lib';
+                    $workDir = $this->getRootDir();
+                    $lib->downloadScript = <<<EOF
+                        test -d {$cacheDir} && rm -rf {$cacheDir}
+                        mkdir -p {$cacheDir}
+                        cd {$cacheDir}
+                        test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
+                        {$lib->downloadScript}
+                        cd {$lib->downloadDirName}
+                        test -f {$lib->path} || tar   -zcf {$lib->path} ./
+                        cd {$workDir}
+EOF;
+
+                    $this->execDownloadScript($cacheDir, $lib->downloadScript);
+                } else {
+                    echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
+                    $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
+                }
             }
         }
 
         if (!empty($lib->pkgConfig)) {
             $this->pkgConfigPaths[] = $lib->pkgConfig;
         }
+
         if (!empty($lib->binPath)) {
             $this->binPaths[] = $lib->binPath;
         }
+
         if (empty($lib->license)) {
             throw new Exception("require license");
         }
@@ -416,36 +462,67 @@ class Preprocessor
 
     public function addExtension(Extension $ext): void
     {
-        if ($ext->peclVersion) {
-            $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-            $ext->path = $this->extensionDir . '/' . $ext->file;
-            $ext->url = "https://pecl.php.net/get/{$ext->file}";
+        if (!$this->getInputOption('skip-download')) {
+            if ($ext->peclVersion || $ext->enableDownloadScript) {
+                if ($ext->enableDownloadScript) {
+                    if (!empty($ext->peclVersion)) {
+                        $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+                    }
+                    if (empty($ext->peclVersion) && empty($ext->file)) {
+                        $ext->file = $ext->name . '.tgz';
+                    }
+                    $ext->path = $this->extensionDir . '/' . $ext->file;
+                } else {
+                    $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+                    $ext->path = $this->extensionDir . '/' . $ext->file;
+                    $ext->url = "https://pecl.php.net/get/{$ext->file}";
+                }
 
-            if (!empty($this->getInputOption('with-download-mirror-url'))) {
-                $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
-            }
+                if (!empty($this->getInputOption('with-download-mirror-url'))) {
+                    $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
+                    if ($ext->enableDownloadScript) {
+                        $ext->enableDownloadScript = false;
+                    }
+                }
 
-            // 检查文件的 MD5，若不一致删除后重新下载
-            if (!empty($ext->md5sum) and is_file($ext->path)) {
-                // 本地文件被修改，MD5 不一致，删除后重新下载
-                $this->checkFileMd5sum($ext->path, $ext->md5sum);
-            }
+                $workDir = $this->getRootDir();
+                if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
+                    if ($ext->enableDownloadScript) {
+                        $cacheDir =  $workDir . '/var/tmp/download/ext';
+                        $ext->downloadScript = <<<EOF
+                                test -d {$cacheDir} && rm -rf {$cacheDir}
+                                mkdir -p {$cacheDir}
+                                cd {$cacheDir}
+                                test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
+                                {$ext->downloadScript}
+                                cd {$ext->downloadDirName}
+                                test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
+                                cd {$workDir}
+EOF;
 
-            if (!$this->getInputOption('skip-download')) {
-                if (!is_file($ext->path) or filesize($ext->path) === 0) {
-                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
+                        $this->execDownloadScript($cacheDir, $ext->downloadScript);
+                    } else {
+                        // 检查文件的 MD5，若不一致删除后重新下载
+                        if (!empty($ext->md5sum) and is_file($ext->path)) {
+                            // 本地文件被修改，MD5 不一致，删除后重新下载
+                            $this->checkFileMd5sum($ext->path, $ext->md5sum);
+                        }
+
+                        if (!is_file($ext->path)) {
+                            echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                            $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
+                        }
+                    }
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
+
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
 
                 echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
             }
-            $this->downloadExtensionList[] = ['url' => $ext->url, 'file' => $ext->file];
         }
-
         $this->extensionList[] = $ext;
         $this->extensionMap[$ext->name] = $ext;
     }
@@ -573,6 +650,11 @@ class Preprocessor
     public function setExtCallback($name, $fn)
     {
         $this->extCallbacks[$name] = $fn;
+    }
+
+    public function setExtHook($name, $fn)
+    {
+        $this->extHooks[$name] = $fn;
     }
 
     public function parseArguments(int $argc, array $argv)
@@ -805,7 +887,6 @@ class Preprocessor
         } else {
             $libcpp = '-lstdc++';
         }
-
         $packagesArr = $this->getLibraryPackages();
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);
@@ -841,7 +922,9 @@ class Preprocessor
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
-
+        if ($this->getInputOption('with-web-ui')) {
+            $this->generateWebUIData();
+        }
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
@@ -859,33 +942,5 @@ class Preprocessor
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
         }
-    }
-
-    protected function generateLibraryDownloadLinks(): void
-    {
-        $this->mkdirIfNotExists($this->getRootDir() . '/var/', 0755, true);
-
-        $download_urls = [];
-        foreach ($this->libraryList as $item) {
-            if (empty($item->url)) {
-                continue;
-            }
-            $url = '';
-            $item->mirrorUrls[] = $item->url;
-            if (!empty($item->mirrorUrls)) {
-                $newMirrorUrls = [];
-                foreach ($item->mirrorUrls as $value) {
-                    $newMirrorUrls[] = trim($value);
-                }
-                $url = implode("\t", $newMirrorUrls);
-            }
-            $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
-        }
-        file_put_contents($this->getRootDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
-        $download_urls = [];
-        foreach ($this->downloadExtensionList as $item) {
-            $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
-        }
-        file_put_contents($this->getRootDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
 }

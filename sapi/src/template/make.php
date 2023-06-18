@@ -125,6 +125,15 @@ make_all_library() {
     return 0
 }
 
+make_ext_hook() {
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+<?php foreach ($this->extHooks as $name => $value) : ?>
+    # ext <?= $name ?> hook
+    <?= $value($this) . PHP_EOL ?>
+<?php endforeach; ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    return 0
+}
 
 export_variables() {
     CPPFLAGS=""
@@ -143,8 +152,10 @@ export_variables() {
 }
 
 make_config() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
     set -exu
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    make_ext_hook
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 <?php if ($this->osType !== 'macos') : ?>
@@ -158,7 +169,7 @@ make_config() {
     <?php endif;?>
 <?php endif; ?>
 
-    ./configure --help
+   ./configure --help
     export_variables
     echo $LDFLAGS > ldflags.log
     echo $CPPFLAGS > cppflags.log

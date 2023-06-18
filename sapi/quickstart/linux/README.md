@@ -75,7 +75,6 @@ sh  sapi/quickstart/linux/alpine-init.sh --mirror china
 # 启动 alpine 容器环境 (容器内包含所有依赖库、php运行时、composer )
 bash sapi/quickstart/linux/run-alpine-container-full.sh
 
-
 ```
 
 ## 准备依赖库，来自镜像

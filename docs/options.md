@@ -42,6 +42,7 @@ skip-download
 
 # 构建依赖库之前，批量下载依赖库和扩展的脚本
 sh sapi/scripts/download-dependencies-use-aria2.sh
+sh sapi/scripts/download-dependencies-use-git.sh
 
 ```
 
