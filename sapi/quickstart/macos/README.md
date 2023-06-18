@@ -3,10 +3,10 @@
 ## 准备依赖
 ```shell
 
-bash sapi/quickstart/macos/brew-install-dependency-init.sh
+bash sapi/quickstart/macos/setup-homebrew-dependency.sh
 
 # 使用中国大陆镜像
-bash sapi/quickstart/macos/brew-install-dependency-init.sh --mirror china
+bash sapi/quickstart/macos/setup-homebrew-dependency.sh --mirror china
 
 ```
 
