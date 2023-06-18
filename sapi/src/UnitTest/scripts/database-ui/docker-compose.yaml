@@ -1,0 +1,45 @@
+version: "3"
+services:
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    ports:
+      - "8083:80"
+    external_links:
+      - postgresql-server
+    environment:
+      - "PGADMIN_DEFAULT_EMAIL=root@domain.com"
+      - "PGADMIN_DEFAULT_PASSWORD=example"
+      - "PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION=True"
+      - "PGADMIN_CONFIG_LOGIN_BANNER='Authorised users only!'"
+      - "PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10"
+  adminer: # 可以 链接 pgsql mysql
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+    external_links:
+      - postgresql-server
+      - mysql-server
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    external_links:
+      - mongodb-server
+    extra_hosts:
+      - "mongodb-server:192.168.3.26"
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb-server  # 服务名称
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_BASICAUTH_USERNAME: "root"
+      ME_CONFIG_BASICAUTH_PASSWORD: "example"
+  elasticsearch-ui:
+    image: appbaseio/dejavu:3.6.0
+    container_name: elasticsearch-ui
+    external_links:
+      - elasticsearch
+    ports:
+      - "1358:1358"
+
