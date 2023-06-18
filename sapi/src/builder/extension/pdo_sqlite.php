@@ -10,6 +10,5 @@ return function (Preprocessor $p) {
             ->withOptions('--with-pdo-sqlite')
             ->withDependentLibraries('sqlite3')
             ->withDependentExtensions('pdo')
-
     );
 };

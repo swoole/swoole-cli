@@ -17,8 +17,10 @@ mkdir -p ${__PROJECT__}/var
 ARCH=$(uname -m)
 
 TIME=$(date -u '+%Y%m%dT%H%M%SZ')
-VERSION="1.7"
-TAG="all-dependencies-alpine-${VERSION}-${ARCH}-${TIME}"
+
+VERSION="1.0.0"
+TAG="all-dependencies-alpine-3.17-php8-v${VERSION}-${ARCH}-${TIME}"
+IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
 USE_COMPOSER_MIRROR=0
@@ -39,6 +41,7 @@ done
 cd ${__PROJECT__}/var
 
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
+cp -f ${__DIR__}/php.ini .
 
 docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR=${USE_COMPOSER_MIRROR}
 

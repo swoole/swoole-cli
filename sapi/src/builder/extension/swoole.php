@@ -21,6 +21,14 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
+        ->withUrl('https://github.com/swoole/swoole-src/archive/refs/tags/v5.0.3.tar.gz')
+        ->withFile('swoole-v5.0.3.tar.gz')
+        ->withDownloadScript(
+            'swoole-src',
+            <<<EOF
+         git clone -b v5.0.3 --dept=1 https://github.com/swoole/swoole-src.git
+EOF
+        )
         ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd');
 
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);

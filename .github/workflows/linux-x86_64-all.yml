@@ -1,6 +1,6 @@
 name: build-swoole-cli-linux-x86_64-all
 
-on: [ push, pull_request ]
+on: [ pull_request ]
 
 jobs:
   linux-x86_64:
@@ -40,6 +40,7 @@ jobs:
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
+
       - name: Prepare and Build
         uses: addnab/docker-run-action@v3
         with:
@@ -56,7 +57,7 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
 
-            php prepare.php   +inotify +apcu +ds +xlswriter +ssh2
+            php prepare.php    +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
 
             chmod a+x make.sh
 
