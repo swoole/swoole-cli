@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://github.com/openvswitch/ovs.git')
         ->withManual('https://github.com/openvswitch/ovs.git')
         ->withLicense('https://github.com/openvswitch/ovs/blob/master/LICENSE', Extension::LICENSE_APACHE2);
-    call_user_func_array([$ext, 'depends'], $depends);
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
     $p->setExtHook('ovs', function (Preprocessor $p) {
 

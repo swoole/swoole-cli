@@ -31,6 +31,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withBinPath($socat_prefix . '/bin/')
-            ->depends('openssl', 'readline')
+            ->withDependentLibraries('openssl', 'readline')
     );
 };

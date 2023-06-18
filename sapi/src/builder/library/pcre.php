@@ -49,6 +49,6 @@ return function (Preprocessor $p) {
             ->withPkgName("libpcre32")
             ->withPkgName("libpcrecpp")
             ->withPkgName("libpcreposix")
-            ->depends('readline', 'zlib', 'bzip2')
+            ->withDependentLibraries('readline', 'zlib', 'bzip2')
     );
 };

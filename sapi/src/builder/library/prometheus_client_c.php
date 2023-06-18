@@ -13,6 +13,6 @@ return function (Preprocessor $p) {
             ->withUrl('https://github.com/digitalocean/prometheus-client-c/archive/refs/tags/v0.1.3.tar.gz')
             ->withFile('prometheus-client-c-v0.1.3.tar.gz')
             ->withBinPath($socat_prefix . '/bin/')
-            ->depends('openssl', 'readline')
+            ->withDependentLibraries('openssl', 'readline')
     );
 };

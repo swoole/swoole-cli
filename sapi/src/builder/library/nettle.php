@@ -25,6 +25,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('nettle')
-            ->depends('gmp')
+            ->withDependentLibraries('gmp')
     );
 };

@@ -34,7 +34,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPkgName('ovn')
-        ->depends('ovs', 'openssl')
+        ->withDependentLibraries('ovs', 'openssl')
         ->withBinPath($ovn_prefix . '/bin/');
 
     $p->addLibrary($lib);

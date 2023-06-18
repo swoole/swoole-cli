@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withHomePage('http://www.dest-unreach.org/socat/')
         ->withManual('http://www.dest-unreach.org/socat/')
         ->withLicense('https://repo.or.cz/socat.git/blob/refs/heads/master:/COPYING', Extension::LICENSE_LGPL);
-    call_user_func_array([$ext, 'depends'], $depends);
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
     $p->setExtHook('socat', function (Preprocessor $p) {
         $workdir = $p->getWorkDir();

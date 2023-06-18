@@ -47,6 +47,6 @@ EOF
 
  EOF
             )
-            ->depends('openssl', 'pcre', 'zlib', 'brotli')
+            ->withDependentLibraries('openssl', 'pcre', 'zlib', 'brotli')
     );
 };

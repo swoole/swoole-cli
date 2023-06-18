@@ -45,6 +45,6 @@ EOF
 EOF
             )
             ->withBinPath($coturn_prefix . '/bin/')
-            ->depends('libevent', 'openssl', 'sqlite3', 'pgsql') # 'hiredis'
+            ->withDependentLibraries('libevent', 'openssl', 'sqlite3', 'pgsql') # 'hiredis'
     );
 };

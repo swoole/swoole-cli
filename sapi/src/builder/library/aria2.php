@@ -41,6 +41,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withBinPath($aria2_prefix . '/bin/')
-            ->depends('libuv', 'zlib', 'libiconv', 'openssl', 'sqlite3', 'nettle', 'libxml2', 'cares', 'libssh2')
+            ->withDependentLibraries('libuv', 'zlib', 'libiconv', 'openssl', 'sqlite3', 'nettle', 'libxml2', 'cares', 'libssh2')
     );
 };

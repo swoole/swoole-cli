@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://aria2.github.io/')
         ->withManual('https://aria2.github.io/') //如何选开源许可证？
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_GPL);
-    call_user_func_array([$ext, 'depends'], $depends);
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
     $p->setExtHook('ffmpeg', function (Preprocessor $p) {
 

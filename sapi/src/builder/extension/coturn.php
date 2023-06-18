@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://github.com/coturn/coturn/')
         ->withManual('https://github.com/coturn/coturn/tree/master/docs')
         ->withLicense('https://github.com/coturn/coturn/blob/master/LICENSE', Extension::LICENSE_SPEC);
-    call_user_func_array([$ext, 'depends'], $depends);
+    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
     $p->setExtHook('coturn', function (Preprocessor $p) {
 
