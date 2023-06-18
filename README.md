@@ -42,6 +42,16 @@
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
 - [快速初始化构建环境](sapi/quickstart/README.md)
 
+## 注意 experiment_v4.8.x 与主分支的区别
+
+> openssl 版本 v1 版本
+
+> curl 库 停用 http2 http3 功能
+
+> 不能启用swoole pgsql 协程支持
+
+> swoole 源码 不作为项目子模块 而是和普通扩展一样
+
 ## Clone
 
 ```shell

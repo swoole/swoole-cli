@@ -73,17 +73,18 @@ jobs:
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
 
-          php prepare.php --without-docker=1  --with-build-type=release   +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql
+          php prepare.php --without-docker=1  --with-build-type=release   +apcu +ds +xlswriter +ssh2
 
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-build-all-library
+          key: ${{ runner.os }}-v4.8.x-build-all-library
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
@@ -93,9 +94,6 @@ jobs:
       - name: Build
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          test -d /usr/local/swoole-cli/curl && rm -rf /usr/local/swoole-cli/curl
-          test -d thirdparty/curl && rm -rf thirdparty/curl
-          bash ./make.sh curl
           bash ./make.sh config
           bash ./make.sh build
           bash ./make.sh archive

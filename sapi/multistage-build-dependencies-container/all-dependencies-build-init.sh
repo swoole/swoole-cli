@@ -53,7 +53,7 @@ done
 
 cd ${__PROJECT__}/var
 
-GIT_BRANCH=main
+GIT_BRANCH=experiment_v4.8.x
 test -d swoole-cli && rm -rf swoole-cli
 git clone -b ${GIT_BRANCH} --depth=1  --recursive https://github.com/swoole/swoole-cli.git
 

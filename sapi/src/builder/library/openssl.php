@@ -12,18 +12,20 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.openssl.org/')
             ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withManual('https://www.openssl.org/docs/')
-            ->withUrl('https://github.com/quictls/openssl/archive/refs/tags/openssl-3.0.8-quic1.tar.gz')
+            ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-                 # ./Configure LIST
-               ./config {$static} no-shared  enable-tls1_3 --release \
-               --prefix={$openssl_prefix} \
-               --libdir={$openssl_prefix}/lib
+                # ./Configure LIST
+
+                # php 8 之前的版本不支持 openssl v3    详情 https://github.com/swoole/swoole-cli/issues/84
+
+                ./config {$static} no-shared  enable-tls1_3 --release \
+                --prefix={$openssl_prefix} \
+                --libdir={$openssl_prefix}/lib
 
 EOF
             )
-            ->withMakeOptions('build_sw')
             ->withMakeInstallCommand('install_sw')
             ->withPkgName('libcrypto')
             ->withPkgName('libssl')
