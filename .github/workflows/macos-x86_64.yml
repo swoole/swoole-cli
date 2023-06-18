@@ -73,6 +73,7 @@ jobs:
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+
           # composer update --no-dev  --optimize-autoloader
           composer update  --optimize-autoloader
 
