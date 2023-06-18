@@ -61,6 +61,6 @@ php prepare.php \
 --with-swoole-pgsql=1 \
 +swoole \
 --with-php-version=8.1.18 \
-+swoole
+
 
 

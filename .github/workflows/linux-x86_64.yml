@@ -1,6 +1,43 @@
 name: build-php-cli-linux-x86_64
 
-on: [ push, pull_request ]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      build_latest_swoole_or_swow:
+        required: true
+        description: "定制构建选项: 构建最新版的 swoole 或者 swow （此二者扩展不能同时启用）"
+        default: ' '
+        type: choice
+        options:
+          - ' '
+          - '-swoole +swoole_latest'
+          - '-swoole +swow_latest'
+          - '-swoole +swow'
+      php_verson:
+        required: true
+        description: "定制构建选项: 指定 PHP 版本(版本号大于8)"
+        default: '--with-php-version=8.2.7'
+        type: choice
+        options:
+          - '--with-php-version=8.0.29'
+          - '--with-php-version=8.1.20'
+          - '--with-php-version=8.2.7'
+      build_type:
+        required: true
+        description: "定制构建选项: 指定构建类型"
+        default: '--with-build-type=release'
+        type: choice
+        options:
+          - '--with-build-type=release'
+          - '--with-build-type=dev'
+      build_options:
+        required: false
+        description: "定制构建选项: 请查看 docs/options.md"
+        default: ' '
+        type: string
+
 
 env:
   BUILD_PHP_VERSION: 8.2.4
@@ -42,6 +79,9 @@ jobs:
 
           # git submodule update --init
 
+          # 准备数据库容器
+          bash sapi/src/UnitTest/scripts/database/start.sh
+
       - name: Prepare Libraries and Extensions
         run: |
           set -x
@@ -59,7 +99,7 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
 
-            php prepare.php   --with-swoole-pgsql=1  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +pgsql +pdo_pgsql -mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }}
 
             chmod a+x make.sh
             head -n 20 make.sh
@@ -86,6 +126,7 @@ jobs:
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
