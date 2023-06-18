@@ -32,9 +32,8 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withManual('https://wiki.swoole.com/#/')
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd')
-        ->withAliasName('swoole')
-    ;
+        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo')
+        ->withAliasName('swoole');
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 };
