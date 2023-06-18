@@ -8,6 +8,8 @@ return function (Preprocessor $p) {
     $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
+    $options .= ' --enable-swoole-pgsql --enable-swoole-coro-time ';
+    $options .= ' --enable-swoole-sqlite ';
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
