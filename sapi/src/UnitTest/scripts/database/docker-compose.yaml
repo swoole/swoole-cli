@@ -1,0 +1,38 @@
+version: "3"
+services:
+    postgresql-server:
+        # image: postgres:15-alpine
+        image: postgis/postgis:15-3.3-alpine
+        hostname: "postgresql"
+        ports:
+            - "5432:5432"
+        environment:
+            - "POSTGRES_PASSWORD=example"
+        # 容器内数据目录 /var/lib/postgresql/data
+        # auth_user: postgres
+        # auth_password: example
+    mysql-server:
+        # image: mysql:8-debian
+        image: mariadb:10.6.14-focal
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --tls-version=''
+        environment:
+            MYSQL_ROOT_PASSWORD: "example"
+            # MARIADB_USER: root
+            MARIADB_PASSWORD: "example"
+            MARIADB_ROOT_PASSWORD: "example"
+        ports:
+            - "3306:3306"
+        # 容器内数据目录 /var/lib/mysql
+    redis-server:
+        image: redis:7-alpine
+        ports:
+            - "6379:6379"
+        # 容器内数据目录 /data
+    mongodb-server:
+        image: mongo:latest
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+        ports:
+            - "27017:27017"
+        # 容器内数据目录 /data/db
