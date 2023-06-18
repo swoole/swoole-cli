@@ -34,6 +34,5 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withBinPath($unixODBC_prefix . '/bin/')
-
     );
 };
