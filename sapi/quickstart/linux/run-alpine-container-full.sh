@@ -34,10 +34,10 @@ ARCH=$(uname -m)
 
 case $ARCH in
 'x86_64')
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-x86_64-20230614T154836Z
   ;;
 'aarch64')
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230614T152332Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230614T155341Z
   ;;
 *)
   echo "此 ${ARCH} 架构的容器 容器未配置"
