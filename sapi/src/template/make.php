@@ -53,12 +53,13 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
+    <?php if ($item->enableBuildCached) : ?>
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
         echo "[<?=$item->name?>] compiled, skip.."
         cd <?= $this->workDir ?>/
         return 0
     fi
+    <?php endif; ?>
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
