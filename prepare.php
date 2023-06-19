@@ -182,5 +182,5 @@ $p->execute();
 
 function install_libraries(Preprocessor $p): void
 {
-    $p->loadDependentLibrary('php_src');
+    //$p->loadDependentLibrary('php_src');
 }
