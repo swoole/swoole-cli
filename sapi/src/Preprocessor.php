@@ -132,6 +132,8 @@ class Preprocessor
 
     protected string $configureVarables;
 
+    protected string $buildType='release';
+
     protected function __construct()
     {
         switch (PHP_OS) {
@@ -319,6 +321,17 @@ class Preprocessor
     {
         $this->logicalProcessors = $logicalProcessors;
         return $this;
+    }
+
+    public function setBuildType(string $buildType): static
+    {
+        $this->buildType=$buildType;
+        return $this;
+    }
+
+    public function getBuildType():string
+    {
+        return $this->buildType;
     }
 
     public function donotInstallLibrary()
@@ -885,7 +898,7 @@ EOF;
         }
 
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
-        $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+        $this->pkgConfigPaths = array_filter(array_unique($this->pkgConfigPaths));
 
         if ($this->getOsType() == 'macos') {
             $libcpp = '-lc++';
@@ -906,7 +919,7 @@ EOF;
             $this->withExportVariable('LIBS', '$LIBS');
         }
         $this->binPaths[] = '$PATH';
-        $this->binPaths = array_unique($this->binPaths);
+        $this->binPaths = array_filter(array_unique($this->binPaths));
         $this->sortLibrary();
         $this->setExtensionDependency();
 

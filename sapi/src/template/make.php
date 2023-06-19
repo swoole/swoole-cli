@@ -53,12 +53,13 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
+    <?php if ($item->enableBuildCached) : ?>
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
         echo "[<?=$item->name?>] compiled, skip.."
         cd <?= $this->workDir ?>/
         return 0
     fi
+    <?php endif; ?>
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
@@ -112,9 +113,9 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
-
+    <?php if ($item->enableBuildCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
-
+    <?php endif; ?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
@@ -142,37 +143,85 @@ make_all_library() {
 }
 
 make_ext() {
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-
+    cd <?= $this->getPhpSrcDir() . PHP_EOL ?>
+    PHP_SRC_DIR=<?= $this->getPhpSrcDir() . PHP_EOL ?>
+    EXT_DIR=<?= $this->getPhpSrcDir() ?>/ext/
 <?php
+
+if ($this->buildType == 'dev') {
+    echo <<<EOF
+    TMP_EXT_DIR={$this->getBuildDir()}/php-tmp-ext-dir/
+    EXT_DIR=\$TMP_EXT_DIR
+
+    cd {$this->phpSrcDir}
+
+
+    test -d \$TMP_EXT_DIR && rm -rf \$TMP_EXT_DIR
+    mkdir -p \$TMP_EXT_DIR
+    cd ext
+
+    cp -rf date \$TMP_EXT_DIR
+    test -d hash && cp -rf hash \$TMP_EXT_DIR
+    test -d json && cp -rf json \$TMP_EXT_DIR
+    cp -rf pcre \$TMP_EXT_DIR
+    test -d random && cp -rf random \$TMP_EXT_DIR
+    cp -rf reflection \$TMP_EXT_DIR
+    cp -rf session \$TMP_EXT_DIR
+    cp -rf spl \$TMP_EXT_DIR
+    cp -rf standard \$TMP_EXT_DIR
+    cp -rf date \$TMP_EXT_DIR
+    cp -rf phar \$TMP_EXT_DIR
+
+EOF;
+}
+
 foreach ($this->extensionMap as $extension) {
     $name = $extension->name;
     if ($extension->aliasName) {
         $name = $extension->aliasName;
     }
+
     if ($extension->peclVersion || $extension->enableDownloadScript) {
         echo <<<EOF
-    if [[ -d {$this->phpSrcDir}/ext/{$name}/ ]]
+    if [[ -d \$EXT_DIR/{$name}/ ]]
     then
-        rm -rf {$this->phpSrcDir}/ext/{$name}/
+        rm -rf \$EXT_DIR/{$name}/
     fi
-    cp -rf {$this->rootDir}/ext/{$name} {$this->phpSrcDir}/ext/
+    cp -rf {$this->getRootDir()}/ext/{$name} \$EXT_DIR/
 EOF;
         echo PHP_EOL;
-        echo PHP_EOL;
+    } else {
+        if ($this->buildType == 'dev') {
+            echo <<<EOF
+    cd \$PHP_SRC_DIR/ext
+    cp -rf {$name} \$TMP_EXT_DIR
+    cd \$PHP_SRC_DIR/ext
+EOF;
+            echo PHP_EOL;
+        }
     }
 }
+if ($this->buildType == 'dev') {
+    echo <<<EOF
 
+    cd \$PHP_SRC_DIR
+    mv ext deprecated-ext
+    mv \$TMP_EXT_DIR ext
+    cd \$PHP_SRC_DIR
+EOF;
+    echo PHP_EOL;
+}
 ?>
+    cd <?= $this->getPhpSrcDir() ?>/
 }
 
 make_ext_hook() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    cd <?= $this->getPhpSrcDir() ?>/
 <?php foreach ($this->extHooks as $name => $value) : ?>
     # ext <?= $name ?> hook
     <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    cd <?= $this->getPhpSrcDir() ?>/
     return 0
 }
 
@@ -201,24 +250,12 @@ export_variables() {
 
 
 make_config() {
-
     set -x
-
-    if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
-        rm -rf <?= $this->buildDir ?>/php_src/
-    fi
     make_php_src
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-<?php if ($this->getInputOption('with-build-type') != 'release') : ?>
-<?php endif ;?>
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-    make_ext_hook
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
     make_ext
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
+    make_ext_hook
 
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
     PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
     if [[ $PHP_VERSION -lt 80000 ]] ; then

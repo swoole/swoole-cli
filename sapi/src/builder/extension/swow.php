@@ -11,16 +11,17 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/swow/swow')
             ->withLicense('https://github.com/swow/swow/blob/develop/LICENSE', Extension::LICENSE_APACHE2)
             ->withManual('https://docs.toast.run/swow/en/install.html')
-            ->withFile('swow-v1.2.0.tar.gz')
+            ->withFile('swow-v1.3.1.tar.gz')
             //->withPeclVersion('1.2.0')
             ->withDownloadScript(
                 "swow",
                 <<<EOF
-                git clone -b v1.2.0 https://github.com/swow/swow.git
+                git clone -b v1.3.1 https://github.com/swow/swow.git
                 mv swow swow-t
                 mv swow-t/ext  swow
                 rm -rf swow-t
 EOF
             )
+            ->withDependentLibraries('openssl')
     );
 };

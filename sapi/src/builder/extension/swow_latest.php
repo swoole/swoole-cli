@@ -23,5 +23,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withAliasName('swow')
+            ->withDependentLibraries('openssl')
     );
 };
