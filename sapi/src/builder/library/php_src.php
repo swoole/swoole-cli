@@ -32,6 +32,11 @@ return function (Preprocessor $p) {
             cp -rf standard \$TMP_EXT_DIR
             cp -rf date \$TMP_EXT_DIR
             cp -rf phar \$TMP_EXT_DIR
+            cp -rf pdo \$TMP_EXT_DIR
+            cp -rf sockets \$TMP_EXT_DIR
+            cp -rf curl \$TMP_EXT_DIR
+            cp -rf openssl \$TMP_EXT_DIR
+            cp -rf mysqlnd \$TMP_EXT_DIR
 
             cd ..
 
