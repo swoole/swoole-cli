@@ -54,8 +54,6 @@ if ($p->getInputOption('with-global-prefix')) {
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
-$p->setGlobalPrefix('/usr');
-
 
 $buildType= $p->getBuildType();
 if ($p->getInputOption('with-build-type')) {
@@ -138,7 +136,7 @@ if test -f /etc/os-release; then
         if test $meson -ne 1 ;then
         {
              apk add ninja python3 py3-pip gn zip unzip p7zip lzip  go flex
-             pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
+             pip3 install meson virtualenv pipenv -i https://pypi.tuna.tsinghua.edu.cn/simple
              # git config --global --add safe.directory /work
 
         }
@@ -154,16 +152,10 @@ EOF;
 
 $p->addEndCallback(function () use ($p, $cmd) {
     $header = <<<'EOF'
-#!/bin/env sh
+#!/bin/env bash
 
-PKG_CONFIG_PATH='/lib/pkgconfig:/usr/lib/pkgconfig'
-test -d /usr/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
-test -d /usr/local/lib64/pkgconfig && PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH" ;
-test -d /usr/local/lib/pkgconfig/ && PKG_CONFIG_PATH="/usr/local/lib/pkgconfig/:$PKG_CONFIG_PATH" ;
-
-cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
+export cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
-
 
 EOF;
 
