@@ -10,6 +10,7 @@ return function (Preprocessor $p) {
             ->withPeclVersion('3.21.6')
             ->withHomePage('https://developers.google.com/protocol-buffers')
             ->withManual('https://protobuf.dev/reference/php/php-generated/')
+            ->withDependentExtensions('sockets')
     );
 
     $p->setExtCallback('protobuf', function (Preprocessor $p) {
