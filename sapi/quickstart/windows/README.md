@@ -72,6 +72,10 @@ setup-x86_64.exe --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disab
 
 ## 构建window  PHP (非 cygwin 环境）工具 和 参考
 
+
+windows PHP download
+https://windows.php.net/download#php-8.2
+
 windows build php 步骤
 https://wiki.php.net/internals/windows/stepbystepbuild
 
