@@ -880,7 +880,7 @@ EOF;
         }
 
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
-        $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+        $this->pkgConfigPaths = array_filter(array_unique($this->pkgConfigPaths));
 
         if ($this->getOsType() == 'macos') {
             $libcpp = '-lc++';
@@ -901,7 +901,7 @@ EOF;
             $this->withExportVariable('LIBS', '$LIBS');
         }
         $this->binPaths[] = '$PATH';
-        $this->binPaths = array_unique($this->binPaths);
+        $this->binPaths = array_filter(array_unique($this->binPaths));
         $this->sortLibrary();
         $this->setExtensionDependency();
 
