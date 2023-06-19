@@ -143,6 +143,7 @@ if test -f /etc/os-release; then
         if test $meson -ne 1 ;then
         {
              apk add ninja python3 py3-pip gn zip unzip p7zip lzip  go flex
+             apk add yasm nasm
              pip3 install meson virtualenv pipenv -i https://pypi.tuna.tsinghua.edu.cn/simple
              # git config --global --add safe.directory /work
 

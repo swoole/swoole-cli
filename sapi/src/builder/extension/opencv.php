@@ -7,14 +7,10 @@ return function (Preprocessor $p) {
     $depends = [
         'ffmpeg'
     ];
-    $ext = (new Extension('ffmpeg'))
-        ->withHomePage('https://ffmpeg.org/')
-        ->withLicense(
-            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
-            Library::LICENSE_LGPL
-        )->withManual('https://ffmpeg.org/documentation.html')
-    ;
-
+    $ext = (new Extension('opencv'))
+        ->withHomePage('https://opencv.org/')
+        ->withManual('https://docs.opencv.org') //如何选开源许可证？
+        ->withLicense('https://opencv.org/license/', Extension::LICENSE_APACHE2);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
     $p->setExtHook('ffmpeg', function (Preprocessor $p) {

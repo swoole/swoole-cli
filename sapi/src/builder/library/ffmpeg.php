@@ -31,8 +31,9 @@ EOF
         # 汇编编译器
         # apk add yasm nasm
         ./configure --help
-        ./configure  --prefix=$ffmpeg_prefix \
-        --enable-libsvtav1
+        ./configure  \
+        --prefix=$ffmpeg_prefix
+        # --enable-libsvtav1
 
 EOF
         )
