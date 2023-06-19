@@ -52,5 +52,6 @@ php prepare.php \
 -yaml \
 -imagick \
 -mongodb \
+--with-swoole-pgsql=1 \
 +swoole
 
