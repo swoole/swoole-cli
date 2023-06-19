@@ -20,7 +20,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://bitbucket.org/osmanov/pecl-event/src/master/LICENSE', Extension::LICENSE_PHP)
             ->withManual('http://docs.php.net/event')
             ->withPeclVersion('3.0.8')
-            ->withDependentLibraries('libevent')
             ->withDependentExtensions('session', 'sockets')
+            ->withDependentLibraries('libevent')
     );
 };
