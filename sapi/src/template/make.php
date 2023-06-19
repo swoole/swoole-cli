@@ -113,9 +113,9 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
-
+    <?php if ($item->enableBuildCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
-
+    <?php endif; ?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
