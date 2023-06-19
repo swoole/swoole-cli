@@ -27,6 +27,7 @@ class Library extends Project
 
     public string $preInstallDirectory = '';
 
+
     public bool $skipBuildLicense = false;
 
     public bool $skipDownload = false;
@@ -38,6 +39,8 @@ class Library extends Project
     public string $label = '';
 
     public string $enablePkgNames = 'yes';
+
+    public bool $enableBuildCached = true ;
 
     public function withMirrorUrl(string $url): static
     {
@@ -146,7 +149,7 @@ class Library extends Project
 
     public function withCleanPreInstallDirectory(string $preInstallDir): static
     {
-        if (!empty($preInstallDir) && (strpos($preInstallDir, PHP_CLI_GLOBAL_PREFIX) === 0)) {
+        if (!empty($preInstallDir) && (str_starts_with($preInstallDir, PHP_CLI_GLOBAL_PREFIX))) {
             if (PHP_CLI_BUILD_TYPE == 'dev') {
                 $this->cleanPreInstallDirectory = true;
                 $this->preInstallDirectory = $preInstallDir;
@@ -226,4 +229,11 @@ class Library extends Project
     {
         return $this->label;
     }
+
+    public function enableBuildCached(bool $buildCache): static
+    {
+        $this->enableBuildCached = $buildCache;
+        return $this;
+    }
+
 }

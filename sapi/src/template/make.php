@@ -62,6 +62,7 @@ make_<?=$item->name?>() {
         mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
     fi
 
+
 <?php if($item->untarArchiveCommand == 'tar'):?>
     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
     result_code=$?
@@ -85,11 +86,14 @@ make_<?=$item->name?>() {
         cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/    <?= PHP_EOL; ?>
 <?php endif ; ?>
 
+
+    <?php if ($item->enableBuildCached) : ?>
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
         echo "[<?=$item->name?>] compiled, skip.."
         cd <?= $this->workDir ?>/
         return 0
     fi
+    <?php endif; ?>
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
@@ -158,8 +162,10 @@ __EOF__
     <?php endif; ?>
 
     # build end
-    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
 
+    <?php if ($item->enableBuildCached) : ?>
+    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    <?php endif; ?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
@@ -191,38 +197,86 @@ make_all_library() {
 }
 
 make_ext() {
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-
+    cd <?= $this->getPhpSrcDir() . PHP_EOL ?>
+    PHP_SRC_DIR=<?= $this->getPhpSrcDir() . PHP_EOL ?>
+    EXT_DIR=<?= $this->getPhpSrcDir() ?>/ext/
 <?php
+
+if ($this->buildType == 'dev') {
+    echo <<<EOF
+    TMP_EXT_DIR={$this->getBuildDir()}/php-tmp-ext-dir/
+    EXT_DIR=\$TMP_EXT_DIR
+
+    cd {$this->phpSrcDir}
+
+
+    test -d \$TMP_EXT_DIR && rm -rf \$TMP_EXT_DIR
+    mkdir -p \$TMP_EXT_DIR
+    cd ext
+
+    cp -rf date \$TMP_EXT_DIR
+    test -d hash && cp -rf hash \$TMP_EXT_DIR
+    test -d json && cp -rf json \$TMP_EXT_DIR
+    cp -rf pcre \$TMP_EXT_DIR
+    test -d random && cp -rf random \$TMP_EXT_DIR
+    cp -rf reflection \$TMP_EXT_DIR
+    cp -rf session \$TMP_EXT_DIR
+    cp -rf spl \$TMP_EXT_DIR
+    cp -rf standard \$TMP_EXT_DIR
+    cp -rf date \$TMP_EXT_DIR
+    cp -rf phar \$TMP_EXT_DIR
+
+EOF;
+}
+
 foreach ($this->extensionMap as $extension) {
     $name = $extension->name;
     if ($extension->aliasName) {
         $name = $extension->aliasName;
     }
+
     if ($extension->peclVersion || $extension->enableDownloadScript) {
         echo <<<EOF
-    if [[ -d {$this->phpSrcDir}/ext/{$name}/ ]]
+    if [[ -d \$EXT_DIR/{$name}/ ]]
     then
-        rm -rf {$this->phpSrcDir}/ext/{$name}/
+        rm -rf \$EXT_DIR/{$name}/
     fi
-    cp -rf {$this->rootDir}/ext/{$name} {$this->phpSrcDir}/ext/
+    cp -rf {$this->getRootDir()}/ext/{$name} \$EXT_DIR/
 
 EOF;
         echo PHP_EOL;
-        echo PHP_EOL;
+    } else {
+        if ($this->buildType == 'dev') {
+            echo <<<EOF
+    cd \$PHP_SRC_DIR/ext
+    cp -rf {$name} \$TMP_EXT_DIR
+    cd \$PHP_SRC_DIR/ext
+EOF;
+            echo PHP_EOL;
+        }
     }
 }
+if ($this->buildType == 'dev') {
+    echo <<<EOF
 
+    cd \$PHP_SRC_DIR
+    mv ext deprecated-ext
+    mv \$TMP_EXT_DIR ext
+    cd \$PHP_SRC_DIR
+EOF;
+    echo PHP_EOL;
+}
 ?>
+    cd <?= $this->getPhpSrcDir() ?>/
 }
 
 make_ext_hook() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    cd <?= $this->getPhpSrcDir() ?>/
 <?php foreach ($this->extHooks as $name => $value) : ?>
     # ext <?= $name ?> hook
     <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    cd <?= $this->getPhpSrcDir() ?>/
     return 0
 }
 
@@ -328,60 +382,15 @@ make_config() {
     ./configure --help | grep -e 'jit'
 _____EO_____
 
-    set -exu
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-<?php if ($this->getInputOption('with-build-type') != 'release') : ?>
-
-<?php endif ;?>
-
-    echo $OPTIONS
-    echo $PKG_CONFIG_PATH
-    export_variables
-    echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
-    echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-    make_ext_hook
-}
-
-make_build() {
-   exit 0
-   # export EXTRA_LDFLAGS="$(pkg-config   --libs-only-L   --static openssl libraw_r )"
-   # export EXTRA_LDFLAGS_PROGRAM=""
-   # EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident '
-
-
-:<<'_____EO_____'
-    export LDFLAGS="$LDFLAGS -all-static"
-    make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
-    EXTRA_LDFLAGS_PROGRAM=' <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
-        if (!empty($item->ldflags)) {
-            echo $item->ldflags;
-            echo ' ';
-        }
-    } ?>'  -j <?= $this->maxJob ?> && echo ""
-_____EO_____
-
 
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-
 
     set -x
-
-    if [[ -f <?= $this->buildDir ?>/php_src/.completed ]] ;then
-        rm -rf <?= $this->buildDir ?>/php_src/
-    fi
     make_php_src
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-<?php if ($this->getInputOption('with-build-type') != 'release') : ?>
-<?php endif ;?>
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-    make_ext_hook
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
     make_ext
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
+    make_ext_hook
 
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
     PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
     if [[ $PHP_VERSION -lt 80000 ]] ; then
@@ -417,10 +426,31 @@ _____EO_____
 <?php if ($this->getOsType()=='linux') : ?>
      sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 <?php endif ; ?>
-
 }
 
 make_build() {
+   exit 0
+   # export EXTRA_LDFLAGS="$(pkg-config   --libs-only-L   --static openssl libraw_r )"
+   # export EXTRA_LDFLAGS_PROGRAM=""
+   # EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident '
+
+
+:<<'_____EO_____'
+    export LDFLAGS="$LDFLAGS -all-static"
+    make EXTRA_CFLAGS='<?= $this->extraCflags ?>' \
+    EXTRA_LDFLAGS_PROGRAM=' <?= $this->extraLdflags ?> <?php foreach ($this->libraryList as $item) {
+        if (!empty($item->ldflags)) {
+            echo $item->ldflags;
+            echo ' ';
+        }
+    } ?>'  -j <?= $this->maxJob ?> && echo ""
+_____EO_____
+
+
+
+}
+
+make_build_old() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
     <?php if ($this->getOsType()=='linux') : ?>

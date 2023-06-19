@@ -44,24 +44,26 @@ if ($p->getInputOption('with-global-prefix')) {
 }
 
 
+
 //release 版本，屏蔽这两个函数，使其不生效
 // ->withCleanBuildDirectory()
 // ->withCleanPreInstallDirectory($prefix)
 //SWOOLE_CLI_SKIP_DEPEND_DOWNLOAD
 //SWOOLE_CLI_BUILD_TYPE=release
 
-$build_type = $p->getInputOption('with-build-type');
-if (!in_array($build_type, ['dev', 'debug'])) {
-    $build_type = 'release';
-}
-
-
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
 $p->setGlobalPrefix('/usr');
 
-define('PHP_CLI_BUILD_TYPE', $build_type);
+
+$buildType= $p->getBuildType();
+if ($p->getInputOption('with-build-type')) {
+    $buildType=$p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
+}
+
+define('PHP_CLI_BUILD_TYPE', $buildType);
 define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
 if ($p->getInputOption('with-parallel-jobs')) {
@@ -175,33 +177,11 @@ $p->setExtraCflags('-fno-ident -Os');
 
 
 
-
 // Generate make.sh
 $p->execute();
 
+
 function install_libraries(Preprocessor $p): void
 {
-    $php_install_prefix = BUILD_PHP_INSTALL_PREFIX;
-    $php_src = $p->getPhpSrcDir();
-    $build_dir = $p->getBuildDir();
-    $p->addLibrary(
-        (new Library('php_src'))
-            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-' . BUILD_PHP_VERSION . '.tar.gz')
-            ->withHomePage('https://www.php.net/')
-            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
-            ->withPrefix($php_install_prefix)
-            ->withCleanBuildDirectory()
-            ->withBuildScript(
-                <<<EOF
-                cd ..
-                if test -d {$php_src} ; then
-                    rm -rf {$php_src}
-                fi
-                cp -rf php_src {$php_src}
-                cd {$build_dir}/php_src
-
-EOF
-            )
-    );
-
+    $p->loadDependentLibrary('php_src');
 }

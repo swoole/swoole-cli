@@ -132,6 +132,8 @@ class Preprocessor
 
     protected string $configureVarables;
 
+    protected string $buildType='release';
+
     protected function __construct()
     {
         switch (PHP_OS) {
@@ -320,6 +322,17 @@ class Preprocessor
     {
         $this->logicalProcessors = $logicalProcessors;
         return $this;
+    }
+
+    public function setBuildType(string $buildType): static
+    {
+        $this->buildType=$buildType;
+        return $this;
+    }
+
+    public function getBuildType():string
+    {
+        return $this->buildType;
     }
 
     public function donotInstallLibrary()
@@ -890,7 +903,8 @@ EOF;
         }
 
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
-        $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
+        $this->pkgConfigPaths = array_filter(array_unique($this->pkgConfigPaths));
+
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
         //暂时由手工维护，依赖关系
@@ -928,8 +942,8 @@ EOF;
         # $this->withVariable('LDFLAGS', '$(pkg-config --libs-only-L --static ' . $packages . ' ) $(pkg-config --libs-only-l --static ' . $packages . ' ) ' . $libcpp);
 
         $this->binPaths[] = '$PATH';
-        $this->binPaths = array_unique($this->binPaths);
 
+        $this->binPaths = array_filter(array_unique($this->binPaths));
 
         if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();
