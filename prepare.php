@@ -41,11 +41,14 @@ if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
 
-$build_type = $p->getInputOption('with-build-type');
-if (!in_array($build_type, ['dev', 'debug'])) {
-    $build_type = 'release';
+$buildType= $p->getBuildType();
+
+if ($p->getInputOption('with-build-type')) {
+    $buildType=$p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
 }
-define('PHP_CLI_BUILD_TYPE', $build_type);
+
+define('PHP_CLI_BUILD_TYPE', $buildType);
 define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
 if ($p->getInputOption('with-parallel-jobs')) {
