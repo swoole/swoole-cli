@@ -51,9 +51,9 @@ return function (Preprocessor $p) {
             --enable-optimize \
             --with-zlib={$zlib_prefix} \
             --enable-ares={$cares_prefix} \
-            --with-nghttp2 \
-            --with-ngtcp2 \
-            --with-nghttp3 \
+            --without-nghttp2 \
+            --without-ngtcp2 \
+            --without-nghttp3 \
             --without-libidn2 \
             --with-libssh2 \
             --with-openssl  \
