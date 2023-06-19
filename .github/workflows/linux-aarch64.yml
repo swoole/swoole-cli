@@ -13,7 +13,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Prepare Source Code
         run: |
-          lscpu
           echo $PATH
           env
           docker info
@@ -52,7 +51,7 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
 
-            php prepare.php  --with-swoole-pgsql=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb
+            php prepare.php   +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb --with-swoole-pgsql=1
 
             chmod a+x make.sh
             head -n 20 make.sh
