@@ -79,7 +79,9 @@ ln -s /opt/homebrew/bin/glibtoolize /opt/homebrew/bin/libtoolize
 ## 缺少`gettext coreutils re2c flex bison`
 
 ```shell
+
  brew install gettext coreutils re2c libunistring flex bison
+
 ```
 
 ## curl configure 检测不通过
