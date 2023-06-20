@@ -25,9 +25,6 @@ if ($p->getInputOption('with-php-version')) {
 
 define('BUILD_PHP_VERSION', $version);
 
-// Sync code from php-src
-$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
-
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setWorkDir(__DIR__);
@@ -36,10 +33,10 @@ if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
 
 // Sync code from php-src
 //设置 PHP 源码所在目录
-$p->setPhpSrcDir($p->getWorkDir() . '/php-src');
+$p->setPhpSrcDir($p->getRootDir() . '/php-src');
 
 //设置PHP 安装目录
-define("BUILD_PHP_INSTALL_PREFIX", $p->getWorkDir() . '/bin/php-' . BUILD_PHP_VERSION);
+define("BUILD_PHP_INSTALL_PREFIX", $p->getRootDir() . '/bin/php-' . BUILD_PHP_VERSION);
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
