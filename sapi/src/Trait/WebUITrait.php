@@ -21,7 +21,7 @@ trait WebUITrait
             json_encode(
                 array_values(
                     array_map(
-                        fn($x) => str_replace('.php', '', $x),
+                        fn ($x) => str_replace('.php', '', $x),
                         array_diff(scandir($directory), array('..', '.'))
                     )
                 )
