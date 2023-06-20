@@ -5,8 +5,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 RUN apk update
 
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-RUN apk add flex  pkgconf ca-certificates
-RUN apk add bash
+RUN apk add flex  pkgconf ca-certificates zip unzip 7zip lzip
 RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
 WORKDIR /work
 
@@ -48,7 +47,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 RUN apk update
 
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-RUN apk add bash
+RUN apk add flex  pkgconf ca-certificates zip unzip 7zip lzip
 RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
 WORKDIR /work
 
@@ -63,48 +62,7 @@ RUN chmod a+x /usr/local/bin/swoole-cli
 RUN chmod a+x /usr/local/bin/composer.phar
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-COPY --from=builder-all-library  /usr/brotli/ /usr/brotli/
-COPY --from=builder-all-library  /usr/cares /usr/cares
-COPY --from=builder-all-library /usr/libiconv /usr/libiconv
-# COPY --from=builder-all-library /usr/libidn2 /usr/libidn2
-COPY --from=builder-all-library /usr/openssl/ /usr/openssl/
-
-COPY --from=builder-all-library /usr/libxml2/ /usr/libxml2/
-COPY --from=builder-all-library /usr/libxslt/ /usr/libxslt/
-
-COPY --from=builder-all-library  /usr/bzip2 /usr/bzip2
-COPY --from=builder-all-library  /usr/zlib /usr/zlib
-
-COPY --from=builder-all-library  /usr/nghttp2 /usr/nghttp2
-COPY --from=builder-all-library  /usr/nghttp3 /usr/nghttp3
-COPY --from=builder-all-library  /usr/ngtcp2 /usr/ngtcp2
-COPY --from=builder-all-library  /usr/libssh2 /usr/libssh2
-
-COPY --from=builder-all-library  /usr/liblz4 /usr/liblz4
-COPY --from=builder-all-library  /usr/liblzma /usr/liblzma
-COPY --from=builder-all-library  /usr/libzstd /usr/libzstd
-COPY --from=builder-all-library  /usr/libzip/ /usr/libzip/
-
-COPY --from=builder-all-library  /usr/curl/ /usr/curl/
-COPY --from=builder-all-library  /usr/oniguruma/ /usr/oniguruma/
-COPY --from=builder-all-library  /usr/sqlite3/ /usr/sqlite3/
-
-COPY --from=builder-all-library  /usr/icu/ /usr/icu/
-
-COPY --from=builder-all-library  /usr/gmp/ /usr/gmp/
-COPY --from=builder-all-library  /usr/libsodium/ /usr/libsodium/
-COPY --from=builder-all-library  /usr/ncurses /usr/ncurses
-COPY --from=builder-all-library  /usr/readline /usr/readline
-
-
-COPY --from=builder-all-library  /usr/libjpeg /usr/libjpeg
-COPY --from=builder-all-library  /usr/libpng /usr/libpng
-COPY --from=builder-all-library  /usr/libgif /usr/libgif
-COPY --from=builder-all-library  /usr/libwebp /usr/libwebp
-COPY --from=builder-all-library  /usr/freetype /usr/freetype
-
-COPY --from=builder-all-library  /usr/libyaml /usr/libyaml
-COPY --from=builder-all-library  /usr/imagemagick /usr/imagemagick
+COPY --from=builder-all-library  /usr/local/swoole-cli /usr/local/swoole-cli
 
 # RUN cp -f /etc/apk/repositories.save /etc/apk/repositories
 
