@@ -1,74 +1,112 @@
 name: build-swoole-cli-macos-x86_64
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Configure
+      - name: Prepare build environment
         run: |
           env
           echo $HOME
-          brew install  wget curl  libtool automake gettext coreutils re2c binutils
+          brew config
+
+          brew install  wget curl  libtool automake  re2c llvm flex bison
+          brew install  gettext coreutils binutils libunistring
+
+          # brew uninstall --ignore-dependencies oniguruma
+          # brew uninstall --ignore-dependencies brotli
+          # brew uninstall --ignore-dependencies freetype
+          # brew uninstall --ignore-dependencies zstd
+
+          brew uninstall --ignore-dependencies snappy
+          brew uninstall --ignore-dependencies capstone
+
           which glibtool
           ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
           ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-          sudo mkdir -p pool/lib
-          sudo mkdir -p pool/ext
-          git submodule update --init
-      - name: Cache
-        uses: actions/cache@v3
-        id: all-archive-cache
-        with:
-          path: |
-            ${GITHUB_WORKSPACE}/var/all-archive.zip
-            ${GITHUB_WORKSPACE}/bin/runtime/php
-            ${GITHUB_WORKSPACE}/bin/runtime/composer
-          key: all-archive
-      - name: Prepare runtime
-        if: ${{ steps.all-archive-cache.outputs.cache-hit != 'true' }}
-        run: |
-          sudo mkdir -p pool/lib
-          sudo mkdir -p pool/ext
-          sudo mkdir -p bin/runtime
 
-          sudo sh  sapi/quickstart/setup-php-runtime.sh
+          # sudo rm -rf /Library/Developer/CommandLineTools
+          # xcode-select --install
+
+          # sudo xcode-select --reset
+          # sudo xcode-select -switch /Library/Developer/CommandLineTools
+
+          # softwareupdate --list --verbose
+          # softwareupdate --install -a
+          # xcode-select --install
+
+          # export SDKROOT=$(xcrun --show-sdk-path)
+          ls -lh $(xcrun --show-sdk-path)
+          # sudo  xcode-select --switch /Applications/Xcode.app
+          # export MACOSX_DEPLOYMENT_TARGET=12.6
+
+          ifconfig
+          export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
+          export IPV4=$(ifconfig en0 | grep "inet " | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
+          echo $IPV4
+          echo $IPV6
+          echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
+          echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+          export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
+          # brew bison --debug
+
+          CURRENT_USER=$(whoami)
+          echo ${CURRENT_USER}
+          sudo mkdir -p /usr/local/swoole-cli
+          CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
+          git submodule update --init
+
+      - name: Prepare runtime
+        run: |
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
+          bash  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          sudo sh sapi/download-box/download-box-get-archive-from-server.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
       - name: prepare
         run: |
-          sudo mkdir -p pool/lib
-          sudo mkdir -p pool/ext
-          sudo mkdir -p bin/runtime
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          sudo sh sapi/download-box/download-box-get-archive-from-server.sh
 
-          sudo composer update --no-dev  --optimize-autoloader
-          sudo php prepare.php --without-docker=1  --with-build-type=release  +ds +apcu
+          # composer update --no-dev  --optimize-autoloader
+          composer update  --optimize-autoloader
+
+          php prepare.php --without-docker=1  --with-build-type=release  +apcu +ds +xlswriter +ssh2
+
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
-          path: |
-            ${HOME}/.swoole-cli
-          key: all-library-cache
+          path: /usr/local/swoole-cli
+          key: ${{ runner.os }}-build-all-library
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
-          sudo chmod a+x ./make.sh
-          sudo ./make.sh all-library
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          bash ./make.sh all-library
 
       - name: Build
         run: |
-          sudo chmod a+x ./make.sh
-          sudo ./make.sh config
-          sudo ./make.sh build
-          sudo ./make.sh archive
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          bash ./make.sh config
+          bash ./make.sh build
+          bash ./make.sh archive
+
+      - name: Show Build Result
+        run: |
+          ./bin/swoole-cli -v
+          ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri swoole
           file ./bin/swoole-cli
+          otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3

@@ -15,6 +15,7 @@ class Preprocessor
 
     protected static ?Preprocessor $instance = null;
 
+    protected array $prepareArgs = [];
     protected string $osType = 'linux';
     protected array $libraryList = [];
     protected array $extensionList = [];
@@ -52,7 +53,7 @@ class Preprocessor
      * 编译后.a静态库文件安装目录的全局前缀，在构建阶段使用
      * @var string
      */
-    protected string $globalPrefix = '/usr';
+    protected string $globalPrefix = '/usr/local/swoole-cli';
 
     protected string $extraLdflags = '';
     protected string $extraOptions = '';
@@ -61,7 +62,17 @@ class Preprocessor
     protected array $variables = [];
 
     protected array $exportVariables = [];
-    protected int $maxJob = 8;
+    /**
+     * default value : CPU   logical processors
+     * @var string
+     */
+    protected string $maxJob = '${LOGICAL_PROCESSORS}';
+
+    /**
+     * CPU   logical processors
+     * @var string
+     */
+    protected string $logicalProcessors = '';
     protected bool $installLibrary = true;
     protected array $inputOptions = [];
 
@@ -131,6 +142,12 @@ class Preprocessor
         }
     }
 
+    public function setLinker(string $ld): static
+    {
+        $this->lld = $ld;
+        return $this;
+    }
+
     public static function getInstance(): static
     {
         if (!self::$instance) {
@@ -197,6 +214,11 @@ class Preprocessor
         $this->phpSrcDir = $phpSrcDir;
     }
 
+    public function getPhpSrcDir(): string
+    {
+        return $this->phpSrcDir;
+    }
+
 
     public function setGlobalPrefix(string $prefix)
     {
@@ -216,6 +238,11 @@ class Preprocessor
     public function getRootDir(): string
     {
         return $this->rootDir;
+    }
+
+    public function getPrepareArgs(): array
+    {
+        return $this->prepareArgs;
     }
 
     public function setLibraryDir(string $libraryDir)
@@ -270,11 +297,23 @@ class Preprocessor
 
     /**
      * make -j {$n}
-     * @param int $n
+     * @param string $n
      */
-    public function setMaxJob(int $n)
+    public function setMaxJob(int $n): static
     {
         $this->maxJob = $n;
+        return $this;
+    }
+
+    /**
+     * set CPU  logical processors
+     * @param string $logicalProcessors
+     * @return $this
+     */
+    public function setLogicalProcessors(string $logicalProcessors): static
+    {
+        $this->logicalProcessors = $logicalProcessors;
+        return $this;
     }
 
     public function donotInstallLibrary()
@@ -292,7 +331,14 @@ class Preprocessor
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
-        echo $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T 15 ";
+        $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
+        echo PHP_EOL;
+        if ($this->getInputOption('with-downloader') === 'wget') {
+            $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T {$connect_timeout} ";
+        } else {
+            $cmd = "curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry}  -Lo '{$file}' '{$url}' ";
+        }
+        echo $cmd;
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
@@ -346,7 +392,7 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
-            if (!is_file($lib->path)) {
+            if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
                 $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
             } else {
@@ -386,7 +432,7 @@ class Preprocessor
             }
 
             if (!$this->getInputOption('skip-download')) {
-                if (!is_file($ext->path)) {
+                if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                     $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
                 } else {
@@ -426,14 +472,22 @@ class Preprocessor
         return $packages;
     }
 
-    public function withVariable(string $key, string $value): void
+    public function withBinPath(string $path): static
     {
-        $this->variables[] = [$key => $value];
+        $this->binPaths[] = $path;
+        return $this;
     }
 
-    public function withExportVariable(string $key, string $value): void
+    public function withVariable(string $key, string $value): static
+    {
+        $this->variables[] = [$key => $value];
+        return $this;
+    }
+
+    public function withExportVariable(string $key, string $value): static
     {
         $this->exportVariables[] = [$key => $value];
+        return $this;
     }
 
     public function getExtension(string $name): ?Extension
@@ -523,6 +577,7 @@ class Preprocessor
 
     public function parseArguments(int $argc, array $argv)
     {
+        $this->prepareArgs = $argv;
         // parse the parameters passed in by the user
         for ($i = 1; $i < $argc; $i++) {
             $arg = $argv[$i];
@@ -624,6 +679,57 @@ class Preprocessor
         }
     }
 
+    public function loadDependentExtension($extension_name)
+    {
+        if (!isset($this->extensionMap[$extension_name])) {
+            $file = realpath(__DIR__ . '/builder/extension/' . $extension_name . '.php');
+            if (!is_file($file)) {
+                throw new Exception("The ext-$extension_name does not exist");
+            }
+            $func = require $file;
+            $func($this);
+        }
+        if (isset($this->extensionMap[$extension_name])) {
+            $deps = $this->extensionMap[$extension_name]->dependentExtensions;
+            if (!empty($deps)) {
+                foreach ($deps as $extension_name) {
+                    $this->loadDependentExtension($extension_name);
+                }
+            }
+        }
+    }
+
+    public function loadDependentLibrary($library_name)
+    {
+        if (!isset($this->libraryMap[$library_name])) {
+            $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
+            if (!is_file($file)) {
+                throw new Exception("The library-$library_name does not exist");
+            }
+            $func = require $file;
+            $func($this);
+        }
+
+        if (isset($this->libraryMap[$library_name])) {
+            $deps = $this->libraryMap[$library_name]->deps;
+            if (!empty($deps)) {
+                foreach ($deps as $library_name) {
+                    $this->loadDependentLibrary($library_name);
+                }
+            }
+        }
+    }
+
+    public function generateFile(string $templateFile, string $outFile): bool
+    {
+        if (!is_file($templateFile)) {
+            return false;
+        }
+        ob_start();
+        include $templateFile;
+        return file_put_contents($outFile, ob_get_clean());
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -644,9 +750,8 @@ class Preprocessor
         include __DIR__ . '/constants.php';
 
         $extAvailabled = [];
-        if (is_dir($this->rootDir . '/conf.d')) {
-            $this->scanConfigFiles($this->rootDir . '/conf.d', $extAvailabled);
-        }
+        $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
+
         $confPath = $this->getInputOption('conf-path');
         if ($confPath) {
             $confDirList = explode(':', $confPath);
@@ -667,6 +772,28 @@ class Preprocessor
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
+            }
+        }
+
+        if ($this->getOsType() == 'macos') {
+            if (is_file('/usr/local/opt/bison/bin/bison')) {
+                $this->withBinPath('/usr/local/opt/bison/bin');
+            } else {
+                $this->loadDependentLibrary("bison");
+            }
+        }
+
+        // autoload extension depend extension
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->dependentExtensions as $extension_name) {
+                $this->loadDependentExtension($extension_name);
+            }
+        }
+
+        // autoload  library depend library
+        foreach ($this->extensionMap as $ext) {
+            foreach ($ext->deps as $library_name) {
+                $this->loadDependentLibrary($library_name);
             }
         }
 
@@ -692,7 +819,6 @@ class Preprocessor
             $this->withExportVariable('LDFLAGS', '$LDFLAGS');
             $this->withExportVariable('LIBS', '$LIBS');
         }
-
         $this->binPaths[] = '$PATH';
         $this->binPaths = array_unique($this->binPaths);
         $this->sortLibrary();
@@ -702,27 +828,17 @@ class Preprocessor
             $this->generateLibraryDownloadLinks();
         }
 
-        ob_start();
-        include __DIR__ . '/make.php';
-        file_put_contents($this->rootDir . '/make.sh', ob_get_clean());
-
-        ob_start();
-        include __DIR__ . '/license.php';
+        $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
-        file_put_contents($this->rootDir . '/bin/LICENSE', ob_get_clean());
-
-        ob_start();
-        include __DIR__ . '/credits.php';
-        file_put_contents($this->rootDir . '/bin/credits.html', ob_get_clean());
+        $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
+        $this->generateFile(__DIR__ . '/template/credits.php', $this->rootDir . '/bin/credits.html');
 
         copy($this->rootDir . '/sapi/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
 
         if ($this->getInputOption('with-dependency-graph')) {
-            ob_start();
-            include __DIR__ . '/ExtensionDependencyGraph.php';
-            file_put_contents(
-                $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot',
-                ob_get_clean()
+            $this->generateFile(
+                __DIR__ . '/template/extension_ependency_graph.php',
+                $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
 
@@ -747,7 +863,7 @@ class Preprocessor
 
     protected function generateLibraryDownloadLinks(): void
     {
-        $this->mkdirIfNotExists($this->getWorkDir() . '/var/', 0755, true);
+        $this->mkdirIfNotExists($this->getRootDir() . '/var/', 0755, true);
 
         $download_urls = [];
         foreach ($this->libraryList as $item) {
@@ -765,11 +881,11 @@ class Preprocessor
             }
             $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getWorkDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
         $download_urls = [];
         foreach ($this->downloadExtensionList as $item) {
             $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
         }
-        file_put_contents($this->getWorkDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
 }

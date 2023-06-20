@@ -74,6 +74,14 @@ without-docker
 
 > 在 `macOS` 系统无法使用 `docker`，需指定此参数
 
+with-global-prefix
+----
+设置依赖库安装目录前缀
+默认安装目录前缀： `/usr/local/swoole-cli/`
+
+```shell
+./prepare.php --with-global-prefix=/usr/local/swoole-cli/
+```
 
 with-dependency-graph
 ----
@@ -101,3 +109,19 @@ sh sapi/scripts/generate-dependency-graph.sh
 
 ```
 
+with-downloader
+----
+指定 `wget` 作为下载器 （默认使用`curl` 作为依赖库和扩展的下载器）
+
+```shell
+php ./prepare.php --with-downloader=wget
+```
+
+with-parallel-jobs
+----
+构建时最大并发进程数；
+默认值是 CPU 逻辑处理器数
+
+```shell
+php ./prepare.php --with-parallel-jobs=8
+```

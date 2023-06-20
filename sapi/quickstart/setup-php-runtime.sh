@@ -42,9 +42,7 @@ case $ARCH in
 esac
 
 VERSION='v5.0.3'
-if [[ $OS = 'macos' ]]; then
-  VERSION='v5.0.1'
-fi
+
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
@@ -52,10 +50,7 @@ cd ${__PROJECT__}/var/runtime
 
 SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
-
-if [[ $ARCH = 'arm64'  ]] && [[ $OS = 'linux' ]]; then
-  SWOOLE_CLI_DOWNLOAD_URL='https://github.com/jingjingxyk/swoole-cli/releases/download/build-native-php-v0.1.1/swoole-cli-v5.0.3-linux-arm64.tar.xz'
-fi
+CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
 mirror=''
 while [ $# -gt 0 ]; do
@@ -84,31 +79,42 @@ china)
 
 esac
 
+test -f composer.phar || wget -O composer.phar ${COMPOSER_DOWNLOAD_URL}
+chmod a+x composer.phar
+
+test -f cacert.pem || wget -O cacert.pem ${CACERT_DOWNLOAD_URL}
+
 SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-${OS}-${ARCH}"
 
 test -f ${SWOOLE_CLI_RUNTIME}.tar.xz || wget -O ${SWOOLE_CLI_RUNTIME}.tar.xz ${SWOOLE_CLI_DOWNLOAD_URL}
 test -f ${SWOOLE_CLI_RUNTIME}.tar || xz -d -k ${SWOOLE_CLI_RUNTIME}.tar.xz
 test -f swoole-cli || tar -xvf ${SWOOLE_CLI_RUNTIME}.tar
 chmod a+x swoole-cli
-
-test -f composer.phar || wget -O composer.phar ${COMPOSER_DOWNLOAD_URL}
-chmod a+x composer.phar
+cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/php
 
 cd ${__PROJECT__}/var/runtime
 
-cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/php
 cp -f ${__PROJECT__}/var/runtime/composer.phar ${__PROJECT__}/bin/runtime/composer
+cp -f ${__PROJECT__}/var/runtime/cacert.pem ${__PROJECT__}/bin/runtime/cacert.pem
+
+cat >${__PROJECT__}/bin/runtime/php.ini <<EOF
+curl.cainfo="${__PROJECT__}/bin/runtime/cacert.pem"
+openssl.cafile="${__PROJECT__}/bin/runtime/cacert.pem"
+swoole.use_shortname=off
+
+EOF
 
 cd ${__PROJECT__}/
 
 set +x
 
 echo " "
-echo " "
-echo " USE  PHP  rumtime :"
+echo " USE PHP RUNTIME :"
 echo " "
 echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
 echo " "
+echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
+echo " OR "
+echo " alias php='php -c ${__PROJECT__}/bin/runtime/php.ini' "
 echo " "
-
 export PATH="${__PROJECT__}/bin/runtime:$PATH"

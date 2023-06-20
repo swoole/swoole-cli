@@ -311,7 +311,12 @@ tmp-php.ini
 /ext/swoole_tracker_agent
 /ext/loader8
 /ext/ds
+/ext/xlswriter
 /.phpunit.result.cache
 /samples/sfx/*.phar
 composer.lock
 .php-cs-fixer.cache
+ldflags.log
+cppflags.log
+/packages
+/conf.d.loader
