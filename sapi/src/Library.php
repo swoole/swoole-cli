@@ -21,11 +21,14 @@ class Library extends Project
 
     public string $binPath = '';
 
+
     public bool $cleanBuildDirectory = false;
 
     public bool $cleanPreInstallDirectory = false;
 
     public string $preInstallDirectory = '';
+
+    public bool $enableBuildCached = true ;
 
     public function withMirrorUrl(string $url): static
     {
@@ -134,12 +137,18 @@ class Library extends Project
 
     public function withCleanPreInstallDirectory(string $preInstallDir): static
     {
-        if (!empty($preInstallDir) && (strpos($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX) === 0)) {
+        if (!empty($preInstallDir) && (str_starts_with($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX))) {
             if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
                 $this->cleanPreInstallDirectory = true;
                 $this->preInstallDirectory = $preInstallDir;
             }
         }
+        return $this;
+    }
+
+    public function enableBuildCached(bool $buildCached): static
+    {
+        $this->enableBuildCached = $buildCached;
         return $this;
     }
 }
