@@ -9,6 +9,7 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+
 # PHP 默认版本
 $version = '8.2.4';
 
@@ -23,6 +24,9 @@ if ($p->getInputOption('with-php-version')) {
 }
 
 define('BUILD_PHP_VERSION', $version);
+
+// Sync code from php-src
+$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
@@ -54,7 +58,6 @@ define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
-
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');

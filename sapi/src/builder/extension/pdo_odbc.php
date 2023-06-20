@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src.git ')
             ->withOptions('./configure --with-pdo-odbc=unixODBC,' . $unixODBC_prefix)
-            ->withDependentLibraries('unixodbc')
+            ->withDependentLibraries('unixODBC')
             ->withDependentExtensions('pdo')
     );
 };

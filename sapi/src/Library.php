@@ -145,9 +145,9 @@ class Library extends Project
         return $this;
     }
 
-    public function enableBuildCached(bool $buildCache): static
+    public function enableBuildCached(bool $buildCached): static
     {
-        $this->enableBuildCached = $buildCache;
+        $this->enableBuildCached = $buildCached;
         return $this;
     }
 }
