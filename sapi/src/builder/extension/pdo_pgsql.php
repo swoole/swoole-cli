@@ -11,7 +11,6 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.php.net/pdo_pgsql')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src.git ')
-            ->withPeclVersion($php_version)
             ->withFile('pdo_pgsql-' . $php_version . '.tgz')
             ->withDownloadScript(
                 'pdo_pgsql',
@@ -20,7 +19,9 @@ return function (Preprocessor $p) {
                 cp -rf php-src/ext/pdo_pgsql  pdo_pgsql
 EOF
             )
-            ->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)->depends('pgsql')
-            ->withDependExtension('pdo')
+            ->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)
+            ->withDependentExtensions('pdo')
+            ->withDependentLibraries('pgsql')
+
     );
 };

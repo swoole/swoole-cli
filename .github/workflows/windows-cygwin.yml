@@ -12,6 +12,8 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
           ipconfig
+          uname -a
+          pwd
       - uses: actions/checkout@v3
       - name: Prepare submodule
         run: |
