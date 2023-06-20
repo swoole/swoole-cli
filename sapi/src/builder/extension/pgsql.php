@@ -4,12 +4,21 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+    $php_version = BUILD_PHP_VERSION;
     $p->addExtension(
         (new Extension('pgsql'))
             ->withHomePage('https://www.php.net/pgsql')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src.git ')
             ->withOptions('--with-pgsql=' . PGSQL_PREFIX)
+            ->withFile('pdo_odbc-' . $php_version . '.tgz')
+            ->withDownloadScript(
+                'pgsql',
+                <<<EOF
+                git clone -b php-{$php_version} --depth=1 https://github.com/php/php-src.git
+                cp -rf php-src/ext/pgsql  pgsql
+EOF
+            )
             ->withDependentLibraries('pgsql')
     );
 };
