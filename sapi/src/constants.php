@@ -56,7 +56,6 @@ define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
-<<<<<<< HEAD
 
 define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
 define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
@@ -70,5 +69,3 @@ define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
 
 define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
-=======
->>>>>>> experiment-webui
