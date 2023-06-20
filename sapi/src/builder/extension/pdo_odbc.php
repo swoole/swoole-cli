@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withOptions('./configure --with-pdo-odbc=unixODBC,' . $unixODBC_prefix)
-            ->withDependentLibraries('unixodbc')
+            ->withDependentLibraries('unixODBC')
             ->withDependentExtensions('pdo')
     );
 };
