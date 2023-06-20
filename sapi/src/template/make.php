@@ -45,12 +45,20 @@ set +x
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
 
-<?php if ($item->skipBuildInstall == true): ?>
+    <?php if ($item->skipBuildInstall == true) : ?>
     echo "skip install library <?=$item->name?>" ;
     return 0 ;
-<?php endif ;?>
+    <?php endif ;?>
 
     echo "build <?=$item->name?>"
+
+    <?php if ($item->enableBuildCached) : ?>
+        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+        echo "[<?=$item->name?>] compiled, skip.."
+        cd <?= $this->workDir ?>/
+        return 0
+        fi
+    <?php endif; ?>
 
     <?php if ($item->cleanBuildDirectory) : ?>
      # If the build directory exist, clean the build directory
@@ -63,7 +71,7 @@ make_<?=$item->name?>() {
     fi
 
 
-<?php if($item->untarArchiveCommand == 'tar'):?>
+    <?php if ($item->untarArchiveCommand == 'tar') :?>
     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
     result_code=$?
     if [ $result_code -ne 0 ]; then
@@ -71,29 +79,21 @@ make_<?=$item->name?>() {
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
         exit  $result_code
     fi
-<?php endif ;?>
-<?php if($item->untarArchiveCommand == 'unzip'):?>
+    <?php endif ;?>
+    <?php if ($item->untarArchiveCommand == 'unzip') :?>
     unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
-<?php endif ; ?>
-<?php if($item->untarArchiveCommand == 'xz'):?>
+    <?php endif ; ?>
+    <?php if ($item->untarArchiveCommand == 'xz') :?>
    xz -f -d -k   <?=$this->workDir?>/pool/lib/<?=$item->file?>    <?= PHP_EOL; ?>
    tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?= rtrim($this->workDir . '/pool/lib/' . $item->file, '.xz') . PHP_EOL?>
-<?php endif ; ?>
-<?php if($item->untarArchiveCommand == 'cp'):?>
+    <?php endif ; ?>
+    <?php if ($item->untarArchiveCommand == 'cp') :?>
         cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?>/* <?=$this->getBuildDir()?>/<?=$item->name?>/   <?= PHP_EOL; ?>
-<?php endif ; ?>
-<?php if($item->untarArchiveCommand == 'mv'):?>
+    <?php endif ; ?>
+    <?php if ($item->untarArchiveCommand == 'mv') :?>
         cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/    <?= PHP_EOL; ?>
-<?php endif ; ?>
+    <?php endif ; ?>
 
-
-    <?php if ($item->enableBuildCached) : ?>
-    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-        echo "[<?=$item->name?>] compiled, skip.."
-        cd <?= $this->workDir ?>/
-        return 0
-    fi
-    <?php endif; ?>
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
@@ -104,14 +104,14 @@ make_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
 
-<?php if(empty($item->buildScript)): ?>
-
+    <?php if (empty($item->buildScript)) : ?>
     # before configure
-<?php if (!empty($item->beforeConfigureScript)) : ?>
-    <?= $item->beforeConfigureScript . PHP_EOL ?>
+        <?php if (!empty($item->beforeConfigureScript)) : ?>
+            <?= $item->beforeConfigureScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -gt 1 ]] &&  echo "[ before configure FAILURE]" && exit $result_code;
-<?php endif; ?>
+        <?php endif; ?>
+
 
     # configure
         <?php if (!empty($item->configure)) : ?>
@@ -172,11 +172,11 @@ __EOF__
 
 clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?> && echo "clean <?=$item->name?>"
-<?php if(($item->getLabel() == 'php_internal_extension') || ($item->getLabel() == 'php_extension')) : ?>
+    <?php if (($item->getLabel() == 'php_internal_extension') || ($item->getLabel() == 'php_extension')) : ?>
     cd <?=$this->getBuildDir()?>/<?= $item->name . PHP_EOL ?>
-<?php else: ?>
+    <?php else : ?>
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
-<?php endif; ?>
+    <?php endif; ?>
     rm -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     cd <?= $this->workDir . PHP_EOL ?>
 }
@@ -443,7 +443,7 @@ make_build() {
             echo $item->ldflags;
             echo ' ';
         }
-    } ?>'  -j <?= $this->maxJob ?> && echo ""
+                            } ?>'  -j <?= $this->maxJob ?> && echo ""
 _____EO_____
 
 
@@ -594,17 +594,17 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
     git checkout $SWOOLE_BRANCH
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    <?php if(!empty($item->pkgName)): ?>
+    <?php if (!empty($item->pkgName)) : ?>
     echo "[<?= $item->name ?>]"
-    <?php if (!empty($item->pkgNames)) :?>
-        <?php foreach ($item->pkgNames as $item) : ?>
+        <?php if (!empty($item->pkgNames)) :?>
+            <?php foreach ($item->pkgNames as $item) : ?>
     pkg-config --libs-only-L <?= $item . PHP_EOL ?>
     pkg-config --libs-only-l <?= $item . PHP_EOL ?>
     pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
-        <?php endforeach; ?>
-    <?php else :?>
+            <?php endforeach; ?>
+        <?php else :?>
     echo "no PKG_CONFIG !"
-    <?php endif ?>
+        <?php endif ?>
     echo "==========================================================="
     <?php endif ?>
 <?php endforeach; ?>
