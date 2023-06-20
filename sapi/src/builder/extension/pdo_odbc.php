@@ -11,6 +11,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.php.net/manual/zh/ref.pdo-odbc.php')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src.git ')
-            ->withOptions('./configure --with-pdo-odbc=unixODBC,' . $unixODBC_prefix)->depends('unixodbc')
+            ->withOptions('./configure --with-pdo-odbc=unixODBC,' . $unixODBC_prefix)
+            ->withDependentLibraries('unixodbc')
+            ->withDependentExtensions('pdo')
     );
 };
