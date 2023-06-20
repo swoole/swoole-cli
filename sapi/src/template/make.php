@@ -31,6 +31,11 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
+<?php if($item->cleanBuildDirectory): ?>
+     # If the build directory exist, clean the build directory
+     test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
+<?php endif; ?>
+
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
         mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
@@ -48,6 +53,11 @@ make_<?=$item->name?>() {
         cd <?= $this->workDir ?>/
         return 0
     fi
+
+<?php if($item->cleanPreInstallDirectory): ?>
+    # If the install directory exist, clean the install directory
+    test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
+<?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 

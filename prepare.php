@@ -10,6 +10,7 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+
 // Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
 
@@ -26,6 +27,17 @@ if ($p->getInputOption('with-global-prefix')) {
 if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
+
+$buildType= $p->getBuildType();
+
+if ($p->getInputOption('with-build-type')) {
+    $buildType=$p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
+}
+
+define('SWOOLE_CLI_BUILD_TYPE', $buildType);
+define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
+
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
