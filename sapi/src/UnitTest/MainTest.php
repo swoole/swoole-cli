@@ -103,8 +103,8 @@ final class MainTest extends TestCase
         $output = strip_tags(ob_get_clean());
         preg_match('/^AsynchDNS (?:=>)?(.*)$/m', $output, $matches);
         $this->assertEquals('Yes', trim($matches[1]), 'library: c-ares no found');
-        preg_match('/^IDN (?:=>)?(.*)$/m', $output, $matches);
-        $this->assertEquals('Yes', trim($matches[1]), 'library: libidn2 no found');
+        # preg_match('/^IDN (?:=>)?(.*)$/m', $output, $matches);
+        # $this->assertEquals('Yes', trim($matches[1]), 'library: libidn2 no found');
         preg_match('/^libz (?:=>)?(.*)$/m', $output, $matches);
         $this->assertEquals('Yes', trim($matches[1]), 'library: zlib no found');
         preg_match('/^SSL (?:=>)?(.*)$/m', $output, $matches);

@@ -68,7 +68,7 @@ EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends(
+            ->withDependentLibraries(
                 'openssl',
                 'cares',
                 'zlib',

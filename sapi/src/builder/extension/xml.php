@@ -11,6 +11,6 @@ return function (Preprocessor $p) {
             ->withOptions(
                 '--enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml'
             )
-            ->depends('libxml2')
+            ->withDependentLibraries('libxml2')
     );
 };

@@ -9,6 +9,6 @@ return function (Preprocessor $p) {
         (new Extension('zlib'))
             ->withHomePage('https://www.php.net/zlib')
             ->withOptions('--with-zlib --with-zlib-dir=' . ZLIB_PREFIX)
-            ->depends('zlib')
+            ->withDependentLibraries('zlib')
     );
 };
