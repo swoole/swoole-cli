@@ -28,11 +28,14 @@ if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
-$build_type = $p->getInputOption('with-build-type');
-if (!in_array($build_type, ['dev', 'debug'])) {
-    $build_type = 'release';
+$buildType= $p->getBuildType();
+
+if ($p->getInputOption('with-build-type')) {
+    $buildType=$p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
 }
-define('SWOOLE_CLI_BUILD_TYPE', $build_type);
+
+define('SWOOLE_CLI_BUILD_TYPE', $buildType);
 define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
 
