@@ -4,7 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $odbc_prefix = unixODBC_PREFIX;
+    $odbc_prefix = UNIX_ODBC_PREFIX;
     $iconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('unixODBC'))
@@ -41,5 +41,4 @@ EOF
             )
             ->withDependentLibraries('readline', 'libiconv')
     );
-
 };
