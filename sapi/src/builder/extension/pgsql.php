@@ -10,8 +10,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.php.net/pgsql')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src.git ')
-            ->withPeclVersion($php_version)
-            ->withFile('pgsql-' . $php_version . '.tgz')
+            ->withOptions('--with-pgsql=' . PGSQL_PREFIX)
+            ->withFile('pdo_odbc-' . $php_version . '.tgz')
             ->withDownloadScript(
                 'pgsql',
                 <<<EOF
@@ -19,6 +19,6 @@ return function (Preprocessor $p) {
                 cp -rf php-src/ext/pgsql  pgsql
 EOF
             )
-            ->withOptions('--with-pgsql=' . PGSQL_PREFIX)->depends('pgsql')
+            ->withDependentLibraries('pgsql')
     );
 };

@@ -12,7 +12,6 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.php.net/manual/zh/ref.pdo-odbc.php')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src.git ')
-            ->withPeclVersion($php_version)
             ->withFile('pdo_odbc-' . $php_version . '.tgz')
             ->withDownloadScript(
                 'pdo_odbc',
@@ -21,6 +20,8 @@ return function (Preprocessor $p) {
                 cp -rf php-src/ext/pdo_odbc  pdo_odbc
 EOF
             )
-            ->withOptions('./configure --with-pdo-odbc=unixODBC,' . $unixODBC_prefix)->withDependentLibraries('unixodbc')
+            ->withOptions('./configure --with-pdo-odbc=unixODBC,' . $unixODBC_prefix)
+            ->withDependentLibraries('unixodbc')
+            ->withDependentExtensions('pdo')
     );
 };
