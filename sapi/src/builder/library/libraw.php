@@ -37,7 +37,7 @@ EOF
         ->withPkgName('libraw')
         ->withPkgName('libraw_r')
         ->withBinPath($libraw_prefix . '/bin/')
-        ->depends('zlib', 'libjpeg', 'lcms2');
+        ->withDependentLibraries('zlib', 'libjpeg', 'lcms2');
 
     $p->addLibrary($lib);
 };

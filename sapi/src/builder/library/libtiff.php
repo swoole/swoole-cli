@@ -30,7 +30,7 @@ EOF
         )
         ->withBinPath($libtiff_prefix . '/bin')
         ->withPkgName('libtiff-4')
-        ->depends('zlib', 'libjpeg', 'liblzma', 'libzstd')
+        ->withDependentLibraries('zlib', 'libjpeg', 'liblzma', 'libzstd')
     ;
 
     $p->addLibrary($lib);

@@ -32,7 +32,7 @@ EOF
         )
         ->withBinPath($lcms2_prefix . '/bin/')
         ->withPkgName('lcms2')
-        ->depends('zlib', 'libjpeg', 'libtiff');
+        ->withDependentLibraries('zlib', 'libjpeg', 'libtiff');
 
     $p->addLibrary($lib);
 };

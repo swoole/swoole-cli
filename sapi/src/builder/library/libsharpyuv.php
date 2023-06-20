@@ -50,6 +50,6 @@ EOF
             ->withPkgName('libwebp')
             ->withLdflags('-L' . $libwebp_prefix . '/lib -lwebpdemux -lwebpmux')
             ->withBinPath($libwebp_prefix . '/bin/')
-            ->depends('libpng', 'libjpeg', 'libgif', 'libtiff')
+            ->withDependentLibraries('libpng', 'libjpeg', 'libgif', 'libtiff')
     );
 };
