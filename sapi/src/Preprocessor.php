@@ -134,6 +134,8 @@ class Preprocessor
 
     protected string $configureVarables;
 
+    protected string $buildType='release';
+
     protected function __construct()
     {
         switch (PHP_OS) {
@@ -322,6 +324,18 @@ class Preprocessor
     {
         $this->logicalProcessors = $logicalProcessors;
         return $this;
+    }
+
+
+    public function setBuildType(string $buildType): static
+    {
+        $this->buildType=$buildType;
+        return $this;
+    }
+
+    public function getBuildType():string
+    {
+        return $this->buildType;
     }
 
     public function donotInstallLibrary()
