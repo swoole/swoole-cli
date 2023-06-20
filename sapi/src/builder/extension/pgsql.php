@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.php.net/pgsql')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src.git ')
-            ->withOptions('--with-pgsql=' . PGSQL_PREFIX)->withDependentLibraries('pgsql')
+            ->withOptions('--with-pgsql=' . PGSQL_PREFIX)
+            ->withDependentLibraries('pgsql')
     );
 };
