@@ -11,14 +11,6 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
             ->withUrl('https://github.com/php/php-src.git ')
             ->withOptions('--with-pgsql=' . PGSQL_PREFIX)
-            ->withFile('pdo_odbc-' . $php_version . '.tgz')
-            ->withDownloadScript(
-                'pgsql',
-                <<<EOF
-                git clone -b php-{$php_version} --depth=1 https://github.com/php/php-src.git
-                cp -rf php-src/ext/pgsql  pgsql
-EOF
-            )
             ->withDependentLibraries('pgsql')
     );
 };
