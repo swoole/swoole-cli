@@ -41,5 +41,4 @@ EOF
             )
             ->withDependentLibraries('readline', 'libiconv')
     );
-
 };
