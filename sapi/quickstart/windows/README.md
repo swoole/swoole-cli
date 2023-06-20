@@ -72,25 +72,12 @@ setup-x86_64.exe --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disab
 
 ## [进入构建 PHP 环节](../../../docs/Cygwin.md#构建)
 
-<<<<<<< HEAD
-## 构建window  PHP (非 cygwin 环境）工具 和 参考
-
-
-windows PHP download
-https://windows.php.net/download#php-8.2
-
-windows build php 步骤
-https://wiki.php.net/internals/windows/stepbystepbuild
-=======
 
 # 构建window  PHP (非 cygwin 环境）工具 和 参考
 
-
 [ download windows PHP ](https://windows.php.net/download#php-8.2)
 
-
 [windows build php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild)
->>>>>>> experiment-webui
 
 ```shell
 git config core.ignorecase false # 设置 Git 在 Windows 上也区分大小写
