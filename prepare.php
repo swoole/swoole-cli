@@ -9,6 +9,7 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+
 # PHP 默认版本
 $version = '8.2.4';
 
@@ -32,10 +33,10 @@ if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
 
 // Sync code from php-src
 //设置 PHP 源码所在目录
-$p->setPhpSrcDir($p->getWorkDir() . '/php-src');
+$p->setPhpSrcDir($p->getRootDir() . '/php-src');
 
 //设置PHP 安装目录
-define("BUILD_PHP_INSTALL_PREFIX", $p->getWorkDir() . '/bin/php-' . BUILD_PHP_VERSION);
+define("BUILD_PHP_INSTALL_PREFIX", $p->getRootDir() . '/bin/php-' . BUILD_PHP_VERSION);
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
@@ -54,7 +55,6 @@ define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
-
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
