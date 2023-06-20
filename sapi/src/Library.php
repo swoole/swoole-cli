@@ -21,6 +21,8 @@ class Library extends Project
 
     public string $binPath = '';
 
+    public bool $enableBuildCached = true ;
+
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
@@ -115,6 +117,12 @@ class Library extends Project
     public function withBinPath(string $path): static
     {
         $this->binPath = $path;
+        return $this;
+    }
+
+    public function enableBuildCached(bool $buildCached): static
+    {
+        $this->enableBuildCached = $buildCached;
         return $this;
     }
 }
