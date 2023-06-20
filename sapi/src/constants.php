@@ -51,5 +51,4 @@ define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
-define("unixODBC_PREFIX", $p->getGlobalPrefix() . '/odbc');
-
+define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unixODBC');
