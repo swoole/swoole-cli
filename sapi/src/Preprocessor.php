@@ -6,12 +6,11 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
-use SwooleCli\Trait\DownloadBoxTrait;
-use SwooleCli\Trait\WebUITrait;
+use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
+use SwooleCli\PreprocessorTrait\WebUITrait;
 
 class Preprocessor
 {
-
     use DownloadBoxTrait;
     use WebUITrait;
 
@@ -932,7 +931,7 @@ EOF;
 
         if ($this->getInputOption('with-dependency-graph')) {
             $this->generateFile(
-                __DIR__ . '/template/extension_ependency_graph.php',
+                __DIR__ . '/template/extension_dependency_graph.php',
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
