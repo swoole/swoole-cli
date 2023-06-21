@@ -12,7 +12,7 @@
 > Swoole将像node.js这样作为独立程序提供给用户，而不是作为PHP的一个扩展。
 > </strong><br/>
 > 除此之外swoole-cli会尽可能地对php-src进行裁剪，<br/>
->移除一些不用的机制、模块、扩展、函数、类型、常量、代码，
+> 移除一些不用的机制、模块、扩展、函数、类型、常量、代码，
 > 使得整个程序可以在几分钟之内编译完成。<br/>
 > swoole-cli 是在 PHP 源码的基础上对功能做了裁剪、优化、添加新功能
 
@@ -42,13 +42,25 @@
 - [swoole-cli 构建选项文档](docs/options.md)
 - [打包成二进制可执行文件 文档](sapi/samples/sfx/README.md)
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
-- [快速初始化构建环境](sapi/quickstart/README.md)
+- [quickstart](sapi/quickstart/README.md)
 - [构建 原生 `php-cli` 版本 使用build_native_php分支](https://github.com/swoole/swoole-cli/tree/build_native_php)
+
 
 ## Clone
 
 ```shell
 git clone --recursive -b build_native_php  https://github.com/swoole/swoole-cli.git
+```
+
+## 快速准备 PHP 运行时
+
+```shell
+cd swoole-cli
+
+bash setup-php-runtime.sh
+# 或者
+bash setup-php-runtime.sh --mirror china
+
 ```
 
 ## 生成构建脚本

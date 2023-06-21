@@ -37,8 +37,8 @@ let show_all_extension_list_template = (all_extension_list, ready_extension_list
 
 let show_extension_list = async () => {
     let [all_extension_list, ready_extension_list] = await Promise.all([
-        get_content('/data/extension_list.json'),
-        get_content('/data/default_extension_list.json')
+        get_content('/public/data/extension_list.json'),
+        get_content('/public/data/default_extension_list.json')
     ])
     show_all_extension_list_template(all_extension_list, ready_extension_list)
 }
