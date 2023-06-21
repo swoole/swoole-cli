@@ -34,13 +34,10 @@ return function (Preprocessor $p) {
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions($options)
         ->withPeclVersion('1.15.3');
-
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
 
     //$depends[] = 'libsasl';
     //$depends[] = 'snappy';
-
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
-
     $p->addExtension($ext);
 };
