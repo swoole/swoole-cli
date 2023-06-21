@@ -1,32 +1,8 @@
 # cygwin 环境下构建 swoole-cli
 
-## [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
-
-> 没有 wget
-> 命令，可以先安装 [msys2环境](https://www.msys2.org/docs/environments/)
-
-> 点击打开 windows 开始菜单，打开 MSYS2 MSYS 控制台
-
-> 使用`pacman`包管理工具，安装 git wget
-
-> msys2 如果慢,可以换源：参考 https://mirrors.cernet.edu.cn/list/msys2
-
-```shell
-
-pacman -Sy --noconfirm git curl wget openssl zip unzip xz
-
-# msys2 环境下 拉取 swoole-cli 源码
-git clone --recursive https://github.com:swoole/swoole-cli.git
-
-# msys2 环境下下载 cygwin (用浏览器下载就行) 安装包
-wget https://cygwin.com/setup-x86_64.exe
-
-# 将 cygwin 安装包 移动到 window  指定盘符根目 （这里以 C盘为例）
-mv setup-x86_64.exe C:/setup-x86_64.exe
-
-```
-
 ## 安装 cygwin 环境下的工具列表和依赖
+
+### [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
 
 > 点击打开 windows 开始菜单,点击打开 CMD 控制台，并安装必要的包
 
@@ -36,9 +12,9 @@ mv setup-x86_64.exe C:/setup-x86_64.exe
 
 > cygwin 可用 换源地址 参考 https://mirrors.cernet.edu.cn/list/cygwin
 
-```bash
+> 命令行同时安装多个包，包名之间使用逗号隔开
 
-cd c:/
+```bash
 
 # 安装cygwin 和 cygwin 依赖项
 
@@ -125,6 +101,39 @@ git clone --recursive https://github.com:swoole/swoole-cli.git
    ，并将相同版本（如8.1.12）php-src中`ext`目录下的`pgsql` `pdo_pgsql`
    两个文件夹拷贝到当前项目的ext目录下，再执行构建脚本
 
-# 问题
+辅助工具 msys2
+----
 
-## [为什么不使用 msys2 构建 swoole-cli,因为 msys2 环境缺失一些依赖库](https://github.com/swoole/swoole-cli/issues/108)
+> 全新的 windows 系统下是没有 wget 、git
+> 命令，可以先安装 [msys2环境 ](https://www.msys2.org/docs/environments/)
+
+> 点击打开 windows 开始菜单，打开 MSYS2 MSYS 控制台
+
+> 使用`pacman`包管理工具，安装 git wget curl zip unzip
+
+> msys2
+> 如果安装软件包慢,可以考虑换源：参考 https://mirrors.cernet.edu.cn/list/msys2
+
+> msys2 集成了 Mingw 和 Cygwin ，同时还提供了包管理工具 `pacman`
+
+```shell
+
+pacman -Sy --noconfirm git curl wget openssl zip unzip xz
+
+# msys2 环境下 拉取 swoole-cli 源码
+git clone --recursive https://github.com:swoole/swoole-cli.git
+
+# msys2 环境下下载 cygwin (也可以用浏览器下载) 安装包
+wget https://cygwin.com/setup-x86_64.exe
+
+# 将 cygwin 安装包 移动到 window  指定盘符根目 （这里以 C盘为例）
+mv setup-x86_64.exe C:/setup-x86_64.exe
+
+
+# windows 开始菜单，打开 新的 windows 自带终端，执行安装 cygwin
+cd c:
+
+setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages zip unzip
+
+
+```
