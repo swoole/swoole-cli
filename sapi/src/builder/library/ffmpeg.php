@@ -33,7 +33,6 @@ EOF
         ./configure --help
         ./configure  \
         --prefix=$ffmpeg_prefix \
-        --enable-shared=no \
         --enable-openssl \
         --enable-libwebp \
         --enable-libxml2 \
@@ -43,7 +42,9 @@ EOF
         --enable-libfreetype \
         --enable-libssh \
         --enable-lcms2 \
-        --enable-gmp
+        --enable-gmp \
+        --enable-libx264 \
+        -=enable-libx265
 
 
 EOF
@@ -62,7 +63,9 @@ EOF
             'freetype',
             'libssh2',
             "gmp",
-            "lcms2"
+            "lcms2",
+            "libx264",
+            "libx265"
         )
     ;
 
