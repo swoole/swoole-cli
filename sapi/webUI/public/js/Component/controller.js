@@ -61,7 +61,7 @@ let gen = (e) => {
         }
     }
     if (with_swoole_pgsql.value === "1") {
-        cmd += "  --with-swoole-pgsql=1" + with_swoole_pgsql.value
+        cmd += "  --with-swoole-pgsql=" + with_swoole_pgsql.value
     }
 
     let extenion_list_obj = document.querySelectorAll('#all_extentions input[type=checkbox]')
