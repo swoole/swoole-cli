@@ -31,6 +31,11 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
+    <?php if ($item->cleanBuildDirectory) : ?>
+     # If the build directory exist, clean the build directory
+     test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
+    <?php endif; ?>
+
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
         mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
@@ -42,12 +47,18 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
+    <?php if ($item->enableBuildCached) : ?>
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
         echo "[<?=$item->name?>] compiled, skip.."
         cd <?= $this->workDir ?>/
         return 0
     fi
+    <?php endif; ?>
+
+    <?php if ($item->cleanPreInstallDirectory) : ?>
+    # If the install directory exist, clean the install directory
+    test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
+    <?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
@@ -96,9 +107,9 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
-
+    <?php if ($item->enableBuildCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
-
+    <?php endif; ?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }

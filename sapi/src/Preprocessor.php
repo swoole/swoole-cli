@@ -6,8 +6,8 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
-use SwooleCli\Trait\DownloadBoxTrait;
-use SwooleCli\Trait\WebUITrait;
+use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
+use SwooleCli\PreprocessorTrait\WebUITrait;
 
 class Preprocessor
 {
@@ -131,6 +131,8 @@ class Preprocessor
     protected array $extHooks = [];
 
     protected string $configureVarables;
+
+    protected string $buildType='release';
 
     protected function __construct()
     {
@@ -319,6 +321,18 @@ class Preprocessor
     {
         $this->logicalProcessors = $logicalProcessors;
         return $this;
+    }
+
+
+    public function setBuildType(string $buildType): static
+    {
+        $this->buildType=$buildType;
+        return $this;
+    }
+
+    public function getBuildType():string
+    {
+        return $this->buildType;
     }
 
     public function donotInstallLibrary()
@@ -915,7 +929,7 @@ EOF;
 
         if ($this->getInputOption('with-dependency-graph')) {
             $this->generateFile(
-                __DIR__ . '/template/extension_ependency_graph.php',
+                __DIR__ . '/template/extension_dependency_graph.php',
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }

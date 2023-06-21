@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SwooleCli\Trait;
+namespace SwooleCli\PreprocessorTrait;
 
 trait DownloadBoxTrait
 {

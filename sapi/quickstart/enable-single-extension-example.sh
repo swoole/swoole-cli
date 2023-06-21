@@ -14,7 +14,7 @@ cd ${__PROJECT__}
 
 php prepare.php \
 --conf-path="./conf.d.extra" \
---with-global-prefix=/usr \
+--with-global-prefix=/usr/local/swoole-cli \
 -opcache \
 -curl \
 -iconv \
