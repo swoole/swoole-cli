@@ -15,6 +15,7 @@ jobs:
         run: |
           env
           echo $HOME
+
           brew config
 
           brew install  wget curl  libtool automake  re2c llvm flex bison

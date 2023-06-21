@@ -149,6 +149,7 @@ define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
 
+<<<<<<< HEAD
 
 define("LIBARCHIVE_PREFIX", $p->getGlobalPrefix() . '/libarchive');
 
@@ -167,3 +168,17 @@ define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 define("VTK_PREFIX", $p->getGlobalPrefix() . '/vtk');
 define("JEMALLOC_PREFIX", $p->getGlobalPrefix() . '/jemalloc');
 define("TCMALLOC_PREFIX", $p->getGlobalPrefix() . '/tcmalloc');
+=======
+define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
+define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
+define("DAV1D_PREFIX", $p->getGlobalPrefix() . '/dav1d');
+define("LIBGAV1_PREFIX", $p->getGlobalPrefix() . '/libgav1');
+define("AOM_PREFIX", $p->getGlobalPrefix() . '/aom');
+define("SVT_AV1_PREFIX", $p->getGlobalPrefix() . '/svt_av1');
+define("LIBSHARPYUV_PREFIX", $p->getGlobalPrefix() . '/libsharpyuv');
+define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
+define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
+define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
+
+define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
+>>>>>>> t

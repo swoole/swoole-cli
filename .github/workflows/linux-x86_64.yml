@@ -113,6 +113,19 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
           options: -v ${{ github.workspace }}:/work -w /work -e BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }}
           run: |
+            apk update
+            apk add ninja python3 py3-pip  nasm
+            pip3 install meson
+            bash ./make.sh libraw
+            bash ./make.sh libtiff
+            bash ./make.sh lcms2
+            bash ./make.sh imagemagick
+            bash ./make.sh dav1d
+            bash ./make.sh aom
+            bash ./make.sh libgav1
+            bash ./make.sh svt_av1
+            bash ./make.sh libyuv
+
             bash ./make.sh config
             bash ./make.sh build
             ./php-src/sapi/cli/php -v
