@@ -32,13 +32,40 @@ EOF
         # apk add yasm nasm
         ./configure --help
         ./configure  \
-        --prefix=$ffmpeg_prefix
-        # --enable-libsvtav1
+        --prefix=$ffmpeg_prefix \
+        --disable-static=no \
+        --enable-shared=no \
+        --enable-openssl \
+        --enable-libwebp \
+        --enable-libxml2 \
+        --enable-libsvtav1 \
+        --enable-libdav1d \
+        --enable-libaom \
+        --enable-libfreetype \
+        --enable-libssh \
+        --enable-lcms2 \
+        --enable-gmp
+
 
 EOF
         )
         ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
-        ->withBinPath($ffmpeg_prefix . '/bin/');
+        ->withBinPath($ffmpeg_prefix . '/bin/')
+        ->withDependentLibraries(
+            'openssl',
+            'zlib',
+            'liblzma',
+            'libxml2',
+            'libwebp',
+            'svt_av1',
+            'dav1d',
+            'aom',
+            'freetype',
+            'libssh2',
+            "gmp",
+            "lcms2"
+        )
+    ;
 
     $p->addLibrary($lib);
 };
