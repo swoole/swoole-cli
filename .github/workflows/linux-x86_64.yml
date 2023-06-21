@@ -37,6 +37,9 @@ jobs:
 
           git submodule update --init
 
+          # 准备数据库容器
+          bash sapi/src/UnitTest/scripts/database/start.sh
+
       - name: Prepare Libraries and Extensions
         run: |
           set -x
@@ -54,7 +57,7 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
 
-            php prepare.php   +inotify +apcu +ds +xlswriter +ssh2
+            php prepare.php   --with-swoole-pgsql=1 +inotify +apcu +ds +xlswriter +ssh2
 
             chmod a+x make.sh
             head -n 20 make.sh
@@ -79,6 +82,7 @@ jobs:
           ./bin/swoole-cli -r "echo PHP_VERSION;"
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
