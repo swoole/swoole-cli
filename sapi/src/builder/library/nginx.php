@@ -17,16 +17,40 @@ return function (Preprocessor $p) {
         (new Library('nginx'))
             ->withHomePage('https://nginx.org/')
             ->withLicense('https://github.com/nginx/nginx/blob/master/docs/text/LICENSE', Library::LICENSE_SPEC)
-            ->withUrl('https://nginx.org/download/nginx-1.23.3.tar.gz')
+            ->withUrl('https://nginx.org/download/nginx-1.24.0.tar.gz')
             ->withManual('https://github.com/nginx/nginx')
             ->withManual('http://nginx.org/en/docs/configure.html')
             ->withDocumentation('https://nginx.org/en/docs/')
+            ->withFile('nginx-1.24.0.tar.gz')
+            /*
+            ->withDownloadScript(
+                'nginx',
+                <<<EOF
+                cat > ~/.hgrc <<__EOF__
+[http_proxy]
+host=http://192.168.3.26:8015
+[https_proxy]
+host=http://192.168.3.26:8015
+
+__EOF__
+                # pip3 install mercurial -i https://pypi.tuna.tsinghua.edu.cn/simple
+                # hg clone  http://hg.nginx.org/nginx
+                # hg update -C release-1.25.1
+                git clone -b release-1.25.1 --depth 1 --progress  https://github.com/nginx/nginx.git
+
+                # git clone --depth 1 --progress   https://github.com/chobits/ngx_http_proxy_connect_module.git
+
+EOF
+            )
+            */
             ->withPrefix($nginx_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($nginx_prefix)
             ->withConfigure(
                 <<<EOF
              set -x
+            patch -p1 < {$builderDir}/ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_102101.patch
+
             # sed -i "50i echo 'stop preprocessor'; exit 3 " ./configure
 
             ./configure --help
@@ -70,7 +94,8 @@ return function (Preprocessor $p) {
             --with-stream_ssl_module \
             --with-threads \
             --with-cc-opt="-static -O2   \$CPPFLAGS " \
-            --with-ld-opt=" -s -static  \$LDFLAGS "
+            --with-ld-opt=" -s -static  \$LDFLAGS " \
+            --add-module={$builderDir}/ngx_http_proxy_connect_module/
 
 
             #--with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS"
@@ -80,6 +105,6 @@ EOF
             )
             //->withMakeOptions('CFLAGS="-O2 -s" LDFLAGS="-static"')
             ->withBinPath($nginx_prefix . '/bin/')
-            ->depends('libxml2', 'libxslt', 'openssl', 'zlib', 'pcre2')
+            ->withDependentLibraries('libxml2', 'libxslt', 'openssl', 'zlib', 'pcre2', 'ngx_http_proxy_connect_module')
     );
 };

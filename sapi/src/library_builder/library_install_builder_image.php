@@ -6,214 +6,27 @@ use SwooleCli\Preprocessor;
 
 function install_libjpeg(Preprocessor $p)
 {
-    $libjpeg_prefix = JPEG_PREFIX;
 
-    $lib = new Library('libjpeg');
-    $lib->withHomePage('https://libjpeg-turbo.org/')
-        ->withManual('https://libjpeg-turbo.org/Documentation/Documentation')
-        ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
-        ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
-        ->withFile('libjpeg-turbo-2.1.2.tar.gz')
-        ->withPrefix($libjpeg_prefix)
-        ->withConfigure(
-            <<<EOF
-            cmake -G"Unix Makefiles"   . \
-            -DCMAKE_INSTALL_PREFIX={$libjpeg_prefix} \
-            -DCMAKE_INSTALL_LIBDIR={$libjpeg_prefix}/lib \
-            -DCMAKE_INSTALL_INCLUDEDIR={$libjpeg_prefix}/include \
-            -DCMAKE_BUILD_TYPE=Release  \
-            -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON \
-            -DENABLE_SHARED=OFF  \
-            -DENABLE_STATIC=ON
-EOF
-        )
-        ->withScriptAfterInstall(
-            <<<EOF
-            rm -rf {$libjpeg_prefix}/lib/*.so.*
-            rm -rf {$libjpeg_prefix}/lib/*.so
-            rm -rf {$libjpeg_prefix}/lib/*.dylib
-EOF
-        )
-        ->withPkgName('libjpeg')
-        ->withPkgName('libturbojpeg')
-        ->withBinPath($libjpeg_prefix . '/bin/');
-    $p->addLibrary($lib);
 }
 
 function install_libgif(Preprocessor $p)
 {
-    $libgif_prefix = GIF_PREFIX;
-    $p->addLibrary(
-        (new Library('libgif'))
-            ->withHomePage('https://giflib.sourceforge.net/')
-            ->withManual('https://giflib.sourceforge.net/intro.html')
-            ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
-            ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
-            ->withPrefix($libgif_prefix)
-            ->withMakeOptions('libgif.a')
-            ->withMakeInstallCommand('')
-            ->withScriptAfterInstall(
-                <<<EOF
-                if [ ! -d {$libgif_prefix}/lib ]; then
-                    mkdir -p {$libgif_prefix}/lib
-                fi
-                if [ ! -d {$libgif_prefix}/include ]; then
-                    mkdir -p {$libgif_prefix}/include
-                fi
-                cp libgif.a {$libgif_prefix}/lib/libgif.a
-                cp gif_lib.h {$libgif_prefix}/include/gif_lib.h
-                EOF
-            )
-            ->withLdflags('-L' . $libgif_prefix . '/lib')
-    );
 
-
-    if (0) {
-        $p->addLibrary(
-            (new Library('giflib'))
-                ->withUrl('https://nchc.dl.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz')
-                ->withLicense('http://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
-                ->withCleanBuildDirectory()
-                ->withPrefix('/usr/giflib')
-                ->withBuildScript(
-                    '
-
-                default_prefix_dir="/ u s r" # 阻止 macos 系统下编译路径被替换
-                # 替换空格
-                default_prefix_dir=$(echo "$default_prefix_dir" | sed -e "s/[ ]//g")
-
-                sed -i.bakup "s@PREFIX = $default_prefix_dir/local@PREFIX = /usr/giflib@" Makefile
-
-                cat >> Makefile <<"EOF"
-install-lib-static:
-    $(INSTALL) -d "$(DESTDIR)$(LIBDIR)"
-    $(INSTALL) -m 644 libgif.a "$(DESTDIR)$(LIBDIR)/libgif.a"
-EOF
-
-
-                '
-                )
-                ->withMakeOptions('libgif.a')
-                //->withMakeOptions('all')
-                ->withMakeInstallOptions('install-include && make  install-lib-static')
-                # ->withMakeInstallCommand('install-include DESTDIR=/usr/giflib && make  install-lib-static DESTDIR=/usr/giflib')
-                # ->withMakeInstallOptions('DESTDIR=/usr/libgif')
-                ->withLdflags('-L/usr/giflib/lib')
-                ->disableDefaultPkgConfig()
-        );
-    }
 }
 
 function install_libpng(Preprocessor $p)
 {
-    $libpng_prefix = PNG_PREFIX;
-    $libzlib_prefix = ZLIB_PREFIX;
-    $p->addLibrary(
-        (new Library('libpng'))
-            ->withHomePage('http://www.libpng.org/pub/png/libpng.html')
-            ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
-            ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
-            ->withPrefix($libpng_prefix)
-            ->withConfigure(
-                <<<EOF
-                ./configure --help
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
-                LDFLAGS="$(pkg-config   --libs-only-L    --static zlib )" \
-                LIBS="$(pkg-config      --libs-only-l    --static zlib )" \
-                ./configure --prefix={$libpng_prefix} \
-                --enable-static --disable-shared \
-                --with-zlib-prefix={$libzlib_prefix} \
-                --with-binconfigs
-EOF
-            )
-            ->withPkgName('libpng')
-            ->withPkgName('libpng16')
-            ->withBinPath($libpng_prefix . '/bin')
-            ->depends('zlib')
-    );
 }
 
 function install_libwebp(Preprocessor $p)
 {
-    $libtiff_prefix = LIBTIFF_PREFIX;
-    $libwebp_prefix = WEBP_PREFIX;
-    $libpng_prefix = PNG_PREFIX;
-    $libjpeg_prefix = JPEG_PREFIX;
-    $libgif_prefix = GIF_PREFIX;
-    $p->addLibrary(
-        (new Library('libwebp'))
-            ->withHomePage('https://chromium.googlesource.com/webm/libwebp')
-            ->withManual('https://chromium.googlesource.com/webm/libwebp/+/HEAD/doc/building.md')
-            ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
-            ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
-            ->withFile('libwebp-1.2.1.tar.gz')
-            ->withPrefix($libwebp_prefix)
-            ->withConfigure(
-                <<<EOF
-                ./autogen.sh
-                ./configure --help
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
-                LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
-                LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
-                ./configure --prefix={$libwebp_prefix} \
-                --enable-static --disable-shared \
-                --enable-libwebpdecoder \
-                --enable-libwebpextras \
-                --with-pngincludedir={$libpng_prefix}/include \
-                --with-pnglibdir={$libpng_prefix}/lib \
-                --with-jpegincludedir={$libjpeg_prefix}/include \
-                --with-jpeglibdir={$libjpeg_prefix}/lib \
-                --with-gifincludedir={$libgif_prefix}/include \
-                --with-giflibdir={$libgif_prefix}/lib \
-                --disable-tiff
-EOF
-            )
-            ->withPkgName('libwebp')
-            ->withLdflags('-L' . $libwebp_prefix . '/lib -lwebpdemux -lwebpmux')
-            ->withBinPath($libwebp_prefix . '/bin/')
-            ->depends('libpng', 'libjpeg', 'libgif')
-    );
+
 }
 
 
 function install_freetype(Preprocessor $p)
 {
-    $freetype_prefix = FREETYPE_PREFIX;
-    $bzip2_prefix = BZIP2_PREFIX;
-    $libpng_prefix = PNG_PREFIX;
-    $libzlib_prefix = ZLIB_PREFIX;
-    $p->addLibrary(
-        (new Library('freetype'))
-            ->withHomePage('https://freetype.org/')
-            ->withManual('https://freetype.org/freetype2/docs/documentation.html')
-            ->withLicense(
-                'https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/GPLv2.TXT',
-                Library::LICENSE_GPL
-            )
-            ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
-            ->withPrefix($freetype_prefix)
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
-            BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
-            BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
-            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            ./configure --prefix={$freetype_prefix} \
-            --enable-static \
-            --disable-shared \
-            --with-zlib=yes \
-            --with-bzip2=yes \
-            --with-png=yes \
-            --with-harfbuzz=no  \
-            --with-brotli=yes
-EOF
-            )
-            ->withPkgName('freetype2')
-            ->depends('zlib', 'bzip2', 'libpng', 'brotli')
-    );
+
 }
 
 

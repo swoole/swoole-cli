@@ -1151,73 +1151,11 @@ EOF
 
 function install_nghttp3(Preprocessor $p)
 {
-    $nghttp3_prefix = NGHTTP3_PREFIX;
-    $p->addLibrary(
-        (new Library('nghttp3'))
-            ->withHomePage('https://github.com/ngtcp2/nghttp3')
-            ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
-            ->withManual('https://nghttp2.org/nghttp3/')
-            ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/tags/v0.9.0.tar.gz')
-            //->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/heads/main.zip')
-            ->withFile('nghttp3-v0.9.0.tar.gz')
-            ->disableDownloadWithMirrorURL()
-            ->withPrefix($nghttp3_prefix)
-            ->withConfigure(
-                <<<EOF
-            autoreconf -fi
-            ./configure --help
-            ./configure --prefix={$nghttp3_prefix} \
-            --enable-lib-only \
-            --enable-shared=no \
-            --enable-static=yes
-EOF
-            )
-            ->withPkgName('libnghttp3')
-    );
+
 }
 
 function install_ngtcp2(Preprocessor $p)
 {
-    $ngtcp2_prefix = NGTCP2_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
-    $p->addLibrary(
-        (new Library('ngtcp2'))
-            ->withHomePage('https://github.com/ngtcp2/ngtcp2')
-            ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
-            ->withManual('https://curl.se/docs/http3.html')
-            ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/tags/v0.13.1.tar.gz')
-            ->withFile('ngtcp2-v0.13.1.tar.gz')
-            ->disableDownloadWithMirrorURL()
-            ->withPrefix($ngtcp2_prefix)
-            ->withConfigure(
-                <<<EOF
-                autoreconf -fi
-                ./configure --help
-
-                PACKAGES="openssl libnghttp3 "
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES )"  \
-                LDFLAGS="$(pkg-config --libs-only-L      --static \$PACKAGES )"  \
-                LIBS="$(pkg-config --libs-only-l         --static \$PACKAGES )"  \
-                ./configure \
-                --prefix=$ngtcp2_prefix \
-                --enable-shared=no \
-                --enable-static=yes \
-                --enable-lib-only \
-                --without-libev \
-                --with-openssl  \
-                --with-libnghttp3=yes \
-                --without-gnutls \
-                --without-boringssl \
-                --without-picotls \
-                --without-wolfssl \
-                --without-cunit  \
-                --without-jemalloc
-EOF
-            )
-            ->withPkgName('libngtcp2')
-            ->withPkgName('libngtcp2_crypto_openssl')
-            ->depends('openssl', 'nghttp3')
-    );
 }
 
 
@@ -1303,47 +1241,7 @@ EOF
 
 function install_nghttp2(Preprocessor $p): void
 {
-    $nghttp2_prefix = NGHTTP2_PREFIX;
-    $p->addLibrary(
-        (new Library('nghttp2'))
-            ->withHomePage('https://github.com/nghttp2/nghttp2.git')
-            ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
-            ->withPrefix($nghttp2_prefix)
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
-            packages="zlib libxml-2.0 libcares openssl "  # jansson  libev libbpf libelf libngtcp2 libnghttp3
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$packages )"  \
-            LDFLAGS="$(pkg-config --libs-only-L      --static \$packages )"  \
-            LIBS="$(pkg-config --libs-only-l         --static \$packages )"  \
-            ./configure --prefix={$nghttp2_prefix} \
-            --enable-static=yes \
-            --enable-shared=no \
-            --enable-lib-only \
-            --with-libxml2  \
-            --with-zlib \
-            --with-libcares \
-            --with-openssl \
-            --disable-http3 \
-            --disable-python-bindings  \
-            --without-jansson  \
-            --without-libevent-openssl \
-            --without-libev \
-            --without-cunit \
-            --without-jemalloc \
-            --without-mruby \
-            --without-neverbleed \
-            --without-cython \
-            --without-libngtcp2 \
-            --without-libnghttp3  \
-            --without-libbpf   \
-            --with-boost=no
-EOF
-            )
-            ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
-            ->withPkgName('libnghttp2')
-            ->depends('openssl', 'zlib', 'libxml2', 'cares')
-    );
+
 }
 
 
@@ -1806,43 +1704,7 @@ EOF
 
 function install_snappy(Preprocessor $p)
 {
-    $snappy_prefix = SNAPPY_PREFIX;
-    $p->addLibrary(
-        (new Library('snappy'))
-            ->withHomePage('https://github.com/google/snappy')
-            ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
-            ->withFile('snappy-1.1.10.tar.gz')
-            ->withManual('https://github.com/google/snappy/blob/main/README.md')
-            ->withDownloadScript(
-                'snappy',
-                <<<EOF
-                git clone -b 1.1.10 --depth 1  --recursive  https://github.com/google/snappy
 
-
-EOF
-            )
-            ->withPrefix($snappy_prefix)
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-
-                mkdir -p build
-                cd build
-                cmake .. \
-                -Werror -Wsign-compare \
-                -DCMAKE_INSTALL_PREFIX={$snappy_prefix} \
-                -DCMAKE_INSTALL_LIBDIR={$snappy_prefix}/lib \
-                -DCMAKE_INSTALL_INCLUDEDIR={$snappy_prefix}/include \
-                -DCMAKE_BUILD_TYPE=Release  \
-                -DBUILD_SHARED_LIBS=OFF  \
-                -DBUILD_STATIC_LIBS=ON
-
-EOF
-            )
-            ->withPkgName('snappy')
-            ->withBinPath($snappy_prefix . '/bin/')
-    );
 }
 
 function install_kerberos(Preprocessor $p)
@@ -2175,34 +2037,9 @@ function install_libfastcommon($p)
 }
 
 
-
-
-
 function install_jansson(Preprocessor $p)
 {
-    $jansson_prefix = JANSSON_PREFIX;
-    $p->addLibrary(
-        (new Library('jansson'))
-            ->withHomePage('http://www.digip.org/jansson/')
-            ->withUrl('https://github.com/akheron/jansson/archive/refs/tags/v2.14.tar.gz')
-            ->withFile('jansson-v2.14.tar.gz')
-            ->withManual('https://github.com/akheron/jansson.git')
-            ->withLicense('https://github.com/akheron/jansson/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withPrefix($jansson_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($jansson_prefix)
-            ->withConfigure(
-                <<<EOF
-             autoreconf -fi
-            ./configure --help
-            ./configure \
-            --prefix={$jansson_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
-EOF
-            )
-            ->withPkgName('jansson')
-    );
+
 }
 
 
@@ -2341,32 +2178,7 @@ EOF
 
 function install_unixodbc(Preprocessor $p)
 {
-    $unixODBC_prefix = UNIX_ODBC_PREFIX;
-    $p->addLibrary(
-        (new Library('unixodbc'))
-            ->withHomePage('https://www.unixodbc.org/')
-            ->withUrl('https://www.unixodbc.org/unixODBC-2.3.11.tar.gz')
-            ->withLicense('https://github.com/lurcher/unixODBC/blob/master/LICENSE', Library::LICENSE_LGPL)
-            ->withManual('https://www.unixodbc.org/doc/')
-            ->withManual('https://github.com/lurcher/unixODBC.git')
-            ->withLabel('build_env_bin')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                "
-                autoreconf -fi
-             ./configure --help
-             ./configure \
-             --prefix={$unixODBC_prefix} \
-             --enable-shared=no \
-             --enable-static=yes \
-             --enable-iconv \
-             --enable-readline \
-             --enable-threads
-            "
-            )
-            ->withBinPath($unixODBC_prefix . '/bin/')
-            ->disablePkgName()
-    );
+
 }
 
 
@@ -2486,75 +2298,8 @@ EOF
 
 function install_opencl(Preprocessor $p)
 {
-    $opencl_prefix = LIBXPM_PREFIX;
-    $opencl_prefix = '/usr/opencl';
-    $lib = new Library('opencl');
-    $lib->withHomePage('https://www.khronos.org/opencl/')
-        ->withLicense('https://github.com/KhronosGroup/OpenCL-SDK/blob/main/LICENSE', Library::LICENSE_APACHE2)
-        ->withUrl('git clone --recursive https://github.com/KhronosGroup/OpenCL-SDK.git')
-        ->withPrefix($opencl_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($opencl_prefix)
-        ->withBuildScript(
-            <<<EOF
-      cmake -A x64 \
-      -D BUILD_TESTING=OFF \
-      -D BUILD_DOCS=OFF \
-      -D BUILD_EXAMPLES=OFF \
-      -D BUILD_TESTS=OFF \
-      -D OPENCL_SDK_BUILD_SAMPLES=ON \
-      -D OPENCL_SDK_TEST_SAMPLES=OFF \
-      -D CMAKE_TOOLCHAIN_FILE=/vcpkg/install/root/scripts/buildsystems/vcpkg.cmake  \
-      -D VCPKG_TARGET_TRIPLET=x64-windows  \
-      -B ./OpenCL-SDK/build -S ./OpenCL-SDK
-      cmake --build ./OpenCL-SDK/build --target install
-EOF
-        )
-        ->withConfigure(
-            <<<EOF
-            autoreconf -ivf
-            ./configure --help
-
-            LDFLAGS="-static " \
-            ./configure --prefix={$opencl_prefix} \
-            --enable-legacy \
-            --enable-strict-compilation
-
-EOF
-        )
-        ->withPkgName('opencv');
-
-    $p->addLibrary($lib);
 }
 
 function install_boost(Preprocessor $p)
 {
-    $boost_prefix = BOOST_PREFIX;
-    $lib = new Library('boost');
-    $lib->withHomePage('https://www.boost.org/')
-        ->withLicense('https://www.boost.org/users/license.html', Library::LICENSE_SPEC)
-        ->withUrl('https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.tar.gz')
-        ->withManual('https://www.boost.org/doc/libs/1_81_0/more/getting_started/index.html')
-        ->withManual('https://github.com/boostorg/wiki/wiki/')
-        ->withManual('https://github.com/boostorg/wiki/wiki/Getting-Started%3A-Overview')
-        ->withManual('https://www.boost.org/build/')
-        ->withManual('https://www.boost.org/build/doc/html/index.html')
-        ->withPrefix($boost_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($boost_prefix)
-        ->withBuildScript(
-            <<<EOF
-            export PATH=\$SYSTEM_ORIGIN_PATH
-            export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
-            ./bootstrap.sh
-            ./b2 headers
-            ./b2 --release install --prefix={$boost_prefix}
-
-            export PATH=\$SWOOLE_CLI_PATH
-            export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
-EOF
-        )
-        ->withPkgName('boost');
-
-    $p->addLibrary($lib);
 }

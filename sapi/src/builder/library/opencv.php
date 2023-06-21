@@ -35,7 +35,7 @@ EOF
         -DCMAKE_INSTALL_PREFIX={$opencv_prefix} \
         -DOPENCV_EXTRA_MODULES_PATH="../opencv_contrib/modules" \
         -DCMAKE_BUILD_TYPE=Release \
-        -DWITH_FFMPEG=OFF \
+        -DWITH_FFMPEG=ON \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
