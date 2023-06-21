@@ -33,7 +33,6 @@ EOF
         ./configure --help
         ./configure  \
         --prefix=$ffmpeg_prefix \
-        --disable-static=no \
         --enable-shared=no \
         --enable-openssl \
         --enable-libwebp \
