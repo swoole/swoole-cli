@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SwooleCli\Trait;
+namespace SwooleCli\PreprocessorTrait;
+
+use function sort;
 
 trait WebUITrait
 {
@@ -21,7 +23,7 @@ trait WebUITrait
             json_encode(
                 array_values(
                     array_map(
-                        fn($x) => str_replace('.php', '', $x),
+                        fn ($x) => str_replace('.php', '', $x),
                         array_diff(scandir($directory), array('..', '.'))
                     )
                 )

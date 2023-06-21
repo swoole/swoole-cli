@@ -9,7 +9,7 @@ use RuntimeException;
 
 class Preprocessor
 {
-    use Trait\WebUITrait;
+    use PreprocessorTrait\WebUITrait;
 
     public const VERSION = '1.6';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
