@@ -6,12 +6,11 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
-use SwooleCli\Trait\DownloadBoxTrait;
-use SwooleCli\Trait\WebUITrait;
+use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
+use SwooleCli\PreprocessorTrait\WebUITrait;
 
 class Preprocessor
 {
-
     use DownloadBoxTrait;
     use WebUITrait;
 
