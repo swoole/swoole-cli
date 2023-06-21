@@ -165,3 +165,5 @@ define("LIBMICROHTTP_PREFIX", $p->getGlobalPrefix() . '/libmicrohttp');
 
 define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 define("VTK_PREFIX", $p->getGlobalPrefix() . '/vtk');
+define("JEMALLOC_PREFIX", $p->getGlobalPrefix() . '/jemalloc');
+define("TCMALLOC_PREFIX", $p->getGlobalPrefix() . '/tcmalloc');

@@ -1492,64 +1492,13 @@ function install_libunwind($p)
 
 function install_jemalloc($p)
 {
-    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
-    $p->addLibrary(
-        (new Library('jemalloc'))
-            ->withHomePage('http://jemalloc.net/')
-            ->withLicense(
-                'https://github.com/jemalloc/jemalloc/blob/dev/COPYING',
-                Library::LICENSE_GPL
-            )
-            ->withUrl('https://github.com/jemalloc/jemalloc/archive/refs/tags/5.3.0.tar.gz')
-            ->withFile('jemalloc-5.3.0.tar.gz')
-            ->withConfigure(
-                '
-            sh autogen.sh
-            ./configure --help ;
-            ./configure \
-            --prefix=/usr/jemalloc \
-            --enable-static=yes \
-            --enable-shared=no \
-            --with-static-libunwind=/usr/libunwind/lib/libunwind.a
-            '
-            )
-            ->withPkgConfig('/usr/jemalloc/lib/pkgconfig')
-            ->withPkgName('jemalloc')
-            ->withLdflags('/usr/jemalloc/lib')
-            ->withSkipBuildInstall()
-    );
+
+
 }
 
 function install_tcmalloc($p)
 {
-    // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
-    $p->addLibrary(
-        (new Library('tcmalloc'))
-            ->withHomePage('https://google.github.io/tcmalloc/overview.html')
-            ->withLicense('https://github.com/google/tcmalloc/blob/master/LICENSE', Library::LICENSE_APACHE2)
-            ->withUrl('https://github.com/google/tcmalloc/archive/refs/heads/master.zip')
-            ->withFile('tcmalloc.zip')
-            ->withUntarArchiveCommand('unzip')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                '
-                # apk add bazel
-                # https://pkgs.alpinelinux.org/packages?name=bazel*&branch=edge&repo=testing&arch=&maintainer=
-            cd  tcmalloc-master/
-            bazel help
-            bazel build
-            return
-            ./configure \
-            --prefix=/usr/tcmalloc \
-            --enable-static \
-            --disable-shared
-            '
-            )
-            ->withPkgConfig('/usr/tcmalloc/lib/pkgconfig')
-            ->withPkgName('tcmalloc')
-            ->withLdflags('/usr/tcmalloc/lib')
-            ->withSkipBuildInstall()
-    );
+
 }
 
 
