@@ -8,7 +8,7 @@
 
 > 安装 msys2
 
-> 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包,如下
+> 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包,命令如下
 
 ```shell
 # 换源 （非中国大陆地区，不需要执行此条命令）
@@ -36,7 +36,7 @@ git clone --recursive https://github.com/swoole/swoole-cli.git
 # 借助 wget 下载 cygwin.exe
 cd swoole-cli
 wget https://cygwin.com/setup-x86_64.exe
-mv setup-x86_64.exe ..
+mv setup-x86_64.exe c:/
 
 ```
 
@@ -49,7 +49,7 @@ mv setup-x86_64.exe ..
 
 > 安装包
 
-> 命令行 进入 `setup-x86_64.exe` 所在目录，执行下列命令初始安装cygwin
+> 命令行 进入 `setup-x86_64.exe` 所在目录，执行下列命令安装 cygwin 环境
 
 ```shell
 setup-x86_64.exe  --site https://mirrors.ustc.edu.cn/cygwin/
@@ -62,6 +62,8 @@ setup-x86_64.exe  --site https://mirrors.ustc.edu.cn/cygwin/
 
 > 命令行 进入 `setup-x86_64.exe` 所在目录，执行下列命令安装依赖
 
+> 安装多个包，包之间使用逗号分隔开
+
 ```shell
 
 setup-x86_64.exe --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus --site https://mirrors.ustc.edu.cn/cygwin/ --packages make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl,libpcre2-devel,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel,libgmp-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel,libsqlite3-devel,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel,libMagick-devel,libzstd-devel,libbrotli-devel,libreadline-devel,libintl-devel,libpq-devel,libssh2-devel,libidn2-devel,gettext-devel,coreutils,openssl-devel,zip,unzip
@@ -70,22 +72,18 @@ setup-x86_64.exe --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disab
 
 ## [进入构建 PHP 环节](../../../docs/Cygwin.md#构建)
 
-## 构建window  PHP (非 cygwin 环境）工具 和 参考
+# 构建window  PHP (非 cygwin 环境）工具 和 参考
 
+[ download windows PHP ](https://windows.php.net/download#php-8.2)
 
-windows PHP download
-https://windows.php.net/download#php-8.2
-
-windows build php 步骤
-https://wiki.php.net/internals/windows/stepbystepbuild
+[windows build php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild)
 
 ```shell
 git config core.ignorecase false # 设置 Git 在 Windows 上也区分大小写
 ```
 
-VC++
+Latest VC++
 https://learn.microsoft.com/en-AU/cpp/windows/latest-supported-vc-redist
-https://aka.ms/vs/16/release/VC_redist.x64.exe
 
 7zip
 https://7-zip.org/
@@ -97,6 +95,8 @@ windows-sdk
 https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
 
 Windows PowerShell ISE 文本编辑器
+
+## 使用命令行快速安装 VisualStudio 组件
 
 ```shell
 

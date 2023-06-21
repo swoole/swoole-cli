@@ -237,77 +237,11 @@ EOF
 
 function install_opencv_contrib(Preprocessor $p)
 {
-    $opencv_prefix = OPENCV_PREFIX;
-    $lib = new Library('opencv_contrib');
-    $lib->withHomePage('https://opencv.org/')
-        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-        ->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
-        ->withManual('https://github.com/opencv/opencv.git')
-        ->withSkipDownload()
-        ->withUntarArchiveCommand('')
-        ->withPrefix($opencv_prefix)
-        ->withBuildScript(
-            <<<EOF
-            apk add python3 py3-pip  ccache
-            pip3 install numpy  -i https://pypi.tuna.tsinghua.edu.cn/simple
-            test -d opencv_contrib || git clone -b 5.x  https://github.com/opencv/opencv_contrib.git --depth 1 --progress
-            test -d opencv || git clone -b 5.x  https://github.com/opencv/opencv.git --depth 1 --progress
-EOF
-        )
-        ->disableDefaultLdflags()
-        ->disablePkgName()
-        ->disableDefaultPkgConfig()
-        ->withSkipBuildLicense();
 
-    $p->addLibrary($lib);
 }
 
 function install_opencv(Preprocessor $p)
 {
-    $opencv_prefix = OPENCV_PREFIX;
-    $workDir = $p->getWorkDir();
-    $buildDir = $p->getBuildDir();
-    $lib = new Library('opencv');
-    $lib->withHomePage('https://opencv.org/')
-        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-        ->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
-        ->withManual('https://github.com/opencv/opencv.git')
-        ->withSkipDownload()
-        ->withUntarArchiveCommand('')
-        ->withPrefix($opencv_prefix)
-        //->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($opencv_prefix)
-        ->withBuildScript(
-            <<<EOF
-
-        test -d opencv || git clone -b 5.x  https://github.com/opencv/opencv.git --depth 1 --progress
-
-        opencv_contrib={$buildDir}/opencv/opencv_contrib
-        cd opencv
-        mkdir -p build
-        cd  build
-        pwd
-
-        cmake -G Ninja \
-        -DCMAKE_INSTALL_PREFIX={$opencv_prefix} \
-        -DOPENCV_EXTRA_MODULES_PATH="../../opencv_contrib/modules" \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DWITH_FFMPEG=ON \
-        -DOPENCV_GENERATE_PKGCONFIG=ON \
-        -DBUILD_TESTS=OFF \
-        -DBUILD_PERF_TESTS=OFF \
-        -DBUILD_EXAMPLES=OFF \
-        -DBUILD_opencv_apps=OFF \
-        -DBUILD_SHARED_LIBS=OFF \
-        ..
-
-        ninja
-        ninja install
-EOF
-        )
-        ->withPkgName('opencv');
-
-    $p->addLibrary($lib);
 }
 
 function install_ffmpeg(Preprocessor $p)

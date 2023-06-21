@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://ffmpeg.org/')
         ->withLicense(
             'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
-            Library::LICENSE_LGPL
+            Extension::LICENSE_LGPL
         )->withManual('https://ffmpeg.org/documentation.html')
     ;
 

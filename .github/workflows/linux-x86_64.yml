@@ -82,6 +82,9 @@ jobs:
           # 准备数据库容器
           bash sapi/src/UnitTest/scripts/database/start.sh
 
+          # 准备数据库容器
+          bash sapi/src/UnitTest/scripts/database/start.sh
+
       - name: Prepare Libraries and Extensions
         run: |
           set -x

@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SwooleCli\Trait;
+namespace SwooleCli\PreprocessorTrait;
+
+use function sort;
 
 trait WebUITrait
 {
@@ -28,5 +30,4 @@ trait WebUITrait
             )
         );
     }
-
 }
