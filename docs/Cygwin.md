@@ -1,12 +1,10 @@
 # cygwin 环境下构建 swoole-cli
 
-## 安装 cygwin 环境下的工具列表和依赖
-
-### [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
-
-> 点击打开 windows 开始菜单,点击打开 CMD 控制台，并安装必要的包
+## 准备 cygwin 软件包
 
 > 打开 https://cygwin.com/
+
+> 下载 cygwin : `https://cygwin.com/setup-x86_64.exe`
 
 > cygwin 搜索包 https://cygwin.com/cgi-bin2/package-grep.cgi?grep=openssl
 
@@ -14,18 +12,17 @@
 
 > 命令行同时安装多个包，包名之间使用逗号隔开
 
-```bash
+## 安装cygwin 和 cygwin 依赖项
 
-# 安装cygwin 和 cygwin 依赖项
+```bash
 
 setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl,libpcre2-devel,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel,libgmp-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel,libsqlite3-devel,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel,libMagick-devel,libzstd-devel,libbrotli-devel,libreadline-devel,libintl-devel,libpq-devel,libssh2-devel,libidn2-devel,gettext-devel,coreutils,openssl-devel
 
 setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages zip unzip
 
-
 ```
 
-## [ 脚本构建步骤 ](/sapi/scripts/cygwin/README.md)
+## [ windows cygwin 环境 PHP 构建步骤 ](/sapi/scripts/cygwin/README.md)
 
 工具列表
 ----
@@ -116,6 +113,7 @@ git clone --recursive https://github.com:swoole/swoole-cli.git
 
 > msys2 集成了 Mingw 和 Cygwin ，同时还提供了包管理工具 `pacman`
 
+
 ```shell
 
 pacman -Sy --noconfirm git curl wget openssl zip unzip xz
@@ -133,7 +131,8 @@ mv setup-x86_64.exe C:/setup-x86_64.exe
 # windows 开始菜单，打开 新的 windows 自带终端，执行安装 cygwin
 cd c:
 
-setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages zip unzip
+# 添加 pgsql
+setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages libpq-devel
 
 
 ```
