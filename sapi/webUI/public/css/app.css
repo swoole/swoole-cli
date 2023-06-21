@@ -1,6 +1,7 @@
-.options-list input,.options-list select{
+.options-list input,.options-list select,select[name='branch_list']{
     min-height: 32px;
     line-height: 32px;
+    font-size:18px;
 }
 
 

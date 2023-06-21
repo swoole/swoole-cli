@@ -6,10 +6,11 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
+use SwooleCli\PreprocessorTrait\WebUITrait;
 
 class Preprocessor
 {
-    use PreprocessorTrait\WebUITrait;
+    use WebUITrait;
 
     public const VERSION = '1.6';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
