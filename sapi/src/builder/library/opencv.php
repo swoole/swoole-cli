@@ -28,6 +28,7 @@ EOF
         ->withBuildScript(
             <<<EOF
         apk add ccache python3-dev
+        pip3 install numpy -i https://pypi.tuna.tsinghua.edu.cn/simple
         mkdir -p build
         cd  build
 
