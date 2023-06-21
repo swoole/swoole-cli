@@ -13,34 +13,46 @@ run(function () {
     $server = new Server('0.0.0.0', 9502, false);
     $message = <<<EOF
 
-    dashboard  listen http://0.0.0.0:9502
+    web UI:  listen http://0.0.0.0:9502
 
 EOF;
     printf($message);
 
-    $workdir = realpath(__DIR__ . "/../../");
-    $server->handle('/', function ($request, $response) use ($server) {
+
+    $server->handle('/', function ($request, $response) {
+        $response->header('content-type', 'text/html;charset=utf-8');
+        $response->end(file_get_contents(realpath(__DIR__ . '/index.html')));
+    });
+
+    $server->handle('/public/', function (Request $request, Response $response) {
         //https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 
         $request_uri = str_replace('..', '', $request->server['request_uri']);
         $request_uri = str_replace('//', '/', $request_uri);
         $path_info = explode('/', $request_uri);
-        $file = __DIR__ . '/public/' . $request_uri;
+        $file = __DIR__ . $request_uri;
+
         if (isset($path_info[1]) && isset($path_info[2])) {
-            $prefix = '/' . $path_info[1] . '/';
+            $prefix = '/public/' . $path_info[2] . '/';
         } else {
-            $prefix = '/';
+            $prefix = '/public/';
         }
-        if ($prefix == '/js/') {
-            $response->header('content-type', 'application/javascript');
-        } elseif ($prefix == '/css/') {
-            $response->header('content-type', 'text/css');
-        } elseif ($prefix == '/data/') {
+        if ($prefix == '/public/js/') {
+            if (str_ends_with($request_uri, '.js')) {
+                $response->header('content-type', 'application/javascript');
+            } else {
+                $response->header('content-type', 'text/plain');
+            }
+        } elseif ($prefix == '/public/css/') {
+            if (str_ends_with($request_uri, '.css')) {
+                $response->header('content-type', 'text/css');
+            } elseif (str_ends_with($request_uri, '.woff2')) {
+                $response->header('content-type', 'font/woff2');
+            } else {
+                $response->header('content-type', 'application/octet-stream');
+            }
+        } elseif ($prefix == '/public/data/') {
             $response->header('content-type', 'application/json;charset=utf-8');
-        } elseif ($request->server['request_uri'] == '/' || $request->server['request_uri'] == '/index.html') {
-            $response->header('content-type', 'text/html;charset=utf-8');
-            $response->end(file_get_contents(__DIR__ . '/public/index.html'));
-            return null;
         } else {
             $response->header('content-type', 'application/octet-stream');
         }
@@ -50,8 +62,9 @@ EOF;
             $response->status(404);
         }
     });
+
     $server->handle('/api', function (Request $request, Response $response) {
-        var_dump($request->header);
+
         $response->header('Content-Type', 'application/json; charset=utf-8');
         $response->header('access-control-allow-credentials', 'true');
 
@@ -83,7 +96,6 @@ EOF;
         //var_dump($parameter);
 
         $word_dir = realpath(__DIR__ . '/../../');
-        $runtime = realpath($word_dir . '/bin/runtime');
         if ($action === 'changeBranchAction') {
             $branch_name = $parameter['data']['branch_name'];
             $cmd = <<<EOF
@@ -177,7 +189,7 @@ EOF;
         }
     });
 
-    $server->handle('/websocket', function (Request $request, Response $ws) use ($server, $workdir) {
+    $server->handle('/websocket', function (Request $request, Response $ws) use ($server) {
         $ws->upgrade();
         while (true) {
             $frame = $ws->recv();
@@ -215,7 +227,6 @@ EOF;
 
     $server->handle('/stop', function ($request, $response) use ($server) {
         $response->end("<h1>Stop</h1>");
-        $server->fp->fclose();
         $server->shutdown();
     });
 
