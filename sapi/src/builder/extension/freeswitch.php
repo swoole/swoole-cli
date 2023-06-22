@@ -8,8 +8,8 @@ return function (Preprocessor $p) {
         'freeswitc'
     ];
     $ext = (new Extension('freeswitch'))
-        ->withHomePage('https://www.jingjingxyk.com')
-        ->withManual('https://developer.baidu.com/article/detail.html?id=293377')
+        ->withHomePage('http://www.freeswitch.org')
+        ->withManual('http://www.freeswitch.org.cn/')
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_SPEC);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
