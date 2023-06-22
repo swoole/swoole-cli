@@ -10,6 +10,5 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.php.net/manual/zh/book.image.php')
             ->withOptions('--enable-gd --with-jpeg --with-freetype --with-webp --with-avif')
             ->withDependentLibraries('libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif', 'libavif')
-
     );
 };

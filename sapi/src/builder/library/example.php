@@ -10,6 +10,12 @@ return function (Preprocessor $p) {
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
         ->withManual('https://github.com/opencv/opencv.git')
+        ->withDownloadScript(
+            'opencv_contrib',
+            <<<EOF
+                git clone -b 5.x  --depth=1 https://github.com/opencv/opencv_contrib.git
+EOF
+        )
         ->withSkipDownload()
         ->withUntarArchiveCommand('')
         ->withPrefix($opencv_prefix)

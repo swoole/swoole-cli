@@ -170,3 +170,12 @@ define("JEMALLOC_PREFIX", $p->getGlobalPrefix() . '/jemalloc');
 define("TCMALLOC_PREFIX", $p->getGlobalPrefix() . '/tcmalloc');
 
 define("LIBSHARPYUV_PREFIX", $p->getGlobalPrefix() . '/libsharpyuv');
+define("LIBWEBSOCKETS_PREFIX", $p->getGlobalPrefix() . '/libwebsockets');
+define("LIBOPENEXR_PREFIX", $p->getGlobalPrefix() . '/libOpenEXR');
+define("GSTREAMER_PREFIX", $p->getGlobalPrefix() . '/gstreamer');
+define("LIBNICE_PREFIX", $p->getGlobalPrefix() . '/libnice');
+define("LIBSRTP_PREFIX", $p->getGlobalPrefix() . '/libsrtp');
+define("LIBUSRSCTP_PREFIX", $p->getGlobalPrefix() . '/libusrsctp');
+define("LIBMICROHTTPD_PREFIX", $p->getGlobalPrefix() . '/libmicrohttpd');
+define("JANUS_GATEWAY_PREFIX", $p->getGlobalPrefix() . '/janus_gateway');
+define("FREESWITCH_PREFIX", $p->getGlobalPrefix() . '/freeswitch');
