@@ -13,6 +13,7 @@ let gen = (e) => {
     let conf_path = document.querySelector('input[name="conf-path"]')
     let with_dependecny_graph = document.querySelector('select[name="with-dependency-graph"]')
     let with_web_ui = document.querySelector('select[name="with-web-ui"]')
+    let with_swoole_pgsql = document.querySelector('select[name="with-swoole-pgsql"]')
     let cmd = "php prepare.php"
 
     if (os.value === 'macos') {
@@ -58,6 +59,9 @@ let gen = (e) => {
         if (skip_download.value === "0") {
             cmd += "  --skip-download=1"
         }
+    }
+    if (with_swoole_pgsql.value === "1") {
+        cmd += "  --with-swoole-pgsql=" + with_swoole_pgsql.value
     }
 
     let extenion_list_obj = document.querySelectorAll('#all_extentions input[type=checkbox]')
