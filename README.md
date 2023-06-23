@@ -40,7 +40,7 @@
 - [swoole-cli 构建选项文档](docs/options.md)
 - [打包成二进制可执行文件 文档](sapi/samples/sfx/README.md)
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
-- [快速初始化构建环境](sapi/quickstart/README.md)
+- [quickstart](sapi/quickstart/README.md)
 
 ## 注意 experiment_v4.8.x 与主分支的区别
 
@@ -61,6 +61,17 @@ git clone --recursive https://github.com/swoole/swoole-cli.git
 ```shell
 git clone https://github.com/swoole/swoole-cli.git
 git submodule update --init
+```
+
+## 快速准备 PHP 运行时
+
+```shell
+cd swoole-cli
+
+bash setup-php-runtime.sh
+# 或者
+bash setup-php-runtime.sh --mirror china
+
 ```
 
 ## 生成构建脚本
