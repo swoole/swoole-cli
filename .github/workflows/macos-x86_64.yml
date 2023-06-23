@@ -95,6 +95,17 @@ jobs:
       - name: Build
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          brew install  ninja python3 python3-pip  nasm
+          pip3 install meson
+          bash ./make.sh libraw
+          bash ./make.sh libtiff
+          bash ./make.sh lcms2
+          bash ./make.sh imagemagick
+          bash ./make.sh dav1d
+          bash ./make.sh aom
+          bash ./make.sh libgav1
+          bash ./make.sh svt_av1
+          bash ./make.sh libyuv
           bash ./make.sh config
           bash ./make.sh build
           bash ./make.sh archive
