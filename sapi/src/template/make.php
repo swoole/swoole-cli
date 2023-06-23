@@ -180,7 +180,6 @@ foreach ($this->extensionMap as $extension) {
     if ($extension->aliasName) {
         $name = $extension->aliasName;
     }
-
     if ($extension->peclVersion || $extension->enableDownloadScript) {
         echo <<<EOF
     if [[ -d \$EXT_DIR/{$name}/ ]]
@@ -189,7 +188,6 @@ foreach ($this->extensionMap as $extension) {
     fi
     cp -rf {$this->getRootDir()}/ext/{$name} \$EXT_DIR/
 EOF;
-        echo PHP_EOL;
     } else {
         if ($this->buildType == 'dev') {
             echo <<<EOF
@@ -197,9 +195,9 @@ EOF;
     cp -rf {$name} \$TMP_EXT_DIR
     cd \$PHP_SRC_DIR/ext
 EOF;
-            echo PHP_EOL;
         }
     }
+    echo PHP_EOL;
 }
 if ($this->buildType == 'dev') {
     echo <<<EOF
@@ -251,6 +249,7 @@ export_variables() {
 
 make_config() {
     set -x
+    test -d <?= $this->getBuildDir() ?>/php_src && rm -rf <?= $this->getBuildDir() ?>/php_src
     make_php_src
     make_ext
     make_ext_hook
@@ -274,12 +273,7 @@ make_config() {
      export_variables
      echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
      echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
-<?php if ($this->osType !== 'macos') : ?>
-    mv main/php_config.h.in /tmp/cnt
-    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
-    cat /tmp/cnt >> main/php_config.h.in
-    echo -ne '\n#endif\n' >> main/php_config.h.in
-<?php else : ?>
+<?php if ($this->osType == 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
