@@ -163,8 +163,7 @@ export_variables() {
 }
 
 make_config() {
-    set -exu
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    set -x
     make_ext_hook
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
