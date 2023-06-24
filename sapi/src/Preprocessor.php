@@ -431,7 +431,7 @@ class Preprocessor
             $this->checkFileMd5sum($lib->path, $lib->md5sum);
         }
 
-        $skip_download = ($this->getInputOption('skip-download'));
+        $skip_download = ($this->getInputOption('with-skip-download'));
         if (!$skip_download) {
             if (is_file($lib->path) && (filesize($lib->path) != 0)) {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
@@ -478,20 +478,33 @@ EOF;
 
     public function addExtension(Extension $ext): void
     {
-        if (!$this->getInputOption('skip-download')) {
+        if (!$this->getInputOption('with-skip-download')) {
+            if (!empty($ext->url)) {
+                $ext->enableDownloadScript=true;
+            }
             if ($ext->peclVersion || $ext->enableDownloadScript) {
-                if ($ext->enableDownloadScript) {
-                    if (!empty($ext->peclVersion)) {
-                        $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-                    }
-                    if (empty($ext->peclVersion) && empty($ext->file)) {
-                        $ext->file = $ext->name . '.tgz';
-                    }
-                    $ext->path = $this->extensionDir . '/' . $ext->file;
-                } else {
+                if (!empty($ext->peclVersion)) {
                     $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
                     $ext->path = $this->extensionDir . '/' . $ext->file;
                     $ext->url = "https://pecl.php.net/get/{$ext->file}";
+                }
+                if ($ext->enableDownloadScript) {
+                    if (empty($ext->downloadScript)) {
+                        if (empty($ext->file)) {
+                            $ext->file = basename($ext->url);
+                        }
+                    } else {
+                        if (empty($ext->file)) {
+                            $ext->file = $ext->name . '.tgz';
+                        }
+                    }
+                    $ext->path = $this->extensionDir . '/' . $ext->file;
+                }
+
+                // 检查文件的 MD5，若不一致删除后重新下载
+                if (!empty($ext->md5sum) and is_file($ext->path)) {
+                    // 本地文件被修改，MD5 不一致，删除后重新下载
+                    $this->checkFileMd5sum($ext->path, $ext->md5sum);
                 }
 
                 if ($ext->enableDownloadWithMirrorURL && !empty($this->getInputOption('with-download-mirror-url'))) {
@@ -504,8 +517,9 @@ EOF;
                 $workDir = $this->getRootDir();
                 if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
-                        $cacheDir =  $workDir . '/var/tmp/download/ext';
-                        $ext->downloadScript = <<<EOF
+                        if (!empty($ext->downloadScript)) {
+                            $cacheDir =  $workDir . '/var/tmp/download/ext';
+                            $ext->downloadScript = <<<EOF
                                 test -d {$cacheDir} && rm -rf {$cacheDir}
                                 mkdir -p {$cacheDir}
                                 cd {$cacheDir}
@@ -517,19 +531,14 @@ EOF;
 
 
 EOF;
-
-                        $this->execDownloadScript($cacheDir, $ext->downloadScript);
-                    } else {
-                        // 检查文件的 MD5，若不一致删除后重新下载
-                        if (!empty($ext->md5sum) and is_file($ext->path)) {
-                            // 本地文件被修改，MD5 不一致，删除后重新下载
-                            $this->checkFileMd5sum($ext->path, $ext->md5sum);
-                        }
-
-                        if (!is_file($ext->path) || filesize($ext->path) === 0) {
+                            $this->execDownloadScript($cacheDir, $ext->downloadScript);
+                        } else {
                             echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                             $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
                         }
+                    } else {
+                        echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                        $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
                     }
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
@@ -945,7 +954,7 @@ EOF;
 
         $this->binPaths = array_filter(array_unique($this->binPaths));
 
-        if ($this->getInputOption('skip-download')) {
+        if ($this->getInputOption('with-skip-download')) {
             $this->generateLibraryDownloadLinks();
         }
 
