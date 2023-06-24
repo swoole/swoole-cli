@@ -29,13 +29,20 @@ trait DownloadBoxTrait
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
-            if (empty($item->peclVersion) || $item->enableDownloadScript) {
+            if (!empty($item->peclVersion)) {
+                $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
+                $item->path = $this->extensionDir . '/' . $item->file;
+                $item->url = "https://pecl.php.net/get/{$item->file}";
+                $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
+            } elseif ($item->enableDownloadScript && !empty($item->url)) {
+                if (empty($item->file)) {
+                    $item->file = $item->name . '.tgz';
+                }
+                $item->path = $this->extensionDir . '/' . $item->file;
+                $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
+            } else {
                 continue;
             }
-            $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
-            $item->path = $this->extensionDir . '/' . $item->file;
-            $item->url = "https://pecl.php.net/get/{$item->file}";
-            $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
         }
         file_put_contents($this->getRootDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
 
@@ -88,10 +95,10 @@ EOF;
             if (!$item->enableDownloadScript) {
                 continue;
             }
-            if (!empty($item->peclVersion)) {
-                $item->file = $item->name . '-' . $item->peclVersion . '.tgz';
+            if (!empty($item->url)) {
+                continue;
             }
-            if (empty($item->peclVersion) && empty($item->file)) {
+            if (empty($item->file)) {
                 $item->file = $item->name . '.tgz';
             }
             $cacheDir = '${__DIR__}/var/tmp/download/ext';
