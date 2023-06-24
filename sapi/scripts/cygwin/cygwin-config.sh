@@ -24,9 +24,9 @@ cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
 
 cd ${__PROJECT__}/php-src/
 
-export CPPFLAGS="-I/usr/include"
-export CFLAGS=""
-export LDFLAGS="-L/usr/lib"
+# export CPPFLAGS="-I/usr/include"
+# export CFLAGS=""
+# export LDFLAGS="-L/usr/lib"
 
 
 
@@ -71,4 +71,6 @@ test -f Makefile && make clean
     --enable-redis \
     --with-imagick \
     --with-yaml \
-    --with-readline
+    --with-readline \
+    --with-pdo-pgsql \
+    --with-pgsql
