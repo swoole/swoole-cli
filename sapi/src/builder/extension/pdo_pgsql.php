@@ -10,7 +10,6 @@ return function (Preprocessor $p) {
         (new Extension('pdo_pgsql'))
             ->withHomePage('https://www.php.net/pdo_pgsql')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
-            ->withUrl('https://github.com/php/php-src.git ')
             ->withFile('pdo_pgsql-' . $php_version . '.tgz')
             ->withDownloadScript(
                 'pdo_pgsql',
