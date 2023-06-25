@@ -12,6 +12,7 @@ return function (Preprocessor $p) {
         ->withFile('ovs-v3.1.1.tar.gz')
         ->withManual('https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/general.rst')
         ->withPrefix($ovs_prefix)
+        ->enableBuildCached(false)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovs_prefix)
         ->withConfigure(
@@ -31,6 +32,7 @@ return function (Preprocessor $p) {
 
 EOF
         )
+        ->withMakeOptions( " &&  make dist-docs -j {$p->maxJob}")
         ->withPkgName('libofproto')
         ->withPkgName('libopenvswitch')
         ->withPkgName('libovsdb')
