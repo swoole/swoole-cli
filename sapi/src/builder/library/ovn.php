@@ -16,7 +16,8 @@ return function (Preprocessor $p) {
         ->withPrefix($ovn_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovn_prefix)
-        ->withConfigure(
+        ->withBuildCached(false)
+        ->withBuildScript(
             <<<EOF
         set -x
         sh ./boot.sh
@@ -31,6 +32,10 @@ return function (Preprocessor $p) {
         --enable-static=yes \
         --with-ovs-source={$workdir}/ovs/ \
         --with-ovs-build={$workdir}/ovs/
+        make -j {$p->maxJob}
+
+        make dist-docs -j {$p->maxJob}
+        make docs-check -j {$p->maxJob}
 EOF
         )
         ->withPkgName('ovn')

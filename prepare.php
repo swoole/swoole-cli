@@ -117,6 +117,9 @@ export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
 export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_AUTO_UPDATE=1
+
+export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+
 EOF;
         $command = file_get_contents(__DIR__ . '/make.sh');
         $command = $header . PHP_EOL . $command;
@@ -177,6 +180,7 @@ $p->addEndCallback(function () use ($p, $cmd) {
     $header = <<<'EOF'
 #!/bin/env bash
 
+export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
 export cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
 

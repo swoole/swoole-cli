@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $ovs_prefix = OVS_PREFIX;
     $lib = new Library('ovs');
-    $lib->withHomePage('https://gcc.gnu.org/projects/gomp/')
+    $lib->withHomePage('https://github.com/openvswitch/ovs/')
         ->withLicense('https://github.com/openvswitch/ovs/blob/master/LICENSE', Library::LICENSE_APACHE2)
         ->withUrl('https://github.com/openvswitch/ovs/archive/refs/tags/v3.1.1.tar.gz')
         ->withFile('ovs-v3.1.1.tar.gz')
@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
         ->withBuildCached(false)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovs_prefix)
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
         set -x
         ./boot.sh
@@ -29,10 +29,22 @@ return function (Preprocessor $p) {
         --enable-ssl \
         --enable-shared=no \
         --enable-static=yes
+        make -j {$p->maxJob}
+        make install
+        # apk add mandoc man-pages
+        # apk add ghostscript
+        # pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple
+        # pipenv --python 3
+        # pipenv shell
+        # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+        # pipenv install -r Documentation/requirements.txt
+        # pipenv install jinja2==3.0.0
 
+        make dist-docs -j {$p->maxJob}
+        make docs-check -j {$p->maxJob}
 EOF
         )
-        ->withMakeOptions( " &&  make dist-docs -j {$p->maxJob}")
+        ->withMakeOptions( " dist-docs ")
         ->withPkgName('libofproto')
         ->withPkgName('libopenvswitch')
         ->withPkgName('libovsdb')

@@ -69,7 +69,7 @@ class Preprocessor
      * default value : CPU   logical processors
      * @var string
      */
-    protected string $maxJob = '${LOGICAL_PROCESSORS}';
+    public string $maxJob = '${LOGICAL_PROCESSORS}';
 
     /**
      * CPU   logical processors
