@@ -111,32 +111,7 @@ function install_libx264(Preprocessor $p)
 
 function install_numa(Preprocessor $p)
 {
-    $numa_prefix = NUMA_PREFIX;
-    $lib = new Library('numa');
-    $lib->withHomePage('https://github.com/numactl/numactl.git')
-        ->withLicense('https://github.com/numactl/numactl/blob/master/LICENSE.GPL2', Library::LICENSE_GPL)
-        ->withUrl('https://github.com/numactl/numactl/archive/refs/tags/v2.0.16.tar.gz')
-        ->withFile('numa-v2.0.16.tar.gz')
-        ->withManual('https://code.videolan.org/videolan/x264.git')
-        ->withPrefix($numa_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($numa_prefix)
-        ->withConfigure(
-            <<<EOF
-            ./autogen.sh
-            ./configure --help
 
-            ./configure \
-            --prefix={$numa_prefix} \
-            --enable-shared=no \
-            --enable-static=yes \
-
-EOF
-        )
-        ->withPkgName('numa')
-        ->withBinPath($numa_prefix . '/bin/');
-
-    $p->addLibrary($lib);
 }
 
 function install_mp3lame(Preprocessor $p)

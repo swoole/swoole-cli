@@ -148,7 +148,7 @@ function libraries_builder($p)
     install_aom($p);
     install_libavif($p); //依赖 libyuv dav1d
     install_libx264($p);
-    install_($p); //把NUMA看作集群运算的一个紧密耦合的形式 https://baike.baidu.com/item/NUMA/6906025
+    install_numa($p); //把NUMA看作集群运算的一个紧密耦合的形式 https://baike.baidu.com/item/NUMA/6906025
     install_libx265($p);
     install_libde265($p);
     install_svt_av1($p);

@@ -50,7 +50,7 @@ EOF
         ->withPkgName('libovsdb')
         ->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/')
-        ->withDependentLibraries('openssl')
+        ->withDependentLibraries('openssl','dpdk')
     ;
 
     $p->addLibrary($lib);
