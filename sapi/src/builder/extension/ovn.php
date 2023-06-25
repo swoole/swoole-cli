@@ -22,20 +22,10 @@ return function (Preprocessor $p) {
 
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
-                cd {$builddir}/aria2/src
-                cp -f aria2c {$workdir}/bin/
+                cd {$builddir}/ovn/Documentation
+                cp -rf _build {$workdir}/bin/ovn_docs
+EOF;
 
-EOF;
-        if ($p->getOsType() == 'macos') {
-            $cmd .= <<<EOF
-            otool -L {$workdir}/bin/aria2c
-EOF;
-        } else {
-            $cmd .= <<<EOF
-              file {$workdir}/bin/aria2c
-              readelf -h {$workdir}/bin/aria2c
-EOF;
-        }
         return $cmd;
     });
 };

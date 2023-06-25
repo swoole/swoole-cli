@@ -19,7 +19,8 @@ return function (Preprocessor $p) {
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/privoxy
-                cp -f privoxy {$workdir}/bin/
+                cp -rf privoxy {$workdir}/bin/
+                cp -rf doc/webserver {$workdir}/bin/privoxy-docs
 
 
 EOF;

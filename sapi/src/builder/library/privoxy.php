@@ -25,8 +25,10 @@ EOF
             ->withPrefix($privoxy_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($privoxy_prefix)
+            ->withBuildCached(false)
             ->withBuildScript(
                 <<<EOF
+                apk add w3m
                 autoheader
                 autoconf
                 ./configure --help
@@ -42,7 +44,7 @@ EOF
                 --with-openssl \
                 --without-mbedtls \
                 --with-brotli
-                make -j \$cpu_nums
+                make -j {$p->maxJob}
 
 
  EOF
