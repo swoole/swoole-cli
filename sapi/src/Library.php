@@ -27,6 +27,7 @@ class Library extends Project
 
     public string $preInstallDirectory = '';
 
+
     public bool $skipBuildLicense = false;
 
     public bool $skipDownload = false;
@@ -39,7 +40,8 @@ class Library extends Project
 
     public string $enablePkgNames = 'yes';
 
-    public bool $enableBuildCached = true ;
+    public bool $enableBuildCached = true;
+
 
     public function withMirrorUrl(string $url): static
     {
@@ -230,9 +232,9 @@ class Library extends Project
         return $this->label;
     }
 
-    public function enableBuildCached(bool $buildCached): static
+    public function withBuildCached(bool $enableBuildCached): static
     {
-        $this->enableBuildCached = $buildCached;
+        $this->enableBuildCached = $enableBuildCached;
         return $this;
     }
 
