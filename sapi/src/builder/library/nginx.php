@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
         (new Library('nginx'))
             ->withHomePage('https://nginx.org/')
             ->withLicense('https://github.com/nginx/nginx/blob/master/docs/text/LICENSE', Library::LICENSE_SPEC)
-            ->withUrl('https://nginx.org/download/nginx-1.24.0.tar.gz')
+            ->withUrl('https://nginx.org/download/nginx-1.21.0.tar.gz')
             ->withManual('https://github.com/nginx/nginx')
             ->withManual('http://nginx.org/en/docs/configure.html')
             ->withDocumentation('https://nginx.org/en/docs/')
@@ -48,13 +48,17 @@ EOF
             ->withCleanPreInstallDirectory($nginx_prefix)
             ->withConfigure(
                 <<<EOF
+:<<'===EOF==='
              set -x
-            patch -p1 < {$builderDir}/ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_102101.patch
+
+
+            # nginx use PCRE2 library  on  nginx 1.21.5
+            # now nginx is built with the PCRE2 library by default.
 
             # sed -i "50i echo 'stop preprocessor'; exit 3 " ./configure
 
             ./configure --help
-:<<'===EOF==='
+
             # 使用 zlib openssl pcre2 新的源码目录
             mkdir -p {$builderDir}/nginx/openssl
             mkdir -p {$builderDir}/nginx/zlib
@@ -73,13 +77,16 @@ EOF
             --with-pcre={$builderDir}/nginx/pcre2 \
             --with-zlib={$builderDir}/nginx/zlib \
 ===EOF===
+            set -x
+            # patch -p1 < {$builderDir}/ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_102101.patch
 
+            ./configure --help
             PACKAGES=" libxml-2.0 libexslt libxslt openssl zlib"
-            PACKAGES="\$PACKAGES libpcre2-16  libpcre2-32  libpcre2-8   libpcre2-posix"
+            PACKAGES="\$PACKAGES libpcre  libpcre16  libpcre32  libpcrecpp  libpcreposix"
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
-            ./configure \
+             ./configure \
             --prefix={$nginx_prefix} \
             --with-http_ssl_module \
             --with-http_gzip_static_module \
@@ -94,8 +101,8 @@ EOF
             --with-stream_ssl_module \
             --with-threads \
             --with-cc-opt="-static -O2   \$CPPFLAGS " \
-            --with-ld-opt=" -s -static  \$LDFLAGS " \
-            --add-module={$builderDir}/ngx_http_proxy_connect_module/
+            --with-ld-opt="-static  \$LDFLAGS "
+            # --add-module={$builderDir}/ngx_http_proxy_connect_module/
 
 
             #--with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS"
@@ -105,6 +112,6 @@ EOF
             )
             //->withMakeOptions('CFLAGS="-O2 -s" LDFLAGS="-static"')
             ->withBinPath($nginx_prefix . '/bin/')
-            ->withDependentLibraries('libxml2', 'libxslt', 'openssl', 'zlib', 'pcre2', 'ngx_http_proxy_connect_module')
+            ->withDependentLibraries('libxml2', 'libxslt', 'openssl', 'zlib', 'pcre', 'ngx_http_proxy_connect_module')
     );
 };

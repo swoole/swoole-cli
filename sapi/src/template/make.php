@@ -316,7 +316,8 @@ export_variables() {
 make_config() {
 
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-
+    make_ext_hook
+    exit 0
 :<<'_____EO_____'
     = 是最基本的赋值
     := 是覆盖之前的值

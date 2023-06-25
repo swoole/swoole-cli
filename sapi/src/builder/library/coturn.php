@@ -24,7 +24,9 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPrefix($coturn_prefix)
-            ->withConfigure(
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($coturn_prefix)
+            ->withBuildScript(
                 <<<EOF
            set -x
            test -d build  && rm -rf build
@@ -37,14 +39,16 @@ EOF
            -DOpenSSL_ROOT={$openssl_prefix} \
            -DLibevent_ROOT={$libevent_prefix} \
            -DSQLite_DIR={$sqlite3_prefix} \
-           -DBUILD_STATIC_LIBS=ON \
-           -DPostgreSQL_DIR={$pgsql_prefix} \
+           -DBUILD_STATIC_LIBS=ON
+           # -DPostgreSQL_DIR={$pgsql_prefix} \
 
            #  hiredis
            # -Dhiredis_DIR={$sqlite3_prefix} \
+
+           cmake --build . --target install
 EOF
             )
             ->withBinPath($coturn_prefix . '/bin/')
-            ->withDependentLibraries('libevent', 'openssl', 'sqlite3', 'pgsql') # 'hiredis'
+            ->withDependentLibraries('libevent', 'openssl', 'sqlite3' ) # 'hiredis' 'pgsql'
     );
 };
