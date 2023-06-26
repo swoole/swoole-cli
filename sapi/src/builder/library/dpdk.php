@@ -10,6 +10,7 @@ return function (Preprocessor $p) {
             ->withHomePage('http://core.dpdk.org/')
             ->withLicense('https://core.dpdk.org/contribute/', Library::LICENSE_BSD)
             ->withUrl('https://fast.dpdk.org/rel/dpdk-23.03.tar.xz')
+            ->withManual('https://github.com/DPDK/dpdk.git')
             ->withManual('http://core.dpdk.org/doc/')
             ->withManual('https://core.dpdk.org/doc/quick-start/')
             ->withUntarArchiveCommand('xz')
@@ -33,7 +34,8 @@ return function (Preprocessor $p) {
             -Ddefault_library=static \
             -Db_staticpic=true \
             -Db_pie=true \
-            -Dprefer_static=true
+            -Dprefer_static=true \
+            -Dexamples=all
 
             # meson  build
 
@@ -44,6 +46,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withBinPath($dpdk_prefix . '/bin/')
-            ->withDependentLibraries('jansson','zlib','libarchive','numa','libbpf') //
+            ->withDependentLibraries('jansson','zlib','libarchive','numa') //'libbpf'
     );
 };
