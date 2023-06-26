@@ -132,7 +132,9 @@ class Preprocessor
 
     protected string $configureVarables;
 
-    protected string $buildType='release';
+    protected string $buildType = 'release';
+
+    protected string $proxyConfig = '';
 
     protected function __construct()
     {
@@ -325,13 +327,24 @@ class Preprocessor
 
     public function setBuildType(string $buildType): static
     {
-        $this->buildType=$buildType;
+        $this->buildType = $buildType;
         return $this;
     }
 
     public function getBuildType(): string
     {
         return $this->buildType;
+    }
+
+    public function setProxyConfig(string $shell): static
+    {
+        $this->proxyConfig = $shell;
+        return $this;
+    }
+
+    public function getProxyConfig(): string
+    {
+        return $this->proxyConfig;
     }
 
     public function donotInstallLibrary()
@@ -357,6 +370,7 @@ class Preprocessor
         } else {
             $cmd = "curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry}  -Lo '{$file}' '{$url}' ";
         }
+        $cmd = $this->proxyConfig . PHP_EOL . $cmd;
         echo $cmd;
         echo PHP_EOL;
         echo `$cmd`;
@@ -381,6 +395,7 @@ class Preprocessor
      */
     protected function execDownloadScript(string $cacheDir, string $downloadScript): void
     {
+        $downloadScript = $this->proxyConfig . PHP_EOL . $downloadScript;
         echo PHP_EOL;
         echo $downloadScript;
         echo PHP_EOL;
@@ -477,7 +492,7 @@ EOF;
     {
         if (!$this->getInputOption('with-skip-download')) {
             if (!empty($ext->url)) {
-                $ext->enableDownloadScript=true;
+                $ext->enableDownloadScript = true;
             }
             if ($ext->peclVersion || $ext->enableDownloadScript) {
                 if (!empty($ext->peclVersion)) {
@@ -515,7 +530,7 @@ EOF;
                 if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
                         if (!empty($ext->downloadScript)) {
-                            $cacheDir =  $workDir . '/var/tmp/download/ext';
+                            $cacheDir = $workDir . '/var/tmp/download/ext';
                             $ext->downloadScript = <<<EOF
                                 test -d {$cacheDir} && rm -rf {$cacheDir}
                                 mkdir -p {$cacheDir}
