@@ -51,6 +51,7 @@ EOF
 
 
             )
+            ->withPkgName('libarchive')
             ->withBinPath($libarchive_prefix . '/bin/')
             ->withDependentLibraries(
                 'openssl',

@@ -23,6 +23,6 @@ EOF
             ->withMakeOptions('BUILD_STATIC_ONLY=y OBJDIR=build')
             ->withMakeInstallOptions('DESTDIR='.$libbpf_prefix)
             ->withPkgName('libbpf')
-            ->withDependentLibraries('zlib','libelf')
+            ->withDependentLibraries('zlib','libelf') //
     );
 };

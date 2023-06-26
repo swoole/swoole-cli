@@ -16,6 +16,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPrefix($libelf_prefix)
+            ->withBuildCached(false)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF
@@ -28,8 +29,8 @@ EOF
 
 EOF
             )
-            ->withMakeOptions('all-local')
-            ->withMakeInstallCommand('install-local')
+            ->withMakeOptions('all')
+            //->withMakeInstallCommand('install-local')
             ->withPkgName('libelf')
     );
 };

@@ -39,11 +39,11 @@ return function (Preprocessor $p) {
 
             ninja -C build
             ninja -C build install
-            ldconfig
-            pkg-config --modversion libdpdk
+            # ldconfig
+            # pkg-config --modversion libdpdk
 EOF
             )
             ->withBinPath($dpdk_prefix . '/bin/')
-            ->withDependentLibraries('jansson','zlib','libarchive','numa') //'libbpf'
+            ->withDependentLibraries('jansson','zlib','libarchive','numa','libbpf') //
     );
 };
