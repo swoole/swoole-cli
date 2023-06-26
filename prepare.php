@@ -38,6 +38,17 @@ if ($p->getInputOption('with-build-type')) {
 define('SWOOLE_CLI_BUILD_TYPE', $buildType);
 define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
+if ($p->getInputOption('with-http-proxy')) {
+    $http_proxy = $p->getInputOption('with-http-proxy');
+    define('SWOOLE_CLI_HTTP_PROXY_URL', $http_proxy);
+    $proxyConfig = <<<EOF
+export HTTP_PROXY={$http_proxy}
+export HTTPS_PROXY={$http_proxy}
+export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+export NO_PROXY="\${NO_PROXY},127.0.0.1,localhost"
+EOF;
+    $p->setProxyConfig($proxyConfig);
+}
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
