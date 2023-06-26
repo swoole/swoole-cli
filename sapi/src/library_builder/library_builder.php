@@ -784,4 +784,6 @@ function libraries_builder($p)
         #  参考 https://blog.csdn.net/10km/article/details/82931978
 
      */
+
+    # cmake module example  https://github.com/ceph/ceph/tree/main/cmake/modules
 }

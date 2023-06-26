@@ -154,8 +154,8 @@ if ($p->getOsType() == 'linux') {
     $cmd .= <<<'EOF'
 if test -f /etc/os-release; then
 {
-    alpine=$(cat /etc/os-release | grep "ID=alpine" | wc -l)
-    if test $alpine -eq 1  ;then
+    OS_RELEASE=$(cat /etc/os-release | grep "^ID=" | sed 's/ID=//g')
+    if test $OS_RELEASE = alpine  ;then
     {
         meson=$(which meson | wc -l )
         if test $meson -ne 1 ;then
@@ -164,15 +164,41 @@ if test -f /etc/os-release; then
              apk add yasm nasm
              pip3 install meson virtualenv pipenv -i https://pypi.tuna.tsinghua.edu.cn/simple
              # git config --global --add safe.directory /work
-
         }
         fi
+    }
+    elif test $OS_RELEASE = ubuntu -o test $OS_RELEASE = debian  ;then
+    {
+            meson=$(which meson | wc -l )
+            if test $meson -ne 1 ;then
+            {
+                apt install -y python3 python3-pip ninja-build  gn zip unzip p7zip lzip  golang flex
+                apt install -y yasm nasm
+                pip3 install meson virtualenv pipenv -i https://pypi.tuna.tsinghua.edu.cn/simple
+                # git config --global --add safe.directory /work
+            }
+            fi
     }
     fi
 }
 fi
+     # GN=generate-ninja
 
 EOF;
+}
+
+if ($p->getInputOption('with-http-proxy')) {
+    $http_proxy = $p->getInputOption('with-http-proxy');
+    define('X_HTTP_PROXY_URL', $http_proxy);
+    $proxyConfig = <<<EOF
+export https_proxy={$http_proxy}
+export http_proxy={$http_proxy}
+export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+export NO_PROXY="\${NO_PROXY},127.0.0.1,localhost"
+export NO_PROXY="\${NO_PROXY},.aliyuncs.com,.taobao.org,.aliyun.com,cdn.unrealengine.com"
+export NO_PROXY="\${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+EOF;
+    $p->setProxyConfig($proxyConfig);
 }
 
 
@@ -186,6 +212,7 @@ export cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 
 EOF;
 
+    $header = $header . PHP_EOL . $p->getProxyConfig() . PHP_EOL;
     $command = file_get_contents(__DIR__ . '/make.sh');
     $command = $header . PHP_EOL . $cmd . PHP_EOL . $command;
     file_put_contents(__DIR__ . '/make.sh', $command);

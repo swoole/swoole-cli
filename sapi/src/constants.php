@@ -181,3 +181,4 @@ define("JANUS_GATEWAY_PREFIX", $p->getGlobalPrefix() . '/janus_gateway');
 define("FREESWITCH_PREFIX", $p->getGlobalPrefix() . '/freeswitch');
 define("LIBBPF_PREFIX", $p->getGlobalPrefix() . '/libbpf');
 define("LIBELF_PREFIX", $p->getGlobalPrefix() . '/libelf');
+define("CEPH_PREFIX", $p->getGlobalPrefix() . '/ceph');
