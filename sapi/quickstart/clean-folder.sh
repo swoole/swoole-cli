@@ -42,6 +42,9 @@ case $GIT_BRANCH in
 'build_native_php_sfx_micro')
   ACTION="delete"
   ;;
+'new_dev')
+  ACTION="delete"
+  ;;
 *)
   echo 'no need delete ext '
   ;;
