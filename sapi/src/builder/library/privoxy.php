@@ -26,7 +26,7 @@ EOF
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($privoxy_prefix)
             ->withBuildCached(false)
-            ->withBuildScript(
+            ->withConfigure(
                 <<<EOF
                 apk add w3m   docbook2x
                 autoheader
