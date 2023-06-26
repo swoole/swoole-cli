@@ -34,9 +34,9 @@ with-skip-download
 ----
 跳过下载依赖库
 
-> 会自动生成，待下载链接地址
-> 链接地址生成在 项目根目录下的 `var` 目录
-> 依赖 aria2
+> 跳过下载依赖库，自动生成待下载链接地址的种子文件<br/>
+> 种子文件位于本项目的 `var` 目录 <br/>
+> 种子文件的下载依赖 aria2
 
 ```shell
 ./prepare.php --with-skip-download=yes --without-docker
