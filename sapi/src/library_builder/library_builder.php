@@ -399,7 +399,6 @@ function libraries_builder($p)
     }
 
     if ($p->getInputOption('with-valgrind') == 'yes') {
-        echo 111111111111111 . PHP_EOL;
         install_valgrind($p); //Valgrind是一款用于内存调试、内存泄漏检测以及性能分析的软件开发工具。
     }
     if ($p->getInputOption('with-capstone') == 'yes') {
