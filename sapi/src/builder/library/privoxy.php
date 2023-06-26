@@ -28,7 +28,7 @@ EOF
             ->withBuildCached(false)
             ->withBuildScript(
                 <<<EOF
-                apk add w3m    docbook2x
+                apk add w3m   docbook2x
                 autoheader
                 autoconf
                 ./configure --help
@@ -47,10 +47,6 @@ EOF
                 --without-mbedtls \
                 --with-brotli \
                 --with-docbook=yes
-                make -j {$p->maxJob}
-                make install
-
-
  EOF
             )
             ->withDependentLibraries('openssl', 'pcre', 'zlib', 'brotli')
