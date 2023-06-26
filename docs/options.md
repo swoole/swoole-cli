@@ -27,7 +27,8 @@ SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
 
 >
 参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes ./prepare.php --with-skip-download=no`
-，有效的值为：`--with-skip-download=no`，环境变量 `SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes` 无效
+，有效的值为：`--with-skip-download=no`
+，环境变量 `SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes` 无效
 
 with-skip-download
 ----
@@ -144,5 +145,14 @@ with-parallel-jobs
 
 ```shell
 php ./prepare.php --with-parallel-jobs=8
+```
+
+with-http-proxy
+----
+使用HTTP代理下载扩展和扩展依赖库
+需要提前准备好代理
+
+```shell
+php ./prepare.php --with-http-proxy=http://192.168.3.26:8015
 ```
 

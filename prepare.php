@@ -83,6 +83,18 @@ if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
+if ($p->getInputOption('with-http-proxy')) {
+    $http_proxy = $p->getInputOption('with-http-proxy');
+    define('PHP_CLI_HTTP_PROXY_URL', $http_proxy);
+    $proxyConfig = <<<EOF
+export HTTP_PROXY={$http_proxy}
+export HTTPS_PROXY={$http_proxy}
+export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+export NO_PROXY="\${NO_PROXY},127.0.0.1,localhost"
+EOF;
+    $p->setProxyConfig($proxyConfig);
+}
+
 if ($p->getOsType() == 'macos') {
     // -lintl -Wl,-framework -Wl,CoreFoundation
     //$p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup');
@@ -185,20 +197,6 @@ fi
      # GN=generate-ninja
 
 EOF;
-}
-
-if ($p->getInputOption('with-http-proxy')) {
-    $http_proxy = $p->getInputOption('with-http-proxy');
-    define('X_HTTP_PROXY_URL', $http_proxy);
-    $proxyConfig = <<<EOF
-export https_proxy={$http_proxy}
-export http_proxy={$http_proxy}
-export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
-export NO_PROXY="\${NO_PROXY},127.0.0.1,localhost"
-export NO_PROXY="\${NO_PROXY},.aliyuncs.com,.taobao.org,.aliyun.com,cdn.unrealengine.com"
-export NO_PROXY="\${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
-EOF;
-    $p->setProxyConfig($proxyConfig);
 }
 
 
