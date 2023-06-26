@@ -17,14 +17,19 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
              ./configure --help
+            PACKAGES="\$PACKAGES openssl gmp"
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             ./configure \
             --prefix={$nettle_prefix} \
             --enable-static \
             --disable-shared \
-            --enable-mini-gmp
+            --enable-mini-gmp  \
+            --enable-openssl
 EOF
             )
             ->withPkgName('nettle')
-            ->withDependentLibraries('gmp')
+            ->withDependentLibraries('gmp','openssl')
     );
 };

@@ -23,6 +23,9 @@ return function (Preprocessor $p) {
             # pipenv install meson pyelftools
             # apk add bsd-compat-headers
             test -d build && rm -rf build
+            meson  -h
+            meson setup -h
+            meson configure -h
             meson setup  build \
             -Dprefix={$dpdk_prefix} \
             -Dbackend=ninja \
@@ -41,6 +44,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withBinPath($dpdk_prefix . '/bin/')
-            ->withDependentLibraries('jansson','zlib',) //'numa','libarchive',
+            ->withDependentLibraries('jansson','zlib','libarchive','numa') //'libbpf'
     );
 };

@@ -179,3 +179,5 @@ define("LIBUSRSCTP_PREFIX", $p->getGlobalPrefix() . '/libusrsctp');
 define("LIBMICROHTTPD_PREFIX", $p->getGlobalPrefix() . '/libmicrohttpd');
 define("JANUS_GATEWAY_PREFIX", $p->getGlobalPrefix() . '/janus_gateway');
 define("FREESWITCH_PREFIX", $p->getGlobalPrefix() . '/freeswitch');
+define("LIBBPF_PREFIX", $p->getGlobalPrefix() . '/libbpf');
+define("LIBELF_PREFIX", $p->getGlobalPrefix() . '/libelf');

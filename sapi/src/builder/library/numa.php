@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/numactl/numactl/blob/master/LICENSE.GPL2', Library::LICENSE_GPL)
         ->withUrl('https://github.com/numactl/numactl/archive/refs/tags/v2.0.16.tar.gz')
         ->withFile('numa-v2.0.16.tar.gz')
-        ->withManual('https://code.videolan.org/videolan/x264.git')
+        ->withManual('https://github.com/numactl/numactl/blob/master/INSTALL.md')
         ->withPrefix($numa_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($numa_prefix)
@@ -22,7 +22,7 @@ return function (Preprocessor $p) {
             ./configure \
             --prefix={$numa_prefix} \
             --enable-shared=no \
-            --enable-static=yes \
+            --enable-static=yes
 
 EOF
         )

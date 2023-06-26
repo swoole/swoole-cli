@@ -1444,61 +1444,12 @@ function install_tcmalloc($p)
 
 function install_libelf(Preprocessor $p)
 {
-    $p->addLibrary(
-        (new Library('libelf'))
-            ->withHomePage('https://github.com/WolfgangSt/libelf.git')
-            ->withLicense('https://github.com/WolfgangSt/libelf/blob/master/COPYING.LIB', Library::LICENSE_GPL)
-            ->withUrl('https://github.com/libbpf/libbpf/archive/refs/tags/v1.1.0.tar.gz')
-            ->withFile('libbpf-v1.1.0.tar.gz')
-            ->withManual('https://github.com/WolfgangSt/libelf.git')
-            ->withPrefix('/usr/libelf')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-                pwd
-                test -d {$p->getBuildDir()}/libelf && rm -rf {$p->getBuildDir()}/libelf
-                cp -rf {$p->getWorkDir()}/pool/lib/libelf {$p->getBuildDir()}/
-                cd {$p->getBuildDir()}/libelf
-                ./configure --help
-                ./configure --prefix=/usr/libelf \
-                --enable-compat \
-                --enable-shared=no
 
-EOF
-            )
-            ->withMakeInstallCommand('install-local')
-            ->withPkgName('libelf')
-    );
 }
 
 function install_libbpf(Preprocessor $p)
 {
-    $p->addLibrary(
-        (new Library('libbpf'))
-            ->withHomePage('https://github.com/libbpf/libbpf.git')
-            ->withLicense('https://github.com/libbpf/libbpf/blob/master/LICENSE.BSD-2-Clause', Library::LICENSE_LGPL)
-            ->withUrl('https://github.com/libbpf/libbpf/archive/refs/tags/v1.1.0.tar.gz')
-            ->withFile('libbpf-v1.1.0.tar.gz')
-            ->withManual('https://libbpf.readthedocs.io/en/latest/libbpf_build.html')
-            ->withPrefix('/usr/libbpf')
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-                cd src
-                BUILD_STATIC_ONLY=y  make
-                exit 0
-                mkdir build /usr/libbpf
-                PKG_CONFIG_PATH=/usr/libbpf/lib64/pkgconfig
-                BUILD_STATIC_ONLY=y \
-                OBJDIR=build \
-                DESTDIR=/usr/libbpf \
-                make install
-                eixt 0
 
-EOF
-            )
-            ->withPkgName('libbpf')
-    );
 }
 
 function install_capstone(Preprocessor $p)
