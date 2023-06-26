@@ -28,23 +28,27 @@ EOF
             ->withBuildCached(false)
             ->withBuildScript(
                 <<<EOF
-                apk add w3m
+                apk add w3m    docbook2x
                 autoheader
                 autoconf
                 ./configure --help
                 set -x
                 PACKAGES="openssl zlib"
-                PACKAGES="\$PACKAGES libpcre libbrotlicommon  libbrotlidec  libbrotlienc "
+                PACKAGES="\$PACKAGES  libbrotlicommon  libbrotlidec  libbrotlienc "
+                PACKAGES="\$PACKAGES libpcre  libpcre16  libpcre32  libpcrecpp  libpcreposix"
                 CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
                 LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES )" \
                 LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
                 PCRE_STATIC=YES \
                 ./configure \
+                --prefix={$privoxy_prefix} \
                 --enable-static-linking \
                 --with-openssl \
                 --without-mbedtls \
-                --with-brotli
+                --with-brotli \
+                --with-docbook=yes
                 make -j {$p->maxJob}
+                make install
 
 
  EOF
