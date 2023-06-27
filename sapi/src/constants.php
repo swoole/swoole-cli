@@ -182,3 +182,4 @@ define("FREESWITCH_PREFIX", $p->getGlobalPrefix() . '/freeswitch');
 define("LIBBPF_PREFIX", $p->getGlobalPrefix() . '/libbpf');
 define("LIBELF_PREFIX", $p->getGlobalPrefix() . '/libelf');
 define("CEPH_PREFIX", $p->getGlobalPrefix() . '/ceph');
+define("MONGODB_C_DRIVER_PREFIX", $p->getGlobalPrefix() . '/mongo_c_driver');
