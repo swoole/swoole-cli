@@ -82,7 +82,10 @@ libpq5 (如果编译pgsql扩展)
 
 ```shell
 git clone --recursive https://github.com:swoole/swoole-cli.git
-git submodule update --init
+
+cd swoole-cli
+
+# git submodule update --init
 
 bash ./sapi/scripts/cygwin/install-re2c.sh
 
@@ -114,4 +117,3 @@ bash ./sapi/scripts/cygwin/cygwin-archive.sh
    ，并将相同版本（如8.1.12）php-src中`ext`目录下的`pgsql` `pdo_pgsql`
    两个文件夹拷贝到当前项目的ext目录下，再执行构建脚本
 
-## [ windows cygwin 环境 PHP 构建步骤 ](/sapi/scripts/cygwin/README.md)
