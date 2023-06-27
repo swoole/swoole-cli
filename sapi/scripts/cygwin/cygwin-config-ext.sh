@@ -89,6 +89,6 @@ if [ ! -d $ROOT/ext/pgsql ]; then
 fi
 
 cd $ROOT
-cp -f $ROOT/php-src/Zend/zend_vm_gen.php /Zend/
+cp -f $ROOT/php-src/Zend/zend_vm_gen.php $ROOT/Zend/
 
 cd $ROOT
