@@ -80,11 +80,14 @@ tar -zxvf php-${PHP_VERSION}.tar.gz
 cd pool/ext
 
 if [ ! -d $ROOT/ext/pdo_pgsql ]; then
-  mv pdo_pgsql $ROOT/ext/pdo_pgsql
+  mv php-src/ext/pdo_pgsql $ROOT/ext/pdo_pgsql
 fi
 
 if [ ! -d $ROOT/ext/pgsql ]; then
-  mv pgsql $ROOT/ext/pgsql
+  mv php-src/ext/pgsql $ROOT/ext/pgsql
 fi
+
+cd $ROOT
+cp -f php-src/Zend/zend_vm_gen.php /Zend/
 
 cd $ROOT
