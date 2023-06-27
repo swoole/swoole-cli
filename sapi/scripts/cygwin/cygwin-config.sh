@@ -11,7 +11,6 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-
 mkdir -p ${__PROJECT__}/bin/
 # cp -f ${__PROJECT__}/php-src/ext/openssl/config0.m4  ${__PROJECT__}/php-src/ext/openssl/config.m4
 
@@ -41,7 +40,6 @@ test -f Makefile && make clean
   --enable-mbstring \
   --enable-ctype \
   --with-zlib \
-  --with-zip \
   --enable-posix \
   --enable-sockets \
   --enable-pdo \
@@ -67,3 +65,5 @@ test -f Makefile && make clean
   --with-readline \
   --with-pdo-pgsql \
   --with-pgsql
+
+#   --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)
