@@ -23,7 +23,7 @@
 ### msys2 终端下
 
 ```shell
-# 换源 （非中国大陆地区，不需要执行此条命令）
+# 换源 （ 不换源，不需要执行此条命令）
 sed -i "s#https\?://mirror.msys2.org/#https://mirrors.tuna.tsinghua.edu.cn/msys2/#g" /etc/pacman.d/mirrorlist*
 
 # 更新源
