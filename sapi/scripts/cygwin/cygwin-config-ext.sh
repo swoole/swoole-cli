@@ -75,7 +75,8 @@ if [ ! -f php-${PHP_VERSION}.tar.gz ]; then
 fi
 
 test -d php-src && rm -rf php-src
-tar -zxvf php-${PHP_VERSION}.tar.gz
+mkdir -p php-src
+tar --strip-components=1 -C  php-src php-${PHP_VERSION}.tar.gz
 
 cd $ROOT
 
