@@ -77,17 +77,17 @@ fi
 test -d php-src && rm -rf php-src
 tar -zxvf php-${PHP_VERSION}.tar.gz
 
-cd pool/ext
+cd $ROOT
 
 if [ ! -d $ROOT/ext/pdo_pgsql ]; then
-  mv php-src/ext/pdo_pgsql $ROOT/ext/pdo_pgsql
+  mv $ROOT/php-src/ext/pdo_pgsql $ROOT/ext/pdo_pgsql
 fi
 
 if [ ! -d $ROOT/ext/pgsql ]; then
-  mv php-src/ext/pgsql $ROOT/ext/pgsql
+  mv $ROOT/php-src/ext/pgsql $ROOT/ext/pgsql
 fi
 
 cd $ROOT
-cp -f php-src/Zend/zend_vm_gen.php /Zend/
+cp -f $ROOT/php-src/Zend/zend_vm_gen.php /Zend/
 
 cd $ROOT
