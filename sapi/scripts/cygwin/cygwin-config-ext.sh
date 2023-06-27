@@ -90,5 +90,5 @@ fi
 
 cd $ROOT
 cp -f $ROOT/php-src/Zend/zend_vm_gen.php $ROOT/Zend/
-
+ls -lh $ROOT/Zend/zend_vm_gen.php
 cd $ROOT
