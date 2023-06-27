@@ -12,11 +12,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 ROOT=${__PROJECT__}
 
-<<<<<<< HEAD
-
-=======
-PHP_VERSION='8.1.12'
->>>>>>> build_native_php
+PHP_VERSION='8.2.7'
 REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
@@ -75,5 +71,16 @@ if [ ! -d $ROOT/ext/swoole ]; then
   mv swoole-${SWOOLE_VERSION} $ROOT/ext/swoole
 fi
 
-cd ${ROOT}
+cd $ROOT
 
+# download php-src source code
+
+if [ ! -f php-${PHP_VERSION}.tar.gz ]; then
+  wget -O php-${PHP_VERSION}.tar.gz https://github.com/php/php-src/archive/refs/tags/php-${PHP_VERSION}.tar.gz
+fi
+
+test -d php-src && rm -rf php-src
+mkdir -p php-src
+tar --strip-components=1 -C php-src -xf php-${PHP_VERSION}.tar.gz
+
+cd $ROOT
