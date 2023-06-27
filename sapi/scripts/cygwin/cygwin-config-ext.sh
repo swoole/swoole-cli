@@ -13,7 +13,7 @@ cd ${__PROJECT__}
 
 ROOT=${__PROJECT__}
 
-PHP_VERSION='8.1.12'
+PHP_VERSION='8.2.7'
 REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
@@ -63,7 +63,6 @@ if [ ! -d $ROOT/ext/imagick ]; then
   mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
 fi
 
-
 if [ ! -d $ROOT/ext/swoole ]; then
   if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
     wget -O swoole-${SWOOLE_VERSION}.tgz https://github.com/swoole/swoole-src/archive/refs/tags/${SWOOLE_VERSION}.tar.gz
@@ -72,5 +71,17 @@ if [ ! -d $ROOT/ext/swoole ]; then
   tar --strip-components=1 -C swoole-${SWOOLE_VERSION} -xf swoole-${SWOOLE_VERSION}.tgz
   mv swoole-${SWOOLE_VERSION} $ROOT/ext/swoole
 fi
+
+cd $ROOT
+
+# download php-src source code
+
+if [ ! -f php-${PHP_VERSION}.tar.gz ]; then
+  wget -O php-${PHP_VERSION}.tar.gz https://github.com/php/php-src/archive/refs/tags/php-${PHP_VERSION}.tar.gz
+fi
+
+test -d php-src && rm -rf php-src
+mkdir -p php-src
+tar --strip-components=1 -C php-src -xf php-${PHP_VERSION}.tar.gz
 
 cd $ROOT

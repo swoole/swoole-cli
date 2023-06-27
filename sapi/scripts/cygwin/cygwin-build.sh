@@ -22,3 +22,5 @@ cp -f ${__PROJECT__}/php-src/sapi/cli/php.exe ${__PROJECT__}/bin/
 cp -f ${__PROJECT__}/php-src/sapi/cli/php.exe ${__PROJECT__}/bin/php-cli.exe
 
 ${__PROJECT__}/bin/php-cli.exe -v
+${__PROJECT__}/bin/php-cli.exe -m
+${__PROJECT__}/bin/php-cli.exe --ri swoole

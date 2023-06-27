@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
     */
 
     $options = ' --with-libxml ';
-    $options .= ' --with-libxml-dir=' . LIBXML2_PREFIX;
+    # $options .= ' --with-libxml-dir=' . LIBXML2_PREFIX;
     $p->addExtension(
         (new Extension('libxml'))
             ->withHomePage('https://www.php.net/libxml')
