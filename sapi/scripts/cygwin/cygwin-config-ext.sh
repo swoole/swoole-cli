@@ -82,6 +82,7 @@ fi
 
 test -d php-src && rm -rf php-src
 mkdir -p php-src
+
 tar --strip-components=1 -C php-src -xf php-${PHP_VERSION}.tar.gz
 
 cd $ROOT
