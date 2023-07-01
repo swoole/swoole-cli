@@ -14,3 +14,9 @@
 
 ```
 
+## 其他
+
+1. [windows build native php](./windows-native.md)
+1. [install msys2 ](./install-msys2.md)
+
+
