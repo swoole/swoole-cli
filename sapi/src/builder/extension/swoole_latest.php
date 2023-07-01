@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'pgsql'];
+    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'pgsql', 'unixODBC'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --enable-swoole-pgsql --enable-swoole-coro-time ';
@@ -32,7 +32,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withManual('https://wiki.swoole.com/#/')
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo', 'unixODBC')
+        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo',)
         ->withAliasName('swoole');
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
