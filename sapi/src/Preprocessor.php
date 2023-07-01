@@ -85,7 +85,7 @@ class Preprocessor
      * @var array|string[]
      */
     protected array $extEnabled = [
-        'opcache',
+        //'opcache',
         'curl',
         'iconv',
         'bz2',
