@@ -13,10 +13,9 @@ return function (Preprocessor $p) {
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
-
+    $options .= ' --enable-swoole-pgsql';
     if ($p->getInputOption('with-swoole-pgsql')) {
-        $options .= ' --enable-swoole-pgsql';
-        $depends[] = 'pgsql';
+        $options .= ' ';
     }
 
     $ext = (new Extension('swoole_latest'))
