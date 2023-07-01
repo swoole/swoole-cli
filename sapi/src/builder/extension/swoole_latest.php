@@ -13,7 +13,8 @@ return function (Preprocessor $p) {
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
-    $options .= ' --enable-swoole-pgsql';
+    $options .= ' --enable-swoole-pgsql ';
+    $options .= ' --with-swoole-odbc ';
     if ($p->getInputOption('with-swoole-pgsql')) {
         $options .= ' ';
     }
@@ -31,7 +32,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withManual('https://wiki.swoole.com/#/')
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo')
+        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo', 'unixODBC')
         ->withAliasName('swoole');
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
