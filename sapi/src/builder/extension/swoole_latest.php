@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
     $options .= ' --enable-swoole-pgsql ';
-    $options .= ' --with-swoole-odbc ';
+    $options .= ' --with-swoole-odbc=unixODBC ';
     if ($p->getInputOption('with-swoole-pgsql')) {
         $options .= ' ';
     }
