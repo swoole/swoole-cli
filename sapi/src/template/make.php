@@ -24,6 +24,7 @@ OPTIONS="--disable-all \
 --disable-cgi  \
 --enable-shared=no \
 --enable-static=yes \
+--without-valgrind \
 --enable-cli  \
 --disable-phpdbg \
 <?php foreach ($this->extensionList as $item) : ?>
