@@ -40,5 +40,9 @@ EOF
 EOF
             )
             ->withDependentLibraries('readline', 'libiconv')
+            ->withBinPath($odbc_prefix . '/bin/')
+            ->withPkgName('odbc')
+            ->withPkgName('odbccr')
+            ->withPkgName('odbcinst')
     );
 };
