@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('unixODBC'))
             ->withHomePage('https://github.com/lurcher/unixODBC')
-            ->withLicense('https://github.com/lurcher/unixODBC/blob/master/LICENSE', Extension::LICENSE_LGPL)
+            ->withLicense('https://github.com/lurcher/unixODBC/blob/master/LICENSE', Library::LICENSE_LGPL)
             ->withUrl('https://github.com/lurcher/unixODBC/releases/download/2.3.11/unixODBC-2.3.11.tar.gz')
             ->withPrefix($odbc_prefix)
             ->withconfigure(
@@ -40,5 +40,9 @@ EOF
 EOF
             )
             ->withDependentLibraries('readline', 'libiconv')
+            ->withBinPath($odbc_prefix . '/bin/')
+            ->withPkgName('odbc')
+            ->withPkgName('odbccr')
+            ->withPkgName('odbcinst')
     );
 };
