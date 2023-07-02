@@ -38,4 +38,4 @@ apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld li
 apk add bash p7zip  zip unzip flex  pkgconf ca-certificates
 # apk add bash 7zip
 apk add wget git curl
-apk add libc++-static
+apk add libc++-static libltdl-static

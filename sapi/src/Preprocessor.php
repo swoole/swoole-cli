@@ -85,7 +85,7 @@ class Preprocessor
      * @var array|string[]
      */
     protected array $extEnabled = [
-        'opcache',
+        //'opcache', //需要修改源码才能实现
         'curl',
         'iconv',
         'bz2',
@@ -921,7 +921,6 @@ EOF;
             }
         }
 
-        $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_filter(array_unique($this->pkgConfigPaths));
 
         if ($this->getOsType() == 'macos') {

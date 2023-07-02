@@ -14,6 +14,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
+          env
           ipconfig
           uname -a
           pwd
@@ -21,7 +22,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Prepare submodule
         run: |
-          env
+          ipconfig /all
           # git submodule update --init
       - name: Cache cygwin packages
         id: cache-cygwin
@@ -32,10 +33,11 @@ jobs:
           path: C:/cygwin-packages
           key: ${{ runner.os }}-build-${{ env.cache-name }}
       - name: Install deps
-        uses: cygwin/cygwin-install-action@v2
+        uses: cygwin/cygwin-install-action@v4
         with:
-          platform: x64
-          packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel zip unzip libpq5 libpq-devel
+          platform: x86_64
+          packages: make git curl wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel zip unzip libpq5 libpq-devel
+
       - name: Install re2c
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
