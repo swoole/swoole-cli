@@ -917,7 +917,6 @@ EOF;
             }
         }
 
-        $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_filter(array_unique($this->pkgConfigPaths));
 
         if ($this->getOsType() == 'macos') {
