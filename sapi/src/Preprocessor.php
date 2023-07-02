@@ -8,11 +8,15 @@ use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
 use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
 use SwooleCli\PreprocessorTrait\WebUITrait;
+use SwooleCli\PreprocessorTrait\CompilerTrait;
 
 class Preprocessor
 {
     use DownloadBoxTrait;
+
     use WebUITrait;
+
+    use CompilerTrait;
 
     public const VERSION = '1.6';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
@@ -152,6 +156,7 @@ class Preprocessor
         }
         $this->extEnabled = [];
     }
+
 
     public function setLinker(string $ld): static
     {

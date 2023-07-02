@@ -231,9 +231,6 @@ function libraries_builder($p)
         install_msh3($p);  //需要安装库 bsd-compat-headers 解决 sys/queue.h 不存在的问题
 
 
-
-
-
         install_libfastcommon($p);
         install_libserverframe($p);
         install_fastdfs($p); //依赖 libfastcommon libserverframe
@@ -531,78 +528,77 @@ function libraries_builder($p)
 
     /**
      * 交叉编译
-      --build=BUILD           configure for building on BUILD [BUILD=HOST]
-      --host=HOST             configure for HOST [guessed]
-      --target=TARGET         configure for TARGET [TARGET=HOST]
+     * --build=BUILD           configure for building on BUILD [BUILD=HOST]
+     * --host=HOST             configure for HOST [guessed]
+     * --target=TARGET         configure for TARGET [TARGET=HOST]
      */
 
     /**
      * BIO 全称Block-IO 是一种阻塞同步的通信模式 BIO 全称Block-IO 是一种阻塞同步的通信模式。我们常说的Stock IO 一般指的是BIO。是一个比较传统的通信方式，模式简单，使用方便。但并发处理能力低，通信耗时，依赖网速。
-      NIO 全称New IO，也叫Non-Block IO 是一种非阻塞同步的通信模式。
-      AIO 也叫NIO2.0 是一种非阻塞异步的通信模式。在NIO的基础上引入了新的异步通道的概念，并提供了异步文件通道和异步套接字通道的实现。
-      AIO 并没有采用NIO的多路复用器，而是使用异步通道的概念
-
+     * NIO 全称New IO，也叫Non-Block IO 是一种非阻塞同步的通信模式。
+     * AIO 也叫NIO2.0 是一种非阻塞异步的通信模式。在NIO的基础上引入了新的异步通道的概念，并提供了异步文件通道和异步套接字通道的实现。
+     * AIO 并没有采用NIO的多路复用器，而是使用异步通道的概念
      */
 
     /**
-      LC_ALL=C 是为了去除所有本地化的设置
+     * LC_ALL=C 是为了去除所有本地化的设置
      */
 
     /**
-      SYSTEM=`uname -s 2>/dev/null`
-      RELEASE=`uname -r 2>/dev/null`
-      MACHINE=`uname -m 2>/dev/null`
-
-      PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+     * SYSTEM=`uname -s 2>/dev/null`
+     * RELEASE=`uname -r 2>/dev/null`
+     * MACHINE=`uname -m 2>/dev/null`
+     *
+     * PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
      */
 
     /**
-          export CFLAGS="$(pkg-config  --cflags --static expat minizip ) "
-
-      SET (CMAKE_EXE_LINKER_FLAGS "-static")
-
-      target
-      ARCHIVE 静态库
-      LIBRARY 动态库
-      RUNTIME  可执行二进制文件
-
-      # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
-      -D 从外部传入搜索路径：
-      <PackageName>_ROOT
-      <PackageName>_DIR
-
-      c++(CMake篇)  https://zhuanlan.zhihu.com/p/470681241
-      # CMAKE_BUILD_TYPE=Debug Release
-
-      cmake -G"Unix Makefiles" .  \
-      -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
-      -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
-      -DCMAKE_INSTALL_INCLUDEDIR={$libminzip_prefix}/include \
-      -DCMAKE_BUILD_TYPE=Release  \
-      -DBUILD_SHARED_LIBS=OFF  \
-      -DBUILD_STATIC_LIBS=ON \
-      -DCMAKE_COLOR_MAKEFILE=ON
-
-      set(libgav1_root "${CMAKE_CURRENT_SOURCE_DIR}")
-      set(libgav1_build "${CMAKE_BINARY_DIR}")
-
-      cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-      cmake --build .
-      cmake --install .
-
-      cmake -G 'Visual Studio 17 2022' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-      cmake --build . --config Release
-      cmake --install . --config Release
-
-      CURL ARCHITECTURE   https://curl.se/docs/install.html#:~:text=26%20CPU%20Architectures
-      CURL Cross compile  https://curl.se/docs/install.html#:~:text=Cross%20compile
-
-        cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_C_COMPILER=clang -DCMAKE_C_FLAGS_RELWITHDEBINFO="-O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer" -DENABLE_SHARED=0 ..
-        export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
-
-
-
-        make install DESTDIR=/usr/libzip
+     * export CFLAGS="$(pkg-config  --cflags --static expat minizip ) "
+     *
+     * SET (CMAKE_EXE_LINKER_FLAGS "-static")
+     *
+     * target
+     * ARCHIVE 静态库
+     * LIBRARY 动态库
+     * RUNTIME  可执行二进制文件
+     *
+     * # find_package的简单用法   https://blog.csdn.net/weixin_43940314/article/details/128252940
+     * -D 从外部传入搜索路径：
+     * <PackageName>_ROOT
+     * <PackageName>_DIR
+     *
+     * c++(CMake篇)  https://zhuanlan.zhihu.com/p/470681241
+     * # CMAKE_BUILD_TYPE=Debug Release
+     *
+     * cmake -G"Unix Makefiles" .  \
+     * -DCMAKE_INSTALL_PREFIX={$libxlsxio_prefix} \
+     * -DCMAKE_INSTALL_LIBDIR={$libminzip_prefix}/lib \
+     * -DCMAKE_INSTALL_INCLUDEDIR={$libminzip_prefix}/include \
+     * -DCMAKE_BUILD_TYPE=Release  \
+     * -DBUILD_SHARED_LIBS=OFF  \
+     * -DBUILD_STATIC_LIBS=ON \
+     * -DCMAKE_COLOR_MAKEFILE=ON
+     *
+     * set(libgav1_root "${CMAKE_CURRENT_SOURCE_DIR}")
+     * set(libgav1_build "${CMAKE_BINARY_DIR}")
+     *
+     * cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+     * cmake --build .
+     * cmake --install .
+     *
+     * cmake -G 'Visual Studio 17 2022' -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+     * cmake --build . --config Release
+     * cmake --install . --config Release
+     *
+     * CURL ARCHITECTURE   https://curl.se/docs/install.html#:~:text=26%20CPU%20Architectures
+     * CURL Cross compile  https://curl.se/docs/install.html#:~:text=Cross%20compile
+     *
+     * cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_C_COMPILER=clang -DCMAKE_C_FLAGS_RELWITHDEBINFO="-O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer" -DENABLE_SHARED=0 ..
+     * export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
+     *
+     *
+     *
+     * make install DESTDIR=/usr/libzip
      */
 
 
@@ -720,11 +716,11 @@ function libraries_builder($p)
             https://zhuanlan.zhihu.com/p/380174726
      */
 
-        /*
-        通过configure.ac文件生成copnfigure文件
+    /*
+    通过configure.ac文件生成copnfigure文件
 
-        https://blog.csdn.net/mao834099514/article/details/79544467
-        */
+    https://blog.csdn.net/mao834099514/article/details/79544467
+    */
     /*
         gcc -ldl 选项作用  程序中使用dlopen、dlsym、dlclose、dlerror 显示加载动态库，需要设置链接选项 -ldl
 
@@ -786,4 +782,76 @@ function libraries_builder($p)
      */
 
     # cmake module example  https://github.com/ceph/ceph/tree/main/cmake/modules
+
+    /*
+
+export CC=/usr/local/bin/gcc
+export CXX=/usr/local/bin/g++
+
+# Without cache
+set(CMAKE_C_COMPILER /usr/bin/clang)
+set(CMAKE_CXX_COMPILER /usr/bin/clang++)
+
+# With cache
+set(CMAKE_C_COMPILER /usr/bin/clang CACHE PATH "")
+set(CMAKE_CXX_COMPILER /usr/bin/clang++ CACHE PATH "")
+
+# Force cache
+set(CMAKE_C_COMPILER /usr/bin/clang CACHE PATH "" FORCE)
+set(CMAKE_CXX_COMPILER /usr/bin/clang++ CACHE PATH "" FORCE)
+
+cmake -GNinja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+
+set( COMPILER_BIN /opt/compiler/bin )
+
+
+set(CMAKE_BUILD_TYPE "Debug")     # CMakeLists.txt中指定
+
+SET(CMAKE_C_FLAGS "{$cflags}")
+SET(CMAKE_CXX_FLAGS "{$cflags}")
+SET(CMAKE_FIND_ROOT_PATH "{$root}")
+SET(CMAKE_PREFIX_PATH "{$root}")
+
+set(PKG_CONFIG_EXECUTABLE /bin/pkg-config
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+
+
+cmake -D CMAKE_TOOLCHAIN_FILE=/path/to/toolchain_file.cmake ...
+
+-DCMAKE_C_COMPILER=gcc
+-DCMAKE_CXX_COMPILER=g++
+-DCMAKE_BUILD_TYPE=Release
+-DCMAKE_INSTALL_PREFIX=$prefix
+-DCMAKE_INSTALL_LIBDIR=$prefix/lib
+-DCMAKE_INSTALL_INCLUDEDIR=$prefix/include
+-DBUILD_SHARED_LIBS=OFF
+-DCMAKE_TOOLCHAIN_FILE=/user-x-cmake-toolchain.cmake
+-DCMAKE_POLICY_DEFAULT_CMP0074=NEW
+find_package(OpenSSL)
+-DOpenSSL_ROOT=$openssL_install_dir
+ 或者
+-DOpenSSL_DIR=$openssL_install_dir
+
+
+
+CMAKE_SYSROOT： 这个选项是用来设置目标平台根目录，会对编译和链接过程中，查找头文件和链接库造成影响。
+例如：原本默认会从/usr/include目录中搜索头文件、从/usr/lib中搜索依赖库，当设置了–sysroot=dir（gcc是–sysroot，camek是CMAKE_SYSROOT) 后则会从dir/usr/include搜索头文件、从dir/usr/lib中搜索依赖库。
+
+PKG_CONFIG_PATH ：指定依赖配置文件的绝对路径，就是存放.pc配置文件的地方
+
+PKG_CONFIG_EXECUTABLE：指定pkg-config配置程序，作用是找到.pc文件，解析其内容，然后对底层构建工具（C/C++编译器、链接器）或高层构建工具（cmake）提供具体配置项目。通常是在POSIX系统（Linux，MacOS等）使用pkg-config，解决第三方依赖项配置问题。
+
+以设置目标系统YOUR_TARGET_OS和目标版本YOUR_TARGET_ARCH
+
+
+
+make install DESTDIR=
+
+
+
+     */
 }

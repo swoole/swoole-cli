@@ -98,6 +98,12 @@ EOF;
 }
 
 if ($p->getOsType() == 'macos') {
+    $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
+} else {
+    $p->setLogicalProcessors('$(nproc 2> /dev/null)');
+}
+
+if ($p->getOsType() == 'macos') {
     // -lintl -Wl,-framework -Wl,CoreFoundation
     //$p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup');
     $p->setExtraLdflags('-undefined dynamic_lookup');
@@ -105,10 +111,17 @@ if ($p->getOsType() == 'macos') {
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
     }
-    $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
     $p->setLinker('ld.lld');
-    $p->setLogicalProcessors('$(nproc 2> /dev/null)');
+}
+
+if ($p->getInputOption('with-c-compiler')) {
+    $c_compiler = $p->getInputOption('with-c-compiler');
+    if ($c_compiler == 'gcc') {
+        $p->set_C_COMPILER('gcc');
+        $p->set_C_COMPILER('g++');
+        $p->setLinker('ld');
+    }
 }
 
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
