@@ -53,5 +53,6 @@ test -f Makefile && make clean
   --with-imagick \
   --with-yaml \
   --with-readline \
-  --with-pdo-pgsql \
-  --with-pgsql
+#  --with-pdo-pgsql \
+#  --with-pgsql
+# --enable-swoole-pgsql
