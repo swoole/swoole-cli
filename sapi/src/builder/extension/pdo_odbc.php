@@ -2,7 +2,6 @@
 
 use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
-use SwooleCli\Library;
 
 return function (Preprocessor $p) {
     $unixODBC_prefix = UNIX_ODBC_PREFIX;
