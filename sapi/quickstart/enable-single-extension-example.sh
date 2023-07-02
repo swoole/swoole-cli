@@ -23,6 +23,7 @@ fi
 # @macos
 # --with-build-type=dev
 # --with-skip-download
+# --with-php-version=8.1.20
 
 php prepare.php \
   --conf-path="./conf.d.extra" \
@@ -67,4 +68,4 @@ php prepare.php \
   -pgsql -pdo_pgsql \
   --with-swoole-pgsql=1 \
   +swoole \
-  --with-php-version=8.1.18
+  --with-php-version=8.2.7
