@@ -42,11 +42,11 @@
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
 - [quickstart](sapi/quickstart/README.md)
 
-## experiment_v4.8.x 与主分支的区别
+## experiment_v4.8.x分支 与 主分支的区别
 
 > openssl 使用 v1 版本
 
-> curl 库 停用 http2 http3 功能
+> curl 库 不启用  http2 http3 功能
 
 > 不启用 swoole pgsql 协程支持
 
