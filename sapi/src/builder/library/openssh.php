@@ -22,16 +22,18 @@ EOF
             <<<EOF
             autoreconf -fi
             ./configure --help
-
+            mkdir build
+            cd build
             PACKAGES='zlib openssl '
             PACKAGES="\$PACKAGES  "
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static" \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
-            ./configure \
+            ../configure \
             --prefix={$openssh_prefix} \
-            --with-pie
+            --with-pie \
+
 
 
 
