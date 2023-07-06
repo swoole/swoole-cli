@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($openssh_prefix)
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
             autoreconf -fi
             ./configure --help
@@ -32,16 +32,15 @@ EOF
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             ../configure \
             --prefix={$openssh_prefix} \
-            --with-pie \
+            --with-pie
 
-
-
+            make -j {$p->maxJob}
 
 EOF
         )
         ->withBuildCached(false)
-        ->withBinPath($openssh_prefix . '/bin/')
-        ->withDependentLibraries('openssl', 'libedit', 'zlib')
+        //->withBinPath($openssh_prefix . '/bin/')
+        ->withDependentLibraries('openssl', 'zlib') //'libedit',
         ->disableDefaultLdflags()
         ->disablePkgName()
         ->disableDefaultPkgConfig()
