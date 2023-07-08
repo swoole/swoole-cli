@@ -8,9 +8,9 @@ return function (Preprocessor $p) {
         'nginx'
     ];
     $ext = (new Extension('nginx'))
-        ->withHomePage('https://aria2.github.io/')
-        ->withManual('https://aria2.github.io/') //如何选开源许可证？
-        ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_GPL);
+        ->withHomePage('https://nginx.org/')
+        ->withManual('http://nginx.org/en/docs/configure.html') //如何选开源许可证？
+        ->withLicense('https://github.com/nginx/nginx/blob/master/docs/text/LICENSE', Extension::LICENSE_SPEC);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
     $p->setExtHook('nginx', function (Preprocessor $p) {
@@ -24,16 +24,7 @@ return function (Preprocessor $p) {
                 cp -f nginx {$workdir}/bin/
 
 EOF;
-        if ($p->getOsType() == 'macos') {
-            $cmd .= <<<EOF
-            otool -L {$workdir}/bin/aria2c
-EOF;
-        } else {
-            $cmd .= <<<EOF
-              file {$workdir}/bin/aria2c
-              readelf -h {$workdir}/bin/aria2c
-EOF;
-        }
+
         return $cmd;
     });
 };
