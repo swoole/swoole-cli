@@ -9,7 +9,8 @@ return function (Preprocessor $p) {
         'curl',
         'openssl',
         'zlib',
-        'iperf3'
+        'iperf3',
+        'libfido2'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

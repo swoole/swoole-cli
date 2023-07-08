@@ -184,3 +184,7 @@ define("CEPH_PREFIX", $p->getGlobalPrefix() . '/ceph');
 define("MONGODB_C_DRIVER_PREFIX", $p->getGlobalPrefix() . '/mongo_c_driver');
 define("IPERF3_PREFIX", $p->getGlobalPrefix() . '/iperf3');
 define("OPENSSH_PREFIX", $p->getGlobalPrefix() . '/openssh');
+define("LIBFIDO2_PREFIX", $p->getGlobalPrefix() . '/libfido2');
+define("HIDAPI_PREFIX", $p->getGlobalPrefix() . '/hidapi');
+define("LIBCBOR_PREFIX", $p->getGlobalPrefix() . '/libcbor');
+define("LIBUDEV_PREFIX", $p->getGlobalPrefix() . '/libudev');
