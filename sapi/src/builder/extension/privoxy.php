@@ -16,11 +16,15 @@ return function (Preprocessor $p) {
     $p->setExtHook('privoxy', function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
+        $installdir = $p->getGlobalPrefix();
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/privoxy
                 cp -rf privoxy {$workdir}/bin/
                 cp -rf doc/webserver {$workdir}/bin/privoxy-docs
+                cd {$installdir}/privoxy
+                mkdir -p {$workdir}/bin/privoxy-conf
+                cp -rf etc {$workdir}/bin/privoxy-conf/
 
 
 EOF;

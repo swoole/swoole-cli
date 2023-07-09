@@ -29,6 +29,8 @@ EOF
             ->withConfigure(
                 <<<EOF
                 apk add w3m   docbook2x
+                adduser privoxy
+                adduser -H -D privoxy privoxy
                 autoheader
                 autoconf
                 ./configure --help
