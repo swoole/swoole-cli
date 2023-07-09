@@ -13,7 +13,8 @@ return function (Preprocessor $p) {
             ->withPrefix($libedit_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libedit_prefix)
-            ->withConfigure(<<<EOF
+            ->withConfigure(
+                <<<EOF
             ./configure --help
             autoreconf -fi
             PACKAGES='ncursesw '
