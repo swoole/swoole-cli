@@ -20,6 +20,7 @@ return function (Preprocessor $p) {
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/socat
                 cp -f socat {$workdir}/bin/
+                cp -rf doc {$workdir}/bin/socat-docs
 
 
 EOF;
