@@ -27,12 +27,12 @@ return function (Preprocessor $p) {
                 'nginx',
                 <<<EOF
                 cat > ~/.hgrc <<__EOF__
-[http_proxy]
-host=http://192.168.3.26:8015
-[https_proxy]
-host=http://192.168.3.26:8015
+        [http_proxy]
+        host=http://192.168.3.26:8015
+        [https_proxy]
+        host=http://192.168.3.26:8015
 
-__EOF__
+        __EOF__
                 # pip3 install mercurial -i https://pypi.tuna.tsinghua.edu.cn/simple
                 # hg clone  http://hg.nginx.org/nginx
                 # hg update -C release-1.25.1
@@ -40,7 +40,7 @@ __EOF__
 
                 # git clone --depth 1 --progress   https://github.com/chobits/ngx_http_proxy_connect_module.git
 
-EOF
+        EOF
             )
             */
             ->withPrefix($nginx_prefix)
@@ -101,9 +101,10 @@ EOF
             --with-stream_ssl_preread_module \
             --with-stream_ssl_module \
             --with-threads \
-            --with-cc-opt=" -O2   \$CPPFLAGS " \
+            --with-cc-opt="-static  -O2   \$CPPFLAGS " \
             --with-ld-opt="-static  \$LDFLAGS "
             # --add-module={$builderDir}/ngx_http_proxy_connect_module/
+            # 动态加载到 nginx 中，请使用该 --add-dynamic-module=/path/to/module
 
 
             #--with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS"
@@ -111,8 +112,15 @@ EOF
             # --with-cc-opt=parameters — sets additional parameters that will be added to the CFLAGS variable.
 EOF
             )
-            //->withMakeOptions('CFLAGS="-O2 -s" LDFLAGS="-static"')
+            //->withMakeOptions('CFLAGS="-O2 -s" LDFLAGS="-static"') //--with-cc-opt="-static -static-libgcc"  --with-ld-opt="-static"
             ->withBinPath($nginx_prefix . '/bin/')
-            ->withDependentLibraries('libxml2', 'libxslt', 'openssl', 'zlib', 'pcre2', 'ngx_http_proxy_connect_module') //'pcre',
+            ->withDependentLibraries(
+                'libxml2',
+                'libxslt',
+                'openssl',
+                'zlib',
+                'pcre2',
+                'ngx_http_proxy_connect_module'
+            ) //'pcre',
     );
 };

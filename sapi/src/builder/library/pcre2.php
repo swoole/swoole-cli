@@ -35,6 +35,7 @@ return function (Preprocessor $p) {
 
  EOF
             )
+            ->withBuildCached(false)
             ->withBinPath($pcre2_prefix . '/bin/')
             ->withPkgName("libpcre2-16")
             ->withPkgName("libpcre2-32")
