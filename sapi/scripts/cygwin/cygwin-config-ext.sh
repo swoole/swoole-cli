@@ -75,16 +75,22 @@ if [ ! -f php-${PHP_VERSION}.tar.gz ]; then
 fi
 
 test -d php-src && rm -rf php-src
-tar -zxvf php-${PHP_VERSION}.tar.gz
+mkdir -p php-src
+tar --strip-components=1 -C  php-src -xf php-${PHP_VERSION}.tar.gz
 
-cd pool/ext
+cd $ROOT
 
 if [ ! -d $ROOT/ext/pdo_pgsql ]; then
-  mv pdo_pgsql $ROOT/ext/pdo_pgsql
+  mv $ROOT/php-src/ext/pdo_pgsql $ROOT/ext/pdo_pgsql
 fi
 
 if [ ! -d $ROOT/ext/pgsql ]; then
-  mv pgsql $ROOT/ext/pgsql
+  mv $ROOT/php-src/ext/pgsql $ROOT/ext/pgsql
 fi
 
+cd $ROOT
+# cp -f $ROOT/php-src/Zend/zend_vm_gen.php $ROOT/Zend/
+ls -lha $ROOT/Zend/zend_vm_gen.php
+ls -lh $ROOT
+ls -lh $ROOT/ext/
 cd $ROOT
