@@ -23,7 +23,7 @@ trait CompilerTrait
 
     public function get_CXX_COMPILER(): string
     {
-        return $this->cCompiler;
+        return $this->cppCompiler;
     }
 }
 
