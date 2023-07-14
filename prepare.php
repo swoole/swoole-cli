@@ -99,7 +99,7 @@ if ($p->getInputOption('with-c-compiler')) {
     $c_compiler = $p->getInputOption('with-c-compiler');
     if ($c_compiler == 'gcc') {
         $p->set_C_COMPILER('gcc');
-        $p->set_C_COMPILER('g++');
+        $p->set_CXX_COMPILER('g++');
         $p->setLinker('ld');
     }
 }
