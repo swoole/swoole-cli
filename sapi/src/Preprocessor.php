@@ -9,7 +9,6 @@ use RuntimeException;
 use SwooleCli\PreprocessorTrait\CompilerTrait;
 use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
 use SwooleCli\PreprocessorTrait\WebUITrait;
-use SwooleCli\PreprocessorTrait\CompilerTrait;
 
 class Preprocessor
 {

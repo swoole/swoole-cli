@@ -12,6 +12,7 @@ return function (Preprocessor $p) {
         'iperf3',
         'libfido2'
     ];
+    $depends=['libzookeeper'];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')
