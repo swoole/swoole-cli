@@ -17,13 +17,15 @@ fi
 
 # 可用配置参数
 # --with-swoole-pgsql=1
-# --with-global-prefix=/usr
+# --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
 # @macos
 # --with-build-type=dev
 # --with-skip-download
 # --with-php-version=8.1.20
+# --with-c-compiler=[gcc|clang] 默认clang
+# --conf-path="./conf.d.extra"
 
 php prepare.php \
   --conf-path="./conf.d.extra" \
