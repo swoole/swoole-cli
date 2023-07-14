@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
             ->withManual('https://github.com/apache/zookeeper/blob/master/zookeeper-client/zookeeper-client-c/README')
             ->withConfigure(
                 <<<EOF
-            # apk add openjdk17
+            apk add openjdk17
 
             test -f apache-ant-1.9.16-bin.zip || wget https://dlcdn.apache.org/ant/binaries/apache-ant-1.9.16-bin.zip
             test -d apache-ant && rm -rf apache-ant

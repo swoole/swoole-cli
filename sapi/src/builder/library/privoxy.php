@@ -17,7 +17,8 @@ return function (Preprocessor $p) {
                 'privoxy',
                 <<<EOF
                     # gitweb
-                    git clone -b master --depth=1 https://www.privoxy.org/git/privoxy.git
+                    git clone -b master --progress  https://www.privoxy.org/git/privoxy.git
+
 EOF
             )
             */
