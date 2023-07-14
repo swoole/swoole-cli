@@ -4,12 +4,17 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $opencl_prefix = LIBXPM_PREFIX;
-    $opencl_prefix = '/usr/opencl';
+    $opencl_prefix = OPENCL_PREFIX;
     $lib = new Library('opencl');
     $lib->withHomePage('https://www.khronos.org/opencl/')
         ->withLicense('https://github.com/KhronosGroup/OpenCL-SDK/blob/main/LICENSE', Library::LICENSE_APACHE2)
-        ->withUrl('git clone --recursive https://github.com/KhronosGroup/OpenCL-SDK.git')
+        ->withFile('OpenCL-SDK-v2023.04.17.tar.gz')
+        ->withDownloadScript(
+            'OpenCL-SDK',
+            <<<EOF
+        git clone -b v2023.04.17 --progress  --recursive  https://github.com/KhronosGroup/OpenCL-SDK.git
+EOF
+        )
         ->withPrefix($opencl_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($opencl_prefix)
@@ -27,20 +32,8 @@ return function (Preprocessor $p) {
       -B ./OpenCL-SDK/build -S ./OpenCL-SDK
       cmake --build ./OpenCL-SDK/build --target install
 EOF
-        )
-        ->withConfigure(
-            <<<EOF
-            autoreconf -ivf
-            ./configure --help
+        );
 
-            LDFLAGS="-static " \
-            ./configure --prefix={$opencl_prefix} \
-            --enable-legacy \
-            --enable-strict-compilation
-
-EOF
-        )
-        ->withPkgName('opencv');
 
     $p->addLibrary($lib);
 };

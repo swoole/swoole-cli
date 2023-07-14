@@ -188,3 +188,5 @@ define("LIBFIDO2_PREFIX", $p->getGlobalPrefix() . '/libfido2');
 define("HIDAPI_PREFIX", $p->getGlobalPrefix() . '/hidapi');
 define("LIBCBOR_PREFIX", $p->getGlobalPrefix() . '/libcbor');
 define("LIBUDEV_PREFIX", $p->getGlobalPrefix() . '/libudev');
+
+define("OPENCL_PREFIX", $p->getGlobalPrefix() . '/opencl');
