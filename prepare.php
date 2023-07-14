@@ -119,10 +119,11 @@ if ($p->getInputOption('with-c-compiler')) {
     $c_compiler = $p->getInputOption('with-c-compiler');
     if ($c_compiler == 'gcc') {
         $p->set_C_COMPILER('gcc');
-        $p->set_C_COMPILER('g++');
+        $p->set_CXX_COMPILER('g++');
         $p->setLinker('ld');
     }
 }
+
 
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；

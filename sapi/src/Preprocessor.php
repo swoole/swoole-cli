@@ -6,6 +6,7 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
+use SwooleCli\PreprocessorTrait\CompilerTrait;
 use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
 use SwooleCli\PreprocessorTrait\WebUITrait;
 use SwooleCli\PreprocessorTrait\CompilerTrait;
@@ -31,6 +32,7 @@ class Preprocessor
 
     protected string $cCompiler = 'clang';
     protected string $cppCompiler = 'clang++';
+
     protected string $lld = 'ld.lld';
 
     protected array $libraryMap = [];

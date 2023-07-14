@@ -159,3 +159,11 @@ with-http-proxy
 php ./prepare.php --with-http-proxy=http://192.168.3.26:8015
 ```
 
+with-c-compiler
+----
+设置编译器
+默认编译器 clang
+
+```shell
+php ./prepare.php --with-c-compiler=gcc
+```
