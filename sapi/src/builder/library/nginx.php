@@ -78,7 +78,7 @@ return function (Preprocessor $p) {
             --with-zlib={$builderDir}/nginx/zlib \
 ===EOF===
             set -x
-            # patch -p1 < {$builderDir}/ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_102101.patch
+            patch -p1 < {$builderDir}/ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_102101.patch
 
             ./configure --help
             PACKAGES=" libxml-2.0 libexslt libxslt openssl zlib"
@@ -102,10 +102,12 @@ return function (Preprocessor $p) {
             --with-stream_ssl_module \
             --with-threads \
             --with-cc-opt="-static  -O2   \$CPPFLAGS " \
-            --with-ld-opt="-static  \$LDFLAGS "
-            # --add-module={$builderDir}/ngx_http_proxy_connect_module/
+            --with-ld-opt="-static  \$LDFLAGS " \
+            --add-module={$builderDir}/ngx_http_proxy_connect_module/
             # 动态加载到 nginx 中，请使用该 --add-dynamic-module=/path/to/module
-
+            # 使用GCC 能构建成功，使用clang 构建报错
+            # src/event/ngx_event_udp.c:143:25: error: comparison of integers of different signs: 'unsigned long' and 'long'
+            # 修改源码 http://nginx.org/en/docs/contributing_changes.html
 
             #--with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS"
             # --with-ld-opt=parameters — sets additional parameters that will be used during linking.
