@@ -20,9 +20,6 @@ bash sapi/quickstart/linux/extra/debian-php-init.sh
 
 ## c c++编译器 组合
 
-> alpine 使用 gcc 默认链接到musl-gcc 不需要把gcc指定为 musl-gcc
-> debian 使用 gcc 需要指定编译器为 musl-gcc
-
 - 组合一 clang clang++
-- 组合二 musl-gcc g++
+- 组合二 gcc g++
 

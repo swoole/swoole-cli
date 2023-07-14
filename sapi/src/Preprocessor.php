@@ -6,13 +6,17 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
+use SwooleCli\PreprocessorTrait\CompilerTrait;
 use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
 use SwooleCli\PreprocessorTrait\WebUITrait;
 
 class Preprocessor
 {
     use DownloadBoxTrait;
+
     use WebUITrait;
+
+    use CompilerTrait;
 
     public const VERSION = '1.6';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
@@ -27,6 +31,7 @@ class Preprocessor
 
     protected string $cCompiler = 'clang';
     protected string $cppCompiler = 'clang++';
+
     protected string $lld = 'ld.lld';
 
     protected array $libraryMap = [];

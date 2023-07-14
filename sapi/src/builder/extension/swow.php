@@ -5,14 +5,19 @@ use SwooleCli\Extension;
 use SwooleCli\Library;
 
 return function (Preprocessor $p) {
+    $options = ' --enable-swow ';
+    $options .= ' --enable-swow-ssl ';
+    $options .= ' --enable-swow-curl ';
+    $options .= ' --enable-swow-pdo-pgsql ';
+
+
     $p->addExtension(
         (new Extension('swow'))
-            ->withOptions('--enable-swow  --enable-swow-ssl --enable-swow-curl ')
+            ->withOptions($options)
             ->withHomePage('https://github.com/swow/swow')
             ->withLicense('https://github.com/swow/swow/blob/develop/LICENSE', Extension::LICENSE_APACHE2)
             ->withManual('https://docs.toast.run/swow/en/install.html')
             ->withFile('swow-v1.3.1.tar.gz')
-            //->withPeclVersion('1.2.0')
             ->withDownloadScript(
                 "swow",
                 <<<EOF
@@ -22,6 +27,6 @@ return function (Preprocessor $p) {
                 rm -rf swow-t
 EOF
             )
-            ->withDependentLibraries('openssl')
+            ->withDependentLibraries('openssl', 'pgsql')
     );
 };
