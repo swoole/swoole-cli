@@ -32,15 +32,18 @@ EOF
            test -d build  && rm -rf build
            mkdir -p build
            cd build
+           #   -DCMAKE_MODULE_PATH="{$openssl_prefix}:{$openssl_prefix}"
            cmake .. \
            -DCMAKE_INSTALL_PREFIX={$coturn_prefix} \
+           -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
            -DCMAKE_BUILD_TYPE=Release \
            -DBUILD_SHARED_LIBS=OFF \
+           -DBUILD_STATIC_LIBS=ON \
            -DOpenSSL_ROOT={$openssl_prefix} \
            -DLibevent_ROOT={$libevent_prefix} \
-           -DSQLite_DIR={$sqlite3_prefix} \
-           -DBUILD_STATIC_LIBS=ON
-           # -DPostgreSQL_DIR={$pgsql_prefix} \
+           -DSQLite_DIR={$sqlite3_prefix}
+
+           #-DPostgreSQL_DIR={$pgsql_prefix} \
 
            #  hiredis
            # -Dhiredis_DIR={$sqlite3_prefix} \
@@ -49,6 +52,6 @@ EOF
 EOF
             )
             ->withBinPath($coturn_prefix . '/bin/')
-            ->withDependentLibraries('libevent', 'openssl', 'sqlite3' ) # 'hiredis' 'pgsql'
+            ->withDependentLibraries('libevent', 'openssl', 'sqlite3') # 'hiredis' 'pgsql'
     );
 };
