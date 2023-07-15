@@ -6,6 +6,10 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $opencv_prefix = OPENCV_PREFIX;
     $ffmpeg_prefix = FFMPEG_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $jpeg_prefix = JPEG_PREFIX;
+    $libtiff_prefix = LIBTIFF_PREFIX;
+    $png_prefix = PNG_PREFIX;
     $workDir = $p->getWorkDir();
     $buildDir = $p->getBuildDir();
     $lib = new Library('opencv');
@@ -35,10 +39,15 @@ EOF
 
         cmake -G Ninja \
         -DCMAKE_INSTALL_PREFIX={$opencv_prefix} \
+        -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DOPENCV_EXTRA_MODULES_PATH="../opencv_contrib/modules" \
         -DCMAKE_BUILD_TYPE=Release \
         -DWITH_FFMPEG=ON \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
+        -DZLIB_ROOT={$zlib_prefix} \
+        -DJPEG_ROOT={$jpeg_prefix} \
+        -DTIFF_ROOT={$libtiff_prefix} \
+        -DPNG_ROOT={$png_prefix} \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
