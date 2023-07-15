@@ -44,8 +44,13 @@ OPTIONS="--disable-all \
 set +x
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-
-    <?php if ($item->skipBuildInstall == true) : ?>
+    <?php if ($this->getInputOption('with-quickstart-library') == 1) : ?>
+        if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ]
+            echo "[<?=$item->name?>] compiled, skip.."
+            return 0
+        fi
+    <?php endif; ?>
+    <?php if ($item->skipBuildInstall) : ?>
     echo "skip install library <?=$item->name?>" ;
     return 0 ;
     <?php endif ;?>
