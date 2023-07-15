@@ -45,7 +45,7 @@ set +x
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     <?php if ($this->getInputOption('with-marked-library') == 1) : ?>
-        if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ]
+        if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
             echo "[<?=$item->name?>] compiled, skip.."
             return 0
         fi
