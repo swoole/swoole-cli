@@ -9,8 +9,15 @@ return function (Preprocessor $p) {
     $lib = new Library('libx265');
     $lib->withHomePage('https://www.videolan.org/developers/x265.html')
         ->withLicense('https://bitbucket.org/multicoreware/x265_git/src/master/COPYING', Library::LICENSE_LGPL)
-        ->withUrl('http://ftp.videolan.org/pub/videolan/x265/x265_2.7.tar.gz')
-        ->withFile('libx265_2.7.tar.gz')
+        //->withUrl('http://ftp.videolan.org/pub/videolan/x265/x265_2.7.tar.gz')
+        //->withFile('libx265_2.7.tar.gz')
+        ->withFile('libx265_Release_3.5.tar.gz')
+        ->withDownloadScript(
+            'x265_git',
+            <<<EOF
+        git clone -b Release_3.5 --progress --depth=1 https://bitbucket.org/multicoreware/x265_git.git
+EOF
+        )
         ->withManual('https://bitbucket.org/multicoreware/x265_git.git')
         ->withPrefix($libx265_prefix)
         ->withCleanBuildDirectory()
