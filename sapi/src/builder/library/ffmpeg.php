@@ -66,7 +66,7 @@ EOF
         --enable-libx265 \
         --enable-random \
         --enable-libfreetype \
-        --extra-cflags=" \${CPPFLAGS} " \
+        --extra-cflags="-static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
         --cc={$p->get_C_COMPILER()} \
@@ -78,7 +78,7 @@ EOF
         #--pkg-config=pkg-config
         #  --enable-nonfree \
         # --enable-libssh \
-        # --extra-cflags=" -static "
+        # --extra-cflags="  "
 
 
 EOF
