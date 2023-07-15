@@ -45,7 +45,8 @@ EOF
         --enable-gmp \
         --enable-libx264 \
         --enable-libx265 \
-        --enable-gpl
+        --enable-gpl \
+        --enable-version3
 
 
 EOF
