@@ -55,7 +55,7 @@ EOF
         )
         ->withScriptAfterInstall(
             <<<EOF
-            sed -i.save's@-lssp_nonshared -lgcc_s -lgcc -lgcc_s -lgcc@@ {$libx265_prefix}/lib/pkgconfig/x265.pc
+            sed -i.save 's@-lssp_nonshared -lgcc_s -lgcc -lgcc_s -lgcc@@' {$libx265_prefix}/lib/pkgconfig/x265.pc
 
 EOF
         )
