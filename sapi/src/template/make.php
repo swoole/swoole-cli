@@ -44,7 +44,7 @@ OPTIONS="--disable-all \
 set +x
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    <?php if ($this->getInputOption('with-quickstart-library') == 1) : ?>
+    <?php if ($this->getInputOption('with-marked-library') == 1) : ?>
         if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ]
             echo "[<?=$item->name?>] compiled, skip.."
             return 0
@@ -544,7 +544,7 @@ elif [ "$1" = "docker-commit" ] ;then
     docker commit <?= Preprocessor::CONTAINER_NAME ?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
 elif [ "$1" = "docker-push" ] ;then
     docker push <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
-elif [ "$1" = "build-all-library" ] ;then
+elif [ "$1" = "all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
 elif [ "$1" = "<?=$item->name?>" ] ;then
