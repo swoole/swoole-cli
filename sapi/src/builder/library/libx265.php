@@ -33,6 +33,8 @@ EOF
             -G"Unix Makefiles" ../source  \
             -DCMAKE_INSTALL_PREFIX={$libx265_prefix} \
             -DCMAKE_CURRENT_SOURCE_DIR={$build_dir}/libx265/source \
+            -DCMAKE_C_COMPILER={$p->get_C_COMPILER()} \
+            -DCMAKE_CXX_COMPILER={$p->get_CXX_COMPILER()}
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \

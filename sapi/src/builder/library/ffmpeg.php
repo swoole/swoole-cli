@@ -47,6 +47,7 @@ EOF
          CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
          LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
          LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+         exit 3
         ./configure  \
         --prefix=$ffmpeg_prefix \
         --enable-gpl \
