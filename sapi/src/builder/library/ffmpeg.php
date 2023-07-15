@@ -44,7 +44,7 @@ EOF
         --enable-lcms2 \
         --enable-gmp \
         --enable-libx264 \
-        -=enable-libx265
+        --enable-libx265
 
 
 EOF
