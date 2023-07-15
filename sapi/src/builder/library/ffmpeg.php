@@ -69,14 +69,15 @@ EOF
         --extra-cflags=" \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
+        --cc={$p->get_C_COMPILER()} \
+        --cxx={$p->get_CXX_COMPILER()} \
+        --ld={$p->getLinker()} \
+
         # --pkg-config-flags="--static" \
         #--pkg-config=pkg-config
         #  --enable-nonfree \
         # --enable-libssh \
         # --extra-cflags=" -static "
-        # --cc={$p->get_C_COMPILER()} \
-        # --cxx={$p->get_CXX_COMPILER()} \
-        # --ld={$p->getLinker()} \
 
 
 EOF
