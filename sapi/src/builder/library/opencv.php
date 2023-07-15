@@ -37,7 +37,8 @@ EOF
         mkdir -p build
         cd  build
 
-        cmake -G Ninja \
+        cmake .. \
+        -G Ninja \
         -DCMAKE_INSTALL_PREFIX={$opencv_prefix} \
         -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DOPENCV_EXTRA_MODULES_PATH="../opencv_contrib/modules" \
@@ -54,8 +55,8 @@ EOF
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
-        -DBUILD_opencv_apps=OFF \
-        ..
+        -DBUILD_opencv_apps=ON
+
 
         ninja
         ninja install
