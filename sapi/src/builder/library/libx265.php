@@ -11,7 +11,6 @@ return function (Preprocessor $p) {
         ->withLicense('https://bitbucket.org/multicoreware/x265_git/src/master/COPYING', Library::LICENSE_LGPL)
         ->withUrl('http://ftp.videolan.org/pub/videolan/x265/x265_2.7.tar.gz')
         ->withFile('x265_2.7.tar.gz')
-        ->withSkipDownload()
         ->withManual('https://bitbucket.org/multicoreware/x265_git.git')
         ->withPrefix($libx265_prefix)
         ->withCleanBuildDirectory()
