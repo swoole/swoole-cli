@@ -31,12 +31,12 @@ return function (Preprocessor $p) {
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
-            otool -L {$workdir}/bin/ffmpeg/ffmpeg
+            otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
 EOF;
         } else {
             $cmd .= <<<EOF
-              file {$workdir}/bin/ffmpeg/ffmpeg
-              readelf -h {$workdir}/bin/ffmpeg/ffmpeg
+              file {$workdir}/bin/ffmpeg/bin/ffmpeg
+              readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
 EOF;
         }
         return $cmd;
