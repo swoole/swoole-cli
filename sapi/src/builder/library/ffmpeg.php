@@ -69,8 +69,8 @@ EOF
         --extra-cflags=" \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
-        --pkg-config-flags="--static" \
-        --pkg-config=pkg-config
+        # --pkg-config-flags="--static" \
+        #--pkg-config=pkg-config
         #  --enable-nonfree \
         # --enable-libssh \
         # --extra-cflags=" -static "
