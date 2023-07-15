@@ -36,7 +36,7 @@ EOF
         ./configure --help | grep static
         ./configure --help | grep  '\-\-extra'
         # exit 3
-        PACKAGES='openssl libwebp  libxml-2.0 libssh2 freetype2 gmp liblzma'
+        PACKAGES='openssl libwebp  libxml-2.0  freetype2 gmp liblzma' # libssh2
         PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
         PACKAGES="\$PACKAGES aom "
         PACKAGES="\$PACKAGES dav1d "
