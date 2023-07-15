@@ -53,8 +53,9 @@ EOF
          LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
          LDFLAGS="\$LDFLAGS -L/usr/lib "
          LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
-
-        ./configure  \
+        mkdir -p build
+        cd build
+        ../configure  \
         --prefix=$ffmpeg_prefix \
         --enable-gpl \
         --enable-version3 \
