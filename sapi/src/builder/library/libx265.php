@@ -25,6 +25,7 @@ EOF
         ->withCleanPreInstallDirectory($libx265_prefix)
         ->withConfigure(
             <<<EOF
+            test -d .git && rm -rf .git
             mkdir -p build
             cd build
             # apk add nasm
