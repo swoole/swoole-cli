@@ -68,9 +68,8 @@ EOF
             'libwebp',
             'libpng',
             'freetype',
-            'libtiff',
-            'vtk'
-        ) // openjpeg openEXR HDR
+            'libtiff'
+        ) // openjpeg openEXR HDR   'vtk'
     ;
 
     $p->addLibrary($lib);

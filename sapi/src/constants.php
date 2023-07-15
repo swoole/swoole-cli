@@ -190,3 +190,4 @@ define("LIBCBOR_PREFIX", $p->getGlobalPrefix() . '/libcbor');
 define("LIBUDEV_PREFIX", $p->getGlobalPrefix() . '/libudev');
 
 define("OPENCL_PREFIX", $p->getGlobalPrefix() . '/opencl');
+define("OPENGL_PREFIX", $p->getGlobalPrefix() . '/opengl');
