@@ -92,7 +92,13 @@ EOF
 
 EOF
         )
-        ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
+        ->withPkgName('libavcodec')
+        ->withPkgName('libavdevice')
+        ->withPkgName('libavfilter')
+        ->withPkgName('libavformat')
+        ->withPkgName('libavutil')
+        ->withPkgName('libswresample')
+        ->withPkgName('libswscale')
         ->withBinPath($ffmpeg_prefix . '/bin/')
         ->withDependentLibraries(
             'openssl',
