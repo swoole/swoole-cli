@@ -159,11 +159,6 @@ class Preprocessor
     }
 
 
-    public function setLinker(string $ld): static
-    {
-        $this->lld = $ld;
-        return $this;
-    }
 
     public static function getInstance(): static
     {

@@ -16,6 +16,13 @@ trait CompilerTrait
         return $this;
     }
 
+
+    public function setLinker(string $ld): static
+    {
+        $this->lld = $ld;
+        return $this;
+    }
+
     public function get_C_COMPILER(): string
     {
         return $this->cCompiler;
@@ -25,5 +32,9 @@ trait CompilerTrait
     {
         return $this->cppCompiler;
     }
-}
 
+    public function getLinker(): string
+    {
+        return $this->lld;
+    }
+}
