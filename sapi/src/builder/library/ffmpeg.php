@@ -31,6 +31,16 @@ EOF
         # 汇编编译器
         # apk add yasm nasm
         ./configure --help
+        PACKAGES='openssl libwebp  libxml-2.0 libssh2 freetype2 gmp '
+        PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
+        PACKAGES="\$PACKAGES aom "
+        PACKAGES="\$PACKAGES lcms2 "
+        PACKAGES="\$PACKAGES x264 "
+        PACKAGES="\$PACKAGES x265 "
+
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
+        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
         ./configure  \
         --prefix=$ffmpeg_prefix \
         --enable-openssl \

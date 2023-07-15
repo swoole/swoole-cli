@@ -18,7 +18,8 @@ EOF
         )
         ->withFile('iperf3-latest.tar.gz')
         ->withPrefix($iperf3_prefix)
-        ->withConfigure(<<<EOF
+        ->withConfigure(
+            <<<EOF
               ./configure  --help
               ./configure  \
               --prefix={$iperf3_prefix} \
