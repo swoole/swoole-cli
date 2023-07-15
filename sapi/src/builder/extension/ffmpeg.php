@@ -23,8 +23,8 @@ return function (Preprocessor $p) {
         $builddir = $p->getBuildDir();
 
         $cmd = <<<EOF
-                mkdir -p {$workdir}/bin/
-                cd {$builddir}/aria2/src
+                mkdir -p {$workdir}/bin/ffmpeg/
+                cd {$builddir}/ffmpeg/build/
                 cp -f aria2c {$workdir}/bin/
 
 EOF;

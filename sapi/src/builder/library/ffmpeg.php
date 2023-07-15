@@ -38,6 +38,7 @@ EOF
         ./configure --help | grep shared
         ./configure --help | grep static
         ./configure --help | grep  '\-\-extra'
+        ./configure --help | grep  'enable'
         # exit 3
         PACKAGES='openssl libwebp  libxml-2.0  freetype2 gmp liblzma' # libssh2
         PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
@@ -53,9 +54,8 @@ EOF
          LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
          LDFLAGS="\$LDFLAGS -L/usr/lib "
          LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
-        mkdir -p build
-        cd build
-        ../configure  \
+
+        ./configure  \
         --prefix=$ffmpeg_prefix \
         --enable-gpl \
         --enable-version3 \
