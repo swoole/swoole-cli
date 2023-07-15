@@ -71,12 +71,13 @@ EOF
         --extra-cflags=" \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
+        --pkg-config-flags="--static"
         # --extra-cflags=" -static "
         # --cc={$p->get_C_COMPILER()} \
         # --cxx={$p->get_CXX_COMPILER()} \
         # --ld={$p->getLinker()} \
         #--pkg-config="\${PKG_CONFIG_PATH}" \
-        #--pkg-config-flags="--static" \
+
 EOF
         )
         ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
