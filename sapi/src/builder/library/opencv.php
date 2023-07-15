@@ -42,6 +42,8 @@ EOF
         -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DOPENCV_EXTRA_MODULES_PATH="../opencv_contrib/modules" \
         -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_STATIC_LIBS=ON \
+        -DBUILD_SHARED_LIBS=OFF \
         -DWITH_FFMPEG=ON \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DZLIB_ROOT={$zlib_prefix} \
@@ -53,7 +55,6 @@ EOF
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=OFF \
-        -DBUILD_SHARED_LIBS=OFF \
         ..
 
         ninja
