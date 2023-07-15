@@ -42,7 +42,7 @@ EOF
         PACKAGES="\$PACKAGES dav1d "
         PACKAGES="\$PACKAGES lcms2 "
         PACKAGES="\$PACKAGES x264 "
-        PACKAGES="\$PACKAGES x265 "
+        PACKAGES="\$PACKAGES x265 numa "
 
          CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
          LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
