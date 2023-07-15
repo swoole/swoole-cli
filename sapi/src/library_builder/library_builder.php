@@ -578,7 +578,7 @@ function libraries_builder($p)
      * -DBUILD_SHARED_LIBS=OFF  \
      * -DBUILD_STATIC_LIBS=ON \
      * -DCMAKE_COLOR_MAKEFILE=ON
-     *
+     * -DCMAKE_REQUIRED_LIBRARIES="-L{$openssl_dir}/lib -lssl"
      * set(libgav1_root "${CMAKE_CURRENT_SOURCE_DIR}")
      * set(libgav1_build "${CMAKE_BINARY_DIR}")
      *
