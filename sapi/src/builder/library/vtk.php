@@ -11,13 +11,15 @@ return function (Preprocessor $p) {
     $lib = new Library('vtk');
     $lib->withHomePage('https://www.vtk.org/')
         ->withLicense('https://gitlab.kitware.com/vtk/vtk/-/blob/v9.2.6/Copyright.txt', Library::LICENSE_BSD)
-        ->withUrl('https://gitlab.kitware.com/vtk/vtk/-/archive/v9.2.6/vtk-v9.2.6.tar.gz')
+        //->withUrl('https://gitlab.kitware.com/vtk/vtk/-/archive/v9.2.6/vtk-v9.2.6.tar.gz')
         ->withManual('https://gitlab.kitware.com/vtk/vtk/-/blob/master/Documentation/dev/build.md#building-vtk')
-        ->withFile('vtk-v9.2.6.tar.gz')
+        //->withFile('vtk-v9.2.6.tar.gz')
+        ->withFile('vtk-release-6.3.tar.gz')
         ->withDownloadScript(
             'vtk',
             <<<EOF
-                git clone -b v9.2.6 --depth 1 --progress --recursive  https://gitlab.kitware.com/vtk/vtk.git
+                # git clone -b v9.2.6 --depth 1 --progress --recursive  https://gitlab.kitware.com/vtk/vtk.git
+                git clone -b release-6.3 --depth 1 --progress --recursive  https://gitlab.kitware.com/vtk/vtk.git
 
 EOF
         )
