@@ -30,6 +30,7 @@ EOF
             <<<EOF
         # 汇编编译器
         # apk add yasm nasm
+        set -x
         ./configure --help
         PACKAGES='openssl libwebp  libxml-2.0 libssh2 freetype2 gmp '
         PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
