@@ -68,6 +68,7 @@ EOF
         --enable-libfreetype \
         --enable-libssh \
         --enable-nonfree \
+        --extra-cflags=" \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
         # --extra-cflags=" -static "
