@@ -66,7 +66,7 @@ EOF
         --enable-libx265 \
         --enable-random \
         --enable-libfreetype \
-        --extra-cflags="-static \${CPPFLAGS} " \
+        --extra-cflags="--static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
         --cc={$p->get_C_COMPILER()} \
