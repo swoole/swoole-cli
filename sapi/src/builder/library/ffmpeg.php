@@ -7,25 +7,28 @@ return function (Preprocessor $p) {
     // 查看更多 https://git.ffmpeg.org/gitweb
 
     $ffmpeg_prefix = FFMPEG_PREFIX;
+    $libxml2_prefix = LIBXML2_PREFIX;
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
         ->withLicense(
             'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
             Library::LICENSE_LGPL
         )
-        ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
-        ->withFile('ffmpeg-v6.tar.gz')
+        //->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
+        //->withFile('ffmpeg-v6.tar.gz')
         ->withManual('https://trac.ffmpeg.org/wiki/CompilationGuide')
+        ->withFile('ffmpeg-latest.tar.gz')
         ->withDownloadScript(
             'FFmpeg',
             <<<EOF
             # git clone --depth=1  --single-branch  https://git.ffmpeg.org/ffmpeg.git
-            git clone --depth=1  --single-branch  https://github.com/FFmpeg/FFmpeg.git
+            git clone -b master --depth=1  https://github.com/FFmpeg/FFmpeg.git
 EOF
         )
         ->withPrefix($ffmpeg_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ffmpeg_prefix)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
         # 汇编编译器
@@ -42,10 +45,13 @@ EOF
         PACKAGES="\$PACKAGES dav1d "
         PACKAGES="\$PACKAGES lcms2 "
         PACKAGES="\$PACKAGES x264 "
-        PACKAGES="\$PACKAGES x265 numa "
+        # PACKAGES="\$PACKAGES x265 numa "
 
-         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I/usr/include "
-         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L/usr/lib "
+         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
+         CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ "
+         CPPFLAGS="\$CPPFLAGS -I/usr/include "
+         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
+         LDFLAGS="\$LDFLAGS -L/usr/lib "
          LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
 
         ./configure  \
@@ -63,7 +69,6 @@ EOF
         --enable-lcms2 \
         --enable-gmp \
         --enable-libx264 \
-        --enable-libx265 \
         --enable-random \
         --enable-libfreetype \
         --enable-ffplay \
@@ -71,14 +76,15 @@ EOF
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
         --extra-ldexeflags="-Bstatic" \
+        --pkg-config-flags="--static" \
+        --pkg-config=pkg-config \
         --cc={$p->get_C_COMPILER()} \
         --cxx={$p->get_CXX_COMPILER()} \
-        --ld={$p->getLinker()} \
-        --pkg-config-flags="--static" \
-        --pkg-config=pkg-config
-        #  --enable-nonfree \
+        # --ld={$p->getLinker()} \
+        # --enable-libx265 \
+        # --enable-nonfree \
         # --enable-libssh \
-        #        --enable-cross-compile \
+        # --enable-cross-compile \
 
 
 EOF
@@ -98,9 +104,8 @@ EOF
             "gmp",
             "lcms2",
             "libx264",
-            "libx265",
             "liblzma"
-        ) // 'libssh2',
+        ) //  "libx265", 'libssh2',
     ;
 
     $p->addLibrary($lib);
