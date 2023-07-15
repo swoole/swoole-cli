@@ -66,9 +66,12 @@ EOF
         --enable-random \
         --enable-libfreetype \
         --enable-libssh \
+        --enable-nonfree \
         --cc={$p->get_C_COMPILER()} \
         --cxx={$p->get_CXX_COMPILER()} \
         --ld={$p->getLinker()} \
+        --pkg-config="\${PKG_CONFIG_PATH}" \
+        --pkg-config-flags="--static" \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
         --extra-cflags=" -static "
