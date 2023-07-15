@@ -68,7 +68,8 @@ EOF
             'libwebp',
             'libpng',
             'freetype',
-            'libtiff'
+            'libtiff',
+            'vtk'
         ) // openjpeg openEXR HDR
     ;
 

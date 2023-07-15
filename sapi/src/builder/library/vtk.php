@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $vtk_prefix = VTK_PREFIX;
+    $ffmpeg_prefix = FFMPEG_PREFIX;
     $workDir = $p->getWorkDir();
     $buildDir = $p->getBuildDir();
     $lib = new Library('vtk');
@@ -16,7 +17,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'vtk',
             <<<EOF
-        git clone -b v9.2.6 --depth 1 --progress --recursive  https://gitlab.kitware.com/vtk/vtk.git
+                git clone -b v9.2.6 --depth 1 --progress --recursive  https://gitlab.kitware.com/vtk/vtk.git
 
 EOF
         )
@@ -29,14 +30,16 @@ EOF
         mkdir -p build
         cd  build
 
-        cmake -G Ninja \
+        cmake .. \
+        -G Ninja \
         -DCMAKE_INSTALL_PREFIX={$vtk_prefix} \
+        -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DCMAKE_BUILD_TYPE=Release \
         -DWITH_FFMPEG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_EXAMPLES=OFF \
         -DBUILD_SHARED_LIBS=OFF \
-        ..
+        -DFFMPEG_ROOT={$ffmpeg_prefix} \
 
         ninja
         ninja install
