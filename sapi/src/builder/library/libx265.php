@@ -31,7 +31,7 @@ EOF
             cd build
             # bug  -lgcc -lgcc_s -lc -lgcc -lgcc_s
             # set(CMAKE_C_IMPLICIT_LINK_LIBRARIES "ssp_nonshared;gcc;gcc_s;c;gcc;gcc_s")  CMakeFiles/3.24.4/CMakeCCompiler.cmake
-            #sed -i.save s@\${CMAKE_C_IMPLICIT_LINK_LIBRARIES}@@ CMakeLists.txt
+            # sed -i.save s@\${CMAKE_C_IMPLICIT_LINK_LIBRARIES}@@ CMakeLists.txt
 
 
             cmake \
