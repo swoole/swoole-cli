@@ -40,11 +40,13 @@ EOF
         PACKAGES="\$PACKAGES x264 "
         PACKAGES="\$PACKAGES x265 "
 
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
-        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
+        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
+        export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
+        export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
         ./configure  \
         --prefix=$ffmpeg_prefix \
+        --enable-shared=no \
+        --enable-static=yes \
         --enable-openssl \
         --enable-libwebp \
         --enable-libxml2 \
@@ -57,6 +59,7 @@ EOF
         --enable-gmp \
         --enable-libx264 \
         --enable-libx265 \
+         --enable-random \
         --enable-gpl \
         --enable-version3
 
