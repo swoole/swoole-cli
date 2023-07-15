@@ -28,7 +28,7 @@ EOF
         ->withPrefix($ffmpeg_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ffmpeg_prefix)
-        ->withBuildCached(false)
+        //->withBuildCached(false)
         ->withConfigure(
             <<<EOF
         # 汇编编译器
