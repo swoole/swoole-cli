@@ -66,7 +66,6 @@ EOF
         --enable-libx265 \
         --enable-random \
         --enable-libfreetype \
-        --enable-pic \
         --enable-ffplay \
         --extra-cflags="--static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \

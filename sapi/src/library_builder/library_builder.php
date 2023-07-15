@@ -625,6 +625,19 @@ function libraries_builder($p)
     */
 
     /*
+     *
+     生成共享库时不应使用 -pie。
+
+    PIE：位置无关的可执行文件
+
+    PIC：位置无关代码（共享库）
+
+    请参阅下文以帮助您理解该问题：
+
+    （注：-shared 与-fPIC/-fPIE 一起使用，-pie 与-fPIE/-fPIC 一起使用）
+
+     */
+    /*
         NUMA（Non Uniform Memory Access）技术可以使众多服务器像单一系统那样运转，同时保留小系统便于编程和管理的优点
 
     计算平台的体系结构  https://baike.baidu.com/item/NUMA/6906025
