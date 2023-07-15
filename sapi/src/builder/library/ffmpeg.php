@@ -32,6 +32,10 @@ EOF
         # apk add yasm nasm
         set -x
         ./configure --help
+        ./configure --help | grep shared
+        ./configure --help | grep static
+        ./configure --help | grep  '\-\-extra'
+        # exit 3
         PACKAGES='openssl libwebp  libxml-2.0 libssh2 freetype2 gmp '
         PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
         PACKAGES="\$PACKAGES aom "
@@ -40,30 +44,31 @@ EOF
         PACKAGES="\$PACKAGES x264 "
         PACKAGES="\$PACKAGES x265 "
 
-        export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
-        export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
-        export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
+         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
+         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
         ./configure  \
         --prefix=$ffmpeg_prefix \
-        --enable-shared=no \
-        --enable-static=yes \
+        --enable-gpl \
+        --enable-version3 \
+        --disable-shared \
+        --enable-static \
         --enable-openssl \
         --enable-libwebp \
         --enable-libxml2 \
         --enable-libsvtav1 \
         --enable-libdav1d \
         --enable-libaom \
-        --enable-libfreetype \
-        --enable-libssh \
         --enable-lcms2 \
         --enable-gmp \
         --enable-libx264 \
         --enable-libx265 \
-         --enable-random \
-        --enable-gpl \
-        --enable-version3
-
-
+        --enable-random \
+        --enable-libfreetype \
+        --enable-libssh \
+        --extra-ldflags="\${LDFLAGS} " \
+        --extra-libs="\${LIBS} " \
+        --extra-cflags=" -static "
 EOF
         )
         ->withPkgName('libavcodec  libavdevice  libavfilter  libavformat libavutil  libswresample  libswscale')
