@@ -45,7 +45,7 @@ EOF
         export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
         ./configure  \
         --prefix=$ffmpeg_prefix \
-        --enable-shared=no \
+        --disable-shared=yes \
         --enable-static=yes \
         --enable-openssl \
         --enable-libwebp \
