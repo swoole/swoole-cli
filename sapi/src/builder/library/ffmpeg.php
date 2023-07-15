@@ -70,7 +70,7 @@ EOF
         --enable-nonfree \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
-        --extra-cflags=" -static "
+        # --extra-cflags=" -static "
         # --cc={$p->get_C_COMPILER()} \
         # --cxx={$p->get_CXX_COMPILER()} \
         # --ld={$p->getLinker()} \
