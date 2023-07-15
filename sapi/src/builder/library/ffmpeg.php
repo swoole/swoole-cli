@@ -72,7 +72,7 @@ EOF
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
         --pkg-config-flags="--static" \
-        --pkg-config="\${PKG_CONFIG_PATH}"
+        --pkg-config=true
         # --extra-cflags=" -static "
         # --cc={$p->get_C_COMPILER()} \
         # --cxx={$p->get_CXX_COMPILER()} \
