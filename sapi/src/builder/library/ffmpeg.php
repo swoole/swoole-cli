@@ -66,9 +66,9 @@ EOF
         --enable-random \
         --enable-libfreetype \
         --enable-libssh \
-         --cc={$p->get_C_COMPILER()} \
-         --cxx={$p->get_CXX_COMPILER()} \
-         --ld={$p->getLinker()} \
+        --cc={$p->get_C_COMPILER()} \
+        --cxx={$p->get_CXX_COMPILER()} \
+        --ld={$p->getLinker()} \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
         --extra-cflags=" -static "
