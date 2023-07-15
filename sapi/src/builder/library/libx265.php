@@ -35,7 +35,8 @@ EOF
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
             -DENABLE_LIBNUMA=ON \
-            -DNuma_ROOT={$numa_prefix}
+            -DNuma_ROOT={$numa_prefix} \
+            -DENABLE_SHARED=OFF
 
 EOF
         )
