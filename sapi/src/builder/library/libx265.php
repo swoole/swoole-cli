@@ -6,6 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $libx265_prefix = LIBX265_PREFIX;
     $numa_prefix = NUMA_PREFIX;
+    $build_dir = $p->getBuildDir();
     $lib = new Library('libx265');
     $lib->withHomePage('https://www.videolan.org/developers/x265.html')
         ->withLicense('https://bitbucket.org/multicoreware/x265_git/src/master/COPYING', Library::LICENSE_LGPL)
@@ -30,6 +31,7 @@ EOF
             cmake \
             -G"Unix Makefiles" ../source  \
             -DCMAKE_INSTALL_PREFIX={$libx265_prefix} \
+            -DCMAKE_CURRENT_SOURCE_DIR={$build_dir}/libx265/source \
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
