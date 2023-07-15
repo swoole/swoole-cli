@@ -34,6 +34,7 @@ EOF
         PACKAGES='openssl libwebp  libxml-2.0 libssh2 freetype2 gmp '
         PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
         PACKAGES="\$PACKAGES aom "
+        PACKAGES="\$PACKAGES dav1d "
         PACKAGES="\$PACKAGES lcms2 "
         PACKAGES="\$PACKAGES x264 "
         PACKAGES="\$PACKAGES x265 "
