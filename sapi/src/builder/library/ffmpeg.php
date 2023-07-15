@@ -66,9 +66,12 @@ EOF
         --enable-libx265 \
         --enable-random \
         --enable-libfreetype \
+        --enable-pic \
+        --enable-ffplay \
         --extra-cflags="--static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
+        --extra-ldexeflags="-Bstatic" \
         --cc={$p->get_C_COMPILER()} \
         --cxx={$p->get_CXX_COMPILER()} \
         --ld={$p->getLinker()} \
