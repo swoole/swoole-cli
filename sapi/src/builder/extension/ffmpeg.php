@@ -21,21 +21,22 @@ return function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
+        $ffmpeg_prefix = FFMPEG_PREFIX;
 
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/ffmpeg/
-                cd {$builddir}/ffmpeg/build/
-                cp -f aria2c {$workdir}/bin/
+                cd {$ffmpeg_prefix}/
+                cp -rf bin/ {$workdir}/bin/ffmpeg/
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
-            otool -L {$workdir}/bin/aria2c
+            otool -L {$workdir}/bin/ffmpeg/ffmpeg
 EOF;
         } else {
             $cmd .= <<<EOF
-              file {$workdir}/bin/aria2c
-              readelf -h {$workdir}/bin/aria2c
+              file {$workdir}/bin/ffmpeg/ffmpeg
+              readelf -h {$workdir}/bin/ffmpeg/ffmpeg
 EOF;
         }
         return $cmd;

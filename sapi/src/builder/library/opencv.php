@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $opencv_prefix = OPENCV_PREFIX;
+    $ffmpeg_prefix = FFMPEG_PREFIX;
     $workDir = $p->getWorkDir();
     $buildDir = $p->getBuildDir();
     $lib = new Library('opencv');
@@ -37,10 +38,11 @@ EOF
         -DOPENCV_EXTRA_MODULES_PATH="../opencv_contrib/modules" \
         -DCMAKE_BUILD_TYPE=Release \
         -DWITH_FFMPEG=ON \
+        -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
-        -DBUILD_EXAMPLES=OFF \
+        -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=OFF \
         -DBUILD_SHARED_LIBS=OFF \
         ..
@@ -57,7 +59,8 @@ EOF
             'libwebp',
             'libpng',
             'freetype',
-        ) //'libtiff' openjpeg openEXR HDR
+            'libtiff'
+        ) // openjpeg openEXR HDR
     ;
 
     $p->addLibrary($lib);
