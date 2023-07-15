@@ -75,12 +75,11 @@ EOF
         --cc={$p->get_C_COMPILER()} \
         --cxx={$p->get_CXX_COMPILER()} \
         --ld={$p->getLinker()} \
-        --enable-cross-compile \
         --pkg-config-flags="--static" \
         --pkg-config=pkg-config
         #  --enable-nonfree \
         # --enable-libssh \
-        # --extra-cflags="  "
+        #        --enable-cross-compile \
 
 
 EOF
