@@ -36,7 +36,7 @@ EOF
         ./configure --help | grep static
         ./configure --help | grep  '\-\-extra'
         # exit 3
-        PACKAGES='openssl libwebp  libxml-2.0 libssh2 freetype2 gmp '
+        PACKAGES='openssl libwebp  libxml-2.0 libssh2 freetype2 gmp liblzma'
         PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
         PACKAGES="\$PACKAGES aom "
         PACKAGES="\$PACKAGES dav1d "
@@ -66,7 +66,7 @@ EOF
         --enable-random \
         --enable-libfreetype \
         --enable-libssh \
-        --extra-ldflags="\${LDFLAGS} " \
+        --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
         --extra-cflags=" -static "
 EOF
@@ -87,7 +87,8 @@ EOF
             "gmp",
             "lcms2",
             "libx264",
-            "libx265"
+            "libx265",
+            "liblzma"
         )
     ;
 
