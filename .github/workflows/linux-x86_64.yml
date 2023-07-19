@@ -62,6 +62,15 @@ jobs:
             chmod a+x make.sh
             head -n 20 make.sh
 
+      - name: Build all-library
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            bash sapi/quickstart/mark-install-library-cached.sh
+            bash ./make.sh all-library
+
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
