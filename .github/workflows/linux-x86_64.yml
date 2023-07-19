@@ -170,9 +170,8 @@ jobs:
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
       - name: Release
-        if: 0
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: 0 && startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-x64.tar.xz
