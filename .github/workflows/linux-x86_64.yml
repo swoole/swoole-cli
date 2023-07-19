@@ -119,6 +119,9 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
+            apk update
+            apk add ninja python3 py3-pip  nasm
+            pip3 install meson
             bash sapi/quickstart/mark-install-library-cached.sh
             bash ./make.sh all-library
 
