@@ -157,9 +157,9 @@ class Preprocessor
                 $this->setOsType('win');
                 break;
         }
+        //重置默认扩展
         $this->extEnabled = [];
     }
-
 
 
     public static function getInstance(): static
@@ -312,6 +312,7 @@ class Preprocessor
     {
         $this->installLibraryCached = $installLibraryCached;
     }
+
     /**
      * make -j {$n}
      * @param string $n

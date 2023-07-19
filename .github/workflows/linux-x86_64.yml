@@ -41,10 +41,11 @@ on:
 
 env:
   BUILD_PHP_VERSION: 8.2.4
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   linux-x86_64:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -77,20 +78,23 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
+          echo ${{ env.BRANCH_NAME }}
           # git submodule update --init
 
           # 准备数据库容器
-          bash sapi/src/UnitTest/scripts/database/start.sh
+          # bash sapi/src/UnitTest/scripts/database/start.sh
 
           # 准备数据库容器
-          bash sapi/src/UnitTest/scripts/database/start.sh
+          # bash sapi/src/UnitTest/scripts/database/start.sh
 
       - name: Prepare Libraries and Extensions
+        if: 0
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
       - name: Prepare
+        if: 0
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
@@ -108,6 +112,7 @@ jobs:
             head -n 20 make.sh
 
       - name: Build all-library
+        if: 0
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
@@ -117,6 +122,7 @@ jobs:
             bash ./make.sh all-library
 
       - name: Build
+        if: 0
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
@@ -141,6 +147,7 @@ jobs:
             bash ./make.sh archive
 
       - name: Show Build Result
+        if: 0
         run: |
           ./php-src/sapi/cli/php -v
           ./php-src/sapi/cli/php -m
@@ -155,6 +162,7 @@ jobs:
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts
+        if: 0
         uses: actions/upload-artifact@v3
         with:
           name: php-cli-linux-x64-${{ env.BUILD_PHP_VERSION }}
@@ -162,6 +170,7 @@ jobs:
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
       - name: Release
+        if: 0
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
