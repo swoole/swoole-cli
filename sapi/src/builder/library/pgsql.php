@@ -7,6 +7,7 @@ return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
 
     $option = '';
+    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static ';
     if ($p->getOsType() == 'macos') {
         $option = '--disable-thread-safety';
     }
@@ -41,7 +42,7 @@ return function (Preprocessor $p) {
 
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
-            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES )" \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
             ../configure  \
             --prefix={$pgsql_prefix} \
