@@ -118,6 +118,10 @@ if ($p->getInputOption('with-c-compiler')) {
     }
 }
 
+if ($p->getInputOption('with-os-mirror-site')) {
+    define('SWOOLE_CLI_WITH_OS_MIRROR', 1);
+}
+
 
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
@@ -125,55 +129,59 @@ if ($p->getInputOption('with-c-compiler')) {
 
 
 if ($p->getOsType() == 'macos') {
-    $p->addEndCallback(function () use ($p) {
-        $header = <<<'EOF'
+    $cmd = <<<'EOF'
 export PATH=/opt/homebrew/bin/:/usr/local/bin/:$PATH
 
 export HOMEBREW_INSTALL_FROM_API=1
-export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+export HOMEBREW_NO_ANALYTICS=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
 
+EOF;
+    if (defined('SWOOLE_CLI_WITH_OS_MIRROR')) {
+        $cmd = $cmd .PHP_EOL . <<<'EOF'
+export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
 
 export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
+export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 
 export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-
 EOF;
-        $command = file_get_contents(__DIR__ . '/make.sh');
-        $command = $header . PHP_EOL . $command;
-        file_put_contents(__DIR__ . '/make.sh', $command);
-    });
-}
-
-
-$cmd = '';
-if ($p->getOsType() == 'macos') {
-    $cmd .= <<<'EOF'
+    }
+    $cmd =  $cmd .PHP_EOL . <<<'EOF'
 brew=$(which brew  | wc -l)
 if test $brew -eq 1 ;then
 {
     meson=$(which meson  | wc -l)
     if test $meson -ne  1 ;then
     {
-        export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
-        export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
-        # export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
         brew install ninja  python3 gn zip unzip 7zip lzip go flex
-        pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
+        # pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
+        pip3 install meson virtualenv
     }
     fi
 }
 fi
-
-
 EOF;
 }
+
+
 if ($p->getOsType() == 'linux') {
-    $cmd .= <<<'EOF'
+    $cmd = <<<'EOF'
+export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
+EOF;
+
+    if (defined('SWOOLE_CLI_WITH_OS_MIRROR')) {
+        $cmd =  $cmd .PHP_EOL . <<<'EOF'
+export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+EOF;
+    }
+
+    $cmd =  $cmd .PHP_EOL . <<<'EOF'
 if test -f /etc/os-release; then
 {
     OS_RELEASE=$(cat /etc/os-release | grep "^ID=" | sed 's/ID=//g')
@@ -182,9 +190,11 @@ if test -f /etc/os-release; then
         meson=$(which meson | wc -l )
         if test $meson -ne 1 ;then
         {
+             cd ${__CURRENT_DIR__}
+             bash sapi/quickstart/linux/alpine-init.sh --mirror china
              apk add ninja python3 py3-pip gn zip unzip p7zip lzip  go flex
              apk add yasm nasm
-             pip3 install meson virtualenv pipenv -i https://pypi.tuna.tsinghua.edu.cn/simple
+             pip3 install meson virtualenv pipenv
              # git config --global --add safe.directory /work
         }
         fi
@@ -194,9 +204,10 @@ if test -f /etc/os-release; then
             meson=$(which meson | wc -l )
             if test $meson -ne 1 ;then
             {
+                bash sapi/quickstart/linux/debian-init.sh --mirror china
                 apt install -y python3 python3-pip ninja-build  gn zip unzip p7zip lzip  golang flex
                 apt install -y yasm nasm
-                pip3 install meson virtualenv pipenv -i https://pypi.tuna.tsinghua.edu.cn/simple
+                pip3 install meson virtualenv pipenv
                 # git config --global --add safe.directory /work
             }
             fi
@@ -212,11 +223,11 @@ EOF;
 
 $p->addEndCallback(function () use ($p, $cmd) {
     $header = <<<'EOF'
-#!/bin/env bash
+#!/use/bin/env bash
 
-export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-export cpu_nums=`nproc 2> /dev/null || sysctl -n hw.ncpu`
+export CPU_NUMS=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
+__CURRENT_DIR__=$( cd "$(dirname "$0")" pwd )
 
 EOF;
 
