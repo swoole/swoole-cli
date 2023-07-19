@@ -19,19 +19,6 @@ if ($p->getInputOption('with-php-version')) {
     if (preg_match($pattern, $subject, $match)) {
         if (intval($match[1]) >= 8) {
             $version = $match[0];
-        } else {
-            echo <<<EOF
-
-            support  PHP7.4 PHP7.3
-
-            php-7.4:
-                git clone -b build_php_7.4  https://github.com/jingjingxyk/swoole-cli/
-
-            php-7.3:
-                git clone -b build_php_7.3  https://github.com/jingjingxyk/swoole-cli/
-
-EOF;
-            die;
         }
     }
 }
