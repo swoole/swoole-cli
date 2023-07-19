@@ -91,7 +91,10 @@ jobs:
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          brew install  ninja python3 python3-pip  nasm
+          brew install  ninja python3  nasm
+          # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
+          python3 -m pip install --upgrade pip
           pip3 install meson
           bash sapi/quickstart/mark-install-library-cached.sh
           # bash ./make.sh libraw
