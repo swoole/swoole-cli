@@ -44,7 +44,7 @@ OPTIONS="--disable-all \
 set +x
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    <?php if ($this->getInputOption('with-marked-library') == 1) : ?>
+    <?php if ($this->getInputOption('with-library-cached') == 1) : ?>
         if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
             echo "[<?=$item->name?>] compiled, skip.."
             return 0
@@ -170,6 +170,7 @@ __EOF__
 
     <?php if ($item->enableBuildCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+
     <?php endif; ?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0

@@ -167,3 +167,10 @@ with-c-compiler
 ```shell
 php ./prepare.php --with-c-compiler=gcc
 ```
+
+with-library-cached
+----
+
+```shell
+php ./prepare.php with-library-cached
+```
