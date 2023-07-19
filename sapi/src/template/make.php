@@ -323,7 +323,7 @@ export_variables() {
 
 
 make_config() {
-
+    mkdir -p <?= $this->getWorkDir()  ?>/php-src/
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     make_ext_hook
     exit 0
