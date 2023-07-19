@@ -94,15 +94,15 @@ jobs:
           brew install  ninja python3 python3-pip  nasm
           pip3 install meson
           bash sapi/quickstart/mark-install-library-cached.sh
-          bash ./make.sh libraw
-          bash ./make.sh libtiff
-          bash ./make.sh lcms2
-          bash ./make.sh imagemagick
-          bash ./make.sh dav1d
-          bash ./make.sh aom
-          bash ./make.sh libgav1
-          bash ./make.sh svt_av1
-          bash ./make.sh libyuv
+          # bash ./make.sh libraw
+          # bash ./make.sh libtiff
+          # bash ./make.sh lcms2
+          # bash ./make.sh imagemagick
+          # bash ./make.sh dav1d
+          # bash ./make.sh aom
+          # bash ./make.sh libgav1
+          # bash ./make.sh svt_av1
+          # bash ./make.sh libyuv
           bash ./make.sh all-library
 
       - name: Build all-library
