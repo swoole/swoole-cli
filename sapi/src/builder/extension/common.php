@@ -10,9 +10,9 @@ return function (Preprocessor $p) {
         'openssl',
         'zlib',
         'iperf3',
-        'libfido2'
+        'libfido2',
+        'opencl'
     ];
-    $depends=['opencl'];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')

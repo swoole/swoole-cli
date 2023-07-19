@@ -32,6 +32,6 @@ EOF
             )
             ->withBinPath($socat_prefix . '/bin/')
             ->withDependentLibraries('openssl', 'readline')
-            ->withBuildLibraryCached(false)
+            //->withBuildLibraryCached(false)
     );
 };
