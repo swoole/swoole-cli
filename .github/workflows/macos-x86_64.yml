@@ -92,10 +92,10 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           brew install  ninja python3  nasm
+          # python3 -m pip install --upgrade pip
+          pip3 install meson
           # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 
-          python3 -m pip install --upgrade pip
-          pip3 install meson
           bash sapi/quickstart/mark-install-library-cached.sh
           # bash ./make.sh libraw
           # bash ./make.sh libtiff
