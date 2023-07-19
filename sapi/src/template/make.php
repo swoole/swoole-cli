@@ -568,6 +568,7 @@ elif [ "$1" = "build" ] ;then
 elif [ "$1" = "test" ] ;then
     <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
+    exit 0
     cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
     PHP_VERSION=$(./php -r "echo PHP_VERSION;")
     PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
