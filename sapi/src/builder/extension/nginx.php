@@ -18,9 +18,10 @@ return function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
 
+
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
-                cd {$builddir}/nginx/src
+                cd {$builddir}/nginx/objs
                 cp -f nginx {$workdir}/bin/
 
 EOF;
