@@ -46,10 +46,14 @@ export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/
 export NO_PROXY="\${NO_PROXY},127.0.0.1,localhost"
 export NO_PROXY="\${NO_PROXY},.aliyuncs.com,.aliyun.com"
 export NO_PROXY="\${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+export NO_PROXY="\${NO_PROXY},dl-cdn.alpinelinux.org,deb.debian.org,security.debian.org"
+export NO_PROXY="\${NO_PROXY},archive.ubuntu.com,security.ubuntu.com"
+export NO_PROXY="\${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
 
 EOF;
     $p->setProxyConfig($proxyConfig);
 }
+
 if ($p->getInputOption('with-install-library-cached')) {
     $p->setInstallLibraryCached(true);
 }
