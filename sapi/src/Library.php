@@ -5,7 +5,9 @@ namespace SwooleCli;
 class Library extends Project
 {
     public array $mirrorUrls = [];
+
     public string $configure = '';
+
     public string $ldflags = '';
 
     public string $buildScript = '';
@@ -17,6 +19,7 @@ class Library extends Project
     public string $afterInstallScript = '';
     public string $pkgConfig = '';
     public array $pkgNames = [];
+
     public string $prefix = '/usr';
 
     public string $binPath = '';
@@ -26,7 +29,6 @@ class Library extends Project
     public bool $cleanPreInstallDirectory = false;
 
     public string $preInstallDirectory = '';
-
 
     public bool $skipBuildLicense = false;
 
@@ -40,8 +42,7 @@ class Library extends Project
 
     public string $enablePkgNames = 'yes';
 
-    public bool $enableBuildCached = true;
-
+    public bool $enableBuildLibraryCached = true;
 
     public function withMirrorUrl(string $url): static
     {
@@ -159,7 +160,6 @@ class Library extends Project
         return $this;
     }
 
-
     public function disablePkgNames(): static
     {
         $this->enablePkgNames = 'no';
@@ -232,10 +232,9 @@ class Library extends Project
         return $this->label;
     }
 
-    public function withBuildCached(bool $enableBuildCached): static
+    public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
     {
-        $this->enableBuildCached = $enableBuildCached;
+        $this->enableBuildLibraryCached = $enableBuildLibraryCached;
         return $this;
     }
-
 }

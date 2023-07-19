@@ -83,6 +83,16 @@ if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
+$buildType = $p->getBuildType();
+
+if ($p->getInputOption('with-build-type')) {
+    $buildType = $p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
+}
+
+define('SWOOLE_CLI_BUILD_TYPE', $buildType);
+define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
+
 if ($p->getInputOption('with-http-proxy')) {
     $http_proxy = $p->getInputOption('with-http-proxy');
     define('PHP_CLI_HTTP_PROXY_URL', $http_proxy);
@@ -93,8 +103,13 @@ export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/
 export NO_PROXY="\${NO_PROXY},127.0.0.1,localhost"
 export NO_PROXY="\${NO_PROXY},.aliyuncs.com,.taobao.org,.aliyun.com"
 export NO_PROXY="\${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+
+
 EOF;
     $p->setProxyConfig($proxyConfig);
+}
+if ($p->getInputOption('with-install-library-cached')) {
+    $p->setInstallLibraryCached(true);
 }
 
 if ($p->getOsType() == 'macos') {

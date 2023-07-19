@@ -44,26 +44,12 @@ OPTIONS="--disable-all \
 set +x
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    <?php if ($this->getInputOption('with-library-cached') == 1) : ?>
-        if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
-            echo "[<?=$item->name?>] compiled, skip.."
-            return 0
-        fi
-    <?php endif; ?>
     <?php if ($item->skipBuildInstall) : ?>
     echo "skip install library <?=$item->name?>" ;
     return 0 ;
     <?php endif ;?>
 
     echo "build <?=$item->name?>"
-
-    <?php if ($item->enableBuildCached) : ?>
-        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-        echo "[<?=$item->name?>] compiled, skip.."
-        cd <?= $this->workDir ?>/
-        return 0
-        fi
-    <?php endif; ?>
 
     <?php if ($item->cleanBuildDirectory) : ?>
      # If the build directory exist, clean the build directory
@@ -74,7 +60,6 @@ make_<?=$item->name?>() {
     if [ ! -d <?=$this->getBuildDir()?>/<?=$item->name?> ]; then
         mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
     fi
-
 
     <?php if ($item->untarArchiveCommand == 'tar') :?>
     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
@@ -89,16 +74,29 @@ make_<?=$item->name?>() {
     unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
     <?php endif ; ?>
     <?php if ($item->untarArchiveCommand == 'xz') :?>
-   xz -f -d -k   <?=$this->workDir?>/pool/lib/<?=$item->file?>    <?= PHP_EOL; ?>
-   tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?= rtrim($this->workDir . '/pool/lib/' . $item->file, '.xz') . PHP_EOL?>
+    xz -f -d -k   <?=$this->workDir?>/pool/lib/<?=$item->file?>    <?= PHP_EOL; ?>
+    tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?= rtrim($this->workDir . '/pool/lib/' . $item->file, '.xz') . PHP_EOL?>
     <?php endif ; ?>
     <?php if ($item->untarArchiveCommand == 'cp') :?>
-        cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?>/* <?=$this->getBuildDir()?>/<?=$item->name?>/   <?= PHP_EOL; ?>
+    cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?>/* <?=$this->getBuildDir()?>/<?=$item->name?>/   <?= PHP_EOL; ?>
     <?php endif ; ?>
     <?php if ($item->untarArchiveCommand == 'mv') :?>
-        cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/    <?= PHP_EOL; ?>
+    cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/    <?= PHP_EOL; ?>
     <?php endif ; ?>
 
+    <?php if ($item->enableBuildLibraryCached) : ?>
+        <?php if ($this->installLibraryCached) :?>
+    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
+        echo "[<?=$item->name?>]  compiled, skip.."
+        return 0
+    fi
+        <?php endif;?>
+    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+        echo "[<?=$item->name?>] compiled, skip.."
+        cd <?= $this->workDir ?>/
+        return 0
+    fi
+    <?php endif; ?>
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
@@ -168,10 +166,15 @@ __EOF__
 
     # build end
 
-    <?php if ($item->enableBuildCached) : ?>
+    <?php if ($item->enableBuildLibraryCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
-
+        <?php if ($this->installLibraryCached) :?>
+    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/] ;then
+         touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
+    fi
+        <?php endif;?>
     <?php endif; ?>
+
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
