@@ -28,16 +28,17 @@ if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
-$buildType= $p->getBuildType();
+$buildType = $p->getBuildType();
 
 if ($p->getInputOption('with-build-type')) {
-    $buildType=$p->getInputOption('with-build-type');
+    $buildType = $p->getInputOption('with-build-type');
     $p->setBuildType($buildType);
 }
 
 define('SWOOLE_CLI_BUILD_TYPE', $buildType);
 define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
+<<<<<<< HEAD
 if ($p->getInputOption('with-http-proxy')) {
     $http_proxy = $p->getInputOption('with-http-proxy');
     define('SWOOLE_CLI_HTTP_PROXY_URL', $http_proxy);
@@ -48,6 +49,10 @@ export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/
 export NO_PROXY="\${NO_PROXY},127.0.0.1,localhost"
 EOF;
     $p->setProxyConfig($proxyConfig);
+=======
+if ($p->getInputOption('with-install-library-cached')) {
+    $p->setInstallLibraryCached(true);
+>>>>>>> new_main
 }
 
 if ($p->getOsType() == 'macos') {

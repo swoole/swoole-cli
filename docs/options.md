@@ -147,3 +147,13 @@ with-http-proxy
 ```shell
 php ./prepare.php --with-http-proxy=http://192.168.3.26:8015
 ```
+
+with-install-library-cached
+----
+使用库缓存，复用已构建、安装的库
+例子：将构建好的openssl库，打包进入容器，使用容器环境构建时，即可跳过 openssl
+构建、安装过程
+
+```shell
+php ./prepare.php --with-install-library-cached=1
+```

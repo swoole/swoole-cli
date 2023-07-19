@@ -27,6 +27,7 @@ class Preprocessor
 
     protected string $cCompiler = 'clang';
     protected string $cppCompiler = 'clang++';
+
     protected string $lld = 'ld.lld';
 
     protected array $libraryMap = [];
@@ -76,7 +77,7 @@ class Preprocessor
      * @var string
      */
     protected string $logicalProcessors = '';
-    protected bool $installLibrary = true;
+
     protected array $inputOptions = [];
 
     protected array $binPaths = [];
@@ -135,6 +136,8 @@ class Preprocessor
     protected string $buildType = 'release';
 
     protected string $proxyConfig = '';
+
+    protected bool $installLibraryCached = false;
 
     protected function __construct()
     {
@@ -304,6 +307,10 @@ class Preprocessor
         $this->extraOptions = $options;
     }
 
+    public function setInstallLibraryCached(bool $installLibraryCached): void
+    {
+        $this->installLibraryCached = $installLibraryCached;
+    }
     /**
      * make -j {$n}
      * @param string $n
@@ -460,6 +467,8 @@ class Preprocessor
                         cd {$lib->downloadDirName}
                         test -f {$lib->path} || tar   -zcf {$lib->path} ./
                         cd {$workDir}
+
+
 EOF;
 
                     $this->execDownloadScript($cacheDir, $lib->downloadScript);
@@ -538,6 +547,8 @@ EOF;
                                 cd {$ext->downloadDirName}
                                 test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
                                 cd {$workDir}
+
+
 EOF;
 
                             $this->execDownloadScript($cacheDir, $ext->downloadScript);
