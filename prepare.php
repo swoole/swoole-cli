@@ -28,16 +28,19 @@ if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
-$buildType= $p->getBuildType();
+$buildType = $p->getBuildType();
 
 if ($p->getInputOption('with-build-type')) {
-    $buildType=$p->getInputOption('with-build-type');
+    $buildType = $p->getInputOption('with-build-type');
     $p->setBuildType($buildType);
 }
 
 define('SWOOLE_CLI_BUILD_TYPE', $buildType);
 define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
+if ($p->getInputOption('with-install-library-cached')) {
+    $p->setInstallLibraryCached(true);
+}
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
