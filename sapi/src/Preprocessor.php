@@ -81,7 +81,7 @@ class Preprocessor
      * @var string
      */
     protected string $logicalProcessors = '';
-    protected bool $installLibrary = true;
+
     protected array $inputOptions = [];
 
     protected array $binPaths = [];
@@ -140,6 +140,8 @@ class Preprocessor
     protected string $buildType = 'release';
 
     protected string $proxyConfig = '';
+
+    protected bool $installLibraryCached = false;
 
     protected function __construct()
     {
@@ -309,6 +311,10 @@ class Preprocessor
         $this->extraOptions = $options;
     }
 
+    public function setInstallLibraryCached(bool $installLibraryCached): void
+    {
+        $this->installLibraryCached = $installLibraryCached;
+    }
     /**
      * make -j {$n}
      * @param string $n
