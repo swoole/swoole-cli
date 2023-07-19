@@ -124,7 +124,7 @@ __EOF__
     <?php if ($item->enableBuildLibraryCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
         <?php if ($this->installLibraryCached) :?>
-    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/] ;then
+    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
          touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
     fi
         <?php endif;?>
