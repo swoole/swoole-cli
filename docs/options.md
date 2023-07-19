@@ -170,6 +170,7 @@ php ./prepare.php --with-c-compiler=gcc
 
 with-library-cached
 ----
+使用构建库的缓存
 
 ```shell
 php ./prepare.php with-library-cached
