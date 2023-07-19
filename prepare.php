@@ -13,16 +13,6 @@ $p->parseArguments($argc, $argv);
 # PHP 默认版本
 $version = '8.2.4';
 
-if ($p->getInputOption('with-php-version')) {
-    $subject = $p->getInputOption('with-php-version');
-    $pattern = '/(\d{1,2})\.\d{1,2}\.\d{1,2}/';
-    if (preg_match($pattern, $subject, $match)) {
-        if (intval($match[1]) >= 8) {
-            $version = $match[0];
-        }
-    }
-}
-
 define('BUILD_PHP_VERSION', $version);
 
 // Compile directly on the host machine, not in the docker container
