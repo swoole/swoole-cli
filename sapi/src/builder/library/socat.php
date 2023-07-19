@@ -7,6 +7,7 @@ return function (Preprocessor $p) {
     // https://github.com/aledbf/socat-static-binary/blob/master/build.sh
     $socat_prefix = SOCAT_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
+    $cflags = $p->getOsType() == 'macos' ? "" : '-static';
     $p->addLibrary(
         (new Library('socat'))
             ->withHomePage('http://www.dest-unreach.org/socat/')
@@ -21,7 +22,7 @@ return function (Preprocessor $p) {
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
-            CFLAGS="-static -O2 -Wall -fPIC  -DWITH_OPENSSL" \
+            CFLAGS="{$cflags} -O2 -Wall -fPIC  -DWITH_OPENSSL" \
             ./configure \
             --prefix={$socat_prefix} \
             --enable-readline \
