@@ -27,10 +27,11 @@ return function (Preprocessor $p) {
             --enable-readline \
             --enable-openssl-base={$openssl_prefix}
 
-            make -j $(cpu_nums)
+            make -j {$p->maxJob}
 EOF
             )
             ->withBinPath($socat_prefix . '/bin/')
             ->withDependentLibraries('openssl', 'readline')
+            ->withBuildLibraryCached(false)
     );
 };
