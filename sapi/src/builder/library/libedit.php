@@ -30,7 +30,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withLdflags('')
-            ->withBuildCached(false)
+            ->withBuildLibraryCached(false)
             ->withDependentLibraries('ncurses')
     );
 };

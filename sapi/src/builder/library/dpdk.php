@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
             ->withManual('https://core.dpdk.org/doc/quick-start/')
             ->withUntarArchiveCommand('xz')
             ->withCleanBuildDirectory()
-            ->withBuildCached(false)
+            ->withBuildLibraryCached(false)
             ->withConfigure(
                 <<<EOF
             # apk add python3 py3-pip

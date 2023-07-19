@@ -38,7 +38,7 @@ EOF
 
 EOF
         )
-        ->withBuildCached(false)
+        ->withBuildLibraryCached(false)
         //->withBinPath($openssh_prefix . '/bin/')
         ->withDependentLibraries('openssl', 'zlib') //'libedit',
         ->disableDefaultLdflags()

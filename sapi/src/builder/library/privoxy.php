@@ -26,7 +26,7 @@ EOF
             ->withPrefix($privoxy_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($privoxy_prefix)
-            ->withBuildCached(false)
+            ->withBuildLibraryCached(false)
             ->withConfigure(
                 <<<EOF
                 apk add w3m   docbook2x

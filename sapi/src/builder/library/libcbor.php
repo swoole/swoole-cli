@@ -31,7 +31,7 @@ EOF
 
 EOF
         )
-        ->withBuildCached(false)
+        ->withBuildLibraryCached(false)
         ->disableDefaultLdflags()
         ->disablePkgName()
         ->disableDefaultPkgConfig()

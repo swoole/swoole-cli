@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPrefix($libelf_prefix)
-            ->withBuildCached(false)
+            ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
             ->withConfigure(
                 <<<EOF

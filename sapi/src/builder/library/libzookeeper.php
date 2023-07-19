@@ -63,7 +63,7 @@ return function (Preprocessor $p) {
 
 EOF
             )
-        ->withBuildCached(false)
+        ->withBuildLibraryCached(false)
         ->withBinPath($libzookeeper_prefix . '/bin/')
     );
 };

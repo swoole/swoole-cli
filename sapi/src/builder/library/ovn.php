@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
         ->withPrefix($ovn_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovn_prefix)
-        ->withBuildCached(false)
+        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
         set -x
