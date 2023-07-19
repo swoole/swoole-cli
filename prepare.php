@@ -227,7 +227,7 @@ $p->addEndCallback(function () use ($p, $cmd) {
 
 export CPU_NUMS=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
-__CURRENT_DIR__=$( cd "$(dirname "$0")" pwd )
+__CURRENT_DIR__=$(cd "$(dirname $0)";pwd)
 
 EOF;
 
