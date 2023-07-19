@@ -84,12 +84,7 @@ jobs:
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-experiment-build-all-library
-      - name: Build all-library
-        if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
-        run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          bash ./make.sh all-library
+          key: ${{ runner.os }}-build-all-library
 
       - name: Build all-library
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
