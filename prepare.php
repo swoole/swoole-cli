@@ -22,15 +22,29 @@ if ($p->getInputOption('with-php-version')) {
         } else {
             echo <<<EOF
 
-            support  PHP7.4 PHP7.3
+    support  PHP7.4  PHP7.3 PHP8  micro
 
-            php-7.4:
-                git clone -b build_php_7.4  https://github.com/jingjingxyk/swoole-cli/
+    php-8-micro:  (https://github.com/dixyes/phpmicro.git）
 
-            php-7.3:
-                git clone -b build_php_7.3  https://github.com/jingjingxyk/swoole-cli/
+        git clone -b build_native_php_sfx_micro  https://github.com/jingjingxyk/swoole-cli/
+
+    php-8.2:
+
+        git clone -b build_php_8.2  https://github.com/jingjingxyk/swoole-cli/
+
+    php-7.4:
+
+        git clone -b build_php_7.4  https://github.com/jingjingxyk/swoole-cli/
+
+    php-7.3:
+
+        git clone -b build_php_7.3  https://github.com/jingjingxyk/swoole-cli/
 
 EOF;
+            echo PHP_EOL;
+            if (is_file(__DIR__ . '/' . 'make.sh')) {
+                unlink(__DIR__ . '/' . 'make.sh');
+            }
             die;
         }
     }
