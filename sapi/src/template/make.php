@@ -51,7 +51,7 @@ make_<?=$item->name?>() {
     <?php if ($item->enableBuildLibraryCached) : ?>
         <?php if ($this->installLibraryCached) :?>
     if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
-        echo "[<?=$item->name?>]  compiled, skip.."
+        echo "[<?=$item->name?>]  library cached , skip.."
         return 0
     fi
         <?php endif;?>

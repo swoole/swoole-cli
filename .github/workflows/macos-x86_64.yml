@@ -91,6 +91,13 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           bash ./make.sh all-library
 
+      - name: Build all-library
+        if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
+        run: |
+          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          bash sapi/quickstart/mark-install-library-cached.sh
+          bash ./make.sh all-library
+
       - name: Build
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
