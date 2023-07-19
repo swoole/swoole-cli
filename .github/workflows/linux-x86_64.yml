@@ -79,6 +79,7 @@ jobs:
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
           echo ${{ env.BRANCH_NAME }}
+
           # git submodule update --init
 
           # 准备数据库容器
@@ -88,7 +89,7 @@ jobs:
           # bash sapi/src/UnitTest/scripts/database/start.sh
 
       - name: Prepare Libraries and Extensions
-        if: 0
+        if: 1
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
@@ -106,13 +107,14 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +pgsql +pdo_pgsql -mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1
+            # php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +pgsql +pdo_pgsql -mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1
+            php prepare.php  +nginx ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1
 
             chmod a+x make.sh
             head -n 20 make.sh
 
       - name: Build all-library
-        if: 0
+        if: 1
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
@@ -122,7 +124,7 @@ jobs:
             bash ./make.sh all-library
 
       - name: Build
-        if: 0
+        if: 1
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
@@ -131,20 +133,9 @@ jobs:
             apk update
             apk add ninja python3 py3-pip  nasm
             pip3 install meson
-            bash ./make.sh libraw
-            bash ./make.sh libtiff
-            bash ./make.sh lcms2
-            bash ./make.sh imagemagick
-            bash ./make.sh dav1d
-            bash ./make.sh aom
-            bash ./make.sh libgav1
-            bash ./make.sh svt_av1
-            bash ./make.sh libyuv
 
             bash ./make.sh config
-            bash ./make.sh build
-            ./php-src/sapi/cli/php -v
-            bash ./make.sh archive
+
 
       - name: Show Build Result
         if: 0
