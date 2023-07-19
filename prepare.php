@@ -27,6 +27,10 @@ if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
+if ($p->getInputOption('with-install-library-cached')) {
+    $p->setInstallLibraryCached(true);
+}
+
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
     $p->setLinker('ld');

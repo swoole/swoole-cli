@@ -42,7 +42,12 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
+    <?php if ($this->installLibraryCached) :?>
+    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
+        echo "[<?=$item->name?>]  compiled, skip.."
+        return 0
+    fi
+    <?php endif;?>
     if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
         echo "[<?=$item->name?>] compiled, skip.."
         cd <?= $this->workDir ?>/
@@ -97,7 +102,14 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
 
+    <?php if ($item->enableBuildLibraryCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+        <?php if ($this->installLibraryCached) :?>
+    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/] ;then
+         touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
+    fi
+        <?php endif;?>
+    <?php endif; ?>
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0

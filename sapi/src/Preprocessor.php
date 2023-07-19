@@ -22,6 +22,7 @@ class Preprocessor
 
     protected string $cCompiler = 'clang';
     protected string $cppCompiler = 'clang++';
+
     protected string $lld = 'ld.lld';
 
     protected array $downloadExtensionList = [];
@@ -125,6 +126,8 @@ class Preprocessor
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
     protected string $configureVarables;
+
+    protected bool $installLibraryCached = false;
 
     protected function __construct()
     {
@@ -295,6 +298,10 @@ class Preprocessor
         $this->extraOptions = $options;
     }
 
+    public function setInstallLibraryCached(bool $installLibraryCached): void
+    {
+        $this->installLibraryCached = $installLibraryCached;
+    }
     /**
      * make -j {$n}
      * @param string $n

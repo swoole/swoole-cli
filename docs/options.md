@@ -133,3 +133,13 @@ with-parallel-jobs
 ```shell
 php ./prepare.php --with-parallel-jobs=8
 ```
+
+with-install-library-cached
+----
+使用库缓存，实现复用已构建、安装的库
+例子：将已经构建好的openssl库，打包进入容器，使用容器环境构建时，即可跳过 openssl
+库的构建 和 安装
+
+```shell
+php ./prepare.php --with-install-library-cached=1
+```
