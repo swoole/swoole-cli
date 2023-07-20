@@ -24,6 +24,7 @@ return function (Preprocessor $p) {
                         export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
                         export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
                         bash sapi/quickstart/linux/alpine-init.sh --mirror china
+                        mkdir -p /root/.cargo/
                         cat > /root/.cargo/config <<'___EOF___'
                         [source.crates-io]
 registry = "https://github.com/rust-lang/crates.io-index"
