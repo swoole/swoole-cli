@@ -30,7 +30,7 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON
-            make -j $(nproc)
+            make -j {$p->getMaxJob()}
             make install
 
 
