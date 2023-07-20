@@ -54,5 +54,5 @@ EOF
             ->withPkgName('libavif')
             ->withDependentLibraries('libwebp', 'aom', 'svt_av1') #'dav1d', 'libgav1',  'libyuv',  'libsharpyuv',
     );
-    $p->withVariable('LIBS', '$LIBS -lbrotli');
+    $p->withVariable('LIBS', '$LIBS -lbrotli -lbrotlicommon ');
 };
