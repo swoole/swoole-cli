@@ -27,6 +27,7 @@ return function (Preprocessor $p) {
             rustc -V
             cargo -V
             rustc --print target-cpus
+            export RUST_LOG=debug
 
             cargo cbuild --release \
             --prefix={$rav1e_prefix} \
