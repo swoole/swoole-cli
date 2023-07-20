@@ -65,6 +65,7 @@ EOF;
     $lib->withHomePage('https://github.com/jingjingxyk/swoole-cli/')
         ->withLicense('https://github.com/jingjingxyk/swoole-cli//LICENSE', Library::LICENSE_APACHE2)
         ->withManual('https://github.com/jingjingxyk/swoole-cli')
+        ->withUrl('https://github.com/quictls/openssl/archive/refs/tags/openssl-3.0.8-quic1.tar.gz')
         ->withBuildLibraryCached(false)
         ->withBuildScript($cmd)
         ->withLdflags('')
