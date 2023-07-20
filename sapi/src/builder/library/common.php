@@ -51,6 +51,7 @@ return function (Preprocessor $p) {
                     }
                     fi
                 }
+                fi
             }
             fi
 
