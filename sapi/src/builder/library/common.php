@@ -51,10 +51,10 @@ return function (Preprocessor $p) {
                         mkdir -p /root/.cargo/
                         cat > /root/.cargo/config <<'___EOF___'
 [source.crates-io]
-replace-with = 'mirror'
+replace-with = 'ustc'
 
-[source.mirror]
-registry = "https://mirrors.tuna.tsinghua.edu.cn/crates.io-index.git"
+[source.ustc]
+registry = "git://mirrors.ustc.edu.cn/crates.io-index"
 ___EOF___
 
                         # cargo --list
