@@ -36,6 +36,11 @@ ___EOF___
                         bash sapi/quickstart/linux/alpine-init.sh --mirror china
                     }
                     fi
+
+                    export RUSTUP_HOME=/root/.rustup
+                    export CARGO_HOME=/root/.cargo
+                    export PATH=\$PATH:/root/.cargo/bin
+
                     meson=$(which cargo-c | wc -l )
                     if test \$meson -ne 1 ;then
                     {
@@ -54,12 +59,11 @@ ___EOF___
                         # apk add cargo
 
                         # /root/.cargo/bin
-                        export RUSTUP_HOME=/root/.rustup
-                        export CARGO_HOME=/root/.cargo
+
                         {$p->getProxyConfig()}
                         # curl https://sh.rustup.rs -sSf | bash -s -- --help
-                        curl https://sh.rustup.rs -sSf | bash -s -- --quiet
-                        export PATH=\$PATH:/root/.cargo/bin
+                        # curl https://sh.rustup.rs -sSf | bash -s -- --quiet
+                        source root/.cargo/env
                         rustc -V
                         cargo -V
                         # cargo --list
