@@ -19,6 +19,7 @@ return function (Preprocessor $p) {
                     export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
 
                     if [[ "\${SWOOLE_CLI_WITH_OS_MIRROR}" -eq 1 ]] ; then
+                    {
                         export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
                         export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
                         export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
