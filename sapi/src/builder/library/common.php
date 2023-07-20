@@ -42,24 +42,25 @@ ___EOF___
 
                         apk update
                         apk add ninja python3 py3-pip  nasm
+                        # pip3
+                        # curl -o get-pip.py  https://bootstrap.pypa.io/get-pip.py # install pip3
+
                         if [[ "\${SWOOLE_CLI_WITH_OS_MIRROR}" -eq 1 ]] ; then
                         {
                             pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
                         }
                         fi
                         pip3 install meson virtualenv pipenv
-                        apk add cargo
+                        # apk add cargo
 
                         # /root/.cargo/bin
                         export RUSTUP_HOME=/root/.rustup
                         export CARGO_HOME=/root/.cargo
 
-                        # curl https://sh.rustup.rs -sSf | sh
-                        # curl -o get-pip.py  https://bootstrap.pypa.io/get-pip.py # install pip3
-
-
-
+                        curl https://sh.rustup.rs -sSf | sh
+                        export PATH=\$PATH:/root/.cargo/bin
+                        rustc -V
+                        cargo -V
                         # cargo --list
                         {$p->getProxyConfig()}
                         cargo install cargo-c
