@@ -9,6 +9,6 @@ return function (Preprocessor $p) {
         (new Extension('gd'))
             ->withHomePage('https://www.php.net/manual/zh/book.image.php')
             ->withOptions('--enable-gd  --with-avif ') //  --with-jpeg --with-freetype --with-webp
-            ->withDependentLibraries('libavif') //'libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif',
+            ->withDependentLibraries('libavif', 'zlib') //'libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif',
     );
 };
