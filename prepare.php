@@ -58,11 +58,11 @@ if ($p->getInputOption('with-install-library-cached')) {
     $p->setInstallLibraryCached(true);
 }
 
-define('SWOOLE_CLI_WITH_OS_MIRROR', 0);
+$with_os_mirror=0;
 if ($p->getInputOption('with-os-mirror-site')) {
-    define('SWOOLE_CLI_WITH_OS_MIRROR', 1);
+    $with_os_mirror=1;
 }
-
+define('SWOOLE_CLI_WITH_OS_MIRROR', $with_os_mirror);
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
