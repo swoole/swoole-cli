@@ -45,4 +45,5 @@ EOF
             ->withPkgName('libbrotlienc')
             ->withBinPath($brotli_prefix . '/bin/')
     );
+    $p->withVariable('LIBS', '$LIBS -lbrotli ');
 };
