@@ -32,14 +32,14 @@ return function (Preprocessor $p) {
             -DAVIF_BUILD_EXAMPLES=OFF \
             -DCMAKE_DISABLE_FIND_PACKAGE_libyuv=ON \
             -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
-            -Daom_ROOT={$aom_prefix} \
             -Dsvt_ROOT={$svt_av1_prefix} \
             -DBUILD_SHARED_LIBS=OFF \
-            -DAVIF_CODEC_AOM=ON \
+            -DAVIF_CODEC_AOM=OFF \
             -DAVIF_CODEC_DAV1D=OFF \
             -DAVIF_CODEC_LIBGAV1=OFF \
             -DAVIF_CODEC_RAV1E=OFF \
             -DAVIF_CODEC_SVT=ON
+            #    -Daom_ROOT={$aom_prefix} \
             # -Ddav1d_ROOT={$dav1d_prefix} \
             # -Dlibgav1_ROOT={$libgav1_prefix} \
             # -Dlibyuv_ROOT={$libyuv_prefix} \
@@ -52,6 +52,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libavif')
-            ->withDependentLibraries('common', 'aom', 'svt_av1') #'dav1d', 'libgav1',  'libyuv',  'libsharpyuv', 'rav1e'
+            ->withDependentLibraries('common', 'svt_av1') # 'aom','dav1d', 'libgav1',  'libyuv',  'libsharpyuv', 'rav1e'
     );
 };
