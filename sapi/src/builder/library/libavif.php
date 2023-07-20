@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
             ->withManual('https://github.com/AOMediaCodec/libavif/ext/')
             ->withPrefix($libavif_prefix)
-            ->withBuildLibraryCached(true)
+            ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libavif_prefix)
             ->withConfigure(
