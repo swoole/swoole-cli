@@ -27,7 +27,7 @@ return function (Preprocessor $p) {
 
                     }
                     fi
-                    meson=$(which meson | wc -l )
+                    meson=$(which cargo-c | wc -l )
                     if test \$meson -ne 1 ;then
                     {
 
