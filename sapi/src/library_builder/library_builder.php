@@ -849,7 +849,20 @@ find_package(OpenSSL)
  或者
 -DOpenSSL_DIR=$openssL_install_dir
 
+-DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
+-DCMAKE_CXX_STANDARD=14
 
+-DCMAKE_C_COMPILER=$(quote "${1#*=}")";;
+-DCMAKE_CXX_COMPILER=$(quote "${1#*=}")";;
+
+-DCMAKE_C_FLAGS=$(quote "${1#*=}")";;
+-DCMAKE_CXX_FLAGS=$(quote "${1#*=}")";;
+
+-DCMAKE_CXX_STANDARD_LIBRARIES="-lm"
+
+-DCMAKE_SHARED_LINKER_FLAGS
+
+cmake -E env  CXXFLAGS="-Wall"
 
 CMAKE_SYSROOT： 这个选项是用来设置目标平台根目录，会对编译和链接过程中，查找头文件和链接库造成影响。
 例如：原本默认会从/usr/include目录中搜索头文件、从/usr/lib中搜索依赖库，当设置了–sysroot=dir（gcc是–sysroot，camek是CMAKE_SYSROOT) 后则会从dir/usr/include搜索头文件、从dir/usr/lib中搜索依赖库。
@@ -866,5 +879,12 @@ make install DESTDIR=
 
 
 
+     */
+    /*
+       gcc link options:
+                       https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html
+       cmake:
+
+                       https://cmake.org/cmake/help/latest/index.html
      */
 }
