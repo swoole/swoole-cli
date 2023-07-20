@@ -56,13 +56,14 @@ ___EOF___
                         # /root/.cargo/bin
                         export RUSTUP_HOME=/root/.rustup
                         export CARGO_HOME=/root/.cargo
-
-                        curl https://sh.rustup.rs -sSf | sh
+                        {$p->getProxyConfig()}
+                        # curl https://sh.rustup.rs -sSf | bash -s -- --help
+                        curl https://sh.rustup.rs -sSf | bash -s -- --quiet
                         export PATH=\$PATH:/root/.cargo/bin
                         rustc -V
                         cargo -V
                         # cargo --list
-                        {$p->getProxyConfig()}
+
                         cargo install cargo-c
 
                         # git config --global --add safe.directory /work
