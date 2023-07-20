@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($aom_prefix)
-        ->withBuildLibraryCached(true)
+        ->withBuildLibraryCached(false)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($aom_prefix)
         ->withConfigure(
