@@ -26,12 +26,14 @@ return function (Preprocessor $p) {
 
             rustc -V
             cargo -V
+            rustc --print target-cpus
 
             cargo cbuild --release \
             --prefix={$rav1e_prefix} \
             --libdir={$rav1e_prefix}/lib \
-            --crate-type=staticlib \
             -C link-arg=-lz -vv
+
+           # --crate-type=staticlib \
 
             cargo cinstall --release
 
