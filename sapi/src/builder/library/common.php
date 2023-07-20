@@ -28,8 +28,8 @@ return function (Preprocessor $p) {
                         export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
                         export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
                         export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-                        pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
                         bash sapi/quickstart/linux/alpine-init.sh --mirror china
+                        pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
                     }
                     fi
                     meson=$(which meson | wc -l )
