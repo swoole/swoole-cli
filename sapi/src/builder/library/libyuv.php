@@ -24,6 +24,7 @@ EOF
             ->withPrefix($libyuv_prefix)
             ->withBuildScript(
                 <<<EOF
+
                 set -x
                 mkdir -p  build
                 cd build
