@@ -18,8 +18,11 @@ return function (Preprocessor $p) {
         ->withCleanPreInstallDirectory($rav1e_prefix)
         ->withBuildScript(
             <<<EOF
-            export PATH=\$SYSTEM_ORIGIN_PATH
-            export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
+            # export PATH=\$SYSTEM_ORIGIN_PATH
+            # export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
+
+            # export PATH=\$SWOOLE_CLI_PATH
+            # export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
 
             rustc -V
             cargo -V
@@ -32,8 +35,7 @@ return function (Preprocessor $p) {
 
             cargo cinstall --release
 
-            export PATH=\$SWOOLE_CLI_PATH
-            export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
+
 EOF
         )
         ->withPkgName('')

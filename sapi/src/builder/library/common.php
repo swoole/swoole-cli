@@ -60,7 +60,7 @@ ___EOF___
 
                         {$p->getProxyConfig()}
                         # curl https://sh.rustup.rs -sSf | bash -s -- --help
-                        # curl https://sh.rustup.rs -sSf | bash -s -- --quiet
+                        curl https://sh.rustup.rs -sSf | bash -s -- --quiet
                         source root/.cargo/env
                         rustc -V
                         cargo -V
