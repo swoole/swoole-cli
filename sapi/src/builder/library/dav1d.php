@@ -13,6 +13,9 @@ return function (Preprocessor $p) {
             ->withFile('dav1d-1.1.0.tar.gz')
             ->withManual('https://code.videolan.org/videolan/dav1d')
             ->withPrefix($dav1d_prefix)
+            ->withBuildLibraryCached(false)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($dav1d_prefix)
             ->withBuildScript(
                 <<<EOF
                 # apk add ninja python3 py3-pip  nasm
