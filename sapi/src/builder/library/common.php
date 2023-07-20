@@ -24,25 +24,6 @@ return function (Preprocessor $p) {
                 {
                     export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
 
-                    if [[ "\${SWOOLE_CLI_WITH_OS_MIRROR}" -eq 1 ]] ; then
-                    {
-                        export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
-                        export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
-                        export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-
-                        mkdir -p /root/.cargo/
-                        cat > /root/.cargo/config <<'___EOF___'
-[source.crates-io]
-replace-with = 'ustc'
-
-[source.ustc]
-registry = "git://mirrors.ustc.edu.cn/crates.io-index"
-___EOF___
-                        rm -rf /root/.cargo/config
-                        bash sapi/quickstart/linux/alpine-init.sh --mirror china
-                    }
-                    fi
-
                     export RUSTUP_HOME=/root/.rustup
                     export CARGO_HOME=/root/.cargo
                     export PATH=\$PATH:/root/.cargo/bin
@@ -50,16 +31,30 @@ ___EOF___
                     meson=$(which cargo-c | wc -l )
                     if test \$meson -ne 1 ;then
                     {
+                        if [[ "\${SWOOLE_CLI_WITH_OS_MIRROR}" -eq 1 ]] ; then
+                        {
+                            pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+                            export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+                            export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+                            export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
 
-                        apk update
+                            mkdir -p /root/.cargo/
+                            cat > /root/.cargo/config <<'___EOF___'
+[source.crates-io]
+replace-with = 'ustc'
+
+[source.ustc]
+registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+___EOF___
+                            rm -rf /root/.cargo/config
+                            bash sapi/quickstart/linux/alpine-init.sh --mirror china
+                        }
+
                         apk add ninja python3 py3-pip  nasm
                         # pip3
                         # curl -o get-pip.py  https://bootstrap.pypa.io/get-pip.py # install pip3
 
-                        if [[ "\${SWOOLE_CLI_WITH_OS_MIRROR}" -eq 1 ]] ; then
-                        {
-                            pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-                        }
+
                         fi
                         pip3 install meson virtualenv pipenv
                         # apk add cargo
