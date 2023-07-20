@@ -17,13 +17,19 @@ return function (Preprocessor $p) {
         ->withCleanPreInstallDirectory($rav1e_prefix)
         ->withBuildScript(
             <<<EOF
-        cargo cbuild --release \
-        --prefix={$rav1e_prefix} \
-        --libdir={$rav1e_prefix}/lib \
-        --crate-type=staticlib \
-        -C link-arg=-lz -vv
+            export PATH=\$SYSTEM_ORIGIN_PATH
+            export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
 
-        cargo cinstall --release
+            cargo cbuild --release \
+            --prefix={$rav1e_prefix} \
+            --libdir={$rav1e_prefix}/lib \
+            --crate-type=staticlib \
+            -C link-arg=-lz -vv
+
+            cargo cinstall --release
+
+            export PATH=\$SWOOLE_CLI_PATH
+            export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
 EOF
         )
         ->withPkgName('')
