@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
             -DBUILD_SHARED_LIBS=OFF \
             -DAVIF_CODEC_AOM=ON \
             -DAVIF_CODEC_DAV1D=ON \
-            -DAVIF_CODEC_LIBGAV1=ON \
+            -DAVIF_CODEC_LIBGAV1=OFF \
             -DAVIF_CODEC_RAV1E=OFF \
             -DAVIF_CODEC_SVT=ON
             # -Dlibyuv_ROOT={$libyuv_prefix} \
@@ -52,7 +52,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libavif')
-            ->withDependentLibraries('libwebp', 'dav1d', 'aom', 'libgav1', 'svt_av1') # 'libyuv',  'libsharpyuv',
+            ->withDependentLibraries('libwebp', 'dav1d', 'aom', 'svt_av1') #'libgav1',  'libyuv',  'libsharpyuv',
     );
     $p->withVariable('LIBS', '$LIBS -lbrotli');
 };
