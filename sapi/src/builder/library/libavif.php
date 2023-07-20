@@ -10,6 +10,7 @@ return function (Preprocessor $p) {
     $libgav1_prefix = LIBGAV1_PREFIX;
     $aom_prefix = AOM_PREFIX;
     $libwebp_prefix = WEBP_PREFIX;
+    $svt_av1_prefix = SVT_AV1_PREFIX;
     $p->addLibrary(
         (new Library('libavif'))
             ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
@@ -34,16 +35,16 @@ return function (Preprocessor $p) {
             -Dlibyuv_ROOT={$libyuv_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
             -Dlibgav1_ROOT={$libgav1_prefix} \
-            -Daom_ROOT={$libgav1_prefix} \
-            -Dsvt_ROOT={$libgav1_prefix} \
+            -Daom_ROOT={$aom_prefix} \
+            -Dsvt_ROOT={$svt_av1_prefix} \
             -DBUILD_SHARED_LIBS=OFF \
             -DAVIF_CODEC_AOM=ON \
             -DAVIF_CODEC_DAV1D=ON \
             -DAVIF_CODEC_LIBGAV1=ON \
             -DAVIF_CODEC_RAV1E=OFF \
             -DAVIF_CODEC_SVT=ON \
-            -DLIBYUV_INCLUDE_DIR={$libyuv_prefix}/include \
-            -DLIBYUV_LIBRARY={$libyuv_prefix}/lib
+            # -DLIBYUV_INCLUDE_DIR={$libyuv_prefix}/include \
+            # -DLIBYUV_LIBRARY={$libyuv_prefix}/lib
             # -DLIBSHARPYUV_INCLUDE_DIR={$libwebp_prefix}/include \
             # -DLIBSHARPYUV_LIBRARY={$libwebp_prefix}/include
 
