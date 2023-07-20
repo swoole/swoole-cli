@@ -52,6 +52,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libavif')
-            ->withDependentLibraries('aom', 'svt_av1') #'dav1d', 'libgav1',  'libyuv',  'libsharpyuv',
+            ->withDependentLibraries('common','aom', 'svt_av1') #'dav1d', 'libgav1',  'libyuv',  'libsharpyuv',
     );
 };
