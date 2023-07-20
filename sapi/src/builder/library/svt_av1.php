@@ -46,8 +46,8 @@ EOF
 
 EOF
         )
-        ->withPkgName('SvtAv1Dec')
         ->withPkgName('SvtAv1Enc')
+        ->withPkgName('SvtAv1Dec')
         ->withBinPath($svt_av1_prefix . '/bin/');
 
     $p->addLibrary($lib);

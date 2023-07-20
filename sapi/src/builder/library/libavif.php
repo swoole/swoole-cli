@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
             -DAVIF_CODEC_LIBGAV1=OFF \
             -DAVIF_CODEC_RAV1E=OFF \
             -DAVIF_CODEC_SVT=ON
-            #    -Daom_ROOT={$aom_prefix} \
+            # -Daom_ROOT={$aom_prefix} \
             # -Ddav1d_ROOT={$dav1d_prefix} \
             # -Dlibgav1_ROOT={$libgav1_prefix} \
             # -Dlibyuv_ROOT={$libyuv_prefix} \
