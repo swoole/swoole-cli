@@ -20,6 +20,9 @@ return function (Preprocessor $p) {
             export PATH=\$SYSTEM_ORIGIN_PATH
             export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
 
+            rustc -V
+            cargo -V
+
             cargo cbuild --release \
             --prefix={$rav1e_prefix} \
             --libdir={$rav1e_prefix}/lib \
