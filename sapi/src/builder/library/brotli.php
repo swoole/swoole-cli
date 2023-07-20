@@ -45,5 +45,8 @@ EOF
             ->withPkgName('libbrotlienc')
             ->withBinPath($brotli_prefix . '/bin/')
     );
-    $p->withVariable('LIBS', '$LIBS -lbrotli ');
+    $p->withVariable('LIBS', '$LIBS  ');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $brotli_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $brotli_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -lbrotli -lbrotlicommon ');
 };
