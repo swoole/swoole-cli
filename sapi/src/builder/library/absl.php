@@ -31,7 +31,8 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBinPath($absl_prefix . '/bin/')
-        ->withPkgName('aom');
+        ->withPkgName('absl_hash_function_default')
+        ->withPkgName('absl_flat_hash_map');
 
     $p->addLibrary($lib);
 };
