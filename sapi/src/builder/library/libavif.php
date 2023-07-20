@@ -32,16 +32,16 @@ return function (Preprocessor $p) {
             -DAVIF_BUILD_EXAMPLES=OFF \
             -DCMAKE_DISABLE_FIND_PACKAGE_libyuv=ON \
             -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
-            -Ddav1d_ROOT={$dav1d_prefix} \
-            -Dlibgav1_ROOT={$libgav1_prefix} \
             -Daom_ROOT={$aom_prefix} \
             -Dsvt_ROOT={$svt_av1_prefix} \
             -DBUILD_SHARED_LIBS=OFF \
             -DAVIF_CODEC_AOM=ON \
-            -DAVIF_CODEC_DAV1D=ON \
+            -DAVIF_CODEC_DAV1D=OFF \
             -DAVIF_CODEC_LIBGAV1=OFF \
             -DAVIF_CODEC_RAV1E=OFF \
             -DAVIF_CODEC_SVT=ON
+            # -Ddav1d_ROOT={$dav1d_prefix} \
+            # -Dlibgav1_ROOT={$libgav1_prefix} \
             # -Dlibyuv_ROOT={$libyuv_prefix} \
             # -DLIBYUV_INCLUDE_DIR={$libyuv_prefix}/include \
             # -DLIBYUV_LIBRARY={$libyuv_prefix}/lib
@@ -52,7 +52,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libavif')
-            ->withDependentLibraries('libwebp', 'dav1d', 'aom', 'svt_av1') #'libgav1',  'libyuv',  'libsharpyuv',
+            ->withDependentLibraries('libwebp', 'aom', 'svt_av1') #'dav1d', 'libgav1',  'libyuv',  'libsharpyuv',
     );
     $p->withVariable('LIBS', '$LIBS -lbrotli');
 };
