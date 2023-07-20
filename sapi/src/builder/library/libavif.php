@@ -32,7 +32,6 @@ return function (Preprocessor $p) {
             -DAVIF_BUILD_EXAMPLES=OFF \
             -DCMAKE_DISABLE_FIND_PACKAGE_libyuv=ON \
             -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
-            -Dlibyuv_ROOT={$libyuv_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
             -Dlibgav1_ROOT={$libgav1_prefix} \
             -Daom_ROOT={$aom_prefix} \
@@ -42,7 +41,8 @@ return function (Preprocessor $p) {
             -DAVIF_CODEC_DAV1D=ON \
             -DAVIF_CODEC_LIBGAV1=ON \
             -DAVIF_CODEC_RAV1E=OFF \
-            -DAVIF_CODEC_SVT=ON \
+            -DAVIF_CODEC_SVT=ON
+            # -Dlibyuv_ROOT={$libyuv_prefix} \
             # -DLIBYUV_INCLUDE_DIR={$libyuv_prefix}/include \
             # -DLIBYUV_LIBRARY={$libyuv_prefix}/lib
             # -DLIBSHARPYUV_INCLUDE_DIR={$libwebp_prefix}/include \
