@@ -37,6 +37,7 @@ return function (Preprocessor $p) {
                         {
                             pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
                         }
+                        fi
                         pip3 install meson virtualenv pipenv
                         apk add cargo
 
