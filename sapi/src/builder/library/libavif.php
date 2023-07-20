@@ -18,6 +18,9 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
             ->withManual('https://github.com/AOMediaCodec/libavif/ext/')
             ->withPrefix($libavif_prefix)
+            ->withBuildLibraryCached(false)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libavif_prefix)
             ->withConfigure(
                 <<<EOF
             mkdir -p build
@@ -26,6 +29,8 @@ return function (Preprocessor $p) {
             cmake ..  \
             -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
             -DAVIF_BUILD_EXAMPLES=OFF \
+            -DCMAKE_DISABLE_FIND_PACKAGE_libyuv=ON \
+            -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
             -Dlibyuv_ROOT={$libyuv_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
             -Dlibgav1_ROOT={$libgav1_prefix} \
