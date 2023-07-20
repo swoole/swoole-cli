@@ -24,14 +24,7 @@ return function (Preprocessor $p) {
                         export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
                         export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
                         bash sapi/quickstart/linux/alpine-init.sh --mirror china
-                        mkdir -p /root/.cargo/
-                        cat > /root/.cargo/config <<'___EOF___'
-[source.crates-io]
-replace-with = 'mirror'
 
-[source.mirror]
-registry = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
-___EOF___
                     }
                     fi
                     meson=$(which meson | wc -l )
@@ -54,6 +47,15 @@ ___EOF___
 
                         # curl https://sh.rustup.rs -sSf | sh
                         # curl -o get-pip.py  https://bootstrap.pypa.io/get-pip.py # install pip3
+
+                        mkdir -p /root/.cargo/
+                        cat > /root/.cargo/config <<'___EOF___'
+[source.crates-io]
+replace-with = 'mirror'
+
+[source.mirror]
+registry = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
+___EOF___
 
                         # cargo --list
 
