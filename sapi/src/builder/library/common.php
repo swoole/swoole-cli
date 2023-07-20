@@ -12,9 +12,6 @@ return function (Preprocessor $p) {
             export PATH=\$SYSTEM_ORIGIN_PATH
             export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
 
-
-
-
             cd {$current_dir}
             export SWOOLE_CLI_WITH_OS_MIRROR=$with_os_mirror;
             if test -f /etc/os-release; then
@@ -28,7 +25,7 @@ return function (Preprocessor $p) {
                     export CARGO_HOME=/root/.cargo
                     export PATH=\$PATH:/root/.cargo/bin
 
-                    meson=$(which cargo-c | wc -l )
+                    meson=$(which cargo | wc -l )
                     if test \$meson -ne 1 ;then
                     {
                         if [[ "\${SWOOLE_CLI_WITH_OS_MIRROR}" -eq 1 ]] ; then
