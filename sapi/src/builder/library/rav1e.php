@@ -19,6 +19,7 @@ return function (Preprocessor $p) {
         cargo cbuild --release \
         --prefix={$rav1e_prefix} \
         --libdir={$rav1e_prefix}/lib \
+        --crate-type=staticlib \
         -C link-arg=-lz -vv
 
         cargo cinstall
