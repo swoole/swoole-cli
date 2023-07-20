@@ -32,6 +32,7 @@ replace-with = 'ustc'
 [source.ustc]
 registry = "git://mirrors.ustc.edu.cn/crates.io-index"
 ___EOF___
+                        rm -rf /root/.cargo/config
                         bash sapi/quickstart/linux/alpine-init.sh --mirror china
                     }
                     fi
@@ -60,7 +61,7 @@ ___EOF___
 
 
                         # cargo --list
-
+                        {$p->getProxyConfig()}
                         cargo install cargo-c
 
                         # git config --global --add safe.directory /work
