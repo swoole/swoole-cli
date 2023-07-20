@@ -54,7 +54,7 @@ return function (Preprocessor $p) {
 replace-with = 'mirror'
 
 [source.mirror]
-registry = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
+registry = "https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
 ___EOF___
 
                         # cargo --list
