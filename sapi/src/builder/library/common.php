@@ -24,7 +24,7 @@ return function (Preprocessor $p) {
                         export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
                         export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
                         bash sapi/quickstart/linux/alpine-init.sh --mirror china
-                        pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
                     }
                     fi
                     meson=$(which meson | wc -l )
@@ -33,6 +33,10 @@ return function (Preprocessor $p) {
 
                         apk update
                         apk add ninja python3 py3-pip  nasm
+                        if [[ "\${SWOOLE_CLI_WITH_OS_MIRROR}" -eq 1 ]] ; then
+                        {
+                            pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+                        }
                         pip3 install meson virtualenv pipenv
                         apk add cargo
 
