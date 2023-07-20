@@ -24,7 +24,13 @@ return function (Preprocessor $p) {
                         export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
                         export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
                         bash sapi/quickstart/linux/alpine-init.sh --mirror china
-
+                        cat > /root/.cargo/config <<'___EOF___'
+                        [source.crates-io]
+registry = "https://github.com/rust-lang/crates.io-index"
+replace-with = 'ustc'
+[source.ustc]
+registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+___EOF___
                     }
                     fi
                     meson=$(which meson | wc -l )
