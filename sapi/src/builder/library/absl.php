@@ -24,7 +24,7 @@ return function (Preprocessor $p) {
             -DBUILD_STATIC_LIBS=ON \
             -DABSL_BUILD_TESTING=OFF \
             -DABSL_USE_GOOGLETEST_HEAD=OFF \
-            -DCMAKE_CXX_STANDARD=11
+            -DCMAKE_CXX_STANDARD=14
 
             cmake --build . --target all
 
