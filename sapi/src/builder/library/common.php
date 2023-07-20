@@ -25,7 +25,7 @@ return function (Preprocessor $p) {
                     export CARGO_HOME=/root/.cargo
                     export PATH=\$PATH:/root/.cargo/bin
 
-                    meson=$(which cargo | wc -l )
+                    meson=$(which meson | wc -l )
                     if test \$meson -ne 1 ;then
                     {
                         if [[ "\${SWOOLE_CLI_WITH_OS_MIRROR}" -eq 1 ]] ; then
@@ -60,13 +60,13 @@ ___EOF___
 
                         {$p->getProxyConfig()}
                         # curl https://sh.rustup.rs -sSf | bash -s -- --help
-                        curl https://sh.rustup.rs -sSf | bash -s -- --quiet
-                        source root/.cargo/env
-                        rustc -V
-                        cargo -V
+                        # curl https://sh.rustup.rs -sSf | bash -s -- --quiet
+                        # source root/.cargo/env
+                        # rustc -V
+                        # cargo -V
                         # cargo --list
 
-                        cargo install cargo-c
+                        # cargo install cargo-c
 
                         # git config --global --add safe.directory /work
                     }
