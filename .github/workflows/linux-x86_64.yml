@@ -93,6 +93,7 @@ jobs:
             apk add ninja python3 py3-pip  nasm
             pip3 install meson
             bash sapi/quickstart/mark-install-library-cached.sh
+            rm -rf /usr/local/swoole-cli/pgsql
 
             # bash ./make.sh libraw
             # bash ./make.sh libtiff
