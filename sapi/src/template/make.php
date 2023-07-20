@@ -195,6 +195,7 @@ make_config() {
 
    ./configure --help
     export_variables
+    export LIBS="$LIBS -lbrotli "
     echo $LDFLAGS > ldflags.log
     echo $CPPFLAGS > cppflags.log
 
