@@ -8,6 +8,7 @@ return function (Preprocessor $p) {
     $lib = new Library('rav1e');
     $lib->withHomePage('https://github.com/xiph/rav1e.git')
         ->withLicense('https://github.com/xiph/rav1e/blob/master/LICENSE', Library::LICENSE_BSD)
+        ->withManual('https://doc.rust-lang.org/reference/linkage.html')
         ->withManual('https://github.com/xiph/rav1e/blob/master/README.md')
         ->withUrl('https://github.com/xiph/rav1e/archive/refs/tags/v0.6.6.tar.gz')
         ->withFile('rav1e-v0.6.6.tar.gz')
@@ -22,8 +23,7 @@ return function (Preprocessor $p) {
         --crate-type=staticlib \
         -C link-arg=-lz -vv
 
-        cargo cinstall
-
+        cargo cinstall --release
 EOF
         )
         ->withPkgName('')
