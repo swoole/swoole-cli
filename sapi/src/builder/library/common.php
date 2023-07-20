@@ -8,11 +8,6 @@ return function (Preprocessor $p) {
     } elseif ($p->getOsType() == 'linux') {
         $current_dir = $p->getWorkDir(); //SWOOLE_CLI_WITH_OS_MIRROR
         $with_os_mirror = SWOOLE_CLI_WITH_OS_MIRROR;
-        $pypi
-        if($with_os_mirror)
-        {
-
-        }
         $cmd = <<<EOF
         cd {$current_dir}
             export SWOOLE_CLI_WITH_OS_MIRROR=$with_os_mirror;
