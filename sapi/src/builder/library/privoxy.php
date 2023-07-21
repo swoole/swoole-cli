@@ -30,7 +30,7 @@ EOF
             ->withPreInstallCommand(
                 <<<EOF
                 apk add w3m   docbook2x
-                adduser privoxy
+                adduser privoxy --shell /sbin/nologin --disabled-password  --no-create-home
                 adduser -H -D privoxy privoxy
 EOF
             )
