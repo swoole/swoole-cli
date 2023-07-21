@@ -34,17 +34,8 @@ return function (Preprocessor $p) {
                             export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
                             export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
                             export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-
-                            mkdir -p /root/.cargo/
-                            cat > /root/.cargo/config <<'___EOF___'
-[source.crates-io]
-replace-with = 'ustc'
-
-[source.ustc]
-registry = "git://mirrors.ustc.edu.cn/crates.io-index"
-___EOF___
-                            rm -rf /root/.cargo/config
                             bash sapi/quickstart/linux/alpine-init.sh --mirror china
+
                         }
 
                         apk add ninja python3 py3-pip  nasm

@@ -46,6 +46,17 @@ EOF
         ->withPkgConfig('')
         ->withPreInstallCommand(
             <<<EOF
+
+mkdir -p /root/.cargo/
+cat > /root/.cargo/config <<'___EOF___'
+[source.crates-io]
+replace-with = 'ustc'
+
+[source.ustc]
+registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+___EOF___
+rm -rf /root/.cargo/config
+
 # library rav1e :
 curl https://sh.rustup.rs -sSf | bash -s -- --quiet
 source root/.cargo/env
