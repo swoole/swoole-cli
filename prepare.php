@@ -127,6 +127,7 @@ if ($p->getOsType() == 'macos') {
     $p->setLogicalProcessors('$(nproc 2> /dev/null)');
 }
 
+
 if ($p->getInputOption('with-c-compiler')) {
     $c_compiler = $p->getInputOption('with-c-compiler');
     if ($c_compiler == 'gcc') {
@@ -136,9 +137,10 @@ if ($p->getInputOption('with-c-compiler')) {
     }
 }
 
-$p->setExtraCflags('-Os');
+$p->setExtraCflags('-fno-ident -Os');
 
 $p->withPreInstallCommand('#!/usr/bin/env bash');
+$p->withPreInstallCommand('set -x');
 
 // Generate make.sh
 $p->execute();
