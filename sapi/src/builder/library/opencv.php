@@ -37,6 +37,7 @@ EOF
             pip3 install numpy
 EOF
         )
+        ->withHttpProxy()
         ->withBuildScript(
             <<<EOF
 
