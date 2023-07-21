@@ -321,5 +321,5 @@ cppflags.log
 /packages
 /conf.d.loader
 /configure.backup
-make_init.sh
-php-cli*
+make-install-deps.sh
+
