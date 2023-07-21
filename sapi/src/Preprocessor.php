@@ -496,9 +496,9 @@ class Preprocessor
         return $this;
     }
 
-    public function withPreInstallCommand(string $shell): static
+    public function withPreInstallCommand(string $preInstallCommand): static
     {
-        $this->preInstallCommands[] = $shell;
+        $this->preInstallCommands[] = $preInstallCommand;
         return $this;
     }
 
