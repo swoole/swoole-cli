@@ -6,41 +6,7 @@ use SwooleCli\Preprocessor;
 
 function install_rav1e(Preprocessor $p)
 {
-    $rav1e_prefix = RAV1E_PREFIX;
-    $lib = new Library('rav1e');
-    $lib->withHomePage('https://github.com/xiph/rav1e.git')
-        ->withLicense('https://github.com/xiph/rav1e/blob/master/LICENSE', Library::LICENSE_BSD)
-        ->withManual('https://github.com/xiph/rav1e/blob/master/README.md')
-        ->withUrl('github.com/xiph/rav1e/archive/refs/tags/p20230221.tar.gz')
-        ->withFile('rav1e-p20230221.tar.gz')
-        ->withFile('rav1e-v0.6.3.tar.gz')
-        ->disableDownloadWithMirrorURL()
-        ->withDownloadScript(
-            'rav1e',
-            <<<EOF
-             git clone -b v0.6.3 --depth=1 https://github.com/xiph/rav1e.git
-EOF
-        )
-        ->withPrefix($rav1e_prefix)
-        //->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($rav1e_prefix)
-        ->withBuildScript(
-            <<<EOF
-        export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
-        export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
-        # /root/.cargo/bin
-        export RUSTUP_HOME=/root/.rustup
-        export CARGO_HOME=/root/.cargo
-        #cargo --list
-        cargo install cargo-c
-        cargo cbuild --release --prefix={$rav1e_prefix} --libdir={$rav1e_prefix}/lib  -C link-arg=-lz -vv
-        cargo cinstall
 
-EOF
-        )
-        ->withPkgName('');
-
-    $p->addLibrary($lib);
 }
 
 function install_aom(Preprocessor $p)
