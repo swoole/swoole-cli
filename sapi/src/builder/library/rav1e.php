@@ -42,7 +42,22 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPkgName('')
-        ->withDependentLibraries('common')
+        ->withLdflags('')
+        ->withPkgConfig('')
+        ->withPreInstallCommand(
+            <<<EOF
+# library rav1e :
+curl https://sh.rustup.rs -sSf | bash -s -- --quiet
+source root/.cargo/env
+export RUSTUP_HOME=/root/.rustup
+export CARGO_HOME=/root/.cargo
+export PATH=\$PATH:/root/.cargo/bin
+rustc -V
+cargo -V
+# cargo --list
+cargo install cargo-c
+EOF
+        )
     ;
 
     $p->addLibrary($lib);

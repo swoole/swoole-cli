@@ -18,8 +18,6 @@ return function (Preprocessor $p) {
             ->withCleanPreInstallDirectory($dav1d_prefix)
             ->withBuildScript(
                 <<<EOF
-                # apk add ninja python3 py3-pip  nasm
-                # pip3 install meson
                 mkdir -p build
                 cd build
                 meson setup \
@@ -35,5 +33,12 @@ EOF
             )
             ->withPkgName('dav1d')
             ->withBinPath($dav1d_prefix . '/bin/')
+            ->withPreInstallCommand(
+                <<<EOF
+# library dav1d :
+apk add ninja python3 py3-pip  nasm
+pip3 install meson
+EOF
+            )
     );
 };
