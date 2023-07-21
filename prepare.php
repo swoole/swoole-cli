@@ -163,6 +163,7 @@ if test $brew -eq 1 ;then
     {
         brew install ninja  python3 gn zip unzip 7zip lzip go flex
         # pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
+        pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
         pip3 install meson virtualenv
     }
     fi
@@ -196,6 +197,7 @@ if test -f /etc/os-release; then
              bash sapi/quickstart/linux/alpine-init.sh --mirror china
              apk add ninja python3 py3-pip gn zip unzip p7zip lzip  go flex
              apk add yasm nasm
+             pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
              pip3 install meson virtualenv pipenv
              # git config --global --add safe.directory /work
         }
@@ -209,6 +211,7 @@ if test -f /etc/os-release; then
                 bash sapi/quickstart/linux/debian-init.sh --mirror china
                 apt install -y python3 python3-pip ninja-build  gn zip unzip p7zip lzip  golang flex
                 apt install -y yasm nasm
+                pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
                 pip3 install meson virtualenv pipenv
                 # git config --global --add safe.directory /work
             }
