@@ -972,6 +972,7 @@ EOF;
             $this->generateLibraryDownloadLinks();
         }
 
+        $this->generateFile(__DIR__ . '/template/pre_init_install.php', $this->rootDir . '/pre_init_install.sh');
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');

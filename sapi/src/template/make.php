@@ -7,7 +7,6 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
-<?= implode(PHP_EOL, $this->preInstallCommands) .PHP_EOL ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
