@@ -31,6 +31,7 @@ class Preprocessor
     protected string $lld = 'ld.lld';
 
     protected array $libraryMap = [];
+
     protected array $extensionMap = [];
     /**
      * 仅用于预处理阶段
@@ -67,6 +68,8 @@ class Preprocessor
     protected array $variables = [];
 
     protected array $exportVariables = [];
+
+    protected array $preInstallCommands = [];
     /**
      * default value : CPU   logical processors
      * @var string
@@ -492,6 +495,9 @@ EOF;
         if (empty($lib->license)) {
             throw new Exception("require license");
         }
+        if (!empty($lib->preInstallCommand)) {
+            $this->preInstallCommands[] = $lib->preInstallCommand;
+        }
 
         $this->libraryList[] = $lib;
         $this->libraryMap[$lib->name] = $lib;
@@ -613,6 +619,12 @@ EOF;
     public function withExportVariable(string $key, string $value): static
     {
         $this->exportVariables[] = [$key => $value];
+        return $this;
+    }
+
+    public function withPreInstallCommand(string $preInstallCommand): static
+    {
+        $this->preInstallCommands[] = $preInstallCommand;
         return $this;
     }
 
@@ -957,6 +969,7 @@ EOF;
             $this->generateLibraryDownloadLinks();
         }
 
+        $this->generateFile(__DIR__ . '/template/make_init.php', $this->rootDir . '/make_init.sh');
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
