@@ -969,7 +969,7 @@ EOF;
             $this->generateLibraryDownloadLinks();
         }
 
-        $this->generateFile(__DIR__ . '/template/make_init.php', $this->rootDir . '/make_init.sh');
+        $this->generateFile(__DIR__ . '/template/make-install-deps.php', $this->rootDir . '/make-install-deps.sh');
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
