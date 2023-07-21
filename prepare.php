@@ -109,6 +109,7 @@ if ($p->getOsType() == 'macos') {
     $p->setLinker('ld.lld');
 }
 
+
 if ($p->getInputOption('with-c-compiler')) {
     $c_compiler = $p->getInputOption('with-c-compiler');
     if ($c_compiler == 'gcc') {
@@ -117,6 +118,7 @@ if ($p->getInputOption('with-c-compiler')) {
         $p->setLinker('ld');
     }
 }
+
 
 if ($p->getInputOption('with-os-mirror-site')) {
     define('SWOOLE_CLI_WITH_OS_MIRROR', 1);
@@ -235,6 +237,10 @@ $cmd = $header . PHP_EOL . $p->getProxyConfig() . PHP_EOL . $cmd;
 $p->withPreInstallCommand($cmd);
 
 $p->setExtraCflags('-fno-ident -Os');
+
+$p->withPreInstallCommand('#!/usr/bin/env bash');
+$p->withPreInstallCommand('set -x');
+
 
 // Generate make.sh
 $p->execute();
