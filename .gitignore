@@ -322,4 +322,6 @@ cppflags.log
 /packages
 /conf.d.loader
 /configure.backup
+make-install-deps.sh
+
 
