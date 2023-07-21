@@ -603,6 +603,11 @@ EOF;
         return $this;
     }
 
+    public function withPreInstallCommand(string $preInstallCommand): static
+    {
+        $this->preInstallCommands[] = $preInstallCommand;
+        return $this;
+    }
 
     public function getExtension(string $name): ?Extension
     {
