@@ -44,6 +44,8 @@ class Library extends Project
 
     public bool $enableBuildLibraryCached = true;
 
+    public bool $enableHttpProxy = false;
+
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
@@ -235,6 +237,12 @@ class Library extends Project
     public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
     {
         $this->enableBuildLibraryCached = $enableBuildLibraryCached;
+        return $this;
+    }
+
+    public function withHttpProxy(): static
+    {
+        $this->enableHttpProxy = true;
         return $this;
     }
 }
