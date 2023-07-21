@@ -109,6 +109,7 @@ if ($p->getOsType() == 'macos') {
     $p->setLinker('ld.lld');
 }
 
+
 if ($p->getInputOption('with-c-compiler')) {
     $c_compiler = $p->getInputOption('with-c-compiler');
     if ($c_compiler == 'gcc') {
@@ -117,6 +118,7 @@ if ($p->getInputOption('with-c-compiler')) {
         $p->setLinker('ld');
     }
 }
+
 
 if ($p->getInputOption('with-os-mirror-site')) {
     define('SWOOLE_CLI_WITH_OS_MIRROR', 1);
@@ -161,6 +163,7 @@ if test $brew -eq 1 ;then
     {
         brew install ninja  python3 gn zip unzip 7zip lzip go flex
         # pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
+        pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
         pip3 install meson virtualenv
     }
     fi
@@ -194,6 +197,7 @@ if test -f /etc/os-release; then
              bash sapi/quickstart/linux/alpine-init.sh --mirror china
              apk add ninja python3 py3-pip gn zip unzip p7zip lzip  go flex
              apk add yasm nasm
+             pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
              pip3 install meson virtualenv pipenv
              # git config --global --add safe.directory /work
         }
@@ -207,6 +211,7 @@ if test -f /etc/os-release; then
                 bash sapi/quickstart/linux/debian-init.sh --mirror china
                 apt install -y python3 python3-pip ninja-build  gn zip unzip p7zip lzip  golang flex
                 apt install -y yasm nasm
+                pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
                 pip3 install meson virtualenv pipenv
                 # git config --global --add safe.directory /work
             }
@@ -221,24 +226,23 @@ EOF;
 }
 
 
-$p->addEndCallback(function () use ($p, $cmd) {
-    $header = <<<'EOF'
-#!/use/bin/env bash
 
+$header = <<<'EOF'
+#!/use/bin/env bash
 export CPU_NUMS=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
-__CURRENT_DIR__=$(cd "$(dirname $0)";pwd)
+export __CURRENT_DIR__=$(cd "$(dirname $0)";pwd)
 
 EOF;
 
-    $header = $header . PHP_EOL . $p->getProxyConfig() . PHP_EOL;
-    $command = file_get_contents(__DIR__ . '/make.sh');
-    $command = $header . PHP_EOL . $cmd . PHP_EOL . $command;
-    file_put_contents(__DIR__ . '/make.sh', $command);
-});
+$cmd = $header . PHP_EOL . $p->getProxyConfig() . PHP_EOL . $cmd;
 
+$p->withPreInstallCommand($cmd);
 
 $p->setExtraCflags('-fno-ident -Os');
+
+$p->withPreInstallCommand('#!/usr/bin/env bash');
+$p->withPreInstallCommand('set -x');
 
 
 // Generate make.sh

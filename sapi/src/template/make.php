@@ -7,7 +7,6 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
-#!/usr/bin/env bash
 set -x
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
@@ -106,6 +105,9 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
+    <?php if ($item->enableHttpProxy) : ?>
+    <?= $this->getProxyConfig() . PHP_EOL ?>
+    <?php endif;?>
 
     <?php if (empty($item->buildScript)) : ?>
     # before configure
@@ -165,6 +167,12 @@ __EOF__
     <?php endif; ?>
 
     # build end
+
+    <?php if ($item->enableHttpProxy):?>
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    unset NO_PROXY
+    <?php endif;?>
 
     <?php if ($item->enableBuildLibraryCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
@@ -626,6 +634,7 @@ elif [ "$1" = "list-extension" ] ;then
     exit 0
 elif [ "$1" = "clean" ] ;then
     make_clean
+    exit 0
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM
