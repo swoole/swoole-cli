@@ -29,10 +29,15 @@ EOF
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ffmpeg_prefix)
         //->withBuildLibraryCached(false)
+        ->withPreInstallCommand(
+            <<<EOF
+            # 汇编编译器
+            apk add yasm nasm
+EOF
+        )
         ->withConfigure(
             <<<EOF
-        # 汇编编译器
-        # apk add yasm nasm
+
         set -x
         ./configure --help
         ./configure --help | grep shared
