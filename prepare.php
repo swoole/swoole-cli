@@ -40,6 +40,7 @@ if ($p->getOsType() == 'macos') {
 }
 
 $p->setExtraCflags('-fno-ident -Os');
+$p->withPreInstallCommand('set -x');
 
 // Generate make.sh
 $p->execute();
