@@ -221,26 +221,20 @@ EOF;
 }
 
 
-$p->addEndCallback(function () use ($p, $cmd) {
-    $header = <<<'EOF'
-#!/use/bin/env bash
 
+$header = <<<'EOF'
+#!/use/bin/env bash
 export CPU_NUMS=`nproc 2> /dev/null || sysctl -n hw.ncpu`
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
-__CURRENT_DIR__=$(cd "$(dirname $0)";pwd)
+export __CURRENT_DIR__=$(cd "$(dirname $0)";pwd)
 
 EOF;
 
-    $header = $header . PHP_EOL . $p->getProxyConfig() . PHP_EOL;
-    $command = file_get_contents(__DIR__ . '/make.sh');
-    $command = $header . PHP_EOL . $cmd . PHP_EOL . $command;
-    file_put_contents(__DIR__ . '/make.sh', $command);
-});
+$cmd = $header . PHP_EOL . $p->getProxyConfig() . PHP_EOL . $cmd;
 
+$p->withPreInstallCommand($cmd);
 
 $p->setExtraCflags('-fno-ident -Os');
-
-$p->withPreInstallCommand('#!/usr/bin/env bash');
 
 // Generate make.sh
 $p->execute();
