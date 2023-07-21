@@ -13,11 +13,11 @@ return function (Preprocessor $p) {
     $svt_av1_prefix = SVT_AV1_PREFIX;
     $p->addLibrary(
         (new Library('libavif'))
-            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
-            ->withFile('libavif-v0.11.1.tar.gz')
             ->withHomePage('https://aomediacodec.github.io/av1-avif/')
-            ->withLicense('https://github.com/AOMediaCodec/libavif/blob/main/LICENSE', Library::LICENSE_SPEC)
+            ->withLicense('https://github.com/AOMediaCodec/libavif/', Library::LICENSE_BSD)
             ->withManual('https://github.com/AOMediaCodec/libavif/ext/')
+                ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
+            ->withFile('libavif-v0.11.1.tar.gz')
             ->withPrefix($libavif_prefix)
             ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
@@ -52,6 +52,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libavif')
-            ->withDependentLibraries('common', 'svt_av1') # 'aom','dav1d', 'libgav1',  'libyuv',  'libsharpyuv', 'rav1e'
+            ->withDependentLibraries('common','aom', 'svt_av1','dav1d', 'libgav1', ) #  'libyuv',  'libsharpyuv', 'rav1e'
     );
 };

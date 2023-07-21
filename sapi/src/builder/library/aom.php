@@ -28,10 +28,14 @@ EOF
              cmake ..  \
             -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
-            -DBUILD_SHARED_LIBS=OFF  \
+            -DBUILD_SHARED_LIBS=ON  \
             -DBUILD_STATIC_LIBS=ON \
-            -DENABLE_DOCS=0 \
-            -DENABLE_TESTS=0
+            -DENABLE_DOCS=OFF \
+            -DENABLE_EXAMPLES=ON \
+            -DENABLE_TESTS=OFF \
+            -DENABLE_TOOLS=ON \
+            -DCONFIG_AV1_DECODER=ON \
+            -DCONFIG_AV1_ENCODER=ON
 EOF
         )
         ->withBinPath($aom_prefix . '/bin/')
