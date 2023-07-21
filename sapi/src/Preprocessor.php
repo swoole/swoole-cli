@@ -22,6 +22,7 @@ class Preprocessor
 
     protected string $cCompiler = 'clang';
     protected string $cppCompiler = 'clang++';
+
     protected string $lld = 'ld.lld';
 
     protected array $downloadExtensionList = [];
@@ -62,6 +63,8 @@ class Preprocessor
     protected array $variables = [];
 
     protected array $exportVariables = [];
+
+    protected array $preInstallCommands = [];
     /**
      * default value : CPU   logical processors
      * @var string
@@ -409,6 +412,9 @@ class Preprocessor
         if (empty($lib->license)) {
             throw new Exception("require license");
         }
+        if (!empty($lib->preInstallCommand)) {
+            $this->preInstallCommands[] = $lib->preInstallCommand;
+        }
 
         $this->libraryList[] = $lib;
         $this->libraryMap[$lib->name] = $lib;
@@ -487,6 +493,12 @@ class Preprocessor
     public function withExportVariable(string $key, string $value): static
     {
         $this->exportVariables[] = [$key => $value];
+        return $this;
+    }
+
+    public function withPreInstallCommand(string $shell): static
+    {
+        $this->preInstallCommands[] = $shell;
         return $this;
     }
 

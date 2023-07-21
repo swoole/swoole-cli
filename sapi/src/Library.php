@@ -17,9 +17,12 @@ class Library extends Project
     public string $afterInstallScript = '';
     public string $pkgConfig = '';
     public array $pkgNames = [];
+
     public string $prefix = '/usr';
 
     public string $binPath = '';
+
+    public string $preInstallCommand = '';
 
     public function withMirrorUrl(string $url): static
     {
@@ -115,6 +118,12 @@ class Library extends Project
     public function withBinPath(string $path): static
     {
         $this->binPath = $path;
+        return $this;
+    }
+
+    public function withPreInstallCommand(string $preInstallCommand): static
+    {
+        $this->preInstallCommand = $preInstallCommand;
         return $this;
     }
 }
