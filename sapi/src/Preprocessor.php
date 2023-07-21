@@ -585,12 +585,6 @@ EOF;
         return $this;
     }
 
-    public function withPreInstallCommand(string $preInstallCommand): static
-    {
-        $this->preInstallCommands[] = $preInstallCommand;
-        return $this;
-    }
-
     public function withVariable(string $key, string $value): static
     {
         $this->variables[] = [$key => $value];
