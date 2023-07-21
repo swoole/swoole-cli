@@ -27,11 +27,16 @@ EOF
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($privoxy_prefix)
             ->withBuildLibraryCached(false)
-            ->withConfigure(
+            ->withPreInstallCommand(
                 <<<EOF
                 apk add w3m   docbook2x
                 adduser privoxy
                 adduser -H -D privoxy privoxy
+EOF
+            )
+            ->withConfigure(
+                <<<EOF
+
                 autoheader
                 autoconf
                 ./configure --help
@@ -53,5 +58,6 @@ EOF
  EOF
             )
             ->withDependentLibraries('openssl', 'pcre', 'zlib', 'brotli')
+
     );
 };
