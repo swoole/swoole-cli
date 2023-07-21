@@ -138,6 +138,7 @@ if ($p->getInputOption('with-c-compiler')) {
 
 $p->setExtraCflags('-Os');
 
+$p->withPreInstallCommand('#!/usr/bin/env bash');
 
 // Generate make.sh
 $p->execute();
