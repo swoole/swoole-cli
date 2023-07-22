@@ -22,7 +22,7 @@ if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
 }
 
 if ($p->getInputOption('with-override-enable-ext')) {
-    $p->setExtEnabled([]);
+    $p->setExtEnabled();
 }
 
 if ($p->getInputOption('with-global-prefix')) {
