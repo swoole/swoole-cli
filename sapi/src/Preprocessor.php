@@ -325,7 +325,7 @@ class Preprocessor
         return $this;
     }
 
-    public function getBuildType():string
+    public function getBuildType(): string
     {
         return $this->buildType;
     }

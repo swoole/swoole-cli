@@ -7,6 +7,9 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
+<?php if (in_array($this->buildType, ['dev','debug'])) : ?>
+set -x
+<?php  endif; ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -31,10 +34,10 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
-<?php if($item->cleanBuildDirectory): ?>
+    <?php if ($item->cleanBuildDirectory) : ?>
      # If the build directory exist, clean the build directory
      test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
-<?php endif; ?>
+    <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
@@ -54,10 +57,10 @@ make_<?=$item->name?>() {
         return 0
     fi
 
-<?php if($item->cleanPreInstallDirectory): ?>
+    <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
-<?php endif; ?>
+    <?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
