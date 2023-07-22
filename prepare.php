@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
@@ -18,6 +19,10 @@ $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
+}
+
+if ($p->getInputOption('with-override-enable-ext')) {
+    $p->setExtEnabled();
 }
 
 if ($p->getInputOption('with-global-prefix')) {
