@@ -32,7 +32,8 @@ EOF
         ->withCleanPreInstallDirectory($opencv_prefix)
         ->withPreInstallCommand(
             <<<EOF
-            apk add ccache python3-dev
+            # apk add ccache python3-dev
+            apt install ccache python3-dev
             # pip3 install numpy -i https://pypi.tuna.tsinghua.edu.cn/simple
             pip3 install numpy
 EOF
