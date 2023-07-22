@@ -20,7 +20,7 @@ EOF
         ->withConfigure(
             <<<EOF
             test -d config && rm -rf config
-            sh autogen.sh
+            sh ./autogen.sh
             ./configure --help
             PACKAGES="libtiff-4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
