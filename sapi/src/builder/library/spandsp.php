@@ -19,7 +19,7 @@ EOF
         ->withPrefix($spandsp_prefix)
         ->withConfigure(
             <<<EOF
-            test -d config && rm -rf config
+
             sh ./autogen.sh
             ./configure --help
             PACKAGES="libtiff-4"
