@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 echo " install deps "
 
 __CURRENT_DIR__=$(cd "$(dirname "$0")";pwd)

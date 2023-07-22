@@ -7,13 +7,10 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
-<<<<<<< HEAD
-set -x
-=======
+#!/usr/bin/env bash
 <?php if (in_array($this->buildType, ['dev','debug'])) : ?>
 set -x
 <?php  endif; ?>
->>>>>>> experiment-webui
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
