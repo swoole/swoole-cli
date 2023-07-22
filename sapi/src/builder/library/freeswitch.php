@@ -63,7 +63,7 @@ EOF
             PACKAGES="\$PACKAGES ldns "
             PACKAGES="\$PACKAGES ImageMagick  ImageMagick-7.Q16HDRI  MagickCore  MagickCore-7.Q16HDRI  MagickWand MagickWand-7.Q16HDRI  Magick++ Magick++-7.Q16HDRI "
             PACKAGES="\$PACKAGES libedit"
-            PACKAGES="\$PACKAGES uuid"
+            # PACKAGES="\$PACKAGES uuid"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib" \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
@@ -113,7 +113,7 @@ EOF
             'libyaml',
             'imagemagick',
             'libedit',
-            'libuuid',
+            //'libuuid',
             // 'portaudio'
             // "opencv",
             // "ffmpeg"

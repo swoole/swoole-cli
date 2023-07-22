@@ -4,7 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $libuuid_prefix = LIBUUID_LINUX;
+    $libuuid_prefix = LIBUUID_PREFIX;
     $lib = new Library('libuuid');
     $lib->withHomePage('http://en.wikipedia.org/wiki/Util-linux')
         ->withLicense('https://github.com/util-linux/util-linux/blob/master/COPYING', Library::LICENSE_GPL)

@@ -4,7 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $libatomic_prefix = LIBATOMIC_LINUX;
+    $libatomic_prefix = LIBATOMIC_PREFIX;
     $lib = new Library('libatomic');
     $lib->withHomePage('https://github.com/gcc-mirror/gcc.git')
         ->withLicense('https://github.com/gcc-mirror/gcc/blob/master/COPYING', Library::LICENSE_GPL)
