@@ -198,3 +198,11 @@ with-override-default-enabled-ext
 ```shell
 php ./prepare.php +uuid --with-override-default-enabled-ext=1 --with-build-type=dev
 ```
+
+with-os-repository-mirror
+----
+系统软件更换源
+
+```shell
+php ./prepare.php +uuid --with-os-repository-mirror=1 --with-build-type=dev
+```

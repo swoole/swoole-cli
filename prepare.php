@@ -31,7 +31,6 @@ $p->setPhpSrcDir($p->getRootDir() . '/php-src');
 //设置PHP 安装目录
 define("BUILD_PHP_INSTALL_PREFIX", $p->getRootDir() . '/bin/php-' . BUILD_PHP_VERSION);
 
-<<<<<<< HEAD
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
@@ -44,12 +43,11 @@ if ($p->getInputOption('with-global-prefix')) {
 //SWOOLE_CLI_SKIP_DEPEND_DOWNLOAD
 //SWOOLE_CLI_BUILD_TYPE=release
 
-=======
+
 if ($p->getInputOption('with-override-default-enabled-ext')) {
     $p->setExtEnabled([]);
 }
 
->>>>>>> build_native_php
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
@@ -128,8 +126,8 @@ if ($p->getInputOption('with-c-compiler')) {
 }
 
 
-if ($p->getInputOption('with-os-mirror-site')) {
-    define('SWOOLE_CLI_WITH_OS_MIRROR', 1);
+if ($p->getInputOption('with-os-repository-mirror')) {
+    define('SWOOLE_CLI_WITH_OS_REPOSITORY_MIRROR', 1);
 }
 
 
@@ -148,7 +146,7 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
 
 EOF;
-    if (defined('SWOOLE_CLI_WITH_OS_MIRROR')) {
+    if (defined('SWOOLE_CLI_WITH_OS_REPOSITORY_MIRROR')) {
         $cmd = $cmd .PHP_EOL . <<<'EOF'
 export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
@@ -160,6 +158,20 @@ export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottle
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 
 export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+
+# pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# pip3 config set global.index-url https://pypi.python.org/simple
+
+
+mkdir -p ~/.pip
+cat > ~/.pip/pip.conf <<===EOF===
+[global]
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+[install]
+trusted-host = https://pypi.tuna.tsinghua.edu.cn
+===EOF===
+
+
 EOF;
     }
     $cmd =  $cmd .PHP_EOL . <<<'EOF'
@@ -171,13 +183,16 @@ if test $brew -eq 1 ;then
     {
         brew install ninja  python3 gn zip unzip 7zip lzip go flex
         # pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
-        pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+        # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
         pip3 install meson virtualenv
     }
     fi
 }
 fi
 EOF;
+
+
+
 }
 
 
@@ -186,9 +201,18 @@ if ($p->getOsType() == 'linux') {
 export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
 EOF;
 
-    if (defined('SWOOLE_CLI_WITH_OS_MIRROR')) {
+    if (defined('SWOOLE_CLI_WITH_OS_REPOSITORY_MIRROR')) {
         $cmd =  $cmd .PHP_EOL . <<<'EOF'
 export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+
+mkdir -p ~/.pip
+cat > ~/.pip/pip.conf <<===EOF===
+[global]
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+[install]
+trusted-host = https://pypi.tuna.tsinghua.edu.cn
+===EOF===
+
 EOF;
     }
 
@@ -196,30 +220,31 @@ EOF;
 if test -f /etc/os-release; then
 {
     OS_RELEASE=$(cat /etc/os-release | grep "^ID=" | sed 's/ID=//g')
-    if test $OS_RELEASE = alpine  ;then
+    if test $OS_RELEASE = "alpine"  ;then
     {
         meson=$(which meson | wc -l )
         if test $meson -ne 1 ;then
         {
              cd ${__CURRENT_DIR__}
-             bash sapi/quickstart/linux/alpine-init.sh --mirror china
+             # bash sapi/quickstart/linux/alpine-init.sh --mirror china
              apk add ninja python3 py3-pip gn zip unzip p7zip lzip  go flex
              apk add yasm nasm
-             pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+             # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
              pip3 install meson virtualenv pipenv
              # git config --global --add safe.directory /work
         }
         fi
     }
-    elif test $OS_RELEASE = ubuntu -o test $OS_RELEASE = debian  ;then
+    elif [ "$OS_RELEASE" = "ubuntu" ] || [  "$OS_RELEASE" = "debian" ]
+    then
     {
             meson=$(which meson | wc -l )
             if test $meson -ne 1 ;then
             {
-                bash sapi/quickstart/linux/debian-init.sh --mirror china
+                # bash sapi/quickstart/linux/debian-init.sh --mirror china
                 apt install -y python3 python3-pip ninja-build  gn zip unzip p7zip lzip  golang flex
                 apt install -y yasm nasm
-                pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+                # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
                 pip3 install meson virtualenv pipenv
                 # git config --global --add safe.directory /work
             }

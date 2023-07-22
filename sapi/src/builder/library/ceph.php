@@ -20,6 +20,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($ceph_prefix)
+        ->withHttpProxy()
         ->withBuildScript(
             <<<EOF
 
@@ -38,14 +39,14 @@ EOF
             if [ -f /etc/os-release ] ; then
                 case \$OS_RELEASE in
                 'debian')
-                  SUPPORT_OS=1
+                  SUPPORT_OS=0
                   ;;
                 'ubuntu')
                   SUPPORT_OS=1
                   sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
                   ;;
                 'alpine')
-                  SUPPORT_OS=1
+                  SUPPORT_OS=0
                   ;;
                 *)
                   ;;
@@ -56,15 +57,9 @@ EOF
                 exit 0
             fi
 
-            mkdir -p ~/.pip
-cat > ~/.pip/pip.conf <<===EOF===
-[global]
-index-url = https://pypi.tuna.tsinghua.edu.cn/simple
-[install]
-trusted-host = https://pypi.tuna.tsinghua.edu.cn
-===EOF===
 
-            # bash ./install-deps.sh
+
+            bash ./install-deps.sh
 
             bash src/cephadm/build.sh cephadm
 
@@ -78,7 +73,6 @@ trusted-host = https://pypi.tuna.tsinghua.edu.cn
 EOF
         )
         ->disableDefaultLdflags()
-        ->disablePkgName()
         ->disableDefaultPkgConfig()
         ->withSkipBuildLicense();
 
