@@ -143,7 +143,7 @@ php ./prepare.php --with-php-version=8.1.18
 
 with-parallel-jobs
 ----
-构建时最大并发进程数；
+构建时最大并发进程数；<br/>
 默认值是 CPU 逻辑处理器数
 
 ```shell
@@ -152,7 +152,7 @@ php ./prepare.php --with-parallel-jobs=8
 
 with-http-proxy
 ----
-使用HTTP代理下载扩展和扩展依赖库
+使用HTTP代理下载扩展和扩展依赖库<br/>
 需要提前准备好代理
 
 ```shell
@@ -170,10 +170,31 @@ php ./prepare.php --with-c-compiler=gcc
 
 with-install-library-cached
 ----
-使用库缓存，复用已构建、安装的库
+使用库缓存，复用已构建、安装的库<br/>
 例子：将构建好的openssl库，打包进入容器，使用容器环境构建时，即可跳过 openssl
 构建、安装过程
 
 ```shell
 php ./prepare.php --with-install-library-cached=1
+```
+
+with-build-type
+----
+构建过程 指定构建类型<br/>
+
+debug 调试版本 （构建过程显示，正在执行的构建命令）<br/>
+dev 开发版本 （便于调试单个扩展）<br/>
+release 默认版本<br/>
+
+```shell
+php ./prepare.php  --with-build-type=dev
+```
+
+with-override-default-enabled-ext
+----
+覆盖默认启用的扩展<br/>
+例子：当添加新扩展时，便于调试
+
+```shell
+php ./prepare.php +uuid --with-override-default-enabled-ext=1 --with-build-type=dev
 ```
