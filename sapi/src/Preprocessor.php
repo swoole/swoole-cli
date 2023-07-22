@@ -2,6 +2,7 @@
 
 namespace SwooleCli;
 
+use AllowDynamicProperties;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
@@ -10,6 +11,7 @@ use SwooleCli\PreprocessorTrait\CompilerTrait;
 use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
 use SwooleCli\PreprocessorTrait\WebUITrait;
 
+#[AllowDynamicProperties]
 class Preprocessor
 {
     use DownloadBoxTrait;
@@ -132,7 +134,7 @@ class Preprocessor
         'imagick',
         //'mongodb', //需要处理依赖库问题 more info ： https://github.com/jingjingxyk/swoole-cli/pull/79/files
     ];
-
+    protected array $extEnabledBuff = [];
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
 
@@ -324,7 +326,7 @@ class Preprocessor
      */
     public function setMaxJob(int $n): static
     {
-        $this->maxJob = $n;
+        $this->maxJob = (string)$n;
         return $this;
     }
 
@@ -359,6 +361,12 @@ class Preprocessor
     public function getProxyConfig(): string
     {
         return $this->proxyConfig;
+    }
+
+    public function setExtEnabled(array $extEnabled = []): static
+    {
+        $this->extEnabled=array_merge($this->extEnabledBuff, $extEnabled);
+        return $this;
     }
 
     public function donotInstallLibrary()
@@ -732,6 +740,7 @@ EOF;
             $value = substr($argv[$i], 1);
             if ($op == '+') {
                 $this->extEnabled[] = $value;
+                $this->extEnabledBuff[] = $value;
             } elseif ($op == '-') {
                 if ($arg[1] == '-') {
                     $_ = explode('=', substr($arg, 2));
@@ -898,7 +907,6 @@ EOF;
 
         $extAvailabled = [];
         $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
-
         $confPath = $this->getInputOption('conf-path');
         if ($confPath) {
             $confDirList = explode(':', $confPath);
