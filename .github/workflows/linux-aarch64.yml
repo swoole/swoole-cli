@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-aarch64:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -49,7 +49,7 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
 
-            php prepare.php    +inotify +apcu +ds +xlswriter +ssh2
+            php prepare.php  --with-swoole-pgsql=1  +inotify +apcu +ds +xlswriter +ssh2
 
             chmod a+x make.sh
             head -n 20 make.sh
