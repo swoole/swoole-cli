@@ -17,15 +17,23 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($spandsp_prefix)
-        ->withBuildLibraryCached(false)
-        ->withBuildScript(
+        ->withConfigure(
             <<<EOF
-
-
+            sh autogen.sh
+            ./configure --help
+            PACKAGES="libtiff-4"
+            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
+            ./configure \
+             --prefix={$spandsp_prefix} \
+            --enable-shared=no \
+            --enable-static=yes
 EOF
         )
-        ->withDependentLibraries('libtiff', 'libaudiofile');
-
+        ->withPkgName('spandsp')
+        ->withDependentLibraries('libtiff'); //'libaudiofile'
+    ;
 
     $p->addLibrary($lib);
 };
