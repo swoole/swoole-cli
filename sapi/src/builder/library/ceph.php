@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/ceph/ceph/blob/main/COPYING-LGPL3', Library::LICENSE_LGPL)
         ->withManual('https://github.com/ceph/ceph')
         ->withFile('ceph-latest.tar.gz')
-        ->withBuildLibraryCached(true)
+        ->withBuildLibraryCached(false)
         ->withDownloadScript(
             'ceph',
             <<<EOF
@@ -34,6 +34,7 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
 
 --EOF--
 
+
             #  docker run --rm --name demo  -ti --init -v $(pwd):/work/ -p 7010:7010 debian:11 /bin/bash
             #  docker run --rm --name demo  -ti --init -v $(pwd):/work/ -p 7010:7010 ubuntu:22.04 /bin/bash
             #  bash sapi/quickstart/linux/debian-init.sh --mirror china
@@ -53,7 +54,6 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
                   ;;
                 'ubuntu')
                   SUPPORT_OS=1
-                  sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
                   ;;
                 'alpine')
                   SUPPORT_OS=0
@@ -68,19 +68,25 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
             fi
 
 
+            if [ -f build-env-ok ] ; then
+                test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
+                bash src/cephadm/build.sh cephadm
+                admin/build-doc
+            else
+                bash ./install-deps.sh
 
-            bash ./install-deps.sh
+                bash src/cephadm/build.sh cephadm
 
-            bash src/cephadm/build.sh cephadm
+                apt-get install -y `cat doc_deps.deb.txt`
+                pip3 install -r admin/doc-requirements.txt
+                pip3 install  -r admin/doc-python-common-requirements.txt
+                admin/build-doc
 
-            apt-get install -y `cat doc_deps.deb.txt`
-            pip3 install -r admin/doc-requirements.txt
-            pip3 install  -r admin/doc-python-common-requirements.txt
-            admin/build-doc
-
-            export PKG_CONFIG_PATH=\${SWOOLE_CLI_PKG_CONFIG_PATH}
-            export PATH=\${SWOOLE_CLI_PATH}
-            test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
+                export PKG_CONFIG_PATH=\${SWOOLE_CLI_PKG_CONFIG_PATH}
+                export PATH=\${SWOOLE_CLI_PATH}
+                test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
+                touch build-env-ok
+            fi
 EOF
         )
         ->disableDefaultLdflags()

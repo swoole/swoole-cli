@@ -43,7 +43,7 @@ OPTIONS="--disable-all \
 <?php endforeach; ?>
 <?=$this->extraOptions?>
 "
-set +x
+
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     <?php if ($item->skipBuildInstall) : ?>

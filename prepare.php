@@ -251,6 +251,8 @@ if test -f /etc/os-release; then
             fi
 
              # sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
+             # sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
+
     }
     fi
 
