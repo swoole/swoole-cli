@@ -8,7 +8,9 @@ use SwooleCli\Preprocessor;
 
 ?>
 #!/usr/bin/env bash
+<?php if (in_array($this->buildType, ['dev','debug'])) : ?>
 set -x
+<?php  endif; ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -470,6 +472,7 @@ elif [ "$1" = "list-extension" ] ;then
     exit 0
 elif [ "$1" = "clean" ] ;then
     make_clean
+    exit 0
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM

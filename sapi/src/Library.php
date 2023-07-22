@@ -32,6 +32,8 @@ class Library extends Project
 
     public bool $enableBuildLibraryCached = true;
 
+    public string $preInstallCommand = '';
+
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
@@ -151,6 +153,12 @@ class Library extends Project
     public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
     {
         $this->enableBuildLibraryCached = $enableBuildLibraryCached;
+        return $this;
+    }
+
+    public function withPreInstallCommand(string $preInstallCommand): static
+    {
+        $this->preInstallCommand = $preInstallCommand;
         return $this;
     }
 }

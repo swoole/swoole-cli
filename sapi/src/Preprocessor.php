@@ -2,6 +2,7 @@
 
 namespace SwooleCli;
 
+use AllowDynamicProperties;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
@@ -10,6 +11,7 @@ use SwooleCli\PreprocessorTrait\CompilerTrait;
 use SwooleCli\PreprocessorTrait\DownloadBoxTrait;
 use SwooleCli\PreprocessorTrait\WebUITrait;
 
+#[AllowDynamicProperties]
 class Preprocessor
 {
     use DownloadBoxTrait;
@@ -35,6 +37,7 @@ class Preprocessor
     protected string $lld = 'ld.lld';
 
     protected array $libraryMap = [];
+
     protected array $extensionMap = [];
     /**
      * 仅用于预处理阶段
@@ -70,6 +73,8 @@ class Preprocessor
     protected array $variables = [];
 
     protected array $exportVariables = [];
+
+    protected array $preInstallCommands = [];
     /**
      * default value : CPU   logical processors
      * @var string
@@ -129,7 +134,7 @@ class Preprocessor
         'imagick',
         //'mongodb', //需要处理依赖库问题 more info ： https://github.com/jingjingxyk/swoole-cli/pull/79/files
     ];
-
+    protected array $extEnabledBuff = [];
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
 
@@ -321,7 +326,7 @@ class Preprocessor
      */
     public function setMaxJob(int $n): static
     {
-        $this->maxJob = $n;
+        $this->maxJob = (string)$n;
         return $this;
     }
 
@@ -356,6 +361,12 @@ class Preprocessor
     public function getProxyConfig(): string
     {
         return $this->proxyConfig;
+    }
+
+    public function setExtEnabled(array $extEnabled = []): static
+    {
+        $this->extEnabled=array_merge($this->extEnabledBuff, $extEnabled);
+        return $this;
     }
 
     public function donotInstallLibrary()
@@ -494,6 +505,9 @@ EOF;
         if (empty($lib->license)) {
             throw new Exception("require license");
         }
+        if (!empty($lib->preInstallCommand)) {
+            $this->preInstallCommands[] = $lib->preInstallCommand;
+        }
 
         $this->libraryList[] = $lib;
         $this->libraryMap[$lib->name] = $lib;
@@ -620,6 +634,12 @@ EOF;
         return $this;
     }
 
+    public function withPreInstallCommand(string $preInstallCommand): static
+    {
+        $this->preInstallCommands[] = $preInstallCommand;
+        return $this;
+    }
+
     public function getExtension(string $name): ?Extension
     {
         if (!isset($this->extensionMap[$name])) {
@@ -720,6 +740,7 @@ EOF;
             $value = substr($argv[$i], 1);
             if ($op == '+') {
                 $this->extEnabled[] = $value;
+                $this->extEnabledBuff[] = $value;
             } elseif ($op == '-') {
                 if ($arg[1] == '-') {
                     $_ = explode('=', substr($arg, 2));
@@ -886,7 +907,6 @@ EOF;
 
         $extAvailabled = [];
         $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
-
         $confPath = $this->getInputOption('conf-path');
         if ($confPath) {
             $confDirList = explode(':', $confPath);
@@ -961,6 +981,7 @@ EOF;
             $this->generateLibraryDownloadLinks();
         }
 
+        $this->generateFile(__DIR__ . '/template/make-install-deps.php', $this->rootDir . '/make-install-deps.sh');
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
