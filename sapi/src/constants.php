@@ -203,3 +203,7 @@ define("SPEEXDSP_PREFIX", $p->getGlobalPrefix() . '/speexdsp');
 define("LIBLDNS_PREFIX", $p->getGlobalPrefix() . '/libldns');
 define("LIBPCAP_PREFIX", $p->getGlobalPrefix() . '/libpcap');
 define("PORTAUDIO_PREFIX", $p->getGlobalPrefix() . '/portaudio');
+define("LIBKS_PREFIX", $p->getGlobalPrefix() . '/libks');
+define("UTIL_LINUX", $p->getGlobalPrefix() . '/util_linux');
+define("LIBUUID_LINUX", $p->getGlobalPrefix() . '/libuuid');
+define("LIBATOMIC_LINUX", $p->getGlobalPrefix() . '/libatomic');

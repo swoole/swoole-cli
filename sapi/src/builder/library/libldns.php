@@ -18,12 +18,15 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libldns_prefix)
-        ->withBuildLibraryCached(false)
         ->withConfigure(
             <<<EOF
             libtoolize -ci
             autoreconf -fi
             ./configure --help
+            PACKAGES="openssl libpcap"
+            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
             ./configure \
             --prefix={$libldns_prefix} \
             --enable-shared=no \
@@ -31,14 +34,18 @@ EOF
             --with-drill \
             --without-pyldns \
             --with-examples \
-            --without-ssl
-            --with-ssl={$openssl_prefix}
+            --with-ssl={$openssl_prefix} \
+            --disable-gost \
+            --disable-ecdsa \
+            --disable-ed25519 \
+            --disable-ed448 \
+            --disable-dsa
 
 EOF
         )
         ->withDependentLibraries('openssl', 'libpcap')
-
-    ;
+        ->withPkgName('ldns')
+        ->withBinPath($libldns_prefix . '/bin/');
 
     $p->addLibrary($lib);
 };

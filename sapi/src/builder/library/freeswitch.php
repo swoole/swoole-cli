@@ -13,6 +13,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/signalwire/freeswitch/blob/master/LICENSE', Library::LICENSE_LGPL)
         ->withUrl('https://github.com/signalwire/freeswitch/archive/refs/tags/v1.10.9.tar.gz')
         ->withManual('https://freeswitch.com/#getting-started')
+        ->withManual('https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Installation/Linux/Debian_67240088#about')
         ->withFile('freeswitch-v1.10.9.tar.gz')
         ->withDownloadScript(
             'freeswitch',
@@ -22,15 +23,32 @@ EOF
         )
         ->withPrefix($freeswitch_prefix)
         ->withBuildLibraryCached(false)
+        ->withCleanBuildDirectory()
         ->withPreInstallCommand(
             <<<EOF
-        apt install libtool  libtool-bin
+        apt install libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
 EOF
         )
         ->withCleanBuildDirectory()
         ->withBuildScript(
             <<<EOF
+
+            # cp -f  build/modules.conf.in bin/modules.conf
+
+            # vi bin/modules.conf
+            # 注释如下两行
+            # #endpoints/mod_verto
+            # #applications/mod_signalwire
+
             ./bootstrap.sh
+            # sed -i.backup "s@^endpoints/mod_verto@#endpoints/mod_verto$@"  modules.conf
+
+            # sed 行注释 参考： https://blog.csdn.net/qq_39677803/article/details/121899559
+
+            sed -i.backup "99 s/^/#&/"  modules.conf
+            sed -i.backup "42 s/^/#&/"  modules.conf
+
+            # cp -f {$p->getWorkDir()}/bin/modules.conf modules.conf
 
             ./configure --help
             # CFLAGS="-O3 -std=c11 -g " \
@@ -41,6 +59,10 @@ EOF
             PACKAGES="\$PACKAGES libpcre  libpcre16  libpcre32  libpcrecpp  libpcreposix "
             PACKAGES="\$PACKAGES speex speexdsp "
             PACKAGES="\$PACKAGES yaml-0.1 "
+            PACKAGES="\$PACKAGES ldns "
+            PACKAGES="\$PACKAGES ImageMagick  ImageMagick-7.Q16HDRI  MagickCore  MagickCore-7.Q16HDRI  MagickWand MagickWand-7.Q16HDRI  Magick++ Magick++-7.Q16HDRI "
+            PACKAGES="\$PACKAGES libedit"
+            PACKAGES="\$PACKAGES uuid"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib" \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
@@ -53,9 +75,14 @@ EOF
             --with-python3 \
             --with-odbc={$odbc_prefix} \
             --enable-systemd=no \
+            --enable-core-pgsql-support
 
+            make -j {$p->maxJob}
+            make install
 
-          # make install
+            # # Install audio files:
+            make cd-sounds-install cd-moh-install
+
 EOF
         )
         ->withDependentLibraries(
@@ -81,9 +108,15 @@ EOF
             'libopus',
             'speex',
             'speexdsp',
-            //'libldns'
+            'libldns',
             'libyaml',
-           // 'portaudio'
+            'imagemagick',
+            'libedit',
+            'libuuid',
+            // 'portaudio'
+            // "opencv",
+            // "ffmpeg"
+            // "libks"
         )
     ;
 

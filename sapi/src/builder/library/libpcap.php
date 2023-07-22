@@ -29,7 +29,8 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withDependentLibraries('openssl')
-
+        ->withPkgName('libpcap')
+        ->withBinPath($libpcap_prefix . '/bin/')
     ;
 
     $p->addLibrary($lib);

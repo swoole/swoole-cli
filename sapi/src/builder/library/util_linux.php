@@ -4,7 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $opencv_prefix = OPENCV_PREFIX;
+    $util_linux_prefix = UTIL_LINUX;
     $lib = new Library('util_linux');
     $lib->withHomePage('http://en.wikipedia.org/wiki/Util-linux')
         ->withLicense('https://github.com/util-linux/util-linux/blob/master/COPYING', Library::LICENSE_GPL)
@@ -17,20 +17,23 @@ return function (Preprocessor $p) {
                 git clone -b v2.39.1  --depth=1 https://github.com/util-linux/util-linux.git
 EOF
         )
-        ->withSkipDownload()
-        ->withUntarArchiveCommand('')
-        ->withPrefix($opencv_prefix)
-        ->withBuildScript(
+        ->withPrefix($util_linux_prefix)
+        ->withBuildLibraryCached(false)
+        ->withConfigure(
             <<<EOF
             sh autogen.sh
-            ./config --help
-
+            ./configure --help
+            ./configure \
+            --prefix={$util_linux_prefix} \
+            --enable-shared=no \
+            --enable-static=yes \
+            --disable-all-programs \
+             --enable-libuuid \
+             --enable-static-programs=uuidd,uuidgen
 
 EOF
         )
-        ->disableDefaultLdflags()
-        ->disablePkgName()
-        ->disableDefaultPkgConfig()
+
         ->withSkipBuildLicense();
 
     $p->addLibrary($lib);
