@@ -5,7 +5,7 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $depends = [
-        'freeswitc'
+        'freeswitch'
     ];
     $ext = (new Extension('freeswitch'))
         ->withHomePage('http://www.freeswitch.org')
@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_SPEC);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->setExtHook('common', function (Preprocessor $p) {
+    $p->setExtHook('freeswitch', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

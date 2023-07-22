@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $freeswitch_prefix = FREESWITCH_PREFIX;
+    $odbc_prefix = UNIX_ODBC_PREFIX;
     $lib = new Library('freeswitch');
     $lib->withHomePage('https://github.com/signalwire/freeswitch.git')
         ->withLicense('https://github.com/signalwire/freeswitch/blob/master/LICENSE', Library::LICENSE_LGPL)
@@ -18,13 +19,37 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($freeswitch_prefix)
-        ->withBuildScript(
+        ->withBuildLibraryCached(false)
+        ->withPreInstallCommand(
             <<<EOF
-          ./bootstrap.sh
-          ./configure
-          make install
+        apt install libtool  libtool-bin
 EOF
         )
+        ->withBuildScript(
+            <<<EOF
+            ./bootstrap.sh
+            ./configure --help
+
+            PACKAGES="openssl libpq"
+            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
+            CFLAGS="-O3 -std=c11 -g " \
+            ./configure \
+            --prefix={$freeswitch_prefix} \
+            --enable-static=yes \
+            --enable-shared=no \
+            --enable-optimization \
+            --with-openssl \
+            --with-python3 \
+            --with-odbc={$odbc_prefix} \
+            --enable-systemd=no \
+
+
+          # make install
+EOF
+        )
+        ->withDependentLibraries('openssl', 'pgsql', 'spandsp')
     ;
 
     $p->addLibrary($lib);

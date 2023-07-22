@@ -191,3 +191,4 @@ define("LIBUDEV_PREFIX", $p->getGlobalPrefix() . '/libudev');
 
 define("OPENCL_PREFIX", $p->getGlobalPrefix() . '/opencl');
 define("OPENGL_PREFIX", $p->getGlobalPrefix() . '/opengl');
+define("SPANDSP_PREFIX", $p->getGlobalPrefix() . '/spandsp');
