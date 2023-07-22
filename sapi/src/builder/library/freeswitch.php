@@ -26,10 +26,11 @@ EOF
         ->withCleanBuildDirectory()
         ->withPreInstallCommand(
             <<<EOF
-        apt install libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
+        apt install -y libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
 EOF
         )
         ->withCleanBuildDirectory()
+        //->withHttpProxy()
         ->withBuildScript(
             <<<EOF
 
@@ -81,7 +82,7 @@ EOF
             make install
 
             # # Install audio files:
-            make cd-sounds-install cd-moh-install
+            # make cd-sounds-install cd-moh-install
 
 EOF
         )
