@@ -157,3 +157,23 @@ with-install-library-cached
 ```shell
 php ./prepare.php --with-install-library-cached=1
 ```
+
+with-build-type
+----
+构建过程 指定构建类型
+debug 调试版本 （构建过程显示，正在执行的构建命令）
+dev 开发版本 （便于调试单个扩展）
+release 默认版本
+
+```shell
+php ./prepare.php  --with-build-type=dev
+```
+
+with-override-enable-ext
+----
+覆盖默认启用的扩展列表
+例子：当添加新扩展时，便于调试
+
+```shell
+php ./prepare.php +uuid --with-override-enable-ext=1 --with-build-type=dev
+```
