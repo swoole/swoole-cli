@@ -24,6 +24,16 @@ EOF
         ->withBuildScript(
             <<<EOF
 
+test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
+
+mkdir -p /etc/apt/apt.conf.d/
+
+cat > /etc/apt/apt.conf.d/proxy.conf <<'--EOF--'
+Acquire::http::Proxy "{$p->getHttpProxy()}";
+Acquire::https::Proxy "{$p->getHttpProxy()}";
+
+--EOF--
+
             #  docker run --rm --name demo  -ti --init -v $(pwd):/work/ -p 7010:7010 debian:11 /bin/bash
             #  docker run --rm --name demo  -ti --init -v $(pwd):/work/ -p 7010:7010 ubuntu:22.04 /bin/bash
             #  bash sapi/quickstart/linux/debian-init.sh --mirror china
@@ -70,6 +80,7 @@ EOF
 
             export PKG_CONFIG_PATH=\${SWOOLE_CLI_PKG_CONFIG_PATH}
             export PATH=\${SWOOLE_CLI_PATH}
+            test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 EOF
         )
         ->disableDefaultLdflags()

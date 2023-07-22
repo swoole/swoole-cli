@@ -146,6 +146,8 @@ class Preprocessor
 
     protected string $proxyConfig = '';
 
+    protected string $httpProxy= '';
+
     protected bool $installLibraryCached = false;
 
     protected function __construct()
@@ -350,15 +352,21 @@ class Preprocessor
         return $this->buildType;
     }
 
-    public function setProxyConfig(string $shell): static
+    public function setProxyConfig(string $shell = '', string $httpProxy = ''): static
     {
         $this->proxyConfig = $shell;
+        $this->httpProxy=$httpProxy;
         return $this;
     }
 
     public function getProxyConfig(): string
     {
         return $this->proxyConfig;
+    }
+
+    public function getHttpProxy(): string
+    {
+        return $this->httpProxy;
     }
 
     public function setExtEnabled(array $extEnabled = []): static

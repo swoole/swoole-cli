@@ -90,7 +90,7 @@ export NO_PROXY="\${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
 
 
 EOF;
-    $p->setProxyConfig($proxyConfig);
+    $p->setProxyConfig($proxyConfig, $http_proxy);
 }
 
 if ($p->getInputOption('with-install-library-cached')) {
@@ -190,14 +190,14 @@ if test $brew -eq 1 ;then
 }
 fi
 EOF;
-
-
-
 }
 
 
 if ($p->getOsType() == 'linux') {
     $cmd = <<<'EOF'
+
+test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
+
 export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
 EOF;
 
@@ -249,8 +249,11 @@ if test -f /etc/os-release; then
                 # git config --global --add safe.directory /work
             }
             fi
+
+             # sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
     }
     fi
+
 }
 fi
      # GN=generate-ninja
