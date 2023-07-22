@@ -322,7 +322,7 @@ class Preprocessor
      */
     public function setMaxJob(int $n): static
     {
-        $this->maxJob = $n;
+        $this->maxJob = (string)$n;
         return $this;
     }
 
@@ -358,6 +358,12 @@ class Preprocessor
     public function getProxyConfig(): string
     {
         return $this->proxyConfig;
+    }
+
+    public function setExtEnabled(array $extEnabled = []): static
+    {
+        $this->extEnabled = $extEnabled;
+        return $this;
     }
 
     public function donotInstallLibrary()
