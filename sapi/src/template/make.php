@@ -7,6 +7,9 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
+<?php if (in_array($this->buildType, ['dev','debug'])) : ?>
+set -x
+<?php  endif; ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
