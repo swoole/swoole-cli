@@ -19,7 +19,7 @@ EOF
         ->withPrefix($spandsp_prefix)
         ->withConfigure(
             <<<EOF
-            sh autogen.sh
+            sh bootstrap.sh
             ./configure --help
             PACKAGES="libtiff-4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
