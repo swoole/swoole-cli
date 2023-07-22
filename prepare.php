@@ -21,8 +21,8 @@ if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
-if ($p->getInputOption('with-override-enable-ext')) {
-    $p->setExtEnabled();
+if ($p->getInputOption('with-override-default-enabled-ext')) {
+    $p->setExtEnabled([]);
 }
 
 if ($p->getInputOption('with-global-prefix')) {

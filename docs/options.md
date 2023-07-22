@@ -169,11 +169,11 @@ release 默认版本
 php ./prepare.php  --with-build-type=dev
 ```
 
-with-override-enable-ext
+with-override-default-enabled-ext
 ----
-覆盖默认启用的扩展列表
+覆盖默认启用的扩展
 例子：当添加新扩展时，便于调试
 
 ```shell
-php ./prepare.php +uuid --with-override-enable-ext=1 --with-build-type=dev
+php ./prepare.php +uuid --with-override-default-enabled-ext=1 --with-build-type=dev
 ```
