@@ -48,7 +48,7 @@ EOF
         PACKAGES='openssl libwebp  libxml-2.0  freetype2 gmp liblzma' # libssh2
         PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
         PACKAGES="\$PACKAGES aom "
-        PACKAGES="\$PACKAGES dav1d "
+        # PACKAGES="\$PACKAGES dav1d "
         PACKAGES="\$PACKAGES lcms2 "
         PACKAGES="\$PACKAGES x264 "
         # PACKAGES="\$PACKAGES x265 numa "
@@ -112,7 +112,7 @@ EOF
             'libxml2',
             'libwebp',
             'svt_av1',
-            'dav1d',
+           // 'dav1d',
             'aom',
             'freetype',
             "gmp",
