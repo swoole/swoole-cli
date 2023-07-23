@@ -70,7 +70,6 @@ EOF
         --enable-libwebp \
         --enable-libxml2 \
         --enable-libsvtav1 \
-        --enable-libdav1d \
         --enable-libaom \
         --enable-lcms2 \
         --enable-gmp \
@@ -87,7 +86,7 @@ EOF
         --cc={$p->get_C_COMPILER()} \
         --cxx={$p->get_CXX_COMPILER()} \
 
-
+        #  --enable-libdav1d \
         # --ld={$p->getLinker()} \
         # --enable-libx265 \
         # --enable-nonfree \
