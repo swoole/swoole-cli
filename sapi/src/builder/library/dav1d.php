@@ -30,12 +30,12 @@ return function (Preprocessor $p) {
                 -Db_staticpic=true \
                 -Db_pie=true \
                 -Dprefer_static=true \
-                -Denable_asm=true
-                -Denable_tools=true
-                -Denable_examples=true
-                -Denable_tests=false
-                -Denable_docs=false
-                -Dlogging=true
+                -Denable_asm=true \
+                -Denable_tools=true \
+                -Denable_examples=true \
+                -Denable_tests=false \
+                -Denable_docs=false \
+                -Dlogging=true \
                 -Dfuzzing_engine=none
 
                 meson compile -C build
