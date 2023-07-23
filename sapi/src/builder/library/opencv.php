@@ -75,7 +75,7 @@ EOF
         )
         ->withScriptAfterInstall(
             <<<EOF
-            LINE_NUMBER=$(grep -n 'Requires.private:' {$opencv_prefix}/lib/pkgconfig/opencv5.pc |cut -d ':' -f 1)
+            LINE_NUMBER=$(grep -n 'Libs.private:' {$opencv_prefix}/lib/pkgconfig/opencv5.pc |cut -d ':' -f 1)
             sed -i.save "\${LINE_NUMBER} s/-lIconv::Iconv//" {$opencv_prefix}/lib/pkgconfig/opencv5.pc
 EOF
         )
