@@ -8,24 +8,39 @@ return function (Preprocessor $p) {
     $lib = new Library('libnice');
     $lib->withHomePage('https://libnice.freedesktop.org/')
         ->withLicense('https://gitlab.com/libnice/libnice/-/blob/master/COPYING', Library::LICENSE_GPL)
-        ->withUrl('https://gitlab.com/libnice/libnice/-/archive/master/libnice-master.tar.gz')
+        ->withUrl('https://libnice.freedesktop.org/releases/libnice-0.1.21.tar.gz')
         ->withManual('https://gitlab.com/libnice/libnice.git')
-        ->withDownloadScript(
-            'libnice',
+        ->withPrefix($libnice_prefix)
+        ->withPreInstallCommand(
             <<<EOF
-                git clone -b 0.1.19  --depth=1 https://gitlab.com/libnice/libnice.git
+            apt install -y ninja-build python3-pip meson
 EOF
         )
-
-        ->withPrefix($libnice_prefix)
+        ->withHttpProxy()
         ->withBuildScript(
             <<<EOF
-meson build_dir
-ninja -C build_dir
-# ninja -C build_dir test (or "meson test -C build_dir" for more control)
-ninja -C build_dir install
+            meson  -h
+            meson setup -h
+            # meson configure -h
+
+            meson setup  build \
+            -Dprefix={$libnice_prefix} \
+            -Dbackend=ninja \
+            -Dbuildtype=release \
+            -Ddefault_library=static \
+            -Db_staticpic=true \
+            -Db_pie=true \
+            -Dprefer_static=true \
+            -Dexamples=disabled \
+            -Dgtk_doc=disabled \
+
+            meson compile -C build
+
+            ninja -C build
+            ninja -C build install
 EOF
         )
+        ->withDependentLibraries('openssl', 'gstreamer')
     ;
 
     $p->addLibrary($lib);

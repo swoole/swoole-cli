@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://libcbor.readthedocs.io/en/latest/')
         ->withLicense('https://github.com/PJK/libcbor/blob/master/LICENSE.md', Library::LICENSE_MIT)
         ->withManual('https://libcbor.readthedocs.io/en/latest/getting_started.html#building-installing-libcbor')
-        ->withManual('https://github-com.proxy.zibenyulun.cn/PJK/libcbor/blob/master/doc/source/getting_started.rst')
+        ->withManual('https://github.com/PJK/libcbor/blob/master/doc/source/getting_started.rst')
         ->withFile('libcbor-latest.tar.gz')
         ->withDownloadScript(
             'libcbor',

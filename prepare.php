@@ -246,7 +246,8 @@ if test -f /etc/os-release; then
                 apt install -y yasm nasm
                 # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
                 # pip3 install meson virtualenv pipenv
-                apt  install -y  python3-meson python3-virtualenv python3-pipenv
+                apt  install -y  meson
+                # pip3 install virtualenv pipenv
                 # git config --global --add safe.directory /work
             }
             fi

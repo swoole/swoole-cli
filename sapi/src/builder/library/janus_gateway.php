@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             '',
             <<<EOF
-        git clone -b v1.1.4 --depth=1  https://github.com/meetecho/janus-gateway.git
+            git clone -b v1.1.4 --depth=1  https://github.com/meetecho/janus-gateway.git
 EOF
         )
 

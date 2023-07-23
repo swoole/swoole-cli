@@ -7,11 +7,18 @@ return function (Preprocessor $p) {
     $depends = [
         'bzip2',
         'curl',
-        'openssl',
         'zlib',
         'iperf3',
         'libfido2',
         'opencl'
+    ];
+    $depends = [
+        'openssl',
+        'libconfig',
+        'libnice'
+    ];
+    $depends = [
+        'libwebsockets'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

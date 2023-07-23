@@ -5,29 +5,40 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $rabbitmq_c_prefix = RABBITMQ_C_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
     $lib = new Library('rabbitmq_c');
     $lib->withHomePage('https://opus-codec.org/')
-        ->withLicense('https://opus-codec.org/license/', Library::LICENSE_SPEC)
-        ->withManual('https://opus-codec.org/docs/')
-        ->withUrl('https://downloads.xiph.org/releases/opus/opus-1.4.tar.gz')
+        ->withLicense('https://github.com/alanxz/rabbitmq-c.git', Library::LICENSE_SPEC)
+        ->withManual('https://github.com/alanxz/rabbitmq-c.git')
+        ->withUrl('https://github.com/alanxz/rabbitmq-c/archive/refs/tags/v0.13.0.tar.gz')
         ->withPrefix($rabbitmq_c_prefix)
-        ->withConfigure(
+        ->withBuildLibraryCached(false)
+        ->withCleanBuildDirectory()
+        ->withBuildScript(
             <<<EOF
 
-            # sh ./autogen.sh
-            ./configure --help
-            ./configure \
-            --prefix={$rabbitmq_c_prefix} \
-            --enable-shared=no \
-            --enable-static=yes \
-            --without-NE10
+            mkdir -p build
+             cd build
+             cmake .. \
+            -DCMAKE_INSTALL_PREFIX={$rabbitmq_c_prefix} \
+            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_SHARED_LIBS=OFF  \
+            -DBUILD_STATIC_LIBS=ON \
+            -DOpenSSL_ROOT={$openssl_prefix} \
+            -DBUILD_EXAMPLES=OFF  \
+            -DBUILD_TESTING=OFF \
+            -DBUILD_TOOLS_DOCS=OFF \
+            -DENABLE_SSL_SUPPORT=ON \
+            -DBUILD_API_DOCS=OFF \
+            -DRUN_SYSTEM_TESTS=OFF
+
+
+            cmake --build . --config Release --target install
 
 EOF
         )
-        ->withPkgName('opus')
-        ->withBinPath($rabbitmq_c_prefix . '/bin/')
-        //  ->withDependentLibraries('libne10')  https://github.com/projectNe10/Ne10/blob/master/doc/building.md
-    ;
+        ->withPkgName('librabbitmq');
 
 
     $p->addLibrary($lib);
