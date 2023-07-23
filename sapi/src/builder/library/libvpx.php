@@ -16,10 +16,7 @@ return function (Preprocessor $p) {
             git clone -b v1.13.0  --depth=1  https://chromium.googlesource.com/webm/libvpx
 EOF
         )
-        ->withBuildLibraryCached(false)
         ->withPrefix($libvpx_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libvpx_prefix)
         ->withConfigure(
             <<<EOF
             mkdir -p build
