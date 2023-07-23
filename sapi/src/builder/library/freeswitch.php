@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
     $bzip2_prefix = BZIP2_PREFIX;
     $lib = new Library('freeswitch');
     $lib->withHomePage('https://github.com/signalwire/freeswitch.git')
-        ->withLicense('https://github.com/signalwire/freeswitch/blob/master/LICENSE', Library::LICENSE_LGPL)
+        ->withLicense('https://github.com/signalwire/freeswitch/blob/master/LICENSE', Library::LICENSE_GPL)
         ->withUrl('https://github.com/signalwire/freeswitch/archive/refs/tags/v1.10.9.tar.gz')
         ->withManual('https://freeswitch.com/#getting-started')
         ->withManual('https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Installation/Linux/Debian_67240088#about')
