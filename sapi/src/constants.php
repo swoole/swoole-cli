@@ -208,3 +208,6 @@ define("UTIL_LINUX_PREFIX", $p->getGlobalPrefix() . '/util_linux');
 define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
 define("LIBATOMIC_PREFIX", $p->getGlobalPrefix() . '/libatomic');
 define("GUPnP_PREFIX", $p->getGlobalPrefix() . '/GUPnP');
+
+
+define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
