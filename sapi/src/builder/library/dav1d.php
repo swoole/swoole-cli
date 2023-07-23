@@ -39,7 +39,7 @@ EOF
                 -Dprefer_static=true \
                 -Denable_asm=true \
                 -Denable_tools=true \
-                -Denable_examples=true \
+                -Denable_examples=false \
                 -Denable_tests=false \
                 -Denable_docs=false \
                 -Dlogging=true \
