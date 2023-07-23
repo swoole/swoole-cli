@@ -84,7 +84,7 @@ EOF
             --enable-shared=no \
             --enable-optimization \
             --with-openssl \
-            --with-python3 \
+            --without-python3 \
             --with-odbc={$odbc_prefix} \
             --enable-systemd=no \
             --enable-core-pgsql-support
