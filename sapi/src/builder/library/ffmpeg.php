@@ -77,7 +77,7 @@ EOF
         --enable-libx264 \
         --enable-random \
         --enable-libfreetype \
-        --enable-livpx \
+        --enable-libvpx \
         --enable-ffplay \
         --extra-cflags="--static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
@@ -119,7 +119,8 @@ EOF
             "gmp",
             "lcms2",
             "libx264",
-            "liblzma"
+            "liblzma",
+            "libvpx"
         ) //  "libx265", 'libssh2',
     ;
 

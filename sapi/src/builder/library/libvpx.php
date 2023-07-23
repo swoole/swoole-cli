@@ -34,14 +34,10 @@ EOF
 
 EOF
         )
-        ->withPkgName('ssl')
+        ->withPkgName('vpx')
         ->withBinPath($libvpx_prefix . '/bin/')
-        ->withDependentLibraries('openssl')
     ;
 
     $p->addLibrary($lib);
 
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $openssl_prefix . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $openssl_prefix . '/lib');
-    $p->withVariable('LIBS', '$LIBS -lssl ');
 };
