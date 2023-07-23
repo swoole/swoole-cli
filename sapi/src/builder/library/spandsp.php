@@ -25,6 +25,8 @@ EOF
             # https://github.com/freeswitch/spandsp/pull/58
 
             # 临时解决
+            # https://github.com/piligrim773/spandsp/blob/fix/spandsp/unaligned.h/src/spandsp/unaligned.h?raw=true
+
             curl -Lo src/spandsp/unaligned.h https://raw.githubusercontent.com/piligrim773/spandsp/fix/spandsp/unaligned.h/src/spandsp/unaligned.h
 
 
