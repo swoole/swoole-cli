@@ -213,3 +213,4 @@ define("GUPnP_PREFIX", $p->getGlobalPrefix() . '/GUPnP');
 define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
 
 define("USRSCTP_PREFIX", $p->getGlobalPrefix() . '/usrsctp');
+define("RABBITMQ_C_PREFIX", $p->getGlobalPrefix() . '/rabbitmq_c');
