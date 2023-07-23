@@ -25,7 +25,7 @@ EOF
             # https://github.com/freeswitch/spandsp/pull/58
 
             # 临时解决
-            curl -LO src/spandsp/unaligned.h https://raw.githubusercontent.com/piligrim773/spandsp/master/src/spandsp/unaligned.h
+            curl -Lo src/spandsp/unaligned.h https://raw.githubusercontent.com/piligrim773/spandsp/master/src/spandsp/unaligned.h
 
 
             sh ./autogen.sh
