@@ -74,7 +74,7 @@ EOF
             PACKAGES="\$PACKAGES librabbitmq"
 
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include" \
-            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib" \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib -static " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
             CFLAGS="-O3  -g  -fms-extensions -std=c11 -Werror,-Wc11-extensions" \
             ./configure \
