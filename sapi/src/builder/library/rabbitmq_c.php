@@ -39,14 +39,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPkgName('librabbitmq');
-
-
     $p->addLibrary($lib);
-    /*
-        Vorbis
-        FLAC
-        Theora
-        Speex
-        Icecast
-    */
+
 };
