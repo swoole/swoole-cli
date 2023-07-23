@@ -27,6 +27,7 @@ EOF
         ->withPreInstallCommand(
             <<<EOF
         apt install -y libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
+        apt install -y uuid-dev
 EOF
         )
         ->withCleanBuildDirectory()
