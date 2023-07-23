@@ -38,6 +38,8 @@ EOF
         ->withConfigure(
             <<<EOF
 
+        #  libavresample 已弃用，默认编译时不再构建它
+
         set -x
         ./configure --help
         ./configure --help | grep shared

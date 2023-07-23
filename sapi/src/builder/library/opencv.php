@@ -73,7 +73,7 @@ EOF
         ninja install
 EOF
         )
-        ->withPkgName('opencv')
+        ->withPkgName('opencv5')
         ->withDependentLibraries(
             'ffmpeg',
             'zlib',
@@ -83,6 +83,7 @@ EOF
             'freetype',
             'libtiff'
         ) // openjpeg openEXR HDR   'vtk'
+        ->withBinPath($opencv_prefix . '/bin/')
     ;
 
     $p->addLibrary($lib);
