@@ -12,8 +12,6 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/alanxz/rabbitmq-c.git')
         ->withUrl('https://github.com/alanxz/rabbitmq-c/archive/refs/tags/v0.13.0.tar.gz')
         ->withPrefix($rabbitmq_c_prefix)
-        ->withBuildLibraryCached(false)
-        ->withCleanBuildDirectory()
         ->withBuildScript(
             <<<EOF
 

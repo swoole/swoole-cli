@@ -12,7 +12,6 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/digitalocean/prometheus-client-c/blob/master/LICENSE', Library::LICENSE_GPL)
             ->withUrl('https://github.com/redis/hiredis/archive/refs/tags/v1.1.0.tar.gz')
             ->withFile('hiredis-v1.1.0.tar.gz')
-            ->withBuildLibraryCached(false)
             ->withConfigure(
                 <<<EOF
 
