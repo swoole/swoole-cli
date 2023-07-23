@@ -51,10 +51,10 @@ EOF
             sed -i.backup "42 s/^/#&/"  modules.conf
 
             # cp -f {$p->getWorkDir()}/bin/modules.conf modules.conf
-            # -std=gnu11
+            #
 
             ./configure --help
-            CFLAGS="-O3  -g  -fms-extensions " \
+            CFLAGS="-O3  -g  -fms-extensions -std=C11 " \
             PACKAGES="openssl libpq spandsp sofia-sip-ua odbc libjpeg libturbojpeg liblzma libpng sqlite3 zlib libcurl"
             PACKAGES="\$PACKAGES libcares  libbrotlicommon libbrotlidec libbrotlienc"
             PACKAGES="\$PACKAGES libnghttp2 libnghttp3 "
