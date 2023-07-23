@@ -16,6 +16,13 @@ return function (Preprocessor $p) {
             ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($dav1d_prefix)
+            ->withPreInstallCommand(
+                <<<EOF
+# library dav1d :
+apk add ninja python3 py3-pip  nasm
+pip3 install meson
+EOF
+            )
             ->withBuildScript(
                 <<<EOF
                 meson  -h
@@ -48,13 +55,7 @@ EOF
             )
             ->withPkgName('dav1d')
             ->withBinPath($dav1d_prefix . '/bin/')
-            ->withPreInstallCommand(
-                <<<EOF
-# library dav1d :
-apk add ninja python3 py3-pip  nasm
-pip3 install meson
-EOF
-            )
+
             ->withDependentLibraries('sdl2')
     );
 };
