@@ -55,5 +55,6 @@ apk add ninja python3 py3-pip  nasm
 pip3 install meson
 EOF
             )
+            ->withDependentLibraries('sdl2')
     );
 };
