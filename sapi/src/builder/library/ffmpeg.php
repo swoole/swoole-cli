@@ -65,6 +65,7 @@ EOF
         --enable-gpl \
         --enable-version3 \
         --disable-shared \
+        --enable-nonfree \
         --enable-static \
         --enable-openssl \
         --enable-libwebp \
