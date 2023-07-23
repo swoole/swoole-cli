@@ -22,7 +22,7 @@ EOF
             <<<EOF
 meson build_dir
 ninja -C build_dir
-ninja -C build_dir test (or "meson test -C build_dir" for more control)
+# ninja -C build_dir test (or "meson test -C build_dir" for more control)
 ninja -C build_dir install
 EOF
         )
