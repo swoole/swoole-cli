@@ -72,6 +72,7 @@ EOF
             PACKAGES="\$PACKAGES opencv5"
             PACKAGES="\$PACKAGES gmp"
             PACKAGES="\$PACKAGES librabbitmq"
+            PACKAGES="\$PACKAGES hiredis"
 
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib -static " \
@@ -128,6 +129,7 @@ EOF
             'opencv',
             'gmp',
             'rabbitmq_c',
+            'hiredis',
 
             //'libuuid',
             // 'portaudio'

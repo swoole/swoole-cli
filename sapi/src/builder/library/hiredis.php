@@ -12,7 +12,9 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/digitalocean/prometheus-client-c/blob/master/LICENSE', Library::LICENSE_GPL)
             ->withUrl('https://github.com/redis/hiredis/archive/refs/tags/v1.1.0.tar.gz')
             ->withFile('hiredis-v1.1.0.tar.gz')
-            ->withConfigure(<<<EOF
+            ->withBuildLibraryCached(false)
+            ->withConfigure(
+                <<<EOF
 
            test -d build  && rm -rf build
            mkdir -p build
@@ -35,5 +37,7 @@ EOF
             rm -rf {$hiredis_prefix}/lib/*.dylib
 EOF
             )
+            ->withPkgName('hiredis')
+            //->withDependentLibraries('openssl')
     );
 };

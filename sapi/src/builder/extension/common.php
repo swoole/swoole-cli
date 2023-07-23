@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         'libnice'
     ];
     $depends = [
-        'libvpx'
+        'hiredis'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
