@@ -54,7 +54,7 @@ EOF
             # -std=gnu11
 
             ./configure --help
-            # CFLAGS="-O3  -g  " \
+            # CFLAGS="-O3  -g  -fms-extensions " \
             PACKAGES="openssl libpq spandsp sofia-sip-ua odbc libjpeg libturbojpeg liblzma libpng sqlite3 zlib libcurl"
             PACKAGES="\$PACKAGES libcares  libbrotlicommon libbrotlidec libbrotlienc"
             PACKAGES="\$PACKAGES libnghttp2 libnghttp3 "
