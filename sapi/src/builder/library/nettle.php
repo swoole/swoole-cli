@@ -12,8 +12,6 @@ return function (Preprocessor $p) {
             ->withUrl('https://ftp.gnu.org/gnu/nettle/nettle-3.8.tar.gz')
             ->withFile('nettle-3.8.tar.gz')
             ->withPrefix($nettle_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($nettle_prefix)
             ->withConfigure(
                 <<<EOF
              ./configure --help
@@ -23,6 +21,7 @@ return function (Preprocessor $p) {
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             ./configure \
             --prefix={$nettle_prefix} \
+            --libdir={$nettle_prefix}/lib \
             --enable-static \
             --disable-shared \
             --enable-mini-gmp  \
@@ -30,6 +29,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('nettle')
-            ->withDependentLibraries('gmp','openssl')
+            ->withDependentLibraries('gmp', 'openssl')
     );
 };

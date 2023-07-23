@@ -16,7 +16,8 @@ return function (Preprocessor $p) {
             ->withUntarArchiveCommand('xz')
             ->withCleanBuildDirectory()
             ->withBuildLibraryCached(false)
-            ->withPreInstallCommand(<<<EOF
+            ->withPreInstallCommand(
+                <<<EOF
             # apk add python3 py3-pip
             # pip3 install meson pyelftools -i https://pypi.tuna.tsinghua.edu.cn/simple
             # pip3 install meson pyelftools -ihttps://pypi.python.org/simple

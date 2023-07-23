@@ -12,12 +12,35 @@ return function (Preprocessor $p) {
         ->withManual('https://wiki.gnome.org/Projects/GUPnP')
         ->withUntarArchiveCommand('xz')
         ->withPrefix($GUPnP_prefix)
+        ->withHttpProxy()
+        ->withBuildLibraryCached(false)
+        ->withCleanBuildDirectory()
         ->withBuildScript(
             <<<EOF
+            meson  -h
+            meson setup -h
+            # meson configure -h
 
+            meson setup  build \
+            -Dprefix={$GUPnP_prefix} \
+            -Dbackend=ninja \
+            -Dbuildtype=release \
+            -Ddefault_library=static \
+            -Db_staticpic=true \
+            -Db_pie=true \
+            -Dprefer_static=true \
+            -Dexamples=false \
+            -Dgtk_doc=false \
+            -Dintrospection=true \
+            -Dvapi=true
+
+            meson compile -C build
+
+            ninja -C build
+            ninja -C build install
 EOF
         )
-       ;
+    ;
 
     $p->addLibrary($lib);
 };

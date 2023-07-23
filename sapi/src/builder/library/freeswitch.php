@@ -28,6 +28,8 @@ EOF
             <<<EOF
             apt install -y libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
             apt install -y uuid-dev
+            apt install -y autopoint elfutils
+            apt install -y libelf-dev
 EOF
         )
         ->withCleanBuildDirectory()
