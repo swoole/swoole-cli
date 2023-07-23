@@ -18,6 +18,11 @@ return function (Preprocessor $p) {
             ->withPrefix($curl_prefix)
             ->withConfigure(
                 <<<EOF
+
+            # 使用 cmake 构建CURL 需要解决这个问题   https://github.com/curl/curl/issues/6167
+            # curl bug 信息：-lgcc -lgcc_s -lc -lgcc -lgcc_s
+            # sed -i.save s@\${CMAKE_C_IMPLICIT_LINK_LIBRARIES}@@ CMakeLists.txt
+
             ./configure --help
 
             PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 '

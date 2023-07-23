@@ -17,8 +17,16 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($spandsp_prefix)
+        ->withHttpProxy()
         ->withConfigure(
             <<<EOF
+
+            # 需要修复这个问题 error: attribute '__packed__' is ignored, place it after "struct" to apply attribute to type declaration
+            # https://github.com/freeswitch/spandsp/pull/58
+
+            # 临时解决
+            curl -LO src/spandsp/unaligned.h https://raw.githubusercontent.com/piligrim773/spandsp/master/src/spandsp/unaligned.h
+
 
             sh ./autogen.sh
             ./configure --help
