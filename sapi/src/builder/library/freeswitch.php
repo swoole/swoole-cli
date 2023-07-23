@@ -70,6 +70,7 @@ EOF
             # PACKAGES="\$PACKAGES uuid"
             PACKAGES="\$PACKAGES libavcodec  libavdevice  libavfilter  libavformat  libavutil  libpostproc  libswresample  libswscale"
             PACKAGES="\$PACKAGES opencv5"
+            PACKAGES="\$PACKAGES gmp"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib" \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
@@ -122,6 +123,7 @@ EOF
             'libedit',
             'ffmpeg',
             'opencv',
+            'gmp',
             //'libuuid',
             // 'portaudio'
             // "opencv",
