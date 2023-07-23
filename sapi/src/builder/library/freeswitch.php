@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'freeswitch',
             <<<EOF
-                git clone -b v1.10.9  --depth=1 https://github.com/signalwire/freeswitch.git
+            git clone -b v1.10.9  --depth=1 https://github.com/signalwire/freeswitch.git
 EOF
         )
         ->withPrefix($freeswitch_prefix)
@@ -26,8 +26,8 @@ EOF
         ->withCleanBuildDirectory()
         ->withPreInstallCommand(
             <<<EOF
-        apt install -y libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
-        apt install -y uuid-dev
+            apt install -y libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
+            apt install -y uuid-dev
 EOF
         )
         ->withCleanBuildDirectory()
@@ -80,7 +80,8 @@ EOF
             --enable-systemd=no \
             --enable-core-pgsql-support
 
-            make -j {$p->maxJob}
+
+           CFLAGS="-O3  -g  -fms-extensions -std=c11 "   make -j {$p->maxJob}
             make install
 
             # # Install audio files:
