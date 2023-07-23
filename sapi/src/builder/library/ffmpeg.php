@@ -77,6 +77,7 @@ EOF
         --enable-libx264 \
         --enable-random \
         --enable-libfreetype \
+        --enable-livpx \
         --enable-ffplay \
         --extra-cflags="--static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
