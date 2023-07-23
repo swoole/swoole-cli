@@ -211,3 +211,5 @@ define("GUPnP_PREFIX", $p->getGlobalPrefix() . '/GUPnP');
 
 
 define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
+
+define("USRSCTP_PREFIX", $p->getGlobalPrefix() . '/usrsctp');
