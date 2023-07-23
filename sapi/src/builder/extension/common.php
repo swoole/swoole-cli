@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         'libnice'
     ];
     $depends = [
-        'libbpf'
+        'sdl2'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

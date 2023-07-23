@@ -217,3 +217,5 @@ define("RABBITMQ_C_PREFIX", $p->getGlobalPrefix() . '/rabbitmq_c');
 define("LIBCONFIG_PREFIX", $p->getGlobalPrefix() . '/libconfig');
 define("OPENH264_PREFIX", $p->getGlobalPrefix() . '/openh264');
 define("PAHO_MQTT_PREFIX", $p->getGlobalPrefix() . '/paho_mqtt');
+
+define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
