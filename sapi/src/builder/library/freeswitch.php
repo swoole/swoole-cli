@@ -56,7 +56,7 @@ EOF
             #
 
             ./configure --help
-
+            export  CFLAGS="-O3  -g  -fms-extensions -std=c11 -Werror,-Wc11-extensions" \
             PACKAGES="openssl libpq spandsp sofia-sip-ua odbc libjpeg libturbojpeg liblzma libpng sqlite3 zlib libcurl"
             PACKAGES="\$PACKAGES libcares  libbrotlicommon libbrotlidec libbrotlienc"
             PACKAGES="\$PACKAGES libnghttp2 libnghttp3 "
@@ -77,7 +77,6 @@ EOF
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib -static " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
-            CFLAGS="-O3  -g  -fms-extensions -std=c11 -Werror,-Wc11-extensions" \
             ./configure \
             --prefix={$freeswitch_prefix} \
             --enable-static=yes \
@@ -96,6 +95,8 @@ EOF
             # # Install audio files:
             # make cd-sounds-install cd-moh-install
 
+
+        unset CFLAGS
 EOF
         )
         ->withDependentLibraries(
