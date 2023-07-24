@@ -47,8 +47,8 @@ EOF
             export TURN_NO_MONGO=1
             ./configure  \
             --prefix=$coturn_prefix
-            make -j {$p->maxJob}
-            make install
+            # make -j {$p->maxJob}
+            # make install
 EOF
             )
             ->withConfigure(

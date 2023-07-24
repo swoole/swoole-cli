@@ -15,7 +15,6 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
                 CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA=1" \
-                LIBS=" -lm " \
                 ./configure --prefix={$sqlite3_prefix}  --enable-static --disable-shared
 
 EOF
