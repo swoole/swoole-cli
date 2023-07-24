@@ -37,7 +37,7 @@ EOF
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
             export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
-            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
+            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static -L/usr/lib"
             export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lm"
 
             TURN_NO_PROMETHEUS=1 TURN_NO_SYSTEMD=1 TURN_NO_MYSQL=1 TURN_NO_MONGO=1 ./configure  \
