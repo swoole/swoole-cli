@@ -220,3 +220,4 @@ define("PAHO_MQTT_PREFIX", $p->getGlobalPrefix() . '/paho_mqtt');
 
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBVPX_PREFIX", $p->getGlobalPrefix() . '/libvpx');
+define("CJSON_PREFIX", $p->getGlobalPrefix() . '/cjson');

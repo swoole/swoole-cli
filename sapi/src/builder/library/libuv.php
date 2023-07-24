@@ -23,7 +23,8 @@ return function (Preprocessor $p) {
             sh autogen.sh
             ./configure --help
 
-            ./configure --prefix={$libuv_prefix} \
+            ./configure \
+            --prefix={$libuv_prefix} \
             --enable-shared=no \
             --enable-static=yes
 
