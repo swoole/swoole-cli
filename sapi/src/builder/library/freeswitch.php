@@ -93,7 +93,7 @@ EOF
             --enable-core-pgsql-support
 
 
-            # make -j {$p->maxJob}
+            make -j {$p->maxJob}
             # make install
 
             # # Install audio files:

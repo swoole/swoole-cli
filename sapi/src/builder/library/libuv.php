@@ -10,9 +10,12 @@ return function (Preprocessor $p) {
         (new Library('libuv'))
             ->withHomePage('https://libuv.org/')
             ->withLicense('https://github.com/libuv/libuv/blob/v1.x/LICENSE', Library::LICENSE_MIT)
-            ->withUrl('https://github.com/libuv/libuv/archive/refs/tags/v1.44.2.tar.gz')
             ->withManual('https://github.com/libuv/libuv.git')
-            ->withFile('libuv-v1.44.2.tar.gz')
+            ->withFile('libuv-latest.tar.gz')
+            ->withDownloadScript('libuv', <<<EOF
+             git clone -b v1.x --depth=1 --progress https://github.com/libuv/libuv.git
+EOF
+            )
             ->withPrefix($libuv_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libuv_prefix)
