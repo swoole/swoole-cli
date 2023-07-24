@@ -22,6 +22,9 @@ return function (Preprocessor $p) {
         //'freetdm',
         'libpri',
     ];
+    $depends = [
+        'frrouting'
+    ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')

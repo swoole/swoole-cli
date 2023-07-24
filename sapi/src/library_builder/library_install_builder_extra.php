@@ -42,7 +42,7 @@ function install_xdp(Preprocessor $p): void
 EOF
             )
             ->withCleanBuildDirectory()
-            ->withConfigure(
+            ->withPreInstallCommand(
                 <<<EOF
                 apk add llvm bpftool
 EOF
