@@ -6,9 +6,9 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $aom_prefix = AOM_PREFIX;
     $lib = new Library('blender');
-    $lib->withHomePage('https://aomedia.googlesource.com/aom')
+    $lib->withHomePage('https://developer.blender.org/')
         ->withLicense('https://aomedia.googlesource.com/aom/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
-        ->withManual('https://aomedia.googlesource.com/aom')
+        ->withManual('https://wiki.blender.org/wiki/Main_Page')
         ->withUrl('https://aomedia.googlesource.com/aom')
         ->withFile('aom.tar.gz')
         ->withDownloadScript(
