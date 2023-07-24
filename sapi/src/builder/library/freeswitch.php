@@ -93,18 +93,18 @@ EOF
             --enable-core-pgsql-support
 
 
-            make -j {$p->maxJob}
-            make install
+            # make -j {$p->maxJob}
+            # make install
 
             # # Install audio files:
             # make cd-sounds-install cd-moh-install
 
 
 
-            unset CFLAGS
-            unset CPPFLAGS
-            unset LDFLAGS
-            unset LIBS
+            #unset CFLAGS
+            #unset CPPFLAGS
+            #unset LDFLAGS
+            #unset LIBS
 EOF
         )
         ->withDependentLibraries(
