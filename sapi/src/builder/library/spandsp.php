@@ -33,7 +33,7 @@ EOF
             sh ./autogen.sh
             ./configure --help
             PACKAGES="libtiff-4"
-            CFLAGS="-O3  -g  -fms-extensions " \
+            CFLAGS="-O3  -g  -fms-extensions -Wc11-extensions " \
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
