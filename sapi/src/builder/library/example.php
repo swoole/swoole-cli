@@ -4,7 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $example_prefix = OPENCV_PREFIX;
+    $example_prefix = EXAMPLE_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $lib = new Library('example');
     $lib->withHomePage('https://opencv.org/')
@@ -21,10 +21,9 @@ EOF
         ->withHttpProxy()
         ->withPreInstallCommand(
             <<<EOF
-            # apk add uuid-runtime
+            apk add uuid-runtime
 EOF
         )
-        ->withSkipDownload()
         ->withUntarArchiveCommand('xz')
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
@@ -109,6 +108,7 @@ EOF
             --enable-static=yes
 EOF
         )
+        ->withSkipDownload()
         ->withPkgName('ssl')
         ->withBinPath($example_prefix . '/bin/')
         ->withDependentLibraries('libpcap', 'openssl')

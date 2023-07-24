@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://opus-codec.org/license/', Library::LICENSE_SPEC)
         ->withManual('https://opus-codec.org/docs/')
         ->withUrl('https://archive.mozilla.org/pub/opus/libopusenc-0.2.1.tar.gz')
-        ->withPrefix( $libopusenc_prefix)
+        ->withPrefix($libopusenc_prefix)
         ->withConfigure(
             <<<EOF
 
