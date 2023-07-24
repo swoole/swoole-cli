@@ -38,7 +38,7 @@ EOF
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
             export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
-            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)  -L/usr/lib/x86_64-linux-gnu -static"
+            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
             export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lm"
 
             export TURN_NO_PROMETHEUS=1
