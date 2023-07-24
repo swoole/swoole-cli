@@ -38,7 +38,9 @@ EOF
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
             export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
             export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
-            ./configure --prefix=$coturn_prefix
+            ./configure --help
+            ./configure  \
+            --prefix=$coturn_prefix
             make -j {$p->maxJob}
             make install
 EOF
