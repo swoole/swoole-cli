@@ -931,4 +931,18 @@ make install DESTDIR=
         link_directories
         target_link_libraries
      */
+
+    /*
+        autoheader
+        libtoolize --force --copy
+        aclocal
+        automake -f --copy --add-missing
+        autoconf
+
+
+     */
+
+    /*
+        autoreconf -fi
+     */
 }

@@ -4,29 +4,26 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-
-    $libpri_prefix = LIBPRI_PREFIX;
-
-    // libpri：基本速率 ISDN 的实现
-
-    $lib = new Library('libpri');
+    $dahdi_linux_prefix = DAHDI_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
+    $lib = new Library('dahdi_linux');
     $lib->withHomePage('https://www.asterisk.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-        ->withManual('https://github.com/asterisk/libpri')
-        ->withFile('libpri-latest.tar.gz')
+        ->withManual('https://github.com/asterisk/dahdi-linux.git')
+        ->withFile('dahdi-linux-latest.tar.gz')
         ->withDownloadScript(
-            'libpri',
+            'dahdi-linux',
             <<<EOF
-                git clone  --depth=1 https://github.com/asterisk/libpri
+                git clone  --depth=1 https://github.com/asterisk/dahdi-linux.git
 EOF
         )
         ->withBuildLibraryCached(false)
-        ->withPrefix($libpri_prefix)
+        ->withPrefix($dahdi_linux_prefix)
         ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libpri_prefix)
+        ->withCleanPreInstallDirectory($dahdi_linux_prefix)
+        ->withHttpProxy()
         ->withBuildScript(
             <<<EOF
-
 
             PACKAGES='zlib  '
             PACKAGES="\$PACKAGES zlib"
@@ -34,19 +31,14 @@ EOF
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
-            make -j {$p->maxJob}  DESTDIR={$libpri_prefix}
-
-
+            make -j {$p->maxJob}  DESTDIR={$dahdi_linux_prefix}
 EOF
         )
-        ->withPkgName('ssl')
-        ->withBinPath($libpri_prefix . '/bin/')
-        ->withDependentLibraries('zlib') //'dahdi_linux'
-       ;
+    ;
 
     $p->addLibrary($lib);
 
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libpri_prefix . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libpri_prefix . '/lib');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $openssl_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $openssl_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lssl ');
 };

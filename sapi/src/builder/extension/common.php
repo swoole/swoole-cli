@@ -18,7 +18,9 @@ return function (Preprocessor $p) {
         'libnice'
     ];
     $depends = [
-        'hiredis'
+        'libg722',
+        //'freetdm',
+        'libpri',
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
