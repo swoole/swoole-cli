@@ -32,6 +32,7 @@ EOF
             )
             ->withBuildScript(
                 <<<EOF
+            export  CFLAGS="-O3  -g  -std=c11 -pedantic " \
             PACKAGES='sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
