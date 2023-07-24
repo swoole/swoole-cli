@@ -85,6 +85,9 @@ EOF
             --enable-optimization \
             --with-openssl \
             --without-python3 \
+            --without-python \
+            --without-java \
+            --without-erlang \
             --with-odbc={$odbc_prefix} \
             --enable-systemd=no \
             --enable-core-pgsql-support
