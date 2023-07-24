@@ -6,7 +6,6 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $coturn_prefix = COTURN_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
-    //$openssl_prefix = OPENSSL_v1_PREFIX;
     $libevent_prefix = LIBEVENT_PREFIX;
     $pgsql_prefix = PGSQL_PREFIX;
     $sqlite3_prefix = SQLITE3_PREFIX;
@@ -26,22 +25,50 @@ EOF
             ->withPrefix($coturn_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($coturn_prefix)
+            ->withPreInstallCommand(<<<EOF
+
+EOF
+)
             ->withBuildScript(
                 <<<EOF
-           set -x
+            PACKAGES='openssl libcrypto libssl  sqlite3'
+            PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
+
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static" \
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
+            ./configure --prefix=$coturn_prefix
+            make -j {$p->maxJob}
+            make install
+EOF
+            )
+            ->withConfigure(<<<EOF
            test -d build  && rm -rf build
            mkdir -p build
            cd build
-           #   -DCMAKE_MODULE_PATH="{$openssl_prefix}:{$openssl_prefix}"
+
            cmake .. \
            -DCMAKE_INSTALL_PREFIX={$coturn_prefix} \
+           -DCMAKE_C_STANDARD=C11 \
+           -DCMAKE_C_FLAGS="-Werror -pedantic" \
            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
+           -DCMAKE_POLICY_DEFAULT_CMP0077=NEW \
            -DCMAKE_BUILD_TYPE=Release \
            -DBUILD_SHARED_LIBS=OFF \
            -DBUILD_STATIC_LIBS=ON \
+           -DCMAKE_DISABLE_FIND_PACKAGE_mongo=ON \
+           -DCMAKE_DISABLE_FIND_PACKAGE_hiredis=ON \
+           -DCMAKE_DISABLE_FIND_PACKAGE_libsystemd=ON \
+           -DCMAKE_DISABLE_FIND_PACKAGE_Prometheus=ON \
+           -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=ON \
+           -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=ON \
            -DOpenSSL_ROOT={$openssl_prefix} \
            -DLibevent_ROOT={$libevent_prefix} \
-           -DSQLite_DIR={$sqlite3_prefix}
+           -DSQLite_DIR={$sqlite3_prefix} \
+           -DOPENSSL_USE_STATIC_LIBS=ON \
+           -DBUILD_TEST=OFF \
+           -DFUZZER=OFF
+
 
            #-DPostgreSQL_DIR={$pgsql_prefix} \
 
@@ -49,8 +76,9 @@ EOF
            # -Dhiredis_DIR={$sqlite3_prefix} \
 
            cmake --build . --target install
+
 EOF
-            )
+)
             ->withBinPath($coturn_prefix . '/bin/')
             ->withDependentLibraries('libevent', 'openssl', 'sqlite3') # 'hiredis' 'pgsql'
     );

@@ -850,6 +850,7 @@ find_package(OpenSSL)
 
 -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
 -DCMAKE_CXX_STANDARD=14
+-DCMAKE_C_STANDARD=C11
 
 -DCMAKE_C_COMPILER=$(quote "${1#*=}")";;
 -DCMAKE_CXX_COMPILER=$(quote "${1#*=}")";;
@@ -891,5 +892,43 @@ make install DESTDIR=
        gprof，打印出程序运行中各个函数消耗的时间，可以帮助程序员找出众多函数中耗时最多的函数。
        Gcov  查看代码覆盖率
 
+     */
+
+    /*
+       CMAKE_EXE_LINKER_FLAGS
+       CMAKE_MODULE_LINKER_FLAGS
+       CMAKE_SHARED_LINKER_FLAGS
+       CMAKE_STATIC_LINKER_FLAGS
+
+        CMAKE_EXE_LINKER_FLAGS：设置可执行文件链接器的选项。
+        CMAKE_SHARED_LINKER_FLAGS：设置共享库链接器的选项。
+        CMAKE_MODULE_LINKER_FLAGS：设置模块链接器的选项。
+
+      -DCMAKE_C_STANDARD_LIBRARIES="-lm -lcrypto -lssl -lopenssl" \
+
+
+        -DCMAKE_EXE_LINKER_FLAGS=" -lm "
+        -DCMAKE_STATIC_LINKER_FLAGS="-L{$openssl_prefix}/lib -lcrypto -lssl -lopenssl "
+
+       #   -DCMAKE_MODULE_PATH="{$openssl_prefix}:{$openssl_prefix}"
+
+        # 以分号 分割
+        CMAKE_INCLUDE_PATH
+        CMAKE_LIBRARY_PATH
+        # 上面这两个路径给CMake的FIND__XXX()系列函数提供查找路径
+
+
+        CMAKE_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/care/lib
+        FIND_LIBRARY
+        INCLUDE_DIRECTORIES=/usr/local/openssl/include:/usr/local/care/include
+
+        INCLUDE_DIRECTORIES（添加头文件目录）
+        LINK_DIRECTORIES（添加需要链接的库文件目录）
+        LINK_LIBRARIES　（添加需要链接的库文件路径，注意这里是全路径 /usr/local/openssl/lib/libssl.so ）
+
+        TARGET_LINK_LIBRARIES （设置要链接的库文件的名称）
+
+        link_directories
+        target_link_libraries
      */
 }
