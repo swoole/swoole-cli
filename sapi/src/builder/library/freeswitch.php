@@ -93,7 +93,7 @@ EOF
             --enable-core-pgsql-support
 
 
-           CFLAGS="-O3  -g  -fms-extensions -std=c11 "   make -j {$p->maxJob}
+            make -j {$p->maxJob}
             make install
 
             # # Install audio files:
