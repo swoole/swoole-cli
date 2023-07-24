@@ -34,7 +34,8 @@ EOF
                 <<<EOF
             PACKAGES='openssl libcrypto libssl  sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
-
+            export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl) "
+            export SSL_LIBS="$(pkg-config    --libs           --static openssl) "
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
             export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
             export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
