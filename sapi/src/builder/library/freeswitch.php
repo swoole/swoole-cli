@@ -73,10 +73,11 @@ EOF
             PACKAGES="\$PACKAGES gmp"
             PACKAGES="\$PACKAGES librabbitmq"
             PACKAGES="\$PACKAGES hiredis"
+            PACKAGES="\$PACKAGES libpcap"
 
-            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include" \
-            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib -static " \
-            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
+             export  CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include"
+             export  LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib -static "
+             export  LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )"
             ./configure \
             --prefix={$freeswitch_prefix} \
             --enable-static=yes \
@@ -96,7 +97,11 @@ EOF
             # make cd-sounds-install cd-moh-install
 
 
-        unset CFLAGS
+
+            unset CFLAGS
+            unset CPPFLAGS
+            unset LDFLAGS
+            unset LIBS
 EOF
         )
         ->withDependentLibraries(
@@ -131,6 +136,7 @@ EOF
             'gmp',
             'rabbitmq_c',
             'hiredis',
+            'libpcap',
 
             //'libuuid',
             // 'portaudio'
