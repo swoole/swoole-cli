@@ -25,24 +25,26 @@ EOF
             ->withPrefix($coturn_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($coturn_prefix)
-            ->withPreInstallCommand(<<<EOF
+            ->withPreInstallCommand(
+                <<<EOF
 
 EOF
-)
+            )
             ->withBuildScript(
                 <<<EOF
             PACKAGES='openssl libcrypto libssl  sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
 
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static" \
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
+            export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
+            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
+            export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
             ./configure --prefix=$coturn_prefix
             make -j {$p->maxJob}
             make install
 EOF
             )
-            ->withConfigure(<<<EOF
+            ->withConfigure(
+                <<<EOF
            test -d build  && rm -rf build
            mkdir -p build
            cd build
@@ -78,7 +80,7 @@ EOF
            cmake --build . --target install
 
 EOF
-)
+            )
             ->withBinPath($coturn_prefix . '/bin/')
             ->withDependentLibraries('libevent', 'openssl', 'sqlite3') # 'hiredis' 'pgsql'
     );
