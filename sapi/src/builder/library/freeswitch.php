@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
         ->withManual('https://freeswitch.com/#getting-started')
         ->withManual('https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Installation/Linux/Debian_67240088#about')
         ->withFile('freeswitch-latest.tar.gz')
-        ->withAutoUpdateFile()
+        //->withAutoUpdateFile()
         ->withDownloadScript(
             'freeswitch',
             <<<EOF

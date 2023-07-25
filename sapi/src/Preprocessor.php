@@ -563,6 +563,9 @@ EOF;
                 }
 
                 $workDir = $this->getRootDir();
+                if (is_file($ext->path) && $ext->latestTarball) {
+                    unlink($ext->path);
+                }
                 if (!file_exists($ext->path) || (filesize($ext->path) === 0)) {
                     if ($ext->enableDownloadScript) {
                         if (!empty($ext->downloadScript)) {
