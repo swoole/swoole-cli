@@ -17,11 +17,13 @@ return function (Preprocessor $p) {
             //->withUrl('https://github.com/coturn/coturn/archive/refs/tags/docker/4.6.2-r1.tar.gz')
             //->withFile('coturn-v4.6.2.tar.gz')
             ->withFile('coturn-latest.tar.gz')
+            ->withAutoUpdateFile()
             ->withDownloadScript(
                 'coturn',
                 <<<EOF
                 # git clone -b 4.6.2 --depth=1 https://github.com/coturn/coturn.git
-                git clone -b master --depth=1 https://github.com/coturn/coturn.git
+                # git clone -b master --depth=1 https://github.com/coturn/coturn.git
+                git clone -b patch --depth=1 https://github.com/jingjingxyk/coturn.git
 EOF
             )
             //->withAutoUpdateFile()
@@ -31,7 +33,7 @@ EOF
             ->withBuildLibraryCached(false)
             ->withBuildScript(
                 <<<EOF
-            export  CFLAGS="-O3  -g  -std=c11 -pedantic -Wint-conversion " \
+             export  CFLAGS="-O3  -g  -std=gnu11 " \
             PACKAGES='sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
@@ -44,6 +46,8 @@ EOF
             export TURN_NO_SYSTEMD=1
             export TURN_NO_MYSQL=1
             export TURN_NO_MONGO=1
+            ./configure --help
+            return 0
             ./configure  \
             --prefix=$coturn_prefix
             make -j {$p->maxJob}
