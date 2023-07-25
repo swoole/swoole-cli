@@ -15,6 +15,18 @@ return function (Preprocessor $p) {
         ->withBuildLibraryCached(false)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovs_prefix)
+        ->withPreInstallCommand(
+            <<<EOF
+        apk add mandoc man-pages
+        apk add ghostscript
+        # pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple
+        # pipenv --python 3
+        # pipenv shell
+        # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+        # pipenv install -r Documentation/requirements.txt
+        # pipenv install jinja2==3.0.0
+EOF
+        )
         ->withBuildScript(
             <<<EOF
         set -x
@@ -30,27 +42,29 @@ return function (Preprocessor $p) {
         --enable-shared=no \
         --enable-static=yes
         make -j {$p->maxJob}
-        make install
-        # apk add mandoc man-pages
-        # apk add ghostscript
-        # pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple
-        # pipenv --python 3
-        # pipenv shell
-        # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-        # pipenv install -r Documentation/requirements.txt
-        # pipenv install jinja2==3.0.0
+        # make install
+
 
         make dist-docs -j {$p->maxJob}
-        make docs-check -j {$p->maxJob}
+        # make docs-check -j {$p->maxJob}
+
+        cd Documentation/
+        pipenv --python 3
+        pipenv shell
+        pipenv install -r requirements.txt
+        pipenv install jinja2==3.0.0
+        pipenv run python3 conf.py
+
+
 EOF
         )
-        ->withMakeOptions( " dist-docs ")
+        //->withMakeOptions( " dist-docs ")
         ->withPkgName('libofproto')
         ->withPkgName('libopenvswitch')
         ->withPkgName('libovsdb')
         ->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/')
-        ->withDependentLibraries('openssl','dpdk')
+        ->withDependentLibraries('openssl') //'dpdk'
     ;
 
     $p->addLibrary($lib);

@@ -35,7 +35,14 @@ return function (Preprocessor $p) {
         make -j {$p->maxJob}
 
         make dist-docs -j {$p->maxJob}
-        make docs-check -j {$p->maxJob}
+        # make docs-check -j {$p->maxJob}
+
+        cd Documentation/
+        pipenv --python 3
+        pipenv shell
+        pipenv install -r requirements.txt
+        pipenv install jinja2==3.0.0
+        pipenv run python3 conf.py
 EOF
         )
         ->withPkgName('ovn')

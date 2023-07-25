@@ -24,6 +24,8 @@ return function (Preprocessor $p) {
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/ovn/Documentation
                 cp -rf _build {$workdir}/bin/ovn_docs
+                cd {$builddir}/ovn
+                cp -rf dist-docs {$workdir}/bin/ovn_docs
 EOF;
 
         return $cmd;
