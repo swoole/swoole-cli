@@ -9,11 +9,12 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://github.com/freeswitch/spandsp.git')
         ->withLicense('https://github.com/freeswitch/spandsp/blob/master/COPYING', Library::LICENSE_LGPL)
         ->withManual('https://github.com/freeswitch/spandsp.git')
-        ->withFile('spandsp-latest.tar.gz')
+        ->withFile('spandsp-latest-jingjingxyk.tar.gz')
         ->withDownloadScript(
             'spandsp',
             <<<EOF
-                git clone -b master  --depth=1 https://github.com/freeswitch/spandsp.git
+                # git clone -b master  --depth=1 https://github.com/freeswitch/spandsp.git
+                git clone -b patch  --depth=1 https://github.com/jingjingxyk/spandsp.git
 EOF
         )
         ->withPrefix($spandsp_prefix)
@@ -29,7 +30,7 @@ EOF
 
             curl -Lo src/spandsp/unaligned.h https://raw.githubusercontent.com/piligrim773/spandsp/fix/spandsp/unaligned.h/src/spandsp/unaligned.h
 
-            curl -Lo src/spandsp/v150_1.h https://github.com/jingjingxyk/spandsp/blob/patch/src/spandsp/v150_1.h?raw=true
+            # curl -Lo src/spandsp/v150_1.h https://github.com/jingjingxyk/spandsp/blob/patch/src/spandsp/v150_1.h?raw=true
 
             sh ./autogen.sh
             ./configure --help
