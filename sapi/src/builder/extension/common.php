@@ -23,7 +23,9 @@ return function (Preprocessor $p) {
         'libpri',
     ];
     $depends = [
-        'frrouting'
+        'apr',
+       'apr_util',
+        'libexpat'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
                 git clone -b 5.x  --depth=1 https://github.com/opencv/opencv_contrib.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+
         ->withHttpProxy()
         ->withPreInstallCommand(
             <<<EOF
@@ -28,6 +28,7 @@ EOF
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)
+        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
 test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
@@ -41,6 +42,7 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
 --EOF--
 
         apt install -y private package
+        test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 EOF
         )
         ->withBuildScript(

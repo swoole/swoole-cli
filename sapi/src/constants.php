@@ -229,4 +229,10 @@ define("OPENXR_PREFIX", $p->getGlobalPrefix() . '/OpenXR');
 define("FREETDM_PREFIX", $p->getGlobalPrefix() . '/freetdm');
 define("LIBPRI_PREFIX", $p->getGlobalPrefix() . '/libpri');
 define("DAHDI_PREFIX", $p->getGlobalPrefix() . '/dahdi_linux');
+define("APR_PREFIX", $p->getGlobalPrefix() . '/apr');
+define("APR_UTIL_PREFIX", $p->getGlobalPrefix() . '/apr-util');
+define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
+
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
