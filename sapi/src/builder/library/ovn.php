@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/ovn-org/ovn/blob/main/Documentation/intro/install/general.rst')
         //->withUrl('https://github.com/ovn-org/ovn/archive/refs/tags/v23.06.0.tar.gz')
         //->withFile('ovn-v23.06.0.tar.gz')
-        ->withAutoUpdateFile()
+        //->withAutoUpdateFile()
         ->withFile('ovn-latest.tar.gz')
         ->withDownloadScript(
             'ovn',

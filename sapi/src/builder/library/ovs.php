@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/general.rst')
         //->withUrl('https://github.com/openvswitch/ovs/archive/refs/tags/v3.1.1.tar.gz')
         //->withFile('ovs-v3.1.1.tar.gz')
-        ->withAutoUpdateFile()
+        //->withAutoUpdateFile()
         ->withFile('ovs-latest.tar.gz')
         ->withDownloadScript(
             'ovs',
