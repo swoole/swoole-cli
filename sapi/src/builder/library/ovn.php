@@ -53,7 +53,7 @@ EOF
 
         cd Documentation/
         pipenv --python 3
-        pipenv shell
+        # pipenv shell
         pipenv install -r requirements.txt
         pipenv install jinja2==3.0.0
         pipenv run python3 conf.py
