@@ -18,13 +18,19 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'ovn',
             <<<EOF
-            git clone -b master --depth=1 --progress https://github.com/ovn-org/ovn.git
+            git clone -b main --depth=1 --progress https://github.com/ovn-org/ovn.git
 EOF
         )
         ->withPrefix($ovn_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovn_prefix)
         ->withBuildLibraryCached(false)
+        ->withPreInstallCommand(
+            <<<EOF
+        apk add mandoc man-pages
+        apk add ghostscript
+EOF
+        )
         ->withBuildScript(
             <<<EOF
         set -x
@@ -40,7 +46,7 @@ EOF
         --enable-static=yes \
         --with-ovs-source={$workdir}/ovs/ \
         --with-ovs-build={$workdir}/ovs/
-        make -j {$p->maxJob}
+        # make -j {$p->maxJob}
 
         make dist-docs -j {$p->maxJob}
         # make docs-check -j {$p->maxJob}

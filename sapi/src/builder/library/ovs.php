@@ -27,12 +27,6 @@ EOF
             <<<EOF
         apk add mandoc man-pages
         apk add ghostscript
-        # pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple
-        # pipenv --python 3
-        # pipenv shell
-        # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-        # pipenv install -r Documentation/requirements.txt
-        # pipenv install jinja2==3.0.0
 EOF
         )
         ->withBuildScript(
@@ -49,7 +43,7 @@ EOF
         --enable-ssl \
         --enable-shared=no \
         --enable-static=yes
-        make -j {$p->maxJob}
+        # make -j {$p->maxJob}
         # make install
 
 
