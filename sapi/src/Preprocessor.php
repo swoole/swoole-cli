@@ -475,6 +475,9 @@ class Preprocessor
 
         $skip_download = ($this->getInputOption('with-skip-download'));
         if (!$skip_download) {
+            if (is_file($lib->path) && $lib->latestTarball) {
+                unlink($lib->path);
+            }
             if (is_file($lib->path) && (filesize($lib->path) != 0)) {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             } else {

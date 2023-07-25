@@ -8,7 +8,9 @@ abstract class Project
     public string $aliasName = '';
 
     public string $url;
+
     public string $path = '';
+
     public string $file = '';
     public string $md5sum = '';
 
@@ -32,6 +34,8 @@ abstract class Project
     public const LICENSE_PHP = 6;
 
     public bool $enableDownloadWithMirrorURL = true;
+
+    public bool $latestTarball = false;
 
     public function __construct(string $name)
     {
@@ -128,4 +132,9 @@ abstract class Project
         return $this;
     }
 
+    public function withAutoUpdateFile(): static
+    {
+        $this->latestTarball = true;
+        return $this;
+    }
 }

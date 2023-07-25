@@ -11,14 +11,17 @@ return function (Preprocessor $p) {
     $lib = new Library('freeswitch');
     $lib->withHomePage('https://github.com/signalwire/freeswitch.git')
         ->withLicense('https://github.com/signalwire/freeswitch/blob/master/LICENSE', Library::LICENSE_GPL)
-        ->withUrl('https://github.com/signalwire/freeswitch/archive/refs/tags/v1.10.9.tar.gz')
+        //->withUrl('https://github.com/signalwire/freeswitch/archive/refs/tags/v1.10.9.tar.gz')
+        //->withFile('freeswitch-v1.10.9.tar.gz')
         ->withManual('https://freeswitch.com/#getting-started')
         ->withManual('https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Installation/Linux/Debian_67240088#about')
-        ->withFile('freeswitch-v1.10.9.tar.gz')
+        ->withFile('freeswitch-latest.tar.gz')
+        ->withAutoUpdateFile()
         ->withDownloadScript(
             'freeswitch',
             <<<EOF
-            git clone -b v1.10.9  --depth=1 https://github.com/signalwire/freeswitch.git
+            # git clone -b v1.10.9  --depth=1 https://github.com/signalwire/freeswitch.git
+            git clone -b master  --depth=1 https://github.com/signalwire/freeswitch.git
 EOF
         )
         ->withPrefix($freeswitch_prefix)
@@ -53,10 +56,16 @@ EOF
             sed -i.backup "42 s/^/#&/"  modules.conf
 
             # cp -f {$p->getWorkDir()}/bin/modules.conf modules.conf
-            #
+
+            # libav
+            # mod_av 不支持最新的ffmpeg
+
+            # -Wall -Wextra -pedantic
+
+            # export  CFLAGS="-O3  -g  -fms-extensions -std=c11 -Werror,-Wc11-extensions -pedantic " \
 
             ./configure --help
-            export  CFLAGS="-O3  -g  -fms-extensions -std=c11 -Werror,-Wc11-extensions -pedantic " \
+            export  CFLAGS="-O3  -g  -fms-extensions -std=c11  " \
             PACKAGES="openssl libpq spandsp sofia-sip-ua odbc libjpeg libturbojpeg liblzma libpng sqlite3 zlib libcurl"
             PACKAGES="\$PACKAGES libcares  libbrotlicommon libbrotlidec libbrotlienc"
             PACKAGES="\$PACKAGES libnghttp2 libnghttp3 "
@@ -134,7 +143,7 @@ EOF
             'libyaml',
             'imagemagick',
             'libedit',
-            'ffmpeg',
+            'ffmpeg_4',
             'opencv',
             'gmp',
             'rabbitmq_c',
