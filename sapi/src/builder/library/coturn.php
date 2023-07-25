@@ -14,32 +14,31 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/coturn/coturn/')
             ->withManual('https://github.com/coturn/coturn/tree/master/docs')
             ->withLicense('https://github.com/coturn/coturn/blob/master/LICENSE', Library::LICENSE_SPEC)
-            ->withUrl('https://github.com/coturn/coturn/archive/refs/tags/docker/4.6.2-r1.tar.gz')
-            ->withFile('coturn-v4.6.2.tar.gz')
+            //->withUrl('https://github.com/coturn/coturn/archive/refs/tags/docker/4.6.2-r1.tar.gz')
+            //->withFile('coturn-v4.6.2.tar.gz')
+            ->withFile('coturn-latest.tar.gz')
             ->withDownloadScript(
                 'coturn',
                 <<<EOF
-            git clone -b 4.6.2 --depth=1 https://github.com/coturn/coturn.git
+                # git clone -b 4.6.2 --depth=1 https://github.com/coturn/coturn.git
+                git clone -b master --depth=1 https://github.com/coturn/coturn.git
 EOF
             )
+            //->withAutoUpdateFile()
             ->withPrefix($coturn_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($coturn_prefix)
-            ->withPreInstallCommand(
-                <<<EOF
-
-EOF
-            )
+            ->withBuildLibraryCached(false)
             ->withBuildScript(
                 <<<EOF
-            export  CFLAGS="-O3  -g  -std=c11 -pedantic " \
+            export  CFLAGS="-O3  -g  -std=c11 -pedantic -Wint-conversion " \
             PACKAGES='sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
             export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
             export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
-            export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lm"
+            export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lstdc++ -lm "
 
             export TURN_NO_PROMETHEUS=1
             export TURN_NO_SYSTEMD=1
@@ -47,7 +46,7 @@ EOF
             export TURN_NO_MONGO=1
             ./configure  \
             --prefix=$coturn_prefix
-            # make -j {$p->maxJob}
+            make -j {$p->maxJob}
             # make install
 EOF
             )
