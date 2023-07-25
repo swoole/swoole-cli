@@ -46,8 +46,7 @@ EOF
             export TURN_NO_SYSTEMD=1
             export TURN_NO_MYSQL=1
             export TURN_NO_MONGO=1
-            ./configure --help
-            return 0
+
             ./configure  \
             --prefix=$coturn_prefix
             make -j {$p->maxJob}
