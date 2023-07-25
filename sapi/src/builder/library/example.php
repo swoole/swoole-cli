@@ -11,6 +11,8 @@ return function (Preprocessor $p) {
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
         ->withManual('https://github.com/opencv/opencv.git')
+        ->withFile('opencv_contrib-latest.tar.gz')
+        ->withAutoUpdateFile()
         ->withDownloadScript(
             'opencv_contrib',
             <<<EOF
