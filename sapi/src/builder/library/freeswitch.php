@@ -59,6 +59,8 @@ EOF
             sed -i.backup "63 s/^/#&/"   modules.conf
             sed -i.backup "104 s/^/#&/"   modules.conf
             sed -i.backup "101 s/^/#&/"   modules.conf
+            sed -i.backup "10 s/^/#&/"   modules.conf
+            sed -i.backup "9 s/^/#&/"   modules.conf
 
             # cp -f {$p->getWorkDir()}/bin/modules.conf modules.conf
 
