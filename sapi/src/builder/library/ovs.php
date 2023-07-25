@@ -8,9 +8,16 @@ return function (Preprocessor $p) {
     $lib = new Library('ovs');
     $lib->withHomePage('https://github.com/openvswitch/ovs/')
         ->withLicense('https://github.com/openvswitch/ovs/blob/master/LICENSE', Library::LICENSE_APACHE2)
-        ->withUrl('https://github.com/openvswitch/ovs/archive/refs/tags/v3.1.1.tar.gz')
-        ->withFile('ovs-v3.1.1.tar.gz')
         ->withManual('https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/general.rst')
+        //->withUrl('https://github.com/openvswitch/ovs/archive/refs/tags/v3.1.1.tar.gz')
+        //->withFile('ovs-v3.1.1.tar.gz')
+        ->withFile('ovs-latest.tar.gz')
+        ->withDownloadScript(
+            'ovs',
+            <<<EOF
+            git clone -b master --depth=1 --progress https://github.com/openvswitch/ovs.git
+EOF
+        )
         ->withPrefix($ovs_prefix)
         ->withBuildLibraryCached(false)
         ->withCleanBuildDirectory()

@@ -10,9 +10,16 @@ return function (Preprocessor $p) {
     $lib = new Library('ovn');
     $lib->withHomePage('https://github.com/ovn-org/ovn.git')
         ->withLicense('https://github.com/ovn-org/ovn/blob/main/LICENSE', Library::LICENSE_APACHE2)
-        ->withUrl('https://github.com/ovn-org/ovn/archive/refs/tags/v23.06.0.tar.gz')
-        ->withFile('ovn-v23.06.0.tar.gz')
         ->withManual('https://github.com/ovn-org/ovn/blob/main/Documentation/intro/install/general.rst')
+        //->withUrl('https://github.com/ovn-org/ovn/archive/refs/tags/v23.06.0.tar.gz')
+        //->withFile('ovn-v23.06.0.tar.gz')
+        ->withFile('ovn-latest.tar.gz')
+        ->withDownloadScript(
+            'ovn',
+            <<<EOF
+            git clone -b master --depth=1 --progress https://github.com/ovn-org/ovn.git
+EOF
+        )
         ->withPrefix($ovn_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovn_prefix)
