@@ -29,6 +29,7 @@ EOF
 
             curl -Lo src/spandsp/unaligned.h https://raw.githubusercontent.com/piligrim773/spandsp/fix/spandsp/unaligned.h/src/spandsp/unaligned.h
 
+            curl -Lo src/spandsp/v150_1.h https://github.com/jingjingxyk/spandsp/blob/patch/src/spandsp/v150_1.h?raw=true
 
             sh ./autogen.sh
             ./configure --help
