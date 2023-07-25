@@ -47,7 +47,7 @@ EOF
         )
         ->withBuildScript(
             <<<EOF
-            mkdir -p build
+             mkdir -p build
              cd build
              # cmake 查看选项
              # cmake -LH ..
@@ -60,11 +60,10 @@ EOF
             -DOpenSSL_ROOT={$openssl_prefix} \
 
             # -DCMAKE_CXX_STANDARD=14
+            # -DCMAKE_C_STANDARD=C11
             # -DCMAKE_C_COMPILER=clang \
             # -DCMAKE_CXX_COMPILER=clang++ \
             # -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
-
-            # -DCMAKE_CXX_STANDARD=14
 
             # cmake --build . --config Release --target install
 
@@ -102,7 +101,7 @@ EOF
             PACKAGES="\$PACKAGES zlib"
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static" \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             ./configure \
             --prefix={$example_prefix} \
@@ -113,7 +112,7 @@ EOF
         ->withSkipDownload()
         ->withPkgName('ssl')
         ->withBinPath($example_prefix . '/bin/')
-        ->withDependentLibraries('libpcap', 'openssl')
+        ->withDependentLibraries('zlib', 'openssl')
         ->withLdflags('-L' . $example_prefix . '/lib/x86_64-linux-gnu/')
         ->withPkgConfig($example_prefix . '/lib/x86_64-linux-gnu/pkgconfig')
         ->disableDefaultLdflags()
@@ -123,7 +122,7 @@ EOF
 
     $p->addLibrary($lib);
 
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $openssl_prefix . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $openssl_prefix . '/lib');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $example_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $example_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lssl ');
 };
