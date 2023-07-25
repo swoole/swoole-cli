@@ -144,7 +144,7 @@ EOF
             'libyaml',
             'imagemagick',
             'libedit',
-            'ffmpeg_4',
+            'ffmpeg',
             'opencv',
             'gmp',
             'rabbitmq_c',
