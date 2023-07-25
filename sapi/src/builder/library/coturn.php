@@ -50,7 +50,7 @@ EOF
             ./configure  \
             --prefix=$coturn_prefix
             make -j {$p->maxJob}
-            # make install
+            make install
 EOF
             )
             ->withConfigure(
