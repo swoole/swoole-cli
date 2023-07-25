@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://ceph.io/')
         ->withLicense('https://github.com/ceph/ceph/blob/main/COPYING-LGPL3', Library::LICENSE_LGPL)
         ->withManual('https://github.com/ceph/ceph')
+        ->withAutoUpdateFile()
         ->withFile('ceph-latest.tar.gz')
         ->withBuildLibraryCached(false)
         ->withDownloadScript(
