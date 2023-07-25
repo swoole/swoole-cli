@@ -21,6 +21,9 @@ if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
+if (is_file(__DIR__ . '/make.sh')) {
+    unlink(__DIR__ . '/make.sh');
+}
 
 $p->setRootDir(__DIR__);
 
