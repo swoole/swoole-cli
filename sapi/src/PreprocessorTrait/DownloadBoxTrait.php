@@ -62,7 +62,7 @@ EOF;
 
         $download_urls = [];
         foreach ($this->libraryList as $item) {
-            if (!empty($item->url) || $item->enableDownloadWithMirrorURL) {
+            if ((!empty($item->url) && !$item->enableDownloadScript) || $item->enableDownloadWithMirrorURL) {
                 $url = '';
                 $item->mirrorUrls[] = $item->url;
                 if (!empty($item->mirrorUrls)) {
