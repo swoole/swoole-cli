@@ -11,6 +11,16 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+# clean
+if (file_exists(__DIR__ . '/make.sh')) {
+    unlink(__DIR__ . '/make.sh');
+}
+if (file_exists(__DIR__ . '/make-install-deps.sh')) {
+    unlink(__DIR__ . '/make-install-deps.sh');
+}
+if (file_exists(__DIR__ . '/make-download-box.sh')) {
+    unlink(__DIR__ . '/make-download-box.sh');
+}
 
 // Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
