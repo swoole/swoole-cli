@@ -1073,7 +1073,7 @@ EOF;
 
         if ($this->getInputOption('with-skip-download')) {
             $this->generateLibraryDownloadLinks();
-            $this->generateFile(__DIR__ . '/template/download-box.php', $this->rootDir . '/download-box.sh');
+            $this->generateFile(__DIR__ . '/template/make-download-box.php', $this->rootDir . '/make-download-box.sh');
         }
 
         $this->generateFile(__DIR__ . '/template/make-install-deps.php', $this->rootDir . '/make-install-deps.sh');
