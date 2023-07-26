@@ -34,6 +34,8 @@ class Library extends Project
 
     public string $preInstallCommand = '';
 
+    public bool $enableHttpProxy = false;
+
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
@@ -159,6 +161,12 @@ class Library extends Project
     public function withPreInstallCommand(string $preInstallCommand): static
     {
         $this->preInstallCommand = $preInstallCommand;
+        return $this;
+    }
+
+    public function withHttpProxy(): static
+    {
+        $this->enableHttpProxy = true;
         return $this;
     }
 }

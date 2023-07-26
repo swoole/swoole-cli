@@ -43,7 +43,6 @@ define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
 if ($p->getInputOption('with-http-proxy')) {
     $http_proxy = $p->getInputOption('with-http-proxy');
-    define('SWOOLE_CLI_HTTP_PROXY_URL', $http_proxy);
     $proxyConfig = <<<EOF
 export HTTP_PROXY={$http_proxy}
 export HTTPS_PROXY={$http_proxy}
@@ -56,7 +55,7 @@ export NO_PROXY="\${NO_PROXY},archive.ubuntu.com,security.ubuntu.com"
 export NO_PROXY="\${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
 
 EOF;
-    $p->setProxyConfig($proxyConfig);
+    $p->setProxyConfig($proxyConfig, $http_proxy);
 }
 
 if ($p->getInputOption('with-install-library-cached')) {

@@ -5,8 +5,13 @@ namespace SwooleCli;
 abstract class Project
 {
     public string $name;
+
+    public string $aliasName = '';
+
     public string $url;
+
     public string $path = '';
+
     public string $file = '';
     public string $md5sum = '';
 
@@ -34,6 +39,10 @@ abstract class Project
     public const LICENSE_LGPL = 4;
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
+
+    public bool $latestTarball = false;
+
+    public bool $enableDownloadWithMirrorURL = false;
 
     public function __construct(string $name)
     {
@@ -88,6 +97,18 @@ abstract class Project
         $this->enableDownloadScript = true;
         $this->downloadScript = $script;
         $this->downloadDirName = $downloadDirName;
+        return $this;
+    }
+
+    public function withAliasName(string $name): static
+    {
+        $this->aliasName = $name;
+        return $this;
+    }
+
+    public function withAutoUpdateFile(): static
+    {
+        $this->latestTarball = true;
         return $this;
     }
 }
