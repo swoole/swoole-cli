@@ -21,6 +21,10 @@ EOF
         ->withBuildLibraryCached(true)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($aom_prefix)
+        ->withPreInstallCommand(<<<EOF
+         apk add yasm nasm
+EOF
+        )
         ->withConfigure(
             <<<EOF
             mkdir -p build
@@ -28,6 +32,7 @@ EOF
              cmake ..  \
             -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
+            -DCMAKE_C_STANDARD=11 \
             -DBUILD_SHARED_LIBS=ON  \
             -DBUILD_STATIC_LIBS=ON \
             -DENABLE_DOCS=OFF \
