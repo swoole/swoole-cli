@@ -119,16 +119,6 @@ jobs:
             bash sapi/quickstart/mark-install-library-cached.sh
             rm -rf /usr/local/swoole-cli/pgsql
 
-            # bash ./make.sh libraw
-            # bash ./make.sh libtiff
-            # bash ./make.sh lcms2
-            # bash ./make.sh imagemagick
-            # bash ./make.sh dav1d
-            # bash ./make.sh aom
-            # bash ./make.sh libgav1
-            # bash ./make.sh svt_av1
-            # bash ./make.sh libyuv
-
             bash ./make.sh all-library
             bash ./make.sh config
 
