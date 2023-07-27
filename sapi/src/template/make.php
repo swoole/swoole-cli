@@ -22,6 +22,15 @@ export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
+
+export SYSTEM_ORIGIN_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
+export SWOOLE_CLI_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+
+export SYSTEM_ORIGIN_PATH=$PATH
+export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
+export SWOOLE_CLI_PATH=$PATH
+
 OPTIONS="--disable-all \
 --disable-cgi  \
 --enable-shared=no \
