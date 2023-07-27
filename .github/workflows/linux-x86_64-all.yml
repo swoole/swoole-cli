@@ -41,7 +41,7 @@ jobs:
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
-      - name: Prepare and Build
+      - name: Prepare and  Build all-library and  Build
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/library/alpine:3.17
