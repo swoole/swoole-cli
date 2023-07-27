@@ -21,7 +21,6 @@ cp -f ${__PROJECT__}/bin/LICENSE ${__PROJECT__}/var
 cp -f ${__PROJECT__}/bin/credits.html ${__PROJECT__}/var
 cp -f ${__PROJECT__}/bin/ext-dependency-graph.pdf ${__PROJECT__}/var
 
-
 cd ${__PROJECT__}/var
 
 test -f all-archive.zip && rm -rf all-archive.zip
