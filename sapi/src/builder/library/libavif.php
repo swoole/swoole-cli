@@ -31,7 +31,7 @@ return function (Preprocessor $p) {
             -DCMAKE_INSTALL_PREFIX={$libavif_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON
+            -DBUILD_STATIC_LIBS=ON \
             -DAVIF_BUILD_EXAMPLES=OFF \
             -DCMAKE_DISABLE_FIND_PACKAGE_libyuv=ON \
             -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
