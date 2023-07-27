@@ -20,13 +20,18 @@ return function (Preprocessor $p) {
                 <<<EOF
                 mkdir -p build
                 cd build
-                meson setup \
-                --backend=ninja \
-                --prefix={$dav1d_prefix} \
-                --default-library=static \
-                ..
-                ninja
-                ninja install
+                meson setup  build \
+                -Dprefix={$dav1d_prefix} \
+                -Dbackend=ninja \
+                -Dbuildtype=release \
+                -Ddefault_library=static \
+                -Db_staticpic=true \
+                -Db_pie=true \
+                -Dprefer_static=true \
+                meson compile -C build
+
+                ninja -C build
+                ninja -C build install
 
 
 EOF
