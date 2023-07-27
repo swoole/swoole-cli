@@ -25,8 +25,7 @@ EOF
             )
             ->withBuildScript(
                 <<<EOF
-                mkdir -p build
-                cd build
+
                 meson setup  build \
                 -Dprefix={$dav1d_prefix} \
                 -Dbackend=ninja \
