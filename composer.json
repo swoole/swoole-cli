@@ -3,7 +3,8 @@
     "marcj/topsort": "^2.0",
     "ext-posix": "*",
     "ext-curl": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-fileinfo": "*"
   },
   "autoload": {
     "psr-4": {
