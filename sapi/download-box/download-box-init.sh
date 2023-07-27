@@ -22,10 +22,13 @@ composer update --no-dev --optimize-autoloader
 php prepare.php --with-build-type=release +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql --with-swoole-pgsql=1 --without-docker=1 --with-skip-download=1
 
 cd ${__PROJECT__}
+# 生成扩展依赖图
+bash sapi/extension-dependency-graph/generate-dependency-graph.sh
+
+cd ${__PROJECT__}
 bash sapi/download-box/download-dependencies-use-aria2.sh
 cd ${__PROJECT__}
 bash sapi/download-box/download-dependencies-use-git.sh
 cd ${__PROJECT__}
 
-# 生成扩展依赖图
-sh sapi/extension-dependency-graph/generate-dependency-graph.sh
+
