@@ -9,7 +9,6 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://aomedia.googlesource.com/aom')
         ->withLicense('https://aomedia.googlesource.com/aom/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
         ->withManual('https://aomedia.googlesource.com/aom')
-        ->withUrl('https://aomedia.googlesource.com/aom')
         ->withFile('aom.tar.gz')
         ->withDownloadScript(
             'aom',
