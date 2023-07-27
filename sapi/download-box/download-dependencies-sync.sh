@@ -18,11 +18,14 @@ mkdir -p ${__PROJECT__}/var/extensions/
 touch ${__PROJECT__}/var/libraries/.gitkeep
 touch ${__PROJECT__}/var/extensions/.gitkeep
 
-cd ${__PROJECT__}/var/
 
+
+cd ${__PROJECT__}/
 
 mkdir -p pool/lib
 mkdir -p pool/ext
+
+cd ${__PROJECT__}/
 
 # cp -rf ${__PROJECT__}/var/download/* ${__PROJECT__}/pool/lib
 
@@ -31,4 +34,4 @@ awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
 
 cd ${__PROJECT__}
 
-exit 0
+
