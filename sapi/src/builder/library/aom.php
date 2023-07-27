@@ -36,7 +36,7 @@ EOF
             -DBUILD_SHARED_LIBS=ON  \
             -DBUILD_STATIC_LIBS=ON \
             -DENABLE_DOCS=OFF \
-            -DENABLE_EXAMPLES=ON \
+            -DENABLE_EXAMPLES=OFF \
             -DENABLE_TESTS=OFF \
             -DENABLE_TOOLS=ON \
             -DCONFIG_AV1_DECODER=ON \
