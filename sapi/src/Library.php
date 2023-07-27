@@ -34,7 +34,6 @@ class Library extends Project
 
     public string $preInstallCommand = '';
 
-
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
