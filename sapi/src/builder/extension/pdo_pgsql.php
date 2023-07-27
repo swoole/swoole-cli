@@ -21,6 +21,5 @@ EOF
             ->withOptions('--with-pdo-pgsql=' . PGSQL_PREFIX)
             ->withDependentExtensions('pdo')
             ->withDependentLibraries('pgsql')
-
     );
 };

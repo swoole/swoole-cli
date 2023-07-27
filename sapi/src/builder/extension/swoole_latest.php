@@ -23,7 +23,8 @@ return function (Preprocessor $p) {
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
         ->withFile('swoole-latest.tar.gz')
-        ->withAutoUpdateFile()
+        ->withAutoUpdateFile(false)
+        ->withHttpProxy(true)
         ->withDownloadScript(
             'swoole-src',
             <<<EOF

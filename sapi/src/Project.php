@@ -40,7 +40,9 @@ abstract class Project
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
-    public bool $latestTarball = false;
+    public bool $enableLatestTarball = false;
+
+    public bool $enableHttpProxy = true;
 
     public bool $enableDownloadWithMirrorURL = false;
 
@@ -106,9 +108,15 @@ abstract class Project
         return $this;
     }
 
-    public function withAutoUpdateFile(): static
+    public function withAutoUpdateFile(bool $enableLatestTarball = true): static
     {
-        $this->latestTarball = true;
+        $this->enableLatestTarball = $enableLatestTarball;
+        return $this;
+    }
+
+    public function withHttpProxy(bool $enableHttpProxy = true): static
+    {
+        $this->enableHttpProxy = $enableHttpProxy;
         return $this;
     }
 }

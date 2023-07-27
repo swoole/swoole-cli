@@ -6,7 +6,7 @@ namespace SwooleCli\PreprocessorTrait;
 
 trait DownloadBoxTrait
 {
-    public $downloadScriptHeader =<<<'EOF'
+    public string $downloadScriptHeader =<<<'EOF'
 #!/bin/bash
 
 set -exu
@@ -19,6 +19,7 @@ cd ${__DIR__}
 mkdir -p ${__DIR__}/var/tmp
 mkdir -p ${__DIR__}/libraries
 mkdir -p ${__DIR__}/extensions
+
 EOF;
 
     protected function generateLibraryDownloadLinks(): void
@@ -36,18 +37,21 @@ EOF;
         $download_scripts = [];
         foreach ($this->extensionMap as $item) {
             if ($item->enableDownloadScript && !$item->enableDownloadWithMirrorURL) {
-                $cacheDir = '${__DIR__}/var/tmp/download/ext';
                 $workDir = '${__DIR__}/var';
+                $cacheDir = '${__DIR__}/var/tmp/download/ext';
                 $downloadScript = <<<EOF
-                test -d {$cacheDir} && rm -rf {$cacheDir}
-                mkdir -p {$cacheDir}
-                cd {$cacheDir}
-                test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
-                {$item->downloadScript}
-                cd {$item->downloadDirName}
-                test -f {$workDir}/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} ./
-                cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
-                cd {$workDir}
+
+## ------------------- download extension {$item->name} start -------------------
+test -d {$cacheDir} && rm -rf {$cacheDir}
+mkdir -p {$cacheDir}
+cd {$cacheDir}
+test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
+{$item->downloadScript}
+cd {$item->downloadDirName}
+test -f {$workDir}/var/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} ./
+cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
+cd {$workDir}
+## ------------------- download extension {$item->name} end -------------------
 
 EOF;
 
@@ -81,21 +85,21 @@ EOF;
         $download_scripts = [];
         foreach ($this->libraryList as $item) {
             if ($item->enableDownloadScript && !$item->enableDownloadWithMirrorURL) {
-                if (empty($item->file)) {
-                    $item->file = $item->name . '.tar.gz';
-                }
-                $cacheDir = '${__DIR__}/var/tmp/download/lib';
                 $workDir = '${__DIR__}/var';
+                $cacheDir = '${__DIR__}/var/tmp/download/lib';
                 $downloadScript = <<<EOF
-                test -d {$cacheDir} && rm -rf {$cacheDir}
-                mkdir -p {$cacheDir}
-                cd {$cacheDir}
-                test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
-                {$item->downloadScript}
-                cd {$item->downloadDirName}
-                test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
-                cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
-                cd {$workDir}
+
+## ------------------- download library {$item->name} start -------------------
+test -d {$cacheDir} && rm -rf {$cacheDir}
+mkdir -p {$cacheDir}
+cd {$cacheDir}
+test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
+{$item->downloadScript}
+test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
+cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
+cd {$workDir}
+## ------------------- download library {$item->name} end -------------------
+
 EOF;
 
                 $download_scripts[] = $downloadScript . PHP_EOL;
