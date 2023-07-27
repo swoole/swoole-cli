@@ -174,7 +174,6 @@ make_ext() {
     PHP_SRC_DIR=<?= $this->getPhpSrcDir() . PHP_EOL ?>
     EXT_DIR=<?= $this->getPhpSrcDir() ?>/ext/
 <?php
-
 if ($this->buildType == 'dev') {
     echo <<<EOF
     TMP_EXT_DIR={$this->getBuildDir()}/php-tmp-ext-dir/
@@ -182,10 +181,9 @@ if ($this->buildType == 'dev') {
 
     cd {$this->phpSrcDir}
 
-
     test -d \$TMP_EXT_DIR && rm -rf \$TMP_EXT_DIR
     mkdir -p \$TMP_EXT_DIR
-    cd ext
+    cd {$this->phpSrcDir}/ext
 
     cp -rf date \$TMP_EXT_DIR
     test -d hash && cp -rf hash \$TMP_EXT_DIR
@@ -207,20 +205,15 @@ foreach ($this->extensionMap as $extension) {
     if ($extension->aliasName) {
         $name = $extension->aliasName;
     }
-    if ($extension->peclVersion || $extension->enableDownloadScript) {
+    if (!empty($extension->peclVersion) || $extension->enableDownloadScript || !empty($extension->url)) {
         echo <<<EOF
-    if [[ -d \$EXT_DIR/{$name}/ ]]
-    then
-        rm -rf \$EXT_DIR/{$name}/
-    fi
+    test -d \$EXT_DIR/{$name}/ &&  rm -rf \$EXT_DIR/{$name}/
     cp -rf {$this->getRootDir()}/ext/{$name} \$EXT_DIR/
 EOF;
     } else {
         if ($this->buildType == 'dev') {
             echo <<<EOF
-    cd \$PHP_SRC_DIR/ext
-    cp -rf {$name} \$TMP_EXT_DIR
-    cd \$PHP_SRC_DIR/ext
+    cp -rf \$PHP_SRC_DIR/ext/{$name} \$TMP_EXT_DIR
 EOF;
         }
     }
@@ -228,11 +221,9 @@ EOF;
 }
 if ($this->buildType == 'dev') {
     echo <<<EOF
-
-    cd \$PHP_SRC_DIR
-    mv ext deprecated-ext
+    mv \$PHP_SRC_DIR/ext \$PHP_SRC_DIR/deprecated-ext
     mv \$TMP_EXT_DIR ext
-    cd \$PHP_SRC_DIR
+
 EOF;
     echo PHP_EOL;
 }
