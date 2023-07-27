@@ -17,6 +17,6 @@ sh sapi/scripts/generate-dependency-graph.sh
 <?php endif; ?>
 
 cd ${__PROJECT__}
-bash sapi/scripts/download-dependencies-use-aria2.sh
+bash sapi/download-box/download-dependencies-use-aria2.sh
 cd ${__PROJECT__}
-bash sapi/scripts/download-dependencies-use-git.sh
+bash sapi/download-box/download-dependencies-use-git.sh

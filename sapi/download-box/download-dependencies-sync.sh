@@ -15,12 +15,11 @@ mkdir -p ${__PROJECT__}/var/
 mkdir -p ${__PROJECT__}/var/libraries/
 mkdir -p ${__PROJECT__}/var/extensions/
 
+touch ${__PROJECT__}/var/libraries/.gitkeep
+touch ${__PROJECT__}/var/extensions/.gitkeep
+
 cd ${__PROJECT__}/var/
 
-test -f download_library_use_git.sh && bash download_library_use_git.sh
-test -f download_extension_use_git.sh && bash download_extension_use_git.sh
-
-cd ${__PROJECT__}
 
 mkdir -p pool/lib
 mkdir -p pool/ext
@@ -31,3 +30,5 @@ awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
 awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
 
 cd ${__PROJECT__}
+
+exit 0
