@@ -33,12 +33,19 @@ EOF
             -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
             -DCMAKE_C_STANDARD=11 \
-            -DBUILD_SHARED_LIBS=ON  \
+            -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
             -DENABLE_DOCS=OFF \
             -DENABLE_EXAMPLES=OFF \
             -DENABLE_TESTS=OFF \
             -DENABLE_TOOLS=ON
+EOF
+        )
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$aom_prefix}/lib/*.so.*
+            rm -rf {$aom_prefix}/lib/*.so
+            rm -rf {$aom_prefix}/lib/*.dylib
 EOF
         )
         ->withBinPath($aom_prefix . '/bin/')
