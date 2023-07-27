@@ -44,15 +44,3 @@ test -f download_extension_urls.txt && aria2c -c -j 10 -s 10 -x 8 -k 10M --allow
   -d extensions --input-file=download_extension_urls.txt
 
 cd ${__PROJECT__}
-
-mkdir -p pool/lib
-mkdir -p pool/ext
-
-# cp -rf ${__PROJECT__}/var/download/* ${__PROJECT__}/pool/lib
-
-awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
-
-cd ${__PROJECT__}
-
-exit 0

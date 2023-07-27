@@ -35,18 +35,21 @@ SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
 
 with-skip-download
 ----
-跳过下载依赖库
+跳过下载依赖库，使用脚本单独批量下载
 
 > 自动生成待下载链接地址的种子文件<br/>
 > 种子文件位于本项目的 `var` 目录 <br/>
 > 使用 aria2 下载种子文件
 
 ```shell
+# 准备批量下载地址
 ./prepare.php --with-skip-download=yes --without-docker
 
-# 构建依赖库之前，批量下载依赖库和扩展的脚本
-sh sapi/scripts/download-dependencies-use-aria2.sh
-sh sapi/scripts/download-dependencies-use-git.sh
+# 批量下载依赖库和扩展的脚本
+bash make-download-box.sh
+
+# 下载完毕，同步到 `pool/lib` 、`pool/ext ` 目录
+bash sapi/download-box/download-dependencies-sync.sh
 
 ```
 
@@ -113,7 +116,7 @@ apk add graphviz
 php ./prepare.php --without-docker --with-dependency-graph=1
 
 # 生成扩展依赖图
-sh sapi/scripts/generate-dependency-graph.sh
+sh sapi/extension-dependency-graph/generate-dependency-graph.sh
 
 ```
 
