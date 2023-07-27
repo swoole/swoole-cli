@@ -36,7 +36,7 @@ EOF
             ->withPreInstallCommand(
                 <<<EOF
 # library dav1d :
-apk add ninja python3 python3-pip  nasm
+apk add ninja python3 py3-pip  nasm
 pip3 install meson
 EOF
             )
