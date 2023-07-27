@@ -6,7 +6,9 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
     $option = '';
+
     $ldflags = $p->getOsType() == 'macos' ? '' : ' -static ';
+
     if ($p->getOsType() == 'macos') {
         $option = '--disable-thread-safety';
     }
