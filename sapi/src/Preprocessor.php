@@ -1102,7 +1102,7 @@ EOF;
 
         if ($this->getInputOption('with-dependency-graph')) {
             $this->generateFile(
-                __DIR__ . '/template/extension_dependency_graph.php',
+                __DIR__ . '/template/extension-dependency-graph.php',
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
