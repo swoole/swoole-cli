@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
@@ -10,6 +11,16 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+# clean
+if (file_exists(__DIR__ . '/make.sh')) {
+    unlink(__DIR__ . '/make.sh');
+}
+if (file_exists(__DIR__ . '/make-install-deps.sh')) {
+    unlink(__DIR__ . '/make-install-deps.sh');
+}
+if (file_exists(__DIR__ . '/make-download-box.sh')) {
+    unlink(__DIR__ . '/make-download-box.sh');
+}
 
 // Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
@@ -18,6 +29,10 @@ $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
+}
+
+if ($p->getInputOption('with-override-default-enabled-ext')) {
+    $p->setExtEnabled([]);
 }
 
 if ($p->getInputOption('with-global-prefix')) {
@@ -38,7 +53,6 @@ define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
 if ($p->getInputOption('with-http-proxy')) {
     $http_proxy = $p->getInputOption('with-http-proxy');
-    define('SWOOLE_CLI_HTTP_PROXY_URL', $http_proxy);
     $proxyConfig = <<<EOF
 export HTTP_PROXY={$http_proxy}
 export HTTPS_PROXY={$http_proxy}
@@ -51,7 +65,7 @@ export NO_PROXY="\${NO_PROXY},archive.ubuntu.com,security.ubuntu.com"
 export NO_PROXY="\${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
 
 EOF;
-    $p->setProxyConfig($proxyConfig);
+    $p->setProxyConfig($proxyConfig, $http_proxy);
 }
 
 if ($p->getInputOption('with-install-library-cached')) {
@@ -70,7 +84,8 @@ if ($p->getOsType() == 'macos') {
     $p->setLogicalProcessors('$(nproc 2> /dev/null)');
 }
 
-$p->setExtraCflags('-Os');
+$p->setExtraCflags('-fno-ident -Os');
+$p->withPreInstallCommand('set -x');
 
 // Generate make.sh
 $p->execute();

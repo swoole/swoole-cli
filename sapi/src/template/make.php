@@ -7,6 +7,9 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
+<?php if (in_array($this->buildType, ['dev','debug'])) : ?>
+set -x
+<?php  endif; ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -69,6 +72,10 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
+    <?php if ($item->enableHttpProxy) : ?>
+        <?= $this->getProxyConfig() . PHP_EOL ?>
+    <?php endif;?>
+
     # use build script replace  configure、make、make install
     <?php if (empty($item->buildScript)) : ?>
     # configure
@@ -114,6 +121,13 @@ __EOF__
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
+
+    # build end
+    <?php if ($item->enableHttpProxy) :?>
+        unset HTTP_PROXY
+        unset HTTPS_PROXY
+        unset NO_PROXY
+    <?php endif;?>
 
     <?php if ($item->enableBuildLibraryCached) : ?>
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
@@ -363,6 +377,7 @@ elif [ "$1" = "list-extension" ] ;then
     exit 0
 elif [ "$1" = "clean" ] ;then
     make_clean
+    exit 0
 elif [ "$1" = "sync" ] ;then
   echo "sync"
   # ZendVM
