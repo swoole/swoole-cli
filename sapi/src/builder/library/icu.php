@@ -13,7 +13,8 @@ return function (Preprocessor $p) {
             ->withManual(
                 'https://unicode-org.github.io/icu/userguide/icu_data/#:~:text=Building%20and%20Linking%20against%20ICU%20data'
             )
-            ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
+            //->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
+            ->withUrl('https://github.com/unicode-org/icu/archive/refs/tags/release-73-2.tar.gz')
             ->withManual('https://unicode-org.github.io/icu/userguide/icu_data/#overview')
             ->withPrefix($icu_prefix)
             ->withConfigure(
