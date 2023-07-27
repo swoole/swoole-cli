@@ -5,6 +5,7 @@ namespace SwooleCli;
 abstract class Project
 {
     public string $name;
+
     public string $aliasName = '';
 
     public string $url;
@@ -33,7 +34,11 @@ abstract class Project
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
-    public bool $enableDownloadWithMirrorURL = true;
+    public bool $enableLatestTarball = false;
+
+    public bool $enableHttpProxy = true;
+
+    public bool $enableDownloadWithMirrorURL = false;
 
     public bool $latestTarball = false;
 
@@ -132,9 +137,15 @@ abstract class Project
         return $this;
     }
 
-    public function withAutoUpdateFile(): static
+    public function withAutoUpdateFile(bool $enableLatestTarball = true): static
     {
-        $this->latestTarball = true;
+        $this->enableLatestTarball = $enableLatestTarball;
+        return $this;
+    }
+
+    public function withHttpProxy(bool $enableHttpProxy = true): static
+    {
+        $this->enableHttpProxy = $enableHttpProxy;
         return $this;
     }
 }

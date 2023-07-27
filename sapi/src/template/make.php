@@ -105,13 +105,13 @@ make_<?=$item->name?>() {
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
     <?php endif; ?>
 
-
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
     <?php if ($item->enableHttpProxy) : ?>
-    <?= $this->getProxyConfig() . PHP_EOL ?>
+        <?= $this->getProxyConfig() . PHP_EOL ?>
     <?php endif;?>
 
+    # use build script replace  configure、make、make install
     <?php if (empty($item->buildScript)) : ?>
     # before configure
         <?php if (!empty($item->beforeConfigureScript)) : ?>
@@ -170,11 +170,10 @@ __EOF__
     <?php endif; ?>
 
     # build end
-
-    <?php if ($item->enableHttpProxy):?>
-    unset HTTP_PROXY
-    unset HTTPS_PROXY
-    unset NO_PROXY
+    <?php if ($item->enableHttpProxy) :?>
+        unset HTTP_PROXY
+        unset HTTPS_PROXY
+        unset NO_PROXY
     <?php endif;?>
 
     <?php if ($item->enableBuildLibraryCached) : ?>
