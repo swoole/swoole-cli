@@ -11,20 +11,21 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-
 mkdir -p ${__PROJECT__}/var/
+mkdir -p ${__PROJECT__}/var/libraries/
+mkdir -p ${__PROJECT__}/var/extensions/
 
-cd ${__PROJECT__}/var/
+touch ${__PROJECT__}/var/libraries/.gitkeep
+touch ${__PROJECT__}/var/extensions/.gitkeep
 
 
-test -f download_library_use_git.sh && bash download_library_use_git.sh
-test -f download_extension_use_git.sh && bash download_extension_use_git.sh
 
-
-cd ${__PROJECT__}
+cd ${__PROJECT__}/
 
 mkdir -p pool/lib
 mkdir -p pool/ext
+
+cd ${__PROJECT__}/
 
 # cp -rf ${__PROJECT__}/var/download/* ${__PROJECT__}/pool/lib
 
@@ -32,3 +33,5 @@ awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
 awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
 
 cd ${__PROJECT__}
+
+

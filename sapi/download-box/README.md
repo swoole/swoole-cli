@@ -27,7 +27,7 @@ apk add graphviz aria2
 # 准备依赖库源码包，使用 aria2 批量下载
 bash sapi/download-box/download-box-init.sh
 
-# 将源码包 ，扩展依赖图 打包到容器中
+# 将依赖库、扩展源码包 、扩展依赖图 打包到容器中
 bash sapi/download-box/download-box-build.sh
 
 ```
