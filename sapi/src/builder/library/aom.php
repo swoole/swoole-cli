@@ -27,8 +27,8 @@ EOF
         )
         ->withConfigure(
             <<<EOF
-            mkdir -p build
-            cd build
+            mkdir -p build_dir
+            cd build_dir
              cmake ..  \
             -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
