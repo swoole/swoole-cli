@@ -472,81 +472,83 @@ class Preprocessor
      */
     public function addLibrary(Library $lib): void
     {
-        if (empty($lib->file)) {
-            if ($lib->enableDownloadScript) {
-                $lib->file = $lib->name . '.tar.gz';
-            } else {
-                $lib->file = basename($lib->url);
-            }
-        }
-
-        if (!empty($this->getInputOption('with-download-mirror-url'))) {
-            $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
-            $lib->enableDownloadWithMirrorURL = true;
-            if ($lib->enableDownloadScript) {
-                $lib->enableDownloadScript=false;
-            }
-        }
-        $lib->path = $this->libraryDir . '/' . $lib->file;
-
-        // 本地文件被修改，MD5 不一致，删除后重新下载
-        if (!empty($lib->md5sum) and is_file($lib->path)) {
-            $this->checkFileMd5sum($lib->path, $lib->md5sum);
-        }
-
-        //文件内容为空
-        if (file_exists($lib->path) && (filesize($lib->path) == 0)) {
-            unlink($lib->path);
-        }
-
-        //获取最新的源码包
-        if (is_file($lib->path) && $lib->enableLatestTarball) {
-            unlink($lib->path);
-        }
-
-        if (!$this->getInputOption('with-skip-download')) {
-            if (file_exists($lib->path)) {
-                echo "[Library] file cached: " . $lib->file . PHP_EOL;
-            } else {
-                $httpProxyConfig = $this->getProxyConfig();
-                if (!$lib->enableHttpProxy) {
-                    $httpProxyConfig = '';
-                }
+        if ($lib->enableDownloadScript || !empty($lib->url)) {
+            if (empty($lib->file)) {
                 if ($lib->enableDownloadScript) {
-                    if (!empty($lib->downloadScript) && !empty($lib->downloadDirName)) {
-                        $workDir = $this->getRootDir();
-                        $cacheDir = '${__DIR__}/var/tmp/download/lib';
-                        $lib->downloadScript = <<<EOF
-                        __DIR__={$workDir}/
-                        {$httpProxyConfig}
-                        test -d {$cacheDir} && rm -rf {$cacheDir}
-                        mkdir -p {$cacheDir}
-                        cd {$cacheDir}
-                        test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
-                        {$lib->downloadScript}
-                        cd {$lib->downloadDirName}
-                        test -f {$lib->path} || tar   -zcf {$lib->path} ./
-                        cd {$workDir}
+                    $lib->file = $lib->name . '.tar.gz';
+                } else {
+                    $lib->file = basename($lib->url);
+                }
+            }
+
+            if (!empty($this->getInputOption('with-download-mirror-url'))) {
+                $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
+                $lib->enableDownloadWithMirrorURL = true;
+            }
+            $lib->path = $this->libraryDir . '/' . $lib->file;
+
+            // 本地文件被修改，MD5 不一致，删除后重新下载
+            if (!empty($lib->md5sum) and is_file($lib->path)) {
+                $this->checkFileMd5sum($lib->path, $lib->md5sum);
+            }
+
+            //文件内容为空
+            if (file_exists($lib->path) && (filesize($lib->path) == 0)) {
+                unlink($lib->path);
+            }
+
+            //获取最新的源码包
+            if (is_file($lib->path) && $lib->enableLatestTarball) {
+                unlink($lib->path);
+            }
+
+            if (!$this->getInputOption('with-skip-download')) {
+                if (file_exists($lib->path)) {
+                    echo "[Library] file cached: " . $lib->file . PHP_EOL;
+                } else {
+                    $httpProxyConfig = $this->getProxyConfig();
+                    if (!$lib->enableHttpProxy) {
+                        $httpProxyConfig = '';
+                    }
+                    if ($lib->enableDownloadScript && !$lib->enableDownloadWithMirrorURL) {
+                        if (!empty($lib->downloadScript) && !empty($lib->downloadDirName)) {
+                            $workDir = $this->getRootDir();
+                            $cacheDir = '${__DIR__}/var/tmp/download/lib';
+                            $lib->downloadScript = <<<EOF
+                            __DIR__={$workDir}/
+                            {$httpProxyConfig}
+                            test -d {$cacheDir} && rm -rf {$cacheDir}
+                            mkdir -p {$cacheDir}
+                            cd {$cacheDir}
+                            test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
+                            {$lib->downloadScript}
+                            cd {$lib->downloadDirName}
+                            test -f {$lib->path} || tar   -zcf {$lib->path} ./
+                            cd {$workDir}
 
 EOF;
 
-                        $this->downloadFileWithScript(
-                            $lib->path,
-                            $lib->md5sum,
-                            $lib->downloadScript
-                        );
+                            $this->downloadFileWithScript(
+                                $lib->path,
+                                $lib->md5sum,
+                                $lib->downloadScript
+                            );
+                        } else {
+                            throw new Exception(
+                                "[Library] withDownloadScript() require \$downloadDirName and \$downloadScript  "
+                            );
+                        }
                     } else {
-                        throw new Exception(
-                            "[Library] withDownloadScript() require \$downloadDirName and \$downloadScript  "
-                        );
+                        echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
+                        $this->downloadFile($lib->url, $lib->path, $lib->md5sum, $httpProxyConfig);
                     }
-                } else {
-                    echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                    $this->downloadFile($lib->url, $lib->path, $lib->md5sum, $httpProxyConfig);
                 }
             }
+        } else {
+            throw new Exception(
+                "[Library] require url OR downloadscript "
+            );
         }
-
         if (!empty($lib->pkgConfig)) {
             $this->pkgConfigPaths[] = $lib->pkgConfig;
         }
@@ -568,10 +570,14 @@ EOF;
 
     public function addExtension(Extension $ext): void
     {
-        if ($ext->peclVersion || $ext->enableDownloadScript) {
+        if (!empty($ext->peclVersion) || $ext->enableDownloadScript || !empty($ext->url)) {
+            if (!empty($ext->url)) {
+                if (empty($ext->file)) {
+                    $ext->file = $ext->name . '.tgz';
+                }
+            }
             if (!empty($ext->peclVersion)) {
                 $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-                $ext->path = $this->extensionDir . '/' . $ext->file;
                 $ext->url = "https://pecl.php.net/get/{$ext->file}";
             }
 
@@ -579,13 +585,13 @@ EOF;
                 if (empty($ext->file)) {
                     $ext->file = $ext->name . '.tgz';
                 }
-                $ext->path = $this->extensionDir . '/' . $ext->file;
                 $ext->url='';
             }
+            $ext->path = $this->extensionDir . '/' . $ext->file;
 
             if (!empty($this->getInputOption('with-download-mirror-url'))) {
-                $ext->enableDownloadWithMirrorURL = true;
                 $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
+                $ext->enableDownloadWithMirrorURL = true;
             }
 
             // 检查文件的 MD5，若不一致删除后重新下载
@@ -609,7 +615,7 @@ EOF;
                     if (!$ext->enableHttpProxy) {
                         $httpProxyConfig='';
                     }
-                    if ($ext->enableDownloadScript) {
+                    if ($ext->enableDownloadScript && !$ext->enableDownloadWithMirrorURL) {
                         if (!empty($ext->downloadScript) && !empty($ext->downloadDirName)) {
                             $workDir = $this->getRootDir();
                             $cacheDir = '${__DIR__}/var/tmp/download/ext';
@@ -649,7 +655,10 @@ EOF;
                 if (!empty($ext->aliasName)) {
                     $dst_dir = "{$this->rootDir}/ext/{$ext->aliasName}";
                 }
-                if ($ext->enableLatestTarball && ($ext->peclVersion || $ext->enableDownloadScript)) {
+                if ($ext->enableLatestTarball
+                    &&
+                    (!empty($ext->peclVersion) ||$ext->enableDownloadScript ||!empty($ext->url))
+                ) {
                     $this->deleteDirectoryIfExists($dst_dir);
                 }
                 $this->mkdirIfNotExists($dst_dir, 0777, true);

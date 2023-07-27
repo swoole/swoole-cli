@@ -28,7 +28,9 @@ EOF;
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
-            if (!empty($item->peclVersion) || $item->enableDownloadWithMirrorURL) {
+            echo $item->name. PHP_EOL;
+
+            if ((!empty($item->peclVersion)  || !empty($item->url)) || $item->enableDownloadWithMirrorURL) {
                 $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
             }
         }
