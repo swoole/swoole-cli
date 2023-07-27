@@ -38,7 +38,7 @@ EOF
             -DENABLE_DOCS=OFF \
             -DENABLE_EXAMPLES=OFF \
             -DENABLE_TESTS=OFF \
-            -DENABLE_TOOLS=ON \
+            -DENABLE_TOOLS=OFF \
             -DCONFIG_AV1_DECODER=ON \
             -DCONFIG_AV1_ENCODER=ON
 EOF
