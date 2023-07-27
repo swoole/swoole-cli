@@ -57,7 +57,7 @@ jobs:
       - name: Build all-library
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230614T152332Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230614T155341Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             bash sapi/quickstart/mark-install-library-cached.sh
