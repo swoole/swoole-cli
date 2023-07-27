@@ -27,7 +27,8 @@ return function (Preprocessor $p) {
                 -Ddefault_library=static \
                 -Db_staticpic=true \
                 -Db_pie=true \
-                -Dprefer_static=true \
+                -Dprefer_static=true
+
                 meson compile -C build
 
                 ninja -C build
