@@ -97,12 +97,27 @@ jobs:
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          brew install  ninja python3  nasm
+          # python3 -m pip install --upgrade pip
+          pip3 install meson
+          # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
           bash sapi/quickstart/mark-install-library-cached.sh
+          # bash ./make.sh libraw
+          # bash ./make.sh libtiff
+          # bash ./make.sh lcms2
+          # bash ./make.sh imagemagick
+          # bash ./make.sh dav1d
+          # bash ./make.sh aom
+          # bash ./make.sh libgav1
+          # bash ./make.sh svt_av1
+          # bash ./make.sh libyuv
           bash ./make.sh all-library
 
       - name: Build
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+
           bash ./make.sh config
           bash ./make.sh build
           bash ./make.sh archive

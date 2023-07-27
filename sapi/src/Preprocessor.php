@@ -331,6 +331,11 @@ class Preprocessor
         return $this;
     }
 
+    public function getMaxJob(): string
+    {
+        return $this->maxJob;
+    }
+
     /**
      * set CPU  logical processors
      * @param string $logicalProcessors

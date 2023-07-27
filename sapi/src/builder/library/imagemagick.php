@@ -98,9 +98,9 @@ EOF
                 'libgif',
                 'openssl',
                 'libzstd',
-                'lcms2',
-                'libtiff',
-                'libraw'
+                // 'lcms2',
+                // 'libtiff',
+                // 'libraw'
             )
     );
 };

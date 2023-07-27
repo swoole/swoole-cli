@@ -19,6 +19,11 @@ EOF
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1.git')
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Build-Guide.md')
         ->withPrefix($svt_av1_prefix)
+        ->withPreInstallCommand(
+            <<<EOF
+         apk add yasm nasm
+EOF
+        )
         ->withBuildScript(
             <<<EOF
             cd Build
@@ -30,12 +35,12 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON
-            make -j $(nproc)
+            make -j {$p->getMaxJob()}
             make install
 
 
 :<<'====EOF===='
-            # 参考： https://github.com/AOMediaCodec/libavif/ext/svt.sh
+            # 参考： AOMediaCodec/libavif/blob/main/ext/svt.sh
             cd Build/linux
             ./build.sh release static no-dec no-apps
             exit 0
@@ -46,8 +51,8 @@ EOF
 
 EOF
         )
-        ->withPkgName('SvtAv1Dec')
         ->withPkgName('SvtAv1Enc')
+        ->withPkgName('SvtAv1Dec')
         ->withBinPath($svt_av1_prefix . '/bin/');
 
     $p->addLibrary($lib);

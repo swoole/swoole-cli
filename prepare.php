@@ -109,6 +109,20 @@ if ($p->getInputOption('with-install-library-cached')) {
     $p->setInstallLibraryCached(true);
 }
 
+$p->withPreInstallCommand('set -x');
+
+$with_os_mirror=0;
+if ($p->getInputOption('with-os-mirror-site')) {
+    $with_os_mirror=1;
+    if ($p->getOsType() == 'macos') {
+        $p->withPreInstallCommand('bash sapi/quickstart/macos/setup-homebrew-dependency.sh --mirror china');
+    }
+    if ($p->getOsType() == 'linux') {
+        $p->withPreInstallCommand('bash sapi/quickstart/linux/alpine-init.sh --mirror china');
+    }
+}
+define('SWOOLE_CLI_WITH_OS_MIRROR', $with_os_mirror);
+
 if ($p->getOsType() == 'macos') {
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
@@ -292,6 +306,7 @@ $cmd = $header . PHP_EOL . $p->getProxyConfig() . PHP_EOL . $cmd;
 $p->withPreInstallCommand($cmd);
 
 $p->setExtraCflags('-fno-ident -Os');
+
 
 $p->withPreInstallCommand('#!/usr/bin/env bash');
 $p->withPreInstallCommand('set -x');

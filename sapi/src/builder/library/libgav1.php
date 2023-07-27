@@ -28,7 +28,7 @@ EOF
                 mkdir -p build
                 cd build
                 # 查看更多选项
-                cmake .. -LH
+                # cmake .. -LH
                 cmake -G "Unix Makefiles" .. \
                 -DCMAKE_INSTALL_PREFIX={$libgav1_prefix} \
                 -DCMAKE_BUILD_TYPE=Release  \
@@ -43,5 +43,6 @@ EOF
             )
             ->withPkgName('libgav1')
             ->withBinPath($libgav1_prefix . '/bin/')
+            ->withDependentLibraries('absl')
     );
 };

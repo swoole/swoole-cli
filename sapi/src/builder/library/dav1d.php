@@ -25,9 +25,6 @@ EOF
             )
             ->withBuildScript(
                 <<<EOF
-                meson  -h
-                meson setup -h
-                # meson configure -h
 
                 meson setup  build \
                 -Dprefix={$dav1d_prefix} \
@@ -42,8 +39,9 @@ EOF
                 -Denable_examples=false \
                 -Denable_tests=false \
                 -Denable_docs=false \
-                -Dlogging=true \
+                -Dlogging=false \
                 -Dfuzzing_engine=none
+
 
                 meson compile -C build
 
@@ -55,7 +53,6 @@ EOF
             )
             ->withPkgName('dav1d')
             ->withBinPath($dav1d_prefix . '/bin/')
-
             ->withDependentLibraries('sdl2')
     );
 };
