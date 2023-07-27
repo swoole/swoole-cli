@@ -58,7 +58,6 @@ define("LIBUV_PREFIX", $p->getGlobalPrefix() . '/libuv');
 define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
 define("LIBMINZIP_PREFIX", $p->getGlobalPrefix() . '/libminizip');
 define("LIBXLSXIO_PREFIX", $p->getGlobalPrefix() . '/libxlsxio');
-define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 define("PRIVOXY_PREFIX", $p->getGlobalPrefix() . '/privoxy');
 

@@ -249,10 +249,4 @@ class Library extends Project
         $this->preInstallCommand = $preInstallCommand;
         return $this;
     }
-
-    public function withHttpProxy(): static
-    {
-        $this->enableHttpProxy = true;
-        return $this;
-    }
 }
