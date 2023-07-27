@@ -19,6 +19,11 @@ EOF
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1.git')
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Build-Guide.md')
         ->withPrefix($svt_av1_prefix)
+        ->withPreInstallCommand(
+            <<<EOF
+         apk add yasm nasm
+EOF
+        )
         ->withBuildScript(
             <<<EOF
             cd Build
@@ -35,7 +40,7 @@ EOF
 
 
 :<<'====EOF===='
-            # 参考： https://github.com/AOMediaCodec/libavif/ext/svt.sh
+            # 参考： AOMediaCodec/libavif/blob/main/ext/svt.sh
             cd Build/linux
             ./build.sh release static no-dec no-apps
             exit 0

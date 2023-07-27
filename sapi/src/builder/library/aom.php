@@ -21,7 +21,8 @@ EOF
         ->withBuildLibraryCached(true)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($aom_prefix)
-        ->withPreInstallCommand(<<<EOF
+        ->withPreInstallCommand(
+            <<<EOF
          apk add yasm nasm
 EOF
         )
@@ -39,13 +40,6 @@ EOF
             -DENABLE_EXAMPLES=OFF \
             -DENABLE_TESTS=OFF \
             -DENABLE_TOOLS=ON
-EOF
-        )
-        ->withScriptAfterInstall(
-            <<<EOF
-            rm -rf {$aom_prefix}/lib/*.so.*
-            rm -rf {$aom_prefix}/lib/*.so
-            rm -rf {$aom_prefix}/lib/*.dylib
 EOF
         )
         ->withBinPath($aom_prefix . '/bin/')
