@@ -38,9 +38,7 @@ EOF
             -DENABLE_DOCS=OFF \
             -DENABLE_EXAMPLES=OFF \
             -DENABLE_TESTS=OFF \
-            -DENABLE_TOOLS=OFF \
-            -DCONFIG_AV1_DECODER=ON \
-            -DCONFIG_AV1_ENCODER=ON
+            -DENABLE_TOOLS=ON
 EOF
         )
         ->withBinPath($aom_prefix . '/bin/')
