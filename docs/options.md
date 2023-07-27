@@ -113,7 +113,7 @@ apk add graphviz
 php ./prepare.php --without-docker --with-dependency-graph=1
 
 # 生成扩展依赖图
-sh sapi/scripts/generate-dependency-graph.sh
+sh sapi/extension-dependency-graph/generate-dependency-graph.sh
 
 ```
 

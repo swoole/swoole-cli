@@ -28,4 +28,4 @@ bash sapi/download-box/download-dependencies-use-git.sh
 cd ${__PROJECT__}
 
 # 生成扩展依赖图
-sh sapi/scripts/generate-dependency-graph.sh
+sh sapi/extension-dependency-graph/generate-dependency-graph.sh
