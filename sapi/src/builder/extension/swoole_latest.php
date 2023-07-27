@@ -5,33 +5,36 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
 
-    $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
+    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'pgsql', 'unixODBC'];
+
+    $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
+    $options .= ' --enable-swoole-pgsql --enable-swoole-coro-time ';
+    $options .= ' --enable-swoole-sqlite ';
+    $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
-
+    $options .= ' --enable-swoole-pgsql ';
+    $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
     if ($p->getInputOption('with-swoole-pgsql')) {
-        $options .= ' --enable-swoole-pgsql';
-        $depends[] = 'pgsql';
+        $options .= ' ';
     }
 
     $ext = (new Extension('swoole_latest'))
         ->withAliasName('swoole')
-        ->withOptions($options)
-        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
+        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
-        ->withFile('swoole-latest.tar.gz')
+        ->withOptions($options)
         ->withAutoUpdateFile(false)
         ->withHttpProxy(true)
+        ->withFile('swoole-latest.tar.gz')
         ->withDownloadScript(
             'swoole-src',
             <<<EOF
-            git clone -b master --depth=1 --progress https://github.com/swoole/swoole-src.git
+            git clone -b master --depth=1 https://github.com/swoole/swoole-src.git
 EOF
-        )
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo');
+        );
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 };
