@@ -19,14 +19,16 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
             ./configure --help
+            PACKAGES='zlib libpng  libbrotlicommon  libbrotlienc libbrotlidec '
             BZIP2_CFLAGS="-I{$bzip2_prefix}/include"  \
             BZIP2_LIBS="-L{$bzip2_prefix}/lib -lbz2"  \
-            CPPFLAGS="$(pkg-config --cflags-only-I --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            LDFLAGS="$(pkg-config  --libs-only-L   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            LIBS="$(pkg-config     --libs-only-l   --static zlib libpng  libbrotlicommon  libbrotlidec  libbrotlienc)" \
-            ./configure --prefix={$freetype_prefix} \
-            --enable-static \
-            --disable-shared \
+            CPPFLAGS="$(pkg-config --cflags-only-I --static \$PACKAGES)" \
+            LDFLAGS="$(pkg-config  --libs-only-L   --static \$PACKAGES)" \
+            LIBS="$(pkg-config     --libs-only-l   --static \$PACKAGES)" \
+            ./configure \
+            --prefix={$freetype_prefix} \
+            --enable-shared=no \
+            --enable-static=yes \
             --with-zlib=yes \
             --with-bzip2=yes \
             --with-png=yes \
