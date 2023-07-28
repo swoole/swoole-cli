@@ -247,6 +247,40 @@ make_clean() {
     rm -f ext/opcache/minilua
 }
 
+show_lib_pkg() {
+<?php foreach ($this->libraryList as $item) : ?>
+    <?php if (!empty($item->pkgNames)) : ?>
+        echo -e "[<?= $item->name ?>] pkg-config : \n<?= implode(' ', $item->pkgNames) ?>" ;
+    <?php else :?>
+        echo -e "[<?= $item->name ?>] pkg-config : \n"
+    <?php endif ?>
+    echo "==========================================================="
+<?php endforeach; ?>
+    exit 0
+}
+
+show_lib_dependent_pkg() {
+    declare -A array_name
+<?php foreach ($this->libraryList as $item) :?>
+    <?php
+    $pkgs=[];
+    $this->getLibraryDependenciesByName($item->name, $pkgs);
+    $res=implode(' ', $pkgs);
+    ?>
+    array_name[<?= $item->name ?>]="<?= $res?>"
+<?php endforeach ;?>
+    if test -n  "$1"  ;then
+      echo -e "[$1] dependent pkgs :\n\n${array_name[$1]} \n"
+    else
+      for i in ${!array_name[@]}
+      do
+            echo -e "[${i}] dependent pkgs :\n\n${array_name[$i]} \n"
+            echo "=================================================="
+      done
+    fi
+    exit 0
+}
+
 help() {
     echo "./make.sh docker-build"
     echo "./make.sh docker-bash"
@@ -262,7 +296,9 @@ help() {
     echo "./make.sh clean-all-library"
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
-    echo "./make.sh pkg-check"
+    echo "./make.sh check-lib-pkg"
+    echo "./make.sh show-lib-pkg"
+    echo "./make.sh show-lib-dependent-pkg"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -350,20 +386,25 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
     cd <?= $this->getRootDir() ?>/ext/swoole
     SWOOLE_BRANCH=$2
     git checkout $SWOOLE_BRANCH
-elif [ "$1" = "pkg-check" ] ;then
+elif [ "$1" = "check-lib-pkg" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    echo "[<?= $item->name ?>]"
-    <?php if (!empty($item->pkgNames)) :?>
-        <?php foreach ($item->pkgNames as $item) : ?>
-    pkg-config --libs-only-L <?= $item . PHP_EOL ?>
-    pkg-config --libs-only-l <?= $item . PHP_EOL ?>
-    pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
-        <?php endforeach; ?>
+    <?php if (!empty($item->pkgNames)) : ?>
+    echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
+    pkg-config --cflags-only-I --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
+    pkg-config --libs-only-L   --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
+    pkg-config --libs-only-l   --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
     <?php else :?>
-    echo "no PKG_CONFIG !"
+    echo "[<?= $item->name ?>] pkg-config : no "
     <?php endif ?>
     echo "==========================================================="
+
 <?php endforeach; ?>
+    exit 0
+elif [ "$1" = "show-lib-pkg" ] ;then
+    show_lib_pkg
+    exit 0
+elif [ "$1" = "show-lib-dependent-pkg" ] ;then
+    show_lib_dependent_pkg "$2"
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
