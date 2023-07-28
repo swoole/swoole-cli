@@ -46,9 +46,6 @@ class Library extends Project
 
     public string $preInstallCommand = '';
 
-    public bool $enableHttpProxy = false;
-
-
 
     public function withMirrorUrl(string $url): static
     {
