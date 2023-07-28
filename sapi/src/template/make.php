@@ -389,6 +389,23 @@ make_config() {
     ./configure --help | grep -e '--disable'
     ./configure --help | grep -e '--without'
     ./configure --help | grep -e 'jit'
+
+
+// libbrotlicommon.a 应该优先被链接
+// 链接顺序问题
+// Library order in static linking
+# 参考  https://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking
+# 参考 https://bbs.huaweicloud.com/blogs/373470
+# 参考   https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_node/ld_3.html
+
+//  -Wl,–whole-archive -Wl,–start-group a.o b.o c.o main.o -lf -ld -le -L./ -lc -Wl,–end-group -Wl,-no-whole-archive
+
+
+# LIBS=" $LIBS -Wl,--whole-archive -Wl,--start-group "
+# LIBS=" -Wl,--start-group  "
+
+# export  LIBS=" $LIBS -Wl,--end-group -Wl,--no-whole-archive "
+# export  LIBS=" $LIBS -Wl,--end-group   "
 _____EO_____
 
 
@@ -491,6 +508,10 @@ make_clean() {
     rm -f ext/opcache/minilua
 }
 
+show_library_pkg() {
+
+}
+
 help() {
     echo "./make.sh docker-build"
     echo "./make.sh docker-bash"
@@ -509,6 +530,7 @@ help() {
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
     echo "./make.sh pkg-check"
+    echo "./make.sh show-library-pkg"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
