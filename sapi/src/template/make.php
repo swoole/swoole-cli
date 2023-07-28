@@ -508,8 +508,20 @@ make_clean() {
     rm -f ext/opcache/minilua
 }
 
-show_library_pkg() {
+show_lib_pkg() {
 
+
+    declare -A library_dependent_pkg_array
+<?php foreach ($this->libraryList as $item) :?>
+    <?php
+    $pkgs=[];
+    $this->getLibraryDependenciesByName($item->name, $pkgs);
+    $res=implode(' ', $pkgs);
+    ?>
+   library_dependent_pkg_array[<?= $item->name ?>]="<?= $res?>"
+<?php endforeach ;?>
+    echo -e "[$1] dependent pkgs :\n\n${library_dependent_pkg_array[$1]} \n"
+    exit 0
 }
 
 help() {
@@ -529,8 +541,8 @@ help() {
     echo "./make.sh clean-all-library"
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
-    echo "./make.sh pkg-check"
-    echo "./make.sh show-library-pkg"
+    echo "./make.sh check-lib-pkg"
+    echo "./make.sh show-lib-pkg"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -620,22 +632,24 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
     cd <?= $this->getRootDir() ?>/ext/swoole
     SWOOLE_BRANCH=$2
     git checkout $SWOOLE_BRANCH
-elif [ "$1" = "pkg-check" ] ;then
+elif [ "$1" = "check-lib-pkg" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    <?php if (!empty($item->pkgName)) : ?>
-    echo "[<?= $item->name ?>]"
-        <?php if (!empty($item->pkgNames)) :?>
-            <?php foreach ($item->pkgNames as $item) : ?>
-    pkg-config --libs-only-L <?= $item . PHP_EOL ?>
-    pkg-config --libs-only-l <?= $item . PHP_EOL ?>
-    pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
-            <?php endforeach; ?>
+        <?php if ($item->enablePkgNames && !empty($item->pkgNames)) : ?>
+        echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
+            <?php foreach ($item->pkgNames as $pkg) : ?>
+    pkg-config --cflags-only-I --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
+    pkg-config --libs-only-L   --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
+    pkg-config --libs-only-l   --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
+            <?php endforeach ; ?>
         <?php else :?>
-    echo "no PKG_CONFIG !"
+    echo "[<?= $item->name ?>] pkg-config : no  !"
         <?php endif ?>
     echo "==========================================================="
-    <?php endif ?>
+
 <?php endforeach; ?>
+    exit 0
+elif [ "$1" = "show-lib-pkg" ] ;then
+    show_lib_pkg "$2"
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
