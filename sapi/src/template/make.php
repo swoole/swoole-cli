@@ -510,10 +510,10 @@ make_clean() {
 
 show_lib_pkg() {
 <?php foreach ($this->libraryList as $item) : ?>
-    <?php if ($item->enablePkgNames && !empty($item->pkgNames)) : ?>
-        echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
+    <?php if (!empty($item->pkgNames)) : ?>
+        echo -e "[<?= $item->name ?>] pkg-config : \n<?= implode(' ', $item->pkgNames) ?>" ;
     <?php else :?>
-        echo "[<?= $item->name ?>] pkg-config : "
+        echo -e "[<?= $item->name ?>] pkg-config : \n"
     <?php endif ?>
     echo "==========================================================="
 <?php endforeach; ?>
@@ -530,9 +530,17 @@ show_lib_dependent_pkg() {
     ?>
     array_name[<?= $item->name ?>]="<?= $res?>"
 <?php endforeach ;?>
-    if [ "$1" = "lib-dependent-pkg" ] ;then
-      echo -e "[$2] dependent pkgs :\n\n${array_name[$2]} \n"
+    if test -n  "$1"  ;then
+      echo -e "[$1] dependent pkgs :\n\n${array_name[$1]} \n"
     else
+      for i in ${!array_name[@]}
+      do
+            echo -e "[${i}] dependent pkgs :\n\n${array_name[$i]} \n"
+            echo "=================================================="
+      done
+    fi
+    exit 0
+}
 
 # 获得关联数组的所有元素值
 # ${array_name[@]}
@@ -544,13 +552,6 @@ show_lib_dependent_pkg() {
 # ${#array_name[*]}
 # ${#array_name[@]}
 
-      for i in ${!array_name[@]}
-      do
-            echo -e " ${i}: ${array_name[$i]} \n"
-      done
-    fi
-    exit 0
-}
 
 help() {
     echo "./make.sh docker-build"
@@ -663,16 +664,14 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
     git checkout $SWOOLE_BRANCH
 elif [ "$1" = "check-lib-pkg" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-        <?php if ($item->enablePkgNames && !empty($item->pkgNames)) : ?>
-        echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
-            <?php foreach ($item->pkgNames as $pkg) : ?>
+    <?php if (!empty($item->pkgNames)) : ?>
+    echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
     pkg-config --cflags-only-I --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
     pkg-config --libs-only-L   --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
     pkg-config --libs-only-l   --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
-            <?php endforeach ; ?>
-        <?php else :?>
+    <?php else :?>
     echo "[<?= $item->name ?>] pkg-config : no "
-        <?php endif ?>
+    <?php endif ?>
     echo "==========================================================="
 
 <?php endforeach; ?>
@@ -681,10 +680,7 @@ elif [ "$1" = "show-lib-pkg" ] ;then
     show_lib_pkg
     exit 0
 elif [ "$1" = "show-lib-dependent-pkg" ] ;then
-    show_lib_dependent_pkg "show-lib-dependent-pkg" "$2"
-    exit 0
-elif [ "$1" = "lib-dependent-pkg" ] ;then
-    show_lib_dependent_pkg "lib-dependent-pkg" "$2"
+    show_lib_dependent_pkg "$2"
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
