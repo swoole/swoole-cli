@@ -21,14 +21,21 @@ brew install  ninja python3  nasm
 pip3 install meson
 # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 EOF;
-    $pre_install = $p->getOsType()=='macos'?$macos_pre_install:$linux_pre_install;
+    $pre_install = $p->getOsType()=='macos' ? $macos_pre_install : $linux_pre_install;
     $p->addLibrary(
         (new Library('dav1d'))
             ->withHomePage('https://code.videolan.org/videolan/dav1d/')
             ->withLicense('https://code.videolan.org/videolan/dav1d/-/blob/master/COPYING', Library::LICENSE_BSD)
-            ->withUrl('https://code.videolan.org/videolan/dav1d/-/archive/1.1.0/dav1d-1.1.0.tar.gz')
-            ->withFile('dav1d-1.1.0.tar.gz')
             ->withManual('https://code.videolan.org/videolan/dav1d')
+            //->withUrl('https://code.videolan.org/videolan/dav1d/-/archive/1.2.1/dav1d-1.2.1.tar.gz')
+            //->withFile('dav1d-1.2.1.tar.gz')
+            ->withFile('dav1d-git-1.2.1.tar.gz')
+            ->withDownloadScript(
+                'dav1d',
+                <<<EOF
+                git clone -b 1.2.1 --depth=1 --progress https://code.videolan.org/videolan/dav1d.git
+EOF
+            )
             ->withPrefix($dav1d_prefix)
             ->withBuildLibraryCached(true)
             ->withCleanBuildDirectory()
