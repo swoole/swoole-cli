@@ -509,18 +509,46 @@ make_clean() {
 }
 
 show_lib_pkg() {
+<?php foreach ($this->libraryList as $item) : ?>
+    <?php if ($item->enablePkgNames && !empty($item->pkgNames)) : ?>
+        echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
+    <?php else :?>
+        echo "[<?= $item->name ?>] pkg-config : "
+    <?php endif ?>
+    echo "==========================================================="
+<?php endforeach; ?>
+    exit 0
+}
 
-
-    declare -A library_dependent_pkg_array
+show_lib_dependent_pkg() {
+    declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
     <?php
     $pkgs=[];
     $this->getLibraryDependenciesByName($item->name, $pkgs);
     $res=implode(' ', $pkgs);
     ?>
-   library_dependent_pkg_array[<?= $item->name ?>]="<?= $res?>"
+    array_name[<?= $item->name ?>]="<?= $res?>"
 <?php endforeach ;?>
-    echo -e "[$1] dependent pkgs :\n\n${library_dependent_pkg_array[$1]} \n"
+    if [ "$1" = "lib-dependent-pkg" ] ;then
+      echo -e "[$2] dependent pkgs :\n\n${array_name[$2]} \n"
+    else
+
+# 获得关联数组的所有元素值
+# ${array_name[@]}
+# ${array_name[*]}
+# 获取关联数组的所有下标值
+# ${!array_name[@]}
+# ${!array_name[*]}
+# 获得关联数组的长度
+# ${#array_name[*]}
+# ${#array_name[@]}
+
+      for i in ${!array_name[@]}
+      do
+            echo -e " ${i}: ${array_name[$i]} \n"
+      done
+    fi
     exit 0
 }
 
@@ -543,6 +571,7 @@ help() {
     echo "./make.sh sync"
     echo "./make.sh check-lib-pkg"
     echo "./make.sh show-lib-pkg"
+    echo "./make.sh show-lib-dependent-pkg"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -642,14 +671,20 @@ elif [ "$1" = "check-lib-pkg" ] ;then
     pkg-config --libs-only-l   --static <?= implode(' ', $item->pkgNames) . PHP_EOL ?>
             <?php endforeach ; ?>
         <?php else :?>
-    echo "[<?= $item->name ?>] pkg-config : no  !"
+    echo "[<?= $item->name ?>] pkg-config : no "
         <?php endif ?>
     echo "==========================================================="
 
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "show-lib-pkg" ] ;then
-    show_lib_pkg "$2"
+    show_lib_pkg
+    exit 0
+elif [ "$1" = "show-lib-dependent-pkg" ] ;then
+    show_lib_dependent_pkg "show-lib-dependent-pkg" "$2"
+    exit 0
+elif [ "$1" = "lib-dependent-pkg" ] ;then
+    show_lib_dependent_pkg "lib-dependent-pkg" "$2"
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
