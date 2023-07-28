@@ -7,7 +7,7 @@ return function (Preprocessor $p) {
     $dav1d_prefix = DAV1D_PREFIX;
     $linux_pre_install=<<<EOF
         # library dav1d :
-        apk add ninja python3 py3-pip  nasm
+        apk add ninja python3 py3-pip  nasm yasm
         pip3 install meson
 EOF;
     $macos_pre_install=<<<EOF
@@ -30,7 +30,7 @@ EOF;
             ->withFile('dav1d-1.1.0.tar.gz')
             ->withManual('https://code.videolan.org/videolan/dav1d')
             ->withPrefix($dav1d_prefix)
-            ->withBuildLibraryCached(false)
+            ->withBuildLibraryCached(true)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($dav1d_prefix)
             ->withPreInstallCommand($pre_install)

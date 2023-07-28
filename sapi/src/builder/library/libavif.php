@@ -16,10 +16,10 @@ return function (Preprocessor $p) {
             ->withHomePage('https://aomediacodec.github.io/av1-avif/')
             ->withLicense('https://github.com/AOMediaCodec/libavif/', Library::LICENSE_BSD)
             ->withManual('https://github.com/AOMediaCodec/libavif/ext/')
-                ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
+            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
             ->withFile('libavif-v0.11.1.tar.gz')
             ->withPrefix($libavif_prefix)
-            ->withBuildLibraryCached(false)
+            ->withBuildLibraryCached(true)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libavif_prefix)
             ->withConfigure(
@@ -38,14 +38,13 @@ return function (Preprocessor $p) {
             -Dsvt_ROOT={$svt_av1_prefix} \
             -Daom_ROOT={$aom_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
+            -Dlibgav1_ROOT={$libgav1_prefix} \
             -DAVIF_CODEC_AOM=ON \
             -DAVIF_CODEC_DAV1D=ON \
-            -DAVIF_CODEC_LIBGAV1=OFF \
+            -DAVIF_CODEC_LIBGAV1=ON \
             -DAVIF_CODEC_RAV1E=OFF \
             -DAVIF_CODEC_SVT=ON
 
-
-            # -Dlibgav1_ROOT={$libgav1_prefix} \
             # -Dlibyuv_ROOT={$libyuv_prefix} \
             # -DLIBYUV_INCLUDE_DIR={$libyuv_prefix}/include \
             # -DLIBYUV_LIBRARY={$libyuv_prefix}/lib
@@ -59,7 +58,10 @@ EOF
             ->withDependentLibraries(
                 'aom',
                 'svt_av1',
-                'dav1d'
-            ) #   // 'libgav1' 'libyuv',  'libsharpyuv','rav1e'
+                'dav1d',
+                'libgav1'
+            )
+        #   'libyuv',  'libsharpyuv','rav1e'
+        #   'libgav1' 依赖 absl
     );
 };
