@@ -5,11 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
-$homeDir = getenv('HOME');
-$p = Preprocessor::getInstance();
-$p->parseArguments($argc, $argv);
-
-# clean
+# clean old make.sh
 if (file_exists(__DIR__ . '/make.sh')) {
     unlink(__DIR__ . '/make.sh');
 }
@@ -19,6 +15,10 @@ if (file_exists(__DIR__ . '/make-install-deps.sh')) {
 if (file_exists(__DIR__ . '/make-download-box.sh')) {
     unlink(__DIR__ . '/make-download-box.sh');
 }
+
+$homeDir = getenv('HOME');
+$p = Preprocessor::getInstance();
+$p->parseArguments($argc, $argv);
 
 # PHP 默认版本
 $version = '8.2.4';
@@ -52,9 +52,6 @@ if ($p->getInputOption('with-php-version')) {
 
 EOF;
             echo PHP_EOL;
-            if (is_file(__DIR__ . '/' . 'make.sh')) {
-                unlink(__DIR__ . '/' . 'make.sh');
-            }
             die;
         }
     }
@@ -62,12 +59,12 @@ EOF;
 
 define('BUILD_PHP_VERSION', $version);
 
+
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
-
 
 $p->setRootDir(__DIR__);
 
@@ -87,26 +84,18 @@ if ($p->getInputOption('with-global-prefix')) {
 }
 
 $buildType = $p->getBuildType();
-
 if ($p->getInputOption('with-build-type')) {
     $buildType = $p->getInputOption('with-build-type');
     $p->setBuildType($buildType);
 }
-
 define('PHP_CLI_BUILD_TYPE', $buildType);
 define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
+
 
 if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
-$buildType = $p->getBuildType();
-if ($p->getInputOption('with-build-type')) {
-    $buildType = $p->getInputOption('with-build-type');
-    $p->setBuildType($buildType);
-}
-define('SWOOLE_CLI_BUILD_TYPE', $buildType);
-define('SWOOLE_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
 
 if ($p->getInputOption('with-http-proxy')) {
     $http_proxy = $p->getInputOption('with-http-proxy');
