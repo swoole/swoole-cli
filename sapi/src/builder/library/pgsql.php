@@ -19,8 +19,15 @@ return function (Preprocessor $p) {
             ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
             ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS')
+            ->withManual('https://www.postgresql.org/download/')
+            ->withManual('https://git.postgresql.org/gitweb/?p=postgresql.git;a=summary')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
             ->withPrefix($pgsql_prefix)
+            /*
+                git://git.postgresql.org/git/postgresql.git
+                https://git.postgresql.org/git/postgresql.git
+                ssh://git@git.postgresql.org/postgresql.git
+             */
             ->withBuildScript(
                 <<<EOF
             test -d build && rm -rf build
@@ -92,3 +99,12 @@ EOF
             ->withDependentLibraries('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
     );
 };
+
+/*
+
+    cd src/common && make -s -j$(nproc) all && make -s install && cd ../.. && \
+    cd src/port && make -s -j$(nproc) all && make -s install && cd ../.. && \
+    cd src/interfaces/libpq make -s -j$(nproc) all-static-lib && make -s install install-lib-static && \
+    cd ../../bin/pg_config && make -j $(nproc) && make install && \
+
+ */
