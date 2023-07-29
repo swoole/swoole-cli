@@ -28,7 +28,10 @@ return function (Preprocessor $p) {
                 https://git.postgresql.org/git/postgresql.git
                 ssh://git@git.postgresql.org/postgresql.git
              */
-            ->withBuildScript(
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($pgsql_prefix)
+            ->withBuildLibraryCached(false)
+            ->withConfigure(
                 <<<EOF
             test -d build && rm -rf build
             mkdir -p build
@@ -87,6 +90,52 @@ return function (Preprocessor $p) {
 
 EOF
             )
+            ->withBuildScript(
+                <<<EOF
+            test -d build && rm -rf build
+            mkdir -p build
+            cd build
+
+            # {$ldflags}
+            PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
+            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags}" \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
+            ../configure  \
+            --prefix={$pgsql_prefix} \
+            --enable-coverage=no \
+            {$option} \
+            --with-ssl=openssl  \
+            --with-readline \
+            --with-icu \
+            --without-ldap \
+            --with-libxml  \
+            --with-libxslt \
+            --with-lz4 \
+            --with-zstd \
+            --without-perl \
+            --without-python \
+            --without-pam \
+            --without-ldap \
+            --without-bonjour \
+            --without-tcl
+
+
+            make -C  src/common all -j {$p->maxJob}
+            make -C  src/common install
+
+            make -C  src/port all -j {$p->maxJob}
+            make -C  src/port install
+
+
+            make -C  src/interfaces/libpq all-static-lib -j {$p->maxJob}
+            make -C  src/interfaces/libpq install install-lib-static
+
+            make -C src/bin/pg_config -j {$p->maxJob}
+            make -C src/bin/pg_config install
+
+EOF
+            )
             ->withScriptAfterInstall(
                 <<<EOF
             rm -rf {$pgsql_prefix}/lib/*.so.*
@@ -108,3 +157,4 @@ EOF
     cd ../../bin/pg_config && make -j $(nproc) && make install && \
 
  */
+
