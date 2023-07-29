@@ -5,14 +5,15 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $example_prefix = EXAMPLE_PREFIX;
-    $lib = new Library('linux');
-    $lib->withHomePage('https://www.kernel.org/')
-        ->withLicense('https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/LICENSES', Library::LICENSE_GPL)
-        ->withManual('https://git.kernel.org/')
+    $lib = new Library('postgis');
+    $lib->withHomePage('https://postgis.net')
+        ->withLicense('https://git.osgeo.org/gitea/postgis/postgis/src/branch/master/LICENSE.TXT', Library::LICENSE_SPEC)
+        ->withManual('https://postgis.net/development/source_code/')
+        ->withManual('https://git.osgeo.org/gitea/postgis/postgis')
         ->withDownloadScript(
-            'linux-kernel',
+            'postgis',
             <<<EOF
-               git clone -b main --depth=1  git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git linux-kernel
+               git clone -b main --depth=1 --single-branch  https://git.osgeo.org/gitea/postgis/postgis.git
 EOF
         )
         ->withBuildLibraryCached(false)
@@ -20,7 +21,6 @@ EOF
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)
-
         ->withBuildScript(
             <<<EOF
             mkdir -p build

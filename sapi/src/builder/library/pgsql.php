@@ -33,9 +33,9 @@ return function (Preprocessor $p) {
             ->withBuildLibraryCached(false)
             ->withConfigure(
                 <<<EOF
-            test -d build && rm -rf build
-            mkdir -p build
-            cd build
+            test -d build_dir && rm -rf build_dir
+            mkdir -p build_dir
+            cd build_dir
 
             ../configure --help
 
@@ -59,7 +59,7 @@ return function (Preprocessor $p) {
             ../configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
-            {$option} \
+            --disable-thread-safety \
             --with-ssl=openssl  \
             --with-readline \
             --with-icu \
@@ -90,21 +90,22 @@ return function (Preprocessor $p) {
 
 EOF
             )
+            ->withBuildLibraryCached(false)
             ->withBuildScript(
                 <<<EOF
-            test -d build && rm -rf build
-            mkdir -p build
-            cd build
+            test -d build_dir && rm -rf build_dir
+            mkdir -p build_dir
+            # cd build_dir
 
             # {$ldflags}
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags}" \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
-            ../configure  \
+            ./configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
-            {$option} \
+            --disable-thread-safety \
             --with-ssl=openssl  \
             --with-readline \
             --with-icu \
@@ -121,18 +122,13 @@ EOF
             --without-tcl
 
 
-            make -C  src/common all -j {$p->maxJob}
-            make -C  src/common install
+            make -C src/bin install
+            make -C src/include install
+            make -C src/common install
+            make -C src/port install
+            make -C src/interfaces install
 
-            make -C  src/port all -j {$p->maxJob}
-            make -C  src/port install
-
-
-            make -C  src/interfaces/libpq all-static-lib -j {$p->maxJob}
-            make -C  src/interfaces/libpq install install-lib-static
-
-            make -C src/bin/pg_config -j {$p->maxJob}
-            make -C src/bin/pg_config install
+            # make -C doc install
 
 EOF
             )
@@ -141,6 +137,9 @@ EOF
             rm -rf {$pgsql_prefix}/lib/*.so.*
             rm -rf {$pgsql_prefix}/lib/*.so
             rm -rf {$pgsql_prefix}/lib/*.dylib
+            test -f {$pgsql_prefix}/lib/libpgcommon_shlib.a && rm -rf {$pgsql_prefix}/lib/libpgcommon_shlib.a
+            test -f {$pgsql_prefix}/lib/libpgport_shlib.a && rm -rf {$pgsql_prefix}/lib/libpgport_shlib.a
+
 EOF
             )
             ->withPkgName('libpq')

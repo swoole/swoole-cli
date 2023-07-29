@@ -54,3 +54,9 @@ git reset --hard c761f5c # 回退到指定的版本
 
 Linux man命令后数字含义  https://blog.csdn.net/u012424148/article/details/86227759
 
+## 节省
+```bash
+
+git clone --recurse-submodules --single-branch -b main --progress --depth=1
+
+```

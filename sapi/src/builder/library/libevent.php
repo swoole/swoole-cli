@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $libevent_prefix = LIBEVENT_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
-    //$openssl_prefix = OPENSSL_v1_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
     $url = 'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz';
     $p->addLibrary(
         (new Library('libevent'))
@@ -28,6 +28,8 @@ return function (Preprocessor $p) {
                 -DEVENT__LIBRARY_TYPE=STATIC \
                 -DEVENT__DISABLE_OPENSSL=OFF \
                 -DEVENT__DISABLE_THREAD_SUPPORT=OFF \
+                -DZLIB_ROOT={$zlib_prefix} \
+                -DCMAKE_DISABLE_FIND_PACKAGE_PythonInterp=ON \
                 -DOpenSSL_ROOT={$openssl_prefix}
 
 EOF
