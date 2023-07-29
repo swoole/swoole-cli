@@ -154,6 +154,9 @@ clean_<?=$item->name?>() {
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
     rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
+        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    fi
 }
 
     <?php echo str_repeat(PHP_EOL, 1);?>
@@ -249,6 +252,7 @@ make_clean() {
 }
 
 show_lib_pkgs() {
+    set +x
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
         echo -e "[<?= $item->name ?>] pkg-config : \n<?= implode(' ', $item->pkgNames) ?>" ;
@@ -261,6 +265,7 @@ show_lib_pkgs() {
 }
 
 show_lib_dependent_pkgs() {
+    set +x
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
     <?php
