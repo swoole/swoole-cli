@@ -46,12 +46,25 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
+    echo "build <?=$item->name?>"
     <?php if ($item->skipBuildInstall) : ?>
-    echo "skip install library <?=$item->name?>" ;
-    return 0 ;
+        echo "skip install library <?=$item->name?>" ;
+        return 0 ;
     <?php endif ;?>
 
-    echo "build <?=$item->name?>"
+    <?php if ($item->enableBuildLibraryCached) : ?>
+        <?php if ($this->installLibraryCached) :?>
+        if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
+            echo "[<?=$item->name?>]  library cached , skip.."
+            return 0
+        fi
+        <?php endif;?>
+        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+            echo "[<?=$item->name?>] compiled, skip.."
+            cd <?= $this->workDir ?>/
+            return 0
+        fi
+    <?php endif; ?>
 
     <?php if ($item->cleanBuildDirectory) : ?>
      # If the build directory exist, clean the build directory
@@ -86,19 +99,6 @@ make_<?=$item->name?>() {
     cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/    <?= PHP_EOL; ?>
     <?php endif ; ?>
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-        <?php if ($this->installLibraryCached) :?>
-    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
-        echo "[<?=$item->name?>]  library cached , skip.."
-        return 0
-    fi
-        <?php endif;?>
-    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-        echo "[<?=$item->name?>] compiled, skip.."
-        cd <?= $this->workDir ?>/
-        return 0
-    fi
-    <?php endif; ?>
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
@@ -107,7 +107,7 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
-    <?php if ($item->enableHttpProxy) : ?>
+    <?php if ($item->enableBuildLibraryHttpProxy) : ?>
         <?= $this->getProxyConfig() . PHP_EOL ?>
     <?php endif;?>
 
@@ -170,7 +170,7 @@ __EOF__
     <?php endif; ?>
 
     # build end
-    <?php if ($item->enableHttpProxy) :?>
+    <?php if ($item->enableBuildLibraryHttpProxy) :?>
         unset HTTP_PROXY
         unset HTTPS_PROXY
         unset NO_PROXY
@@ -203,6 +203,9 @@ clean_<?=$item->name?>() {
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
     rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
+        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    fi
 }
 
     <?php echo str_repeat(PHP_EOL, 1);?>
@@ -412,6 +415,7 @@ _____EO_____
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 
     set -x
+
     test -d <?= $this->getBuildDir() ?>/php_src && rm -rf <?= $this->getBuildDir() ?>/php_src
     make_php_src
     make_ext
@@ -508,7 +512,8 @@ make_clean() {
     rm -f ext/opcache/minilua
 }
 
-show_lib_pkg() {
+show_lib_pkgs() {
+    set +x
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
         echo -e "[<?= $item->name ?>] pkg-config : \n<?= implode(' ', $item->pkgNames) ?>" ;
@@ -520,7 +525,8 @@ show_lib_pkg() {
     exit 0
 }
 
-show_lib_dependent_pkg() {
+show_lib_dependent_pkgs() {
+    set +x
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
     <?php
@@ -554,6 +560,7 @@ show_lib_dependent_pkg() {
 
 
 help() {
+    set +x
     echo "./make.sh docker-build"
     echo "./make.sh docker-bash"
     echo "./make.sh docker-commit"
@@ -570,7 +577,7 @@ help() {
     echo "./make.sh clean-all-library"
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
-    echo "./make.sh check-lib-pkg"
+    echo "./make.sh lib-pkg-check"
     echo "./make.sh show-lib-pkg"
     echo "./make.sh show-lib-dependent-pkg"
     echo "./make.sh list-swoole-branch"
@@ -656,13 +663,13 @@ elif [ "$1" = "clean-all-library-cached" ] ;then
 elif [ "$1" = "diff-configure" ] ;then
     meld $SRC/configure.ac ./configure.ac
 elif [ "$1" = "list-swoole-branch" ] ;then
-    cd <?= $this->getRootDir() ?>/ext/swoole
+    cd <?= $this->getRootDir() ?>/sapi/swoole
     git branch
 elif [ "$1" = "switch-swoole-branch" ] ;then
-    cd <?= $this->getRootDir() ?>/ext/swoole
+    cd <?= $this->getRootDir() ?>/sapi/swoole
     SWOOLE_BRANCH=$2
     git checkout $SWOOLE_BRANCH
-elif [ "$1" = "check-lib-pkg" ] ;then
+elif [ "$1" = "lib-pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
     echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
@@ -677,10 +684,10 @@ elif [ "$1" = "check-lib-pkg" ] ;then
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "show-lib-pkg" ] ;then
-    show_lib_pkg
+    show_lib_pkgs
     exit 0
 elif [ "$1" = "show-lib-dependent-pkg" ] ;then
-    show_lib_dependent_pkg "$2"
+    show_lib_dependent_pkgs "$2"
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
