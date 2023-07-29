@@ -5,13 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
 
-const BUILD_PHP_VERSION = '8.1.12';
-
-$homeDir = getenv('HOME');
-$p = Preprocessor::getInstance();
-$p->parseArguments($argc, $argv);
-
-# clean
+# clean old make.sh
 if (file_exists(__DIR__ . '/make.sh')) {
     unlink(__DIR__ . '/make.sh');
 }
@@ -21,6 +15,13 @@ if (file_exists(__DIR__ . '/make-install-deps.sh')) {
 if (file_exists(__DIR__ . '/make-download-box.sh')) {
     unlink(__DIR__ . '/make-download-box.sh');
 }
+
+const BUILD_PHP_VERSION = '8.1.12';
+
+$homeDir = getenv('HOME');
+$p = Preprocessor::getInstance();
+$p->parseArguments($argc, $argv);
+
 
 // Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
