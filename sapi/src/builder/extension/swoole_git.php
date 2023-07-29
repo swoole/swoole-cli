@@ -5,16 +5,12 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
+    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
 
-    $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
+    $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
+    $options .= ' --enable-http2  --enable-brotli  ';
+    $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
-    $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
-
-    if ($p->getInputOption('with-swoole-pgsql')) {
-        $options .= ' --enable-swoole-pgsql';
-        $depends[] = 'pgsql';
-    }
 
     $rootDir = $p->getRootDir();
     $ext = (new Extension('swoole_git'))
