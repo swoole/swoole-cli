@@ -10,6 +10,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://www.blender.org/about/license/', Library::LICENSE_GPL)
         ->withManual('https://wiki.blender.org/wiki/Main_Page')
         ->withUrl('https://mirrors.aliyun.com/blender/source/blender-2.93.18.tar.xz')
+        ->withHttpProxy(false) //不走代理
         ->withUntarArchiveCommand('xz')
         ->withPrefix($blender_prefix)
         ->withConfigure(

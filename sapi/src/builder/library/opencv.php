@@ -41,7 +41,7 @@ EOF
             apt install -y python3-numpy
 EOF
         )
-        ->withHttpProxy()
+        ->withBuildLibraryHttpProxy(true)
         ->withBuildScript(
             <<<EOF
 
