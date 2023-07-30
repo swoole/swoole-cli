@@ -42,6 +42,8 @@ abstract class Project
 
     public bool $latestTarball = false;
 
+    public bool $enableBuildLibraryCached = true;
+
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -146,6 +148,12 @@ abstract class Project
     public function withHttpProxy(bool $enableHttpProxy = true): static
     {
         $this->enableHttpProxy = $enableHttpProxy;
+        return $this;
+    }
+
+    public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
+    {
+        $this->enableBuildLibraryCached = $enableBuildLibraryCached;
         return $this;
     }
 }

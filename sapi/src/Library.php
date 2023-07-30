@@ -11,13 +11,21 @@ class Library extends Project
     public string $ldflags = '';
 
     public string $buildScript = '';
+
     public string $makeOptions = '';
+
     public string $makeVariables = '';
+
     public string $makeInstallCommand = 'install';
+
     public string $makeInstallOptions = '';
+
     public string $beforeInstallScript = '';
+
     public string $afterInstallScript = '';
+
     public string $pkgConfig = '';
+
     public array $pkgNames = [];
 
     public string $prefix = '/usr';
@@ -170,7 +178,6 @@ class Library extends Project
         return $this;
     }
 
-
     public function withUntarArchiveCommand(string $command): static
     {
         $this->untarArchiveCommand = $command;
@@ -234,12 +241,6 @@ class Library extends Project
     public function getLabel(): string
     {
         return $this->label;
-    }
-
-    public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
-    {
-        $this->enableBuildLibraryCached = $enableBuildLibraryCached;
-        return $this;
     }
 
     public function withPreInstallCommand(string $preInstallCommand): static
