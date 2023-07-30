@@ -74,7 +74,10 @@ jobs:
           run: |
             ./php-src/sapi/cli/php -v
             ./php-src/sapi/cli/php -m
+            ./php-src/sapi/cli/php --ri gd
             ./php-src/sapi/cli/php --ri swoole
+            ./php-src/sapi/cli/php --ri pgsql
+            ./php-src/sapi/cli/php --ri pdo_pgsql
             file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"

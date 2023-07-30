@@ -117,14 +117,16 @@ jobs:
 
             bash ./make.sh config
             bash ./make.sh build
-            ./php-src/sapi/cli/php -v
             bash ./make.sh archive
 
       - name: Show Build Result
         run: |
           ./php-src/sapi/cli/php -v
           ./php-src/sapi/cli/php -m
+          ./php-src/sapi/cli/php --ri gd
           ./php-src/sapi/cli/php --ri swoole
+          ./php-src/sapi/cli/php --ri pgsql
+          ./php-src/sapi/cli/php --ri pdo_pgsql
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
