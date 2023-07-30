@@ -35,7 +35,7 @@ EOF
             --enable-static=yes
 EOF
         )
-        ->withPkgName('ssl')
+        ->withPkgName('sdl2')
         ->withBinPath($sdl2_prefix . '/bin/')
         ->withDependentLibraries('openssl', 'libiconv')
     ;

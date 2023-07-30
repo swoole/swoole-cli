@@ -11,7 +11,9 @@ return function (Preprocessor $p) {
             'https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md',
             Library::LICENSE_BSD
         )
-        ->withDownloadScript('SVT-AV1', <<<EOF
+        ->withDownloadScript(
+            'SVT-AV1',
+            <<<EOF
             git clone -b v1.5.0 --depth=1 https://gitlab.com/AOMediaCodec/SVT-AV1.git
 EOF
         )
@@ -37,17 +39,6 @@ EOF
             -DBUILD_STATIC_LIBS=ON
             make -j {$p->getMaxJob()}
             make install
-
-
-:<<'====EOF===='
-            # 参考： AOMediaCodec/libavif/blob/main/ext/svt.sh
-            cd Build/linux
-            ./build.sh release static no-dec no-apps
-            exit 0
-            cd ../..
-            mkdir -p include/svt-av1
-            cp Source/API/*.h include/svt-av1
-====EOF====
 
 EOF
         )

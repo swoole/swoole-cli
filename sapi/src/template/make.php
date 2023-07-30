@@ -221,15 +221,16 @@ make_all_library() {
 make_ext() {
     cd <?= $this->getPhpSrcDir() . PHP_EOL ?>
     PHP_SRC_DIR=<?= $this->getPhpSrcDir() . PHP_EOL ?>
-    EXT_DIR=<?= $this->getPhpSrcDir() ?>/ext/
+    EXT_DIR=$PHP_SRC_DIR/ext/
+    TMP_EXT_DIR=$PHP_SRC_DIR/php-tmp-ext-dir/
+    mkdir -p $TMP_EXT_DIR
 <?php
 if ($this->buildType == 'dev') {
     echo <<<EOF
-    TMP_EXT_DIR={$this->getBuildDir()}/php-tmp-ext-dir/
 
     test -d \$TMP_EXT_DIR && rm -rf \$TMP_EXT_DIR
     mkdir -p \$TMP_EXT_DIR
-    cd {$this->phpSrcDir}/ext
+    cd \$EXT_DIR
 
     cp -rf date \$TMP_EXT_DIR
     test -d hash && cp -rf hash \$TMP_EXT_DIR
@@ -258,7 +259,7 @@ EOF;
     } else {
         if ($this->buildType == 'dev') {
             echo <<<EOF
-    cp -rf \$PHP_SRC_DIR/ext/{$name} \$TMP_EXT_DIR
+    cp -rf \$EXT_DIR/{$name} \$TMP_EXT_DIR
 EOF;
         }
     }
@@ -266,7 +267,7 @@ EOF;
 }
 if ($this->buildType == 'dev') {
     echo <<<EOF
-    mv \$PHP_SRC_DIR/ext/ \$PHP_SRC_DIR/del-ext/
+    mv \$EXT_DIR/ \$PHP_SRC_DIR/del-ext/
     mv \$TMP_EXT_DIR \$PHP_SRC_DIR/ext/
 
 EOF;
@@ -438,6 +439,7 @@ _____EO_____
      export_variables
      echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
      echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
+     echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
 <?php if ($this->osType == 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure

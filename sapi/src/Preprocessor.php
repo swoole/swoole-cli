@@ -435,8 +435,7 @@ class Preprocessor
         string $file,
         string $md5sum,
         string $downloadScript,
-    ): void
-    {
+    ): void {
         echo PHP_EOL;
         echo $downloadScript;
         echo PHP_EOL;

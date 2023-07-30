@@ -148,7 +148,6 @@ define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
 
-
 define("LIBARCHIVE_PREFIX", $p->getGlobalPrefix() . '/libarchive');
 
 define("SOCAT_PREFIX", $p->getGlobalPrefix() . '/socat');
@@ -221,6 +220,7 @@ define("OPENH264_PREFIX", $p->getGlobalPrefix() . '/openh264');
 define("PAHO_MQTT_PREFIX", $p->getGlobalPrefix() . '/paho_mqtt');
 
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
+
 define("LIBVPX_PREFIX", $p->getGlobalPrefix() . '/libvpx');
 define("CJSON_PREFIX", $p->getGlobalPrefix() . '/cjson');
 define("BLENDER_PREFIX", $p->getGlobalPrefix() . '/blender');
@@ -235,5 +235,3 @@ define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
-
-

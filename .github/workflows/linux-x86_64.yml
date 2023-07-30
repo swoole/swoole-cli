@@ -94,8 +94,6 @@ jobs:
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
-
-
       - name: Prepare and  Build all-library and  Build
         if: 1
         uses: addnab/docker-run-action@v3
@@ -118,9 +116,12 @@ jobs:
 
             bash sapi/quickstart/mark-install-library-cached.sh
             rm -rf /usr/local/swoole-cli/pgsql
+            rm -rf /usr/local/swoole-cli/freetype
 
             bash ./make.sh all-library
             bash ./make.sh config
+            bash ./make.sh build
+            bash ./make.sh archive
 
 
       - name: Show Build Result
@@ -128,7 +129,10 @@ jobs:
         run: |
           ./php-src/sapi/cli/php -v
           ./php-src/sapi/cli/php -m
+          ./php-src/sapi/cli/php --ri gd
           ./php-src/sapi/cli/php --ri swoole
+          ./php-src/sapi/cli/php --ri pgsql
+          ./php-src/sapi/cli/php --ri pdo_pgsql
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
