@@ -56,8 +56,11 @@ jobs:
             chmod a+x make.sh
             head -n 20 make.sh
 
+            bash make-install-deps.sh
+
             bash sapi/quickstart/mark-install-library-cached.sh
-            bash ./make.sh all-library
+            rm -rf /usr/local/swoole-cli/pgsql
+            rm -rf /usr/local/swoole-cli/freetype
 
             bash ./make.sh config
             bash ./make.sh build

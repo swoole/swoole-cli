@@ -93,7 +93,12 @@ jobs:
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          bash make-install-deps.sh
+
           bash sapi/quickstart/mark-install-library-cached.sh
+          rm -rf /usr/local/swoole-cli/pgsql
+          rm -rf /usr/local/swoole-cli/freetype
+
           bash ./make.sh all-library
 
       - name: Build
