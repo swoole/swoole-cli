@@ -126,7 +126,7 @@ __EOF__
     <?php endif; ?>
 
     # build end
-    <?php if ($item->enableBuildLibraryHttpProxy) :?>
+    <?php if ($item->enableBuildScriptHttpProxy) :?>
         unset HTTP_PROXY
         unset HTTPS_PROXY
         unset NO_PROXY
