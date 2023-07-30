@@ -160,12 +160,6 @@ class Library extends Project
         return $this;
     }
 
-    public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
-    {
-        $this->enableBuildLibraryCached = $enableBuildLibraryCached;
-        return $this;
-    }
-
     public function withPreInstallCommand(string $preInstallCommand): static
     {
         $this->preInstallCommand = $preInstallCommand;
