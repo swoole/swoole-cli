@@ -46,3 +46,7 @@ EOF
             ->withBinPath($brotli_prefix . '/bin/')
     );
 };
+
+/*
+export EXTRA_LIBS='<?= BROTLI_PREFIX ?>/lib/libbrotli.a <?= BROTLI_PREFIX ?>/lib/libbrotlicommon.a <?= BROTLI_PREFIX ?>/lib/libbrotlidec.a <?= BROTLI_PREFIX ?>/lib/libbrotlienc.a'
+*/

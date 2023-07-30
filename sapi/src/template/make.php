@@ -317,10 +317,16 @@ export_variables() {
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+<?php if (isset($this->libraryMap['pgsql'])) : ?>
+    export LIBPQ_CFLAGS=$(pkg-config  --cflags --static libpq);
+    export LIBPQ_LIBS=$(pkg-config    --libs   --static libpq);
+<?php endif;?>
 <?php foreach ($this->exportVariables as $value) : ?>
     export  <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
-    result_code=$?
+
+
+result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE]" && exit  $result_code;
     return 0
 }
@@ -367,6 +373,7 @@ make_config() {
     export   LIBPQ_CFLAGS=$(pkg-config  --cflags --static libpq)
     export   LIBPQ_LIBS=$(pkg-config    --libs   --static libpq)
 
+    # export EXTRA_LIBS='<?= BROTLI_PREFIX ?>/lib/libbrotli.a <?= BROTLI_PREFIX ?>/lib/libbrotlicommon.a <?= BROTLI_PREFIX ?>/lib/libbrotlidec.a <?= BROTLI_PREFIX ?>/lib/libbrotlienc.a'
 
     # -lmcrypt
     # -lm  math.h 链接数学库， -lptread 链接线程库
