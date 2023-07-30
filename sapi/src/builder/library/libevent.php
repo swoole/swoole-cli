@@ -39,7 +39,7 @@ EOF
             ->withPkgName('libevent_extra')
             ->withPkgName('libevent_openssl')
             ->withPkgName(' libevent_pthreads')
-            ->withDependentLibraries('openssl')
+            ->withDependentLibraries('openssl', 'zlib')
             ->withBinPath($libevent_prefix . '/bin/')
     );
 };
