@@ -226,9 +226,6 @@ make_ext() {
 if ($this->buildType == 'dev') {
     echo <<<EOF
     TMP_EXT_DIR={$this->getBuildDir()}/php-tmp-ext-dir/
-    EXT_DIR=\$TMP_EXT_DIR
-
-    cd {$this->phpSrcDir}
 
     test -d \$TMP_EXT_DIR && rm -rf \$TMP_EXT_DIR
     mkdir -p \$TMP_EXT_DIR
@@ -256,9 +253,7 @@ foreach ($this->extensionMap as $extension) {
     }
     if (!empty($extension->peclVersion) || $extension->enableDownloadScript || !empty($extension->url)) {
         echo <<<EOF
-    test -d \$EXT_DIR/{$name}/ &&  rm -rf \$EXT_DIR/{$name}/
-    cp -rf {$this->getRootDir()}/ext/{$name} \$EXT_DIR/
-
+    cp -rf {$this->getRootDir()}/ext/{$name} \$TMP_EXT_DIR
 EOF;
     } else {
         if ($this->buildType == 'dev') {
@@ -271,8 +266,8 @@ EOF;
 }
 if ($this->buildType == 'dev') {
     echo <<<EOF
-    mv \$PHP_SRC_DIR/ext \$PHP_SRC_DIR/deprecated-ext
-    mv \$TMP_EXT_DIR ext
+    mv \$PHP_SRC_DIR/ext/ \$PHP_SRC_DIR/del-ext/
+    mv \$TMP_EXT_DIR \$PHP_SRC_DIR/ext/
 
 EOF;
     echo PHP_EOL;
@@ -421,10 +416,6 @@ _____EO_____
 
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 
-    set -x
-
-    test -d <?= $this->getBuildDir() ?>/php_src && rm -rf <?= $this->getBuildDir() ?>/php_src
-    make_php_src
     make_ext
     make_ext_hook
 
