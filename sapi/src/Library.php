@@ -11,13 +11,21 @@ class Library extends Project
     public string $ldflags = '';
 
     public string $buildScript = '';
+
     public string $makeOptions = '';
+
     public string $makeVariables = '';
+
     public string $makeInstallCommand = 'install';
+
     public string $makeInstallOptions = '';
+
     public string $beforeInstallScript = '';
+
     public string $afterInstallScript = '';
+
     public string $pkgConfig = '';
+
     public array $pkgNames = [];
 
     public string $prefix = '/usr';

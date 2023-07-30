@@ -24,8 +24,8 @@ return function (Preprocessor $p) {
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
         ->withFile('swoole-git-submodule.tar.gz')
-        ->withAutoUpdateFile(true)
-        # 自动 拷贝子模块 swoole 的源代码到 pool/ext/ 目录
+        ->withBuildLibraryCached(false) //及时更新 ext/swoole 的源代码
+        # 打包 sapi/swoole 的源代码到 pool/ext/swoole-git-submodule.tar.gz
         # swoole 版本由子模块控制
         ->withDownloadScript(
             'swoole',
