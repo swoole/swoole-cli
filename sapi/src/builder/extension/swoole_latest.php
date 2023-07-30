@@ -26,8 +26,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
         ->withOptions($options)
-        ->withAutoUpdateFile(false)
-        ->withHttpProxy(true)
+        ->withAutoUpdateFile(true) //每次都下载，不使用缓存，同时及时更新 ext/swoole 源码
         ->withFile('swoole-latest.tar.gz')
         ->withDownloadScript(
             'swoole-src',
