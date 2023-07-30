@@ -110,6 +110,9 @@ jobs:
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
           ./bin/swoole-cli --ri swoole
+          ./bin/swoole-cli --ri gd
+          ./bin/swoole-cli --ri pgsql
+          ./bin/swoole-cli --ri pdo_pgsql
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
