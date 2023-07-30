@@ -29,7 +29,7 @@ EOF
         )
         ->withPkgName('expat')
         ->withBinPath($libexpat_prefix . '/bin/')
-       ;
+    ;
 
     $p->addLibrary($lib);
 

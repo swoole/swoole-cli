@@ -27,6 +27,7 @@ EOF
             cd build_dir
              cmake ..  \
             -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
+            -DCMAKE_C_STANDARD=11 \
             -DCMAKE_BUILD_TYPE=Release  \
             -DCMAKE_C_STANDARD=11 \
             -DBUILD_SHARED_LIBS=OFF  \

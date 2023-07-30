@@ -37,8 +37,8 @@ return function (Preprocessor $p) {
             -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
             -Dsvt_ROOT={$svt_av1_prefix} \
             -Daom_ROOT={$aom_prefix} \
-            -Ddav1d_ROOT={$dav1d_prefix} \
             -Dlibgav1_ROOT={$libgav1_prefix} \
+            -Ddav1d_ROOT={$dav1d_prefix} \
             -DAVIF_CODEC_AOM=ON \
             -DAVIF_CODEC_DAV1D=ON \
             -DAVIF_CODEC_LIBGAV1=ON \
@@ -58,10 +58,10 @@ EOF
             ->withDependentLibraries(
                 'aom',
                 'svt_av1',
+                'libgav1',
                 'dav1d',
-                'libgav1'
             )
-        #   'libyuv',  'libsharpyuv','rav1e'
+        #     'libyuv',  'libsharpyuv','rav1e'
         #   'libgav1' 依赖 absl
     );
 };
