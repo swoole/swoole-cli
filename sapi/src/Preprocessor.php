@@ -654,10 +654,10 @@ EOF;
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
-                $ext_name=$ext->name;
+                $ext_name = $ext->name;
                 if (!empty($ext->aliasName)) {
                     $dst_dir = "{$this->rootDir}/ext/{$ext->aliasName}";
-                    $ext_name=$ext->aliasName;
+                    $ext_name = $ext->aliasName;
                 }
                 if (($ext->enableLatestTarball || !$ext->enableBuildLibraryCached)
                     &&
@@ -669,7 +669,7 @@ EOF;
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
                 $cached = $dst_dir . '/.completed';
                 if (file_exists($cached) && $ext->enableBuildLibraryCached) {
-                    echo 'ext/'.$ext_name . ' cached ';
+                    echo 'ext/' . $ext_name . ' cached ';
                 } else {
                     echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
                     if ($ext->enableBuildLibraryCached) {
