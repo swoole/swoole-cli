@@ -125,12 +125,12 @@ class Preprocessor
         'openssl',
         'readline',
         'xml',
-        'gd',
         'redis',
         'swoole',
         'yaml',
         'imagick',
         'mongodb',
+        'gd',
     ];
     protected array $extEnabledBuff = [];
     protected array $endCallbacks = [];
