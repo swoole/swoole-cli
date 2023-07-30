@@ -230,12 +230,13 @@ EOF;
     echo PHP_EOL;
 } else {
     echo <<<EOF
-    cp -rf \$TMP_EXT_DIR \$PHP_SRC_DIR/ext/
+    cp -rf \$TMP_EXT_DIR/* \$PHP_SRC_DIR/ext/
 EOF;
 }
     echo PHP_EOL;
 ?>
     cd <?= $this->getPhpSrcDir() ?>/
+    return 0
 }
 
 make_ext_hook() {
