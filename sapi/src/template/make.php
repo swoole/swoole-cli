@@ -291,6 +291,7 @@ make_config() {
      export_variables
      echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
      echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
+     echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
 <?php if ($this->osType == 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
