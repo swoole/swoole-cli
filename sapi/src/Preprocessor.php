@@ -127,12 +127,12 @@ class Preprocessor
         'openssl',
         'readline',
         'xml',
-        'gd',
         'redis',
         'swoole',
         'yaml',
         'imagick',
-        //'mongodb', //需要处理依赖库问题 more info ： https://github.com/jingjingxyk/swoole-cli/pull/79/files
+        //'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/jingjingxyk/swoole-cli/pull/79/files
+        'gd',
     ];
     protected array $extEnabledBuff = [];
     protected array $endCallbacks = [];
