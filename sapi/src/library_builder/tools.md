@@ -60,3 +60,30 @@ Linux man命令后数字含义  https://blog.csdn.net/u012424148/article/details
 git clone --recurse-submodules --single-branch -b main --progress --depth=1
 
 ```
+
+```shell
+
+pkg-config --libs libpq
+pkg-config --cflags libpq
+pkg-config libpq --libs-only-L
+pkg-config --modversion libpq
+
+
+pkg-config libpq --libs --cflags
+
+```
+
+--disable-new-dtags表示使用的是rpath，去掉后编译器默认使用runpath
+
+
+使用 -Wl,–whole-archive -Wl,–start-group 和 -Wl,–end-group -Wl,-no-whole-archive
+
+
+# 链接顺序问题解决办法
+https://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking
+
+https://bbs.huaweicloud.com/blogs/373470
+
+https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_node/ld_3.html
+
+macos clang 不支持 -Wl,–whole-archive -Wl,–start-group 和 -Wl,–end-group -Wl,-no-whole-archive
