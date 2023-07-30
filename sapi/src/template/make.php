@@ -227,7 +227,7 @@ EOF;
 if ($this->buildType == 'dev') {
     echo <<<EOF
     mv \$PHP_SRC_DIR/ext \$PHP_SRC_DIR/deprecated-ext
-    mv \$TMP_EXT_DIR ext
+    mv \$TMP_EXT_DIR {$this->phpSrcDir}/ext
 
 EOF;
     echo PHP_EOL;
