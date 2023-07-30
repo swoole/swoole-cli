@@ -212,23 +212,28 @@ foreach ($this->extensionMap as $extension) {
         echo <<<EOF
     cp -rf {$this->getRootDir()}/ext/{$name} \$TMP_EXT_DIR
 EOF;
+        echo PHP_EOL;
     } else {
         if ($this->buildType == 'dev') {
             echo <<<EOF
     cp -rf \$EXT_DIR/{$name} \$TMP_EXT_DIR
 EOF;
+            echo PHP_EOL;
         }
     }
-    echo PHP_EOL;
 }
 if ($this->buildType == 'dev') {
     echo <<<EOF
     mv \$EXT_DIR/ \$PHP_SRC_DIR/del-ext/
     mv \$TMP_EXT_DIR \$PHP_SRC_DIR/ext/
-
 EOF;
     echo PHP_EOL;
+} else {
+    echo <<<EOF
+    cp -rf \$TMP_EXT_DIR \$PHP_SRC_DIR/ext/
+EOF;
 }
+    echo PHP_EOL;
 ?>
     cd <?= $this->getPhpSrcDir() ?>/
 }
