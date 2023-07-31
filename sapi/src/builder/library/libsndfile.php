@@ -18,8 +18,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBuildLibraryCached(false)
-        ->withHttpProxy()
-        ->withPreInstallCommand(
+        ->withPreInstallCommand('alpine',
             <<<EOF
             apk add uuid-runtime
 EOF

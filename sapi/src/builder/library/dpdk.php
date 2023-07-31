@@ -17,6 +17,7 @@ return function (Preprocessor $p) {
             ->withCleanBuildDirectory()
             ->withBuildLibraryCached(false)
             ->withPreInstallCommand(
+                'alpine',
                 <<<EOF
             # apk add python3 py3-pip
             # pip3 install meson pyelftools -i https://pypi.tuna.tsinghua.edu.cn/simple

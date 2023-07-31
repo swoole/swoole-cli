@@ -19,7 +19,7 @@ EOF
         )
         ->withPrefix($spandsp_prefix)
         ->withBuildLibraryHttpProxy()
-        ->withPreInstallCommand(<<<EOF
+        ->withPreInstallCommand('alpine', <<<EOF
         apk add util-linux
 EOF
         )

@@ -12,7 +12,6 @@ return function (Preprocessor $p) {
         ->withManual('https://wiki.gnome.org/Projects/GUPnP')
         ->withUntarArchiveCommand('xz')
         ->withPrefix($GUPnP_prefix)
-        ->withHttpProxy()
         ->withBuildLibraryCached(false)
         ->withCleanBuildDirectory()
         ->withBuildScript(

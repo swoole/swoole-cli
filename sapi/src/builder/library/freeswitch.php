@@ -27,7 +27,7 @@ EOF
         ->withPrefix($freeswitch_prefix)
         ->withBuildLibraryCached(false)
         ->withCleanBuildDirectory()
-        ->withPreInstallCommand(
+        ->withPreInstallCommand('debian',
             <<<EOF
             apt install -y libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
             apt install -y uuid-dev
@@ -36,7 +36,6 @@ EOF
 EOF
         )
         ->withCleanBuildDirectory()
-        //->withHttpProxy()
         ->withBuildScript(
             <<<EOF
 

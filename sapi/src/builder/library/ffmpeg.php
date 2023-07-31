@@ -30,6 +30,7 @@ EOF
         ->withCleanPreInstallDirectory($ffmpeg_prefix)
         //->withBuildLibraryCached(false)
         ->withPreInstallCommand(
+            'alpine',
             <<<EOF
             # 汇编编译器
             apk add yasm nasm
@@ -115,7 +116,7 @@ EOF
             'libxml2',
             'libwebp',
             'svt_av1',
-           // 'dav1d',
+            // 'dav1d',
             'aom',
             'freetype',
             "gmp",

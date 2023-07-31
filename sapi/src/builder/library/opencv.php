@@ -30,7 +30,7 @@ EOF
         ->withPrefix($opencv_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($opencv_prefix)
-        ->withPreInstallCommand(
+        ->withPreInstallCommand('debian',
             <<<EOF
             # apk add ccache python3-dev
 

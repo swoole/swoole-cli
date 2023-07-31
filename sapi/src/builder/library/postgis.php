@@ -17,7 +17,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBuildLibraryCached(false)
-        ->withHttpProxy()
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)

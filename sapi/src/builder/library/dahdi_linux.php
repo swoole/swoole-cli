@@ -21,7 +21,6 @@ EOF
         ->withPrefix($dahdi_linux_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($dahdi_linux_prefix)
-        ->withHttpProxy()
         ->withBuildScript(
             <<<EOF
 

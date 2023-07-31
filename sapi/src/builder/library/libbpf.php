@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
             ->withPrefix($libbpf_prefix)
             ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
-            ->withPreInstallCommand(
+            ->withPreInstallCommand('debian',
                 <<<EOF
             apt install libelf-dev
 EOF

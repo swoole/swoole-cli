@@ -44,7 +44,7 @@ EOF
         ->withPkgName('')
         ->withLdflags('')
         ->withPkgConfig('')
-        ->withPreInstallCommand(
+        ->withPreInstallCommand('alpine',
             <<<EOF
 
 mkdir -p /root/.cargo/

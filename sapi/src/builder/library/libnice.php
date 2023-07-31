@@ -11,12 +11,11 @@ return function (Preprocessor $p) {
         ->withUrl('https://libnice.freedesktop.org/releases/libnice-0.1.21.tar.gz')
         ->withManual('https://gitlab.com/libnice/libnice.git')
         ->withPrefix($libnice_prefix)
-        ->withPreInstallCommand(
+        ->withPreInstallCommand('debian',
             <<<EOF
             apt install -y ninja-build python3-pip meson
 EOF
         )
-        ->withHttpProxy()
         ->withBuildScript(
             <<<EOF
             meson  -h

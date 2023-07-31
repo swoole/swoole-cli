@@ -21,7 +21,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($ceph_prefix)
-        ->withHttpProxy()
         ->withBuildScript(
             <<<EOF
 

@@ -17,6 +17,7 @@ return function (Preprocessor $p) {
             ->withUrl('https://github.com/libarchive/libarchive/releases/download/v3.6.2/libarchive-3.6.2.tar.gz')
             ->withPrefix($libarchive_prefix)
             ->withPreInstallCommand(
+                'debian',
                 <<<EOF
               apt install groff  util-linux
               # apk add groff  util-linux

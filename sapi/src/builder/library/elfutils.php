@@ -26,6 +26,7 @@ EOF
             )
             ->withPrefix($libelf_prefix)
             ->withPreInstallCommand(
+                'debian',
                 <<<EOF
             apt install -y autopoint elfutils
 EOF

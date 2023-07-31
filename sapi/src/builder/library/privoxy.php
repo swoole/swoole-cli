@@ -27,7 +27,7 @@ EOF
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($privoxy_prefix)
             ->withBuildLibraryCached(false)
-            ->withPreInstallCommand(
+            ->withPreInstallCommand('alpine',
                 <<<EOF
                 apk add w3m   docbook2x
                 adduser privoxy --shell /sbin/nologin --disabled-password  --no-create-home

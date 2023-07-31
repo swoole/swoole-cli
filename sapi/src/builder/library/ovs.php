@@ -24,6 +24,7 @@ EOF
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovs_prefix)
         ->withPreInstallCommand(
+            'alpine',
             <<<EOF
         apk add mandoc man-pages
         apk add ghostscript

@@ -13,7 +13,9 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/cisco/openh264.git')
         ->withFile('openh264-v2.3.1.tar.gz')
         ->withPrefix($openh264_prefix)
-        ->withPreInstallCommand(<<<EOF
+        ->withPreInstallCommand(
+            'alpine',
+            <<<EOF
 apt install -y nasm
 
 EOF

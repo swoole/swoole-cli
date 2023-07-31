@@ -20,8 +20,9 @@ return function (Preprocessor $p) {
 EOF
         )
 
-        ->withHttpProxy()
+        ->withBuildLibraryHttpProxy()
         ->withPreInstallCommand(
+            'alpine',
             <<<EOF
             apk add uuid-runtime
 EOF
