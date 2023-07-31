@@ -573,7 +573,10 @@ EOF;
         if (!empty($lib->preInstallCommands)) {
             foreach (['alpine', 'debian', 'ubuntu', 'macos'] as $os) {
                 if (!empty($lib->preInstallCommands[$os])) {
-                    $this->preInstallCommands[$os][] = $lib->preInstallCommands[$os];
+                    $this->preInstallCommands[$os] = array_merge(
+                        $this->preInstallCommands[$os],
+                        $lib->preInstallCommands[$os]
+                    );
                 }
             }
         }
@@ -681,7 +684,9 @@ EOF;
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
                 $cached = $dst_dir . '/.completed';
                 if (file_exists($cached) && $ext->enableBuildLibraryCached) {
-                    echo 'ext/' . $ext_name . ' cached ';
+                    if (in_array($this->buildType, ['dev', 'debug'])) {
+                        echo '[ext/' . $ext_name . '] cached ' . PHP_EOL;
+                    }
                 } else {
                     echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
                     if ($ext->enableBuildLibraryCached) {
@@ -736,7 +741,7 @@ EOF;
 
     public function withPreInstallCommand(string $os, string $preInstallCommand): static
     {
-        if (!empty($os) && in_array($os, ['alpine','debian','ubuntu','macos']) && !empty($preInstallCommand)) {
+        if (!empty($os) && in_array($os, ['alpine', 'debian', 'ubuntu', 'macos']) && !empty($preInstallCommand)) {
             $this->preInstallCommands[$os][] = $preInstallCommand;
         }
         return $this;
