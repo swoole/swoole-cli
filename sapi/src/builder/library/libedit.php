@@ -24,6 +24,5 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libedit')
-
     );
 };

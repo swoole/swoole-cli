@@ -19,6 +19,10 @@ EOF
         )
         ->withPrefix($spandsp_prefix)
         ->withBuildLibraryHttpProxy()
+        ->withPreInstallCommand(<<<EOF
+        apk add util-linux
+EOF
+        )
         ->withConfigure(
             <<<EOF
 
