@@ -99,19 +99,6 @@ if ($p->getInputOption('with-install-library-cached')) {
     $p->setInstallLibraryCached(true);
 }
 
-$p->withPreInstallCommand('set -x');
-
-$with_os_mirror=0;
-if ($p->getInputOption('with-os-mirror-site')) {
-    $with_os_mirror=1;
-    if ($p->getOsType() == 'macos') {
-        $p->withPreInstallCommand('bash sapi/quickstart/macos/setup-homebrew-dependency.sh --mirror china');
-    }
-    if ($p->getOsType() == 'linux') {
-        $p->withPreInstallCommand('bash sapi/quickstart/linux/alpine-init.sh --mirror china');
-    }
-}
-define('SWOOLE_CLI_WITH_OS_MIRROR', $with_os_mirror);
 
 if ($p->getOsType() == 'macos') {
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
@@ -141,29 +128,27 @@ if ($p->getInputOption('with-c-compiler')) {
     }
 }
 
-
-if ($p->getInputOption('with-os-repository-mirror')) {
-    define('SWOOLE_CLI_WITH_OS_REPOSITORY_MIRROR', 1);
-}
-
-
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
 
-
 if ($p->getOsType() == 'macos') {
-    $cmd = <<<'EOF'
+    $p->withPreInstallCommand(
+        'macos',
+        <<<'EOF'
 export PATH=/opt/homebrew/bin/:/usr/local/bin/:$PATH
 
 export HOMEBREW_INSTALL_FROM_API=1
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_AUTO_UPDATE=1
 export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
+EOF
+    );
 
-EOF;
-    if (defined('SWOOLE_CLI_WITH_OS_REPOSITORY_MIRROR')) {
-        $cmd = $cmd .PHP_EOL . <<<'EOF'
+    if ($p->getInputOption('with-os-repository-mirror')) {
+        $p->withPreInstallCommand(
+            'macos',
+            <<<EOF
 export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
@@ -186,11 +171,13 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 [install]
 trusted-host = https://pypi.tuna.tsinghua.edu.cn
 ===EOF===
-
-
-EOF;
+EOF
+        );
     }
-    $cmd =  $cmd .PHP_EOL . <<<'EOF'
+
+    $p->withPreInstallCommand(
+        'macos',
+        <<<'EOF'
 brew=$(which brew  | wc -l)
 if test $brew -eq 1 ;then
 {
@@ -205,20 +192,25 @@ if test $brew -eq 1 ;then
     fi
 }
 fi
-EOF;
+EOF
+    );
 }
 
 
 if ($p->getOsType() == 'linux') {
-    $cmd = <<<'EOF'
-
+    $p->withPreInstallCommand(
+        'debian',
+        <<<'EOF'
 test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
-
 export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
-EOF;
 
-    if (defined('SWOOLE_CLI_WITH_OS_REPOSITORY_MIRROR')) {
-        $cmd =  $cmd .PHP_EOL . <<<'EOF'
+EOF
+    );
+
+    if ($p->getInputOption('with-os-repository-mirror')) {
+        $p->withPreInstallCommand(
+            'debian',
+            <<<'EOF'
 export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
 
 mkdir -p ~/.pip
@@ -229,15 +221,13 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 trusted-host = https://pypi.tuna.tsinghua.edu.cn
 ===EOF===
 
-EOF;
+EOF
+        );
     }
 
-    $cmd =  $cmd .PHP_EOL . <<<'EOF'
-if test -f /etc/os-release; then
-{
-    OS_RELEASE=$(cat /etc/os-release | grep "^ID=" | sed 's/ID=//g')
-    if test $OS_RELEASE = "alpine"  ;then
-    {
+    $p->withPreInstallCommand(
+        'alpine',
+        <<<'EOF'
         meson=$(which meson | wc -l )
         if test $meson -ne 1 ;then
         {
@@ -250,10 +240,12 @@ if test -f /etc/os-release; then
              # git config --global --add safe.directory /work
         }
         fi
-    }
-    elif [ "$OS_RELEASE" = "ubuntu" ] || [  "$OS_RELEASE" = "debian" ]
-    then
-    {
+
+EOF
+    );
+    $p->withPreInstallCommand(
+        'ubuntu',
+        <<<'EOF'
             meson=$(which meson | wc -l )
             if test $meson -ne 1 ;then
             {
@@ -271,17 +263,34 @@ if test -f /etc/os-release; then
              # sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
              # sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
 
-    }
-    fi
+EOF
+    );
 
+    $p->withPreInstallCommand(
+        'ubuntu',
+        <<<'EOF'
+           meson=$(which meson | wc -l )
+            if test $meson -ne 1 ;then
+            {
+                # bash sapi/quickstart/linux/debian-init.sh --mirror china
+                apt install -y python3 python3-pip ninja-build  gn zip unzip p7zip lzip  golang flex
+                apt install -y yasm nasm
+                # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+                # pip3 install meson virtualenv pipenv
+                apt  install -y  meson
+                # pip3 install virtualenv pipenv
+                # git config --global --add safe.directory /work
+            }
+            fi
+
+             # sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
+             # sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
+
+EOF
+    );
 }
-fi
-     # GN=generate-ninja
 
-EOF;
-}
-
-
+# GN=generate-ninja
 
 $header = <<<'EOF'
 #!/use/bin/env bash
@@ -291,15 +300,10 @@ export __CURRENT_DIR__=$(cd "$(dirname $0)";pwd)
 
 EOF;
 
-$cmd = $header . PHP_EOL . $p->getProxyConfig() . PHP_EOL . $cmd;
 
-$p->withPreInstallCommand($cmd);
+#$p->setExtraCflags('-fno-ident -Os');
 
-$p->setExtraCflags('-fno-ident -Os');
-
-
-$p->withPreInstallCommand('#!/usr/bin/env bash');
-$p->withPreInstallCommand('set -x');
+$p->setExtraCflags(' -Os');
 
 
 // Generate make.sh
