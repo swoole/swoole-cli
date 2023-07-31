@@ -23,7 +23,8 @@ return function (Preprocessor $p) {
             --prefix={$libedit_prefix} \
             --enable-static=yes \
             --enable-shared=no \
-            --enable-examples=no
+            --enable-examples=no \
+            --enable-widec
 
 EOF
             )
