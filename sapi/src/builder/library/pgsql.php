@@ -30,7 +30,6 @@ return function (Preprocessor $p) {
              */
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($pgsql_prefix)
-            ->withBuildLibraryCached(false)
             ->withConfigure(
                 <<<EOF
             test -d build_dir && rm -rf build_dir
@@ -90,7 +89,7 @@ return function (Preprocessor $p) {
 
 EOF
             )
-            ->withBuildLibraryCached(false)
+            ->withBuildLibraryCached(true)
             ->withBuildScript(
                 <<<EOF
             test -d build_dir && rm -rf build_dir
