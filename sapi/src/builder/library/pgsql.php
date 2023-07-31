@@ -90,4 +90,6 @@ EOF
             ->withBinPath($pgsql_prefix . '/bin/')
             ->withDependentLibraries('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
     );
+    $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
+    $p->withExportVariable('LIBPQ_LIBS', '$(pkg-config    --libs   --static libpq)');
 };

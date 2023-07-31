@@ -24,6 +24,7 @@ export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
 --enable-shared=no \
 --enable-static=yes \
+--without-valgrind \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
@@ -215,6 +216,7 @@ make_config() {
     export_variables
     echo $LDFLAGS > ldflags.log
     echo $CPPFLAGS > cppflags.log
+    echo $LIBS > libs.log
 
     ./configure $OPTIONS
 }
