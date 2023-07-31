@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($gstreamer_prefix)
-        ->withHttpProxy()
+        ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF
             meson  -h
