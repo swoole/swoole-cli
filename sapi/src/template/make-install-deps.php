@@ -12,7 +12,7 @@ echo " install deps "
 function os_alpine_release() {
     echo "${OS_RELEASE}"
 <?php foreach ($this->preInstallCommands['alpine'] as $item) :?>
-    <?= implode(PHP_EOL, $item) . PHP_EOL ?>
+    <?= $item . PHP_EOL ?>
 <?php endforeach ;?>
     return 0
 }
@@ -20,7 +20,7 @@ function os_alpine_release() {
 function os_debian_release() {
     echo "${OS_RELEASE}"
 <?php foreach ($this->preInstallCommands['debian'] as $item) :?>
-    <?= implode(PHP_EOL, $item) . PHP_EOL ?>
+    <?= $item . PHP_EOL ?>
 <?php endforeach ;?>
     return 0
 }
@@ -28,7 +28,7 @@ function os_debian_release() {
 function os_ubuntu_release() {
     echo "${OS_RELEASE}"
 <?php foreach ($this->preInstallCommands['ubuntu'] as $item) :?>
-    <?= implode(PHP_EOL, $item) . PHP_EOL ?>
+    <?= $item . PHP_EOL ?>
 <?php endforeach ;?>
     return 0
 }
@@ -36,7 +36,7 @@ function os_ubuntu_release() {
 function os_macos_release() {
     echo "${OS_RELEASE}"
 <?php foreach ($this->preInstallCommands['macos'] as $item) :?>
-    <?= implode(PHP_EOL, $item) . PHP_EOL ?>
+    <?= $item . PHP_EOL ?>
 <?php endforeach ;?>
     return 0
 }
