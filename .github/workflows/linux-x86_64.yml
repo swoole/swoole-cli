@@ -102,24 +102,31 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +pgsql +pdo_pgsql -mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }} --with-install-library-cached=1
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }} --with-install-library-cached=1
 
             chmod a+x make.sh
             head -n 20 make.sh
 
+            bash make-install-deps.sh
+
             bash sapi/quickstart/mark-install-library-cached.sh
+            rm -rf /usr/local/swoole-cli/pgsql
+            rm -rf /usr/local/swoole-cli/freetype
+
             bash ./make.sh all-library
 
             bash ./make.sh config
             bash ./make.sh build
-            ./php-src/sapi/cli/php -v
             bash ./make.sh archive
 
       - name: Show Build Result
         run: |
           ./php-src/sapi/cli/php -v
           ./php-src/sapi/cli/php -m
+          ./php-src/sapi/cli/php --ri gd
           ./php-src/sapi/cli/php --ri swoole
+          ./php-src/sapi/cli/php --ri pgsql
+          ./php-src/sapi/cli/php --ri pdo_pgsql
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php

@@ -334,6 +334,11 @@ class Preprocessor
         return $this;
     }
 
+    public function getMaxJob(): string
+    {
+        return $this->maxJob;
+    }
+
     /**
      * set CPU  logical processors
      * @param string $logicalProcessors
@@ -432,8 +437,7 @@ class Preprocessor
         string $file,
         string $md5sum,
         string $downloadScript,
-    ): void
-    {
+    ): void {
         echo PHP_EOL;
         echo $downloadScript;
         echo PHP_EOL;

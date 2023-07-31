@@ -56,8 +56,11 @@ jobs:
             chmod a+x make.sh
             head -n 20 make.sh
 
+            bash make-install-deps.sh
+
             bash sapi/quickstart/mark-install-library-cached.sh
-            bash ./make.sh all-library
+            rm -rf /usr/local/swoole-cli/pgsql
+            rm -rf /usr/local/swoole-cli/freetype
 
             bash ./make.sh config
             bash ./make.sh build
@@ -71,13 +74,15 @@ jobs:
           run: |
             ./php-src/sapi/cli/php -v
             ./php-src/sapi/cli/php -m
+            ./php-src/sapi/cli/php --ri gd
             ./php-src/sapi/cli/php --ri swoole
+            ./php-src/sapi/cli/php --ri pgsql
+            ./php-src/sapi/cli/php --ri pdo_pgsql
             file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
-
 
       - name: production artifacts
         uses: actions/upload-artifact@v3

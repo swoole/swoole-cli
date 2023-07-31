@@ -93,7 +93,12 @@ jobs:
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          bash make-install-deps.sh
+
           bash sapi/quickstart/mark-install-library-cached.sh
+          rm -rf /usr/local/swoole-cli/pgsql
+          rm -rf /usr/local/swoole-cli/freetype
+
           bash ./make.sh all-library
 
       - name: Build
@@ -108,7 +113,10 @@ jobs:
           export PATH="/usr/local/opt/binutils/bin:$PATH"
           ./php-src/sapi/cli/php -v
           ./php-src/sapi/cli/php -m
+          ./php-src/sapi/cli/php --ri gd
           ./php-src/sapi/cli/php --ri swoole
+          ./php-src/sapi/cli/php --ri pgsql
+          ./php-src/sapi/cli/php --ri pdo_pgsql
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           otool -L ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
