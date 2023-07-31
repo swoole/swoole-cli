@@ -53,6 +53,7 @@ EOF
             'ogg',
             'zlib',
             'rabbitmq_c',
+            'ffmpeg',
         )
         ;
 
