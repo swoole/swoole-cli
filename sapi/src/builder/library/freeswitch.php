@@ -67,12 +67,12 @@ EOF
             # libav
             # mod_av 不支持最新的ffmpeg
 
-            # -Wall -Wextra -pedantic
+            # -Wall -Wextra -pedantic  -Werror=stringop-overflow=
 
             # export  CFLAGS="-O3  -g  -fms-extensions -std=c11 -Werror,-Wc11-extensions -pedantic " \
 
             ./configure --help
-            export  CFLAGS="-O3  -g  -fms-extensions -std=c11  -Werror=stringop-overflow=" \
+            export  CFLAGS="-O3  -g  -fms-extensions -std=c11 " \
             PACKAGES="openssl libpq spandsp sofia-sip-ua odbc libjpeg libturbojpeg liblzma libpng sqlite3 zlib libcurl"
             PACKAGES="\$PACKAGES libcares  libbrotlicommon libbrotlidec libbrotlienc"
             PACKAGES="\$PACKAGES libnghttp2 libnghttp3 "
