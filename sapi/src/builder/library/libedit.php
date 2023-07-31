@@ -15,6 +15,10 @@ return function (Preprocessor $p) {
                 <<<EOF
             # autoreconf -fi
             ./configure --help
+            PACKAGES='ncursesw  '
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) " \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) " \
             ./configure \
             --prefix={$libedit_prefix} \
             --enable-static=yes \
@@ -24,5 +28,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libedit')
+            ->withDependentLibraries('ncurses')
     );
 };
