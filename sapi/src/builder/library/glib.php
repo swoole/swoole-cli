@@ -4,34 +4,49 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $p->addLibrary(
-        (new Library('gnulib'))
-            ->withHomePage('https://www.gnu.org/software/gnulib/')
-            ->withLicense('https://www.gnu.org/licenses/gpl-2.0.html', Library::LICENSE_LGPL)
-            ->withManual('https://www.gnu.org/software/gnulib/manual/')
-            ->withManual('https://www.gnu.org/software/gnulib/manual/html_node/Building-gnulib.html')
-            ->withUrl('https://github.com/coreutils/gnulib/archive/refs/heads/master.zip')
-            ->withDownloadScript(
-                'gnulib',
-                <<<EOF
-              git clone -b master --depth 1 --single-branch  https://git.savannah.gnu.org/git/gnulib.git
+    $example_prefix = EXAMPLE_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
+    $lib = new Library('glib');
+    $lib->withHomePage('https://gitlab.gnome.org/GNOME/glib')
+        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+        ->withManual('https://gitlab.gnome.org/GNOME/glib/-/blob/main/INSTALL.md')
+        ->withFile('glib-latest.tar.gz')
+        ->withAutoUpdateFile()
+        ->withDownloadScript(
+            'glib',
+            <<<EOF
+                git clone -b main --depth=1 https://gitlab.gnome.org/GNOME/glib.git
 EOF
-            )
-            ->withFile('gnulib-latest.tar.gz')
-            ->withCleanBuildDirectory()
-            ->withBuildScript(
-                <<<EOF
+        )
+        ->withUntarArchiveCommand('xz')
+        ->withPrefix($example_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($example_prefix)
+        ->withBuildLibraryCached(false)
+        ->withBuildScript(
+            <<<EOF
+            meson  -h
+            meson setup -h
+            # meson configure -h
 
-                ./gnulib-tool --help
-                exit 3
-                gnulib-tool --create-megatestdir --with-tests --dir=...
-                ./configure
-                make dist
-                ./do-autobuild
-                             return 0 ;
+            meson setup  build \
+            -Dprefix={$example_prefix} \
+            -Dbackend=ninja \
+            -Dbuildtype=release \
+            -Ddefault_library=static \
+            -Db_staticpic=true \
+            -Db_pie=true \
+            -Dprefer_static=true \
+            -Dexamples=disabled
+
+            meson compile -C build
+            meson install -C build
 EOF
-            )
-            ->withPkgConfig('')
-            ->withPkgName('')
-    );
+        )
+
+        ->withPkgName('glib-2.0')
+        ->withBinPath($example_prefix . '/bin/')
+        ->withDependentLibraries('zlib', 'openssl');
+    $p->addLibrary($lib);
+
 };
