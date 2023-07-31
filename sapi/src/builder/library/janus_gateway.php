@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
         ->withManual('https://janus.conf.meetecho.com/')
         ->withFile('janus-gateway-v1.1.4.tar.gz')
         ->withDownloadScript(
-            '',
+            'janus-gateway',
             <<<EOF
             git clone -b v1.1.4 --depth=1  https://github.com/meetecho/janus-gateway.git
 EOF
