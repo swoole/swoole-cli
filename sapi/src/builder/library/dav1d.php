@@ -5,23 +5,6 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $dav1d_prefix = DAV1D_PREFIX;
-    $linux_pre_install=<<<EOF
-        # library dav1d :
-        apk add ninja python3 py3-pip  nasm yasm
-        pip3 install meson
-EOF;
-    $macos_pre_install=<<<EOF
-
-export HOMEBREW_INSTALL_FROM_API=1
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-brew install  ninja python3  nasm
-# python3 -m pip install --upgrade pip
-pip3 install meson
-# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-EOF;
-    $pre_install = $p->getOsType()=='macos' ? $macos_pre_install : $linux_pre_install;
     $p->addLibrary(
         (new Library('dav1d'))
             ->withHomePage('https://code.videolan.org/videolan/dav1d/')
@@ -40,7 +23,27 @@ EOF
             ->withBuildLibraryCached(true)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($dav1d_prefix)
-            ->withPreInstallCommand($pre_install)
+            ->withPreInstallCommand(
+                'alpine',
+                <<<EOF
+apk add ninja python3 py3-pip  nasm yasm
+pip3 install meson
+EOF
+            )
+            ->withPreInstallCommand(
+                'macos',
+                <<<EOF
+export HOMEBREW_INSTALL_FROM_API=1
+export HOMEBREW_NO_ANALYTICS=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+brew install  ninja python3  nasm yasm
+# python3 -m pip install --upgrade pip
+pip3 install meson
+# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
+EOF
+            )
             ->withBuildScript(
                 <<<EOF
 

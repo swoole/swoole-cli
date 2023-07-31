@@ -140,10 +140,8 @@ if ($p->getInputOption('with-c-compiler')) {
     }
 }
 
-$p->setExtraCflags('-fno-ident -Os');
+$p->setExtraCflags(' -Os');
 
-$p->withPreInstallCommand('#!/usr/bin/env bash');
-$p->withPreInstallCommand('set -x');
 
 // Generate make.sh
 $p->execute();
