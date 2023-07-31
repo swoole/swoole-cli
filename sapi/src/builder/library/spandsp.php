@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($spandsp_prefix)
-        ->withHttpProxy()
+        ->withBuildLibraryHttpProxy()
         ->withConfigure(
             <<<EOF
 
