@@ -271,16 +271,10 @@ if ($this->buildType == 'dev') {
     mv \$EXT_DIR/ \$PHP_SRC_DIR/del-ext/
     mv \$TMP_EXT_DIR \$PHP_SRC_DIR/ext/
 EOF;
-<<<<<<< HEAD
-} else {
-    echo <<<EOF
-    cp -rf \$TMP_EXT_DIR \$PHP_SRC_DIR/ext/
-=======
     echo PHP_EOL;
 } else {
     echo <<<EOF
     cp -rf \$TMP_EXT_DIR/* \$PHP_SRC_DIR/ext/
->>>>>>> build_native_php
 EOF;
 }
     echo PHP_EOL;
