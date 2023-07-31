@@ -72,7 +72,13 @@ class Preprocessor
 
     protected array $exportVariables = [];
 
-    protected array $preInstallCommands = [];
+    protected array $preInstallCommands = [
+        'alpine' => [],
+        'debian' => [],
+        'ubuntu' => [],
+        'macos' => []
+    ];
+
     /**
      * default value : CPU   logical processors
      * @var string
@@ -432,11 +438,8 @@ class Preprocessor
      * @param string $downloadScript
      * @return void
      */
-    protected function downloadFileWithScript(
-        string $file,
-        string $md5sum,
-        string $downloadScript,
-    ): void {
+    protected function downloadFileWithScript(string $file, string $md5sum, string $downloadScript): void
+    {
         echo PHP_EOL;
         echo $downloadScript;
         echo PHP_EOL;
@@ -565,8 +568,13 @@ EOF;
         if (empty($lib->license)) {
             throw new Exception("require license");
         }
-        if (!empty($lib->preInstallCommand)) {
-            $this->preInstallCommands[] = $lib->preInstallCommand;
+
+        if (!empty($lib->preInstallCommands)) {
+            foreach (['alpine', 'debian', 'ubuntu', 'macos'] as $os) {
+                if (!empty($lib->preInstallCommands[$os])) {
+                    $this->preInstallCommands[$os][] = $lib->preInstallCommands[$os];
+                }
+            }
         }
 
         $this->libraryList[] = $lib;
@@ -724,9 +732,11 @@ EOF;
         return $this;
     }
 
-    public function withPreInstallCommand(string $preInstallCommand): static
+    public function withPreInstallCommand(string $os, string $preInstallCommand): static
     {
-        $this->preInstallCommands[] = $preInstallCommand;
+        if (!empty($os) && in_array($os, ['alpine','debian','ubuntu','macos']) && !empty($preInstallCommand)) {
+            $this->preInstallCommands[$os][] = $preInstallCommand;
+        }
         return $this;
     }
 
