@@ -29,6 +29,7 @@ EOF
             <<<EOF
         apk add mandoc man-pages
         apk add ghostscript
+        pip3 install pipenv
 EOF
         )
         ->withBuildScript(
