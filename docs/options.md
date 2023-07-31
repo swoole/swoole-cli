@@ -181,3 +181,11 @@ with-override-default-enabled-ext
 ```shell
 php ./prepare.php +uuid --with-override-default-enabled-ext=1 --with-build-type=dev
 ```
+
+with-libavif
+---
+GD 库支持 AVIF 图片
+
+```shell
+php ./prepare.php --with-libavif=1
+```
