@@ -1,12 +1,12 @@
-# macos快速准备运行环境
+# macos快速准备构建环境
 
 ## 准备依赖
 ```shell
 
-bash sapi/quickstart/macos/setup-homebrew-dependency.sh
+bash sapi/quickstart/macos/homebrew-init.sh
 
 # 使用中国大陆镜像
-bash sapi/quickstart/macos/setup-homebrew-dependency.sh --mirror china
+bash sapi/quickstart/macos/homebrew-init.sh --mirror china
 
 ```
 
