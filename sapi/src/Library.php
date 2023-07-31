@@ -40,7 +40,7 @@ class Library extends Project
 
     public bool $enableBuildLibraryCached = true;
 
-    public string $preInstallCommand = '';
+    public array $preInstallCommands = [];
 
     public bool $enableBuildLibraryHttpProxy = false;
 
@@ -160,9 +160,11 @@ class Library extends Project
         return $this;
     }
 
-    public function withPreInstallCommand(string $preInstallCommand): static
+    public function withPreInstallCommand(string $os, string $preInstallCommand): static
     {
-        $this->preInstallCommand = $preInstallCommand;
+        if (!empty($os) && in_array($os, ['alpine','debian','ubuntu','macos']) && !empty($preInstallCommand)) {
+            $this->preInstallCommands[$os][] = $preInstallCommand;
+        }
         return $this;
     }
 
