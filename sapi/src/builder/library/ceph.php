@@ -24,6 +24,9 @@ EOF
         ->withBuildScript(
             <<<EOF
 
+
+
+
 test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 
 mkdir -p /etc/apt/apt.conf.d/
@@ -64,9 +67,9 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
             fi
             if test \$SUPPORT_OS -ne 1 ;then
                 echo 'no support os'
-                exit 0
+                exit 3
             fi
-
+            # 仅支持 ubuntu
 
             if [ -f build-env-ok ] ; then
                 test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf

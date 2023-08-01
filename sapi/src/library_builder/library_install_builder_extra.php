@@ -43,6 +43,7 @@ EOF
             )
             ->withCleanBuildDirectory()
             ->withPreInstallCommand(
+                'alpine',
                 <<<EOF
                 apk add llvm bpftool
 EOF

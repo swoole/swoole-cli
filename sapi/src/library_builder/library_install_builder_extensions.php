@@ -27,40 +27,7 @@ function install_php_parser($p)
 
 function install_php_internal_extensions($p)
 {
-    $workDir = $p->getWorkDir();
-    $p->addLibrary(
-        (new Library('php_internal_extensions'))
-            ->withHomePage('https://www.php.net/')
-            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
-            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
-            ->withFile('php-8.1.12.tar.gz')
-            ->withManual('https://www.php.net/docs.php')
-            ->withLabel('php_internal_extension')
-            ->withCleanBuildDirectory()
-            ->withBuildScript(
-                <<<EOF
-                    test -d {$workDir}/ext/ffi && rm -rf {$workDir}/ext/ffi
-                    cp -rf  ext/ffi {$workDir}/ext/
 
-                    test -d {$workDir}/ext/pdo_pgsql && rm -rf {$workDir}/ext/pdo_pgsql
-                    cp -rf  ext/pdo_pgsql {$workDir}/ext/
-
-                    test -d {$workDir}/ext/pgsql && rm -rf {$workDir}/ext/pgsql
-                    cp -rf  ext/pgsql {$workDir}/ext/
-                    
-                    test -d {$workDir}/library && rm -rf {$workDir}/library
-                    test -d {$workDir}/ext/xlswriter/library && cp -rf {$workDir}/ext/xlswriter/library  {$workDir}/
-                    test -d {$workDir}/kernel && rm -rf {$workDir}/kernel
-                    test -d {$workDir}/ext/xlswriter/kernel && cp -rf {$workDir}/ext/xlswriter/kernel  {$workDir}/
-                    
-EOF
-            )
-            ->withSkipDownload()
-            ->disablePkgName()
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->withSkipBuildLicense()
-    );
 }
 
 function install_php_extension_micro(Preprocessor $p)
@@ -85,28 +52,7 @@ function install_php_extension_micro(Preprocessor $p)
 
 function install_php_extension_swow(Preprocessor $p)
 {
-    $workDir = $p->getWorkDir();
-    $buildDir = $p->getBuildDir();
-    $p->addLibrary(
-        (new Library('php_extension_swow'))
-            ->withHomePage('https://github.com/swow/swow')
-            ->withUrl('https://github.com/swow/swow/archive/refs/tags/v1.2.0.tar.gz')
-            ->withFile('swow-v1.2.0.tar.gz')
-            ->withLicense('https://github.com/swow/swow/blob/develop/LICENSE', Library::LICENSE_APACHE2)
-            ->withManual('https://github.com/swow/swow')
-            ->withLabel('php_extension')
-            ->withCleanBuildDirectory()
-            ->withBuildScript(
-                <<<EOF
-            test -d {$workDir}/ext/swow && rm -rf {$workDir}/ext/swow
-            cp -rf {$buildDir}/php_extension_swow/ext/ {$workDir}/ext/swow
-            return 0
-EOF
-            )
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->disablePkgName()
-    );
+
 }
 
 function install_php_extension_wasm(Preprocessor $p)
@@ -132,33 +78,11 @@ function install_php_extension_wasm(Preprocessor $p)
             ->disableDefaultPkgConfig()
             ->disableDefaultLdflags()
             ->disablePkgName()
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
 function install_php_extension_zookeeper(Preprocessor $p)
 {
-    $workDir = $p->getWorkDir();
-    $buildDir = $p->getBuildDir();
-    $p->addLibrary(
-        (new Library('php_extension_wasm'))
-            ->withHomePage('https://github.com/wasmerio/wasmer-php.git')
-            ->withUrl('https://github.com/wasmerio/wasmer-php/archive/refs/tags/1.1.0.tar.gz')
-            ->withFile('wasmer-php-1.1.0.tar.gz')
-            ->withLicense('https://github.com/wasmerio/wasmer-php/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withManual('https://github.com/wasmerio/wasmer-php.git')
-            ->withLabel('php_extension')
-            ->withCleanBuildDirectory()
-            ->withBuildScript(
-                "
-              ls -lh ./ext
-              pwd
-              cp -rf ext  {$workDir}/ext/wasm
-            "
-            )
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->disablePkgName()
-    //->withSkipBuildInstall()
-    );
+
 }
