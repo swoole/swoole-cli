@@ -94,3 +94,6 @@ macos clang 不支持 -Wl,–whole-archive -Wl,–start-group 和 -Wl,–end-gro
 gcc 提供了 -Wl,--as-needed 和 -Wl,--no-as-needed 两个选项，这两个选项一个是开启特性，一个是取消该特性。
 -Wl,--as-needed 选项指示最终的可执行文件中只包含必要的链接库信息；
 -Wl,--no-as-needed 选项指示在命令行中指定加载的所有库都记录到可执行文件头中，并最终由动态加载器去加载
+
+re2c:
+https://github.com/skvadrik/re2c/
