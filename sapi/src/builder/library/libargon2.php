@@ -5,10 +5,10 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libargon2_prefix = LIBARGON2_PREFIX;
-    $libargon2_path = '/lib/';
 
+    $libargon2_lib_path = $libargon2_prefix . '/lib/';
     if (($p->getOsType() == 'linux') && ($p->getSystemArch() == 'x64')) {
-        $libargon2_path = '/lib/x86_64-linux-gnu/';
+        $libargon2_lib_path = $libargon2_prefix . '/lib/x86_64-linux-gnu/';
     }
 
     $lib = new Library('libargon2');
@@ -28,15 +28,15 @@ EOF
         ->withMakeInstallOptions('PREFIX=' . $libargon2_prefix)
         ->withScriptAfterInstall(
             <<<EOF
-            rm -rf {$libargon2_prefix}{$libargon2_path}/*.so.*
-            rm -rf {$libargon2_prefix}{$libargon2_path}/*.so
-            rm -rf {$libargon2_prefix}{$libargon2_path}/*.dylib
+            rm -rf {$libargon2_lib_path}/*.so.*
+            rm -rf {$libargon2_lib_path}/*.so
+            rm -rf {$libargon2_lib_path}/*.dylib
 EOF
         )
         ->withPkgName('libargon2')
         ->withBinPath($libargon2_prefix . '/bin/')
-        ->withLdflags('-L' . $libargon2_prefix . $libargon2_path)
-        ->withPkgConfig($libargon2_prefix . "{$libargon2_path}pkgconfig");
+        ->withLdflags('-L' . $libargon2_lib_path)
+        ->withPkgConfig($libargon2_lib_path . "/pkgconfig");
 
     $p->addLibrary($lib);
 };
