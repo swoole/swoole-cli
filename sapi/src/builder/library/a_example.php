@@ -113,7 +113,7 @@ EOF
 EOF
         )
         ->withSkipDownload()
-        ->withPkgName('ssl')
+        ->withPkgName('opencv')
         ->withBinPath($example_prefix . '/bin/')
         ->withDependentLibraries('zlib', 'openssl')
         ->withLdflags('-L' . $example_prefix . '/lib/x86_64-linux-gnu/')

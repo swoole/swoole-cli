@@ -233,5 +233,7 @@ define("APR_PREFIX", $p->getGlobalPrefix() . '/apr');
 define("APR_UTIL_PREFIX", $p->getGlobalPrefix() . '/apr-util');
 define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
-
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
+define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
+

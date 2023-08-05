@@ -197,6 +197,9 @@ clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
     <?php endif; ?>
     rm -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
+        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    fi
     cd <?= $this->workDir . PHP_EOL ?>
 }
 
