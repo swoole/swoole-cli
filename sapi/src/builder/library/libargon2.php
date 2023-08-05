@@ -5,6 +5,12 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libargon2_prefix = LIBARGON2_PREFIX;
+    $libargon2_path = '/lib/';
+
+    if (($p->getOsType() == 'linux') && ($p->getSystemArch() == 'x64')) {
+        $libargon2_path = '/lib/x86_64-linux-gnu/';
+    }
+
     $lib = new Library('libargon2');
     $lib->withHomePage('https://github.com/P-H-C/phc-winner-argon2.git')
         ->withLicense('https://github.com/P-H-C/phc-winner-argon2/blob/master/LICENSE', Library::LICENSE_SPEC)
@@ -22,15 +28,15 @@ EOF
         ->withMakeInstallOptions('PREFIX=' . $libargon2_prefix)
         ->withScriptAfterInstall(
             <<<EOF
-            rm -rf {$libargon2_prefix}/lib/x86_64-linux-gnu/*.so.*
-            rm -rf {$libargon2_prefix}/lib/x86_64-linux-gnu/*.so
-            rm -rf {$libargon2_prefix}/lib/x86_64-linux-gnu/*.dylib
+            rm -rf {$libargon2_prefix}{$libargon2_path}/*.so.*
+            rm -rf {$libargon2_prefix}{$libargon2_path}/*.so
+            rm -rf {$libargon2_prefix}{$libargon2_path}/*.dylib
 EOF
         )
         ->withPkgName('libargon2')
         ->withBinPath($libargon2_prefix . '/bin/')
-        ->withLdflags('-L' . $libargon2_prefix . '/lib/x86_64-linux-gnu/')
-        ->withPkgConfig($libargon2_prefix . '/lib/x86_64-linux-gnu/pkgconfig');
+        ->withLdflags('-L' . $libargon2_prefix . $libargon2_path)
+        ->withPkgConfig($libargon2_prefix . "{$libargon2_path}pkgconfig");
 
     $p->addLibrary($lib);
 };
