@@ -63,7 +63,6 @@ if [[ $ACTION = "delete" ]]; then
   test -d modules && rm -rf modules
   test -f configure && rm -rf configure
   test -f configure.ac && rm -rf configure.ac
-  test -f .gitmodules && rm -rf .gitmodules
   test -f buildconf && rm -rf buildconf
   test -f cppflags.log && rm -rf cppflags.log
   test -f ldflags.log && rm -rf ldflags.log
@@ -77,5 +76,6 @@ if [[ $ACTION = "delete" ]]; then
   test -f conftest && rm -rf conftest
   test -f conftest.c && rm -rf conftest.c
   test -d scripts && rm -rf scripts
+  test -d sapi/cli && rm -rf sapi/cli/
 
 fi
