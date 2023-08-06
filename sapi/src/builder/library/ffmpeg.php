@@ -6,6 +6,10 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     // 查看更多 https://git.ffmpeg.org/gitweb
 
+    //更多静态库参考： https://github.com/BtbN/FFmpeg-Builds/tree/master/scripts.d
+
+    //https://github.com/zshnb/ffmpeg-gpu-compile-guide.git
+
     $ffmpeg_prefix = FFMPEG_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
     $lib = new Library('ffmpeg');
