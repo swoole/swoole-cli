@@ -99,4 +99,10 @@ bash make.sh archive
 1. [linux](../../docs/linux.md)
 1. [macos](../../docs/macOS.md)
 1. [wsl](../../docs/wsl.md)
-2. [构建选项](../../docs/options.md)
+1. [构建选项](../../docs/options.md)
+
+## PHP 版本变更详情
+
+1. [PHP 8.1.x 升级到 PHP 8.2.x  的变更](https://www.php.net/manual/zh/migration82.php)
+1. [PHP 8.0.x 升级到 PHP 8.1.x  的变更](https://www.php.net/manual/zh/migration81.php)
+1. [PHP 7.4.x 升级到 PHP 8.0.x  的变更](https://www.php.net/manual/zh/migration80.php)

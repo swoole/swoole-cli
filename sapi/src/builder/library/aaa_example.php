@@ -10,9 +10,16 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://github.com/opencv/opencv.git')
+        /*
 
+       ->withDownloadWithOriginURL() //明确申明 使用源地址下载
+       ->withAutoUpdateFile() //明确声明，每次都执行下载，不使用已下载的缓存文件
+       ->withHttpProxy(false) //明确申明 不使用代理
+       ->withBuildLibraryCached(false) //明确申明 不使用缓存缓存目录  例子： thirdparty/openssl (每次都解压全新源代码到此目录）
+       ->withDownloadWithMirrorURL(false) //明确申明不使用镜像下载
 
-        ->withDownloadWithMirrorURL(false) //明确申明不使用镜像下载
+        */
+
         //下载扩展源代码 二种方式 （任选一种即可）
 
         /********************* 下载依赖库源代码方式一 start *****************************/
@@ -58,12 +65,11 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
         test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 EOF
         )
-        ->withBuildLibraryHttpProxy() //构建过程中添加代理 （特殊库才需要，比如构建 rav1e 库，构建过程中会自动下载）
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()  //build_type=dev 才生效  自动清理构建目录  用于调试
         ->withCleanPreInstallDirectory($example_prefix)  //build_type=dev 才生效  自动清理安装目录 用于调试
         ->withBuildLibraryCached(false) //明确申明 不使用构建缓存
-
+        ->withBuildLibraryHttpProxy() //构建过程中添加代理 （特殊库才需要，比如构建 rav1e 库，构建过程中会自动到代码仓库下载）
 
         /********************************* 使用 cmake 构建 start *************************************/
         ->withBuildScript(
@@ -113,6 +119,7 @@ EOF
 
             ninja -C build
             ninja -C build install
+
 EOF
         )
         /********************************* 使用 meson、ninja  构建 end *************************************/
@@ -134,6 +141,7 @@ EOF
             --prefix={$example_prefix} \
             --enable-shared=no \
             --enable-static=yes
+
 EOF
         )
         /********************** 使用 autoconfig automake  构建 end  **********************/
