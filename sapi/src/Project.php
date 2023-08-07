@@ -127,9 +127,9 @@ abstract class Project
         return $this;
     }
 
-    public function disableDownloadWithMirrorURL(): static
+    public function withDownloadWithMirrorURL(bool $enableDownloadWithMirrorURL = true): static
     {
-        $this->enableDownloadWithMirrorURL = false;
+        $this->enableDownloadWithMirrorURL = $enableDownloadWithMirrorURL;
         return $this;
     }
 

@@ -123,7 +123,7 @@ function install_libyuv(Preprocessor $p)
                 Library::LICENSE_SPEC
             )
             ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
-            ->disableDownloadWithMirrorURL()
+            ->withDownloadWithMirrorURL(false)
             ->withDownloadScript(
                 'libyuv',
                 <<<EOF
@@ -231,7 +231,7 @@ function install_nasm(Preprocessor $p)
             ->withLicense('http://opensource.org/licenses/BSD-2-Clause', Library::LICENSE_BSD)
             ->withManual('https://github.com/netwide-assembler/nasm.git')
             ->withMd5sum('42c4948349d01662811c8641fad4494c')
-            ->disableDownloadWithMirrorURL()
+            ->withDownloadWithMirrorURL(false)
             ->withPrefix($nasm_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($nasm_prefix)
@@ -953,7 +953,7 @@ function install_boringssl($p)
             )
             ->withUrl('https://github.com/google/boringssl/archive/refs/heads/master.zip')
             ->withFile('boringssl-latest.tar.gz')
-            ->disableDownloadWithMirrorURL()
+            ->withDownloadWithMirrorURL(false)
             ->withDownloadScript(
                 'boringssl',
                 <<<EOF
