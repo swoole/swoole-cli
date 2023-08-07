@@ -46,6 +46,8 @@ abstract class Project
 
     public bool $enableDownloadWithMirrorURL = false;
 
+    public bool $enableDownloadWithOriginURL = false;
+
     public bool $enableBuildLibraryCached = true;
 
     public function __construct(string $name)
@@ -104,12 +106,6 @@ abstract class Project
         return $this;
     }
 
-    public function disableDownloadWithMirrorURL(): static
-    {
-        $this->enableDownloadWithMirrorURL = false;
-        return $this;
-    }
-
     public function withAliasName(string $name): static
     {
         $this->aliasName = $name;
@@ -131,6 +127,12 @@ abstract class Project
     public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
     {
         $this->enableBuildLibraryCached = $enableBuildLibraryCached;
+        return $this;
+    }
+
+    public function withDownloadWithOriginURL(bool $enableDownloadWithOriginURL = true): static
+    {
+        $this->enableDownloadWithOriginURL = $enableDownloadWithOriginURL;
         return $this;
     }
 }

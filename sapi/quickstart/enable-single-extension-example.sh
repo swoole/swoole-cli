@@ -26,6 +26,9 @@ fi
 # --with-php-version=8.1.20
 # --with-c-compiler=[gcc|clang] 默认clang
 # --conf-path="./conf.d.extra"
+# --with-install-library-cached=1
+# --with-override-default-enabled-ext=1
+# --with-http-proxy=http://192.168.3.26:8015
 
 php prepare.php \
   --conf-path="./conf.d.extra" \
