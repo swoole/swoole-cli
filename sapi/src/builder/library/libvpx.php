@@ -19,15 +19,13 @@ EOF
         ->withPrefix($libvpx_prefix)
         ->withConfigure(
             <<<EOF
-            mkdir -p build
-            cd build
-            ../configure --help
-            ../configure \
+            ./configure --help
+            ./configure \
             --prefix={$libvpx_prefix} \
             --disable-shared \
             --enable-static \
             --enable-vp8 \
-            --enable-vp9 \
+            --enable-vp9
 
 EOF
         )
