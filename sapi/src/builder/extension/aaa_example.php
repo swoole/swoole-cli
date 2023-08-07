@@ -79,7 +79,7 @@ EOF
         //例子： 下载扩展方式三，把下载地址更换为 https://gitee.com/swoole/swoole.git ，不使用代理下载
         ->withHttpProxy(false)
         //明确声明不使用缓存文件
-        //例子： 下载扩展方式三 ，明确不使用  pool/ext/swoole-latest.tar.gz 缓存文件；每一次都拉去最新的代码
+        //例子： 下载扩展方式四 ，明确不使用  pool/ext/swoole-submodule.tar.gz 缓存文件；每一次都拉去最新的代码
         ->withBuildLibraryCached(false)
 
         //swoole 依赖的扩展

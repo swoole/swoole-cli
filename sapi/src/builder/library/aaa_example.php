@@ -22,7 +22,7 @@ return function (Preprocessor $p) {
 
 
         /********************* 下载依赖库源代码方式二 start *****************************/
-        ->withAutoUpdateFile() # 明确申明 每次都拉取代码，不使用 pool/lib/opencv_contrib-latest.tar.gz 文件作为缓存
+        ->withAutoUpdateFile() # 明确申明 每次都拉取代码，不使用 pool/lib/opencv-latest.tar.g 文件作为缓存
         ->withFile('opencv-latest.tar.gz')
         ->withDownloadScript(
             'opencv',
