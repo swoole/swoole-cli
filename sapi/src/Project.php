@@ -46,6 +46,8 @@ abstract class Project
 
     public bool $enableDownloadWithMirrorURL = false;
 
+    public bool $enableDownloadWithOriginURL = false;
+
     public bool $enableBuildLibraryCached = true;
 
     public function __construct(string $name)
@@ -125,6 +127,12 @@ abstract class Project
     public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
     {
         $this->enableBuildLibraryCached = $enableBuildLibraryCached;
+        return $this;
+    }
+
+    public function withDownloadWithOriginURL(bool $enableDownloadWithOriginURL = true): static
+    {
+        $this->enableDownloadWithOriginURL = $enableDownloadWithOriginURL;
         return $this;
     }
 }
