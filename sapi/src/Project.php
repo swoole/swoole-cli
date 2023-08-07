@@ -106,12 +106,6 @@ abstract class Project
         return $this;
     }
 
-    public function withDownloadWithMirrorURL(bool $enableDownloadWithMirrorURL = false): static
-    {
-        $this->enableDownloadWithMirrorURL = false;
-        return $this;
-    }
-
     public function withAliasName(string $name): static
     {
         $this->aliasName = $name;
