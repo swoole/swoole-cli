@@ -29,8 +29,15 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
+        /*
+
+        ->withDownloadWithOriginURL() //明确申明 使用源地址下载
+        ->withAutoUpdateFile() //明确声明，每次都执行下载，不使用已下载的缓存文件
+        ->withHttpProxy(false) //明确申明 不使用代理
+        ->withBuildLibraryCached(false) //明确申明 不使用缓存缓存目录  例子： ext/swoole (每次都解压全新源代码到此目录）
 
 
+         */
 
 
         //下载扩展源代码 四种方式 （任选一种即可，备注：PHP源码包含的扩展不需要下载）
