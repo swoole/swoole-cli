@@ -103,7 +103,7 @@ function install_musl(Preprocessor $p): void
             ->withLicense('https://git.musl-libc.org/cgit/musl/tree/COPYRIGHT', Library::LICENSE_MIT)
             ->withManual('https://musl.libc.org/manual.html')
             ->withUrl('https://musl.libc.org/releases/musl-1.2.3.tar.gz')
-            ->withDownloadWithMirrorURL(false)
+            ->withDownloadWithOriginURL()
             ->withPrefix($musl_libc_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($musl_libc_prefix)
@@ -138,7 +138,7 @@ function install_musl_cross_make(Preprocessor $p): void
             git clone -b master --depth=1 https://github.com/richfelker/musl-cross-make.git
 EOF
             )
-            ->withDownloadWithMirrorURL(false)
+            ->withDownloadWithOriginURL()
             ->withPrefix($musl_cross_make_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($musl_cross_make_prefix)
@@ -173,7 +173,7 @@ function install_rust(Preprocessor $p): void
             ->withUrl('https://sh.rustup.rs')
             ->withManual('https://www.rust-lang.org/tools/install')
             ->withFile('rustup.sh')
-            ->withDownloadWithMirrorURL(false)
+            ->withDownloadWithOriginURL()
             ->withUntarArchiveCommand('mv')
             ->withCleanBuildDirectory()
             ->withBuildScript(
@@ -212,7 +212,7 @@ function install_nodejs(Preprocessor $p): void
             ->withUrl('https://nodejs.org/dist/v18.15.0/node-v18.15.0-linux-x64.tar.xz')
             ->withManual('https://nodejs.org/en/docs')
             ->withFile('node-v18.15.0-linux-x64.tar.xz')
-            ->withDownloadWithMirrorURL(false)
+            ->withDownloadWithOriginURL()
             ->withUntarArchiveCommand('mv')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($nodejs_prefix)
@@ -244,7 +244,7 @@ function install_golang(Preprocessor $p): void
             ->withUrl('https://golang.google.cn/dl/go1.20.2.linux-amd64.tar.gz')
             ->withManual('https://golang.google.cn/doc/')
             ->withFile('go1.20.2.linux-amd64.tar.gz')
-            ->withDownloadWithMirrorURL(false)
+            ->withDownloadWithOriginURL()
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($golang_prefix)
             ->withBuildScript(
@@ -280,7 +280,7 @@ function install_depot_tools(Preprocessor $p): void
                 'https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up'
             )
             ->withFile('depot_tools.tar.gz')
-            ->withDownloadWithMirrorURL(false)
+            ->withDownloadWithOriginURL()
             ->withDownloadScript(
                 'depot_tools',
                 <<<EOF
