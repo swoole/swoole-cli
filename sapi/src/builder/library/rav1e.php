@@ -73,3 +73,6 @@ EOF
 
     $p->addLibrary($lib);
 };
+
+
+//参考： https://github.com/BtbN/FFmpeg-Builds/blob/master/scripts.d/50-rav1e.sh
