@@ -1902,38 +1902,6 @@ function install_unixodbc(Preprocessor $p)
 
 function install_xorg_macros(Preprocessor $p)
 {
-    $xorg_macros_prefix = XORG_MACROS_PREFIX;
-    $lib = new Library('xorg_macros');
-    $lib->withHomePage('https://github.com/freedesktop/xorg-macros.git')
-        ->withLicense('https://github.com/freedesktop/xorg-macros/blob/master/COPYING', Library::LICENSE_SPEC)
-        ->withManual('https://gitlab.freedesktop.org/xorg/util/macros/-/blob/util-macros-1.20.0/INSTALL')
-        ->withUrl(
-            'https://gitlab.freedesktop.org/xorg/util/macros/-/archive/util-macros-1.20.0/macros-util-macros-1.20.0.tar.gz'
-        )
-        ->withFile('util-macros-1.20.0.tar.gz')
-        ->withDownloadScript(
-            'macros',
-            <<<EOF
-            git clone -b util-macros-1.20.0 --depth=1  https://gitlab.freedesktop.org/xorg/util/macros.git
-EOF
-        )
-        ->withPrefix($xorg_macros_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($xorg_macros_prefix)
-        ->withConfigure(
-            <<<EOF
-            ls -lha .
-             ./autogen.sh
-             ./configure --help
-             ./configure \
-             --prefix={$xorg_macros_prefix}
-
-EOF
-        )
-        ->withMakeOptions('all')
-    ;
-
-    $p->addLibrary($lib);
 }
 
 function install_xorgproto(Preprocessor $p)
