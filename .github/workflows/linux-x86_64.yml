@@ -103,6 +103,9 @@ jobs:
           run: |
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
+            bash sapi/quickstart/linux/alpine-init.sh
+            # composer config -g repos.packagist composer https://packagist.mirrors.sjtug.sjtu.edu.cn
+            composer config -g repos.packagist composer https://packagist.org
 
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
