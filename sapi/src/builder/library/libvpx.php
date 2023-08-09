@@ -25,7 +25,13 @@ EOF
             --disable-shared \
             --enable-static \
             --enable-vp8 \
-            --enable-vp9
+            --enable-vp9 \
+            --enable-pic \
+            --disable-examples \
+            --disable-tools \
+            --disable-docs \
+            --disable-unit-tests \
+            --enable-vp9-highbitdepth
 
 EOF
         )
