@@ -125,6 +125,7 @@ jobs:
             bash ./make.sh config
             # bash ./make.sh build
             # bash ./make.sh archive
+            bin/ffmpeg/bin/ffmpeg
 
 
       - name: Show Build Result
@@ -146,12 +147,12 @@ jobs:
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts
-        if: 0
+        if: 1
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-linux-x64-${{ env.BUILD_PHP_VERSION }}
+          name: ffmpeg-linux-x64
           retention-days: 7
-          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          path: ./bin/ffmpeg/bin/ffmpeg
 
       - name: Release
         uses: softprops/action-gh-release@v1
