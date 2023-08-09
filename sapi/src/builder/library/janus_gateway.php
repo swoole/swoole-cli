@@ -26,6 +26,10 @@ EOF
             PACKAGES="\$PACKAGES libcares  libbrotlicommon libbrotlidec libbrotlienc"
             PACKAGES="\$PACKAGES libnghttp2 libnghttp3 "
             PACKAGES="\$PACKAGES libngtcp2 libngtcp2_crypto_openssl "
+            PACKAGES="\$PACKAGES librabbitmq libopus"
+            PACKAGES="\$PACKAGES libavcodec libavdevice libavfilter libavformat libavutil libswresample libswscale "
+            PACKAGES="\$PACKAGES ogg "
+
 
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
