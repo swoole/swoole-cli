@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
                     # gitweb
                     git clone -b master --progress  https://www.privoxy.org/git/privoxy.git
 
-EOF
+        EOF
             )
             */
             ->withFile('privoxy-3.0.34.tar.gz')
@@ -27,7 +27,8 @@ EOF
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($privoxy_prefix)
             ->withBuildLibraryCached(false)
-            ->withPreInstallCommand('alpine',
+            ->withPreInstallCommand(
+                'alpine',
                 <<<EOF
                 apk add w3m   docbook2x
                 adduser privoxy --shell /sbin/nologin --disabled-password  --no-create-home
@@ -58,6 +59,5 @@ EOF
  EOF
             )
             ->withDependentLibraries('openssl', 'pcre', 'zlib', 'brotli')
-
     );
 };
