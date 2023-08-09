@@ -29,6 +29,7 @@ case "$mirror" in
 china)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   ;;
 
 esac
