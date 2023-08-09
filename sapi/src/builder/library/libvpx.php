@@ -16,6 +16,24 @@ return function (Preprocessor $p) {
             git clone -b v1.13.0  --depth=1  https://chromium.googlesource.com/webm/libvpx
 EOF
         )
+        ->withPreInstallCommand(
+            'alpine',
+            <<<EOF
+        apk add diffutils
+EOF
+        )
+        ->withPreInstallCommand(
+            'debian',
+            <<<EOF
+        apt install -y diffutils
+EOF
+        )
+        ->withPreInstallCommand(
+            'ubuntu',
+            <<<EOF
+        apt install -y diffutils
+EOF
+        )
         ->withPrefix($libvpx_prefix)
         ->withConfigure(
             <<<EOF
@@ -36,9 +54,7 @@ EOF
 EOF
         )
         ->withPkgName('vpx')
-        ->withBinPath($libvpx_prefix . '/bin/')
-    ;
+        ->withBinPath($libvpx_prefix . '/bin/');
 
     $p->addLibrary($lib);
-
 };
