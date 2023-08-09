@@ -16,7 +16,14 @@ return function (Preprocessor $p) {
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
-apt install -y nasm
+            apk add nasm
+
+EOF
+        )
+        ->withPreInstallCommand(
+            'debian',
+            <<<EOF
+            apk add nasm
 
 EOF
         )
@@ -48,8 +55,7 @@ EOF
         ->withPkgName('openh264')
         ->withDependentLibraries('libpcap', 'openssl')
         ->withLdflags('-L' . $openh264_prefix . '/lib/x86_64-linux-gnu/')
-        ->withPkgConfig($openh264_prefix . '/lib/x86_64-linux-gnu/pkgconfig')
-    ;
+        ->withPkgConfig($openh264_prefix . '/lib/x86_64-linux-gnu/pkgconfig');
 
     $p->addLibrary($lib);
 };
