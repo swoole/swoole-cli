@@ -31,6 +31,18 @@ EOF
       -D VCPKG_TARGET_TRIPLET=x64-windows  \
       -B ./OpenCL-SDK/build -S ./OpenCL-SDK
       cmake --build ./OpenCL-SDK/build --target install
+
+      https://github.com/KhronosGroup/OpenCL-Headers.git
+      https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+      cmake  \
+        -DCMAKE_BUILD_TYPE=Release  \
+        -DCMAKE_INSTALL_PREFIX="{$opencl_prefix}" \
+        -DOPENCL_ICD_LOADER_HEADERS_DIR="$FFBUILD_PREFIX"/include  \
+        -DOPENCL_ICD_LOADER_BUILD_SHARED_LIBS=OFF \
+        -DOPENCL_ICD_LOADER_DISABLE_OPENCLON12=ON  \
+        -DOPENCL_ICD_LOADER_PIC=ON \
+        -DOPENCL_ICD_LOADER_BUILD_TESTING=OFF \
+        -DBUILD_TESTING=OFF ..
 EOF
         );
 
