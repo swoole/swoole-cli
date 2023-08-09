@@ -50,12 +50,12 @@ EOF
             'curl',
             'sofia_sip',
             'libopus',
-            'ogg',
+            'libogg',
             'zlib',
             'rabbitmq_c',
             'ffmpeg',
         )
-        ;
+    ;
 
     $p->addLibrary($lib);
 };

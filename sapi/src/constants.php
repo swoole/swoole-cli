@@ -193,7 +193,7 @@ define("SPANDSP_PREFIX", $p->getGlobalPrefix() . '/spandsp');
 define("SOFIA_SIP_PREFIX", $p->getGlobalPrefix() . '/sofia_sip');
 define("AUDIOFILE_PREFIX", $p->getGlobalPrefix() . '/audiofile');
 define("FLAC_PREFIX", $p->getGlobalPrefix() . '/flac');
-define("OGG_PREFIX", $p->getGlobalPrefix() . '/ogg');
+define("LIBOGG_PREFIX", $p->getGlobalPrefix() . '/libogg');
 define("ALSA_PREFIX", $p->getGlobalPrefix() . '/alsa');
 define("LIBOPUS_PREFIX", $p->getGlobalPrefix() . '/libopus');
 define("LIBOPUSENC_PREFIX", $p->getGlobalPrefix() . '/libopusenc');
@@ -235,4 +235,5 @@ define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
-
+define("FFTW3_PREFIX", $p->getGlobalPrefix() . '/fftw3');
+define("LIBSAMPLERATE_PREFIX", $p->getGlobalPrefix() . '/libsamplerate_prefix');
