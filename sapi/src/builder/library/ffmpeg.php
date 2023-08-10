@@ -113,9 +113,6 @@ EOF
             --disable-libxcb-xfixes \
             --disable-libxcb-shape  \
             --disable-libxvid \
-            --disable-libxv \
-            --disable-libxext \
-            --disable-libxext \
             --extra-cflags="{$cflags} \${CPPFLAGS} " \
             --extra-ldflags="{$ldflags} \${LDFLAGS} " \
             --extra-libs="\${LIBS} " \
