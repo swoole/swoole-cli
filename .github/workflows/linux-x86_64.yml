@@ -125,8 +125,6 @@ jobs:
             bash ./make.sh config
             # bash ./make.sh build
             # bash ./make.sh archive
-            bin/ffmpeg/bin/ffmpeg
-
 
       - name: Show Build Result
         if: 0
