@@ -36,7 +36,7 @@ return function (Preprocessor $p) {
         // 'shaderc'
         // 'spirv_tools'
        // 'fdk_aac'
-        'libfribidi'
+       // 'libfribidi'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

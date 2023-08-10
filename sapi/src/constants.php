@@ -251,3 +251,4 @@ define("VULKAN_PREFIX", $p->getGlobalPrefix() . '/vulkan');
 define("SHADERC_PREFIX", $p->getGlobalPrefix() . '/shaderc');
 define("SPIRV_TOOLS_PREFIX", $p->getGlobalPrefix() . '/spirv_tools');
 define("FDK_AAC_PREFIX", $p->getGlobalPrefix() . '/fdk_aac');
+define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
