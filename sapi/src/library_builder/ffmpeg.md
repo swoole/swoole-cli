@@ -23,5 +23,5 @@
 --enable-libfdk-aac     [fdk-aac](https://github.com/mstorsjo/fdk-aac.git)
 --enable-libfribidi     [libfribidi](https://github.com/fribidi/fribidi.git)
 --enable-librabbitmq    [librabbitmq](https://github.com/alanxz/rabbitmq-c.git)
---enable-libspeex       [speex](https://speex.org/)
+--enable-libspeex       [speex](https://speex.org/)  被opus 取代
 ```

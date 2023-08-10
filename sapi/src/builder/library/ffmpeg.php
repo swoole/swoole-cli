@@ -67,8 +67,6 @@ EOF
         PACKAGES="\$PACKAGES fdk-aac "
         PACKAGES="\$PACKAGES fribidi "
         PACKAGES="\$PACKAGES librabbitmq "
-        PACKAGES="\$PACKAGES speex "
-
          CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
          CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ "
          CPPFLAGS="\$CPPFLAGS -I/usr/include "
@@ -102,7 +100,6 @@ EOF
         --enable-libfdk-aac \
         --enable-libfribidi \
         --enable-librabbitmq \
-        --enable-libspeex \
         --extra-cflags="--static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
@@ -118,6 +115,7 @@ EOF
         # --enable-nonfree \
         # --enable-libssh \
         # --enable-cross-compile \
+        # --enable-libspeex \
 
 
 EOF
@@ -152,7 +150,7 @@ EOF
             'fdk_aac',
             'libfribidi',
             'rabbitmq_c',
-            'speex'
+            //'speex' //被opus 取代
         ) //  "libx265", 'libssh2',
     ;
 
