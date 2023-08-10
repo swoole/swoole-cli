@@ -45,6 +45,7 @@ EOF
 EOF
         )
         ->withBuildLibraryHttpProxy(true)
+        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
 
