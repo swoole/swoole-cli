@@ -115,9 +115,9 @@ EOF
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \
             --disable-libxcb-shape  \
-            --extra-cflags="{$cflags} \${CPPFLAGS} " \
+            --extra-cflags="{$cflags}   \${CPPFLAGS} " \
             --extra-ldflags="{$ldflags} \${LDFLAGS} " \
-            --extra-libs="\${LIBS} " \
+            --extra-libs=" \${LIBS} " \
             --cc={$p->get_C_COMPILER()} \
             --cxx={$p->get_CXX_COMPILER()}
 
@@ -135,6 +135,7 @@ EOF
 
 EOF
         )
+        /*
         ->withPkgName('libavcodec')
         ->withPkgName('libavdevice')
         ->withPkgName('libavfilter')
@@ -142,6 +143,7 @@ EOF
         ->withPkgName('libavutil')
         ->withPkgName('libswresample')
         ->withPkgName('libswscale')
+        */
         ->withBinPath($ffmpeg_prefix . '/bin/')
         ->withDependentLibraries(
             'openssl',
