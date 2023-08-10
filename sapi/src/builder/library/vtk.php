@@ -44,7 +44,7 @@ EOF
         ninja install
 EOF
         )
-        ->withPkgName('opencv')
+        ->withPkgName('vtk')
         ->withDependentLibraries(
             'ffmpeg'
         )
