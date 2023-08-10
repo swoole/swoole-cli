@@ -116,6 +116,7 @@ EOF
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \
             --disable-libxcb-shape  \
+            --disable-xlib  \
             --extra-cflags="{$cflags}   \${CPPFLAGS} " \
             --extra-ldflags="{$ldflags} \${LDFLAGS} " \
             --extra-libs="{$libs}       \${LIBS} " \
