@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $openh264_prefix = OPENH264_PREFIX;
+    $lib_path = $p->getOsType() == 'macos' ? "" : $openh264_prefix . '/lib/x86_64-linux-gnu/';
     $lib = new Library('openh264');
     $lib->withHomePage('https://github.com/cisco/openh264.git')
         ->withLicense('https://github.com/cisco/openh264/blob/master/LICENSE', Library::LICENSE_BSD)
@@ -43,18 +44,14 @@ EOF
             -Dtests=disabled \
 
 
-
-            meson compile -C build_dir
-
             ninja -C build_dir
             ninja -C build_dir install
 EOF
         )
-        ->withBuildLibraryCached(false)
         ->withPkgName('openh264')
         ->withDependentLibraries('libpcap', 'openssl')
-        ->withLdflags('-L' . $openh264_prefix . '/lib/x86_64-linux-gnu/')
-        ->withPkgConfig($openh264_prefix . '/lib/x86_64-linux-gnu/pkgconfig');
+        ->withLdflags('-L' . $lib_path)
+        ->withPkgConfig($lib_path . '/pkgconfig');
 
     $p->addLibrary($lib);
 };

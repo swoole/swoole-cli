@@ -34,6 +34,8 @@ return function (Preprocessor $p) {
 
             cmake --build . --config Release --target install
 
+            sed -i.backup 's/-l -lssl/-lssl/g' {$rabbitmq_c_prefix}/lib/pkgconfig/librabbitmq.pc
+
 EOF
         )
         ->withPkgName('librabbitmq');
