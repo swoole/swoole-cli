@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $openh264_prefix = OPENH264_PREFIX;
-    $lib_path = $p->getOsType() == 'macos' ? "" : $openh264_prefix . '/lib/x86_64-linux-gnu/';
+    $lib_path = $p->getOsType() == 'macos' ? $openh264_prefix . "/lib/" : $openh264_prefix . '/lib/x86_64-linux-gnu/';
     $lib = new Library('openh264');
     $lib->withHomePage('https://github.com/cisco/openh264.git')
         ->withLicense('https://github.com/cisco/openh264/blob/master/LICENSE', Library::LICENSE_BSD)
