@@ -123,13 +123,12 @@ EOF
             --cc={$p->get_C_COMPILER()} \
             --cxx={$p->get_CXX_COMPILER()}
 
-            # xlib 是 x11 相关的库
+            # libxcb、xlib 是 x11 相关的库
             # --extra-ldexeflags="{$ldexeflags}"
             # --pkg-config-flags=" {$cflags} "
             # --pkg-config=pkg-config
             # --ld={$p->getLinker()}
             # --enable-libx265
-            # --enable-nonfree
             # --enable-libssh
             # --enable-cross-compile
             # --enable-libspeex
@@ -137,7 +136,6 @@ EOF
 
 EOF
         )
-        /*
         ->withPkgName('libavcodec')
         ->withPkgName('libavdevice')
         ->withPkgName('libavfilter')
@@ -145,7 +143,6 @@ EOF
         ->withPkgName('libavutil')
         ->withPkgName('libswresample')
         ->withPkgName('libswscale')
-        */
         ->withBinPath($ffmpeg_prefix . '/bin/')
         ->withDependentLibraries(
             'openssl',
