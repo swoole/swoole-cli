@@ -11,6 +11,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://www.vtk.org/')
         ->withLicense('https://gitlab.kitware.com/vtk/vtk/-/blob/master/Copyright.txt', Library::LICENSE_BSD)
         ->withManual('https://gitlab.kitware.com/vtk/vtk/-/blob/master/Documentation/dev/build.md#building-vtk')
+        ->withManual('https://docs.vtk.org/en/latest/build_instructions/index.html')
         ->withFile('vtk-latest.tar.gz')
         ->withDownloadScript(
             'vtk',
