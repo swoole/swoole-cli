@@ -32,12 +32,13 @@ EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
+            {$workdir}/bin/ffmpeg/bin/ffmpeg -h
 EOF;
         } else {
             $cmd .= <<<EOF
               file {$workdir}/bin/ffmpeg/bin/ffmpeg
               readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
-              {$workdir}/bin/ffmpeg/bin/ffmpeg -h
+
 EOF;
         }
         return $cmd;
