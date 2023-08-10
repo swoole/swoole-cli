@@ -14,6 +14,7 @@ return function (Preprocessor $p) {
     $libxml2_prefix = LIBXML2_PREFIX;
     $ldflags = $p->getOsType() == 'macos' ? ' ' : ' -static ';
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
+    $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
 
     $CPPFLAGS = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
     $LDFALGS = $p->getOsType() == 'macos' ? ' ' : " -L/usr/lib ";
@@ -117,7 +118,7 @@ EOF
             --disable-libxcb-shape  \
             --extra-cflags="{$cflags}   \${CPPFLAGS} " \
             --extra-ldflags="{$ldflags} \${LDFLAGS} " \
-            --extra-libs=" \${LIBS} " \
+            --extra-libs="{$libs}       \${LIBS} " \
             --cc={$p->get_C_COMPILER()} \
             --cxx={$p->get_CXX_COMPILER()}
 
