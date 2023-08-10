@@ -5,7 +5,6 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $openh264_prefix = OPENH264_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
     $lib = new Library('openh264');
     $lib->withHomePage('https://github.com/cisco/openh264.git')
         ->withLicense('https://github.com/cisco/openh264/blob/master/LICENSE', Library::LICENSE_BSD)

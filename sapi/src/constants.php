@@ -207,7 +207,7 @@ define("LIBKS_PREFIX", $p->getGlobalPrefix() . '/libks');
 define("UTIL_LINUX_PREFIX", $p->getGlobalPrefix() . '/util_linux');
 define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
 define("LIBATOMIC_PREFIX", $p->getGlobalPrefix() . '/libatomic');
-define("GUPnP_PREFIX", $p->getGlobalPrefix() . '/GUPnP');
+define("UPNP_PREFIX", $p->getGlobalPrefix() . '/upnp');
 
 
 define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
@@ -252,3 +252,4 @@ define("SHADERC_PREFIX", $p->getGlobalPrefix() . '/shaderc');
 define("SPIRV_TOOLS_PREFIX", $p->getGlobalPrefix() . '/spirv_tools');
 define("FDK_AAC_PREFIX", $p->getGlobalPrefix() . '/fdk_aac');
 define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
+define("PJPROJECT_PREFIX", $p->getGlobalPrefix() . '/pjproject');

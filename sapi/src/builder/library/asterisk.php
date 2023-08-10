@@ -17,10 +17,10 @@ return function (Preprocessor $p) {
                 git clone -b master --depth=1 https://github.com/asterisk/asterisk
 EOF
         )
-        ->withBuildLibraryCached(false)
         ->withPrefix($asterisk_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($asterisk_prefix)
+        ->withBuildLibraryCached(false)
         ->withConfigure(
             <<<EOF
             ./configure --help
@@ -34,6 +34,7 @@ EOF
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             ./configure \
             --prefix={$asterisk_prefix} \
+            --without-pjproject-bundled \
             --enable-shared=no \
             --enable-static=yes
 EOF
@@ -44,10 +45,10 @@ EOF
             'libpcap',
             'openssl',
             'zlib',
-            'libpri',
-            'dahdi_linux',
-            'dahdi_tools',
-            'dahdi_complete',
+           // 'libpri',
+            //'dahdi_linux',
+            //'dahdi_tools',
+            //'dahdi_complete',
             'pjproject',
             'libsrtp'
         )
