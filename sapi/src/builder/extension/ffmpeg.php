@@ -26,7 +26,7 @@ return function (Preprocessor $p) {
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/ffmpeg/
                 cd {$ffmpeg_prefix}/
-                cp -rf bin/ {$workdir}/bin/ffmpeg/
+                cp -rf bin {$workdir}/bin/ffmpeg/
 
 EOF;
         if ($p->getOsType() == 'macos') {
