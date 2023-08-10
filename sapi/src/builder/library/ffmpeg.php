@@ -14,9 +14,11 @@ return function (Preprocessor $p) {
     $libxml2_prefix = LIBXML2_PREFIX;
     $ldflags = $p->getOsType() == 'macos' ? ' ' : ' -static ';
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
-    $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic ';
+
     $CPPFLAGS = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
     $LDFALGS = $p->getOsType() == 'macos' ? ' ' : " -L/usr/lib ";
+
+    $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic ';
 
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
@@ -58,6 +60,7 @@ EOF
             ./configure --help | grep static
             ./configure --help | grep  '\-\-extra'
             ./configure --help | grep  'enable'
+            ./configure --help | grep  'disable'
 
             PACKAGES='openssl libwebp  libxml-2.0  freetype2 gmp liblzma' # libssh2
             PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
@@ -112,23 +115,22 @@ EOF
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \
             --disable-libxcb-shape  \
-            --disable-libxvid \
             --extra-cflags="{$cflags} \${CPPFLAGS} " \
             --extra-ldflags="{$ldflags} \${LDFLAGS} " \
             --extra-libs="\${LIBS} " \
-            --extra-ldexeflags="{$ldexeflags}" \
-            --pkg-config-flags=" {$cflags} " \
-            --pkg-config=pkg-config \
             --cc={$p->get_C_COMPILER()} \
-            --cxx={$p->get_CXX_COMPILER()} \
+            --cxx={$p->get_CXX_COMPILER()}
 
 
-            # --ld={$p->getLinker()} \
-            # --enable-libx265 \
-            # --enable-nonfree \
-            # --enable-libssh \
-            # --enable-cross-compile \
-            # --enable-libspeex \
+            # --extra-ldexeflags="{$ldexeflags}"
+            # --pkg-config-flags=" {$cflags} "
+            # --pkg-config=pkg-config
+            # --ld={$p->getLinker()}
+            # --enable-libx265
+            # --enable-nonfree
+            # --enable-libssh
+            # --enable-cross-compile
+            # --enable-libspeex
 
 
 EOF
