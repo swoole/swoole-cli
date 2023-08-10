@@ -64,6 +64,8 @@ EOF
         PACKAGES="\$PACKAGES opus "
         PACKAGES="\$PACKAGES openh264 "
         PACKAGES="\$PACKAGES vpx "
+        PACKAGES="\$PACKAGES fdk-aac "
+        PACKAGES="\$PACKAGES fribidi "
 
          CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
          CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ "
@@ -95,6 +97,8 @@ EOF
         --enable-libdav1d \
         --enable-libopus \
         --enable-libopenh264 \
+        --enable-libfdk-aac \
+        --enable-libfribidi \
         --extra-cflags="--static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
@@ -140,7 +144,9 @@ EOF
             "sdl2",
             'libogg',
             'libopus',
-            'openh264'
+            'openh264',
+            'fdk_aac',
+            'libfribidi'
         ) //  "libx265", 'libssh2',
     ;
 

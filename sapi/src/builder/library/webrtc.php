@@ -27,9 +27,9 @@ EOF
 
 EOF
         )
+        ->withDependentLibraries('depot_tools')
 
     ;
 
     $p->addLibrary($lib);
-
 };

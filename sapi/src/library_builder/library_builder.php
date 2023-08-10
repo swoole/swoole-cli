@@ -943,6 +943,16 @@ make install DESTDIR=
      */
 
     /*
+
+        autotools 学习 文档： https://learnopengl.com/demo/autotools_tutorial.txt
         autoreconf -fi
-     */
+
+        autotools主要由三个组件组成
+        `autoconf`，它生成检测位置的“配置”脚本 使用的库允许重新配置构建系统；
+        `automake`，生成 makefile
+        `libtool`，它添加了一些功能来生成库（共享或 静止的）。我们不会处理那个人。
+
+    */
+
+
 }

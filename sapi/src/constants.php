@@ -234,6 +234,20 @@ define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
+
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 define("FFTW3_PREFIX", $p->getGlobalPrefix() . '/fftw3');
-define("LIBSAMPLERATE_PREFIX", $p->getGlobalPrefix() . '/libsamplerate_prefix');
+define("LIBSAMPLERATE_PREFIX", $p->getGlobalPrefix() . '/libsamplerate');
+
+define("LIBCAP_NG_PREFIX", $p->getGlobalPrefix() . '/libcap_ng');
+define("ICECREAM_PREFIX", $p->getGlobalPrefix() . '/icecream');
+define("LZO_PREFIX", $p->getGlobalPrefix() . '/lzo');
+
+define("LIBDRM_PREFIX", $p->getGlobalPrefix() . '/libdrm');
+define("GLSLANG_PREFIX", $p->getGlobalPrefix() . '/glslang');
+define("MESA3D_PREFIX", $p->getGlobalPrefix() . '/mesa3d');
+define("LIBPLACEBO_PREFIX", $p->getGlobalPrefix() . '/libplacebo');
+define("VULKAN_PREFIX", $p->getGlobalPrefix() . '/vulkan');
+define("SHADERC_PREFIX", $p->getGlobalPrefix() . '/shaderc');
+define("SPIRV_TOOLS_PREFIX", $p->getGlobalPrefix() . '/spirv_tools');
+define("FDK_AAC_PREFIX", $p->getGlobalPrefix() . '/fdk_aac');

@@ -24,8 +24,19 @@ return function (Preprocessor $p) {
     ];
     $depends = [
         'apr',
-       'apr_util',
+        'apr_util',
         'libexpat'
+    ];
+    $depends = [
+
+        //'icecream',
+        //'icecream_sundae',
+        // 'mesa3d'
+        // 'vulkan',
+        // 'shaderc'
+        // 'spirv_tools'
+       // 'fdk_aac'
+        'libfribidi'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

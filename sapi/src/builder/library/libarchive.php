@@ -73,7 +73,9 @@ EOF
                 'libiconv',
                 'libzstd',
                 'bzip2',
-                'nettle'
+                'nettle',
+                'bzip2',
+                'libiconv'
             )
     );
 };

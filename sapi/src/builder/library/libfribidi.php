@@ -15,20 +15,30 @@ return function (Preprocessor $p) {
             ->withPrefix($libfribidi_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libfribidi_prefix)
-            ->withConfigure(
-                "
+            ->withBuildScript(
+                <<<EOF
+            meson  -h
+            meson setup -h
+            # meson configure -h
 
-                # 可以使用 meson
-                # meson setup  build
+            meson setup  build \
+            -Dprefix={$libfribidi_prefix} \
+            -Dbackend=ninja \
+            -Dbuildtype=release \
+            -Ddefault_library=static \
+            -Db_staticpic=true \
+            -Db_pie=true \
+            -Dprefer_static=true \
+            -Dbin=true \
+            -Ddocs=false \
+            -Dtests=false
 
-                sh autogen.sh
-                ./configure --help
+            ninja -C build
+            ninja -C build install
 
-                ./configure \
-                --prefix={$libfribidi_prefix} \
-                --enable-static=yes \
-                --enable-shared=no
-            "
+EOF
             )
+            ->withPkgName('fribidi')
+            ->withBinPath($libfribidi_prefix . '/bin/')
     );
 };

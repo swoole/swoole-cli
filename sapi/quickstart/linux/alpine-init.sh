@@ -29,7 +29,6 @@ case "$mirror" in
 china)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
-   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   ;;
 
 esac
@@ -42,6 +41,14 @@ apk add bash p7zip zip unzip flex pkgconf ca-certificates
 apk add wget git curl
 apk add libc++-static libltdl-static
 apk add yasm nasm
-apk add ninja python3 py3-pip
+apk add ninja python3 py3-pip diffutils
+
+case "$mirror" in
+china)
+   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  ;;
+
+esac
+
 pip3 install meson
 
