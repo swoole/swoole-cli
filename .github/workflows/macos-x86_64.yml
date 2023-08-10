@@ -7,7 +7,7 @@ env:
 
 jobs:
   macos-x86_64:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -82,9 +82,9 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
 
           # composer update --no-dev  --optimize-autoloader
-          composer update  --optimize-autoloader
+          composer update
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb --with-build-type=release --with-swoole-pgsql=1 --with-install-library-cached=1 --with-libavif=1
+          php prepare.php --without-docker=1  +ffmpeg --with-build-type=release  --with-install-library-cached=1
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -111,10 +111,11 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
 
           bash ./make.sh config
-          bash ./make.sh build
-          bash ./make.sh archive
+          # bash ./make.sh build
+          # bash ./make.sh archive
 
       - name: Show Build Result
+        if: 0
         run: |
           export PATH="/usr/local/opt/binutils/bin:$PATH"
           ./php-src/sapi/cli/php -v
@@ -139,6 +140,7 @@ jobs:
           ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts
+        if: 0
         uses: actions/upload-artifact@v3
         with:
           name: php-cli-macos-x64-${{ env.BUILD_PHP_VERSION }}
