@@ -123,7 +123,7 @@ EOF
             --cc={$p->get_C_COMPILER()} \
             --cxx={$p->get_CXX_COMPILER()}
 
-
+            # xlib 是 x11 相关的库
             # --extra-ldexeflags="{$ldexeflags}"
             # --pkg-config-flags=" {$cflags} "
             # --pkg-config=pkg-config
