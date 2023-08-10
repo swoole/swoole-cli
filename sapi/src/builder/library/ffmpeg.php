@@ -66,6 +66,8 @@ EOF
         PACKAGES="\$PACKAGES vpx "
         PACKAGES="\$PACKAGES fdk-aac "
         PACKAGES="\$PACKAGES fribidi "
+        PACKAGES="\$PACKAGES librabbitmq "
+        PACKAGES="\$PACKAGES speex "
 
          CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
          CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ "
@@ -99,6 +101,8 @@ EOF
         --enable-libopenh264 \
         --enable-libfdk-aac \
         --enable-libfribidi \
+        --enable-librabbitmq \
+        --enable-libspeex \
         --extra-cflags="--static \${CPPFLAGS} " \
         --extra-ldflags="-static \${LDFLAGS} " \
         --extra-libs="\${LIBS} " \
@@ -146,7 +150,9 @@ EOF
             'libopus',
             'openh264',
             'fdk_aac',
-            'libfribidi'
+            'libfribidi',
+            'rabbitmq_c',
+            'speex'
         ) //  "libx265", 'libssh2',
     ;
 

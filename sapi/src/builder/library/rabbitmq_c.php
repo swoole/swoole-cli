@@ -7,7 +7,7 @@ return function (Preprocessor $p) {
     $rabbitmq_c_prefix = RABBITMQ_C_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $lib = new Library('rabbitmq_c');
-    $lib->withHomePage('https://opus-codec.org/')
+    $lib->withHomePage('https://github.com/alanxz/rabbitmq-c.git')
         ->withLicense('https://github.com/alanxz/rabbitmq-c.git', Library::LICENSE_SPEC)
         ->withManual('https://github.com/alanxz/rabbitmq-c.git')
         ->withUrl('https://github.com/alanxz/rabbitmq-c/archive/refs/tags/v0.13.0.tar.gz')
@@ -38,5 +38,4 @@ EOF
         )
         ->withPkgName('librabbitmq');
     $p->addLibrary($lib);
-
 };

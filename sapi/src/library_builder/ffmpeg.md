@@ -22,4 +22,6 @@
 --enable-libopenh264    [openh264](https://github.com/cisco/openh264.git)
 --enable-libfdk-aac     [fdk-aac](https://github.com/mstorsjo/fdk-aac.git)
 --enable-libfribidi     [libfribidi](https://github.com/fribidi/fribidi.git)
+--enable-librabbitmq    [librabbitmq](https://github.com/alanxz/rabbitmq-c.git)
+--enable-libspeex       [speex](https://speex.org/)
 ```
