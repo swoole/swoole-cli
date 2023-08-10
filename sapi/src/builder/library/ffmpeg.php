@@ -12,11 +12,11 @@ return function (Preprocessor $p) {
 
     $ffmpeg_prefix = FFMPEG_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
-    $ldflags = $p->getOsType()=='macos'?' ':' -static ';
-    $cflags = $p->getOsType()=='macos'?' ':' --static ';
-    $ldexeflags = $p->getOsType()=='macos'?' ':' -Bstatic ';
-    $CPPFLAGS = $p->getOsType()=='macos'?' ': " -I/usr/include ";
-    $LDFALGS = $p->getOsType()=='macos'?' ': " -L/usr/lib ";
+    $ldflags = $p->getOsType()=='macos' ? ' ' : ' -static ';
+    $cflags = $p->getOsType()=='macos' ? ' ' : ' --static ';
+    $ldexeflags = $p->getOsType()=='macos' ? ' ' : ' -Bstatic ';
+    $CPPFLAGS = $p->getOsType()=='macos' ? ' ' : " -I/usr/include ";
+    $LDFALGS = $p->getOsType()=='macos' ? ' ' : " -L/usr/lib ";
 
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
