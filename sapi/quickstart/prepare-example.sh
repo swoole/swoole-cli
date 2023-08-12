@@ -51,3 +51,31 @@ php prepare.php \
   --with-global-prefix=/usr/local/swoole-cli \
   +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql \
   --with-swoole-pgsql=1
+
+
+exit 0
+SYSTEM=`uname -s 2>/dev/null`
+RELEASE=`uname -r 2>/dev/null`
+MACHINE=`uname -m 2>/dev/null`
+PLATFORM="$SYSTEM:$RELEASE:$MACHINE";
+PLATFORM="$SYSTEM:$MACHINE";
+echo $PLATFORM
+
+which php
+composer suggests --all
+composer dump-autoload
+
+
+
+:<<'EOF'
+cho -e "Enter numbers 1-4" \c"
+read NUM
+case $NUM in
+    1) echo "one";;
+    2) echo "two";;
+    3) echo "three";;
+    4) echo "four";;
+    *) echo "invalid answer"
+       exit 1;;
+esac
+EOF
