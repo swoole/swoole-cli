@@ -39,6 +39,7 @@ php -v
 # --conf-path="./conf.d.extra"
 #  --without-docker=1
 # @macos
+# --with-override-default-enabled-ext=1
 
 bash sapi/quickstart/mark-install-library-cached.sh
 
