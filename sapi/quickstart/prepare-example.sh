@@ -39,12 +39,10 @@ php -v
 # --conf-path="./conf.d.extra"
 #  --without-docker=1
 # @macos
+# --with-override-default-enabled-ext=1
 # --with-php-version=8.1.20
 # --with-c-compiler=[gcc|clang] 默认clang
 # --conf-path="./conf.d.extra"
-# --with-install-library-cached=1
-# --with-override-default-enabled-ext=1
-
 
 
 bash sapi/quickstart/mark-install-library-cached.sh
