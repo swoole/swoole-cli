@@ -6,11 +6,11 @@ __DIR__=$(
   pwd
 )
 
-mirror=''
+MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    mirror="$2"
+    MIRROR="$2"
     shift
     ;;
   --*)
@@ -20,7 +20,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-case "$mirror" in
+case "$MIRROR" in
 china)
   OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
   VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
@@ -70,6 +70,13 @@ apt install -y pkg-config bzip2 flex p7zip
 apt install -y gcc g++
 
 # apt install build-essential linux-headers-$(uname -r)
-apt install -y python3 python3-pip ninja-build  gn
+apt install -y python3 python3-pip ninja-build gn diffutils
 apt install -y yasm nasm
 apt install -y meson
+
+case "$MIRROR" in
+china)
+  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  ;;
+
+esac
