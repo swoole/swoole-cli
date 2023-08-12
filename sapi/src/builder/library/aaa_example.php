@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://github.com/opencv/opencv.git')
-        /*
+
         //明确申明 使用源地址下载
         ->withDownloadWithOriginURL()
         //明确声明，每次都执行下载，不使用已下载的缓存文件
@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
         ->withBuildLibraryCached(false)
         //明确申明 每次都拉取代码，不使用 pool/lib/opencv-latest.tar.g 文件作为缓存
         ->withAutoUpdateFile()
-        */
+
 
         //下载扩展源代码 二种方式 （任选一种即可）
 
@@ -50,7 +50,7 @@ EOF
 EOF
         )
         ->withPrefix($example_prefix)
-        /*
+
         //build_type=dev 才生效
         // 自动清理构建目录  用于调试
         ->withCleanBuildDirectory()
@@ -60,8 +60,8 @@ EOF
         ->withBuildLibraryCached(false)
         //构建过程中添加代理 （特殊库才需要，比如构建 rav1e 库，构建过程中会自动到代码仓库下载）
         ->withBuildLibraryHttpProxy()
-        */
 
+        # 构建源码可以使用cmake autoconfig meson 构建
         /** 使用 cmake 构建 start **/
         ->withBuildScript(
             <<<EOF
@@ -106,7 +106,7 @@ EOF
             -Dprefer_static=true \
             -Dexamples=disabled
 
-            meson compile -C build
+            # meson compile -C build
 
             ninja -C build
             ninja -C build install
@@ -117,6 +117,7 @@ EOF
         /** 使用 autoconfig automake  构建 start  **/
         ->withConfigure(
             <<<EOF
+            # sh autogen.sh
             libtoolize -ci
             autoreconf -fi
             ./configure --help
@@ -143,12 +144,21 @@ EOF
         //默认下不需要，特殊目录才需要配置
         ->withLdflags('-L' . $example_prefix . '/lib/x86_64-linux-gnu/')
         //默认下不需要，特殊目录才需要配置
-        ->withPkgConfig($example_prefix . '/lib/x86_64-linux-gnu/pkgconfig');
+        ->withPkgConfig($example_prefix . '/lib/x86_64-linux-gnu/pkgconfig')
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$example_prefix}/lib/*.so.*
+            rm -rf {$example_prefix}/lib/*.so
+            rm -rf {$example_prefix}/lib/*.dylib
+EOF
+        );
 
     $p->addLibrary($lib);
+
 
     //只有当没有 PKG-CONFIG 配置文件才需要编写这里配置; 例子： src/builder/library/bzip2.php
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $example_prefix . '/include');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $example_prefix . '/lib');
-    $p->withVariable('LIBS', '$LIBS -lopencv ');
+    $p->withVariable('LIBS', '$LIBS -lexample ');
+
 };
