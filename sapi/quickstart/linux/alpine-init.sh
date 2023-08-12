@@ -10,12 +10,16 @@ cd ${__DIR__}
 # use china mirror
 # bash sapi/quickstart/linux/alpine-init.sh --mirror china
 
+<<<<<<< HEAD
 
 mirror=''
+=======
+MIRROR=''
+>>>>>>> build_native_php
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    mirror="$2"
+    MIRROR="$2"
     shift
     ;;
   --*)
@@ -25,7 +29,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-case "$mirror" in
+case "$MIRROR" in
 china)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
@@ -41,11 +45,12 @@ apk add bash p7zip zip unzip flex pkgconf ca-certificates
 apk add wget git curl
 apk add libc++-static libltdl-static
 apk add yasm nasm
-apk add ninja python3 py3-pip diffutils
+apk add ninja python3 py3-pip
+apk add diffutils
 
-case "$mirror" in
+case "$MIRROR" in
 china)
-   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   ;;
 
 esac
