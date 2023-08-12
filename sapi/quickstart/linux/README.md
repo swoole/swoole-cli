@@ -8,19 +8,7 @@
 
 ```bash
 
-curl -fsSL https://get.docker.com -o get-docker.sh
-
-# 方法一：默认
-bash get-docker.sh
-
-# 方法二： 使用镜像地址替换 （使用中科大镜像) 在中国大陆 推荐这个
 bash sapi/quickstart/linux/install-docker.sh --mirror china
-
-# 方法三： 使用 阿里云镜像
-bash get-docker.sh --mirror Aliyun
-
-# 方法三： 使用 AzureChinaCloud 镜像
-bash get-docker.sh --mirror AzureChinaCloud
 
 ```
 
