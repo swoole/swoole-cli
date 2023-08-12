@@ -33,7 +33,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
-        /*
+
         //明确申明 使用源地址下载
         ->withDownloadWithOriginURL()
         //明确声明，每次都执行下载，不使用已下载的缓存文件
@@ -42,10 +42,10 @@ return function (Preprocessor $p) {
         ->withHttpProxy(false)
          //明确申明 不使用缓存缓存目录  例子： ext/swoole (每次都解压全新源代码到此目录）
         ->withBuildLibraryCached(false)
-         */
 
 
         #下载扩展源代码 四种方式 （任选一种即可，备注：PHP源码包含的扩展不需要下载）
+
         /** 下载扩展源代码方式一 start **/
         // main分支 默认是这种方式 （去pecl.php.net 站点下载）
         //完整的下载地址 "https://pecl.php.net/get/swoole-5.0.3.tgz";
@@ -98,11 +98,12 @@ EOF
     # 参数固定设置
     /** 依赖的静态链接库 写法一 start   **/
     $ext->withDependentLibraries('curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2');
-    /** 依赖的静态链接库 写法一 start   **/
+    /** 依赖的静态链接库 写法一 end   **/
+
     # 根据传入的参数，动态设置
     /** 依赖的静态链接库 写法二 start   **/
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
-    /** 依赖的静态链接库 写法二 start   **/
+    /** 依赖的静态链接库 写法二 end   **/
 
 
     $p->addExtension($ext);
