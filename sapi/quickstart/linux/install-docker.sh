@@ -17,11 +17,11 @@ cd ${__PROJECT__}/var
 
 curl -fsSL https://get.docker.com -o get-docker.sh
 
-mirror=''
+MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    mirror="$2"
+    MIRROR="$2"
     shift
     ;;
   --*)
@@ -31,7 +31,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-case "$mirror" in
+case "$MIRROR" in
 china)
   sed -i "s@https://mirrors.aliyun.com/docker-ce@https://mirrors.ustc.edu.cn/docker-ce@g" get-docker.sh
   sed -i "s@Aliyun)@china)@g" get-docker.sh
