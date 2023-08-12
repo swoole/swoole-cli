@@ -10,12 +10,8 @@ cd ${__DIR__}
 # use china mirror
 # bash sapi/quickstart/linux/alpine-init.sh --mirror china
 
-<<<<<<< HEAD
 
-mirror=''
-=======
 MIRROR=''
->>>>>>> build_native_php
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
