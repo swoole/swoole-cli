@@ -179,7 +179,7 @@ define("FREESWITCH_PREFIX", $p->getGlobalPrefix() . '/freeswitch');
 define("LIBBPF_PREFIX", $p->getGlobalPrefix() . '/libbpf');
 define("LIBELF_PREFIX", $p->getGlobalPrefix() . '/libelf');
 define("CEPH_PREFIX", $p->getGlobalPrefix() . '/ceph');
-define("MONGODB_C_DRIVER_PREFIX", $p->getGlobalPrefix() . '/mongo_c_driver');
+
 define("IPERF3_PREFIX", $p->getGlobalPrefix() . '/iperf3');
 define("OPENSSH_PREFIX", $p->getGlobalPrefix() . '/openssh');
 define("LIBFIDO2_PREFIX", $p->getGlobalPrefix() . '/libfido2');
@@ -253,3 +253,6 @@ define("SPIRV_TOOLS_PREFIX", $p->getGlobalPrefix() . '/spirv_tools');
 define("FDK_AAC_PREFIX", $p->getGlobalPrefix() . '/fdk_aac');
 define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
 define("PJPROJECT_PREFIX", $p->getGlobalPrefix() . '/pjproject');
+define("PROMETHEUS_CLIENT_C_PREFIX", $p->getGlobalPrefix() . '/prometheus_client_c');
+define("MONGODB_C_DRIVER_PREFIX", $p->getGlobalPrefix() . '/mongo_c_driver');
+define("LIBBSON_PREFIX", $p->getGlobalPrefix() . '/libbson');

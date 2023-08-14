@@ -37,6 +37,8 @@ return function (Preprocessor $p) {
         // 'spirv_tools'
        // 'fdk_aac'
        // 'libfribidi'
+        //'libbson',
+       'mongo_c_driver'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

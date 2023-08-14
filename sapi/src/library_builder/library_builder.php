@@ -904,7 +904,9 @@ make install DESTDIR=
         CMAKE_SHARED_LINKER_FLAGS：设置共享库链接器的选项。
         CMAKE_MODULE_LINKER_FLAGS：设置模块链接器的选项。
 
-      -DCMAKE_C_STANDARD_LIBRARIES="-lm -lcrypto -lssl -lopenssl" \
+
+        -DCMAKE_C_STANDARD_LIBRARIES="-lm -lcrypto -lssl -lopenssl" \
+        -DCMAKE_REQUIRED_LIBRARIES="-L/usr/local/swoole-cli/mongo_c_driver/lib -latomic"
 
 
         -DCMAKE_EXE_LINKER_FLAGS=" -lm "
