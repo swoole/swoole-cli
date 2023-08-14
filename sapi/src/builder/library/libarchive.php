@@ -60,6 +60,7 @@ EOF
                 <<<EOF
             LINE_NUMBER=$(grep -n 'Requires.private:' {$libarchive_prefix}/lib/pkgconfig/libarchive.pc |cut -d ':' -f 1)
             sed -i.save "\${LINE_NUMBER} s/iconv//" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
+            sed -i.save "s@-L{$libxml2_prefix}/lib@ @" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
 EOF
             )
             ->withPkgName('libarchive')

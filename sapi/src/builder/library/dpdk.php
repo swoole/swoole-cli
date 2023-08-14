@@ -58,6 +58,7 @@ EOF
 EOF
             )
             ->withBinPath($dpdk_prefix . '/bin/')
-            ->withDependentLibraries('jansson', 'zlib', 'libarchive', 'numa','libpcap') //'libbpf'
-    );
+            ->withDependentLibraries('jansson', 'zlib', 'libarchive', 'numa','libpcap','libbpf')
+    )
+        ;
 };

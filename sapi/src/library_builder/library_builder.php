@@ -956,5 +956,13 @@ make install DESTDIR=
 
     */
 
+   /*
+      抽象语法树 AST  Abstract Syntax Tree
+      PHP AST  https://github.com/nikic/PHP-Parser
+      https://juejin.cn/post/6844904126099226631
+    */
 
+    /**
+     * BPF CO-RE（编译一次 - 到处运行）
+     */
 }
