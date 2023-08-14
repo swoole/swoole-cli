@@ -38,7 +38,8 @@ return function (Preprocessor $p) {
        // 'fdk_aac'
        // 'libfribidi'
         //'libbson',
-       'mongo_c_driver'
+       //'mongo_c_driver',
+       'dpdk'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

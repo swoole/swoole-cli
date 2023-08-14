@@ -108,6 +108,7 @@ EOF
             meson setup -h
             # meson configure -h
 
+            LD_LIBRARY_PATH="{$openssl_prefix}/lib" \
             meson setup  build \
             -Dprefix={$example_prefix} \
             -Dbackend=ninja \
@@ -116,7 +117,9 @@ EOF
             -Db_staticpic=true \
             -Db_pie=true \
             -Dprefer_static=true \
-            -Dexamples=disabled
+            -Dexamples=disabled \
+            -Dc_args=-fmax-errors=10 \
+            -Dcpp_args=-DMAGIC=123
 
             # meson compile -C build
 

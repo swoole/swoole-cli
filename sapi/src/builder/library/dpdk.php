@@ -9,21 +9,26 @@ return function (Preprocessor $p) {
         (new Library('dpdk'))
             ->withHomePage('http://core.dpdk.org/')
             ->withLicense('https://core.dpdk.org/contribute/', Library::LICENSE_BSD)
-            ->withUrl('https://fast.dpdk.org/rel/dpdk-23.03.tar.xz')
             ->withManual('https://github.com/DPDK/dpdk.git')
             ->withManual('http://core.dpdk.org/doc/')
             ->withManual('https://core.dpdk.org/doc/quick-start/')
-            ->withUntarArchiveCommand('xz')
+            ->withFile('dpdk-v22.11.2.tar.gz')
+            ->withDownloadScript(
+                'dpdk-stable',
+                <<<EOF
+                git clone -b v22.11.2 --depth=1 https://dpdk.org/git/dpdk-stable
+EOF
+            )
             ->withCleanBuildDirectory()
             ->withBuildLibraryCached(false)
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
-            # apk add python3 py3-pip
+            apk add python3 py3-pip
             # pip3 install meson pyelftools -i https://pypi.tuna.tsinghua.edu.cn/simple
             # pip3 install meson pyelftools -ihttps://pypi.python.org/simple
-            # pipenv install meson pyelftools
-            # apk add bsd-compat-headers
+            pip3 install meson pyelftools
+            apk add bsd-compat-headers
 EOF
             )
             ->withConfigure(
@@ -53,6 +58,6 @@ EOF
 EOF
             )
             ->withBinPath($dpdk_prefix . '/bin/')
-            ->withDependentLibraries('jansson', 'zlib', 'libarchive', 'numa') //'libbpf'
+            ->withDependentLibraries('jansson', 'zlib', 'libarchive', 'numa','libpcap') //'libbpf'
     );
 };
