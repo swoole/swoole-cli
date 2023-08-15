@@ -107,8 +107,7 @@ EOF
 
             ./configure  \
             --prefix=$coturn_prefix
-            make -j {$p->maxJob}
-            make install
+
 EOF
             )
             ->withBinPath($coturn_prefix . '/bin/')
