@@ -15,6 +15,27 @@ return function (Preprocessor $p) {
             ->withMakeInstallOptions('PREFIX=' . $bzip2_prefix)
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
             ->withBinPath($bzip2_prefix . '/bin/')
+            ->withScriptAfterInstall(
+                <<<EOF
+                mkdir -p {$bzip2_prefix}/lib/pkgconfig/
+                cat > {$bzip2_prefix}/lib/pkgconfig/bz2.pc <<'__bzip2__EOF'
+prefix={$bzip2_prefix}
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
+
+Name: bz2
+Description: bzip2 library
+Version: 1.0.8
+
+Requires:
+Libs: -L\${libdir}  -lbz2
+Cflags: -I\${includedir}
+
+__bzip2__EOF
+EOF
+            )
+            //->withPkgName('bz2')
     );
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . BZIP2_PREFIX . '/include');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . BZIP2_PREFIX . '/lib');

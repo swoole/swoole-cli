@@ -14,8 +14,28 @@ return function (Preprocessor $p) {
             ->withPrefix($libiconv_prefix)
             ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
             ->withBinPath($libiconv_prefix . '/bin/')
-    );
+            ->withScriptAfterInstall(
+                <<<EOF
+                mkdir -p {$libiconv_prefix}/lib/pkgconfig/
+                cat > {$libiconv_prefix}/lib/pkgconfig/iconv.pc <<'__libiconv__EOF'
+prefix={$libiconv_prefix}
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
 
+Name: iconv
+Description: iconv library
+Version: 1.16
+
+Requires:
+Libs: -L\${libdir} -liconv
+Cflags: -I\${includedir}
+
+__libiconv__EOF
+EOF
+            )
+           // ->withPkgName('iconv')
+    );
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . ICONV_PREFIX . '/include');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . ICONV_PREFIX . '/lib');
     $p->withVariable('LIBS', '$LIBS -liconv');

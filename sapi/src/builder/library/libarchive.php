@@ -20,7 +20,12 @@ return function (Preprocessor $p) {
                 'debian',
                 <<<EOF
               apt install groff  util-linux
-              # apk add groff  util-linux
+EOF
+            )
+            ->withPreInstallCommand(
+                'alpine',
+                <<<EOF
+              apk add groff  util-linux
 EOF
             )
             ->withConfigure(
@@ -32,6 +37,7 @@ EOF
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include " \
                 LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib" \
                 LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 -liconv " \
+                LIBS="\$LDFLAGS \$LIBS" \
                 ./configure \
                 --prefix={$libarchive_prefix} \
                 --enable-shared=no \
@@ -48,19 +54,12 @@ EOF
                 --with-zlib \
                 --with-libiconv-prefix={$libiconv_prefix} \
                 --without-mbedtls
-
-
-                 # make distcheck
-
-
-                # cmake .
 EOF
             )
             ->withScriptAfterInstall(
                 <<<EOF
             LINE_NUMBER=$(grep -n 'Requires.private:' {$libarchive_prefix}/lib/pkgconfig/libarchive.pc |cut -d ':' -f 1)
             sed -i.save "\${LINE_NUMBER} s/iconv//" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
-            sed -i.save "s@-L{$libxml2_prefix}/lib@ @" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
 EOF
             )
             ->withPkgName('libarchive')
