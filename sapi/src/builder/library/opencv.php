@@ -70,7 +70,8 @@ EOF
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
-        -DBUILD_opencv_apps=ON
+        -DBUILD_opencv_apps=ON \
+        -DOpenCV_STATIC=ON \
 
 
         ninja

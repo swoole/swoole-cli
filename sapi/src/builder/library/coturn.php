@@ -18,14 +18,14 @@ return function (Preprocessor $p) {
             //->withUrl('https://github.com/coturn/coturn/archive/refs/tags/docker/4.6.2-r1.tar.gz')
             //->withFile('coturn-v4.6.2.tar.gz')
             ->withFile('coturn-latest.tar.gz')
-           // ->withAutoUpdateFile(true)
+            ->withAutoUpdateFile(true)
             ->withDownloadScript(
                 'coturn',
                 <<<EOF
                 # git clone -b 4.6.2 --depth=1 https://github.com/coturn/coturn.git
                 # git clone -b master --depth=1 https://github.com/coturn/coturn.git
-                # git clone -b patch --depth=1 https://github.com/jingjingxyk/coturn.git
-                git clone -b fix_openssl_no_threads --depth=1 https://github.com/jingjingxyk/coturn.git
+                git clone -b test --depth=1 https://github.com/jingjingxyk/coturn.git
+                # git clone -b fix_openssl_no_threads --depth=1 https://github.com/jingjingxyk/coturn.git
 EOF
             )
             ->withAutoUpdateFile()
@@ -44,7 +44,7 @@ EOF
 
            export TURN_NO_MYSQL=ON
            export TURN_NO_SQLITE=OFF
-           export TURN_NO_PQ=OFF
+           export TURN_NO_PQ=ON
            export TURN_NO_MONGO=ON
            export TURN_NO_HIREDIS=OFF
            export TURN_NO_PROMETHEUS=ON
@@ -62,16 +62,18 @@ EOF
            -DCMAKE_DISABLE_FIND_PACKAGE_libsystemd=ON \
            -DCMAKE_DISABLE_FIND_PACKAGE_Prometheus=ON \
            -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=ON \
+           -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=OFF \
+           -DCMAKE_DISABLE_FIND_PACKAGE_hiredis=ON \
            -DOpenSSL_ROOT={$openssl_prefix} \
            -DLibevent_ROOT={$libevent_prefix} \
            -DSQLite_DIR={$sqlite3_prefix} \
-           -DPostgreSQL_DIR={$pgsql_prefix} \
-           -Dhiredis_DIR={$hiredis_prefix} \
+           -DPostgreSQL_ROOT={$pgsql_prefix} \
+           -Dhiredis_ROOT={$hiredis_prefix} \
            -DOPENSSL_USE_STATIC_LIBS=ON \
            -DBUILD_TEST=OFF \
            -DFUZZER=OFF \
-           -DINCLUDE_DIRECTORIES="{$pgsql_prefix}/include" \
-           -DCMAKE_LIBRARY_PATH="{$pgsql_prefix}/lib/"
+           -DCMAKE_EXE_LINKER_FLAGS="-static"
+
 
 
 

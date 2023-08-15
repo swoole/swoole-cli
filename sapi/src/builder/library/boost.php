@@ -21,6 +21,7 @@ return function (Preprocessor $p) {
             <<<EOF
             export PATH=\$SYSTEM_ORIGIN_PATH
             export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
+            export Boost_USE_STATIC_LIBS=on
             ./bootstrap.sh
             ./b2 headers
             ./b2 --release install --prefix={$boost_prefix}
