@@ -24,8 +24,8 @@ return function (Preprocessor $p) {
                 <<<EOF
                 # git clone -b 4.6.2 --depth=1 https://github.com/coturn/coturn.git
                 # git clone -b master --depth=1 https://github.com/coturn/coturn.git
-                git clone -b test --depth=1 https://github.com/jingjingxyk/coturn.git
-                # git clone -b fix_openssl_no_threads --depth=1 https://github.com/jingjingxyk/coturn.git
+                # git clone -b test --depth=1 https://github.com/jingjingxyk/coturn.git
+                git clone -b fix_openssl_no_threads --depth=1 https://github.com/jingjingxyk/coturn.git
 EOF
             )
             ->withAutoUpdateFile()
@@ -93,6 +93,7 @@ EOF
             PACKAGES='sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
             PACKAGES="\$PACKAGES libpq"
+            PACKAGES="\$PACKAGES hiredis"
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
             export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
@@ -104,6 +105,7 @@ EOF
             export TURN_NO_MYSQL=1
             export TURN_NO_MONGO=1
             export TURN_NO_PQ=0
+            export TURN_NO_HIREDIS=0
 
             ./configure  \
             --prefix=$coturn_prefix
