@@ -20,8 +20,7 @@ EOF;
 
 
     $server->handle('/', function ($request, $response) {
-        $response->header('content-type', 'text/html;charset=utf-8');
-        $response->end(file_get_contents(realpath(__DIR__ . '/index.html')));
+        $response->redirect('/public/index.html', 302);
     });
 
     $server->handle('/public/', function (Request $request, Response $response) {
@@ -29,34 +28,26 @@ EOF;
 
         $request_uri = str_replace('..', '', $request->server['request_uri']);
         $request_uri = str_replace('//', '/', $request_uri);
-        $path_info = explode('/', $request_uri);
-        $file = __DIR__ . $request_uri;
+        $urlinfo = parse_url($request_uri);
+        $path = empty($urlinfo['path']) ? "/" : $urlinfo['path'];
+        $file = realpath(__DIR__ . '/') . $path;
 
-        if (isset($path_info[1]) && isset($path_info[2])) {
-            $prefix = '/public/' . $path_info[2] . '/';
-        } else {
-            $prefix = '/public/';
-        }
-        if ($prefix == '/public/js/') {
-            if (str_ends_with($request_uri, '.js')) {
-                $response->header('content-type', 'application/javascript');
-            } else {
-                $response->header('content-type', 'text/plain');
-            }
-        } elseif ($prefix == '/public/css/') {
-            if (str_ends_with($request_uri, '.css')) {
-                $response->header('content-type', 'text/css');
-            } elseif (str_ends_with($request_uri, '.woff2')) {
-                $response->header('content-type', 'font/woff2');
-            } else {
-                $response->header('content-type', 'application/octet-stream');
-            }
-        } elseif ($prefix == '/public/data/') {
-            $response->header('content-type', 'application/json;charset=utf-8');
-        } else {
-            $response->header('content-type', 'application/octet-stream');
-        }
         if (is_file($file)) {
+            if (str_ends_with($request_uri, '.js')) {
+                $mimetype='application/javascript;charset=utf-8';
+            } elseif (str_ends_with($request_uri, 'css')) {
+                $mimetype='text/css;charset=utf-8';
+            } elseif (str_ends_with($request_uri, 'html')) {
+                $mimetype='text/html;charset=utf-8';
+            } else {
+                $finfo = finfo_open(FILEINFO_MIME);
+                $mimetype = finfo_file($finfo, $file);
+                finfo_close($finfo);
+                if (!$mimetype) {
+                    $mimetype='text/plain;charset=utf-8';
+                }
+            }
+            $response->header('content-type', $mimetype);
             $response->end(file_get_contents($file));
         } else {
             $response->status(404);
