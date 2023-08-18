@@ -30,6 +30,10 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-sasl=no ';
     $options .= ' --with-mongodb-icu=yes ';
 
+    $options .= ' --with-mongodb-client-side-encryption=no ';
+    $options .= ' --with-mongodb-snappy=no ';
+
+
     $ext = new Extension('mongodb');
 
     $ext->withHomePage('https://www.php.net/mongodb')
