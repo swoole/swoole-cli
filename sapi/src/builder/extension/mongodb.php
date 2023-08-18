@@ -34,6 +34,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-client-side-encryption=no ';
     $options .= ' --with-mongodb-snappy=no ';
 
+    $mongodb_version = '1.16.2';
 
     $ext = new Extension('mongodb');
 
@@ -42,11 +43,11 @@ return function (Preprocessor $p) {
         ->withOptions($options)
         //->withAutoUpdateFile()
         //->withPeclVersion('1.6.2') //官方包 解压需要解决这个问题 https://github.com/mongodb/mongo-php-driver/issues/1459
-        ->withFile('mongodb-1.16.2.tgz')
+        ->withFile("mongodb-{$mongodb_version}.tgz")
         ->withDownloadScript(
             'mongo-php-driver',
             <<<EOF
-        git clone -b 1.16.2 --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
+        git clone -b {$mongodb_version} --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
 EOF
         )//->withDependentExtensions('date','json','standar','spl')
 
