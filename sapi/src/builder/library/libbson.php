@@ -26,7 +26,7 @@ return function (Preprocessor $p) {
             cd cmake-build
             cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libbson_prefix} \
-             -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_STATIC_LIBS=ON \
             -DCMAKE_POLICY_DEFAULT_CMP0075=NEW \
@@ -40,16 +40,19 @@ EOF
             )
             ->withScriptAfterInstall(
                 <<<EOF
-           # rm -rf {$libbson_prefix}/lib/*.so.*
-           # rm -rf {$libbson_prefix}/lib/*.so
-           # rm -rf {$libbson_prefix}/lib/*.dylib
-           # rm -rf {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
-           # mv {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
-           # mv {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/libbson-1.0.a
-           echo 1;
+           rm -rf {$libbson_prefix}/lib/*.so.*
+           rm -rf {$libbson_prefix}/lib/*.so
+           rm -rf {$libbson_prefix}/lib/*.dylib
+           rm -rf {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
+           cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
+           cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/bson-1.0.pc
+           cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/libbson-1.0.a
+           cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/bson-1.0.a
+
 
 EOF
             )
+        ->withPkgName('libbson-static-1.0')
         ->withPkgName('libbson-1.0')
     );
 };

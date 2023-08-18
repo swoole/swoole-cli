@@ -38,8 +38,10 @@ return function (Preprocessor $p) {
        // 'fdk_aac'
        // 'libfribidi'
         //'libbson',
+       // 'libmongocrypt',
+        'libmongoc',
        //'mongo_c_driver',
-       'dpdk',
+       //'dpdk',
        //'libarchive'
     ];
     $ext = (new Extension('common'))

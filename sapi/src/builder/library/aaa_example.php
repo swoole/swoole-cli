@@ -93,7 +93,8 @@ EOF
             -DCMAKE_CXX_COMPILER=clang++ \
             -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
             -DCMAKE_C_FLAGS="-D_POSIX_C_SOURCE=200809L" \
-            -DOpenSSL_ROOT={$openssl_prefix}
+            -DOpenSSL_ROOT={$openssl_prefix} \
+            -DCMAKE_PREFIX_PATH="{$openssl_prefix}"  # 多个使用分号隔开
 
             cmake --build . --config Release --target install
 

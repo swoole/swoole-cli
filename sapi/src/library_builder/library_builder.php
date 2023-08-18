@@ -917,6 +917,12 @@ make install DESTDIR=
         # 以分号 分割
         CMAKE_INCLUDE_PATH
         CMAKE_LIBRARY_PATH
+        -- Searching for sasl/sasl.h
+        --   Not found (specify -DCMAKE_INCLUDE_PATH=/path/to/sasl/include for SASL support)
+        -- Searching for libsasl2
+        --   Not found (specify -DCMAKE_LIBRARY_PATH=/path/to/sasl/lib for SASL support)
+
+        -DCMAKE_PREFIX_PATH="{$libbson_prefix}"   https://cmake.org/cmake/help/latest/variable/CMAKE_PREFIX_PATH.html
         # 上面这两个路径给CMake的FIND__XXX()系列函数提供查找路径
 
 

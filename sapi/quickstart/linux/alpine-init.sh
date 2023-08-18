@@ -37,6 +37,7 @@ apk update
 
 apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils gcc g++
 apk add bash p7zip zip unzip flex pkgconf ca-certificates
+apk add tar gzip zip unzip bzip2
 # apk add bash 7zip
 apk add wget git curl
 apk add libc++-static libltdl-static

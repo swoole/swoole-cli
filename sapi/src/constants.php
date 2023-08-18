@@ -254,5 +254,7 @@ define("FDK_AAC_PREFIX", $p->getGlobalPrefix() . '/fdk_aac');
 define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
 define("PJPROJECT_PREFIX", $p->getGlobalPrefix() . '/pjproject');
 define("PROMETHEUS_CLIENT_C_PREFIX", $p->getGlobalPrefix() . '/prometheus_client_c');
-define("MONGODB_C_DRIVER_PREFIX", $p->getGlobalPrefix() . '/mongo_c_driver');
+
 define("LIBBSON_PREFIX", $p->getGlobalPrefix() . '/libbson');
+define("LIBMONGOCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmongocrypt');
+define("LIBMONGOC_PREFIX", $p->getGlobalPrefix() . '/libmongoc');
