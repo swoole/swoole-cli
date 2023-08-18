@@ -34,10 +34,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-client-side-encryption=no ';
     $options .= ' --with-mongodb-snappy=no ';
 
-    $mongodb_version = '1.16.2'; //1.16.2 macos 有 bug
-    if ($p->getOsType() == 'macos') {
-        $mongodb_version = '1.16.1';
-    }
+    $mongodb_version = '1.16.2';
 
     $ext = new Extension('mongodb');
 
