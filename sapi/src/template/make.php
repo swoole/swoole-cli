@@ -41,6 +41,9 @@ make_<?=$item->name?>() {
             echo "[<?=$item->name?>]  library cached , skip.."
             return 0
         fi
+        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+        fi
         <?php endif;?>
         if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
             echo "[<?=$item->name?>] compiled, skip.."

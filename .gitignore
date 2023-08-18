@@ -318,8 +318,14 @@ composer.lock
 .php-cs-fixer.cache
 ldflags.log
 cppflags.log
+libs.log
 /packages
 /conf.d.loader
 /configure.backup
 make-install-deps.sh
 make-download-box.sh
+make-env.sh
+var/
+php-src/
+ext/swoole/
+sapi/webUI/.idea/
