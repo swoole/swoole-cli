@@ -42,8 +42,14 @@ return function (Preprocessor $p) {
         ->withOptions($options)
         //->withAutoUpdateFile()
         //->withPeclVersion('1.6.2') //官方包 解压需要解决这个问题 https://github.com/mongodb/mongo-php-driver/issues/1459
-        ->withUrl('https://github.com/mongodb/mongo-php-driver/archive/refs/tags/1.16.2.tar.gz')
-        ->withFile('mongodb-1.6.2.tgz')
+        ->withFile('mongodb-1.16.2.tgz')
+        ->withDownloadScript(
+            'mongo-php-driver',
+            <<<EOF
+        git clone -b 1.16.2 --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
+EOF
+        )//->withDependentExtensions('date','json','standar','spl')
+
     ;
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
 
