@@ -40,8 +40,11 @@ return function (Preprocessor $p) {
     $ext->withHomePage('https://www.php.net/mongodb')
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions($options)
-        ->withPeclVersion('1.6.2');
-
+        ->withAutoUpdateFile()
+        //->withPeclVersion('1.6.2') //官方包 解压需要解决这个问题 https://github.com/mongodb/mongo-php-driver/issues/1459
+        ->withUrl('https://github.com/mongodb/mongo-php-driver/archive/refs/tags/1.16.2.tar.gz')
+        ->withFile('mongodb-1.6.2.tgz')
+    ;
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
 
     //$depends[] = 'libsasl';

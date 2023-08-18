@@ -692,7 +692,10 @@ EOF;
                         echo '[ext/' . $ext_name . '] cached ' . PHP_EOL;
                     }
                 } else {
-                    echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+                    echo $cmd="tar --strip-components=1 -C $dst_dir -xf {$ext->path}";
+                    echo PHP_EOL;
+                    echo `$cmd`;
+                    echo PHP_EOL;
                     if ($ext->enableBuildLibraryCached) {
                         touch($cached);
                     }
