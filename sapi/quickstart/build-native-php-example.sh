@@ -1,39 +1,61 @@
 #!/bin/env bash
 set -uex
 
+
+OS=$(uname -s)
+ARCH=$(uname -m)
+
+
+export CC=clang
+export CXX=clang++
+export LD=ld.lld
+
+if [ "$OS" = 'Linux' ] ;then
+
 : <<'EOF'
 # setup container environment
 
 docker run --rm   -ti --init -v .:/work -w /work debian:11
 docker run --rm   -ti --init -v .:/work -w /work alpine:3.17
 
+
+
 EOF
+
+fi
+
+
+if [ "$OS" = 'Darwin' ] ;then
+
+export PATH=/usr/local/opt/bison/bin/:/usr/local/opt/llvm/bin/:$PATH
+
+fi
+
+
 
 mkdir -p /tmp/t
 cd /tmp/t
 
 PHP_VERSION=8.1.21
-PHP_VERSION=8.2.1
+PHP_VERSION=8.2.7
 
 test -f php-${PHP_VERSION}.tar.gz || wget -O php-${PHP_VERSION}.tar.gz https://github.com/php/php-src/archive/refs/tags/php-${PHP_VERSION}.tar.gz
 test -d php-src && rm -rf php-src
 mkdir -p php-src
 tar --strip-components=1 -C php-src -xf php-${PHP_VERSION}.tar.gz
 
-test -f mongodb-1.16.1.tgz || wget -O mongodb-1.16.1.tgz https://github.com/mongodb/mongo-php-driver/releases/download/1.16.1/mongodb-1.16.1.tgz
+MONGODB_VERSION=1.16.1
+#test -f mongodb-${MONGODB_VERSION}.tgz || wget -O mongodb-${MONGODB_VERSION}.tgz https://github.com/mongodb/mongo-php-driver/releases/download/${MONGODB_VERSION}/mongodb-${MONGODB_VERSION}.tgz
+test -f mongodb-${MONGODB_VERSION}.tgz || wget -O mongodb-${MONGODB_VERSION}.tgz https://pecl.php.net/get/mongodb-${MONGODB_VERSION}.tgz
 mkdir -p mongodb
-tar --strip-components=1 -C mongodb -xf mongodb-1.16.1.tgz
+tar --strip-components=1 -C mongodb -xf mongodb-${MONGODB_VERSION}.tgz
 
 test -d php-src/ext/mongodb && rm -rf php-src/ext/mongodb
 mv mongodb php-src/ext/
 
-export CC=gcc
-export CXX=g++
-export LD=ld
 
-export CC=clang
-export CXX=clang++
-export LD=ld.lld
+
+
 
 cd php-src
 
@@ -61,5 +83,13 @@ cd php-src
 
 make -j $(nproc)
 
-file sapi/cli/php
-readelf -h sapi/cli/php
+
+if [ "$OS" = 'Linux' ] ;then
+
+  file sapi/cli/php
+  readelf -h sapi/cli/php
+
+else
+    otool -L sapi/cli/php
+fi
+
