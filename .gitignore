@@ -325,6 +325,7 @@ composer.lock
 /php-src
 ldflags.log
 cppflags.log
+libs.log
 /packages
 /conf.d.loader
 /configure.backup
@@ -332,4 +333,9 @@ make-install-deps.sh
 php-cli*
 make-download-box.sh
 make-env.sh
+var/
+php-src/
+ext/swoole/
+sapi/webUI/.idea/
+
 
