@@ -39,9 +39,9 @@ return function (Preprocessor $p) {
        // 'libfribidi'
         //'libbson',
        // 'libmongocrypt',
-        'libmongoc',
+       // 'libmongoc',
        //'mongo_c_driver',
-       //'dpdk',
+       'dpdk',
        //'libarchive'
     ];
     $ext = (new Extension('common'))

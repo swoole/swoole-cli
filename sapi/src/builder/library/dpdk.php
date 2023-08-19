@@ -47,7 +47,7 @@ EOF
             -Db_staticpic=true \
             -Db_pie=true \
             -Dprefer_static=true \
-            -Dexamples=all
+            -Dexamples=false
 
 
             ninja -C build
@@ -60,5 +60,5 @@ EOF
             ->withBinPath($dpdk_prefix . '/bin/')
             ->withDependentLibraries('jansson', 'zlib', 'libarchive', 'numa', 'libpcap', 'libbpf')
     )
-        ;
+    ;
 };
