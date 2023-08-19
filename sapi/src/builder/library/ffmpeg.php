@@ -50,7 +50,7 @@ EOF
 
 EOF
         )
-        ->withBuildLibraryCached(false)
+        //->withBuildLibraryCached(false)
         ->withConfigure(
             <<<EOF
 
