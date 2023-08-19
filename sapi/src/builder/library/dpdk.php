@@ -46,7 +46,8 @@ EOF
             -Ddefault_library=static \
             -Db_staticpic=true \
             -Db_pie=true \
-            -Dprefer_static=true
+            -Dprefer_static=true \
+            -Dibverbs_link=static
 
 
             ninja -C build
