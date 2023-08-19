@@ -47,6 +47,7 @@ EOF
             <<<EOF
             # 汇编编译器
             apk add yasm nasm
+
 EOF
         )
         ->withBuildLibraryCached(false)

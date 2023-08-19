@@ -41,8 +41,9 @@ return function (Preprocessor $p) {
        // 'libmongocrypt',
        // 'libmongoc',
        //'mongo_c_driver',
-       'dpdk',
+       //'dpdk',
        //'libarchive'
+        'libx265'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
