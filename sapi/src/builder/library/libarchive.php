@@ -74,7 +74,8 @@ EOF
                 'bzip2',
                 'nettle',
                 'bzip2',
-                'libiconv'
+                'libiconv',
+                'gmp'
             )
     );
 };
