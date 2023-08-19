@@ -46,8 +46,7 @@ EOF
             -Ddefault_library=static \
             -Db_staticpic=true \
             -Db_pie=true \
-            -Dprefer_static=true \
-            -Dexamples=false
+            -Dprefer_static=true
 
 
             ninja -C build
