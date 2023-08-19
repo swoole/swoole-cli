@@ -16,6 +16,7 @@ return function (Preprocessor $p) {
             # autoreconf -fi
             ./configure --help
             PACKAGES='ncursesw  '
+            CFLAGS=' -D__STDC_ISO_10646__=201103L ' \
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) " \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) " \
