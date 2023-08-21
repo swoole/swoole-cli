@@ -43,7 +43,8 @@ return function (Preprocessor $p) {
        //'mongo_c_driver',
        //'dpdk',
        //'libarchive'
-        'libx265'
+       // 'libx265',
+        'boost'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

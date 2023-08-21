@@ -258,3 +258,4 @@ define("PROMETHEUS_CLIENT_C_PREFIX", $p->getGlobalPrefix() . '/prometheus_client
 define("LIBBSON_PREFIX", $p->getGlobalPrefix() . '/libbson');
 define("LIBMONGOCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmongocrypt');
 define("LIBMONGOC_PREFIX", $p->getGlobalPrefix() . '/libmongoc');
+define("LIBRIME_PREFIX", $p->getGlobalPrefix() . '/librime');

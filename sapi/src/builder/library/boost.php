@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $boost_prefix = BOOST_PREFIX;
+    $icu_prefix = ICU_PREFIX;
     $lib = new Library('boost');
     $lib->withHomePage('https://www.boost.org/')
         ->withLicense('https://www.boost.org/users/license.html', Library::LICENSE_SPEC)
@@ -14,23 +15,36 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/boostorg/wiki/wiki/Getting-Started%3A-Overview')
         ->withManual('https://www.boost.org/build/')
         ->withManual('https://www.boost.org/build/doc/html/index.html')
+        ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/windows.html')
+        ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/unix-variants.html')
         ->withPrefix($boost_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($boost_prefix)
+        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
-            export PATH=\$SYSTEM_ORIGIN_PATH
-            export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
+
             export Boost_USE_STATIC_LIBS=on
-            ./bootstrap.sh
-            ./b2 headers
+            ./bootstrap.sh --help
+
+            ./bootstrap.sh \
+            --prefix={$boost_prefix} \
+            --with-icu={$icu_prefix} \
+            --with-toolset={$p->get_C_COMPILER()} \
+            --with-libraries=all
+
+            ./b2 --help
+
+            ./b2 headers link=static runtime-link=static
             ./b2 --release install --prefix={$boost_prefix}
 
-            export PATH=\$SWOOLE_CLI_PATH
-            export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
+
 EOF
         )
-        ->withPkgName('boost');
+        ->withPkgName('boost')
+        ->withDependentLibraries('zlib','bzip2','liblzma','libzstd','icu','libiconv')
+
+    ;
 
     $p->addLibrary($lib);
 };

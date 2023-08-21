@@ -12,6 +12,11 @@ return function (Preprocessor $p) {
             export PATH=\$SYSTEM_ORIGIN_PATH
             export PKG_CONFIG_PATH=\$SYSTEM_ORIGIN_PKG_CONFIG_PATH
 
+            export PATH=\$SWOOLE_CLI_PATH
+            export PKG_CONFIG_PATH=\$SWOOLE_CLI_PKG_CONFIG_PATH
+
+
+
             cd {$current_dir}
             export SWOOLE_CLI_WITH_OS_MIRROR=$with_os_mirror;
             if test -f /etc/os-release; then
