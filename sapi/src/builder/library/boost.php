@@ -24,18 +24,29 @@ return function (Preprocessor $p) {
         ->withBuildScript(
             <<<EOF
 
-            export Boost_USE_STATIC_LIBS=on
-            ./bootstrap.sh --help
+            # export Boost_USE_STATIC_LIBS=on
+            # ./bootstrap.sh --help
 
-            ./bootstrap.sh \
-            --prefix={$boost_prefix} \
-            --with-icu={$icu_prefix} \
-            --with-toolset={$p->get_C_COMPILER()} \
-            --with-libraries=all
+            #./bootstrap.sh \
+            #--prefix={$boost_prefix} \
+            #--with-icu={$icu_prefix} \
+            #--with-toolset={$p->get_C_COMPILER()} \
+            #--with-libraries=all \
+            #--show-libraries
 
-            ./b2 --help
+            # ./b2 --help
+            # ./b2 release headers link=static runtime-link=static
 
-            ./b2 headers link=static runtime-link=static
+            mkdri -p build-dir
+            cd tools/build/
+            sh   bootstrap.sh
+            ./b2  \
+            --build-dir={$p->getBuildDir()}/boost/build-dir \
+            toolset={$p->get_C_COMPILER()} \
+             --build-type=complete  \
+             release headers link=static runtime-link=static
+
+
             ./b2 --release install --prefix={$boost_prefix}
 
 
