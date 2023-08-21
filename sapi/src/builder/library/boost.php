@@ -37,7 +37,7 @@ return function (Preprocessor $p) {
             # ./b2 --help
             # ./b2 release headers link=static runtime-link=static
 
-            mkdri -p build-dir
+            mkdir -p build-dir
             cd tools/build/
             sh   bootstrap.sh
             ./b2  \
