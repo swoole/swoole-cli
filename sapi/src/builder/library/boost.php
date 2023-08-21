@@ -21,8 +21,8 @@ return function (Preprocessor $p) {
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($boost_prefix)
         ->withBuildLibraryCached(false)
- ->withBuildScript(
-            <<<EOF
+    ->withBuildScript(
+        <<<EOF
 
             # export Boost_USE_STATIC_LIBS=on
             ./bootstrap.sh --help
@@ -37,13 +37,18 @@ return function (Preprocessor $p) {
             # b2 [options] [properties] [install|stage]
             # --show-libraries
 
-            ./b2 --prefix={$boost_prefix}  link=static install
+            ./b2 --prefix={$boost_prefix} \
+            --without-graph_parallel \
+            --with-icu={$icu_prefix} \
+            --with-toolset={$p->get_C_COMPILER()} \
+            --with-libraries=all \
+             link=static install
 
 
-EOF
-        )
+   EOF
+    )
         ->withPkgName('boost')
-        ->withDependentLibraries('zlib','bzip2','liblzma','libzstd','icu','libiconv')
+        ->withDependentLibraries('zlib', 'bzip2', 'liblzma', 'libzstd', 'icu', 'libiconv')
 
     ;
 
