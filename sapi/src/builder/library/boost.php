@@ -26,23 +26,25 @@ return function (Preprocessor $p) {
 
             # export Boost_USE_STATIC_LIBS=on
             ./bootstrap.sh --help
+            ./bootstrap.sh --show-libraries
 
             ./bootstrap.sh \
             --prefix={$boost_prefix} \
             --with-icu={$icu_prefix} \
             --with-toolset={$p->get_C_COMPILER()} \
-            --with-libraries=all \
-            --show-libraries
+            --with-libraries=all
 
             ./b2 --help
             # b2 [options] [properties] [install|stage]
-            # --show-libraries
 
-            ./b2 --prefix={$boost_prefix} \
+            ./b2 \
+            --prefix={$boost_prefix} \
             --with-toolset={$p->get_C_COMPILER()} \
             --with-libraries=all \
             --build-type=complete \
-             link=static install
+             link=static
+
+            ./b2  --prefix={$boost_prefix}  install
 
 
    EOF
