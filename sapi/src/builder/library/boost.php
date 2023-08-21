@@ -38,7 +38,6 @@ return function (Preprocessor $p) {
             # --show-libraries
 
             ./b2 --prefix={$boost_prefix} \
-            --without-graph_parallel \
             --with-icu={$icu_prefix} \
             --with-toolset={$p->get_C_COMPILER()} \
             --with-libraries=all \
