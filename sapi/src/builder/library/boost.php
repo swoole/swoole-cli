@@ -44,7 +44,7 @@ return function (Preprocessor $p) {
             --build-dir={$p->getBuildDir()}/boost/build-dir \
             toolset={$p->get_C_COMPILER()} \
              --build-type=complete  \
-             release headers link=static runtime-link=static
+             release --with-libraries=all  link=static runtime-link=static
 
 
             ./b2 --release install --prefix={$boost_prefix}
