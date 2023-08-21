@@ -37,7 +37,7 @@ return function (Preprocessor $p) {
             # b2 [options] [properties] [install|stage]
             # --show-libraries
 
-            ./b2 install
+            ./b2 --prefix={$boost_prefix}  link=static install
 
 
 EOF
