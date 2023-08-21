@@ -39,8 +39,9 @@ return function (Preprocessor $p) {
 
 
             ./b2  --prefix={$boost_prefix} \
-            --with-toolset={$p->get_C_COMPILER()} \
-            link=static    cxxflags="-std=c++11 -stdlib=libc++" linkflags="-stdlib=libc++" install
+            variant=release \
+            toolset={$p->get_C_COMPILER()} \
+            link=static    cxxflags="-std=c++11 -stdlib=libstdc++" linkflags="-stdlib=libstdc++" install
 
 
    EOF
