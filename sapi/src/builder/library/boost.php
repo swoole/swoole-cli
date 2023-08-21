@@ -21,33 +21,23 @@ return function (Preprocessor $p) {
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($boost_prefix)
         ->withBuildLibraryCached(false)
-        ->withBuildScript(
+ ->withBuildScript(
             <<<EOF
 
             # export Boost_USE_STATIC_LIBS=on
-            # ./bootstrap.sh --help
+            ./bootstrap.sh --help
 
-            #./bootstrap.sh \
-            #--prefix={$boost_prefix} \
-            #--with-icu={$icu_prefix} \
-            #--with-toolset={$p->get_C_COMPILER()} \
-            #--with-libraries=all \
-            #--show-libraries
+            ./bootstrap.sh \
+            --prefix={$boost_prefix} \
+            --with-icu={$icu_prefix} \
+            --with-toolset={$p->get_C_COMPILER()} \
+            --with-libraries=all
 
-            # ./b2 --help
-            # ./b2 release headers link=static runtime-link=static
+            ./b2 --help
+            # b2 [options] [properties] [install|stage]
+            # --show-libraries
 
-            mkdir -p build-dir
-            cd tools/build/
-            sh   bootstrap.sh
-            ./b2  \
-            --build-dir={$p->getBuildDir()}/boost/build-dir \
-            toolset={$p->get_C_COMPILER()} \
-             --build-type=complete  \
-             release --with-libraries=all  link=static runtime-link=static
-
-
-            ./b2 --release install --prefix={$boost_prefix}
+            ./b2 install
 
 
 EOF
