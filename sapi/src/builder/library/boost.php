@@ -37,14 +37,8 @@ return function (Preprocessor $p) {
             ./b2 --help
             # b2 [options] [properties] [install|stage]
 
-            ./b2 \
-            --prefix={$boost_prefix} \
-            --with-toolset={$p->get_C_COMPILER()} \
-            --with-libraries=all \
-            --build-type=complete \
-             link=static
 
-            ./b2  --prefix={$boost_prefix}  install
+            ./b2  --prefix={$boost_prefix} link=static  install
 
 
    EOF
