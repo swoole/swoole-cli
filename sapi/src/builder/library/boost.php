@@ -31,16 +31,17 @@ return function (Preprocessor $p) {
             --prefix={$boost_prefix} \
             --with-icu={$icu_prefix} \
             --with-toolset={$p->get_C_COMPILER()} \
-            --with-libraries=all
+            --with-libraries=all \
+            --show-libraries
 
             ./b2 --help
             # b2 [options] [properties] [install|stage]
             # --show-libraries
 
             ./b2 --prefix={$boost_prefix} \
-            --with-icu={$icu_prefix} \
             --with-toolset={$p->get_C_COMPILER()} \
             --with-libraries=all \
+            --build-type=complete \
              link=static install
 
 
