@@ -10,8 +10,15 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/google/snappy')
             ->withManual('https://github.com/google/snappy/blob/main/README.md')
             ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
-            ->withFile('snappy-1.1.10.tar.gz')
+            //->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
+            //->withFile('snappy-1.1.10.tar.gz')
+            ->withFile('snappy-latest.tar.gz')
+            ->withDownloadScript(
+                'snappy',
+                <<<EOF
+            git clone -b main --depth=1 https://github.com/google/snappy.git
+EOF
+            )
             ->withPrefix($snappy_prefix)
             ->withConfigure(
                 <<<EOF
@@ -34,13 +41,11 @@ return function (Preprocessor $p) {
 
 EOF
             )
-            ->withPkgName('snappy')
-            ->withBinPath($snappy_prefix . '/bin/')
     );
 
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . SNAPPY_PREFIX . '/include');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . SNAPPY_PREFIX . '/lib');
-    $p->withVariable('LIBS', '$LIBS -liconv');
+    $p->withVariable('LIBS', '$LIBS -lsnappy');
 
 
 };

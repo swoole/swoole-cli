@@ -23,16 +23,16 @@ return function (Preprocessor $p) {
                 -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
                 -DBUILD_SHARED_LIBS=OFF \
                 -DBUILD_STATIC_LIBS=ON \
-                -DBUILD_TESTING=OFF
+                -DINSTALL_HEADERS=ON \
+                -DBUILD_gflags_LIBS=ON \
+                -DBUILD_CONFIG_TESTS=OFF \
+                -DBUILD_TESTING=OFF \
+                -DBUILD_NC_TESTS=OFF
 
 
 EOF
             )
-            ->withDependentLibraries(
-                'zlib',
-                'liblz4',
-                'bzip2'
-            )
             ->withPkgName('gflags')
+            ->withBinPath($gflags_prefix . '/bin/')
     );
 };

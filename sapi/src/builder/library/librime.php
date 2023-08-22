@@ -61,9 +61,8 @@ EOF
         ->withPkgName('example')
         ->withBinPath($example_prefix . '/bin/')
 
-        //依赖其它静态依赖库
-        //->withDependentLibraries('zlib', 'openssl','boost','glog','leveldb','libopencc')
-        ->withDependentLibraries('boost')
+        ->withDependentLibraries('glog', 'leveldb', 'libopencc', 'libyaml_cpp')
+
         ->withScriptAfterInstall(
             <<<EOF
             rm -rf {$example_prefix}/lib/*.so.*
@@ -73,7 +72,6 @@ EOF
         );
 
     $p->addLibrary($lib);
-
 };
 
 /*

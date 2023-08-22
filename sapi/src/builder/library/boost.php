@@ -9,20 +9,21 @@ return function (Preprocessor $p) {
     $lib = new Library('boost');
     $lib->withHomePage('https://www.boost.org/')
         ->withLicense('https://www.boost.org/users/license.html', Library::LICENSE_SPEC)
-        ->withUrl('https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.tar.gz')
+        ->withUrl('https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz')
         ->withManual('https://www.boost.org/doc/libs/1_81_0/more/getting_started/index.html')
-        ->withManual('https://github.com/boostorg/wiki/wiki/')
         ->withManual('https://github.com/boostorg/wiki/wiki/Getting-Started%3A-Overview')
+        ->withManual('https://github.com/boostorg/wiki/wiki/')
         ->withManual('https://www.boost.org/build/')
         ->withManual('https://www.boost.org/build/doc/html/index.html')
         ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/windows.html')
         ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/unix-variants.html')
+
         ->withPrefix($boost_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($boost_prefix)
         ->withBuildLibraryCached(false)
-    ->withBuildScript(
-        <<<EOF
+        ->withBuildScript(
+            <<<EOF
 
             # export Boost_USE_STATIC_LIBS=on
             ./bootstrap.sh --help
@@ -38,15 +39,16 @@ return function (Preprocessor $p) {
             # b2 [options] [properties] [install|stage]
 
 
-            ./b2  --prefix={$boost_prefix} \
+            ./b2 \
+             --prefix={$boost_prefix} \
             variant=release \
             toolset={$p->get_C_COMPILER()} \
-            link=static    install
+            link=static  headers  install
 
             # cxxflags="-std=c++11 -stdlib=libstdc++" linkflags="-stdlib=libstdc++"
 
    EOF
-    )
+        )
         ->withPkgName('boost')
         ->withDependentLibraries('zlib', 'bzip2', 'liblzma', 'libzstd', 'icu', 'libiconv')
 

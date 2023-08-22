@@ -232,7 +232,7 @@ define("APR_PREFIX", $p->getGlobalPrefix() . '/apr');
 define("APR_UTIL_PREFIX", $p->getGlobalPrefix() . '/apr-util');
 define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
-define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
 
 
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
@@ -259,3 +259,11 @@ define("LIBBSON_PREFIX", $p->getGlobalPrefix() . '/libbson');
 define("LIBMONGOCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmongocrypt');
 define("LIBMONGOC_PREFIX", $p->getGlobalPrefix() . '/libmongoc');
 define("LIBRIME_PREFIX", $p->getGlobalPrefix() . '/librime');
+define("GLOG_PREFIX", $p->getGlobalPrefix() . '/glog');
+define("LIBUNWIND_PREFIX", $p->getGlobalPrefix() . '/libunwind');
+define("GFLAGS_PREFIX", $p->getGlobalPrefix() . '/gflags');
+define("LEVELDB_PREFIX", $p->getGlobalPrefix() . '/leveldb');
+
+define("LIBOPENCC_PREFIX", $p->getGlobalPrefix() . '/libopencc');
+define("LIBYAML_CPP_PREFIX", $p->getGlobalPrefix() . '/libyaml_cpp');
+define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

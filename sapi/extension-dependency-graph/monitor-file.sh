@@ -9,7 +9,7 @@ __PROJECT__=$(
   cd ${__DIR__}/../../
   pwd
 )
-cd ${__DIR__}
+cd ${__PROJECT__}/bin/
 
 
 
@@ -21,9 +21,9 @@ cd ${__DIR__}
 
 # inotifywait -mrq -e create,modify,delete /home
 
-if ! test -f input.template.dot ;then
+if ! test -f ext-dependency-graph.graphviz.dot ;then
 {
-  echo "graphviz 模板文件 input.template.dot 不存在"
+  echo "graphviz 模板文件 ext-dependency-graph.graphviz.dot 不存在"
   echo "请运行 php prepare.php --with-dependency-graph=1 命令生成模板文件"
   exit 3
 
@@ -31,14 +31,16 @@ if ! test -f input.template.dot ;then
 fi
 
 
-inotifywait --monitor --timefmt '%Y%m%dT%H%M%SZ' --format '%T%w%f' -e modify,create,attrib ${__DIR__}/input.template.dot \
+inotifywait --monitor --timefmt '%Y%m%dT%H%M%SZ' --format '%T%w%f' -e modify,create,attrib ${__PROJECT__}/bin/ext-dependency-graph.graphviz.dot \
     | while read file
     do
         echo "file changed, restart"
         echo $file
         {
 
-          sh run.sh
+          sh ${__DIR__}/generate-dependency-graph.sh
+          echo "xdg-open ${__PROJECT__}/bin/ext-dependency-graph.svg"
+          # chromium "${__PROJECT__}/bin/ext-dependency-graph.svg"
         } || {
           echo $?
         }

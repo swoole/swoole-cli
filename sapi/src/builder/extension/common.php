@@ -44,7 +44,14 @@ return function (Preprocessor $p) {
        //'dpdk',
        //'libarchive'
        // 'libx265',
-        'boost'
+        //'boost',
+        //'librime'
+        'glog',
+        'leveldb',
+        'gflags',
+        'libyaml_cpp',
+        'boost',
+        //'librime'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
