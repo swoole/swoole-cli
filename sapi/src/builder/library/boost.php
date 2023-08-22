@@ -37,15 +37,20 @@ return function (Preprocessor $p) {
 
             ./b2 --help
             # b2 [options] [properties] [install|stage]
+            # -stdlib=libc++
+            # -stdlib=libstdc++
 
 
             ./b2 \
              --prefix={$boost_prefix} \
             variant=release \
             toolset={$p->get_C_COMPILER()} \
-            link=static  headers  install
+            link=static    \
+            cxxflags="-std=c++11 -stdlib=libstdc++" \
+            linkflags="-stdlib=libstdc++" \
+            headers  install
 
-            # cxxflags="-std=c++11 -stdlib=libstdc++" linkflags="-stdlib=libstdc++"
+
 
    EOF
         )
