@@ -45,7 +45,7 @@ return function (Preprocessor $p) {
              --prefix={$boost_prefix} \
             variant=release \
             toolset={$p->get_C_COMPILER()} \
-            link=static    \
+            threading=multi link=static runtime-link=static
             cxxflags="-std=c++11 -stdlib=libstdc++" \
             linkflags="-stdlib=libstdc++" \
             headers  install
