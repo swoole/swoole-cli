@@ -45,9 +45,9 @@ return function (Preprocessor $p) {
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static runtime-link=static \
-            --build-type=complete \
             headers  install
 
+            #   --build-type=complete \
             #  cxxflags=" -std=c++11 -stdlib=libstdc++" \
             #  linkflags="-stdlib=libstdc++" \
 
