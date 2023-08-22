@@ -40,9 +40,10 @@ return function (Preprocessor $p) {
             # -stdlib=libc++
             # -stdlib=libstdc++
 
+            ./b2 clean
 
             ./b2 \
-             --prefix={$boost_prefix} \
+            --prefix={$boost_prefix} \
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static runtime-link=static \
