@@ -45,12 +45,11 @@ return function (Preprocessor $p) {
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static runtime-link=static \
-            cxxflags=" -std=c++11 -stdlib=libstdc++" \
-            linkflags="-stdlib=libstdc++" \
             --build-type=complete \
             headers  install
 
-
+            #  cxxflags=" -std=c++11 -stdlib=libstdc++" \
+            #  linkflags="-stdlib=libstdc++" \
 
    EOF
         )
