@@ -8,3 +8,6 @@ export LD=<?= $this->lld . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 
+pkg-config --list-all --static
+# pkg-config --cflags --static
+# pkg-config --libs --static
