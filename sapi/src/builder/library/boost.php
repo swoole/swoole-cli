@@ -6,6 +6,11 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $boost_prefix = BOOST_PREFIX;
     $icu_prefix = ICU_PREFIX;
+    $bzip2_prefix = BZIP2_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
+
+
+
     $lib = new Library('boost');
     $lib->withHomePage('https://www.boost.org/')
         ->withLicense('https://www.boost.org/users/license.html', Library::LICENSE_SPEC)
@@ -27,6 +32,9 @@ return function (Preprocessor $p) {
             # apk add boost1.80-dev
             # apk add boost1.80-static
 
+            PACKAGES='liblzma libzstd icu-i18n icu-io icu-uc'
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/inlcude  -I{$libiconv_prefix}/include"
+            CPPFLAGS="\CPPFLAGS -I/usr/include/c++/12.2.1 -I/usr/include/c++/12.2.1/x86_64-alpine-linux-musl "
 
             # boost components: filesystem regex system
 
@@ -52,7 +60,7 @@ return function (Preprocessor $p) {
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static  \
-            cxxflags="-std=c++11 -I/usr/include/c++/12.2.1 -I/usr/include/c++/12.2.1/x86_64-alpine-linux-musl " \
+            cxxflags="-std=c++11   \$CPPFLAGS " \
             linkflags="-stdlib=libstdc++" \
             release \
             install
@@ -120,4 +128,9 @@ Boost libraries
  */
 
 
+/*
 
+  查找标准头位置
+  clang++ -v -xc++ -
+
+*/
