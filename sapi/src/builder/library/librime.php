@@ -6,6 +6,9 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $example_prefix = LIBRIME_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
+    $glog_prefix = GLOG_PREFIX;
+    $libyaml_cpp_prefix = LIBYAML_CPP_PREFIX;
+    $leveldb_prefix = LEVELDB_PREFIX;
     $lib = new Library('librime');
     $lib->withHomePage('https://rime.im/')
         ->withLicense('https://github.com/rime/librime/blob/master/LICENSE', Library::LICENSE_BSD)
@@ -45,12 +48,11 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            -DCMAKE_CXX_STANDARD=14
-            -DCMAKE_C_STANDARD=11
-            -DCMAKE_C_COMPILER=clang \
-            -DCMAKE_CXX_COMPILER=clang++ \
             -DBUILD_STATIC=ON \
-            -DCMAKE_PREFIX_PATH="{$openssl_prefix}"  # 多个使用分号隔开
+            -DBUILD_DATA=ON \
+            -DBUILD_TEST=OFF \
+            -DBoost_ROOT=/usr/ \
+            -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$glog_prefix};{$libyaml_cpp_prefix};{$leveldb_prefix}"
 
             cmake --build . --config Release --target install
 
@@ -61,7 +63,7 @@ EOF
         ->withPkgName('example')
         ->withBinPath($example_prefix . '/bin/')
 
-        ->withDependentLibraries('glog', 'leveldb', 'libopencc', 'libyaml_cpp')
+        ->withDependentLibraries('glog', 'leveldb', 'libopencc', 'libyaml_cpp','libmarisa')
 
         ->withScriptAfterInstall(
             <<<EOF

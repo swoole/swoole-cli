@@ -17,13 +17,18 @@ return function (Preprocessor $p) {
         ->withManual('https://www.boost.org/build/doc/html/index.html')
         ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/windows.html')
         ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/unix-variants.html')
-
+        ->withPreInstallCommand('alpine',<<<EOF
+        apk add boost1.80-dev
+        apk add boost1.80-static
+EOF
+        )
         ->withPrefix($boost_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($boost_prefix)
         ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
+            # boost components: filesystem regex system
 
             # export Boost_USE_STATIC_LIBS=on
             ./bootstrap.sh --help
@@ -55,7 +60,15 @@ return function (Preprocessor $p) {
    EOF
         )
         ->withPkgName('boost')
-        ->withDependentLibraries('zlib', 'bzip2', 'liblzma', 'libzstd', 'icu', 'libiconv')
+        ->withDependentLibraries(
+            'zlib',
+            'bzip2',
+            'liblzma',
+            'libzstd',
+            'icu',
+            'libiconv',
+
+        )
 
     ;
 

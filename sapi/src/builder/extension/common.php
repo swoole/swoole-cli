@@ -50,8 +50,8 @@ return function (Preprocessor $p) {
         'leveldb',
         'gflags',
         'libyaml_cpp',
-        'boost',
-        //'librime'
+        //'boost',
+        'librime'
     ];
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
