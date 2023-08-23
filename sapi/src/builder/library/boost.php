@@ -50,11 +50,12 @@ return function (Preprocessor $p) {
             --layout=versioned \
             variant=release \
             toolset={$p->get_C_COMPILER()} \
-            threading=multi link=static runtime-link=static \
+            threading=multi link=static  \
             install
 
-            # headers
-            #   --build-type=complete \
+            #  headers
+            #  runtime-link=static
+            #  --build-type=complete \
             #  cxxflags=" -std=c++11 -stdlib=libstdc++" \
             #  linkflags="-stdlib=libstdc++" \
 
