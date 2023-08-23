@@ -45,7 +45,7 @@ EOF
            export TURN_NO_MYSQL=ON
            export TURN_NO_SQLITE=OFF
            export TURN_NO_PQ=ON
-           export TURN_NO_MONGO=ON
+           export TURN_NO_MONGO=OFF
            export TURN_NO_HIREDIS=OFF
            export TURN_NO_PROMETHEUS=ON
            export TURN_NO_SYSTEMD=ON
@@ -103,9 +103,9 @@ EOF
             export TURN_NO_PROMETHEUS=1
             export TURN_NO_SYSTEMD=1
             export TURN_NO_MYSQL=1
-            export TURN_NO_MONGO=1
-            export TURN_NO_PQ=0
-            export TURN_NO_HIREDIS=0
+            export TURN_NO_MONGO=OFF
+            export TURN_NO_PQ=OFF
+            export TURN_NO_HIREDIS=OFF
 
             ./configure  \
             --prefix=$coturn_prefix
@@ -119,7 +119,7 @@ EOF
                 'sqlite3',
                 'pgsql',
                 'hiredis',
-              // 'mongo_c_driver',
+                 'libmongoc',
                // 'prometheus_client_c'
             )
     );

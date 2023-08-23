@@ -32,12 +32,19 @@ return function (Preprocessor $p) {
             -DCMAKE_POLICY_DEFAULT_CMP0075=NEW \
             -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF \
             -DENABLE_MONGOC=OFF \
-            -DCMAKE_DISABLE_FIND_PACKAGE_Python3=ON \
             -DENABLE_TESTS=OFF \
             -DENABLE_EXAMPLES=OFF
 
 EOF
             )
+
+            ->withScriptAfterInstall(
+                <<<EOF
+           cp -f {$p->getBuildDir()}/libbson/src/libbson/src/bson/bson-dsl.h  {$libbson_prefix}/include/libbson-1.0/bson/
+
+EOF
+            )
+                 /*
             ->withScriptAfterInstall(
                 <<<EOF
            rm -rf {$libbson_prefix}/lib/*.so.*
@@ -52,7 +59,14 @@ EOF
 
 EOF
             )
+            */
         ->withPkgName('libbson-static-1.0')
         ->withPkgName('libbson-1.0')
     );
 };
+
+
+/*
+ * libbson  静态编译补丁
+ *  https://github.com/microsoft/vcpkg/pull/10010/files
+ */

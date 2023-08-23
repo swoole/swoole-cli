@@ -37,8 +37,6 @@ return function (Preprocessor $p) {
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_STATIC_LIBS=ON \
-            -Dlibzstd_ROOT={$libzstd_prefix} \
-            -DOpenSSL_ROOT={$openssl_prefix} \
             -DZLIB_ROOT={$zlib_prefix} \
             -DICU_ROOT={$icu_prefix} \
             -DUSE_SYSTEM_LIBBSON=ON \
@@ -54,10 +52,12 @@ return function (Preprocessor $p) {
             -DENABLE_CLIENT_SIDE_ENCRYPTION=OFF \
             -DENABLE_TESTS=OFF \
             -DENABLE_EXAMPLES=OFF \
-            -DCMAKE_PREFIX_PATH="{$libbson_prefix}"
+            -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}" \
+            -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0"
 
 
-            cmake --build . --target install
+            cmake --build . --config Release
+            cmake --build . --config Release --target install
 
             #
 EOF
@@ -65,3 +65,10 @@ EOF
             ->withDependentLibraries('openssl', 'readline', 'zlib', 'libzstd', 'icu', 'libbson')
     );
 };
+
+
+
+/*
+ *  libmongoc   静态编译 补丁
+ *  https://github.com/microsoft/vcpkg/pull/10010/files
+ */
