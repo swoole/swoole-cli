@@ -42,7 +42,6 @@ EOF
              cd build
              cmake .. \
             -DCMAKE_INSTALL_PREFIX={$librime_prefix} \
-            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
