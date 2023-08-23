@@ -19,6 +19,9 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($glog_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($glog_prefix)
+        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
              mkdir -p build
@@ -36,7 +39,7 @@ EOF
             -DWITH_TLS=ON \
             -DWITH_UNWIND=OFF \
             -DWITH_GMOCK=OFF  \
-            -DWITH_GFLAGS=OFF \
+            -DWITH_GFLAGS=ON \
             -DCMAKE_PREFIX_PATH="{$gflags_prefix}"
 
 
