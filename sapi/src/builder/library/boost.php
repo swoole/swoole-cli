@@ -27,7 +27,8 @@ return function (Preprocessor $p) {
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($boost_prefix)
         ->withBuildLibraryCached(false)
-        ->withBuildScript(<<<EOF
+        ->withBuildScript(
+            <<<EOF
             # 观察使用系统软件包安装结果
             # apk add boost1.80-dev
             # apk add boost1.80-static
