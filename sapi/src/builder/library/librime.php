@@ -21,7 +21,8 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'librime',
             <<<EOF
-                git clone -b master  --depth=1 --recursive https://github.com/rime/librime.git
+            # git clone -b master  --depth=1 --recursive https://github.com/rime/librime.git
+            git clone -b master  --depth=1  https://github.com/rime/librime.git
 EOF
         )
         ->withPrefix($librime_prefix)
