@@ -36,7 +36,7 @@ EOF
             -DWITH_TLS=ON \
             -DWITH_UNWIND=OFF \
             -DWITH_GMOCK=OFF  \
-            -DWITH_GFLAGS=ON \
+            -DWITH_GFLAGS=OFF \
             -DCMAKE_PREFIX_PATH="{$gflags_prefix}"
 
 
