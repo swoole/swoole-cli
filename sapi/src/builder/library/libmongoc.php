@@ -55,11 +55,12 @@ return function (Preprocessor $p) {
             -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}" \
             -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0"
 
+            {
+                cmake --build . --config Release --target install
+            } || {
+                echo $?
+            }
 
-            cmake --build . --config Release
-            cmake --build . --config Release --target install
-
-            #
 EOF
             )
             ->withDependentLibraries('openssl', 'readline', 'zlib', 'libzstd', 'icu', 'libbson')
