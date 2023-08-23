@@ -6,13 +6,17 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $example_prefix = EXAMPLE_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
-    $lib = new Library('example');
+
+    //文件名称 和 库名称一致
+    $lib = new Library('aaa_example');
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://github.com/opencv/opencv.git')
 
 
         /*
+        //设置别名
+        ->withAliasName('example')
 
         //明确申明 使用源地址下载
         ->withDownloadWithOriginURL()
