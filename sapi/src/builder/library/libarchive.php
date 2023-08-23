@@ -14,8 +14,11 @@ return function (Preprocessor $p) {
             ->withManual('https://www.libarchive.org/')
             ->withManual('https://github.com/libarchive/libarchive/wiki/BuildInstructions')
             ->withLicense('https://github.com/libarchive/libarchive/blob/master/COPYING', Library::LICENSE_SPEC)
-            ->withUrl('https://github.com/libarchive/libarchive/releases/download/v3.6.2/libarchive-3.6.2.tar.gz')
-            ->withPrefix($libarchive_prefix)
+            ->withFile('libarchive-latest.tar.gz')
+            ->withDownloadScript('libarchive',<<<EOF
+            git clone -b master --depth=1  https://github.com/libarchive/libarchive.git
+EOF
+            )
             ->withPreInstallCommand(
                 'debian',
                 <<<EOF
@@ -28,6 +31,10 @@ EOF
               apk add groff  util-linux
 EOF
             )
+            ->withPrefix($libarchive_prefix)
+            ->withCleanBuildDirectory()
+            ->withCleanPreInstallDirectory($libarchive_prefix)
+            ->withBuildLibraryCached(false)
             ->withConfigure(
                 <<<EOF
 

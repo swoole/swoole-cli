@@ -18,7 +18,6 @@ return function (Preprocessor $p) {
             //->withUrl('https://github.com/coturn/coturn/archive/refs/tags/docker/4.6.2-r1.tar.gz')
             //->withFile('coturn-v4.6.2.tar.gz')
             ->withFile('coturn-latest.tar.gz')
-            ->withAutoUpdateFile(true)
             ->withDownloadScript(
                 'coturn',
                 <<<EOF
@@ -36,19 +35,20 @@ EOF
 
             ->withConfigure(
                 <<<EOF
-           test -d build  && rm -rf build
+
            mkdir -p build
            cd build
 
-           # -DCMAKE_C_FLAGS="-Werror -pedantic" \
 
-           export TURN_NO_MYSQL=ON
-           export TURN_NO_SQLITE=OFF
-           export TURN_NO_PQ=ON
-           export TURN_NO_MONGO=OFF
-           export TURN_NO_HIREDIS=OFF
+
            export TURN_NO_PROMETHEUS=ON
            export TURN_NO_SYSTEMD=ON
+           export TURN_NO_MYSQL=ON
+           export TURN_NO_MONGO=ON
+           export TURN_NO_SQLITE=OFF
+           export TURN_NO_PQ=OFF
+           export TURN_NO_HIREDIS=ON
+
 
            cmake .. \
            -DCMAKE_INSTALL_PREFIX={$coturn_prefix} \
@@ -62,51 +62,55 @@ EOF
            -DCMAKE_DISABLE_FIND_PACKAGE_libsystemd=ON \
            -DCMAKE_DISABLE_FIND_PACKAGE_Prometheus=ON \
            -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=ON \
-           -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=OFF \
-           -DCMAKE_DISABLE_FIND_PACKAGE_hiredis=ON \
-           -DOpenSSL_ROOT={$openssl_prefix} \
-           -DLibevent_ROOT={$libevent_prefix} \
-           -DSQLite_DIR={$sqlite3_prefix} \
-           -DPostgreSQL_ROOT={$pgsql_prefix} \
-           -Dhiredis_ROOT={$hiredis_prefix} \
            -DOPENSSL_USE_STATIC_LIBS=ON \
            -DBUILD_TEST=OFF \
            -DFUZZER=OFF \
-           -DCMAKE_EXE_LINKER_FLAGS="-static"
+           -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$libevent_prefix};{$sqlite3_prefix};{$pgsql_prefix}"
 
+           # -DOpenSSL_ROOT={$openssl_prefix} \
+           # -DLibevent_ROOT={$libevent_prefix} \
+           # -DSQLite_DIR={$sqlite3_prefix} \
+           # -DPostgreSQL_DIR={$pgsql_prefix} \
+           # -Dhiredis_ROOT={$hiredis_prefix} \
+           # -DCMAKE_C_FLAGS="-Werror -pedantic" \
 
-
+           # -DCMAKE_MODULE_LINKER_FLAGS="-lpgcommon -lpgport" \
+           # -DCMAKE_STATIC_LINKER_FLAGS="" \
+           # -DCMAKE_EXE_LINKER_FLAGS="-static " \
 
            #  hiredis
            # TURN_NO_SCTP
            # TURN_NO_THREAD_BARRIERS
            # TURN_NO_GCM
 
-           cmake --build . --target install
+           # make -j {$p->getMaxJob()}
+           # make install
 
 
 EOF
             )
             ->withConfigure(
                 <<<EOF
-            export  CFLAGS="-O3  -g  -std=gnu11 " \
+
+            export TURN_NO_PROMETHEUS=ON
+            export TURN_NO_SYSTEMD=ON
+            export TURN_NO_MYSQL=ON
+            export TURN_NO_MONGO=ON
+            export TURN_NO_SQLITE=OFF
+            export TURN_NO_PQ=OFF
+            export TURN_NO_HIREDIS=OFF
+
+
             PACKAGES='sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
             PACKAGES="\$PACKAGES libpq"
             PACKAGES="\$PACKAGES hiredis"
-            export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
-            export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
-            export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
-            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
-            export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lstdc++ -lm -lpgcommon -lpgport "
-
-            export TURN_NO_PROMETHEUS=1
-            export TURN_NO_SYSTEMD=1
-            export TURN_NO_MYSQL=1
-            export TURN_NO_MONGO=OFF
-            export TURN_NO_PQ=OFF
-            export TURN_NO_HIREDIS=OFF
-
+            SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) " \
+            SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) " \
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static" \
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lstdc++ -lm -lpgcommon -lpgport " \
+            CFLAGS="-O3  -g  -std=gnu11 " \
             ./configure  \
             --prefix=$coturn_prefix
 
@@ -117,10 +121,10 @@ EOF
                 'libevent',
                 'openssl',
                 'sqlite3',
-                'pgsql',
+                //'pgsql',
                 'hiredis',
-                 'libmongoc',
-               // 'prometheus_client_c'
+                //'libmongoc',
+                // 'prometheus_client_c'
             )
     );
 };

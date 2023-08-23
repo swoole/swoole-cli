@@ -17,21 +17,24 @@ return function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
-
+        $coturn_prefix = COTURN_PREFIX;
         $cmd = <<<EOF
-                mkdir -p {$workdir}/bin/
-                cd {$builddir}/aria2/src
-                cp -f aria2c {$workdir}/bin/
+                mkdir -p {$workdir}/bin/coturn/
+                mkdir -p {$workdir}/bin/coturn/etc/
+                cd {$coturn_prefix}/
+
+                cp -rf {$coturn_prefix}/bin/  {$workdir}/bin/coturn/
+                cp -rf {$coturn_prefix}/etc/*  {$workdir}/bin/coturn/etc/
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
-            otool -L {$workdir}/bin/aria2c
+            otool -L {$workdir}/bin/coturn/bin/turnserver
 EOF;
         } else {
             $cmd .= <<<EOF
-              file {$workdir}/bin/aria2c
-              readelf -h {$workdir}/bin/aria2c
+              file {$workdir}/bin/coturn/bin/turnserver
+              readelf -h {$workdir}/bin/coturn/bin/turnserver
 EOF;
         }
         return $cmd;
