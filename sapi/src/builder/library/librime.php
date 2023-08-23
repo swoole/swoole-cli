@@ -50,7 +50,8 @@ EOF
             -DBUILD_DATA=ON \
             -DBUILD_TEST=OFF \
             -DBoost_ROOT={$boost_prefix} \
-            -DCMAKE_PREFIX_PATH="{$glog_prefix};{$libyaml_cpp_prefix};{$leveldb_prefix};{$libmarisa_prefix};{$libopencc_prefix}"
+            -DCMAKE_PREFIX_PATH="{$glog_prefix};{$libyaml_cpp_prefix};{$leveldb_prefix};{$libmarisa_prefix};{$libopencc_prefix}" \
+            -DINCLUDE_DIRECTORIES="{$gflags_prefix}/include/"
 
             cmake --build . --config Release --target install
 
