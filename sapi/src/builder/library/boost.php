@@ -47,7 +47,7 @@ return function (Preprocessor $p) {
 
             ./b2 \
             --prefix={$boost_prefix} \
-            --layout=versioned
+            --layout=versioned \
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static runtime-link=static \
