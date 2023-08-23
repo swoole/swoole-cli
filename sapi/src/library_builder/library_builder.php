@@ -971,4 +971,32 @@ make install DESTDIR=
     /**
      * BPF CO-RE（编译一次 - 到处运行）
      */
+
+
+    /*
+     *
+     C_INCLUDE_PATH      # 对预处理C有效
+     CPLUS_INCLUDE_PATH  # 对预处理C++有效
+     CPATH               # 对所有语言均有效
+
+     */
+
+    /*
+        #找到动态链接库的路径
+        LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/MyLib
+        export LD_LIBRARY_PATH
+
+        #找到静态库的路径
+        LIBRARY_PATH=$LIBRARY_PATH:/MyLib
+        export LIBRARY_PATH
+     */
+
+
+    /*
+
+    查找标准头位置
+    clang++ -v -xc++ -
+
+
+    */
 }

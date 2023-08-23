@@ -52,7 +52,7 @@ return function (Preprocessor $p) {
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static  \
-            cxxflags="-std=c++11 -I/usr/include/c++/12.2.1 " \
+            cxxflags="-std=c++11 -I/usr/include/c++/12.2.1 -I/usr/include/c++/12.2.1/x86_64-alpine-linux-musl " \
             linkflags="-stdlib=libstdc++" \
             release \
             install
@@ -118,3 +118,6 @@ Boost libraries
 - wave
 
  */
+
+
+
