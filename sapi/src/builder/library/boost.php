@@ -51,7 +51,7 @@ return function (Preprocessor $p) {
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static  \
-            cxxflags="-std=c++11" \
+            cxxflags="-std=c++11 -I/usr/include/c++/12.2.1 " \
             --without-python \
             release \
             install
