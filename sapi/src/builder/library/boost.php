@@ -41,7 +41,7 @@ return function (Preprocessor $p) {
 
 
             ./bootstrap.sh --help
-            ./bootstrap.sh --show-libraries
+            ./bootstrap.sh --with-toolset={$p->get_C_COMPILER()} --show-libraries
 
             ./bootstrap.sh \
             --prefix={$boost_prefix} \
@@ -49,7 +49,8 @@ return function (Preprocessor $p) {
             --with-toolset={$p->get_C_COMPILER()} \
             --with-libraries=all
 
-            ./b2 --help
+            ./b2 --help --with-toolset={$p->get_C_COMPILER()}
+
             # b2 [options] [properties] [install|stage]
             # -stdlib=libc++
             # -stdlib=libstdc++
