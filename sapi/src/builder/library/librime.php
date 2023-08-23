@@ -13,6 +13,7 @@ return function (Preprocessor $p) {
     $libmarisa_prefix = LIBMARISA_PREFIX;
     $boost_prefix = BOOST_PREFIX;
     $libopencc_prefix = LIBOPENCC_PREFIX;
+    $gflags_prefix = GFLAGS_PREFIX;
 
     $lib = new Library('librime');
     $lib->withHomePage('https://rime.im/')
@@ -60,7 +61,7 @@ EOF
         ->withPkgName('example')
         ->withBinPath($librime_prefix . '/bin/')
 
-        ->withDependentLibraries('glog', 'leveldb', 'libopencc', 'libyaml_cpp', 'libmarisa', 'boost')
+        ->withDependentLibraries('glog', 'leveldb', 'libopencc', 'libyaml_cpp', 'libmarisa', 'boost', 'gflags')
     ;
 
     $p->addLibrary($lib);
