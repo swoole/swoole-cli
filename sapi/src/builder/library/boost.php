@@ -52,6 +52,7 @@ return function (Preprocessor $p) {
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static  \
             cxxflags="-std=c++11" \
+            --without-python \
             install
 
             #  headers
@@ -76,3 +77,42 @@ return function (Preprocessor $p) {
 
     $p->addLibrary($lib);
 };
+
+/*
+Boost libraries
+
+- atomic
+- chrono
+- container
+- context
+- contract
+- coroutine
+- date_time
+- exception
+- fiber
+- filesystem
+- graph
+- graph_parallel
+- headers
+- iostreams
+- json
+- locale
+- log
+- math
+- mpi
+- nowide
+- program_options
+- python
+- random
+- regex
+- serialization
+- stacktrace
+- system
+- test
+- thread
+- timer
+- type_erasure
+- url
+- wave
+
+ */
