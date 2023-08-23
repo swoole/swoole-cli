@@ -17,7 +17,12 @@ return function (Preprocessor $p) {
                 git clone -b master  --depth=1 https://github.com/BYVoid/OpenCC.git
 EOF
         )
-
+        ->withPreInstallCommand(
+            'alpine',
+            <<<EOF
+        apk add python3
+EOF
+        )
         ->withPrefix($libopencc_prefix)
         ->withBuildScript(
             <<<EOF

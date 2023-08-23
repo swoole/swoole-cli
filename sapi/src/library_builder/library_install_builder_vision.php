@@ -21,53 +21,12 @@ function install_av1(Preprocessor $p)
 
 function install_libvpx(Preprocessor $p)
 {
-    $libvpx_prefix = '/usr/libvpx';
-    $lib = new Library('libvpx');
-    $lib->withHomePage('https://chromium.googlesource.com/webm/libvpx')
-        ->withLicense(
-            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
-            Library::LICENSE_LGPL
-        )
-        ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
-        ->withFile('ffmpeg-n6.0.tar.gz')
-        ->withSkipDownload()
-        ->withManual('https://chromium.googlesource.com/webm/libvpx')
-        ->withPrefix($libvpx_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libvpx_prefix)
-        ->withConfigure(
-            <<<EOF
-exit 0
 
-EOF
-        )
-        ->withPkgName('libvpx');
-
-    $p->addLibrary($lib);
 }
 
 function install_libopus(Preprocessor $p)
 {
-    $libopus_prefix = '/usr/libopus';
-    $lib = new Library('libopus');
-    $lib->withHomePage('https://opus-codec.org/')
-        ->withLicense('https://opus-codec.org/license', Library::LICENSE_LGPL)
-        ->withUrl('https://archive.mozilla.org/pub/opus/opus-1.3.1.tar.gz')
-        ->withFile('ffmpeg-n6.0.tar.gz')
-        ->withSkipDownload()
-        ->withManual('https://opus-codec.org/docs')
-        ->withPrefix($libopus_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libopus_prefix)
-        ->withConfigure(
-            <<<EOF
-exit 0
 
-EOF
-        )
-        ->withPkgName('libopus');
-
-    $p->addLibrary($lib);
 }
 
 function install_libx264(Preprocessor $p)

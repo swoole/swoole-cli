@@ -17,20 +17,20 @@ return function (Preprocessor $p) {
         ->withManual('https://www.boost.org/build/doc/html/index.html')
         ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/windows.html')
         ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/unix-variants.html')
-        ->withPreInstallCommand('alpine',<<<EOF
-        apk add boost1.80-dev
-        apk add boost1.80-static
-EOF
-        )
+
         ->withPrefix($boost_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($boost_prefix)
         ->withBuildLibraryCached(false)
-        ->withBuildScript(
-            <<<EOF
+        ->withBuildScript(<<<EOF
+            # 观察使用系统软件包安装结果
+            # apk add boost1.80-dev
+            # apk add boost1.80-static
+
+
             # boost components: filesystem regex system
 
-            # export Boost_USE_STATIC_LIBS=on
+
             ./bootstrap.sh --help
             ./bootstrap.sh --show-libraries
 
@@ -47,6 +47,7 @@ EOF
 
             ./b2 \
             --prefix={$boost_prefix} \
+            --layout=versioned
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static runtime-link=static \
@@ -67,7 +68,6 @@ EOF
             'libzstd',
             'icu',
             'libiconv',
-
         )
 
     ;

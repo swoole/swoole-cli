@@ -278,33 +278,7 @@ EOF
 
 function install_svt_av1(Preprocessor $p)
 {
-    $svt_av1_prefix = SVT_AV1_PREFIX;
-    $lib = new Library('svt_av1');
-    $lib->withHomePage('https://gitlab.com/AOMediaCodec/SVT-AV1/')
-        ->withLicense('https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md', Library::LICENSE_BSD)
-        ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Build-Guide.md')
-        ->withUrl('https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v1.4.1/SVT-AV1-v1.4.1.tar.gz')
-        ->withFile('SVT-AV1-v1.4.1.tar.gz')
-        ->withPrefix($svt_av1_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($svt_av1_prefix)
-        ->withConfigure(
-            <<<EOF
-        cd SVT-AV1
-        cd Build
-        cmake .. -G"Unix Makefiles" \
-        -DCMAKE_INSTALL_PREFIX={$svt_av1_prefix} \
-        -DCMAKE_BUILD_TYPE=Release  \
-        -DBUILD_SHARED_LIBS=OFF  \
-        -DBUILD_STATIC_LIBS=ON
 
-EOF
-        )
-        ->withPkgName('SvtAv1Dec')
-        ->withPkgName('SvtAv1Enc')
-        ->withBinPath($svt_av1_prefix . '/bin/');
-
-    $p->addLibrary($lib);
 }
 
 function install_libheif(Preprocessor $p)
@@ -640,15 +614,7 @@ function install_libjxl(Preprocessor $p)
 
 function install_libedit(Preprocessor $p)
 {
-    $p->addLibrary(
-        (new Library('libedit'))
-            ->withUrl('https://thrysoee.dk/editline/libedit-20210910-3.1.tar.gz')
-            ->withPrefix(LIBEDIT_PREFIX)
-            ->withConfigure('./configure --prefix=' . LIBEDIT_PREFIX . ' --enable-static --disable-shared')
-            ->withLdflags('')
-            ->withLicense('http://www.netbsd.org/Goals/redistribution.html', Library::LICENSE_BSD)
-            ->withHomePage('https://thrysoee.dk/editline/')
-    );
+
 }
 
 
@@ -758,28 +724,7 @@ EOF
 
 function install_libexpat($p)
 {
-    $libexpat_prefix = LIBEXPAT_PREFIX;
-    $p->addLibrary(
-        (new Library('libexpat'))
-            ->withHomePage('https://github.com/libexpat/libexpat')
-            ->withLicense('https://github.com/libexpat/libexpat/blob/master/COPYING', Library::LICENSE_MIT)
-            ->withManual('https://libexpat.github.io/doc/')
-            ->withUrl('https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-2.5.0.tar.gz')
-            ->withPrefix($libexpat_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libexpat_prefix)
-            ->withConfigure(
-                <<<EOF
-             ./configure --help
 
-            ./configure \
-            --prefix={$libexpat_prefix} \
-            --enable-static=yes \
-            --enable-shared=no
-EOF
-            )->withPkgName('expat')
-            ->withBinPath($libexpat_prefix . '/bin')
-    );
 }
 
 function install_unbound($p)
@@ -1306,27 +1251,7 @@ function install_gnulib($p)
 
 function install_libunwind($p)
 {
-    $p->addLibrary(
-        (new Library('libunwind'))
-            ->withHomePage('https://github.com/libunwind/libunwind.git')
-            ->withLicense('https://github.com/libunwind/libunwind/blob/master/LICENSE', Library::LICENSE_MIT)
-            ->withUrl('https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz')
-            ->withFile('libunwind-1.6.2.tar.gz')
-            ->withPrefix('/usr/libunwind')
-            ->withConfigure(
-                '
-                 autoreconf -i
 
-                ./configure --help ;
-                ./configure \
-                --prefix=/usr/libunwind \
-                --enable-static=yes \
-                --enable-shared=no
-                '
-            )
-            ->withPkgName('libunwind-coredump  libunwind-generic   libunwind-ptrace    libunwind-setjmp    libunwind')
-            ->withSkipBuildInstall()
-    );
 }
 
 
