@@ -64,7 +64,7 @@ return function (Preprocessor $p) {
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static  \
             cxxflags="-std=c++11   \$CPPFLAGS " \
-            linkflags="-stdlib=libstdc++" \
+            linkflags="-stdlib=libstdc++ " \
             release \
             install
 

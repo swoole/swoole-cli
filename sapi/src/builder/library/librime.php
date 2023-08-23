@@ -12,6 +12,7 @@ return function (Preprocessor $p) {
     $leveldb_prefix = LEVELDB_PREFIX;
     $libmarisa_prefix = LIBMARISA_PREFIX;
     $boost_prefix = BOOST_PREFIX;
+    $libopencc_prefix = LIBOPENCC_PREFIX;
 
     $lib = new Library('librime');
     $lib->withHomePage('https://rime.im/')
@@ -49,7 +50,7 @@ EOF
             -DBUILD_DATA=ON \
             -DBUILD_TEST=OFF \
             -DBoost_ROOT={$boost_prefix} \
-            -DCMAKE_PREFIX_PATH="{$glog_prefix};{$libyaml_cpp_prefix};{$leveldb_prefix};{$libmarisa_prefix}"
+            -DCMAKE_PREFIX_PATH="{$glog_prefix};{$libyaml_cpp_prefix};{$leveldb_prefix};{$libmarisa_prefix};{$libopencc_prefix}"
 
             cmake --build . --config Release --target install
 
