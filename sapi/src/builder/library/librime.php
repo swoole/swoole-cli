@@ -11,6 +11,7 @@ return function (Preprocessor $p) {
     $libyaml_cpp_prefix = LIBYAML_CPP_PREFIX;
     $leveldb_prefix = LEVELDB_PREFIX;
     $libmarisa_prefix = LIBMARISA_PREFIX;
+    $boost_prefix = BOOST_PREFIX;
 
     $lib = new Library('librime');
     $lib->withHomePage('https://rime.im/')
@@ -38,8 +39,6 @@ EOF
             <<<EOF
              mkdir -p build
              cd build
-             # cmake 查看选项
-             # cmake -LH ..
              cmake .. \
             -DCMAKE_INSTALL_PREFIX={$librime_prefix} \
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
@@ -49,7 +48,7 @@ EOF
             -DBUILD_STATIC=ON \
             -DBUILD_DATA=ON \
             -DBUILD_TEST=OFF \
-            -DBoost_ROOT=/usr/ \
+            -DBoost_ROOT={$boost_prefix} \
             -DCMAKE_PREFIX_PATH="{$glog_prefix};{$libyaml_cpp_prefix};{$leveldb_prefix};{$libmarisa_prefix}"
 
             cmake --build . --config Release --target install
@@ -62,7 +61,7 @@ EOF
         ->withBinPath($librime_prefix . '/bin/')
 
         ->withDependentLibraries('glog', 'leveldb', 'libopencc', 'libyaml_cpp', 'libmarisa', 'boost')
-        ;
+    ;
 
     $p->addLibrary($lib);
 };

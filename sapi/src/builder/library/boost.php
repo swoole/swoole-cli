@@ -24,9 +24,9 @@ return function (Preprocessor $p) {
         ->withManual('https://www.boost.org/doc/libs/1_83_0/more/getting_started/unix-variants.html')
 
         ->withPrefix($boost_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($boost_prefix)
-        ->withBuildLibraryCached(false)
+        //->withCleanBuildDirectory()
+        //->withCleanPreInstallDirectory($boost_prefix)
+        //->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
             # 观察使用系统软件包安装结果
@@ -59,6 +59,7 @@ return function (Preprocessor $p) {
             --prefix={$boost_prefix} \
             --layout=versioned \
             --without-python \
+            --without-graph_parallel \
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static  \
@@ -75,7 +76,6 @@ return function (Preprocessor $p) {
 
    EOF
         )
-        ->withPkgName('boost')
         ->withDependentLibraries(
             'zlib',
             'bzip2',
