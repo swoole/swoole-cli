@@ -121,7 +121,7 @@ EOF
                 'libevent',
                 'openssl',
                 'sqlite3',
-                //'pgsql',
+                'pgsql',
                 'hiredis',
                 //'libmongoc',
                 // 'prometheus_client_c'
