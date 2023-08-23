@@ -53,6 +53,7 @@ return function (Preprocessor $p) {
             threading=multi link=static  \
             cxxflags="-std=c++11" \
             --without-python \
+            release \
             install
 
             #  headers
