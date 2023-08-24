@@ -48,6 +48,7 @@ EOF
            export TURN_NO_SQLITE=OFF
            export TURN_NO_PQ=OFF
            export TURN_NO_HIREDIS=ON
+           export TURN_NO_SCTP=OFF
 
 
            cmake .. \
@@ -105,12 +106,12 @@ EOF
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
             PACKAGES="\$PACKAGES libpq"
             PACKAGES="\$PACKAGES hiredis"
-            SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) " \
-            SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) " \
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static" \
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lstdc++ -lm -lpgcommon -lpgport " \
-            CFLAGS="-O3  -g  -std=gnu11 " \
+            export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
+            export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
+            export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
+            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
+            export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lstdc++ -lm -lpgcommon -lpgport "
+            export CFLAGS="-O3  -g  -std=gnu11 "
             ./configure  \
             --prefix=$coturn_prefix
 
