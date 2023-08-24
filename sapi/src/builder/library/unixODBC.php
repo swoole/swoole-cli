@@ -12,7 +12,12 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/lurcher/unixODBC/blob/master/LICENSE', Library::LICENSE_LGPL)
             ->withUrl('https://github.com/lurcher/unixODBC/releases/download/2.3.11/unixODBC-2.3.11.tar.gz')
             ->withPrefix($odbc_prefix)
-            ->withBuildLibraryCached(false)
+            ->withPreInstallCommand(
+                'alpine',
+                <<<EOF
+            apk add libltdl-static
+EOF
+            )
             ->withconfigure(
                 <<<EOF
             autoreconf -ivf
