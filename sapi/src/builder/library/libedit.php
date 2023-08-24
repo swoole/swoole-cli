@@ -13,7 +13,6 @@ return function (Preprocessor $p) {
             ->withPrefix($libedit_prefix)
             ->withConfigure(
                 <<<EOF
-            # autoreconf -fi
             ./configure --help
             PACKAGES='ncursesw  '
             CFLAGS=' -D__STDC_ISO_10646__=201103L ' \

@@ -70,7 +70,7 @@ apt install -y pkg-config bzip2 flex p7zip
 apt install -y gcc g++
 
 # apt install build-essential linux-headers-$(uname -r)
-apt install -y python3 python3-pip ninja-build gn diffutils
+apt install -y python3 python3-pip ninja-build  diffutils
 apt install -y yasm nasm
 apt install -y meson
 
