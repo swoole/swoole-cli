@@ -462,7 +462,7 @@ _____EO_____
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
 <?php if ($this->getOsType()=='linux') : ?>
-     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
+    sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 <?php endif ; ?>
 }
 
