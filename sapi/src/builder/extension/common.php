@@ -59,6 +59,11 @@ return function (Preprocessor $p) {
     $depends = ['bcg729'] ;
     $depends = ['util_linux'] ;
     $depends = ['elfutils'] ;
+    $depends = ['snappy'] ;
+
+    $depends = ['libdeflate'] ;
+    $depends = ['libsharpyuv'] ;
+    $depends = ['libyuv'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
