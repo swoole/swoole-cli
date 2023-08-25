@@ -40,8 +40,8 @@ EOF
             --enable-shared=no \
             --enable-static=yes \
             --disable-all-programs \
-             --enable-libuuid \
-             --enable-static-programs=uuidd,uuidgen
+            --enable-libuuid \
+            --enable-static-programs=uuidd,uuidgen
 
 EOF
         )
