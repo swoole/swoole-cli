@@ -337,5 +337,5 @@ var/
 php-src/
 ext/swoole/
 sapi/webUI/.idea/
-
+make-pkg-check.sh
 

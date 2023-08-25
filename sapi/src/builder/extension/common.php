@@ -53,6 +53,8 @@ return function (Preprocessor $p) {
         //'boost',
         'librime'
     ];
+    $depends = ['libzookeeper'] ;
+
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')

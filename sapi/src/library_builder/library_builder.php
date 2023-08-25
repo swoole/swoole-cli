@@ -999,4 +999,10 @@ make install DESTDIR=
 
 
     */
+
+    /*
+     * SCTP（Stream Control Transmission Protocol，流控制传输协议  是一个 IP 协议之上的、可靠的、面向控制信令的、传输层协议
+     *
+     *  参考： https://zhuanlan.zhihu.com/p/639293225
+     */
 }

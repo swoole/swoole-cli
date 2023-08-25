@@ -266,7 +266,6 @@ EOF
 
 function install_depot_tools(Preprocessor $p): void
 {
-
 }
 
 function install_gn_test(Preprocessor $p): void
@@ -396,5 +395,47 @@ function install_bazel(Preprocessor $p)
             ->disableDefaultPkgConfig()
             ->disablePkgName()
             ->disableDefaultLdflags()
+    );
+}
+
+
+function install_apache_ant(Preprocessor $p): void
+{
+    $example_prefix = EXAMPLE_PREFIX;
+    ;
+    $p->addLibrary(
+        (new Library('apache_ant'))
+            ->withHomePage('http://ant.apache.org/')
+            ->withLicense('https://www.apache.org/licenses/', Library::LICENSE_APACHE2)
+            ->withPrefix($example_prefix)
+            ->withBuildScript(
+                <<<EOF
+            test -f apache-ant-1.9.16-bin.zip || wget https://dlcdn.apache.org/ant/binaries/apache-ant-1.9.16-bin.zip
+            test -d apache-ant && rm -rf apache-ant
+            unzip -d apache-ant apache-ant-1.9.16-bin.zip
+EOF
+            )
+            ->withBinPath($example_prefix . '/bin/')
+    );
+}
+
+
+function install_apache_maven(Preprocessor $p): void
+{
+    $example_prefix = EXAMPLE_PREFIX;
+    ;
+    $p->addLibrary(
+        (new Library('maven'))
+            ->withHomePage('https://maven.apache.org/')
+            ->withLicense('https://www.apache.org/licenses/', Library::LICENSE_APACHE2)
+            ->withPrefix($example_prefix)
+            ->withBuildScript(
+                <<<EOF
+            test -f apache-maven-3.9.3-bin.zip || wget https://mirrors.cnnic.cn/apache/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip
+            test  -d maven && rm -rf maven
+            unzip -d maven apache-maven-3.9.3-bin.zip
+EOF
+            )
+            ->withBinPath($example_prefix . '/bin/')
     );
 }
