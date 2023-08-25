@@ -32,3 +32,10 @@ EOF
 
     $p->addLibrary($lib);
 };
+
+# chromium 引用 github 上的库
+/*
+
+ https://chromium.googlesource.com/external/github.com/
+
+ */

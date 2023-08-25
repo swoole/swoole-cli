@@ -20,3 +20,9 @@
 1. [install msys2 ](./install-msys2.md)
 
 
+# windows 软连接例子
+```bash
+
+mklink composer composer.phar
+
+```
