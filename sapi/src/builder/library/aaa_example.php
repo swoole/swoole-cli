@@ -213,6 +213,10 @@ EOF
 
         ->withPkgName('example')
         ->withBinPath($example_prefix . '/bin/')
+
+        //依赖其它静态链接库
+        ->withDependentLibraries('zlib', 'openssl')
+
         /*
 
         ->withSkipDownload()
@@ -225,8 +229,8 @@ EOF
 
 
         /*
-        //默认不需要此配置
 
+        //默认不需要此配置
         ->withScriptAfterInstall(
             <<<EOF
             rm -rf {$example_prefix}/lib/*.so.*
@@ -234,14 +238,11 @@ EOF
             rm -rf {$example_prefix}/lib/*.dylib
 EOF
         )
-
         */
 
 
-        ->withPkgName('opencv')
-        ->withBinPath($example_prefix . '/bin/')
-        //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')/*
+
+        /*
 
         //默认不需要此配置，特殊目录才需要配置
         ->withLdflags('-L' . $example_prefix . '/lib/x86_64-linux-gnu/')
@@ -255,6 +256,7 @@ EOF
 
 
     /*
+
     //只有当没有 pkgconfig  配置文件才需要编写这里配置; 例子： src/builder/library/bzip2.php
 
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $example_prefix . '/include');

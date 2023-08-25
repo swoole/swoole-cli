@@ -100,12 +100,14 @@ EOF
             export TURN_NO_SQLITE=OFF
             export TURN_NO_PQ=OFF
             export TURN_NO_HIREDIS=OFF
+            export TURN_NO_SCTP=OFF
 
 
             PACKAGES='sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
             PACKAGES="\$PACKAGES libpq"
             PACKAGES="\$PACKAGES hiredis"
+            PACKAGES="\$PACKAGES libsctp"
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
             export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
@@ -124,6 +126,7 @@ EOF
                 'sqlite3',
                 'pgsql',
                 'hiredis',
+                'libsctp',
                 //'libmongoc',
                 // 'prometheus_client_c'
             )

@@ -54,6 +54,7 @@ return function (Preprocessor $p) {
         'librime'
     ];
     $depends = ['libzookeeper'] ;
+    $depends = ['libsctp'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

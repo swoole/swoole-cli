@@ -31,7 +31,6 @@ return function (Preprocessor $p) {
             --enable-static=yes
 EOF
         )
-        ->withSkipDownload()
         ->withPkgName('ssl')
         ->withBinPath($example_prefix . '/bin/');
 
