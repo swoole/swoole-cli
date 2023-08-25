@@ -58,6 +58,7 @@ return function (Preprocessor $p) {
     $depends = ['libusrsctp'] ;
     $depends = ['bcg729'] ;
     $depends = ['util_linux'] ;
+    $depends = ['elfutils'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
