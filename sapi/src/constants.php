@@ -268,4 +268,5 @@ define("LIBOPENCC_PREFIX", $p->getGlobalPrefix() . '/libopencc');
 define("LIBYAML_CPP_PREFIX", $p->getGlobalPrefix() . '/libyaml_cpp');
 define("LIBMARISA_PREFIX", $p->getGlobalPrefix() . '/libmarisa');
 define("LIBSCTP_PREFIX", $p->getGlobalPrefix() . '/libsctp');
+define("BCG729_PREFIX", $p->getGlobalPrefix() . '/bcg729');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
