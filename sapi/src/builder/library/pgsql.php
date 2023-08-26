@@ -8,7 +8,7 @@ return function (Preprocessor $p) {
 
     $option = '';
 
-    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static ';
+    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static -lstdc++ ';
 
     if ($p->getOsType() == 'macos') {
         $option = '--disable-thread-safety';
