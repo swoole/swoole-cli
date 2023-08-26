@@ -46,6 +46,7 @@ return function (Preprocessor $p) {
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
             sed -i.backup "293 s/^/#$/"  ../src/Makefile.shlib
             sed -i.backup "441 s/^/#$/"  ../src/Makefile.shlib
+            sed -i.backup "461 s/^/echo 1#$/"  ../src/Makefile.shlib
 
             # 静态链接方法二：
             # 102行，整行替换
@@ -103,8 +104,8 @@ EOF
             rm -rf {$pgsql_prefix}/lib/*.so.*
             rm -rf {$pgsql_prefix}/lib/*.so
             rm -rf {$pgsql_prefix}/lib/*.dylib
-            test -f {$pgsql_prefix}/lib/libpgcommon_shlib.a && rm -rf {$pgsql_prefix}/lib/libpgcommon_shlib.a
-            test -f {$pgsql_prefix}/lib/libpgport_shlib.a && rm -rf {$pgsql_prefix}/lib/libpgport_shlib.a
+            rm -rf {$pgsql_prefix}/lib/libpgcommon_shlib.a
+            rm -rf {$pgsql_prefix}/lib/libpgport_shlib.a
 
 EOF
             )

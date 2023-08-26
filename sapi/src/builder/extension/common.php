@@ -80,6 +80,7 @@ return function (Preprocessor $p) {
     $depends = ['dav1d'] ;
     $depends = ['libarchive'] ;
     $depends = ['glib'] ;
+    $depends = ['pgsql'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
