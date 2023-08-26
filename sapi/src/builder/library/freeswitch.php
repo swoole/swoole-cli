@@ -101,7 +101,7 @@ EOF
             # -all-static
              export  CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) -I{$libtiff_prefix}/include -I{$bzip2_prefix}/include"
              export  LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) -L{$libtiff_prefix}/lib -L{$bzip2_prefix}/lib -static  --static "
-             export  LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )"
+             export  LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) -lbrotli "
              ./configure --help
 
             ./configure \
