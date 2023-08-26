@@ -270,5 +270,5 @@ define("LIBMARISA_PREFIX", $p->getGlobalPrefix() . '/libmarisa');
 define("LIBSCTP_PREFIX", $p->getGlobalPrefix() . '/libsctp');
 define("BCG729_PREFIX", $p->getGlobalPrefix() . '/bcg729');
 define("LIBDEFLATE_PREFIX", $p->getGlobalPrefix() . '/libdeflate');
-define("LIBELF_PREFIX", $p->getGlobalPrefix() . '/libelf');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
