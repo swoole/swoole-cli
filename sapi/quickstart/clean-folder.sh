@@ -17,7 +17,7 @@ if [ ! "$BASH_VERSION" ] ; then
 fi
 
 if [[ -f /.dockerenv ]]; then
-  sed -i '/directory = \/work/d' ~/.gitconfig
+  test -f ~/.gitconfig && sed -i '/directory = \/work/d' ~/.gitconfig
   git config --global --add safe.directory ${__PROJECT__}
 fi
 
