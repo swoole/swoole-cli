@@ -166,11 +166,12 @@ EOF
             'rabbitmq_c',
             'hiredis',
             'libpcap',
-
-            //'libuuid',
+            'libvpx',
+            'openh264',
+            'libuuid',
             // 'portaudio'
-            // "opencv",
-            // "ffmpeg"
+             "opencv",
+             "ffmpeg"
             // "libks"
         )
     ;

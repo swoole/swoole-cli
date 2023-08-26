@@ -67,7 +67,12 @@ EOF
             'sdl2',
             'libopus',
             'libg722',
-            'pjsua2'
+            'upnp',
+            'libvpx',
+            'openh264',
+            "ffmpeg",
+            'sdl2'
+           // 'pjsua2'
 
         )
     ;
