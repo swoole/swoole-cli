@@ -30,7 +30,7 @@ return function (Preprocessor $p) {
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($pgsql_prefix)
             ->withBuildLibraryCached(false)
-            ->withConfigure(
+            ->withBuildScript(
                 <<<EOF
             test -d build_dir && rm -rf build_dir
             mkdir -p build_dir
@@ -46,7 +46,6 @@ return function (Preprocessor $p) {
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
             sed -i.backup "293 s/^/#$/"  ../src/Makefile.shlib
             sed -i.backup "441 s/^/#$/"  ../src/Makefile.shlib
-            sed -i.backup "461 s/^/pwd #$/"  ../src/Makefile.shlib
 
             # 静态链接方法二：
             # 102行，整行替换
