@@ -7,7 +7,7 @@ return function (Preprocessor $p) {
     $libg722_prefix = LIBG722_PREFIX;
     $lib = new Library('libg722');
     $lib->withHomePage('https://github.com/sippy/libg722.git')
-        ->withLicense('https://github.com/sippy/libg722/blob/master/LICENSE', Library::LICENSE_SPEC)
+        ->withLicense('https://github.com/sippy/libg722/blob/master/LICENSE', Library::LICENSE_BSD)
         ->withManual('https://github.com/sippy/libg722.git')
         ->withManual('https://www.itu.int/rec/T-REC-G.722-201209-I/en')
         ->withFile('libg722-v_1_0_3.tar.gz')

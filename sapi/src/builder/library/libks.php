@@ -5,13 +5,15 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libks_prefix = LIBKS_PREFIX;
+
     $openssl_prefix = OPENSSL_PREFIX;
-    $libuuid_prefix = LIBUUID_LINUX;
+    $libuuid_prefix = LIBUUID_PREFIX;
+
     $lib = new Library('libks');
     $lib->withHomePage('https://github.com/signalwire/libks.git')
         ->withLicense('https://github.com/signalwire/libks.git', Library::LICENSE_SPEC)
         ->withManual('https://github.com/signalwire/libks.git')
-        ->withFile('libks-v2.0.2.tar.gz')
+        ->withFile('libks-2.0.2.tar.gz')
         ->withDownloadScript(
             'libks',
             <<<EOF
@@ -21,6 +23,12 @@ EOF
         ->withPrefix($libks_prefix)
         ->withBuildLibraryCached(false)
         ->withCleanBuildDirectory()
+        ->withPreInstallCommand(
+            'debian',
+            <<<EOF
+        apt-get install -y lsb-release
+EOF
+        )
         ->withConfigure(
             <<<EOF
             mkdir -p build
@@ -33,13 +41,13 @@ EOF
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
             -DUUID_ROOT={$libuuid_prefix} \
             -DOpenSSL_ROOT={$openssl_prefix} \
-            -DKS_STATIC=ON
+            -DKS_STATIC=ON \
+            -DCMAKE_OS_NAME="Debian"
 
 
 EOF
         )
         ->withDependentLibraries('openssl', 'libuuid') //,'libatomic'
-        ->withPkgName('ldns')
         ->withBinPath($libks_prefix . '/bin/');
 
     $p->addLibrary($lib);

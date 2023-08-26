@@ -20,15 +20,15 @@ EOF
         ->withPrefix($libuuid_prefix)
         ->withConfigure(
             <<<EOF
-            sh autogen.sh
-            ./configure --help
-            ./configure \
-            --prefix={$libuuid_prefix} \
-            --enable-shared=no \
-            --enable-static=yes \
-            --disable-all-programs \
-             --enable-libuuid \
-             --enable-static-programs=uuidd,uuidgen
+        sh autogen.sh
+        ./configure --help
+        ./configure \
+        --prefix={$libuuid_prefix} \
+        --enable-shared=no \
+        --enable-static=yes \
+        --disable-all-programs \
+        --enable-libuuid \
+        --enable-static-programs=uuidd,uuidgen
 
 EOF
         )

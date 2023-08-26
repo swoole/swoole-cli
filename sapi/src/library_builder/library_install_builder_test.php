@@ -112,92 +112,7 @@ EOF
 
 function install_libyuv(Preprocessor $p)
 {
-    $libyuv_prefix = LIBYUV_PREFIX;
-    $libjpeg_prefix = JPEG_PREFIX;
-    $p->addLibrary(
-        (new Library('libyuv'))
-            ->withUrl('https://chromium.googlesource.com/libyuv/libyuv')
-            ->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
-            ->withLicense(
-                'https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE',
-                Library::LICENSE_SPEC
-            )
-            ->withManual('https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/getting_started.md')
-            ->withDownloadWithOriginURL()
-            ->withDownloadScript(
-                'libyuv',
-                <<<EOF
-            git clone -b main --depth=1 https://chromium.googlesource.com/libyuv/libyuv
-EOF
-            )
-            //->withUntarArchiveCommand('cp')
-            ->withPrefix($libyuv_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libyuv_prefix)
-            ->withBuildScript(
-                <<<EOF
 
-                sed -i.backup "33c  " CMakeLists.txt
-                sed -i.backup "34c  " CMakeLists.txt
-                sed -i.backup "35c  " CMakeLists.txt
-                sed -i.backup "51c  " CMakeLists.txt
-                sed -i.backup "99c  " CMakeLists.txt
-                mkdir -p  build
-                cd build
-                cmake .. \
-                -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
-                -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
-                -DJPEG_ROOT={$libjpeg_prefix} \
-                -DBUILD_STATIC_LIBS=ON \
-                -DBUILD_SHARED_LIBS=OFF  \
-                -DCMAKE_BUILD_TYPE="Release"
-                cmake --build . --config Release
-                cmake --build . --target install --config Release
-
-                rm -rf {$libyuv_prefix}/lib/*.so.*
-                rm -rf {$libyuv_prefix}/lib/*.so
-                rm -rf {$libyuv_prefix}/lib/*.dylib
-:<<'_____EOF_____'
-            make V=1 -f linux.mk
-            make V=1 -f linux.mk clean
-            make V=1 -f linux.mk CXX=clang++ CC=clang
-            exit 0
-            gn gen out/Release "--args=is_debug=false"
-            gn gen out/Debug "--args=is_debug=true"
-            ninja -v -C out/Release
-            ninja -v -C out/Debug
-
-            exit  0
-
-
-            #  cmake默认查找到的是动态库 ; cmake 优先使用静态库
-            #  参考 https://blog.csdn.net/10km/article/details/82931978
-
-            # sed -i '/find_package ( JPEG )/i set( JPEG_NAMES libjpeg.a )'  CMakeLists.txt
-
-            # -DJPEG_LIBRARY_RELEASE={$libjpeg_prefix}/lib/libjpeg.a
-            # CMAKE_INCLUDE_PATH 和 CMAKE_LIBRARY_PATH
-
-            # -DJPEG_LIBRARY:PATH={$libjpeg_prefix}/lib/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
-
-            mkdir -p build
-            cd build
-            cmake \
-            -Wno-dev \
-            -DCMAKE_INSTALL_PREFIX="{$libyuv_prefix}" \
-            -DCMAKE_BUILD_TYPE="Release"  \
-            -DJPEG_LIBRARY:PATH={$libjpeg_prefix}/lib/libjpeg.a -DJPEG_INCLUDE_DIR:PATH={$libjpeg_prefix}/include/ \
-            -DBUILD_SHARED_LIBS=OFF  ..
-
-            cmake --build . --config Release
-            cmake --build . --target install --config Release
-
-_____EOF_____
-EOF
-            )
-            ->withPkgName('')
-            ->withBinPath($libyuv_prefix . '/bin/')
-    );
 }
 
 
@@ -343,46 +258,8 @@ function install_libfribidi(Preprocessor $p)
 
 function install_harfbuzz(Preprocessor $p)
 {
-    $harfbuzz_prefix = HARFBUZZ_PREFIX;
-    $p->addLibrary(
-        (new Library('harfbuzz'))
-            ->withLicense('https://github.com/harfbuzz/harfbuzz/blob/main/COPYING', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/harfbuzz/harfbuzz.git')
-            ->withUrl('https://github.com/harfbuzz/harfbuzz/archive/refs/tags/7.1.0.tar.gz')
-            ->withFile('harfbuzz-7.1.0.tar.gz')
-            ->withLabel('library')
-            ->withPrefix($harfbuzz_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($harfbuzz_prefix)
-            ->withBuildScript(
-                <<<EOF
-                meson help
-                meson setup --help
 
-                meson setup  build \
-                --backend=ninja \
-                --prefix={$harfbuzz_prefix} \
-                --default-library=static \
-                -Dglib=disabled \
-                -Dicu=enabled \
-                -Dfreetype=disabled \
-                -Dtests=disabled \
-                -Ddocs=disabled  \
-                -Dbenchmark=disabled
-
-                meson compile -C build
-                meson install -C build
-                # ninja -C build
-                # ninja -C build install
-
-EOF
-            )
-            ->withPkgName('harfbuzz-icu  harfbuzz-subset harfbuzz')
-    );
 }
-
-
-//-lgd -lpng -lz -ljpeg -lfreetype -lm
 
 function install_libgd2($p)
 {
@@ -455,6 +332,7 @@ EOF
 
     $p->addLibrary($lib);
 }
+
 function install_librsvg($p)
 {
     $librsvg_prefix = LIBRSVG_PREFIX;
@@ -480,7 +358,6 @@ EOF
             --prefix=$librsvg_prefix
 EOF
         )
-
         ->withPkgName('librsvg');
 
     $p->addLibrary($lib);
@@ -620,28 +497,7 @@ function install_libedit(Preprocessor $p)
 
 function install_libdeflate(Preprocessor $p)
 {
-    $libdeflate_prefix = '/usr/libdeflate';
-    $p->addLibrary(
-        (new Library('libdeflate'))
-            ->withLicense('https://github.com/ebiggers/libdeflate/blob/master/COPYING', Library::LICENSE_MIT)
-            ->withHomePage('https://github.com/ebiggers/libdeflate.git')
-            ->withUrl('https://github.com/ebiggers/libdeflate/archive/refs/tags/v1.17.tar.gz')
-            ->withFile('libdeflate-v1.17.tar.gz')
-            ->withLabel('library')
-            ->withPrefix($libdeflate_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libdeflate_prefix)
-            ->withConfigure(
-                "
-                ls -lh
-                exit 0
-                cmake -B build && cmake --build build
 
-            "
-            )
-            ->withPkgName('libdeflate')
-            ->depends('libzip', 'zlib')
-    );
 }
 
 
@@ -854,7 +710,7 @@ EOF;
 EOF
             )->withPkgName('gnutls')
             ->withBinPath($gnutls_prefix . '/bin/')
-        //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
+    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
     );
 }
 
@@ -901,7 +757,7 @@ EOF
 EOF
             )
             ->disableDefaultPkgConfig()
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -931,7 +787,7 @@ function install_wolfssl($p)
 EOF
             )
             ->withPkgName('wolfssl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -959,7 +815,7 @@ function install_libressl($p)
 EOF
             )
             ->withPkgName('libressl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -1061,132 +917,17 @@ function install_nghttp2(Preprocessor $p): void
 
 function install_libunistring($p)
 {
-    $iconv_prefix = ICONV_PREFIX;
-    $libunistring_prefix = LIBUNISTRING_PREFIX;
-    $p->addLibrary(
-        (new Library('libunistring'))
-            ->withHomePage('https://www.gnu.org/software/libunistring/')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-            ->withUrl('https://ftp.gnu.org/gnu/libunistring/libunistring-1.1.tar.gz')
-            ->withPrefix($libunistring_prefix)
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
-            ./configure \
-            --prefix={$libunistring_prefix} \
-            --with-libiconv-prefix={$iconv_prefix} \
-            --enable-static \
-            --disable-shared
-EOF
-            )
-            ->withPkgName('libunistring')
-    );
+
 }
 
 function install_libintl(Preprocessor $p)
 {
-    $gettext_prefix = GETTEXT_PREFIX ;
-    $libunistring_prefix = LIBUNISTRING_PREFIX;
-    $iconv_prefix = ICONV_PREFIX;
-    $libxml2_prefix = LIBXML2_PREFIX;
-    $ncurses_prefix = NCURSES_PREFIX;
-    $libintl_prefix =  LIBINTL_PREFIX;
-    $p->addLibrary(
-        (new Library('libintl'))
-            ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.21.1.tar.gz')
-            ->withHomePage('https://www.gnu.org/software/gettext/')
-            ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
-            ->withCleanBuildDirectory()
-            ->withPrefix($libintl_prefix)
-            ->withConfigure(
-                <<<EOF
-             cd gettext-runtime/
 
-            ./configure \
-            --prefix={$libintl_prefix} \
-             --enable-shared=yes \
-             --enable-static=no \
-             --enable-relocatable \
-             --with-libiconv-prefix=${iconv_prefix} \
-             --with-libncurses-prefix=${ncurses_prefix} \
-             --with-libxml2-prefix=${libxml2_prefix} \
-             --with-libunistring-prefix=${libunistring_prefix} \
-             --without-libintl-prefix \
-             --without-libtermcap-prefix \
-             --without-emacs \
-             --without-lispdir \
-             --without-cvs \
-              --without-included-regex \
-              --without-libtextstyle-prefix \
-              --disable-libasprintf \
-              --disable-openmp \
-              --disable-acl \
-              --disable-java \
-              --disable-csharp \
-               --without-git \
-               --disable-nls \
-               --disable-namespacing
-
-EOF
-            )
-            ->withPkgName('gettext')
-            ->withMakeInstallOptions('DESTDIR=' . $libintl_prefix)
-    );
 }
+
 function install_gettext(Preprocessor $p)
 {
-    $gettext_prefix = GETTEXT_PREFIX ;
-    $libunistring_prefix = LIBUNISTRING_PREFIX;
-    $iconv_prefix = ICONV_PREFIX;
-    $libxml2_prefix = LIBXML2_PREFIX;
-    $ncurses_prefix = NCURSES_PREFIX;
-    $p->addLibrary(
-        (new Library('gettext'))
-            ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.21.1.tar.gz')
-            ->withHomePage('https://www.gnu.org/software/gettext/')
-            ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
-            ->withManual('https://www.jiangguo.net/c/1q/nZW.html')
-            ->withCleanBuildDirectory()
-            ->withPrefix($gettext_prefix)
-            ->withConfigure(
-                <<<EOF
-            cd gettext-tools
-            ./configure --help
-            exit 3
-            ./configure \
-            --prefix={$gettext_prefix} \
-             --enable-shared=yes \
-             --enable-static=no \
-             --enable-relocatable \
-             --with-libiconv-prefix=${iconv_prefix} \
-             --with-libncurses-prefix=${ncurses_prefix} \
-             --with-libxml2-prefix=${libxml2_prefix} \
-             --with-libunistring-prefix=${libunistring_prefix} \
-             --without-libintl-prefix \
-             --without-libtermcap-prefix \
-             --without-emacs \
-             --without-lispdir \
-             --without-cvs \
-              --without-included-regex \
-              --without-libtextstyle-prefix \
-              --disable-libasprintf \
-              --disable-openmp \
-              --disable-acl \
-              --disable-java \
-              --disable-csharp \
-               --without-git \
-               --disable-nls \
-               --disable-namespacing
 
-              # make -C lib
-              # make -C src msgfmt
-EOF
-            )
-            ->withPkgName('gettext')
-            ->withMakeOptions("lib")
-            ->withMakeInstallOptions('lib')
-    );
 }
 
 function install_coreutils($p): void
@@ -1201,35 +942,7 @@ function install_coreutils($p): void
         coreutils    包括常用的命令，如 cat、ls、rm、chmod、mkdir、wc、whoami 和许多其他命令
 
      */
-    $iconv_prefix = ICONV_PREFIX;
-    $gmp_prefix = GMP_PREFIX;
-    $libintl_prefix = LIBINTL_PREFIX ;
-    $p->addLibrary(
-        (new Library('coreutils'))
-            ->withHomePage('https://www.gnu.org/software/coreutils/')
-            ->withLicense('https://www.gnu.org/licenses/gpl-2.0.html', Library::LICENSE_LGPL)
-            ->withManual('https://www.gnu.org/software/coreutils/')
-            ->withUrl('https://mirrors.aliyun.com/gnu/coreutils/coreutils-9.1.tar.gz')
-            ->withFile('coreutils-9.1.tar.gz')
-            ->withCleanBuildDirectory()
-            ->withBuildScript(
-                <<<EOF
 
-                ./configure --help
-
-                ./bootstrap
-                ./configure \
-                --prefix=/usr/coreutils \
-                --with-openssl=yes \
-                --with-libiconv-prefix={$iconv_prefix} \
-                --with-libgmp-prefix={$gmp_prefix} \
-                --with-libintl-prefix={ $libintl_prefix}
-
-EOF
-            )
-            ->withPkgConfig('')
-            ->withPkgName('')
-    );
 }
 
 function install_gnulib($p)
@@ -1241,12 +954,11 @@ function install_gnulib($p)
 
         gnulib 是一个库,提供从POSIX API到本机API的适配器.
 
-       Gnulib，也称为GNU Portability Library，是 GNU 代码的集合，用于帮助编写可移植代码。
+        gnulib，也称为GNU Portability Library，是 GNU 代码的集合，用于帮助编写可移植代码。
 
      */
 
 }
-
 
 
 function install_libunwind($p)
@@ -1616,10 +1328,10 @@ install-libpq5555.a: install-lib-static install-lib-pc
                 '
             '
             )
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -1645,10 +1357,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -1669,9 +1381,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -1695,9 +1407,9 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -1710,64 +1422,19 @@ function install_jansson(Preprocessor $p)
 
 function install_php_internal_extension_curl_patch(Preprocessor $p)
 {
-    $workDir = $p->getWorkDir();
-    $command = '';
 
-    if (is_file("{$workDir}/ext/curl/config.m4.backup")) {
-        $originFileHash = md5(file_get_contents("{$workDir}/ext/curl/config.m4"));
-        $backupFileHash = md5(file_get_contents("{$workDir}/ext/curl/config.m4.backup"));
-        if ($originFileHash == $backupFileHash) {
-            $command = <<<EOF
-           test -f {$workDir}/ext/curl/config.m4.backup && rm -f {$workDir}/ext/curl/config.m4.backup
-           test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
-EOF;
-        }
-    } else {
-        $command = <<<EOF
-           test -f {$workDir}/ext/curl/config.m4.backup ||  sed -i.backup '75,82d' {$workDir}/ext/curl/config.m4
-EOF;
-    }
-
-    $p->addLibrary(
-        (new Library('patch_php_internal_extension_curl'))
-            ->withHomePage('https://www.php.net/')
-            ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
-            ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-8.1.12.tar.gz')
-            ->withManual('https://www.php.net/docs.php')
-            ->withLabel('php_extension_patch')
-            ->withConfigure('return 0 ')
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->disablePkgName()
-    );
 }
 
 
 function install_libgomp(Preprocessor $p)
 {
-    $libgomp_prefix = '/usr/libgomp';
-    $lib = new Library('libgomp');
-    $lib->withHomePage('https://gcc.gnu.org/projects/gomp/')
-        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-        ->withUrl('')
-        ->withManual('https://gcc.gnu.org/onlinedocs/libgomp/')
-        ->withPrefix($libgomp_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libgomp_prefix)
-        ->withConfigure(
-            <<<EOF
-./configure --help
-EOF
-        )
-        ->withPkgName('libgomp');
 
-    $p->addLibrary($lib);
 }
 
 function install_libzip_ng(Preprocessor $p)
 {
     $zlib_ng_prefix = '/usr/zlib_ng';
-    $lib = new Library('libgomp');
+    $lib = new Library('zlib_ng');
     $lib->withHomePage('https://github.com/zlib-ng/zlib-ng.git')
         ->withLicense('https://github.com/zlib-ng/minizip-ng/blob/master/LICENSE', Library::LICENSE_SPEC)
         ->withUrl('https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.6.tar.gz')

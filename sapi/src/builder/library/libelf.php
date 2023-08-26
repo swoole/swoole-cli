@@ -4,6 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
+    // 实用程序和库的集合，用于读取、创建和修改 ELF 二进制文件，
     $libelf_prefix = LIBELF_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;

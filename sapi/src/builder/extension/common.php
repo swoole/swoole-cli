@@ -66,6 +66,16 @@ return function (Preprocessor $p) {
     $depends = ['libyuv'] ;
     $depends = ['elfutils'] ;
     $depends = ['util_linux'] ;
+    $depends = ['libunistring'] ;
+    $depends = ['gettext'] ;
+    # $depends = ['coreutils'] ;
+    # $depends = ['gnulib'] ;
+    $depends = ['libidn2'] ;
+
+    $depends = ['libnl'] ;
+    $depends = ['libmlx5'] ;
+    $depends = ['libks'] ;
+    $depends = ['confd'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

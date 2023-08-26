@@ -190,8 +190,8 @@ function libraries_builder($p)
         install_libXpm($p); //依赖 xorg-macros  xorgproto libx11 # apk add util-macros xorgproto libx11
     }
 
-    install_libunistring($p); //coreutils 包含  libiconv
-    install_libintl($p); //coreutils 包含  libiconv
+    install_libunistring($p); //coreutils需要  libiconv
+    install_libintl($p); //coreutils 需要 libiconv
     install_gettext($p);// gettext 包含 intl
     install_coreutils($p);// gettext 包含 intl   GNU Core Utilities 包括常用的命令，如 cat、ls、rm、chmod、mkdir、wc、whoami 和许多其他命令
     install_gnulib($p);
@@ -250,7 +250,11 @@ function libraries_builder($p)
         install_fontconfig($p);
         //install_pcre2($p);
         install_pgsql_test($p);
-        install_libgomp($p); //压缩算法
+
+        // GCC 的 编译器都支持 OpenMP 和 OpenACC。
+        // -fopenmp  -fopenmp-simd   -fopenacc
+        //
+        install_libgomp($p); //   OpenMP  OpenACC  https://gcc.gnu.org/projects/gomp/
         install_libzip_ng($p); //zlib next
     }
     install_snappy($p);
@@ -512,6 +516,7 @@ function libraries_builder($p)
         //install_openmp($p);
 
         //并发编程：SIMD 介绍  https://zhuanlan.zhihu.com/p/416172020
+        // SIMD 的全称是 Single Instruction Multiple Data，中文名“单指令多数据”。顾名思义，一条指令处理多个数据。
     }
     /*
     export PATH=$SYSTEM_ORIGIN_PATH

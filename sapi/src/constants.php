@@ -133,7 +133,7 @@ define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
 define('LIBRSVG_PREFIX', $p->getGlobalPrefix() . '/librsvg');
 
 define('GETTEXT_PREFIX', $p->getGlobalPrefix() . '/gettext');
-define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/libintl');
+define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/gettext');
 
 
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
@@ -271,4 +271,8 @@ define("LIBSCTP_PREFIX", $p->getGlobalPrefix() . '/libsctp');
 define("BCG729_PREFIX", $p->getGlobalPrefix() . '/bcg729');
 define("LIBDEFLATE_PREFIX", $p->getGlobalPrefix() . '/libdeflate');
 
+define("COREUTILS_PREFIX", $p->getGlobalPrefix() . '/coreutils');
+define("LIBGOMP_PREFIX", $p->getGlobalPrefix() . '/libgomp');
+define("LIBMLX5_PREFIX", $p->getGlobalPrefix() . '/libmlx5');
+define("LIBNL_PREFIX", $p->getGlobalPrefix() . '/libnl');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

@@ -9,10 +9,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://savannah.gnu.org/git/?group=gnulib')
             ->withLicense('https://www.gnu.org/licenses/gpl-2.0.html', Library::LICENSE_LGPL)
             ->withManual('https://www.gnu.org/software/gnulib/')
-            ->withManual('')
             ->withManual('https://www.gnu.org/software/gnulib/manual/')
             ->withManual('https://www.gnu.org/software/gnulib/manual/html_node/Building-gnulib.html')
-
             ->withUrl('https://github.com/coreutils/gnulib/archive/refs/heads/master.zip')
             ->withDownloadScript(
                 'gnulib',
@@ -24,14 +22,17 @@ EOF
             ->withCleanBuildDirectory()
             ->withBuildScript(
                 <<<EOF
-
+                test -d build-dir && rm -rf build-dir
                 ./gnulib-tool --help
-                exit 3
-                gnulib-tool --create-megatestdir --with-tests --dir=...
+
+                # ./gnulib-tool --create-megatestdir --with-tests --dir=build-dir
+
+
+                cd build-dir
                 ./configure
                 make dist
                 ./do-autobuild
-                             return 0 ;
+
 EOF
             )
     );
