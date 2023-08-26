@@ -31,6 +31,12 @@ EOF
             apk add bsd-compat-headers
 EOF
             )
+            ->withPreInstallCommand(
+                'debian',
+                <<<EOF
+            apt install python3-pyelftools
+EOF
+            )
             ->withConfigure(
                 <<<EOF
 
@@ -65,18 +71,7 @@ EOF
                 'numa',
                 'libpcap',
                 'libbpf',
-                'openssl',
-                'libxml2',
-                'zlib',
-                'liblzma',
-                'liblz4',
-                'libiconv',
-                'libzstd',
-                'bzip2',
-                'nettle',
-                'bzip2',
-                'libiconv',
-                'gmp'
+                'libmlx5'
             )
     );
 };
