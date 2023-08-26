@@ -6,11 +6,8 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
 
-    $option = '';
-
     $ldflags = $p->getOsType() == 'macos' ? '' : ' -static  ';
     $libs = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
-
 
     $p->addLibrary(
         (new Library('pgsql'))
@@ -27,9 +24,12 @@ return function (Preprocessor $p) {
                 https://git.postgresql.org/git/postgresql.git
                 ssh://git@git.postgresql.org/postgresql.git
              */
+
+            /*
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($pgsql_prefix)
             ->withBuildLibraryCached(false)
+            */
             ->withBuildScript(
                 <<<EOF
             test -d build_dir && rm -rf build_dir
