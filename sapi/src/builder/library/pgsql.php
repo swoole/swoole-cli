@@ -30,6 +30,7 @@ return function (Preprocessor $p) {
              */
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($pgsql_prefix)
+            ->withBuildLibraryCached(true)
             ->withConfigure(
                 <<<EOF
             test -d build_dir && rm -rf build_dir
@@ -87,45 +88,12 @@ return function (Preprocessor $p) {
             make -C  src/backend/libpq install
             make -C  src/interfaces/libpq install
 
-EOF
-            )
-            ->withBuildLibraryCached(true)
-            ->withBuildScript(
-                <<<EOF
-            test -d build_dir && rm -rf build_dir
-            mkdir -p build_dir
-            # cd build_dir
 
-            # {$ldflags}
-            PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
-            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
-            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags}" \
-            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
-            ./configure  \
-            --prefix={$pgsql_prefix} \
-            --enable-coverage=no \
-            --disable-thread-safety \
-            --with-ssl=openssl  \
-            --with-readline \
-            --with-icu \
-            --without-ldap \
-            --with-libxml  \
-            --with-libxslt \
-            --with-lz4 \
-            --with-zstd \
-            --without-perl \
-            --without-python \
-            --without-pam \
-            --without-ldap \
-            --without-bonjour \
-            --without-tcl
-
-
-            make -C src/bin install
-            make -C src/include install
-            make -C src/common install
-            make -C src/port install
-            make -C src/interfaces install
+            # make -C src/bin install
+            # make -C src/include install
+            # make -C src/common install
+            # make -C src/port install
+            # make -C src/interfaces install
 
             # make -C doc install
 
