@@ -9,11 +9,9 @@ return function (Preprocessor $p) {
     $option = '';
 
     $ldflags = $p->getOsType() == 'macos' ? '' : ' -static  ';
-    $libs = $p->getOsType() == 'macos' ? '' : ' -lstdc++ ';
+    $libs = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
 
-    if ($p->getOsType() == 'macos') {
-        $option = '--disable-thread-safety';
-    }
+
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
@@ -31,7 +29,7 @@ return function (Preprocessor $p) {
              */
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($pgsql_prefix)
-            ->withBuildLibraryCached(true)
+            ->withBuildLibraryCached(false)
             ->withConfigure(
                 <<<EOF
             test -d build_dir && rm -rf build_dir
