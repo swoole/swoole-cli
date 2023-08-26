@@ -23,6 +23,8 @@ return function (Preprocessor $p) {
 
             meson setup  build \
             -Dprefix={$libfribidi_prefix} \
+            -Dlibdir={$libfribidi_prefix}/lib \
+            -Dincludedir={$libfribidi_prefix}/include \
             -Dbackend=ninja \
             -Dbuildtype=release \
             -Ddefault_library=static \

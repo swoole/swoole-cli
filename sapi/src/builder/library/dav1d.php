@@ -20,9 +20,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPrefix($dav1d_prefix)
-            ->withBuildLibraryCached(true)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($dav1d_prefix)
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
@@ -44,7 +41,6 @@ pip3 install meson
 
 EOF
             )
-            ->withBuildLibraryCached(false)
             ->withBuildScript(
                 <<<EOF
                 meson configure -h
