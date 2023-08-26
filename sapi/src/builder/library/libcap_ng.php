@@ -4,11 +4,13 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
+    # Linux Capabilities
+
     $libcap_ng_prefix = LIBCAP_NG_PREFIX;
     $lib = new Library('libcap_ng');
-    $lib->withHomePage('https://github.com/opencv/opencv.git')
-        ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-        ->withManual('https://github.com/opencv/opencv.git')
+    $lib->withHomePage('libcap-ng')
+        ->withLicense('https://github.com/stevegrubb/libcap-ng/blob/master/LICENSE', Library::LICENSE_LGPL)
+        ->withManual('https://github.com/stevegrubb/libcap-ng.git')
         ->withFile('libcap-ng-latest.tar.gz')
         ->withDownloadScript(
             'libcap-ng',
