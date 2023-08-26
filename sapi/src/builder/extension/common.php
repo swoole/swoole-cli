@@ -64,6 +64,7 @@ return function (Preprocessor $p) {
     $depends = ['libdeflate'] ;
     $depends = ['libsharpyuv'] ;
     $depends = ['libyuv'] ;
+    $depends = ['elfutils'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

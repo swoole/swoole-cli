@@ -12,6 +12,8 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'linux-kernel',
             <<<EOF
+               export GIT_PROXY_COMMAND="{$p->getRootDir()}/sapi/quickstart/git-proxy.sh"
+               # git clone --depth=1 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
                git clone -b main --depth=1  git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git linux-kernel
 EOF
         )

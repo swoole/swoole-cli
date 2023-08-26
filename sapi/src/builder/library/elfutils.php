@@ -4,7 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $libelf_prefix = EXAMPLE_PREFIX;
+    $libelf_prefix = LIBELF_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
@@ -21,16 +21,28 @@ return function (Preprocessor $p) {
                 <<<EOF
 
                 # git clone -b elfutils-0.178 https://chromium.googlesource.com/external/elfutils
+
+                export GIT_PROXY_COMMAND="{$p->getRootDir()}/sapi/quickstart/git-proxy.sh"
                 git clone --depth=1  git://sourceware.org/git/elfutils.git
+                unset GIT_PROXY_COMMAND
+
+
 EOF
             )
-            ->withPrefix($libelf_prefix)
             ->withPreInstallCommand(
                 'debian',
                 <<<EOF
             apt install -y autopoint elfutils
 EOF
             )
+            ->withPreInstallCommand(
+                'alpine',
+                <<<EOF
+            apk add socat
+EOF
+            )
+            ->withAutoUpdateFile()
+            ->withPrefix($libelf_prefix)
             ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
             ->withConfigure(

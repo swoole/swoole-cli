@@ -5,14 +5,61 @@ if [ -z "$1" ] || [ -z "$2" ] || [ -n "$3" ]; then
   exit 1
 fi
 
-# connect through the specifid proxy
-# nc -X connect  -x 192.168.3.26:8015 "$1" "$2"
+# environment deps
+
+# apk add netcat-openbsd
+# apk add socat
+
+
+
+# HTTP PROXY
+
+# shellcheck disable=SC2034
+HTTP_PROXY_HOST=192.168.3.26
+# shellcheck disable=SC2034
+HTTP_PROXY_PORT=8015
+
+
+# SOCKS PROXY
+# shellcheck disable=SC2034
+SOCKS_PROXY_HOST=192.168.3.26
+# shellcheck disable=SC2034
+SOCKS_PROXY_PORT=2000
+
+
+
+# nc -h
+
+
+nc -X connect  -x $HTTP_PROXY_HOST:$HTTP_PROXY_PORT "$1" "$2"
+
+# nc -X 5  -x $SOCKS_PROXY_HOST:$SOCKS_PROXY_PORT "$1" "$2"
+
+
+# socat -h
+# exec socat stdio  PROXY:$HTTP_PROXY_HOST:$1:$2,proxyport=$HTTP_PROXY_PORT
+# exec socat STDIO socks4a:$SOCKS_PROXY_HOST:$1:$2,socksport=$SOCKS_PROXY_PORT
+
+# socat - PROXY:$HTTP_PROXY_HOST:$1:$2,proxyport=$HTTP_PROXY_PORT
+
+# socat - socks4a:$SOCKS_PROXY_HOST:$1:$2,socksport=$SOCKS_PROXY_PORT
+
+
+
+
+
+
+
+
+
 
 # exec /usr/bin/nc -X 5 -x <socks_host>:<socks_port> $1 $2
 
+# exec nc -5 -S <socks_proxy>:<port> $*
+# shellcheck disable=SC2093
+# exec nc -5 -S $PROXY_HOST:$PROXY_PORT $*
 
-
-
+:<<'EOF'
 if [ -z "$SOCAT" ]; then
 	SOCAT=$(which socat 2>/dev/null)
 	if [ $? -ne 0 ]; then
@@ -22,18 +69,8 @@ if [ -z "$SOCAT" ]; then
 fi
 
 
-:<<'EOF'
-# http proxy
-PROXY_HOST=192.168.3.26
-PROXY_PORT=8015
-# shellcheck disable=SC2093
-exec socat STDIO  PROXY:${PROXY_HOST}:$1:$2,proxyport=${PROXY_PORT}
+socat - PROXY:your.proxy.ip:%h:%p,proxyport=8015,proxyauth=user:pwd
+
+
 EOF
-
-# socks5
-PROXY_HOST=192.168.3.26
-PROXY_PORT=2000
-exec socat STDIO socks4a:${PROXY_HOST}:$1:$2,socksport=${PROXY_PORT}
-
-
 

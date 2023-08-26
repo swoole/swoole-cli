@@ -56,6 +56,8 @@ nc -X 5 -x 127.0.0.1:1080 "$@"
 export GIT_SSH_COMMAND='ssh -o ProxyCommand="nc -X 5 -x 127.0.0.1:1080 %h %p"'
 
 
+git config --get --global core.gitproxy
+
 git config --global core.gitproxy ""
 
 git config --global core.gitproxy "git-proxy"
@@ -72,3 +74,25 @@ sh sapi/quickstart/deploy-git-proxy.sh
 # https://bryanbrattlof.com/how-to-proxy-git-connections/
 
 # https://elinux.org/Using_git_with_a_proxy
+
+# shwo git clone information
+
+export GIT_TRACE_PACKET=1
+export GIT_TRACE=1
+export GIT_CURL_VERBOSE=1
+
+
+git config --global core.gitproxy "/work/bin/runtime/git-proxy"
+
+git clone --depth=1 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+
+git config --global core.gitproxy ""
+
+git config --get --global core.gitproxy
+
+# or
+
+export GIT_PROXY_COMMAND="/work/sapi/quickstart/git-proxy.sh"
+git clone --depth=1 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+
+
