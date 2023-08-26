@@ -6,7 +6,6 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $util_linux_prefix = UTIL_LINUX_PREFIX;
     $proxy=parse_url($p->getHttpProxy());
-    var_dump($proxy);
     $http_proxy_host=$proxy['host'];
     $http_proxy_port=$proxy['port'];
 
