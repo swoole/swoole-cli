@@ -77,6 +77,7 @@ return function (Preprocessor $p) {
     $depends = ['libks'] ;
     $depends = ['confd'] ;
     $depends = ['libfvad'] ;
+    $depends = ['dav1d'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
