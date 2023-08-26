@@ -23,8 +23,7 @@ EOF
         ->withPreInstallCommand(
             'debian',
             <<<EOF
-            apk add nasm
-
+            apt intall -y  nasm
 EOF
         )
         ->withConfigure(

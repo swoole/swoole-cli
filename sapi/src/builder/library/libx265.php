@@ -23,9 +23,13 @@ EOF
         ->withPrefix($libx265_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libx265_prefix)
+        ->withPreInstallCommand('debian',<<<EOF
+       apt install nasm
+EOF
+)
         ->withConfigure(
             <<<EOF
-            # apk add nasm
+
             test -d .git && rm -rf .git
             mkdir -p build
             cd build
