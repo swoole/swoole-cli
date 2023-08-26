@@ -27,16 +27,16 @@ EOF
         ->withPrefix($freeswitch_prefix)
         ->withBuildLibraryCached(false)
         ->withCleanBuildDirectory()
-        ->withPreInstallCommand('alpine',
-        <<<EOF
+        ->withPreInstallCommand(
+            'alpine',
+            <<<EOF
              apk add util-linux util-linux-dev
              apk add libuuid
              apk add uuidgen
 EOF
-
-
         )
-        ->withPreInstallCommand('debian',
+        ->withPreInstallCommand(
+            'debian',
             <<<EOF
             apt install -y libtool  libtool-bin yasm uuid-runtime libatomic-ops-dev
             apt install -y uuid-dev
@@ -170,8 +170,8 @@ EOF
             'openh264',
             'libuuid',
             // 'portaudio'
-             "opencv",
-             "ffmpeg"
+            "opencv",
+            "ffmpeg"
             // "libks"
         )
     ;
