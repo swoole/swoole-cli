@@ -23,7 +23,7 @@ EOF
         ->withPreInstallCommand(
             'debian',
             <<<EOF
-            apt intall -y  nasm
+            apt install -y  nasm
 EOF
         )
         ->withConfigure(
