@@ -8,17 +8,16 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('pcre2'))
             ->withHomePage('https://github.com/PCRE2Project/pcre2.git')
-            ->withUrl('https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz')
             ->withDocumentation('https://pcre2project.github.io/pcre2/doc/html/index.html')
             ->withManual('https://github.com/PCRE2Project/pcre2.git')
             ->withLicense(
                 'https://github.com/PCRE2Project/pcre2/blob/master/COPYING',
                 Library::LICENSE_SPEC
             )
+            ->withUrl('https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz')
+
             ->withFile('pcre2-10.42.tar.gz')
             ->withPrefix($pcre2_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($pcre2_prefix)
             ->withConfigure(
                 <<<EOF
                 ./configure --help
@@ -35,7 +34,6 @@ return function (Preprocessor $p) {
 
  EOF
             )
-            ->withBuildLibraryCached(false)
             ->withBinPath($pcre2_prefix . '/bin/')
             ->withPkgName("libpcre2-16")
             ->withPkgName("libpcre2-32")

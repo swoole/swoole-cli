@@ -97,7 +97,7 @@ EOF
 
        */
 
-
+        ->withUntarArchiveCommand('tar')
         # 构建源码可以使用cmake 、 autoconfig 、 meson 构建等
 
 
@@ -144,9 +144,10 @@ EOF
             meson setup -h
             # meson configure -h
 
-            LD_LIBRARY_PATH="{$openssl_prefix}/lib" \
             meson setup  build \
             -Dprefix={$example_prefix} \
+            -Dlibdir={$example_prefix}/lib \
+            -Dincludedir={$example_prefix}/include \
             -Dbackend=ninja \
             -Dbuildtype=release \
             -Ddefault_library=static \

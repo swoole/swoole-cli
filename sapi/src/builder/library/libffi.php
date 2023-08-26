@@ -15,13 +15,13 @@ return function (Preprocessor $p) {
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libffi_prefix)
             ->withConfigure(
-                "
+                <<<EOF
             ./configure --help ;
             ./configure \
             --prefix={$libffi_prefix} \
             --enable-shared=no \
             --enable-static=yes
-            "
+            EOF
             )
             ->withPkgName('libffi')
     );

@@ -276,4 +276,8 @@ define("LIBGOMP_PREFIX", $p->getGlobalPrefix() . '/libgomp');
 define("LIBMLX5_PREFIX", $p->getGlobalPrefix() . '/libmlx5');
 define("LIBNL_PREFIX", $p->getGlobalPrefix() . '/libnl');
 define("LIBFVAD_PREFIX", $p->getGlobalPrefix() . '/libfvad');
+define("GVDB_PREFIX", $p->getGlobalPrefix() . '/gvdb');
+define("GLIB_PREFIX", $p->getGlobalPrefix() . '/glib');
+define("LIBSOUP_PREFIX", $p->getGlobalPrefix() . '/libsoup');
+define("LIBPSL_PREFIX", $p->getGlobalPrefix() . '/libpsl');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

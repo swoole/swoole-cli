@@ -9,7 +9,6 @@ return function (Preprocessor $p) {
     $lib->withHomePage('http://libsndfile.github.io/libsamplerate/')
         ->withLicense('https://github.com/libsndfile/libsamplerate/blob/master/COPYING', Library::LICENSE_BSD)
         ->withManual('https://github.com/libsndfile/libsamplerate.git')
-
         ->withFile('libsamplerate-latest.tar.gz')
         ->withDownloadScript(
             'libsamplerate',
@@ -18,12 +17,10 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libsamplerate_prefix)
-        ->withBuildScript(
+        ->withConfigure(
             <<<EOF
              mkdir -p build
              cd build
-             # cmake 查看选项
-             # cmake -LH ..
              cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libsamplerate_prefix} \
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
@@ -39,8 +36,6 @@ EOF
         ->withPkgName('libsamplerate')
         ->withBinPath($libsamplerate_prefix . '/bin/')
     ;
-
-
     $p->addLibrary($lib);
 
 };
