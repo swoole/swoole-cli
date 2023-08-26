@@ -275,4 +275,5 @@ define("COREUTILS_PREFIX", $p->getGlobalPrefix() . '/coreutils');
 define("LIBGOMP_PREFIX", $p->getGlobalPrefix() . '/libgomp');
 define("LIBMLX5_PREFIX", $p->getGlobalPrefix() . '/libmlx5');
 define("LIBNL_PREFIX", $p->getGlobalPrefix() . '/libnl');
+define("LIBFVAD_PREFIX", $p->getGlobalPrefix() . '/libfvad');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
