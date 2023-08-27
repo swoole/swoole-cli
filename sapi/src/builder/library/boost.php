@@ -33,10 +33,21 @@ return function (Preprocessor $p) {
             # apk add boost1.80-dev
             # apk add boost1.80-static
 
+            X_CPPFLAGS=""
+            if [ "\$OS_RELEASE" = 'alpine' ]; then
+                X_CPPFLAGS="-I/usr/include/c++/12.2.1 -I/usr/include/c++/12.2.1/x86_64-alpine-linux-musl"
+            elif [ "\$OS_RELEASE" = 'debian' ]; then
+                X_CPPFLAGS="-I/usr/include/c++/12 -I/usr/include/x86_64-linux-gnu/c++/12/"
+            elif [ "\$OS_RELEASE" = 'ubuntu' ]; then
+                X_CPPFLAGS=""
+            else
+                X_CPPFLAGS=""
+            fi
+
+
             PACKAGES='liblzma libzstd icu-i18n icu-io icu-uc'
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/inlcude  -I{$libiconv_prefix}/include"
-            CPPFLAGS="\$CPPFLAGS -I/usr/include/c++/12.2.1 -I/usr/include/c++/12.2.1/x86_64-alpine-linux-musl "
-
+            CPPFLAGS="\$CPPFLAGS \$X_CPPFLAGS "
 
 
             # boost components: filesystem regex system
