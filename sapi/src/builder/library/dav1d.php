@@ -49,6 +49,8 @@ EOF
 
                 meson setup  build \
                 -Dprefix={$dav1d_prefix} \
+                -Dlibdir={$dav1d_prefix}/lib \
+                -Dincludedir={$dav1d_prefix}/include \
                 -Dbackend=ninja \
                 -Dbuildtype=release \
                 -Ddefault_library=static \
