@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
             elif [ "\$OS_RELEASE" = 'debian' ]; then
                 X_CPPFLAGS="-I/usr/include/c++/12 -I/usr/include/x86_64-linux-gnu/c++/12/"
             elif [ "\$OS_RELEASE" = 'ubuntu' ]; then
-                X_CPPFLAGS=""
+                X_CPPFLAGS="-I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11/"
             else
                 X_CPPFLAGS=""
             fi
@@ -76,7 +76,7 @@ return function (Preprocessor $p) {
             variant=release \
             toolset={$p->get_C_COMPILER()} \
             threading=multi link=static  \
-            cxxflags="-std=c++11   \$CPPFLAGS " \
+            cxxflags="-std=c++14   \$CPPFLAGS " \
             linkflags="-stdlib=libstdc++ " \
             release \
             install
