@@ -37,7 +37,7 @@ EOF
         )
         ->withPkgName('sdl2')
         ->withBinPath($sdl2_prefix . '/bin/')
-        ->withDependentLibraries('openssl', 'libiconv')
+        ->withDependentLibraries('openssl', 'libiconv', 'zlib')
     ;
 
     $p->addLibrary($lib);

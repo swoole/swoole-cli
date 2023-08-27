@@ -5,13 +5,10 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
-    $option = '';
 
-    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static ';
+    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static  ';
+    $libs = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
 
-    if ($p->getOsType() == 'macos') {
-        $option = '--disable-thread-safety';
-    }
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
@@ -44,11 +41,11 @@ return function (Preprocessor $p) {
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
-            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs} " \
             ../configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
-            {$option} \
+            --disable-thread-safety \
             --with-ssl=openssl  \
             --with-readline \
             --with-icu \
@@ -65,16 +62,14 @@ return function (Preprocessor $p) {
             --without-tcl
 
 
-
             make -C src/bin/pg_config install
+
             make -C src/include install
 
             make -C  src/common install
 
-            make -C  src/backend/port install
             make -C  src/port install
 
-            make -C  src/backend/libpq install
             make -C  src/interfaces/libpq install
 
 EOF
