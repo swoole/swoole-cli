@@ -33,6 +33,6 @@ EOF
 
 EOF
         )
-        ->withPkgName('yaml-cpp.');
+        ->withPkgName('yaml-cpp');
     $p->addLibrary($lib);
 };

@@ -60,7 +60,7 @@ EOF
         )
 
 
-        ->withPkgName('example')
+        ->withPkgName('rime')
         ->withBinPath($librime_prefix . '/bin/')
 
         ->withDependentLibraries('glog', 'leveldb', 'libopencc', 'libyaml_cpp', 'libmarisa', 'boost', 'gflags')
