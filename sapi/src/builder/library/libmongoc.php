@@ -18,6 +18,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.mongodb.com/docs/drivers/c/')
             ->withLicense('https://github.com/mongodb/mongo-c-driver/blob/master/COPYING', Library::LICENSE_APACHE2)
             ->withManual('https://mongoc.org/libmongoc/current/tutorial.html')
+            ->withManual('https://mongoc.org/libmongoc/current/installing.html')
             ->withUrl('https://github.com/mongodb/mongo-c-driver/releases/download/1.24.3/mongo-c-driver-1.24.3.tar.gz')
             ->withFile('mongo-c-driver-1.24.3.tar.gz')
             ->withPrefix($libmongoc_prefix)
