@@ -539,6 +539,9 @@ __GIT_PROXY_CONFIG_EOF;
                     echo "[Library] file cached: " . $lib->file . PHP_EOL;
                 } else {
                     $httpProxyConfig = $this->getProxyConfig();
+                    if ($lib->enableGitProxy) {
+                        $httpProxyConfig = $httpProxyConfig . PHP_EOL . $this->getGitProxy();
+                    }
                     if (!$lib->enableHttpProxy) {
                         $httpProxyConfig = '';
                     }
@@ -654,6 +657,9 @@ EOF;
             if (!$this->getInputOption('with-skip-download')) {
                 if (!file_exists($ext->path)) {
                     $httpProxyConfig = $this->getProxyConfig();
+                    if ($ext->enableGitProxy) {
+                        $httpProxyConfig = $httpProxyConfig . PHP_EOL . $this->getGitProxy();
+                    }
                     if (!$ext->enableHttpProxy) {
                         $httpProxyConfig = '';
                     }

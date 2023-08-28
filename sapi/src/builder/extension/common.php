@@ -65,7 +65,7 @@ return function (Preprocessor $p) {
     $depends = ['libsharpyuv'] ;
     $depends = ['libyuv'] ;
     $depends = ['elfutils'] ;
-    $depends = ['util_linux'] ;
+
     $depends = ['libunistring'] ;
     $depends = ['gettext'] ;
     # $depends = ['coreutils'] ;
@@ -82,6 +82,7 @@ return function (Preprocessor $p) {
     $depends = ['glib'] ;
     $depends = ['pgsql'] ;
     $depends = ['libbsd'] ;
+    $depends = ['util_linux'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

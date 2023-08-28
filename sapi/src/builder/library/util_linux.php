@@ -16,6 +16,7 @@ return function (Preprocessor $p) {
         ->withManual('http://en.wikipedia.org/wiki/Util-linux/util-linux/tree/v2.39.1/Documentation')
         ->withFile('util-linux-v2.39.1.tar.gz')
         ->withAutoUpdateFile()
+        ->withHttpProxy(true, true)
         ->withDownloadScript(
             'util-linux',
             <<<EOF
@@ -25,17 +26,6 @@ return function (Preprocessor $p) {
                 # export GIT_CURL_VERBOSE=1
 
                 # git clone -b v2.39.1  --depth=1 https://github.com/util-linux/util-linux.git
-
-
-                export GIT_PROXY_COMMAND=/tmp/git-proxy;
-
-                cat  > \$GIT_PROXY_COMMAND <<___eof___
-#!/bin/bash
-# socat - PROXY:{$http_proxy_host}:\$1:\$2,proxyport={$http_proxy_port}
-nc -X connect  -x {$http_proxy_host}:{$http_proxy_port} "\\$1" "\\$2"
-___eof___
-                chmod +x \$GIT_PROXY_COMMAND;
-
 
                 # git config --global core.gitproxy "{$p->getRootDir()}/bin/runtime/git-proxy"
 
@@ -71,3 +61,19 @@ EOF
 
     $p->addLibrary($lib);
 };
+
+/*
+
+
+export GIT_PROXY_COMMAND=/tmp/git-proxy;
+
+cat  > \$GIT_PROXY_COMMAND <<___eof___
+#!/bin/bash
+# socat - PROXY:{$http_proxy_host}:\$1:\$2,proxyport={$http_proxy_port}
+nc -X connect  -x {$http_proxy_host}:{$http_proxy_port} "\\$1" "\\$2"
+___eof___
+
+chmod +x \$GIT_PROXY_COMMAND;
+
+
+ */
