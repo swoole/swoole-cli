@@ -58,6 +58,7 @@ EOF
 
 EOF
         )
+        ->withBinPath(GETTEXT_PREFIX . '/bin/')
         ->withDependentLibraries('gettext')
         ->withSkipBuildLicense();
 
