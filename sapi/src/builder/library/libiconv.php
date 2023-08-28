@@ -34,9 +34,13 @@ Cflags: -I\${includedir}
 __libiconv__EOF
 EOF
             )
-           // ->withPkgName('iconv')
+            // ->withPkgName('iconv')
+            ->withLdflags('-L' . $libiconv_prefix . '/lib')
+            ->withPkgConfig('')
     );
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . ICONV_PREFIX . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . ICONV_PREFIX . '/lib');
+
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libiconv_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libiconv_prefix . '/lib');
+
     $p->withVariable('LIBS', '$LIBS -liconv');
 };

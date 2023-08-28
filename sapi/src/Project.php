@@ -38,6 +38,8 @@ abstract class Project
 
     public bool $enableHttpProxy = true;
 
+    public bool $enableGitProxy = true;
+
     public bool $enableDownloadWithMirrorURL = false;
 
     public bool $enableDownloadWithOriginURL = false;
@@ -140,9 +142,10 @@ abstract class Project
         return $this;
     }
 
-    public function withHttpProxy(bool $enableHttpProxy = true): static
+    public function withHttpProxy(bool $enableHttpProxy = true, $enableGitProxy = false): static
     {
         $this->enableHttpProxy = $enableHttpProxy;
+        $this->enableGitProxy = $enableGitProxy;
         return $this;
     }
 
