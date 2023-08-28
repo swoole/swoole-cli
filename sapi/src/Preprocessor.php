@@ -540,7 +540,7 @@ __GIT_PROXY_CONFIG_EOF;
                 } else {
                     $httpProxyConfig = $this->getProxyConfig();
                     if ($lib->enableGitProxy) {
-                        $httpProxyConfig = $httpProxyConfig . PHP_EOL . $this->getGitProxy();
+                        $httpProxyConfig = $httpProxyConfig . PHP_EOL . $this->getGitProxyConfig();
                     }
                     if (!$lib->enableHttpProxy) {
                         $httpProxyConfig = '';
@@ -658,7 +658,7 @@ EOF;
                 if (!file_exists($ext->path)) {
                     $httpProxyConfig = $this->getProxyConfig();
                     if ($ext->enableGitProxy) {
-                        $httpProxyConfig = $httpProxyConfig . PHP_EOL . $this->getGitProxy();
+                        $httpProxyConfig = $httpProxyConfig . PHP_EOL . $this->getGitProxyConfig();
                     }
                     if (!$ext->enableHttpProxy) {
                         $httpProxyConfig = '';
