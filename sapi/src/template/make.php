@@ -84,6 +84,9 @@ make_<?=$item->name?>() {
 
     <?php if ($item->enableBuildLibraryHttpProxy) : ?>
         <?= $this->getProxyConfig() . PHP_EOL ?>
+        <?php if ($item->enableBuildLibraryGitProxy) :?>
+            <?= $this->getGitProxyConfig() . PHP_EOL ?>
+        <?php endif;?>
     <?php endif;?>
 
     # use build script replace  configure、make、make install
@@ -137,6 +140,9 @@ __EOF__
         unset HTTP_PROXY
         unset HTTPS_PROXY
         unset NO_PROXY
+        <?php if ($item->enableBuildLibraryGitProxy) :?>
+        unset GIT_PROXY_COMMAND
+        <?php endif;?>
     <?php endif;?>
 
     <?php if ($item->enableBuildLibraryCached) : ?>
