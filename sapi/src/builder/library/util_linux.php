@@ -42,8 +42,10 @@ EOF
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($util_linux_prefix)
         ->withBuildLibraryCached(false)
+        ->withBuildLibraryHttpProxy(true, true)
         ->withConfigure(
             <<<EOF
+git clone -b v2.39.2 --depth=1 git://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
             sh autogen.sh
             ./configure --help
             ./configure \
