@@ -54,6 +54,10 @@ make_<?=$item->name?>() {
             cd <?= $this->workDir ?>/
             return 0
         fi
+    <?php else :?>
+        if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
+            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+        fi
     <?php endif; ?>
 
     <?php if ($item->cleanBuildDirectory) : ?>
@@ -286,6 +290,7 @@ export_variables() {
 
 
 make_config() {
+    test -d <?= $this->getBuildDir()?>/php_src/ && rm -rf <?= $this->getBuildDir()?>/php_src/
     make_php_src
     make_ext
     make_ext_hook
