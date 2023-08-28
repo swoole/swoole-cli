@@ -32,15 +32,11 @@ if ($p->getInputOption('with-php-version')) {
         } else {
             echo <<<EOF
 
-    support  PHP7.4  PHP7.3 PHP8  micro
+    support  PHP7.4  PHP7.3   micro
 
     php-8-micro:  (https://github.com/dixyes/phpmicro.git）
 
         git clone -b build_native_php_sfx_micro  https://github.com/jingjingxyk/swoole-cli/
-
-    php-8.2:
-
-        git clone -b build_php_8.2  https://github.com/jingjingxyk/swoole-cli/
 
     php-7.4:
 
