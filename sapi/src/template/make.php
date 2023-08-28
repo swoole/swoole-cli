@@ -68,6 +68,10 @@ make_<?=$item->name?>() {
             cd <?= $this->workDir ?>/
             return 0
         fi
+    <?php else : ?>
+        if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
+        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+        fi
     <?php endif; ?>
 
     <?php if ($item->cleanBuildDirectory) : ?>
