@@ -67,8 +67,12 @@ apt update -y
 apt install -y git curl wget ca-certificates
 apt install -y xz-utils autoconf automake clang-tools clang lld libtool cmake bison re2c gettext coreutils lzip zip unzip
 apt install -y pkg-config bzip2 flex p7zip
+<<<<<<< HEAD
 apt install -y gcc g++
 apt install -y libtool  libtool-bin autopoint
+=======
+apt install -y gcc g++ musl-tools
+>>>>>>> build_native_php
 
 # apt install build-essential linux-headers-$(uname -r)
 apt install -y python3 python3-pip ninja-build  diffutils
