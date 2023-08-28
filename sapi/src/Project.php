@@ -44,7 +44,7 @@ abstract class Project
 
     public bool $enableHttpProxy = true;
 
-    public bool $enableGitProxy = true;
+    public bool $enableGitProxy = false;
 
     public bool $enableDownloadWithMirrorURL = false;
 
