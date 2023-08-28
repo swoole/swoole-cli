@@ -152,6 +152,8 @@ class Preprocessor
 
     protected string $httpProxy = '';
 
+    protected string $gitProxyConfig = '';
+
     protected bool $installLibraryCached = false;
 
     protected function __construct()
@@ -371,6 +373,36 @@ class Preprocessor
     {
         $this->proxyConfig = $shell;
         $this->httpProxy = $httpProxy;
+        $proxyInfo=parse_url($httpProxy);
+        if (!empty($proxyInfo['scheme']) && !empty($proxyInfo['host']) && !empty($proxyInfo['port'])) {
+            $proto='';
+            switch (strtolower($proxyInfo['scheme'])) {
+                case 'socks5':
+                case "socks5h":
+                    $proto=5;
+                    break;
+                case "socks4a":
+                case 'socks4':
+                    $proto=4;
+                    break;
+                default:
+                    $proto="connect";
+                    break;
+            }
+            $this->gitProxyConfig=<<<__GIT_PROXY_CONFIG_EOF
+export GIT_PROXY_COMMAND=/tmp/git-proxy;
+
+cat  > \$GIT_PROXY_COMMAND <<___EOF___
+#!/bin/bash
+
+nc -X {$proto}  -x {$proxyInfo['host']}:{$proxyInfo['port']} "\\$1" "\\$2"
+___EOF___
+
+chmod +x \$GIT_PROXY_COMMAND;
+
+__GIT_PROXY_CONFIG_EOF;
+        }
+
         return $this;
     }
 
@@ -382,6 +414,11 @@ class Preprocessor
     public function getHttpProxy(): string
     {
         return $this->httpProxy;
+    }
+
+    public function getGitProxyConfig(): string
+    {
+        return $this->gitProxyConfig;
     }
 
 
@@ -517,6 +554,9 @@ class Preprocessor
                     echo "[Library] file cached: " . $lib->file . PHP_EOL;
                 } else {
                     $httpProxyConfig = $this->getProxyConfig();
+                    if ($lib->enableGitProxy) {
+                        $httpProxyConfig = $httpProxyConfig . PHP_EOL . $this->getGitProxyConfig();
+                    }
                     if (!$lib->enableHttpProxy) {
                         $httpProxyConfig = '';
                     }
@@ -632,6 +672,9 @@ EOF;
             if (!$this->getInputOption('with-skip-download')) {
                 if (!file_exists($ext->path)) {
                     $httpProxyConfig = $this->getProxyConfig();
+                    if ($ext->enableGitProxy) {
+                        $httpProxyConfig = $httpProxyConfig . PHP_EOL . $this->getGitProxyConfig();
+                    }
                     if (!$ext->enableHttpProxy) {
                         $httpProxyConfig = '';
                     }
