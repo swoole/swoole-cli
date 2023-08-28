@@ -290,7 +290,6 @@ export_variables() {
 
 
 make_config() {
-    test -d <?= $this->getBuildDir()?>/php_src/ && rm -rf <?= $this->getBuildDir()?>/php_src/
     make_php_src
     make_ext
     make_ext_hook
