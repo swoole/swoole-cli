@@ -81,6 +81,7 @@ return function (Preprocessor $p) {
     $depends = ['libarchive'] ;
     $depends = ['glib'] ;
     $depends = ['pgsql'] ;
+    $depends = ['libbsd'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

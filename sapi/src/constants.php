@@ -280,4 +280,6 @@ define("GVDB_PREFIX", $p->getGlobalPrefix() . '/gvdb');
 define("GLIB_PREFIX", $p->getGlobalPrefix() . '/glib');
 define("LIBSOUP_PREFIX", $p->getGlobalPrefix() . '/libsoup');
 define("LIBPSL_PREFIX", $p->getGlobalPrefix() . '/libpsl');
+define("LIBBSD_PREFIX", $p->getGlobalPrefix() . '/libbsd');
+define("LIBMD_PREFIX", $p->getGlobalPrefix() . '/libmd');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

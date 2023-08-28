@@ -1010,4 +1010,9 @@ make install DESTDIR=
      *  TCP是以字节为单位传输的，SCTP是以数据块为单位传输的
      *  参考： https://zhuanlan.zhihu.com/p/639293225
      */
+
+    /*
+     * ABI  每个操作系统都会为运行在该系统下的应用程序提供应用程序二进制接口（Application Binary Interface，ABI）
+     * EABI  嵌入式应用二进制接口 EABI（embedded application binary interface）
+     */
 }
