@@ -42,6 +42,7 @@ apk add libc++-static libltdl-static
 apk add yasm nasm
 apk add ninja python3 py3-pip
 apk add diffutils
+apk add netcat-openbsd
 
 case "$MIRROR" in
 china)

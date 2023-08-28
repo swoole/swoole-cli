@@ -154,6 +154,8 @@ class Preprocessor
 
     protected string $httpProxy = '';
 
+    protected string $gitProxyConfig = '';
+
     protected bool $installLibraryCached = false;
 
     protected function __construct()
@@ -371,6 +373,22 @@ class Preprocessor
     {
         $this->proxyConfig = $shell;
         $this->httpProxy = $httpProxy;
+        $proxyInfo=parse_url($httpProxy);
+        if (!empty($proxyInfo['host']) && !empty($proxyInfo['port'])) {
+            $this->gitProxyConfig=<<<__GIT_PROXY_CONFIG_EOF
+export GIT_PROXY_COMMAND=/tmp/git-proxy;
+
+cat  > \$GIT_PROXY_COMMAND <<___EOF___
+#!/bin/bash
+
+nc -X connect  -x {$proxyInfo['host']}:{$proxyInfo['port']} "\\$1" "\\$2"
+___EOF___
+
+chmod +x \$GIT_PROXY_COMMAND;
+
+__GIT_PROXY_CONFIG_EOF;
+        }
+
         return $this;
     }
 
@@ -382,6 +400,11 @@ class Preprocessor
     public function getHttpProxy(): string
     {
         return $this->httpProxy;
+    }
+
+    public function getGitProxy(): string
+    {
+        return $this->gitProxyConfig;
     }
 
 
