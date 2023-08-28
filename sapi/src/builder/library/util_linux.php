@@ -45,7 +45,7 @@ EOF
         ->withBuildLibraryHttpProxy(true, true)
         ->withConfigure(
             <<<EOF
-git clone -b v2.39.2 --depth=1 git://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
+            git clone -b v2.39.2 --depth=1 git://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
             sh autogen.sh
             ./configure --help
             ./configure \
@@ -58,7 +58,7 @@ git clone -b v2.39.2 --depth=1 git://git.kernel.org/pub/scm/utils/util-linux/uti
 
 EOF
         )
-
+        ->withDependentLibraries('gettext')
         ->withSkipBuildLicense();
 
     $p->addLibrary($lib);
