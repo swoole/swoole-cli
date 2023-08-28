@@ -399,7 +399,7 @@ __GIT_PROXY_CONFIG_EOF;
         return $this->httpProxy;
     }
 
-    public function getGitProxy(): string
+    public function getGitProxyConfig(): string
     {
         return $this->gitProxyConfig;
     }
