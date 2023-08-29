@@ -518,6 +518,7 @@ make_build_old() {
     # make install
     mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
     cp -f <?= $this->phpSrcDir  ?>/sapi/cli/php <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
+    <?= $this->phpSrcDir  ?>/sapi/cli/php -v
 
     # elfedit --output-osabi linux sapi/cli/php
 }
