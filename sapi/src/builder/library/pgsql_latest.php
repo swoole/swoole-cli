@@ -120,7 +120,7 @@ EOF
                 'libedit',
                 'ncurses',
                 'util_linux',
-                'ossp_uuid'
+               // 'ossp_uuid'
             )
     );
     $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
