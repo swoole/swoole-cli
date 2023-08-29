@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
         ->withManual('http://en.wikipedia.org/wiki/Util-linux')
         ->withManual('http://en.wikipedia.org/wiki/Util-linux/util-linux/tree/v2.39.1/Documentation')
         ->withFile('util-linux-v2.39.1.tar.gz')
-        ->withAutoUpdateFile()
+        //->withAutoUpdateFile()
         ->withHttpProxy(true, true)
         ->withDownloadScript(
             'util-linux',
@@ -41,7 +41,7 @@ EOF
         ->withPrefix($util_linux_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($util_linux_prefix)
-        ->withBuildLibraryCached(false)
+        //->withBuildLibraryCached(false)
         ->withBuildLibraryHttpProxy(true, true)
         ->withConfigure(
             <<<EOF

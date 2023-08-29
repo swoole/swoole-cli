@@ -20,6 +20,8 @@ return function (Preprocessor $p) {
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
             ->withPrefix($pgsql_prefix)
             /*
+                https://git.postgresql.org/gitweb/
+
                 git://git.postgresql.org/git/postgresql.git
                 https://git.postgresql.org/git/postgresql.git
                 ssh://git@git.postgresql.org/postgresql.git

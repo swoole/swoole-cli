@@ -83,6 +83,7 @@ return function (Preprocessor $p) {
     $depends = ['pgsql'] ;
     $depends = ['libbsd'] ;
     $depends = ['util_linux'] ;
+    $depends = ['pgsql_latest'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

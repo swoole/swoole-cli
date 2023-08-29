@@ -1,0 +1,141 @@
+<?php
+
+use SwooleCli\Library;
+use SwooleCli\Preprocessor;
+
+return function (Preprocessor $p) {
+    $pgsql_prefix = PGSQL_LATEST_PREFIX;
+    $gettext_prefix = GETTEXT_PREFIX;
+    $util_linux_prefix = UTIL_LINUX_PREFIX;
+    $ncurses_prefix = NCURSES_PREFIX;
+
+    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static  ';
+    $libs = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
+
+    $p->addLibrary(
+        (new Library('pgsql_latest'))
+            ->withHomePage('https://www.postgresql.org/')
+            ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
+            ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS')
+            ->withManual('https://www.postgresql.org/download/')
+            ->withManual('https://git.postgresql.org/gitweb/?p=postgresql.git;a=summary')
+            ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
+            ->withFile('postgresql-latest.tar.gz')
+            ->withHttpProxy(true, true)
+            ->withDownloadScript(
+                'postgresql',
+                <<<EOF
+                git clone -b master --depth=1 git://git.postgresql.org/git/postgresql.git
+                # git clone -b REL_16_STABLE --depth=1 git://git.postgresql.org/git/postgresql.git
+                # git clone -b REL_15_4 --depth=1 git://git.postgresql.org/git/postgresql.git
+EOF
+            )
+            //->withAutoUpdateFile()
+            ->withPrefix($pgsql_prefix)
+            /*
+                https://git.postgresql.org/gitweb/
+
+                git://git.postgresql.org/git/postgresql.git
+                https://git.postgresql.org/git/postgresql.git
+                ssh://git@git.postgresql.org/postgresql.git
+            */
+
+            /*
+                ->withCleanBuildDirectory()
+                ->withCleanPreInstallDirectory($pgsql_prefix)
+                ->withBuildLibraryCached(false)
+            */
+            ->withBuildLibraryCached(false)
+            ->withBuildScript(
+                <<<EOF
+            # reference
+            # https://git.postgresql.org/gitweb/?p=postgresql.git;a=blob;f=meson.build;
+                        meson  -h
+            meson setup -h
+            # meson configure -h
+
+            CPPFLAGS="-I{$gettext_prefix}/include -I{$util_linux_prefix}/include -I{$ncurses_prefix}/include" \
+            LDFLAGS="-L{$gettext_prefix}/lib -L{$util_linux_prefix}/lib -L{$ncurses_prefix}/lib" \
+            LIBS=" -lintl -luuid -lncurses -lncursesw " \
+            meson setup  build \
+            -Dprefix={$pgsql_prefix} \
+            -Dlibdir={$pgsql_prefix}/lib \
+            -Dincludedir={$pgsql_prefix}/include \
+            -Dbackend=ninja \
+            -Dbuildtype=release \
+            -Ddefault_library=static \
+            -Db_staticpic=true \
+            -Db_pie=true \
+            -Dprefer_static=true \
+             -Dbonjour=disabled \
+             -Dbsd_auth=disabled \
+             -Ddocs_pdf=disabled \
+             -Dgssapi=disabled \
+             -Dbonjour=disabled \
+             -Dicu=enabled \
+             -Dldap=disabled \
+             -Dlibedit_preferred=true \
+             -Dlibxml=enabled \
+             -Dlibxslt=enabled \
+             -Dlz4=enabled \
+             -Dnls=enabled \
+             -Dpam=disabled \
+             -Dplperl=disabled \
+             -Dplpython=disabled \
+             -Dpltcl=disabled \
+             -Dreadline=enabled \
+             -Dssl=openssl \
+             -Dbonjour=disabled \
+             -Dsystemd=disabled \
+             -Duuid=e2fs \
+             -Dzlib=enabled \
+             -Dzstd=enabled \
+
+
+            # ninja -C build
+            # ninja -C build install
+EOF
+            )
+            ->withScriptAfterInstall(
+                <<<EOF
+            rm -rf {$pgsql_prefix}/lib/*.so.*
+            rm -rf {$pgsql_prefix}/lib/*.so
+            rm -rf {$pgsql_prefix}/lib/*.dylib
+            rm -rf {$pgsql_prefix}/lib/libpgcommon_shlib.a
+            rm -rf {$pgsql_prefix}/lib/libpgport_shlib.a
+
+EOF
+            )
+            ->withPkgName('libpq')
+            ->withBinPath($pgsql_prefix . '/bin/')
+            ->withDependentLibraries(
+                'zlib',
+                'icu',
+                'libxml2',
+                'openssl',
+                'readline',
+                'libxslt',
+                'libzstd',
+                'liblz4',
+                'libedit',
+                'ncurses',
+                'util_linux',
+                'ossp_uuid'
+            )
+    );
+    $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
+    $p->withExportVariable('LIBPQ_LIBS', '$(pkg-config    --libs   --static libpq)');
+};
+
+/*
+
+    cd src/common && make -s -j$(nproc) all && make -s install && cd ../.. && \
+    cd src/port && make -s -j$(nproc) all && make -s install && cd ../.. && \
+    cd src/interfaces/libpq make -s -j$(nproc) all-static-lib && make -s install install-lib-static && \
+    cd ../../bin/pg_config && make -j $(nproc) && make install && \
+
+ */
+
+/*
+option('uuid', type: 'combo', choices: ['none', 'bsd', 'e2fs', 'ossp'],
+*/
