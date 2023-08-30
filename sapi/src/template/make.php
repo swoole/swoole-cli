@@ -348,7 +348,9 @@ make_build() {
     # make install
     mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
     cp -f <?= $this->phpSrcDir  ?>/sapi/cli/php <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
+    echo "<?= $this->phpSrcDir  ?>/sapi/cli/php -v"
     <?= $this->phpSrcDir  ?>/sapi/cli/php -v
+    echo "<?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php -v"
     <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php -v
 
     # elfedit --output-osabi linux sapi/cli/php
