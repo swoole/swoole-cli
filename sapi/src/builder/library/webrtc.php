@@ -23,7 +23,8 @@ EOF
         ->withBuildScript(
             <<<EOF
             mkdir -p build
-             cd build
+
+
 
 EOF
         )
@@ -33,3 +34,8 @@ EOF
 
     $p->addLibrary($lib);
 };
+
+/*
+ * webrtc 和 chromium 使用同样的构建系统
+ *
+ */

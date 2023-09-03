@@ -44,8 +44,9 @@ EOF
         --enable-ssl \
         --enable-shared=no \
         --enable-static=yes
-        # make -j {$p->maxJob}
-        # make install
+
+        make -j {$p->maxJob}
+        make install
 
 
         make dist-docs -j {$p->maxJob}
@@ -59,6 +60,7 @@ EOF
         pipenv run python3 conf.py
 
 
+
 EOF
         )
         //->withMakeOptions( " dist-docs ")
@@ -67,7 +69,7 @@ EOF
         ->withPkgName('libovsdb')
         ->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/')
-        ->withDependentLibraries('openssl') //'dpdk'
+        ->withDependentLibraries('openssl', 'libcap_ng') //'dpdk'
     ;
 
     $p->addLibrary($lib);

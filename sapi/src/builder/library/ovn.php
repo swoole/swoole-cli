@@ -48,7 +48,7 @@ EOF
         --enable-static=yes \
         --with-ovs-source={$workdir}/ovs/ \
         --with-ovs-build={$workdir}/ovs/
-        # make -j {$p->maxJob}
+        make -j {$p->maxJob}
 
         make dist-docs -j {$p->maxJob}
         # make docs-check -j {$p->maxJob}
