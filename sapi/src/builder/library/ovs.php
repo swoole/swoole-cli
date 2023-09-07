@@ -52,10 +52,11 @@ EOF
         make dist-docs -j {$p->maxJob}
         # make docs-check -j {$p->maxJob}
 
+        export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
         cd Documentation/
         pipenv --python 3
         # pipenv shell
-        export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+
         pipenv install -r requirements.txt
         pipenv install jinja2==3.0.0
         pipenv run python3 conf.py
