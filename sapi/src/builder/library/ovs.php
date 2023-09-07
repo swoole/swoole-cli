@@ -28,6 +28,7 @@ EOF
             <<<EOF
         apk add mandoc man-pages
         apk add ghostscript
+        apk add bind-tools  # dig pypi.org
 EOF
         )
         ->withBuildScript(
@@ -57,8 +58,11 @@ EOF
         pipenv --python 3
         # pipenv shell
 
+        # 参考 文档 https://pipenv-fork.readthedocs.io/en/latest/advanced.html
         # pipenv install -r requirements.txt -i https://pypi.python.org/simple
+        # pipenv install -r requirements.txt --pypi-mirror https://pypi.tuna.tsinghua.edu.cn/simple
         pipenv install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+        # pipenv run pip3 install -r requirements.txt
         pipenv install jinja2==3.0.0
         pipenv run python3 conf.py
 
