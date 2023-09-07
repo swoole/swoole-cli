@@ -30,7 +30,6 @@ EOF
         apk add ghostscript
 EOF
         )
-        ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF
         set -x
@@ -58,7 +57,7 @@ EOF
         pipenv --python 3
         # pipenv shell
 
-        pipenv install -r requirements.txt
+        pipenv install -r requirements.txt -i https://pypi.python.org/simple
         pipenv install jinja2==3.0.0
         pipenv run python3 conf.py
 

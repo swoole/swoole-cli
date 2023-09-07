@@ -235,6 +235,7 @@ EOF
              apk add ninja python3 py3-pip gn zip unzip p7zip lzip  go flex
              apk add yasm nasm
              # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+             # pip3 config set global.index-url https://pypi.python.org/simple
              pip3 install meson virtualenv pipenv
              # git config --global --add safe.directory /work
         }
