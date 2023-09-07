@@ -30,6 +30,7 @@ EOF
         apk add ghostscript
 EOF
         )
+        ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF
         set -x

@@ -33,6 +33,7 @@ EOF
         pip3 install pipenv
 EOF
         )
+        ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF
         set -x
