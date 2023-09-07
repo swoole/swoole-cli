@@ -37,7 +37,7 @@ EOF
             <<<EOF
         set -x
         sh ./boot.sh
-        PACKAGES="openssl"
+        PACKAGES="openssl libsctp"
         CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
         LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
         LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
@@ -49,6 +49,7 @@ EOF
         --with-ovs-source={$workdir}/ovs/ \
         --with-ovs-build={$workdir}/ovs/
         make -j {$p->maxJob}
+        make install
 
         make dist-docs -j {$p->maxJob}
         # make docs-check -j {$p->maxJob}
@@ -62,7 +63,7 @@ EOF
 EOF
         )
         ->withPkgName('ovn')
-        ->withDependentLibraries('ovs', 'openssl')
+        ->withDependentLibraries('ovs', 'openssl', 'libsctp')
         ->withBinPath($ovn_prefix . '/bin/');
 
     $p->addLibrary($lib);
