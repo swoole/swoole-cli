@@ -19,13 +19,17 @@ return function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
-
+        $ovn_prefix = OVN_PREFIX;
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/ovn/Documentation
                 cp -rf _build {$workdir}/bin/ovn_docs
                 cd {$builddir}/ovn
                 cp -rf dist-docs {$workdir}/bin/ovn_docs
+
+                cd $ovn_prefix/../
+                tar -cJvf ovn-vlatest-static-linux-x64.tar.xz ovn
+                cp -f ovn-vlatest-static-linux-x64.tar.xz {$workdir}/bin/
 EOF;
 
         return $cmd;
