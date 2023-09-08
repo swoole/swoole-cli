@@ -14,8 +14,9 @@ return function (Preprocessor $p) {
             ->withFile('libbpf-v1.1.0.tar.gz')
             ->withManual('https://libbpf.readthedocs.io/en/latest/libbpf_build.html')
             ->withPrefix($libbpf_prefix)
+            /*
             ->withBuildLibraryCached(false)
-            ->withCleanBuildDirectory()
+            */
             ->withPreInstallCommand('debian',
                 <<<EOF
             apt install libelf-dev

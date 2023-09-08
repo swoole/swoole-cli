@@ -34,11 +34,9 @@ EOF
 EOF
             )
             ->withPrefix($libarchive_prefix)
-
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libarchive_prefix)
+/*
             ->withBuildLibraryCached(false)
-
+*/
             ->withConfigure(
                 <<<EOF
 
@@ -54,8 +52,6 @@ EOF
                 --prefix={$libarchive_prefix} \
                 --enable-shared=no \
                 --enable-static=yes \
-                --enable-bsdcpio=static \
-                --enable-bsdtar=static \
                 --with-nettle \
                 --with-openssl \
                 --with-xml2 \
@@ -66,6 +62,9 @@ EOF
                 --with-zlib \
                 --with-libiconv-prefix={$libiconv_prefix} \
                 --without-mbedtls
+
+                # --enable-bsdcpio=static \
+                # --enable-bsdtar=static \
 EOF
             )
             ->withScriptAfterInstall(
