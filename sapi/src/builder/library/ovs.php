@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($ovs_prefix)
-        ->withBuildLibraryCached(false)
+        //->withBuildLibraryCached(false)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovs_prefix)
         ->withPreInstallCommand(

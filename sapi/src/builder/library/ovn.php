@@ -45,7 +45,7 @@ EOF
 
         sh ./boot.sh
         ./configure --help
-        PACKAGES="openssl libsctp"
+        PACKAGES="openssl " # libsctp
         CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
         LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
         LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
@@ -74,7 +74,7 @@ EOF
 EOF
         )
         ->withPkgName('ovn')
-        ->withDependentLibraries('ovs', 'openssl', 'libsctp')
+        ->withDependentLibraries('ovs', 'openssl') //'libsctp'
         ->withBinPath($ovn_prefix . '/bin/');
 
     $p->addLibrary($lib);
