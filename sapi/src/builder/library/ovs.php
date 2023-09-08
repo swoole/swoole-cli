@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/general.rst')
         //->withUrl('https://github.com/openvswitch/ovs/archive/refs/tags/v3.1.1.tar.gz')
         ->withFile('ovs-v3.2.0.tar.gz')
-        ->withAutoUpdateFile()
+        //->withAutoUpdateFile()
         //->withFile('ovs-latest.tar.gz')
         ->withDownloadScript(
             'ovs',
@@ -56,10 +56,11 @@ EOF
         LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
         ./configure \
         --prefix={$ovs_prefix} \
-        --with-dpdk=static \
         --enable-ssl \
         --enable-shared=no \
         --enable-static=yes
+
+        # --with-dpdk=static \
 
         make dist-docs -j {$p->maxJob}
 
