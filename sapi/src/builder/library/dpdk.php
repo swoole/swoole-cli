@@ -5,6 +5,8 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $dpdk_prefix = DPDK_PREFIX;
+    $libarchive_prefix = LIBARCHIVE_PREFIX;
+
     $p->addLibrary(
         (new Library('dpdk'))
             ->withHomePage('http://core.dpdk.org/')
@@ -45,6 +47,9 @@ EOF
             meson setup -h
             # meson configure -h
 
+            CPPFLAGS="-I{$libarchive_prefix}/include" \
+            LDFLAGS="-L{$libarchive_prefix}/lib" \
+            LIBS=" -larchive " \
             meson setup  build \
             -Dprefix={$dpdk_prefix} \
             -Dbackend=ninja \
