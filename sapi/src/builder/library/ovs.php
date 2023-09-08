@@ -66,8 +66,8 @@ EOF
 
         make docs-check -j {$p->maxJob}
 
-        # make -j {$p->maxJob}
-        # make install
+        make -j {$p->maxJob}
+        make install
 
         # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
         # cd Documentation/
