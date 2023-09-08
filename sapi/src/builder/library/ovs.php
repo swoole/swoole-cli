@@ -56,6 +56,7 @@ EOF
         LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
         ./configure \
         --prefix={$ovs_prefix} \
+        --with-dpdk=static \
         --enable-ssl \
         --enable-shared=no \
         --enable-static=yes
@@ -95,7 +96,7 @@ EOF
         ->withPkgName('libovsdb')
         ->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/')
-        ->withDependentLibraries('openssl', 'libcap_ng') //'dpdk' ,'unbound'
+        ->withDependentLibraries('openssl', 'libcap_ng', 'dpdk') //,'unbound'
     ;
 
     $p->addLibrary($lib);
