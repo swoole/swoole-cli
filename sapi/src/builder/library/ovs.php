@@ -29,7 +29,7 @@ EOF
         apk add mandoc man-pages
         apk add ghostscript
         pip3 install pipenv
-        pip3 install sphinx
+        pip3 install sphinx virtualenv
 
         # apk add bind-tools  # dig pypi.org
 
@@ -40,6 +40,13 @@ EOF
         ->withBuildScript(
             <<<EOF
         set -x
+
+
+        virtualenv .venv
+        source .venv/bin/activate
+        pip3 install -r Documentation/requirements.txt
+        pip3 install jinja2==3.0.0
+
         ./boot.sh
         ./configure --help
         PACKAGES="openssl libcap-ng"
@@ -52,22 +59,16 @@ EOF
         --enable-shared=no \
         --enable-static=yes
 
-        make -j {$p->maxJob}
-        make install
-
-
         make dist-docs -j {$p->maxJob}
 
         # 文档构建  https://github.com/openvswitch/ovs/blob/master/Documentation/intro/install/documentation.rst
 
-
-        virtualenv .venv
-        source .venv/bin/activate
-        pip3 install -r Documentation/requirements.txt
-
         make docs-check -j {$p->maxJob}
 
-        export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+        make -j {$p->maxJob}
+        make install
+
+        # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
         # cd Documentation/
         # pipenv --rm
         # pipenv --python 3

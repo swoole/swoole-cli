@@ -36,7 +36,14 @@ EOF
         ->withBuildScript(
             <<<EOF
         set -x
+
+        virtualenv .venv
+        source .venv/bin/activate
+        pip3 install -r Documentation/requirements.txt
+        pip3 install jinja2==3.0.0
+
         sh ./boot.sh
+        ./configure --help
         PACKAGES="openssl libsctp"
         CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
         LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
@@ -48,20 +55,21 @@ EOF
         --enable-static=yes \
         --with-ovs-source={$workdir}/ovs/ \
         --with-ovs-build={$workdir}/ovs/
+
+        make dist-docs -j {$p->maxJob}
+        make docs-check -j {$p->maxJob}
+
         make -j {$p->maxJob}
         make install
 
-        make dist-docs -j {$p->maxJob}
-        # make docs-check -j {$p->maxJob}
-
-        export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-        cd Documentation/
-        pipenv --python 3
+        # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+        # cd Documentation/
+        # pipenv --python 3
         # pipenv shell
 
-        pipenv install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-        pipenv install jinja2==3.0.0
-        pipenv run python3 conf.py
+        # pipenv install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+        # pipenv install jinja2==3.0.0
+        # pipenv run python3 conf.py
 EOF
         )
         ->withPkgName('ovn')
