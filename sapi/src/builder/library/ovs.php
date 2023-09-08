@@ -28,8 +28,12 @@ EOF
             <<<EOF
         apk add mandoc man-pages
         apk add ghostscript
+        pip3 install pipenv
 
-        apk add bind-tools  # dig pypi.org
+        # apk add bind-tools  # dig pypi.org
+
+        # sysctl -w net.ipv6.conf.all.disable_ipv6=1
+        # sysctl -w net.ipv6.conf.default.disable_ipv6=1
 EOF
         )
         ->withBuildScript(
@@ -37,7 +41,7 @@ EOF
         set -x
         ./boot.sh
         ./configure --help
-        PACKAGES="openssl"
+        PACKAGES="openssl libcap-ng"
         CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
         LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
         LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
@@ -52,20 +56,31 @@ EOF
 
 
         make dist-docs -j {$p->maxJob}
-        # make docs-check -j {$p->maxJob}
+
+        # 文档构建  https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/documentation.rst
+
+
+        virtualenv .venv
+        source .venv/bin/activate
+        pip install -r Documentation/requirements.txt
+
+        make docs-check -j {$p->maxJob}
 
         export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-        cd Documentation/
-        pipenv --python 3
+        # cd Documentation/
+        # pipenv --rm
+        # pipenv --python 3
         # pipenv shell
 
         # 参考 文档 https://pipenv-fork.readthedocs.io/en/latest/advanced.html
         # pipenv install -r requirements.txt -i https://pypi.python.org/simple
         # pipenv install -r requirements.txt --pypi-mirror https://pypi.tuna.tsinghua.edu.cn/simple
-        pipenv install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+        # pipenv install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
         # pipenv run pip3 install -r requirements.txt
-        pipenv install jinja2==3.0.0
-        pipenv run python3 conf.py
+
+        # pipenv install jinja2==3.0.0
+        # pipenv run python3 conf.py
+
 
 
 
@@ -77,7 +92,7 @@ EOF
         ->withPkgName('libovsdb')
         ->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/')
-        ->withDependentLibraries('openssl', 'libcap_ng') //'dpdk'
+        ->withDependentLibraries('openssl', 'libcap_ng', 'unbound') //'dpdk'
     ;
 
     $p->addLibrary($lib);

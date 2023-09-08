@@ -285,4 +285,5 @@ define("LIBMD_PREFIX", $p->getGlobalPrefix() . '/libmd');
 define("PGSQL_LATEST_PREFIX", $p->getGlobalPrefix() . '/pgsql_latest');
 define("OSSP_UUID_PREFIX", $p->getGlobalPrefix() . '/ossp_uuid');
 define("PROXYCHAINS_PREFIX", $p->getGlobalPrefix() . '/proxychains');
+define("UNBOUND_PREFIX", $p->getGlobalPrefix() . '/unbound');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
