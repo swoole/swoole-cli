@@ -15,7 +15,9 @@ return function (Preprocessor $p) {
             ->withManual('https://github.com/libarchive/libarchive/wiki/BuildInstructions')
             ->withLicense('https://github.com/libarchive/libarchive/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withFile('libarchive-latest.tar.gz')
-            ->withDownloadScript('libarchive',<<<EOF
+            ->withDownloadScript(
+                'libarchive',
+                <<<EOF
             git clone -b master --depth=1  https://github.com/libarchive/libarchive.git
 EOF
             )
@@ -32,11 +34,11 @@ EOF
 EOF
             )
             ->withPrefix($libarchive_prefix)
-            /*
+
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libarchive_prefix)
             ->withBuildLibraryCached(false)
-            */
+
             ->withConfigure(
                 <<<EOF
 
@@ -46,8 +48,8 @@ EOF
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include " \
                 LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib" \
                 LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 -liconv " \
+                LIBSREQUIRED=" \$PACKAGES " \
                 LIBS="\$LDFLAGS \$LIBS" \
-                LIBSREQUIRED="\$PACKAGES " \
                 ./configure \
                 --prefix={$libarchive_prefix} \
                 --enable-shared=no \

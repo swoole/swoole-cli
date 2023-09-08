@@ -42,7 +42,7 @@ return function (Preprocessor $p) {
        // 'libmongoc',
        //'mongo_c_driver',
        //'dpdk',
-       //'libarchive'
+
        // 'libx265',
         //'boost',
         //'librime'
@@ -78,13 +78,14 @@ return function (Preprocessor $p) {
     $depends = ['confd'] ;
     $depends = ['libfvad'] ;
     $depends = ['dav1d'] ;
-    $depends = ['libarchive'] ;
+
     $depends = ['glib'] ;
     $depends = ['pgsql'] ;
     $depends = ['libbsd'] ;
     $depends = ['util_linux'] ;
     $depends = ['pgsql_latest'] ;
     $depends = ['webrtc'] ;
+    $depends = ['libarchive'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
