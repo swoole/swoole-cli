@@ -12,14 +12,15 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/ovn-org/ovn/blob/main/LICENSE', Library::LICENSE_APACHE2)
         ->withManual('https://github.com/ovn-org/ovn/blob/main/Documentation/intro/install/general.rst')
         //->withUrl('https://github.com/ovn-org/ovn/archive/refs/tags/v23.06.0.tar.gz')
-        ->withFile('ovn-v23.06.1.tar.gz')
+        ->withFile('ovn-v23.06.0.tar.gz')
         //->withAutoUpdateFile()
         //->withFile('ovn-latest.tar.gz')
         ->withDownloadScript(
             'ovn',
             <<<EOF
             # git clone -b main --depth=1 --progress https://github.com/ovn-org/ovn.git
-            git clone -b v23.06.1 --depth=1 --progress https://github.com/ovn-org/ovn.git
+            # git clone -b v23.06.1 --depth=1 --progress https://github.com/ovn-org/ovn.git
+            git clone -b v23.06.0 --depth=1 --progress https://github.com/ovn-org/ovn.git
 EOF
         )
         ->withPrefix($ovn_prefix)
