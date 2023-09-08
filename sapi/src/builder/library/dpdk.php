@@ -53,7 +53,8 @@ EOF
             -Db_staticpic=true \
             -Db_pie=true \
             -Dprefer_static=true \
-            -Dibverbs_link=static
+            -Dibverbs_link=static \
+            -Dtests=false
 
 
             ninja -C build
