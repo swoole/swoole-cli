@@ -59,7 +59,8 @@ EOF
             -Db_pie=true \
             -Dprefer_static=true \
             -Dibverbs_link=static \
-            -Dtests=false
+            -Dtests=false \
+            -Dexamples=all
 
 
             ninja -C build

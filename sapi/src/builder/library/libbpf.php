@@ -17,12 +17,14 @@ return function (Preprocessor $p) {
             /*
             ->withBuildLibraryCached(false)
             */
-            ->withPreInstallCommand('debian',
+            ->withPreInstallCommand(
+                'debian',
                 <<<EOF
             apt install libelf-dev
 EOF
             )
-            ->withPreInstallCommand('alpine',
+            ->withPreInstallCommand(
+                'alpine',
                 <<<EOF
             apk add libelf-static elfutils-dev
 EOF
