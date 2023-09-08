@@ -11,12 +11,13 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/general.rst')
         //->withUrl('https://github.com/openvswitch/ovs/archive/refs/tags/v3.1.1.tar.gz')
         //->withFile('ovs-v3.1.1.tar.gz')
-        //->withAutoUpdateFile()
+        ->withAutoUpdateFile()
         ->withFile('ovs-latest.tar.gz')
         ->withDownloadScript(
             'ovs',
             <<<EOF
-            git clone -b master --depth=1 --progress https://github.com/openvswitch/ovs.git
+            # git clone -b master --depth=1 --progress https://github.com/openvswitch/ovs.git
+            git clone -b v3.2.0 --depth=1 --progress https://github.com/openvswitch/ovs.git
 EOF
         )
         ->withPrefix($ovs_prefix)
@@ -65,8 +66,8 @@ EOF
 
         make docs-check -j {$p->maxJob}
 
-        make -j {$p->maxJob}
-        make install
+        # make -j {$p->maxJob}
+        # make install
 
         # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
         # cd Documentation/
