@@ -10,9 +10,9 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/openvswitch/ovs/blob/master/LICENSE', Library::LICENSE_APACHE2)
         ->withManual('https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/general.rst')
         //->withUrl('https://github.com/openvswitch/ovs/archive/refs/tags/v3.1.1.tar.gz')
-        //->withFile('ovs-v3.1.1.tar.gz')
+        ->withFile('ovs-v3.2.0.tar.gz')
         ->withAutoUpdateFile()
-        ->withFile('ovs-latest.tar.gz')
+        //->withFile('ovs-latest.tar.gz')
         ->withDownloadScript(
             'ovs',
             <<<EOF
