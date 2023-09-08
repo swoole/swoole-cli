@@ -29,6 +29,7 @@ EOF
         apk add mandoc man-pages
         apk add ghostscript
         pip3 install pipenv
+        pip3 install sphinx
 
         # apk add bind-tools  # dig pypi.org
 
@@ -57,12 +58,12 @@ EOF
 
         make dist-docs -j {$p->maxJob}
 
-        # 文档构建  https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/documentation.rst
+        # 文档构建  https://github.com/openvswitch/ovs/blob/master/Documentation/intro/install/documentation.rst
 
 
         virtualenv .venv
         source .venv/bin/activate
-        pip install -r Documentation/requirements.txt
+        pip3 install -r Documentation/requirements.txt
 
         make docs-check -j {$p->maxJob}
 
@@ -92,7 +93,7 @@ EOF
         ->withPkgName('libovsdb')
         ->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/')
-        ->withDependentLibraries('openssl', 'libcap_ng', 'unbound') //'dpdk'
+        ->withDependentLibraries('openssl', 'libcap_ng') //'dpdk' ,'unbound'
     ;
 
     $p->addLibrary($lib);
