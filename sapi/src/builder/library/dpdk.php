@@ -80,7 +80,7 @@ EOF
                 'zlib',
                 //'libarchive',
                 'numa',
-                'libpcap',
+                //'libpcap',
                 //'libxdp',
                 //'libbpf',
                 'libmlx5',
