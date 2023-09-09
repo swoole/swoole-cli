@@ -45,7 +45,7 @@ EOF
         ->withMakeOptions('libxdp')
         ->withPkgName('example')
         ->withBinPath($libxdp_prefix . '/bin/')
-        ->withDependentLibraries('libpcap')
+        ->withDependentLibraries('libpcap','zlib')
 
     ;
 
