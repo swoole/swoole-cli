@@ -25,6 +25,12 @@ return function (Preprocessor $p) {
                 --disable-doc
 EOF
             )
+            ->withScriptAfterInstall(
+                <<<EOF
+            cp -f  {$liblzma_prefix}/lib/pkgconfig/liblzma.pc {$liblzma_prefix}/lib/pkgconfig/lzma.pc
+            cp -f  {$liblzma_prefix}/lib/liblzma.a {$liblzma_prefix}/lib/lzma.a
+EOF
+            )
             ->withPkgName('liblzma')
             ->withBinPath($liblzma_prefix . '/bin/')
             ->withDependentLibraries('libiconv')
