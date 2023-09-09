@@ -49,7 +49,7 @@ EOF
                 LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib" \
                 LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 -liconv " \
                 LIBSREQUIRED=" \$PACKAGES " \
-                LIBS=" \$LIBS" \
+                LIBS=" \$LIBS " \
                 ./configure \
                 --prefix={$libarchive_prefix} \
                 --enable-shared=no \
