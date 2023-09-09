@@ -66,7 +66,7 @@ EOF
             --without-valgrind \
             --with-zlib \
             --with-bzlib \
-            --with-lzma \
+            --without-lzma \
             --with-zstd \
             --without-biarch \
             --with-libiconv-prefix={$libiconv_prefix}
