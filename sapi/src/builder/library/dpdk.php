@@ -49,9 +49,9 @@ EOF
             meson setup -h
             # meson configure -h
 
-            CPPFLAGS="-I{$libarchive_prefix}/include -I{$numa_prefix}/include -I{$liblzma_prefix}/include -I{$libiconv_prefix}/include" \
-            LDFLAGS="-L{$libarchive_prefix}/lib -L{$numa_prefix}/lib -L{$liblzma_prefix}/lib -L{$libiconv_prefix}/lib" \
-            LIBS=" -larchive -lnuma -lliblzma -llzma " \
+            # CPPFLAGS="-I{$libarchive_prefix}/include -I{$numa_prefix}/include -I{$liblzma_prefix}/include -I{$libiconv_prefix}/include" \
+            # LDFLAGS="-L{$libarchive_prefix}/lib -L{$numa_prefix}/lib -L{$liblzma_prefix}/lib -L{$libiconv_prefix}/lib" \
+            # LIBS=" -larchive -lnuma -lliblzma -llzma " \
             meson setup  build \
             -Dprefix={$dpdk_prefix} \
             -Dbackend=ninja \
@@ -78,7 +78,7 @@ EOF
             ->withDependentLibraries(
                 'jansson',
                 'zlib',
-                'libarchive',
+                //'libarchive',
                 'numa',
                 //'libpcap',
                // 'libbpf',
