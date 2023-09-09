@@ -29,6 +29,8 @@ EOF
             apk add libelf-static elfutils-dev
 EOF
             )
+            ->withCleanPreInstallDirectory($libbpf_prefix)
+            ->withBuildLibraryCached(false)
             ->withBuildScript(
                 <<<EOF
                 # xdg-open https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf-next
@@ -37,24 +39,13 @@ EOF
 
                 cd src
                 mkdir -p build {$libbpf_prefix}
-                PACKAGES="  zlib" # libelf
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) " \
-                LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static" \
-                LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) " \
-                BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR={$libbpf_prefix} make -j {$p->maxJob}
-                BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR={$libbpf_prefix} make install
+                set -ex
+
+                BUILD_STATIC_ONLY=y OBJDIR=build  PREFIX={$libbpf_prefix} LIBDIR={$libbpf_prefix}/lib INCLUDEDIR={$libbpf_prefix}/include make -j {$p->maxJob}
+                BUILD_STATIC_ONLY=y OBJDIR=build  PREFIX={$libbpf_prefix} LIBDIR={$libbpf_prefix}/lib INCLUDEDIR={$libbpf_prefix}/include make install
 EOF
             )
-            ->withScriptAfterInstall(
-                <<<EOF
-                rm -rf {$libbpf_prefix}/usr/lib64/*.so.*
-                rm -rf {$libbpf_prefix}/usr/lib64/*.so
-                rm -rf {$libbpf_prefix}/usr/lib64/*.dylib
-EOF
-            )
-            ->withLdflags('-L' . $libbpf_prefix . '/usr/lib64')
-            ->withPkgConfig("{$libbpf_prefix}/usr/lib64/pkgconfig")
             ->withPkgName('libbpf')
-            ->withDependentLibraries('zlib') //'libelf'
+            ->withDependentLibraries('zlib', 'libelf')
     );
 };

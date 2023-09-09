@@ -86,6 +86,7 @@ return function (Preprocessor $p) {
     $depends = ['pgsql_latest'] ;
     $depends = ['webrtc'] ;
     $depends = ['libarchive'] ;
+    $depends = ['libbpf'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

@@ -16,7 +16,9 @@ return function (Preprocessor $p) {
             ->withLicense('https://chromium.googlesource.com/external/elfutils/+/refs/heads/master/COPYING-LGPLV3', Library::LICENSE_GPL)
             //->withFile('elfutils-0.178.tar.gz')
             ->withFile('elfutils-latest.tar.gz')
+            ->withManual('https://sourceware.org/git/?p=elfutils.git;a=summary')
             ->withManual('https://chromium.googlesource.com/external/elfutils/+/refs/heads/master/README')
+            ->withHttpProxy(true, true)
             ->withDownloadScript(
                 'elfutils',
                 <<<EOF
@@ -37,8 +39,8 @@ EOF
             ->withConfigure(
                 <<<EOF
 
-                # 读取环境变量,判定是静态编译  BUILD_STATIC_TRUE BUILD_STATIC_FALSE
-                # BUILD_STATIC
+            # 读取环境变量,判定是静态编译  BUILD_STATIC_TRUE BUILD_STATIC_FALSE
+            # BUILD_STATIC
 
             autoreconf -if
             ./configure --help
@@ -67,6 +69,7 @@ EOF
             --with-gnu-ld  \
             --without-biarch \
             --with-libiconv-prefix={$libiconv_prefix}
+
             # --enable-maintainer-mode \
 EOF
             )
@@ -88,7 +91,8 @@ EOF
                 'liblzma',
                 'liblz4',
                 'bzip2',
-                'gmp'
+                'gmp',
+                'gettext'
             )
     );
 };
