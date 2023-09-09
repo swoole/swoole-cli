@@ -9,7 +9,6 @@ return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
     $gettext_prefix = GETTEXT_PREFIX;
 
-    //文件名称 和 库名称一致
     $lib = new Library('libxdp');
     $lib->withHomePage('https://github.com/xdp-project/xdp-tools.git')
         ->withLicense('https://github.com/xdp-project/xdp-tools/blob/master/LICENSE', Library::LICENSE_LGPL)
@@ -29,12 +28,6 @@ EOF
 
             ./configure --help
 
-            PACKAGES='openssl  '
-            PACKAGES="\$PACKAGES zlib"
-
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
             ./configure \
             --prefix={$libxdp_prefix} \
             --enable-shared=no \
@@ -43,7 +36,7 @@ EOF
 EOF
         )
 
-
+        ->withMakeOptions('libxdp')
         ->withPkgName('example')
         ->withBinPath($libxdp_prefix . '/bin/')
         ->withDependentLibraries('zlib', 'libbpf')

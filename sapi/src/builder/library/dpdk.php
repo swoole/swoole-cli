@@ -81,6 +81,7 @@ EOF
                 //'libarchive',
                 'numa',
                 'libpcap',
+                'libxdp',
                // 'libbpf',
                 'libmlx5',
                // 'libbsd',
