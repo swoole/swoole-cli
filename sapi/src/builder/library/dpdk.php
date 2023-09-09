@@ -86,6 +86,13 @@ EOF
                // 'libbsd',
                 'openssl'
             )
+            ->withScriptAfterInstall(
+                <<<EOF
+            rm -rf {$dpdk_prefix}/lib/*.so.*
+            rm -rf {$dpdk_prefix}/lib/*.so
+            rm -rf {$dpdk_prefix}/lib/*.dylib
+EOF
+            )
     );
 };
 
