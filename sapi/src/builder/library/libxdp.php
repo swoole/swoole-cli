@@ -22,7 +22,13 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libxdp_prefix)
-
+        ->withPreInstallCommand('alpine',<<<EOF
+        apk add llvm
+        apk add bpftool
+        apk add --no-cache grep
+EOF
+        )
+        ->withBuildLibraryHttpProxy()
         ->withConfigure(
             <<<EOF
 

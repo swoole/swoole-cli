@@ -82,7 +82,7 @@ EOF
                 'numa',
                 'libpcap',
                 'libxdp',
-               // 'libbpf',
+                'libbpf',
                 'libmlx5',
                // 'libbsd',
                 'openssl'
