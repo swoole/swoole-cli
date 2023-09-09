@@ -78,7 +78,7 @@ EOF
             ->withDependentLibraries(
                 'jansson',
                 'zlib',
-                //'libarchive',
+                'libarchive',
                 'numa',
                 //'libpcap',
                 //'libxdp',
