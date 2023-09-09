@@ -8,6 +8,8 @@ return function (Preprocessor $p) {
     $libiconv_prefix = ICONV_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
+    $liblzma_prefix = LIBLZMA_PREFIX;
+
     $p->addLibrary(
         (new Library('libarchive'))
             ->withHomePage('https://github.com/libarchive/libarchive.git')
@@ -71,6 +73,10 @@ EOF
                 <<<EOF
             LINE_NUMBER=$(grep -n 'Requires.private:' {$libarchive_prefix}/lib/pkgconfig/libarchive.pc |cut -d ':' -f 1)
             sed -i.save "\${LINE_NUMBER} s/iconv//" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
+
+            cp -f  {$liblzma_prefix}/lib/pkgconfig/liblzma.pc {$liblzma_prefix}/lib/pkgconfig/lzma.pc
+            cp -f  {$liblzma_prefix}/lib/liblzma.a {$liblzma_prefix}/lib/lzma.a
+
 EOF
             )
             ->withPkgName('libarchive')
