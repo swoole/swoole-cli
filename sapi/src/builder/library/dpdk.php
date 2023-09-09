@@ -77,7 +77,7 @@ EOF
                 'zlib',
                 'libarchive',
                 'numa',
-                'libpcap',
+                //'libpcap',
                // 'libbpf',
                 'libmlx5',
                // 'libbsd'
