@@ -79,7 +79,10 @@ EOF
             --without-biarch \
             --without-valgrind \
             --enable-maintainer-mode \
-            --disable-debuginfod
+            --disable-debuginfod \
+            --without-libintl-prefix \
+            --disable-nls \
+            --disable-rpath
 EOF
             )
             ->withMakeOptions('all')
