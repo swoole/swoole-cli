@@ -33,6 +33,14 @@ EOF
                 'debian',
                 <<<EOF
             # apt install -y autopoint elfutils
+
+EOF
+            )
+            ->withPreInstallCommand('alpine',<<<EOF
+                apk add argp-standalone  # https://github.com/ericonr/argp-standalone.git
+                apk add musl-fts-dev  # https://github.com/void-linux/musl-fts.git
+                apk add musl-obstack  # https://github.com/void-linux/musl-obstack.git
+
 EOF
             )
             ->withBuildLibraryCached(false)
@@ -63,15 +71,14 @@ EOF
             ./configure \
             --prefix={$libelf_prefix} \
             --enable-install-elfh \
-            --without-valgrind \
+            --with-libiconv-prefix={$libiconv_prefix} \
             --with-zlib \
             --with-bzlib \
             --without-lzma \
             --without-zstd \
             --without-biarch \
-            --with-libiconv-prefix={$libiconv_prefix}
-
-            # --enable-maintainer-mode \
+            --without-valgrind \
+            --enable-maintainer-mode
 EOF
             )
             ->withMakeOptions('all')
