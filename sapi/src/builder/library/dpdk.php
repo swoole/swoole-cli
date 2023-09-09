@@ -23,8 +23,8 @@ return function (Preprocessor $p) {
                 git clone -b v22.11.2 --depth=1 https://dpdk.org/git/dpdk-stable
 EOF
             )
-            ->withCleanBuildDirectory()
-            ->withBuildLibraryCached(false)
+            //->withCleanBuildDirectory()
+            //->withBuildLibraryCached(false)
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
