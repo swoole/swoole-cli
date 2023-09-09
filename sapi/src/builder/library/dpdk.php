@@ -23,8 +23,7 @@ return function (Preprocessor $p) {
                 git clone -b v22.11.2 --depth=1 https://dpdk.org/git/dpdk-stable
 EOF
             )
-            //->withCleanBuildDirectory()
-            //->withBuildLibraryCached(false)
+
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
@@ -41,6 +40,8 @@ EOF
             apt install python3-pyelftools
 EOF
             )
+            ->withCleanBuildDirectory()
+            ->withBuildLibraryCached(false)
             ->withBuildScript(
                 <<<EOF
 
@@ -49,9 +50,9 @@ EOF
             meson setup -h
             # meson configure -h
 
-            CPPFLAGS="-I{$libarchive_prefix}/include -I{$numa_prefix}/include -I{$liblzma_prefix}/include -I{$libiconv_prefix}/include" \
-            LDFLAGS="-L{$libarchive_prefix}/lib -L{$numa_prefix}/lib -L{$liblzma_prefix}/lib -L{$libiconv_prefix}/lib" \
-            LIBS=" -larchive -lnuma -llzma " \
+            # CPPFLAGS="-I{$libarchive_prefix}/include -I{$numa_prefix}/include -I{$liblzma_prefix}/include -I{$libiconv_prefix}/include" \
+            # LDFLAGS="-L{$libarchive_prefix}/lib -L{$numa_prefix}/lib -L{$liblzma_prefix}/lib -L{$libiconv_prefix}/lib" \
+            # LIBS=" -larchive -lnuma -llzma " \
             meson setup  build \
             -Dprefix={$dpdk_prefix} \
             -Dbackend=ninja \
@@ -78,7 +79,7 @@ EOF
             ->withDependentLibraries(
                 'jansson',
                 'zlib',
-                'libarchive',
+                //'libarchive',
                 'numa',
                 //'libpcap',
                 //'libxdp',
