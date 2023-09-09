@@ -287,4 +287,5 @@ define("OSSP_UUID_PREFIX", $p->getGlobalPrefix() . '/ossp_uuid');
 define("PROXYCHAINS_PREFIX", $p->getGlobalPrefix() . '/proxychains');
 define("UNBOUND_PREFIX", $p->getGlobalPrefix() . '/unbound');
 define("LIBXDP_PREFIX", $p->getGlobalPrefix() . '/libxdp');
+define("CPU_FEATURES_PREFIX", $p->getGlobalPrefix() . '/cpu_features');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
