@@ -18,11 +18,13 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'xdp-tools',
             <<<EOF
-                git clone -b master  --depth=1 https://github.com/xdp-project/xdp-tools.git
+        git clone -b master  --depth=1 https://github.com/xdp-project/xdp-tools.git
 EOF
         )
         ->withPrefix($libxdp_prefix)
-        ->withPreInstallCommand('alpine',<<<EOF
+        ->withPreInstallCommand(
+            'alpine',
+            <<<EOF
         apk add llvm
         apk add bpftool
         apk add --no-cache grep
@@ -45,10 +47,9 @@ EOF
         ->withMakeOptions('libxdp')
         ->withPkgName('example')
         ->withBinPath($libxdp_prefix . '/bin/')
-        ->withDependentLibraries('libpcap','zlib')
+        ->withDependentLibraries('libpcap', 'zlib')
 
     ;
 
     $p->addLibrary($lib);
-
 };
