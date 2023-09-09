@@ -53,6 +53,7 @@ EOF
             PACKAGES=" liblzma"
             PACKAGES=" liblz4"
             PACKAGES=" gmp"
+            PACKAGES=" zlib"
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib -static --static " \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lm -pthread " \
@@ -92,7 +93,8 @@ EOF
                 'liblz4',
                 'bzip2',
                 'gmp',
-                'gettext'
+                'gettext',
+                "zlib"
             )
     );
 };
