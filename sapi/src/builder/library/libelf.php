@@ -68,7 +68,6 @@ EOF
             --with-bzlib \
             --with-lzma \
             --with-zstd \
-            --with-gnu-ld  \
             --without-biarch \
             --with-libiconv-prefix={$libiconv_prefix}
 
