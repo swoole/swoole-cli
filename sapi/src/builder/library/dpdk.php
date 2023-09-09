@@ -8,6 +8,7 @@ return function (Preprocessor $p) {
     $libarchive_prefix = LIBARCHIVE_PREFIX;
     $numa_prefix = NUMA_PREFIX;
     $liblzma_prefix = LIBLZMA_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
         (new Library('dpdk'))
             ->withHomePage('http://core.dpdk.org/')
@@ -48,9 +49,9 @@ EOF
             meson setup -h
             # meson configure -h
 
-            CPPFLAGS="-I{$libarchive_prefix}/include -I{$numa_prefix}/include -I{$liblzma_prefix}/include " \
-            LDFLAGS="-L{$libarchive_prefix}/lib -L{$numa_prefix}/lib -L{$liblzma_prefix}/lib " \
-            LIBS=" -larchive -lnuma " \
+            CPPFLAGS="-I{$libarchive_prefix}/include -I{$numa_prefix}/include -I{$liblzma_prefix}/include -I{$libiconv_prefix}/include" \
+            LDFLAGS="-L{$libarchive_prefix}/lib -L{$numa_prefix}/lib -L{$liblzma_prefix}/lib -L{$libiconv_prefix}/lib" \
+            LIBS=" -larchive -lnuma -liblzma " \
             meson setup  build \
             -Dprefix={$dpdk_prefix} \
             -Dbackend=ninja \
@@ -62,6 +63,7 @@ EOF
             -Dibverbs_link=static \
             -Dtests=false
 
+            # -Dexamples=all
             # -Dexamples=''
 
 
@@ -85,3 +87,22 @@ EOF
             )
     );
 };
+
+/*
+
+DPDK (Data Plane Development Kit)
+
+PPS（Packet Per Second)
+
+PMD（Poll Mode Driver）
+
+UIO（Userspace I/O）
+
+Zero Copy、无系统调用的好处
+
+
+https://cloud.tencent.com/developer/article/1198333
+
+https://www.packetcoders.io/what-is-dpdk/
+
+ */
