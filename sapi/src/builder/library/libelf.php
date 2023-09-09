@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
     $libiconv_prefix = ICONV_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
-
+    $gettext_prefix = GETTEXT_PREFIX;
     $p->addLibrary(
         (new Library('libelf'))
             ->withHomePage('http://elfutils.org/')
@@ -64,8 +64,8 @@ EOF
             PACKAGES=" liblz4"
             PACKAGES=" gmp"
             PACKAGES=" zlib"
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib -static --static " \
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include -I{$gettext_prefix }/include" \
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib -L{$gettext_prefix }/lib -static --static " \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lm -pthread " \
             CFLAGS=" -std=gnu11 -static -g -fPIE -fPIC -O2 -Wall   " \
             BUILD_STATIC=true \
