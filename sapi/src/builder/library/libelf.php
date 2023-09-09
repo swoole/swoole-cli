@@ -41,6 +41,7 @@ EOF
                 apk add musl-fts-dev  # https://github.com/void-linux/musl-fts.git
                 apk add musl-obstack  # https://github.com/void-linux/musl-obstack.git
                 apk add gawk
+                apk add binutils binutils-dev
 
 EOF
             )
@@ -54,7 +55,7 @@ EOF
 
             autoreconf -if
             ./configure --help
-            #  CFLAGS=" -std=gnu11 -static -g -fPIE -fPIC -O2 -Wall   " \
+
             PACKAGES=" sqlite3 libcurl libarchive libcares "
             PACKAGES=" libbrotlicommon libbrotlidec  libbrotlienc"
             PACKAGES=" libzstd"
@@ -67,6 +68,7 @@ EOF
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include -I{$gettext_prefix }/include" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib -L{$gettext_prefix }/lib -static --static " \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lm -pthread " \
+            CFLAGS=" -std=gnu11 -static -g -fPIE -fPIC -O2 -Wall   " \
             BUILD_STATIC=true \
             ./configure \
             --prefix={$libelf_prefix} \
