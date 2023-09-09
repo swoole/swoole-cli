@@ -77,9 +77,9 @@ EOF
                 'libarchive',
                 'numa',
                 'libpcap',
-                'libbpf',
+               // 'libbpf',
                 'libmlx5',
-                'libbsd'
+               // 'libbsd'
             )
     );
 };
