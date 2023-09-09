@@ -40,6 +40,7 @@ EOF
                 apk add argp-standalone  # https://github.com/ericonr/argp-standalone.git
                 apk add musl-fts-dev  # https://github.com/void-linux/musl-fts.git
                 apk add musl-obstack  # https://github.com/void-linux/musl-obstack.git
+                apk add gawk
 
 EOF
             )
@@ -78,7 +79,8 @@ EOF
             --without-zstd \
             --without-biarch \
             --without-valgrind \
-            --enable-maintainer-mode
+            --enable-maintainer-mode \
+            --disable-debuginfod
 EOF
             )
             ->withMakeOptions('all')
