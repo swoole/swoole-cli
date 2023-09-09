@@ -83,7 +83,8 @@ EOF
                 //'libpcap',
                // 'libbpf',
                 'libmlx5',
-               // 'libbsd'
+               // 'libbsd',
+                'openssl'
             )
     );
 };
