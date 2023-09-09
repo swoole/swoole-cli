@@ -31,7 +31,7 @@ EOF
             ->withPreInstallCommand(
                 'debian',
                 <<<EOF
-            apt install -y autopoint elfutils
+            # apt install -y autopoint elfutils
 EOF
             )
             ->withBuildLibraryCached(false)

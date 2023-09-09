@@ -44,7 +44,7 @@ return function (Preprocessor $p) {
 
 EOF
             )
-            # ->withBinPath($gettext_prefix . '/bin/') //因为只需要libintl ，其它不启用
+            ->withBinPath($gettext_prefix . '/bin/') //因为只需要libintl ，其它不启用
             ->withDependentLibraries('libunistring', 'libiconv', 'ncurses', 'libxml2')
     );
 };

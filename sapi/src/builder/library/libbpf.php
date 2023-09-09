@@ -20,13 +20,13 @@ return function (Preprocessor $p) {
             ->withPreInstallCommand(
                 'debian',
                 <<<EOF
-            apt install libelf-dev
+            # apt install libelf-dev
 EOF
             )
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
-            apk add libelf-static elfutils-dev
+            # apk add libelf-static elfutils-dev
 EOF
             )
             ->withCleanPreInstallDirectory($libbpf_prefix)
