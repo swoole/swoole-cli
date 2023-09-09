@@ -41,7 +41,7 @@ EOF
             apt install python3-pyelftools
 EOF
             )
-            ->withConfigure(
+            ->withBuildScript(
                 <<<EOF
 
             test -d build && rm -rf build
