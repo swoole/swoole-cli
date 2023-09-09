@@ -26,7 +26,7 @@ EOF
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
-            # apk add libelf-static elfutils-dev
+            apk add libelf-static elfutils-dev
 EOF
             )
             ->withCleanPreInstallDirectory($libbpf_prefix)
@@ -46,6 +46,6 @@ EOF
 EOF
             )
             ->withPkgName('libbpf')
-            ->withDependentLibraries('zlib', 'libelf')
+            ->withDependentLibraries('zlib') //'libelf'
     );
 };
