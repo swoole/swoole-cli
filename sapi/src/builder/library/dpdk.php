@@ -48,7 +48,7 @@ EOF
             meson setup -h
             # meson configure -h
 
-            CPPFLAGS="-I{$libarchive_prefix}/include -I{$numa_prefix}/include I{$liblzma_prefix}/include " \
+            CPPFLAGS="-I{$libarchive_prefix}/include -I{$numa_prefix}/include -I{$liblzma_prefix}/include " \
             LDFLAGS="-L{$libarchive_prefix}/lib -L{$numa_prefix}/lib -L{$liblzma_prefix}/lib " \
             LIBS=" -larchive -lnuma " \
             meson setup  build \
