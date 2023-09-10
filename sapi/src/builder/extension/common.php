@@ -90,6 +90,7 @@ return function (Preprocessor $p) {
     $depends = ['libelf'] ;
     $depends = ['libbson'] ;
     $depends = ['libmongoc'] ;
+    //$depends = ['libmongocrypt'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

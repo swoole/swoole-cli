@@ -60,7 +60,8 @@ EOF
             -DENABLE_TESTS=OFF \
             -DENABLE_EXAMPLES=OFF \
             -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}" \
-            -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0"
+            -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0" \
+            -Dbson-1.0_DIR={{$libbson_prefix}}
 
             {
                 cmake --build . --config Release --target install

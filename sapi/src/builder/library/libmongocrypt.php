@@ -28,8 +28,7 @@ EOF
             <<<EOF
              mkdir -p build
              cd build
-             # cmake 查看选项
-             # cmake -LH ..
+
              cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libmongocrypt_prefix} \
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
@@ -58,7 +57,7 @@ EOF
             rm -rf {$libmongocrypt_prefix}/lib/*.dylib
 EOF
         )
-        ->withDependentLibraries('openssl', 'libbson','zlib')
+        ->withDependentLibraries('openssl', 'libbson', 'zlib', 'libsasl')
     ;
 
     $p->addLibrary($lib);

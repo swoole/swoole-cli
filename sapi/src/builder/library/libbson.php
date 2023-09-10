@@ -50,12 +50,25 @@ EOF
            rm -rf {$libbson_prefix}/lib/*.so.*
            rm -rf {$libbson_prefix}/lib/*.so
            rm -rf {$libbson_prefix}/lib/*.dylib
+           rm -rf {$libbson_prefix}/lib/cmake/origin-libbson-1.0
+           rm -rf {$libbson_prefix}/lib/cmake/origin-bson-1.0
+           mv  {$libbson_prefix}/lib/cmake/libbson-1.0 {$libbson_prefix}/lib/cmake/origin-libbson-1.0
+           mv {$libbson_prefix}/lib/cmake/bson-1.0 {$libbson_prefix}/lib/cmake/origin-bson-1.0
+           cp -rf {$libbson_prefix}/lib/cmake/libbson-static-1.0 {$libbson_prefix}/lib/cmake/libbson-1.0
+           cp -rf {$libbson_prefix}/lib/cmake/libbson-static-1.0 {$libbson_prefix}/lib/cmake/bson-1.0
 
-           # rm -rf {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
-           # cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
-           # cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/bson-1.0.pc
-           # cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/libbson-1.0.a
-           # cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/bson-1.0.a
+           mv  {$libbson_prefix}/lib/cmake/bson-1.0/libbson-static-1.0-config.cmake  {$libbson_prefix}/lib/cmake/bson-1.0/libbson-1.0-config.cmake
+           mv  {$libbson_prefix}/lib/cmake/bson-1.0/libbson-static-1.0-config-version.cmake  {$libbson_prefix}/lib/cmake/bson-1.0/libbson-1.0-config-version.cmake
+
+           mv  {$libbson_prefix}/lib/cmake/libbson-1.0/libbson-static-1.0-config.cmake  {$libbson_prefix}/lib/cmake/libbson-1.0/libbson-1.0-config.cmake
+           mv  {$libbson_prefix}/lib/cmake/libbson-1.0/libbson-static-1.0-config-version.cmake  {$libbson_prefix}/lib/cmake/libbson-1.0/libbson-1.0-config-version.cmake
+
+           rm -rf {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
+           cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
+           cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/bson-1.0.pc
+
+           cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/libbson-1.0.a
+
 
 
 EOF
