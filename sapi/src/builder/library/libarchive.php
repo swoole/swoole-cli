@@ -26,13 +26,13 @@ EOF
             ->withPreInstallCommand(
                 'debian',
                 <<<EOF
-              apt install groff  util-linux
+              # apt install groff  util-linux
 EOF
             )
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
-              apk add groff  util-linux
+              # apk add groff  util-linux
 EOF
             )
             ->withPrefix($libarchive_prefix)
