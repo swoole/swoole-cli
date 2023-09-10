@@ -19,8 +19,14 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/mongodb/mongo-c-driver/blob/master/COPYING', Library::LICENSE_APACHE2)
             ->withManual('https://mongoc.org/libmongoc/current/tutorial.html')
             ->withManual('https://mongoc.org/libmongoc/current/installing.html')
-            ->withUrl('https://github.com/mongodb/mongo-c-driver/releases/download/1.24.3/mongo-c-driver-1.24.3.tar.gz')
-            ->withFile('mongo-c-driver-1.24.3.tar.gz')
+            //->withUrl('https://github.com/mongodb/mongo-c-driver/releases/download/1.24.3/mongo-c-driver-1.24.3.tar.gz')
+            ->withFile('mongo-c-driver-1.24.4.tar.gz')
+            ->withDownloadScript(
+                'mongo-c-driver',
+                <<<EOF
+                git clone -b 1.24.4 --depth=1   https://github.com/mongodb/mongo-c-driver.git
+EOF
+            )
             ->withPrefix($libmongoc_prefix)
             ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()

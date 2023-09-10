@@ -37,7 +37,7 @@ return function (Preprocessor $p) {
         // 'spirv_tools'
        // 'fdk_aac'
        // 'libfribidi'
-        //'libbson',
+
        // 'libmongocrypt',
        // 'libmongoc',
        //'mongo_c_driver',
@@ -88,6 +88,8 @@ return function (Preprocessor $p) {
     $depends = ['libbpf'] ;
     $depends = ['libarchive'] ;
     $depends = ['libelf'] ;
+    $depends = ['libbson'] ;
+    $depends = ['libmongoc'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

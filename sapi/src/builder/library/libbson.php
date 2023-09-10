@@ -13,9 +13,16 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.mongodb.com/docs/drivers/c/')
             ->withLicense('https://github.com/mongodb/mongo-c-driver/blob/master/COPYING', Library::LICENSE_APACHE2)
             ->withManual('https://mongoc.org/libmongoc/current/tutorial.html')
+            ->withManual('https://github.com/mongodb/mongo-c-driver/')
             ->withManual('https://mongoc.org/libmongoc/current/installing.html')
-            ->withUrl('https://github.com/mongodb/mongo-c-driver/releases/download/1.24.3/mongo-c-driver-1.24.3.tar.gz')
-            ->withFile('mongo-c-driver-1.24.3.tar.gz')
+            //->withUrl('https://github.com/mongodb/mongo-c-driver/releases/download/1.24.3/mongo-c-driver-1.24.3.tar.gz')
+            ->withFile('mongo-c-driver-1.24.4.tar.gz')
+            ->withDownloadScript(
+                'mongo-c-driver',
+                <<<EOF
+                git clone -b 1.24.4 --depth=1   https://github.com/mongodb/mongo-c-driver.git
+EOF
+            )
             ->withPrefix($libbson_prefix)
             ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
@@ -38,29 +45,22 @@ return function (Preprocessor $p) {
 
 EOF
             )
-
-            ->withScriptAfterInstall(
-                <<<EOF
-           cp -f {$p->getBuildDir()}/libbson/src/libbson/src/bson/bson-dsl.h  {$libbson_prefix}/include/libbson-1.0/bson/
-
-EOF
-            )
-                 /*
             ->withScriptAfterInstall(
                 <<<EOF
            rm -rf {$libbson_prefix}/lib/*.so.*
            rm -rf {$libbson_prefix}/lib/*.so
            rm -rf {$libbson_prefix}/lib/*.dylib
-           rm -rf {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
-           cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
-           cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/bson-1.0.pc
-           cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/libbson-1.0.a
-           cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/bson-1.0.a
+
+           # rm -rf {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
+           # cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/libbson-1.0.pc
+           # cp -f  {$libbson_prefix}/lib/pkgconfig/libbson-static-1.0.pc {$libbson_prefix}/lib/pkgconfig/bson-1.0.pc
+           # cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/libbson-1.0.a
+           # cp -f {$libbson_prefix}/lib/libbson-static-1.0.a {$libbson_prefix}/lib/bson-1.0.a
 
 
 EOF
             )
-            */
+
         ->withPkgName('libbson-static-1.0')
         ->withPkgName('libbson-1.0')
     );

@@ -93,15 +93,20 @@ EOF
             ->withConfigure(
                 <<<EOF
 
-            # export TURN_NO_PROMETHEUS=ON
-            # export TURN_NO_SYSTEMD=ON
-            # export TURN_NO_MYSQL=ON
-            # export TURN_NO_MONGO=ON
+            export TURN_NO_PROMETHEUS=ON
+            export TURN_NO_GCM=ON
+            export TURN_NO_SYSTEMD=ON
+            export TURN_NO_MYSQL=ON
+            export TURN_NO_MONGO=ON
+
             # export TURN_NO_SQLITE=OFF
             # export TURN_NO_PQ=OFF
             # export TURN_NO_HIREDIS=OFF
-            # export TURN_NO_SCTP=OFF
 
+            # export TURN_NO_SCTP=OFF
+            # TURN_SCTP_INCLUDE
+
+            export TURN_IP_RECVERR=ON
 
             PACKAGES='sqlite3'
             PACKAGES="\$PACKAGES libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads"
@@ -110,10 +115,20 @@ EOF
             PACKAGES="\$PACKAGES libsctp"
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
             export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
+
+            # export EVENT_CFLAGS="$(pkg-config  --cflags-only-I  --static libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads) "
+            # export EVENT_LIBS="$(pkg-config    --libs           --static libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads) "
+
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
             export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
+            export OSLIBS=\$LDFLAGS
+
+            export DBCFLAGS="$(pkg-config  --cflags --static libpq sqlite3 hiredis )"
+            export DBLIBS="$(pkg-config  --libs --static libpq sqlite3 hiredis )"
+
             export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lstdc++ -lm " # -lpgcommon -lpgport
-            export CFLAGS="-O3  -g  -std=gnu11 "
+            export CFLAGS="-O3  -g  -std=gnu11 -static "
+            export OSCFLAGS=\$CFLAGS
             ./configure  \
             --prefix=$coturn_prefix
 
@@ -129,6 +144,18 @@ EOF
                 'libsctp',
                 //'libmongoc',
                 // 'prometheus_client_c'
+                //'libsctp'
             )
     );
 };
+
+/*
+ *  nm /usr/local/swoole-cli/pgsql/lib/libpq.a | grep PQconnectStart
+ *  nm -u /usr/local/swoole-cli/pgsql/lib/libpq.a
+ *
+ *   Linux - nm命令
+ *
+ *   https://blog.csdn.net/guoqx/article/details/127828038
+ *
+ *   如果是小写字符，则是本地符号(local)，如果是大写，则是外部符号(external)
+ */
