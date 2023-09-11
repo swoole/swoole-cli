@@ -27,6 +27,8 @@ return function (Preprocessor $p) {
                 mkdir -p {$workdir}/bin/ffmpeg/
                 cd {$ffmpeg_prefix}/
                 cp -rf bin {$workdir}/bin/ffmpeg/
+                cd {$workdir}/bin/
+                tar -cJvf ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
 
 EOF;
         if ($p->getOsType() == 'macos') {
