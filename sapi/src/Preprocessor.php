@@ -373,23 +373,23 @@ class Preprocessor
     {
         $this->proxyConfig = $shell;
         $this->httpProxy = $httpProxy;
-        $proxyInfo=parse_url($httpProxy);
+        $proxyInfo = parse_url($httpProxy);
         if (!empty($proxyInfo['scheme']) && !empty($proxyInfo['host']) && !empty($proxyInfo['port'])) {
-            $proto='';
+            $proto = '';
             switch (strtolower($proxyInfo['scheme'])) {
                 case 'socks5':
                 case "socks5h":
-                    $proto=5;
+                    $proto = 5;
                     break;
                 case "socks4a":
                 case 'socks4':
-                    $proto=4;
+                    $proto = 4;
                     break;
                 default:
-                    $proto="connect";
+                    $proto = "connect";
                     break;
             }
-            $this->gitProxyConfig=<<<__GIT_PROXY_CONFIG_EOF
+            $this->gitProxyConfig = <<<__GIT_PROXY_CONFIG_EOF
 export GIT_PROXY_COMMAND=/tmp/git-proxy;
 
 cat  > \$GIT_PROXY_COMMAND <<___EOF___
@@ -563,14 +563,13 @@ __GIT_PROXY_CONFIG_EOF;
                     if ($lib->enableDownloadScript && !$lib->enableDownloadWithMirrorURL) {
                         if (!empty($lib->downloadScript) && !empty($lib->downloadDirName)) {
                             $workDir = $this->getRootDir();
-                            $cacheDir = '${__DIR__}/var/tmp/download/lib';
+                            $cacheDir = '${__DIR__}/var/tmp/download/lib/' . $lib->name;
                             $lib->downloadScript = <<<EOF
                             __DIR__={$workDir}/
                             {$httpProxyConfig}
                             test -d {$cacheDir} && rm -rf {$cacheDir}
                             mkdir -p {$cacheDir}
                             cd {$cacheDir}
-                            test -d {$lib->downloadDirName} && rm -rf {$lib->downloadDirName}
                             {$lib->downloadScript}
                             cd {$lib->downloadDirName}
                             test -f {$lib->path} || tar   -zcf {$lib->path} ./
@@ -681,14 +680,13 @@ EOF;
                     if ($ext->enableDownloadScript && !$ext->enableDownloadWithMirrorURL) {
                         if (!empty($ext->downloadScript) && !empty($ext->downloadDirName)) {
                             $workDir = $this->getRootDir();
-                            $cacheDir = '${__DIR__}/var/tmp/download/ext';
+                            $cacheDir = '${__DIR__}/var/tmp/download/ext/' . $ext->name;
                             $ext->downloadScript = <<<EOF
                             __DIR__={$workDir}/
                             {$httpProxyConfig}
                             test -d {$cacheDir} && rm -rf {$cacheDir}
                             mkdir -p {$cacheDir}
                             cd {$cacheDir}
-                            test -d {$ext->downloadDirName} && rm -rf {$ext->downloadDirName}
                             {$ext->downloadScript}
                             cd {$ext->downloadDirName}
                             test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
@@ -733,7 +731,7 @@ EOF;
                         echo '[ext/' . $ext_name . '] cached ' . PHP_EOL;
                     }
                 } else {
-                    echo $cmd="tar --strip-components=1 -C $dst_dir -xf {$ext->path}";
+                    echo $cmd = "tar --strip-components=1 -C $dst_dir -xf {$ext->path}";
                     echo PHP_EOL;
                     echo `$cmd`;
                     echo PHP_EOL;
