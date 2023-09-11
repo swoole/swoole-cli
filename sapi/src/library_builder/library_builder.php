@@ -937,8 +937,8 @@ make install DESTDIR=
 
         INCLUDE_DIRECTORIES（添加头文件目录）
         LINK_DIRECTORIES（添加需要链接的库文件目录）
-        LINK_LIBRARIES　（添加需要链接的库文件路径，注意这里是全路径 /usr/local/openssl/lib/libssl.so ）
-
+        LINK_LIBRARIES　（添加需要链接的库文件路径，注意这里是全路径 /usr/local/openssl/lib/libssl.so ） # 可以链接一个，也可以多个，中间使用空格分隔
+        # https://www.cnblogs.com/binbinjx/p/5626916.html
         TARGET_LINK_LIBRARIES （设置要链接的库文件的名称）
 
         link_directories
