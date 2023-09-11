@@ -49,7 +49,7 @@ EOF
             'alpine',
             <<<EOF
         apk add ccache python3-dev
-        pip3 install numpy
+        pip3 install numpy setuptools utils-misc  gapi mat_wrapper utils
 EOF
         )
         ->withBuildLibraryHttpProxy(true)
@@ -71,16 +71,17 @@ EOF
         -DWITH_FFMPEG=ON \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DZLIB_ROOT={$zlib_prefix} \
+        -Dfreetype2_ROOT={$freetype_prefix} \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
         -DOpenCV_STATIC=ON \
-        -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix}" \
+        -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix};{$libzstd_prefix};{$liblz4_prefix}" \
+        -DCMAKE_STATIC_LINKER_FLAGS="-llzma  -lzstd  -llz4 "
 
-        # ;{$libzstd_prefix};{$liblz4_prefix}
-        # -DCMAKE_STATIC_LINKER_FLAGS="-llzma  -lzstd  -llz4 "
+
         # -DJPEG_ROOT={$jpeg_prefix} \
         # OpenJPEG
         # -DPNG_ROOT={$png_prefix} \
@@ -114,3 +115,7 @@ EOF
 
     $p->addLibrary($lib);
 };
+
+/*
+ * https://github.com/opencv/ade.git
+ */
