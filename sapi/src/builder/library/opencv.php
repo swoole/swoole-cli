@@ -79,7 +79,9 @@ EOF
         -DBUILD_opencv_apps=ON \
         -DOpenCV_STATIC=ON \
         -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix};{$libzstd_prefix};{$liblz4_prefix}" \
-        -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
+        -DLINK_LIBRARIES="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
+
+        # -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
 
 
         # -DJPEG_ROOT={$jpeg_prefix} \
