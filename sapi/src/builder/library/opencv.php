@@ -53,7 +53,7 @@ EOF
 EOF
         )
         ->withBuildLibraryHttpProxy(true)
-        ->withBuildLibraryCached(false)
+        //->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
 
@@ -79,16 +79,19 @@ EOF
         -DBUILD_opencv_apps=ON \
         -DOpenCV_STATIC=ON \
         -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix};{$libzstd_prefix};{$liblz4_prefix}" \
-        -DCMAKE_STATIC_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
+        # -DCMAKE_STATIC_LINKER_FLAGS="lzma  zstd  lz4"
+
+
+        # -DCMAKE_STATIC_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
         # -DLINK_LIBRARIES="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a " \
         # -DLINK_DIRECTORIES="{$liblzma_prefix}/lib/:{$libzstd_prefix}/lib/:{$liblz4_prefix}/lib/"
 
-         # -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
-         #
-         # -DLINK_LIBRARIES="lzma  zstd  lz4"
-         # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
-        #  -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
+        # -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
+
+        # -DLINK_LIBRARIES="lzma  zstd  lz4"
+        # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
+        # -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
 
 
         # -DJPEG_ROOT={$jpeg_prefix} \
