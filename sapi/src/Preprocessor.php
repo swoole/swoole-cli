@@ -373,23 +373,23 @@ class Preprocessor
     {
         $this->proxyConfig = $shell;
         $this->httpProxy = $httpProxy;
-        $proxyInfo=parse_url($httpProxy);
+        $proxyInfo = parse_url($httpProxy);
         if (!empty($proxyInfo['scheme']) && !empty($proxyInfo['host']) && !empty($proxyInfo['port'])) {
-            $proto='';
+            $proto = '';
             switch (strtolower($proxyInfo['scheme'])) {
                 case 'socks5':
                 case "socks5h":
-                    $proto=5;
+                    $proto = 5;
                     break;
                 case "socks4a":
                 case 'socks4':
-                    $proto=4;
+                    $proto = 4;
                     break;
                 default:
-                    $proto="connect";
+                    $proto = "connect";
                     break;
             }
-            $this->gitProxyConfig=<<<__GIT_PROXY_CONFIG_EOF
+            $this->gitProxyConfig = <<<__GIT_PROXY_CONFIG_EOF
 export GIT_PROXY_COMMAND=/tmp/git-proxy;
 
 cat  > \$GIT_PROXY_COMMAND <<___EOF___
@@ -731,7 +731,7 @@ EOF;
                         echo '[ext/' . $ext_name . '] cached ' . PHP_EOL;
                     }
                 } else {
-                    echo $cmd="tar --strip-components=1 -C $dst_dir -xf {$ext->path}";
+                    echo $cmd = "tar --strip-components=1 -C $dst_dir -xf {$ext->path}";
                     echo PHP_EOL;
                     echo `$cmd`;
                     echo PHP_EOL;
