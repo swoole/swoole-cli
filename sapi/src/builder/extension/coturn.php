@@ -25,6 +25,8 @@ return function (Preprocessor $p) {
 
                 cp -rf {$coturn_prefix}/bin/  {$workdir}/bin/coturn/
                 cp -rf {$coturn_prefix}/etc/*  {$workdir}/bin/coturn/etc/
+                cd {$workdir}/bin/
+                tar -cJvf coturn-vlatest-static-linux-x64.tar.xz coturn/
 
 EOF;
         if ($p->getOsType() == 'macos') {
