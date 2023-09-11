@@ -7,9 +7,17 @@ return function (Preprocessor $p) {
     $opencv_prefix = OPENCV_PREFIX;
     $ffmpeg_prefix = FFMPEG_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
+    $libzstd_prefix = LIBZSTD_PREFIX;
+    $liblz4_prefix = LIBLZ4_PREFIX;
+    $liblzma_prefix = LIBLZMA_PREFIX;
     $jpeg_prefix = JPEG_PREFIX;
     $libtiff_prefix = LIBTIFF_PREFIX;
     $png_prefix = PNG_PREFIX;
+    $gmp_prefix = GMP_PREFIX;
+    $libwebp_prefix = WEBP_PREFIX;
+    $freetype_prefix = FREETYPE_PREFIX;
+    $gflags_prefix = GFLAGS_PREFIX;
+
     $workDir = $p->getWorkDir();
     $buildDir = $p->getBuildDir();
     $lib = new Library('opencv');
@@ -45,7 +53,7 @@ EOF
 EOF
         )
         ->withBuildLibraryHttpProxy(true)
-        //->withBuildLibraryCached(false)
+        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
 
@@ -63,16 +71,20 @@ EOF
         -DWITH_FFMPEG=ON \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DZLIB_ROOT={$zlib_prefix} \
-        -DJPEG_ROOT={$jpeg_prefix} \
-        -DTIFF_ROOT={$libtiff_prefix} \
-        -DPNG_ROOT={$png_prefix} \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
         -DOpenCV_STATIC=ON \
+        -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix}" \
 
+        # ;{$libzstd_prefix};{$liblz4_prefix}
+        # -DCMAKE_STATIC_LINKER_FLAGS="-llzma  -lzstd  -llz4 "
+        # -DJPEG_ROOT={$jpeg_prefix} \
+        # OpenJPEG
+        # -DPNG_ROOT={$png_prefix} \
+        # -DTIFF_ROOT={$libtiff_prefix} \
 
         ninja
         ninja install
@@ -92,7 +104,10 @@ EOF
             'libwebp',
             'libpng',
             'freetype',
-            'libtiff'
+            'libtiff',
+            "gmp",
+            'liblzma',
+            'gflags'
         ) // openjpeg openEXR HDR   'vtk'
         ->withBinPath($opencv_prefix . '/bin/')
     ;
