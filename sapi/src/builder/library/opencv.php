@@ -79,7 +79,7 @@ EOF
         -DBUILD_opencv_apps=ON \
         -DOpenCV_STATIC=ON \
         -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix};{$libzstd_prefix};{$liblz4_prefix}" \
-        -DCMAKE_STATIC_LINKER_FLAGS="-llzma  -lzstd  -llz4 "
+        -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
 
 
         # -DJPEG_ROOT={$jpeg_prefix} \
