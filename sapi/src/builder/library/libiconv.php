@@ -14,9 +14,11 @@ return function (Preprocessor $p) {
             ->withPrefix($libiconv_prefix)
             ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
             ->withBinPath($libiconv_prefix . '/bin/')
+            ->withLdflags('-L' . $libiconv_prefix . '/lib')
+            ->withPkgConfig('')
     );
 
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . ICONV_PREFIX . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . ICONV_PREFIX . '/lib');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libiconv_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libiconv_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -liconv');
 };

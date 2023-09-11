@@ -6,7 +6,7 @@ namespace SwooleCli\PreprocessorTrait;
 
 trait DownloadBoxTrait
 {
-    public string $downloadScriptHeader =<<<'EOF'
+    public string $downloadScriptHeader = <<<'EOF'
 #!/bin/bash
 
 set -exu
@@ -28,9 +28,9 @@ EOF;
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
-            echo $item->name. PHP_EOL;
+            echo $item->name . PHP_EOL;
 
-            if ((!empty($item->peclVersion)  || !empty($item->url)) || $item->enableDownloadWithMirrorURL) {
+            if ((!empty($item->peclVersion) || !empty($item->url)) || $item->enableDownloadWithMirrorURL) {
                 $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
             }
         }
@@ -40,14 +40,13 @@ EOF;
         foreach ($this->extensionMap as $item) {
             if ($item->enableDownloadScript && !$item->enableDownloadWithMirrorURL) {
                 $workDir = '${__DIR__}/var';
-                $cacheDir = '${__DIR__}/var/tmp/download/ext';
+                $cacheDir = '${__DIR__}/var/tmp/download/ext/' . $item->name;
                 $downloadScript = <<<EOF
 
 ## ------------------- download extension {$item->name} start -------------------
 test -d {$cacheDir} && rm -rf {$cacheDir}
 mkdir -p {$cacheDir}
 cd {$cacheDir}
-test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
 {$item->downloadScript}
 cd {$item->downloadDirName}
 test -f {$workDir}/var/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} ./
@@ -62,7 +61,7 @@ EOF;
         }
         file_put_contents(
             $this->getRootDir() . '/var/download_extension_use_git.sh',
-            $this->downloadScriptHeader  . PHP_EOL .
+            $this->downloadScriptHeader . PHP_EOL .
             implode(PHP_EOL, $download_scripts)
         );
 
@@ -88,14 +87,13 @@ EOF;
         foreach ($this->libraryList as $item) {
             if ($item->enableDownloadScript && !$item->enableDownloadWithMirrorURL) {
                 $workDir = '${__DIR__}/var';
-                $cacheDir = '${__DIR__}/var/tmp/download/lib';
+                $cacheDir = '${__DIR__}/var/tmp/download/lib/' . $item->name;
                 $downloadScript = <<<EOF
 
 ## ------------------- download library {$item->name} start -------------------
 test -d {$cacheDir} && rm -rf {$cacheDir}
 mkdir -p {$cacheDir}
 cd {$cacheDir}
-test -d {$item->downloadDirName} && rm -rf {$item->downloadDirName}
 {$item->downloadScript}
 test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
 cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
@@ -109,7 +107,7 @@ EOF;
         }
         file_put_contents(
             $this->rootDir . '/var/download_library_use_git.sh',
-            $this->downloadScriptHeader  . PHP_EOL .
+            $this->downloadScriptHeader . PHP_EOL .
             implode(PHP_EOL, $download_scripts)
         );
     }

@@ -50,6 +50,10 @@ make_<?=$item->name?>() {
             cd <?= $this->workDir ?>/
             return 0
         fi
+    <?php else : ?>
+        if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
+        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+        fi
     <?php endif; ?>
 
     <?php if ($item->cleanBuildDirectory) : ?>
@@ -80,6 +84,9 @@ make_<?=$item->name?>() {
 
     <?php if ($item->enableBuildLibraryHttpProxy) : ?>
         <?= $this->getProxyConfig() . PHP_EOL ?>
+        <?php if ($item->enableBuildLibraryGitProxy) :?>
+            <?= $this->getGitProxyConfig() . PHP_EOL ?>
+        <?php endif;?>
     <?php endif;?>
 
     # use build script replace  configure、make、make install
@@ -133,6 +140,9 @@ __EOF__
         unset HTTP_PROXY
         unset HTTPS_PROXY
         unset NO_PROXY
+        <?php if ($item->enableBuildLibraryGitProxy) :?>
+        unset GIT_PROXY_COMMAND
+        <?php endif;?>
     <?php endif;?>
 
     <?php if ($item->enableBuildLibraryCached) : ?>
