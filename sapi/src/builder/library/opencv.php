@@ -87,6 +87,7 @@ EOF
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_STATIC_LIBS=ON \
         -DBUILD_SHARED_LIBS=OFF \
+        -DOpenCV_STATIC=ON \
         -DWITH_FFMPEG=ON \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DZLIB_ROOT={$zlib_prefix} \
@@ -97,12 +98,12 @@ EOF
         -Dglog_ROOT={$glog_prefix} \
         -DLAPACK_ROOT={$lapack_prefix} \
         -DOpenBLAS_ROOT={$openblas_prefix} \
+        -DGLOG_INCLUDE_DIR={$glog_prefix}/include \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
-        -DBUILD_EXAMPLES=OFF \
-        -DBUILD_opencv_apps=OFF \
-        -DOpenCV_STATIC=ON \
+        -DBUILD_EXAMPLES=ON \
+        -DBUILD_opencv_apps=ON \
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
 
