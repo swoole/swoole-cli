@@ -4,16 +4,19 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
+
+    # libdeflate是一个用于基于DEFLATE的全缓冲区快速压缩和解压缩的库
+
     $libdeflate_prefix = LIBDEFLATE_PREFIX;
     $lib = new Library('libdeflate');
     $lib->withHomePage('https://github.com/ebiggers/libdeflate.git')
         ->withLicense('https://github.com/ebiggers/libdeflate/blob/master/COPYING', Library::LICENSE_MIT)
         ->withManual('https://github.com/ebiggers/libdeflate.git')
-        ->withFile('libdeflate-latest.tar.gz')
+        ->withFile('libdeflate-v1.18.tar.gz')
         ->withDownloadScript(
             'libdeflate',
             <<<EOF
-                git clone -b master  --depth=1 https://github.com/ebiggers/libdeflate.git
+            git clone -b v1.18  --depth=1 https://github.com/ebiggers/libdeflate.git
 EOF
         )
         ->withPrefix($libdeflate_prefix)
@@ -34,12 +37,15 @@ EOF
 
 EOF
         )
-
-
-
         ->withPkgName('libdeflate')
         ->withBinPath($libdeflate_prefix . '/bin/')
-    ;
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$libdeflate_prefix}/lib/*.so.*
+            rm -rf {$libdeflate_prefix}/lib/*.so
+            rm -rf {$libdeflate_prefix}/lib/*.dylib
+EOF
+        );
 
     $p->addLibrary($lib);
 };

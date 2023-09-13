@@ -35,15 +35,15 @@ return function (Preprocessor $p) {
         // 'vulkan',
         // 'shaderc'
         // 'spirv_tools'
-       // 'fdk_aac'
-       // 'libfribidi'
+        // 'fdk_aac'
+        // 'libfribidi'
 
-       // 'libmongocrypt',
-       // 'libmongoc',
-       //'mongo_c_driver',
-       //'dpdk',
+        // 'libmongocrypt',
+        // 'libmongoc',
+        //'mongo_c_driver',
+        //'dpdk',
 
-       // 'libx265',
+        // 'libx265',
         //'boost',
         //'librime'
         'glog',
@@ -91,13 +91,16 @@ return function (Preprocessor $p) {
     $depends = ['libbson'] ;
     $depends = ['libmongoc'] ;
     //$depends = ['libmongocrypt'] ;
-
+    $depends = ['riscv_gnu_toolchain'] ;
     $depends = ['fftw3'] ;
     $depends = ['lapack'] ;
-    $depends = ['OpenBLAS'] ;
-    $depends = ['OpenEXR'] ;
-    $depends = ['OpenJPEG'] ;
-    $depends = ['riscv_gnu_toolchain'] ;
+    $depends = ['openblas'] ;
+    $depends = ['openexr'] ;
+    $depends = ['openjpeg'] ;
+
+    $depends = ['imath'] ;
+    $depends = ['openexr'] ;
+    //$depends = ['libdeflate'] ;
 
 
 

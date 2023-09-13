@@ -15,7 +15,8 @@ return function (Preprocessor $p) {
         ->withConfigure(
             <<<EOF
             ./configure --help
-            ./configure --prefix={$libconfig_prefix} \
+            ./configure \
+            --prefix={$libconfig_prefix} \
             --enable-shared=no \
             --enable-static=yes \
             --disable-examples \

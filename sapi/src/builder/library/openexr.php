@@ -5,7 +5,8 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $openexr_prefix = OPENEXR_PREFIX;
-
+    $imath_prefix = IMATH_PREFIX;
+    $libdeflate_prefix = LIBDEFLATE_PREFIX;
     $lib = new Library('openexr');
     $lib->withHomePage('https://openexr.com/en/latest/')
         ->withLicense('https://openexr.com/en/latest/license.html#license', Library::LICENSE_BSD)
@@ -14,26 +15,24 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'openexr',
             <<<EOF
-                git clone -b master  --depth=1 https://github.com/AcademySoftwareFoundation/openexr.git
+            git clone -b main  --depth=1 https://github.com/AcademySoftwareFoundation/openexr.git
 EOF
         )
-
+        //->withAutoUpdateFile()
         ->withPrefix($openexr_prefix)
-
-        /* 使用 cmake 构建 start */
+        ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF
         mkdir -p build
         cd build
-        # cmake 查看选项
-        # cmake -LH ..
         cmake .. \
         -DCMAKE_INSTALL_PREFIX={$openexr_prefix} \
-        -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DCMAKE_BUILD_TYPE=Release  \
         -DBUILD_SHARED_LIBS=OFF  \
-        -DBUILD_STATIC_LIBS=ON
-
+        -DBUILD_STATIC_LIBS=ON \
+        -DCMAKE_PREFIX_PATH="{$imath_prefix};{$libdeflate_prefix}" \
+        -DBUILD_TESTING=OFF \
+        -DOPENEXR_INSTALL_EXAMPLES=ON
 
         cmake --build . --config Release
 
@@ -42,14 +41,9 @@ EOF
 EOF
         )
 
-        ->withPkgName('example')
+        ->withPkgName('OpenEXR')
         ->withBinPath($openexr_prefix . '/bin/')
-
-        //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')
-
+        ->withDependentLibraries('libdeflate', 'imath')
     ;
-
     $p->addLibrary($lib);
-
 };

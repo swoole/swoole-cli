@@ -109,6 +109,8 @@ EOF
              cd build
              # cmake 查看选项
              # cmake -LH ..
+             # cmake -LAH \$cmake_source_directory/setup.cmake
+
              cmake .. \
             -DCMAKE_INSTALL_PREFIX={$example_prefix} \
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \

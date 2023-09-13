@@ -151,7 +151,7 @@ EOF
             'openblas', //基础线性代数程序集
             'lapack', //线性代数计算库
             // 'harfbuzz',
-            // 'openexr',
+            'openexr',
             // 'openjpeg'
         )   //   HDR   'vtk'
         ->withBinPath($opencv_prefix . '/bin/')
