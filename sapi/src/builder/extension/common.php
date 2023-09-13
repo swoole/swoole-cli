@@ -97,6 +97,7 @@ return function (Preprocessor $p) {
     $depends = ['OpenBLAS'] ;
     $depends = ['OpenEXR'] ;
     $depends = ['OpenJPEG'] ;
+    $depends = ['riscv_gnu_toolchain'] ;
 
 
 
