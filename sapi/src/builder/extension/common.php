@@ -95,8 +95,9 @@ return function (Preprocessor $p) {
 
     $depends = ['OpenJPEG'] ;
     $depends = ['OpenBLAS'] ;
-    $depends = ['lapack'] ;
+
     $depends = ['fftw3'] ;
+    $depends = ['lapack'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
