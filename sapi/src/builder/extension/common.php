@@ -106,6 +106,8 @@ return function (Preprocessor $p) {
     $depends = ['libeigen'] ;
     $depends = ['libosmesa'] ;
 
+    $depends = ['libsnmp'] ;
+    $depends = ['opensips'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
