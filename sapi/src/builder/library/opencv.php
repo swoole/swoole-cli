@@ -148,11 +148,11 @@ EOF
             'liblzma',
             'gflags',
             'fftw3', //快速傅立叶变换库
-            'OpenBLAS', //基础线性代数程序集
+            'openblas', //基础线性代数程序集
             'lapack', //线性代数计算库
             // 'harfbuzz',
-            // 'OpenEXR',
-            // 'OpenJPEG'
+            // 'openexr',
+            // 'openjpeg'
         )   //   HDR   'vtk'
         ->withBinPath($opencv_prefix . '/bin/')
     ;

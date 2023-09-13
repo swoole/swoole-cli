@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
 
 
     //文件名称 和 库名称一致
-    $lib = new Library('OpenJPEG');
+    $lib = new Library('openjpeg');
     $lib->withHomePage('https://www.openjpeg.org/')
         ->withLicense('https://github.com/uclouvain/openjpeg/blob/master/LICENSE', Library::LICENSE_SPEC)
         ->withManual('https://github.com/uclouvain/openjpeg/blob/master/INSTALL.md')

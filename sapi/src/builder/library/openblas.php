@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
     // FFTW ( the Faster Fourier Transform in the West) 是一个快速计算离散傅里叶变换的标准C语言程序集
 
     //开源矩阵计算库
-    $lib = new Library('OpenBLAS');
+    $lib = new Library('openblas');
     $lib->withHomePage('http://www.openblas.net/')
         ->withLicense('https://github.com/xianyi/OpenBLAS/blob/develop/LICENSE', Library::LICENSE_BSD)
         ->withManual('https://github.com/xianyi/OpenBLAS.git')

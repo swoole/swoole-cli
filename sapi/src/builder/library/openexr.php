@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $openexr_prefix = OPENEXR_PREFIX;
 
-    $lib = new Library('OpenEXR');
+    $lib = new Library('openexr');
     $lib->withHomePage('https://openexr.com/en/latest/')
         ->withLicense('https://openexr.com/en/latest/license.html#license', Library::LICENSE_BSD)
         ->withManual('https://openexr.com/en/latest/install.html#install')

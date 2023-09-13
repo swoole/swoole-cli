@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $OpenXR_prefix = OPENXR_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
-    $lib = new Library('OpenXR');
+    $lib = new Library('openxr');
     $lib->withHomePage('https://www.khronos.org/openxr/')
         ->withLicense('https://github.com/KhronosGroup/OpenXR-SDK/blob/main/LICENSE', Library::LICENSE_APACHE2)
         ->withUrl('https://github.com/KhronosGroup/OpenXR-SDK/archive/refs/tags/release-1.0.28.tar.gz')
