@@ -29,8 +29,6 @@ EOF
         )
 
         ->withPrefix($openblas_prefix)
-
-        /* 使用 cmake 构建 start */
         ->withBuildScript(
             <<<EOF
         mkdir -p build
