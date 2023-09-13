@@ -68,7 +68,7 @@ EOF
            // 'ibradius-ng', //待解决
            // 'libsnmp', //待解决
            // 'libldap', //待解决
-            'libncurses'
+            'ncurses'
         )
     ;
 
