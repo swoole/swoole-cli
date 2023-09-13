@@ -103,7 +103,6 @@ EOF
         -DBUILD_EXAMPLES=OFF \
         -DBUILD_opencv_apps=OFF \
         -DOpenCV_STATIC=ON \
-
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
 
