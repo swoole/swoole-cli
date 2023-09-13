@@ -294,4 +294,5 @@ define("LAPACK_PREFIX", $p->getGlobalPrefix() . '/lapack');
 define("RISCV_PREFIX", $p->getGlobalPrefix() . '/riscv');
 define("IMATH_PREFIX", $p->getGlobalPrefix() . '/imath');
 define("LIBEIGEN_PREFIX", $p->getGlobalPrefix() . '/libeigen');
+define("LIBOSMESA_PREFIX", $p->getGlobalPrefix() . '/libosmesa');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

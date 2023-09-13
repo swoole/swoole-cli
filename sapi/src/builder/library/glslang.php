@@ -12,7 +12,6 @@ return function (Preprocessor $p) {
         ->withUrl('https://github.com/KhronosGroup/glslang/archive/refs/tags/12.3.1.tar.gz')
         ->withFile('glslang-12.3.1.tar.gz')
         ->withPrefix($glslang_prefix)
-        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
              mkdir -p build
