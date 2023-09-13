@@ -96,12 +96,13 @@ return function (Preprocessor $p) {
     $depends = ['lapack'] ;
     $depends = ['openblas'] ;
     $depends = ['openexr'] ;
-    $depends = ['openjpeg'] ;
 
     $depends = ['imath'] ;
+    $depends = ['libdeflate'] ;
     $depends = ['openexr'] ;
-    //$depends = ['libdeflate'] ;
 
+    $depends = ['openjpeg'] ;
+    $depends = ['harfbuzz'] ;
 
 
     $ext = (new Extension('common'))

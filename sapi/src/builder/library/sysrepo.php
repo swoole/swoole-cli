@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
     $lib = new Library('sysrepo');
     $lib->withHomePage('https://www.sysrepo.org/')
         ->withLicense('https://github.com/sysrepo/sysrepo/blob/master/LICENSE', Library::LICENSE_BSD)
-        ->withUrl('https://github-com.proxy.zibenyulun.cn/sysrepo/sysrepo/archive/refs/tags/v2.2.73.tar.gz')
+        ->withUrl('https://github.com/sysrepo/sysrepo/archive/refs/tags/v2.2.73.tar.gz')
         ->withFile('sysrepo-v2.2.73.tar.gz')
         ->withManual('https://github.com/sysrepo/sysrepo.git')
         ->withBuildLibraryCached(false)

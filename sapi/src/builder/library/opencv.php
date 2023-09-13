@@ -152,7 +152,7 @@ EOF
             'lapack', //线性代数计算库
             // 'harfbuzz',
             'openexr',
-            // 'openjpeg'
+            'openjpeg'
         )   //   HDR   'vtk'
         ->withBinPath($opencv_prefix . '/bin/')
     ;
