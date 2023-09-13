@@ -24,7 +24,7 @@ return function (Preprocessor $p) {
             'OpenBLAS',
             <<<EOF
 
-                 git clone -b v0.3.24 --depth=1 https://github.com/xianyi/OpenBLAS.git
+        git clone -b v0.3.24 --depth=1 https://github.com/xianyi/OpenBLAS.git
 EOF
         )
         ->withPrefix($openblas_prefix)
@@ -52,9 +52,4 @@ EOF
         ->withDependentLibraries('lapack');
 
     $p->addLibrary($lib);
-
 };
-
-
-
-
