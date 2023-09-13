@@ -159,10 +159,9 @@ EOF
             //'openexr',
             //'openjpeg',
             'libeigen', //线性运算代数库 (依赖待完善）
-            // 'vtk'
+        // 'vtk'
         )   //   HDR
-        ->withBinPath($opencv_prefix . '/bin/')
-    ;
+        ->withBinPath($opencv_prefix . '/bin/');
 
     $p->addLibrary($lib);
 };

@@ -295,4 +295,6 @@ define("RISCV_PREFIX", $p->getGlobalPrefix() . '/riscv');
 define("IMATH_PREFIX", $p->getGlobalPrefix() . '/imath');
 define("LIBEIGEN_PREFIX", $p->getGlobalPrefix() . '/libeigen');
 define("LIBOSMESA_PREFIX", $p->getGlobalPrefix() . '/libosmesa');
+define("WAYLAND_PREFIX", $p->getGlobalPrefix() . '/wayland');
+define("WAYLAND_PROTOCOLS_PREFIX", $p->getGlobalPrefix() . '/wayland_protocols');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
