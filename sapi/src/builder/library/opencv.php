@@ -22,6 +22,7 @@ return function (Preprocessor $p) {
     $harfbuzz_prefix = HARFBUZZ_PREFIX;
     $glog_prefix = GLOG_PREFIX;
     $imath_prefix = IMATH_PREFIX;
+    $libeigen_prefix = LIBEIGEN_PREFIX;
 
     $CMAKE_PREFIX_PATH = "{$jpeg_prefix};";
     $CMAKE_PREFIX_PATH .= "{$png_prefix};";
@@ -35,6 +36,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$liblz4_prefix};";
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix}";
+    $CMAKE_PREFIX_PATH .= "{$libeigen_prefix}";
 
 
     $workDir = $p->getWorkDir();
@@ -154,7 +156,8 @@ EOF
             // 'harfbuzz',
            // 'imath',
             //'openexr',
-            //'openjpeg'
+            //'openjpeg',
+            'libeigen' //线性运算代数库 (依赖待完善）
         )   //   HDR   'vtk'
         ->withBinPath($opencv_prefix . '/bin/')
     ;

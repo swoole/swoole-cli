@@ -293,4 +293,5 @@ define("OPENBLAS_PREFIX", $p->getGlobalPrefix() . '/openblas');
 define("LAPACK_PREFIX", $p->getGlobalPrefix() . '/lapack');
 define("RISCV_PREFIX", $p->getGlobalPrefix() . '/riscv');
 define("IMATH_PREFIX", $p->getGlobalPrefix() . '/imath');
+define("LIBEIGEN_PREFIX", $p->getGlobalPrefix() . '/libeigen');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
