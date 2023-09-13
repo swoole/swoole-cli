@@ -37,6 +37,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix}";
     $CMAKE_PREFIX_PATH .= "{$libeigen_prefix}";
+    $CMAKE_PREFIX_PATH .= "{$glog_prefix}";
 
 
     $workDir = $p->getWorkDir();
@@ -154,7 +155,7 @@ EOF
             'openblas', //基础线性代数程序集
             'lapack', //线性代数计算库
             // 'harfbuzz',
-           // 'imath',
+            // 'imath',
             //'openexr',
             //'openjpeg',
             'libeigen' //线性运算代数库 (依赖待完善）
