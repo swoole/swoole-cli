@@ -38,7 +38,7 @@ EOF
             -Ddefault_library=static \
             -Db_staticpic=true \
             -Db_pie=true \
-            -Dprefer_static=true
+            -Dprefer_static=true  \
             -Dosmesa=true \
             -Dgallium-drivers=swrast \
             -Dvulkan-drivers=[]
@@ -58,3 +58,14 @@ EOF
 
     $p->addLibrary($lib);
 };
+
+
+/*
+ * libomxil-bellagio
+ * libtizoia
+ * libva
+ * tizilheaders
+ * libelf
+ * libunwind
+ * wayland-scanner
+ */
