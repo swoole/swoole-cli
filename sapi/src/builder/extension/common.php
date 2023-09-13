@@ -94,10 +94,11 @@ return function (Preprocessor $p) {
     $depends = ['OpenEXR'] ;
 
     $depends = ['OpenJPEG'] ;
-    $depends = ['OpenBLAS'] ;
+
 
     $depends = ['fftw3'] ;
     $depends = ['lapack'] ;
+    $depends = ['OpenBLAS'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
