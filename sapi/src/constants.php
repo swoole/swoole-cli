@@ -168,7 +168,6 @@ define("TCMALLOC_PREFIX", $p->getGlobalPrefix() . '/tcmalloc');
 
 define("LIBSHARPYUV_PREFIX", $p->getGlobalPrefix() . '/libsharpyuv');
 define("LIBWEBSOCKETS_PREFIX", $p->getGlobalPrefix() . '/libwebsockets');
-define("LIBOPENEXR_PREFIX", $p->getGlobalPrefix() . '/libOpenEXR');
 define("GSTREAMER_PREFIX", $p->getGlobalPrefix() . '/gstreamer');
 define("LIBNICE_PREFIX", $p->getGlobalPrefix() . '/libnice');
 define("LIBSRTP_PREFIX", $p->getGlobalPrefix() . '/libsrtp');

@@ -20,6 +20,7 @@ return function (Preprocessor $p) {
     $openblas_prefix = OPENBLAS_PREFIX;
     $lapack_prefix = LAPACK_PREFIX;
     $harfbuzz_prefix = HARFBUZZ_PREFIX;
+    $glog_prefix = GLOG_PREFIX;
 
     $CMAKE_PREFIX_PATH = "{$jpeg_prefix};";
     $CMAKE_PREFIX_PATH .= "{$png_prefix};";
@@ -33,6 +34,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$liblz4_prefix};";
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix}";
+    $CMAKE_PREFIX_PATH .= "{$glog_prefix}";
 
 
     $workDir = $p->getWorkDir();
@@ -92,14 +94,16 @@ EOF
         -DPNG_ROOT={$png_prefix} \
         -DTIFF_ROOT={$libtiff_prefix} \
         -DJPEG_ROOT={$jpeg_prefix} \
+        -Dglog_ROOT={$glog_prefix} \
+        -DLAPACK_ROOT={$lapack_prefix} \
+        -DOpenBLAS_ROOT={$openblas_prefix} \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=OFF \
         -DBUILD_opencv_apps=OFF \
         -DOpenCV_STATIC=ON \
-        -DLAPACK_ROOT={$lapack_prefix} \
-        -DOpenBLAS_ROOT={$openblas_prefix} \
+
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
 
@@ -143,11 +147,13 @@ EOF
             "gmp",
             'liblzma',
             'gflags',
-            'fftw3',//快速傅立叶变换库
+            'fftw3', //快速傅立叶变换库
             'OpenBLAS', //基础线性代数程序集
             'lapack', //线性代数计算库
-           // 'harfbuzz'
-        ) // openjpeg openEXR HDR   'vtk'
+            // 'harfbuzz',
+            //OpenEXR,
+            //'OpenJPEG'
+        ) //   HDR   'vtk'
         ->withBinPath($opencv_prefix . '/bin/')
     ;
 
