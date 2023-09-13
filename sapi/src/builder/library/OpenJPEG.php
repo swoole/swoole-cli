@@ -4,10 +4,17 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $example_prefix = EXAMPLE_PREFIX;
+
     $openjpeg_prefix = OPENJPEG_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
-    $gettext_prefix = GETTEXT_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $libtiff_prefix = LIBTIFF_PREFIX;
+    $liblcms2_prefix = LCMS2_PREFIX;
+    $libpng_prefix = PNG_PREFIX;
+
+    $libzstd_prefix = LIBZSTD_PREFIX;
+    $liblz4_prefix = LIBLZ4_PREFIX;
+    $liblzma_prefix = LIBLZMA_PREFIX;
+
 
     //文件名称 和 库名称一致
     $lib = new Library('OpenJPEG');
@@ -26,49 +33,38 @@ return function (Preprocessor $p) {
             pip3 install meson
 EOF
         )
-        ->withPrefix($example_prefix)
-        /* 使用 cmake 构建 start */
+        ->withPrefix($openjpeg_prefix)
+        ->withCleanBuildDirectory()
+       ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
              mkdir -p build
              cd build
-             # cmake 查看选项
-             # cmake -LH ..
+
              cmake .. \
-            -DCMAKE_INSTALL_PREFIX={$example_prefix} \
+            -DCMAKE_INSTALL_PREFIX={$openjpeg_prefix} \
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON
+            -DBUILD_STATIC_LIBS=ON \
+            -DBUILD_TESTING=OFF \
+            -DBUILD_JPIP=ON \
+            -DCMAKE_DISABLE_FIND_PACKAGE_Java=ON \
+            -DCMAKE_PREFIX_PATH="{$zlib_prefix};{$libtiff_prefix};{$liblcms2_prefix};{$libpng_prefix}" \
+            -DLINK_LIBRARIES="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
 
-
-            # 配置选项例子
-            # -DCMAKE_CXX_STANDARD=14
-            # -DCMAKE_C_STANDARD=11
-            # -DCMAKE_C_COMPILER=clang \
-            # -DCMAKE_CXX_COMPILER=clang++ \
-            # -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
-            # -DCMAKE_C_FLAGS="-D_POSIX_C_SOURCE=200809L" \
-            # -DOpenSSL_ROOT={$openssl_prefix} \
-            # 查找PKGCONFIG配置目录多个使用分号隔开
-            # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
-
-
-            # cmake --build . --config Release
+            cmake --build . --config Release
 
             cmake --build . --config Release --target install
 
 EOF
         )
 
-        ->withPkgName('example')
-        ->withBinPath($example_prefix . '/bin/')
-        //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')
+        ->withPkgName('libopenjp2')
+        ->withBinPath($openjpeg_prefix . '/bin/')
+        ->withDependentLibraries('zlib', 'libpng', 'libtiff', 'lcms2')
 
     ;
 
     $p->addLibrary($lib);
-
-
 };
