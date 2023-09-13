@@ -21,6 +21,19 @@ return function (Preprocessor $p) {
     $lapack_prefix = LAPACK_PREFIX;
     $harfbuzz_prefix = HARFBUZZ_PREFIX;
 
+    $CMAKE_PREFIX_PATH = "{$jpeg_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$png_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$libtiff_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$gmp_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$libwebp_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$liblzma_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$freetype_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$gflags_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$libzstd_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$liblz4_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$lapack_prefix}";
+
 
     $workDir = $p->getWorkDir();
     $buildDir = $p->getBuildDir();
@@ -84,10 +97,10 @@ EOF
         -DOpenCV_STATIC=ON \
         -DLAPACK_ROOT={$lapack_prefix} \
         -DOpenBLAS_ROOT={$openblas_prefix} \
-        -Dharfbuzz_ROOT={$harfbuzz_prefix} \
-        -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix};{$libzstd_prefix};{$liblz4_prefix};{$openblas_prefix};{$lapack_prefix}" \
+        -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
 
+        # -Dharfbuzz_ROOT={$harfbuzz_prefix} \
 
         # -DCMAKE_STATIC_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
@@ -131,7 +144,7 @@ EOF
             'fftw3',//快速傅立叶变换库
             'OpenBLAS', //基础线性代数程序集
             'lapack', //线性代数计算库
-            'harfbuzz'
+           // 'harfbuzz'
         ) // openjpeg openEXR HDR   'vtk'
         ->withBinPath($opencv_prefix . '/bin/')
     ;

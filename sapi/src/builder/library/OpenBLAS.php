@@ -27,7 +27,6 @@ return function (Preprocessor $p) {
                  git clone -b v0.3.24 --depth=1 https://github.com/xianyi/OpenBLAS.git
 EOF
         )
-
         ->withPrefix($openblas_prefix)
         ->withBuildScript(
             <<<EOF
@@ -39,8 +38,9 @@ EOF
         -DCMAKE_BUILD_TYPE=Release  \
         -DBUILD_SHARED_LIBS=OFF  \
         -DBUILD_STATIC_LIBS=ON \
-        -DBUILD_TESTING=OFF \
-        -DBUILD_WITHOUT_LAPACK=ON
+        -DBUILD_TESTING=OFF
+
+        # -DBUILD_WITHOUT_LAPACK=ON
 
         cmake --build . --config Release
 
@@ -48,11 +48,8 @@ EOF
 
 EOF
         )
-
         ->withPkgName('openblas')
-        ->withDependentLibraries('lapack')
-
-    ;
+        ->withDependentLibraries('lapack');
 
     $p->addLibrary($lib);
 
