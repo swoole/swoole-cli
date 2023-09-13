@@ -18,6 +18,7 @@ return function (Preprocessor $p) {
     $freetype_prefix = FREETYPE_PREFIX;
     $gflags_prefix = GFLAGS_PREFIX;
     $openblas_prefix = OPENBLAS_PREFIX;
+    $lapack_prefix = LAPACK_PREFIX;
 
     $workDir = $p->getWorkDir();
     $buildDir = $p->getBuildDir();
@@ -79,7 +80,7 @@ EOF
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
         -DOpenCV_STATIC=ON \
-        -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix};{$libzstd_prefix};{$liblz4_prefix};{$openblas_prefix}" \
+        -DCMAKE_PREFIX_PATH="{$jpeg_prefix};{$png_prefix};{$libtiff_prefix};{$gmp_prefix};{$libwebp_prefix};{$liblzma_prefix};{$freetype_prefix};{$gflags_prefix};{$libzstd_prefix};{$liblz4_prefix};{$openblas_prefix};{$lapack_prefix}" \
         -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
 
 
