@@ -89,11 +89,14 @@ EOF
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DZLIB_ROOT={$zlib_prefix} \
         -Dfreetype2_ROOT={$freetype_prefix} \
+        -DPNG_ROOT={$png_prefix} \
+        -DTIFF_ROOT={$libtiff_prefix} \
+        -DJPEG_ROOT={$jpeg_prefix} \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
-        -DBUILD_EXAMPLES=ON \
-        -DBUILD_opencv_apps=ON \
+        -DBUILD_EXAMPLES=OFF \
+        -DBUILD_opencv_apps=OFF \
         -DOpenCV_STATIC=ON \
         -DLAPACK_ROOT={$lapack_prefix} \
         -DOpenBLAS_ROOT={$openblas_prefix} \
@@ -114,10 +117,9 @@ EOF
         # -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
 
 
-        # -DJPEG_ROOT={$jpeg_prefix} \
+
         # OpenJPEG
-        # -DPNG_ROOT={$png_prefix} \
-        # -DTIFF_ROOT={$libtiff_prefix} \
+
 
         ninja
         ninja install
