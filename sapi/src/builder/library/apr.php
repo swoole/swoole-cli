@@ -5,7 +5,6 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $apr_prefix = APR_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
     $lib = new Library('apr');
     $lib->withHomePage('https://apr.apache.org/')
         ->withLicense('https://www.apache.org/licenses/', Library::LICENSE_APACHE2)
