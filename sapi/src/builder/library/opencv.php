@@ -36,7 +36,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix}";
     $CMAKE_PREFIX_PATH .= "{$glog_prefix}";
-    $CMAKE_PREFIX_PATH .= "{$imath_prefix}";
+
 
 
     $workDir = $p->getWorkDir();
@@ -101,7 +101,6 @@ EOF
         -DLAPACK_ROOT={$lapack_prefix} \
         -DOpenBLAS_ROOT={$openblas_prefix} \
         -DGLOG_INCLUDE_DIR={$glog_prefix}/include \
-        -DImath_DIR={$imath_prefix} \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
@@ -154,9 +153,9 @@ EOF
             'openblas', //基础线性代数程序集
             'lapack', //线性代数计算库
             // 'harfbuzz',
-            'imath',
-            'openexr',
-            'openjpeg'
+           // 'imath',
+            //'openexr',
+            //'openjpeg'
         )   //   HDR   'vtk'
         ->withBinPath($opencv_prefix . '/bin/')
     ;
