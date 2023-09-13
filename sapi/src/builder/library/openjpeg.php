@@ -35,8 +35,6 @@ EOF
 EOF
         )
         ->withPrefix($openjpeg_prefix)
-        ->withCleanBuildDirectory()
-        ->withBuildLibraryCached(false)
         ->withConfigure(
             <<<EOF
              mkdir -p build
