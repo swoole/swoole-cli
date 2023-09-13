@@ -91,6 +91,12 @@ return function (Preprocessor $p) {
     $depends = ['libbson'] ;
     $depends = ['libmongoc'] ;
     //$depends = ['libmongocrypt'] ;
+    $depends = ['OpenEXR'] ;
+
+    $depends = ['OpenJPEG'] ;
+    $depends = ['OpenBLAS'] ;
+    $depends = ['lapack'] ;
+    $depends = ['fftw3'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

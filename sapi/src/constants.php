@@ -290,4 +290,6 @@ define("LIBXDP_PREFIX", $p->getGlobalPrefix() . '/libxdp');
 define("CPU_FEATURES_PREFIX", $p->getGlobalPrefix() . '/cpu_features');
 define("OPENEXR_PREFIX", $p->getGlobalPrefix() . '/openexr');
 define("OPENJPEG_PREFIX", $p->getGlobalPrefix() . '/openjpeg');
+define("OPENBLAS_PREFIX", $p->getGlobalPrefix() . '/openblas');
+define("LAPACK_PREFIX", $p->getGlobalPrefix() . '/lapack');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

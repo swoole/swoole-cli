@@ -1049,4 +1049,12 @@ make install DESTDIR=
      * ABI  每个操作系统都会为运行在该系统下的应用程序提供应用程序二进制接口（Application Binary Interface，ABI）
      * EABI  嵌入式应用二进制接口 EABI（embedded application binary interface）
      */
+
+    /*
+      alpine 搜索 库构建命令
+                 https://git.alpinelinux.org/aports/about/
+
+      debian 搜索 库构建命令
+
+     */
 }
