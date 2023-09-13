@@ -35,8 +35,6 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$liblz4_prefix};";
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix}";
-    $CMAKE_PREFIX_PATH .= "{$glog_prefix}";
-
 
 
     $workDir = $p->getWorkDir();
@@ -97,10 +95,8 @@ EOF
         -DPNG_ROOT={$png_prefix} \
         -DTIFF_ROOT={$libtiff_prefix} \
         -DJPEG_ROOT={$jpeg_prefix} \
-        -Dglog_ROOT={$glog_prefix} \
         -DLAPACK_ROOT={$lapack_prefix} \
         -DOpenBLAS_ROOT={$openblas_prefix} \
-        -DGLOG_INCLUDE_DIR={$glog_prefix}/include \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
