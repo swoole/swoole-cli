@@ -103,6 +103,7 @@ return function (Preprocessor $p) {
 
     $depends = ['openjpeg'] ;
     $depends = ['harfbuzz'] ;
+    $depends = ['libeigen'] ;
 
 
     $ext = (new Extension('common'))
