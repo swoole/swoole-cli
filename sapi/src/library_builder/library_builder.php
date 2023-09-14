@@ -1061,4 +1061,24 @@ make install DESTDIR=
     /*
      * SLAM语言也称交替建模仿真语言
      */
+
+    /*
+     * 什么是IPoE？IPoE与PPPoE相比有哪些不同？
+     * https://info.support.huawei.com/info-finder/encyclopedia/zh/IPoE.html
+     *
+     * PPPoE（Point-to-Point Protocol over Ethernet）
+     *
+     *  IPoE（IP over Ethernet）是一种接入认证技术
+     *
+     * 在IPoE中，用户通过DHCP（Dynamic Host Configuration Protocol，动态主机配置协议）动态获取IP地址
+     *
+     * 宽带接入服务器（Broadband Remote Access Server,简称BRAS）是面向宽带网络应用的新型接入网关
+     *
+     * IPSec（IP Security Protocol）
+     * VoIP（Voice over IP)
+     */
+
+    /*
+     *  Valgrind、Address Sanitizer（ASan）内存分析工具
+     */
 }

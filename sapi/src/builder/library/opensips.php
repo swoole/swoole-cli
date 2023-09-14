@@ -65,9 +65,9 @@ EOF
             'unixODBC',
             'libexpat',
             'libxml2',
-           // 'ibradius-ng', //待解决
-           // 'libsnmp', //待解决
-           // 'libldap', //待解决
+            // 'libradius-ng', //待解决
+            // 'libsnmp', //待解决
+            // 'libldap', //待解决
             'ncurses'
         )
     ;
