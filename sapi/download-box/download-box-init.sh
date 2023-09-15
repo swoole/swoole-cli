@@ -34,10 +34,12 @@ done
 export COMPOSER_ALLOW_SUPERUSER=1
 composer update  --optimize-autoloader
 
-php prepare.php --with-build-type=release +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql \
+php prepare.php  +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql \
 --with-swoole-pgsql=1 \
+--with-libavif=1 \
 --without-docker=1 --with-skip-download=1 \
---with-dependency-graph=1 --with-libavif=1
+--with-dependency-graph=1 \
+--with-build-type=release
 
 
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var

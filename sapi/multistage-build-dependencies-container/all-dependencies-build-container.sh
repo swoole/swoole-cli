@@ -10,6 +10,8 @@ __PROJECT__=$(
   pwd
 )
 
+cd ${__PROJECT__}
+
 mkdir -p ${__PROJECT__}/var
 
 # export DOCKER_BUILDKIT=1
@@ -38,15 +40,15 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-cd ${__PROJECT__}/var
+cd ${__PROJECT__}/
 
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
 
 docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR=${USE_COMPOSER_MIRROR}
 
-cd ${__PROJECT__}/var
+cd ${__PROJECT__}/
 
-echo ${IMAGE} >swoole-cli-build-all-dependencies-container.txt
+echo ${IMAGE} >${__PROJECT__}/var/swoole-cli-build-all-dependencies-container.txt
 
 docker push ${IMAGE}

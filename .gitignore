@@ -329,3 +329,5 @@ var/
 php-src/
 ext/swoole/
 sapi/webUI/.idea/
+Dockerfile-all-dependencies-alpine
+php.ini
