@@ -26,5 +26,8 @@ EOF
             ->withBinPath($sqlite3_prefix)
             ->withPkgName('sqlite3')
             ->withBinPath($sqlite3_prefix . '/bin/')
+
     );
+    $p->withExportVariable('SQLITE_CFLAGS', '$(pkg-config  --cflags --static sqlite3)');
+    $p->withExportVariable('SQLITE_LIBS', '$(pkg-config    --libs   --static sqlite3)');
 };
