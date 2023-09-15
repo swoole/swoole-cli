@@ -42,8 +42,10 @@ RUN /bin/bash -c "source /root/.bashrc" && composer suggest --no-dev
 RUN /bin/bash -c "source /root/.bashrc" && composer update --no-dev --optimize-autoloader
 
 
-RUN /bin/bash -c "source /root/.bashrc" && php prepare.php --with-build-type=dev  --with-swoole-pgsql=1
+RUN /bin/bash -c "source /root/.bashrc" && php prepare.php --with-build-type=dev  --with-swoole-pgsql=1 --with-libavif=1
 RUN bash make.sh list-library
+RUN bash make-install-deps.sh
+RUN bash sapi/quickstart/linux/alpine-init.sh --mirror china
 RUN bash make.sh all-library
 
 

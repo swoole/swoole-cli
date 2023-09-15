@@ -4,14 +4,14 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $odbc_prefix = UNIX_ODBC_PREFIX;
+    $unix_odbc_prefix = UNIX_ODBC_PREFIX;
     $iconv_prefix = ICONV_PREFIX;
     $p->addLibrary(
-        (new Library('unixODBC'))
+        (new Library('unix_odbc'))
             ->withHomePage('https://github.com/lurcher/unixODBC')
             ->withLicense('https://github.com/lurcher/unixODBC/blob/master/LICENSE', Library::LICENSE_LGPL)
             ->withUrl('https://github.com/lurcher/unixODBC/releases/download/2.3.11/unixODBC-2.3.11.tar.gz')
-            ->withPrefix($odbc_prefix)
+            ->withPrefix($unix_odbc_prefix)
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
@@ -28,7 +28,7 @@ EOF
             LDFLAGS="\$(pkg-config  --libs-only-L   --static \$PACKAGES_NAMES ) -L{$iconv_prefix}/lib"  \
             LIBS="\$(pkg-config     --libs-only-l   --static \$PACKAGES_NAMES ) -liconv" \
             ./configure \
-            --prefix={$odbc_prefix} \
+            --prefix={$unix_odbc_prefix} \
             --enable-static=yes \
             --enable-shared=no \
             --enable-readline \
@@ -42,13 +42,13 @@ EOF
             )
             ->withScriptAfterInstall(
                 <<<EOF
-            rm -rf {$odbc_prefix}/lib/*.so.*
-            rm -rf {$odbc_prefix}/lib/*.so
-            rm -rf {$odbc_prefix}/lib/*.dylib
+            rm -rf {$unix_odbc_prefix}/lib/*.so.*
+            rm -rf {$unix_odbc_prefix}/lib/*.so
+            rm -rf {$unix_odbc_prefix}/lib/*.dylib
 EOF
             )
             ->withDependentLibraries('readline', 'libiconv', 'libedit')
-            ->withBinPath($odbc_prefix . '/bin/')
+            ->withBinPath($unix_odbc_prefix . '/bin/')
             ->withPkgName('odbc')
             ->withPkgName('odbccr')
             ->withPkgName('odbcinst')
