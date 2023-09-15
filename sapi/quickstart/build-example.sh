@@ -25,8 +25,9 @@ export PATH="${__PROJECT__}/bin/runtime:$PATH"
 alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
 php -v
 
-# composer config  repo.packagist composer https://mirrors.aliyun.com/composer/
-
+composer config  repo.packagist composer https://mirrors.aliyun.com/composer/
+composer update  --optimize-autoloader
+composer config -g --unset repos.packagist
 
 # 可用配置参数
 # --with-swoole-pgsql=1

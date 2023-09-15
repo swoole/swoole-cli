@@ -35,7 +35,7 @@ USE_COMPOSER_MIRROR=0
 while [ $# -gt 0 ]; do
   case "$1" in
   --composer_mirror)
-    USE_COMPOSER_MIRROR=1
+    USE_COMPOSER_MIRROR="aliyun"
     shift
     ;;
   --*)
@@ -50,7 +50,7 @@ cd ${__PROJECT__}/
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
 
-docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR=${USE_COMPOSER_MIRROR}
+docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR="${USE_COMPOSER_MIRROR}"
 
 cd ${__PROJECT__}/
 
