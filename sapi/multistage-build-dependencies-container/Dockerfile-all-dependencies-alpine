@@ -38,8 +38,7 @@ WORKDIR /work
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ARG USE_COMPOSER_MIRROR
 RUN if [ $USE_COMPOSER_MIRROR -eq 1 ]; then { composer config repo.packagist composer https://mirrors.aliyun.com/composer/ ; } fi
-RUN /bin/bash -c "source /root/.bashrc" && composer suggest --no-dev
-RUN /bin/bash -c "source /root/.bashrc" && composer update --no-dev --optimize-autoloader
+RUN /bin/bash -c "source /root/.bashrc" && composer update  --optimize-autoloader
 
 
 RUN /bin/bash -c "source /root/.bashrc" && php prepare.php --with-build-type=dev  --with-swoole-pgsql=1 --with-libavif=1
