@@ -60,7 +60,7 @@ if [[ -f /.dockerenv ]]; then
   git config --global --add safe.directory ${__PROJECT__}
 fi
 
-GIT_BRANCH=main
+GIT_BRANCH=build_native_php
 test -d swoole-cli && rm -rf swoole-cli
 git clone -b ${GIT_BRANCH} --depth=1  --recursive https://github.com/swoole/swoole-cli.git
 
