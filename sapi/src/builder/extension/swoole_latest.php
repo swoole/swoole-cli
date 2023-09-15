@@ -6,7 +6,7 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
 
-    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'pgsql', 'unixODBC'];
+    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'pgsql', 'unix_odbc'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --enable-swoole-pgsql --enable-swoole-coro-time ';
