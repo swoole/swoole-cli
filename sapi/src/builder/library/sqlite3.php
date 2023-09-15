@@ -25,5 +25,6 @@ EOF
             )
             ->withBinPath($sqlite3_prefix)
             ->withPkgName('sqlite3')
+            ->withBinPath($sqlite3_prefix . '/bin/')
     );
 };
