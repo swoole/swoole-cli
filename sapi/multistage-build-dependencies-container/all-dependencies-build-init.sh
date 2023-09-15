@@ -29,6 +29,9 @@ set -x
 chmod a+x php
 chmod a+x composer
 
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
+
 cd ${__PROJECT__}
 
 mkdir -p pool/lib

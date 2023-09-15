@@ -30,6 +30,8 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
 
 export COMPOSER_ALLOW_SUPERUSER=1
 composer update  --optimize-autoloader
