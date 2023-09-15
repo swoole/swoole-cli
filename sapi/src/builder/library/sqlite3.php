@@ -14,8 +14,12 @@ return function (Preprocessor $p) {
             ->withPrefix($sqlite3_prefix)
             ->withConfigure(
                 <<<EOF
+                ./configure --help
                 CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA=1" \
-                ./configure --prefix={$sqlite3_prefix}  --enable-static --disable-shared
+                ./configure \
+                --prefix={$sqlite3_prefix} \
+                --enable-shared=no \
+                --enable-static=yes
 
 EOF
             )
