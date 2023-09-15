@@ -63,7 +63,7 @@ composer update  --optimize-autoloader
 php prepare.php  +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql \
 --with-swoole-pgsql=1 \
 --with-libavif=1 \
---without-docker=1 --with-skip-download=1 \
+--without-docker=1
 --with-dependency-graph=1 \
 --with-build-type=release
 
