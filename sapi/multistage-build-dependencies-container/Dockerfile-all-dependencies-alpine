@@ -33,7 +33,7 @@ RUN alias php='php -d curl.cainfo="${CERT_FILE}" -d openssl.cafile="${CERT_FILE}
 RUN alias
 RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\${CERT_FILE}\"'" >>/root/.bashrc
 
-
+RUN bash sapi/quickstart/linux/alpine-init.sh --mirror china
 WORKDIR /work
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ARG USE_COMPOSER_MIRROR
@@ -44,7 +44,7 @@ RUN /bin/bash -c "source /root/.bashrc" && composer update  --optimize-autoloade
 RUN /bin/bash -c "source /root/.bashrc" && php prepare.php --with-build-type=dev  --with-swoole-pgsql=1 --with-libavif=1
 RUN bash make.sh list-library
 RUN bash make-install-deps.sh
-RUN bash sapi/quickstart/linux/alpine-init.sh --mirror china
+
 RUN bash make.sh all-library
 
 
