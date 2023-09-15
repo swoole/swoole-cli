@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://curl.se/')
             ->withManual('https://curl.se/docs/install.html')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
-            ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
+            ->withUrl('https://curl.se/download/curl-8.3.0.tar.gz')
             ->withPrefix($curl_prefix)
             ->withConfigure(
                 <<<EOF
