@@ -40,7 +40,7 @@ RUN if [ $USE_COMPOSER_MIRROR -eq "aliyun" ]; then { composer config -g repo.pac
 RUN /bin/bash -c "source /root/.bashrc" && composer update  --optimize-autoloader
 
 
-RUN /bin/bash -c "source /root/.bashrc" && php prepare.php   --with-swoole-pgsql=1 --with-libavif=1 --with-override-default-enabled-ext=1
+RUN /bin/bash -c "source /root/.bashrc" && php prepare.php   --with-swoole-pgsql=1 --with-libavif=1 --with-install-library-cached=1
 
 RUN bash make-install-deps.sh
 RUN bash make.sh all-library
