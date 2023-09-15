@@ -21,7 +21,8 @@ OS=$(uname -s)
 # shellcheck disable=SC2034
 ARCH=$(uname -m)
 
-export PATH=${__PROJECT__}/bin/runtime:$PATH
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
 php -v
 
 # composer config  repo.packagist composer https://mirrors.aliyun.com/composer/

@@ -16,12 +16,9 @@ return function (Preprocessor $p) {
             ->withHomePage('https://aomediacodec.github.io/av1-avif/')
             ->withLicense('https://github.com/AOMediaCodec/libavif/', Library::LICENSE_BSD)
             ->withManual('https://github.com/AOMediaCodec/libavif/ext/')
-            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v0.11.1.tar.gz')
-            ->withFile('libavif-v0.11.1.tar.gz')
+            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.0.1.tar.gz')
+            ->withFile('libavif-v1.0.1.tar.gz')
             ->withPrefix($libavif_prefix)
-            ->withBuildLibraryCached(true)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libavif_prefix)
             ->withConfigure(
                 <<<EOF
             mkdir -p build
@@ -61,7 +58,7 @@ EOF
                 'libgav1',
                 'dav1d',
             )
-        #     'libyuv',  'libsharpyuv','rav1e'
+        #    'libyuv',  'libsharpyuv','rav1e'
         #   'libgav1' 依赖 absl
     );
 };

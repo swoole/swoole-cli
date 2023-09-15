@@ -11,11 +11,11 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-mkdir -p ${__PROJECT__}/var/runtime
-cd ${__PROJECT__}/var/runtime
+mkdir -p ${__PROJECT__}/bin/runtime
+cd ${__PROJECT__}/bin/runtime
 
 set +x
-if [[ ! -f swoole-cli ]] || [[ ! -f composer.phar ]]; then
+if [[ ! -f php ]] || [[ ! -f composer ]]; then
   echo ""
   echo ""
   echo "please run： bash sapi/quickstart/setup-php-runtime.sh "
@@ -27,13 +27,19 @@ if [[ ! -f swoole-cli ]] || [[ ! -f composer.phar ]]; then
   exit 0
 fi
 
-chmod a+x swoole-cli
-chmod a+x composer.phar
+set -x
+chmod a+x php
+chmod a+x composer
+
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
 
 set -x
 
 cd ${__PROJECT__}
 
+mkdir -p pool/lib
+mkdir -p pool/ext
 ## 借助 download-box 获得已经准备好的 依赖库源码 ，缩减下载时间  存放于 var目录
 bash sapi/download-box/download-box-get-archive-from-server.sh
 
@@ -54,31 +60,19 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-cd ${__PROJECT__}/var
 
 if [[ -f /.dockerenv ]]; then
   git config --global --add safe.directory ${__PROJECT__}
 fi
 
-GIT_BRANCH=build_native_php
-test -d swoole-cli && rm -rf swoole-cli
-git clone -b ${GIT_BRANCH} --depth=1  --recursive https://github.com/swoole/swoole-cli.git
-
-cd ${__PROJECT__}/var/swoole-cli
-
-mkdir -p pool/lib
-mkdir -p pool/ext
-
-cd ${__PROJECT__}/var
-
-awk 'BEGIN { cmd="cp -ri libraries/* swoole-cli/pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri extensions/* swoole-cli/pool/ext" ; print "n" |cmd; }'
-
-cd ${__PROJECT__}/var/swoole-cli
-
 export COMPOSER_ALLOW_SUPERUSER=1
-composer update --no-dev --optimize-autoloader
+composer update  --optimize-autoloader
 
-php prepare.php --with-build-type=dev --with-dependency-graph=1 --with-swoole-pgsql=1  +apcu +ds +inotify +pgsql +pdo_pgsql --without-docker
+php prepare.php  +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql \
+--with-swoole-pgsql=1 \
+--with-libavif=1 \
+--without-docker=1 \
+--with-dependency-graph=1 \
+--with-build-type=release
 
 cd ${__PROJECT__}/

@@ -30,6 +30,8 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
 
 cd ${__PROJECT__}
 
@@ -38,10 +40,12 @@ test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 export COMPOSER_ALLOW_SUPERUSER=1
 composer update  --optimize-autoloader
 
-php prepare.php --with-build-type=release +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql \
+php prepare.php  +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql \
 --with-swoole-pgsql=1 \
+--with-libavif=1 \
 --without-docker=1 --with-skip-download=1 \
---with-dependency-graph=1 --with-libavif=1
+--with-dependency-graph=1 \
+--with-build-type=release
 
 
 cd ${__PROJECT__}
