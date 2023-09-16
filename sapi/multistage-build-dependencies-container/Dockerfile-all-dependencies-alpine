@@ -14,18 +14,17 @@ WORKDIR /work
 
 RUN mkdir -p /usr/local/swoole-cli/etc/
 
-ADD ./runtime/swoole-cli  /usr/local/bin/
-ADD ./runtime/composer.phar  /usr/local/bin/
+ADD ./bin/runtime/php  /usr/local/bin/
+ADD ./bin/runtime/composer  /usr/local/bin/
+ADD ./bin/runtime/cacert.pem  /etc/ssl/certs/
 
-ADD ./runtime/cacert.pem  /etc/ssl/certs/
 ADD ./php.ini  /usr/local/swoole-cli/etc/
-ADD ./swoole-cli  /work
+ADD ./  /work
 
 
-RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
-RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
-RUN chmod a+x /usr/local/bin/swoole-cli
-RUN chmod a+x /usr/local/bin/composer.phar
+RUN chmod a+x /usr/local/bin/php
+RUN chmod a+x /usr/local/bin/composer
+
 
 ENV CERT_FILE=/etc/ssl/certs/cacert.pem
 # ENV CERT_FILE=/etc/ssl/certs/ca-certificates.crt
@@ -35,17 +34,18 @@ RUN alias php='php -d curl.cainfo="${CERT_FILE}" -d openssl.cafile="${CERT_FILE}
 RUN alias
 RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\${CERT_FILE}\"'" >>/root/.bashrc
 
+RUN bash sapi/quickstart/linux/alpine-init.sh --mirror china
 
 WORKDIR /work
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ARG USE_COMPOSER_MIRROR
-RUN if [ $USE_COMPOSER_MIRROR -eq 1 ]; then { composer config repo.packagist composer https://mirrors.aliyun.com/composer/ ; } fi
-RUN /bin/bash -c "source /root/.bashrc" && composer suggest --no-dev
-RUN /bin/bash -c "source /root/.bashrc" && composer update --no-dev --optimize-autoloader
+RUN if [ $USE_COMPOSER_MIRROR -eq "aliyun" ]; then { composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ ; } fi
+RUN /bin/bash -c "source /root/.bashrc" && composer update  --optimize-autoloader
 
 
-RUN /bin/bash -c "source /root/.bashrc" && php prepare.php --with-build-type=dev  --with-swoole-pgsql=1
-RUN bash make.sh list-library
+RUN /bin/bash -c "source /root/.bashrc" && php prepare.php   --with-swoole-pgsql=1 --with-libavif=1 --with-install-library-cached=1
+
+RUN bash make-install-deps.sh
 RUN bash make.sh all-library
 
 
@@ -66,16 +66,14 @@ WORKDIR /work
 RUN mkdir -p /usr/local/swoole-cli/etc/
 
 
-COPY --from=builder-all-library /usr/local/bin/swoole-cli /usr/local/bin/swoole-cli
-COPY --from=builder-all-library /usr/local/bin/composer.phar /usr/local/bin/composer.phar
+COPY --from=builder-all-library /usr/local/bin/php /usr/local/bin/php
+COPY --from=builder-all-library /usr/local/bin/composer /usr/local/bin/composer
 COPY --from=builder-all-library /etc/ssl/certs/cacert.pem /etc/ssl/certs/cacert.pem
 COPY --from=builder-all-library /usr/local/swoole-cli/etc/ /usr/local/swoole-cli/etc/
 
 
-RUN ln -sf /usr/local/bin/swoole-cli /usr/local/bin/php
-RUN ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
-RUN chmod a+x /usr/local/bin/swoole-cli
-RUN chmod a+x /usr/local/bin/composer.phar
+RUN chmod a+x /usr/local/bin/php
+RUN chmod a+x /usr/local/bin/composer
 
 ENV CERT_FILE=/etc/ssl/certs/cacert.pem
 # ENV CERT_FILE=/etc/ssl/certs/ca-certificates.crt
@@ -89,6 +87,7 @@ RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\$
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 COPY --from=builder-all-library  /usr/local/swoole-cli /usr/local/swoole-cli
+
 RUN ls -lh /usr/local/swoole-cli
 RUN du -h -d 1  /usr/local/swoole-cli
 RUN ls -lh /usr/local/swoole-cli/etc/

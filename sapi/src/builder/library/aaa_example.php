@@ -14,14 +14,12 @@ return function (Preprocessor $p) {
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://github.com/opencv/opencv.git')
         /*
+
         //设置别名
         ->withAliasName('example')
 
         //明确申明 使用源地址下载
         ->withDownloadWithOriginURL()
-
-        //明确声明，每次都执行下载，不使用已下载的缓存文件
-        ->withAutoUpdateFile()
 
         //明确申明 不使用代理
         ->withHttpProxy(false)
@@ -81,9 +79,8 @@ EOF
         )
         ->withPrefix($example_prefix)
         /*
-         //用于调试
-         //当 --with-build_type=dev 时 如下2个配置生效
 
+         // 当--with-build_type=dev 时 如下2个配置才生效
 
         // 自动清理构建目录
         ->withCleanBuildDirectory()
@@ -92,8 +89,7 @@ EOF
         ->withCleanPreInstallDirectory($example_prefix)
 
 
-        //明确申明 不使用构建缓存
-        //例子： thirdparty/openssl (每次都解压全新源代码到此目录）
+        //明确申明 不使用构建缓存 例子： thirdparty/openssl (每次都解压全新源代码到此目录）
         ->withBuildLibraryCached(false)
 
        */
@@ -105,35 +101,34 @@ EOF
         /* 使用 cmake 构建 start */
         ->withBuildScript(
             <<<EOF
-             mkdir -p build
-             cd build
-             # cmake 查看选项
-             # cmake -LH ..
-             # cmake -LAH \$cmake_source_directory/setup.cmake
+         mkdir -p build
+         cd build
+         # cmake 查看选项
+         # cmake -LH ..
+         cmake .. \
+        -DCMAKE_INSTALL_PREFIX={$example_prefix} \
+        -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
+        -DCMAKE_BUILD_TYPE=Release  \
+        -DBUILD_SHARED_LIBS=OFF  \
+        -DBUILD_STATIC_LIBS=ON
 
-             cmake .. \
-            -DCMAKE_INSTALL_PREFIX={$example_prefix} \
-            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
-            -DCMAKE_BUILD_TYPE=Release  \
-            -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON
-
-
-            # 配置选项例子
-            # -DCMAKE_CXX_STANDARD=14
-            # -DCMAKE_C_STANDARD=11
-            # -DCMAKE_C_COMPILER=clang \
-            # -DCMAKE_CXX_COMPILER=clang++ \
-            # -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
-            # -DCMAKE_C_FLAGS="-D_POSIX_C_SOURCE=200809L" \
-            # -DOpenSSL_ROOT={$openssl_prefix} \
-            # 查找PKGCONFIG配置目录多个使用分号隔开
-            # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
+        # 更多配置选项，请查看 CMakeLists.txt 文件
+        # 配置选项例子 ；
+        # -DCMAKE_CXX_STANDARD=14
+        # -DCMAKE_C_STANDARD=11
+        # -DCMAKE_C_COMPILER=clang \
+        # -DCMAKE_CXX_COMPILER=clang++ \
+        # -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
+        # -DCMAKE_C_FLAGS="-D_POSIX_C_SOURCE=200809L" \
+        # -DOpenSSL_ROOT={$openssl_prefix} \
+        # 查找PKGCONFIG配置目录多个使用分号隔开
+        # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
 
 
-            # cmake --build . --config Release
+        cmake --build . --config Release
 
-            cmake --build . --config Release --target install
+        cmake --build . --config Release --target install
+
 
 EOF
         )
@@ -143,37 +138,36 @@ EOF
         /* 使用 meson、ninja  构建 start */
         ->withBuildScript(
             <<<EOF
-            meson  -h
-            meson setup -h
-            # meson configure -h
-
-            CPPFLAGS="-I{$gettext_prefix}/include" \
-            LDFLAGS="-L{$gettext_prefix}/lib" \
-            LIBS=" -lintl " \
-            meson setup  build \
-            -Dprefix={$example_prefix} \
-            -Dlibdir={$example_prefix}/lib \
-            -Dincludedir={$example_prefix}/include \
-            -Dbackend=ninja \
-            -Dbuildtype=release \
-            -Ddefault_library=static \
-            -Db_staticpic=true \
-            -Db_pie=true \
-            -Dprefer_static=true \
-            -Dexamples=disabled \
-            -Dc_args=-fmax-errors=10 \
-            -Dcpp_args=-DMAGIC=123
-
-            # -Dc_args=-fmax-errors=10 \
-            # -Dcpp_args=-DMAGIC=123
+        meson  -h
+        meson setup -h
+        # meson configure -h
 
 
-            # meson compile -C build
+        CPPFLAGS="-I{$gettext_prefix}/include" \
+        LDFLAGS="-L{$gettext_prefix}/lib" \
+        LIBS=" -lintl " \
+        meson setup  build \
+        -Dprefix={$example_prefix} \
+        -Dlibdir={$example_prefix}/lib \
+        -Dincludedir={$example_prefix}/include \
+        -Dbackend=ninja \
+        -Dbuildtype=release \
+        -Ddefault_library=static \
+        -Db_staticpic=true \
+        -Db_pie=true \
+        -Dprefer_static=true
 
-            ninja -C build
-            ninja -C build install
+        # 更多构建选项，请查看 meson_options.txt 文件
+        # -Dexamples=disabled
+        # -Dc_args=-fmax-errors=10 \
+        # -Dcpp_args=-DMAGIC=123
 
 
+        # meson compile -C build
+        # meson install -C build
+
+        ninja -C build
+        ninja -C build install
 
 EOF
         )
@@ -183,25 +177,25 @@ EOF
         /* 使用 autoconfig automake  构建 start  */
         ->withConfigure(
             <<<EOF
-            # sh autogen.sh
+        # sh autogen.sh
 
-            # libtoolize -ci
-            # autoreconf -fi
+        # libtoolize -ci
+        # autoreconf -fi
 
-            ./configure --help
+        ./configure --help
 
-            # LDFLAGS="\$LDFLAGS -static"
+        # LDFLAGS="\$LDFLAGS -static"
 
-            PACKAGES='openssl  '
-            PACKAGES="\$PACKAGES zlib"
+        PACKAGES='openssl  '
+        PACKAGES="\$PACKAGES zlib"
 
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
-            ./configure \
-            --prefix={$example_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
+        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
+        ./configure \
+        --prefix={$example_prefix} \
+        --enable-shared=no \
+        --enable-static=yes
 
 EOF
         )
@@ -226,6 +220,8 @@ EOF
 
         /*
 
+        //默认不需要此配置
+
         ->withSkipDownload()
         ->disableDefaultLdflags()
         ->disablePkgName()
@@ -247,14 +243,19 @@ EOF
         )
         */
 
+        ->withPkgName('example')
+        ->withBinPath($example_prefix . '/bin/')
+        //依赖其它静态链接库
+        ->withDependentLibraries('zlib', 'openssl')
 
 
         /*
 
         //默认不需要此配置，特殊目录才需要配置
-        ->withLdflags('-L' . $example_prefix . '/lib/x86_64-linux-gnu/')
+        ->withLdflags('-L' . $example_prefix . '/lib64')
+
         //默认不需要此配置，特殊目录才需要配置
-        ->withPkgConfig($example_prefix . '/lib/x86_64-linux-gnu/pkgconfig')
+        ->withPkgConfig($example_prefix . '/lib/ib64/pkgconfig')
 
         */
     ;

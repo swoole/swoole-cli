@@ -1187,7 +1187,10 @@ EOF;
         $this->generateFile(__DIR__ . '/template/make-install-deps.php', $this->rootDir . '/make-install-deps.sh');
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
         $this->generateFile(__DIR__ . '/template/make-env.php', $this->rootDir . '/make-env.sh');
-        $this->generateFile(__DIR__ . '/template/make-pkg-check.php', $this->rootDir . '/make-pkg-check.sh');
+        $this->generateFile(
+            __DIR__ . '/template/make-export-variables.php',
+            $this->rootDir . '/make-export-variables.sh'
+        );
 
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
