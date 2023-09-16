@@ -204,11 +204,13 @@ export_variables() {
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
 <?php foreach ($this->exportVariables as $value) : ?>
     export  <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     return 0
 }
 
@@ -230,10 +232,9 @@ make_config() {
 
    ./configure --help
     export_variables
-    echo $LDFLAGS > ldflags.log
-    echo $CPPFLAGS > cppflags.log
-    echo $LIBS > libs.log
-
+    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
     ./configure $OPTIONS
 <?php if ($this->getOsType()=='linux') : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
@@ -272,7 +273,7 @@ make_clean() {
     rm -f ext/opcache/minilua
 }
 
-show_lib_pkgs() {
+show_lib_pkg() {
     set +x
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
@@ -285,7 +286,7 @@ show_lib_pkgs() {
     exit 0
 }
 
-show_lib_dependent_pkgs() {
+show_lib_dep_pkg() {
     set +x
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
@@ -324,9 +325,9 @@ help() {
     echo "./make.sh clean-all-library"
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
-    echo "./make.sh lib-pkg-check"
+    echo "./make.sh pkg-check"
     echo "./make.sh show-lib-pkg"
-    echo "./make.sh show-lib-dependent-pkg"
+    echo "./make.sh show-lib-dep-pkg"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -414,7 +415,7 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
     cd <?= $this->getRootDir() ?>/sapi/swoole
     SWOOLE_BRANCH=$2
     git checkout $SWOOLE_BRANCH
-elif [ "$1" = "lib-pkg-check" ] ;then
+elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
     echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
@@ -429,10 +430,10 @@ elif [ "$1" = "lib-pkg-check" ] ;then
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "show-lib-pkg" ] ;then
-    show_lib_pkgs
+    show_lib_pkg
     exit 0
-elif [ "$1" = "show-lib-dependent-pkg" ] ;then
-    show_lib_dependent_pkgs "$2"
+elif [ "$1" = "show-lib-dep-pkg" ] ;then
+    show_lib_dep_pkg "$2"
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>

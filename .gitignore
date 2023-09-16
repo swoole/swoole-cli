@@ -325,6 +325,7 @@ libs.log
 make-install-deps.sh
 make-download-box.sh
 make-env.sh
+make-export-variables.sh
 var/
 php-src/
 ext/swoole/
