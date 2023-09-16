@@ -197,7 +197,6 @@ make_ext_hook() {
 }
 
 export_variables() {
-    set +x
     CPPFLAGS=""
     CFLAGS=""
     LDFLAGS=""
@@ -275,6 +274,10 @@ make_clean() {
     rm -f libs.log ldflags.log cppflags.log
 }
 
+show_export_var() {
+    set -x
+    export_variables
+}
 show_lib_pkg() {
     set +x
 <?php foreach ($this->libraryList as $item) : ?>
@@ -330,6 +333,7 @@ help() {
     echo "./make.sh pkg-check"
     echo "./make.sh show-lib-pkg"
     echo "./make.sh show-lib-dep-pkg"
+    echo "./make.sh show-export-var"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -436,6 +440,9 @@ elif [ "$1" = "show-lib-pkg" ] ;then
     exit 0
 elif [ "$1" = "show-lib-dep-pkg" ] ;then
     show_lib_dep_pkg "$2"
+    exit 0
+elif [ "$1" = "show-export-var" ] ;then
+    show_export_var
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
