@@ -60,4 +60,7 @@ EOF
         #  'libyuv', 'libsharpyuv','rav1e'
         #   'libgav1'  # 测试例子依赖 absl
     );
+
+    $p->withExportVariable('AVIF_CFLAGS', '$(pkg-config  --cflags --static libavif libbrotlicommon libbrotlidec libbrotlienc SvtAv1Enc SvtAv1Dec aom)');
+    $p->withExportVariable('AVIF_LIBS', '$(pkg-config    --libs   --static libavif libbrotlicommon libbrotlidec libbrotlienc SvtAv1Enc SvtAv1Dec aom)');
 };
