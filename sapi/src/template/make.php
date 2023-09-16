@@ -271,6 +271,7 @@ make_clean() {
     rm -f ext/opcache/jit/zend_jit_x86.c
     rm -f ext/opcache/jit/zend_jit_arm64.c
     rm -f ext/opcache/minilua
+    rm -f libs.log ldflags.log cppflags.log
 }
 
 show_lib_pkg() {
