@@ -280,11 +280,13 @@ export_variables() {
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+    result_code=$?
+    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
 <?php foreach ($this->exportVariables as $value) : ?>
     export  <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     return 0
 }
 
@@ -319,6 +321,12 @@ make_config() {
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
 <?php endif; ?>
+
+   ./configure --help
+    export_variables
+    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
     ./configure $OPTIONS
 
@@ -367,9 +375,14 @@ make_clean() {
     rm -f ext/opcache/jit/zend_jit_x86.c
     rm -f ext/opcache/jit/zend_jit_arm64.c
     rm -f ext/opcache/minilua
+    rm -f libs.log ldflags.log cppflags.log
 }
 
-show_lib_pkgs() {
+show_export_var() {
+    set -x
+    export_variables
+}
+show_lib_pkg() {
     set +x
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
@@ -382,7 +395,7 @@ show_lib_pkgs() {
     exit 0
 }
 
-show_lib_dependent_pkgs() {
+show_lib_dep_pkg() {
     set +x
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
@@ -422,9 +435,10 @@ help() {
     echo "./make.sh clean-all-library"
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
-    echo "./make.sh lib-pkg-check"
+    echo "./make.sh pkg-check"
     echo "./make.sh show-lib-pkg"
-    echo "./make.sh show-lib-dependent-pkg"
+    echo "./make.sh show-lib-dep-pkg"
+    echo "./make.sh show-export-var"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -513,7 +527,7 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
     cd <?= $this->getRootDir() ?>/sapi/swoole
     SWOOLE_BRANCH=$2
     git checkout $SWOOLE_BRANCH
-elif [ "$1" = "lib-pkg-check" ] ;then
+elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
     echo "[<?= $item->name ?>] pkg-config : <?= implode(' ', $item->pkgNames) ?>" ;
@@ -528,10 +542,13 @@ elif [ "$1" = "lib-pkg-check" ] ;then
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "show-lib-pkg" ] ;then
-    show_lib_pkgs
+    show_lib_pkg
     exit 0
-elif [ "$1" = "show-lib-dependent-pkg" ] ;then
-    show_lib_dependent_pkgs "$2"
+elif [ "$1" = "show-lib-dep-pkg" ] ;then
+    show_lib_dep_pkg "$2"
+    exit 0
+elif [ "$1" = "show-export-var" ] ;then
+    show_export_var
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>

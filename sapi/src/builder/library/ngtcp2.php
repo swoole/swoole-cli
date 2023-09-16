@@ -40,7 +40,8 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libngtcp2')
-            ->withPkgName('libngtcp2_crypto_openssl')
+            ->withPkgName('libngtcp2_crypto_quictls')
+            //->withPkgName('libngtcp2_crypto_openssl') # v1.0 版本 变更为 quictls
             ->withDependentLibraries('openssl', 'nghttp3')
     );
 };

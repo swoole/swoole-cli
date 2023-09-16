@@ -112,6 +112,11 @@ jobs:
             bash sapi/quickstart/mark-install-library-cached.sh
             rm -rf /usr/local/swoole-cli/pgsql
             rm -rf /usr/local/swoole-cli/freetype
+            rm -rf /usr/local/swoole-cli/openssl
+            rm -rf /usr/local/swoole-cli/nghttp3
+            rm -rf /usr/local/swoole-cli/ngtcp2
+            rm -rf /usr/local/swoole-cli/curl
+            rm -rf /usr/local/swoole-cli/icu
 
             bash ./make.sh all-library
 
