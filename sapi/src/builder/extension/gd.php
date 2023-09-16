@@ -11,6 +11,9 @@ return function (Preprocessor $p) {
     if ($p->getInputOption('with-libavif')) {
         $options .= ' --with-avif ';
         $depends[] = 'libavif';
+
+        $p->withExportVariable('AVIF_CFLAGS', '$(pkg-config  --cflags --static libavif)');
+        $p->withExportVariable('AVIF_LIBS', '$(pkg-config    --libs   --static libavif)');
     }
 
     $ext = (new Extension('gd'))
