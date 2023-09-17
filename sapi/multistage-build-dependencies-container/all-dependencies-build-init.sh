@@ -79,7 +79,7 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 case "$COMPOSER_MIRROR" in
   aliyun)
   # shellcheck disable=SC2034
-  composer config  -g repo.packagist composer https://mirrors.aliyun.com/composer/
+  composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
   ;;
   tencent)
   # shellcheck disable=SC2034
