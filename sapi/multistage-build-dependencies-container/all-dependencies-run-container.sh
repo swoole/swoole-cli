@@ -13,7 +13,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}/
 ARCH=$(uname -m)
 
-IMAGE_FILE="${__PROJECT__}/var/swoole-cli-build-all-dependencies-container.txt"
+IMAGE_FILE="${__PROJECT__}/var/all-dependencies-container.txt"
 if test -f $IMAGE_FILE; then
   {
     docker stop swoole-cli-alpine-dev

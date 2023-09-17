@@ -45,13 +45,19 @@ bash  sapi/multistage-build-dependencies-container/all-dependencies-build-contai
 bash sapi/multistage-build-dependencies-container/all-dependencies-run-container.sh
 
 # 新开终端进入容器
-docker exec -it swoole-cli-all-dependencies-container sh
+docker exec -it swoole-cli-alpine-dev sh
 
-composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-composer update --no-dev --optimize-autoloader
+
+export COMPOSER_ALLOW_SUPERUSER=1
+export PATH="/work/bin/runtime:$PATH"
+alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
+
+composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+composer update --optimize-autoloader
+composer config -g --unset repos.packagist
 
 # 生成构建脚本
-php prepare.php --with-build-type=release  +ds +inotify +apcu --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+php prepare.php --with-build-type=release  +ds +inotify +apcu --with-libavif=1
 
 # 这里可以直接跳过步骤
 # sh make.sh all-library
@@ -65,25 +71,25 @@ sh make.sh build
 
 ## 为了方便分发，把容器镜像导出为文件
 
-> 使用 抢占式 高配置 云服务器 来加速构建
+> 构建加速建议： 使用 抢占式 高配置云服务器 来加速构建
 > 目的：节省网络流量 （单个文件不压缩情况下，大小超过 1GB）
 
 ```bash
 
 cd var
 
-docker save -o "all-dependencies-container-image-php8-$(uname -m).tar" $(cat all-dependencies-container.txt)
-
+docker save -o "all-dependencies-container-image-$(uname -m).tar" $(cat all-dependencies-container.txt)
 
 # xz 并行压缩 -T cpu核数 -k 保持源文件
-xz -9 -T$(nproc) -k "all-dependencies-container-image-php8-$(uname -m).tar"
+xz -9 -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar"
 
 # xz 解压
-xz -d -T$(nproc) -k "all-dependencies-container-image-php8-$(uname -m).tar.xz"
+xz -d -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar.xz"
 
 # 从文件导入容器镜像
 
-docker load -i  "all-dependencies-container-image-php8-$(uname -m).tar"
+docker load -i  "all-dependencies-container-image-$(uname -m).tar"
+>>>>>>> experiment-webui
 
 ```
 
