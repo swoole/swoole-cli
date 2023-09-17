@@ -18,9 +18,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($aom_prefix)
-        ->withBuildLibraryCached(true)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($aom_prefix)
         ->withConfigure(
             <<<EOF
             mkdir -p build_dir
