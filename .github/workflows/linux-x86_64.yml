@@ -104,11 +104,10 @@ jobs:
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
 
-            sh sapi/quickstart/linux/alpine-init.sh
+            sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
+
             # composer config -g repos.packagist composer https://packagist.mirrors.sjtug.sjtu.edu.cn
             # composer config -g repos.packagist composer https://packagist.org
-
-            sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
 
             # composer update --no-dev  --optimize-autoloader
             composer update  --no-dev --optimize-autoloader
@@ -121,7 +120,6 @@ jobs:
             bash make-install-deps.sh
 
             # bash sapi/quickstart/mark-install-library-cached.sh
-
 
             bash ./make.sh all-library
             bash ./make.sh config
