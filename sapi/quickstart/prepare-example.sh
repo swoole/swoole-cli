@@ -26,7 +26,8 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 
 php -v
 
-composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+#composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
 
