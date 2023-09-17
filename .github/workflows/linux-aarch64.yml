@@ -48,8 +48,7 @@ jobs:
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
-            # composer update --no-dev  --optimize-autoloader
-            composer update   --optimize-autoloader
+            composer update --no-dev  --optimize-autoloader
 
             php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb --with-swoole-pgsql=1 --with-install-library-cached=1
 

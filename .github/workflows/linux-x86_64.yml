@@ -99,8 +99,7 @@ jobs:
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
-            # composer update --no-dev  --optimize-autoloader
-            composer update  --optimize-autoloader
+            composer update --no-dev  --optimize-autoloader
 
             php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql +mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }} --with-install-library-cached=1 --with-libavif=1
 
@@ -110,7 +109,6 @@ jobs:
             bash make-install-deps.sh
 
             # bash sapi/quickstart/mark-install-library-cached.sh
-
 
             bash ./make.sh all-library
 
