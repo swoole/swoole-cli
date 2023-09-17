@@ -25,13 +25,13 @@ while [ $# -gt 0 ]; do
 done
 
 case "$MIRROR" in
-tuna)
+china|tuna)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
   ;;
-china|ustc)
+ustc)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
-  sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+  sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
   ;;
 
 esac
@@ -49,10 +49,10 @@ apk add diffutils
 apk add netcat-openbsd
 
 case "$MIRROR" in
-tuna)
+china|tuna)
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   ;;
-china|ustc)
+ustc)
   pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
   ;;
 
