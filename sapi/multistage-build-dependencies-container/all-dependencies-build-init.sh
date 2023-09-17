@@ -32,7 +32,8 @@ chmod a+x php
 chmod a+x composer
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
-alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
+alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
+
 
 set -x
 
@@ -40,17 +41,22 @@ cd ${__PROJECT__}
 
 mkdir -p pool/lib
 mkdir -p pool/ext
-## 借助 download-box 获得已经准备好的 依赖库源码 ，缩减下载时间  存放于 var目录
-bash sapi/download-box/download-box-get-archive-from-server.sh
 
 cd ${__PROJECT__}
 
+COMPOSER_MIRROR=""
 while [ $# -gt 0 ]; do
   case "$1" in
   --proxy)
     export http_proxy="$2"
     export https_proxy="$2"
     export no_proxy="0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+    shift
+    ;;
+  --composer_mirror)
+    ## 借助 download-box 获得已经准备好的 依赖库源码 ，缩减下载时间  存放于 var目录
+    bash sapi/download-box/download-box-get-archive-from-server.sh
+    COMPOSER_MIRROR="$2"
     shift
     ;;
   --*)
@@ -66,13 +72,32 @@ if [[ -f /.dockerenv ]]; then
 fi
 
 export COMPOSER_ALLOW_SUPERUSER=1
-composer update  --optimize-autoloader
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
 
-php prepare.php  +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql \
+
+case "$COMPOSER_MIRROR" in
+  aliyun)
+  # shellcheck disable=SC2034
+  composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+  ;;
+  tencent)
+  # shellcheck disable=SC2034
+  composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+  ;;
+  *)
+    echo 'no found mirror site, use origin site'
+    ;;
+esac
+
+composer update  --optimize-autoloader
+composer config -g --unset repos.packagist
+
+
+php prepare.php  +ds +inotify +apcu  +pgsql +pdo_pgsql \
 --with-swoole-pgsql=1 \
 --with-libavif=1 \
 --without-docker=1 \
---with-dependency-graph=1 \
 --with-build-type=release
 
 cd ${__PROJECT__}/

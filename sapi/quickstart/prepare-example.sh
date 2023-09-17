@@ -22,10 +22,12 @@ OS=$(uname -s)
 ARCH=$(uname -m)
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
-alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
+alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
+
 php -v
 
-composer config  repo.packagist composer https://mirrors.aliyun.com/composer/
+#composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
 
@@ -51,8 +53,8 @@ bash sapi/quickstart/mark-install-library-cached.sh
 
 php prepare.php \
   --with-global-prefix=/usr/local/swoole-cli \
-  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql \
-  --with-swoole-pgsql=1
+  --with-install-library-cached=1 \
+  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql
 
 
 exit 0
@@ -81,3 +83,14 @@ case $NUM in
        exit 1;;
 esac
 EOF
+
+
+
+bash make-install-deps.sh
+
+bash make.sh all-library
+
+bash make.sh config
+
+bash make.sh build
+

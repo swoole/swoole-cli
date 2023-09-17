@@ -13,7 +13,7 @@ __PROJECT__=$(
 
 cd ${__PROJECT__}/
 
-
+COMPOSER_MIRROR=""
 while [ $# -gt 0 ]; do
   case "$1" in
   --proxy)
@@ -23,6 +23,10 @@ while [ $# -gt 0 ]; do
     export NO_PROXY="\${NO_PROXY},127.0.0.1,localhost"
     shift
     ;;
+  --mirror)
+    COMPOSER_MIRROR="$2"
+    shift
+    ;;
   --*)
     echo "Illegal option $1"
     ;;
@@ -30,17 +34,32 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-export PATH="${__PROJECT__}/bin/runtime:$PATH"
-alias php="php -c ${__PROJECT__}/bin/runtime/php.ini"
 
 cd ${__PROJECT__}
 
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
 export COMPOSER_ALLOW_SUPERUSER=1
-composer update  --optimize-autoloader
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
+case "$COMPOSER_MIRROR" in
+  aliyun)
+  composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+  ;;
+  tencent)
+  composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+  ;;
+  *)
+    echo 'no found mirror site, use origin site'
+    ;;
+esac
 
-php prepare.php  +ds +inotify +apcu +protobuf +pgsql +pdo_pgsql \
+
+composer update  --optimize-autoloader
+composer config -g --unset repos.packagist
+
+
+php prepare.php  +ds +inotify +apcu  +pgsql +pdo_pgsql \
 --with-swoole-pgsql=1 \
 --with-libavif=1 \
 --without-docker=1 --with-skip-download=1 \

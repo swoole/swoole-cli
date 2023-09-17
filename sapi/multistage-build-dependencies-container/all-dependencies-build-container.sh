@@ -32,12 +32,17 @@ IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 ALIYUN_IMAGE="registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:build-swoole-cli-${TAG}"
 
-USE_COMPOSER_MIRROR=0
+COMPOSER_MIRROR=""
+MIRROR=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
   --composer_mirror)
-    USE_COMPOSER_MIRROR="aliyun"
+    COMPOSER_MIRROR="$2"  # "aliyun"  "tencent"
+    shift
+    ;;
+  --mirror)
+    MIRROR="$2" # "ustc"  "tuna"
     shift
     ;;
   --*)
@@ -52,11 +57,15 @@ cd ${__PROJECT__}/
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
 
-docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR="${USE_COMPOSER_MIRROR}"
+docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
+--progress=plain \
+--build-arg="COMPOSER_MIRROR=${COMPOSER_MIRROR}" \
+--build-arg="MIRROR=${MIRROR}"
+
 
 cd ${__PROJECT__}/
 
-echo ${IMAGE} >${__PROJECT__}/var/swoole-cli-build-all-dependencies-container.txt
+echo ${IMAGE} >${__PROJECT__}/var/all-dependencies-container.txt
 
 docker tag ${IMAGE} ${ALIYUN_IMAGE}
 
