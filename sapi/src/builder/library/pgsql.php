@@ -5,10 +5,8 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
-    $option = '';
-    if ($p->getOsType() == 'macos') {
-        $option = '--disable-thread-safety';
-    }
+    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static  ';
+    $libs = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
@@ -31,6 +29,8 @@ return function (Preprocessor $p) {
             # 121行 替换内容
 
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
+            sed -i.backup "293 s/^/#$/"  ../src/Makefile.shlib
+            sed -i.backup "441 s/^/#$/"  ../src/Makefile.shlib
 
             # 静态链接方法二：
             # 102行，整行替换
@@ -38,12 +38,12 @@ return function (Preprocessor $p) {
 
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
-            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES )" \
-            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES )" \
+           LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs}  " \
             ../configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
-            {$option} \
+            --disable-thread-safety \
             --with-ssl=openssl  \
             --with-readline \
             --with-icu \
@@ -59,17 +59,14 @@ return function (Preprocessor $p) {
             --without-bonjour \
             --without-tcl
 
-
-
             make -C src/bin/pg_config install
+
             make -C src/include install
 
             make -C  src/common install
 
-            make -C  src/backend/port install
             make -C  src/port install
 
-            make -C  src/backend/libpq install
             make -C  src/interfaces/libpq install
 
 EOF
@@ -83,6 +80,15 @@ EOF
             )
             ->withPkgName('libpq')
             ->withBinPath($pgsql_prefix . '/bin/')
-            ->withDependentLibraries('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
+            ->withDependentLibraries(
+                'zlib',
+                'icu',
+                'libxml2',
+                'openssl',
+                'readline',
+                'libxslt',
+                'libzstd',
+                'liblz4'
+            )
     );
 };
