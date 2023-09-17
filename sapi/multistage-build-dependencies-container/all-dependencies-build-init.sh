@@ -40,6 +40,7 @@ mkdir -p pool/ext
 
 cd ${__PROJECT__}
 
+MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --proxy)
@@ -51,6 +52,7 @@ while [ $# -gt 0 ]; do
     --mirror)
       ## 借助 download-box 获得已经准备好的 依赖库源码 ，缩减下载时间  存放于 var目录
       bash sapi/download-box/download-box-get-archive-from-server.sh
+      MIRROR="$2"
       shift
       ;;
   --*)
