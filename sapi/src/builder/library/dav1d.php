@@ -43,7 +43,6 @@ EOF
             )
             ->withBuildScript(
                 <<<EOF
-
             meson setup  build \
             -Dprefix={$dav1d_prefix} \
             -Dlibdir={$dav1d_prefix}/lib \
@@ -61,7 +60,6 @@ EOF
             -Denable_docs=false \
             -Dlogging=false \
             -Dfuzzing_engine=none
-
 
             ninja -C build
             ninja -C build install

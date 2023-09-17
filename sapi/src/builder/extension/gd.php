@@ -23,7 +23,7 @@ return function (Preprocessor $p) {
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
 
-    $p->withExportVariable('FREETYPE2_CFLAGS', '$(pkg-config  --cflags --static libavif libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
-    $p->withExportVariable('FREETYPE2_LIBS', '$(pkg-config    --libs   --static libavif libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+    $p->withExportVariable('FREETYPE2_CFLAGS', '$(pkg-config  --cflags --static  libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+    $p->withExportVariable('FREETYPE2_LIBS', '$(pkg-config    --libs   --static  libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
 
 };
