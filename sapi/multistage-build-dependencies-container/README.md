@@ -34,6 +34,7 @@ bash  sapi/multistage-build-dependencies-container/all-dependencies-build-contai
 
 ## composer 使用阿里云镜像 , 系统源使用 ustc 源
 bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --mirror ustc --composer_mirror aliyun
+bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --mirror tuna --composer_mirror tencent
 
 ```
 
