@@ -21,6 +21,7 @@ if test -f $IMAGE_FILE; then
   } || {
     echo $?
   }
+  IMAGE=$(cat ${IMAGE_FILE})
   docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work -ti --init ${IMAGE}
 else
   echo 'no  container image'
