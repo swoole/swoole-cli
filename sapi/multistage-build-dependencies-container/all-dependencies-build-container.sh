@@ -25,7 +25,7 @@ TAG="all-dependencies-alpine-3.17-php8-v${VERSION}-${ARCH}-${TIME}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
-USE_COMPOSER_MIRROR=0
+USE_COMPOSER_MIRROR=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
