@@ -72,7 +72,7 @@ case "$MIRROR" in
   aliyun)
   # shellcheck disable=SC2034
   MIRROR_SITE='aliyun'
-  composer config  repo.packagist composer https://mirrors.aliyun.com/composer/
+  composer config  -g repo.packagist composer https://mirrors.aliyun.com/composer/
   ;;
   tencent)
   # shellcheck disable=SC2034
