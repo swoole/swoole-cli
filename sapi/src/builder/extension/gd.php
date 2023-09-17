@@ -14,7 +14,9 @@ return function (Preprocessor $p) {
 
         $p->withExportVariable('AVIF_CFLAGS', '$(pkg-config  --cflags --static libavif libbrotlicommon libbrotlidec libbrotlienc SvtAv1Enc SvtAv1Dec aom dav1d libgav1)');
         $p->withExportVariable('AVIF_LIBS', '$(pkg-config    --libs   --static libavif libbrotlicommon libbrotlidec libbrotlienc SvtAv1Enc SvtAv1Dec aom dav1d libgav1)');
-        $p->withVariable('LIBS', '$LIBS -lbrotli');
+        $p->withExportVariable('FREETYPE2_CFLAGS', '$(pkg-config  --cflags --static libavif libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+        $p->withExportVariable('FREETYPE2_LIBS', '$(pkg-config    --libs   --static libavif libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+
     }
 
     $ext = (new Extension('gd'))
