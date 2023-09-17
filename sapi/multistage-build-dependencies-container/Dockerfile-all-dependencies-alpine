@@ -14,9 +14,8 @@ RUN if [ "${MIRROR}" = "tuna" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors
 
 RUN apk update
 RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-RUN apk add flex  pkgconf ca-certificates zip unzip p7zip lzip
+RUN apk add flex  pkgconf ca-certificates zip unzip 7zip lzip
 RUN apk add bash curl  wget git   tini ca-certificates openssl openssl-dev
-RUN apk add libc++-static
 WORKDIR /work
 
 RUN mkdir -p /usr/local/swoole-cli/etc/
@@ -41,7 +40,6 @@ RUN alias php='php -d curl.cainfo="${CERT_FILE}" -d openssl.cafile="${CERT_FILE}
 RUN alias
 RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\${CERT_FILE}\"'" >>/root/.bashrc
 
-RUN bash sapi/quickstart/linux/alpine-init.sh --mirror ${MIRROR}
 
 WORKDIR /work
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -53,9 +51,8 @@ RUN composer update --no-dev --optimize-autoloader
 RUN composer config -g --unset repos.packagist
 
 
-RUN php prepare.php   --with-swoole-pgsql=1 --with-libavif=1 --with-install-library-cached=1
+RUN php prepare.php   --with-swoole-pgsql=1
 
-RUN bash make-install-deps.sh
 RUN bash make.sh all-library
 
 

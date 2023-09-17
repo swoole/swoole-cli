@@ -96,8 +96,6 @@ composer config -g --unset repos.packagist
 
 php prepare.php  +ds +inotify +apcu  +pgsql +pdo_pgsql \
 --with-swoole-pgsql=1 \
---with-libavif=1 \
---without-docker=1 \
---with-build-type=release
+--without-docker=1
 
 cd ${__PROJECT__}/
