@@ -26,11 +26,16 @@ IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
 USE_COMPOSER_MIRROR=""
+USE_MIRROR=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
   --composer_mirror)
-    USE_COMPOSER_MIRROR="aliyun"
+    USE_COMPOSER_MIRROR="$2"
+    shift
+    ;;
+  --mirror)
+    USE_MIRROR="$2"
     shift
     ;;
   --*)
@@ -45,7 +50,11 @@ cd ${__PROJECT__}/
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
 
-docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR="${USE_COMPOSER_MIRROR}"
+docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
+--progress=plain \
+--build-arg USE_COMPOSER_MIRROR="${USE_COMPOSER_MIRROR}" \
+--build-arg USE_MIRROR="${USE_MIRROR}"
+
 
 cd ${__PROJECT__}/
 

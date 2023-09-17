@@ -33,7 +33,7 @@ bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh
 bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh
 
 ## composer 使用阿里云镜像
-bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --composer_mirror
+bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --mirror ustc --composer_mirror aliyun
 
 ```
 
