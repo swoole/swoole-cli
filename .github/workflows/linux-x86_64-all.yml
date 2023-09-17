@@ -54,8 +54,7 @@ jobs:
             export PATH=/work/bin/runtime:$PATH
             alias php='php -c /work/bin/runtime/php.ini'
 
-            # composer update --no-dev  --optimize-autoloader
-            composer update   --optimize-autoloader
+            composer update --no-dev  --optimize-autoloader
 
             php prepare.php +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1 --with-install-library-cached=1 --with-libavif=1
 
