@@ -13,7 +13,7 @@ __PROJECT__=$(
 
 cd ${__PROJECT__}/
 
-MIRROR=""
+COMPOSER_MIRROR=""
 while [ $# -gt 0 ]; do
   case "$1" in
   --proxy)
@@ -24,7 +24,7 @@ while [ $# -gt 0 ]; do
     shift
     ;;
   --mirror)
-    MIRROR="$2"
+    COMPOSER_MIRROR="$2"
     shift
     ;;
   --*)
@@ -42,19 +42,15 @@ test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 export COMPOSER_ALLOW_SUPERUSER=1
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
-case "$MIRROR" in
+case "$COMPOSER_MIRROR" in
   aliyun)
-  # shellcheck disable=SC2034
-  MIRROR_SITE='aliyun'
-  composer config  repo.packagist composer https://mirrors.aliyun.com/composer/
+  composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
   ;;
   tencent)
-  # shellcheck disable=SC2034
-  MIRROR_SITE='tencent'
   composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
   ;;
   *)
-    echo 'no found mirror site'
+    echo 'no found mirror site, use origin site'
     ;;
 esac
 

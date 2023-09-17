@@ -22,7 +22,7 @@
 bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh
 
 ## 使用代理
-bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh --proxy http://127.0.0.1:1080
+bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh --proxy http://127.0.0.1:1080 --composer_mirror aliyun
 
 ```
 
@@ -32,8 +32,8 @@ bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh
 
 bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh
 
-## composer 使用阿里云镜像
-bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --composer_mirror
+## composer 使用阿里云镜像 , 系统源使用 ustc 源
+bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --mirror ustc --composer_mirror aliyun
 
 ```
 
