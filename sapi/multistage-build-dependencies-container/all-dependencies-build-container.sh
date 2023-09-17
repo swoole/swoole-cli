@@ -15,6 +15,8 @@ if [[ -f /.dockerenv ]]; then
   exit 0
 fi
 
+cd ${__PROJECT__}
+
 mkdir -p ${__PROJECT__}/var
 
 # export DOCKER_BUILDKIT=1
@@ -28,12 +30,17 @@ TAG="all-dependencies-alpine-3.17-php8-v${VERSION}-${ARCH}-${TIME}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
-USE_COMPOSER_MIRROR=0
+COMPOSER_MIRROR=""
+MIRROR=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
   --composer_mirror)
-    USE_COMPOSER_MIRROR=1
+    COMPOSER_MIRROR="$2"  # "aliyun"  "tencent"
+    shift
+    ;;
+  --mirror)
+    MIRROR="$2" # "ustc"  "tuna"
     shift
     ;;
   --*)
@@ -43,15 +50,19 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-cd ${__PROJECT__}/var
+cd ${__PROJECT__}/
 
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
 
-docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . --progress=plain --build-arg USE_COMPOSER_MIRROR=${USE_COMPOSER_MIRROR}
+docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
+--progress=plain \
+--build-arg="COMPOSER_MIRROR=${COMPOSER_MIRROR}" \
+--build-arg="MIRROR=${MIRROR}"
 
-cd ${__PROJECT__}/var
 
-echo ${IMAGE} >all-dependencies-container.txt
+cd ${__PROJECT__}/
+
+echo ${IMAGE} >${__PROJECT__}/var/all-dependencies-container.txt
 
 docker push ${IMAGE}

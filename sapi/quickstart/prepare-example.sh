@@ -21,11 +21,15 @@ OS=$(uname -s)
 # shellcheck disable=SC2034
 ARCH=$(uname -m)
 
-export PATH=${__PROJECT__}/bin/runtime:$PATH
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
+
 php -v
 
-# composer config  repo.packagist composer https://mirrors.aliyun.com/composer/
-
+#composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+composer update  --optimize-autoloader
+composer config -g --unset repos.packagist
 
 # 可用配置参数
 # --with-swoole-pgsql=1
@@ -49,5 +53,15 @@ bash sapi/quickstart/mark-install-library-cached.sh
 
 php prepare.php \
   --with-global-prefix=/usr/local/swoole-cli \
+  --with-install-library-cached=1 \
   +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql \
-  --with-swoole-pgsql=1
+  --with-swoole-pgsql=1 --with-libavif=1
+
+
+bash make-install-deps.sh
+
+bash make.sh all-library
+
+bash make.sh config
+
+bash make.sh build

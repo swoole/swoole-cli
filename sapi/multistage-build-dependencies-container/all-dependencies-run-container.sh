@@ -13,7 +13,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}/
 ARCH=$(uname -m)
 
-IMAGE_FILE="${__PROJECT__}/var/swoole-cli-build-all-dependencies-container.txt"
+IMAGE_FILE="${__PROJECT__}/var/all-dependencies-container.txt"
 if test -f $IMAGE_FILE; then
   {
     docker stop swoole-cli-alpine-dev
@@ -21,6 +21,7 @@ if test -f $IMAGE_FILE; then
   } || {
     echo $?
   }
+  IMAGE=$(cat ${IMAGE_FILE})
   docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work -ti --init ${IMAGE}
 else
   echo 'no  container image'

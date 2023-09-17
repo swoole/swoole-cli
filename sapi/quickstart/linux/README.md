@@ -83,11 +83,14 @@ bash sapi/download-box/download-box-get-archive-from-server.sh
 # composer 使用阿里云镜像
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
+# composer 安装完毕 恢复默认
+# composer config -g --unset repos.packagist
+
 # 使用代理
 # export http_proxy=http://192.168.3.26:8015
 # export https_proxy=http://192.168.3.26:8015
 
-composer update --no-dev  --optimize-autoloader
+composer update   --optimize-autoloader
 
 php prepare.php  +inotify +apcu +ds
 

@@ -95,6 +95,7 @@ test -d {$cacheDir} && rm -rf {$cacheDir}
 mkdir -p {$cacheDir}
 cd {$cacheDir}
 {$item->downloadScript}
+cd {$item->downloadDirName}
 test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
 cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
 cd {$workDir}

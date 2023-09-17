@@ -20,9 +20,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPrefix($dav1d_prefix)
-            ->withBuildLibraryCached(true)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($dav1d_prefix)
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
@@ -46,31 +43,26 @@ EOF
             )
             ->withBuildScript(
                 <<<EOF
+            meson setup  build \
+            -Dprefix={$dav1d_prefix} \
+            -Dlibdir={$dav1d_prefix}/lib \
+            -Dincludedir={$dav1d_prefix}/include \
+            -Dbackend=ninja \
+            -Dbuildtype=release \
+            -Ddefault_library=static \
+            -Db_staticpic=true \
+            -Db_pie=true \
+            -Dprefer_static=true \
+            -Denable_asm=true \
+            -Denable_tools=true \
+            -Denable_examples=false \
+            -Denable_tests=false \
+            -Denable_docs=false \
+            -Dlogging=false \
+            -Dfuzzing_engine=none
 
-                meson setup  build \
-                -Dprefix={$dav1d_prefix} \
-                -Dlibdir={$dav1d_prefix}/lib \
-                -Dincludedir={$dav1d_prefix}/include \
-                -Dbackend=ninja \
-                -Dbuildtype=release \
-                -Ddefault_library=static \
-                -Db_staticpic=true \
-                -Db_pie=true \
-                -Dprefer_static=true \
-                -Denable_asm=true \
-                -Denable_tools=true \
-                -Denable_examples=false \
-                -Denable_tests=false \
-                -Denable_docs=false \
-                -Dlogging=false \
-                -Dfuzzing_engine=none
-
-
-                meson compile -C build
-
-                ninja -C build
-                ninja -C build install
-
+            ninja -C build
+            ninja -C build install
 
 EOF
             )

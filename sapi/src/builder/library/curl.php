@@ -14,14 +14,14 @@ return function (Preprocessor $p) {
             ->withHomePage('https://curl.se/')
             ->withManual('https://curl.se/docs/install.html')
             ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
-            ->withUrl('https://curl.se/download/curl-7.88.0.tar.gz')
+            ->withUrl('https://curl.se/download/curl-8.3.0.tar.gz')
             ->withPrefix($curl_prefix)
             ->withConfigure(
                 <<<EOF
             ./configure --help
 
             PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 '
-            PACKAGES="\$PACKAGES  libssh2 libnghttp3 libngtcp2  libngtcp2_crypto_openssl" # libidn2
+            PACKAGES="\$PACKAGES  libssh2 libnghttp3 libngtcp2  libngtcp2_crypto_quictls" # libidn2 libngtcp2_crypto_openssl
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
