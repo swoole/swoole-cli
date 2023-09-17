@@ -50,3 +50,4 @@ define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
+define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unix_odbc');
