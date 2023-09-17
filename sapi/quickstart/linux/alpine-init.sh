@@ -18,14 +18,18 @@ while [ $# -gt 0 ]; do
     shift
     ;;
   --*)
-    echo "Illegal option $1"
+    echo "no found mirror option $1"
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
 done
 
 case "$MIRROR" in
-china)
+tuna)
+  test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
+  sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+  ;;
+china|ustc)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
   ;;
