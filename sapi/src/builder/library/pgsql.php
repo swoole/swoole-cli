@@ -38,7 +38,7 @@ return function (Preprocessor $p) {
 
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
-           LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs}  " \
             ../configure  \
             --prefix={$pgsql_prefix} \
