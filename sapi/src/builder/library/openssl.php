@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.openssl.org/')
             ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withManual('https://www.openssl.org/docs/')
-            ->withUrl('https://www.openssl.org/source/openssl-1.1.1p.tar.gz')
+            ->withUrl('https://www.openssl.org/source/openssl-1.1.1w.tar.gz')
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF

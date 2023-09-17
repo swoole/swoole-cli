@@ -74,8 +74,7 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
 
-          # composer update --no-dev  --optimize-autoloader
-          composer update  --optimize-autoloader
+          composer update --no-dev  --optimize-autoloader
 
           php prepare.php --without-docker=1    +ds +apcu  +xlswriter +ssh2 +pgsql +pdo_pgsql --with-build-type=release  --with-install-library-cached=1
 
@@ -92,9 +91,7 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           bash make-install-deps.sh
 
-          bash sapi/quickstart/mark-install-library-cached.sh
-          rm -rf /usr/local/swoole-cli/pgsql
-          rm -rf /usr/local/swoole-cli/freetype
+          # bash sapi/quickstart/mark-install-library-cached.sh
 
           bash ./make.sh all-library
 

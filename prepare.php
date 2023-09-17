@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 require __DIR__ . '/vendor/autoload.php';
@@ -8,10 +7,11 @@ use SwooleCli\Preprocessor;
 # clean old make.sh
 if (file_exists(__DIR__ . '/make.sh')) {
     unlink(__DIR__ . '/make.sh');
-}
-if (file_exists(__DIR__ . '/make-install-deps.sh')) {
     unlink(__DIR__ . '/make-install-deps.sh');
+    unlink(__DIR__ . '/make-env.sh');
+    unlink(__DIR__ . '/make-export-variables.sh');
 }
+
 if (file_exists(__DIR__ . '/make-download-box.sh')) {
     unlink(__DIR__ . '/make-download-box.sh');
 }
