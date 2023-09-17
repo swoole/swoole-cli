@@ -49,8 +49,11 @@ apk add diffutils
 apk add netcat-openbsd
 
 case "$MIRROR" in
-china)
+tuna)
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  ;;
+china|ustc)
+  pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
   ;;
 
 esac
