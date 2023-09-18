@@ -5,6 +5,9 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $mesa3d_prefix = MESA3D_PREFIX;
+
+    //  libosmesa.php 与之同样的功能
+
     $lib = new Library('mesa3d');
     $lib->withHomePage('https://www.mesa3d.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
