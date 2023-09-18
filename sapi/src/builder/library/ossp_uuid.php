@@ -19,17 +19,7 @@ return function (Preprocessor $p) {
         ->withBuildLibraryCached(false)
         ->withConfigure(
             <<<EOF
-            libtoolize -ci
-            autoreconf -fi
-            ./configure --help
-
-            ./configure \
-            --prefix={$ossp_uuid_prefix} \
-            --enable-shared=no \
-            --enable-static=yes \
-            --with-cxx \
-            --without-php \
-            --with-pgsql
+            cd contrib/uuid-ossp
 EOF
         )
         ->withMakeInstallOptions('DESTDIR=' . $ossp_uuid_prefix)

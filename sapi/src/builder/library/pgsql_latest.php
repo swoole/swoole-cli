@@ -73,7 +73,7 @@ EOF
             -Dgssapi=disabled \
             -Dbonjour=disabled \
             -Dicu=enabled \
-            -Dldap=disabled \
+            -Dldap=enabled \
             -Dlibedit_preferred=true \
             -Dlibxml=enabled \
             -Dlibxslt=enabled \
@@ -90,10 +90,51 @@ EOF
             -Dzlib=enabled \
             -Dzstd=enabled \
 
+
             # -Duuid=e2fs \
+            # -Duuid=ossp
 
             # ninja -C build
             # ninja -C build install
+EOF
+            )
+            ->withBuildScript(
+                <<<EOF
+
+            PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
+            CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
+            LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs} " \
+            ./configure  \
+            --prefix={$pgsql_prefix} \
+            --enable-coverage=no \
+            --with-ssl=openssl  \
+            --with-readline \
+            --with-icu \
+            --without-ldap \
+            --with-libxml  \
+            --with-libxslt \
+            --with-lz4 \
+            --with-zstd \
+            --without-perl \
+            --without-python \
+            --without-pam \
+            --without-ldap \
+            --without-bonjour \
+            --without-tcl
+
+
+            make -C src/bin/pg_config install
+
+            make -C src/include install
+
+            make -C  src/common install
+
+            make -C  src/port install
+
+            make -C  src/interfaces/libpq install
+
+
 EOF
             )
             ->withScriptAfterInstall(
@@ -119,8 +160,9 @@ EOF
                 'liblz4',
                 'libedit',
                 'ncurses',
-                //'util_linux',
+                'openldap',
                 // 'ossp_uuid'
+                // 'util_linux',
             )
     );
     $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
