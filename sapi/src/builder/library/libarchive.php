@@ -36,9 +36,7 @@ EOF
 EOF
             )
             ->withPrefix($libarchive_prefix)
-/*
             ->withBuildLibraryCached(false)
-*/
             ->withConfigure(
                 <<<EOF
 
@@ -74,8 +72,9 @@ EOF
             LINE_NUMBER=$(grep -n 'Requires.private:' {$libarchive_prefix}/lib/pkgconfig/libarchive.pc |cut -d ':' -f 1)
             sed -i.save "\${LINE_NUMBER} s/iconv//" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
 
-            cp -f  {$liblzma_prefix}/lib/pkgconfig/liblzma.pc {$liblzma_prefix}/lib/pkgconfig/lzma.pc
-            cp -f  {$liblzma_prefix}/lib/liblzma.a {$liblzma_prefix}/lib/lzma.a
+            DEST_LINE="-L{$libxml2_prefix}/libxml2/lib -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib"
+            sed -i.save "s@-L/usr/local/swoole-cli/libxml2/lib@\$DEST_LINE@" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
+
 
 EOF
             )
