@@ -87,10 +87,10 @@ EOF
             -Dssl=openssl \
             -Dbonjour=disabled \
             -Dsystemd=disabled \
-            -Duuid=e2fs \
             -Dzlib=enabled \
             -Dzstd=enabled \
 
+            # -Duuid=e2fs \
 
             # ninja -C build
             # ninja -C build install
@@ -119,8 +119,8 @@ EOF
                 'liblz4',
                 'libedit',
                 'ncurses',
-                'util_linux',
-               // 'ossp_uuid'
+                //'util_linux',
+                // 'ossp_uuid'
             )
     );
     $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');

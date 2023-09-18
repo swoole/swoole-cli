@@ -299,4 +299,5 @@ define("LIBEIGEN_PREFIX", $p->getGlobalPrefix() . '/libeigen');
 define("LIBOSMESA_PREFIX", $p->getGlobalPrefix() . '/libosmesa');
 define("WAYLAND_PREFIX", $p->getGlobalPrefix() . '/wayland');
 define("WAYLAND_PROTOCOLS_PREFIX", $p->getGlobalPrefix() . '/wayland_protocols');
+define("OPENLDAP_PREFIX", $p->getGlobalPrefix() . '/openldap');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

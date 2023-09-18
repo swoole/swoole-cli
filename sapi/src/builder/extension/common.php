@@ -108,6 +108,8 @@ return function (Preprocessor $p) {
 
     $depends = ['libsnmp'] ;
     $depends = ['opensips'] ;
+    $depends = ['pgsql_latest'] ;
+    $depends = ['openldap'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
