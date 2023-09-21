@@ -243,11 +243,6 @@ EOF
         )
         */
 
-        ->withPkgName('example')
-        ->withBinPath($example_prefix . '/bin/')
-        //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')
-
 
         /*
 
