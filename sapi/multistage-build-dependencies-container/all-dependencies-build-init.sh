@@ -76,6 +76,9 @@ export PATH="${__PROJECT__}/bin/runtime:$PATH"
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
 
 
+# composer mirror url 镜像地址
+# https://packagist.org/mirrors
+
 case "$COMPOSER_MIRROR" in
   aliyun)
   # shellcheck disable=SC2034
@@ -84,6 +87,10 @@ case "$COMPOSER_MIRROR" in
   tencent)
   # shellcheck disable=SC2034
   composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+  ;;
+  sjtug)
+  # shellcheck disable=SC2034
+  composer config -g repos.packagist composer https://packagist.mirrors.sjtug.sjtu.edu.cn
   ;;
   *)
     echo 'no found mirror site, use origin site'
