@@ -11,3 +11,7 @@ bash sapi/quickstart/macos/homebrew-init.sh --mirror china
 ```
 
 ## [进入构建 PHP 环节](../README.md#构建依赖库-构建swoole-打包)
+
+
+## macOS 环境 容器访问宿主机
+> 用这个名称 `host.docker.internal` 保证本机 IP 变化，服务仍然可用
