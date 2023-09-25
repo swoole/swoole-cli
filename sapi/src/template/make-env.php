@@ -19,5 +19,5 @@ export ROOT_DIR="<?= $this->getRootDir() ?>"
 export PHP_VERSION="<?= BUILD_PHP_VERSION ?>"
 export PHP_VERSION_ID=<?= BUILD_PHP_VERSION_ID . PHP_EOL ?>
 export PHP_VERSION_TAG="<?= BUILD_PHP_VERSION_TAG ?>"
-export CUSTOM_PHP_VERSION_ID=<?= intval(substr((string)BUILD_PHP_VERSION_ID, 0, 4)). PHP_EOL ?>
+export CUSTOM_PHP_VERSION_ID=<?= BUILD_CUSTOM_PHP_VERSION_ID . PHP_EOL ?>
 
