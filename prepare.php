@@ -39,7 +39,7 @@ if ($p->getInputOption('with-php-version')) {
             ;
             $php_version_tag = 'php-' . $match[0];
         } else {
-            echo <<<EOF
+            $note = <<<EOF
 
     support PHP8.2 PHP8.1  PHP7.4  PHP7.3   PHP8.2-micro
 
