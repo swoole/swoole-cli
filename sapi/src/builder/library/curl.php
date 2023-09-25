@@ -4,24 +4,49 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
+    $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
+    $file = '';
+    $url = 'https://curl.se/download/curl-8.3.0.tar.gz';
+    $download_dir_name = '';
+    $download_script = '';
+    $dependent_libraries = [
+        'openssl',
+        'cares',
+        'zlib',
+        'brotli',
+        'libzstd',
+        'libssh2'
+    ];
+    $configure_packages='';
+    $configure_options='';
+
+    if ($php_version_id >= 8010) {
+        $url = '';
+        $dependent_libraries = $dependent_libraries + ['nghttp2',  'nghttp3', 'ngtcp2'];
+        $configure_options='--with-nghttp2 --with-ngtcp2 --with-nghttp3';
+        $configure_packages=' libnghttp2 libnghttp3 libngtcp2  libngtcp2_crypto_quictls ';
+    } else {
+        $configure_options='--without-nghttp2 --without-ngtcp2 --without-nghttp3';
+    }
+
+
     $curl_prefix = CURL_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $cares_prefix = CARES_PREFIX;
 
-    $p->addLibrary(
-        (new Library('curl'))
-            ->withHomePage('https://curl.se/')
-            ->withManual('https://curl.se/docs/install.html')
-            ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
-            ->withUrl('https://curl.se/download/curl-8.3.0.tar.gz')
-            ->withPrefix($curl_prefix)
-            ->withConfigure(
-                <<<EOF
+
+    $lib=(new Library('curl'))
+        ->withHomePage('https://curl.se/')
+        ->withManual('https://curl.se/docs/install.html')
+        ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
+        ->withUrl($url)
+        ->withPrefix($curl_prefix)
+        ->withConfigure(
+            <<<EOF
             ./configure --help
 
-            PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd libnghttp2 '
-            PACKAGES="\$PACKAGES  libssh2 libnghttp3 libngtcp2  libngtcp2_crypto_quictls" # libidn2 libngtcp2_crypto_openssl
+            PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd  '
+            PACKAGES="\$PACKAGES  libssh2 {$configure_packages}" # libidn2 libngtcp2_crypto_openssl
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
@@ -51,9 +76,6 @@ return function (Preprocessor $p) {
             --enable-optimize \
             --with-zlib={$zlib_prefix} \
             --enable-ares={$cares_prefix} \
-            --with-nghttp2 \
-            --with-ngtcp2 \
-            --with-nghttp3 \
             --without-libidn2 \
             --with-libssh2 \
             --with-openssl  \
@@ -62,22 +84,28 @@ return function (Preprocessor $p) {
             --without-mbedtls \
             --without-wolfssl \
             --without-bearssl \
-            --without-rustls
+            --without-rustls \
+            {$configure_options}
 
 EOF
-            )
-            ->withPkgName('libcurl')
-            ->withBinPath($curl_prefix . '/bin/')
-            ->withDependentLibraries(
-                'openssl',
-                'cares',
-                'zlib',
-                'brotli',
-                'libzstd',
-                'nghttp2',
-                'nghttp3',
-                'ngtcp2',
-                'libssh2'
-            ) # 'libidn2',
-    );
+        )
+        ->withPkgName('libcurl')
+        ->withBinPath($curl_prefix . '/bin/')
+        /*
+        ->withDependentLibraries(
+            'openssl',
+            'cares',
+            'zlib',
+            'brotli',
+            'libzstd',
+            'nghttp2',
+            'nghttp3',
+            'ngtcp2',
+            'libssh2'
+        ) # 'libidn2',
+        */
+    ;
+
+    call_user_func_array([$lib, 'withDependentLibraries'], $dependent_libraries);
+    $p->addLibrary($lib);
 };
