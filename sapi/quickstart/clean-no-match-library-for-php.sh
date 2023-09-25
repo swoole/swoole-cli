@@ -20,7 +20,7 @@ else
 fi
 
 
-if [[ ${CUSTOM_PHP_VERSION_ID} -lt 8020  &&   ${CUSTOM_PHP_VERSION_ID} -ge 8000 ]] ; then
+if [[ ${CUSTOM_PHP_VERSION_ID} -lt 8030  &&   ${CUSTOM_PHP_VERSION_ID} -ge 7030 ]] ; then
     echo '发现不匹配的链接库'
 
     test -d ${GLOBAL_PREFIX}/openssl && rm -rf ${GLOBAL_PREFIX}/openssl
