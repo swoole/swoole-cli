@@ -22,22 +22,38 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 # PHP 默认版本
-$version = '8.2.4';
+$php_version = '8.2.7';
+$php_version_id = 802007;
+$php_version_tag = 'php-8.2.7';
 
 if ($p->getInputOption('with-php-version')) {
     $subject = $p->getInputOption('with-php-version');
-    $pattern = '/(\d{1,2})\.\d{1,2}\.\d{1,2}/';
+    $pattern = '/(\d{1,2})\.(\d{1,2})\.(\d{1,})\w*/';
     if (preg_match($pattern, $subject, $match)) {
         if (intval($match[1]) >= 8) {
-            $version = $match[0];
+            $php_version = $match[0];
+            $php_version_id = intval(
+                str_pad($match[1], 2, '0') .
+                str_pad($match[2], 2, '0') .
+                sprintf('%02d', $match[3])
+            );
+            $php_version_tag = 'php-' . $match[0];
         } else {
             echo <<<EOF
 
-    support  PHP7.4  PHP7.3   micro
+    support PHP8.2 PHP8.1  PHP7.4  PHP7.3   PHP8.2-micro
 
     php-8-micro:  (https://github.com/dixyes/phpmicro.git）
 
         git clone -b build_native_php_sfx_micro  https://github.com/jingjingxyk/swoole-cli/
+
+    php-8.2
+
+        git clone -b build_php_8.2  https://github.com/jingjingxyk/swoole-cli/
+
+    php-8.0-8.1
+
+        git clone -b build_php_8.1  https://github.com/jingjingxyk/swoole-cli/
 
     php-7.4:
 
@@ -48,13 +64,16 @@ if ($p->getInputOption('with-php-version')) {
         git clone -b build_php_7.3  https://github.com/jingjingxyk/swoole-cli/
 
 EOF;
-            echo PHP_EOL;
+
             die;
         }
+        echo PHP_EOL;
     }
 }
 
-define('BUILD_PHP_VERSION', $version);
+define('BUILD_PHP_VERSION', $php_version);
+define('BUILD_PHP_VERSION_ID', $php_version_id);
+define('BUILD_PHP_VERSION_TAG', $php_version_tag);
 
 
 // Compile directly on the host machine, not in the docker container
