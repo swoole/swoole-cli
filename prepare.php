@@ -31,7 +31,6 @@ if ($p->getInputOption('with-php-version')) {
     $pattern = '/(\d{1,2})\.(\d{1,2})\.(\d{1,})\w*/';
     if (preg_match($pattern, $subject, $match)) {
         if (intval($match[1]) >= 8) {
-            var_dump($match);
             $php_version = $match[0];
             $php_version_id = intval(
                 str_pad($match[1], 2, '0') .
@@ -47,6 +46,9 @@ if ($p->getInputOption('with-php-version')) {
     php-8-micro:  (https://github.com/dixyes/phpmicro.git）
 
         git clone -b build_native_php_sfx_micro  https://github.com/jingjingxyk/swoole-cli/
+    php-8.0-8.1
+
+        git clone -b build_php_8.1  https://github.com/jingjingxyk/swoole-cli/
 
     php-7.4:
 
