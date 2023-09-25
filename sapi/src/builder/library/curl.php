@@ -21,7 +21,6 @@ return function (Preprocessor $p) {
     $configure_options='';
 
     if ($php_version_id >= 8010) {
-        $url = '';
         $dependent_libraries = $dependent_libraries + ['nghttp2',  'nghttp3', 'ngtcp2'];
         $configure_options='--with-nghttp2 --with-ngtcp2 --with-nghttp3';
         $configure_packages=' libnghttp2 libnghttp3 libngtcp2  libngtcp2_crypto_quictls ';
