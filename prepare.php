@@ -49,7 +49,7 @@ if ($p->getInputOption('with-php-version')) {
 
     php-8.0
 
-        git clone -b build_php_8.1  https://github.com/jingjingxyk/swoole-cli/
+        git clone -b build_php_8.0  https://github.com/jingjingxyk/swoole-cli/
 
     php-7.4:
 
@@ -61,7 +61,6 @@ if ($p->getInputOption('with-php-version')) {
 
 EOF;
 
-            die;
         }
         echo PHP_EOL;
     }
