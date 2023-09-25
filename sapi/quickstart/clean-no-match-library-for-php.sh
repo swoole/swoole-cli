@@ -49,6 +49,7 @@ if [[ ${CUSTOM_PHP_VERSION_ID} -lt 8030  &&   ${CUSTOM_PHP_VERSION_ID} -ge 7030 
 
     test -d ${GLOBAL_PREFIX}/libzip && rm -rf ${GLOBAL_PREFIX}/libzip
     test -d ${BUILD_DIR}/libzip && rm -rf ${BUILD_DIR}/libzip
+    echo $?
 else
   echo '未发现，不匹配的链接库 '
 fi
