@@ -11,7 +11,4 @@ return function (Preprocessor $p) {
             ->withOptions('--with-openssl --with-openssl-dir=' . OPENSSL_PREFIX)
             ->withDependentLibraries('openssl')
     );
-    $p->withExportVariable('OPENSSL_CFLAGS', '$(pkg-config  --cflags --static libcrypto libssl openssl)');
-    $p->withExportVariable('OPENSSL_LIBS', '$(pkg-config    --libs   --static libcrypto libssl openssl)');
-
 };
