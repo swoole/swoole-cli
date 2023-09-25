@@ -266,6 +266,7 @@ make_ext_hook() {
 }
 
 export_variables() {
+    set -x
     # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
     CFLAGS=""
