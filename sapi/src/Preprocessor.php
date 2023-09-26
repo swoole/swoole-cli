@@ -1121,6 +1121,10 @@ EOF;
             if ($ext_key) {
                 unset($this->extEnabled[$ext_key]);
             }
+            $ext_key = array_search('intl', $this->extEnabled);
+            if ($ext_key) {
+                unset($this->extEnabled[$ext_key]);
+            }
         }
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
