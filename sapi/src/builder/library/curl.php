@@ -105,6 +105,6 @@ EOF
         */
     ;
 
-    call_user_func_array([$lib, 'withDependentLibraries'], [$dependent_libraries]);
+    call_user_func_array([$lib, 'withDependentLibraries'], $dependent_libraries);
     $p->addLibrary($lib);
 };
