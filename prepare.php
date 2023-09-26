@@ -30,30 +30,25 @@ if ($p->getInputOption('with-php-version')) {
     $subject = $p->getInputOption('with-php-version');
     $pattern = '/(\d{1,2})\.(\d{1,2})\.(\d{1,})\w*/';
     if (preg_match($pattern, $subject, $match)) {
-        if (intval($match[1]) >= 8) {
+        if (intval($match[1]) >= 8 && intval($match[2]) >= 1) {
             $php_version = $match[0];
-            $php_version_id = intval(
+            $php_version_id =
                 str_pad($match[1], 2, '0') .
                 str_pad($match[2], 2, '0') .
-                sprintf('%02d', $match[3])
-            );
+                sprintf('%02d', $match[3]);
             $php_version_tag = 'php-' . $match[0];
         } else {
             echo <<<EOF
 
-    support PHP8.2 PHP8.1  PHP7.4  PHP7.3   PHP8.2-micro
+    support PHP8.2  PHP8.1  PHP7.4  PHP7.3   PHP8.2-micro
 
     php-8-micro:  (https://github.com/dixyes/phpmicro.git）
 
         git clone -b build_native_php_sfx_micro  https://github.com/jingjingxyk/swoole-cli/
 
-    php-8.2
+    php-8.0
 
-        git clone -b build_php_8.2  https://github.com/jingjingxyk/swoole-cli/
-
-    php-8.0-8.1
-
-        git clone -b build_php_8.1  https://github.com/jingjingxyk/swoole-cli/
+        git clone -b build_php_8.0  https://github.com/jingjingxyk/swoole-cli/
 
     php-7.4:
 
@@ -64,7 +59,7 @@ if ($p->getInputOption('with-php-version')) {
         git clone -b build_php_7.3  https://github.com/jingjingxyk/swoole-cli/
 
 EOF;
-
+            echo PHP_EOL;
             die;
         }
         echo PHP_EOL;
@@ -72,9 +67,15 @@ EOF;
 }
 
 define('BUILD_PHP_VERSION', $php_version);
-define('BUILD_PHP_VERSION_ID', $php_version_id);
+define('BUILD_PHP_VERSION_ID', intval($php_version_id));
 define('BUILD_PHP_VERSION_TAG', $php_version_tag);
+define('BUILD_CUSTOM_PHP_VERSION_ID', intval(substr($php_version_id, 0, 4))); //取主版本号和次版本号
 
+echo "PHP_VERSION: " . BUILD_PHP_VERSION . PHP_EOL;
+echo "PHP_VERSION_ID: " . BUILD_PHP_VERSION_ID . PHP_EOL;
+echo "PHP_VERSION_TAG: " . BUILD_PHP_VERSION_TAG . PHP_EOL;
+echo "CUSTOM_PHP_VERSION_ID: " . BUILD_CUSTOM_PHP_VERSION_ID . PHP_EOL;
+echo PHP_EOL;
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
