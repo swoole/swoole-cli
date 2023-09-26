@@ -44,10 +44,10 @@ define('BUILD_PHP_VERSION_ID', intval($php_version_id));
 define('BUILD_PHP_VERSION_TAG', $php_version_tag);
 define('BUILD_CUSTOM_PHP_VERSION_ID', intval(substr($php_version_id, 0, 4))); //取主版本号和次版本号
 
-echo BUILD_PHP_VERSION . PHP_EOL;
-echo BUILD_PHP_VERSION_ID . PHP_EOL;
-echo BUILD_PHP_VERSION_TAG . PHP_EOL;
-echo BUILD_CUSTOM_PHP_VERSION_ID . PHP_EOL;
+echo "PHP_VERSION: " . BUILD_PHP_VERSION . PHP_EOL;
+echo "PHP_VERSION_ID: " . BUILD_PHP_VERSION_ID . PHP_EOL;
+echo "PHP_VERSION_TAG: " . BUILD_PHP_VERSION_TAG . PHP_EOL;
+echo "CUSTOM_PHP_VERSION_ID: " . BUILD_CUSTOM_PHP_VERSION_ID . PHP_EOL;
 echo PHP_EOL;
 
 
