@@ -13,4 +13,20 @@ return function (Preprocessor $p) {
             ->withOptions('--enable-intl')
             ->withDependentLibraries('icu')
     );
+
+    $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
+    if ($php_version_id < 7040) {
+        $p->setExtHook('intl', function (Preprocessor $p) {
+            //解决 ICU 多重定义BUG https://bugs.php.net/bug.php?id=80425
+            $cmd = <<<EOF
+                cd {$p->getPhpSrcDir()}/
+                if [[ ! -f ext/intl/msgformat/msgformat_helpers.cpp.backup ]] ;then
+                   sed -i.backup '67,71d' ext/intl/msgformat/msgformat_helpers.cpp
+                   echo "ok"
+                fi
+EOF;
+
+            return $cmd;
+        });
+    }
 };
