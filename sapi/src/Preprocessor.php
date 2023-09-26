@@ -1104,12 +1104,20 @@ EOF;
         }
         install_libraries($this);
         if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
-            $ext_key= array_search('mongodb', $this->extEnabled);
+            $ext_key = array_search('mongodb', $this->extEnabled);
             if ($ext_key) {
                 unset($this->extEnabled[$ext_key]);
             }
-        }elseif(BUILD_CUSTOM_PHP_VERSION_ID < 7040){
-            $ext_key= array_search('gd', $this->extEnabled);
+        } elseif (BUILD_CUSTOM_PHP_VERSION_ID < 7040) {
+            $ext_key = array_search('gd', $this->extEnabled);
+            if ($ext_key) {
+                unset($this->extEnabled[$ext_key]);
+            }
+            $ext_key = array_search('zip', $this->extEnabled);
+            if ($ext_key) {
+                unset($this->extEnabled[$ext_key]);
+            }
+            $ext_key = array_search('imagick', $this->extEnabled);
             if ($ext_key) {
                 unset($this->extEnabled[$ext_key]);
             }
