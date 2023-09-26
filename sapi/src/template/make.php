@@ -30,7 +30,10 @@ OPTIONS="--disable-all \
 --enable-cli  \
 --disable-phpdbg \
 <?php if (BUILD_CUSTOM_PHP_VERSION_ID < 8000) : ?>
---enable-json --enable-hash \
+--enable-json \
+<?php endif; ?>
+<?php if (BUILD_CUSTOM_PHP_VERSION_ID < 7040) : ?>
+--enable-hash \
 <?php endif; ?>
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
