@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         $file = 'swoole-v5.0.3.tar.gz';
         $url = 'https://github.com/swoole/swoole-src/archive/refs/tags/v5.0.3.tar.gz';
 
-        $dependent_libraries = $dependent_libraries + ['brotli', 'nghttp2'];
+        $dependent_libraries = array_merge($dependent_libraries, ['brotli', 'nghttp2']);
         $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
         $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
 
