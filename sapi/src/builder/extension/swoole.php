@@ -52,5 +52,6 @@ EOF;
     if (!empty($download_dir_name)) {
         call_user_func_array([$ext, 'withDownloadScript'], [$download_dir_name, $download_script]);
     }
+
     $p->addExtension($ext);
 };
