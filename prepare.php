@@ -30,12 +30,12 @@ if ($p->getInputOption('with-php-version')) {
     $subject = $p->getInputOption('with-php-version');
     $pattern = '/(\d{1,2})\.(\d{1,2})\.(\d{1,})\w*/';
     if (preg_match($pattern, $subject, $match)) {
-        $php_version = $match[0];
-        $php_version_id =
-            str_pad($match[1], 2, '0') .
-            str_pad($match[2], 2, '0') .
-            sprintf('%02d', $match[3]);
-        $php_version_tag = 'php-' . $match[0];
+            $php_version = $match[0];
+            $php_version_id =
+                str_pad($match[1], 2, '0') .
+                str_pad($match[2], 2, '0') .
+                sprintf('%02d', $match[3]);
+            $php_version_tag = 'php-' . $match[0];
     }
 }
 

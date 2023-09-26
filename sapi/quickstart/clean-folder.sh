@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -x
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
@@ -27,16 +27,7 @@ case $GIT_BRANCH in
 'build_native_php')
   ACTION="delete"
   ;;
-'build_php_8.2')
-  ACTION="delete"
-  ;;
-'build_php_7.4')
-  ACTION="delete"
-  ;;
-'build_php_7.3')
-  ACTION="delete"
-  ;;
-'build_php_7.2')
+'build_php_8.2' | 'build_php_8.1' | 'build_php_8.0' | 'build_php_7.4' | 'build_php_7.3' )
   ACTION="delete"
   ;;
 'build_native_php_sfx_micro')
