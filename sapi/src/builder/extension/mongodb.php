@@ -31,10 +31,28 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-sasl=no ';
     $options .= ' --with-mongodb-icu=yes ';
 
-    $options .= ' --with-mongodb-client-side-encryption=no ';
-    $options .= ' --with-mongodb-snappy=no ';
 
-    $mongodb_version = '1.16.2';
+    $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
+    $file = '';
+    $url = '';
+    $download_dir_name = '';
+    $download_script = '';
+    $pecl_version = '';
+    $mongodb_version = '';
+
+    if ($php_version_id < 7040) {
+        $pecl_version = '1.7.4';
+    } else {
+        $mongodb_version = '1.16.2';
+        $file = "mongodb-{$mongodb_version}.tgz";
+        $download_dir_name = 'mongo-php-driver';
+        $download_script = <<<EOF
+        git clone -b {$mongodb_version} --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
+EOF;
+        $options .= ' --with-mongodb-client-side-encryption=no ';
+        $options .= ' --with-mongodb-snappy=no ';
+    }
+
 
     $ext = new Extension('mongodb');
 
@@ -43,21 +61,33 @@ return function (Preprocessor $p) {
         ->withOptions($options)
         //->withAutoUpdateFile()
         //->withPeclVersion('1.6.2') //官方包 解压需要解决这个问题 https://github.com/mongodb/mongo-php-driver/issues/1459
-        ->withFile("mongodb-{$mongodb_version}.tgz")
-        ->withDownloadScript(
-            'mongo-php-driver',
-            <<<EOF
-        git clone -b {$mongodb_version} --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
+        /*
+    ->withFile("mongodb-{$mongodb_version}.tgz")
+    ->withDownloadScript(
+        'mongo-php-driver',
+        <<<EOF
+    git clone -b {$mongodb_version} --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
 EOF
-        )//->withDependentExtensions('date','json','standar','spl')
+    )
+        */
+        //->withDependentExtensions('date','json','standar','spl')
 
     ;
-    $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
+    $dependent_libraries = ['icu', 'openssl', 'zlib', 'libzstd'];
 
-    //$depends[] = 'libsasl';
-    //$depends[] = 'snappy';
+    //$dependent_libraries[] = 'libsasl';
+    //$dependent_libraries[] = 'snappy';
 
-    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
+
+    if (!empty($pecl_version)) {
+        call_user_func_array([$ext, '>withPeclVersion'], [$pecl_version]);
+    }
+
+    if (!empty($download_dir_name)) {
+        call_user_func_array([$ext, 'withFile'], [$file]);
+        call_user_func_array([$ext, 'withDownloadScript'], [$download_dir_name, $download_script]);
+    }
+    call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
 
     $p->addExtension($ext);
 };

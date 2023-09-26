@@ -137,7 +137,7 @@ class Preprocessor
         'swoole',
         'yaml',
         'imagick',
-        //'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
+        'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
         'gd',
     ];
     protected array $extEnabledBuff = [];
@@ -1103,6 +1103,17 @@ EOF;
             }
         }
         install_libraries($this);
+        if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
+            $ext_key= array_search('mongodb', $this->extEnabled);
+            if ($ext_key) {
+                unset($this->extEnabled[$ext_key]);
+            }
+        }elseif(BUILD_CUSTOM_PHP_VERSION_ID < 7040){
+            $ext_key= array_search('gd', $this->extEnabled);
+            if ($ext_key) {
+                unset($this->extEnabled[$ext_key]);
+            }
+        }
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
