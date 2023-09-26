@@ -29,6 +29,9 @@ OPTIONS="--disable-all \
 --without-valgrind \
 --enable-cli  \
 --disable-phpdbg \
+<?php if (BUILD_CUSTOM_PHP_VERSION_ID < 8000) : ?>
+--enable-json --enable-hash \
+<?php endif; ?>
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
