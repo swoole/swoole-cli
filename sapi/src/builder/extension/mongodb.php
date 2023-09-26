@@ -80,7 +80,7 @@ EOF
 
 
     if (!empty($pecl_version)) {
-        call_user_func_array([$ext, '>withPeclVersion'], [$pecl_version]);
+        call_user_func_array([$ext, 'withPeclVersion'], [$pecl_version]);
     }
 
     if (!empty($download_dir_name)) {
