@@ -15,9 +15,13 @@ return function (Preprocessor $p) {
             ->withDependentLibraries('libxml2')
     );
     */
+    $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
 
     $options = ' --with-libxml ';
-    # $options .= ' --with-libxml-dir=' . LIBXML2_PREFIX;
+    if ($php_version_id < 7040) {
+        $options = ' --enable-libxml ';
+        $options .= ' --with-libxml-dir=' . LIBXML2_PREFIX;
+    }
     $p->addExtension(
         (new Extension('libxml'))
             ->withHomePage('https://www.php.net/libxml')
