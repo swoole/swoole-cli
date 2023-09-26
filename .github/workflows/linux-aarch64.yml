@@ -58,8 +58,6 @@ jobs:
             bash make-install-deps.sh
 
             bash sapi/quickstart/mark-install-library-cached.sh
-            rm -rf /usr/local/swoole-cli/pgsql
-            rm -rf /usr/local/swoole-cli/freetype
 
             bash ./make.sh config
             bash ./make.sh build
