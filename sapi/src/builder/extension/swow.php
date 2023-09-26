@@ -27,6 +27,7 @@ return function (Preprocessor $p) {
                 rm -rf swow-t
 EOF
             )
+            ->withBuildLibraryCached(false)
             ->withDependentLibraries('openssl', 'pgsql')
     );
 };

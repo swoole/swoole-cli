@@ -24,6 +24,7 @@ return function (Preprocessor $p) {
         ->withManual('https://wiki.swoole.com/#/')
         ->withUrl('https://github.com/swoole/swoole-src/archive/refs/tags/v5.0.3.tar.gz')
         ->withFile('swoole-v5.0.3.tar.gz')
+        ->withBuildLibraryCached(false)
         ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo');
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
