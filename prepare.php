@@ -40,7 +40,7 @@ if ($p->getInputOption('with-php-version')) {
         } else {
             echo <<<EOF
 
-    support PHP8.2  PHP8.1  PHP7.4  PHP7.3   PHP8.2-micro
+    support PHP8.0  PHP7.4  PHP7.3  PHP8.2-micro
 
     php-8-micro:  (https://github.com/dixyes/phpmicro.git）
 
