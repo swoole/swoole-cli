@@ -40,8 +40,8 @@ on:
 
 
 env:
-  BUILD_PHP_VERSION: 8.2.4
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  BUILD_PHP_VERSION: 8.2.7
 
 jobs:
   linux-x86_64:
@@ -88,6 +88,9 @@ jobs:
           # 准备数据库容器
           # bash sapi/src/UnitTest/scripts/database/start.sh
 
+          echo ${{ github.actor }}
+          echo ${{ github.repository }}
+
       - name: Prepare Libraries and Extensions
         if: 1
         run: |
@@ -112,7 +115,7 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update  --no-dev --optimize-autoloader
 
-            php prepare.php  +ffmpeg ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1 --with-c-compiler=clang
+            php prepare.php  +ffmpeg +coturn  ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1 --with-c-compiler=clang
 
             chmod a+x make.sh
             head -n 20 make.sh

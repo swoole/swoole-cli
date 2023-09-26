@@ -22,9 +22,29 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 # PHP 默认版本
-$version = '8.2.4';
+$php_version = '8.2.7';
+$php_version_id = 802007;
+$php_version_tag = 'php-8.2.7';
 
-define('BUILD_PHP_VERSION', $version);
+if ($p->getInputOption('with-php-version')) {
+    $subject = $p->getInputOption('with-php-version');
+    $pattern = '/(\d{1,2})\.(\d{1,2})\.(\d{1,})\w*/';
+    if (preg_match($pattern, $subject, $match)) {
+        $php_version = $match[0];
+        $php_version_id =
+            str_pad($match[1], 2, '0') .
+            str_pad($match[2], 2, '0') .
+            sprintf('%02d', $match[3]);
+        $php_version_tag = 'php-' . $match[0];
+
+        echo PHP_EOL;
+    }
+}
+
+define('BUILD_PHP_VERSION', $php_version);
+define('BUILD_PHP_VERSION_ID', intval($php_version_id));
+define('BUILD_PHP_VERSION_TAG', $php_version_tag);
+define('BUILD_CUSTOM_PHP_VERSION_ID', intval(substr($php_version_id, 0, 4))); //取主版本号和次版本号
 
 
 // Compile directly on the host machine, not in the docker container
