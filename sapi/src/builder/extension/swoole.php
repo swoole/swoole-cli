@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
     $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
     $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
 
-    if ($php_version_id >= 8010) {
+    if ($php_version_id >= 8000) {
         $file = 'swoole-v5.0.3.tar.gz';
         $url = 'https://github.com/swoole/swoole-src/archive/refs/tags/v5.0.3.tar.gz';
 
