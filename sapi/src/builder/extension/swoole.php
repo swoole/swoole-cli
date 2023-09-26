@@ -46,7 +46,9 @@ EOF;
         ->withManual('https://wiki.swoole.com/#/')
         ->withOptions($options)
         ->withUrl($url)
-        ->withFile($file);
+        ->withFile($file)
+        ->withBuildLibraryCached(false)
+    ;
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
     if (!empty($download_dir_name)) {
