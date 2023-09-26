@@ -10,10 +10,10 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('libssh2'))
             ->withHomePage('https://www.libssh2.org/')
-            ->withLicense('https://www.libssh2.org/license.html', Library::LICENSE_SPEC)
+            ->withLicense('https://libssh2.org/license.html', Library::LICENSE_SPEC)
             ->withManual('https://github.com/libssh2/libssh2.git')
             ->withManual('https://github.com/libssh2/libssh2/blob/master/docs/INSTALL_CMAKE.md')
-            ->withUrl('https://www.libssh2.org/download/libssh2-1.10.0.tar.gz')
+            ->withUrl('https://libssh2.org/download/libssh2-1.11.0.tar.gz')
             ->withPrefix($libssh2_prefix)
             ->withBuildScript(
                 <<<EOF
