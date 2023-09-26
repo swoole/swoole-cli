@@ -37,7 +37,6 @@ return function (Preprocessor $p) {
 
 EOF
             )
-            ->withMakeOptions('build_sw')
             ->withMakeInstallCommand('install_sw')
             ->withPkgName('libcrypto')
             ->withPkgName('libssl')
