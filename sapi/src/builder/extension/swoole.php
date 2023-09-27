@@ -39,7 +39,6 @@ EOF;
         $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     }
 
-
     $ext = (new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
