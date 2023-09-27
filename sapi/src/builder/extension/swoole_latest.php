@@ -33,9 +33,4 @@ EOF
         ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo');
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-
-    $p->deleteDefaultEnableExtension('pdo_sqlite');
-    $p->deleteDefaultEnableExtension('pdo_pgsql');
-    $p->deleteDefaultEnableExtension('pdo_odbc');
-    $p->deleteDefaultEnableExtension('pdo_oci');
 };

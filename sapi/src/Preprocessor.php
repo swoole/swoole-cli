@@ -1015,25 +1015,6 @@ EOF;
             if (is_dir($path)) {
                 $this->scanConfigFiles($path, $extAvailabled);
             } else {
-                $extName = basename($f, '.php');
-                if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
-                    if ($extName == 'mongodb') {
-                        continue;
-                    }
-                } elseif (BUILD_CUSTOM_PHP_VERSION_ID < 7040) {
-                    if ($extName == 'zip' ||
-                        $extName == 'imagick' ||
-                        $extName == 'intl'
-                    ) {
-                        continue;
-                    }
-                } elseif (BUILD_CUSTOM_PHP_VERSION_ID == 8000) {
-                    $this->deleteDefaultEnableExtension('swoole');
-                    if ($extName == 'swoole') {
-                        continue;
-                    }
-                }
-
                 $extAvailabled[basename($f, '.php')] = require $path;
             }
         }
@@ -1090,14 +1071,6 @@ EOF;
         return file_put_contents($outFile, ob_get_clean());
     }
 
-    public function deleteDefaultEnableExtension($extensionName): void
-    {
-        $ext_key = array_search($extensionName, $this->extEnabled);
-        if ($ext_key) {
-            unset($this->extEnabled[$ext_key]);
-        }
-    }
-
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -1116,17 +1089,6 @@ EOF;
         $this->mkdirIfNotExists($this->libraryDir, 0777, true);
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
-
-        if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
-            $this->deleteDefaultEnableExtension('mongodb');
-        } elseif (BUILD_CUSTOM_PHP_VERSION_ID < 7040) {
-            $this->deleteDefaultEnableExtension('zip');
-            $this->deleteDefaultEnableExtension('imagick');
-            $this->deleteDefaultEnableExtension('intl');
-        } elseif (BUILD_CUSTOM_PHP_VERSION_ID == 8000) {
-            $this->deleteDefaultEnableExtension('swoole');
-        }
-
         $extAvailabled = [];
         $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
         $confPath = $this->getInputOption('conf-path');
@@ -1141,12 +1103,62 @@ EOF;
         }
         install_libraries($this);
         $this->extEnabled = array_unique($this->extEnabled);
+        //解决扩展之间冲突
+        if (isset($extAvailabled['swoole_latest'])) {
+            if (isset($extAvailabled['pdo_sqlite'])) {
+                unset($extAvailabled['pdo_sqlite']);
+            }
+            if (isset($extAvailabled['pdo_pgsql'])) {
+                unset($extAvailabled['pdo_pgsql']);
+            }
+            if (isset($extAvailabled['pdo_odbc'])) {
+                unset($extAvailabled['pdo_odbc']);
+            }
+        }
+
+        if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
+            if (isset($extAvailabled['mongodb'])) {
+                unset($extAvailabled['mongodb']);
+            }
+        }
+
+        if (BUILD_CUSTOM_PHP_VERSION_ID < 7040) {
+            if (isset($extAvailabled['zip'])) {
+                unset($extAvailabled['zip']);
+            }
+            if (isset($extAvailabled['imagick'])) {
+                unset($extAvailabled['imagick']);
+            }
+            if (isset($extAvailabled['intl'])) {
+                unset($extAvailabled['intl']);
+            }
+        }
+
+        if (BUILD_CUSTOM_PHP_VERSION_ID < 8000) {
+            if (isset($extAvailabled['swoole_latest'])) {
+                unset($extAvailabled['swoole_latest']);
+            }
+            if (isset($extAvailabled['swow_latest'])) {
+                unset($extAvailabled['swow_latest']);
+            }
+            if (isset($extAvailabled['swow'])) {
+                unset($extAvailabled['swow']);
+            }
+        }
+        if (BUILD_CUSTOM_PHP_VERSION_ID == 8000) {
+            if (isset($extAvailabled['swoole'])) {
+                unset($extAvailabled['swoole']);
+            }
+            if (isset($extAvailabled['swoole_latest'])) {
+                unset($extAvailabled['swoole_latest']);
+            }
+        }
+
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
                 echo "unsupported extension[$ext]\n";
                 continue;
             }
-
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
