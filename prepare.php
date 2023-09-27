@@ -23,7 +23,7 @@ $p->parseArguments($argc, $argv);
 
 # PHP 默认版本
 $php_version = '8.2.7';
-$php_version_id = 802007;
+$php_version_id = '802007';
 $php_version_tag = 'php-8.2.7';
 
 if ($p->getInputOption('with-php-version')) {
@@ -132,8 +132,10 @@ EOF;
 }
 
 if ($p->getInputOption('with-install-library-cached')) {
-    $p->setInstallLibraryCached(true);
+    # 默认启用构建安装缓存
+    echo PHP_EOL;
 }
+$p->setInstallLibraryCached(true);
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
