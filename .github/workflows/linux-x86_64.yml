@@ -115,7 +115,7 @@ jobs:
             # composer update --no-dev  --optimize-autoloader
             composer update  --no-dev --optimize-autoloader
 
-            php prepare.php  +ffmpeg +coturn  ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1 --with-c-compiler=clang
+            php prepare.php  -ffmpeg +coturn  ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1 --with-c-compiler=clang
 
             chmod a+x make.sh
             head -n 20 make.sh
