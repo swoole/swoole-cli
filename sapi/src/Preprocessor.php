@@ -1104,7 +1104,7 @@ EOF;
         install_libraries($this);
         $this->extEnabled = array_unique($this->extEnabled);
         //解决扩展之间冲突
-        if (isset($extAvailabled['swoole_latest'])) {
+        if (array_search('swoole_latest', $this->extEnabled)) {
             if (isset($extAvailabled['pdo_sqlite'])) {
                 unset($extAvailabled['pdo_sqlite']);
             }
@@ -1145,6 +1145,7 @@ EOF;
                 unset($extAvailabled['swow']);
             }
         }
+
         if (BUILD_CUSTOM_PHP_VERSION_ID == 8000) {
             if (isset($extAvailabled['swoole'])) {
                 unset($extAvailabled['swoole']);
