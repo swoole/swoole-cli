@@ -1114,6 +1114,9 @@ EOF;
             if (isset($extAvailabled['pdo_odbc'])) {
                 unset($extAvailabled['pdo_odbc']);
             }
+            if (isset($extAvailabled['swoole'])) {
+                unset($extAvailabled['swoole']);
+            }
         }
 
         if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
