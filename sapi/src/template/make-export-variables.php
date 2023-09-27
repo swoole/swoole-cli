@@ -1,7 +1,7 @@
-__DIR__=$(
-cd "$(dirname "$0")"
-pwd
-)
+<?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
+set -x
+<?php endif ;?>
+__DIR__=$(cd "$(dirname "$0")"; pwd)
 
 if [ -f ${__DIR__}/make-env.sh ] ; then
     source ${__DIR__}/make-env.sh
