@@ -1015,6 +1015,25 @@ EOF;
             if (is_dir($path)) {
                 $this->scanConfigFiles($path, $extAvailabled);
             } else {
+                $extName = basename($f, '.php');
+                if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
+                    if ($extName == 'mongodb') {
+                        continue;
+                    }
+                } elseif (BUILD_CUSTOM_PHP_VERSION_ID < 7040) {
+                    if ($extName == 'zip' ||
+                        $extName == 'imagick' ||
+                        $extName == 'intl'
+                    ) {
+                        continue;
+                    }
+                } elseif (BUILD_CUSTOM_PHP_VERSION_ID == 8000) {
+                    $this->deleteDefaultEnableExtension('swoole');
+                    if ($extName == 'swoole') {
+                        continue;
+                    }
+                }
+
                 $extAvailabled[basename($f, '.php')] = require $path;
             }
         }
@@ -1079,13 +1098,6 @@ EOF;
         }
     }
 
-    private function deleteAvailabledExtension($extensionName, &$extAvailabled): void
-    {
-        if (!empty($extAvailabled[$extensionName])) {
-            unset($extAvailabled[$extensionName]);
-        }
-    }
-
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -1105,6 +1117,16 @@ EOF;
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
 
+        if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
+            $this->deleteDefaultEnableExtension('mongodb');
+        } elseif (BUILD_CUSTOM_PHP_VERSION_ID < 7040) {
+            $this->deleteDefaultEnableExtension('zip');
+            $this->deleteDefaultEnableExtension('imagick');
+            $this->deleteDefaultEnableExtension('intl');
+        } elseif (BUILD_CUSTOM_PHP_VERSION_ID == 8000) {
+            $this->deleteDefaultEnableExtension('swoole');
+        }
+
         $extAvailabled = [];
         $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
         $confPath = $this->getInputOption('conf-path');
@@ -1118,27 +1140,13 @@ EOF;
             }
         }
         install_libraries($this);
-        if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
-            $this->deleteDefaultEnableExtension('mongodb');
-            $this->deleteAvailabledExtension('mongodb', $extAvailabled);
-        } elseif (BUILD_CUSTOM_PHP_VERSION_ID < 7040) {
-            $this->deleteDefaultEnableExtension('zip');
-            $this->deleteDefaultEnableExtension('imagick');
-            $this->deleteDefaultEnableExtension('intl');
-            $this->deleteAvailabledExtension('zip', $extAvailabled);
-            $this->deleteAvailabledExtension('imagick', $extAvailabled);
-            $this->deleteAvailabledExtension('intl', $extAvailabled);
-        } elseif (BUILD_CUSTOM_PHP_VERSION_ID == 8000) {
-            $this->deleteDefaultEnableExtension('swoole');
-            $this->deleteAvailabledExtension('swoole', $extAvailabled);
-        }
-
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {
                 echo "unsupported extension[$ext]\n";
                 continue;
             }
+
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
