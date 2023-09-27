@@ -1071,6 +1071,21 @@ EOF;
         return file_put_contents($outFile, ob_get_clean());
     }
 
+    public function deleteDefaultEnableExtension($extensionName): void
+    {
+        $ext_key = array_search($extensionName, $this->extEnabled);
+        if ($ext_key) {
+            unset($this->extEnabled[$ext_key]);
+        }
+    }
+
+    private function deleteAvailabledExtension($extensionName, &$extAvailabled): void
+    {
+        if (!empty($extAvailabled[$extensionName])) {
+            unset($extAvailabled[$extensionName]);
+        }
+    }
+
     /**
      * @throws CircularDependencyException
      * @throws ElementNotFoundException
@@ -1104,28 +1119,20 @@ EOF;
         }
         install_libraries($this);
         if (BUILD_CUSTOM_PHP_VERSION_ID >= 8020) {
-            $ext_key = array_search('mongodb', $this->extEnabled);
-            if ($ext_key) {
-                unset($this->extEnabled[$ext_key]);
-            }
+            $this->deleteDefaultEnableExtension('mongodb');
+            $this->deleteAvailabledExtension('mongodb', $extAvailabled);
         } elseif (BUILD_CUSTOM_PHP_VERSION_ID < 7040) {
-            $ext_key = array_search('gd', $this->extEnabled);
-            if ($ext_key) {
-                unset($this->extEnabled[$ext_key]);
-            }
-            $ext_key = array_search('zip', $this->extEnabled);
-            if ($ext_key) {
-                unset($this->extEnabled[$ext_key]);
-            }
-            $ext_key = array_search('imagick', $this->extEnabled);
-            if ($ext_key) {
-                unset($this->extEnabled[$ext_key]);
-            }
-            $ext_key = array_search('intl', $this->extEnabled);
-            if ($ext_key) {
-                unset($this->extEnabled[$ext_key]);
-            }
+            $this->deleteDefaultEnableExtension('zip');
+            $this->deleteDefaultEnableExtension('imagick');
+            $this->deleteDefaultEnableExtension('intl');
+            $this->deleteAvailabledExtension('zip', $extAvailabled);
+            $this->deleteAvailabledExtension('imagick', $extAvailabled);
+            $this->deleteAvailabledExtension('intl', $extAvailabled);
+        } elseif (BUILD_CUSTOM_PHP_VERSION_ID == 8000) {
+            $this->deleteDefaultEnableExtension('swoole');
+            $this->deleteAvailabledExtension('swoole', $extAvailabled);
         }
+
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailabled[$ext])) {

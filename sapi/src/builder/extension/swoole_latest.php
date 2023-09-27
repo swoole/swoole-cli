@@ -30,8 +30,12 @@ return function (Preprocessor $p) {
             git clone -b master --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo')
-    ;
+        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo');
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
+
+    $p->deleteDefaultEnableExtension('pdo_sqlite');
+    $p->deleteDefaultEnableExtension('pdo_pgsql');
+    $p->deleteDefaultEnableExtension('pdo_odbc');
+    $p->deleteDefaultEnableExtension('pdo_oci');
 };
