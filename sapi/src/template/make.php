@@ -40,9 +40,12 @@ OPTIONS="--disable-all \
 <?php endforeach; ?>
 <?=$this->extraOptions?>
 "
-set +x
+
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
+    <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
+    set -x
+    <?php endif ;?>
     echo "build <?=$item->name?>"
 
     <?php if ($item->enableBuildLibraryCached) : ?>
@@ -390,7 +393,6 @@ show_export_var() {
     export_variables
 }
 show_lib_pkg() {
-    set +x
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
         echo -e "[<?= $item->name ?>] pkg-config : \n<?= implode(' ', $item->pkgNames) ?>" ;
@@ -403,7 +405,6 @@ show_lib_pkg() {
 }
 
 show_lib_dep_pkg() {
-    set +x
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
     <?php
@@ -426,7 +427,6 @@ show_lib_dep_pkg() {
 }
 
 help() {
-    set +x
     echo "./make.sh docker-build"
     echo "./make.sh docker-bash"
     echo "./make.sh docker-commit"
