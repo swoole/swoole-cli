@@ -13,32 +13,30 @@ return function (Preprocessor $p) {
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
             ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
-            ->withUrl('https://ftp.postgresql.org/pub/source/v16.0/postgresql-16.0.tar.gz')
+            ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS')
-            ->withManual('https://www.postgresql.org/download/')
-            ->withManual('https://git.postgresql.org/gitweb/?p=postgresql.git;a=summary')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
             ->withPrefix($pgsql_prefix)
-            /*
-                https://git.postgresql.org/gitweb/
-
-                git://git.postgresql.org/git/postgresql.git
-                https://git.postgresql.org/git/postgresql.git
-                ssh://git@git.postgresql.org/postgresql.git
-             */
-
-            /*
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($pgsql_prefix)
-            ->withBuildLibraryCached(false)
-            */
             ->withBuildScript(
                 <<<EOF
-            test -d build_dir && rm -rf build_dir
-            mkdir -p build_dir
-            cd build_dir
+            test -d build && rm -rf build
+            mkdir -p build
+            cd build
 
             ../configure --help
+
+            # 有静态链接配置  参考文件： src/interfaces/libpq/Makefile
+
+            # 静态链接方法一：
+            # 121行 替换内容
+
+            sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
+            sed -i.backup "293 s/^/#$/"  ../src/Makefile.shlib
+            sed -i.backup "441 s/^/#$/"  ../src/Makefile.shlib
+
+            # 静态链接方法二：
+            # 102行，整行替换
+            # sed -i.backup "102c all: all-lib" ../src/interfaces/libpq/Makefile
 
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
@@ -70,20 +68,9 @@ return function (Preprocessor $p) {
 
             make -C  src/common install
 
-            # make -C  src/backend/port install
             make -C  src/port install
 
-            # make -C  src/backend/libpq install
             make -C  src/interfaces/libpq install
-
-
-            # make -C src/bin install
-            # make -C src/include install
-            # make -C src/common install
-            # make -C src/port install
-            # make -C src/interfaces install
-
-            # make -C doc install
 
 EOF
             )
@@ -92,9 +79,6 @@ EOF
             rm -rf {$pgsql_prefix}/lib/*.so.*
             rm -rf {$pgsql_prefix}/lib/*.so
             rm -rf {$pgsql_prefix}/lib/*.dylib
-            rm -rf {$pgsql_prefix}/lib/libpgcommon_shlib.a
-            rm -rf {$pgsql_prefix}/lib/libpgport_shlib.a
-
 EOF
             )
             ->withPkgName('libpq')
@@ -104,12 +88,3 @@ EOF
     $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
     $p->withExportVariable('LIBPQ_LIBS', '$(pkg-config    --libs   --static libpq)');
 };
-
-/*
-
-    cd src/common && make -s -j$(nproc) all && make -s install && cd ../.. && \
-    cd src/port && make -s -j$(nproc) all && make -s install && cd ../.. && \
-    cd src/interfaces/libpq make -s -j$(nproc) all-static-lib && make -s install install-lib-static && \
-    cd ../../bin/pg_config && make -j $(nproc) && make install && \
-
- */
