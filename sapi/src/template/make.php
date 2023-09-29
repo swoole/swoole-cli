@@ -232,8 +232,8 @@ EOF;
         echo PHP_EOL;
     } else {
         if ($this->buildType == 'dev') {
-            echo <<<EOF
-    cp -rf \$EXT_DIR/{$name} \$EXT_TMP_DIR
+            echo <<<'EOF'
+    cp -rf $EXT_DIR/{$name} $EXT_TMP_DIR
 EOF;
             echo PHP_EOL;
         }
@@ -249,7 +249,7 @@ EOF;
     echo <<<'EOF'
     NUM=$(ls $EXT_TMP_DIR/ | wc -l )
     if [ $NUM -gt 0 ] ; then
-        cp -rf $EXT_TMP_DIR/* $EXT_DIR
+        cp -rf ${EXT_TMP_DIR}/* $EXT_DIR
     fi
 
 EOF;
