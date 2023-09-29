@@ -13,8 +13,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://chromium.googlesource.com/webm/libwebp')
             ->withManual('https://chromium.googlesource.com/webm/libwebp/+/HEAD/doc/building.md')
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
-            ->withUrl('https://codeload.github.com/webmproject/libwebp/tar.gz/refs/tags/v1.2.1')
-            ->withFile('libwebp-1.2.1.tar.gz')
+            ->withUrl('https://github.com/webmproject/libwebp/archive/refs/tags/v1.3.2.tar.gz')
+            ->withFile('libwebp-v1.3.2.tar.gz')
             ->withPrefix($libwebp_prefix)
             ->withConfigure(
                 <<<EOF
@@ -23,8 +23,10 @@ return function (Preprocessor $p) {
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
                 LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
                 LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
-                ./configure --prefix={$libwebp_prefix} \
-                --enable-static --disable-shared \
+                ./configure \
+                --prefix={$libwebp_prefix} \
+                --enable-shared=no \
+                --enable-static=yes \
                 --enable-libwebpdecoder \
                 --enable-libwebpextras \
                 --with-pngincludedir={$libpng_prefix}/include \
