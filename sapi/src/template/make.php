@@ -277,8 +277,8 @@ EOF;
         echo PHP_EOL;
     } else {
         if ($this->buildType == 'dev') {
-            echo <<<'EOF'
-    cp -rf $EXT_DIR/{$name} $EXT_TMP_DIR
+            echo <<<EOF
+    cp -rf \$EXT_DIR/{$name} \$EXT_TMP_DIR
 EOF;
             echo PHP_EOL;
         }
