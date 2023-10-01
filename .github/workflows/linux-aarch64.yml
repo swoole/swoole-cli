@@ -50,7 +50,7 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql -mongodb --with-swoole-pgsql=1 --with-install-library-cached=1
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql -pdo_pgsql -mongodb --with-swoole-pgsql=1 --with-install-library-cached=1
 
             chmod a+x make.sh
             head -n 20 make.sh
