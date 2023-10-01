@@ -101,7 +101,7 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql -pdo_pgsql +mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }} --with-install-library-cached=1 --with-libavif=1
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql  +mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }} --with-install-library-cached=1 --with-libavif=1
 
             chmod a+x make.sh
             head -n 20 make.sh
@@ -123,7 +123,6 @@ jobs:
           ./php-src/sapi/cli/php --ri gd
           ./php-src/sapi/cli/php --ri swoole
           ./php-src/sapi/cli/php --ri pgsql
-          ./php-src/sapi/cli/php --ri pdo_pgsql
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php

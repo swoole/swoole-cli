@@ -79,7 +79,7 @@ jobs:
 
           composer update --no-dev  --optimize-autoloader
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -pdo_pgsql  --with-build-type=release --with-swoole-pgsql=1 --with-install-library-cached=1 --with-libavif=1
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql  --with-build-type=release --with-swoole-pgsql=1 --with-install-library-cached=1 --with-libavif=1
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -113,7 +113,6 @@ jobs:
           ./php-src/sapi/cli/php --ri gd
           ./php-src/sapi/cli/php --ri swoole
           ./php-src/sapi/cli/php --ri pgsql
-          ./php-src/sapi/cli/php --ri pdo_pgsql
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           otool -L ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
