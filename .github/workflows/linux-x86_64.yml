@@ -77,7 +77,7 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1 --with-libavif=1
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-install-library-cached=1 --with-libavif=1
 
             chmod a+x make.sh
             head -n 20 make.sh
@@ -99,7 +99,6 @@ jobs:
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri pgsql
-          ./bin/swoole-cli --ri pdo_pgsql
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
