@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+
     $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
     $file = '';
     $url = '';
@@ -26,6 +27,15 @@ return function (Preprocessor $p) {
             $options .= ' --enable-swoole-pgsql';
             $dependent_libraries[] = 'pgsql';
         }
+
+        $file = 'swoole-v5.1.0.tar.gz';
+        $url = 'https://github.com/swoole/swoole-src/archive/refs/tags/v5.1.0.tar.gz';
+
+        $options .= ' --enable-swoole-sqlite';
+        $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
+        $options .= ' --enable-swoole-coro-time --enable-thread-context ';
+
+        $dependent_libraries = array_merge($dependent_libraries, ['sqlite3', 'unix_odbc', 'pgsql']);
     } else {
         $file = 'swoole-4.8.x.tar.gz';
         $download_dir_name = 'swoole-src';
@@ -46,8 +56,7 @@ EOF;
         ->withOptions($options)
         ->withUrl($url)
         ->withFile($file)
-        ->withBuildLibraryCached(false)
-    ;
+        ->withBuildLibraryCached(false);
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
     if (!empty($download_dir_name)) {
