@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
     if ($php_version_id>8010) {
         if ($p->getInputOption('with-libavif')) {
             $options .= ' --with-avif ';
-            $depends[] = 'libavif';
+            $dependent_libraries[] = 'libavif';
 
             if ($p->getOsType() == 'macos') {
                 $libcpp = '-lc++';
