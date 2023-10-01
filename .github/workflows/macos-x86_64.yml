@@ -76,7 +76,7 @@ jobs:
 
           composer update --no-dev  --optimize-autoloader
 
-          php prepare.php --without-docker=1    +ds +apcu  +xlswriter +ssh2 +pgsql +pdo_pgsql --with-build-type=release --with-swoole-pgsql=1 --with-install-library-cached=1 --with-libavif=1
+          php prepare.php --without-docker=1    +ds +apcu  +xlswriter +ssh2 +pgsql --with-build-type=release --with-swoole-pgsql=1 --with-install-library-cached=1 --with-libavif=1
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -109,7 +109,6 @@ jobs:
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri pgsql
-          ./bin/swoole-cli --ri pdo_pgsql
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
           ./bin/swoole-cli -r "echo PHP_VERSION;"
