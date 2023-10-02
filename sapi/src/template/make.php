@@ -148,8 +148,10 @@ ___<?=$item->name?>__EOF___
                 touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
             fi
         <?php endif;?>
+    <?php else : ?>
+        touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     <?php endif; ?>
-    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
