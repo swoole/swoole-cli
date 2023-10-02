@@ -122,7 +122,7 @@ class Preprocessor
         'intl',
         'fileinfo',
         'pdo_mysql',
-        'pdo_sqlite',
+        //'pdo_sqlite',
         'soap',
         'xsl',
         'gmp',
