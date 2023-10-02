@@ -14,8 +14,7 @@ return function (Preprocessor $p) {
     $dependent_extensions = [];
     $options = '--enable-gd --with-jpeg --with-freetype --with-webp ';
 
-
-    if ($php_version_id>8010) {
+    if ($php_version_id>=8010) {
         if ($p->getInputOption('with-libavif')) {
             $options .= ' --with-avif ';
             $dependent_libraries[] = 'libavif';
