@@ -28,8 +28,9 @@ if ($p->getInputOption('with-parallel-jobs')) {
 }
 
 if ($p->getInputOption('with-install-library-cached')) {
-    $p->setInstallLibraryCached(true);
+    //$p->setInstallLibraryCached(true);
 }
+$p->setInstallLibraryCached(true);
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
