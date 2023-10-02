@@ -4,9 +4,8 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $swoole_tag = '5.1.0';
-    $file = "swoole-v{$swoole_tag}.tar.gz";
-    $url = "https://github.com/swoole/swoole-src/archive/refs/tags/v{$swoole_tag}.tar.gz";
+    $swoole_tag = 'v5.1.0';
+    $file = "swoole-{$swoole_tag}.tar.gz";
 
     $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
     $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
@@ -23,8 +22,13 @@ return function (Preprocessor $p) {
         ->withManual('https://wiki.swoole.com/#/')
         ->withOptions($options)
         ->withManual('https://wiki.swoole.com/#/')
-        ->withUrl($url)
         ->withFile($file)
+        ->withDownloadScript(
+            'swoole-src',
+            <<<EOF
+            git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
+EOF
+        )
         ->withBuildLibraryCached(false);
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);

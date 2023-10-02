@@ -1,3 +1,0 @@
-[submodule "sapi/swoole"]
-	path = sapi/swoole
-	url = https://github.com/swoole/swoole-src.git
