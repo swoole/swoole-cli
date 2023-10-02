@@ -31,8 +31,8 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-        <?php if ($this->installLibraryCached) :?>
+    <?php if ($this->installLibraryCached) : ?>
+        <?php if ($item->enableBuildLibraryCached) :?>
         if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
             echo "[<?=$item->name?>]  library cached , skip.."
             return 0
@@ -110,14 +110,13 @@ ___<?=$item->name?>__EOF___
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-        <?php if ($this->installLibraryCached) :?>
+    <?php if ($this->installLibraryCached) : ?>
+        <?php if ($item->enableBuildLibraryCached) :?>
             if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
                 touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
             fi
         <?php endif;?>
     <?php endif; ?>
-
     touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
 
     cd <?= $this->workDir . PHP_EOL ?>
@@ -181,8 +180,9 @@ make_config() {
 
     ./configure --help
     export_variables
-    echo $LDFLAGS > ldflags.log
-    echo $CPPFLAGS > cppflags.log
+    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
     ./configure $OPTIONS
 }
