@@ -35,8 +35,8 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-        <?php if ($this->installLibraryCached) :?>
+    <?php if ($this->installLibraryCached) : ?>
+        <?php if ($item->enableBuildLibraryCached) :?>
         if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
             echo "[<?=$item->name?>]  library cached , skip.."
             return 0
@@ -142,8 +142,8 @@ ___<?=$item->name?>__EOF___
         <?php endif;?>
     <?php endif;?>
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-        <?php if ($this->installLibraryCached) :?>
+    <?php if ($this->installLibraryCached) : ?>
+        <?php if ($item->enableBuildLibraryCached) :?>
             if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
                 touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
             fi
