@@ -31,6 +31,27 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
+    <?php if ($item->enableBuildLibraryCached) : ?>
+        <?php if ($this->installLibraryCached) :?>
+        if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
+            echo "[<?=$item->name?>]  library cached , skip.."
+            return 0
+        fi
+        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+        fi
+        <?php endif;?>
+        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
+            echo "[<?=$item->name?>] compiled, skip.."
+            cd <?= $this->workDir ?>/
+            return 0
+        fi
+    <?php else : ?>
+        if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
+            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+        fi
+    <?php endif; ?>
+
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
         mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
@@ -41,12 +62,6 @@ make_<?=$item->name?>() {
             rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
             exit  $result_code
         fi
-    fi
-
-    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-        echo "[<?=$item->name?>] compiled, skip.."
-        cd <?= $this->workDir ?>/
-        return 0
     fi
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
@@ -97,7 +112,14 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
 
-    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    <?php if ($item->enableBuildLibraryCached) : ?>
+        touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+        <?php if ($this->installLibraryCached) :?>
+            if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
+                touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
+            fi
+        <?php endif;?>
+    <?php endif; ?>
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
