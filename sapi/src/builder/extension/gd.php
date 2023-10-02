@@ -11,7 +11,6 @@ return function (Preprocessor $p) {
     if ($p->getInputOption('with-libavif')) {
         $options .= ' --with-avif ';
         $dependent_libraries[] = 'libavif';
-
         if ($p->getOsType() == 'macos') {
             $libcpp = '-lc++';
         } else {
