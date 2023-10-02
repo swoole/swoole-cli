@@ -56,26 +56,24 @@ make_<?=$item->name?>() {
         return 0 ;
     <?php endif ;?>
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-        <?php if ($this->installLibraryCached) :?>
+    <?php if ($this->installLibraryCached) : ?>
+        <?php if ($item->enableBuildLibraryCached) :?>
         if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
             echo "[<?=$item->name?>]  library cached , skip.."
             return 0
         fi
-        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-        fi
         <?php endif;?>
+    <?php else : ?>
         if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
             echo "[<?=$item->name?>] compiled, skip.."
             cd <?= $this->workDir ?>/
             return 0
         fi
-    <?php else : ?>
-        if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
-        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-        fi
     <?php endif; ?>
+
+    if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
+        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+    fi
 
     <?php if ($item->cleanBuildDirectory) : ?>
      # If the build directory exist, clean the build directory
@@ -110,7 +108,6 @@ make_<?=$item->name?>() {
     cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/    <?= PHP_EOL; ?>
     <?php endif ; ?>
 
-
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
     test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
@@ -137,9 +134,9 @@ make_<?=$item->name?>() {
 
     # configure
         <?php if (!empty($item->configure)) : ?>
-cat <<'__EOF__'
+    cat <<'___<?=$item->name?>__EOF___'
             <?= $item->configure . PHP_EOL ?>
-__EOF__
+___<?=$item->name?>__EOF___
             <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
@@ -167,10 +164,9 @@ __EOF__
         <?php endif; ?>
     <?php else : ?>
     # use build script replace  configure、make、make install
-
-    cat <<'__EOF__'
+    cat <<'___<?=$item->name?>__EOF___'
         <?= $item->buildScript . PHP_EOL ?>
-__EOF__
+___<?=$item->name?>__EOF___
         <?= $item->buildScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
@@ -193,14 +189,16 @@ __EOF__
         <?php endif;?>
     <?php endif;?>
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
-        <?php if ($this->installLibraryCached) :?>
-    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
-         touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
-    fi
+    <?php if ($this->installLibraryCached) : ?>
+        <?php if ($item->enableBuildLibraryCached) :?>
+            if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
+                touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
+            fi
         <?php endif;?>
+    <?php else : ?>
+        touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     <?php endif; ?>
+
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
