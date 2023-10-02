@@ -4,8 +4,8 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $swoole_tag = '5.1.0';
-    $file = "swoole-v{$swoole_tag}.tar.gz";
+    $swoole_tag = 'v5.1.0';
+    $file = "swoole-{$swoole_tag}.tar.gz";
 
     $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
     $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
