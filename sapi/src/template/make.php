@@ -68,9 +68,9 @@ make_<?=$item->name?>() {
     <?php if (empty($item->buildScript)) : ?>
     # configure
         <?php if (!empty($item->configure)) : ?>
-    cat <<'__<?=$item->name?>__EOF__'
+    cat <<'___<?=$item->name?>__EOF___'
             <?= $item->configure . PHP_EOL ?>
-___<?=$item->name?>__EOF__
+___<?=$item->name?>__EOF___
             <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
@@ -95,9 +95,9 @@ ___<?=$item->name?>__EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
         <?php endif; ?>
     <?php else : ?>
-    cat <<'__<?=$item->name?>__EOF__'
+    cat <<'___<?=$item->name?>__EOF___'
         <?= $item->buildScript . PHP_EOL ?>
-___<?=$item->name?>__EOF__
+___<?=$item->name?>__EOF___
         <?= $item->buildScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
