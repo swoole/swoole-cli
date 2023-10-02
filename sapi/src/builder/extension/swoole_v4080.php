@@ -1,11 +1,10 @@
 <?php
 
-use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $swoole_tag = '4.8.x';
+    $swoole_tag = 'v4.8.13';
     $file = "swoole-v{$swoole_tag}.tar.gz";
     $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
     $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
@@ -15,7 +14,8 @@ return function (Preprocessor $p) {
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
 
-    $ext = (new Extension('swoole'))
+    $ext = (new Extension('swoole_v4080'))
+        ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')

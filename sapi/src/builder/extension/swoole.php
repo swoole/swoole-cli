@@ -1,11 +1,13 @@
 <?php
 
-use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
+    $swoole_tag = 'v4.8.13';
+    $file = "swoole-v{$swoole_tag}.tar.gz";
+    $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
+    $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --enable-http2  --enable-brotli  ';
@@ -13,13 +15,19 @@ return function (Preprocessor $p) {
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
 
     $ext = (new Extension('swoole'))
-        ->withOptions($options)
-        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
+        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
-        ->withUrl('https://github.com/swoole/swoole-src/archive/refs/tags/v4.8.13.tar.gz')
-        ->withFile('swoole-v4.8.13.tar.gz')
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo');
-    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
+        ->withOptions($options)
+        ->withFile($file)
+        ->withDownloadScript(
+            'swoole-src',
+            <<<EOF
+            git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
+EOF
+        )
+        ->withBuildLibraryCached(false);
+    call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
+    call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
     $p->addExtension($ext);
 };
