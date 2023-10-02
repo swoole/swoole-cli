@@ -29,6 +29,8 @@ abstract class Project
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
+    public bool $enableBuildLibraryCached = true;
+
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -68,6 +70,12 @@ abstract class Project
     public function withUrl(string $url): static
     {
         $this->url = $url;
+        return $this;
+    }
+
+    public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
+    {
+        $this->enableBuildLibraryCached = $enableBuildLibraryCached;
         return $this;
     }
 }

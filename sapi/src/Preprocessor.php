@@ -126,6 +126,8 @@ class Preprocessor
     protected array $extCallbacks = [];
     protected string $configureVarables;
 
+    protected bool $installLibraryCached = false;
+
     protected function __construct()
     {
         switch (PHP_OS) {
@@ -293,6 +295,11 @@ class Preprocessor
     public function setExtraOptions(string $options)
     {
         $this->extraOptions = $options;
+    }
+
+    public function setInstallLibraryCached(bool $installLibraryCached): void
+    {
+        $this->installLibraryCached = $installLibraryCached;
     }
 
     /**

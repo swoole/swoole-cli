@@ -37,20 +37,18 @@ make_<?=$item->name?>() {
             echo "[<?=$item->name?>]  library cached , skip.."
             return 0
         fi
-        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-        fi
         <?php endif;?>
+    <?php else : ?>
         if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
             echo "[<?=$item->name?>] compiled, skip.."
             cd <?= $this->workDir ?>/
             return 0
         fi
-    <?php else : ?>
-        if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
-            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-        fi
     <?php endif; ?>
+
+    if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
+        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+    fi
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
@@ -70,9 +68,9 @@ make_<?=$item->name?>() {
     <?php if (empty($item->buildScript)) : ?>
     # configure
         <?php if (!empty($item->configure)) : ?>
-cat <<'__EOF__'
+    cat <<'__<?=$item->name?>__EOF__'
             <?= $item->configure . PHP_EOL ?>
-__EOF__
+___<?=$item->name?>__EOF__
             <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
@@ -97,9 +95,9 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
         <?php endif; ?>
     <?php else : ?>
-    cat <<'__EOF__'
+    cat <<'__<?=$item->name?>__EOF__'
         <?= $item->buildScript . PHP_EOL ?>
-__EOF__
+___<?=$item->name?>__EOF__
         <?= $item->buildScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
@@ -113,13 +111,14 @@ __EOF__
     <?php endif; ?>
 
     <?php if ($item->enableBuildLibraryCached) : ?>
-        touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
         <?php if ($this->installLibraryCached) :?>
             if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
                 touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
             fi
         <?php endif;?>
     <?php endif; ?>
+
+    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
