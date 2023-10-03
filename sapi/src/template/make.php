@@ -42,26 +42,24 @@ make_<?=$item->name?>() {
     <?php endif ;?>
     echo "build <?=$item->name?>"
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-        <?php if ($this->installLibraryCached) :?>
+    <?php if ($this->installLibraryCached) : ?>
+        <?php if ($item->enableBuildLibraryCached) :?>
         if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
             echo "[<?=$item->name?>]  library cached , skip.."
             return 0
         fi
-        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-            rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-        fi
         <?php endif;?>
+    <?php else : ?>
         if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
             echo "[<?=$item->name?>] compiled, skip.."
             cd <?= $this->workDir ?>/
             return 0
         fi
-    <?php else : ?>
-        if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
-        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-        fi
     <?php endif; ?>
+
+    if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
+        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+    fi
 
     <?php if ($item->cleanBuildDirectory) : ?>
      # If the build directory exist, clean the build directory
@@ -79,7 +77,6 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
 
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
@@ -100,9 +97,9 @@ make_<?=$item->name?>() {
     <?php if (empty($item->buildScript)) : ?>
     # configure
         <?php if (!empty($item->configure)) : ?>
-cat <<'__EOF__'
+    cat <<'___<?=$item->name?>__EOF___'
             <?= $item->configure . PHP_EOL ?>
-__EOF__
+___<?=$item->name?>__EOF___
             <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
@@ -127,9 +124,9 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
         <?php endif; ?>
     <?php else : ?>
-    cat <<'__EOF__'
+    cat <<'___<?=$item->name?>__EOF___'
         <?= $item->buildScript . PHP_EOL ?>
-__EOF__
+___<?=$item->name?>__EOF___
         <?= $item->buildScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
@@ -152,14 +149,16 @@ __EOF__
         <?php endif;?>
     <?php endif;?>
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
-    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
-        <?php if ($this->installLibraryCached) :?>
-    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
-         touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
-    fi
+    <?php if ($this->installLibraryCached) : ?>
+        <?php if ($item->enableBuildLibraryCached) :?>
+            if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
+                touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
+            fi
         <?php endif;?>
+    <?php else : ?>
+        touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
     <?php endif; ?>
+
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
