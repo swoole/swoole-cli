@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+    $swoole_tag = 'v5.0.3';
     $depends = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
     $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
