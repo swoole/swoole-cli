@@ -45,7 +45,7 @@ jobs:
           run: |
             set -eux
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
-
+            apk add libltdl-static
             # composer update --no-dev  --optimize-autoloader
             composer update   --optimize-autoloader
 
