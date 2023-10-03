@@ -45,7 +45,7 @@ jobs:
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
-      - name: Prepare
+      - name: Build
         uses: addnab/docker-run-action@v3
         with:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
