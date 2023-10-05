@@ -23,10 +23,11 @@ return function (Preprocessor $p) {
                 <<<EOF
                 # git clone -b 1.24.4 --depth=1   https://github.com/mongodb/mongo-c-driver.git
                 # git clone -b master --depth=1   https://github.com/mongodb/mongo-c-driver.git
-                git clone -b fix_static_build --depth=1   https://github.com/mongodb/mongo-c-driver.git
+                git clone -b fix_static_build --depth=1   https://github.com/jingjingxyk/mongo-c-driver.git
 EOF
             )
             ->withPrefix($libbson_prefix)
+            ->withAutoUpdateFile()
             ->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libbson_prefix)
@@ -40,11 +41,12 @@ EOF
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_STATIC_LIBS=ON \
-            -DCMAKE_POLICY_DEFAULT_CMP0075=NEW \
             -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF \
             -DENABLE_MONGOC=OFF \
             -DENABLE_TESTS=OFF \
-            -DENABLE_EXAMPLES=OFF
+            -DENABLE_EXAMPLES=OFF \
+            -DENABLE_SHARED=OFF \
+            -DENABLE_STATIC=ON
 
 EOF
             )

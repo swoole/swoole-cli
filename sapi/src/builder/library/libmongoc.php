@@ -28,7 +28,7 @@ return function (Preprocessor $p) {
                 <<<EOF
                 # git clone -b 1.24.4 --depth=1   https://github.com/mongodb/mongo-c-driver.git
                 # git clone -b master --depth=1   https://github.com/mongodb/mongo-c-driver.git
-                git clone -b fix_static_build --depth=1   https://github.com/mongodb/mongo-c-driver.git
+                git clone -b fix_static_build --depth=1   https://github.com/jingjingxyk/mongo-c-driver.git
 EOF
             )
             ->withPrefix($libmongoc_prefix)
@@ -43,8 +43,6 @@ EOF
             cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libmongoc_prefix} \
             -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF \
-            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
-            -DCMAKE_POLICY_DEFAULT_CMP0075=NEW \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_STATIC_LIBS=ON \
@@ -53,7 +51,6 @@ EOF
             -DUSE_SYSTEM_LIBBSON=ON \
             -DMONGOC_ENABLE_STATIC_BUILD=ON \
             -DMONGOC_ENABLE_STATIC_INSTALL=ON \
-            -DENABLE_STATIC=ON  \
             -DENABLE_SNAPPY=OFF \
             -DENABLE_ZSTD=ON \
             -DENABLE_ZLIB=SYSTEM \
@@ -63,7 +60,14 @@ EOF
             -DENABLE_CLIENT_SIDE_ENCRYPTION=OFF \
             -DENABLE_TESTS=OFF \
             -DENABLE_EXAMPLES=OFF \
-            -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}"
+            -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}" \
+            -DENABLE_SHARED=OFF \
+            -DENABLE_STATIC=ON \
+            -DENABLE_MONGOC=ON \
+            -DENABLE_PIC=ON \
+            -DENABLE_SRV=ON \
+            -DMONGOC_ENABLE_MONGODB_AWS_AUTH=OFF
+
 
             # -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0" \
             # -Dbson-1.0_DIR={{$libbson_prefix}}
