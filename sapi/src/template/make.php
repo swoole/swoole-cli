@@ -456,19 +456,14 @@ _____EO_____
 
     test -f ./configure &&  rm ./configure
     ./buildconf --force
-
     ./configure --help
-     export_variables
-     echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
-     echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
-     echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
+
 <?php if ($this->osType == 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
 <?php endif; ?>
 
-   ./configure --help
     export_variables
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
