@@ -83,7 +83,7 @@ jobs:
 
           composer update --no-dev  --optimize-autoloader
 
-          php prepare.php --without-docker=1  +ffmpeg  --with-build-type=release  --with-install-library-cached=1
+          php prepare.php --without-docker=1  -ffmpeg +coturn --with-build-type=release  --with-install-library-cached=1
 
       - name: Cache all-library
         uses: actions/cache@v3

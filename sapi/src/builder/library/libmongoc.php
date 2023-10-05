@@ -20,11 +20,15 @@ return function (Preprocessor $p) {
             ->withManual('https://mongoc.org/libmongoc/current/tutorial.html')
             ->withManual('https://mongoc.org/libmongoc/current/installing.html')
             //->withUrl('https://github.com/mongodb/mongo-c-driver/releases/download/1.24.3/mongo-c-driver-1.24.3.tar.gz')
-            ->withFile('mongo-c-driver-1.24.4.tar.gz')
+            //->withFile('mongo-c-driver-1.24.4.tar.gz')
+            //->withFile('mongo-c-driver-1.24.4.tar.gz')
+            ->withFile('mongo-c-driver-master.tar.gz')
             ->withDownloadScript(
                 'mongo-c-driver',
                 <<<EOF
-                git clone -b 1.24.4 --depth=1   https://github.com/mongodb/mongo-c-driver.git
+                # git clone -b 1.24.4 --depth=1   https://github.com/mongodb/mongo-c-driver.git
+                # git clone -b master --depth=1   https://github.com/mongodb/mongo-c-driver.git
+                git clone -b fix_static_build --depth=1   https://github.com/mongodb/mongo-c-driver.git
 EOF
             )
             ->withPrefix($libmongoc_prefix)
@@ -59,9 +63,10 @@ EOF
             -DENABLE_CLIENT_SIDE_ENCRYPTION=OFF \
             -DENABLE_TESTS=OFF \
             -DENABLE_EXAMPLES=OFF \
-            -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}" \
-            -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0" \
-            -Dbson-1.0_DIR={{$libbson_prefix}}
+            -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}"
+
+            # -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0" \
+            # -Dbson-1.0_DIR={{$libbson_prefix}}
 
             {
                 cmake --build . --config Release --target install

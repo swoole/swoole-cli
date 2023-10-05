@@ -88,9 +88,7 @@ return function (Preprocessor $p) {
     $depends = ['libbpf'] ;
 
     $depends = ['libelf'] ;
-    $depends = ['libbson'] ;
-    $depends = ['libmongoc'] ;
-    //$depends = ['libmongocrypt'] ;
+
     $depends = ['riscv_gnu_toolchain'] ;
     $depends = ['fftw3'] ;
     $depends = ['lapack'] ;
@@ -112,6 +110,9 @@ return function (Preprocessor $p) {
     $depends = ['openldap'] ;
     $depends = ['libarchive'] ;
     $depends = ['pgsql_latest'] ;
+    $depends = ['libbson'] ;
+    $depends = ['libmongoc'] ;
+    //$depends = ['libmongocrypt'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
