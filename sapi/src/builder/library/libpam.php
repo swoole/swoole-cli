@@ -20,14 +20,14 @@ return function (Preprocessor $p) {
                 git clone -b v1.5.3  --depth=1 https://github.com/linux-pam/linux-pam.git
 EOF
         )
-        ->withPreInstallCommand('alpine',<<<EOF
+        ->withPreInstallCommand('alpine', <<<EOF
 apk add gettext-dev
 
 apk add docbook5-xml
 apk add docbook-xsl-ns
 
 EOF
-)
+    )
         ->withPrefix($libpam_prefix)
 
 
@@ -52,7 +52,7 @@ EOF
 
         # LDFLAGS="\$LDFLAGS -static"
 
-        PACKAGES='openssl  '
+        PACKAGES='openssl  ncursesw '
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
@@ -62,22 +62,31 @@ EOF
         --enable-shared=no \
         --enable-static=yes \
         --enable-openssl \
-        --with-libiconv-prefix={$libiconv_prefix}
+        --with-libiconv-prefix={$libiconv_prefix} \
+        --disable-prelude \
+        --disable-audit \
+        --enable-db=no \
+        --disable-nis \
+        --disable-selinux \
+        --disable-econf \
+        --disable-nls \
+        --disable-rpath \
+        --disable-pie \
+        --disable-doc
+
+
         # --with-libintl-prefix=
-
-
 EOF
         )
-
-
-        ->withPkgName('example')
+        ->withPkgName('pam')
+        ->withPkgName('pam_misc')
+        ->withPkgName('pamc')
         ->withBinPath($libpam_prefix . '/bin/')
 
         //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')
+        ->withDependentLibraries('openssl', 'ncurses')
 
     ;
 
     $p->addLibrary($lib);
-
 };
