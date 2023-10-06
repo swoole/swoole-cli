@@ -11,11 +11,11 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-mirror=''
+MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    mirror="$2"
+    MIRROR="$2"
     shift
     ;;
   --*)
@@ -25,7 +25,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-case "$mirror" in
+case "$MIRROR" in
 china)
 
   export HOMEBREW_INSTALL_FROM_API=1
@@ -52,3 +52,16 @@ brew install gettext coreutils binutils libunistring
 
 brew uninstall --ignore-dependencies snappy
 brew uninstall --ignore-dependencies capstone
+
+
+case "$MIRROR" in
+china|tuna)
+  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  ;;
+ustc)
+  pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
+  ;;
+
+esac
+
+pip3 install meson
