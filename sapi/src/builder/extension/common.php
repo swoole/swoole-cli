@@ -110,9 +110,11 @@ return function (Preprocessor $p) {
     $depends = ['openldap'] ;
     $depends = ['libarchive'] ;
     $depends = ['pgsql_latest'] ;
+
     $depends = ['libbson'] ;
     $depends = ['libmongoc'] ;
     //$depends = ['libmongocrypt'] ;
+    $depends = ['libpam'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
