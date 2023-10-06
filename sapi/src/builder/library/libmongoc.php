@@ -66,7 +66,6 @@ EOF
             -DENABLE_MONGOC=ON \
             -DENABLE_PIC=ON \
             -DENABLE_SRV=ON \
-            -DMONGOC_ENABLE_MONGODB_AWS_AUTH=OFF
 
 
             # -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0" \

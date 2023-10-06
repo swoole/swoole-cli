@@ -41,7 +41,6 @@ EOF
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_STATIC_LIBS=ON \
-            -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF \
             -DENABLE_MONGOC=OFF \
             -DENABLE_TESTS=OFF \
             -DENABLE_EXAMPLES=OFF \
