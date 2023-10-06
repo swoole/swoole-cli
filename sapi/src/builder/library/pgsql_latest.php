@@ -101,7 +101,8 @@ EOF
             ->withBuildScript(
                 <<<EOF
 
-            PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
+            PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4 "
+            PACKAGES="\$PACKAGES lber ldap gmp odbc  odbccr  odbcinst libargon2  "
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs} " \
@@ -119,7 +120,7 @@ EOF
             --without-perl \
             --without-python \
             --without-pam \
-            --without-ldap \
+            --with-ldap \
             --without-bonjour \
             --without-tcl
 

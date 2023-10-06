@@ -112,6 +112,7 @@ return function (Preprocessor $p) {
     $depends = ['openldap'] ;
     $depends = ['libarchive'] ;
     $depends = ['pgsql_latest'] ;
+    $depends = ['libpam'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
