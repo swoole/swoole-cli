@@ -3,11 +3,11 @@ name: build-php-cli-windows-cygwin
 on: [ push ]
 
 env:
-  BUILD_PHP_VERSION: 8.2.4
+  BUILD_PHP_VERSION: 8.2.11
 
 jobs:
   windows-cygwin:
-    if: 0
+    if: 1
     runs-on: windows-latest
     steps:
       - name: Prepare git

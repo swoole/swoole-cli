@@ -3,7 +3,7 @@ name: build-php-cli-macos-x86_64
 on: [ push, pull_request ]
 
 env:
-  BUILD_PHP_VERSION: 8.2.7
+  BUILD_PHP_VERSION: 8.2.11
 
 jobs:
   macos-x86_64:
@@ -80,7 +80,7 @@ jobs:
 
           composer update --no-dev  --optimize-autoloader
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql  --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -89,7 +89,7 @@ jobs:
           path: /usr/local/swoole-cli
           key: ${{ runner.os }}-build-native-php-build-all-library
 
-      - name: Build all-library
+      - name: Build
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
@@ -100,9 +100,6 @@ jobs:
 
           bash ./make.sh all-library
 
-      - name: Build
-        run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           bash ./make.sh config
           bash ./make.sh build
           bash ./make.sh archive
