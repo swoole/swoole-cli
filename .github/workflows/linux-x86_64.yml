@@ -78,6 +78,11 @@ jobs:
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
           echo ${{ env.BRANCH_NAME }}
+          echo ${{ github.actor }}
+          echo ${{ github.repository }}
+          echo ${{ github.repository_owner }}
+          echo ${{ github.head_ref }}
+          echo ${{ github.ref_name }}
 
           # git submodule update --init
 

@@ -91,7 +91,7 @@ jobs:
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-build-native-php-build-all-library
+          key: ${{ runner.os }}-${{ github.ref_name }}-build-native-php-build-all-library
 
       - name: Build
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
