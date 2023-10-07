@@ -105,12 +105,6 @@ EOF;
     $p->setProxyConfig($proxyConfig, $http_proxy);
 }
 
-if ($p->getInputOption('with-install-library-cached')) {
-    # 默认启用构建安装缓存
-    echo PHP_EOL;
-}
-$p->setInstallLibraryCached(true);
-
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
     $p->setLinker('ld');

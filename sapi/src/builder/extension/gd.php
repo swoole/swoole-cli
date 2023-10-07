@@ -5,16 +5,18 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+
     $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
     $file = '';
     $url = '';
     $download_dir_name = '';
     $download_script = '';
-    $dependent_libraries =['libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif'];
+
+    $dependent_libraries = ['libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif'];
     $dependent_extensions = [];
     $options = '--enable-gd --with-jpeg --with-freetype --with-webp ';
 
-    if ($php_version_id>=8010) {
+    if ($php_version_id >= 8010) {
         if ($p->getInputOption('with-libavif')) {
             $options .= ' --with-avif ';
             $dependent_libraries[] = 'libavif';

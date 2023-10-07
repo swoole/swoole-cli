@@ -4,13 +4,17 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+
     $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
     $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib'];
+
     $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
     $options = '--enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
-    $swoole_tag = 'v5.1.0';
+
 
     if ($php_version_id >= 8010) {
+        $swoole_tag = 'v5.1.0';
+
         $dependent_libraries = array_merge($dependent_libraries, [
             'brotli',
             'nghttp2',
@@ -34,6 +38,8 @@ return function (Preprocessor $p) {
     }
 
     $file = "swoole-{$swoole_tag}.tar.gz";
+    $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
+
 
     $ext = (new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')
@@ -49,6 +55,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBuildLibraryCached(false);
+
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
     $p->addExtension($ext);
