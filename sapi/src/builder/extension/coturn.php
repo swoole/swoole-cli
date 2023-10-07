@@ -23,7 +23,7 @@ return function (Preprocessor $p) {
                 mkdir -p {$workdir}/bin/coturn/etc/
                 cd {$coturn_prefix}/
 
-                cp -rf {$coturn_prefix}/bin/  {$workdir}/bin/coturn/bin/
+                cp -rf {$coturn_prefix}/bin/*  {$workdir}/bin/coturn/bin/
                 cp -rf {$coturn_prefix}/etc/*  {$workdir}/bin/coturn/etc/
                 cd {$workdir}/bin/
 
