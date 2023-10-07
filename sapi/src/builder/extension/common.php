@@ -111,10 +111,12 @@ return function (Preprocessor $p) {
     $depends = ['libarchive'] ;
     $depends = ['pgsql_latest'] ;
 
-    $depends = ['libbson'] ;
-    $depends = ['libmongoc'] ;
+
     //$depends = ['libmongocrypt'] ;
     $depends = ['libpam'] ;
+    $depends = ['libbson'] ;
+    $depends = ['libmongoc'] ;
+    $depends = ['coturn'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

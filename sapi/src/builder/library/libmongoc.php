@@ -32,44 +32,46 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPrefix($libmongoc_prefix)
-            ->withBuildLibraryCached(false)
+            //->withAutoUpdateFile()
+            //->withBuildLibraryCached(false)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libmongoc_prefix)
             ->withBuildScript(
                 <<<EOF
              mkdir -p cmake-build
             cd cmake-build
-            export BSON_ROOT_DIR={$libbson_prefix}/lib/pkgconfig/
+
             cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libmongoc_prefix} \
-            -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF \
+            -DCMAKE_C_STANDARD=11 \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_STATIC_LIBS=ON \
-            -DZLIB_ROOT={$zlib_prefix} \
-            -DICU_ROOT={$icu_prefix} \
-            -DUSE_SYSTEM_LIBBSON=ON \
-            -DMONGOC_ENABLE_STATIC_BUILD=ON \
-            -DMONGOC_ENABLE_STATIC_INSTALL=ON \
-            -DENABLE_SNAPPY=OFF \
-            -DENABLE_ZSTD=ON \
-            -DENABLE_ZLIB=SYSTEM \
-            -DENABLE_SSL=OPENSSL \
-            -DENABLE_SASL=OFF \
-            -DENABLE_ICU=ON \
-            -DENABLE_CLIENT_SIDE_ENCRYPTION=OFF \
+            -DENABLE_MONGOC=ON \
+            -DENABLE_STATIC=ON \
+            -DENABLE_SHARED=OFF \
             -DENABLE_TESTS=OFF \
             -DENABLE_EXAMPLES=OFF \
-            -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}" \
-            -DENABLE_SHARED=OFF \
-            -DENABLE_STATIC=ON \
-            -DENABLE_MONGOC=ON \
-            -DENABLE_PIC=ON \
             -DENABLE_SRV=ON \
+            -DENABLE_SNAPPY=OFF \
+            -DENABLE_ZLIB=SYSTEM \
+            -DZLIB_ROOT={$zlib_prefix} \
+            -DENABLE_ZSTD=ON \
+            -DENABLE_SSL=OPENSSL \
+            -DENABLE_SASL=OFF \
+            -DENABLE_CLIENT_SIDE_ENCRYPTION=OFF \
+            -DENABLE_MONGODB_AWS_AUTH=OFF \
+            -DENABLE_CRYPTO_SYSTEM_PROFILE=OFF \
+            -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF \
+            -DENABLE_EXTRA_ALIGNMENT=OFF \
+            -DUSE_SYSTEM_LIBBSON=OFF \
+            -DMONGOC_ENABLE_STATIC_BUILD=ON \
+            -DMONGOC_ENABLE_STATIC_INSTALL=ON \
+            -DENABLE_ICU=ON \
+            -DICU_ROOT=ON \
+            -DICU_ROOT={$icu_prefix} \
+            -DCMAKE_PREFIX_PATH="{$openssl_prefix}"
 
-
-            # -DCMAKE_INCLUDE_PATH="{$libbson_prefix}/include/libbson-1.0" \
-            # -Dbson-1.0_DIR={{$libbson_prefix}}
 
             {
                 cmake --build . --config Release --target install
@@ -79,7 +81,17 @@ EOF
 
 EOF
             )
-            ->withDependentLibraries('openssl', 'readline', 'zlib', 'libzstd', 'icu', 'libbson')
+            ->withScriptAfterInstall(
+                <<<EOF
+            sed -i.backup "s/libmongoc-1\.0/libmongoc-static-1\.0/"  {$libmongoc_prefix}/lib/pkgconfig/libmongoc-ssl-1.0.pc
+
+EOF
+            )
+            ->withDependentLibraries('openssl', 'readline', 'zlib', 'libzstd', 'icu') //'libbson'
+            ->withPkgName('libbson-static-1.0')
+            ->withPkgName('libmongoc-ssl-1.0')
+            ->withPkgName('libmongoc-static-1.0')
+            ->withBinPath($libmongoc_prefix . '/bin/')
     );
 };
 

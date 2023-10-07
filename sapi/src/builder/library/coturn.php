@@ -27,7 +27,7 @@ return function (Preprocessor $p) {
                 git clone -b fix_openssl_no_threads --depth=1 https://github.com/jingjingxyk/coturn.git
 EOF
             )
-            ->withAutoUpdateFile()
+            //->withAutoUpdateFile()
             ->withPrefix($coturn_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($coturn_prefix)
@@ -100,7 +100,8 @@ EOF
             export TURN_NO_GCM=ON
             export TURN_NO_SYSTEMD=ON
             export TURN_NO_MYSQL=ON
-            export TURN_NO_MONGO=ON
+
+            # export TURN_NO_MONGO=OFF
 
             # export TURN_NO_SQLITE=OFF
             # export TURN_NO_PQ=OFF
@@ -116,6 +117,7 @@ EOF
             # PACKAGES="\$PACKAGES libpq"
             PACKAGES="\$PACKAGES hiredis"
             PACKAGES="\$PACKAGES libsctp"
+            PACKAGES="\$PACKAGES libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0 "
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
             export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
 
@@ -126,12 +128,14 @@ EOF
             export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -static"
             export OSLIBS=\$LDFLAGS
 
-            export DBCFLAGS="$(pkg-config  --cflags --static libpq sqlite3 hiredis )"
-            export DBLIBS="$(pkg-config  --libs --static libpq sqlite3 hiredis )"
+            export DBCFLAGS="$(pkg-config  --cflags --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0)"
+            export DBLIBS="$(pkg-config  --libs --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0)"
 
-            export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lstdc++ -lm " # -lpgcommon -lpgport
+            export LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lstdc++ -lm "
             export CFLAGS="-O3  -g  -std=gnu11 -static "
             export OSCFLAGS=\$CFLAGS
+
+            sed -i.backup  "s/libmongoc-1.0/libmongoc-static-1.0/" ./configure
             ./configure  \
             --prefix=$coturn_prefix
 
@@ -145,7 +149,7 @@ EOF
                 'pgsql',
                 'hiredis',
                 'libsctp',
-                //'libmongoc',
+                'libmongoc',
                 // 'prometheus_client_c'
                 //'libsctp'
             )
