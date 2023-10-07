@@ -116,6 +116,10 @@ return function (Preprocessor $p) {
     $depends = ['libpam'] ;
     $depends = ['libbson'] ;
     $depends = ['libmongoc'] ;
+
+
+    $depends = ['gnutls'] ;
+    $depends = ['oAuth'] ;
     $depends = ['coturn'] ;
 
     $ext = (new Extension('common'))

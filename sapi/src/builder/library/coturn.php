@@ -12,6 +12,7 @@ return function (Preprocessor $p) {
     $hiredis_prefix = HIREDIS_PREFIX;
 
     $cflags  = $p->getOsType() == 'macos' ? ' ' : ' -static ';
+    $ldflags  = $p->getOsType() == 'macos' ? ' ' : ' --static ';
     $libsctp = $p->getOsType() == 'macos' ? ' ' : ' libsctp ';
     $libcpp = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
     $p->addLibrary(
@@ -122,20 +123,21 @@ EOF
             PACKAGES="\$PACKAGES hiredis"
             # PACKAGES="\$PACKAGES libsctp"
             PACKAGES="\$PACKAGES libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0 "
+
             export SSL_CFLAGS="$(pkg-config  --cflags-only-I  --static openssl libcrypto libssl) "
-            export SSL_LIBS="$(pkg-config    --libs-only-L         --static openssl libcrypto libssl) "
+            export SSL_LIBS="$(pkg-config    --libs           --static openssl libcrypto libssl) "
 
             # export EVENT_CFLAGS="$(pkg-config  --cflags-only-I  --static libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads) "
             # export EVENT_LIBS="$(pkg-config    --libs           --static libevent  libevent_core libevent_extra  libevent_openssl  libevent_pthreads) "
 
             export CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
-            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) {$cflags} "
-            export OSLIBS="$(pkg-config    --libs           --static \$PACKAGES) "
+            export LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) {$ldflags} "
+            export OSLIBS="$(pkg-config    --libs-only-l    --static \$PACKAGES) "
 
-            export DBCFLAGS="$(pkg-config  --cflags --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0)"
-            export DBLIBS="$(pkg-config  --libs --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0)"
+            export DBCFLAGS="$(pkg-config  --cflags --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0     )"
+            export DBLIBS="$(pkg-config     --libs  --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0     )"
 
-            export LIBS="$(pkg-config      --libs     \$PACKAGES) {$libcpp} -lm --static " #
+            export LIBS="$(pkg-config      --libs     \$PACKAGES) {$libcpp} -lm  " #
             export CFLAGS="-O3  -g  -std=gnu11  {$cflags} "
             export OSCFLAGS=\$CFLAGS
 

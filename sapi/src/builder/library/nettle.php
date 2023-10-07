@@ -28,7 +28,14 @@ return function (Preprocessor $p) {
             --enable-openssl
 EOF
             )
+            ->withScriptAfterInstall(
+                <<<EOF
+            sed -i.backup "s/-ldl/  /g" {$nettle_prefix}/lib/pkgconfig/hogweed.pc
+EOF
+            )
             ->withPkgName('nettle')
+            ->withPkgName('hogweed')
             ->withDependentLibraries('gmp', 'openssl')
+            ->withBinPath($nettle_prefix . '/bin/')
     );
 };

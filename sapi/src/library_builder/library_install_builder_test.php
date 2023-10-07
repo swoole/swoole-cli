@@ -528,54 +528,11 @@ function install_bzip2_dev_latest(Preprocessor $p)
 
 function install_libev($p)
 {
-    $libev_prefix = LIBEV_PREFIX;
-    $p->addLibrary(
-        (new Library('libev'))
-            ->withHomePage('http://software.schmorp.de/pkg/libev.html')
-            ->withLicense('http://cvs.schmorp.de/libev/README', Library::LICENSE_BSD)
-            ->withUrl('http://dist.schmorp.de/libev/libev-4.33.tar.gz')
-            ->withManual('http://cvs.schmorp.de/libev/README')
-            ->withPrefix($libev_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libev_prefix)
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
-            ./configure \
-            --prefix={$libev_prefix} \
-            --enable-shared=no \
-            --enable-static=yes
-EOF
-            )
-    );
-
-
-    $p->setVarable('SWOOLE_CLI_EXTRA_CPPLAGS', '$SWOOLE_CLI_EXTRA_CPPLAGS -I' . LIBEV_PREFIX . '/include');
-    $p->setVarable('SWOOLE_CLI_EXTRA_LDLAGS', '$SWOOLE_CLI_EXTRA_LDLAGS -L' . LIBEV_PREFIX . '/lib');
-    $p->setVarable('SWOOLE_CLI_EXTRA_LIBS', '$SWOOLE_CLI_EXTRA_LIBS -lev');
 }
 
 function install_libtasn1($p)
 {
-    $libtasn1_prefix = LIBTASN1_PREFIX;
-    $p->addLibrary(
-        (new Library('libtasn1'))
-            ->withHomePage('https://www.gnu.org/software/libtasn1/')
-            ->withLicense('https://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-            ->withManual('https://www.gnu.org/software/libtasn1/manual/')
-            ->withUrl('https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.19.0.tar.gz')
-            ->withPrefix($libtasn1_prefix)
-            ->withConfigure(
-                <<<EOF
-            ./configure --help
-            ./configure \
-            --prefix={$libtasn1_prefix} \
-            --enable-static=yes \
-            --enable-shared=no
-EOF
-            )
-            ->withPkgName('libtasn1')
-    );
+
 }
 
 function install_libexpat($p)
@@ -585,35 +542,7 @@ function install_libexpat($p)
 
 function install_unbound($p)
 {
-    $p->addLibrary(
-        (new Library('unbound'))
-            ->withHomePage('https://nlnetlabs.nl/unbound')
-            ->withLicense('https://github.com/NLnetLabs/unbound/blob/master/LICENSE', Library::LICENSE_BSD)
-            ->withManual('https://unbound.docs.nlnetlabs.nl/en/latest/')
-            ->withUrl('https://nlnetlabs.nl/downloads/unbound/unbound-1.17.1.tar.gz')
-            ->withPrefix('/usr/unbound/')
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory('/usr/unbound/')
-            ->withConfigure(
-                '
-             ./configure --help
 
-            ./configure \
-            --prefix= \
-            --enable-static=yes \
-            --enable-shared=no \
-            --with-libsodium=/usr/libsodium \
-            --with-libnghttp2=/usr/nghttp2 \
-            --with-nettle=/usr/nettle \
-            --with-ssl=/usr/openssl \
-            --with-libexpat=/usr/libexpat/ \
-            --with-dynlibmodule=no \
-            --with-libunbound-only
-
-            '
-            )
-            ->withPkgName('unbound')
-    );
 }
 
 function install_gnutls($p)
@@ -633,85 +562,7 @@ function install_gnutls($p)
 EOF;
 
     $gnutls_prefix = GNUTLS_PREFIX;
-    $iconv_prefix = ICONV_PREFIX;
-    $zlib_prefix = ZLIB_PREFIX;
-    $p->addLibrary(
-        (new Library('gnutls'))
-            ->withHomePage('https://www.gnutls.org/')
-            ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-            ->withUrl('https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.8.tar.xz')
-            ->withManual('https://gitlab.com/gnutls/gnutls.git')
-            ->withManual('https://www.gnutls.org/download.html')
-            ->withPrefix($gnutls_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($gnutls_prefix)
-            ->withConfigure(
-                <<<EOF
 
-                 set -uex
-                export GMP_CFLAGS=$(pkg-config  --cflags --static gmp)
-                export GMP_LIBS=$(pkg-config    --libs   --static gmp)
-                export LIBTASN1_CFLAGS=$(pkg-config  --cflags --static libtasn1)
-                export LIBTASN1_LIBS=$(pkg-config    --libs   --static libtasn1)
-
-                export LIBIDN2_CFLAGS=$(pkg-config  --cflags --static libidn2)
-                export LIBIDN2_LIBS=$(pkg-config    --libs   --static libidn2)
-
-
-                export LIBBROTLIENC_CFLAGS=$(pkg-config  --cflags --static libbrotlienc)
-                export LIBBROTLIENC_LIBS=$(pkg-config    --libs   --static libbrotlienc)
-
-                export LIBBROTLIDEC_CFLAGS=$(pkg-config  --cflags --static libbrotlidec)
-                export LIBBROTLIDEC_LIBS=$(pkg-config    --libs   --static libbrotlidec)
-
-                export LIBZSTD_CFLAGS=$(pkg-config  --cflags --static libzstd)
-                export LIBZSTD_LIBS=$(pkg-config    --libs   --static libzstd)
-                export NETTLE_CFLAGS=$(pkg-config  --cflags --static nettle)
-                export NETTLE_LIBS=$(pkg-config    --libs   --static nettle)
-                export LIBIDN2_CFLAGS=$(pkg-config  --cflags --static libidn2)
-                export LIBIDN2_LIBS=$(pkg-config    --libs   --static libidn2)
-
-                # export P11_KIT_CFLAGS=$(pkg-config  --cflags --static p11-kit-1)
-                # export P11_KIT_LIBS=$(pkg-config    --libs   --static p11-kit-1)
-
-
-
-                export CPPFLAGS=$(pkg-config    --cflags   --static libbrotlicommon libbrotlienc libbrotlidec)
-                export LIBS=$(pkg-config        --libs     --static libbrotlicommon libbrotlienc libbrotlidec)
-                 //  exit 0
-                # ./bootstrap
-                ./configure --help | grep -e '--without'
-                ./configure --help | grep -e '--with-'
-
-
-
-                ./configure \
-                --prefix={$gnutls_prefix} \
-                --enable-static=yes \
-                --enable-shared=no \
-                --with-zstd \
-                --with-brotli \
-                --with-libiconv-prefix={$iconv_prefix} \
-                --with-libz-prefix={$zlib_prefix} \
-                --with-nettle-mini \
-                --with-libintl-prefix \
-                --with-included-unistring \
-                --with-included-libtasn1 \
-                --without-tpm2 \
-                --without-tpm \
-                --disable-doc \
-                --disable-tests \
-                --enable-openssl-compatibility \
-                --without-p11-kit \
-                --without-libseccomp-prefix \
-                --without-libcrypto-prefix \
-                --without-librt-prefix
-                # --with-libev-prefix=/usr/libev \
-EOF
-            )->withPkgName('gnutls')
-            ->withBinPath($gnutls_prefix . '/bin/')
-    //依赖：nettle, hogweed, libtasn1, libidn2, p11-kit-1, zlib, libbrotlienc, libbrotlidec, libzstd -lgmp  -latomic
-    );
 }
 
 

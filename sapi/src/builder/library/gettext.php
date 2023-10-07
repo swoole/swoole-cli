@@ -29,6 +29,7 @@ return function (Preprocessor $p) {
             --enable-shared=no \
             --enable-static=yes \
             --enable-relocatable \
+            --enable-year2038 \
             --with-libiconv-prefix={$iconv_prefix} \
             --with-libncurses-prefix={$ncurses_prefix} \
             --with-libxml2-prefix={$libxml2_prefix} \

@@ -13,14 +13,21 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/libevent/libevent')
             ->withLicense('https://github.com/libevent/libevent/blob/master/LICENSE', Library::LICENSE_BSD)
             ->withManual('https://libevent.org/libevent-book/')
-            ->withUrl($url)
+            //->withUrl($url)
+            ->withFile('libevent-latest.tar.gz')
+            ->withDownloadScript(
+                'libevent',
+                <<<EOF
+        git clone -b master --depth=1  https://github.com/libevent/libevent.git
+EOF
+            )
             ->withPrefix($libevent_prefix)
+            //->withBuildLibraryCached(false)
             ->withConfigure(
                 <<<EOF
-                # 查看更多选项
-                # cmake -LAH .
                 mkdir -p build
                 cd build
+                # OPENSSL_LIBRARIES="{$openssl_prefix}/lib/" \
                 cmake ..   \
                 -DCMAKE_INSTALL_PREFIX={$libevent_prefix} \
                 -DEVENT__DISABLE_DEBUG_MODE=ON \
@@ -28,10 +35,16 @@ return function (Preprocessor $p) {
                 -DEVENT__LIBRARY_TYPE=STATIC \
                 -DEVENT__DISABLE_OPENSSL=OFF \
                 -DEVENT__DISABLE_THREAD_SUPPORT=OFF \
-                -DZLIB_ROOT={$zlib_prefix} \
                 -DCMAKE_DISABLE_FIND_PACKAGE_PythonInterp=ON \
-                -DOpenSSL_ROOT={$openssl_prefix}
+                -DCMAKE_DISABLE_FIND_PACKAGE_MbedTLS=ON \
+                -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix}" \
+                -DEVENT__DISABLE_TESTS=ON
 
+EOF
+            )
+            ->withScriptAfterInstall(
+                <<<EOF
+            sed -i.backup "s/-Ldl/  /" {$libevent_prefix}/lib/pkgconfig/libevent_openssl.pc
 EOF
             )
             ->withPkgName('libevent')
