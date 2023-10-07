@@ -150,7 +150,7 @@ clean_<?=$item->name?>() {
     if [ -d <?=$this->getBuildDir()?>/<?= $item->name ?>/ ] ;then
         rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?>/
     fi
-    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
         rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
     fi
     cd <?= $this->workDir . PHP_EOL ?>
