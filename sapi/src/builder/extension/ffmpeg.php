@@ -33,14 +33,14 @@ EOF;
             $cmd .= <<<EOF
                 otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
                 {$workdir}/bin/ffmpeg/bin/ffmpeg -h
-                tar -cJvf ffmpeg-vlatest-static-macos-x64.tar.xz ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-vlatest-static-macos-x64.tar.xz ffmpeg
 EOF;
         } else {
             $cmd .= <<<EOF
                 file {$workdir}/bin/ffmpeg/bin/ffmpeg
                 readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
                 {$workdir}/bin/ffmpeg/bin/ffmpeg -h
-                tar -cJvf ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
 EOF;
         }
         return $cmd;

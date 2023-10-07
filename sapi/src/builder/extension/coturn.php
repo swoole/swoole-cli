@@ -33,15 +33,15 @@ EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/coturn/bin/turnserver
-            tar -cJvf coturn-vlatest-static-macos-x64.tar.xz coturn/
-            zip -v  coturn-vlatest-static-macos-x64.tar.xz.zip coturn-vlatest-static-macos-x64.tar.xz
+            tar -cJvf {$workdir}/coturn-vlatest-static-macos-x64.tar.xz coturn/
+            zip -v  coturn-vlatest-static-macos-x64.tar.xz.zip {$workdir}/coturn-vlatest-static-macos-x64.tar.xz
 EOF;
         } else {
             $cmd .= <<<EOF
             file {$workdir}/bin/coturn/bin/turnserver
             readelf -h {$workdir}/bin/coturn/bin/turnserver
-            tar -cJvf coturn-vlatest-static-linux-x64.tar.xz coturn/
-            zip -v  coturn-vlatest-static-linux-x64.tar.xz.zip coturn-vlatest-static-linux-x64.tar.xz
+            tar -cJvf {$workdir}/coturn-vlatest-static-linux-x64.tar.xz coturn/
+            zip -v  {$workdir}/coturn-vlatest-static-linux-x64.tar.xz.zip {$workdir}/coturn-vlatest-static-linux-x64.tar.xz
 EOF;
         }
         return $cmd;
