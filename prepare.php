@@ -22,9 +22,9 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 # PHP 默认版本
-$php_version = '8.2.7';
-$php_version_id = '802007';
-$php_version_tag = 'php-8.2.7';
+$php_version = '8.2.11';
+$php_version_id = '802011';
+$php_version_tag = 'php-8.2.11';
 
 if ($p->getInputOption('with-php-version')) {
     $subject = $p->getInputOption('with-php-version');
@@ -40,7 +40,7 @@ if ($p->getInputOption('with-php-version')) {
         } else {
             echo <<<EOF
 
-    support PHP8.0  PHP7.4  PHP7.3  PHP8.2-micro
+    extra support PHP8.0  PHP7.4  PHP7.3  PHP8.2-micro
 
     php-8-micro:  (https://github.com/dixyes/phpmicro.git）
 
@@ -130,12 +130,6 @@ export NO_PROXY="\${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
 EOF;
     $p->setProxyConfig($proxyConfig, $http_proxy);
 }
-
-if ($p->getInputOption('with-install-library-cached')) {
-    # 默认启用构建安装缓存
-    echo PHP_EOL;
-}
-$p->setInstallLibraryCached(true);
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');

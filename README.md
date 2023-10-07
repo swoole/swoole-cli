@@ -89,13 +89,13 @@ php prepare.php +inotify +mongodb -mysqli
 
 ```shell
 # 启动 alpine 容器环境
-bash sapi/quickstart/linux/run-alpine-3.16-container.sh
+bash sapi/quickstart/linux/run-alpine-container.sh
 
 # 进入容器
 bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 
 # 准备构建基础软件
-sh  sapi/quickstart/linux/alpine-3.16-init.sh
+sh  sapi/quickstart/linux/alpine-init.sh
 
 ```
 
