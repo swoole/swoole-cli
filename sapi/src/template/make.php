@@ -42,29 +42,16 @@ make_<?=$item->name?>() {
     <?php endif ;?>
     echo "build <?=$item->name?>"
 
-    <?php if ($this->installLibraryCached) : ?>
-        <?php if ($item->enableBuildLibraryCached) :?>
-        if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
-            echo "[<?=$item->name?>]  library cached , skip.."
-            return 0
-        fi
-        <?php endif;?>
-    <?php else : ?>
-        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-            echo "[<?=$item->name?>] compiled, skip.."
-            cd <?= $this->workDir ?>/
-            return 0
-        fi
+    <?php if ($item->enableBuildLibraryCached) : ?>
+    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
+        echo "[<?=$item->name?>]  library cached , skip.."
+        return 0
+    fi
     <?php endif; ?>
 
     if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
     fi
-
-    <?php if ($item->cleanBuildDirectory) : ?>
-     # If the build directory exist, clean the build directory
-     test -d <?=$this->getBuildDir()?>/<?=$item->name?> && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?> ;
-    <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
@@ -77,7 +64,6 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
@@ -149,16 +135,11 @@ ___<?=$item->name?>__EOF___
         <?php endif;?>
     <?php endif;?>
 
-    <?php if ($this->installLibraryCached) : ?>
-        <?php if ($item->enableBuildLibraryCached) :?>
-            if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
-                touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
-            fi
-        <?php endif;?>
-    <?php else : ?>
-        touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    <?php if ($item->enableBuildLibraryCached) : ?>
+    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
+        touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
+    fi
     <?php endif; ?>
-
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -178,9 +159,6 @@ clean_<?=$item->name?>() {
 
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
-    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ] ;then
-        rm -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
-    fi
     if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
         rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
     fi
@@ -333,7 +311,6 @@ make_config() {
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
-    echo $OPTIONS
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
@@ -517,8 +494,8 @@ elif [ "$1" = "clean-all-library" ] ;then
     exit 0
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    echo "rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed"
-    rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
+    echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
+    rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "diff-configure" ] ;then

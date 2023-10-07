@@ -73,13 +73,14 @@ jobs:
           bash  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           bash sapi/download-box/download-box-get-archive-from-server.sh
+
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
 
           composer update --no-dev  --optimize-autoloader
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql  --with-build-type=release --with-swoole-pgsql=1 --with-install-library-cached=1 --with-libavif=1
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql  --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -92,6 +93,7 @@ jobs:
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+
           bash make-install-deps.sh
 
           # bash sapi/quickstart/mark-install-library-cached.sh
