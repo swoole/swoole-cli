@@ -69,10 +69,6 @@ EOF;
     $p->setProxyConfig($proxyConfig, $http_proxy);
 }
 
-if ($p->getInputOption('with-install-library-cached')) {
-    $p->setInstallLibraryCached(true);
-}
-
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
     $p->setLinker('ld');
