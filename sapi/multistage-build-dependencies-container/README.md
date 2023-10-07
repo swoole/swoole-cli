@@ -89,7 +89,6 @@ xz -d -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar.xz"
 # 从文件导入容器镜像
 
 docker load -i  "all-dependencies-container-image-$(uname -m).tar"
->>>>>>> experiment-webui
 
 ```
 
