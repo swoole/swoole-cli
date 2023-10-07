@@ -31,19 +31,11 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
-    <?php if ($this->installLibraryCached) : ?>
-        <?php if ($item->enableBuildLibraryCached) :?>
-        if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
-            echo "[<?=$item->name?>]  library cached , skip.."
-            return 0
-        fi
-        <?php endif;?>
-    <?php else : ?>
-        if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-            echo "[<?=$item->name?>] compiled, skip.."
-            cd <?= $this->workDir ?>/
-            return 0
-        fi
+    <?php if ($item->enableBuildLibraryCached) : ?>
+    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
+        echo "[<?=$item->name?>]  library cached , skip.."
+        return 0
+    fi
     <?php endif; ?>
 
     if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
@@ -110,16 +102,11 @@ ___<?=$item->name?>__EOF___
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
 
-    <?php if ($this->installLibraryCached) : ?>
-        <?php if ($item->enableBuildLibraryCached) :?>
-            if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
-                touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
-            fi
-        <?php endif;?>
-    <?php else : ?>
-        touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    <?php if ($item->enableBuildLibraryCached) : ?>
+    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
+        touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
+    fi
     <?php endif; ?>
-
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -127,14 +114,23 @@ ___<?=$item->name?>__EOF___
 
 clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?> && echo "clean <?=$item->name?>"
-    cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
-    rm -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    if [ -d <?=$this->getBuildDir()?>/<?= $item->name ?>/ ] ;then
+        rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?>/
+    fi
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
+    fi
     cd <?= $this->workDir . PHP_EOL ?>
+    return 0
 }
 
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
-    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
+        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    fi
+    cd <?= $this->workDir . PHP_EOL ?>
+    return 0
 }
 
     <?php echo str_repeat(PHP_EOL, 1);?>
