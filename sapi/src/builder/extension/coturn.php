@@ -19,25 +19,29 @@ return function (Preprocessor $p) {
         $builddir = $p->getBuildDir();
         $coturn_prefix = COTURN_PREFIX;
         $cmd = <<<EOF
-                mkdir -p {$workdir}/bin/coturn/
+                mkdir -p {$workdir}/bin/coturn/bin/
                 mkdir -p {$workdir}/bin/coturn/etc/
                 cd {$coturn_prefix}/
 
-                cp -rf {$coturn_prefix}/bin/  {$workdir}/bin/coturn/
+                cp -rf {$coturn_prefix}/bin/  {$workdir}/bin/coturn/bin/
                 cp -rf {$coturn_prefix}/etc/*  {$workdir}/bin/coturn/etc/
                 cd {$workdir}/bin/
-                tar -cJvf coturn-vlatest-static-linux-x64.tar.xz coturn/
-                zip -v  coturn-vlatest-static-linux-x64.tar.xz.zip coturn-vlatest-static-linux-x64.tar.xz
+
+
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/coturn/bin/turnserver
+            tar -cJvf coturn-vlatest-static-macos-x64.tar.xz coturn/
+            zip -v  coturn-vlatest-static-macos-x64.tar.xz.zip coturn-vlatest-static-macos-x64.tar.xz
 EOF;
         } else {
             $cmd .= <<<EOF
-              file {$workdir}/bin/coturn/bin/turnserver
-              readelf -h {$workdir}/bin/coturn/bin/turnserver
+            file {$workdir}/bin/coturn/bin/turnserver
+            readelf -h {$workdir}/bin/coturn/bin/turnserver
+            tar -cJvf coturn-vlatest-static-linux-x64.tar.xz coturn/
+            zip -v  coturn-vlatest-static-linux-x64.tar.xz.zip coturn-vlatest-static-linux-x64.tar.xz
 EOF;
         }
         return $cmd;
