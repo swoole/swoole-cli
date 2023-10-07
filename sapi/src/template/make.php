@@ -218,10 +218,12 @@ make_config() {
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
+
     ./configure $OPTIONS
 <?php if ($this->getOsType()=='linux') : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 <?php endif ; ?>
+
 }
 
 make_build() {
@@ -391,8 +393,8 @@ elif [ "$1" = "clean-all-library" ] ;then
     exit 0
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    echo "rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed"
-    rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
+    echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
+    rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "diff-configure" ] ;then

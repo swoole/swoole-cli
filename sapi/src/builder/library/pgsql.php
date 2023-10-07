@@ -5,7 +5,6 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
-
     $ldflags = $p->getOsType() == 'macos' ? '' : ' -static  ';
     $libs = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
 
@@ -13,7 +12,7 @@ return function (Preprocessor $p) {
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
             ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
-            ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
+            ->withUrl('https://ftp.postgresql.org/pub/source/v16.0/postgresql-16.0.tar.gz')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
             ->withPrefix($pgsql_prefix)
@@ -25,23 +24,14 @@ return function (Preprocessor $p) {
 
             ../configure --help
 
-            # 有静态链接配置  参考文件： src/interfaces/libpq/Makefile
-
-            # 静态链接方法一：
-            # 121行 替换内容
-
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
             sed -i.backup "293 s/^/#$/"  ../src/Makefile.shlib
             sed -i.backup "441 s/^/#$/"  ../src/Makefile.shlib
 
-            # 静态链接方法二：
-            # 102行，整行替换
-            # sed -i.backup "102c all: all-lib" ../src/interfaces/libpq/Makefile
-
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
-            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs} " \
+            LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs}  " \
             ../configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
@@ -60,7 +50,6 @@ return function (Preprocessor $p) {
             --without-ldap \
             --without-bonjour \
             --without-tcl
-
 
             make -C src/bin/pg_config install
 
@@ -83,7 +72,16 @@ EOF
             )
             ->withPkgName('libpq')
             ->withBinPath($pgsql_prefix . '/bin/')
-            ->withDependentLibraries('zlib', 'icu', 'libxml2', 'openssl', 'readline', 'libxslt', 'libzstd', 'liblz4')
+            ->withDependentLibraries(
+                'zlib',
+                'icu',
+                'libxml2',
+                'openssl',
+                'readline',
+                'libxslt',
+                'libzstd',
+                'liblz4'
+            )
     );
     $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
     $p->withExportVariable('LIBPQ_LIBS', '$(pkg-config    --libs   --static libpq)');

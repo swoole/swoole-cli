@@ -70,6 +70,7 @@ jobs:
           bash  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           bash sapi/download-box/download-box-get-archive-from-server.sh
+
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
@@ -89,6 +90,7 @@ jobs:
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+
           bash make-install-deps.sh
 
           # bash sapi/quickstart/mark-install-library-cached.sh
