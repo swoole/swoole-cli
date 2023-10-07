@@ -116,6 +116,7 @@ return function (Preprocessor $p) {
     $depends = ['libpam'] ;
     $depends = ['libbson'] ;
     $depends = ['libmongoc'] ;
+    $depends = ['coturn'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
