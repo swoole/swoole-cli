@@ -6,6 +6,11 @@ use SwooleCli\Preprocessor;
 
 const BUILD_PHP_VERSION = '8.1.12';
 
+# clean old make.sh
+if (file_exists(__DIR__ . '/make.sh')) {
+    unlink(__DIR__ . '/make.sh');
+}
+
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
