@@ -12,8 +12,7 @@ return function (Preprocessor $p) {
         ->withLicense(
             'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
             Extension::LICENSE_LGPL
-        )->withManual('https://ffmpeg.org/documentation.html')
-    ;
+        )->withManual('https://ffmpeg.org/documentation.html');
 
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
@@ -28,20 +27,20 @@ return function (Preprocessor $p) {
                 cd {$ffmpeg_prefix}/
                 cp -rf bin {$workdir}/bin/ffmpeg/
                 cd {$workdir}/bin/
-                tar -cJvf ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
-            otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
-            {$workdir}/bin/ffmpeg/bin/ffmpeg -h
+                otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
+                {$workdir}/bin/ffmpeg/bin/ffmpeg -h
+                tar -cJvf ffmpeg-vlatest-static-macos-x64.tar.xz ffmpeg
 EOF;
         } else {
             $cmd .= <<<EOF
-              file {$workdir}/bin/ffmpeg/bin/ffmpeg
-              readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
-              {$workdir}/bin/ffmpeg/bin/ffmpeg -h
-
+                file {$workdir}/bin/ffmpeg/bin/ffmpeg
+                readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
+                {$workdir}/bin/ffmpeg/bin/ffmpeg -h
+                tar -cJvf ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
 EOF;
         }
         return $cmd;
