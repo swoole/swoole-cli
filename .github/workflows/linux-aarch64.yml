@@ -48,23 +48,21 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql --with-install-library-cached=1
-
-            chmod a+x make.sh
-            head -n 20 make.sh
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1
 
             bash make-install-deps.sh
 
-            bash sapi/quickstart/mark-install-library-cached.sh
+            # bash sapi/quickstart/mark-install-library-cached.sh
 
-            bash ./make.sh config
-            bash ./make.sh build
-            bash ./make.sh archive
+            bash make.sh all-library
+            bash make.sh config
+            bash make.sh build
+            bash make.sh archive
 
       - name: Show Build Result
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230614T155341Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             ./bin/swoole-cli -v
