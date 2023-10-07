@@ -22,9 +22,9 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 # PHP 默认版本
-$php_version = '8.2.7';
-$php_version_id = '802007';
-$php_version_tag = 'php-8.2.7';
+$php_version = '8.2.11';
+$php_version_id = '802011';
+$php_version_tag = 'php-8.2.11';
 
 if ($p->getInputOption('with-php-version')) {
     $subject = $p->getInputOption('with-php-version');
@@ -36,7 +36,6 @@ if ($p->getInputOption('with-php-version')) {
             str_pad($match[2], 2, '0') .
             sprintf('%02d', $match[3]);
         $php_version_tag = 'php-' . $match[0];
-
         echo PHP_EOL;
     }
 }
@@ -110,17 +109,9 @@ export NO_PROXY="\${NO_PROXY},dl-cdn.alpinelinux.org,deb.debian.org,security.deb
 export NO_PROXY="\${NO_PROXY},archive.ubuntu.com,security.ubuntu.com"
 export NO_PROXY="\${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
 
-
 EOF;
     $p->setProxyConfig($proxyConfig, $http_proxy);
 }
-
-if ($p->getInputOption('with-install-library-cached')) {
-    # 默认启用构建安装缓存
-    echo PHP_EOL;
-}
-$p->setInstallLibraryCached(true);
-
 
 if ($p->getOsType() == 'macos') {
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');

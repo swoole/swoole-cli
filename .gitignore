@@ -329,6 +329,7 @@ cppflags.log
 libs.log
 /packages
 /conf.d.loader
+
 /configure.backup
 make-install-deps.sh
 php-cli*
@@ -349,4 +350,6 @@ sapi/webUI/public/data/
 Makefile.backup
 Dockerfile-all-dependencies-alpine
 php.ini
+Makefile.backup
+
 
