@@ -62,7 +62,7 @@ EOF
             -DENABLE_EXAMPLES=OFF \
             -DCMAKE_PREFIX_PATH="{$libbson_prefix};{$openssl_prefix};{$libzstd_prefix}" \
             -DENABLE_SHARED=OFF \
-            -DENABLE_STATIC=ON \
+            -DENABLE_STATIC=BUILD_ONLY \
             -DENABLE_MONGOC=ON \
             -DENABLE_PIC=ON \
             -DENABLE_SRV=ON \
