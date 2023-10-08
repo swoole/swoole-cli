@@ -118,9 +118,10 @@ return function (Preprocessor $p) {
     $depends = ['libmongoc'] ;
 
 
-    $depends = ['gnutls'] ;
+
     $depends = ['oAuth'] ;
     $depends = ['coturn'] ;
+    $depends = ['gnutls'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

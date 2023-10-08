@@ -17,3 +17,8 @@ xxx-xxxx-xxxxx 平台描述
             负责解析（parse）输入的源代码  负责语义（semantic checking）的检查  最终的结果常常是一个抽象的语法树（abstract syntax tree，或 AST）
 编译器后端（backend）
            主要负责分析，优化中间代码（Intermediate representation）以及生成机器代码（Code Generation）
+
+
+g++ your_program.cpp -o your_program -ldl -Wl,-Bstatic -lxx -Wl,-Bdynamic
+
+-Wl,-Bstatic 表示后面的库需要静态链接，-Wl,-Bdynamic 表示后面的库需要动态链接。
