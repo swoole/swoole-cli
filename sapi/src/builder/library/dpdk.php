@@ -33,7 +33,7 @@ EOF
             apk add python3 py3-pip
             # pip3 install meson pyelftools -i https://pypi.tuna.tsinghua.edu.cn/simple
             # pip3 install meson pyelftools -ihttps://pypi.python.org/simple
-            pip3 install meson pyelftools sphinx-build
+            pip3 install meson pyelftools
             apk add bsd-compat-headers
             apk add libxdp libxdp-static
             apk add libxdp numactl-dev numactl-tools
@@ -85,7 +85,7 @@ EOF
             -Dibverbs_link=static \
             -Dtests=false \
             -Dexamples='' \
-            -Ddisable_apps='' \
+            -Ddisable_apps='all' \
             -Dcheck_includes=true
 
             # -Dexamples=all
