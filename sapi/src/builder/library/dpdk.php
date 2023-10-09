@@ -57,7 +57,8 @@ EOF
             meson setup -h
             # meson configure -h
 
-            PACKAGES=" jansson  openssl libxml-2.0  nettle hogweed gmp numa "
+            PACKAGES=" jansson  openssl libxml-2.0  nettle hogweed gmp  "
+            # PACKAGES="\$PACKAGES numa "
             PACKAGES="\$PACKAGES zlib  liblzma liblz4 libzstd "
             # PACKAGES="\$PACKAGES  liblzma  "
             # PACKAGES="\$PACKAGES libarchive "
@@ -109,7 +110,7 @@ EOF
                 'jansson',
                 'zlib',
                 'libarchive',
-                'numa',
+                //'numa',
                 //'libpcap',
                 //'libxdp',
                 //'libbpf',
