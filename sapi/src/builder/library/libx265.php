@@ -54,7 +54,8 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            -DENABLE_SHARED=OFF
+            -DENABLE_SHARED=OFF \
+            -DCMAKE_DISABLE_FIND_PACKAGE_Numa=ON
 
             # -DENABLE_LIBNUMA=ON \
             # -DNuma_ROOT={$numa_prefix} \
