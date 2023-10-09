@@ -38,6 +38,7 @@ EOF
             apk add libxdp libxdp-static
             apk add libxdp numactl-dev numactl-tools
             apk add libfdt
+            apk add libarchive-dev libarchive-static
 EOF
             )
             ->withPreInstallCommand(
