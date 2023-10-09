@@ -8,44 +8,76 @@ return function (Preprocessor $p) {
     $lib = new Library('opencl');
     $lib->withHomePage('https://www.khronos.org/opencl/')
         ->withLicense('https://github.com/KhronosGroup/OpenCL-SDK/blob/main/LICENSE', Library::LICENSE_APACHE2)
-        ->withFile('OpenCL-SDK-v2023.04.17.tar.gz')
+        ->withManual('https://github.com/KhronosGroup/OpenCL-SDK.git')
+        //->withFile('OpenCL-SDK-v2023.04.17.tar.gz')
+        ->withFile('OpenCL-SDK-latest.tar.gz')
         ->withDownloadScript(
             'OpenCL-SDK',
             <<<EOF
-        git clone -b v2023.04.17 --progress  --recursive  https://github.com/KhronosGroup/OpenCL-SDK.git
+        # git clone -b v2023.04.17 --progress  --recursive  https://github.com/KhronosGroup/OpenCL-SDK.git
+        git clone -b main --progress  --recursive --depth=1 https://github.com/KhronosGroup/OpenCL-SDK.git
 EOF
         )
         ->withPrefix($opencl_prefix)
-        ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($opencl_prefix)
+        //->withAutoUpdateFile()
+        ->withBuildLibraryCached(false)
+        ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF
-      cmake -A x64 \
-      -D BUILD_TESTING=OFF \
-      -D BUILD_DOCS=OFF \
-      -D BUILD_EXAMPLES=OFF \
-      -D BUILD_TESTS=OFF \
-      -D OPENCL_SDK_BUILD_SAMPLES=ON \
-      -D OPENCL_SDK_TEST_SAMPLES=OFF \
-      -D CMAKE_TOOLCHAIN_FILE=/vcpkg/install/root/scripts/buildsystems/vcpkg.cmake  \
-      -D VCPKG_TARGET_TRIPLET=x64-windows  \
-      -B ./OpenCL-SDK/build -S ./OpenCL-SDK
-      cmake --build ./OpenCL-SDK/build --target install
+            mkdir -p build
 
-      https://github.com/KhronosGroup/OpenCL-Headers.git
-      https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
-      cmake  \
-        -DCMAKE_BUILD_TYPE=Release  \
-        -DCMAKE_INSTALL_PREFIX="{$opencl_prefix}" \
-        -DOPENCL_ICD_LOADER_HEADERS_DIR="$FFBUILD_PREFIX"/include  \
-        -DOPENCL_ICD_LOADER_BUILD_SHARED_LIBS=OFF \
-        -DOPENCL_ICD_LOADER_DISABLE_OPENCLON12=ON  \
-        -DOPENCL_ICD_LOADER_PIC=ON \
-        -DOPENCL_ICD_LOADER_BUILD_TESTING=OFF \
-        -DBUILD_TESTING=OFF ..
+            cmake  -G "Unix Makefiles" \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DCMAKE_INSTALL_PREFIX="{$opencl_prefix}" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DOPENCL_SDK_TEST_SAMPLES=OFF \
+            -DOPENCL_SDK_BUILD_SAMPLES=OFF \
+            -DOPENCL_SDK_BUILD_OPENGL_SAMPLES=OFF \
+            -DOPENCL_SDK_TEST_SAMPLES=OFF \
+            -B ./build -S . \
+            -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON
+
+            cmake --build ./build --target install
+
 EOF
-        );
+        )
+        //默认不需要此配置
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$opencl_prefix}/lib/*.so.*
+            rm -rf {$opencl_prefix}/lib/*.so
+            rm -rf {$opencl_prefix}/lib/*.dylib
+EOF
+        )
+        ->withPkgName('OpenCL');
 
 
     $p->addLibrary($lib);
 };
+
+/*
+ *  depend library
+
+   https://github.com/KhronosGroup/OpenCL-CLHPP.git
+
+   https://github.com/KhronosGroup/OpenCL-Headers.git
+
+   https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+
+    https://github.com/ThrowTheSwitch/CMock
+
+    https://github.com/throwtheswitch/cexception.git
+    https://github.com/throwtheswitch/unity.git
+
+   # 轻量级跨平台 getopt 替代方案
+    https://github.com/likle/cargs
+
+    http://tclap.sourceforge.net/
+
+    https://github.com/nothings/stb
+
+
+
+
+ */

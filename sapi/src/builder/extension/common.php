@@ -142,6 +142,8 @@ return function (Preprocessor $p) {
     $depends = ['unbound'] ;
     $depends = ['gnutls'] ;
     $depends = ['libx265'] ;
+    $depends = ['opencl'] ;
+    $depends = ['vtk'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

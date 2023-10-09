@@ -4,6 +4,8 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
+    # math 是一个用于计算机图形学的 2D 和 3D 矢量、矩阵和数学运算的 C++  库
+
     $imath_prefix = IMATH_PREFIX;
 
     $lib = new Library('imath');

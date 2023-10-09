@@ -41,7 +41,7 @@ EOF
         -DBUILD_SHARED_LIBS=OFF \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
 
-        ninja -j {$p->getMaxJob()}
+        ninja
         ninja install
 EOF
         )

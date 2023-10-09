@@ -124,8 +124,6 @@ EOF
         # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
         # -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
 
-
-
         # OpenJPEG
 
 
