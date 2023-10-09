@@ -41,6 +41,8 @@ EOF
         -DBUILD_SHARED_LIBS=OFF \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DCMAKE_PREFIX_PATH="{$ffmpeg_prefix};{$libosmesa_prefix}" \
+        -DVTK_BUILD_TESTING=OFF \
+
 
         ninja
         ninja install
