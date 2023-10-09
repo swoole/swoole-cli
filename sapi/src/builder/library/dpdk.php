@@ -80,7 +80,8 @@ EOF
             -Db_pie=true \
             -Dprefer_static=true \
             -Dibverbs_link=static \
-            -Dtests=false
+            -Dtests=false \
+            -Dexamples=''
 
             # -Dexamples=all
             # -Dexamples=''
