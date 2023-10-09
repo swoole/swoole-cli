@@ -42,6 +42,7 @@ EOF
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DCMAKE_PREFIX_PATH="{$ffmpeg_prefix};{$libosmesa_prefix}" \
         -DVTK_BUILD_TESTING=OFF \
+        -DVTK_OPENGL_HAS_OSMESA=ON
 
 
         ninja
