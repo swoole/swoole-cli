@@ -34,11 +34,11 @@ EOF
             # pip3 install meson pyelftools -i https://pypi.tuna.tsinghua.edu.cn/simple
             # pip3 install meson pyelftools -ihttps://pypi.python.org/simple
             pip3 install meson pyelftools
-            apk add bsd-compat-headers
-            apk add libxdp libxdp-static
-            apk add libxdp numactl-dev numactl-tools
-            apk add libfdt
-            apk add libarchive-dev libarchive-static
+            # apk add bsd-compat-headers
+            # apk add libxdp libxdp-static
+            # apk add libxdp numactl-dev numactl-tools
+            # apk add libfdt
+            # apk add libarchive-dev libarchive-static
 EOF
             )
             ->withPreInstallCommand(
