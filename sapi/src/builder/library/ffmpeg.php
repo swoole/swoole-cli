@@ -72,7 +72,7 @@ EOF
             PACKAGES="\$PACKAGES dav1d "
             PACKAGES="\$PACKAGES lcms2 "
             PACKAGES="\$PACKAGES x264 "
-            PACKAGES="\$PACKAGES x265 " # numa
+            # PACKAGES="\$PACKAGES x265 " # numa
             PACKAGES="\$PACKAGES sdl2 "
             PACKAGES="\$PACKAGES ogg "
             PACKAGES="\$PACKAGES opus "
@@ -178,7 +178,7 @@ EOF
             'fdk_aac',
             'libfribidi',
             'rabbitmq_c',
-            "libx265"
+            //"libx265"
             //'speex' //被opus 取代
         ) //   'libssh2',
     ;
