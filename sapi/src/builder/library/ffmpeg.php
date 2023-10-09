@@ -72,7 +72,7 @@ EOF
             PACKAGES="\$PACKAGES dav1d "
             PACKAGES="\$PACKAGES lcms2 "
             PACKAGES="\$PACKAGES x264 "
-            # PACKAGES="\$PACKAGES x265 " # numa
+            PACKAGES="\$PACKAGES x265 " # numa
             PACKAGES="\$PACKAGES sdl2 "
             PACKAGES="\$PACKAGES ogg "
             PACKAGES="\$PACKAGES opus "
@@ -135,6 +135,7 @@ EOF
             --cxx={$p->get_CXX_COMPILER()}
 
             # libxcb、xlib 是 x11 相关的库
+
             # --extra-ldexeflags="{$ldexeflags}"
             # --pkg-config-flags=" {$cflags} "
             # --pkg-config=pkg-config
