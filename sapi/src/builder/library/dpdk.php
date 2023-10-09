@@ -85,7 +85,7 @@ EOF
             -Dibverbs_link=static \
             -Dtests=false \
             -Dexamples='' \
-            -Denable_apps='' \
+            -Ddisable_apps='' \
             -Dcheck_includes=true
 
             # -Dexamples=all
