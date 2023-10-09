@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $protobuf_c_prefix = PROTOBUF_C_PREFIX;
+    $protobuf_prefix = PROTOBUF_PREFIX;
     $lib = new Library('protobuf_c');
     $lib->withHomePage('https://github.com/protobuf-c/protobuf-c.git')
         ->withLicense('https://github.com/protobuf-c/protobuf-c/blob/master/LICENSE', Library::LICENSE_SPEC)
@@ -23,8 +24,11 @@ EOF
 
         ./configure --help
 
-        protobuf_CFLAGS="$(pkg-config  --cflags --static protobuf)" \
-        protobuf_LIBS="$(pkg-config    --libs   --static protobuf)" \
+
+        PACKAGES='protobuf '
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$protobuf_prefix}/include/ " \
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
+        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) " \
         ./configure \
         --prefix={$protobuf_c_prefix} \
         --enable-shared=no \
@@ -34,6 +38,7 @@ EOF
         )
         ->withPkgName('example')
         ->withBinPath($protobuf_c_prefix . '/bin/')
+        ->withDependentLibraries('protobuf')
     ;
 
     $p->addLibrary($lib);

@@ -121,7 +121,7 @@ return function (Preprocessor $p) {
 
     $depends = ['oAuth'] ;
     $depends = ['coturn'] ;
-    $depends = ['gnutls'] ;
+
 
     $depends = ['openssl'] ;
 
@@ -133,12 +133,15 @@ return function (Preprocessor $p) {
     $depends = ['dpdk'] ;
 
     $depends = ['libmnl'] ;
-    $depends = ['unbound'] ;
+
 
 
     $depends = ['abseil_cpp'] ;
     $depends = ['protobuf'] ;
     $depends = ['protobuf_c'] ;
+    $depends = ['unbound'] ;
+    $depends = ['gnutls'] ;
+
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')

@@ -48,15 +48,17 @@ CMD_EOF
 
                 ./configure --help
 
-                PACKAGES="nettle hogweed openssl  gmp libzstd libbrotlicommon libbrotlidec libbrotlienc"
-                PACKAGES="\$PACKAGES libidn2 libtasn1 libunbound "
-                PACKAGES="\$PACKAGES hiredis libnghttp2 "
 
                 export LIBBROTLIENC_CFLAGS=$(pkg-config  --cflags --static libbrotlienc libbrotlicommon)
                 export LIBBROTLIENC_LIBS=$(pkg-config    --libs   --static libbrotlienc libbrotlicommon)
 
                 export LIBBROTLIDEC_CFLAGS=$(pkg-config  --cflags --static libbrotlidec libbrotlicommon)
                 export LIBBROTLIDEC_LIBS=$(pkg-config    --libs   --static libbrotlidec libbrotlicommon)
+
+                PACKAGES="nettle hogweed openssl  gmp libzstd libbrotlicommon libbrotlidec libbrotlienc"
+                PACKAGES="\$PACKAGES libidn2 libtasn1  "
+                PACKAGES="\$PACKAGES hiredis libnghttp2 "
+                # PACKAGES="\$PACKAGES libunbound "
 
                 CPPFLAGS="$(pkg-config --cflags-only-I --static \$PACKAGES ) -I{$libunistring_prefix}/include " \
                 LDFLAGS="$(pkg-config --libs-only-L --static \$PACKAGES ) -L{$libunistring_prefix}/lib/" \
@@ -103,7 +105,7 @@ EOF
             'libidn2',
             'libunistring',
             'gettext',
-            'unbound',
+            //'unbound',
             //'libev',
             'libtasn1',
             'nghttp2',

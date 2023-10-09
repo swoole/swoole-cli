@@ -57,10 +57,10 @@ EOF
             # meson configure -h
 
             PACKAGES=" jansson  openssl libxml-2.0  nettle hogweed gmp numa "
-            PACKAGES=" zlib libarchive liblzma liblz4 libzstd "
-            PACKAGES=" libpcap libbpf "
-            PACKAGES=" libmlx4 libibverbs libmlx5 libefa libibmad libibnetdisc libibumad libmana librdmacm libnl-3.0 libnl-genl-3.0 libnl-idiag-3.0 libnl-route-3.0 libnl-xfrm-3.0 "
-            # PACKAGES=" libbsd libbsd-overlay libmd "
+            PACKAGES="\$PACKAGES zlib libarchive liblzma liblz4 libzstd "
+            PACKAGES="\$PACKAGES libpcap libbpf "
+            PACKAGES="\$PACKAGES libmlx4 libibverbs libmlx5 libefa libibmad libibnetdisc libibumad libmana librdmacm libnl-3.0 libnl-genl-3.0 libnl-idiag-3.0 libnl-route-3.0 libnl-xfrm-3.0 "
+            # PACKAGES="\$PACKAGES libbsd libbsd-overlay libmd "
 
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "

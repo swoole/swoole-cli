@@ -64,7 +64,6 @@ EOF
             --enable-shared=no \
             --enable-static=yes \
             --with-libunbound-only \
-            --enable-fully-static \
             --with-pthreads \
             --with-libnghttp2={$nghttp2_prefix} \
             --with-libhiredis={$hiredis_prefix} \
@@ -80,6 +79,7 @@ EOF
             --with-libmnl={$libmnl_prefix} \
             --with-nettle={$nettle_prefix} \
 
+            # --enable-fully-static \
             # --enable-dnstap
             # --with-protobuf-c
             # --with-dnstap-socket-path
