@@ -5,8 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libx265_prefix = LIBX265_PREFIX;
-    $numa_prefix = NUMA_PREFIX;
-    $build_dir = $p->getBuildDir();
+
     $lib = new Library('libx265');
     $lib->withHomePage('https://www.videolan.org/developers/x265.html')
         ->withLicense('https://bitbucket.org/multicoreware/x265_git/src/master/COPYING', Library::LICENSE_LGPL)
@@ -54,7 +53,28 @@ EOF
 
 EOF
         )
-        //->withPkgName('x265')
+        //默认不需要此配置
+        ->withScriptAfterInstall(
+            <<<EOF
+                mkdir -p {$libx265_prefix}/lib/pkgconfig/
+                cat > {$libx265_prefix}/lib/pkgconfig/x265 <<'__libx265__EOF'
+prefix={$libx265_prefix}
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
+
+Name: x265
+Description: H.265 encoder library
+Version: 3.5.x
+Libs: -L\${exec_prefix}/lib -lx265
+Libs.private:
+Cflags: -I\${prefix}/include
+
+__libx265__EOF
+EOF
+        )
+
+        ->withPkgName('x265')
         ->withBinPath($libx265_prefix . '/bin/')
         // ->withDependentLibraries('numa')
     ;
