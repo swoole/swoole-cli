@@ -57,7 +57,7 @@ EOF
             PACKAGES=" zlib libarchive liblzma liblz4 libzstd "
             PACKAGES=" libpcap libbpf "
             PACKAGES=" libmlx4 libibverbs libmlx5 libefa libibmad libibnetdisc libibumad libmana librdmacm libnl-3.0 libnl-genl-3.0 libnl-idiag-3.0 libnl-route-3.0 libnl-xfrm-3.0 "
-            PACKAGES=" libbsd libbsd-overlay libmd "
+            # PACKAGES=" libbsd libbsd-overlay libmd "
 
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
@@ -104,7 +104,7 @@ EOF
                 //'libxdp',
                 'libbpf',
                 'libmlx5',
-                'libbsd',
+                //'libbsd',
                 'openssl'
             )
             ->withScriptAfterInstall(
