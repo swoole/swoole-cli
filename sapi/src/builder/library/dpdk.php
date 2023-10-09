@@ -84,8 +84,9 @@ EOF
             -Dprefer_static=true \
             -Dibverbs_link=static \
             -Dtests=false \
-            -Dexamples='' \
-            -Ddisable_apps='all' \
+            -Dibverbs_link=static \
+            -Dexamples='cmdline' \
+            -Denable_apps='dumpcap,pdump,proc-info' \
             -Dcheck_includes=true
 
             # -Dexamples=all
