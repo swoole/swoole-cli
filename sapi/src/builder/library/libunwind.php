@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
             autoreconf -i
             ./configure --help
 
-             PACKAGES='zlib liblzma'
+            PACKAGES='zlib liblzma'
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \

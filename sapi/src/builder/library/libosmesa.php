@@ -27,6 +27,7 @@ EOF
             <<<EOF
             apk add ninja python3 py3-pip
             pip3 install mako
+            apk add llvm llvm-config
 
 EOF
         )
@@ -66,7 +67,8 @@ EOF
             'libzstd',
             'libdrm',
             'wayland',
-            'wayland_protocols'
+            'wayland_protocols',
+            'libunwind'
         );
 
 
