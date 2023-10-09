@@ -7,6 +7,7 @@ use SwooleCli\Preprocessor;
 
 ?>
 #!/usr/bin/env bash
+set -x
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -21,6 +22,7 @@ export OS_RELEASE='macos'
 export CC=<?= $this->cCompiler . PHP_EOL ?>
 export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>
+set +x
 
 export SYSTEM_ORIGIN_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
@@ -47,10 +49,12 @@ OPTIONS="--disable-all \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
-    <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-    set -x
-    <?php endif ;?>
     echo "build <?=$item->name?>"
+
+    <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
+        set -x
+    <?php endif ;?>
+
     <?php if ($item->skipBuildInstall) : ?>
         echo "skip install library <?=$item->name?>" ;
         return 0 ;
@@ -182,7 +186,9 @@ ___<?=$item->name?>__EOF___
         touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
     fi
     <?php endif; ?>
-
+    <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
+        set +x
+    <?php endif ;?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }
@@ -438,11 +444,17 @@ _____EO_____
 
     test -f ./configure &&  rm ./configure
     ./buildconf --force
-    ./configure --help
 
-<?php if ($this->osType == 'macos') : ?>
+<?php if ($this->osType !== 'macos') : ?>
+    mv main/php_config.h.in /tmp/cnt
+    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
+    cat /tmp/cnt >> main/php_config.h.in
+    echo -ne '\n#endif\n' >> main/php_config.h.in
+<?php endif; ?>
+
+<?php if ($this->osType === 'linux') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
-    sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
+        sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
 <?php endif; ?>
 
@@ -522,11 +534,8 @@ make_clean() {
     rm -f libs.log ldflags.log cppflags.log
 }
 
-show_export_var() {
-    set -x
-    export_variables
-}
-show_lib_pkg() {
+lib_pkg() {
+    set +x
 <?php foreach ($this->libraryList as $item) : ?>
     <?php if (!empty($item->pkgNames)) : ?>
         echo -e "[<?= $item->name ?>] pkg-config : \n<?= implode(' ', $item->pkgNames) ?>" ;
@@ -539,12 +548,13 @@ show_lib_pkg() {
 }
 
 lib_dep_pkg() {
+    set +x
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
     <?php
     $pkgs=[];
     $this->getLibraryDependenciesByName($item->name, $pkgs);
-    $pkgs=array_unique($pkgs);
+    $pkgs = array_unique($pkgs);
     $res=implode(' ', $pkgs);
     ?>
     array_name[<?= $item->name ?>]="<?= $res?>"
@@ -592,7 +602,6 @@ help() {
     echo "./make.sh pkg-check"
     echo "./make.sh lib-pkg"
     echo "./make.sh lib-dep-pkg"
-    echo "./make.sh show-export-var"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -701,9 +710,6 @@ elif [ "$1" = "lib-pkg" ] ;then
     exit 0
 elif [ "$1" = "lib-dep-pkg" ] ;then
     lib_dep_pkg "$2"
-    exit 0
-elif [ "$1" = "show-export-var" ] ;then
-    show_export_var
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
