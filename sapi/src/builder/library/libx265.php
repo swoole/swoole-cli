@@ -23,10 +23,12 @@ EOF
         ->withPrefix($libx265_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libx265_prefix)
-        ->withPreInstallCommand('debian', <<<EOF
+        ->withPreInstallCommand(
+            'debian',
+            <<<EOF
        apt install nasm
 EOF
-    )
+        )
         ->withConfigure(
             <<<EOF
 
