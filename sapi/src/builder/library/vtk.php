@@ -49,7 +49,7 @@ EOF
         ->withDependentLibraries(
             'ffmpeg',
 
-            //'libosmesa'
+            'libosmesa'
             //'open_mpi'
         );
 
