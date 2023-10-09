@@ -122,7 +122,6 @@ EOF
             --enable-libfribidi \
             --enable-librabbitmq \
             --enable-random \
-            --enable-libx265 \
             --disable-libxcb \
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \
@@ -140,7 +139,7 @@ EOF
             # --pkg-config-flags=" {$cflags} "
             # --pkg-config=pkg-config
             # --ld={$p->getLinker()}
-            #
+            # --enable-libx265 \
             # --enable-libssh
             # --enable-cross-compile
             # --enable-libspeex
