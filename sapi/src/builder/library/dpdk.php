@@ -136,8 +136,11 @@ EOF
             rm -rf {$dpdk_prefix}/lib/*.so.*
             rm -rf {$dpdk_prefix}/lib/*.so
             rm -rf {$dpdk_prefix}/lib/*.dylib
+            rm -rf {$dpdk_prefix}/lib/dpdk/
 EOF
             )
+        ->withPkgName('libdpdk-libs')
+        ->withPkgName('libdpdk')
     );
 };
 
