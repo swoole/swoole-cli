@@ -57,8 +57,11 @@ EOF
             # meson configure -h
 
             PACKAGES=" jansson  openssl libxml-2.0  nettle hogweed gmp numa "
-            PACKAGES="\$PACKAGES zlib libarchive liblzma liblz4 libzstd "
-            PACKAGES="\$PACKAGES libpcap libbpf "
+            PACKAGES="\$PACKAGES zlib  liblzma liblz4 libzstd "
+            # PACKAGES="\$PACKAGES  liblzma  "
+            # PACKAGES="\$PACKAGES libarchive "
+            PACKAGES="\$PACKAGES libpcap "
+            # PACKAGES="\$PACKAGES  libbpf "
             PACKAGES="\$PACKAGES libmlx4 libibverbs libmlx5 libefa libibmad libibnetdisc libibumad libmana librdmacm libnl-3.0 libnl-genl-3.0 libnl-idiag-3.0 libnl-route-3.0 libnl-xfrm-3.0 "
             # PACKAGES="\$PACKAGES libbsd libbsd-overlay libmd "
 
@@ -67,8 +70,8 @@ EOF
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
 
-            CPPFLAGS="\$CPPFLAGS -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libarchive_prefix}/include "
-            LDFLAGS="\$LDFLAGS -L{$libiconv_prefix}/lib -L{$bzip2_prefix}/lib -L{$libarchive_prefix}/lib"
+            CPPFLAGS="\$CPPFLAGS -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include  " # -I{$libarchive_prefix}/include
+            LDFLAGS="\$LDFLAGS -L{$libiconv_prefix}/lib -L{$bzip2_prefix}/lib " # -L{$libarchive_prefix}/lib
             LIBS="\$LIBS  -liconv -lbz2 "
 
             CPPFLAGS="\$CPPFLAGS" \
@@ -108,7 +111,7 @@ EOF
                 'numa',
                 'libpcap',
                 //'libxdp',
-                'libbpf',
+                //'libbpf',
                 'libmlx5',
                 //'libbsd',
                 'openssl'
