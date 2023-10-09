@@ -135,6 +135,10 @@ return function (Preprocessor $p) {
     $depends = ['libmnl'] ;
     $depends = ['unbound'] ;
 
+
+    $depends = ['abseil_cpp'] ;
+    $depends = ['protobuf'] ;
+    $depends = ['protobuf_c'] ;
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')

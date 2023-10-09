@@ -162,7 +162,7 @@ define("COTURN_PREFIX", $p->getGlobalPrefix() . '/coturn');
 define("HIREDIS_PREFIX", $p->getGlobalPrefix() . '/hiredis');
 define("LIBMICROHTTP_PREFIX", $p->getGlobalPrefix() . '/libmicrohttp');
 
-define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
+define("ABSL_CPP_PREFIX", $p->getGlobalPrefix() . '/abseil_cpp');
 
 define("VTK_PREFIX", $p->getGlobalPrefix() . '/vtk');
 define("JEMALLOC_PREFIX", $p->getGlobalPrefix() . '/jemalloc');
@@ -303,4 +303,6 @@ define("OPENLDAP_PREFIX", $p->getGlobalPrefix() . '/openldap');
 define("LIBPAM_PREFIX", $p->getGlobalPrefix() . '/libpam');
 define("IDDAWC_PREFIX", $p->getGlobalPrefix() . '/iddawc');
 define("LIBMNL_PREFIX", $p->getGlobalPrefix() . '/libmnl');
+define("PROTOBUF_PREFIX", $p->getGlobalPrefix() . '/protobuf');
+define("PROTOBUF_C_PREFIX", $p->getGlobalPrefix() . '/protobuf_c');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
