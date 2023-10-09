@@ -156,7 +156,7 @@ EOF
             // 'imath',
             //'openexr',
             //'openjpeg',
-            'libeigen', //线性运算代数库 (依赖待完善）
+            //'libeigen', //线性运算代数库 (依赖待完善）
             // 'vtk'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
