@@ -35,6 +35,7 @@ EOF
             # pip3 install meson pyelftools -ihttps://pypi.python.org/simple
             pip3 install meson pyelftools
             apk add bsd-compat-headers
+            apk add libxdp libxdp-static
 EOF
             )
             ->withPreInstallCommand(
