@@ -298,7 +298,7 @@ make_config() {
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 
-<?php if ($this->osType === 'linux') : ?>
+<?php if ($this->osType === 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
         sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
