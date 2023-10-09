@@ -21,7 +21,6 @@ EOF
         )
         ->withManual('https://bitbucket.org/multicoreware/x265_git.git')
         ->withPrefix($libx265_prefix)
-        ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libx265_prefix)
         ->withPreInstallCommand(
             'debian',
@@ -29,24 +28,20 @@ EOF
             apt install nasm
 EOF
         )
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
-
-            test -d .git && rm -rf .git
-            mkdir -p build
-            cd build
+            mkdir -p build-dir
+            cd build-dir
 
             # bug  -lgcc -lgcc_s -lc -lgcc -lgcc_s
             # set(CMAKE_C_IMPLICIT_LINK_LIBRARIES "ssp_nonshared;gcc;gcc_s;c;gcc;gcc_s")  CMakeFiles/3.24.4/CMakeCCompiler.cmake
             # sed -i.save s@\${CMAKE_C_IMPLICIT_LINK_LIBRARIES}@@ CMakeLists.txt
-
 
             cmake \
             -G"Unix Makefiles" ../source  \
             -DCMAKE_INSTALL_PREFIX={$libx265_prefix} \
             -DCMAKE_INSTALL_LIBDIR={$libx265_prefix}/lib \
             -DCMAKE_INSTALL_INCLUDEDIR={$libx265_prefix}/include \
-            -DCMAKE_CURRENT_SOURCE_DIR={$build_dir}/libx265/source \
             -DCMAKE_C_COMPILER={$p->get_C_COMPILER()} \
             -DCMAKE_CXX_COMPILER={$p->get_CXX_COMPILER()} \
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
@@ -57,12 +52,13 @@ EOF
             -DENABLE_SHARED=OFF \
             -DCMAKE_DISABLE_FIND_PACKAGE_Numa=ON
 
-            # -DENABLE_LIBNUMA=ON \
-            # -DNuma_ROOT={$numa_prefix} \
+            cmake --build . --config Release
 
+            cmake --build . --config Release --target install
 
 EOF
         )
+
         ->withScriptAfterInstall(
             <<<EOF
             sed -i.save 's@ -lssp_nonshared @ @' {$libx265_prefix}/lib/pkgconfig/x265.pc
