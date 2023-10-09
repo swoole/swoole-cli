@@ -86,10 +86,14 @@ EOF
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
 
-            CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ -I{$libx265_prefix}/include/"
+            CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ -I{$libx265_prefix}/include/ "
             CPPFLAGS="\$CPPFLAGS  {$CPPFLAGS} "
-            LDFLAGS="\$LDFLAGS  {$LDFALGS} -L{$libx265_prefix}/lib/"
+
+            LDFLAGS="\$LDFLAGS -L{$libx265_prefix}/lib/ "
+            LDFLAGS="\$LDFLAGS  {$LDFALGS} "
+
             LIBS="\$LIBS  -lx265  "
+            LIBS="\$LIBS  {$libs} "
 
             ./configure  \
             --prefix=$ffmpeg_prefix \
@@ -124,9 +128,9 @@ EOF
             --disable-libxcb-xfixes \
             --disable-libxcb-shape  \
             --disable-xlib  \
-            --extra-cflags="{$cflags}   \${CPPFLAGS} " \
-            --extra-ldflags="{$ldflags} \${LDFLAGS} " \
-            --extra-libs="{$libs}       \${LIBS} " \
+            --extra-cflags="\${CPPFLAGS} " \
+            --extra-ldflags="\${LDFLAGS} " \
+            --extra-libs="\${LIBS} " \
             --cc={$p->get_C_COMPILER()} \
             --cxx={$p->get_CXX_COMPILER()}
 
