@@ -18,8 +18,8 @@ return function (Preprocessor $p) {
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
     $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
 
-    $CPPFLAGS = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
-    $LDFALGS = $p->getOsType() == 'macos' ? ' ' : " -L/usr/lib ";
+    $cppflags = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
+    $ldfalgs = $p->getOsType() == 'macos' ? ' ' : " -L/usr/lib ";
 
     $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
 
@@ -87,10 +87,10 @@ EOF
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
 
             CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/  "
-            CPPFLAGS="\$CPPFLAGS  {$CPPFLAGS} "
+            CPPFLAGS="\$CPPFLAGS  {$cppflags} "
 
             LDFLAGS="\$LDFLAGS  "
-            LDFLAGS="\$LDFLAGS  {$LDFALGS} "
+            LDFLAGS="\$LDFLAGS  {$ldfalgs} "
 
             LIBS="\$LIBS   "
             LIBS="\$LIBS  {$libs} "
