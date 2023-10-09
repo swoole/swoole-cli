@@ -131,13 +131,14 @@ EOF
             export CPPFLAGS="$(pkg-config  --cflags-only-I --static  \$PACKAGES)"
             export LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES) {$ldflags} "
             export LIBS="$(pkg-config      --libs-only-l   --static    \$PACKAGES)  {$libcpp} -lm " #
-            export OSLIBS="$(pkg-config    --libs          --static \$PACKAGES) {$libcpp} -lm "
+            export CFLAGS="-O3  -g  -std=gnu11 -Wall {$cflags} "
 
             export DBCFLAGS="$(pkg-config  --cflags --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0     )"
             export DBLIBS="$(pkg-config     --libs  --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0     )"
 
 
-            export CFLAGS="-O3  -g  -std=gnu11 -Wall {$cflags} "
+
+            export OSLIBS="$(pkg-config    --libs          --static \$PACKAGES) {$libcpp} -lm "
             export OSCFLAGS=\$CFLAGS
 
             sed -i.backup  "s/libmongoc-1.0/libmongoc-static-1.0/" ./configure
@@ -145,6 +146,20 @@ EOF
             ./configure  \
             --prefix=$coturn_prefix
 
+EOF
+            )
+            ->withScriptBeforeInstall(
+                <<<EOF
+            unset CPPFLAGS
+            unset LDFLAGS
+            unset LIBS
+            unset CFLAGS
+
+            unset DBCFLAGS
+            unset DBLIBS
+
+            unset OSLIBS
+            unset OSCFLAGS
 EOF
             )
             ->withBinPath($coturn_prefix . '/bin/')
