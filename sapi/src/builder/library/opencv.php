@@ -103,8 +103,8 @@ EOF
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
-        -DBUILD_EXAMPLES=OFF \
-        -DBUILD_opencv_apps=OFF \
+        -DBUILD_EXAMPLES=ON \
+        -DBUILD_opencv_apps=ON \
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
@@ -159,9 +159,11 @@ EOF
             //'openexr',
             //'openjpeg',
             'libeigen', //线性运算代数库 (依赖待完善）
-        // 'vtk'
+            // 'vtk'
         )   //   HDR
-        ->withBinPath($opencv_prefix . '/bin/');
+        ->withBinPath($opencv_prefix . '/bin/')
+        ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
+    ;
 
     $p->addLibrary($lib);
 };
