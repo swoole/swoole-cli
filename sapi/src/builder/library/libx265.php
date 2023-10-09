@@ -28,7 +28,7 @@ EOF
             apt install nasm
 EOF
         )
-        ->withBuildScript(
+        ->withConfigure(
             <<<EOF
             mkdir -p build-dir
             cd build-dir
@@ -49,12 +49,8 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            -DENABLE_SHARED=OFF \
-            -DCMAKE_DISABLE_FIND_PACKAGE_Numa=ON
+            -DENABLE_SHARED=OFF
 
-            cmake --build . --config Release
-
-            cmake --build . --config Release --target install
 
 EOF
         )
@@ -65,6 +61,8 @@ EOF
             sed -i.save 's@ -lgcc_s @ @' {$libx265_prefix}/lib/pkgconfig/x265.pc
             sed -i.save 's@ -lgcc @ @' {$libx265_prefix}/lib/pkgconfig/x265.pc
             sed -i.save 's@ -ldl @ @' {$libx265_prefix}/lib/pkgconfig/x265.pc
+
+/usr/local/swoole-cli/libx265/lib/pkgconfig/x265.pc: No such file or directory
 
 EOF
         )
