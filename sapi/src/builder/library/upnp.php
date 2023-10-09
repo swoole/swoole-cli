@@ -38,7 +38,7 @@ EOF
             -Dintrospection=true \
             -Dvapi=true
 
-            meson compile -C build
+            # meson compile -C build
 
             ninja -C build
             ninja -C build install

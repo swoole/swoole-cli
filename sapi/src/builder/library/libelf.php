@@ -63,6 +63,8 @@ EOF
             //->withCleanPreInstallDirectory($libelf_prefix)
             ->withBuildScript(
                 <<<EOF
+            autoreconf -if
+            ./configure --help
 
             PACKAGES=" libarchive openssl libxml-2.0   "
             PACKAGES="\$PACKAGES libbrotlicommon libbrotlidec libbrotlienc "
@@ -84,8 +86,7 @@ EOF
             export LIBS="\$LIBS"
             export CFLAGS=" -static "
 
-            autoreconf -if
-            ./configure --help
+
 
 
             ./configure \
@@ -99,11 +100,16 @@ EOF
             --without-valgrind \
             --enable-maintainer-mode \
             --with-libiconv-prefix={$libiconv_prefix} \
-            --with-libintl-prefix={$gettext_prefix} \
             --disable-debuginfod  \
             --disable-libdebuginfod \
             --program-prefix=eu- \
-		    --enable-deterministic-archives
+		    --enable-deterministic-archives \
+		    --without-libintl-prefix \
+		    --disable-nls
+
+            # --with-libintl-prefix={$gettext_prefix}
+
+
 
             unset CPPFLAGS
             unset LDFLAGS
@@ -111,6 +117,7 @@ EOF
             unset CFLAGS
 
             make -j {$p->getMaxJob()}
+
 EOF
             )
             ->withPkgName('libelf')
@@ -132,9 +139,10 @@ EOF
                 'liblz4',
                 'bzip2',
                 'gmp',
-                'gettext',
+               // 'gettext',
                 "zlib",
-                'libmicrohttpd'
+                'libmicrohttpd',
+                'ncurses'
             )
     );
 };
