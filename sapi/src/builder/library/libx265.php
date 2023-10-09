@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'x265_git',
             <<<EOF
-        git clone -b Release_3.5 --progress --depth=1 https://bitbucket.org/multicoreware/x265_git.git
+            git clone -b Release_3.5 --progress --depth=1 https://bitbucket.org/multicoreware/x265_git.git
 EOF
         )
         ->withManual('https://bitbucket.org/multicoreware/x265_git.git')
@@ -26,7 +26,7 @@ EOF
         ->withPreInstallCommand(
             'debian',
             <<<EOF
-       apt install nasm
+            apt install nasm
 EOF
         )
         ->withConfigure(
@@ -54,9 +54,11 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            -DENABLE_LIBNUMA=ON \
-            -DNuma_ROOT={$numa_prefix} \
             -DENABLE_SHARED=OFF
+
+            # -DENABLE_LIBNUMA=ON \
+            # -DNuma_ROOT={$numa_prefix} \
+
 
 EOF
         )
@@ -71,7 +73,7 @@ EOF
         )
         ->withPkgName('x265')
         ->withBinPath($libx265_prefix . '/bin/')
-        ->withDependentLibraries('numa');
-
+       // ->withDependentLibraries('numa')
+    ;
     $p->addLibrary($lib);
 };
