@@ -13,6 +13,7 @@ return function (Preprocessor $p) {
     $lib = new Library('libosmesa');
     $lib->withHomePage('https://www.mesa3d.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
+        ->withManual('https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/meson_options.txt?ref_type=heads')
         ->withManual('https://docs.mesa3d.org/osmesa.html')
         //->withUrl('https://archive.mesa3d.org/mesa-23.1.5.tar.xz')
             ->withFile('mesa-latest.tar.gz')
@@ -56,8 +57,6 @@ EOF
 
 EOF
         )
-        /** 使用 meson、ninja  构建 end **/
-
         ->withBinPath($libosmesa_prefix . '/bin/')
         ->withDependentLibraries(
             'glslang',

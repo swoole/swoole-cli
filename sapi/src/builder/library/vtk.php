@@ -48,7 +48,6 @@ EOF
         ->withPkgName('vtk')
         ->withDependentLibraries(
             'ffmpeg',
-
             'libosmesa'
             //'open_mpi'
         );
