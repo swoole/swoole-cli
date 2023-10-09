@@ -343,7 +343,15 @@ make_config() {
     mkdir -p <?= $this->getWorkDir()  ?>/php-src/
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     make_ext_hook
+
+    # export_variables
+    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
+
+
     exit 0
+
 :<<'_____EO_____'
     = 是最基本的赋值
     := 是覆盖之前的值
@@ -389,6 +397,7 @@ make_config() {
     # export CFLAGS="-static"
     # export CFLAGS="-std=gnu11 -g -Wall -O3 -fPIE"
     # -std=gnu++ -fno-common -DPIC -static
+
     # package_names="${package_names}  libtiff-4 lcms2"
     # export CFLAGS="-Wno-error=implicit-function-declaration"
     CPPFLAGS="$(pkg-config  --cflags-only-I --static ${package_names} ) $CPPFLAGS"
@@ -431,19 +440,6 @@ _____EO_____
     make_ext
     make_ext_hook
 
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-<?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
-    PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
-    if [[ $PHP_VERSION -lt 80000 ]] ; then
-        echo "only support PHP >= 8.0 "
-    else
-        # 请把这个做成 patch  https://github.com/swoole/swoole-cli/pull/55/files
-
-    fi
-<?php endif ;?>
-
-    test -f ./configure &&  rm ./configure
-    ./buildconf --force
 
 <?php if ($this->osType === 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
@@ -451,20 +447,12 @@ _____EO_____
     <?php endif;?>
 <?php endif; ?>
 
-    export_variables
-    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
-    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
-    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
-
-    ./configure $OPTIONS
-
-    # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
-<?php if ($this->getOsType()=='linux') : ?>
-    sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
-<?php endif ; ?>
 }
 
 make_build() {
+
+
+
    exit 0
    # export EXTRA_LDFLAGS="$(pkg-config   --libs-only-L   --static openssl libraw_r )"
    # export EXTRA_LDFLAGS_PROGRAM=""
