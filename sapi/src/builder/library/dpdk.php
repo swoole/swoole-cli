@@ -109,14 +109,27 @@ EOF
             ->withDependentLibraries(
                 'jansson',
                 'zlib',
+                'openssl',
+                'libmlx5',
+                'libnl',
+                'liblzma',
+                'liblz4',
+                'libiconv',
+                'libzstd',
+                'bzip2',
+                'nettle',
+                'bzip2',
+                'libxml2',
+                'libiconv',
+                'gmp'
                 //'libarchive',
                 //'numa',
                 //'libpcap',
                 //'libxdp',
                 //'libbpf',
-                'libmlx5',
+
                 //'libbsd',
-                'openssl'
+
             )
             ->withScriptAfterInstall(
                 <<<EOF
