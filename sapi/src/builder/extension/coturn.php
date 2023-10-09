@@ -25,9 +25,14 @@ return function (Preprocessor $p) {
 
                 cp -rf {$coturn_prefix}/bin/*  {$workdir}/bin/coturn/bin/
                 cp -rf {$coturn_prefix}/etc/*  {$workdir}/bin/coturn/etc/
+
+                for f in `ls {$workdir}/bin/coturn/bin/` ; do
+                echo \$f
+                strip {$workdir}/bin/coturn/bin/\$f
+                done
+
+
                 cd {$workdir}/bin/
-
-
 
 EOF;
         if ($p->getOsType() == 'macos') {
@@ -41,7 +46,7 @@ EOF;
             file {$workdir}/bin/coturn/bin/turnserver
             readelf -h {$workdir}/bin/coturn/bin/turnserver
             tar -cJvf {$workdir}/coturn-vlatest-static-linux-x64.tar.xz coturn/
-            zip -v  {$workdir}/coturn-vlatest-static-linux-x64.tar.xz.zip {$workdir}/coturn-vlatest-static-linux-x64.tar.xz
+            zip -v  coturn-vlatest-static-linux-x64.tar.xz.zip {$workdir}/coturn-vlatest-static-linux-x64.tar.xz
 EOF;
         }
         return $cmd;

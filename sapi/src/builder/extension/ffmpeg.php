@@ -28,18 +28,25 @@ return function (Preprocessor $p) {
                 cp -rf bin {$workdir}/bin/ffmpeg/
                 cd {$workdir}/bin/
 
+                {$workdir}/bin/ffmpeg/bin/ffmpeg -h
+
+                for f in `ls {$workdir}/bin/ffmpeg/bin/` ; do
+                    echo \$f
+                    strip {$workdir}/bin/ffmpeg/bin/\$f
+                done
+
+                cd {$workdir}/bin/
+
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
                 otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
-                {$workdir}/bin/ffmpeg/bin/ffmpeg -h
                 tar -cJvf {$workdir}/ffmpeg-vlatest-static-macos-x64.tar.xz ffmpeg
 EOF;
         } else {
             $cmd .= <<<EOF
                 file {$workdir}/bin/ffmpeg/bin/ffmpeg
                 readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
-                {$workdir}/bin/ffmpeg/bin/ffmpeg -h
                 tar -cJvf {$workdir}/ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
 EOF;
         }

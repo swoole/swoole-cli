@@ -23,16 +23,17 @@ EOF
         ->withPrefix($libx265_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libx265_prefix)
-        ->withPreInstallCommand('debian',<<<EOF
+        ->withPreInstallCommand('debian', <<<EOF
        apt install nasm
 EOF
-)
+    )
         ->withConfigure(
             <<<EOF
 
             test -d .git && rm -rf .git
             mkdir -p build
             cd build
+
             # bug  -lgcc -lgcc_s -lc -lgcc -lgcc_s
             # set(CMAKE_C_IMPLICIT_LINK_LIBRARIES "ssp_nonshared;gcc;gcc_s;c;gcc;gcc_s")  CMakeFiles/3.24.4/CMakeCCompiler.cmake
             # sed -i.save s@\${CMAKE_C_IMPLICIT_LINK_LIBRARIES}@@ CMakeLists.txt
@@ -50,7 +51,6 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            -DCMAKE_C_IMPLICIT_LINK_LIBRARIES="" \
             -DENABLE_LIBNUMA=ON \
             -DNuma_ROOT={$numa_prefix} \
             -DENABLE_SHARED=OFF
