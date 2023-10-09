@@ -36,6 +36,8 @@ EOF
             pip3 install meson pyelftools
             apk add bsd-compat-headers
             apk add libxdp libxdp-static
+            apk add libxdp numactl-dev numactl-tools
+            apk add libfdt
 EOF
             )
             ->withPreInstallCommand(
@@ -82,7 +84,9 @@ EOF
             -Dprefer_static=true \
             -Dibverbs_link=static \
             -Dtests=false \
-            -Dexamples=''
+            -Dexamples='' \
+            -Denable_apps='' \
+            -Dcheck_includes=true
 
             # -Dexamples=all
             # -Dexamples=''
