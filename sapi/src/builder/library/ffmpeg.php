@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
     $CPPFLAGS = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
     $LDFALGS = $p->getOsType() == 'macos' ? ' ' : " -L/usr/lib ";
 
-    $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic ';
+    $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
 
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
@@ -70,7 +70,7 @@ EOF
             PACKAGES="\$PACKAGES dav1d "
             PACKAGES="\$PACKAGES lcms2 "
             PACKAGES="\$PACKAGES x264 "
-            # PACKAGES="\$PACKAGES x265 numa "
+            PACKAGES="\$PACKAGES x265 numa "
             PACKAGES="\$PACKAGES sdl2 "
             PACKAGES="\$PACKAGES ogg "
             PACKAGES="\$PACKAGES opus "
@@ -81,11 +81,13 @@ EOF
             PACKAGES="\$PACKAGES librabbitmq "
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+
             CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ "
             CPPFLAGS="\$CPPFLAGS  {$CPPFLAGS} "
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
             LDFLAGS="\$LDFLAGS  {$LDFALGS} "
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+
             ./configure  \
             --prefix=$ffmpeg_prefix \
             --enable-gpl \
@@ -113,6 +115,7 @@ EOF
             --enable-libfribidi \
             --enable-librabbitmq \
             --enable-random \
+            --enable-libx265 \
             --disable-libxcb \
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \
@@ -129,7 +132,7 @@ EOF
             # --pkg-config-flags=" {$cflags} "
             # --pkg-config=pkg-config
             # --ld={$p->getLinker()}
-            # --enable-libx265
+            #
             # --enable-libssh
             # --enable-cross-compile
             # --enable-libspeex
