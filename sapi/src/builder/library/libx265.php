@@ -54,21 +54,9 @@ EOF
 
 EOF
         )
-
-        ->withScriptAfterInstall(
-            <<<EOF
-            sed -i.save 's@ -lssp_nonshared @ @' {$libx265_prefix}/lib/pkgconfig/x265.pc
-            sed -i.save 's@ -lgcc_s @ @' {$libx265_prefix}/lib/pkgconfig/x265.pc
-            sed -i.save 's@ -lgcc @ @' {$libx265_prefix}/lib/pkgconfig/x265.pc
-            sed -i.save 's@ -ldl @ @' {$libx265_prefix}/lib/pkgconfig/x265.pc
-
-/usr/local/swoole-cli/libx265/lib/pkgconfig/x265.pc: No such file or directory
-
-EOF
-        )
-        ->withPkgName('x265')
+        //->withPkgName('x265')
         ->withBinPath($libx265_prefix . '/bin/')
-       // ->withDependentLibraries('numa')
+        // ->withDependentLibraries('numa')
     ;
     $p->addLibrary($lib);
 };

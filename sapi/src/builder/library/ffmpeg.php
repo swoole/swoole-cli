@@ -12,6 +12,8 @@ return function (Preprocessor $p) {
 
     $ffmpeg_prefix = FFMPEG_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
+    $libx265_prefix = LIBX265_PREFIX;
+
     $ldflags = $p->getOsType() == 'macos' ? ' ' : ' -static ';
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
     $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
@@ -70,7 +72,7 @@ EOF
             PACKAGES="\$PACKAGES dav1d "
             PACKAGES="\$PACKAGES lcms2 "
             PACKAGES="\$PACKAGES x264 "
-            PACKAGES="\$PACKAGES x265 numa "
+            PACKAGES="\$PACKAGES x265 " # numa
             PACKAGES="\$PACKAGES sdl2 "
             PACKAGES="\$PACKAGES ogg "
             PACKAGES="\$PACKAGES opus "
@@ -82,11 +84,12 @@ EOF
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
 
-            CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ "
+            CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ -I{$libx265_prefix}/include/"
             CPPFLAGS="\$CPPFLAGS  {$CPPFLAGS} "
-            LDFLAGS="\$LDFLAGS  {$LDFALGS} "
+            LDFLAGS="\$LDFLAGS  {$LDFALGS} -L{$libx265_prefix}/lib/"
+            LIBS="\$LIBS  -lx265  "
 
             ./configure  \
             --prefix=$ffmpeg_prefix \
