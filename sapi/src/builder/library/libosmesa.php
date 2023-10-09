@@ -45,7 +45,9 @@ EOF
             -Dprefer_static=true  \
             -Dosmesa=true \
             -Dgallium-drivers=swrast \
-            -Dvulkan-drivers=[]
+            -Dvulkan-drivers=[] \
+            -Dplatforms=['wayland'],
+
 
             meson compile -C build
             meson install -C build
