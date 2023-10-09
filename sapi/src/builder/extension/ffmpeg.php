@@ -30,11 +30,6 @@ return function (Preprocessor $p) {
 
                 {$workdir}/bin/ffmpeg/bin/ffmpeg -h
 
-                for f in `ls {$workdir}/bin/ffmpeg/bin/` ; do
-                    echo \$f
-                    strip {$workdir}/bin/ffmpeg/bin/\$f
-                done
-
                 cd {$workdir}/bin/
 
 EOF;
