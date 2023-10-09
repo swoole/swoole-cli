@@ -61,7 +61,7 @@ EOF
             PACKAGES="\$PACKAGES zlib  liblzma liblz4 libzstd "
             # PACKAGES="\$PACKAGES  liblzma  "
             # PACKAGES="\$PACKAGES libarchive "
-            PACKAGES="\$PACKAGES libpcap "
+            # PACKAGES="\$PACKAGES libpcap "
             # PACKAGES="\$PACKAGES  libbpf "
             PACKAGES="\$PACKAGES libmlx4 libibverbs libmlx5 libefa libibmad libibnetdisc libibumad libmana librdmacm libnl-3.0 libnl-genl-3.0 libnl-idiag-3.0 libnl-route-3.0 libnl-xfrm-3.0 "
             # PACKAGES="\$PACKAGES libbsd libbsd-overlay libmd "
@@ -110,7 +110,7 @@ EOF
                 'zlib',
                 'libarchive',
                 'numa',
-                'libpcap',
+                //'libpcap',
                 //'libxdp',
                 //'libbpf',
                 'libmlx5',
