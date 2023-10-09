@@ -298,13 +298,6 @@ make_config() {
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 
-<?php if ($this->osType !== 'macos') : ?>
-    mv main/php_config.h.in /tmp/cnt
-    echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
-    cat /tmp/cnt >> main/php_config.h.in
-    echo -ne '\n#endif\n' >> main/php_config.h.in
-<?php endif; ?>
-
 <?php if ($this->osType === 'linux') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
         sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
