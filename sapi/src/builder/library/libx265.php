@@ -57,7 +57,7 @@ EOF
         ->withScriptAfterInstall(
             <<<EOF
                 mkdir -p {$libx265_prefix}/lib/pkgconfig/
-                cat > {$libx265_prefix}/lib/pkgconfig/x265 <<'__libx265__EOF'
+                cat > {$libx265_prefix}/lib/pkgconfig/x265.pc <<'__libx265__EOF'
 prefix={$libx265_prefix}
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
