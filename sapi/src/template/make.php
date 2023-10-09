@@ -7,7 +7,6 @@ use SwooleCli\Preprocessor;
 
 ?>
 #!/usr/bin/env bash
-
 set -x
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
