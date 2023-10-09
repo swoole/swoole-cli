@@ -39,8 +39,6 @@ EOF
             cmake \
             -G"Unix Makefiles" ../source  \
             -DCMAKE_INSTALL_PREFIX={$libx265_prefix} \
-            -DCMAKE_INSTALL_LIBDIR={$libx265_prefix}/lib \
-            -DCMAKE_INSTALL_INCLUDEDIR={$libx265_prefix}/include \
             -DCMAKE_C_COMPILER={$p->get_C_COMPILER()} \
             -DCMAKE_CXX_COMPILER={$p->get_CXX_COMPILER()} \
             -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
