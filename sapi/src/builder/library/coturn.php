@@ -139,7 +139,7 @@ EOF
 
 
             export OSLIBS="$(pkg-config    --libs          --static \$PACKAGES) {$libcpp} -lm "
-            export OSCFLAGS=\$CFLAGS
+            export OSCFLAGS=\$CPPFLAGS
 
             sed -i.backup  "s/libmongoc-1.0/libmongoc-static-1.0/" ./configure
 
