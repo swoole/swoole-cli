@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
     $nettle_prefix = NETTLE_PREFIX;
     $hiredis_prefix = HIREDIS_PREFIX;
-
+    $libmnl_prefix = LIBMNL_PREFIX;
 
     $lib = new Library('unbound');
     $lib->withHomePage('http://www.unbound.net/')
@@ -26,12 +26,14 @@ return function (Preprocessor $p) {
                 git clone -b master  --depth=1 https://github.com/NLnetLabs/unbound.git
 EOF
         )
-        ->withPreInstallCommand('alpine', <<<EOF
+        ->withPreInstallCommand(
+            'alpine',
+            <<<EOF
         apk add libltdl-static
 EOF
         )
         ->withPrefix($unbound_prefix)
-        /* 使用 autoconfig automake  构建 start  */
+
         ->withConfigure(
             <<<EOF
            ./configure --help
@@ -40,18 +42,19 @@ EOF
             # ssed -i.backup "s/-ldl/  /g" {$nettle_prefix}/lib/pkgconfig/hogweed.pc
             # ssed -i.backup "s/-Ldl/  /" {$libevent_prefix}/lib/pkgconfig/libevent_openssl.pc
 
-            set -ex
+
             PACKAGES='openssl '
             PACKAGES="\$PACKAGES libevent libevent_core libevent_extra libevent_openssl libevent_pthreads"
             PACKAGES="\$PACKAGES expat"
+            PACKAGES="\$PACKAGES zlib libxml-2.0 "
             PACKAGES="\$PACKAGES libnghttp2"
             PACKAGES="\$PACKAGES libsodium"
-            PACKAGES="\$PACKAGES libbsd"
-            PACKAGES="\$PACKAGES nettle"
+            PACKAGES="\$PACKAGES nettle hogweed gmp"
             PACKAGES="\$PACKAGES hiredis"
-            PACKAGES="libbsd"
+            PACKAGES="\$PACKAGES libmnl"
 
-            # CFLAGS="-std=c99 -D__EXTENSIONS__ -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_XOPEN_SOURCE_EXTENDED=1 -D_ALL_SOURCE " \
+            # PACKAGES="\$PACKAGES libbsd"
+
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) " \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
@@ -60,7 +63,9 @@ EOF
             --prefix={$unbound_prefix} \
             --enable-shared=no \
             --enable-static=yes \
+            --with-libunbound-only \
             --enable-fully-static \
+            --with-pthreads \
             --with-libnghttp2={$nghttp2_prefix} \
             --with-libhiredis={$hiredis_prefix} \
             --with-libexpat={$libexpat_prefix} \
@@ -69,13 +74,12 @@ EOF
             --without-pyunbound \
             --without-pythonmodule \
             --without-dynlibmodule \
-            --with-pthreads \
-            --with-libbsd
+            --without-libbsd \
+            --enable-dnscrypt \
+            --with-libsodium={$libsodium_prefix} \
+            --with-libmnl={$libmnl_prefix} \
+            --with-nettle={$nettle_prefix} \
 
-            #  --with-libmnl={} \
-            #  --with-nettle={$nettle_prefix} \
-            # --enable-dnscrypt \
-            # --with-libsodium={$libsodium_prefix} \
             # --enable-dnstap
             # --with-protobuf-c
             # --with-dnstap-socket-path
@@ -91,9 +95,14 @@ EOF
             'libsodium',
             'nghttp2',
             'libexpat',
-            'libbsd',
+            //'libbsd',
             'nettle',
-            'hiredis'
+            'hiredis',
+            'libmnl',
+            'libxml2',
+            'cares',
+            'gmp',
+            'zlib'
         );
 
     $p->addLibrary($lib);

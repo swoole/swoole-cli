@@ -132,6 +132,8 @@ return function (Preprocessor $p) {
     $depends = ['libbpf'] ;
     $depends = ['dpdk'] ;
 
+    $depends = ['libmnl'] ;
+    $depends = ['unbound'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

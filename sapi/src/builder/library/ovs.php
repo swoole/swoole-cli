@@ -97,7 +97,7 @@ EOF
         ->withPkgName('libovsdb')
         ->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/')
-        ->withDependentLibraries('openssl', 'libcap_ng' ) //'dpdk','unbound'
+        ->withDependentLibraries('openssl', 'libcap_ng') //'dpdk','unbound'
     ;
 
     $p->addLibrary($lib);

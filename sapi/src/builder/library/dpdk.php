@@ -67,8 +67,8 @@ EOF
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
 
-            CPPFLAGS="\$CPPFLAGS -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include "
-            LDFLAGS="\$LDFLAGS -L{$libiconv_prefix}/lib -L{$bzip2_prefix}/lib "
+            CPPFLAGS="\$CPPFLAGS -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libarchive_prefix}/include "
+            LDFLAGS="\$LDFLAGS -L{$libiconv_prefix}/lib -L{$bzip2_prefix}/lib -L{$libarchive_prefix}/lib"
             LIBS="\$LIBS  -liconv -lbz2 "
 
             CPPFLAGS="\$CPPFLAGS" \
