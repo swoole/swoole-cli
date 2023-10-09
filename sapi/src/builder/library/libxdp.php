@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'xdp-tools',
             <<<EOF
-        git clone -b master  --depth=1 https://github.com/xdp-project/xdp-tools.git
+        git clone -b master  --depth=1 --recurse-submodules https://github.com/xdp-project/xdp-tools.git
 EOF
         )
         ->withPrefix($libxdp_prefix)
@@ -28,6 +28,7 @@ EOF
         apk add llvm
         apk add bpftool
         apk add --no-cache grep
+        apk add libelf-static libelf
 EOF
         )
         ->withBuildLibraryHttpProxy()
@@ -47,7 +48,7 @@ EOF
         ->withMakeOptions('libxdp')
         ->withPkgName('example')
         ->withBinPath($libxdp_prefix . '/bin/')
-        ->withDependentLibraries('libpcap', 'zlib')
+        ->withDependentLibraries('libpcap', 'zlib') //"libbpf"
 
     ;
 

@@ -36,12 +36,14 @@ EOF
 EOF
             )
             ->withPrefix($libarchive_prefix)
-            ->withBuildLibraryCached(false)
+            //->withBuildLibraryCached(false)
+           ->withCleanPreInstallDirectory($libarchive_prefix)
             ->withConfigure(
                 <<<EOF
 
                 sh build/autogen.sh
                 ./configure --help
+
                 PACKAGES=" openssl gmp libxml-2.0 liblz4 liblzma zlib libzstd nettle"
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include " \
                 LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib" \
@@ -61,10 +63,9 @@ EOF
                 --with-bz2lib \
                 --with-zlib \
                 --with-libiconv-prefix={$libiconv_prefix} \
-                --without-mbedtls
-
-                # --enable-bsdcpio=static \
-                # --enable-bsdtar=static \
+                --without-mbedtls \
+                --enable-bsdcpio=static \
+                --enable-bsdtar=static
 EOF
             )
             ->withScriptAfterInstall(
@@ -73,7 +74,7 @@ EOF
             sed -i.save "\${LINE_NUMBER} s/iconv//" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
 
             DEST_LINE="-L{$libxml2_prefix}/libxml2/lib -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib"
-            sed -i.save "s@-L/usr/local/swoole-cli/libxml2/lib@\$DEST_LINE@" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
+            sed -i.save "s@-L{$libxml2_prefix}/lib@\$DEST_LINE@" {$libarchive_prefix}/lib/pkgconfig/libarchive.pc
 
 
 EOF

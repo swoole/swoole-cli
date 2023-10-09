@@ -8,16 +8,20 @@ return function (Preprocessor $p) {
     //elfutils  实用程序和库的集合，用于读取、创建和修改 ELF 二进制文件
 
     $libelf_prefix = LIBELF_PREFIX;
-    $bzip2_prefix = BZIP2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
+    $libunistring_prefix = LIBUNISTRING_PREFIX;
     $gettext_prefix = GETTEXT_PREFIX;
+
+    $ldflags  = $p->getOsType() == 'macos' ? ' ' : ' -static --static ';
+
     $p->addLibrary(
         (new Library('libelf'))
             ->withHomePage('http://elfutils.org/')
             ->withLicense('https://chromium.googlesource.com/external/elfutils/+/refs/heads/master/COPYING-LGPLV3', Library::LICENSE_GPL)
             ->withManual('https://sourceware.org/git/?p=elfutils.git;a=summary')
+            ->withManual('https://git.alpinelinux.org/aports/tree/main/elfutils/APKBUILD')
             ->withManual('https://chromium.googlesource.com/external/elfutils/+/refs/heads/master/README')
             ->withHttpProxy(true, true)
             ->withFile('elfutils-0.189.tar.gz')
@@ -38,70 +42,75 @@ EOF
 
         EOF
             )
-            ->withPreInstallCommand('alpine', <<<EOF
+            ->withPreInstallCommand(
+                'alpine',
+                <<<EOF
                 apk add argp-standalone  # https://github.com/ericonr/argp-standalone.git
                 apk add musl-fts-dev     # https://github.com/void-linux/musl-fts.git
                 apk add musl-obstack-dev  # https://github.com/void-linux/musl-obstack.git
                 apk add gawk
-                apk add binutils binutils-dev
 
-                apk add gettext-dev gettext-static
-                apk add musl-libintl
+                # apk add binutils binutils-dev
+                # apk add gettext-dev gettext-static
+                # apk add musl-libintl
+
+                # apk add libelf-static
 
         EOF
             )
             //->withAutoUpdateFile()
-            ->withBuildLibraryCached(false)
-            ->withCleanBuildDirectory()
-            ->withConfigure(
+            //->withBuildLibraryCached(false)
+            //->withCleanPreInstallDirectory($libelf_prefix)
+            ->withBuildScript(
                 <<<EOF
 
-            # 读取环境变量,判定是静态编译  BUILD_STATIC_TRUE BUILD_STATIC_FALSE
-            # BUILD_STATIC
+            PACKAGES=" libarchive openssl libxml-2.0   "
+            PACKAGES="\$PACKAGES libbrotlicommon libbrotlidec libbrotlienc "
+            PACKAGES="\$PACKAGES zlib liblzma liblz4 libzstd "
+            PACKAGES="\$PACKAGES libnghttp2 libnghttp3 libngtcp2 libngtcp2_crypto_quictls libssh2 libcurl "
+            PACKAGES="\$PACKAGES nettle hogweed gmp sqlite3  libcares ncursesw "
+            PACKAGES="\$PACKAGES libmicrohttpd "
+
+            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
+            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
+            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
+
+            CPPFLAGS="\$CPPFLAGS -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include -I{$libunistring_prefix}/include -I{$gettext_prefix}/include"
+            LDFLAGS="\$LDFLAGS -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib -L{$libunistring_prefix}/lib/ -L{$gettext_prefix}/lib/ {$ldflags} "
+            LIBS="\$LIBS -liconv -lbz2 -lunistring -lintl -lm -pthread "
+
+            export CPPFLAGS="\$CPPFLAGS"
+            export LDFLAGS="\$LDFLAGS"
+            export LIBS="\$LIBS"
+            export CFLAGS=" -static "
 
             autoreconf -if
             ./configure --help
 
-            #  CFLAGS=" -std=gnu99 -static -g -fPIE -fPIC -O2 -Wall   " \
-            #  -I{$gettext_prefix}/include
-            #  -L{$gettext_prefix}/lib
-            # -lintl
 
-            BUILD_STATIC=true
-            BUILD_STATIC_FALSE="#"
-            BUILD_STATIC_TRUE=""
-
-
-            PACKAGES=" sqlite3 libcurl libarchive libcares "
-            PACKAGES=" libbrotlicommon libbrotlidec  libbrotlienc"
-            PACKAGES=" libzstd"
-            PACKAGES=" libnghttp2 libnghttp3 libngtcp2 libngtcp2_crypto_openssl"
-            PACKAGES=" nettle"
-            PACKAGES=" liblzma"
-            PACKAGES=" liblz4"
-            PACKAGES=" libzstd"
-            PACKAGES=" gmp"
-            PACKAGES=" zlib"
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include " \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib  -static --static " \
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lm -pthread  -liconv " \
             ./configure \
             --prefix={$libelf_prefix} \
             --enable-install-elfh \
             --with-zlib \
             --with-bzlib \
-            --without-lzma \
-            --without-zstd \
+            --with-lzma \
+            --with-zstd \
             --without-biarch \
             --without-valgrind \
             --enable-maintainer-mode \
             --with-libiconv-prefix={$libiconv_prefix} \
             --with-libintl-prefix={$gettext_prefix} \
-            --disable-nls \
             --disable-debuginfod  \
             --disable-libdebuginfod \
-            --enable-gprof
+            --program-prefix=eu- \
+		    --enable-deterministic-archives
 
+            unset CPPFLAGS
+            unset LDFLAGS
+            unset LIBS
+            unset CFLAGS
+
+            make -j {$p->getMaxJob()}
 EOF
             )
             ->withPkgName('libelf')
@@ -109,6 +118,7 @@ EOF
                 'libarchive',
                 'sqlite3',
                 'curl',
+                'libssh2',
                 'libiconv',
                 'cares',
                 'brotli',
@@ -122,8 +132,9 @@ EOF
                 'liblz4',
                 'bzip2',
                 'gmp',
-                //'gettext',
-                "zlib"
+                'gettext',
+                "zlib",
+                'libmicrohttpd'
             )
     );
 };

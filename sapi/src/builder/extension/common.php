@@ -123,6 +123,16 @@ return function (Preprocessor $p) {
     $depends = ['coturn'] ;
     $depends = ['gnutls'] ;
 
+    $depends = ['openssl'] ;
+
+
+    $depends = ['libarchive'] ;
+    $depends = ['libelf'] ;
+    $depends = ['libxdp'] ;
+    $depends = ['libbpf'] ;
+    $depends = ['dpdk'] ;
+
+
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
         ->withManual('https://developer.baidu.com/article/detail.html?id=293377')

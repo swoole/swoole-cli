@@ -3,14 +3,10 @@
  * @var $this SwooleCli\Preprocessor
  */
 
-use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
 #!/usr/bin/env bash
-<?php if (in_array($this->buildType, ['dev','debug'])) : ?>
-set -x
-<?php  endif; ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -542,12 +538,13 @@ show_lib_pkg() {
     exit 0
 }
 
-show_lib_dep_pkg() {
+lib_dep_pkg() {
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
     <?php
     $pkgs=[];
     $this->getLibraryDependenciesByName($item->name, $pkgs);
+    $pkgs=array_unique($pkgs);
     $res=implode(' ', $pkgs);
     ?>
     array_name[<?= $item->name ?>]="<?= $res?>"
@@ -593,8 +590,8 @@ help() {
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
     echo "./make.sh pkg-check"
-    echo "./make.sh show-lib-pkg"
-    echo "./make.sh show-lib-dep-pkg"
+    echo "./make.sh lib-pkg"
+    echo "./make.sh lib-dep-pkg"
     echo "./make.sh show-export-var"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
@@ -699,11 +696,11 @@ elif [ "$1" = "pkg-check" ] ;then
 
 <?php endforeach; ?>
     exit 0
-elif [ "$1" = "show-lib-pkg" ] ;then
-    show_lib_pkg
+elif [ "$1" = "lib-pkg" ] ;then
+    lib_pkg
     exit 0
-elif [ "$1" = "show-lib-dep-pkg" ] ;then
-    show_lib_dep_pkg "$2"
+elif [ "$1" = "lib-dep-pkg" ] ;then
+    lib_dep_pkg "$2"
     exit 0
 elif [ "$1" = "show-export-var" ] ;then
     show_export_var

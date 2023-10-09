@@ -16,14 +16,16 @@ return function (Preprocessor $p) {
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-                 # ./Configure LIST
-               ./config {$static} no-shared  enable-tls1_3 --release \
+               # ./Configure LIST
+               ./config {$static} no-shared   enable-tls1_3 --release \
                --prefix={$openssl_prefix} \
                --libdir={$openssl_prefix}/lib
 
+               # sctp zlib
+
 EOF
             )
-            //->withMakeOptions('build_sw')
+            ->withMakeOptions('build_sw')
             ->withMakeInstallCommand('install_sw')
             ->withScriptAfterInstall(
                 <<<EOF

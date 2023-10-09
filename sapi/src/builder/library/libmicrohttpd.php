@@ -31,6 +31,7 @@ return function (Preprocessor $p) {
 
 EOF
         )
+        ->withPkgName('libmicrohttpd')
         ->withDependentLibraries('curl', 'libiconv')
 
     ;
