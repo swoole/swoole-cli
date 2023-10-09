@@ -86,13 +86,13 @@ EOF
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
 
-            CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/ -I{$libx265_prefix}/include/ "
+            CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/  "
             CPPFLAGS="\$CPPFLAGS  {$CPPFLAGS} "
 
-            LDFLAGS="\$LDFLAGS -L{$libx265_prefix}/lib/ "
+            LDFLAGS="\$LDFLAGS  "
             LDFLAGS="\$LDFLAGS  {$LDFALGS} "
 
-            LIBS="\$LIBS  -lx265  "
+            LIBS="\$LIBS   "
             LIBS="\$LIBS  {$libs} "
 
             ./configure  \
