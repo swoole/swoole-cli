@@ -46,7 +46,7 @@ EOF
             -Dosmesa=true \
             -Dgallium-drivers=swrast \
             -Dvulkan-drivers=[] \
-            -Dplatforms=['wayland']
+            -Dplatforms="['wayland']"
 
 
             meson compile -C build
