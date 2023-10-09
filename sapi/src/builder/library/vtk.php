@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $vtk_prefix = VTK_PREFIX;
     $ffmpeg_prefix = FFMPEG_PREFIX;
-
+    $libosmesa_prefix = LIBOSMESA_PREFIX;
     $lib = new Library('vtk');
     $lib->withHomePage('https://www.vtk.org/')
         ->withLicense('https://gitlab.kitware.com/vtk/vtk/-/blob/master/Copyright.txt', Library::LICENSE_BSD)
@@ -40,6 +40,7 @@ EOF
         -DBUILD_EXAMPLES=OFF \
         -DBUILD_SHARED_LIBS=OFF \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
+        -DCMAKE_PREFIX_PATH="{$ffmpeg_prefix};{$libosmesa_prefix}" \
 
         ninja
         ninja install
