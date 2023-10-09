@@ -124,6 +124,8 @@ EOF
         # 查找PKGCONFIG配置目录多个使用分号隔开
         # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
 
+        # ccmake  ..  # 对cmake的cache进行修改，重新生成makefile文件
+
 
         cmake --build . --config Release
 
