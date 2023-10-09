@@ -6,17 +6,22 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $libosmesa_prefix = LIBOSMESA_PREFIX;
 
-    //Off-screen Rendering   //没有opencl 硬件的服务器上运行 VTK
-    //软件渲染器
+    //Off-screen Rendering   //没有openGL 硬件的服务器上运行 VTK
+    //离屏渲染器
+    // mesa3d 在 CPU 上模拟 OpenGL 的 进行静态链接。 但是 并不完全兼容 OpenGL
 
     $lib = new Library('libosmesa');
     $lib->withHomePage('https://www.mesa3d.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://docs.mesa3d.org/osmesa.html')
-
-        // mesa3d 在 CPU 上模拟 OpenGL 的 进行静态链接。 但是 并不完全兼容 OpenGL
-
-        ->withUrl('https://archive.mesa3d.org/mesa-23.1.5.tar.xz')
+        //->withUrl('https://archive.mesa3d.org/mesa-23.1.5.tar.xz')
+            ->withFile('mesa-latest.tar.gz')
+        ->withDownloadScript(
+            'mesa',
+            <<<EOF
+        git clone -b main --depth=1  https://gitlab.freedesktop.org/mesa/mesa.git
+EOF
+        )
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
