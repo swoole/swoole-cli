@@ -158,6 +158,7 @@ EOF
             //'openjpeg',
             //'libeigen', //线性运算代数库 (依赖待完善）
             // 'vtk'
+            'opencl'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
