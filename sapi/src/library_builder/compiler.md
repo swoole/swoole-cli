@@ -59,3 +59,7 @@ clang -o vlc vlc.c.o -Wl,--as-needed -Wl,--no-undefined -Wl,-O1 -pie -Wl,--start
 
 由于 OpenMP 内置于编译器中，因此无需安装外部库即可编译此代码
 https://curc.readthedocs.io/en/latest/programming/OpenMP-C.html
+
+
+自动微分  Adolc
+https://github.com/coin-or/ADOL-C.git

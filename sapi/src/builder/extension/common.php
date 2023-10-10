@@ -152,8 +152,9 @@ return function (Preprocessor $p) {
 
     $depends = ['mpfr'] ;
 
-    $depends = ['libeigen'] ;
+
     $depends = ['suitesparse'] ;
+    $depends = ['libeigen'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
