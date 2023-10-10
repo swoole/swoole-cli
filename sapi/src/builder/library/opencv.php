@@ -41,7 +41,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$vtk_prefix};";
+    # $CMAKE_PREFIX_PATH .= "{$vtk_prefix};";
     $CMAKE_PREFIX_PATH .= "{$ffmpeg_prefix};";
     $CMAKE_PREFIX_PATH .= "{$imath_prefix};";
     $CMAKE_PREFIX_PATH .= "{$fftw3_prefix};";
@@ -172,6 +172,7 @@ EOF
             //'vtk',
             'opencl',
             //'libdc1394'
+            'imath'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
