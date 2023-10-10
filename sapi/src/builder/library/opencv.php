@@ -23,6 +23,9 @@ return function (Preprocessor $p) {
     $glog_prefix = GLOG_PREFIX;
     $imath_prefix = IMATH_PREFIX;
     $libeigen_prefix = LIBEIGEN_PREFIX;
+    $vtk_prefix = VTK_PREFIX;
+    $fftw3_prefix = FFTW3_PREFIX;
+    $libdc1394_prefix = LIBDC1394_PREFIX;
 
     $CMAKE_PREFIX_PATH = "{$jpeg_prefix};";
     $CMAKE_PREFIX_PATH .= "{$png_prefix};";
@@ -35,9 +38,14 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$libzstd_prefix};";
     $CMAKE_PREFIX_PATH .= "{$liblz4_prefix};";
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$lapack_prefix}";
-    $CMAKE_PREFIX_PATH .= "{$libeigen_prefix}";
-    $CMAKE_PREFIX_PATH .= "{$glog_prefix}";
+    $CMAKE_PREFIX_PATH .= "{$lapack_prefix};";
+    # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$vtk_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$ffmpeg_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$imath_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$fftw3_prefix};";
+    # $CMAKE_PREFIX_PATH .= "{$libdc1394_prefix};";
 
 
     $workDir = $p->getWorkDir();
@@ -105,7 +113,10 @@ EOF
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
-        -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}"
+        -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
+        -DCMAKE_DISABLE_FIND_PACKAGE_Java=ON \
+        -DCMAKE_DISABLE_FIND_PACKAGE_JNI=ON \
+
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
@@ -154,12 +165,13 @@ EOF
             'openblas', //基础线性代数程序集
             'lapack', //线性代数计算库
             // 'harfbuzz',
-            // 'imath',
+            'imath',
             //'openexr',
             //'openjpeg',
             //'libeigen', //线性运算代数库 (依赖待完善）
-            // 'vtk'
+            'vtk',
             'opencl',
+            //'libdc1394'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')

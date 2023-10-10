@@ -183,6 +183,7 @@ EOF
 
         # libtoolize -ci
         # autoreconf -fi
+        # example:  libdc1394.php
 
         ./configure --help
 
