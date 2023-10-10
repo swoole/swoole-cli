@@ -47,6 +47,14 @@ EOF
 
 EOF
         )
+        ->withScriptAfterInstall(
+            <<<EOF
+            sed -i.backup "s/-lssp_nonshared//g" {$libx265_prefix}/lib/pkgconfig/x265.pc
+            sed -i.backup "s/-lgcc_s//g" {$libx265_prefix}/lib/pkgconfig/x265.pc
+            sed -i.backup "s/-lgcc//g" {$libx265_prefix}/lib/pkgconfig/x265.pc
+            sed -i.backup "s/-ldl//g" {$libx265_prefix}/lib/pkgconfig/x265.pc
+EOF
+        )
         ->withPkgName('x265')
         ->withBinPath($libx265_prefix . '/bin/')
         // ->withDependentLibraries('numa')
