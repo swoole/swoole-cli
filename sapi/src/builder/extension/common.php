@@ -150,8 +150,9 @@ return function (Preprocessor $p) {
     $depends = ['libdc1394'] ;
     $depends = ['blas'] ;
     $depends = ['libeigen'] ;
-    $depends = ['suitesparse'] ;
     $depends = ['mpfr'] ;
+    $depends = ['suitesparse'] ;
+
 
 
     $ext = (new Extension('common'))
