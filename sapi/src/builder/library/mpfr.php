@@ -49,8 +49,7 @@ EOF
 EOF
         )
         ->withPkgName('mpfr')
-        ->withDependentLibraries('gmp')
-    ;
+        ->withDependentLibraries('gmp');
 
     $p->addLibrary($lib);
 };
