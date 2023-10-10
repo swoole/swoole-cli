@@ -19,15 +19,10 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($glog_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($glog_prefix)
-        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
              mkdir -p build
              cd build
-             # cmake 查看选项
-             # cmake -LH ..
              cmake .. \
             -G "Unix Makefiles" \
             -DCMAKE_INSTALL_PREFIX={$glog_prefix} \
