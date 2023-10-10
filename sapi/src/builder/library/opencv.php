@@ -29,6 +29,7 @@ return function (Preprocessor $p) {
     $vtk_prefix = VTK_PREFIX;
     $fftw3_prefix = FFTW3_PREFIX;
     $libdc1394_prefix = LIBDC1394_PREFIX;
+    $glog_prefix = GLOG_PREFIX;
 
     $CMAKE_PREFIX_PATH = "{$openssl_prefix};";
     $CMAKE_PREFIX_PATH .= "{$zlib_prefix};";
@@ -56,6 +57,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$imath_prefix};";
     $CMAKE_PREFIX_PATH .= "{$fftw3_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libdc1394_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
 
 
     $workDir = $p->getWorkDir();
@@ -89,7 +91,7 @@ EOF
             'alpine',
             <<<EOF
         apk add ccache python3-dev
-        pip3 install numpy setuptools utils-misc  gapi mat_wrapper utils
+        pip3 install numpy setuptools utils-misc  gapi  utils
 EOF
         )
         ->withBuildLibraryHttpProxy(true)
@@ -126,6 +128,7 @@ EOF
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DCMAKE_DISABLE_FIND_PACKAGE_Java=ON \
         -DCMAKE_DISABLE_FIND_PACKAGE_JNI=ON \
+        -DCMAKE_DISABLE_FIND_PACKAGE_HDF5=ON \
 
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
@@ -183,7 +186,8 @@ EOF
             'opencl',
             //'libdc1394'
             'imath',
-            'gflags'
+            'gflags',
+            'glog'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
