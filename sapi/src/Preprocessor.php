@@ -862,6 +862,20 @@ EOF;
         }
     }
 
+    private function getLibraryDependentLibraryByName($libraryName, &$libs): void
+    {
+        if (!isset($this->libraryMap[$libraryName])) {
+            throw new RuntimeException('library ' . $libraryName . ' no found');
+        }
+        $lib = $this->libraryMap[$libraryName];
+        if (!empty($lib->deps)) {
+            $libs = array_merge($libs, $lib->deps);
+            foreach ($lib->deps as $name) {
+                $this->getLibraryDependentLibraryByName($name, $libs);
+            }
+        }
+    }
+
     public function addEndCallback($fn)
     {
         $this->endCallbacks[] = $fn;

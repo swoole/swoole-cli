@@ -552,6 +552,26 @@ lib_dep_pkg() {
     exit 0
 }
 
+lib_dep() {
+    set +x
+    declare -A array_name
+<?php foreach ($this->libraryList as $item) :?>
+    <?php
+    $libs=[];
+    $this->getLibraryDependentLibraryByName($item->name, $libs);
+    $libs = array_unique($libs);
+    $res=implode(' ', $libs);
+    ?>
+    array_name[<?= $item->name ?>]="<?= $res?>"
+<?php endforeach ;?>
+
+    for i in ${!array_name[@]}
+    do
+        echo -e "[${i}] dependent libraries :\n\n${array_name[$i]} \n"
+        echo "=================================================="
+    done
+    exit 0
+}
 # 获得关联数组的所有元素值
 # ${array_name[@]}
 # ${array_name[*]}
@@ -583,6 +603,7 @@ help() {
     echo "./make.sh pkg-check"
     echo "./make.sh lib-pkg"
     echo "./make.sh lib-dep-pkg"
+    echo "./make.sh lib-dep"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -691,6 +712,9 @@ elif [ "$1" = "lib-pkg" ] ;then
     exit 0
 elif [ "$1" = "lib-dep-pkg" ] ;then
     lib_dep_pkg "$2"
+    exit 0
+elif [ "$1" = "lib-dep" ] ;then
+    lib_dep "$2"
     exit 0
 elif [ "$1" = "list-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
