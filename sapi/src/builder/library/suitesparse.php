@@ -11,8 +11,7 @@ return function (Preprocessor $p) {
     $gmp_prefix = GMP_PREFIX;
     $mpfr_prefix = MPFR_PREFIX;
 
-    $cmake_options ="";
-    $cmake_options .="-DCMAKE_INSTALL_PREFIX={$suitesparse_prefix} ";
+    $cmake_options = "-DCMAKE_INSTALL_PREFIX={$suitesparse_prefix} ";
     $cmake_options .="-DCMAKE_BUILD_TYPE=Release ";
     $cmake_options .="-DBUILD_SHARED_LIBS=OFF ";
     $cmake_options .="-DBUILD_STATIC_LIBS=ON ";

@@ -23,6 +23,12 @@ return function (Preprocessor $p) {
                 git clone https://gitlab.inria.fr/mpfr/mpfr.git
 EOF
         )
+        ->withPreInstallCommand(
+            "alpine",
+            <<<EOF
+        apk add texinfo
+EOF
+        )
         ->withConfigure(
             <<<EOF
         sh autogen.sh
