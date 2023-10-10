@@ -25,8 +25,10 @@ EOF
         //->withUntarArchiveCommand('xz')
         ->withPrefix($vlc_prefix)
         ->withCleanPreInstallDirectory($vlc_prefix)
-        ->withPreInstallCommand('alpine', <<<EOF
-        apk add lua
+        ->withPreInstallCommand(
+            'alpine',
+            <<<EOF
+        apk add lua-dev
 EOF
         )
         ->withBuildScript(
