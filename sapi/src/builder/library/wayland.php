@@ -49,7 +49,7 @@ EOF
         ->withPkgName('wayland-scanner')
         ->withPkgName('wayland-server')
         ->withBinPath($wayland_prefix . '/bin/')
-        ->withDependentLibraries('libffi', 'libxml2')
+        ->withDependentLibraries('libffi', 'libxml2', 'libexpat')
 
 
 
