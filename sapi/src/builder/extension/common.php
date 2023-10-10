@@ -149,10 +149,10 @@ return function (Preprocessor $p) {
     $depends = ['vlc'] ;
     $depends = ['libdc1394'] ;
     $depends = ['blas'] ;
-    $depends = ['libeigen'] ;
+
     $depends = ['mpfr'] ;
     $depends = ['suitesparse'] ;
-
+    $depends = ['libeigen'] ;
 
 
     $ext = (new Extension('common'))

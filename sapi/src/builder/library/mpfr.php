@@ -46,35 +46,11 @@ EOF
         --enable-shared=no \
         --enable-static=yes
 
-
-
 EOF
         )
-
-
-
         ->withPkgName('mpfr')
-        ->withBinPath($mpfr_prefix . '/bin/')
-
-        //依赖其它静态链接库
         ->withDependentLibraries('gmp')
-
-
-        /*
-
-        //默认不需要此配置
-        ->withScriptAfterInstall(
-            <<<EOF
-            rm -rf {$mpfr_prefix}/lib/*.so.*
-            rm -rf {$mpfr_prefix}/lib/*.so
-            rm -rf {$mpfr_prefix}/lib/*.dylib
-EOF
-        )
-        */
-
-
     ;
 
     $p->addLibrary($lib);
-
 };

@@ -45,20 +45,7 @@ EOF
         ->withMakeOptions(" CMAKE_OPTIONS='{$cmake_options}' JOBS={$p->getMaxJob()}") # 更多配置查看 makefile
         ->withPkgName('example')
         ->withBinPath($suitesparse_prefix . '/bin/')
-
-
-        /*
-
-        //默认不需要此配置
-        ->withScriptAfterInstall(
-            <<<EOF
-            rm -rf {$suitesparse_prefix}/lib/*.so.*
-            rm -rf {$suitesparse_prefix}/lib/*.so
-            rm -rf {$suitesparse_prefix}/lib/*.dylib
-EOF
-        )
-        */
-    ->withDependentLibraries('blas', 'lapack','gmp','mpfr')
+         ->withDependentLibraries('blas', 'lapack', 'gmp', 'mpfr')
     ;
 
     $p->addLibrary($lib);
