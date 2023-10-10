@@ -25,6 +25,10 @@ EOF
         //->withUntarArchiveCommand('xz')
         ->withPrefix($vlc_prefix)
         ->withCleanPreInstallDirectory($vlc_prefix)
+        ->withPreInstallCommand('alpine', <<<EOF
+        apk add lua
+EOF
+        )
         ->withBuildScript(
             <<<EOF
 
@@ -65,10 +69,13 @@ EOF
             "ffmpeg",
             "wayland",
             'wayland_protocols',
-            'alsa'
+            'alsa',
+            'zlib',
+            'libiconv',
+            'gmp',
+            'liblzma'
         )
     ;
 
     $p->addLibrary($lib);
-
 };
