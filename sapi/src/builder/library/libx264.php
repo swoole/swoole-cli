@@ -9,8 +9,6 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://www.videolan.org/developers/x264.html')
         ->withManual('https://code.videolan.org/videolan/x264.git')
         ->withLicense('https://code.videolan.org/videolan/x264/-/blob/master/COPYING', Library::LICENSE_LGPL)
-        //->withUrl('https://code.videolan.org/videolan/x264/-/archive/master/x264-master.tar.bz2')
-        //->withFile('x264-master.tar.bz2')
         ->withFile('libx264-stable.tar.gz')
         ->withDownloadScript(
             'x264',
