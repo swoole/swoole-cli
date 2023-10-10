@@ -18,7 +18,6 @@ EOF
         )
         ->withManual('https://bitbucket.org/multicoreware/x265_git.git')
         ->withPrefix($libx265_prefix)
-        ->withCleanPreInstallDirectory($libx265_prefix)
         ->withPreInstallCommand(
             'debian',
             <<<EOF
