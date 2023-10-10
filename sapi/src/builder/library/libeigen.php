@@ -24,6 +24,12 @@ EOF
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libeigen_prefix)
         ->withBuildLibraryCached(false)
+        ->withPreInstallCommand(
+            "alpine",
+            <<<EOF
+        apk add gfortran
+EOF
+        )
         ->withBuildScript(
             <<<EOF
              mkdir -p build
@@ -42,7 +48,14 @@ EOF
         )
         ->withPkgName('example')
         ->withBinPath($libeigen_prefix . '/bin/')
-       // ->withDependentLibraries('cholmod', 'umfpack', 'klu', 'superlu', 'spqr')
+       ->withDependentLibraries(
+           'cholmod',
+           'umfpack',
+           'klu',
+           'superlu',
+           'spqr',
+           'fftw3' //快速傅立叶变换库
+       )
 
     ;
 

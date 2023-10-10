@@ -65,7 +65,7 @@ return function (Preprocessor $p) {
     $lib = new Library('opencv');
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('https://github.com/opencv/opencv/blob/4.x/LICENSE', Library::LICENSE_APACHE2)
-        ->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
+        //->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
         ->withManual('https://github.com/opencv/opencv.git')
         ->withFile('opencv-v5.x.tar.gz')
         ->withDownloadScript(

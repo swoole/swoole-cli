@@ -123,6 +123,8 @@ EOF
         # -DOpenSSL_ROOT={$openssl_prefix} \
         # 查找PKGCONFIG配置目录多个使用分号隔开
         # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
+        # -DCMAKE_CXX_FLAGS=" -Wall -std=c++11 -fopenmp=libomp "
+        # -DCMAKE_C_FLAGS=" -Wall -std=11 -fopenmp=libomp "
 
         # ccmake  ..  # 对cmake的cache进行修改，重新生成makefile文件
 

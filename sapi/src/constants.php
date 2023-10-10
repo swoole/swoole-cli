@@ -307,4 +307,6 @@ define("PROTOBUF_PREFIX", $p->getGlobalPrefix() . '/protobuf');
 define("PROTOBUF_C_PREFIX", $p->getGlobalPrefix() . '/protobuf_c');
 define("VLC_PREFIX", $p->getGlobalPrefix() . '/vlc');
 define("LIBDC1394_PREFIX", $p->getGlobalPrefix() . '/libdc1394');
+define("SUITESPARSE_PREFIX", $p->getGlobalPrefix() . '/suitesparse');
+define("BLAS_PREFIX", $p->getGlobalPrefix() . '/blas');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

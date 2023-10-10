@@ -7,6 +7,8 @@ return function (Preprocessor $p) {
     $libgomp_prefix = LIBGOMP_PREFIX;
 
     # OpenMP（libgomp）
+    # 由于 OpenMP 内置于编译器中，因此无需安装外部库即可编译此代码  并行编程
+
 
     $lib = new Library('libgomp');
     $lib->withHomePage('https://www.openmp.org/')

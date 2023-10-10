@@ -148,6 +148,10 @@ return function (Preprocessor $p) {
     $depends = ['libx265'] ;
     $depends = ['vlc'] ;
     $depends = ['libdc1394'] ;
+    $depends = ['blas'] ;
+    $depends = ['libeigen'] ;
+    $depends = ['suitesparse'] ;
+
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
