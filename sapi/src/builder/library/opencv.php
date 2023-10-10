@@ -172,7 +172,8 @@ EOF
             //'vtk',
             'opencl',
             //'libdc1394'
-            'imath'
+            'imath',
+            'gflags'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
