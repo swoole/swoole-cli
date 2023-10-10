@@ -21,8 +21,8 @@ return function (Preprocessor $p) {
 
         ->withBuildScript(
             <<<EOF
-            mkdir -p build
-            meson setup  build \
+
+            meson setup  . \
             -Dprefix={$vlc_prefix} \
             -Dbuildtype=release \
             -Ddefault_library=static \
