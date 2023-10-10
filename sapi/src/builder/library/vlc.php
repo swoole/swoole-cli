@@ -24,7 +24,6 @@ return function (Preprocessor $p) {
             mkdir -p build
             meson setup  build \
             -Dprefix={$vlc_prefix} \
-            -Dbackend=ninja \
             -Dbuildtype=release \
             -Ddefault_library=static \
             -Db_staticpic=true \
@@ -33,8 +32,8 @@ return function (Preprocessor $p) {
             -Dx11=disabled \
             -Dxcb=disabled
 
-            ninja -C build
-            ninja -C build install
+            meson -C build
+            meson -C build install
 EOF
         )
         ->withBinPath($vlc_prefix . '/bin/')
