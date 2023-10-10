@@ -51,3 +51,7 @@ cmake --graphviz=./ffmpeg.dot
 
 CMake toolchain file for cross compiling
 cmake -DCMAKE_TOOLCHAIN_FILE="crosscompile.cmake"
+
+
+clang 传递编译器参数例子：
+clang -o vlc vlc.c.o -Wl,--as-needed -Wl,--no-undefined -Wl,-O1 -pie -Wl,--start-group modules/access/http/libvlc_http.a compat/libcompat.a src/libvlccore.a -pthread -lm -ldl -Wl,--end-group
