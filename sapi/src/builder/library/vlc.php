@@ -9,16 +9,22 @@ return function (Preprocessor $p) {
     $lib = new Library('vlc');
     $lib->withHomePage('https://www.videolan.org/vlc/libvlc.html')
         ->withLicense('http://www.gnu.org/copyleft/gpl.html', Library::LICENSE_GPL)
-        ->withUrl('https://get.videolan.org/vlc/3.0.18/vlc-3.0.18.tar.xz')
         ->withManual('https://github.com/videolan/vlc')
         ->withManual('https://wiki.videolan.org/')
         ->withManual('https://www.videolan.org/developers/vlc.html')
         ->withManual('https://github.com/videolan/vlc/blob/master/meson_options.txt')
+        //->withUrl('https://get.videolan.org/vlc/3.0.18/vlc-3.0.18.tar.xz')
+        ->withFile('vlc-latest.tar.gz')
+        ->withDownloadScript(
+            'vlc',
+            <<<EOF
+        git clone -b master --depth=1 https://github.com/videolan/vlc.git
+EOF
+        )
         ->withBuildLibraryCached(false)
-        ->withUntarArchiveCommand('xz')
+        //->withUntarArchiveCommand('xz')
         ->withPrefix($vlc_prefix)
         ->withCleanPreInstallDirectory($vlc_prefix)
-
         ->withBuildScript(
             <<<EOF
 
