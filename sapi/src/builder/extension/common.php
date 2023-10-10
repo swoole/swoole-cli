@@ -141,10 +141,11 @@ return function (Preprocessor $p) {
     $depends = ['protobuf_c'] ;
     $depends = ['unbound'] ;
     $depends = ['gnutls'] ;
-    $depends = ['libx265'] ;
+
     $depends = ['opencl'] ;
     $depends = ['vtk'] ;
     $depends = ['libelf'] ;
+    $depends = ['libx265'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

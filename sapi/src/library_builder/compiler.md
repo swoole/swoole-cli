@@ -47,3 +47,7 @@ Objdump：查看静态库或者动态库的方法签名
 
 cmake 生成依赖图
 cmake --graphviz=./ffmpeg.dot
+
+
+CMake toolchain file for cross compiling
+cmake -DCMAKE_TOOLCHAIN_FILE="crosscompile.cmake"
