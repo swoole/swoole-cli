@@ -26,7 +26,10 @@ EOF
         ./configure --help
         ./configure \
         --prefix={$libx264_prefix} \
-        --enable-static
+        --enable-static \
+        --enable-pic \
+        --enable-lto \
+        --enable-strip
 
 EOF
         )
