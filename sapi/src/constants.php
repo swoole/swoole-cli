@@ -305,4 +305,5 @@ define("IDDAWC_PREFIX", $p->getGlobalPrefix() . '/iddawc');
 define("LIBMNL_PREFIX", $p->getGlobalPrefix() . '/libmnl');
 define("PROTOBUF_PREFIX", $p->getGlobalPrefix() . '/protobuf');
 define("PROTOBUF_C_PREFIX", $p->getGlobalPrefix() . '/protobuf_c');
+define("VLC_PREFIX", $p->getGlobalPrefix() . '/vlc');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
