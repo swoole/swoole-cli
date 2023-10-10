@@ -11,6 +11,7 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+
 if [ -f /.dockerenv ]; then
   git config --global --add safe.directory ${__PROJECT__}
 fi
@@ -21,11 +22,17 @@ OS=$(uname -s)
 # shellcheck disable=SC2034
 ARCH=$(uname -m)
 
+if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
+  bash sapi/quickstart/setup-php-runtime.sh --mirror china
+fi
+
+
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
 
 php -v
 
+export COMPOSER_ALLOW_SUPERUSER=1
 #composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 composer update  --optimize-autoloader
@@ -38,26 +45,43 @@ composer config -g --unset repos.packagist
 # --with-web-ui
 # --with-build-type=dev
 # --with-skip-download=1
-# --with-install-library-cached=1
 # --with-http-proxy=http://192.168.3.26:8015
 # --conf-path="./conf.d.extra"
-#  --without-docker=1
+# --without-docker=1
 # @macos
 # --with-override-default-enabled-ext=1
 # --with-php-version=8.1.20
 # --with-c-compiler=[gcc|clang] 默认clang
-# --conf-path="./conf.d.extra"
 
 
-bash sapi/quickstart/mark-install-library-cached.sh
+
+# bash sapi/quickstart/mark-install-library-cached.sh
+bash sapi/quickstart/clean-folder.sh
 
 php prepare.php \
   --with-global-prefix=/usr/local/swoole-cli \
   --with-install-library-cached=1 \
-  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +pdo_pgsql
+  +common
+
+
+bash make-install-deps.sh
+
+bash make.sh all-library
+
+bash make.sh config
+
+bash make.sh build
+
+
+
 
 
 exit 0
+
+
+
+
+
 SYSTEM=`uname -s 2>/dev/null`
 RELEASE=`uname -r 2>/dev/null`
 MACHINE=`uname -m 2>/dev/null`
@@ -86,11 +110,4 @@ EOF
 
 
 
-bash make-install-deps.sh
-
-bash make.sh all-library
-
-bash make.sh config
-
-bash make.sh build
 
