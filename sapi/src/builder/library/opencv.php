@@ -5,8 +5,11 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $opencv_prefix = OPENCV_PREFIX;
+
+    $openssl_prefix = OPENSSL_PREFIX;
     $ffmpeg_prefix = FFMPEG_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
+    $libxml2_prefix = LIBXML2_PREFIX;
     $libzstd_prefix = LIBZSTD_PREFIX;
     $liblz4_prefix = LIBLZ4_PREFIX;
     $liblzma_prefix = LIBLZMA_PREFIX;
@@ -27,16 +30,23 @@ return function (Preprocessor $p) {
     $fftw3_prefix = FFTW3_PREFIX;
     $libdc1394_prefix = LIBDC1394_PREFIX;
 
-    $CMAKE_PREFIX_PATH = "{$jpeg_prefix};";
+    $CMAKE_PREFIX_PATH = "{$openssl_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$zlib_prefix};";
+
+    $CMAKE_PREFIX_PATH .= "{$libxml2_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$jpeg_prefix};";
     $CMAKE_PREFIX_PATH .= "{$png_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$libtiff_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$gmp_prefix};";
     $CMAKE_PREFIX_PATH .= "{$libwebp_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$liblzma_prefix};";
     $CMAKE_PREFIX_PATH .= "{$freetype_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$gflags_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$libtiff_prefix};";
+
+    $CMAKE_PREFIX_PATH .= "{$gmp_prefix};";
+
+    $CMAKE_PREFIX_PATH .= "{$liblzma_prefix};";
     $CMAKE_PREFIX_PATH .= "{$libzstd_prefix};";
     $CMAKE_PREFIX_PATH .= "{$liblz4_prefix};";
+
+    $CMAKE_PREFIX_PATH .= "{$gflags_prefix};";
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
