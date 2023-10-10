@@ -30,6 +30,8 @@ return function (Preprocessor $p) {
     $fftw3_prefix = FFTW3_PREFIX;
     $libdc1394_prefix = LIBDC1394_PREFIX;
     $glog_prefix = GLOG_PREFIX;
+    $libeigen_prefix = LIBEIGEN_PREFIX;
+    $suitesparse_prefix = SUITESPARSE_PREFIX;
 
     $CMAKE_PREFIX_PATH = "{$openssl_prefix};";
     $CMAKE_PREFIX_PATH .= "{$zlib_prefix};";
@@ -58,6 +60,8 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$fftw3_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libdc1394_prefix};";
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$suitesparse_prefix};";
 
 
     $workDir = $p->getWorkDir();

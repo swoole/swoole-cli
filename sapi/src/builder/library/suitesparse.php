@@ -34,11 +34,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($suitesparse_prefix)
-
-        // 自动清理安装目录
-        ->withCleanPreInstallDirectory($suitesparse_prefix)
-        //明确申明 不使用构建缓存 例子： thirdparty/openssl (每次都解压全新源代码到此目录）
-        ->withBuildLibraryCached(false)
         ->withPreInstallCommand(
             "alpine",
             <<<EOF
