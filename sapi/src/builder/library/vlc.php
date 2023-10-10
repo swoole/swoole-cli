@@ -22,7 +22,7 @@ return function (Preprocessor $p) {
         ->withBuildScript(
             <<<EOF
 
-            meson setup  . \
+            meson setup   \
             -Dprefix={$vlc_prefix} \
             -Dbuildtype=release \
             -Ddefault_library=static \
@@ -30,7 +30,8 @@ return function (Preprocessor $p) {
             -Db_pie=true \
             -Dprefer_static=true \
             -Dx11=disabled \
-            -Dxcb=disabled
+            -Dxcb=disabled \
+             build .
 
             meson -C build
             meson -C build install
