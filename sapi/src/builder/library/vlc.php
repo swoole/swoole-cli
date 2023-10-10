@@ -4,9 +4,8 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $example_prefix = EXAMPLE_PREFIX;
     $vlc_prefix = VLC_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
+
     $lib = new Library('vlc');
     $lib->withHomePage('https://www.videolan.org/vlc/libvlc.html')
         ->withLicense('http://www.gnu.org/copyleft/gpl.html', Library::LICENSE_GPL)
@@ -17,14 +16,14 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/videolan/vlc/blob/master/meson_options.txt')
         ->withBuildLibraryCached(false)
         ->withUntarArchiveCommand('xz')
-        ->withPrefix($example_prefix)
-        ->withCleanPreInstallDirectory($example_prefix)
+        ->withPrefix($vlc_prefix)
+        ->withCleanPreInstallDirectory($vlc_prefix)
 
         ->withBuildScript(
             <<<EOF
-
+            mkdir -p build
             meson setup  build \
-            -Dprefix={$example_prefix} \
+            -Dprefix={$vlc_prefix} \
             -Dbackend=ninja \
             -Dbuildtype=release \
             -Ddefault_library=static \
@@ -38,7 +37,7 @@ return function (Preprocessor $p) {
             ninja -C build install
 EOF
         )
-        ->withBinPath($example_prefix . '/bin/')
+        ->withBinPath($vlc_prefix . '/bin/')
         ->withDependentLibraries(
             'libpcap',
             'openssl',

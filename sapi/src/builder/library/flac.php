@@ -14,9 +14,7 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/xiph/flac')
         ->withUrl('https://github.com/xiph/flac/archive/refs/tags/1.4.3.tar.gz')
         ->withFile('libflac-1.4.3.tar.gz')
-
         ->withPrefix($flac_prefix)
-        ->withBuildLibraryCached(false)
         ->withConfigure(
             <<<EOF
             sh ./autogen.sh
