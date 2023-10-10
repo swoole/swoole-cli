@@ -151,6 +151,7 @@ return function (Preprocessor $p) {
     $depends = ['blas'] ;
     $depends = ['libeigen'] ;
     $depends = ['suitesparse'] ;
+    $depends = ['mpfr'] ;
 
 
     $ext = (new Extension('common'))

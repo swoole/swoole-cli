@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
     $blas_prefix = BLAS_PREFIX;
     $lapack_prefix = LAPACK_PREFIX;
     $gmp_prefix = GMP_PREFIX;
+    $mpfr_prefix = MPFR_PREFIX;
 
     $cmake_options ="";
     $cmake_options .="-DCMAKE_INSTALL_PREFIX={$suitesparse_prefix} ";
@@ -17,7 +18,7 @@ return function (Preprocessor $p) {
     $cmake_options .="-DBUILD_STATIC_LIBS=ON ";
     $cmake_options .="-DBLAS_LIBRARIES={$blas_prefix}/lib/ ";
     $cmake_options .="-DLAPACK_LIBRARIES={$lapack_prefix}/lib/ ";
-    $cmake_options .="-DCMAKE_PREFIX_PATH='{$gmp_prefix};{$blas_prefix};{$lapack_prefix}' ";
+    $cmake_options .="-DCMAKE_PREFIX_PATH='{$gmp_prefix};{$blas_prefix};{$lapack_prefix};{$mpfr_prefix}' ";
 
 
 
@@ -42,7 +43,7 @@ EOF
         apk add gfortran libgomp
 EOF
         )
-        ->withMakeOptions(" CMAKE_OPTIONS='{$cmake_options}' JOBS={$p->getMaxJob()}")
+        ->withMakeOptions(" CMAKE_OPTIONS='{$cmake_options}' JOBS={$p->getMaxJob()}") # 更多配置查看 makefile
         ->withPkgName('example')
         ->withBinPath($suitesparse_prefix . '/bin/')
 
@@ -58,7 +59,7 @@ EOF
 EOF
         )
         */
-    ->withDependentLibraries('blas', 'lapack','gmp')
+    ->withDependentLibraries('blas', 'lapack','gmp',)
     ;
 
     $p->addLibrary($lib);
