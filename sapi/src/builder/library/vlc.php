@@ -36,6 +36,7 @@ EOF
 
             meson setup   \
             -Dprefix={$vlc_prefix} \
+            -Dbackend=ninja \
             -Dbuildtype=release \
             -Ddefault_library=static \
             -Db_staticpic=true \
@@ -45,8 +46,8 @@ EOF
             -Dxcb=disabled \
              build .
 
-            meson -C build
-            meson -C build install
+            ninja -C build
+            ninja -C build install
 EOF
         )
         ->withBinPath($vlc_prefix . '/bin/')
