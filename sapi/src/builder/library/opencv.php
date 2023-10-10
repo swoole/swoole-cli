@@ -105,8 +105,9 @@ EOF
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
-        -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
-        -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
+        -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}"
+
+        # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
 
         # -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
