@@ -58,7 +58,7 @@ EOF
 EOF
         )
         */
-    ->withDependentLibraries('blas', 'lapack','gmp',)
+    ->withDependentLibraries('blas', 'lapack','gmp','mpfr')
     ;
 
     $p->addLibrary($lib);
