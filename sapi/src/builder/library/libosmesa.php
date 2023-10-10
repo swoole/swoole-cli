@@ -57,6 +57,13 @@ EOF
 
 EOF
         )
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$libosmesa_prefix}/lib/*.so.*
+            rm -rf {$libosmesa_prefix}/lib/*.so
+            rm -rf {$libosmesa_prefix}/lib/*.dylib
+EOF
+        )
         ->withBinPath($libosmesa_prefix . '/bin/')
         ->withDependentLibraries(
             'glslang',

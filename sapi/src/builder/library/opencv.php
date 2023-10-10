@@ -169,7 +169,7 @@ EOF
             //'openexr',
             //'openjpeg',
             //'libeigen', //线性运算代数库 (依赖待完善）
-            'vtk',
+            //'vtk',
             'opencl',
             //'libdc1394'
         )   //   HDR
