@@ -98,6 +98,21 @@ EOF
         ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
+        PACKAGES='openssl  '
+        PACKAGES="\$PACKAGES  zlib"
+        PACKAGES="\$PACKAGES  libxml-2.0"
+        PACKAGES="\$PACKAGES  liblzma  libzstd liblz4 "
+        PACKAGES="\$PACKAGES  libavcodec libavdevice libavfilter libavformat libavutil libswresample libswscale"
+        PACKAGES="\$PACKAGES  libwebp libpng libpng16 libjpeg libturbojpeg SvtAv1Enc SvtAv1Dec "
+
+        PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 libtiff-4"
+        PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
+        PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
+        PACKAGES="\$PACKAGES  fftw3q openblas blas64 lapack64 Imath  libglog"
+
+        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+
+
 
         mkdir -p build
         cd  build
@@ -129,6 +144,7 @@ EOF
         -DCMAKE_DISABLE_FIND_PACKAGE_Java=ON \
         -DCMAKE_DISABLE_FIND_PACKAGE_JNI=ON \
         -DCMAKE_DISABLE_FIND_PACKAGE_HDF5=ON \
+        -DCMAKE_CXX_IMPLICIT_LINK_LIBRARIES="\${LIBS}"
 
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
@@ -183,7 +199,7 @@ EOF
             //'openjpeg',
             //'libeigen', //线性运算代数库 (依赖待完善）
             //'vtk',
-            'opencl',
+            //'opencl',
             //'libdc1394'
             'imath',
             'gflags',
