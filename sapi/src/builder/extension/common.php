@@ -151,9 +151,9 @@ return function (Preprocessor $p) {
     $depends = ['blas'] ;
 
     $depends = ['mpfr'] ;
-    $depends = ['suitesparse'] ;
-    $depends = ['libeigen'] ;
 
+    $depends = ['libeigen'] ;
+    $depends = ['suitesparse'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

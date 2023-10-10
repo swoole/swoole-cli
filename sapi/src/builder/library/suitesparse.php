@@ -17,12 +17,12 @@ return function (Preprocessor $p) {
     $cmake_options .= "-DBUILD_STATIC_LIBS=ON ";
     $cmake_options .= "-DBLAS_LIBRARIES={$blas_prefix}/lib/ ";
     $cmake_options .= "-DLAPACK_LIBRARIES={$lapack_prefix}/lib/ ";
-    $cmake_options .= "-DCMAKE_PREFIX_PATH='{$gmp_prefix};{$blas_prefix};{$lapack_prefix};{$mpfr_prefix};' ";
+    $cmake_options .= "-DCMAKE_PREFIX_PATH=\"{$gmp_prefix};{$blas_prefix};{$lapack_prefix};{$mpfr_prefix};\" ";
 
 
     # 稀疏矩阵计算包 cholmod
     //文件名称 和 库名称一致
-    $lib = new Library('suitesparse');
+    $lib = new Library("suitesparse");
     $lib->withHomePage('https://people.engr.tamu.edu/davis/suitesparse.html')
         ->withLicense('https://github.com/DrTimothyAldenDavis/SuiteSparse/blob/dev/LICENSE.txt', Library::LICENSE_SPEC)
         ->withManual('https://github.com/DrTimothyAldenDavis/SuiteSparse.git')

@@ -6,6 +6,9 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $libeigen_prefix = LIBEIGEN_PREFIX;
     $suitesparse_prefix = SUITESPARSE_PREFIX;
+    $boost_prefix = BOOST_PREFIX;
+
+
     //线性代数的 C++ 模板库：矩阵、向量、数值求解器和相关算法
     //线性运算代数库
     $lib = new Library('libeigen');
@@ -21,9 +24,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libeigen_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libeigen_prefix)
-        ->withBuildLibraryCached(false)
         ->withPreInstallCommand(
             "alpine",
             <<<EOF
@@ -39,7 +39,7 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            -DCMAKE_PREFIX_PATH="{$suitesparse_prefix}"
+            # -DCMAKE_PREFIX_PATH="{$suitesparse_prefix};{$boost_prefix}"
 
             cmake --build . --config Release
 
@@ -51,7 +51,8 @@ EOF
         ->withBinPath($libeigen_prefix . '/bin/')
        ->withDependentLibraries(
            'suitesparse',
-           'fftw3' //快速傅立叶变换库
+           'fftw3', //快速傅立叶变换库
+           'boost'
        )
 
     ;
