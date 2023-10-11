@@ -157,7 +157,7 @@ EOF
         -DENABLE_FLAKE8=OFF \
         -DENABLE_PYLINT=OFF \
         -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'  \
-        -DCMAKE_EXE_LINKER_FLAGS_INIT
+        # -DCMAKE_EXE_LINKER_FLAGS_INIT
 
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
