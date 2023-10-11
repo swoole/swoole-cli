@@ -24,6 +24,7 @@ return function (Preprocessor $p) {
     $freetype_prefix = FREETYPE_PREFIX;
     $gflags_prefix = GFLAGS_PREFIX;
     $openblas_prefix = OPENBLAS_PREFIX;
+    $blas_prefix = BLAS_PREFIX;
     $lapack_prefix = LAPACK_PREFIX;
     $harfbuzz_prefix = HARFBUZZ_PREFIX;
     $glog_prefix = GLOG_PREFIX;
@@ -55,6 +56,7 @@ return function (Preprocessor $p) {
 
     $CMAKE_PREFIX_PATH .= "{$gflags_prefix};";
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$blas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
@@ -121,7 +123,7 @@ EOF
         PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 libtiff-4"
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
-        PACKAGES="\$PACKAGES  fftw3q  Imath  libglog" # openblas blas64 lapack64
+        PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64 lapack64 blas"
 
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
@@ -186,13 +188,12 @@ EOF
         # -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
         # -DCMAKE_STATIC_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS} "
 
-        # -Wl,--no-dynamic-linker
 
         #  -DENABLE_BUILD_HARDENING=ON \
 
         # -DCMAKE_EXE_LINKER_FLAGS_INIT='\${LIBS}'
 
-        #-DINCLUDE_DIRECTORIES
+        # -DINCLUDE_DIRECTORIES
 
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"

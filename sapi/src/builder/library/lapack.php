@@ -50,7 +50,9 @@ EOF
 EOF
         )
         ->withPkgName('blas64')
-        ->withPkgName('lapack64');
+        ->withPkgName('lapack64')
+        ->withDependentLibraries('blas')
+    ;
 
     $p->addLibrary($lib);
 };
