@@ -161,7 +161,7 @@ EOF
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
         -DCMAKE_PREFIX_PATH='{$CMAKE_PREFIX_PATH}' \
-        -DBUILD_opencv_js=ON \
+        -DBUILD_opencv_js=OFF \
         -DBUILD_JAVA=OFF \
         -DBUILD_CUDA_STUBS=OFF  \
         -DBUILD_FAT_JAVA_LIB=OFF  \
@@ -170,8 +170,14 @@ EOF
         -DBUILD_KOTLIN_EXTENSIONS=OFF \
         -DENABLE_FLAKE8=OFF \
         -DENABLE_PYLINT=OFF \
-        -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
-        -DCMAKE_STATIC_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS} "
+
+
+        # -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
+        # -DCMAKE_STATIC_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS} "
+
+
+
+
 
         # -Wl,--no-dynamic-linker
 
