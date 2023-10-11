@@ -32,7 +32,8 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'SuiteSparse',
             <<<EOF
-                git clone -b dev  --depth=1 https://github.com/DrTimothyAldenDavis/SuiteSparse.git
+            #     git clone -b dev  --depth=1 https://github.com/DrTimothyAldenDavis/SuiteSparse.git
+                git clone -bfix_static_build  --depth=1 https://github.com/jingjingxyk/SuiteSparse.git
 EOF
         )
         ->withPrefix($suitesparse_prefix)
