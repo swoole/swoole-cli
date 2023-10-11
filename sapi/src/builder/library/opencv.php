@@ -97,7 +97,7 @@ EOF
             'alpine',
             <<<EOF
         apk add ccache python3-dev
-        pip3 install numpy setuptools utils-misc  gapi  utils
+        pip3 install numpy setuptools utils-misc  gapi  utils log
 EOF
         )
         ->withBuildLibraryHttpProxy(true)
@@ -146,6 +146,7 @@ EOF
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
+        -DENABLE_BUILD_HARDENING=ON \
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DBUILD_opencv_js=ON \
         -DBUILD_JAVA=OFF \
@@ -156,7 +157,8 @@ EOF
         -DBUILD_KOTLIN_EXTENSIONS=OFF \
         -DENABLE_FLAKE8=OFF \
         -DENABLE_PYLINT=OFF \
-        -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'  \
+        -DTARGET_LINK_LIBRARIES='\${LIBS}'
+
         # -DCMAKE_EXE_LINKER_FLAGS_INIT
 
 
@@ -177,6 +179,7 @@ EOF
         # -DLINK_LIBRARIES="lzma  zstd  lz4"
         # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
         # -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
+        # -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'  \
 
         # OpenJPEG
 
