@@ -80,12 +80,10 @@ EOF
         ->withPrefix($example_prefix)
         /*
 
-         // 当--with-build_type=dev 时 如下2个配置才生效
-
         // 自动清理构建目录
         ->withCleanBuildDirectory()
 
-        // 自动清理安装目录
+        // 自动清理安装目录   当--with-build_type=dev 时 配置才生效
         ->withCleanPreInstallDirectory($example_prefix)
 
 

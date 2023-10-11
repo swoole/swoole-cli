@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://www.mpfr.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://www.mpfr.org/mpfr-current/mpfr.html#Installing-MPFR')
-        ->withFile('ompfr-latest.tar.gz')
+        ->withFile('mpfr-latest.tar.gz')
         ->withDownloadScript(
             'mpfr',
             <<<EOF
