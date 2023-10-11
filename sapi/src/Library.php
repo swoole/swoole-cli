@@ -38,13 +38,12 @@ class Library extends Project
 
     public string $preInstallDirectory = '';
 
-    public bool $enableBuildLibraryCached = true;
-
     public array $preInstallCommands = [];
 
     public bool $enableBuildLibraryHttpProxy = false;
 
     public bool $enableBuildLibraryGitProxy = false;
+
 
     public function withMirrorUrl(string $url): static
     {
@@ -143,11 +142,9 @@ class Library extends Project
         return $this;
     }
 
-    public function withCleanBuildDirectory(): static
+    public function withCleanBuildDirectory(bool $cleanBuildDirectory = true): static
     {
-        if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
-            $this->cleanBuildDirectory = true;
-        }
+        $this->cleanBuildDirectory = $cleanBuildDirectory;
         return $this;
     }
 
@@ -172,7 +169,7 @@ class Library extends Project
 
     public function withBuildLibraryHttpProxy(
         bool $enableBuildLibraryHttpProxy = true,
-        bool  $enableBuildLibraryGitProxy = false,
+        bool  $enableBuildLibraryGitProxy = false
     ): static {
         $this->enableBuildLibraryHttpProxy = $enableBuildLibraryHttpProxy;
         $this->enableBuildLibraryGitProxy = $enableBuildLibraryGitProxy;

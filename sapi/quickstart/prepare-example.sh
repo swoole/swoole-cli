@@ -5,10 +5,18 @@ __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-__PROJECT__=$(
-  cd ${__DIR__}/../../
-  pwd
-)
+if [ -f ${__DIR__}/prepare.php ] ; then
+  __PROJECT__=$(
+    cd ${__DIR__}/
+    pwd
+  )
+else
+  __PROJECT__=$(
+    cd ${__DIR__}/../../
+    pwd
+  )
+fi
+
 cd ${__PROJECT__}
 
 if [ -f /.dockerenv ]; then
@@ -21,12 +29,19 @@ OS=$(uname -s)
 # shellcheck disable=SC2034
 ARCH=$(uname -m)
 
+
+if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
+  bash sapi/quickstart/setup-php-runtime.sh --mirror china
+fi
+
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
 
 php -v
 
-#composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+export COMPOSER_ALLOW_SUPERUSER=1
+# composer config -g repos.packagist composer https://packagist.org
+# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
@@ -38,7 +53,6 @@ composer config -g --unset repos.packagist
 # --with-web-ui
 # --with-build-type=dev
 # --with-skip-download=1
-# --with-install-library-cached=1
 # --with-http-proxy=http://192.168.3.26:8015
 # --conf-path="./conf.d.extra"
 #  --without-docker=1
