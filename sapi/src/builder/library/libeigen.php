@@ -7,6 +7,7 @@ return function (Preprocessor $p) {
     $libeigen_prefix = LIBEIGEN_PREFIX;
     $suitesparse_prefix = SUITESPARSE_PREFIX;
     $boost_prefix = BOOST_PREFIX;
+    $fftw3_prefix = FFTW3_PREFIX;
 
 
     //线性代数的 C++ 模板库：矩阵、向量、数值求解器和相关算法
@@ -39,7 +40,7 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            -DCMAKE_PREFIX_PATH="{$suitesparse_prefix};{$boost_prefix}"
+            -DCMAKE_PREFIX_PATH="{$suitesparse_prefix};{$boost_prefix};{$fftw3_prefix}"
 
             cmake --build . --config Release
 
@@ -59,3 +60,7 @@ EOF
 
     $p->addLibrary($lib);
 };
+
+/*
+  SuperLU,  PaStiX,  METIS,  Qt4 support,  GoogleHash,  Adolc,  MPFR C++,  fftw,  OpenGL
+ */
