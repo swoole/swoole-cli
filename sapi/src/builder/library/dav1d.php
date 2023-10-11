@@ -66,6 +66,11 @@ EOF
 
 EOF
             )
+            ->withScriptAfterInstall(
+                <<<EOF
+            sed -i.backup "s/-ldl/  /g" {$dav1d_prefix}/lib/pkgconfig/libcrypto.pc
+EOF
+            )
             ->withPkgName('dav1d')
             ->withBinPath($dav1d_prefix . '/bin/')
             ->withDependentLibraries('sdl2')

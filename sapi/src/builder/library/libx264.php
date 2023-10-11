@@ -31,6 +31,11 @@ EOF
 
 EOF
         )
+        ->withScriptAfterInstall(
+            <<<EOF
+            sed -i.backup "s/-ldl/  /g" {$libx264_prefix}/lib/pkgconfig/libcrypto.pc
+EOF
+        )
         ->withPkgName('x264')
         ->withBinPath($libx264_prefix . '/bin/');
 
