@@ -173,6 +173,6 @@ class Library extends Project
     ): static {
         $this->enableBuildLibraryHttpProxy = $enableBuildLibraryHttpProxy;
         $this->enableBuildLibraryGitProxy = $enableBuildLibraryGitProxy;
-
+        return $this;
     }
 }
