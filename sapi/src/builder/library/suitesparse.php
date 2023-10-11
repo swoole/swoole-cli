@@ -24,11 +24,12 @@ return function (Preprocessor $p) {
 
 
     # 稀疏矩阵计算包 cholmod
-    //文件名称 和 库名称一致
+
     $lib = new Library("suitesparse");
     $lib->withHomePage('https://people.engr.tamu.edu/davis/suitesparse.html')
         ->withLicense('https://github.com/DrTimothyAldenDavis/SuiteSparse/blob/dev/LICENSE.txt', Library::LICENSE_SPEC)
         ->withManual('https://github.com/DrTimothyAldenDavis/SuiteSparse.git')
+        ->withManual('https://github.com/DrTimothyAldenDavis/SuiteSparse/README.md')
         ->withFile('suitesparse-latest.tar.gz')
         ->withDownloadScript(
             'SuiteSparse',
@@ -45,7 +46,21 @@ EOF
 EOF
         )
         ->withMakeOptions(" CMAKE_OPTIONS='{$cmake_options}' JOBS={$p->getMaxJob()}") # 更多配置查看 makefile
-        ->withPkgName('example')
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$suitesparse_prefix}/lib/*.so.*
+            rm -rf {$suitesparse_prefix}/lib/*.so
+            rm -rf {$suitesparse_prefix}/lib/*.dylib
+EOF
+        )
+        ->withPkgName('SuiteSparse_config')
+        ->withPkgName('CHOLMOD')
+        //有很多个 pgkconfig 文件，按需设置
+        /*
+ AMD.pc  CAMD.pc     CHOLMOD.pc  CXSparse.pc     GraphBLAS.pc  KLU_CHOLMOD.pc  Mongoose.pc  SPEX.pc  SuiteSparse_GPURuntime.pc  UMFPACK.pc
+ BTF.pc  CCOLAMD.pc  COLAMD.pc   GPUQREngine.pc  KLU.pc        LDL.pc          RBio.pc      SPQR.pc  SuiteSparse_config.pc
+
+         */
         ->withBinPath($suitesparse_prefix . '/bin/')
         ->withDependentLibraries(
             'blas',
