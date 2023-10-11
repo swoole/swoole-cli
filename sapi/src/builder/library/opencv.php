@@ -173,7 +173,6 @@ EOF
         -DINSTALL_C_EXAMPLES=ON \
         -DINSTALL_PYTHON_EXAMPLES=ON \
         -DBUILD_DOCS=ON \
-        -DENABLE_PROFILING=ON
 
 
         # -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
