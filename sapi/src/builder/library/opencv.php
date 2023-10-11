@@ -83,9 +83,6 @@ return function (Preprocessor $p) {
         cd ..
 EOF
         )
-        ->withPrefix($opencv_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($opencv_prefix)
         ->withPreInstallCommand(
             'debian',
             <<<EOF
@@ -96,12 +93,18 @@ EOF
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
-        apk add ccache python3-dev
-        pip3 install numpy setuptools utils-misc  gapi  utils log
+        apk add ccache python3-dev binaryen
+
+        pip3 install numpy setuptools utils-misc  gapi  utils
+
+        # apk add binaryen # WebAssembly 的优化器和编译器/工具链
 EOF
         )
+        ->withPrefix($opencv_prefix)
+        ->withCleanBuildDirectory()
+        ->withCleanPreInstallDirectory($opencv_prefix)
         ->withBuildLibraryHttpProxy(true)
-        ->withBuildLibraryCached(false)
+        ->withBuildLibraryCached(true)
         ->withBuildScript(
             <<<EOF
         PACKAGES='openssl  '
@@ -117,6 +120,7 @@ EOF
         PACKAGES="\$PACKAGES  fftw3q openblas blas64 lapack64 Imath  libglog"
 
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+        LIBS="\$LIBS -lconv -lbz2 "
 
 
 

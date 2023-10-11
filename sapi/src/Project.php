@@ -149,7 +149,7 @@ abstract class Project
         return $this;
     }
 
-    public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
+    public function withBuildLibraryCached(bool $enableBuildLibraryCached = true): static
     {
         $this->enableBuildLibraryCached = $enableBuildLibraryCached;
         return $this;
