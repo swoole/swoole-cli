@@ -5,10 +5,21 @@ __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-__PROJECT__=$(
-  cd ${__DIR__}/../../
-  pwd
-)
+
+cd ${__DIR__}
+
+if [ -f ${__DIR__}/prepare.php ] ; then
+  __PROJECT__=$(
+    cd ${__DIR__}/
+    pwd
+  )
+else
+  __PROJECT__=$(
+    cd ${__DIR__}/../../
+    pwd
+  )
+fi
+
 cd ${__PROJECT__}
 
 
@@ -63,7 +74,8 @@ composer config -g --unset repos.packagist
 
 php prepare.php \
   --with-global-prefix=/usr/local/swoole-cli \
-  +common --without-docker=1
+  --without-docker=1 \
+  +common
 
 
 bash make-install-deps.sh
