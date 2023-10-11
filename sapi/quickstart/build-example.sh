@@ -21,15 +21,47 @@ fi
 cd ${__PROJECT__}
 
 
-if [ -f /.dockerenv ]; then
-  git config --global --add safe.directory ${__PROJECT__}
-fi
-
-
 # shellcheck disable=SC2034
 OS=$(uname -s)
 # shellcheck disable=SC2034
 ARCH=$(uname -m)
+
+case $OS in
+'Linux')
+  OS="linux"
+  ;;
+'Darwin')
+  OS="macos"
+  ;;
+*)
+  echo '暂未配置的 OS '
+  exit 0
+  ;;
+
+esac
+
+if [ $OS = 'linux' ] ; then
+    if [ -f /.dockerenv ]; then
+        number=$(which meson  | wc -l)
+        if test $number -eq 0 ;then
+        {
+           sh sapi/quickstart/linux/alpine-init.sh --mirror china
+        }
+
+        git config --global --add safe.directory ${__PROJECT__}
+    fi
+  fi
+fi
+
+if [ $OS = 'macos' ] ; then
+  number=$(which meson  | wc -l)
+  if test $number -eq 0 ;then
+  {
+      bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+  }
+  fi
+fi
+
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
   bash sapi/quickstart/setup-php-runtime.sh --mirror china
