@@ -140,6 +140,8 @@ EOF
         -DCMAKE_INSTALL_PREFIX={$opencv_prefix} \
         -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DOPENCV_EXTRA_MODULES_PATH="../opencv_contrib/modules" \
+        -DCMAKE_CXX_STANDARD=14 \
+        -DCMAKE_C_STANDARD=11 \
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_STATIC_LIBS=ON \
         -DBUILD_SHARED_LIBS=OFF \
