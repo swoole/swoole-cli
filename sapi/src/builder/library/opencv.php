@@ -174,7 +174,9 @@ EOF
         -DINSTALL_C_EXAMPLES=ON \
         -DINSTALL_PYTHON_EXAMPLES=ON \
         -DBUILD_DOCS=ON \
-        -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
+
+
+        # -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
 
         # -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
 
