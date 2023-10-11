@@ -170,7 +170,10 @@ EOF
         -DBUILD_KOTLIN_EXTENSIONS=OFF \
         -DENABLE_FLAKE8=OFF \
         -DENABLE_PYLINT=OFF \
-        -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
+        -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
+        -DCMAKE_STATIC_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS} "
+
+        # -Wl,--no-dynamic-linker
 
         #  -DENABLE_BUILD_HARDENING=ON \
 
@@ -192,6 +195,7 @@ EOF
         # -DLINK_DIRECTORIES="{$liblzma_prefix}/lib/:{$libzstd_prefix}/lib/:{$liblz4_prefix}/lib/"
 
         # -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
+        #     -DCMAKE_TARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
 
         # -DLINK_LIBRARIES="lzma  zstd  lz4"
         # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
@@ -249,4 +253,9 @@ EOF
 
 /*
  * https://github.com/opencv/ade.git
+ */
+
+/*
+ *  Automatically Tuned Linear Algebra Software (ATLAS)
+ *  https://math-atlas.sourceforge.net/
  */
