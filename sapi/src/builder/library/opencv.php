@@ -64,7 +64,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$fftw3_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libdc1394_prefix};";
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
+    # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
     $CMAKE_PREFIX_PATH .= "{$suitesparse_prefix};";
 
 
@@ -249,7 +249,7 @@ EOF
             'imath',
             'gflags',
             'glog',
-            'libeigen'
+            //'libeigen'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
@@ -265,4 +265,9 @@ EOF
 /*
  *  Automatically Tuned Linear Algebra Software (ATLAS)
  *  https://math-atlas.sourceforge.net/
+ */
+
+/*
+ * libmv  运动轨迹重建
+ * https://github.com/opencv/opencv_contrib/tree/master/modules/sfm
  */
