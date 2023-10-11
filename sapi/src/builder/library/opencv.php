@@ -72,6 +72,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/opencv/opencv/blob/4.x/LICENSE', Library::LICENSE_APACHE2)
         //->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
         ->withManual('https://github.com/opencv/opencv.git')
+        ->withManual('https://github.com/opencv/opencv_contrib/tree/5.x/modules/README.md')
         ->withFile('opencv-v5.x.tar.gz')
         ->withDownloadScript(
             'opencv',
@@ -146,10 +147,17 @@ EOF
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
-        -DCMAKE_DISABLE_FIND_PACKAGE_Java=ON \
-        -DCMAKE_DISABLE_FIND_PACKAGE_JNI=ON \
-        -DCMAKE_DISABLE_FIND_PACKAGE_HDF5=ON \
-        -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'
+        -DBUILD_opencv_js=ON \
+        -DBUILD_JAVA=OFF \
+        -DBUILD_CUDA_STUBS=OFF  \
+        -DBUILD_FAT_JAVA_LIB=OFF  \
+        -DBUILD_ANDROID_SERVICE=OFF \
+        -DBUILD_OBJC=OFF \
+        -DBUILD_KOTLIN_EXTENSIONS=OFF \
+        -DENABLE_FLAKE8=OFF \
+        -DENABLE_PYLINT=OFF \
+        -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'  \
+        -DCMAKE_EXE_LINKER_FLAGS_INIT
 
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
