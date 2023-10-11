@@ -174,13 +174,15 @@ EOF
         -DINSTALL_C_EXAMPLES=ON \
         -DINSTALL_PYTHON_EXAMPLES=ON \
         -DBUILD_DOCS=ON \
-        -DCMAKE_C_FLAGS="-D NDEBUG" \
+        -DCMAKE_MODULE_LINKER_FLAGS='-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}'
 
+
+        # 参考 https://github.com/opencv/opencv_3rdparty/blob/ffmpeg/4.x_20230622/ffmpeg/build_videoio_plugin.sh
+
+        # -DOPENCV_EXTRA_FLAGS="-DCV_EXPORTS= -D_GNU_SOURCE="
 
          # -DTIFF_ROOT={$libtiff_prefix} \
          # -Dharfbuzz_ROOT={$harfbuzz_prefix} \
-
-
 
 
 
@@ -238,7 +240,7 @@ EOF
             'libwebp',
             'libpng',
             'freetype',
-            //'libtiff',
+            'libtiff',
             "gmp",
             'liblzma',
             'gflags',
@@ -246,7 +248,6 @@ EOF
             'openblas', //基础线性代数程序集
             'lapack', //线性代数计算库
             // 'harfbuzz',
-            'imath',
             //'openexr',
             //'openjpeg',
             //'vtk',
