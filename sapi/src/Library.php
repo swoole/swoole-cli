@@ -157,9 +157,7 @@ class Library extends Project
 
     public function withCleanBuildDirectory(): static
     {
-        if (PHP_CLI_BUILD_TYPE == 'dev') {
-            $this->cleanBuildDirectory = true;
-        }
+        $this->cleanBuildDirectory = true;
         return $this;
     }
 
