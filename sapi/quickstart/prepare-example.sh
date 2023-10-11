@@ -35,7 +35,8 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 php -v
 
 export COMPOSER_ALLOW_SUPERUSER=1
-#composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+# composer config -g repos.packagist composer https://packagist.org
+# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
@@ -62,8 +63,7 @@ composer config -g --unset repos.packagist
 
 php prepare.php \
   --with-global-prefix=/usr/local/swoole-cli \
-  --with-install-library-cached=1 \
-  +common
+  +common --without-docker=1
 
 
 bash make-install-deps.sh
