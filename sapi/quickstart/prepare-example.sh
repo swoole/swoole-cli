@@ -26,6 +26,8 @@ if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
   bash sapi/quickstart/setup-php-runtime.sh --mirror china
 fi
 
+bash sapi/quickstart/clean-folder.sh
+
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
@@ -56,7 +58,7 @@ composer config -g --unset repos.packagist
 
 
 # bash sapi/quickstart/mark-install-library-cached.sh
-bash sapi/quickstart/clean-folder.sh
+
 
 php prepare.php \
   --with-global-prefix=/usr/local/swoole-cli \
