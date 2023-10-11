@@ -28,7 +28,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://people.engr.tamu.edu/davis/suitesparse.html')
         ->withLicense('https://github.com/DrTimothyAldenDavis/SuiteSparse/blob/dev/LICENSE.txt', Library::LICENSE_SPEC)
         ->withManual('https://github.com/DrTimothyAldenDavis/SuiteSparse.git')
-        ->withFile('SuiteSparse-latest.tar.gz')
+        ->withFile('suitesparse-latest.tar.gz')
         ->withDownloadScript(
             'SuiteSparse',
             <<<EOF
