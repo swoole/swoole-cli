@@ -39,7 +39,7 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            # -DCMAKE_PREFIX_PATH="{$suitesparse_prefix};{$boost_prefix}"
+            -DCMAKE_PREFIX_PATH="{$suitesparse_prefix};{$boost_prefix}"
 
             cmake --build . --config Release
 
