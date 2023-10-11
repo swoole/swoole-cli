@@ -37,6 +37,7 @@ abstract class Project
     public const LICENSE_BSD = 2;
     public const LICENSE_GPL = 3;
     public const LICENSE_LGPL = 4;
+
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
@@ -127,7 +128,7 @@ abstract class Project
         return $this;
     }
 
-    public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
+    public function withBuildLibraryCached(bool $enableBuildLibraryCached = true): static
     {
         $this->enableBuildLibraryCached = $enableBuildLibraryCached;
         return $this;
