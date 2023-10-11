@@ -29,6 +29,7 @@ EOF
         apk add texinfo
 EOF
         )
+        ->withPrefix($mpfr_prefix)
         ->withConfigure(
             <<<EOF
         sh autogen.sh
