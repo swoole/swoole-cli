@@ -208,7 +208,8 @@ EOF
             //'libdc1394'
             'imath',
             'gflags',
-            'glog'
+            'glog',
+            'libeigen'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')

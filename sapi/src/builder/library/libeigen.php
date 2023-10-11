@@ -52,16 +52,13 @@ EOF
 
 EOF
         )
-        ->withPkgName('example')
         ->withBinPath($libeigen_prefix . '/bin/')
-       ->withDependentLibraries(
-           'suitesparse',
-           'fftw3', //快速傅立叶变换库
-           'boost',
-           'mpfr'
-       )
-
-    ;
+        ->withDependentLibraries(
+            'suitesparse',
+            'fftw3', //快速傅立叶变换库
+            'boost',
+            'mpfr'
+        );
 
     $p->addLibrary($lib);
 };
