@@ -6,6 +6,9 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $opencv_prefix = OPENCV_PREFIX;
 
+    $libiconv_prefix = ICONV_PREFIX;
+    $bzip2_prefix = BZIP2_PREFIX;
+
     $openssl_prefix = OPENSSL_PREFIX;
     $ffmpeg_prefix = FFMPEG_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
@@ -119,9 +122,14 @@ EOF
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
         PACKAGES="\$PACKAGES  fftw3q openblas blas64 lapack64 Imath  libglog"
 
-        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
-        LIBS="\$LIBS -lconv -lbz2 "
 
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
+        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+
+        CPPFLAGS="\$CPPFLAGS -I{$bzip2_prefix}/include -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include " \
+        LDFLAGS="\$LDFLAGS -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib" \
+        LIBS="\$LIBS -lbz2 -liconv " \
 
 
         mkdir -p build
@@ -150,7 +158,7 @@ EOF
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
-        -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
+        -DCMAKE_PREFIX_PATH='{$CMAKE_PREFIX_PATH}' \
         -DBUILD_opencv_js=ON \
         -DBUILD_JAVA=OFF \
         -DBUILD_CUDA_STUBS=OFF  \
