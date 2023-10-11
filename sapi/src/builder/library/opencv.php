@@ -176,6 +176,11 @@ EOF
 
 
          # -DTIFF_ROOT={$libtiff_prefix} \
+         # -Dharfbuzz_ROOT={$harfbuzz_prefix} \
+
+
+
+
 
 
         # -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
@@ -195,7 +200,7 @@ EOF
 
         # -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
 
-        # -Dharfbuzz_ROOT={$harfbuzz_prefix} \
+
 
         # -DCMAKE_STATIC_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
@@ -203,7 +208,7 @@ EOF
         # -DLINK_DIRECTORIES="{$liblzma_prefix}/lib/:{$libzstd_prefix}/lib/:{$liblz4_prefix}/lib/"
 
         # -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
-        #     -DCMAKE_TARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
+        #  -DCMAKE_TARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
 
         # -DLINK_LIBRARIES="lzma  zstd  lz4"
         # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
