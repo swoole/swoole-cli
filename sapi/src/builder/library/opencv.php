@@ -157,10 +157,13 @@ EOF
         -DBUILD_KOTLIN_EXTENSIONS=OFF \
         -DENABLE_FLAKE8=OFF \
         -DENABLE_PYLINT=OFF \
-        -DTARGET_LINK_LIBRARIES='\${LIBS}'
+        -DCMAKE_EXE_LINKER_FLAGS_INIT=='\${LIBS}'
 
-        # -DCMAKE_EXE_LINKER_FLAGS_INIT
 
+
+        #-DINCLUDE_DIRECTORIES
+
+        #
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
@@ -180,6 +183,7 @@ EOF
         # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
         # -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
         # -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'  \
+        # -DTARGET_LINK_LIBRARIES='\${LIBS}'
 
         # OpenJPEG
 
