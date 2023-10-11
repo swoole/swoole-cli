@@ -121,7 +121,7 @@ EOF
         PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 libtiff-4"
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
-        PACKAGES="\$PACKAGES  fftw3q openblas blas64 lapack64 Imath  libglog"
+        PACKAGES="\$PACKAGES  fftw3q  Imath  libglog" # openblas blas64 lapack64
 
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
@@ -255,7 +255,6 @@ EOF
             'gflags',
             'glog',
             //'libeigen', //线性运算代数库 (依赖待完善）
-            //'libeigen'
             //'suitesparse',
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
