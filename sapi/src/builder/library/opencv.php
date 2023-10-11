@@ -104,7 +104,7 @@ EOF
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($opencv_prefix)
         ->withBuildLibraryHttpProxy(true)
-        ->withBuildLibraryCached(true)
+        ->withBuildLibraryCached(false)
         ->withBuildScript(
             <<<EOF
         PACKAGES='openssl  '
