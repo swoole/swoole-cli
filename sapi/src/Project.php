@@ -5,8 +5,11 @@ namespace SwooleCli;
 abstract class Project
 {
     public string $name;
+
     public string $url;
+
     public string $path = '';
+
     public string $file = '';
     public string $md5sum = '';
 
@@ -26,6 +29,7 @@ abstract class Project
     public const LICENSE_BSD = 2;
     public const LICENSE_GPL = 3;
     public const LICENSE_LGPL = 4;
+
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
@@ -73,7 +77,7 @@ abstract class Project
         return $this;
     }
 
-    public function withBuildLibraryCached(bool $enableBuildLibraryCached): static
+    public function withBuildLibraryCached(bool $enableBuildLibraryCached = true): static
     {
         $this->enableBuildLibraryCached = $enableBuildLibraryCached;
         return $this;

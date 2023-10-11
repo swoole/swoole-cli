@@ -38,9 +38,11 @@ make_<?=$item->name?>() {
     fi
     <?php endif; ?>
 
+    <?php if ($item->cleanBuildDirectory) : ?>
     if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
     fi
+    <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
