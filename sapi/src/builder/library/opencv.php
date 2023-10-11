@@ -75,6 +75,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/opencv/opencv/blob/4.x/LICENSE', Library::LICENSE_APACHE2)
         //->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
         ->withManual('https://github.com/opencv/opencv.git')
+        ->withManual('https://docs.opencv.org/5.x/db/d05/tutorial_config_reference.html')
         ->withManual('https://github.com/opencv/opencv_contrib/tree/5.x/modules/README.md')
         ->withFile('opencv-v5.x.tar.gz')
         ->withDownloadScript(
@@ -146,6 +147,7 @@ EOF
         -DBUILD_STATIC_LIBS=ON \
         -DBUILD_SHARED_LIBS=OFF \
         -DOpenCV_STATIC=ON \
+        -DENABLE_PIC=ON \
         -DWITH_FFMPEG=ON \
         -DFFMPEG_ROOT={$ffmpeg_prefix} \
         -DZLIB_ROOT={$zlib_prefix} \
@@ -168,16 +170,14 @@ EOF
         -DBUILD_ANDROID_SERVICE=OFF \
         -DBUILD_OBJC=OFF \
         -DBUILD_KOTLIN_EXTENSIONS=OFF \
-        -DENABLE_FLAKE8=OFF \
-        -DENABLE_PYLINT=OFF \
+        -DINSTALL_C_EXAMPLES=ON \
+        -DINSTALL_PYTHON_EXAMPLES=ON \
+        -DBUILD_DOCS=ON \
+        -DENABLE_PROFILING=ON
 
 
         # -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
         # -DCMAKE_STATIC_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS} "
-
-
-
-
 
         # -Wl,--no-dynamic-linker
 
