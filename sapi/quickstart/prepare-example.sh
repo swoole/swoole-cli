@@ -6,8 +6,6 @@ __DIR__=$(
   pwd
 )
 
-cd ${__DIR__}
-
 if [ -f ${__DIR__}/prepare.php ] ; then
   __PROJECT__=$(
     cd ${__DIR__}/
@@ -37,8 +35,8 @@ if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
   bash sapi/quickstart/setup-php-runtime.sh --mirror china
 fi
 
-bash sapi/quickstart/clean-folder.sh
 
+bash sapi/quickstart/clean-folder.sh
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
@@ -76,6 +74,7 @@ php prepare.php \
   --with-global-prefix=/usr/local/swoole-cli \
   --without-docker=1 \
   +common
+
 
 
 bash make-install-deps.sh

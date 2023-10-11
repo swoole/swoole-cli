@@ -5,7 +5,6 @@ __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-cd ${__DIR__}
 
 if [ -f ${__DIR__}/prepare.php ] ; then
   __PROJECT__=$(
@@ -18,7 +17,7 @@ else
     pwd
   )
 fi
-cd ${__PROJECT__}
+
 
 OS=$(uname -s)
 ARCH=$(uname -m)

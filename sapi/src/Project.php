@@ -31,6 +31,7 @@ abstract class Project
     public const LICENSE_BSD = 2;
     public const LICENSE_GPL = 3;
     public const LICENSE_LGPL = 4;
+
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
 
@@ -43,7 +44,6 @@ abstract class Project
     public bool $enableDownloadWithMirrorURL = false;
 
     public bool $enableDownloadWithOriginURL = false;
-
 
     public bool $enableBuildLibraryCached = true;
 
