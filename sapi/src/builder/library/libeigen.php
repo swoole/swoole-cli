@@ -17,18 +17,19 @@ return function (Preprocessor $p) {
         ->withLicense('https://gitlab.com/libeigen/eigen/-/blob/master/COPYING.APACHE', Library::LICENSE_SPEC)
         ->withManual('https://gitlab.com/libeigen/eigen.git')
         ->withManual('https://gitlab.com/libeigen/eigen/-/blob/3.4.0/INSTALL?ref_type=tags')
-        ->withFile('eigen-3.4.0.tar.gz')
+        ->withFile('eigen-latest.tar.gz')
         ->withDownloadScript(
             'eigen',
             <<<EOF
-                git clone -b 3.4.0  --depth=1 https://gitlab.com/libeigen/eigen.git
+                git clone -b master  --depth=1 https://gitlab.com/libeigen/eigen.git
 EOF
         )
         ->withPrefix($libeigen_prefix)
         ->withPreInstallCommand(
             "alpine",
             <<<EOF
-        apk add gfortran
+            apk add gfortran
+            apk add hwloc
 EOF
         )
         ->withBuildScript(
@@ -40,6 +41,7 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
+            -DFFTW_ROOT={$fftw3_prefix} \
             -DCMAKE_PREFIX_PATH="{$suitesparse_prefix};{$boost_prefix};{$fftw3_prefix};{$mpfr_prefix}"
 
             cmake --build . --config Release
@@ -67,4 +69,9 @@ EOF
  *  Adolc  自动微分库
  *  fftw   傅立叶变幻
   SuperLU,  PaStiX,  METIS,  Qt4 support,  GoogleHash,  Adolc,  MPFR C++,  fftw,  OpenGL
- */
+
+ SYCL是OpenCL的高级编程模型
+
+  LU分解(LU Factorization)是矩阵分解的一种
+  SuperLU https://portal.nersc.gov/project/sparse/superlu/
+*/
