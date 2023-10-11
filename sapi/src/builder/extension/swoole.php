@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
 
 
-    $ext = (new Extension('swoole'))
+    $ext = (new Extension('swoole_v5000'))
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
