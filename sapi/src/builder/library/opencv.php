@@ -174,9 +174,14 @@ EOF
         -DINSTALL_C_EXAMPLES=ON \
         -DINSTALL_PYTHON_EXAMPLES=ON \
         -DBUILD_DOCS=ON \
-        -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
+        -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
+
+        # -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
 
 
+        # OPENCV_LINKER_DEFENSES_FLAGS_COMMON
+        # OPENCV_EXTRA_MODULE_LINKER_FLAG
+        # OPENCV_EXTRA_MODULE_LINKER_FLAGS_RELEAS
         # 参考 https://github.com/opencv/opencv_3rdparty/blob/ffmpeg/4.x_20230622/ffmpeg/build_videoio_plugin.sh
 
         # -DOPENCV_EXTRA_FLAGS="-DCV_EXPORTS= -D_GNU_SOURCE="
@@ -193,7 +198,7 @@ EOF
 
         #  -DENABLE_BUILD_HARDENING=ON \
 
-        # -DCMAKE_EXE_LINKER_FLAGS_INIT='\${LIBS}'
+
 
         # -DINCLUDE_DIRECTORIES
 
@@ -214,6 +219,7 @@ EOF
         #  -DCMAKE_TARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
 
         # -DLINK_LIBRARIES="lzma  zstd  lz4"
+        # -DCMAKE_EXE_LINKER_FLAGS_INIT='\${LIBS}'
         # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
         # -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
         # -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'  \
