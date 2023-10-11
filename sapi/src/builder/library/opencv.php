@@ -150,7 +150,6 @@ EOF
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
-        -DENABLE_BUILD_HARDENING=ON \
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DBUILD_opencv_js=ON \
         -DBUILD_JAVA=OFF \
@@ -162,6 +161,7 @@ EOF
         -DENABLE_FLAKE8=OFF \
         -DENABLE_PYLINT=OFF
 
+        #  -DENABLE_BUILD_HARDENING=ON \
 
         # -DCMAKE_EXE_LINKER_FLAGS_INIT='\${LIBS}'
 
