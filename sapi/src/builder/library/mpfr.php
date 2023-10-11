@@ -20,7 +20,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'mpfr',
             <<<EOF
-                git clone https://gitlab.inria.fr/mpfr/mpfr.git
+                git clone -b master --depth=1 https://gitlab.inria.fr/mpfr/mpfr.git
 EOF
         )
         ->withPreInstallCommand(
