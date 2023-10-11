@@ -8,7 +8,7 @@ return function (Preprocessor $p) {
     $suitesparse_prefix = SUITESPARSE_PREFIX;
     $boost_prefix = BOOST_PREFIX;
     $fftw3_prefix = FFTW3_PREFIX;
-
+    $mpfr_prefix = MPFR_PREFIX;
 
     //线性代数的 C++ 模板库：矩阵、向量、数值求解器和相关算法
     //线性运算代数库
@@ -40,7 +40,7 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
-            -DCMAKE_PREFIX_PATH="{$suitesparse_prefix};{$boost_prefix};{$fftw3_prefix}"
+            -DCMAKE_PREFIX_PATH="{$suitesparse_prefix};{$boost_prefix};{$fftw3_prefix};{$mpfr_prefix}"
 
             cmake --build . --config Release
 
@@ -53,7 +53,8 @@ EOF
        ->withDependentLibraries(
            'suitesparse',
            'fftw3', //快速傅立叶变换库
-           'boost'
+           'boost',
+           'mpfr'
        )
 
     ;
@@ -62,5 +63,8 @@ EOF
 };
 
 /*
+ *  MPFR   高精度运算库
+ *  Adolc  自动微分库
+ *  fftw   傅立叶变幻
   SuperLU,  PaStiX,  METIS,  Qt4 support,  GoogleHash,  Adolc,  MPFR C++,  fftw,  OpenGL
  */

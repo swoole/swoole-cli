@@ -6,9 +6,9 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
 
     $mpfr_prefix = MPFR_PREFIX;
-    $gmp_prefix = GMP_PREFIX;
 
-    //多精度浮点计算的 C 库
+    # 高精度运算库
+    # 多精度浮点计算的 C 库
     # 多精度复杂算术库
     # 其他计算库 https://www.mpfr.org/
 
