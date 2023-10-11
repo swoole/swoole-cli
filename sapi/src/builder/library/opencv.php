@@ -149,7 +149,7 @@ EOF
         -DCMAKE_DISABLE_FIND_PACKAGE_Java=ON \
         -DCMAKE_DISABLE_FIND_PACKAGE_JNI=ON \
         -DCMAKE_DISABLE_FIND_PACKAGE_HDF5=ON \
-        -DCMAKE_C_IMPLICIT_LINK_LIBRARIES="\${LIBS}"
+        -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'
 
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
