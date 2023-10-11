@@ -38,6 +38,11 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withMakeInstallCommand('install_sw')
+            ->withScriptAfterInstall(
+                <<<EOF
+            sed -i.backup "s/-ldl/  /g" {$openssl_prefix}/lib/pkgconfig/libcrypto.pc
+EOF
+            )
             ->withPkgName('libcrypto')
             ->withPkgName('libssl')
             ->withPkgName('openssl')
