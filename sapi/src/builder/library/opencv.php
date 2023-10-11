@@ -45,7 +45,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$png_prefix};";
     $CMAKE_PREFIX_PATH .= "{$libwebp_prefix};";
     $CMAKE_PREFIX_PATH .= "{$freetype_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$libtiff_prefix};";
+    # $CMAKE_PREFIX_PATH .= "{$libtiff_prefix};";
 
     $CMAKE_PREFIX_PATH .= "{$gmp_prefix};";
 
@@ -153,7 +153,6 @@ EOF
         -DZLIB_ROOT={$zlib_prefix} \
         -Dfreetype2_ROOT={$freetype_prefix} \
         -DPNG_ROOT={$png_prefix} \
-        -DTIFF_ROOT={$libtiff_prefix} \
         -DJPEG_ROOT={$jpeg_prefix} \
         -DLAPACK_ROOT={$lapack_prefix} \
         -DOpenBLAS_ROOT={$openblas_prefix} \
@@ -175,6 +174,8 @@ EOF
         -DBUILD_DOCS=ON \
         -DCMAKE_C_FLAGS="-D NDEBUG" \
 
+
+         # -DTIFF_ROOT={$libtiff_prefix} \
 
 
         # -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
@@ -231,7 +232,7 @@ EOF
             'libwebp',
             'libpng',
             'freetype',
-            'libtiff',
+            //'libtiff',
             "gmp",
             'liblzma',
             'gflags',
@@ -242,13 +243,13 @@ EOF
             'imath',
             //'openexr',
             //'openjpeg',
-            //'libeigen', //线性运算代数库 (依赖待完善）
             //'vtk',
             //'opencl',
             //'libdc1394'
             'imath',
             'gflags',
             'glog',
+            //'libeigen', //线性运算代数库 (依赖待完善）
             //'libeigen'
             //'suitesparse',
         )   //   HDR
