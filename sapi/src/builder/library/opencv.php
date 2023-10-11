@@ -159,7 +159,8 @@ EOF
         -DBUILD_OBJC=OFF \
         -DBUILD_KOTLIN_EXTENSIONS=OFF \
         -DENABLE_FLAKE8=OFF \
-        -DENABLE_PYLINT=OFF
+        -DENABLE_PYLINT=OFF \
+        -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
 
         #  -DENABLE_BUILD_HARDENING=ON \
 
@@ -167,7 +168,6 @@ EOF
 
         #-DINCLUDE_DIRECTORIES
 
-        #
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
