@@ -74,3 +74,5 @@ if [[ $ACTION = "delete" ]]; then
   test -d sapi/cli && rm -rf sapi/cli/
 
 fi
+
+echo $?
