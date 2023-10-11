@@ -17,11 +17,11 @@ return function (Preprocessor $p) {
         ->withLicense('https://gitlab.com/libeigen/eigen/-/blob/master/COPYING.APACHE', Library::LICENSE_SPEC)
         ->withManual('https://gitlab.com/libeigen/eigen.git')
         ->withManual('https://gitlab.com/libeigen/eigen/-/blob/3.4.0/INSTALL?ref_type=tags')
-        ->withFile('eigen-latest.tar.gz')
+        ->withFile('eigen-v3.4.0.tar.gz')
         ->withDownloadScript(
             'eigen',
             <<<EOF
-                git clone -b master  --depth=1 https://gitlab.com/libeigen/eigen.git
+                git clone -b 3.4.0  --depth=1 https://gitlab.com/libeigen/eigen.git
 EOF
         )
         ->withPrefix($libeigen_prefix)
