@@ -77,7 +77,7 @@ apt install -y  musl-tools
 apt install -y python3 python3-pip ninja-build  diffutils
 apt install -y yasm nasm
 apt install -y meson
-apt install -y netcat
+apt install -y netcat-openbsd
 
 case "$MIRROR" in
 china)

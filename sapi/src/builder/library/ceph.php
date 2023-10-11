@@ -9,9 +9,9 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://ceph.io/')
         ->withLicense('https://github.com/ceph/ceph/blob/main/COPYING-LGPL3', Library::LICENSE_LGPL)
         ->withManual('https://github.com/ceph/ceph')
-        ->withAutoUpdateFile()
+        //->withAutoUpdateFile()
+        //->withBuildLibraryCached(false)
         ->withFile('ceph-latest.tar.gz')
-        ->withBuildLibraryCached(false)
         ->withDownloadScript(
             'ceph',
             <<<EOF
@@ -66,13 +66,12 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
                 esac
             fi
             if test \$SUPPORT_OS -ne 1 ;then
-                echo 'no support os'
+                echo 'no support OS'
                 exit 3
             fi
             # 仅支持 ubuntu
 
             if [ -f build-env-ok ] ; then
-                test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
                 bash src/cephadm/build.sh cephadm
                 admin/build-doc
             else
@@ -85,16 +84,18 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
                 pip3 install  -r admin/doc-python-common-requirements.txt
                 admin/build-doc
 
-                export PKG_CONFIG_PATH=\${SWOOLE_CLI_PKG_CONFIG_PATH}
-                export PATH=\${SWOOLE_CLI_PATH}
-                test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
                 touch build-env-ok
             fi
+            mkdir -p {$ceph_prefix}/ceph/
+            touch {$ceph_prefix}/ceph/.completed
+            export PKG_CONFIG_PATH=\${SWOOLE_CLI_PKG_CONFIG_PATH}
+            export PATH=\${SWOOLE_CLI_PATH}
+            test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 EOF
         )
         ->disableDefaultLdflags()
         ->disableDefaultPkgConfig()
-        ->withSkipBuildLicense();
+    ;
 
     $p->addLibrary($lib);
 };

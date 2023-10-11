@@ -24,6 +24,8 @@ return function (Preprocessor $p) {
                 cd {$builddir}/ceph/
                 cp -rf cephadm {$workdir}/bin/cephadm
                 cp -rf build-doc/output {$workdir}/bin/ceph-docs
+                cd {$workdir}/bin/
+                tar -cJvf {$workdir}/ceph-docs-vlatest.tar.xz ceph-docs
 
 EOF;
         return $cmd;
