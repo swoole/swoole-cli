@@ -5,10 +5,18 @@ __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-__PROJECT__=$(
-  cd ${__DIR__}/../../
-  pwd
-)
+if [ -f ${__DIR__}/prepare.php ] ; then
+  __PROJECT__=$(
+    cd ${__DIR__}/
+    pwd
+  )
+else
+  __PROJECT__=$(
+    cd ${__DIR__}/../../
+    pwd
+  )
+fi
+
 cd ${__PROJECT__}
 
 OS=$(uname -s)
