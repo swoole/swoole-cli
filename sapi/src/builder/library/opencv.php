@@ -120,7 +120,7 @@ EOF
         PACKAGES="\$PACKAGES  libavcodec libavdevice libavfilter libavformat libavutil libswresample libswscale"
         PACKAGES="\$PACKAGES  libwebp libpng libpng16 libjpeg libturbojpeg SvtAv1Enc SvtAv1Dec "
 
-        PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 libtiff-4"
+        PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " # libtiff-4
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
         PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64 lapack64 blas"
@@ -174,7 +174,7 @@ EOF
         -DINSTALL_C_EXAMPLES=ON \
         -DINSTALL_PYTHON_EXAMPLES=ON \
         -DBUILD_DOCS=ON \
-        -DCMAKE_MODULE_LINKER_FLAGS='-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}'
+        -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
 
 
         # 参考 https://github.com/opencv/opencv_3rdparty/blob/ffmpeg/4.x_20230622/ffmpeg/build_videoio_plugin.sh
@@ -240,7 +240,7 @@ EOF
             'libwebp',
             'libpng',
             'freetype',
-            'libtiff',
+            //'libtiff',
             "gmp",
             'liblzma',
             'gflags',
