@@ -16,6 +16,7 @@ else
     pwd
   )
 fi
+
 cd ${__DIR__}
 
 if [ ! -f ${__PROJECT__}/var/runtime/swoole-cli ];then

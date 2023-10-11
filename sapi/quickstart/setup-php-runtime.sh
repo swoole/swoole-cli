@@ -16,6 +16,7 @@ else
     pwd
   )
 fi
+
 cd ${__PROJECT__}
 
 OS=$(uname -s)
