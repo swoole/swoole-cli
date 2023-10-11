@@ -65,7 +65,7 @@ return function (Preprocessor $p) {
     # $CMAKE_PREFIX_PATH .= "{$libdc1394_prefix};";
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$suitesparse_prefix};";
+    # $CMAKE_PREFIX_PATH .= "{$suitesparse_prefix};";
 
 
     $workDir = $p->getWorkDir();
@@ -250,6 +250,7 @@ EOF
             'gflags',
             'glog',
             //'libeigen'
+            //'suitesparse',
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
