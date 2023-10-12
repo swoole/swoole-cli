@@ -56,12 +56,6 @@ done
 
 
 if [ $OS = 'linux' ] ; then
-
-    # docker inspect -f {{.State.Running}} download-box-web-server
-    if [ "`docker inspect -f {{.State.Running}} swoole-cli-alpine-dev`" = "true" ]; then
-      echo "find build  container  no running !"
-    fi
-
     if [ -f /.dockerenv ]; then
         number=$(which meson  | wc -l)
         if test $number -eq 0 ;then
@@ -73,6 +67,11 @@ if [ $OS = 'linux' ] ; then
             fi
         }
         git config --global --add safe.directory ${__PROJECT__}
+    else
+          # docker inspect -f {{.State.Running}} download-box-web-server
+          if [ "`docker inspect -f {{.State.Running}} swoole-cli-alpine-dev`" = "true" ]; then
+            echo " no running  build container "
+          fi
     fi
   fi
 fi
@@ -128,8 +127,8 @@ composer config -g --unset repos.packagist
 # @macos
 # --with-override-default-enabled-ext=1
 # --with-php-version=8.1.20
-# --with-c-compiler=[gcc|clang] 默认clang
-
+# --with-c-compiler=[gcc|clang] #默认clang
+# --with-os-repository-mirror   # 系统仓库镜像
 
 
 # bash sapi/quickstart/mark-install-library-cached.sh
