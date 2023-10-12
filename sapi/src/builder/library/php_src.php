@@ -14,6 +14,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.php.net/')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
             ->withPrefix($php_install_prefix)
+            ->withCleanBuildDirectory()
             ->withBuildScript(
                 <<<EOF
             if test -d {$php_src} ; then
