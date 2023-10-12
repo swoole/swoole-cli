@@ -103,7 +103,7 @@ php -v
 export COMPOSER_ALLOW_SUPERUSER=1
 # composer config -g repos.packagist composer https://packagist.org
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-if [ $MIRROR = 'china' ] ; then
+if [ $MIRROR = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 fi
 composer update  --optimize-autoloader
