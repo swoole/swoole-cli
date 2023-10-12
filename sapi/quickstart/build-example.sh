@@ -78,7 +78,7 @@ php -v
 export COMPOSER_ALLOW_SUPERUSER=1
 # composer config -g repos.packagist composer https://packagist.org
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+# composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
 
@@ -103,10 +103,13 @@ composer config -g --unset repos.packagist
 
 
 php prepare.php \
+  --without-docker=1 \
   --with-global-prefix=/usr/local/swoole-cli \
   --without-docker=1 \
   +common
 
+
+exit 0
 
 
 bash make-install-deps.sh
@@ -118,12 +121,7 @@ bash make.sh config
 bash make.sh build
 
 
-
-
-
 exit 0
-
-
 
 
 
@@ -152,7 +150,3 @@ case $NUM in
        exit 1;;
 esac
 EOF
-
-
-
-
