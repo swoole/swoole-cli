@@ -96,12 +96,6 @@ jobs:
           # 准备数据库容器
           # bash sapi/src/UnitTest/scripts/database/start.sh
 
-          echo ${{ github.actor }}
-          echo ${{ github.repository }}
-          echo ${{ github.repository_owner }}
-          echo ${{ github.head_ref }}
-          echo ${{ github.ref_name }}
-
       - name: Prepare Libraries and Extensions
         if: 1
         run: |
