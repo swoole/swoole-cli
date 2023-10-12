@@ -7,7 +7,7 @@ env:
 
 jobs:
   macos-x86_64:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -20,6 +20,7 @@ jobs:
 
           brew install  wget curl  libtool automake  re2c llvm flex bison
           brew install  gettext coreutils binutils libunistring
+          brew install  jq
 
           # brew uninstall --ignore-dependencies oniguruma
           # brew uninstall --ignore-dependencies brotli
@@ -61,6 +62,15 @@ jobs:
           export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
           # brew bison --debug
 
+          curl https://detect-ip.xiaoshuogeng.com/ip/json  | jq
+
+          echo ${{ env.BRANCH_NAME }}
+          echo ${{ github.actor }}
+          echo ${{ github.repository }}
+          echo ${{ github.repository_owner }}
+          echo ${{ github.head_ref }}
+          echo ${{ github.ref_name }}
+
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
           sudo mkdir -p /usr/local/swoole-cli
@@ -84,7 +94,7 @@ jobs:
 
           composer update --no-dev  --optimize-autoloader
 
-          php prepare.php --without-docker=1  +ffmpeg -coturn --with-build-type=release
+          php prepare.php --without-docker=1  -coturn --with-build-type=release
 
       - name: Cache all-library
         uses: actions/cache@v3

@@ -77,6 +77,10 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
+          apt install -y jq curl
+
+          curl https://detect-ip.xiaoshuogeng.com/ip/json  | jq
+
           echo ${{ env.BRANCH_NAME }}
           echo ${{ github.actor }}
           echo ${{ github.repository }}
