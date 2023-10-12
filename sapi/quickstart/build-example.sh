@@ -40,14 +40,32 @@ case $OS in
 
 esac
 
+MIRROR=''
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    MIRROR="$2"
+    shift
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+
 if [ $OS = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
         number=$(which meson  | wc -l)
         if test $number -eq 0 ;then
         {
-           sh sapi/quickstart/linux/alpine-init.sh --mirror china
+            if [ $MIRROR = 'china' ] ; then
+                sh sapi/quickstart/linux/alpine-init.sh --mirror china
+            else
+                sh sapi/quickstart/linux/alpine-init.sh
+            fi
         }
-
         git config --global --add safe.directory ${__PROJECT__}
     fi
   fi
@@ -57,16 +75,23 @@ if [ $OS = 'macos' ] ; then
   number=$(which meson  | wc -l)
   if test $number -eq 0 ;then
   {
-      bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+        if [ $MIRROR = 'china' ] ; then
+            bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+        else
+            bash sapi/quickstart/macos/homebrew-init.sh
+        fi
   }
   fi
 fi
 
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
-  bash sapi/quickstart/setup-php-runtime.sh --mirror china
+      if [ $MIRROR = 'china' ] ; then
+          bash sapi/quickstart/setup-php-runtime.sh --mirror china
+      else
+          bash sapi/quickstart/setup-php-runtime.sh
+      fi
 fi
-
 
 bash sapi/quickstart/clean-folder.sh
 
@@ -78,7 +103,9 @@ php -v
 export COMPOSER_ALLOW_SUPERUSER=1
 # composer config -g repos.packagist composer https://packagist.org
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-# composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+if [ $MIRROR = 'china' ] ; then
+    composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+fi
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
 
