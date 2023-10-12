@@ -36,6 +36,8 @@ return function (Preprocessor $p) {
             <<<EOF
             #     git clone -b dev  --depth=1 https://github.com/DrTimothyAldenDavis/SuiteSparse.git
                 git clone -b fix_static_build  --depth=1 https://github.com/jingjingxyk/SuiteSparse.git
+
+                # fix static build : https://github.com/DrTimothyAldenDavis/SuiteSparse/issues/424
 EOF
         )
         ->withPrefix($suitesparse_prefix)
