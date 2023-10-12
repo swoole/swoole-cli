@@ -14,6 +14,10 @@ $message .= PHP_EOL;
 
 $http = new Swoole\Http\Server("0.0.0.0", 9503);
 
+# reload 知识点
+# https://wiki.swoole.com/#/server/methods?id=reload
+# https://wiki.swoole.com/#/question/use?id=swoole如何正确的重启服务
+
 
 $http->set([
     'document_root' => $web_document,
@@ -24,6 +28,11 @@ $http->set([
         'text/html',
         'application/json'
     ],
+    'display_errors' => true,
+    //'daemonize'=>true,
+    'log_file' => "/tmp/swoole-cli-download-box-web.log"
+     # 'ssl_cert_file' => __DIR__.'/config/ssl.crt',
+     # 'ssl_key_file' => __DIR__.'/config/ssl.key',
 ]);
 
 
