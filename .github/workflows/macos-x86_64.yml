@@ -80,7 +80,7 @@ jobs:
 
           composer update --no-dev  --optimize-autoloader
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1 --with-download-mirror-url=https://swoole-cli.xiaoshuogeng.com/
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1 --with-download-mirror-url=https://php-cli.xiaoshuogeng.com/
 
       - name: Cache all-library
         uses: actions/cache@v3
