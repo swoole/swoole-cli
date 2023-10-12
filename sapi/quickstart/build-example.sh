@@ -56,6 +56,12 @@ done
 
 
 if [ $OS = 'linux' ] ; then
+
+    # docker inspect -f {{.State.Running}} download-box-web-server
+    if [ "`docker inspect -f {{.State.Running}} swoole-cli-alpine-dev`" = "true" ]; then
+      echo "find build  container  no running !"
+    fi
+
     if [ -f /.dockerenv ]; then
         number=$(which meson  | wc -l)
         if test $number -eq 0 ;then
