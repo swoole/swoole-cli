@@ -72,7 +72,7 @@ jobs:
           mkdir -p bin/runtime
           bash  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          bash sapi/download-box/download-box-get-archive-from-server.sh
+          # bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: prepare
         run: |
