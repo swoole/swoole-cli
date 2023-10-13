@@ -35,7 +35,7 @@ case $OS in
 esac
 
 
-# 配置系统仓库使用 china mirror
+# 配置系统仓库  china mirror
 MIRROR='china'
 
 IN_DOCKER=0
@@ -61,7 +61,7 @@ if [ "$OS" = 'linux' ] ; then
         if test $number -eq 0 ;then
         {
             if [ "$MIRROR" = 'china' ] ; then
-                sh sapi/quickstart/linux/alpine-init.sh --mirror china
+                sh sapi/quickstart/linux/alpine-init.sh --mirror $MIRROR
             else
                 sh sapi/quickstart/linux/alpine-init.sh
             fi
@@ -70,7 +70,7 @@ if [ "$OS" = 'linux' ] ; then
         git config --global --add safe.directory ${__PROJECT__}
     else
         # docker inspect -f {{.State.Running}} download-box-web-server
-        if [ "`docker inspect -f {{.State.Running}} swoole-cli-alpine-dev`" = "true" ]; then
+        if [ "`docker inspect -f {{.State.Running}} swoole-cli-builder`" = "true" ]; then
             echo " build container is running "
           else
             echo " build container no running "
@@ -83,7 +83,7 @@ if [ "$OS" = 'macos' ] ; then
   if test $number -eq 0 -o -f sapi/quickstart/macos/homebrew-init.sh ;then
   {
         if [ "$MIRROR" = 'china' ] ; then
-            bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+            bash sapi/quickstart/macos/homebrew-init.sh --mirror $MIRROR
         else
             bash sapi/quickstart/macos/homebrew-init.sh
         fi
@@ -94,7 +94,7 @@ fi
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
       if [ "$MIRROR" = 'china' ] ; then
-          bash sapi/quickstart/setup-php-runtime.sh --mirror china
+          bash sapi/quickstart/setup-php-runtime.sh --mirror $MIRROR
       else
           bash sapi/quickstart/setup-php-runtime.sh
       fi
@@ -127,8 +127,6 @@ composer config -g --unset repos.packagist
 # --without-docker=1
 # @macos
 
-
-# bash sapi/quickstart/mark-install-library-cached.sh
 
 
 if [ ${IN_DOCKER} -ne 1 ] ; then
