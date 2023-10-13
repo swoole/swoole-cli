@@ -147,11 +147,6 @@ EOF
 
 EOF
         )
-        ->withScriptAfterInstall(
-            <<<EOF
-            sed -i.backup "s/-ldl/  /g" {$ffmpeg_prefix}/lib/pkgconfig/libcrypto.pc
-EOF
-        )
         ->withPkgName('libavcodec')
         ->withPkgName('libavdevice')
         ->withPkgName('libavfilter')

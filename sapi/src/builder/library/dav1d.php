@@ -68,7 +68,7 @@ EOF
             )
             ->withScriptAfterInstall(
                 <<<EOF
-            sed -i.backup "s/-ldl/  /g" {$dav1d_prefix}/lib/pkgconfig/libcrypto.pc
+            sed -i.backup "s/-ldl/  /g" {$dav1d_prefix}/lib/pkgconfig/dav1d
 EOF
             )
             ->withPkgName('dav1d')
