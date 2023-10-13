@@ -8,7 +8,6 @@ use SwooleCli\Preprocessor;
 
 ?>
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
-
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
