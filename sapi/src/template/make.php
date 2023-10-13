@@ -283,7 +283,6 @@ export_variables() {
 
 
 make_config() {
-    make_php_src
     make_ext
     make_ext_hook
 
