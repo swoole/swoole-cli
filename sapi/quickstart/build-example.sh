@@ -66,9 +66,9 @@ if [ $OS = 'linux' ] ; then
                 sh sapi/quickstart/linux/alpine-init.sh
             fi
         }
+        fi
         git config --global --add safe.directory ${__PROJECT__}
     fi
-  fi
 fi
 
 if [ $OS = 'macos' ] ; then
