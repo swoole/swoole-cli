@@ -35,15 +35,22 @@ case $OS in
 esac
 
 
+IN_DOCKER=0
+
+
 # 配置系统仓库  china mirror
 MIRROR='china'
 
-IN_DOCKER=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
+    shift
+    ;;
+  --proxy)
+    export http_proxy="$2"
+    export https_proxy="$2"
     shift
     ;;
   --*)
@@ -61,7 +68,7 @@ if [ "$OS" = 'linux' ] ; then
         if test $number -eq 0 ;then
         {
             if [ "$MIRROR" = 'china' ] ; then
-                sh sapi/quickstart/linux/alpine-init.sh --mirror $MIRROR
+                sh sapi/quickstart/linux/alpine-init.sh --mirror china
             else
                 sh sapi/quickstart/linux/alpine-init.sh
             fi
@@ -83,7 +90,7 @@ if [ "$OS" = 'macos' ] ; then
   if test $number -eq 0 -o -f sapi/quickstart/macos/homebrew-init.sh ;then
   {
         if [ "$MIRROR" = 'china' ] ; then
-            bash sapi/quickstart/macos/homebrew-init.sh --mirror $MIRROR
+            bash sapi/quickstart/macos/homebrew-init.sh --mirror china
         else
             bash sapi/quickstart/macos/homebrew-init.sh
         fi
@@ -94,7 +101,7 @@ fi
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
       if [ "$MIRROR" = 'china' ] ; then
-          bash sapi/quickstart/setup-php-runtime.sh --mirror $MIRROR
+          bash sapi/quickstart/setup-php-runtime.sh --mirror china
       else
           bash sapi/quickstart/setup-php-runtime.sh
       fi
@@ -116,6 +123,7 @@ fi
 
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
+
 
 # 可用配置参数
 # --with-swoole-pgsql=1
