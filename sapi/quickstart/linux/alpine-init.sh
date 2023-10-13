@@ -8,13 +8,13 @@ __DIR__=$(
 cd ${__DIR__}
 
 # use china mirror
-# bash sapi/quickstart/linux/alpine-3.16-init.sh --mirror china
+# bash sapi/quickstart/linux/alpine-init.sh --mirror china
 
-mirror=''
+MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    mirror="$2"
+    MIRROR="$2"
     shift
     ;;
   --*)
@@ -24,7 +24,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-case "$mirror" in
+case "$MIRROR" in
 china)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
