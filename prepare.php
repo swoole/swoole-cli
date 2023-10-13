@@ -54,12 +54,11 @@ if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
 
 $p->setRootDir(__DIR__);
 
-// Sync code from php-src
-//设置 PHP 源码所在目录
+//设置 PHP 源码所在目录 (构建时将进入此目录进行构建)
 if ($p->getInputOption('with-php-src')) {
     $p->setPhpSrcDir($p->getInputOption('with-php-src'));
 } else {
-    $p->setPhpSrcDir($p->getRootDir() . '/php-src');
+    $p->setPhpSrcDir($p->getRootDir() . '/thirdparty/php-src');
 }
 
 //设置PHP 安装目录
@@ -330,5 +329,5 @@ $p->execute();
 
 function install_libraries(Preprocessor $p): void
 {
-    //$p->loadDependentLibrary('php_src');
+    //$p->loadDependentLibrary('php');
 }
