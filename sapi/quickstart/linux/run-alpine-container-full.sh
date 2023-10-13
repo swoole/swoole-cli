@@ -32,6 +32,7 @@ EOF
 OS=$(uname -s)
 ARCH=$(uname -m)
 
+DEV_SHM=0
 MIRROR=""
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -39,6 +40,9 @@ while [ $# -gt 0 ]; do
     MIRROR="$2"
     shift
     ;;
+  --dev-shm)
+    DEV_SHM=1
+    shift
   esac
   shift $(($# > 0 ? 1 : 0))
 done
@@ -65,20 +69,6 @@ esac
 
 
 cd ${__DIR__}
-
-DEV_SHM=0
-while [ $# -gt 0 ]; do
-  case "$1" in
-  --dev-shm)
-    DEV_SHM=1
-    shift
-    ;;
-  --*)
-    echo "Illegal option $1"
-    ;;
-  esac
-  shift $(($# > 0 ? 1 : 0))
-done
 
 if [ $DEV_SHM -eq 0 ] ; then
   docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
