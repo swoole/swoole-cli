@@ -45,7 +45,7 @@ esac
 
 if [[ $ACTION = "delete" ]]; then
   cd ${__PROJECT__}
-  test -d ext/ && rm -rf ext
+  test -d ext/ && rm -rf ext/*
 
   test -d Zend/ && rm -rf Zend/
   test -d build && rm -rf build

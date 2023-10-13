@@ -34,6 +34,7 @@ ARCH=$(uname -m)
 
 DEV_SHM=0
 MIRROR=""
+DEV_SHM=0
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
@@ -43,6 +44,7 @@ while [ $# -gt 0 ]; do
   --dev-shm)
     DEV_SHM=1
     shift
+    ;;
   esac
   shift $(($# > 0 ? 1 : 0))
 done
@@ -70,9 +72,11 @@ esac
 
 cd ${__DIR__}
 
-if [ $DEV_SHM -eq 0 ] ; then
-  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
-else
+if [ $DEV_SHM -eq 1 ] ; then
   mkdir -p /dev/shm/swoole-cli/thirdparty/
-  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -v /dev/shm/swoole-cli/thirdparty/:/work/thirdparty/ -w /work $IMAGE tail -f /dev/null
+  mkdir -p /dev/shm/swoole-cli/ext/
+  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -v /dev/shm/swoole-cli/thirdparty/:/work/thirdparty/ -v /dev/shm/swoole-cli/ext/:/work/ext/ -w /work $IMAGE tail -f /dev/null
+else
+  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
 fi
+
