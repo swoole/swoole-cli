@@ -20,7 +20,7 @@ EOF
         ->withPrefix($asterisk_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($asterisk_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             ./configure --help

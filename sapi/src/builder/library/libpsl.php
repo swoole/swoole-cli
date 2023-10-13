@@ -20,7 +20,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libpsl_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withCleanBuildDirectory()
         ->withBuildScript(
             <<<EOF

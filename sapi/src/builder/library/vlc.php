@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
         git clone -b master --depth=1 https://github.com/videolan/vlc.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         //->withUntarArchiveCommand('xz')
         ->withPrefix($vlc_prefix)
         ->withCleanPreInstallDirectory($vlc_prefix)

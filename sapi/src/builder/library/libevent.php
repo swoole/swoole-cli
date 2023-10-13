@@ -22,7 +22,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPrefix($libevent_prefix)
-            //->withBuildLibraryCached(false)
+            //->withBuildCached(false)
             ->withConfigure(
                 <<<EOF
                 mkdir -p build

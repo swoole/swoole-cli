@@ -22,7 +22,7 @@ EOF
         ->withPrefix($openssl_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($openssl_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
              mkdir -p build

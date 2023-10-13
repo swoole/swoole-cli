@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/ceph/ceph/blob/main/COPYING-LGPL3', Library::LICENSE_LGPL)
         ->withManual('https://github.com/ceph/ceph')
         //->withAutoUpdateFile()
-        //->withBuildLibraryCached(false)
+        //->withBuildCached(false)
         ->withFile('ceph-latest.tar.gz')
         ->withDownloadScript(
             'ceph',

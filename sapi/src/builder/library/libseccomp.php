@@ -23,7 +23,7 @@ EOF
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             libtoolize -ci

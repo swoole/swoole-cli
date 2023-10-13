@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/FRRouting/frr/blob/master/COPYING', Library::LICENSE_SPEC)
         ->withUrl('https://github.com/FRRouting/frr/archive/refs/tags/frr-8.5.2.tar.gz')
         ->withManual('https://frrouting.org/doc/')
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)

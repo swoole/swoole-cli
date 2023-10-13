@@ -48,7 +48,7 @@ EOF
 EOF
             )
             ->withCleanBuildDirectory()
-            ->withBuildLibraryCached(false)
+            ->withBuildCached(false)
             ->withBuildScript(
                 <<<EOF
 

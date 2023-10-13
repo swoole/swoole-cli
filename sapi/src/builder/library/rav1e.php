@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
         ->withUrl('https://github.com/xiph/rav1e/archive/refs/tags/v0.6.6.tar.gz')
         ->withFile('rav1e-v0.6.6.tar.gz')
         ->withPrefix($rav1e_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($rav1e_prefix)
         ->withBuildScript(

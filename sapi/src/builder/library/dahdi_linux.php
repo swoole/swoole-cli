@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
                 git clone  --depth=1 https://github.com/asterisk/dahdi-linux.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($dahdi_linux_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($dahdi_linux_prefix)

@@ -28,6 +28,6 @@ EOF
             )
             ->withLdflags('')
             ->withPkgConfig('')
-            ->withBuildLibraryCached(false)
+            ->withBuildCached(false)
     );
 };

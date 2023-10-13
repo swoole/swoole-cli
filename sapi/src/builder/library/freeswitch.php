@@ -25,7 +25,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($freeswitch_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withCleanBuildDirectory()
         ->withPreInstallCommand(
             'alpine',

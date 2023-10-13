@@ -28,7 +28,7 @@ EOF
             )
             ->withPrefix($libbson_prefix)
             ->withAutoUpdateFile()
-            ->withBuildLibraryCached(false)
+            ->withBuildCached(false)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libbson_prefix)
             ->withConfigure(

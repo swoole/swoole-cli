@@ -25,7 +25,7 @@ EOF
 EOF
         )
         ->withPrefix($example_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
             meson  -h

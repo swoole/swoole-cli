@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($upnp_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withCleanBuildDirectory()
         ->withBuildScript(
             <<<EOF

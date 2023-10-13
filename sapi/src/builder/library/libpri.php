@@ -20,7 +20,7 @@ return function (Preprocessor $p) {
                 git clone  --depth=1 https://github.com/asterisk/libpri
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($libpri_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libpri_prefix)

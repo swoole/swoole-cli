@@ -33,7 +33,7 @@ EOF
             )
             ->withPrefix($libmongoc_prefix)
             //->withAutoUpdateFile()
-            //->withBuildLibraryCached(false)
+            //->withBuildCached(false)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libmongoc_prefix)
             ->withBuildScript(

@@ -21,7 +21,7 @@ EOF
         ->withPrefix($opencl_prefix)
         ->withCleanPreInstallDirectory($opencl_prefix)
         //->withAutoUpdateFile()
-        //->withBuildLibraryCached(false)
+        //->withBuildCached(false)
         ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF

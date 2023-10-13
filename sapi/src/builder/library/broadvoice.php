@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
                 git clone -b 5.x  --depth=1 https://github.com/opencv/opencv_contrib.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withBuildLibraryHttpProxy()
         ->withPreInstallCommand(
             'alpine',

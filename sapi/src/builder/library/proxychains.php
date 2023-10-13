@@ -18,7 +18,7 @@ EOF
         )
 
         ->withPrefix($proxychains_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             ./configure --help

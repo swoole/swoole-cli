@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
             ->withManual('https://libbpf.readthedocs.io/en/latest/libbpf_build.html')
             ->withPrefix($libbpf_prefix)
             /*
-            ->withBuildLibraryCached(false)
+            ->withBuildCached(false)
             */
             ->withPreInstallCommand(
                 'debian',
@@ -30,7 +30,7 @@ EOF
 EOF
             )
             //->withCleanPreInstallDirectory($libbpf_prefix)
-            //->withBuildLibraryCached(false)
+            //->withBuildCached(false)
             ->withBuildScript(
                 <<<EOF
                 # xdg-open https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf-next

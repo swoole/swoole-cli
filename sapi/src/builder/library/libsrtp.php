@@ -30,7 +30,7 @@ return function (Preprocessor $p) {
             --with-openssl-dir={$openssl_prefix}
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPkgName('libsrtp2')
         ->withDependentLibraries('libpcap', 'openssl');
 

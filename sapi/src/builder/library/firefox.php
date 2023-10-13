@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
                 tar -jxvf firefox-${FIREFOX_VERSION}.tar.bz2
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)

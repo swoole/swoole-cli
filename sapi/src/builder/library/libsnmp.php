@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withLicense('http://www.net-snmp.org/about/license.html', Library::LICENSE_BSD)
         ->withUrl('https://sourceforge.net/projects/net-snmp/files/net-snmp/5.9.1/net-snmp-5.9.1.tar.gz')
         ->withManual('http://www.net-snmp.org/docs/INSTALL.html')
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($libsnmp_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libsnmp_prefix)

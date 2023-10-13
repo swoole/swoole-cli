@@ -59,7 +59,7 @@ EOF
         EOF
             )
             //->withAutoUpdateFile()
-            //->withBuildLibraryCached(false)
+            //->withBuildCached(false)
             //->withCleanPreInstallDirectory($libelf_prefix)
             ->withBuildScript(
                 <<<EOF

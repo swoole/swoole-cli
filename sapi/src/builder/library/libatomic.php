@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libatomic_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             cd libatomic

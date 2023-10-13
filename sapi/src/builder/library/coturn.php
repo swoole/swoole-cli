@@ -40,7 +40,7 @@ EOF
             ->withPrefix($coturn_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($coturn_prefix)
-            ->withBuildLibraryCached(false)
+            ->withBuildCached(false)
 
             ->withConfigure(
                 <<<EOF

@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
         ->withUrl('https://github.com/sysrepo/sysrepo/archive/refs/tags/v2.2.73.tar.gz')
         ->withFile('sysrepo-v2.2.73.tar.gz')
         ->withManual('https://github.com/sysrepo/sysrepo.git')
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)

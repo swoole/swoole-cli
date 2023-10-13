@@ -27,7 +27,7 @@ EOF
         // 自动清理安装目录  用于调试
         ->withCleanPreInstallDirectory($example_prefix)
         //明确申明 不使用构建缓存 用于调试
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         //构建过程中添加代理 （特殊库才需要，比如构建 rav1e 库，构建过程中会自动到代码仓库下载）
         ->withBuildLibraryHttpProxy()
 

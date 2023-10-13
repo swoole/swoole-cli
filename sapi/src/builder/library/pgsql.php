@@ -29,7 +29,7 @@ return function (Preprocessor $p) {
             /*
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($pgsql_prefix)
-            ->withBuildLibraryCached(false)
+            ->withBuildCached(false)
             */
             ->withBuildScript(
                 <<<EOF

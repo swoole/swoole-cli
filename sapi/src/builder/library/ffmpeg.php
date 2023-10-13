@@ -43,7 +43,7 @@ EOF
         ->withPrefix($ffmpeg_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ffmpeg_prefix)
-        //->withBuildLibraryCached(false)
+        //->withBuildCached(false)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
@@ -52,7 +52,7 @@ EOF
 
 EOF
         )
-        //->withBuildLibraryCached(false)
+        //->withBuildCached(false)
         ->withConfigure(
             <<<EOF
 

@@ -26,7 +26,7 @@ return function (Preprocessor $p) {
         ->withPrefix($boost_prefix)
         //->withCleanBuildDirectory()
         //->withCleanPreInstallDirectory($boost_prefix)
-        //->withBuildLibraryCached(false)
+        //->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
             # 观察使用系统软件包安装结果

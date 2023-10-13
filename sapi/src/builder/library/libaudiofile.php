@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libaudiofile_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             sh autogen.sh

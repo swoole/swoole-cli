@@ -36,7 +36,7 @@ EOF
 EOF
             )
             ->withPrefix($libarchive_prefix)
-            //->withBuildLibraryCached(false)
+            //->withBuildCached(false)
            ->withCleanPreInstallDirectory($libarchive_prefix)
             ->withConfigure(
                 <<<EOF

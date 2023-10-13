@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
                git clone -b main --depth=1  https://chromium.googlesource.com/chromium/src  chromium
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)

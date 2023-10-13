@@ -25,7 +25,7 @@ EOF
         ->withPrefix($depot_tools_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($depot_tools_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
             cd ..

@@ -24,7 +24,7 @@ EOF
         ->withPrefix($ovn_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ovn_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF

@@ -18,7 +18,7 @@ EOF
         )
         ->withPrefix($vulkan_prefix)
         ->withCleanBuildDirectory()
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
 
         ->withConfigure(
             <<<EOF

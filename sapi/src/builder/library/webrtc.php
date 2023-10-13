@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
                git clone -b main --depth=1 https://webrtc.googlesource.com/src webrtc
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)

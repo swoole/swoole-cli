@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libsoup_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withCleanBuildDirectory()
         ->withBuildScript(
             <<<EOF

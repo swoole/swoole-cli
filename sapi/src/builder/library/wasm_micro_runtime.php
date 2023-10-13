@@ -20,7 +20,7 @@ EOF
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
              mkdir -p build

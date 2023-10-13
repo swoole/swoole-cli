@@ -26,7 +26,7 @@ EOF
         ->withPrefix($pjproject_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($pjproject_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
 

@@ -22,7 +22,7 @@ EOF
         /*
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libmlx5_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         */
         ->withPreInstallCommand(
             'alpine',

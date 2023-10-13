@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
                git clone -b main --depth=1 --single-branch  https://git.osgeo.org/gitea/postgis/postgis.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($example_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($example_prefix)

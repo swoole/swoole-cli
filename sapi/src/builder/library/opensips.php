@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
                 git clone -b master --depth=1 --recursive https://github.com/OpenSIPS/opensips.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF

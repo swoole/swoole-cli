@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/KhronosGroup/OpenXR-SDK/blob/main/LICENSE', Library::LICENSE_APACHE2)
         ->withUrl('https://github.com/KhronosGroup/OpenXR-SDK/archive/refs/tags/release-1.0.28.tar.gz')
         ->withManual('https://github.com/KhronosGroup/OpenXR-SDK.git')
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($OpenXR_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($OpenXR_prefix)

@@ -26,7 +26,7 @@ return function (Preprocessor $p) {
             ->withPrefix($privoxy_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($privoxy_prefix)
-            ->withBuildLibraryCached(false)
+            ->withBuildCached(false)
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF

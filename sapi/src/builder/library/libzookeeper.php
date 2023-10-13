@@ -24,7 +24,7 @@ return function (Preprocessor $p) {
 
 EOF
             )
-            ->withBuildLibraryCached(false)
+            ->withBuildCached(false)
             ->withBuildLibraryHttpProxy()
             ->withPrefix($libzookeeper_prefix)
             // 自动清理构建目录

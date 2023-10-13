@@ -21,7 +21,7 @@ EOF
         /*
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($glib_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         */
         ->withBuildLibraryHttpProxy()
         ->withBuildScript(

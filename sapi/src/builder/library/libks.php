@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libks_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withCleanBuildDirectory()
         ->withPreInstallCommand(
             'debian',

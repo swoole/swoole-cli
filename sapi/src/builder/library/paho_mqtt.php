@@ -36,7 +36,7 @@ EOF
             -DPAHO_ENABLE_TESTING=OFF
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPkgName('libsrtp2')
         ->withDependentLibraries('libpcap', 'openssl');
 

@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
                 git clone -b master  --depth=1 https://github.com/dpirch/libfvad.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($libfvad_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libfvad_prefix)

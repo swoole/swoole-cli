@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
         ->withHttpProxy(false)
         ->withPrefix($coreutils_prefix)
         ->withCleanBuildDirectory()
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
 

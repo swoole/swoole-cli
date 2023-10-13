@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
         ->withUrl('http://files.portaudio.com/archives/pa_stable_v190700_20210406.tgz')
         ->withFile('portaudio-stable_v190700_20210406.tgz')
         ->withPrefix($portaudio_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             autoreconf -if

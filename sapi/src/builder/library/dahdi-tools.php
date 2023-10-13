@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
                 git clone --depth=1 https://github.com/asterisk/dahdi-tools.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF

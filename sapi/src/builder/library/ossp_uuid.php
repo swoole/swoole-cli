@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
         ->withPrefix($ossp_uuid_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ossp_uuid_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             cd contrib/uuid-ossp

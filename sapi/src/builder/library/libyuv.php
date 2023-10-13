@@ -37,7 +37,7 @@ EOF
 
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withScriptAfterInstall(
             <<<EOF
             rm -rf {$libyuv_prefix}/lib/*.so.*

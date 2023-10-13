@@ -27,7 +27,7 @@ EOF
         ->withPrefix($libgomp_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($libgomp_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
           return 0

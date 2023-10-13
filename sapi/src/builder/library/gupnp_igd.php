@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
         ->withManual('https://wiki.gnome.org/Projects/GUPnP')
         ->withUntarArchiveCommand('xz')
         ->withPrefix($GUPnP_prefix)
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withCleanBuildDirectory()
         ->withBuildScript(
             <<<EOF

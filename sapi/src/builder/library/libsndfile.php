@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
                 git clone -b master  --depth=1 https://github.com/libsndfile/libsndfile.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPreInstallCommand('alpine',
             <<<EOF
             apk add uuid-runtime

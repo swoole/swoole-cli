@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
                 git clone -b master  --depth=1 https://github.com/freeswitch/freetdm.git
 EOF
         )
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
         ->withPrefix($freetdm_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($freetdm_prefix)
