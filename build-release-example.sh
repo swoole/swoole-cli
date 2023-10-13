@@ -38,6 +38,7 @@ esac
 # 配置系统仓库使用 china mirror
 MIRROR='china'
 
+IN_DOCKER=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -55,6 +56,7 @@ done
 
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
+        IN_DOCKER=1
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
@@ -64,16 +66,15 @@ if [ "$OS" = 'linux' ] ; then
                 sh sapi/quickstart/linux/alpine-init.sh
             fi
         }
-        git config --global --add safe.directory ${__PROJECT__}
         fi
+        git config --global --add safe.directory ${__PROJECT__}
     else
-
-          # docker inspect -f {{.State.Running}} download-box-web-server
-          if [ "`docker inspect -f {{.State.Running}} swoole-cli-alpine-dev`" = "true" ]; then
-              echo "  build container is running "
-            else
-              echo " build container no running "
-          fi
+        # docker inspect -f {{.State.Running}} download-box-web-server
+        if [ "`docker inspect -f {{.State.Running}} swoole-cli-alpine-dev`" = "true" ]; then
+            echo " build container is running "
+          else
+            echo " build container no running "
+        fi
     fi
 fi
 
@@ -110,10 +111,10 @@ export COMPOSER_ALLOW_SUPERUSER=1
 if [ "$MIRROR" = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 fi
-composer suggests --all
-composer update  --optimize-autoloader
+# composer suggests --all
+# composer dump-autoload
 
-composer dump-autoload
+composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
 
 # 可用配置参数
@@ -130,14 +131,22 @@ composer config -g --unset repos.packagist
 # bash sapi/quickstart/mark-install-library-cached.sh
 
 
-php prepare.php \
-  --without-docker=1 \
-  --with-global-prefix=/usr/local/swoole-cli \
-  --without-docker=1 \
-  --skip-download=1
+if [ ${IN_DOCKER} -ne 1 ] ; then
+{
+# 容器中
 
+  php prepare.php
 
-exit 0
+} else {
+# 容器外
+
+  php prepare.php \
+    --without-docker=1 \
+    --without-docker=${IN_DOCKER} \
+    --skip-download=1
+
+}
+fi
 
 
 
