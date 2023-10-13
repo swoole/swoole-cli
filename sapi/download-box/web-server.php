@@ -18,6 +18,8 @@ $http = new Swoole\Http\Server("0.0.0.0", 9503);
 # https://wiki.swoole.com/#/server/methods?id=reload
 # https://wiki.swoole.com/#/question/use?id=swoole如何正确的重启服务
 
+# top -p `pidof dockerd`
+
 
 $http->set([
     'document_root' => $web_document,
