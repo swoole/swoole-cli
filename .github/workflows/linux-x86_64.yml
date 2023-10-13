@@ -124,11 +124,11 @@ jobs:
 
       - name: Show Build Result
         run: |
-          ./php-src/sapi/cli/php -v
-          ./php-src/sapi/cli/php -m
-          ./php-src/sapi/cli/php --ri gd
-          ./php-src/sapi/cli/php --ri swoole
-          ./php-src/sapi/cli/php --ri pgsql
+          ./thirdparty/php-src/sapi/cli/php -v
+          ./thirdparty/php-src/sapi/cli/php -m
+          ./thirdparty/php-src/sapi/cli/php --ri gd
+          ./thirdparty/php-src/sapi/cli/php --ri swoole
+          ./thirdparty/php-src/sapi/cli/php --ri pgsql
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
