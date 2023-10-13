@@ -69,7 +69,7 @@ cd ${__DIR__}
 DEV_SHM=0
 while [ $# -gt 0 ]; do
   case "$1" in
-  --shm)
+  --dev-shm)
     DEV_SHM=1
     shift
     ;;
