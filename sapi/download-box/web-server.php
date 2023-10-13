@@ -22,8 +22,11 @@ $http = new Swoole\Http\Server("0.0.0.0", 9503);
 # Linux 信号列表
 # https://wiki.swoole.com/#/other/signal
 # kill -SIGHUP $(pidof php)
-# pgrep '^php'
-# ps aux | grep 'php'
+# kill -SIGHUP $(ps aux | grep 'php sapi/download-box/web-server.php' | grep -v grep | awk '{print $2}')
+
+# 关闭
+
+# kill -SIGKILL $(ps aux | grep 'php sapi/download-box/web-server.php' | grep -v grep | awk '{print $2}')
 
 
 $http->set([
