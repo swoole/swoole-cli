@@ -31,7 +31,7 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
+    <?php if ($item->enableInstallCached) : ?>
     if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
         echo "[<?=$item->name?>]  library cached , skip.."
         return 0
@@ -104,7 +104,7 @@ ___<?=$item->name?>__EOF___
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
 
-    <?php if ($item->enableBuildLibraryCached) : ?>
+    <?php if ($item->enableInstallCached) : ?>
     if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
         touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
     fi
@@ -194,7 +194,7 @@ make_config() {
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType()=='linux') : ?>
+    <?php if ($this->getOsType() == 'linux') : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
