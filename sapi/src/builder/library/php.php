@@ -21,8 +21,8 @@ return function (Preprocessor $p) {
                 rm -rf {$php_src}
             fi
             cd ..
-            cp -rf php_src {$php_src}
-            cd {$build_dir}/php_src
+            cp -rf php {$php_src}
+            cd {$build_dir}/php
 
 EOF
             )
