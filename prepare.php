@@ -89,7 +89,7 @@ $p->setRootDir(__DIR__);
 //设置 PHP 源码所在目录
 if ($p->getInputOption('with-php-src')) {
     $p->setGlobalPrefix($p->getInputOption('with-php-src'));
-}else{
+} else {
     $p->setPhpSrcDir($p->getRootDir() . '/php-src');
 }
 
