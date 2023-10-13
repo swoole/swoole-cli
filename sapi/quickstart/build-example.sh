@@ -66,6 +66,7 @@ if [ $OS = 'linux' ] ; then
                 sh sapi/quickstart/linux/alpine-init.sh
             fi
         }
+        fi
         git config --global --add safe.directory ${__PROJECT__}
     else
           # docker inspect -f {{.State.Running}} download-box-web-server
@@ -73,7 +74,6 @@ if [ $OS = 'linux' ] ; then
             echo " no running  build container "
           fi
     fi
-  fi
 fi
 
 if [ $OS = 'macos' ] ; then
