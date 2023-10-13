@@ -1,7 +1,12 @@
 FROM arm64v8/alpine:latest
 
+ARG MIRROR=""
+
 # setup source repo, install dependencies
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
+RUN if [ "${MIRROR}" = "ustc" -o "${MIRROR}" = "china"   ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories ; } fi
+RUN if [ "${MIRROR}" = "tuna" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories ; } fi
+
 RUN apk update --allow-untrusted
 RUN apk upgrade --allow-untrusted
 RUN apk add --allow-untrusted vim
@@ -19,4 +24,6 @@ RUN apk add --allow-untrusted bison
 RUN apk add --allow-untrusted re2c
 RUN apk add --allow-untrusted bash
 RUN apk add --allow-untrusted libc++-static
+RUN apk add --allow-untrusted tini
+
 WORKDIR /work
