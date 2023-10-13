@@ -39,12 +39,22 @@ case $OS in
   ;;
 
 esac
+IN_DOCKER=0
 
-MIRROR=''
+
+# 配置系统仓库  china mirror
+MIRROR='china'
+
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
+    shift
+    ;;
+  --proxy)
+    export http_proxy="$2"
+    export https_proxy="$2"
     shift
     ;;
   --*)
@@ -55,9 +65,10 @@ while [ $# -gt 0 ]; do
 done
 
 
-if [ $OS = 'linux' ] ; then
+if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
-        number=$(which meson  | wc -l)
+        IN_DOCKER=1
+        number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
             if [ "$MIRROR" = 'china' ] ; then
@@ -69,15 +80,17 @@ if [ $OS = 'linux' ] ; then
         fi
         git config --global --add safe.directory ${__PROJECT__}
     else
-          # docker inspect -f {{.State.Running}} download-box-web-server
-          if [ "`docker inspect -f {{.State.Running}} swoole-cli-alpine-dev`" = "true" ]; then
-            echo " no running  build container "
-          fi
+        # docker inspect -f {{.State.Running}} download-box-web-server
+        if [ "`docker inspect -f {{.State.Running}} swoole-cli-builder`" = "true" ]; then
+            echo " build container is running "
+          else
+            echo " build container no running "
+        fi
     fi
 fi
 
-if [ $OS = 'macos' ] ; then
-  number=$(which meson  | wc -l)
+if [ "$OS" = 'macos' ] ; then
+  number=$(which flex  | wc -l)
   if test $number -eq 0 ;then
   {
         if [ "$MIRROR" = 'china' ] ; then
@@ -111,6 +124,9 @@ export COMPOSER_ALLOW_SUPERUSER=1
 if [ "$MIRROR" = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 fi
+# composer suggests --all
+# composer dump-autoload
+
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
 
