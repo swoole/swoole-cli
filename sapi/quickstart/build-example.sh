@@ -84,6 +84,9 @@ if [ "$OS" = 'linux' ] ; then
         if [ "`docker inspect -f {{.State.Running}} swoole-cli-builder`" = "true" ]; then
             echo " build container is running "
           else
+            if ! docker info >/dev/null 2>&1; then
+                echo "Docker does not  running"
+            fi
             echo " build container no running "
         fi
     fi
