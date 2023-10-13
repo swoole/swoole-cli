@@ -65,4 +65,24 @@ esac
 
 
 cd ${__DIR__}
-docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
+
+DEV_SHM=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --shm)
+    DEV_SHM=1
+    shift
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+if [ $DEV_SHM -eq 0 ] ; then
+  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
+else
+  mkdir -p /dev/shm/swoole-cli/thirdparty/
+  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -v /dev/shm/swoole-cli/thirdparty/:/work/thirdparty/ -w /work $IMAGE tail -f /dev/null
+fi
