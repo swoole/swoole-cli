@@ -135,15 +135,12 @@ if [ ${IN_DOCKER} -ne 1 ] ; then
 {
 # 容器中
 
-  php prepare.php
+  php prepare.php --skip-download=1
 
 } else {
 # 容器外
 
-  php prepare.php \
-    --without-docker=1 \
-    --without-docker=${IN_DOCKER} \
-    --skip-download=1
+  php prepare.php --without-docker=1 --skip-download=1
 
 }
 fi
