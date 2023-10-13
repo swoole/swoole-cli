@@ -1,26 +1,20 @@
 #!/bin/bash
 
-set -exu
+
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
+__PROJECT__=${__DIR__}
 
-if [ -f ${__DIR__}/prepare.php ] ; then
-  __PROJECT__=$(
-    cd ${__DIR__}/
-    pwd
-  )
-else
-  __PROJECT__=$(
-    cd ${__DIR__}/../../
-    pwd
-  )
+if [ ! -f ${__DIR__}/prepare.php ] ; then
+  echo 'no found prepare.php'
+  exit 0
 fi
 
 cd ${__PROJECT__}
 
-
+set -x
 # shellcheck disable=SC2034
 OS=$(uname -s)
 # shellcheck disable=SC2034
@@ -40,11 +34,23 @@ case $OS in
 
 esac
 
-MIRROR=''
+
+IN_DOCKER=0
+
+
+# 配置系统仓库  china mirror
+MIRROR='china'
+
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
+    shift
+    ;;
+  --proxy)
+    export http_proxy="$2"
+    export https_proxy="$2"
     shift
     ;;
   --*)
@@ -55,9 +61,10 @@ while [ $# -gt 0 ]; do
 done
 
 
-if [ $OS = 'linux' ] ; then
+if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
-        number=$(which meson  | wc -l)
+        IN_DOCKER=1
+        number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
             if [ "$MIRROR" = 'china' ] ; then
@@ -68,12 +75,19 @@ if [ $OS = 'linux' ] ; then
         }
         fi
         git config --global --add safe.directory ${__PROJECT__}
+    else
+        # docker inspect -f {{.State.Running}} download-box-web-server
+        if [ "`docker inspect -f {{.State.Running}} swoole-cli-builder`" = "true" ]; then
+            echo " build container is running "
+          else
+            echo " build container no running "
+        fi
     fi
 fi
 
-if [ $OS = 'macos' ] ; then
-  number=$(which meson  | wc -l)
-  if test $number -eq 0 ;then
+if [ "$OS" = 'macos' ] ; then
+  number=$(which flex  | wc -l)
+  if test $number -eq 0 -o -f sapi/quickstart/macos/homebrew-init.sh ;then
   {
         if [ "$MIRROR" = 'china' ] ; then
             bash sapi/quickstart/macos/homebrew-init.sh --mirror china
@@ -93,8 +107,6 @@ if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
       fi
 fi
 
-bash sapi/quickstart/clean-folder.sh
-
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
 
@@ -106,43 +118,68 @@ export COMPOSER_ALLOW_SUPERUSER=1
 if [ "$MIRROR" = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 fi
+# composer suggests --all
+# composer dump-autoload
+
 composer update  --optimize-autoloader
 composer config -g --unset repos.packagist
+
 
 # 可用配置参数
 # --with-swoole-pgsql=1
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
-# --with-build-type=dev
-# --with-skip-download=1
-# --with-http-proxy=http://192.168.3.26:8015
+# --skip-download=1
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos
-# --with-override-default-enabled-ext=1
-# --with-php-version=8.1.20
-# --with-c-compiler=[gcc|clang] 默认clang
 
 
 
-# bash sapi/quickstart/mark-install-library-cached.sh
+if [ ${IN_DOCKER} -ne 1 ] ; then
+{
+# 容器中
+
+  php prepare.php --skip-download=1
+
+} else {
+# 容器外
+
+  php prepare.php --without-docker=1 --skip-download=1
+
+}
+fi
 
 
-php prepare.php \
-  --without-docker=1 \
-  --with-global-prefix=/usr/local/swoole-cli \
-  +inotify +apcu +ds +xlswriter +ssh2 +pgsql -pdo_pgsql \
-  --with-swoole-pgsql=1 --with-libavif=1
-
-exit 0
-
-
-bash make-install-deps.sh
 
 bash make.sh all-library
 
 bash make.sh config
 
 bash make.sh build
+
+
+exit 0
+
+
+:<<'EOF'
+echo  "Enter mirror [china]:\n \c"
+read Location
+case $Location in
+    china)
+       echo "use china mirror"
+       MIRROR='china'
+      ;;
+
+    *) e
+      cho " no mirror "
+       ;;
+esac
+
+EOF
+
+
+
+
 
