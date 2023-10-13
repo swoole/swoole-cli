@@ -122,26 +122,16 @@ jobs:
         if: 0
         run: |
           export PATH="/usr/local/opt/binutils/bin:$PATH"
-          ./php-src/sapi/cli/php -v
-          ./php-src/sapi/cli/php -m
-          ./php-src/sapi/cli/php --ri gd
-          ./php-src/sapi/cli/php --ri swoole
-          ./php-src/sapi/cli/php --ri pgsql
-          ./php-src/sapi/cli/php --ri pdo_pgsql
 
+          ./thirdparty/php-src/sapi/cli/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           otool -L ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
 
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -m
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php swoole
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php  --list-tests
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/unit/MainTest.php
+          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
-          ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts
         if: 0

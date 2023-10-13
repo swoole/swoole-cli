@@ -33,7 +33,7 @@ EOF
         )
         ->withScriptAfterInstall(
             <<<EOF
-            sed -i.backup "s/-ldl/  /g" {$libx264_prefix}/lib/pkgconfig/libcrypto.pc
+            sed -i.backup "s/-ldl/  /g" {$libx264_prefix}/lib/pkgconfig/x264.pc
 EOF
         )
         ->withPkgName('x264')

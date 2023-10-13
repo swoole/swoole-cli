@@ -343,15 +343,13 @@ export_variables() {
 
 
 make_config() {
-    mkdir -p <?= $this->getWorkDir()  ?>/php-src/
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+
     make_ext_hook
 
     # export_variables
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
-
 
     exit 0
 
@@ -439,17 +437,6 @@ _____EO_____
 
 
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-
-    make_ext
-    make_ext_hook
-
-
-<?php if ($this->osType === 'macos') : ?>
-    <?php if (isset($this->libraryMap['pgsql'])) : ?>
-        sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
-    <?php endif;?>
-<?php endif; ?>
-
 }
 
 make_build() {

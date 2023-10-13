@@ -67,7 +67,7 @@ jobs:
           image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
-            ./php-src/sapi/cli/php -v
+            ./thirdparty/php-src/sapi/cli/php -v
             file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
