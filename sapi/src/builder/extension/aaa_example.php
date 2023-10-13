@@ -53,7 +53,7 @@ return function (Preprocessor $p) {
         //明确申明 不使用缓存目录
         //例子： ext/swoole (每次都解压全新源代码到此目录）
         //例子： 下载扩展方式四 ，明确不使用  pool/ext/swoole-submodule.tar.gz 缓存文件；每一次都会拉取最新的代码
-        ->withBuildLibraryCached(false)
+        ->withBuildCached(false)
 
         */
 
