@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     $build_dir = $p->getBuildDir();
 
     $p->addLibrary(
-        (new Library('php_src'))
+        (new Library('php'))
             ->withUrl('https://github.com/php/php-src/archive/refs/tags/php-' . BUILD_PHP_VERSION . '.tar.gz')
             ->withHomePage('https://www.php.net/')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Library::LICENSE_PHP)
@@ -21,8 +21,8 @@ return function (Preprocessor $p) {
                 rm -rf {$php_src}
             fi
             cd ..
-            cp -rf php_src {$php_src}
-            cd {$build_dir}/php_src
+            cp -rf php {$php_src}
+            cd {$build_dir}/php
 
 EOF
             )

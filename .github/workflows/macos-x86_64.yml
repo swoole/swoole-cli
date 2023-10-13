@@ -107,17 +107,17 @@ jobs:
       - name: Show Build Result
         run: |
           export PATH="/usr/local/opt/binutils/bin:$PATH"
-          ./php-src/sapi/cli/php -v
-          ./php-src/sapi/cli/php -m
-          ./php-src/sapi/cli/php --ri gd
-          ./php-src/sapi/cli/php --ri swoole
-          ./php-src/sapi/cli/php --ri pgsql
+          ./thirdparty/php-src/sapi/cli/php -v
+          ./thirdparty/php-src/sapi/cli/php -m
+          ./thirdparty/php-src/sapi/cli/php --ri gd
+          ./thirdparty/php-src/sapi/cli/php --ri swoole
+          ./thirdparty/php-src/sapi/cli/php --ri pgsql
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           otool -L ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
-          ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          ./php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
