@@ -295,12 +295,12 @@ EOF;
 }
 
 make_ext_hook() {
-    cd <?= $this->getPhpSrcDir() ?>/
+    cd <?= $this->getWorkDir() ?>/
 <?php foreach ($this->extHooks as $name => $value) : ?>
     # ext <?= $name ?> hook
     <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
-    cd <?= $this->getPhpSrcDir() ?>/
+    cd <?= $this->getWorkDir() ?>/
     return 0
 }
 
