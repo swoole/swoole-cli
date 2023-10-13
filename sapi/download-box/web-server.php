@@ -19,6 +19,11 @@ $http = new Swoole\Http\Server("0.0.0.0", 9503);
 # https://wiki.swoole.com/#/question/use?id=swoole如何正确的重启服务
 
 # top -p `pidof dockerd`
+# Linux 信号列表
+# https://wiki.swoole.com/#/other/signal
+# kill -SIGHUP $(pidof php)
+# pgrep '^php'
+# ps aux | grep 'php'
 
 
 $http->set([
@@ -31,7 +36,7 @@ $http->set([
         'application/json'
     ],
     'display_errors' => true,
-    //'daemonize'=>true,
+    'daemonize'=>true,
     'log_file' => "/tmp/swoole-cli-download-box-web.log"
      # 'ssl_cert_file' => __DIR__.'/config/ssl.crt',
      # 'ssl_key_file' => __DIR__.'/config/ssl.key',
