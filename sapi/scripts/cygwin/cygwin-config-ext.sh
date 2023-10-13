@@ -33,7 +33,7 @@ if [ ! -d $ROOT/ext/redis ]; then
 fi
 
 if [ ! -d $ROOT/ext/mongodb ]; then
-    if [ ! -f redis-${MONGODB_VERSION}.tgz ]; then
+    if [ ! -f mongodb-${MONGODB_VERSION}.tgz ]; then
         wget https://pecl.php.net/get/mongodb-${MONGODB_VERSION}.tgz
     fi
     tar xvf mongodb-${MONGODB_VERSION}.tgz
@@ -41,7 +41,7 @@ if [ ! -d $ROOT/ext/mongodb ]; then
 fi
 
 if [ ! -d $ROOT/ext/yaml ]; then
-    if [ ! -f redis-${YAML_VERSION}.tgz ]; then
+    if [ ! -f yaml-${YAML_VERSION}.tgz ]; then
         wget https://pecl.php.net/get/yaml-${YAML_VERSION}.tgz
     fi
     tar xvf yaml-${YAML_VERSION}.tgz
@@ -49,7 +49,7 @@ if [ ! -d $ROOT/ext/yaml ]; then
 fi
 
 if [ ! -d $ROOT/ext/imagick ]; then
-    if [ ! -f redis-${IMAGICK_VERSION}.tgz ]; then
+    if [ ! -f imagick-${IMAGICK_VERSION}.tgz ]; then
         wget https://pecl.php.net/get/imagick-${IMAGICK_VERSION}.tgz
     fi
     tar xvf imagick-${IMAGICK_VERSION}.tgz
