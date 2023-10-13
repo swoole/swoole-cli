@@ -713,7 +713,7 @@ EOF;
                     $dst_dir = "{$this->rootDir}/ext/{$ext->aliasName}";
                     $ext_name = $ext->aliasName;
                 }
-                if (($ext->enableLatestTarball || !$ext->enableBuildLibraryCached)
+                if (($ext->enableLatestTarball || !$ext->enableBuildCached)
                     &&
                     (!empty($ext->peclVersion) || $ext->enableDownloadScript || !empty($ext->url))
                 ) {
@@ -722,7 +722,7 @@ EOF;
 
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
                 $cached = $dst_dir . '/.completed';
-                if (file_exists($cached) && $ext->enableBuildLibraryCached) {
+                if (file_exists($cached) && $ext->enableBuildCached) {
                     if (in_array($this->buildType, ['dev', 'debug'])) {
                         echo '[ext/' . $ext_name . '] cached ' . PHP_EOL;
                     }
@@ -731,7 +731,7 @@ EOF;
                     echo PHP_EOL;
                     echo `$cmd`;
                     echo PHP_EOL;
-                    if ($ext->enableBuildLibraryCached) {
+                    if ($ext->enableBuildCached) {
                         touch($cached);
                     }
                 }

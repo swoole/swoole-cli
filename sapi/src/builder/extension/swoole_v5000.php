@@ -35,7 +35,7 @@ return function (Preprocessor $p) {
             git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
-        ->withBuildLibraryCached(false);
+        ->withBuildCached(false);
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
 
