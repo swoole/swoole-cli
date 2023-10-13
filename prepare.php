@@ -87,7 +87,11 @@ $p->setRootDir(__DIR__);
 
 // Sync code from php-src
 //设置 PHP 源码所在目录
-$p->setPhpSrcDir($p->getRootDir() . '/php-src');
+if ($p->getInputOption('with-php-src')) {
+    $p->setGlobalPrefix($p->getInputOption('with-php-src'));
+}else{
+    $p->setPhpSrcDir($p->getRootDir() . '/php-src');
+}
 
 //设置PHP 安装目录
 define("BUILD_PHP_INSTALL_PREFIX", $p->getRootDir() . '/bin/php-' . BUILD_PHP_VERSION);
