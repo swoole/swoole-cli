@@ -141,17 +141,20 @@ if [ ${IN_DOCKER} -ne 1 ] ; then
 {
 # 容器中
 
-  php prepare.php --skip-download=1
+  php prepare.php +inotify +apcu +ds +xlswriter +ssh2
 
 } else {
 # 容器外
 
-  php prepare.php --without-docker=1 --skip-download=1
+  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2
 
 }
 fi
 
-
+if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
+   echo ' please run in container !'
+   exit 0
+fi
 
 bash make.sh all-library
 
