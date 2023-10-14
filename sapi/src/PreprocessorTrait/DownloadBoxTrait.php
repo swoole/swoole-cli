@@ -16,9 +16,10 @@ __DIR__=$(
 )
 
 cd ${__DIR__}
-mkdir -p ${__DIR__}/var/tmp
-mkdir -p ${__DIR__}/libraries
-mkdir -p ${__DIR__}/extensions
+mkdir -p ${__DIR__}/tmp
+mkdir -p ${__DIR__}/lib
+mkdir -p ${__DIR__}/ext
+
 
 EOF;
 
@@ -34,13 +35,13 @@ EOF;
                 $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
             }
         }
-        file_put_contents($this->getRootDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download-box/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
 
         $download_scripts = [];
         foreach ($this->extensionMap as $item) {
             if ($item->enableDownloadScript && !$item->enableDownloadWithMirrorURL) {
-                $workDir = '${__DIR__}/var';
-                $cacheDir = '${__DIR__}/var/tmp/download/ext/' . $item->name;
+                $workDir = '${__DIR__}/';
+                $cacheDir = '${__DIR__}/tmp/ext/' . $item->name;
                 $downloadScript = <<<EOF
 
 ## ------------------- download extension {$item->name} start -------------------
@@ -49,8 +50,7 @@ mkdir -p {$cacheDir}
 cd {$cacheDir}
 {$item->downloadScript}
 cd {$item->downloadDirName}
-test -f {$workDir}/var/extensions/{$item->file} || tar -czf  {$workDir}/{$item->file} ./
-cp -f {$workDir}/{$item->file} "\${__DIR__}/extensions/"
+test -f {$workDir}/ext/{$item->file} || tar -czf {$workDir}/ext/{$item->file} ./
 cd {$workDir}
 ## ------------------- download extension {$item->name} end -------------------
 
@@ -60,7 +60,7 @@ EOF;
             }
         }
         file_put_contents(
-            $this->getRootDir() . '/var/download_extension_use_git.sh',
+            $this->getRootDir() . '/var/download-box/download_extension_use_git.sh',
             $this->downloadScriptHeader . PHP_EOL .
             implode(PHP_EOL, $download_scripts)
         );
@@ -80,14 +80,14 @@ EOF;
                 $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
             }
         }
-        file_put_contents($this->getRootDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt', implode(PHP_EOL, $download_urls));
 
 
         $download_scripts = [];
         foreach ($this->libraryList as $item) {
             if ($item->enableDownloadScript && !$item->enableDownloadWithMirrorURL) {
-                $workDir = '${__DIR__}/var';
-                $cacheDir = '${__DIR__}/var/tmp/download/lib/' . $item->name;
+                $workDir = '${__DIR__}/';
+                $cacheDir = '${__DIR__}/tmp/lib/' . $item->name;
                 $downloadScript = <<<EOF
 
 ## ------------------- download library {$item->name} start -------------------
@@ -96,8 +96,7 @@ mkdir -p {$cacheDir}
 cd {$cacheDir}
 {$item->downloadScript}
 cd {$item->downloadDirName}
-test -f {$workDir}/libraries/{$item->file} || tar  -czf {$workDir}/{$item->file} ./
-cp -f {$workDir}/{$item->file} "\${__DIR__}/libraries/"
+test -f  {$workDir}/lib/{$item->file} || tar  -czf {$workDir}/lib/{$item->file} ./
 cd {$workDir}
 ## ------------------- download library {$item->name} end -------------------
 
@@ -107,7 +106,7 @@ EOF;
             }
         }
         file_put_contents(
-            $this->rootDir . '/var/download_library_use_git.sh',
+            $this->rootDir . '/var/download-box/download_library_use_git.sh',
             $this->downloadScriptHeader . PHP_EOL .
             implode(PHP_EOL, $download_scripts)
         );
