@@ -144,7 +144,7 @@ composer config -g --unset repos.packagist
 # --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 
 
-if [ ${IN_DOCKER} -ne 1 ] ; then
+if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
@@ -153,7 +153,7 @@ if [ ${IN_DOCKER} -ne 1 ] ; then
 } else {
 # 容器外
 
-  php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql
+  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql
 
 }
 fi
@@ -162,6 +162,7 @@ if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'
    exit 0
 fi
+
 
 bash make-install-deps.sh
 
@@ -175,28 +176,5 @@ bash make.sh config
 bash make.sh build
 
 bash make.sh archive
-
-
-exit 0
-
-
-:<<'EOF'
-echo  "Enter mirror [china]:\n \c"
-read Location
-case $Location in
-    china)
-       echo "use china mirror"
-       MIRROR='china'
-      ;;
-
-    *) e
-      cho " no mirror "
-       ;;
-esac
-
-EOF
-
-
-
 
 
