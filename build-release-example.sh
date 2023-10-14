@@ -40,7 +40,7 @@ IN_DOCKER=0
 
 # 配置系统仓库  china mirror
 MIRROR='china'
-
+MIRROR=''
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -141,16 +141,20 @@ if [ ${IN_DOCKER} -ne 1 ] ; then
 {
 # 容器中
 
-  php prepare.php --with-skip-download=1   +inotify +apcu +ds +xlswriter +ssh2 +pgsql
+  php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql
 
 } else {
 # 容器外
 
-  php prepare.php --without-docker=1 --with-skip-download=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql
+  php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql
 
 }
 fi
 
+if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
+   echo ' please run in container !'
+   exit 0
+fi
 
 bash make-install-deps.sh
 
