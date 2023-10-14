@@ -98,6 +98,7 @@ if [ "$OS" = 'macos' ] ; then
   fi
 fi
 
+bash sapi/quickstart/clean-folder.sh
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
       if [ "$MIRROR" = 'china' ] ; then
@@ -127,37 +128,49 @@ composer config -g --unset repos.packagist
 
 # 可用配置参数
 # --with-swoole-pgsql=1
+# --with-libavif=1
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
-# --skip-download=1
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos
-
+# --with-build-type=dev
+# --with-skip-download=1
+# --with-http-proxy=http://192.168.3.26:8015
+# --with-override-default-enabled-ext=0
+# --with-php-version=8.2.11
+# --with-c-compiler=[gcc|clang] 默认clang
+# --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 
 
 if [ ${IN_DOCKER} -ne 1 ] ; then
 {
 # 容器中
 
-  php prepare.php --skip-download=1
+  php prepare.php --with-skip-download=1   +inotify +apcu +ds +xlswriter +ssh2 +pgsql
 
 } else {
 # 容器外
 
-  php prepare.php --without-docker=1 --skip-download=1
+  php prepare.php --without-docker=1 --with-skip-download=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql
 
 }
 fi
 
 
+bash make-install-deps.sh
+
+# 兼容上一版本已构建完毕的依赖库
+# bash sapi/quickstart/mark-install-library-cached.sh
 
 bash make.sh all-library
 
 bash make.sh config
 
 bash make.sh build
+
+bash make.sh archive
 
 
 exit 0
