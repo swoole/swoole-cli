@@ -137,7 +137,7 @@ composer config -g --unset repos.packagist
 # --with-http-proxy=http://192.168.3.26:8015
 # --with-override-default-enabled-ext=0
 
-if [ ${IN_DOCKER} -ne 1 ] ; then
+if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
@@ -156,6 +156,7 @@ if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
    exit 0
 fi
 
+
 bash make-install-deps.sh
 
 # 清理不匹配的依赖库 （比如使用 main 分支的依赖库构建，需要先清理，后构建）
@@ -171,11 +172,5 @@ bash make.sh config
 bash make.sh build
 
 bash make.sh archive
-
-
-exit 0
-
-
-
 
 
