@@ -156,6 +156,9 @@ fi
 
 bash make-install-deps.sh
 
+# 清理不匹配的依赖库 （比如使用 main 分支的依赖库构建，需要先清理，后构建）
+# bash sapi/quickstart/clean-no-match-library-for-php.sh
+
 # 兼容上一版本已构建完毕的依赖库
 # bash sapi/quickstart/mark-install-library-cached.sh
 
