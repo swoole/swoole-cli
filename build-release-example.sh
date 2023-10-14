@@ -144,7 +144,7 @@ composer config -g --unset repos.packagist
 # --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 
 
-if [ ${IN_DOCKER} -ne 1 ] ; then
+if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
@@ -163,6 +163,7 @@ if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
    exit 0
 fi
 
+
 bash make-install-deps.sh
 
 # 兼容上一版本已构建完毕的依赖库
@@ -175,28 +176,5 @@ bash make.sh config
 bash make.sh build
 
 bash make.sh archive
-
-
-exit 0
-
-
-:<<'EOF'
-echo  "Enter mirror [china]:\n \c"
-read Location
-case $Location in
-    china)
-       echo "use china mirror"
-       MIRROR='china'
-      ;;
-
-    *) e
-      cho " no mirror "
-       ;;
-esac
-
-EOF
-
-
-
 
 
