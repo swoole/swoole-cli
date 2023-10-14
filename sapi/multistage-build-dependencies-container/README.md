@@ -22,7 +22,7 @@
 bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh
 
 ## 使用代理
-bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh --proxy http://127.0.0.1:1080 --composer_mirror aliyun
+bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh --proxy http://127.0.0.1:1080
 
 ```
 
