@@ -7,7 +7,7 @@ return function (Preprocessor $p) {
     $sdl2_prefix = SDL2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
     $lib = new Library('sdl2');
-    $lib->withHomePage('libsdl.org')
+    $lib->withHomePage('https://libsdl.org')
         ->withLicense('https://github.com/libsdl-org/SDL/blob/main/LICENSE.txt', Library::LICENSE_SPEC)
         ->withManual('https://github.com/libsdl-org/SDL.git')
         ->withFile('SDL-release-2.28.1.tar.gz')
