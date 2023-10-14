@@ -148,7 +148,7 @@ if [ ${IN_DOCKER} -ne 1 ] ; then
 } else {
 # 容器外
 
-  php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql
+  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql
 
 }
 fi
