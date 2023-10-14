@@ -98,6 +98,7 @@ if [ "$OS" = 'macos' ] ; then
   fi
 fi
 
+bash sapi/quickstart/clean-folder.sh
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
       if [ "$MIRROR" = 'china' ] ; then
@@ -139,6 +140,10 @@ composer config -g --unset repos.packagist
 # --with-http-proxy=http://192.168.3.26:8015
 # --with-override-default-enabled-ext=1
 # --with-libavif=1
+# --with-php-version=8.2.11
+# --with-c-compiler=[gcc|clang] 默认clang
+# --with-download-mirror-url=https://php-cli.jingjingxyk.com/
+# --with-os-repository-mirror=1   # 系统仓库镜像
 
 if [ ${IN_DOCKER} -ne 1 ] ; then
 {
