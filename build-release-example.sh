@@ -127,18 +127,17 @@ composer config -g --unset repos.packagist
 
 # 可用配置参数
 # --with-swoole-pgsql=1
+# --with-libavif=1
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
-# --skip-download=1
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos
 # --with-build-type=dev
 # --with-skip-download=1
 # --with-http-proxy=http://192.168.3.26:8015
-# --with-override-default-enabled-ext=1
-# --with-libavif=1
+# --with-override-default-enabled-ext=0
 
 if [ ${IN_DOCKER} -ne 1 ] ; then
 {
