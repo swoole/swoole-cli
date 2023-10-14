@@ -412,7 +412,6 @@ help() {
     echo "./make.sh build"
     echo "./make.sh test"
     echo "./make.sh archive"
-    echo "./make.sh archive-sfx-micro"
     echo "./make.sh all-library"
     echo "./make.sh list-library"
     echo "./make.sh list-extension"
