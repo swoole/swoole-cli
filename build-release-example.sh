@@ -153,7 +153,7 @@ if [ ${IN_DOCKER} -ne 1 ] ; then
 }
 fi
 
-if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -ne 0 ] ; then
+if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'
    exit 0
 fi
