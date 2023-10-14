@@ -126,32 +126,39 @@ composer config -g --unset repos.packagist
 
 
 # 可用配置参数
-# --with-swoole-pgsql=1
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
-# --skip-download=1
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos
-
-
+# --with-build-type=dev
+# --with-skip-download=1
+# --with-http-proxy=http://192.168.3.26:8015
+# --with-override-default-enabled-ext=0
 
 if [ ${IN_DOCKER} -ne 1 ] ; then
 {
 # 容器中
 
-  php prepare.php --skip-download=1
+  php prepare.php --with-skip-download=1   +inotify +apcu +ds +xlswriter +ssh2 +pgsql
 
 } else {
 # 容器外
 
-  php prepare.php --without-docker=1 --skip-download=1
+  php prepare.php --without-docker=1 --with-skip-download=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql
 
 }
 fi
 
 
+bash make-install-deps.sh
+
+# 清理不匹配的依赖库 （比如使用 main 分支的依赖库构建，需要先清理，后构建）
+# bash sapi/quickstart/clean-no-match-library-for-php.sh
+
+# 兼容上一版本已构建完毕的依赖库
+# bash sapi/quickstart/mark-install-library-cached.sh
 
 bash make.sh all-library
 
@@ -159,25 +166,10 @@ bash make.sh config
 
 bash make.sh build
 
+bash make.sh archive
+
 
 exit 0
-
-
-:<<'EOF'
-echo  "Enter mirror [china]:\n \c"
-read Location
-case $Location in
-    china)
-       echo "use china mirror"
-       MIRROR='china'
-      ;;
-
-    *) e
-      cho " no mirror "
-       ;;
-esac
-
-EOF
 
 
 
