@@ -126,8 +126,6 @@ composer config -g --unset repos.packagist
 
 
 # 可用配置参数
-# --with-swoole-pgsql=1
-# --with-libavif=1
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
@@ -172,23 +170,6 @@ bash make.sh archive
 
 
 exit 0
-
-
-:<<'EOF'
-echo  "Enter mirror [china]:\n \c"
-read Location
-case $Location in
-    china)
-       echo "use china mirror"
-       MIRROR='china'
-      ;;
-
-    *) e
-      cho " no mirror "
-       ;;
-esac
-
-EOF
 
 
 
