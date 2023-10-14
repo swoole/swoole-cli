@@ -7,6 +7,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
+__PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -199,10 +200,11 @@ make_clean() {
 }
 
 help() {
-    echo "./make.sh docker-build"
+    echo "./make.sh docker-build [china|ustc|tuna]"
     echo "./make.sh docker-bash"
     echo "./make.sh docker-commit"
     echo "./make.sh docker-push"
+    echo "./make.sh docker-stop"
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh test"
@@ -223,37 +225,49 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-    cd <?=$this->getRootDir()?>/sapi/docker
-    docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f <?= $this->getBaseImageDockerFile() ?>  .
+    MIRROR=""
+    if [ -n "$2" ]; then
+        MIRROR=$2
+    fi
+    cd ${__PROJECT_DIR__}/sapi/docker
+    docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f <?= $this->getBaseImageDockerFile() ?>  . --build-arg="MIRROR=${MIRROR}"
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
     base_image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> | tail -n +2 2> /dev/null)
     image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> | tail -n +2 2> /dev/null)
+    CONTAINER_STATE=$(docker inspect -f {{.State.Running}} <?= Preprocessor::CONTAINER_NAME ?> 2> /dev/null)
+    if [[ "${CONTAINER_STATE}" != "true" ]]; then
+        bash ./make.sh docker-stop
+        container=''
+    fi
 
     if [[ -z ${container} ]] ;then
         if [[ ! -z ${image} ]] ;then
             echo "swoole-cli-builder container does not exist, try to create with image[<?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?>]"
-            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v ${ROOT}:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+            docker run -d --name <?= Preprocessor::CONTAINER_NAME ?> -v  ${__PROJECT_DIR__}:/work <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> tini -- tail -f /dev/null
         elif [[ ! -z ${base_image} ]] ;then
             echo "swoole-cli-builder container does not exist, try to create with image[<?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?>]"
-            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v ${ROOT}:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> /bin/bash
+            docker run -d --name <?= Preprocessor::CONTAINER_NAME ?> -v  ${__PROJECT_DIR__}:/work  <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> tini -- tail -f /dev/null
         else
             echo "<?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> image does not exist, try to pull"
             echo "create container with <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> image"
-            docker run -it --name <?= Preprocessor::CONTAINER_NAME ?> -v ${ROOT}:<?=$this->getWorkDir()?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> /bin/bash
+            docker run -d --name <?= Preprocessor::CONTAINER_NAME ?> -v  ${__PROJECT_DIR__}:/work  <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> tini -- tail -f /dev/null
         fi
-    else
-        if [[ "${container}" =~ "Exited" ]]; then
-            docker start <?= Preprocessor::CONTAINER_NAME ?> ;
-        fi
-        docker exec -it <?= Preprocessor::CONTAINER_NAME ?> /bin/bash
     fi
+    docker exec -it <?= Preprocessor::CONTAINER_NAME ?> /bin/bash
     exit 0
 elif [ "$1" = "docker-commit" ] ;then
     docker commit <?= Preprocessor::CONTAINER_NAME ?> <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
-elif [ "$1" = "docker-commit" ] ;then
+elif [ "$1" = "docker-push" ] ;then
     docker push <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> && exit 0
+elif [ "$1" = "docker-stop" ] ;then
+    {
+        docker stop <?= Preprocessor::CONTAINER_NAME ?><?= PHP_EOL ?>
+        docker rm <?= Preprocessor::CONTAINER_NAME ?><?= PHP_EOL ?>
+    } || {
+        echo $?
+    }
 elif [ "$1" = "all-library" ] ;then
     make_all_library
 <?php foreach ($this->libraryList as $item) : ?>
