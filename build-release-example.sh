@@ -137,7 +137,7 @@ composer config -g --unset repos.packagist
 
 
 
-if [ ${IN_DOCKER} -ne 1 ] ; then
+if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
