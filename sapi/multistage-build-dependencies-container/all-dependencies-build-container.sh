@@ -11,9 +11,10 @@ __PROJECT__=$(
 )
 
 if [[ -f /.dockerenv ]]; then
-  echo 'not in docker'
+  echo 'not support in docker'
   exit 0
 fi
+
 
 cd ${__PROJECT__}
 

@@ -11,26 +11,21 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-mkdir -p ${__PROJECT__}/var/
-mkdir -p ${__PROJECT__}/var/libraries/
-mkdir -p ${__PROJECT__}/var/extensions/
+DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
+mkdir -p "${DOWNLOAD_BOX_DIR}"
+mkdir -p "${DOWNLOAD_BOX_DIR}/lib/"
+mkdir -p "${DOWNLOAD_BOX_DIR}/ext/"
 
-touch ${__PROJECT__}/var/libraries/.gitkeep
-touch ${__PROJECT__}/var/extensions/.gitkeep
-
-
+cd "${DOWNLOAD_BOX_DIR}"
 
 cd ${__PROJECT__}/
 
 mkdir -p pool/lib
 mkdir -p pool/ext
 
-cd ${__PROJECT__}/
 
-# cp -rf ${__PROJECT__}/var/download/* ${__PROJECT__}/pool/lib
-
-awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib"  ; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext"; print "n" |cmd; }'
 
 cd ${__PROJECT__}
 
