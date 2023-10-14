@@ -10,6 +10,12 @@ __PROJECT__=$(
   pwd
 )
 
+if [[ -f /.dockerenv ]]; then
+  echo 'not support in docker'
+  exit 0
+fi
+
+
 cd ${__PROJECT__}
 
 mkdir -p ${__PROJECT__}/var
