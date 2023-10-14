@@ -881,11 +881,11 @@ class Preprocessor
             }
             $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getRootDir() . '/var/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt', implode(PHP_EOL, $download_urls));
         $download_urls = [];
         foreach ($this->downloadExtensionList as $item) {
             $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
         }
-        file_put_contents($this->getRootDir() . '/var/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download-box/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
     }
 }
