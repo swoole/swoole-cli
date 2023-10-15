@@ -74,7 +74,7 @@ RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repo
 RUN if [ "${MIRROR}" = "ustc" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories ; } fi
 RUN if [ "${MIRROR}" = "tuna" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories ; } fi
 
-RUN apk update && -no-cache tini
+RUN apk update && apk add --no-cache tini
 
 WORKDIR /work
 

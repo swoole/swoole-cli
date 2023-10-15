@@ -124,6 +124,7 @@ abstract class Project
     public function withAutoUpdateFile(bool $enableLatestTarball = true): static
     {
         $this->enableLatestTarball = $enableLatestTarball;
+        $this->enableBuildCached = false;
         return $this;
     }
 
