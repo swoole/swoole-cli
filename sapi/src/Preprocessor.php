@@ -523,7 +523,7 @@ __GIT_PROXY_CONFIG_EOF;
 
             if (!empty($this->getInputOption('with-download-mirror-url'))) {
                 if ($lib->enableDownloadWithOriginURL === false) {
-                    $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
+                    $lib->url = $this->getInputOption('with-download-mirror-url') . '/lib/' . $lib->file;
                     $lib->enableDownloadWithMirrorURL = true;
                 }
             }
@@ -558,7 +558,7 @@ __GIT_PROXY_CONFIG_EOF;
                     if ($lib->enableDownloadScript && !$lib->enableDownloadWithMirrorURL) {
                         if (!empty($lib->downloadScript) && !empty($lib->downloadDirName)) {
                             $workDir = $this->getRootDir();
-                            $cacheDir = '${__DIR__}/var/tmp/download/lib/' . $lib->name;
+                            $cacheDir = '${__DIR__}/var/tmp/lib/' . $lib->name;
                             $lib->downloadScript = <<<EOF
                             __DIR__={$workDir}/
                             {$httpProxyConfig}
@@ -643,7 +643,7 @@ EOF;
 
             if (!empty($this->getInputOption('with-download-mirror-url'))) {
                 if ($ext->enableDownloadWithOriginURL === false) {
-                    $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
+                    $ext->url = $this->getInputOption('with-download-mirror-url') . '/ext/' . $ext->file;
                     $ext->enableDownloadWithMirrorURL = true;
                 }
             }
@@ -675,7 +675,7 @@ EOF;
                     if ($ext->enableDownloadScript && !$ext->enableDownloadWithMirrorURL) {
                         if (!empty($ext->downloadScript) && !empty($ext->downloadDirName)) {
                             $workDir = $this->getRootDir();
-                            $cacheDir = '${__DIR__}/var/tmp/download/ext/' . $ext->name;
+                            $cacheDir = '${__DIR__}/var/tmp/ext/' . $ext->name;
                             $ext->downloadScript = <<<EOF
                             __DIR__={$workDir}/
                             {$httpProxyConfig}

@@ -11,11 +11,14 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-mkdir -p ${__PROJECT__}/var/
-mkdir -p ${__PROJECT__}/var/libraries/
-mkdir -p ${__PROJECT__}/var/extensions/
 
-cd ${__PROJECT__}/var/
+DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
+mkdir -p "${DOWNLOAD_BOX_DIR}"
+mkdir -p "${DOWNLOAD_BOX_DIR}/lib/"
+mkdir -p "${DOWNLOAD_BOX_DIR}/ext/"
+
+cd "${DOWNLOAD_BOX_DIR}"
+
 
 # https://aria2.github.io/manual/en/html/aria2c.html#http-ftp-segmented-downloads
 # https://aria2.github.io/manual/en/html/aria2c.html
@@ -37,10 +40,15 @@ user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 
 # --user-agent=$user_agent
 
-test -f download_library_urls.txt && aria2c -c -j 10 -s 10 -x 8 -k 10M --allow-overwrite=true --max-tries=30 --retry-wait=15 \
-  -d libraries --input-file=download_library_urls.txt
 
-test -f download_extension_urls.txt && aria2c -c -j 10 -s 10 -x 8 -k 10M --allow-overwrite=true --max-tries=30 --retry-wait=15 \
-  -d extensions --input-file=download_extension_urls.txt
+test -f download_library_urls.txt  && aria2c -c -j 10 -s 10 -x 8 -k 10M --allow-overwrite=true --max-tries=30  --retry-wait=15  \
+ -d lib --input-file=download_library_urls.txt
 
-cd ${__PROJECT__}
+
+test -f download_extension_urls.txt  && aria2c -c -j 10 -s 10 -x 8 -k 10M --allow-overwrite=true --max-tries=30  --retry-wait=15 --user-agent=$user_agent \
+ -d ext --input-file=download_extension_urls.txt
+
+
+cd "${__PROJECT__}"
+
+exit 0
