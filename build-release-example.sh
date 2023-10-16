@@ -38,6 +38,7 @@ esac
 IN_DOCKER=0
 WITH_DOWNLOAD_BOX=0
 WITH_ALL_DEPENDENCIES_CONTAINER=0
+WITH_HTTP_PROXY=0
 
 # 配置系统仓库  china mirror
 WITH_MIRROR='china'
@@ -98,6 +99,7 @@ if [ "$OS" = 'linux' ] ; then
           else
             echo " build container no running "
         fi
+        OPTIONS="${OPTIONS} --without-docker=1  "
     fi
 fi
 
@@ -165,6 +167,7 @@ if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
   unset HTTPS_PROXY
   unset NO_PROXY
 fi
+
 
 if [ ${IN_DOCKER} -eq 1 ] ; then
 {
