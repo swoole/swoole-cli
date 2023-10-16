@@ -55,6 +55,7 @@ return function (Preprocessor $p) {
 
 
             make -C src/bin/pg_config install
+
             make -C src/include install
 
             make -C  src/common install
