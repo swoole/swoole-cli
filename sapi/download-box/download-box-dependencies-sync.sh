@@ -25,7 +25,7 @@ mkdir -p pool/ext
 
 
 awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext"; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext"  ; print "n" |cmd; }'
 
 cd ${__PROJECT__}
 
