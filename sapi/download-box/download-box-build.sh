@@ -39,5 +39,5 @@ IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
 docker build -t ${IMAGE} -f ./Dockerfile-dowload-box . --progress=plain
-echo ${IMAGE} >download-box.txt
-# docker push ${IMAGE}
+echo ${IMAGE} > download-box.txt
+docker push ${IMAGE}
