@@ -43,6 +43,7 @@ WITH_ALL_DEPENDENCIES_CONTAINER=0
 WITH_MIRROR='china'
 WITH_MIRROR=''
 
+
 OPTIONS=''
 
 while [ $# -gt 0 ]; do
@@ -126,7 +127,7 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 php -v
 
 export COMPOSER_ALLOW_SUPERUSER=1
-# composer config -g repos.packagist composer https://packagist.org
+composer config -g repos.packagist composer https://packagist.org
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 if [ "$MIRROR" = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
@@ -157,6 +158,7 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 # 容器中
 
   php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql ${OPTIONS} --with-swoole-pgsql=1 --with-libavif=1
+
 
 } else {
 # 容器外
@@ -200,6 +202,7 @@ bash make.sh config
 bash make.sh build
 
 bash make.sh archive
+
 
 
 # 例子

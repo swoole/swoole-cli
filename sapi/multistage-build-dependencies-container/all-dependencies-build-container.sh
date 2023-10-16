@@ -38,11 +38,9 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --composer_mirror)
     COMPOSER_MIRROR="$2"  # "aliyun"  "tencent"
-    shift
     ;;
   --mirror)
     MIRROR="$2" # "ustc"  "tuna"
-    shift
     ;;
   --*)
     echo "Illegal option $1"
@@ -64,10 +62,9 @@ docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
 
 cd ${__PROJECT__}/
 
-echo ${IMAGE} >${__PROJECT__}/var/all-dependencies-container.txt
+echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 
-docker push ${IMAGE}
-
+# docker push ${IMAGE}
 
 
 # 例子：
