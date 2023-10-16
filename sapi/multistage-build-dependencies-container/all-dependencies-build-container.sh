@@ -29,7 +29,9 @@ TIME=$(date -u '+%Y%m%dT%H%M%SZ')
 VERSION="1.0.0"
 TAG="all-dependencies-alpine-3.17-php7-v${VERSION}-${ARCH}-${TIME}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
+
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
+IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
 COMPOSER_MIRROR=""
 MIRROR=""
@@ -38,11 +40,9 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --composer_mirror)
     COMPOSER_MIRROR="$2"  # "aliyun"  "tencent"
-    shift
     ;;
   --mirror)
     MIRROR="$2" # "ustc"  "tuna"
-    shift
     ;;
   --*)
     echo "Illegal option $1"
@@ -64,6 +64,12 @@ docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
 
 cd ${__PROJECT__}/
 
-echo ${IMAGE} >${__PROJECT__}/var/all-dependencies-container.txt
+echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 
-docker push ${IMAGE}
+# docker push ${IMAGE}
+
+
+# 例子：
+# bash build-release-example.sh --mirror china  --all_dependencies
+# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
+# bash sapi/multistage-build-dependencies-container/download-box-server-run-test.sh
