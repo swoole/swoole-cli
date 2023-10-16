@@ -41,5 +41,6 @@ done
 php prepare.php  +ds +inotify +apcu  +pgsql +pdo_pgsql \
 --with-swoole-pgsql=1 \
 --with-libavif=1 \
---without-docker=1
+--without-docker=1 \
+--with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 
