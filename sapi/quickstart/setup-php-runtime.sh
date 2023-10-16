@@ -57,12 +57,12 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    shift
     ;;
   --proxy)
-    export http_proxy="$2"
-    export https_proxy="$2"
-    shift
+    export HTTP_PROXY="$2"
+    export HTTPS_PROXY="$2"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+    NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     ;;
   --*)
     echo "Illegal option $1"
