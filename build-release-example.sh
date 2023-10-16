@@ -43,6 +43,7 @@ WITH_ALL_DEPENDENCIES_CONTAINER=0
 WITH_MIRROR='china'
 WITH_MIRROR=''
 
+
 OPTIONS=''
 
 while [ $# -gt 0 ]; do
@@ -163,6 +164,7 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 
   php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql ${OPTIONS} --with-swoole-pgsql=1 --with-libavif=1
 
+
 } else {
 # 容器外
 
@@ -205,6 +207,7 @@ bash make.sh config
 bash make.sh build
 
 bash make.sh archive
+
 
 
 # 例子
