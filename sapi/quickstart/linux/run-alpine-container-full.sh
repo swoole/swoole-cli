@@ -38,7 +38,6 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    shift
     ;;
     --dev-shm)
       DEV_SHM=1
