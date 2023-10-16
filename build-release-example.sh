@@ -38,6 +38,7 @@ esac
 IN_DOCKER=0
 WITH_DOWNLOAD_BOX=0
 WITH_ALL_DEPENDENCIES_CONTAINER=0
+WITH_HTTP_PROXY=0
 
 # 配置系统仓库  china mirror
 WITH_MIRROR='china'
@@ -57,7 +58,9 @@ while [ $# -gt 0 ]; do
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
     NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
-    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
+    WITH_HTTP_PROXY=1
+    OPTIONS="${OPTIONS} --with-http-proxy=${2}  "
     ;;
   --download_box)
     WITH_DOWNLOAD_BOX=1
@@ -96,6 +99,7 @@ if [ "$OS" = 'linux' ] ; then
           else
             echo " build container no running "
         fi
+        OPTIONS="${OPTIONS} --without-docker=1  "
     fi
 fi
 
@@ -128,11 +132,12 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 php -v
 
 export COMPOSER_ALLOW_SUPERUSER=1
-composer config -g repos.packagist composer https://packagist.org
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+# composer config -g repos.packagist composer https://packagist.org
 if [ "$MIRROR" = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 fi
+
 # composer suggests --all
 # composer dump-autoload
 
@@ -156,6 +161,13 @@ composer config -g --unset repos.packagist
 # --with-php-version=8.2.11
 # --with-c-compiler=[gcc|clang] 默认clang
 # --with-download-mirror-url=https://php-cli.jingjingxyk.com/
+
+
+if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
+  unset HTTP_PROXY
+  unset HTTPS_PROXY
+  unset NO_PROXY
+fi
 
 
 if [ ${IN_DOCKER} -eq 1 ] ; then
