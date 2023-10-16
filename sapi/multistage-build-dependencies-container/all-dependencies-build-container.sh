@@ -37,11 +37,9 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --composer_mirror)
     COMPOSER_MIRROR="$2"  # "aliyun"  "tencent"
-    shift
     ;;
   --mirror)
     MIRROR="$2" # "ustc"  "tuna"
-    shift
     ;;
   --*)
     echo "Illegal option $1"
