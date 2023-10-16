@@ -14,6 +14,7 @@ cd ${__PROJECT__}
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
 TAG='download-box-nginx-alpine-20230505T112517Z'
+TAG='download-box-nginx-alpine-1.7-20231016T050317Z'
 
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
