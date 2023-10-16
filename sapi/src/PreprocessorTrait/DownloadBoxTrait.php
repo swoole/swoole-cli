@@ -25,7 +25,7 @@ EOF;
 
     protected function generateLibraryDownloadLinks(): void
     {
-        $this->mkdirIfNotExists($this->getRootDir() . '/var/', 0755, true);
+        $this->mkdirIfNotExists($this->getRootDir() . '/var/download-box/', 0755, true);
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {

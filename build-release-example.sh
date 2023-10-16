@@ -36,22 +36,35 @@ esac
 
 
 IN_DOCKER=0
-
+WITH_DOWNLOAD_BOX=0
+WITH_ALL_DEPENDENCIES_CONTAINER=0
 
 # 配置系统仓库  china mirror
-MIRROR='china'
-MIRROR=''
+WITH_MIRROR='china'
+WITH_MIRROR=''
+
+OPTIONS=''
 
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    shift
     ;;
   --proxy)
-    export http_proxy="$2"
-    export https_proxy="$2"
-    shift
+    export HTTP_PROXY="$2"
+    export HTTPS_PROXY="$2"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+    NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
+    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
+    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+    ;;
+  --download_box)
+    WITH_DOWNLOAD_BOX=1
+    OPTIONS="${OPTIONS} --with-dependency-graph=1 --without-docker=1 --with-skip-download=1 "
+    ;;
+  --all_dependencies)
+    WITH_ALL_DEPENDENCIES_CONTAINER=1
+    OPTIONS="${OPTIONS} --without-docker=1  "
     ;;
   --*)
     echo "Illegal option $1"
@@ -148,20 +161,36 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
-  php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql
+  php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql ${OPTIONS} --with-swoole-pgsql=1 --with-libavif=1
 
 } else {
 # 容器外
 
-  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql
+  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql ${OPTIONS} --with-swoole-pgsql=1 --with-libavif=1
 
 }
 fi
+
+
+
+if [ ${WITH_DOWNLOAD_BOX} -eq 1 ] ; then
+    echo " please exec script: "
+    echo " bash sapi/download-box/download-box-init.sh "
+    exit 0
+fi
+
+if [ ${WITH_ALL_DEPENDENCIES_CONTAINER} -eq 1 ] ; then
+    echo " please exec script: "
+    echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc "
+    exit 0
+fi
+
 
 if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'
    exit 0
 fi
+
 
 
 bash make-install-deps.sh
@@ -178,3 +207,13 @@ bash make.sh build
 bash make.sh archive
 
 
+# 例子
+# bash build-release-example.sh --mirror china
+
+# 例子  download-box
+# bash build-release-example.sh --mirror china  --download_box
+# bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
+
+# 例子  all_dependencies
+# bash build-release-example.sh --mirror china  --all_dependencies
+# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
