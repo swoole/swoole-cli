@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('libedit'))
-            ->withUrl('https://thrysoee.dk/editline/libedit-20210910-3.1.tar.gz')
+            ->withUrl('https://thrysoee.dk/editline/libedit-20230828-3.1.tar.gz')
             ->withPrefix(LIBEDIT_PREFIX)
             ->withConfigure('./configure --prefix=' . LIBEDIT_PREFIX . ' --enable-static --disable-shared')
             ->withLdflags('')
