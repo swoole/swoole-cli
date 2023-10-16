@@ -52,6 +52,8 @@ mkdir -p "${DOWNLOAD_BOX_DIR}/ext/"
 
 cd "${__PROJECT__}/"
 
+cp -rf pool/* "${DOWNLOAD_BOX_DIR}"
+
 
 php prepare.php  +ds +inotify +apcu  +pgsql  \
 --with-swoole-pgsql=1 \
