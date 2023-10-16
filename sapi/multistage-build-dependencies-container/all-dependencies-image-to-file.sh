@@ -10,6 +10,7 @@ __PROJECT__=$(
   pwd
 )
 
+mkdir -p ${__PROJECT__}/var
 cd ${__PROJECT__}/var
 
 
