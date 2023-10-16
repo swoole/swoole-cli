@@ -18,7 +18,6 @@ fi
 
 cd ${__PROJECT__}
 
-mkdir -p ${__PROJECT__}/var
 
 # export DOCKER_BUILDKIT=1
 
@@ -62,6 +61,7 @@ docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
 --build-arg="MIRROR=${MIRROR}"
 
 
+mkdir -p ${__PROJECT__}/var
 cd ${__PROJECT__}/
 
 echo ${IMAGE} >${__PROJECT__}/var/all-dependencies-container.txt
