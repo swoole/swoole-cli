@@ -62,10 +62,11 @@ docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
 mkdir -p ${__PROJECT__}/var
 cd ${__PROJECT__}/
 
-echo ${IMAGE} >${__PROJECT__}/var/all-dependencies-container.txt
+
+echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
+
 
 # docker push ${IMAGE}
-
 
 
 # 例子：
