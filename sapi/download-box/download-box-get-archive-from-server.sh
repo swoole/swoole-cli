@@ -36,7 +36,8 @@ cd ${__PROJECT__}/
 mkdir -p ${__PROJECT__}/pool/lib
 mkdir -p ${__PROJECT__}/pool/ext
 
-awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/lib/* pool/lib"  ; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/ext/* pool/ext"; print "n" |cmd; }'
+
 
 echo "download all-archive.zip ok ！"

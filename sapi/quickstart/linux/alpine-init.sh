@@ -16,7 +16,6 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    shift
     ;;
   --*)
     echo "no found mirror option $1"
