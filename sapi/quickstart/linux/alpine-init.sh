@@ -15,7 +15,6 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    shift
     ;;
   --*)
     echo "no found mirror option $1"
@@ -39,8 +38,8 @@ esac
 apk update
 
 apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils gcc g++
-apk add bash p7zip zip unzip flex pkgconf ca-certificates
-# apk add bash 7zip
+apk add bash 7zip zip unzip flex pkgconf ca-certificates
+# apk add bash p7zip
 apk add wget git curl
 apk add libc++-static libltdl-static
 apk add yasm nasm

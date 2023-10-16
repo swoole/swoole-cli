@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.sqlite.org/index.html')
             ->withLicense('https://www.sqlite.org/copyright.html', Library::LICENSE_SPEC)
             ->withManual('https://www.sqlite.org/docs.html')
-            ->withUrl('https://www.sqlite.org/2023/sqlite-autoconf-3430100.tar.gz')
+            ->withUrl('https://www.sqlite.org/2023/sqlite-autoconf-3430200.tar.gz')
             ->withPrefix($sqlite3_prefix)
             ->withConfigure(
                 <<<EOF
@@ -26,7 +26,6 @@ EOF
             ->withBinPath($sqlite3_prefix)
             ->withPkgName('sqlite3')
             ->withBinPath($sqlite3_prefix . '/bin/')
-
     );
     $p->withExportVariable('SQLITE_CFLAGS', '$(pkg-config  --cflags --static sqlite3)');
     $p->withExportVariable('SQLITE_LIBS', '$(pkg-config    --libs   --static sqlite3)');

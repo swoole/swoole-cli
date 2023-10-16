@@ -16,13 +16,13 @@ return function (Preprocessor $p) {
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF
-                # ./Configure LIST
-
                 # php 8 之前的版本不支持 openssl v3    详情 https://github.com/swoole/swoole-cli/issues/84
 
-                ./config {$static} no-shared  enable-tls1_3 --release \
-                --prefix={$openssl_prefix} \
-                --libdir={$openssl_prefix}/lib
+                 # ./Configure LIST
+               ./config {$static} no-shared  enable-tls1_3 --release \
+               --prefix={$openssl_prefix} \
+               --libdir={$openssl_prefix}/lib \
+               --openssldir=/etc/ssl
 
 EOF
             )
