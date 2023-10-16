@@ -19,4 +19,4 @@ docker save -o "all-dependencies-container-image-$(uname -m).tar" $(cat all-depe
 xz -9 -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar"
 
 # xz 解压
-xz -d -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar.xz"
+# xz -d -T$(nproc) -k "all-dependencies-container-image-$(uname -m).tar.xz"
