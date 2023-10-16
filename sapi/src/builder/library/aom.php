@@ -10,11 +10,11 @@ return function (Preprocessor $p) {
         ->withLicense('https://aomedia.googlesource.com/aom/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
         ->withManual('https://aomedia.googlesource.com/aom')
         ->withUrl('https://aomedia.googlesource.com/aom')
-        ->withFile('aom-v3.6.1.tar.gz')
+        ->withFile('aom-v3.7.0.tar.gz')
         ->withDownloadScript(
             'aom',
             <<<EOF
-            git clone -b v3.6.1 --depth=1  https://aomedia.googlesource.com/aom
+            git clone -b v3.7.0 --depth=1  https://aomedia.googlesource.com/aom
 EOF
         )
         ->withPrefix($aom_prefix)

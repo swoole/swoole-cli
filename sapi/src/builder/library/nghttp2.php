@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/nghttp2/nghttp2.git')
             ->withManual('https://nghttp2.org/')
             ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
-            ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz')
+            ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.57.0/nghttp2-1.57.0.tar.gz')
             ->withPrefix($nghttp2_prefix)
             ->withConfigure(
                 <<<EOF

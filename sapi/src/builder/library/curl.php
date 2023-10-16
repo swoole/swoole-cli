@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
     $file = '';
-    $url = 'https://curl.se/download/curl-8.3.0.tar.gz';
+    $url = 'https://curl.se/download/curl-8.4.0.tar.gz';
     $download_dir_name = '';
     $download_script = '';
     $dependent_libraries = [
@@ -17,15 +17,15 @@ return function (Preprocessor $p) {
         'libzstd',
         'libssh2'
     ];
-    $configure_packages='';
-    $configure_options='';
+    $configure_packages = '';
+    $configure_options = '';
 
     if ($php_version_id >= 8010) {
         $dependent_libraries = array_merge($dependent_libraries, ['nghttp2',  'nghttp3', 'ngtcp2']);
-        $configure_options='--with-nghttp2 --with-ngtcp2 --with-nghttp3';
-        $configure_packages=' libnghttp2 libnghttp3 libngtcp2  libngtcp2_crypto_quictls ';
+        $configure_options = '--with-nghttp2 --with-ngtcp2 --with-nghttp3';
+        $configure_packages = ' libnghttp2 libnghttp3 libngtcp2  libngtcp2_crypto_quictls ';
     } else {
-        $configure_options='--without-nghttp2 --without-ngtcp2 --without-nghttp3';
+        $configure_options = '--without-nghttp2 --without-ngtcp2 --without-nghttp3';
     }
 
 
@@ -33,8 +33,7 @@ return function (Preprocessor $p) {
     $zlib_prefix = ZLIB_PREFIX;
     $cares_prefix = CARES_PREFIX;
 
-
-    $lib=(new Library('curl'))
+    $lib = (new Library('curl'))
         ->withHomePage('https://curl.se/')
         ->withManual('https://curl.se/docs/install.html')
         ->withLicense('https://github.com/curl/curl/blob/master/COPYING', Library::LICENSE_SPEC)
@@ -42,6 +41,7 @@ return function (Preprocessor $p) {
         ->withPrefix($curl_prefix)
         ->withConfigure(
             <<<EOF
+
             ./configure --help
 
             PACKAGES='zlib openssl libcares libbrotlicommon libbrotlidec libbrotlienc libzstd  '
