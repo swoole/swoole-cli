@@ -40,18 +40,21 @@ IN_DOCKER=0
 
 # 配置系统仓库  china mirror
 MIRROR='china'
+MIRROR=''
 
 
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    shift
     ;;
   --proxy)
-    export http_proxy="$2"
-    export https_proxy="$2"
-    shift
+    export HTTP_PROXY="$2"
+    export HTTPS_PROXY="$2"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+    NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
+    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
+    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
     ;;
   --*)
     echo "Illegal option $1"
@@ -113,7 +116,7 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 php -v
 
 export COMPOSER_ALLOW_SUPERUSER=1
-# composer config -g repos.packagist composer https://packagist.org
+  composer config -g repos.packagist composer https://packagist.org
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 if [ "$MIRROR" = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
@@ -141,12 +144,12 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
-  php prepare.php +inotify +apcu +ds +xlswriter +ssh2
+  php prepare.php +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
 
 } else {
 # 容器外
 
-  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2
+  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
 
 }
 fi
@@ -165,22 +168,6 @@ bash make.sh build
 
 exit 0
 
-
-:<<'EOF'
-echo  "Enter mirror [china]:\n \c"
-read Location
-case $Location in
-    china)
-       echo "use china mirror"
-       MIRROR='china'
-      ;;
-
-    *) e
-      cho " no mirror "
-       ;;
-esac
-
-EOF
 
 
 
