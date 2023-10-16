@@ -46,6 +46,7 @@ done
 case $ARCH in
 'x86_64')
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230917T123120Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
   if [ "$MIRROR" = 'china' ] ; then
     IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230917T123120Z
   fi

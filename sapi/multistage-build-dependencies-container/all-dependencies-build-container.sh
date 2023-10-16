@@ -28,8 +28,8 @@ TIME=$(date -u '+%Y%m%dT%H%M%SZ')
 
 VERSION="1.0.0"
 TAG="all-dependencies-alpine-3.17-php8-v${VERSION}-${ARCH}-${TIME}"
-IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
+IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
 COMPOSER_MIRROR=""
 MIRROR=""
@@ -67,3 +67,10 @@ cd ${__PROJECT__}/
 echo ${IMAGE} >${__PROJECT__}/var/all-dependencies-container.txt
 
 docker push ${IMAGE}
+
+
+
+# 例子：
+# bash build-release-example.sh --mirror china  --all_dependencies
+# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
+# bash sapi/multistage-build-dependencies-container/download-box-server-run-test.sh
