@@ -107,4 +107,4 @@ RUN cp /etc/apk/repositories /etc/apk/repositories.save
 
 RUN rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
-ENTRYPOINT ["/sbin/tini", "--"]
+ENTRYPOINT ["tini", "--"]
