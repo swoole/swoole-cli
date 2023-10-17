@@ -37,7 +37,8 @@ esac
 
 IN_DOCKER=0
 WITH_DOWNLOAD_BOX=0
-WITH_ALL_DEPENDENCIES_CONTAINER=0
+WITH_BUILD_CONTAINER=0
+WITH_WEB_UI=0
 WITH_HTTP_PROXY=0
 
 # 配置系统仓库  china mirror
@@ -64,11 +65,15 @@ while [ $# -gt 0 ]; do
     ;;
   --download_box)
     WITH_DOWNLOAD_BOX=1
-    OPTIONS="${OPTIONS} --with-dependency-graph=1 --without-docker=1 --with-skip-download=1 "
+    OPTIONS="${OPTIONS} --without-docker=1 --with-skip-download=1 --with-dependency-graph=1  "
     ;;
-  --all_dependencies)
-    WITH_ALL_DEPENDENCIES_CONTAINER=1
+  --build_contianer)
+    WITH_BUILD_CONTAINER=1
     OPTIONS="${OPTIONS} --without-docker=1  "
+    ;;
+  --webui)
+    WITH_WEB_UI=1
+    OPTIONS="${OPTIONS}  --without-docker=1 --with-skip-download=1  --with-web-ui=1 "
     ;;
   --*)
     echo "Illegal option $1"
@@ -188,9 +193,16 @@ if [ ${WITH_DOWNLOAD_BOX} -eq 1 ] ; then
     exit 0
 fi
 
-if [ ${WITH_ALL_DEPENDENCIES_CONTAINER} -eq 1 ] ; then
+if [ ${WITH_BUILD_CONTAINER} -eq 1 ] ; then
     echo " please exec script: "
     echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc "
+    exit 0
+fi
+
+if [ ${WITH_WEB_UI} -eq 1 ] ; then
+    echo " please exec script: "
+    echo " bash sapi/webUI/webui-init-data.sh "
+    echo " php sapi/webUI/bootstrap.php "
     exit 0
 fi
 
