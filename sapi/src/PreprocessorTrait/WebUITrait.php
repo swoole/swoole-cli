@@ -10,7 +10,7 @@ trait WebUITrait
 {
     protected function generateWebUIData(): void
     {
-        $this->mkdirIfNotExists($this->rootDir . '/var/webui/', 0777, true);
+        $this->mkdirIfNotExists($this->rootDir . '/var/webui/', 0755, true);
         $data = $this->extEnabled;
         sort($data);
         file_put_contents(
