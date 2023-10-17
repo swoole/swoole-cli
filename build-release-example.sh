@@ -237,5 +237,10 @@ bash make.sh archive
 # bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 
 # 例子  all_dependencies
-# bash build-release-example.sh --mirror china  --all_dependencies
+# bash build-release-example.sh --mirror china  --build_contianer
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
+
+# 例子  web ui
+# bash build-release-example.sh --mirror china  --webui
+# bash sapi/webUI/webui-init-data.sh
+# php sapi/webUI/bootstrap.php
