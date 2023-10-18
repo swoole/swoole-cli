@@ -70,6 +70,7 @@ echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 
 
 # 例子：
-# bash build-release-example.sh --mirror china  --all_dependencies
+# bash build-release-example.sh --mirror china  --build-contianer
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
-# bash sapi/multistage-build-dependencies-container/download-box-server-run-test.sh
+# 验证构建结果
+# bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh
