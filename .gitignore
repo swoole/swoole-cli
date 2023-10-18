@@ -336,5 +336,7 @@ sapi/webUI/.idea/
 Dockerfile-all-dependencies-alpine
 php.ini
 Makefile.backup
+sapi/webUI/deploy.sh
+sapi/webUI/public/data/
 
 
