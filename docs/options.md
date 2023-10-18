@@ -22,7 +22,7 @@
 也可以写作：
 
 ```shell
-SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
+SWOOLE_CLI_SKIP_DOWNLOAD=1 ./prepare.php --without-docker
 ```
 
 > 参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，
@@ -43,13 +43,14 @@ with-skip-download
 
 ```shell
 # 准备批量下载地址
-./prepare.php --with-skip-download=yes --without-docker
+./prepare.php --with-skip-download=1 --without-docker
 
 # 批量下载依赖库和扩展的脚本
 bash make-download-box.sh
 
 # 下载完毕，同步到 `pool/lib` 、`pool/ext ` 目录
-bash sapi/download-box/download-dependencies-sync.sh
+awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib/"  ; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext/"  ; print "n" |cmd; }'
 
 ```
 
@@ -57,14 +58,14 @@ bash sapi/download-box/download-dependencies-sync.sh
 ----
 
 > 使用镜像地址下载下载前，需要准备镜像服务器
-> 例如： `sh sapi/scripts/download-box/download-box-server-run.sh`
+> 例如： `sh sapi/scripts/download-box/download-box-server-run-test.sh`
 
 ```shell
 # 演示例子
-./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:8000
+php ./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:9503
 
 # 可用镜像
-./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+php ./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 ```
 
 conf-path
@@ -88,7 +89,7 @@ with-global-prefix
 默认安装目录前缀： `/usr/local/swoole-cli/`
 
 ```shell
-./prepare.php --with-global-prefix=/usr/local/swoole-cli/
+php ./prepare.php --with-global-prefix=/usr/local/swoole-cli/
 ```
 
 with-dependency-graph
