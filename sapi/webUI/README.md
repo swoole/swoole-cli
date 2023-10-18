@@ -4,10 +4,10 @@
 
 ```shell
 # 准备数据
-bash sapi/dashboard/webui-init-data.sh
+bash sapi/webUI/webui-init-data.sh
 
 # 启动
-php sapi/dashboard/bootstrap.php
+php sapi/webUI/bootstrap.php
 
 ```
 
