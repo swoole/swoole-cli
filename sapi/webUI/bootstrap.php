@@ -34,17 +34,17 @@ EOF;
 
         if (is_file($file)) {
             if (str_ends_with($request_uri, '.js')) {
-                $mimetype='application/javascript;charset=utf-8';
+                $mimetype = 'application/javascript;charset=utf-8';
             } elseif (str_ends_with($request_uri, 'css')) {
-                $mimetype='text/css;charset=utf-8';
+                $mimetype = 'text/css;charset=utf-8';
             } elseif (str_ends_with($request_uri, 'html')) {
-                $mimetype='text/html;charset=utf-8';
+                $mimetype = 'text/html;charset=utf-8';
             } else {
                 $finfo = finfo_open(FILEINFO_MIME);
                 $mimetype = finfo_file($finfo, $file);
                 finfo_close($finfo);
                 if (!$mimetype) {
-                    $mimetype='text/plain;charset=utf-8';
+                    $mimetype = 'text/plain;charset=utf-8';
                 }
             }
             $response->header('content-type', $mimetype);

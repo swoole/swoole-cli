@@ -71,7 +71,7 @@ ARG COMPOSER_MIRROR=""
 ARG MIRROR=""
 
 # setup source repo, install dependencies
-RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
+RUN cp /etc/apk/repositories /etc/apk/repositories.save
 
 RUN if [ "${MIRROR}" = "ustc" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories ; } fi
 RUN if [ "${MIRROR}" = "tuna" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories ; } fi
@@ -103,8 +103,8 @@ RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\$
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN cp /etc/apk/repositories /etc/apk/repositories.save
+RUN test -f /etc/apk/repositories.save || cp -f /etc/apk/repositories.save /etc/apk/repositories
 
 RUN rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
-ENTRYPOINT ["/sbin/tini", "--"]
+ENTRYPOINT ["tini", "--"]

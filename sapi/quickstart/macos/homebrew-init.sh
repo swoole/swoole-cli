@@ -11,12 +11,11 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-mirror=''
+MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    mirror="$2"
-    shift
+    MIRROR="$2"
     ;;
   --*)
     echo "Illegal option $1"
@@ -25,7 +24,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-case "$mirror" in
+case "$MIRROR" in
 china)
 
   export HOMEBREW_INSTALL_FROM_API=1
