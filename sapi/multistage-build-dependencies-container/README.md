@@ -15,30 +15,19 @@
 
 > 二者容器镜像是一样的
 
-## 准备 swoole-cli源码和依赖库源码
 
-```bash
-
-bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh
-
-## 使用代理
-bash sapi/multistage-build-dependencies-container/all-dependencies-build-init.sh --proxy http://127.0.0.1:1080
-
-```
 
 ## 执行构建依赖库容器
 
 ```bash
 
-bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh
-
-## composer 使用阿里云镜像 , 系统源使用 ustc 源
-bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --mirror ustc --composer_mirror aliyun
-bash  sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh  --mirror tuna --composer_mirror tencent
+bash build-release-example.sh --mirror china  --build-contianer
+## composer 使用腾讯镜像源 , 系统源使用 ustc 源
+bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
 
 ```
 
-## 验证提前构建好的依赖库
+## 验证构建好的依赖库
 
 ```bash
 
@@ -48,31 +37,14 @@ bash sapi/multistage-build-dependencies-container/all-dependencies-run-container
 docker exec -it swoole-cli-alpine-dev sh
 
 
-export COMPOSER_ALLOW_SUPERUSER=1
-export PATH="/work/bin/runtime:$PATH"
-alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
-
-composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
-composer update --optimize-autoloader
-composer config -g --unset repos.packagist
-
-# 生成构建脚本
-php prepare.php --with-build-type=release  +ds +inotify +apcu --with-libavif=1
-
-# 这里可以直接跳过步骤
-# sh make.sh all-library
-
-# 执行 PHP 构建预处理
-sh make.sh config
-# 执行 PHP 构建
-sh make.sh build
+bash build-release-example.sh --mirror china
 
 ```
 
 ## 为了方便分发，把容器镜像导出为文件
 
 > 构建加速建议： 使用 抢占式 高配置云服务器 来加速构建
-> 目的：节省网络流量 （单个文件不压缩情况下，大小超过 1GB）
+> 目的：节省网络传输流量 （单个文件不压缩情况下，大小超过 1GB）
 
 ```bash
 

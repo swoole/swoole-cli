@@ -61,7 +61,7 @@ bash sapi/download-box/download-box-dependencies-use-git.sh
 
 
 # 例子
-# bash build-release-example.sh --mirror china  --download_box
+# bash build-release-example.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 # bash sapi/download-box/download-box-dependencies-sync.sh
 
