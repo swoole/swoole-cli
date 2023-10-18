@@ -63,11 +63,11 @@ while [ $# -gt 0 ]; do
     WITH_HTTP_PROXY=1
     OPTIONS="${OPTIONS} --with-http-proxy=${2}  "
     ;;
-  --download_box)
+  --download-box)
     WITH_DOWNLOAD_BOX=1
     OPTIONS="${OPTIONS} --without-docker=1 --with-skip-download=1 --with-dependency-graph=1  "
     ;;
-  --build_contianer)
+  --build-contianer)
     WITH_BUILD_CONTAINER=1
     OPTIONS="${OPTIONS} --without-docker=1  "
     ;;
@@ -233,11 +233,11 @@ bash make.sh archive
 # bash build-release-example.sh --mirror china
 
 # 例子  download-box
-# bash build-release-example.sh --mirror china  --download_box
+# bash build-release-example.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 
 # 例子  all_dependencies
-# bash build-release-example.sh --mirror china  --build_contianer
+# bash build-release-example.sh --mirror china  --build-contianer
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
 
 # 例子  web ui
