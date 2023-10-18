@@ -104,7 +104,7 @@ RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\$
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories.save /etc/apk/repositories
+RUN test -f /etc/apk/repositories.save || cp -f /etc/apk/repositories.save /etc/apk/repositories
 
 RUN rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
