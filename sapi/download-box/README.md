@@ -36,11 +36,11 @@ bash sapi/download-box/download-box-build.sh
 
 ```bash
 
-bash sapi/download-box/download-box-server-run.sh
+bash sapi/download-box/download-box-server-run-test.sh
 
 ```
 
-> 本地浏览器打开地址：   [`http://0.0.0.0:8000`](http://0.0.0.0:8000)  即可查看镜像服务器
+> 本地浏览器打开地址：   [`http://0.0.0.0:9503`](http://0.0.0.0:9503)  即可查看镜像服务器
 
 ## 依赖库镜像的分发方式
 
@@ -61,7 +61,7 @@ bash sapi/download-box/download-box-get-archive-from-container.sh
 
 ### 方式二（来自web服务器）：
 
-> 原理： 下载：`http://127.0.0.1:8000/all-archive.zip`
+> 原理： 下载：`http://127.0.0.1:9503/all-archive.zip`
 > 自动解压，并自动拷贝到 `pool/` 目录
 
 > 真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
@@ -79,7 +79,7 @@ bash  sapi/download-box/download-box-get-archive-from-server.sh
 ```bash
 
 # 演示例子
-./prepare.php --without-docker=1 --with-download-mirror-url=http://127.0.0.1:8000
+./prepare.php --without-docker=1 --with-download-mirror-url=http://127.0.0.1:9503
 
 # 真实可用的依赖库镜像
 ./prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
@@ -91,12 +91,9 @@ bash  sapi/download-box/download-box-get-archive-from-server.sh
 
 ```bash
 
-php prepare.php \
---with-build-type=dev \
---with-dependency-graph=1 \
-+apcu +ds +inotify \
---without-docker=1 \
---with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+bash build-release-example.sh --mirror china  --download-box
+bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
+bash sapi/download-box/download-box-build.sh
 
 
 ```
