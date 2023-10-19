@@ -90,16 +90,7 @@ function libraries_builder($p)
 
     # pdo_pgsql,pdo_oci,pdo_odbc,ldap,ffi
 
-    /**
-     * # 需要特别设置的地方
-     *   //  CFLAGS='-static -O2 -Wall'
-     *     直接编译可执行文件 -fPIE
-     *      直接编译成库      -fPIC
-     *
-     * export  CPPFLAGS=$(pkg-config  --cflags --static  libpq libcares libffi icu-uc icu-io icu-i18n readline )
-     * LIBS=$(pkg-config  --libs --static   libpq libcares libffi icu-uc icu-io icu-i18n readline )
-     * export LIBS="$LIBS -L/usr/lib -lstdc++"
-     */
+
     if ($p->getOsType() == 'win') {
         install_re2c($p);
     }

@@ -25,3 +25,11 @@
 --enable-librabbitmq    [librabbitmq](https://github.com/alanxz/rabbitmq-c.git)
 --enable-libspeex       [speex](https://speex.org/)  被opus 取代
 ```
+
+
+
+```text
+   ONVIF 协议 onvif（Open Network Video Interface Forum）
+
+   gb28181 标准
+ ```

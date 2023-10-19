@@ -63,3 +63,9 @@ https://curc.readthedocs.io/en/latest/programming/OpenMP-C.html
 
 自动微分  Adolc
 https://github.com/coin-or/ADOL-C.git
+
+
+       * # 需要特别设置的地方
+       *   //  CFLAGS='-static -O2 -Wall'
+       *    直接编译可执行文件 -fPIE
+       *    直接编译成库      -fPIC

@@ -184,9 +184,3 @@ EOF
 
     $p->addLibrary($lib);
 };
-
-/*
- *   ONVIF 协议 onvif（Open Network Video Interface Forum）
- *
- *   gb28181 标准
- */
