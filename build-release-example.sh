@@ -51,7 +51,7 @@ OPTIONS=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    MIRROR="$2"
+    WITH_MIRROR="$2"
     ;;
   --proxy)
     export HTTP_PROXY="$2"
@@ -86,10 +86,11 @@ done
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
         IN_DOCKER=1
+        OPTIONS="${OPTIONS}  --without-docker=1  "
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
-            if [ "$MIRROR" = 'china' ] ; then
+            if [ "$WITH_MIRROR" = 'china' ] ; then
                 sh sapi/quickstart/linux/alpine-init.sh --mirror china
             else
                 sh sapi/quickstart/linux/alpine-init.sh
@@ -112,7 +113,7 @@ if [ "$OS" = 'macos' ] ; then
   number=$(which flex  | wc -l)
   if test $number -eq 0 -o -f sapi/quickstart/macos/homebrew-init.sh ;then
   {
-        if [ "$MIRROR" = 'china' ] ; then
+        if [ "$WITH_MIRROR" = 'china' ] ; then
             bash sapi/quickstart/macos/homebrew-init.sh --mirror china
         else
             bash sapi/quickstart/macos/homebrew-init.sh
@@ -124,7 +125,7 @@ fi
 bash sapi/quickstart/clean-folder.sh
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
-      if [ "$MIRROR" = 'china' ] ; then
+      if [ "$WITH_MIRROR" = 'china' ] ; then
           bash sapi/quickstart/setup-php-runtime.sh --mirror china
       else
           bash sapi/quickstart/setup-php-runtime.sh
@@ -141,7 +142,7 @@ export COMPOSER_ALLOW_SUPERUSER=1
 # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 # composer config -g repos.packagist composer https://packagist.org
 
-if [ "$MIRROR" = 'china' ]; then
+if [ "$WITH_MIRROR" = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 fi
 
@@ -178,20 +179,11 @@ if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
 fi
 
 
-if [ ${IN_DOCKER} -eq 1 ] ; then
-{
-# 容器中
-
-  php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql ${OPTIONS} --with-swoole-pgsql=1 --with-libavif=1
 
 
-} else {
-# 容器外
+php prepare.php ${OPTIONS}
 
-  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2 +pgsql ${OPTIONS} --with-swoole-pgsql=1 --with-libavif=1
 
-}
-fi
 
 
 
