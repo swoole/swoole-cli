@@ -604,7 +604,7 @@ EOF;
         }
 
         if (!empty($lib->preInstallCommands)) {
-            foreach (['alpine', 'debian', 'ubuntu', 'macos'] as $os) {
+            foreach (['alpine', 'debian', 'ubuntu', 'rhel', 'macos'] as $os) {
                 if (!empty($lib->preInstallCommands[$os])) {
                     $this->preInstallCommands[$os] = array_merge(
                         $this->preInstallCommands[$os],

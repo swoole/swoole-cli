@@ -40,6 +40,14 @@ function os_ubuntu_release() {
     return 0
 }
 
+function os_rhel_release()
+{
+    echo "${OS_RELEASE}"
+    <?php foreach ($this->preInstallCommands['rhel'] as $item) :?>
+        <?= $item . PHP_EOL ?>
+    <?php endforeach ;?>
+    return 0
+}
 
 if [ "$OS_RELEASE" = 'alpine' ]; then
     os_alpine_release
@@ -47,6 +55,8 @@ elif [ "$OS_RELEASE" = 'debian' ]; then
     os_debian_release
 elif [ "$OS_RELEASE" = 'ubuntu' ]; then
     os_ubuntu_release
+elif [ "$OS_RELEASE" = 'rhel' ]; then
+    os_rhel_release
 else
     echo 'no support OS'
 fi
