@@ -78,7 +78,8 @@ class Preprocessor
         'alpine' => [],
         'debian' => [],
         'ubuntu' => [],
-        'macos' => []
+        'macos' => [],
+        'rhel' => []
     ];
 
     /**
