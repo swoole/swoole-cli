@@ -110,16 +110,18 @@ EOF
             --with-threads \
             --with-cc-opt="-static  -O2   \$CPPFLAGS " \
             --with-ld-opt="-static  \$LDFLAGS " \
-            --add-module={$builderDir}/ngx_http_proxy_connect_module/
+            --add-module={$builderDir}/ngx_http_proxy_connect_module/ \
 
 
+
+            # --conf-path=/etc/nginx/nginx.conf
 
             # 动态加载到 nginx 中，请使用该 --add-dynamic-module=/path/to/module
             # 使用GCC 能构建成功，使用clang 构建报错
             # src/event/ngx_event_udp.c:143:25: error: comparison of integers of different signs: 'unsigned long' and 'long'
             # 修改源码 http://nginx.org/en/docs/contributing_changes.html
 
-            #--with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS"
+            # --with-cc-opt="-O2 -static -Wl,-pie \$CPPFLAGS"
             # --with-ld-opt=parameters — sets additional parameters that will be used during linking.
             # --with-cc-opt=parameters — sets additional parameters that will be added to the CFLAGS variable.
 EOF
@@ -139,7 +141,7 @@ EOF
 // http3
 // https://nginx.org/en/docs/http/ngx_http_v3_module.html
 
-// quick
+// quic
 // http://nginx.org/en/docs/quic.html
 
 
