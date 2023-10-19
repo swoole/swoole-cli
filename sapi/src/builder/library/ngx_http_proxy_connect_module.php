@@ -11,7 +11,6 @@ return function (Preprocessor $p) {
             Library::LICENSE_BSD
         )
         ->withManual('https://github.com/chobits/ngx_http_proxy_connect_module.git')
-        ->withUrl('https://github.com/chobits/ngx_http_proxy_connect_module/archive/refs/tags/v0.0.5.tar.gz')
         ->withFile('ngx_http_proxy_connect_module-v0.0.5.tar.gz')
         ->withDownloadScript(
             'ngx_http_proxy_connect_module',
@@ -20,6 +19,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBuildScript('return 0')
+        ->withBuildCached(false)
 
     ;
 

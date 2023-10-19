@@ -17,37 +17,37 @@ return function (Preprocessor $p) {
         (new Library('nginx'))
             ->withHomePage('https://nginx.org/')
             ->withLicense('https://github.com/nginx/nginx/blob/master/docs/text/LICENSE', Library::LICENSE_SPEC)
-            ->withUrl('https://nginx.org/download/nginx-1.25.0.tar.gz')
             ->withManual('https://github.com/nginx/nginx')
             ->withManual('http://nginx.org/en/docs/configure.html')
             ->withDocumentation('https://nginx.org/en/docs/')
-            //->withFile('nginx-1.25.0.tar.gz')
-            /*
+            //->withUrl('http://nginx.org/download/nginx-1.25.2.tar.gz')
+            //->withAutoUpdateFile()
+            ->withFile('nginx-1.25.2.tar.gz')
             ->withDownloadScript(
                 'nginx',
                 <<<EOF
-                cat > ~/.hgrc <<__EOF__
-        [http_proxy]
-        host=http://192.168.3.26:8015
-        [https_proxy]
-        host=http://192.168.3.26:8015
-
-        __EOF__
-                # pip3 install mercurial -i https://pypi.tuna.tsinghua.edu.cn/simple
                 # hg clone  http://hg.nginx.org/nginx
-                # hg update -C release-1.25.1
-                git clone -b release-1.25.1 --depth 1 --progress  https://github.com/nginx/nginx.git
+                # hg update -C release-1.25.2
+                # git clone -b release-1.25.2 --depth 1 --progress  https://github.com/nginx/nginx.git
 
-                # git clone --depth 1 --progress   https://github.com/chobits/ngx_http_proxy_connect_module.git
+                # hg  clone -r release-1.25.2 --rev=1  http://hg.nginx.org/nginx
+                hg  clone -r default --rev=1  http://hg.nginx.org/nginx
 
-        EOF
+EOF
             )
-            */
+
+            ->withPreInstallCommand(
+                "alpine",
+                <<<EOF
+            apk add  mercurial
+EOF
+            )
             ->withPrefix($nginx_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($nginx_prefix)
             ->withConfigure(
                 <<<EOF
+
 :<<'===EOF==='
              set -x
 
@@ -77,16 +77,22 @@ return function (Preprocessor $p) {
             --with-pcre={$builderDir}/nginx/pcre2 \
             --with-zlib={$builderDir}/nginx/zlib \
 ===EOF===
+
+
             set -x
             patch -p1 < {$builderDir}/ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_102101.patch
+
+            cp -f auto/configure configure
 
             ./configure --help
             PACKAGES=" libxml-2.0 libexslt libxslt openssl zlib"
             # PACKAGES="\$PACKAGES libpcre  libpcre16  libpcre32  libpcrecpp  libpcreposix"
             PACKAGES="\$PACKAGES libpcre2-16  libpcre2-32  libpcre2-8   libpcre2-posix"
+
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)"
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+
              ./configure \
             --prefix={$nginx_prefix} \
             --with-http_ssl_module \
@@ -95,6 +101,7 @@ return function (Preprocessor $p) {
             --with-http_realip_module \
             --with-http_auth_request_module \
             --with-http_v2_module \
+            --with-http_v3_module \
             --with-http_flv_module \
             --with-http_sub_module \
             --with-stream \
@@ -104,6 +111,9 @@ return function (Preprocessor $p) {
             --with-cc-opt="-static  -O2   \$CPPFLAGS " \
             --with-ld-opt="-static  \$LDFLAGS " \
             --add-module={$builderDir}/ngx_http_proxy_connect_module/
+
+
+
             # 动态加载到 nginx 中，请使用该 --add-dynamic-module=/path/to/module
             # 使用GCC 能构建成功，使用clang 构建报错
             # src/event/ngx_event_udp.c:143:25: error: comparison of integers of different signs: 'unsigned long' and 'long'
@@ -114,7 +124,6 @@ return function (Preprocessor $p) {
             # --with-cc-opt=parameters — sets additional parameters that will be added to the CFLAGS variable.
 EOF
             )
-            //->withMakeOptions('CFLAGS="-O2 -s" LDFLAGS="-static"') //--with-cc-opt="-static -static-libgcc"  --with-ld-opt="-static"
             ->withBinPath($nginx_prefix . '/bin/')
             ->withDependentLibraries(
                 'libxml2',
@@ -126,3 +135,22 @@ EOF
             ) //'pcre',
     );
 };
+
+// http3
+// https://nginx.org/en/docs/http/ngx_http_v3_module.html
+
+// quick
+// http://nginx.org/en/docs/quic.html
+
+
+/*
+
+
+cat > ~/.hgrc <<__hgrc_EOF__
+[http_proxy]
+host={$p->getHttpProxy()}
+[https_proxy]
+host={$p->getHttpProxy()}
+__hgrc_EOF__
+
+ */

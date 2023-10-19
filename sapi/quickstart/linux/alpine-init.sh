@@ -52,6 +52,8 @@ apk add yasm nasm
 apk add ninja python3 py3-pip
 apk add diffutils
 apk add netcat-openbsd
+apk add python3-dev
+apk add mercurial
 
 case "$MIRROR" in
 china|tuna)
@@ -64,4 +66,5 @@ ustc)
 esac
 
 pip3 install meson
+
 
