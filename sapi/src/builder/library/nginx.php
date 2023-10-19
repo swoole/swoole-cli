@@ -144,6 +144,8 @@ EOF
 // quic
 // http://nginx.org/en/docs/quic.html
 
+// linux package
+// https://nginx.org/en/linux_packages.html
 
 /*
 
