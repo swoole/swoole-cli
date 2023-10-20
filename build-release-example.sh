@@ -90,7 +90,6 @@ done
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
         WITH_DOCKER=1
-        OPTIONS="${OPTIONS}  --without-docker=1  "
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
@@ -182,6 +181,8 @@ fi
 if [ "$OS" = 'linux' ] ; then
    OPTIONS="${OPTIONS} +inotify  "
 fi
+
+
 
 
 php prepare.php ${OPTIONS}  +apcu +ds +xlswriter +ssh2 +pgsql  --with-swoole-pgsql=1 --with-libavif=1
