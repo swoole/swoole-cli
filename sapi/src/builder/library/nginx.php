@@ -13,6 +13,8 @@ return function (Preprocessor $p) {
     $zlib = $p->getLibrary('zlib');
     $pcre2 = $p->getLibrary('pcre2');
 
+    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static  ';
+
     $p->addLibrary(
         (new Library('nginx'))
             ->withHomePage('https://nginx.org/')
@@ -35,11 +37,16 @@ return function (Preprocessor $p) {
 
 EOF
             )
-
             ->withPreInstallCommand(
                 "alpine",
                 <<<EOF
             apk add  mercurial
+EOF
+            )
+            ->withPreInstallCommand(
+                "macos",
+                <<<EOF
+            brew install  mercurial
 EOF
             )
             ->withPrefix($nginx_prefix)
@@ -109,8 +116,8 @@ EOF
             --with-stream_ssl_preread_module \
             --with-stream_ssl_module \
             --with-threads \
-            --with-cc-opt="-static  -O2   \$CPPFLAGS " \
-            --with-ld-opt="-static  \$LDFLAGS " \
+            --with-cc-opt="{$ldflags}  -O2   \$CPPFLAGS " \
+            --with-ld-opt="{$ldflags}  \$LDFLAGS " \
             --add-module={$builderDir}/ngx_http_proxy_connect_module/ \
 
 

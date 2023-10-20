@@ -155,7 +155,8 @@ if ($p->getOsType() == 'macos') {
     $p->withPreInstallCommand(
         'macos',
         <<<'EOF'
-export PATH=/opt/homebrew/bin/:/usr/local/bin/:$PATH
+
+# ls -lh /usr/local/opt
 
 export HOMEBREW_INSTALL_FROM_API=1
 export HOMEBREW_NO_ANALYTICS=1
