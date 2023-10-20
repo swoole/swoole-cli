@@ -80,10 +80,11 @@ brew install gettext coreutils binutils libunistring
 brew uninstall --ignore-dependencies snappy
 brew uninstall --ignore-dependencies capstone
 
+ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
+ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 
-
-launchctl -h
+# launchctl -h
 
 
 
