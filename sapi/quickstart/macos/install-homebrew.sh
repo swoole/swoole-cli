@@ -39,7 +39,7 @@ china)
   export HOMEBREW_NO_ANALYTICS=1
   export HOMEBREW_NO_AUTO_UPDATE=1
   git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install
-  /bin/bash brew-install/install.sh
+  bash brew-install/install.sh
   rm -rf brew-install
   ;;
 *)
