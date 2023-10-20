@@ -115,12 +115,12 @@ fi
 
 if [ "$OS" = 'macos' ] ; then
   number=$(which flex  | wc -l)
-  if test $number -eq 0 -o -f sapi/quickstart/macos/homebrew-init.sh ;then
+  if test $number -eq 0 ; then
   {
         if [ "$WITH_MIRROR" = 'china' ] ; then
-            bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+            bash sapi/quickstart/macos/macos-init.sh --mirror china
         else
-            bash sapi/quickstart/macos/homebrew-init.sh
+            bash sapi/quickstart/macos/macos-init.sh
         fi
   }
   fi
@@ -179,10 +179,12 @@ if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
   unset NO_PROXY
 fi
 
+if [ "$OS" = 'linux' ] ; then
+   OPTIONS="${OPTIONS} +inotify  "
+fi
 
 
-
-php prepare.php ${OPTIONS} +inotify +apcu +ds +xlswriter +ssh2 +pgsql  --with-swoole-pgsql=1 --with-libavif=1
+php prepare.php ${OPTIONS}  +apcu +ds +xlswriter +ssh2 +pgsql  --with-swoole-pgsql=1 --with-libavif=1
 
 
 

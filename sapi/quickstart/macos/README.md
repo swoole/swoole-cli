@@ -3,10 +3,10 @@
 ## 准备依赖
 ```shell
 
-bash sapi/quickstart/macos/homebrew-init.sh
+bash sapi/quickstart/macos/macos-init.sh
 
 # 使用中国大陆镜像
-bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+bash sapi/quickstart/macos/macos-init.sh --mirror china
 
 ```
 
