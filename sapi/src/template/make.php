@@ -295,6 +295,7 @@ EOF;
 }
 
 make_ext_hook() {
+    set -x
     cd <?= $this->getWorkDir() ?>/
 <?php foreach ($this->extHooks as $name => $value) : ?>
     # ext <?= $name ?> hook
