@@ -69,3 +69,7 @@ https://github.com/coin-or/ADOL-C.git
        *   //  CFLAGS='-static -O2 -Wall'
        *    直接编译可执行文件 -fPIE
        *    直接编译成库      -fPIC
+
+
+BPF CO-RE (Compile Once – Run Everywhere)
+https://github.com/libbpf/libbpf#bpf-co-re-compile-once--run-everywhere
