@@ -12,28 +12,24 @@ return function (Preprocessor $p) {
         ->withUrl('https://dri.freedesktop.org/libdrm/libdrm-2.4.115.tar.xz')
         ->withUntarArchiveCommand('xz')
         ->withPrefix($libdrm_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libdrm_prefix)
-        /** 使用 meson、ninja  构建 start **/
         ->withBuildScript(
             <<<EOF
-            meson  -h
-            meson setup -h
-            # meson configure -h
+        meson  -h
+        meson setup -h
 
-            meson setup  build \
-            -Dprefix={$libdrm_prefix} \
-            -Dbackend=ninja \
-            -Dbuildtype=release \
-            -Ddefault_library=static \
-            -Db_staticpic=true \
-            -Db_pie=true \
-            -Dprefer_static=true \
-            -Dudev=true           \
-            -Dvalgrind=disabled
+        meson setup  build \
+        -Dprefix={$libdrm_prefix} \
+        -Dbackend=ninja \
+        -Dbuildtype=release \
+        -Ddefault_library=static \
+        -Db_staticpic=true \
+        -Db_pie=true \
+        -Dprefer_static=true \
+        -Dudev=true           \
+        -Dvalgrind=disabled
 
-            ninja -C build
-            ninja -C build install
+        ninja -C build
+        ninja -C build install
 EOF
         )
         ->withPkgName('libdrm')
@@ -45,5 +41,4 @@ EOF
     ;
 
     $p->addLibrary($lib);
-
 };

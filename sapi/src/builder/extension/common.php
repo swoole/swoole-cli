@@ -155,6 +155,7 @@ return function (Preprocessor $p) {
 
     $depends = ['suitesparse'] ;
     $depends = ['libeigen'] ;
+    $depends = ['libva'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
