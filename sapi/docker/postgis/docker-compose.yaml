@@ -1,0 +1,13 @@
+version: "3"
+services:
+  postgresql-server:
+    # image: postgres:15-alpine
+    image: postgis/postgis:15-3.3-alpine
+    hostname: "postgis"
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_PASSWORD=example"
+    # 容器内数据目录 /var/lib/postgresql/data
+    # auth_user: postgres
+    # auth_password: example
