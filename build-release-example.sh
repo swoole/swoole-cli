@@ -182,7 +182,7 @@ fi
 
 
 
-php prepare.php ${OPTIONS}  +apcu +ds +xlswriter +ssh2 +pgsql  --with-swoole-pgsql=1 --with-libavif=1
+php prepare.php ${OPTIONS}  +apcu +ds +xlswriter +ssh2 +pgsql
 
 
 
