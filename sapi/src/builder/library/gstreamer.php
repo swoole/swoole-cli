@@ -24,7 +24,8 @@ EOF
             <<<EOF
             meson  -h
             meson setup -h
-            # meson configure -h
+            #  更多选项
+            # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/blob/main/meson_options.txt
 
             meson setup  build \
             -Dprefix={$gstreamer_prefix} \
@@ -36,23 +37,6 @@ EOF
             -Dprefer_static=true \
             -Dexamples=disabled \
             -Dauto_features=enabled \
-            -Dgstreamer:tools=enabled \
-            -Dbad=enabled \
-            -Dgst-plugins-bad:openh264=enabled \
-            -Dlibnice:tests=disabled \
-            -Dlibnice:examples=disabled \
-            -Dopenh264:tests=disabled \
-            -Dpygobject:tests=false \
-            -Dpython=disabled \
-            -Dlibav=enabled \
-            -Dugly=enabled \
-            -Dbad=enabled \
-            -Ddevtools=disabled \
-            -Dges=enabled \
-            -Drtsp_server=enabled \
-            -Dvaapi=enabled \
-            -Dsharp=disabled \
-            -Dgpl=enabled
 
 
             ninja -C build
