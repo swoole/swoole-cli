@@ -40,6 +40,7 @@ WITH_DOWNLOAD_BOX=0
 WITH_BUILD_CONTAINER=0
 WITH_WEB_UI=0
 WITH_HTTP_PROXY=0
+WITH_PHP_COMPOSER=1
 
 # 配置系统仓库  china mirror
 WITH_MIRROR='china'
@@ -139,19 +140,20 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 
 php -v
 
-export COMPOSER_ALLOW_SUPERUSER=1
-# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-# composer config -g repos.packagist composer https://packagist.org
-if [ "$WITH_MIRROR" = 'china' ]; then
-    composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
+      export COMPOSER_ALLOW_SUPERUSER=1
+      # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+      # composer config -g repos.packagist composer https://packagist.org
+      if [ "$WITH_MIRROR" = 'china' ]; then
+          composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+      fi
+
+      # composer suggests --all
+      # composer dump-autoload
+
+      composer update  --optimize-autoloader
+      composer config -g --unset repos.packagist
 fi
-
-# composer suggests --all
-# composer dump-autoload
-
-composer update  --optimize-autoloader
-composer config -g --unset repos.packagist
-
 
 # 可用配置参数
 # --with-global-prefix=/usr/local/swoole-cli
@@ -170,6 +172,8 @@ if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
   unset HTTPS_PROXY
   unset NO_PROXY
 fi
+
+
 
 if [ "$OS" = 'linux' ] ; then
    OPTIONS="${OPTIONS} +inotify  "
