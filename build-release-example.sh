@@ -173,7 +173,7 @@ fi
 # --with-php-version=8.2.11
 # --with-c-compiler=[gcc|clang] 默认clang
 # --with-download-mirror-url=https://php-cli.jingjingxyk.com/
-# --with-os-repository-mirror=1   # 系统仓库镜像
+
 
 
 if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then

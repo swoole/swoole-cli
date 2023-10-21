@@ -120,7 +120,7 @@ export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ## 下载 macOS 版本 运行无权限，解决方案
 
 >  Mac安装应用“提示文件已损坏”或“来自身份不明开发者”解决方法
->
+
 > 解压以后执行如下命令：
 
 ```bash
