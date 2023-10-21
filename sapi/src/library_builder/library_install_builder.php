@@ -226,35 +226,8 @@ function install_icu(Preprocessor $p)
         static   static library (.a/.lib/etc.)
         auto     build shared if possible (default)
     */
-    $icu_prefix = ICU_PREFIX;
-    $os = $p->getOsType() == 'macos' ? 'MacOSX' : 'Linux';
-    $p->addLibrary(
-        (new Library('icu'))
-            ->withHomePage('https://icu.unicode.org/')
-            ->withLicense('https://github.com/unicode-org/icu/blob/main/icu4c/LICENSE', Library::LICENSE_SPEC)
-            ->withUrl('https://github.com/unicode-org/icu/releases/download/release-60-3/icu4c-60_3-src.tgz')
-            ->withPrefix($icu_prefix)
-            ->withConfigure(
-                <<<EOF
-             CPPFLAGS="-DU_CHARSET_IS_UTF8=1  -DU_USING_ICU_NAMESPACE=1  -DU_STATIC_IMPLEMENTATION=1" \
-             source/runConfigureICU $os --prefix={$icu_prefix} \
-             --enable-static=yes \
-             --enable-shared=no \
-             --with-data-packaging=static \
-             --enable-release=yes \
-             --enable-extras=yes \
-             --enable-icuio=yes \
-             --enable-dyload=no \
-             --enable-tools=yes \
-             --enable-tests=no \
-             --enable-samples=no
-EOF
-            )
-            ->withPkgName('icu-i18n')
-            ->withPkgName('icu-io')
-            ->withPkgName('icu-uc')
-            ->withBinPath($icu_prefix . '/bin/')
-    );
+    //https://github.com/unicode-org/icu/
+
 }
 
 function install_oniguruma(Preprocessor $p)
@@ -406,7 +379,7 @@ EOF
             )
             ->withPkgName('libcurl')
             ->withBinPath($curl_prefix . '/bin/')
-            ->depends(
+            ->withDependentLibraries(
                 'openssl',
                 'cares',
                 'zlib',
@@ -454,131 +427,7 @@ EOF
 
 function install_pgsql(Preprocessor $p): void
 {
-    $pgsql_prefix = PGSQL_PREFIX;
 
-    $openssl_prefix = OPENSSL_PREFIX;
-    $libxml2_prefix = LIBXML2_PREFIX;
-    $libxslt_prefix = LIBXSLT_PREFIX;
-    $readline_prefix = READLINE_PREFIX;
-    $icu_prefix = ICU_PREFIX;
-    $zlib_prefix = ZLIB_PREFIX;
-
-
-    $includes = <<<EOF
-{$openssl_prefix}/include/:
-{$libxml2_prefix}/include/:
-{$libxslt_prefix}/include:
-{$readline_prefix}/include/readline:
-{$icu_prefix}/include:
-{$zlib_prefix}/include:
-/usr/include
-
-EOF;
-
-    $includes = trim(str_replace(PHP_EOL, '', $includes));
-    $libraries = <<<EOF
-{$openssl_prefix}/lib/:
-{$libxml2_prefix}/lib/:
-{$libxslt_prefix}/lib:
-{$readline_prefix}/lib:
-{$icu_prefix}/lib:
-{$zlib_prefix}/lib:
-/usr/lib
-EOF;
-
-    $libraries = trim(str_replace(PHP_EOL, '', $libraries));
-
-    $link_cpp = $p->getOsType() == 'macos' ? '-lc++' : '-lstdc++';
-    $p->addLibrary(
-        (new Library('pgsql'))
-            ->withHomePage('https://www.postgresql.org/')
-            ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
-            ->withUrl('https://ftp.postgresql.org/pub/source/v15.1/postgresql-15.1.tar.gz')
-            //https://www.postgresql.org/docs/devel/installation.html
-            //https://www.postgresql.org/docs/devel/install-make.html#INSTALL-PROCEDURE-MAKE
-            ->withManual('https://www.postgresql.org/docs/')
-            ->withPrefix($pgsql_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($pgsql_prefix)
-            ->withBuildScript(
-                <<<EOF
-            set -uex
-            sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  src/interfaces/libpq/Makefile
-
-            # 替换指定行内容
-            sed -i.backup "102c all: all-lib" src/interfaces/libpq/Makefile
-
-            # export CFLAGS="-static -g -fPIE -fPIC -O2 -Wall "
-            ./configure --help
-
-            # --with-includes="{$includes}"
-            # --with-libraries="{$libraries}"
-            PACKAGES="icu-uc icu-io icu-i18n readline libxml-2.0 openssl zlib libxslt liblz4 libzstd"
-
-            CPPFLAGS="\$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
-            LDFLAGS="\$(pkg-config   --libs-only-L   --static \$PACKAGES )" \
-            LIBS="\$(pkg-config     --libs-only-l   --static \$package_names ) $link_cpp" \
-            ./configure  --prefix={$pgsql_prefix} \
-            --enable-coverage=no \
-            --with-ssl=openssl  \
-            --with-readline \
-            --with-icu \
-            --without-ldap \
-            --with-libxml  \
-            --with-libxslt \
-            --with-lz4 \
-            --with-zstd \
-            --without-python \
-            --without-perl \
-            --without-systemd
-
-            result_code=\$?
-            [[ \$result_code -ne 0 ]] && echo "[make FAILURE]" && exit \$result_code;
-
-            # make -j \$cpu_nums
-            # make -C  src/bin/pg_config install
-            # make install
-
-
-
-            make -C src/include install
-
-            make -C  src/bin/pg_config install
-
-            make -C  src/common -j \$cpu_nums all
-            make -C  src/common install
-
-
-            make -C  src/port -j \$cpu_nums all
-            make -C  src/port install
-
-
-            make -C  src/backend/libpq -j \$cpu_nums all
-            make -C  src/backend/libpq install
-
-
-            make -C src/interfaces/ecpg   -j \$cpu_nums all-pgtypeslib-recurse all-ecpglib-recurse all-compatlib-recurse all-preproc-recurse
-            make -C src/interfaces/ecpg  install-pgtypeslib-recurse install-ecpglib-recurse install-compatlib-recurse install-preproc-recurse
-
-
-            # 静态编译 src/interfaces/libpq/Makefile  有静态配置  参考： all-static-lib
-
-            make -C src/interfaces/libpq  -j \$cpu_nums # soname=true
-            make -C src/interfaces/libpq  install
-
-EOF
-            )
-            ->withScriptAfterInstall(
-                <<<EOF
-            rm -rf {$pgsql_prefix}/lib/*.so.*
-            rm -rf {$pgsql_prefix}/lib/*.so
-            rm -rf {$pgsql_prefix}/lib/*.dylib
-EOF
-            )
-            ->withPkgName('libpq')
-            ->withBinPath($pgsql_prefix . '/bin/')
-            ->depends('libxml2', 'liblz4', 'libzstd', '')
-    );
 }
 
 function install_re2c(Preprocessor $p)

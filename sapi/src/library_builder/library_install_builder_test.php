@@ -112,28 +112,23 @@ EOF
 
 function install_libyuv(Preprocessor $p)
 {
-
 }
 
 
 function install_libraw(Preprocessor $p)
 {
-
 }
 
 function install_dav1d(Preprocessor $p)
 {
-
 }
 
 function install_libgav1(Preprocessor $p)
 {
-
 }
 
 function install_libavif(Preprocessor $p): void
 {
-
 }
 
 function install_nasm(Preprocessor $p)
@@ -193,7 +188,6 @@ EOF
 
 function install_svt_av1(Preprocessor $p)
 {
-
 }
 
 function install_libheif(Preprocessor $p)
@@ -253,17 +247,14 @@ function install_graphite2(Preprocessor $p)
 
 function install_libfribidi(Preprocessor $p)
 {
-
 }
 
 function install_harfbuzz(Preprocessor $p)
 {
-
 }
 
 function install_libgd2($p)
 {
-
 }
 
 function install_librsvg($p)
@@ -374,7 +365,6 @@ EOF
 
 function install_libOpenEXR(Preprocessor $p)
 {
-
 }
 
 /**
@@ -418,19 +408,16 @@ EOF
 
 function install_libjxl(Preprocessor $p)
 {
-
 }
 
 
 function install_libedit(Preprocessor $p)
 {
-
 }
 
 
 function install_libdeflate(Preprocessor $p)
 {
-
 }
 
 
@@ -465,17 +452,14 @@ function install_libev($p)
 
 function install_libtasn1($p)
 {
-
 }
 
 function install_libexpat($p)
 {
-
 }
 
 function install_unbound($p)
 {
-
 }
 
 function install_gnutls($p)
@@ -495,7 +479,6 @@ function install_gnutls($p)
 EOF;
 
     $gnutls_prefix = GNUTLS_PREFIX;
-
 }
 
 
@@ -541,7 +524,7 @@ EOF
 EOF
             )
             ->disableDefaultPkgConfig()
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -571,7 +554,7 @@ function install_wolfssl($p)
 EOF
             )
             ->withPkgName('wolfssl')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
@@ -599,13 +582,12 @@ function install_libressl($p)
 EOF
             )
             ->withPkgName('libressl')
-    //->withSkipBuildInstall()
+        //->withSkipBuildInstall()
     );
 }
 
 function install_nghttp3(Preprocessor $p)
 {
-
 }
 
 function install_ngtcp2(Preprocessor $p)
@@ -695,23 +677,19 @@ EOF
 
 function install_nghttp2(Preprocessor $p): void
 {
-
 }
 
 
 function install_libunistring($p)
 {
-
 }
 
 function install_libintl(Preprocessor $p)
 {
-
 }
 
 function install_gettext(Preprocessor $p)
 {
-
 }
 
 function install_coreutils($p): void
@@ -726,7 +704,6 @@ function install_coreutils($p): void
         coreutils    包括常用的命令，如 cat、ls、rm、chmod、mkdir、wc、whoami 和许多其他命令
 
      */
-
 }
 
 function install_gnulib($p)
@@ -741,36 +718,29 @@ function install_gnulib($p)
         gnulib，也称为GNU Portability Library，是 GNU 代码的集合，用于帮助编写可移植代码。
 
      */
-
 }
 
 
 function install_libunwind($p)
 {
-
 }
 
 
 function install_jemalloc($p)
 {
-
-
 }
 
 function install_tcmalloc($p)
 {
-
 }
 
 
 function install_libelf(Preprocessor $p)
 {
-
 }
 
 function install_libbpf(Preprocessor $p)
 {
-
 }
 
 function install_capstone(Preprocessor $p)
@@ -865,7 +835,6 @@ EOF
 
 function install_snappy(Preprocessor $p)
 {
-
 }
 
 function install_kerberos(Preprocessor $p)
@@ -981,7 +950,6 @@ function install_p11_kit(Preprocessor $p)
 
 function install_pgsql_test(Preprocessor $p)
 {
-
 }
 
 
@@ -1006,10 +974,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-    //->withSkipInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->withSkipInstall()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -1030,9 +998,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
@@ -1056,28 +1024,25 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-    //->disablePkgName()
-    //->disableDefaultPkgConfig()
-    //->disableDefaultLdflags()
+        //->disablePkgName()
+        //->disableDefaultPkgConfig()
+        //->disableDefaultLdflags()
     );
 }
 
 
 function install_jansson(Preprocessor $p)
 {
-
 }
 
 
 function install_php_internal_extension_curl_patch(Preprocessor $p)
 {
-
 }
 
 
 function install_libgomp(Preprocessor $p)
 {
-
 }
 
 function install_libzip_ng(Preprocessor $p)
@@ -1104,13 +1069,11 @@ EOF
 
 function install_zookeeper_client($p)
 {
-
 }
 
 
 function install_unixodbc(Preprocessor $p)
 {
-
 }
 
 

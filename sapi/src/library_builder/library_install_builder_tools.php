@@ -96,7 +96,7 @@ function install_ninja(Preprocessor $p)
 function install_musl(Preprocessor $p): void
 {
     $workDir = $p->getWorkDir();
-    $musl_libc_prefix= MUSL_LIBC_PREFIX;
+    $musl_libc_prefix = MUSL_LIBC_PREFIX;
     $p->addLibrary(
         (new Library('musl_libc'))
             ->withHomePage('https://musl.libc.org/')
@@ -124,7 +124,7 @@ EOF
 function install_musl_cross_make(Preprocessor $p): void
 {
     $workDir = $p->getWorkDir();
-    $musl_cross_make_prefix= MUSL_CROSS_MAKE_PREFIX;
+    $musl_cross_make_prefix = MUSL_CROSS_MAKE_PREFIX;
     $p->addLibrary(
         (new Library('musl_cross_make'))
             ->withHomePage('https://musl.libc.org/')
