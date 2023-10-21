@@ -14,19 +14,17 @@ return function (Preprocessor $p) {
             ->withFile('libbpf-v1.1.0.tar.gz')
             ->withManual('https://libbpf.readthedocs.io/en/latest/libbpf_build.html')
             ->withPrefix($libbpf_prefix)
-            /*
             ->withBuildCached(false)
-            */
             ->withPreInstallCommand(
                 'debian',
                 <<<EOF
-            # apt install libelf-dev
+                # apt install libelf-dev
 EOF
             )
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
-            apk add libelf-static elfutils-dev
+                # apk add libelf-static elfutils-dev
 EOF
             )
             //->withCleanPreInstallDirectory($libbpf_prefix)

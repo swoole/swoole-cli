@@ -58,7 +58,7 @@ return function (Preprocessor $p) {
     $depends = ['libusrsctp'] ;
     $depends = ['bcg729'] ;
     $depends = ['util_linux'] ;
-    $depends = ['elfutils'] ;
+
     $depends = ['snappy'] ;
 
     $depends = ['libdeflate'] ;
@@ -85,9 +85,8 @@ return function (Preprocessor $p) {
     $depends = ['util_linux'] ;
     $depends = ['pgsql_latest'] ;
     $depends = ['webrtc'] ;
-    $depends = ['libbpf'] ;
 
-    $depends = ['libelf'] ;
+
 
     $depends = ['riscv_gnu_toolchain'] ;
     $depends = ['fftw3'] ;
@@ -126,11 +125,6 @@ return function (Preprocessor $p) {
     $depends = ['openssl'] ;
 
 
-    $depends = ['libarchive'] ;
-    $depends = ['libelf'] ;
-    $depends = ['libxdp'] ;
-    $depends = ['libbpf'] ;
-    $depends = ['dpdk'] ;
 
     $depends = ['libmnl'] ;
 
@@ -144,7 +138,6 @@ return function (Preprocessor $p) {
 
     $depends = ['opencl'] ;
     $depends = ['vtk'] ;
-    $depends = ['libelf'] ;
     $depends = ['libx265'] ;
     $depends = ['vlc'] ;
     $depends = ['libdc1394'] ;
@@ -156,6 +149,15 @@ return function (Preprocessor $p) {
     $depends = ['suitesparse'] ;
     $depends = ['libeigen'] ;
     $depends = ['libva'] ;
+    $depends = ['libelf'] ;
+    $depends = ['libbpf'] ;
+
+    $depends = ['libarchive'] ;
+
+
+    $depends = ['libbpf'] ;
+    $depends = ['dpdk'] ;
+    $depends = ['libxdp'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

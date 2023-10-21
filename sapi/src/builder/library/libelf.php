@@ -59,7 +59,7 @@ EOF
         EOF
             )
             //->withAutoUpdateFile()
-            //->withBuildCached(false)
+            ->withBuildCached(false)
             //->withCleanPreInstallDirectory($libelf_prefix)
             ->withBuildScript(
                 <<<EOF
@@ -81,14 +81,10 @@ EOF
             LDFLAGS="\$LDFLAGS -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib -L{$libunistring_prefix}/lib/ -L{$gettext_prefix}/lib/ {$ldflags} "
             LIBS="\$LIBS -liconv -lbz2 -lunistring -lintl -lm -pthread "
 
-            export CPPFLAGS="\$CPPFLAGS"
-            export LDFLAGS="\$LDFLAGS"
-            export LIBS="\$LIBS"
-            export CFLAGS=" -static "
-
-
-
-
+            CPPFLAGS="\$CPPFLAGS"   \
+            LDFLAGS=" -static \$LDFLAGS"  \
+            LIBS="\$LIBS"  \
+            CFLAGS=" -static "  \
             ./configure \
             --prefix={$libelf_prefix} \
             --enable-install-elfh \
@@ -104,57 +100,68 @@ EOF
             --disable-libdebuginfod \
             --program-prefix=eu- \
 		    --enable-deterministic-archives \
-		    --without-libintl-prefix \
-		    --disable-nls
-
-            # --with-libintl-prefix={$gettext_prefix}
+            --with-libintl-prefix={$gettext_prefix}
 
 
+            make -j {$p->getMaxJob()} config.h
+            cd libelf
+            make -j {$p->getMaxJob()} libelf.a libelf_pic.a
+            cd ..
 
-            unset CPPFLAGS
-            unset LDFLAGS
-            unset LIBS
-            unset CFLAGS
-
-            make -j {$p->getMaxJob()}
 
 EOF
             )
-            ->withPkgName('libelf')
-            ->withDependentLibraries(
-                'libarchive',
-                'sqlite3',
-                'curl',
-                'libssh2',
-                'libiconv',
-                'cares',
-                'brotli',
-                'libzstd',
-                'nghttp2',
-                'nghttp3',
-                'ngtcp2',
-                'nettle',
-                'liblzma',
-                'libzstd',
-                'liblz4',
-                'bzip2',
-                'gmp',
-               // 'gettext',
-                "zlib",
-                'libmicrohttpd',
-                'ncurses'
+            ->withScriptAfterInstall(
+                <<<EOF
+                mkdir -p {$libelf_prefix}/include/
+                mkdir -p {$libelf_prefix}/lib/pkgconfig/
+                cp -f config/libelf.pc {$libelf_prefix}/lib/pkgconfig/
+                cp -f libelf/*.h {$libelf_prefix}/include/
+                cp -f libelf/libelf*.a {$libelf_prefix}/lib/
+EOF
             )
+
+
+        ->withPkgName('libelf')
+        ->withDependentLibraries(
+            'libarchive',
+            'sqlite3',
+            'curl',
+            'libssh2',
+            'libiconv',
+            'cares',
+            'brotli',
+            'libzstd',
+            'nghttp2',
+            'nghttp3',
+            'ngtcp2',
+            'nettle',
+            'liblzma',
+            'libzstd',
+            'liblz4',
+            'bzip2',
+            'gmp',
+            'gettext',
+            "zlib",
+            'libmicrohttpd',
+            'ncurses',
+            'libunistring'
+        )
     );
 };
 
 /*
- * undefined reference to libintl_gettext
- * https://www.gnu.org/software/gettext/FAQ.html
- *
- *  nm /usr/local/swoole-cli/gettext/lib/libintl.a |  grep libintl_gettext
+
+    undefined reference to libintl_gettext
+    https://www.gnu.org/software/gettext/FAQ.html
+
+    nm /usr/local/swoole-cli/gettext/lib/libintl.a |  grep libintl_gettext
+
  */
 
 /*
- * 参考
- * https://git.alpinelinux.org/aports/tree/main/elfutils/APKBUILD
+
+     参考
+     https://git.alpinelinux.org/aports/tree/main/elfutils/APKBUILD
+
  */

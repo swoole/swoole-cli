@@ -22,33 +22,37 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libxdp_prefix)
+        ->withBuildCached(false)
+        ->withCleanPreInstallDirectory($libxdp_prefix)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
-        apk add llvm
-        apk add bpftool
-        apk add --no-cache grep
-        apk add libelf-static libelf
+            apk add llvm
+            apk add bpftool
+            apk add --no-cache grep
+            # apk add libelf-static libelf
 EOF
         )
         ->withBuildLibraryHttpProxy()
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
-
+            set -x
             ./configure --help
 
             ./configure \
             --prefix={$libxdp_prefix} \
             --enable-shared=no \
             --enable-static=yes
-
+            sed -i 's/) $(EMBEDDED_XDP_OBJS)/) /' lib/libxdp/Makefile
+            BUILD_STATIC_ONLY=y make -j {$p->getMaxJob()} libxdp
+            BUILD_STATIC_ONLY=y make install
 EOF
         )
 
-        ->withMakeOptions('libxdp')
+        //->withMakeOptions('libxdp')
         ->withPkgName('example')
         ->withBinPath($libxdp_prefix . '/bin/')
-        ->withDependentLibraries('libpcap', 'zlib') //"libbpf"
+        ->withDependentLibraries('libpcap', 'zlib', "libbpf")
 
     ;
 

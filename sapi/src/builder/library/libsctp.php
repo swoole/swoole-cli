@@ -23,7 +23,7 @@ EOF
         ->withPrefix($libsctp_prefix)
         ->withConfigure(
             <<<EOF
-           ./bootstrap
+            ./bootstrap
 
             ./configure --help
 

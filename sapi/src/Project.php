@@ -146,6 +146,7 @@ abstract class Project
     {
         $this->enableLatestTarball = $enableLatestTarball;
         $this->enableBuildCached = false;
+        $this->enableInstallCached = false;
         return $this;
     }
 
