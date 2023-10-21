@@ -35,7 +35,7 @@ EOF
             -Db_pie=true \
             -Dprefer_static=true \
             -Dexamples=disabled \
-            -Dauto_features=disabled \
+            -Dauto_features=enabled \
             -Dgstreamer:tools=enabled \
             -Dbad=enabled \
             -Dgst-plugins-bad:openh264=enabled \
@@ -54,13 +54,29 @@ EOF
             -Dsharp=disabled \
             -Dgpl=enabled
 
-            meson compile -C build
 
             ninja -C build
             ninja -C build install
 EOF
         )
-        ->withDependentLibraries('gmp')
+        ->withDependentLibraries(
+            'gmp',
+            'libx265',
+            'libwebp',
+            'libxml2',
+            'svt_av1',
+            'libopus',
+            'openh264',
+            'libvpx',
+            'libpng',
+            'flac',
+            'zlib',
+            //'orc',
+            'libffi',
+            'pcre',
+            'glib',
+            'libva',
+        )
     ;
 
     $p->addLibrary($lib);

@@ -33,7 +33,6 @@ EOF
             -Dexamples=disabled \
             -Dgtk_doc=disabled \
 
-            meson compile -C build
 
             ninja -C build
             ninja -C build install

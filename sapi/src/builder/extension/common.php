@@ -158,6 +158,8 @@ return function (Preprocessor $p) {
     $depends = ['libbpf'] ;
     $depends = ['dpdk'] ;
     $depends = ['libxdp'] ;
+    $depends = ['paho_mqtt'] ;
+    $depends = ['janus_gateway'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

@@ -5,6 +5,12 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $janus_gateway_prefix = JANUS_GATEWAY_PREFIX;
+    $paho_mqtt_prefix = PAHO_MQTT_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
+    $bzip2_prefix = BZIP2_PREFIX;
+    $libxml2_prefix = LIBXML2_PREFIX;
+    $ldflags  = $p->getOsType() == 'macos' ? ' ' : ' -static  ';
+
     $lib = new Library('janus_gateway');
     $lib->withHomePage('https://janus.conf.meetecho.com/')
         ->withLicense('https://github.com/meetecho/janus-gateway/blob/master/COPYING', Library::LICENSE_LGPL)
@@ -34,6 +40,14 @@ EOF
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
+
+            CPPFLAGS="\$CPPFLAGS -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include -I{$paho_mqtt_prefix}/include "
+            LDFLAGS="\$LDFLAGS -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib -L{$paho_mqtt_prefix}/lib/ "
+            LIBS="\$LIBS -liconv -lbz2  -lm -pthread "
+
+            CPPFLAGS="\$CPPFLAGS"   \
+            LDFLAGS=" {$ldflags} \$LDFLAGS"  \
+            LIBS="\$LIBS"  \
             ./configure \
             --prefix={$janus_gateway_prefix} \
              --enable-websockets \
@@ -48,7 +62,7 @@ EOF
             'libnice',
             'openssl',
             'libsrtp',
-            'usrsctp',
+            'libusrsctp',
             'libmicrohttpd',
             'libwebsockets',
             'curl',
@@ -57,7 +71,8 @@ EOF
             'libogg',
             'zlib',
             'rabbitmq_c',
-            'ffmpeg',
+            'paho_mqtt',
+           // 'ffmpeg',
         )
     ;
 

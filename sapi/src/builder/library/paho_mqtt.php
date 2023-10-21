@@ -10,6 +10,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://eclipse.dev/paho/index.php?page=clients/c/index.php')
         ->withLicense('https://github.com/eclipse/paho.mqtt.c/blob/master/CODE_OF_CONDUCT.md', Library::LICENSE_SPEC)
         ->withManual('https://eclipse.github.io/paho.mqtt.c/')
+        ->withManual('https://eclipse.dev/paho/index.php?page=clients/c/index.php')
         ->withFile('paho.mqtt.c-v1.3.12.tar.gz')
         ->withDownloadScript(
             'paho.mqtt.c',
@@ -28,6 +29,8 @@ EOF
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
+            -DPAHO_BUILD_SHARED=OFF\
+            -DPAHO_BUILD_STATIC=ON \
             -DCMAKE_C_FLAGS="-fpic" \
             -DPAHO_WITH_SSL=ON \
             -DOpenSSL_ROOT={$openssl_prefix} \

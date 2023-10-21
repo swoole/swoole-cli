@@ -18,11 +18,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($glib_prefix)
-        /*
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($glib_prefix)
-        ->withBuildCached(false)
-        */
         ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF
