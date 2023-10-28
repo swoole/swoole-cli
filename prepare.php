@@ -114,6 +114,7 @@ export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
 export NO_PROXY="${NO_PROXY},dl-cdn.alpinelinux.org,deb.debian.org,security.debian.org"
 export NO_PROXY="${NO_PROXY},archive.ubuntu.com,security.ubuntu.com"
 export NO_PROXY="${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
+export NO_PROXY="${NO_PROXY},sourceforge.net"
 
 EOF;
     $p->setProxyConfig($proxyConfig, $http_proxy);

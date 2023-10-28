@@ -17,6 +17,8 @@ return function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $installdir = $p->getGlobalPrefix();
+        $privoxy_prefix = PRIVOXY_PREFIX;
+
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/privoxy
@@ -25,7 +27,7 @@ return function (Preprocessor $p) {
                 cd {$installdir}/privoxy
                 mkdir -p {$workdir}/bin/privoxy-conf
                 cp -rf etc {$workdir}/bin/privoxy-conf/
-
+                cd {$privoxy_prefix}/../
 
 EOF;
         if ($p->getOsType() == 'macos') {
@@ -36,6 +38,7 @@ EOF;
             $cmd .= <<<EOF
               file {$workdir}/bin/privoxy
               readelf -h {$workdir}/bin/privoxy
+              tar -cJvf {$workdir}/privoxy-vlatest-static-linux-x64.tar.xz privoxy
 EOF;
         }
         return $cmd;
