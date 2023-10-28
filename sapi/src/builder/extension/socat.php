@@ -16,22 +16,26 @@ return function (Preprocessor $p) {
     $p->setExtHook('socat', function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
+        $socat_prefix = SOCAT_PREFIX;
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/socat
                 cp -f socat {$workdir}/bin/
                 cp -rf doc {$workdir}/bin/socat-docs
-
+                cd {$builddir}/socat
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/socat
+            tar -cJvf {$workdir}/socat-vlatest-static-macos-x64.tar.xz socat
 EOF;
         } else {
             $cmd .= <<<EOF
               file {$workdir}/bin/socat
               readelf -h {$workdir}/bin/socat
+              tar -cJvf {$workdir}/socat-vlatest-static-linux-x64.tar.xz socat
+
 EOF;
         }
         return $cmd;
