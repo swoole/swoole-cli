@@ -44,3 +44,7 @@ EOF;
         return $cmd;
     });
 };
+
+# TEST
+# cd $privoxy_prefix
+# ./sbin/privoxy --no-daemon etc/config
