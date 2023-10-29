@@ -36,7 +36,6 @@ EOF
 
 EOF
         )
-        ->withPkgName('example')
         ->withBinPath($protobuf_c_prefix . '/bin/')
         ->withDependentLibraries('protobuf')
     ;

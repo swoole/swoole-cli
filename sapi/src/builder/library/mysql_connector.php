@@ -14,59 +14,48 @@ return function (Preprocessor $p) {
     $liblz4_prefix = LIBLZ4_PREFIX;
     $curl_prefix = CURL_PREFIX;
     $libfido2_prefix = LIBFIDO2_PREFIX;
+    $protobuf_prefix = PROTOBUF_PREFIX;
 
-    $lib = new Library('libmysqlclient');
+    $lib = new Library('mysql_connector');
     $lib->withHomePage('http://www.mysql.com/')
         ->withLicense('https://github.com/mysql/mysql-server/blob/trunk/LICENSE', Library::LICENSE_SPEC)
         ->withManual('https://dev.mysql.com/doc/c-api/5.7/en/c-api-building-clients.html')
         ->withManual('https://dev.mysql.com/doc/refman/8.0/en/source-installation.html')
-        ->withFile('mysql-8.2.0.tar.gz')
-        ->withDownloadScript(
-            'mysql-server',
-            <<<EOF
-            git clone -b mysql-8.2.0 --depth=1 https://github.com/mysql/mysql-server.git
-EOF
-        )
-        ->withBuildLibraryHttpProxy(true)
-        //->withBuildCached(false)
-            ->withPreInstallCommand(
-                'alpine',
-                <<<EOF
-            apk add libc6-compat
-EOF
-            )
-
+        ->withUrl('https://downloads.mysql.com/archives/get/p/20/file/mysql-connector-c%2B%2B-8.1.0-src.tar.gz')
+        ->withFile('mysql-connector-8.1.0-src.tar.gz')
+        ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
          mkdir -p build
          cd build
 
-         cmake .. \
+        # sed -i '191 s@#@ @' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
+
+        # sed -i '194 s@([a-z]|)[\t \\-]@@' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
+
+        # sed -i '195 s@\\\\4@q@' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
+
+        cp -f /work/DepFindSSL.cmake {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
+
+        cmake .. \
         -DCMAKE_INSTALL_PREFIX={$libmysqlclient_prefix} \
+        -DCMAKE_INSTALL_LIBDIR={$libmysqlclient_prefix}/lib \
+        -DCMAKE_INSTALL_INCLUDEDIR={$libmysqlclient_prefix}/include \
         -DCMAKE_BUILD_TYPE=Release  \
         -DBUILD_SHARED_LIBS=OFF  \
         -DBUILD_STATIC_LIBS=ON \
-        -DWITHOUT_SERVER=ON \
-        -DDOWNLOAD_BOOST=1 \
-        -DWITH_BOOST={$p->getBuildDir()}/libmysqlclient/boost/  \
-        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix};{$ncurses_prefix};{$libzstd_prefix};{$libedit_prefix};{$libevent_prefix};{$liblz4_prefix};{$curl_prefix};{$libfido2_prefix}" \
-        -DCURSES_INCLUDE_PATH={$ncurses_prefix}/include \
-        -DEDITLINE_INCLUDE_PATH={$libedit_prefix}/include/editline \
-        -DEDITLINE_ROOT={$libedit_prefix} \
-        -DWITH_UNIT_TESTS=OFF \
-        -DWITH_SYSTEM_LIBS=ON \
-        -DWITH_EDITLINE=system \
+        -DBUILD_STATIC=ON \
+        -DWITH_SSL=system \
         -DWITH_ZLIB=system \
-        -DWITH_ZSTD=system \
         -DWITH_LZ4=system \
-        -DWITH_CURL=system \
-        -DWITH_FIDO=bundled \
-        -DWITH_NDB=OFF
+        -DWITH_ZSTD=system \
+        -DWITH_JDBC=OFF \
+        -DWITH_PROTOBUF=system \
+        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix};{$ncurses_prefix};{$libzstd_prefix};{$libedit_prefix};{$libevent_prefix};{$liblz4_prefix};{$curl_prefix};{$libfido2_prefix};{$protobuf_prefix}" \
 
-        make -j {$p->getMaxJob()} clientlib
-        make -j {$p->getMaxJob()} mysqlclient
-        make install
+        cmake --build . --config Release
 
+        cmake --build . --config Release --target install
 EOF
         )
         ->withDependentLibraries(
@@ -81,7 +70,8 @@ EOF
             'libevent',
             'liblz4',
             'curl',
-            //'libfido2'
+            //'libfido2',
+            'protobuf'
         );
 
     $p->addLibrary($lib);

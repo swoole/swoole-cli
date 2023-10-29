@@ -161,6 +161,7 @@ return function (Preprocessor $p) {
     $depends = ['paho_mqtt'] ;
     $depends = ['janus_gateway'] ;
     $depends = ['libmysqlclient'] ;
+    $depends = ['mysql_connector'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
