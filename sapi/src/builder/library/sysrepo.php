@@ -21,30 +21,20 @@ return function (Preprocessor $p) {
         ->withCleanPreInstallDirectory($example_prefix)
         ->withBuildScript(
             <<<EOF
-            mkdir -p build
-             cd build
-             # cmake 查看选项
-             # cmake -LH ..
-             cmake .. \
-            -DCMAKE_INSTALL_PREFIX={$example_prefix} \
-            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
-            -DCMAKE_BUILD_TYPE=Release  \
-            -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON \
-            -DOpenSSL_ROOT={$openssl_prefix} \
+        mkdir -p build
+        cd build
 
-            # -DCMAKE_CXX_STANDARD=14
-            # -DCMAKE_C_COMPILER=clang \
-            # -DCMAKE_CXX_COMPILER=clang++ \
-            # -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
+        cmake .. \
+        -DCMAKE_INSTALL_PREFIX={$example_prefix} \
+        -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
+        -DCMAKE_BUILD_TYPE=Release  \
+        -DBUILD_SHARED_LIBS=OFF  \
+        -DBUILD_STATIC_LIBS=ON \
+        -DOpenSSL_ROOT={$openssl_prefix} \
 
-            # -DCMAKE_CXX_STANDARD=14
-
-            # cmake --build . --config Release --target install
 
 EOF
         )
-        ->withPkgName('ssl')
         ->withBinPath($example_prefix . '/bin/')
         ->withDependentLibraries('openssl')
     ;
