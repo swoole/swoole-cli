@@ -19,11 +19,13 @@ EOF
 
         ->withPrefix($proxychains_prefix)
         ->withBuildCached(false)
+        ->withInstallCached(false)
         ->withConfigure(
             <<<EOF
             ./configure --help
 
-            LDFLAGS=" -static" \
+            CFLAGS=" -std=gnu11 " \
+            LDFLAGS=" -static -std=gnu11 " \
             ./configure \
             --prefix={$proxychains_prefix} \
             --enable-shared=no \
@@ -31,49 +33,11 @@ EOF
 
 EOF
         )
-
-
-        ->withPkgName('example')
         ->withBinPath($proxychains_prefix . '/bin/')
-
-        //依赖其它静态链接库
         ->withDependentLibraries('zlib', 'openssl')
 
-
-        /*
-
-        //默认不需要此配置
-        ->withScriptAfterInstall(
-            <<<EOF
-            rm -rf {$proxychains_prefix}/lib/*.so.*
-            rm -rf {$proxychains_prefix}/lib/*.so
-            rm -rf {$proxychains_prefix}/lib/*.dylib
-EOF
-        )
-        */
-
-
-
-        /*
-
-        //默认不需要此配置，特殊目录才需要配置
-        ->withLdflags('-L' . $proxychains_prefix . '/lib/x86_64-linux-gnu/')
-        //默认不需要此配置，特殊目录才需要配置
-        ->withPkgConfig($proxychains_prefix . '/lib/x86_64-linux-gnu/pkgconfig')
-
-        */
     ;
 
     $p->addLibrary($lib);
 
-
-    /*
-
-    //只有当没有 pkgconfig  配置文件才需要编写这里配置; 例子： src/builder/library/bzip2.php
-
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $proxychains_prefix . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $proxychains_prefix . '/lib');
-    $p->withVariable('LIBS', '$LIBS -lexample ');
-
-    */
 };
