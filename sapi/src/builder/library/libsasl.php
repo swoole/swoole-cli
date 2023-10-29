@@ -27,6 +27,5 @@ EOF
             )
             ->withPkgName('libsasl2')
             ->withBinPath($libsasl_prefix . '/sbin/')
-
     );
 };

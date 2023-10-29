@@ -45,22 +45,10 @@ EOF
 
 EOF
         )
-
         ->withPkgName('zimg')
         ->withBinPath($example_prefix . '/bin/')
-        ->withDependentLibraries('zlib', 'openssl') //依赖其它静态依赖库
-        ->withLdflags('-L' . $example_prefix . '/lib/x86_64-linux-gnu/') //默认下不需要配，特殊目录才需要配置
-        ->withPkgConfig($example_prefix . '/lib/x86_64-linux-gnu/pkgconfig')//默认下不需要配，特殊目录才需要配置
-        ->withSkipDownload()
-        ->disableDefaultLdflags()
-        ->disablePkgName()
-        ->disableDefaultPkgConfig()
-        ->withSkipBuildLicense();
+        ->withDependentLibraries('zlib', 'openssl')
+    ;
 
     $p->addLibrary($lib);
-
-
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $example_prefix . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $example_prefix . '/lib');
-    $p->withVariable('LIBS', '$LIBS -lopencv ');
 };

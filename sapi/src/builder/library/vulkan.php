@@ -37,13 +37,7 @@ EOF
         )
 
         ->withBinPath($vulkan_prefix . '/bin/')
-
-        //依赖其它静态依赖库
         ->withDependentLibraries('zlib', 'openssl')
-
     ;
-
-
     $p->addLibrary($lib);
-
 };

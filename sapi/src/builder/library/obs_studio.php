@@ -41,5 +41,4 @@ EOF
 
 
     $p->addLibrary($lib);
-
 };

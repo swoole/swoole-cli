@@ -42,11 +42,7 @@ EOF
         ->withPkgName('ssl')
         ->withBinPath($libpri_prefix . '/bin/')
         ->withDependentLibraries('zlib') //'dahdi_linux'
-       ;
+    ;
 
     $p->addLibrary($lib);
-
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libpri_prefix . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libpri_prefix . '/lib');
-    $p->withVariable('LIBS', '$LIBS -lssl ');
 };
