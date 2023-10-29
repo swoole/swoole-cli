@@ -18,13 +18,9 @@ EOF
         )
         ->withPrefix($upnp_prefix)
         ->withBuildCached(false)
-        ->withCleanBuildDirectory()
         ->withBuildScript(
             <<<EOF
-            meson  -h
-            meson setup -h
-            # meson configure -h
-            test -d build && rm -rf build
+
             meson setup  build \
             -Dprefix={$upnp_prefix} \
             -Dbackend=ninja \
@@ -38,7 +34,6 @@ EOF
             -Dintrospection=true \
             -Dvapi=true
 
-            # meson compile -C build
 
             ninja -C build
             ninja -C build install
