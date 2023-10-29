@@ -18,9 +18,11 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libcbor_prefix)
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
-            cmake -B build \
+            mkdir -p build
+            cd build
+            cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libcbor_prefix} \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
@@ -28,14 +30,14 @@ EOF
             -DHUGE_FUZZ=OFF \
             -DWITH_TESTS=OFF
 
+            cmake --build . --config Release
+
+            cmake --build . --config Release --target install
 
 EOF
         )
-        ->withBuildCached(false)
-        ->disableDefaultLdflags()
-        ->disablePkgName()
-        ->disableDefaultPkgConfig()
-        ->withSkipBuildLicense();
+        ->withPkgName('libcbor')
+    ;
 
     $p->addLibrary($lib);
 };

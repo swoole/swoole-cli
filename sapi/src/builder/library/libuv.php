@@ -12,7 +12,9 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/libuv/libuv/blob/v1.x/LICENSE', Library::LICENSE_MIT)
             ->withManual('https://github.com/libuv/libuv.git')
             ->withFile('libuv-latest.tar.gz')
-            ->withDownloadScript('libuv', <<<EOF
+            ->withDownloadScript(
+                'libuv',
+                <<<EOF
              git clone -b v1.x --depth=1 --progress https://github.com/libuv/libuv.git
 EOF
             )
@@ -21,7 +23,6 @@ EOF
             ->withCleanPreInstallDirectory($libuv_prefix)
             ->withConfigure(
                 <<<EOF
-            ls -lh
 
             sh autogen.sh
             ./configure --help

@@ -160,6 +160,7 @@ return function (Preprocessor $p) {
     $depends = ['libxdp'] ;
     $depends = ['paho_mqtt'] ;
     $depends = ['janus_gateway'] ;
+    $depends = ['libmysqlclient'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

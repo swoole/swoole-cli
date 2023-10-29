@@ -311,4 +311,5 @@ define("SUITESPARSE_PREFIX", $p->getGlobalPrefix() . '/suitesparse');
 define("BLAS_PREFIX", $p->getGlobalPrefix() . '/blas');
 define("MPFR_PREFIX", $p->getGlobalPrefix() . '/mpfr');
 define("LIBVA_PREFIX", $p->getGlobalPrefix() . '/libva');
+define("LIBMYSQLICLIENT_PREFIX", $p->getGlobalPrefix() . '/libmysqlclient');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

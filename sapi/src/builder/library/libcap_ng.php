@@ -21,7 +21,7 @@ EOF
         ->withPrefix($libcap_ng_prefix)
         ->withConfigure(
             <<<EOF
-              sh autogen.sh
+            sh autogen.sh
             ./configure --help
 
             ./configure \
