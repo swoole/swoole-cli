@@ -29,13 +29,13 @@ return function (Preprocessor $p) {
          mkdir -p build
          cd build
 
-        # sed -i '191 s@#@ @' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
+        sed -i '191 s@#@ @' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
 
         # sed -i '194 s@([a-z]|)[\t \\-]@@' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
 
         # sed -i '195 s@\\\\4@q@' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
 
-        cp -f /work/DepFindSSL.cmake {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
+        # cp -f /work/DepFindSSL.cmake {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
 
         cmake .. \
         -DCMAKE_INSTALL_PREFIX={$libmysqlclient_prefix} \
