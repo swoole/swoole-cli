@@ -25,17 +25,20 @@ return function (Preprocessor $p) {
                 cd {$proxychains_prefix}/
                 cp -rf bin/ {$workdir}/bin/proxychains/
                 cp -f {$builddir}/proxychains/src/proxychains.conf {$workdir}/bin/proxychains/
+                cd {$workdir}/bin/
 
 EOF;
         $cmd = $cmd . PHP_EOL;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/proxychains/bin/proxychains4
+            tar -cJvf {$workdir}/proxychains-vlatest-static-macos-x64.tar.xz proxychains
 EOF;
         } else {
             $cmd .= <<<EOF
             file {$workdir}/bin/proxychains/bin/proxychains4
             readelf -h {$workdir}/bin/proxychains/bin/proxychains4
+            tar -cJvf {$workdir}/proxychains-vlatest-static-linux-x64.tar.xz proxychains
 EOF;
         }
         return $cmd;
