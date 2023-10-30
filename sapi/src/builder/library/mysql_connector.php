@@ -16,6 +16,7 @@ return function (Preprocessor $p) {
     $libfido2_prefix = LIBFIDO2_PREFIX;
     $protobuf_prefix = PROTOBUF_PREFIX;
 
+
     $lib = new Library('mysql_connector');
     $lib->withHomePage('http://www.mysql.com/')
         ->withLicense('https://github.com/mysql/mysql-server/blob/trunk/LICENSE', Library::LICENSE_SPEC)
@@ -26,16 +27,28 @@ return function (Preprocessor $p) {
         ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
+        DEP_SSL_CMAKE={$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
+
+EOF
+            .
+            <<<'EOF'
+
+        # 解决匹配 openssl 版本问题
+        # define OPENSSL_VERSION_TEXT "OpenSSL 3.0.10+quic 1 Aug 2023"
+
+        sed -i '191 s@#@ @' $DEP_SSL_CMAKE
+
+        sed -i '194 s@\[\\t \\\\-\]@@' $DEP_SSL_CMAKE
+        sed -i '194 s@\(\[a\-z\]|\)@@' $DEP_SSL_CMAKE
+        sed -i '194 s@()@@' $DEP_SSL_CMAKE
+
+        sed -i '195 s@\\\\4@q@'  $DEP_SSL_CMAKE
+
+EOF
+            .
+            <<<EOF
          mkdir -p build
          cd build
-
-        sed -i '191 s@#@ @' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
-
-        # sed -i '194 s@([a-z]|)[\t \\-]@@' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
-
-        # sed -i '195 s@\\\\4@q@' {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
-
-        # cp -f /work/DepFindSSL.cmake {$p->getBuildDir()}/mysql_connector/cdk/cmake/DepFindSSL.cmake
 
         cmake .. \
         -DCMAKE_INSTALL_PREFIX={$libmysqlclient_prefix} \
@@ -51,7 +64,8 @@ return function (Preprocessor $p) {
         -DWITH_ZSTD=system \
         -DWITH_JDBC=OFF \
         -DWITH_PROTOBUF=system \
-        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix};{$ncurses_prefix};{$libzstd_prefix};{$libedit_prefix};{$libevent_prefix};{$liblz4_prefix};{$curl_prefix};{$libfido2_prefix};{$protobuf_prefix}" \
+        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix};{$ncurses_prefix};{$libzstd_prefix};{$libedit_prefix};{$libevent_prefix};{$liblz4_prefix};{$curl_prefix};{$libfido2_prefix};{$protobuf_prefix}"
+
 
         cmake --build . --config Release
 
