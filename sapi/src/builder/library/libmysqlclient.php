@@ -36,7 +36,7 @@ EOF
 EOF
             )
 
-        ->withBuildScript(
+        ->withConfigure(
             <<<EOF
          mkdir -p build
          cd build
@@ -49,23 +49,24 @@ EOF
         -DWITHOUT_SERVER=ON \
         -DDOWNLOAD_BOOST=1 \
         -DWITH_BOOST={$p->getBuildDir()}/libmysqlclient/boost/  \
-        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix};{$ncurses_prefix};{$libzstd_prefix};{$libedit_prefix};{$libevent_prefix};{$liblz4_prefix};{$curl_prefix};{$libfido2_prefix}" \
+        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix};{$ncurses_prefix};{$libzstd_prefix};{$libedit_prefix};{$libevent_prefix};{$liblz4_prefix};{$curl_prefix};" \
         -DCURSES_INCLUDE_PATH={$ncurses_prefix}/include \
-        -DEDITLINE_INCLUDE_PATH={$libedit_prefix}/include/editline \
-        -DEDITLINE_ROOT={$libedit_prefix} \
         -DWITH_UNIT_TESTS=OFF \
-        -DWITH_SYSTEM_LIBS=ON \
         -DWITH_EDITLINE=system \
         -DWITH_ZLIB=system \
         -DWITH_ZSTD=system \
         -DWITH_LZ4=system \
         -DWITH_CURL=system \
         -DWITH_FIDO=bundled \
-        -DWITH_NDB=OFF
+        -DWITH_NDB=OFF \
+        -DCMAKE_CXX_STANDARD_LIBRARIES=" -lresolv " \
 
-        make -j {$p->getMaxJob()} clientlib
-        make -j {$p->getMaxJob()} mysqlclient
-        make install
+
+        # -DCMAKE_C_FLAGS="  -D__STDC_ISO_10646__=201103L "
+
+        # make -j {$p->getMaxJob()} clientlib
+        # make -j {$p->getMaxJob()} mysqlclient
+        # make install
 
 EOF
         )

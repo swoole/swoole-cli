@@ -64,7 +64,8 @@ EOF
         -DWITH_ZSTD=system \
         -DWITH_JDBC=OFF \
         -DWITH_PROTOBUF=system \
-        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix};{$ncurses_prefix};{$libzstd_prefix};{$libedit_prefix};{$libevent_prefix};{$liblz4_prefix};{$curl_prefix};{$libfido2_prefix};{$protobuf_prefix}"
+        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$zlib_prefix};{$ncurses_prefix};{$libzstd_prefix};{$libedit_prefix};{$libevent_prefix};{$liblz4_prefix};{$curl_prefix};{$libfido2_prefix};{$protobuf_prefix}" \
+        -DCMAKE_CXX_STANDARD_LIBRARIES=" -lresolv "
 
 
         cmake --build . --config Release
