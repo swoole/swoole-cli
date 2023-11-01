@@ -14,13 +14,21 @@ cd ${__PROJECT__}
 mkdir -p var/build-github-action-container/
 cd ${__PROJECT__}/var/build-github-action-container/
 
-cp -f ${__PROJECT__}/sapi/docker/Dockerfile .
 cp -f ${__PROJECT__}/sapi/quickstart/linux/alpine-init.sh .
 
 cat >>Dockerfile<<'EOF'
+FROM alpine:3.18
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ENV TZ=Etc/UTC
+
 ADD ./alpine-init.sh /alpine-init.sh
+
 RUN sh /alpine-init.sh
 # RUN sh /alpine-init.sh --mirror china
+
+RUN mkdir /work
+WORKDIR /work
 ENTRYPOINT ["tini", "--"]
 EOF
 
