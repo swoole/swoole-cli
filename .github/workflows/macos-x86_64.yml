@@ -88,7 +88,9 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/runtime
-          bash  sapi/quickstart/setup-php-runtime.sh
+          if [ ! -f bin/runtime/php ] ; then
+              bash  sapi/quickstart/setup-php-runtime.sh
+          fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: prepare

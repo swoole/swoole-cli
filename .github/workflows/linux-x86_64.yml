@@ -107,7 +107,9 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/runtime
-          bash  setup-php-runtime.sh
+          if [ ! -f bin/runtime/php ] ; then
+              bash  setup-php-runtime.sh
+          fi
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
       - name: Prepare swoole-cli-builder-image
