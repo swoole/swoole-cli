@@ -27,26 +27,15 @@ ADD ./alpine-init.sh /alpine-init.sh
 RUN sh /alpine-init.sh
 # RUN sh /alpine-init.sh --mirror china
 
-uname -m
-
+RUN uname -m
 RUN mkdir /work
+
 WORKDIR /work
 ENTRYPOINT ["tini", "--"]
 
 EOF
 
-:<<'EOF'
-linux/386
-linux/amd64
-linux/arm/v5
-linux/arm/v7
-linux/arm64/v8
-linux/arm64
-linux/mips64le
-linux/ppc64le
-linux/riscv64
-linux/s390x
-EOF
+
 
 PLATFORM='linux/amd64'
 
@@ -68,3 +57,18 @@ IMAGE='swoole-cli-builder:latest'
 docker buildx build -t ${IMAGE} -f ./Dockerfile .  --platform ${PLATFORM}
 
 docker save -o "swoole-cli-builder-image.tar" ${IMAGE}
+
+
+# 可设置的架构选项
+:<<'EOF'
+linux/386
+linux/amd64
+linux/arm/v5
+linux/arm/v7
+linux/arm64/v8
+linux/arm64
+linux/mips64le
+linux/ppc64le
+linux/riscv64
+linux/s390x
+EOF
