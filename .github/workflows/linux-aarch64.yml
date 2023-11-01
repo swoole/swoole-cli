@@ -88,7 +88,7 @@ jobs:
           if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-aarch64.tar ] ; then
               docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-aarch64.tar
           else
-              sh .github/workflows/build-alpine-builder-container.sh --platform "linux/amd64"
+              sh .github/workflows/build-alpine-builder-container.sh --platform "linux/arm64"
           fi
 
 
