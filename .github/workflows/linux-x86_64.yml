@@ -80,12 +80,6 @@ jobs:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-php-vendor
 
-      - name: Prepare Libraries and Extensions
-        run: |
-          set -x
-          bash  setup-php-runtime.sh
-          bash sapi/download-box/download-box-get-archive-from-container.sh
-
       - name: Cache Dependency Tarball
         uses: actions/cache@v3
         id: dependency-cache
@@ -106,6 +100,12 @@ jobs:
         with:
           path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar
           key: ${{ runner.os }}-swoole-cli-builder-image
+
+      - name: Prepare Libraries and Extensions
+        run: |
+          set -x
+          bash  setup-php-runtime.sh
+          bash sapi/download-box/download-box-get-archive-from-container.sh
 
       - name: Prepare swoole-cli-builder-image
         run: |
