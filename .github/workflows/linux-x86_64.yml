@@ -73,7 +73,7 @@ jobs:
           path: ${{ github.workspace }}/bin/runtime
           key: ${{ runner.os }}-php-runtime
 
-      - name: Cache PHP Vendor Runtime
+      - name: Cache PHP Vendor
         uses: actions/cache@v3
         id: php-vendor-cache
         with:
@@ -104,6 +104,9 @@ jobs:
       - name: Prepare Libraries and Extensions
         run: |
           set -x
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
           bash  setup-php-runtime.sh
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
