@@ -113,6 +113,7 @@ jobs:
           key: ${{ runner.os }}-php-vendor
 
       - name: Cache Dependency Source Code Tarball
+        if: 0
         uses: actions/cache@v3
         id: dependency-cache
         with:
@@ -120,6 +121,7 @@ jobs:
           key: ${{ runner.os }}-pool
 
       - name: Cache all-library
+        if: 0
         uses: actions/cache@v3
         id: all-library-cache
         with:
@@ -127,6 +129,7 @@ jobs:
           key: ${{ runner.os }}-all-library
 
       - name: Cache swoole-cli-builder-image
+        if: 0
         uses: actions/cache@v3
         id: swoole-cli-builder-image-cache
         with:
@@ -145,6 +148,7 @@ jobs:
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
       - name: Prepare swoole-cli-builder-image
+        if: 0
         run: |
             if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar ] ; then
                 docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar

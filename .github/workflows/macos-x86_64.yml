@@ -94,6 +94,7 @@ jobs:
           key: ${{ runner.os }}-php-vendor
 
       - name: Cache Dependency Source Code Tarball
+        if: 0
         uses: actions/cache@v3
         id: dependency-cache
         with:
@@ -101,6 +102,7 @@ jobs:
           key: ${{ runner.os }}-pool
 
       - name: Cache all-library
+        if: 0
         uses: actions/cache@v3
         id: all-library-cache
         with:
