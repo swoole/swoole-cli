@@ -81,6 +81,8 @@ jobs:
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          alias php="php -d curl.cainfo=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem -d openssl.cafile=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem"
+
 
           composer update --no-dev  --optimize-autoloader
 
