@@ -19,13 +19,13 @@ cp -f ${__PROJECT__}/sapi/quickstart/linux/alpine-init.sh .
 
 cat >>Dockerfile<<'EOF'
 ADD ./alpine-init.sh /alpine-init.sh
-# RUN sh /alpine-init.sh
-RUN sh /alpine-init.sh --mirror china
+RUN sh /alpine-init.sh
+# RUN sh /alpine-init.sh --mirror china
 ENTRYPOINT ["tini", "--"]
 EOF
 
 IMAGE='swoole-cli-builder:latest'
-# docker build -t ${IMAGE} -f ./Dockerfile .
-docker build -t ${IMAGE} -f ./Dockerfile . --build-arg="MIRROR=ustc"
+docker build -t ${IMAGE} -f ./Dockerfile .
+# docker build -t ${IMAGE} -f ./Dockerfile . --build-arg="MIRROR=ustc"
 
 docker save -o "swoole-cli-builder-image-$(uname -m).tar" ${IMAGE}
