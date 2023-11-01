@@ -74,6 +74,7 @@ jobs:
       - name: Prepare QEMU aarch64
         run: |
           set -x
+          # https://github.com/multiarch/qemu-user-static
           # sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           sudo docker run --rm --privileged multiarch/qemu-user-static:x86_64-aarch64 --reset -p yes
 
