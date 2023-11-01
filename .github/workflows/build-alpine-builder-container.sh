@@ -27,13 +27,61 @@ ADD ./alpine-init.sh /alpine-init.sh
 RUN sh /alpine-init.sh
 # RUN sh /alpine-init.sh --mirror china
 
+RUN uname -m
 RUN mkdir /work
+
 WORKDIR /work
 ENTRYPOINT ["tini", "--"]
 
 EOF
 
-IMAGE='swoole-cli-builder:latest'
-docker build -t ${IMAGE} -f ./Dockerfile .
 
-docker save -o "swoole-cli-builder-image-$(uname -m).tar" ${IMAGE}
+
+PLATFORM='linux/amd64'
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --platform)
+    PLATFORM="$2"
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+
+
+IMAGE='swoole-cli-builder:latest'
+docker buildx build -t ${IMAGE} -f ./Dockerfile .  --platform ${PLATFORM}
+
+docker save -o "swoole-cli-builder-image.tar" ${IMAGE}
+
+
+
+# alpine 可设置的架构选项
+# https://hub.docker.com/_/alpine/tags
+:<<'EOF'
+linux/386
+linux/amd64
+linux/arm/v6
+linux/arm/v7
+linux/arm64/v8
+linux/ppc64le
+linux/s390x
+EOF
+
+# debian 可设置的架构选项
+:<<'EOF'
+linux/386
+linux/amd64
+linux/arm/v5
+linux/arm/v7
+linux/arm64/v8
+linux/arm64
+linux/mips64le
+linux/ppc64le
+linux/riscv64
+linux/s390x
+EOF
