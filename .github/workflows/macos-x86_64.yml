@@ -88,9 +88,17 @@ jobs:
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           bash sapi/download-box/download-box-get-archive-from-server.sh
 
+      - name: Cache Dependency Tarball
+        uses: actions/cache@v3
+        id: dependency-cache
+        with:
+          path: ${GITHUB_WORKSPACE}/pool/
+          key: ${{ runner.os }}-pool
+
       - name: prepare
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          alias php="php -d curl.cainfo=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem -d openssl.cafile=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem"
 
           composer update --no-dev  --optimize-autoloader
 
@@ -101,7 +109,7 @@ jobs:
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-${{ env.BRANCH_NAME }}-all-library
+          key: ${{ runner.os }}-all-library
 
       - name: Build
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
