@@ -149,8 +149,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-<<<<<<< HEAD
           files: php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-arm64.tar.xz
-=======
-          files: swoole-cli-*-linux-aarch64.tar.xz
->>>>>>> experiment-webui
+
