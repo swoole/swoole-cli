@@ -61,14 +61,28 @@ jobs:
           # 准备数据库容器
           bash sapi/src/UnitTest/scripts/database/start.sh
 
+          sudo mkdir -p /usr/local/swoole-cli
+          uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
+
+      - name: Cache PHP Runtime
+        uses: actions/cache@v3
+        id: php-runtime-cache
+        with:
+          path: ${{ github.workspace }}/bin/runtime
+          key: ${{ runner.os }}-php-runtime
+
+      - name: Cache PHP Vendor Runtime
+        uses: actions/cache@v3
+        id: php-vendor-cache
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-php-vendor
+
       - name: Prepare Libraries and Extensions
         run: |
           set -x
           bash  setup-php-runtime.sh
           bash sapi/download-box/download-box-get-archive-from-container.sh
-          sudo mkdir -p /usr/local/swoole-cli
-
-          uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
 
       - name: Cache Dependency Tarball
         uses: actions/cache@v3

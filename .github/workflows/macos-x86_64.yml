@@ -62,7 +62,21 @@ jobs:
 
           # git submodule update --init
 
-      - name: Prepare runtime
+      - name: Cache PHP Runtime
+        uses: actions/cache@v3
+        id: php-runtime-cache
+        with:
+          path: ${{ github.workspace }}/bin/runtime
+          key: ${{ runner.os }}-php-runtime
+
+      - name: Cache PHP Vendor Runtime
+        uses: actions/cache@v3
+        id: php-vendor-cache
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-php-vendor
+
+      - name: Prepare Runtime
         run: |
           mkdir -p pool/lib
           mkdir -p pool/ext
