@@ -65,21 +65,43 @@ jobs:
 
           # git submodule update --init
 
-      - name: Prepare runtime
+      - name: Cache PHP Runtime
+        uses: actions/cache@v3
+        id: php-runtime-cache
+        with:
+          path: ${{ github.workspace }}/bin/runtime
+          key: ${{ runner.os }}-php-runtime
+
+      - name: Cache PHP Vendor
+        uses: actions/cache@v3
+        id: php-vendor-cache
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-php-vendor
+
+      - name: Cache Dependency Source Code Tarball
+        uses: actions/cache@v3
+        id: dependency-cache
+        with:
+          path: ${{ github.workspace }}/pool/
+          key: ${{ runner.os }}-pool
+
+      - name: Cache all-library
+        uses: actions/cache@v3
+        id: all-library-cache
+        with:
+          path: /usr/local/swoole-cli
+          key: ${{ runner.os }}-all-library
+
+      - name: Prepare Runtime
         run: |
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/runtime
-          bash  sapi/quickstart/setup-php-runtime.sh
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          if [ ! -f bin/runtime/php ] ; then
+              bash  sapi/quickstart/setup-php-runtime.sh
+          fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
-
-      - name: Cache Dependency Tarball
-        uses: actions/cache@v3
-        id: dependency-cache
-        with:
-          path: ${GITHUB_WORKSPACE}/pool/
-          key: ${{ runner.os }}-pool
 
       - name: prepare
         run: |
@@ -90,15 +112,7 @@ jobs:
 
           php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1
 
-      - name: Cache all-library
-        uses: actions/cache@v3
-        id: all-library-cache
-        with:
-          path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-all-library
-
       - name: Build
-        # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
 
