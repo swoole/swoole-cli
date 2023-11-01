@@ -118,9 +118,9 @@ jobs:
         if: 1
         uses: addnab/docker-run-action@v3
         with:
-          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
-          image: alpine:3.18
-          options: -v ${{ github.workspace }}:/work -w /work -e BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }} -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
+          # image: alpine:3.18
+          options: -v ${{ github.workspace }}:/work -w /work -e BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }} # -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
