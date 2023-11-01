@@ -18,7 +18,7 @@ cd ${__DIR__}
 
 # https://hub.docker.com/_/alpine/tags
 
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker run --rm -d --name qemu-user-static --privileged multiarch/qemu-user-static --reset -p yes
 
 #docker run --rm --privileged multiarch/qemu-user-static:x86_64-aarch64
 
