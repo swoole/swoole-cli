@@ -68,7 +68,7 @@ jobs:
           bash sapi/download-box/download-box-get-archive-from-container.sh
           sudo mkdir -p /usr/local/swoole-cli
 
-          uid=$(id -u)  gid=$(id -g) sudo chown -R $(uid):$(gid) /usr/local/swoole-cli
+          uid=$(id -u) && gid=$(id -g) && sudo chown -R $(uid):$(gid) /usr/local/swoole-cli
 
       - name: Cache Dependency Tarball
         uses: actions/cache@v3
