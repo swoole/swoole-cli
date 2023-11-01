@@ -90,7 +90,7 @@ jobs:
           run: |
             set -eux
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
-            alias php="php -d curl.cainfo=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem -d openssl.cafile=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem"
+            alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
 
             # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
