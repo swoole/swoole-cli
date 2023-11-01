@@ -33,7 +33,36 @@ ENTRYPOINT ["tini", "--"]
 
 EOF
 
+:<<'EOF'
+linux/386
+linux/amd64
+linux/arm/v5
+linux/arm/v7
+linux/arm64/v8
+linux/arm64
+linux/mips64le
+linux/ppc64le
+linux/riscv64
+linux/s390x
+EOF
+
+PLATFORM='linux/amd64'
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --platform)
+    PLATFORM="$2"
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+
+
 IMAGE='swoole-cli-builder:latest'
-docker build -t ${IMAGE} -f ./Dockerfile .
+docker buildx build -t ${IMAGE} -f ./Dockerfile .  --platform ${PLATFORM}
 
 docker save -o "swoole-cli-builder-image-$(uname -m).tar" ${IMAGE}
