@@ -84,8 +84,8 @@ jobs:
       - name: Prepare and  Build all-library and  Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
-          #image: alpine:3.18
+          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
+          image: alpine:3.18
           options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
