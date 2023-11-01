@@ -98,13 +98,13 @@ jobs:
         uses: actions/cache@v3
         id: swoole-cli-builder-image-cache
         with:
-          path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar
+          path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
           key: ${{ runner.os }}-swoole-cli-builder-image
 
       - name: Prepare swoole-cli-builder-image
         run: |
-            if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar ] ; then
-                docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar
+            if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
+                docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
             else
                 sh .github/workflows/build-alpine-builder-container.sh
             fi
@@ -129,6 +129,7 @@ jobs:
           options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
+            uname -m
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 

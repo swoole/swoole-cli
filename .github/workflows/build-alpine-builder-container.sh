@@ -27,6 +27,8 @@ ADD ./alpine-init.sh /alpine-init.sh
 RUN sh /alpine-init.sh
 # RUN sh /alpine-init.sh --mirror china
 
+uname -m
+
 RUN mkdir /work
 WORKDIR /work
 ENTRYPOINT ["tini", "--"]
@@ -65,4 +67,4 @@ done
 IMAGE='swoole-cli-builder:latest'
 docker buildx build -t ${IMAGE} -f ./Dockerfile .  --platform ${PLATFORM}
 
-docker save -o "swoole-cli-builder-image-$(uname -m).tar" ${IMAGE}
+docker save -o "swoole-cli-builder-image.tar" ${IMAGE}

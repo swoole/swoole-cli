@@ -79,19 +79,15 @@ jobs:
       - name: Prepare QEMU aarch64
         run: |
           set -x
-          # https://github.com/multiarch/qemu-user-static
-          # https://hub.docker.com/r/multiarch/qemu-user-static/tags?page=1&name=aarch64
           sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Prepare swoole-cli-builder-image
         run: |
-          if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-aarch64.tar ] ; then
-              docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-aarch64.tar
+          if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
+              docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
           else
               sh .github/workflows/build-alpine-builder-container.sh --platform "linux/arm64"
           fi
-
-
 
       - name: Build
         uses: addnab/docker-run-action@v3
@@ -101,6 +97,7 @@ jobs:
           options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
+            uname -m
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
