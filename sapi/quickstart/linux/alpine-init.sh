@@ -57,4 +57,5 @@ ustc)
 
 esac
 
-pip3 install meson
+# pip3 install meson
+apk add meson

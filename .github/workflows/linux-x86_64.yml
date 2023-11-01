@@ -64,6 +64,8 @@ jobs:
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
 
+          mkdir -p ${{ github.workspace }}/var/build-github-action-container/
+
       - name: Cache PHP Runtime
         uses: actions/cache@v3
         id: php-runtime-cache
@@ -98,11 +100,27 @@ jobs:
           path: /usr/local/swoole-cli
           key: ${{ runner.os }}-all-library
 
+      - name: Cache swoole-cli-builder-image
+        uses: actions/cache@v3
+        id: swoole-cli-builder-image-cache
+        with:
+          path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar
+          key: ${{ runner.os }}-swoole-cli-builder-image
+
+      - name: Prepare swoole-cli-builder-image
+        run: |
+            if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar ] ; then
+                docker load -i  swoole-cli-builder-image-$(uname -m).tar
+            else
+                sh .github/workflows/build-alpine-builder-container.sh
+            fi
+
       - name: Prepare and  Build all-library and  Build
         uses: addnab/docker-run-action@v3
         with:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
-          image: alpine:3.18
+          # image: alpine:3.18
+          image: swoole-cli-builder:latest
           options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
