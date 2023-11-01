@@ -71,7 +71,7 @@ jobs:
         uses: actions/cache@v3
         id: dependency-cache
         with:
-          path: ${GITHUB_WORKSPACE}/pool/
+          path: ${{ github.workspace }}/pool/
           key: ${{ runner.os }}-pool
 
       - name: Cache all-library
