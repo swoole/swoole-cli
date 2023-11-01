@@ -30,10 +30,10 @@ RUN sh /alpine-init.sh
 RUN mkdir /work
 WORKDIR /work
 ENTRYPOINT ["tini", "--"]
+
 EOF
 
 IMAGE='swoole-cli-builder:latest'
 docker build -t ${IMAGE} -f ./Dockerfile .
-# docker build -t ${IMAGE} -f ./Dockerfile . --build-arg="MIRROR=ustc"
 
 docker save -o "swoole-cli-builder-image-$(uname -m).tar" ${IMAGE}
