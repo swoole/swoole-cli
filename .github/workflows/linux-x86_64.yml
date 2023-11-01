@@ -64,19 +64,35 @@ jobs:
       - name: Prepare Libraries and Extensions
         run: |
           set -x
-          bash sapi/download-box/download-box-get-archive-from-container.sh
+          bash  setup-php-runtime.sh
+          # bash sapi/download-box/download-box-get-archive-from-container.sh
+
+      - name: Cache Dependency Tarball
+        uses: actions/cache@v3
+        id: dependency-cache
+        with:
+          path: ${GITHUB_WORKSPACE}/pool/
+          key: ${{ runner.os }}-pool
+
+      - name: Cache all-library
+        uses: actions/cache@v3
+        id: all-library-cache
+        with:
+          path: /usr/local/swoole-cli
+          key: ${{ runner.os }}-all-library
 
       - name: Prepare and  Build all-library and  Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
-          options: -v ${{ github.workspace }}:/work -w /work
+          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
+          image: alpine:3.18
+          options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
-            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
+            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
 
-            sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
-            sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
 
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
