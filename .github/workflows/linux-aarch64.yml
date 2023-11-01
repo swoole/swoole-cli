@@ -41,32 +41,32 @@ jobs:
         id: php-runtime-cache
         with:
           path: ${{ github.workspace }}/bin/runtime
-          key: ${{ runner.os }}-php-runtime
+          key: ${{ runner.os }}-aarch64-php-runtime
 
       - name: Cache PHP Vendor
         uses: actions/cache@v3
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
-          key: ${{ runner.os }}-php-vendor
+          key: ${{ runner.os }}-aarch64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
         id: dependency-cache
         with:
           path: ${{ github.workspace }}/pool/
-          key: ${{ runner.os }}-pool
+          key: ${{ runner.os }}-aarch64-pool
 
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-all-library
+          key: ${{ runner.os }}-aarch64-all-library
 
       - name: Cache swoole-cli-builder-image
         uses: actions/cache@v3
-        id: swoole-cli-builder-image-cache
+        id: swoole-cli-builder-image-aarch64-cache
         with:
           path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-aarch64.tar
           key: ${{ runner.os }}-swoole-cli-builder-image
