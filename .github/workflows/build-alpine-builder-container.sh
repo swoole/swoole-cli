@@ -59,7 +59,20 @@ docker buildx build -t ${IMAGE} -f ./Dockerfile .  --platform ${PLATFORM}
 docker save -o "swoole-cli-builder-image.tar" ${IMAGE}
 
 
-# 可设置的架构选项
+
+# alpine 可设置的架构选项
+# https://hub.docker.com/_/alpine/tags
+:<<'EOF'
+linux/386
+linux/amd64
+linux/arm/v6
+linux/arm/v7
+linux/arm64/v8
+linux/ppc64le
+linux/s390x
+EOF
+
+# debian 可设置的架构选项
 :<<'EOF'
 linux/386
 linux/amd64
