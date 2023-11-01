@@ -101,6 +101,14 @@ jobs:
           path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar
           key: ${{ runner.os }}-swoole-cli-builder-image
 
+      - name: Prepare swoole-cli-builder-image
+        run: |
+            if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar ] ; then
+                docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar
+            else
+                sh .github/workflows/build-alpine-builder-container.sh
+            fi
+
       - name: Prepare Libraries and Extensions
         run: |
           set -x
@@ -112,14 +120,6 @@ jobs:
           fi
           bash sapi/download-box/download-box-get-archive-from-container.sh
 
-      - name: Prepare swoole-cli-builder-image
-        run: |
-            if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar ] ; then
-                docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-x86_64.tar
-            else
-                sh .github/workflows/build-alpine-builder-container.sh
-            fi
-
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
@@ -129,7 +129,7 @@ jobs:
           options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
-            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
+            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
             sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories

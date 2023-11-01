@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-aarch64:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -31,20 +31,74 @@ jobs:
 
           # git submodule update --init
 
+          sudo mkdir -p /usr/local/swoole-cli
+          uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
+
+          mkdir -p ${{ github.workspace }}/var/build-github-action-container/
+
+      - name: Cache PHP Runtime
+        uses: actions/cache@v3
+        id: php-runtime-cache
+        with:
+          path: ${{ github.workspace }}/bin/runtime
+          key: ${{ runner.os }}-php-runtime
+
+      - name: Cache PHP Vendor
+        uses: actions/cache@v3
+        id: php-vendor-cache
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-php-vendor
+
+      - name: Cache Dependency Source Code Tarball
+        uses: actions/cache@v3
+        id: dependency-cache
+        with:
+          path: ${{ github.workspace }}/pool/
+          key: ${{ runner.os }}-pool
+
+      - name: Cache all-library
+        uses: actions/cache@v3
+        id: all-library-cache
+        with:
+          path: /usr/local/swoole-cli
+          key: ${{ runner.os }}-all-library
+
+      - name: Cache swoole-cli-builder-image
+        uses: actions/cache@v3
+        id: swoole-cli-builder-image-cache
+        with:
+          path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-aarch64.tar
+          key: ${{ runner.os }}-swoole-cli-builder-image
+
+      - name: Prepare QEMU aarch64
+        run: |
+          set -x
+          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - name: Prepare swoole-cli-builder-image
+        run: |
+          if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-aarch64.tar ] ; then
+              docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image-aarch64.tar
+          else
+              sh .github/workflows/build-alpine-builder-container.sh
+          fi
+
       - name: Prepare Libraries and Extensions
         run: |
           set -x
           bash sapi/download-box/download-box-get-archive-from-container.sh
-          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
-      - name: Prepare and  Build all-library and  Build
+      - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
-          options: -v ${{ github.workspace }}:/work -w /work
+          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
+          image: swoole-cli-builder:latest
+          options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
-            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer 容器
+            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
+            alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
             sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
@@ -66,7 +120,8 @@ jobs:
       - name: Show Build Result
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
+          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
+          image: swoole-cli-builder:latest
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             ./bin/swoole-cli -v
@@ -92,4 +147,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-*-linux-x64.tar.xz
+          files: swoole-cli-*-linux-aarch64.tar.xz
