@@ -16,7 +16,7 @@ cd ${__PROJECT__}/var/build-github-action-container/
 
 cp -f ${__PROJECT__}/sapi/quickstart/linux/alpine-init.sh .
 
-cat >>Dockerfile<<'EOF'
+cat > Dockerfile <<'EOF'
 FROM alpine:3.18
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
