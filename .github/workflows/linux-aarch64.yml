@@ -149,4 +149,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-*-linux-aarch64.tar.xz
+          files: swoole-cli-*-linux-arm64.tar.xz
