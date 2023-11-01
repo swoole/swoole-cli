@@ -69,7 +69,7 @@ jobs:
           mkdir -p bin/runtime
           bash  sapi/quickstart/setup-php-runtime.sh
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          # bash sapi/download-box/download-box-get-archive-from-server.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: Cache Dependency Tarball
         uses: actions/cache@v3
@@ -82,7 +82,6 @@ jobs:
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
           alias php="php -d curl.cainfo=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem -d openssl.cafile=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem"
-
 
           composer update --no-dev  --optimize-autoloader
 
