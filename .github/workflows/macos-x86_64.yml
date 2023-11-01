@@ -76,12 +76,19 @@ jobs:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-php-vendor
 
-      - name: Cache Dependency Tarball
+      - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
         id: dependency-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: ${{ runner.os }}-pool
+
+      - name: Cache all-library
+        uses: actions/cache@v3
+        id: all-library-cache
+        with:
+          path: /usr/local/swoole-cli
+          key: ${{ runner.os }}-all-library
 
       - name: Prepare Runtime
         run: |
@@ -101,13 +108,6 @@ jobs:
           composer update --no-dev  --optimize-autoloader
 
           php prepare.php --without-docker=1    +ds +apcu  +xlswriter +ssh2 +pgsql --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1
-
-      - name: Cache all-library
-        uses: actions/cache@v3
-        id: all-library-cache
-        with:
-          path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-all-library
 
       - name: Build all-library
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}

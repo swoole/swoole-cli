@@ -80,7 +80,7 @@ jobs:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-php-vendor
 
-      - name: Cache Dependency Tarball
+      - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
         id: dependency-cache
         with:
