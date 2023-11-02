@@ -6,12 +6,10 @@ use SwooleCli\Preprocessor;
 
 function install_rav1e(Preprocessor $p)
 {
-
 }
 
 function install_aom(Preprocessor $p)
 {
-
 }
 
 
@@ -21,60 +19,26 @@ function install_av1(Preprocessor $p)
 
 function install_libvpx(Preprocessor $p)
 {
-
 }
 
 function install_libopus(Preprocessor $p)
 {
-
 }
 
 function install_libx264(Preprocessor $p)
 {
-
 }
 
 function install_numa(Preprocessor $p)
 {
-
 }
 
 function install_mp3lame(Preprocessor $p)
 {
-    $mp3lame_prefix = '/usr/mp3lame';
-    $lib = new Library('mp3lame');
-    $lib->withHomePage('https://ffmpeg.org/')
-        ->withLicense(
-            'https://git.ffmpeg.org/gitweb/ffmpeg.git/blob/refs/heads/master:/LICENSE.md',
-            Library::LICENSE_LGPL
-        )
-        ->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
-        ->withFile('ffmpeg-n6.0.tar.gz')
-        ->withSkipDownload()
-        ->withManual('https://ffmpeg.org/documentation.html')
-        ->withPrefix($mp3lame_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($mp3lame_prefix)
-        ->withConfigure(
-            <<<EOF
-exit 0
-./configure --help
-test -d ffmpeg || git clone  https://github.com/FFmpeg/FFmpeg ffmpeg  --depth=1 --progress
-test -d ffmpeg  && git -C ffmpeg  pull  --depth=1 --progress --rebase=true
-test -d SVT-AV1 || git clone https://gitlab.com/AOMediaCodec/SVT-AV1.git --depth=1 --progress
-test -d SVT-AV1 && git -C SVT-AV1  pull  --depth=1 --progress --rebase=true
-test -d aom || git clone https://aomedia.googlesource.com/aom  --depth=1 --progress
-test -d aom && git -C aom  pull   --depth=1 --progress --rebase=true
-EOF
-        )
-        ->withPkgName('mp3lame');
-
-    $p->addLibrary($lib);
 }
 
 function install_libx265(Preprocessor $p)
 {
-
 }
 
 
