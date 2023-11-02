@@ -131,6 +131,7 @@ jobs:
             # bash make.sh archive
 
       - name: Show Build Result
+        if: 0
         uses: addnab/docker-run-action@v3
         with:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
