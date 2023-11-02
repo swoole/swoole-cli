@@ -80,7 +80,7 @@ jobs:
           if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
               bash sapi/download-box/download-box-get-archive-from-container.sh
           fi
-
+          rm -rf /usr/local/swoole-cli/*
           if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
               IMAGE="docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z"
 
