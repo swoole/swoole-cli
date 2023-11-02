@@ -105,8 +105,8 @@ jobs:
 
       - name: prepare
         run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          alias php="php -d curl.cainfo=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem -d openssl.cafile=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem"
+          export PATH=${{ github.workspace }}/bin/runtime:$PATH
+          alias php="php -d curl.cainfo=${{ github.workspace }}/bin/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/bin/runtime/cacert.pem"
 
           composer update --no-dev  --optimize-autoloader
 
@@ -115,7 +115,7 @@ jobs:
       - name: Build all-library
         # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          export PATH=${{ github.workspace }}/bin/runtime:$PATH
 
           bash make-install-deps.sh
 
@@ -125,7 +125,7 @@ jobs:
 
       - name: Build
         run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          export PATH=${{ github.workspace }}/bin/runtime:$PATH
           bash ./make.sh config
           bash ./make.sh build
           bash ./make.sh archive
