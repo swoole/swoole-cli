@@ -91,10 +91,10 @@ jobs:
             if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
                 docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
             else
-                sh .github/workflows/build-alpine-builder-container.sh
+                bash .github/workflows/build-alpine-builder-container.sh
             fi
 
-      - name: Prepare Libraries and Extensions
+      - name: Prepare Runtime and Libraries and Extensions
         run: |
           set -x
           mkdir -p pool/lib
@@ -103,7 +103,9 @@ jobs:
           if [ ! -f bin/runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
-          bash sapi/download-box/download-box-get-archive-from-container.sh
+          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+              bash sapi/download-box/download-box-get-archive-from-container.sh
+          fi
 
       - name: Build
         uses: addnab/docker-run-action@v3

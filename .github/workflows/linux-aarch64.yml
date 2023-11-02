@@ -74,7 +74,12 @@ jobs:
       - name: Prepare Libraries and Extensions
         run: |
           set -x
-          bash sapi/download-box/download-box-get-archive-from-container.sh
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
+          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+              bash sapi/download-box/download-box-get-archive-from-container.sh
+          fi
 
       - name: Prepare QEMU
         run: |
@@ -86,7 +91,7 @@ jobs:
           if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
               docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
           else
-              sh .github/workflows/build-alpine-builder-container.sh --platform "linux/arm64"
+              bash .github/workflows/build-alpine-builder-container.sh --platform "linux/arm64"
           fi
 
       - name: Build
@@ -99,6 +104,7 @@ jobs:
             set -eux
             uname -m
             bash  setup-php-runtime.sh
+
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
@@ -115,11 +121,12 @@ jobs:
             # bash sapi/quickstart/mark-install-library-cached.sh
 
             bash make.sh all-library
-            bash make.sh config
-            bash make.sh build
-            bash make.sh archive
+            # bash make.sh config
+            # bash make.sh build
+            # bash make.sh archive
 
       - name: Show Build Result
+        if: 0
         uses: addnab/docker-run-action@v3
         with:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
