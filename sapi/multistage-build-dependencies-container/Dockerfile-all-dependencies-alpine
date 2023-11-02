@@ -1,4 +1,4 @@
-FROM alpine:3.17 as builder-all-library
+FROM alpine:3.18 as builder-all-library
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV TZ=Etc/UTC
@@ -63,7 +63,7 @@ RUN bash make.sh all-library
 
 
 
-FROM alpine:3.17
+FROM alpine:3.18
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV TZ=Etc/UTC

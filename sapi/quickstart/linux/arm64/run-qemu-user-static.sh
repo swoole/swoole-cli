@@ -6,7 +6,7 @@ __DIR__=$(
   pwd
 )
 __PROJECT__=$(
-  cd ${__DIR__}/../../../
+  cd ${__DIR__}/../../../../
   pwd
 )
 cd ${__DIR__}
@@ -18,9 +18,10 @@ cd ${__DIR__}
 
 # https://hub.docker.com/_/alpine/tags
 
-docker run --rm -d --name qemu-user-static --privileged multiarch/qemu-user-static --reset -p yes
 
-#docker run --rm --privileged multiarch/qemu-user-static:x86_64-aarch64
+# docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+# docker run --rm --privileged multiarch/qemu-user-static:x86_64-aarch64
 
 
 # multiarch/qemu-user-static 支持的架构
