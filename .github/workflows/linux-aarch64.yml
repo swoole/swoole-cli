@@ -83,6 +83,15 @@ jobs:
               bash sapi/download-box/download-box-get-archive-from-container.sh
           fi
 
+          if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
+              IMAGE="docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z"
+
+              container_id=$(docker create $IMAGE) # returns container ID
+              docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
+              docker rm $container_id
+          fi
+          ls -A /usr/local/swoole-cli/
+
       - name: Prepare QEMU
         run: |
           set -x
@@ -125,12 +134,12 @@ jobs:
             # bash sapi/quickstart/mark-install-library-cached.sh
 
             bash make.sh all-library
-            # bash make.sh config
-            # bash make.sh build
-            # bash make.sh archive
+
+            bash make.sh config
+            bash make.sh build
+            bash make.sh archive
 
       - name: Show Build Result
-        if: 0
         uses: addnab/docker-run-action@v3
         with:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
