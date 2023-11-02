@@ -80,7 +80,7 @@ jobs:
           if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
               bash sapi/download-box/download-box-get-archive-from-container.sh
           fi
-          rm -rf /usr/local/swoole-cli/*
+
           if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
               IMAGE="docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z"
 
@@ -104,7 +104,6 @@ jobs:
           fi
 
       - name: Build
-        if: 0
         uses: addnab/docker-run-action@v3
         with:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
@@ -120,8 +119,8 @@ jobs:
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
-            sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
-            sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
 
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
@@ -133,8 +132,6 @@ jobs:
             # bash sapi/quickstart/mark-install-library-cached.sh
 
             bash make.sh all-library
-
-            cp -rf /usr/local/swoole-cli/* /usr/local/swoole-cli-new/
 
             # bash make.sh config
             # bash make.sh build
