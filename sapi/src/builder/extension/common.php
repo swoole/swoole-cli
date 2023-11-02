@@ -111,13 +111,6 @@ return function (Preprocessor $p) {
     $depends = ['pgsql_latest'] ;
 
 
-    //$depends = ['libmongocrypt'] ;
-    $depends = ['libpam'] ;
-    $depends = ['libbson'] ;
-    $depends = ['libmongoc'] ;
-
-
-
     $depends = ['oAuth'] ;
     $depends = ['coturn'] ;
 
@@ -162,6 +155,11 @@ return function (Preprocessor $p) {
     $depends = ['janus_gateway'] ;
     $depends = ['libmysqlclient'] ;
     # $depends = ['mysql_connector'] ;
+    //$depends = ['libmongocrypt'] ;
+    $depends = ['libpam'] ;
+
+    $depends = ['libmongoc'] ;
+    $depends = ['libbson'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

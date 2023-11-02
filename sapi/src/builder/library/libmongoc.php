@@ -32,7 +32,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPrefix($libmongoc_prefix)
-            //->withAutoUpdateFile()
+            ->withAutoUpdateFile()
             //->withBuildCached(false)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libmongoc_prefix)
