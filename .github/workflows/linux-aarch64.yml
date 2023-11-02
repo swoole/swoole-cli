@@ -74,7 +74,9 @@ jobs:
       - name: Prepare Libraries and Extensions
         run: |
           set -x
-          bash sapi/download-box/download-box-get-archive-from-container.sh
+          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+            bash sapi/download-box/download-box-get-archive-from-container.sh
+          fi
 
       - name: Prepare QEMU
         run: |
