@@ -103,7 +103,9 @@ jobs:
           run: |
             set -eux
             uname -m
-            bash  setup-php-runtime.sh
+            if [ ! -f bin/runtime/php ] ; then
+              bash  setup-php-runtime.sh
+            fi
 
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
