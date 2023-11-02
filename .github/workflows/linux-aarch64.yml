@@ -122,9 +122,9 @@ jobs:
 
             # bash sapi/quickstart/mark-install-library-cached.sh
 
-            cp -rf /usr/local/swoole-cli/* /usr/local/swoole-cli-new/
-
             bash make.sh all-library
+
+            cp -rf /usr/local/swoole-cli/* /usr/local/swoole-cli-new/
 
             # bash make.sh config
             # bash make.sh build
