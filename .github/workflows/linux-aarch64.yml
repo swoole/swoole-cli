@@ -74,6 +74,9 @@ jobs:
       - name: Prepare Libraries and Extensions
         run: |
           set -x
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
           if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
             bash sapi/download-box/download-box-get-archive-from-container.sh
           fi

@@ -109,7 +109,7 @@ jobs:
                 sh .github/workflows/build-alpine-builder-container.sh
             fi
 
-      - name: Prepare Libraries and Extensions
+      - name: Prepare Runtime and Libraries and Extensions
         run: |
           set -x
           mkdir -p pool/lib
