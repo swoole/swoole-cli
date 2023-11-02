@@ -93,20 +93,23 @@ jobs:
           path: /usr/local/swoole-cli
           key: ${{ runner.os }}-x86_64-all-library
 
-      - name: Prepare Runtime
+      - name: Prepare Runtime and Libraries and Extensions
         run: |
+          set -x
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/runtime
           if [ ! -f bin/runtime/php ] ; then
               bash  sapi/quickstart/setup-php-runtime.sh
           fi
-          bash sapi/download-box/download-box-get-archive-from-server.sh
+          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+              bash sapi/download-box/download-box-get-archive-from-server.sh
+          fi
 
       - name: prepare
         run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          alias php="php -d curl.cainfo=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem -d openssl.cafile=${GITHUB_WORKSPACE}/bin/runtime/cacert.pem"
+          export PATH=${{ github.workspace }}/bin/runtime:$PATH
+          alias php="php -d curl.cainfo=${{ github.workspace }}/bin/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/bin/runtime/cacert.pem"
 
           composer update --no-dev  --optimize-autoloader
 
@@ -114,7 +117,7 @@ jobs:
 
       - name: Build
         run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          export PATH=${{ github.workspace }}/bin/runtime:$PATH
 
           bash make-install-deps.sh
 
