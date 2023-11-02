@@ -65,34 +65,59 @@ jobs:
 
           # git submodule update --init
 
-      - name: Prepare runtime
-        run: |
-          mkdir -p pool/lib
-          mkdir -p pool/ext
-          mkdir -p bin/runtime
-          bash  sapi/quickstart/setup-php-runtime.sh
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          bash sapi/download-box/download-box-get-archive-from-server.sh
+      - name: Cache PHP Runtime
+        uses: actions/cache@v3
+        id: php-runtime-cache
+        with:
+          path: ${{ github.workspace }}/bin/runtime
+          key: ${{ runner.os }}-x86_64-php-runtime
 
-      - name: prepare
-        run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+      - name: Cache PHP Vendor
+        uses: actions/cache@v3
+        id: php-vendor-cache
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-x86_64-php-vendor
 
-          composer update --no-dev  --optimize-autoloader
-
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1
+      - name: Cache Dependency Source Code Tarball
+        uses: actions/cache@v3
+        id: dependency-cache
+        with:
+          path: ${{ github.workspace }}/pool/
+          key: ${{ runner.os }}-x86_64-pool
 
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-${{ env.BRANCH_NAME }}-all-library
+          key: ${{ runner.os }}-x86_64-all-library
+
+      - name: Prepare Runtime and Libraries and Extensions
+        run: |
+          set -x
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
+          if [ ! -f bin/runtime/php ] ; then
+              bash  sapi/quickstart/setup-php-runtime.sh
+          fi
+          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+              bash sapi/download-box/download-box-get-archive-from-server.sh
+          fi
+
+      - name: prepare
+        run: |
+          export PATH=${{ github.workspace }}/bin/runtime:$PATH
+          alias php="php -d curl.cainfo=${{ github.workspace }}/bin/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/bin/runtime/cacert.pem"
+
+          composer update --no-dev  --optimize-autoloader
+
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-swoole-pgsql=1  --with-libavif=1
 
       - name: Build
-        # if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
-          export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
+          export PATH=${{ github.workspace }}/bin/runtime:$PATH
 
           bash make-install-deps.sh
 
