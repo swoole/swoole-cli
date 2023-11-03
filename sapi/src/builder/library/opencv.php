@@ -123,7 +123,7 @@ EOF
         PACKAGES="\$PACKAGES  liblzma  libzstd liblz4 "
         PACKAGES="\$PACKAGES  libavcodec libavdevice libavfilter libavformat libavutil libswresample libswscale"
         PACKAGES="\$PACKAGES  libpng libpng16 libjpeg libturbojpeg SvtAv1Enc SvtAv1Dec "
-        PACKAGES="\$PACKAGES  libwebp libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
+        PACKAGES="\$PACKAGES  libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
 
         PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " # libtiff-4
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
@@ -188,7 +188,9 @@ EOF
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
         -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}" \
-        -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} "
+        -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} " \
+        -DWEBP_INCLUDE_DIR={$libwebp_prefix}/include/ \
+        -DWEBP_LIBRARY={$libwebp_prefix}/lib/libsharpyuv.a \
 
 
 
