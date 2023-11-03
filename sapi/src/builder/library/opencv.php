@@ -129,7 +129,7 @@ EOF
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
         PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64  lapack64 blas"
-        PACKAGES="\$PACKAGES  harfbuzz-icu harfbuzz-subse harfbuzz"
+        PACKAGES="\$PACKAGES   harfbuzz harfbuzz-icu"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "

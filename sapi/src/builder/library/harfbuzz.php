@@ -11,6 +11,7 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/harfbuzz/harfbuzz.git')
         ->withUrl('https://github.com/harfbuzz/harfbuzz/archive/refs/tags/8.1.1.tar.gz')
         ->withFile('harfbuzz-8.1.1.tar.gz')
+        ->withPrefix($harfbuzz_prefix)
         ->withConfigure(
             <<<EOF
             ./autogen.sh
@@ -33,7 +34,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPkgName('harfbuzz-icu')
-        ->withPkgName('harfbuzz-subse')
         ->withPkgName('harfbuzz')
         ->withBinPath($harfbuzz_prefix . '/bin/')
         ->withDependentLibraries('icu', 'freetype')
