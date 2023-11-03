@@ -41,7 +41,7 @@ $http->set([
         'application/json'
     ],
     'display_errors' => true,
-    'daemonize' => true,
+    'daemonize' => false,
     'log_file' => "/tmp/swoole-cli-download-box-web.log"
     # 'ssl_cert_file' => __DIR__.'/config/ssl.crt',
     # 'ssl_key_file' => __DIR__.'/config/ssl.key',
