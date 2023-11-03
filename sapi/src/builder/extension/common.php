@@ -160,6 +160,7 @@ return function (Preprocessor $p) {
 
     $depends = ['libmongoc'] ;
     $depends = ['libbson'] ;
+    $depends = ['libwebp'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
