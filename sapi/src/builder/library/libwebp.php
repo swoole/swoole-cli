@@ -43,7 +43,8 @@ return function (Preprocessor $p) {
             -DCMAKE_DISABLE_FIND_PACKAGE_OpenGL=ON \
             -DCMAKE_DISABLE_FIND_PACKAGE_TIFF=ON \
             -DCMAKE_PREFIX_PATH="{$libzip_prefix};{$libpng_prefix};{$libjpeg_prefix};{$sdl_prefix}" \
-            -DCMAKE_EXE_LINKER_FLAGS=" -lm "
+            -DCMAKE_EXE_LINKER_FLAGS=" -lm " \
+            -DCMAKE_C_STANDARD_LIBRARIES="-lm "
 
             cmake --build . --config Release
 
