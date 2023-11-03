@@ -105,7 +105,7 @@ EOF
             <<<EOF
         apk add ccache python3-dev binaryen doxygen
 
-        pip3 install numpy setuptools utils-misc  gapi  utils lxml beautifulsoup4
+        pip3 install numpy setuptools utils-misc  gapi  utils lxml beautifulsoup4 graphviz
 
         # apk add binaryen # WebAssembly 的优化器和编译器/工具链
 EOF
@@ -122,7 +122,8 @@ EOF
         PACKAGES="\$PACKAGES  libxml-2.0"
         PACKAGES="\$PACKAGES  liblzma  libzstd liblz4 "
         PACKAGES="\$PACKAGES  libavcodec libavdevice libavfilter libavformat libavutil libswresample libswscale"
-        PACKAGES="\$PACKAGES  libwebp libpng libpng16 libjpeg libturbojpeg SvtAv1Enc SvtAv1Dec "
+        PACKAGES="\$PACKAGES  libpng libpng16 libjpeg libturbojpeg SvtAv1Enc SvtAv1Dec "
+        PACKAGES="\$PACKAGES  libwebp libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
 
         PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " # libtiff-4
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
