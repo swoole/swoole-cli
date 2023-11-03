@@ -188,8 +188,8 @@ EOF
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
         -DCMAKE_EXE_LINKER_FLAGS="  -Wl,--no-dynamic-linker -Wl,--as-needed -Wl,--no-undefined  \${REQUIRED_LIBRARIES} " \
-        -DWEBP_INCLUDE_DIR={$libwebp_prefix}/include \
-        -DWEBP_LIBRARIES={$libwebp_prefix}/lib
+        -DWEBP_INCLUDE_DIR="{$libwebp_prefix}/include" \
+        -DWEBP_LIBRARIES="{$libwebp_prefix}/lib/libsharpyuv.a  {$libwebp_prefix}/lib/libwebp.a  {$libwebp_prefix}/lib/libwebpdecoder.a  {$libwebp_prefix}/lib/libwebpdemux.a  {$libwebp_prefix}/lib/libwebpmux.a"
 
         # 编译选项链接参数
         # https://github.com/opencv/opencv/blob/5.x/cmake/OpenCVCompilerOptions.cmake
