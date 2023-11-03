@@ -19,7 +19,7 @@ cd ${__DIR__}
 }
 cd ${__DIR__}
 
-IMAGE=alpine:3.16
+IMAGE=alpine:3.18
 
 :<<'EOF'
    启动此容器

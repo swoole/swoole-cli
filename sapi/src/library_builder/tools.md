@@ -48,3 +48,7 @@ https://github.com/skvadrik/re2c/
 
 https://github.com/multiarch/qemu-user-static
 https://hub.docker.com/r/multiarch/qemu-user-static/tags?page=1&name=aarch64
+
+
+ipv4 私有地址块
+https://forum.huawei.com/enterprise/zh/thread/580934319407513600
