@@ -37,7 +37,7 @@ return function (Preprocessor $p) {
     $libeigen_prefix = LIBEIGEN_PREFIX;
     $suitesparse_prefix = SUITESPARSE_PREFIX;
     $harfbuzz_prefix = HARFBUZZ_PREFIX;
-
+    $libavif_prefix = LIBAVIF_PREFIX;
 
     $CMAKE_PREFIX_PATH = "{$openssl_prefix};";
     $CMAKE_PREFIX_PATH .= "{$zlib_prefix};";
@@ -70,6 +70,7 @@ return function (Preprocessor $p) {
     # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$suitesparse_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$harfbuzz_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$libavif_prefix};";
 
 
     $workDir = $p->getWorkDir();
@@ -165,7 +166,7 @@ EOF
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=ON \
         -DBUILD_opencv_apps=ON \
-        -DCMAKE_PREFIX_PATH='{$CMAKE_PREFIX_PATH}' \
+        -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DBUILD_opencv_js=OFF \
         -DBUILD_JAVA=OFF \
         -DBUILD_CUDA_STUBS=OFF  \

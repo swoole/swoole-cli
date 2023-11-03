@@ -118,10 +118,16 @@ EOF
         # -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
         # -DCMAKE_C_FLAGS="-D_POSIX_C_SOURCE=200809L" \
         # -DOpenSSL_ROOT={$openssl_prefix} \
+
         # 查找PKGCONFIG配置目录多个使用分号隔开
         # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
+
         # -DCMAKE_CXX_FLAGS=" -Wall -std=c++11 -fopenmp=libomp "
         # -DCMAKE_C_FLAGS=" -Wall -std=11 -fopenmp=libomp "
+
+        # -DGIF_INCLUDE_DIR=/usr/local/swoole-cli/libgif/include/ \
+        # -DGIF_LIBRARY=/usr/local/swoole-cli/libgif/lib/libgif.a \
+
 
         # ccmake  ..  # 对cmake的cache进行修改，重新生成makefile文件
 
