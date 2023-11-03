@@ -36,6 +36,7 @@ return function (Preprocessor $p) {
     $glog_prefix = GLOG_PREFIX;
     $libeigen_prefix = LIBEIGEN_PREFIX;
     $suitesparse_prefix = SUITESPARSE_PREFIX;
+    $harfbuzz_prefix = HARFBUZZ_PREFIX;
 
 
     $CMAKE_PREFIX_PATH = "{$openssl_prefix};";
@@ -68,6 +69,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$suitesparse_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$harfbuzz_prefix};";
 
 
     $workDir = $p->getWorkDir();
@@ -124,7 +126,7 @@ EOF
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
         PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64 lapack64 blas"
-
+        PACKAGES="\$PACKAGES  harfbuzz-icu harfbuzz-subse harfbuzz"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
@@ -266,6 +268,7 @@ EOF
             'glog',
             //'libeigen', //线性运算代数库 (依赖待完善）
             //'suitesparse',
+            'harfbuzz'
         )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
