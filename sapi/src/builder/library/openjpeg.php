@@ -30,8 +30,7 @@ EOF
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
-            apk add ninja python3 py3-pip  nasm yasm
-            pip3 install meson
+            apk add ninja python3 py3-pip  nasm yasm meson
 EOF
         )
         ->withPrefix($openjpeg_prefix)

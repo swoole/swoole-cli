@@ -24,8 +24,7 @@ EOF
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
-            apk add ninja python3 py3-pip
-            pip3 install meson
+            apk add ninja python3 py3-pip meson
 EOF
         )
         ->withPrefix($libplacebo_prefix)
