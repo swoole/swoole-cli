@@ -77,7 +77,6 @@ define("RAV1E_PREFIX", $p->getGlobalPrefix() . '/rav1e');
 define("AOM_PREFIX", $p->getGlobalPrefix() . '/aom');
 define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
 
-define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
 define("DEPOT_TOOLS_PREFIX", $p->getGlobalPrefix() . '/depot_tools');
 
 

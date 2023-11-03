@@ -184,7 +184,8 @@ EOF
         -DWITH_AVIF=ON \
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
-        -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
+        -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}" \
+        -DCMAKE_REQUIRED_LIBRARIES="-L{$openssl_dir}/lib -lssl"
 
         # -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
 

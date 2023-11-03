@@ -5,7 +5,6 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libavif_prefix = LIBAVIF_PREFIX;
-    $libyuv_prefix = LIBYUV_PREFIX;
     $dav1d_prefix = DAV1D_PREFIX;
     $libgav1_prefix = LIBGAV1_PREFIX;
     $aom_prefix = AOM_PREFIX;
@@ -35,17 +34,12 @@ return function (Preprocessor $p) {
             -Dlibgav1_ROOT={$libgav1_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
-            -Dlibyuv_ROOT={$libyuv_prefix} \
+            -Dlibyuv_ROOT={$libwebp_prefix} \
             -DAVIF_CODEC_AOM=ON \
             -DAVIF_CODEC_DAV1D=ON \
             -DAVIF_CODEC_LIBGAV1=ON \
             -DAVIF_CODEC_RAV1E=OFF \
             -DAVIF_CODEC_SVT=ON
-
-            # -DCMAKE_DISABLE_FIND_PACKAGE_libsharpyuv=ON \
-            # -DCMAKE_DISABLE_FIND_PACKAGE_libyuv=ON \
-            # -DLIBSHARPYUV_INCLUDE_DIR={$libwebp_prefix}/include \
-            # -DLIBSHARPYUV_LIBRARY={$libwebp_prefix}/include
 
 EOF
             )
@@ -54,9 +48,10 @@ EOF
                 'aom',
                 'svt_av1',
                 'libgav1',
-                'dav1d'
+                'dav1d',
+                'libwebp'
             )
-        #  'libyuv', 'libsharpyuv','rav1e'
+        #   'rav1e'
         #   'libgav1'  # 测试例子依赖 absl
     );
 
