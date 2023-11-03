@@ -19,8 +19,6 @@ return function (Preprocessor $p) {
             ->withUrl('https://github.com/webmproject/libwebp/archive/refs/tags/v1.3.2.tar.gz')
             ->withFile('libwebp-v1.3.2.tar.gz')
             ->withPrefix($libwebp_prefix)
-            ->withBuildCached(false)
-            ->withInstallCached(false)
             ->withBuildScript(
                 <<<EOF
             mkdir -p build
