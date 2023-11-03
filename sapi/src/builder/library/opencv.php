@@ -187,7 +187,7 @@ EOF
         -DWITH_AVIF=ON \
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
-        -DCMAKE_EXE_LINKER_FLAGS=" \${REQUIRED_LIBRARIES} " \
+        -DCMAKE_EXE_LINKER_FLAGS="  -Wl,--no-dynamic-linker -Wl,--as-needed -Wl,--no-undefined  \${REQUIRED_LIBRARIES} " \
 
 
         # 编译选项链接参数
