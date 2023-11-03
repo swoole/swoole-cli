@@ -191,6 +191,8 @@ EOF
         -DOPENCV_EXTRA_EXE_LINKER_FLAGS=" \${REQUIRED_LIBRARIES} " \
 
 
+        # 编译选项链接参数
+        # https://github.com/opencv/opencv/blob/5.x/cmake/OpenCVCompilerOptions.cmake
 
         # -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} " \
 
