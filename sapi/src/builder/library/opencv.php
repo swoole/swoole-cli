@@ -69,7 +69,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$suitesparse_prefix};";
-    $CMAKE_PREFIX_PATH .= "{$harfbuzz_prefix};";
+    # $CMAKE_PREFIX_PATH .= "{$harfbuzz_prefix};";
 
 
     $workDir = $p->getWorkDir();
@@ -126,7 +126,7 @@ EOF
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
         PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64 lapack64 blas"
-        PACKAGES="\$PACKAGES  harfbuzz-icu harfbuzz-subse harfbuzz"
+        # PACKAGES="\$PACKAGES  harfbuzz-icu harfbuzz-subse harfbuzz"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
