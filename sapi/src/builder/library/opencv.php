@@ -141,7 +141,7 @@ EOF
         mkdir -p build
         cd  build
 
-        export OPENCV_DOWNLOAD_PATH={$buildDir}/opencv-download-cache
+        # export OPENCV_DOWNLOAD_PATH={$buildDir}/opencv-download-cache
 
         cmake .. \
         -G Ninja \
@@ -153,6 +153,7 @@ EOF
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_STATIC_LIBS=ON \
         -DBUILD_SHARED_LIBS=OFF \
+        -DOPENCV_DOWNLOAD_PATH={$buildDir}/opencv-download-cache \
         -DOpenCV_STATIC=ON \
         -DENABLE_PIC=ON \
         -DWITH_FFMPEG=ON \
