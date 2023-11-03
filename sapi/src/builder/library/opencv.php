@@ -104,7 +104,7 @@ EOF
             <<<EOF
         apk add ccache python3-dev binaryen doxygen
 
-        pip3 install numpy setuptools utils-misc  gapi  utils
+        pip3 install numpy setuptools utils-misc  gapi  utils lxml beautifulsoup4
 
         # apk add binaryen # WebAssembly 的优化器和编译器/工具链
 EOF
@@ -140,6 +140,8 @@ EOF
 
         mkdir -p build
         cd  build
+
+        export OPENCV_DOWNLOAD_PATH={$buildDir}/opencv-download-cache
 
         cmake .. \
         -G Ninja \
