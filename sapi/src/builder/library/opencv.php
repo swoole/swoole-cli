@@ -101,7 +101,7 @@ EOF
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
-        apk add ccache python3-dev binaryen
+        apk add ccache python3-dev binaryen doxygen
 
         pip3 install numpy setuptools utils-misc  gapi  utils
 
@@ -176,6 +176,10 @@ EOF
         -DINSTALL_C_EXAMPLES=ON \
         -DINSTALL_PYTHON_EXAMPLES=ON \
         -DBUILD_DOCS=ON \
+        -DOPENCV_ENABLE_NONFREE=ON \
+        -DWITH_AVIF=ON \
+        -DWITH_GTK=OFF \
+        -DWITH_CUDA=OFF \
 
 
         # -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
@@ -289,4 +293,8 @@ EOF
 /*
  * libmv  运动轨迹重建
  * https://github.com/opencv/opencv_contrib/tree/master/modules/sfm
+ */
+
+/*
+ * WebNN
  */
