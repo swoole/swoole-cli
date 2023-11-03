@@ -170,7 +170,7 @@ EOF
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
-        -DBUILD_EXAMPLES=ON \
+        -DBUILD_EXAMPLES=OFF \
         -DBUILD_opencv_apps=ON \
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DBUILD_opencv_js=OFF \
