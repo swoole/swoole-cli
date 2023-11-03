@@ -82,6 +82,7 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/opencv/opencv.git')
         ->withManual('https://docs.opencv.org/5.x/db/d05/tutorial_config_reference.html')
         ->withManual('https://github.com/opencv/opencv_contrib/tree/5.x/modules/README.md')
+        ->withManual('https://github.com/opencv/opencv/blob/5.x/doc/tutorials/introduction/config_reference/config_reference.markdown')
         ->withFile('opencv-v5.x.tar.gz')
         ->withDownloadScript(
             'opencv',
@@ -186,6 +187,7 @@ EOF
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
         -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}" \
+        -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} "
 
         # -DCMAKE_REQUIRED_LIBRARIES=" \${REQUIRED_LIBRARIES} "
 
