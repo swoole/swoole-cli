@@ -69,7 +69,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$suitesparse_prefix};";
-    # $CMAKE_PREFIX_PATH .= "{$harfbuzz_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$harfbuzz_prefix};";
     $CMAKE_PREFIX_PATH .= "{$libavif_prefix};";
 
 
@@ -129,7 +129,7 @@ EOF
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
         PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64  lapack64 blas"
-        # PACKAGES="\$PACKAGES  harfbuzz-icu harfbuzz-subse harfbuzz"
+        PACKAGES="\$PACKAGES  harfbuzz-icu harfbuzz-subse harfbuzz"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
@@ -190,22 +190,17 @@ EOF
         -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}" \
         -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} "
 
+
+
+
         # -DCMAKE_REQUIRED_LIBRARIES=" \${REQUIRED_LIBRARIES} "
 
         # -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
-
 
         # OPENCV_LINKER_DEFENSES_FLAGS_COMMON
         # OPENCV_EXTRA_MODULE_LINKER_FLAG
         # OPENCV_EXTRA_MODULE_LINKER_FLAGS_RELEAS
         # 参考 https://github.com/opencv/opencv_3rdparty/blob/ffmpeg/4.x_20230622/ffmpeg/build_videoio_plugin.sh
-
-        # -DOPENCV_EXTRA_FLAGS="-DCV_EXPORTS= -D_GNU_SOURCE="
-
-         # -DTIFF_ROOT={$libtiff_prefix} \
-         # -Dharfbuzz_ROOT={$harfbuzz_prefix} \
-
-
 
 
         # -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
@@ -214,16 +209,12 @@ EOF
 
         #  -DENABLE_BUILD_HARDENING=ON \
 
-
-
         # -DINCLUDE_DIRECTORIES
-
 
         # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
 
         # -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
-
 
 
         # -DCMAKE_STATIC_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
@@ -240,8 +231,6 @@ EOF
         # -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
         # -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'  \
         # -DTARGET_LINK_LIBRARIES='\${LIBS}'
-
-        # OpenJPEG
 
 
         ninja
