@@ -66,7 +66,8 @@ EOF
             ./configure --help | grep  'enable'
             ./configure --help | grep  'disable'
 
-            PACKAGES='openssl libwebp  libxml-2.0  freetype2 gmp liblzma' # libssh2
+            PACKAGES='openssl  libxml-2.0  freetype2 gmp liblzma' # libssh2
+            PACKAGES='\$PACKAGES libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux'
             PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
             PACKAGES="\$PACKAGES aom "
             PACKAGES="\$PACKAGES dav1d "
