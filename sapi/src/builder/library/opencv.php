@@ -127,7 +127,7 @@ EOF
         PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " # libtiff-4
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
-        PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64 lapack64 blas"
+        PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64  lapack64 blas"
         # PACKAGES="\$PACKAGES  harfbuzz-icu harfbuzz-subse harfbuzz"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"

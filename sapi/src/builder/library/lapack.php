@@ -49,6 +49,11 @@ EOF
 
 EOF
         )
+        ->withScriptAfterInstall(
+            <<<EOF
+            cp -f {$lapack_prefix}/lib/liblapack64.a {$lapack_prefix}/lib/liblapack.a
+EOF
+        )
         ->withPkgName('blas64')
         ->withPkgName('lapack64')
         ->withDependentLibraries('blas')
