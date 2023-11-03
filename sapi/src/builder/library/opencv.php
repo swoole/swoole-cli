@@ -190,7 +190,7 @@ EOF
         -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}" \
         -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} " \
         -DWEBP_INCLUDE_DIR={$libwebp_prefix}/include/ \
-        -DWEBP_LIBRARY={$libwebp_prefix}/lib/libsharpyuv.a \
+        -DWEBP_LIBRARY="{$libwebp_prefix}/lib/libwebp.a {$libwebp_prefix}/lib/libsharpyuv.a "\
 
 
 
