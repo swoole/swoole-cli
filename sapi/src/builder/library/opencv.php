@@ -188,12 +188,11 @@ EOF
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
         -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}" \
-        -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} " \
+        -DOPENCV_EXTRA_EXE_LINKER_FLAGS=" \${REQUIRED_LIBRARIES} " \
 
 
-        # -DWEBP_INCLUDE_DIR={$libwebp_prefix}/include/ \
-        # -DWEBP_LIBRARY="{$libwebp_prefix}/lib/libwebp.a"\
 
+        # -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} " \
 
 
 
