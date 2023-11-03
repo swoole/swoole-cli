@@ -132,11 +132,12 @@ EOF
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
+        REQUIRED_LIBRARIES="$(pkg-config --libs  --static \$PACKAGES)"
 
-        CPPFLAGS="\$CPPFLAGS -I{$bzip2_prefix}/include -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include " \
-        LDFLAGS="\$LDFLAGS -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib" \
-        LIBS="\$LIBS -lbz2 -liconv " \
-
+        CPPFLAGS="\$CPPFLAGS -I{$bzip2_prefix}/include -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include "
+        LDFLAGS="\$LDFLAGS -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib"
+        LIBS="\$LIBS -lbz2 -liconv "
+        REQUIRED_LIBRARIES="\$LDFLAGS \$LIBS"
 
         mkdir -p build
         cd  build
@@ -185,7 +186,7 @@ EOF
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
         -DOPENCV_EXTRA_MODULE_LINKER_FLAG="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}" \
-        -DCMAKE_REQUIRED_LIBRARIES="-L{$openssl_dir}/lib -lssl"
+        -DCMAKE_REQUIRED_LIBRARIES=" \${REQUIRED_LIBRARIES} "
 
         # -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
 
