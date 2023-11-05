@@ -14,6 +14,8 @@ $message .= PHP_EOL;
 
 $http = new Swoole\Http\Server("0.0.0.0", 9503);
 
+# 如果使用了systemd或supervisor管理Swoole服务器程序，就不要开启daemonize
+
 # reload 知识点
 # https://wiki.swoole.com/#/server/methods?id=reload
 # https://wiki.swoole.com/#/question/use?id=swoole如何正确的重启服务

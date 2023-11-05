@@ -14,7 +14,7 @@ fi
 
 cd ${__PROJECT__}
 
-set -x
+
 # shellcheck disable=SC2034
 OS=$(uname -s)
 # shellcheck disable=SC2034
@@ -35,11 +35,12 @@ case $OS in
 esac
 
 
-IN_DOCKER=0
+WITH_DOCKER=0
 WITH_DOWNLOAD_BOX=0
 WITH_BUILD_CONTAINER=0
 WITH_WEB_UI=0
 WITH_HTTP_PROXY=0
+WITH_PHP_COMPOSER=1
 
 # 配置系统仓库  china mirror
 WITH_MIRROR='china'
@@ -61,7 +62,7 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
     export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
     WITH_HTTP_PROXY=1
-    OPTIONS="${OPTIONS} --with-http-proxy=${2}  "
+    OPTIONS="${OPTIONS} --with-http-proxy=${HTTP_PROXY}  "
     ;;
   --download-box)
     WITH_DOWNLOAD_BOX=1
@@ -75,6 +76,10 @@ while [ $# -gt 0 ]; do
     WITH_WEB_UI=1
     OPTIONS="${OPTIONS}  --without-docker=1 --with-skip-download=1  --with-web-ui=1 "
     ;;
+  --debug)
+    set -x
+    OPTIONS="${OPTIONS}  --with-build-type=debug "
+    ;;
   --*)
     echo "Illegal option $1"
     ;;
@@ -85,8 +90,7 @@ done
 
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
-        IN_DOCKER=1
-        OPTIONS="${OPTIONS}  --without-docker=1  "
+        WITH_DOCKER=1
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
@@ -111,12 +115,12 @@ fi
 
 if [ "$OS" = 'macos' ] ; then
   number=$(which flex  | wc -l)
-  if test $number -eq 0 -o -f sapi/quickstart/macos/homebrew-init.sh ;then
+  if test $number -eq 0 ; then
   {
         if [ "$WITH_MIRROR" = 'china' ] ; then
-            bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+            bash sapi/quickstart/macos/macos-init.sh --mirror china
         else
-            bash sapi/quickstart/macos/homebrew-init.sh
+            bash sapi/quickstart/macos/macos-init.sh
         fi
   }
   fi
@@ -137,19 +141,20 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 
 php -v
 
-export COMPOSER_ALLOW_SUPERUSER=1
-# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-# composer config -g repos.packagist composer https://packagist.org
-if [ "$WITH_MIRROR" = 'china' ]; then
-    composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
+      export COMPOSER_ALLOW_SUPERUSER=1
+      # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+      # composer config -g repos.packagist composer https://packagist.org
+      if [ "$WITH_MIRROR" = 'china' ]; then
+          composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+      fi
+
+      # composer suggests --all
+      # composer dump-autoload
+
+      composer update  --optimize-autoloader
+      composer config -g --unset repos.packagist
 fi
-
-# composer suggests --all
-# composer dump-autoload
-
-composer update  --optimize-autoloader
-composer config -g --unset repos.packagist
-
 
 # 可用配置参数
 # --with-swoole-pgsql=1
@@ -177,8 +182,14 @@ fi
 
 
 
+if [ "$OS" = 'linux' ] ; then
+   OPTIONS="${OPTIONS} +inotify  "
+fi
 
-php prepare.php ${OPTIONS} +inotify +apcu +ds +xlswriter +ssh2 +pgsql  --with-swoole-pgsql=1 --with-libavif=1
+
+
+
+php prepare.php ${OPTIONS}  +apcu +ds +xlswriter +ssh2 +pgsql  --with-swoole-pgsql=1 --with-libavif=1
 
 
 
@@ -204,7 +215,7 @@ if [ ${WITH_WEB_UI} -eq 1 ] ; then
 fi
 
 
-if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
+if [ "$OS" = 'linux'  ] && [ ${WITH_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'
    exit 0
 fi
@@ -228,6 +239,7 @@ bash make.sh archive
 
 # 例子
 # bash build-release-example.sh --mirror china
+# bash build-release-example.sh --mirror china --debug
 
 # 例子  download-box
 # bash build-release-example.sh --mirror china  --download-box
