@@ -53,7 +53,7 @@ make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-        set -x
+    set -x
     <?php endif ;?>
 
     <?php if ($item->skipBuildInstall) : ?>
@@ -79,7 +79,7 @@ make_<?=$item->name?>() {
         mkdir -p <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
     fi
 
-    <?php if ($item->untarArchiveCommand == 'tar') :?>
+    <?php if ($item->untarArchiveCommand == 'tar') : ?>
     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?=$this->workDir?>/pool/lib/<?=$item->file . PHP_EOL?>
     result_code=$?
     if [ $result_code -ne 0 ]; then
@@ -87,18 +87,19 @@ make_<?=$item->name?>() {
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
         exit  $result_code
     fi
-    <?php endif ;?>
-    <?php if ($item->untarArchiveCommand == 'unzip') :?>
+    <?php endif ; ?>
+
+    <?php if ($item->untarArchiveCommand == 'unzip') : ?>
     unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file?> <?= PHP_EOL; ?>
     <?php endif ; ?>
     <?php if ($item->untarArchiveCommand == 'xz') :?>
     xz -f -d -k   <?=$this->workDir?>/pool/lib/<?=$item->file?>    <?= PHP_EOL; ?>
     tar --strip-components=1 -C <?=$this->getBuildDir()?>/<?=$item->name?> -xf <?= rtrim($this->workDir . '/pool/lib/' . $item->file, '.xz') . PHP_EOL?>
     <?php endif ; ?>
-    <?php if ($item->untarArchiveCommand == 'cp') :?>
+    <?php if ($item->untarArchiveCommand == 'cp') :  ?>
     cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?>/* <?=$this->getBuildDir()?>/<?=$item->name?>/   <?= PHP_EOL; ?>
     <?php endif ; ?>
-    <?php if ($item->untarArchiveCommand == 'mv') :?>
+    <?php if ($item->untarArchiveCommand == 'mv') :  ?>
     cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/    <?= PHP_EOL; ?>
     <?php endif ; ?>
 
@@ -109,6 +110,12 @@ make_<?=$item->name?>() {
     <?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
+
+    <?php if ($item->enableSystemOriginEnvPath) : ?>
+    export PKG_CONFIG_PATH=${SYSTEM_ORIGIN_PKG_CONFIG_PATH}
+    export PATH=${SYSTEM_ORIGIN_PATH}
+    <?php endif;?>
+
 
     <?php if ($item->enableBuildLibraryHttpProxy) : ?>
         <?= $this->getProxyConfig() . PHP_EOL ?>
@@ -189,6 +196,12 @@ ___<?=$item->name?>__EOF___
         touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
     fi
     <?php endif; ?>
+
+    <?php if ($item->enableSystemOriginEnvPath) : ?>
+    export PKG_CONFIG_PATH=${SWOOLE_CLI_PKG_CONFIG_PATH}
+    export PATH=${SWOOLE_CLI_PATH}
+    <?php endif;?>
+
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
         set +x
     <?php endif ;?>

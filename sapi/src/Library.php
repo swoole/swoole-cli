@@ -58,6 +58,8 @@ class Library extends Project
 
     public bool $enableBuildLibraryGitProxy = false;
 
+    public array $os = ['alpine', 'debian', 'ubuntu', 'macos'];
+
 
     public function withMirrorUrl(string $url): static
     {
@@ -246,7 +248,7 @@ class Library extends Project
 
     public function withPreInstallCommand(string $os, string $preInstallCommand): static
     {
-        if (!empty($os) && in_array($os, ['alpine', 'debian', 'ubuntu', 'macos']) && !empty($preInstallCommand)) {
+        if (!empty($os) && in_array($os, $this->os) && !empty($preInstallCommand)) {
             $this->preInstallCommands[$os][] = $preInstallCommand;
         }
         return $this;
@@ -255,10 +257,25 @@ class Library extends Project
     public function withBuildLibraryHttpProxy(
         bool $enableBuildLibraryHttpProxy = true,
         bool $enableBuildLibraryGitProxy = false
-    ): static
-    {
+    ): static {
         $this->enableBuildLibraryHttpProxy = $enableBuildLibraryHttpProxy;
         $this->enableBuildLibraryGitProxy = $enableBuildLibraryGitProxy;
+        return $this;
+    }
+
+    public bool $enableSystemOriginEnvPath = false;
+
+    public function withSystemEnvPath(): static
+    {
+        $this->enableSystemOriginEnvPath = true;
+        return $this;
+    }
+
+    public bool $enableOsHttpProxy = false;
+
+    public function withSystemHttpProxy(): static
+    {
+        $this->enableOsHttpProxy = true;
         return $this;
     }
 }
