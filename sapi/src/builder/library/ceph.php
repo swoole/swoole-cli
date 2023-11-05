@@ -23,7 +23,7 @@ EOF
         ->withInstallCached(false)
         ->withBuildCached(false)
         ->withSystemEnvPath()
-        ->withHttpProxy()
+        ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF
 
