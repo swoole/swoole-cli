@@ -71,7 +71,6 @@ EOF
 
 EOF
             )
-
             ->withPkgName('libsharpyuv')
             ->withPkgName('libwebp')
             ->withPkgName('libwebpdecoder')
