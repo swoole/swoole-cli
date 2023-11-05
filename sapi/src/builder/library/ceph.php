@@ -21,7 +21,7 @@ EOF
         )
         ->withPrefix($ceph_prefix)
         ->withInstallCached(false)
-        ->withBuildCached(false)
+        //->withBuildCached(false)
         ->withSystemEnvPath()
         ->withBuildLibraryHttpProxy()
         ->withBuildScript(
