@@ -107,6 +107,15 @@ jobs:
               bash sapi/download-box/download-box-get-archive-from-container.sh
           fi
 
+          if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
+              IMAGE="docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z"
+
+              container_id=$(docker create $IMAGE) # returns container ID
+              docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
+              docker rm $container_id
+          fi
+          ls -A /usr/local/swoole-cli/
+
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
