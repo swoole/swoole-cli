@@ -18,27 +18,28 @@ return function (Preprocessor $p) {
             ->withPrefix($libwebp_prefix)
             ->withConfigure(
                 <<<EOF
+
                 ./autogen.sh
                 ./configure --help
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static libpng libjpeg )" \
-                LDFLAGS="$(pkg-config --libs-only-L      --static libpng libjpeg )" \
-                LIBS="$(pkg-config --libs-only-l         --static libpng libjpeg )" \
-                ./configure --prefix={$libwebp_prefix} \
-                --enable-static --disable-shared \
-                --enable-libwebpdecoder \
-                --enable-libwebpextras \
-                --with-pngincludedir={$libpng_prefix}/include \
-                --with-pnglibdir={$libpng_prefix}/lib \
-                --with-jpegincludedir={$libjpeg_prefix}/include \
-                --with-jpeglibdir={$libjpeg_prefix}/lib \
-                --with-gifincludedir={$libgif_prefix}/include \
-                --with-giflibdir={$libgif_prefix}/lib \
+
+                PACKAGES='libpng libjpegsdl2 '
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES ) -I{$libgif_prefix}/include/ " \
+                LDFLAGS="$(pkg-config --libs-only-L      --static \$PACKAGES ) -L{$libgif_prefix}/lib/ " \
+                LIBS="$(pkg-config --libs-only-l         --static \$PACKAGES ) -lgif" \
+                ./configure \
+                --prefix={$libwebp_prefix} \
+                --enable-shared=no \
+                --enable-static=yes \
+                --enable-everything \
                 --disable-tiff
 
 EOF
             )
+            ->withPkgName('libsharpyuv')
             ->withPkgName('libwebp')
-            ->withLdflags('-L' . $libwebp_prefix . '/lib -lwebpdemux -lwebpmux')
+            ->withPkgName('libwebpdecoder')
+            ->withPkgName('libwebpdemux')
+            ->withPkgName('libwebpmux')
             ->withBinPath($libwebp_prefix . '/bin/')
             ->withDependentLibraries('libpng', 'libjpeg', 'libgif')
     );
