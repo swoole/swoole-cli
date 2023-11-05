@@ -68,7 +68,16 @@ make_<?=$item->name?>() {
     fi
     <?php endif; ?>
 
-    <?php if ($item->cleanBuildDirectory || ! $item->enableBuildCached) : ?>
+    # 默认不需要，当需要构建中间库时需要
+    <?php if ($item->enableCompiledCached) : ?>
+    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed  ]; then
+        echo "[<?=$item->name?>] compiled, skip.."
+        cd <?= $this->workDir ?>/
+        return 0
+    fi
+    <?php endif; ?>
+
+    <?php if ($item->cleanBuildDirectory || !$item->enableBuildCached) : ?>
     if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
     fi
@@ -102,7 +111,6 @@ make_<?=$item->name?>() {
     <?php if ($item->untarArchiveCommand == 'mv') :  ?>
     cp -rfa  <?=$this->workDir?>/pool/lib/<?=$item->file?> <?=$this->getBuildDir()?>/<?=$item->name?>/    <?= PHP_EOL; ?>
     <?php endif ; ?>
-
 
     <?php if ($item->cleanPreInstallDirectory) : ?>
     # If the install directory exist, clean the install directory
@@ -202,9 +210,14 @@ ___<?=$item->name?>__EOF___
     export PATH=${SWOOLE_CLI_PATH}
     <?php endif;?>
 
+    <?php if ($item->enableCompiledCached) : ?>
+    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    <?php endif; ?>
+
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
         set +x
     <?php endif ;?>
+
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
 }

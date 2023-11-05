@@ -21,9 +21,11 @@ return function (Preprocessor $p) {
 
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
+                test -d {$workdir}/bin/ceph-docs && rm -rf {$workdir}/bin/ceph-docs
+
                 cd {$builddir}/ceph/
                 cp -rf cephadm {$workdir}/bin/cephadm
-                test -d {$workdir}/bin/ceph-docs && rm -rf {$workdir}/bin/ceph-docs
+
                 cp -rf build-doc/output {$workdir}/bin/ceph-docs
                 cd {$workdir}/bin/
                 tar -cJvf {$workdir}/ceph-docs-vlatest.tar.xz ceph-docs

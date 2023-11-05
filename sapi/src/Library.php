@@ -278,4 +278,12 @@ class Library extends Project
         $this->enableOsHttpProxy = true;
         return $this;
     }
+
+    public bool $enableCompiledCached = false;
+
+    public function withCompiledCached(): static
+    {
+        $this->enableCompiledCached = true;
+        return $this;
+    }
 }

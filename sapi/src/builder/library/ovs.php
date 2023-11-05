@@ -11,19 +11,18 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/openvswitch/ovs/blob/v3.1.1/Documentation/intro/install/general.rst')
         //->withUrl('https://github.com/openvswitch/ovs/archive/refs/tags/v3.1.1.tar.gz')
         //->withFile('ovs-v3.2.0.tar.gz')
-        //->withAutoUpdateFile()
+        ->withAutoUpdateFile()
         ->withFile('ovs-latest.tar.gz')
         ->withDownloadScript(
             'ovs',
             <<<EOF
-            # git clone -b master --depth=1 --progress https://github.com/openvswitch/ovs.git
-            git clone -b v3.2.0 --depth=1 --progress https://github.com/openvswitch/ovs.git
+            git clone -b master --depth=1 --progress https://github.com/openvswitch/ovs.git
+            # git clone -b v3.2.0 --depth=1 --progress https://github.com/openvswitch/ovs.git
 EOF
         )
         ->withPrefix($ovs_prefix)
-        //->withBuildCached(false)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($ovs_prefix)
+        ->withInstallCached(false)
+        ->withCompiledCached()
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
@@ -62,13 +61,16 @@ EOF
 
         # --with-dpdk=static \
 
-        make dist-docs -j {$p->maxJob}
-
         # 文档构建  https://github.com/openvswitch/ovs/blob/master/Documentation/intro/install/documentation.rst
-
+        make dist-docs -j {$p->maxJob}
         make docs-check -j {$p->maxJob}
 
-        # make -j {$p->maxJob}
+        make -j {$p->maxJob}
+
+        deactivate
+
+
+
         # make install
 
         # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
@@ -92,10 +94,10 @@ EOF
 EOF
         )
         //->withMakeOptions( " dist-docs ")
-        ->withPkgName('libofproto')
-        ->withPkgName('libopenvswitch')
-        ->withPkgName('libovsdb')
-        ->withPkgName('libsflow')
+        //->withPkgName('libofproto')
+        //->withPkgName('libopenvswitch')
+        //->withPkgName('libovsdb')
+        //->withPkgName('libsflow')
         ->withBinPath($ovs_prefix . '/bin/')
         ->withDependentLibraries('openssl', 'libcap_ng') //'dpdk','unbound'
     ;

@@ -22,8 +22,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($ovn_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($ovn_prefix)
+        ->withInstallCached(false)
         ->withBuildCached(false)
         ->withPreInstallCommand(
             'alpine',
@@ -58,6 +57,8 @@ EOF
 
         make dist-docs -j {$p->maxJob}
         make docs-check -j {$p->maxJob}
+        make -j {$p->maxJob}
+        deactivate
 
         # make -j {$p->maxJob}
         # make install

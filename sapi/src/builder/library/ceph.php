@@ -32,7 +32,7 @@ test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 mkdir -p /etc/apt/apt.conf.d/
 
 cat > /etc/apt/apt.conf.d/proxy.conf <<'--CEPH-EOF--'
-Acquire::http::Proxy "{$p->getHttpProxy()}";
+Acquire::http::Proxy  "{$p->getHttpProxy()}";
 Acquire::https::Proxy "{$p->getHttpProxy()}";
 
 --CEPH-EOF--

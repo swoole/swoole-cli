@@ -22,14 +22,16 @@ return function (Preprocessor $p) {
         $ovn_prefix = OVN_PREFIX;
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
+                test -d {$workdir}/bin/ovn_docs/ && rm -rf {$workdir}/bin/ovn_docs/
+
                 cd {$builddir}/ovn/Documentation
                 cp -rf _build {$workdir}/bin/ovn_docs
                 cd {$builddir}/ovn
                 cp -rf dist-docs {$workdir}/bin/ovn_docs
 
-                cd $ovn_prefix/../
-                tar -cJvf ovn-vlatest-static-linux-x64.tar.xz ovn
-                cp -f ovn-vlatest-static-linux-x64.tar.xz {$workdir}/bin/
+                # cd $ovn_prefix/../
+                # tar -cJvf ovn-vlatest-static-linux-x64.tar.xz ovn
+                # cp -f ovn-vlatest-static-linux-x64.tar.xz {$workdir}/bin/
 EOF;
 
         return $cmd;
