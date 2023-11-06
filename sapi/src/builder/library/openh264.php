@@ -51,7 +51,7 @@ EOF
         )
         ->withPkgName('openh264')
         ->withDependentLibraries('libpcap', 'openssl')
-        ;
+    ;
 
     $p->addLibrary($lib);
 };
