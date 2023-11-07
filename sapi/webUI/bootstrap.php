@@ -30,6 +30,9 @@ EOF;
         $request_uri = str_replace('//', '/', $request_uri);
         $urlinfo = parse_url($request_uri);
         $path = empty($urlinfo['path']) ? "/" : $urlinfo['path'];
+        if($request_uri == '/'){
+            $path='/index.html';
+        }
         $file = realpath(__DIR__ . '/public/') . $path;
 
         //printf("%s,%s%s", $path, $file,PHP_EOL);

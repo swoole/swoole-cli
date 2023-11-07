@@ -131,7 +131,8 @@ let bindEvent = () => {
     document.querySelector('.generate-cmd-button').addEventListener('click', (e) => {
         gen()
     })
-    document.querySelector('.exec-button').addEventListener('click', (event) => {
+    document.querySelector('.build-workflow').addEventListener('click', (event) => {
+        window.open('/runner.html')
         let cmd = event.target.getAttribute('data-cmd');
         console.log(cmd)
         let message = {
