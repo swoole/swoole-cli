@@ -342,16 +342,13 @@ ext/swoole/
 sapi/webUI/.idea/
 make-pkg-check.sh
 sapi/quickstart/git-proxy.sh
-sapi/webUI/deploy.sh
-sapi/webUI/public/data/
-!sapi/webUI/public/data/.gitkeep
 .github/workflows/
 !.github/workflows/*.yml
 Makefile.backup
 Dockerfile-all-dependencies-alpine
 php.ini
-Makefile.backup
 sapi/webUI/deploy.sh
+!sapi/webUI/public/data/.gitkeep
 sapi/webUI/public/data/
 sapi/webUI/public/ajax/
 sapi/webUI/node_modules/
