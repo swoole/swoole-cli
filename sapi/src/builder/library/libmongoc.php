@@ -87,11 +87,19 @@ EOF
 
 EOF
             )
-            ->withDependentLibraries('openssl', 'readline', 'zlib', 'libzstd', 'icu') //'libbson'
             ->withPkgName('libbson-static-1.0')
             ->withPkgName('libmongoc-ssl-1.0')
             ->withPkgName('libmongoc-static-1.0')
             ->withBinPath($libmongoc_prefix . '/bin/')
+            ->withDependentLibraries(
+                'openssl',
+                'readline',
+                'zlib',
+                'libzstd',
+                'icu',
+                // 'libsasl',
+                // 'snappy'
+            ) //'libbson'
     );
 };
 
