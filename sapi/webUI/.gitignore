@@ -1,3 +1,5 @@
 ./data
 ./.idea
 ./deploy.sh
+./node_modules
+./public/ajax/

@@ -13,6 +13,7 @@ cd ${__PROJECT__}
 
 mkdir -p ${__PROJECT__}/var
 
+# shellcheck disable=SC2164
 cd ${__PROJECT__}/var
 
 MIRROR=''

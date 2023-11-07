@@ -52,3 +52,23 @@ https://hub.docker.com/r/multiarch/qemu-user-static/tags?page=1&name=aarch64
 
 ipv4 私有地址块
 https://forum.huawei.com/enterprise/zh/thread/580934319407513600
+
+
+Tmux 是一个终端复用器（terminal multiplexer）
+
+xtermjs
+http://xtermjs.org/
+
+Apache Guacamole  pache Guacamole 是一个无客户端远程桌面网关。它支持 VNC、RDP 和 SSH 等标准协议
+https://guacamole.apache.org/
+
+
+wasmer https://github.com/wasmerio/wasmer.git
+
+
+macos 终端模拟器 iTerm2
+```bash
+
+brew install iTerm2
+
+```
