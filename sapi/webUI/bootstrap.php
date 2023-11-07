@@ -13,7 +13,8 @@ use function Swoole\Coroutine\run;
 run(function () {
     $server = new Server('0.0.0.0', 9502, false);
     $server->set([
-        'open_websocket_ping_frame' => false
+        'open_websocket_ping_frame' => true,
+        'open_websocket_pong_frame' => true,
     ]);
     $message = <<<EOF
 
@@ -101,7 +102,7 @@ EOF;
             passthru($cmd, $result_code);
             $result = ob_get_contents();
             ob_end_clean();
-            $result=trim($result);
+            $result = trim($result);
             echo $result;
         } elseif ($action === 'branchListAction') {
             $cmd = <<<EOF
@@ -121,7 +122,7 @@ EOF;
                     unset($result[$key]);
                 }
             });
-           // var_dump($result);
+            // var_dump($result);
         } elseif ($action === 'extensionListAction') {
             $cmd = <<<EOF
             cd $word_dir/sapi/src/builder/extension
@@ -192,12 +193,17 @@ EOF;
         //chrome是实现了ping/pong的，只要服务端发送了ping, 那么会立即收到一个pong
         //https://wiki.swoole.com/#/websocket_server?id=%E5%8F%91%E9%80%81ping%E5%B8%A7
         https://wiki.swoole.com/#/websocket_server?id=%e6%95%b0%e6%8d%ae%e5%b8%a7%e7%b1%bb%e5%9e%8b
+
+
+        //处理工作流
         while (true) {
             $frame = $ws->recv();
+            print($frame);
             if ($frame === '') {
                 $ws->close();
                 break;
             } else {
+
                 if ($frame === false) {
                     echo 'errorCode: ' . swoole_last_error() . "\n";
                     $ws->close();
@@ -215,23 +221,45 @@ EOF;
                         $ws->push($frame->fd, $pongFrame);
                     }
                     */
-                    $pingFrame = new Frame;
-                    $pingFrame->opcode = WEBSOCKET_OPCODE_PING;
-                    var_dump($pingFrame);
-                    $ws->push( $pingFrame);
+                    Swoole\Timer::tick(45 * 1000, function () use ($ws) {
+                        echo " server ping\n";
+                        $pingFrame = new Frame;
+                        $pingFrame->opcode = WEBSOCKET_OPCODE_PING;
+                        $ws->push($pingFrame);
+
+                    });
+
+                    // WEBSOCKET_OPCODE_PONG 值为 0xa
+                    if ($frame->opcode == 0xa) {
+                        echo "Pong frame received: Code {$frame->opcode}\n";
+                    }
 
                     if ($frame->data == 'close' || get_class($frame) === CloseFrame::class) {
                         $ws->close();
                         break;
                     }
                     $request = json_decode($frame->data, true);
-                    if (isset($request['action']) && isset($request['data'])) {
+                    if (isset($request['action'])) {
+                        $data = [
+                            "code" => 200,
+                            "data" => [],
+                            "msg" => 'ok'
+
+                        ];
                         $action = $request['action'];
-                        $cmd = $request['data'];
-                        if ($action == 'preprocessor') {
-                            echo $cmd;
+                        $cmd = isset($request['data']) ? $request['data'] : [];
+                        switch ($action) {
+                            case 'get_instance_state':
+                                $data['data'] = [
+                                    'instance_id' => 1,
+                                    'state' => 'init'
+                                ];
+                                break;
+                            default:
+                                break;
                         }
-                        $ws->push("run  preprocessor");
+
+                        $ws->push(json_encode($data));
                     }
 
                 }

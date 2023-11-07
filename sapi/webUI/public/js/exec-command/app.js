@@ -7,6 +7,9 @@ let app=()=>{
     let  websocket = new WebSocket(wsServer);
     websocket.onopen = function (evt) {
         console.log("Connected to WebSocket server.");
+        websocket.send(JSON.stringify({
+            action:'get_instance_state',
+        }))
       /*
         setInterval(() => {
             websocket.ping();
