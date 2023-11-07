@@ -43,7 +43,7 @@ let show_extension_list = async () => {
     show_all_extension_list_template(all_extension_list, ready_extension_list)
 }
 
-let inputCheckBoxBindEvent = () => {
+let input_check_box_bind_event = () => {
 
     document.querySelector('#all_extentions').addEventListener('click', (event) => {
         if (event.target.nodeName === 'INPUT') {
@@ -85,7 +85,7 @@ let inputCheckBoxBindEvent = () => {
 
 let extension_list = () => {
     show_extension_list();
-    inputCheckBoxBindEvent();
+    input_check_box_bind_event();
 }
 
 export {extension_list}

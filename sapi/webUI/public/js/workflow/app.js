@@ -1,4 +1,8 @@
 let app=()=>{
-    window.open('/runner.html')
+    document.querySelector('.exec-workflow').addEventListener('click',()=>{
+        window.open('/runner.html')
+    })
 }
+
+
 export default app

@@ -105,7 +105,7 @@ let gen = (e) => {
 
 }
 
-let bindEvent = () => {
+let bind_event = () => {
     let option_list = document.querySelector('.options-list')
     if (option_list) {
         option_list.addEventListener('click', (event) => {
@@ -132,7 +132,7 @@ let bindEvent = () => {
         gen()
     })
     document.querySelector('.build-workflow').addEventListener('click', (event) => {
-        window.open('/runner.html')
+
         let cmd = event.target.getAttribute('data-cmd');
         console.log(cmd)
         let message = {
@@ -140,13 +140,14 @@ let bindEvent = () => {
             "data": cmd
         }
         //send(JSON.stringify(message));
+        window.open('/workflow.html')
 
     })
 
 }
 
 let show_controller = () => {
-    bindEvent()
+    bind_event()
     gen()
     //init()
 }
