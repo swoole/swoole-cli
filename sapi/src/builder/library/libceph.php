@@ -27,7 +27,7 @@ EOF
         ->withPreInstallCommand(
             'macos',
             <<<EOF
-       brew install osxfuse
+       brew install osxfuse yasm
 EOF
         )
         ->withPreInstallCommand(
