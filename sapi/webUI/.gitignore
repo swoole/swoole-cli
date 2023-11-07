@@ -3,3 +3,4 @@
 ./deploy.sh
 ./node_modules
 ./public/ajax/
+./package-lock.json

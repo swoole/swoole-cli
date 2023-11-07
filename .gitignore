@@ -353,5 +353,8 @@ php.ini
 Makefile.backup
 sapi/webUI/deploy.sh
 sapi/webUI/public/data/
+sapi/webUI/public/ajax/
+sapi/webUI/node_modules/
+sapi/webUI/package-lock.json
 
 

@@ -4,7 +4,7 @@
 
 ```shell
 # 准备数据
-bash sapi/webUI/webui-init-data.sh
+bash sapi/webUI/sync-webui-data.sh
 
 # 启动
 php sapi/webUI/bootstrap.php
@@ -16,3 +16,4 @@ php sapi/webUI/bootstrap.php
 ## 工具
 1. [xterm](http://xtermjs.org/)
 1. [WebSSH2](https://github.com/billchurch/webssh2.git)
+1. [公共 CDN 静态资源库](https://github.com/justjavac/ReplaceGoogleCDN/blob/master/public-cdn.md)
