@@ -8,9 +8,9 @@ let gen = (e) => {
     let with_global_prefix = document.querySelector('input[name="with-global-prefix"]')
     let with_http_proxy = document.querySelector('input[name="with-http-proxy"]')
     let with_downloader = document.querySelector('select[name="with-downloader"]')
-    let skip_download = document.querySelector('select[name="skip-download"]')
+    let with_skip_download = document.querySelector('select[name="skip-download"]')
     let with_download_mirror_url = document.querySelector('select[name="with-download-mirror-url"]')
-    let conf_path = document.querySelector('input[name="conf-path"]')
+    let with_conf_path = document.querySelector('input[name="conf-path"]')
     let with_dependecny_graph = document.querySelector('select[name="with-dependency-graph"]')
     let with_web_ui = document.querySelector('select[name="with-web-ui"]')
     let with_swoole_pgsql = document.querySelector('select[name="with-swoole-pgsql"]')
@@ -40,24 +40,24 @@ let gen = (e) => {
         cmd += "  --with-downloader=" + with_downloader.value
     }
 
-    if (skip_download.value === "1") {
-        cmd += "  --skip-download=" + skip_download.value
+    if (with_skip_download.value === "1") {
+        cmd += "  --skip-download=" + with_skip_download.value
     }
 
     if (with_download_mirror_url.value !== "0") {
         cmd += "  --with-download-mirror-url=" + with_download_mirror_url.value
     }
 
-    if (conf_path.value.length > 0) {
-        cmd += "  --conf-path=" + conf_path.value
+    if (with_conf_path.value.length > 0) {
+        cmd += "  --conf-path=" + with_conf_path.value
     }
     if (with_dependecny_graph.value === "1") {
         cmd += "  --with-dependency-graph=" + with_dependecny_graph.value
     }
     if (with_web_ui.value === "1") {
         cmd += "  --with-web-ui=" + with_web_ui.value
-        if (skip_download.value === "0") {
-            cmd += "  --skip-download=1"
+        if (with_skip_download.value === "0") {
+            cmd += "  --with-skip-download=1"
         }
     }
     if (with_swoole_pgsql.value === "1") {

@@ -6,11 +6,15 @@ use Swoole\WebSocket\CloseFrame;
 use Swoole\Coroutine\Http\Server;
 use Swoole\Coroutine\Channel;
 use Swoole\Coroutine;
+use Swoole\WebSocket\Frame;
 
 use function Swoole\Coroutine\run;
 
 run(function () {
     $server = new Server('0.0.0.0', 9502, false);
+    $server->set([
+        'open_websocket_ping_frame' => false
+    ]);
     $message = <<<EOF
 
     web UI:  listen http://0.0.0.0:9502
@@ -18,19 +22,17 @@ run(function () {
 EOF;
     printf($message);
 
-
-    $server->handle('/', function ($request, $response) {
-        $response->redirect('/public/index.html', 302);
-    });
-
-    $server->handle('/public/', function (Request $request, Response $response) {
+    $server->handle('/', function (Request $request, Response $response) {
         //https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 
         $request_uri = str_replace('..', '', $request->server['request_uri']);
         $request_uri = str_replace('//', '/', $request_uri);
         $urlinfo = parse_url($request_uri);
         $path = empty($urlinfo['path']) ? "/" : $urlinfo['path'];
-        $file = realpath(__DIR__ . '/') . $path;
+        $file = realpath(__DIR__ . '/public/') . $path;
+
+        //printf("%s,%s%s", $path, $file,PHP_EOL);
+
 
         if (is_file($file)) {
             if (str_ends_with($request_uri, '.js')) {
@@ -91,18 +93,20 @@ EOF;
             $branch_name = $parameter['data']['branch_name'];
             $cmd = <<<EOF
          cd $word_dir
-         git checkout $branch_name
+         echo "将分支切换为：$branch_name"
+         # git checkout $branch_name
 
 EOF;
             ob_start();
             passthru($cmd, $result_code);
             $result = ob_get_contents();
             ob_end_clean();
+            $result=trim($result);
             echo $result;
         } elseif ($action === 'branchListAction') {
             $cmd = <<<EOF
          cd $word_dir
-         git branch
+         git branch | cat
 
 EOF;
             ob_start();
@@ -117,11 +121,11 @@ EOF;
                     unset($result[$key]);
                 }
             });
-            var_dump($result);
+           // var_dump($result);
         } elseif ($action === 'extensionListAction') {
             $cmd = <<<EOF
             cd $word_dir/sapi/src/builder/extension
-            ls .
+            ls -A .
 
 EOF;
             ob_start();
@@ -182,6 +186,12 @@ EOF;
 
     $server->handle('/websocket', function (Request $request, Response $ws) use ($server) {
         $ws->upgrade();
+        //websocket  控制帧 ping,pong
+        //The Ping frame contains an opcode of 0x9.
+        //The Pong frame contains an opcode of 0xA.
+        //chrome是实现了ping/pong的，只要服务端发送了ping, 那么会立即收到一个pong
+        //https://wiki.swoole.com/#/websocket_server?id=%E5%8F%91%E9%80%81ping%E5%B8%A7
+        https://wiki.swoole.com/#/websocket_server?id=%e6%95%b0%e6%8d%ae%e5%b8%a7%e7%b1%bb%e5%9e%8b
         while (true) {
             $frame = $ws->recv();
             if ($frame === '') {
@@ -193,7 +203,22 @@ EOF;
                     $ws->close();
                     break;
                 } else {
-                    //参考 : https://wiki.swoole.com/#/websocket_server?id=%e6%95%b0%e6%8d%ae%e5%b8%a7%e7%b1%bb%e5%9e%8b
+
+                    //参考 :
+                    // https://wiki.swoole.com/#/websocket_server?id=%e6%95%b0%e6%8d%ae%e5%b8%a7%e7%b1%bb%e5%9e%8b
+                    /*
+                    if ($frame->opcode == 0x09) {
+                        echo "Ping frame received: Code {$frame->opcode}\n";
+                        // 回复 Pong 帧
+                        $pongFrame = new Swoole\WebSocket\Frame;
+                        $pongFrame->opcode = WEBSOCKET_OPCODE_PONG;
+                        $ws->push($frame->fd, $pongFrame);
+                    }
+                    */
+                    $pingFrame = new Frame;
+                    $pingFrame->opcode = WEBSOCKET_OPCODE_PING;
+                    var_dump($pingFrame);
+                    $ws->push( $pingFrame);
 
                     if ($frame->data == 'close' || get_class($frame) === CloseFrame::class) {
                         $ws->close();
@@ -207,10 +232,8 @@ EOF;
                             echo $cmd;
                         }
                         $ws->push("run  preprocessor");
-                    } else {
-                        $ws->push("Hello {$frame->data}!");
-                        $ws->push("How are you, {$frame->data}?");
                     }
+
                 }
             }
         }

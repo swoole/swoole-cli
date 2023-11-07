@@ -35,7 +35,7 @@ if (response.status === 200 && res) {
 }
 
 let change_branch = async(event) => {
-    console.log(event, event.target, event.target.value)
+    //console.log(event, event.target, event.target.value)
     let url = "/api/changeBranch"
     if (event.target.value) {
         let data = {
