@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
         $depends[] = 'pgsql';
     }
 
-    $ext = (new Extension('swoole'))
+    $ext = (new Extension('swoole_v50000'))
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
