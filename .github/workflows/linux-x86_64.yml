@@ -107,6 +107,9 @@ jobs:
               container_id=$(docker create $IMAGE) # returns container ID
               docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
               docker rm $container_id
+
+              rm -rf /usr/local/swoole-cli/libwebp
+
           fi
           ls -A /usr/local/swoole-cli/
 
