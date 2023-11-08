@@ -52,17 +52,17 @@ SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
-mirror=''
+MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    mirror="$2"
-    shift
+    MIRROR="$2"
     ;;
   --proxy)
-    export http_proxy="$2"
-    export https_proxy="$2"
-    shift
+    export HTTP_PROXY="$2"
+    export HTTPS_PROXY="$2"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+    NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     ;;
   --*)
     echo "Illegal option $1"
@@ -71,7 +71,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-case "$mirror" in
+case "$MIRROR" in
 china)
   SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
   COMPOSER_DOWNLOAD_URL="https://mirrors.aliyun.com/composer/composer.phar"
