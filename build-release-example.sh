@@ -35,7 +35,7 @@ case $OS in
 esac
 
 
-IN_DOCKER=0
+WITH_IN_DOCKER=0
 
 
 # 配置系统仓库  china mirror
@@ -51,7 +51,7 @@ while [ $# -gt 0 ]; do
   --proxy)
     export HTTP_PROXY="$2"
     export HTTPS_PROXY="$2"
-    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
     export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
@@ -66,7 +66,7 @@ done
 
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
-        IN_DOCKER=1
+        WITH_IN_DOCKER=1
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
@@ -140,7 +140,7 @@ composer config -g --unset repos.packagist
 
 
 
-if [ ${IN_DOCKER} -eq 1 ] ; then
+if [ ${WITH_IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
@@ -154,7 +154,7 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 }
 fi
 
-if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
+if [ "$OS" = 'linux'  ] && [ ${WITH_IN_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'
    exit 0
 fi
