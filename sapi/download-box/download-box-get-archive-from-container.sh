@@ -18,8 +18,7 @@ IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
 cd ${__PROJECT__}/var
-mkdir -p libraries
-mkdir -p extensions
+
 
 container_id=$(docker create $IMAGE) # returns container ID
 docker cp $container_id:/usr/share/nginx/html/extensions extensions
