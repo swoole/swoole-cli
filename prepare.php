@@ -6,9 +6,15 @@ use SwooleCli\Preprocessor;
 
 const BUILD_PHP_VERSION = '8.1.12';
 
+
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
+
+# clean old make.sh
+if (($p->getInputOption('with-build-type') == 'dev') && file_exists(__DIR__ . '/make.sh')) {
+    unlink(__DIR__ . '/make.sh');
+}
 
 // Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
@@ -26,6 +32,7 @@ if ($p->getInputOption('with-global-prefix')) {
 if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
+
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');

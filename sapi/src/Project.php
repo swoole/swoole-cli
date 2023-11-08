@@ -5,12 +5,17 @@ namespace SwooleCli;
 abstract class Project
 {
     public string $name;
+
     public string $url;
+
     public string $path = '';
+
     public string $file = '';
+
     public string $md5sum = '';
 
     public string $manual = '';
+
     public string $homePage = '';
 
     public string $license = '';
@@ -26,8 +31,13 @@ abstract class Project
     public const LICENSE_BSD = 2;
     public const LICENSE_GPL = 3;
     public const LICENSE_LGPL = 4;
+
     public const LICENSE_MIT = 5;
     public const LICENSE_PHP = 6;
+
+    public bool $enableBuildCached = true;
+
+    public bool $enableInstallCached = true;
 
     public function __construct(string $name)
     {
@@ -68,6 +78,18 @@ abstract class Project
     public function withUrl(string $url): static
     {
         $this->url = $url;
+        return $this;
+    }
+
+    public function withBuildCached(bool $enableBuildCached = true): static
+    {
+        $this->enableBuildCached = $enableBuildCached;
+        return $this;
+    }
+
+    public function withInstallCached(bool $enableInstallCached = true): static
+    {
+        $this->enableInstallCached = $enableInstallCached;
         return $this;
     }
 }

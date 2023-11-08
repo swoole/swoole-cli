@@ -320,3 +320,7 @@ ldflags.log
 cppflags.log
 /packages
 /conf.d.loader
+Makefile.backup
+ldflags.log
+cppflags.log
+libs.log
