@@ -6,6 +6,11 @@ use SwooleCli\Preprocessor;
 
 const BUILD_PHP_VERSION = '8.1.12';
 
+# clean old make.sh
+if (file_exists(__DIR__ . '/make.sh')) {
+    unlink(__DIR__ . '/make.sh');
+}
+
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
@@ -26,6 +31,7 @@ if ($p->getInputOption('with-global-prefix')) {
 if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
+
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');

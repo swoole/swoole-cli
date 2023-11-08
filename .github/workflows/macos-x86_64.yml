@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
-    if: 0
+    if: 1
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -88,7 +88,8 @@ jobs:
         if: ${{ steps.all-library-cache.outputs.cache-hit != 'true' }}
         run: |
           export PATH=${GITHUB_WORKSPACE}/bin/runtime:$PATH
-          bash ./make.sh all-library
+          bash sapi/quickstart/mark-install-library-cached.sh
+          bash make.sh all-library
 
       - name: Build
         run: |

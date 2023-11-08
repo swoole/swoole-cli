@@ -31,6 +31,19 @@ OPTIONS="--disable-all \
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
+    <?php if ($item->enableInstallCached) : ?>
+    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
+        echo "[<?=$item->name?>]  library cached , skip.."
+        return 0
+    fi
+    <?php endif; ?>
+
+    <?php if ($item->cleanBuildDirectory) : ?>
+    if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
+        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
+    fi
+    <?php endif; ?>
+
     # If the source code directory does not exist, create a directory and decompress the source code archive
     if [ ! -d <?= $this->getBuildDir() ?>/<?= $item->name ?> ]; then
         mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
@@ -43,21 +56,15 @@ make_<?=$item->name?>() {
         fi
     fi
 
-    if [ -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed ]; then
-        echo "[<?=$item->name?>] compiled, skip.."
-        cd <?= $this->workDir ?>/
-        return 0
-    fi
-
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
     # use build script replace  configure、make、make install
     <?php if (empty($item->buildScript)) : ?>
     # configure
         <?php if (!empty($item->configure)) : ?>
-cat <<'__EOF__'
+    cat <<'___<?=$item->name?>__EOF___'
             <?= $item->configure . PHP_EOL ?>
-__EOF__
+___<?=$item->name?>__EOF___
             <?=$item->configure . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [configure FAILURE]" && exit  $result_code;
@@ -82,9 +89,9 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [make install FAILURE]" && exit  $result_code;
         <?php endif; ?>
     <?php else : ?>
-    cat <<'__EOF__'
+    cat <<'___<?=$item->name?>__EOF___'
         <?= $item->buildScript . PHP_EOL ?>
-__EOF__
+___<?=$item->name?>__EOF___
         <?= $item->buildScript . PHP_EOL ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [build script FAILURE]" && exit  $result_code;
@@ -97,7 +104,11 @@ __EOF__
     [[ $result_code -ne 0 ]] &&  echo "[<?=$item->name?>] [ after make  install script FAILURE]" && exit  $result_code;
     <?php endif; ?>
 
-    touch <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    <?php if ($item->enableInstallCached) : ?>
+    if [ -d <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
+        touch <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed
+    fi
+    <?php endif; ?>
 
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -105,14 +116,23 @@ __EOF__
 
 clean_<?=$item->name?>() {
     cd <?=$this->getBuildDir()?> && echo "clean <?=$item->name?>"
-    cd <?=$this->getBuildDir()?>/<?= $item->name ?> && make clean
-    rm -f <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    if [ -d <?=$this->getBuildDir()?>/<?= $item->name ?>/ ] ;then
+        rm -rf <?=$this->getBuildDir()?>/<?= $item->name ?>/
+    fi
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
+    fi
     cd <?= $this->workDir . PHP_EOL ?>
+    return 0
 }
 
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
-    rm <?=$this->getBuildDir()?>/<?=$item->name?>/.completed
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
+        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    fi
+    cd <?= $this->workDir . PHP_EOL ?>
+    return 0
 }
 
     <?php echo str_repeat(PHP_EOL, 1);?>
@@ -160,8 +180,9 @@ make_config() {
 
     ./configure --help
     export_variables
-    echo $LDFLAGS > ldflags.log
-    echo $CPPFLAGS > cppflags.log
+    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
     ./configure $OPTIONS
 }
@@ -169,7 +190,7 @@ make_config() {
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType()=='linux') : ?>
+    <?php if ($this->getOsType() == 'linux') : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
@@ -288,8 +309,8 @@ elif [ "$1" = "clean-all-library" ] ;then
     exit 0
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
-    echo "rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed"
-    rm <?= $this->getBuildDir() ?>/<?= $item->name ?>/.completed
+    echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
+    rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "diff-configure" ] ;then
