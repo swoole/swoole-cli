@@ -35,7 +35,7 @@ case $OS in
 esac
 
 
-WITH_IN_DOCKER=0
+IN_DOCKER=0
 
 
 # 配置系统仓库  china mirror
@@ -66,7 +66,7 @@ done
 
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
-        WITH_IN_DOCKER=1
+        IN_DOCKER=1
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
@@ -116,10 +116,12 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 php -v
 
 export COMPOSER_ALLOW_SUPERUSER=1
-  composer config -g repos.packagist composer https://packagist.org
-# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
 if [ "$MIRROR" = 'china' ]; then
     composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+    # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+else
+    composer config -g repos.packagist composer https://packagist.org
 fi
 # composer suggests --all
 # composer dump-autoload
@@ -140,7 +142,7 @@ composer config -g --unset repos.packagist
 
 
 
-if [ ${WITH_IN_DOCKER} -eq 1 ] ; then
+if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
@@ -154,7 +156,7 @@ if [ ${WITH_IN_DOCKER} -eq 1 ] ; then
 }
 fi
 
-if [ "$OS" = 'linux'  ] && [ ${WITH_IN_DOCKER} -eq 0 ] ; then
+if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'
    exit 0
 fi
