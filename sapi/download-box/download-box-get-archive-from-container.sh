@@ -19,6 +19,7 @@ IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
 cd ${__PROJECT__}/var
 
+
 container_id=$(docker create $IMAGE) # returns container ID
 docker cp $container_id:/usr/share/nginx/html/extensions extensions
 docker cp $container_id:/usr/share/nginx/html/libraries libraries

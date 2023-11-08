@@ -384,7 +384,7 @@ class Preprocessor
         }
 
         if (!empty($this->getInputOption('with-download-mirror-url'))) {
-            $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
+            $lib->url = $this->getInputOption('with-download-mirror-url') . '/lib/' . $lib->file;
         }
 
         $lib->path = $this->libraryDir . '/' . $lib->file;
@@ -425,7 +425,7 @@ class Preprocessor
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
             if (!empty($this->getInputOption('with-download-mirror-url'))) {
-                $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
+                $ext->url = $this->getInputOption('with-download-mirror-url') . '/ext/' . $ext->file;
             }
 
             // 检查文件的 MD5，若不一致删除后重新下载
