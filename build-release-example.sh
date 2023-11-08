@@ -35,7 +35,7 @@ case $OS in
 esac
 
 
-IN_DOCKER=0
+WITH_IN_DOCKER=0
 
 
 # 配置系统仓库  china mirror
@@ -66,7 +66,7 @@ done
 
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
-        IN_DOCKER=1
+        WITH_IN_DOCKER=1
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
@@ -142,7 +142,7 @@ composer config -g --unset repos.packagist
 
 
 
-if [ ${IN_DOCKER} -eq 1 ] ; then
+if [ ${WITH_IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
@@ -156,7 +156,7 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 }
 fi
 
-if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
+if [ "$OS" = 'linux'  ] && [ ${WITH_IN_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'
    exit 0
 fi
