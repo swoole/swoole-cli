@@ -148,7 +148,7 @@ make_all_library() {
 
 before_configure_script() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-<?php foreach ($this->extHooks as $name => $value) : ?>
+<?php foreach ($this->beforeConfigure as $name => $value) : ?>
     # ext <?= $name ?> hook
     <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
