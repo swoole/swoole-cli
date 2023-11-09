@@ -71,11 +71,9 @@ if [ ${WITH_UPDATE} -eq 1 ] ; then
 
 fi
 
-
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_INSTALL_FROM_API=1
-
 
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
@@ -84,39 +82,5 @@ ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 
-case "$MIRROR" in
-china|tuna)
-  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-  ;;
-ustc)
-  pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
-  ;;
-
-esac
-
 brew uninstall --ignore-dependencies snappy
 brew uninstall --ignore-dependencies capstone
-
-
-
-
-
-
-# launchctl -h
-
-
-# 配置例子
-:<<'EOF'
-# pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
-
-mkdir -p ~/.pip
-
-cat > ~/.pip/pip.conf <<===EOF===
-[global]
-index-url = https://pypi.tuna.tsinghua.edu.cn/simple
-[install]
-trusted-host = https://pypi.tuna.tsinghua.edu.cn
-===EOF===
-
-
-EOF

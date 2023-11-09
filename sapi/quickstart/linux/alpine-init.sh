@@ -50,14 +50,4 @@ apk add wget git curl
 apk add libc++-static libltdl-static
 
 
-case "$MIRROR" in
-china|tuna)
-  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-  ;;
-ustc)
-  pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
-  ;;
-
-esac
-
 
