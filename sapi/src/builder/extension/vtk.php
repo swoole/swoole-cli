@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_SPEC);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->setExtHook('vtk', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('vtk', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

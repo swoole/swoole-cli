@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/nginx/nginx/blob/master/docs/text/LICENSE', Extension::LICENSE_SPEC);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->setExtHook('nginx', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('nginx', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_GPL);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->setExtHook('aria2', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('aria2', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

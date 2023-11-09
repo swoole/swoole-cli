@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_SPEC);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->setExtHook('iperf3', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('iperf3', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

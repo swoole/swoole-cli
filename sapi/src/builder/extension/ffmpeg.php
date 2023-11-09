@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
 
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->setExtHook('ffmpeg', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('ffmpeg', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

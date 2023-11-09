@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://repo.or.cz/socat.git/blob/refs/heads/master:/COPYING', Extension::LICENSE_LGPL);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->setExtHook('socat', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('socat', function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $socat_prefix = SOCAT_PREFIX;

@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/rofl0r/proxychains-ng/blob/master/COPYING', Extension::LICENSE_GPL);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->setExtHook('proxychains', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('proxychains', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
