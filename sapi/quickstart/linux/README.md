@@ -53,6 +53,8 @@ bash sapi/download-box/download-box-get-archive-from-container.sh
  cp build-release-example.sh build-release.sh
 
  sh build-release.sh
+# 使用系统镜像源
+# sh build-release.sh --mirror china
 
 ```
 
