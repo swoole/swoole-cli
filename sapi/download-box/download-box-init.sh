@@ -14,21 +14,27 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
-mkdir -p "${DOWNLOAD_BOX_DIR}"
-mkdir -p "${DOWNLOAD_BOX_DIR}/lib/"
-mkdir -p "${DOWNLOAD_BOX_DIR}/ext/"
+mkdir -p ${__PROJECT__}/var/download-box/
+
+cd ${__PROJECT__}/var/download-box/
+mkdir -p lib
+mkdir -p ext
+
 
 cd "${__PROJECT__}/"
 
+if [ -f download_library_urls.txt ] && [ -f download_extension_urls.txt ]  ; then
+  echo 'downloading source code '
+else
+  echo 'please run script : '
+  echo "cp  build-release-example.sh  build-release.sh "
+  echo "prepare.php --skip-download=1 --with-dependency-graph=1 "
+  exit 0
+fi
 
-export COMPOSER_ALLOW_SUPERUSER=1
-composer update --no-dev --optimize-autoloader
 
-php prepare.php --with-build-type=release +ds +inotify +apcu --without-docker=1 --skip-download=1
-sh sapi/scripts/download-dependencies-use-aria2.sh
+cd "${__PROJECT__}/"
 
-# for macos
-php prepare.php --with-build-type=release +ds +apcu +protobuf @macos --with-dependency-graph=1 --without-docker=1 --skip-download=1
 sh sapi/scripts/download-dependencies-use-aria2.sh
 
 # 生成扩展依赖图
