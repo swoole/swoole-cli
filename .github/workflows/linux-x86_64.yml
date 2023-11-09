@@ -125,7 +125,6 @@ jobs:
               container_id=$(docker create $IMAGE) # returns container ID
               docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
               docker rm $container_id
-
           fi
           ls -A /usr/local/swoole-cli/
 
@@ -150,7 +149,7 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update   --optimize-autoloader
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1 --with-libavif=1
 
             bash make-install-deps.sh
 

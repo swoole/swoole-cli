@@ -38,7 +38,6 @@ esac
 
 
 IN_DOCKER=0
-WITH_DOCKER=0
 WITH_DOWNLOAD_BOX=0
 WITH_BUILD_CONTAINER=0
 WITH_WEB_UI=0
@@ -82,7 +81,6 @@ while [ $# -gt 0 ]; do
   --debug)
     set -x
     OPTIONS="${OPTIONS}  --with-build-type=debug "
-
     ;;
   --*)
     echo "Illegal option $1"
@@ -98,7 +96,7 @@ if [ "$OS" = 'linux' ] ; then
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
-            if [ "$MIRROR" = 'china' ] ; then
+            if [ "$WITH_MIRROR" = 'china' ] ; then
                 sh sapi/quickstart/linux/alpine-init.sh --mirror china
             else
                 sh sapi/quickstart/linux/alpine-init.sh
@@ -146,7 +144,7 @@ php -v
 
 
 if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
-    if [ "$MIRROR" = 'china' ]; then
+    if [ "$WITH_MIRROR" = 'china' ]; then
         composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
         # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
     else
