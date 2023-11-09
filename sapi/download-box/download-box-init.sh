@@ -35,7 +35,9 @@ fi
 
 cd "${__PROJECT__}/"
 
-sh sapi/scripts/download-dependencies-use-aria2.sh
-
 # 生成扩展依赖图
 sh sapi/scripts/generate-dependency-graph.sh
+
+sh sapi/scripts/download-dependencies-use-aria2.sh
+
+
