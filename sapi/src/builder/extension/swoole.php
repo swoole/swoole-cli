@@ -1,12 +1,12 @@
 <?php
 
-use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $swoole_tag = 'v5.1.0';
     $file = "swoole-{$swoole_tag}.tar.gz";
+
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
 
     $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
@@ -20,10 +20,13 @@ return function (Preprocessor $p) {
 
 
     $ext = (new Extension('swoole'))
-        ->withOptions($options)
-        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
-        ->withManual('https://wiki.swoole.com/#/');
+        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
+        ->withManual('https://wiki.swoole.com/#/')
+        ->withOptions($options)
+        ->withManual('https://wiki.swoole.com/#/')
+    ;
+
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
     $p->addExtension($ext);
