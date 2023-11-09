@@ -230,10 +230,10 @@ make_config() {
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
     ./configure $OPTIONS
+
 <?php if ($this->getOsType()=='linux') : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 <?php endif ; ?>
-
 }
 
 make_build() {

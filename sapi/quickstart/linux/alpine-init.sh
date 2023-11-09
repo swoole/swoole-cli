@@ -41,6 +41,7 @@ apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld li
 apk add bash 7zip zip unzip flex pkgconf ca-certificates
 # apk add bash p7zip
 apk add wget git curl
+
 apk add libc++-static libltdl-static
 apk add yasm nasm
 apk add ninja python3 py3-pip
@@ -59,3 +60,5 @@ esac
 
 # pip3 install meson
 apk add meson
+
+
