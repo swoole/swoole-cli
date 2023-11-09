@@ -522,7 +522,7 @@ __GIT_PROXY_CONFIG_EOF;
 
             if (!empty($this->getInputOption('with-download-mirror-url'))) {
                 if ($lib->enableDownloadWithOriginURL === false) {
-                    $lib->url = $this->getInputOption('with-download-mirror-url') . '/libraries/' . $lib->file;
+                    $lib->url = $this->getInputOption('with-download-mirror-url') . '/lib/' . $lib->file;
                     $lib->enableDownloadWithMirrorURL = true;
                 }
             }
