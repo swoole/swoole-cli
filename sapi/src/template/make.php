@@ -305,7 +305,7 @@ make_config() {
     fi
 <?php endif ;?>
 
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    cd <?= $this->getPhpSrcDir() ?>/
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 
