@@ -155,7 +155,6 @@ jobs:
               container_id=$(docker create $IMAGE) # returns container ID
               docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
               docker rm $container_id
-
           fi
           ls -A /usr/local/swoole-cli/
 
