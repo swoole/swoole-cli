@@ -16,8 +16,8 @@ bash sapi/quickstart/linux/install-docker.sh --mirror china
 
 # 启动 alpine 容器环境
 bash sapi/quickstart/linux/run-alpine-container.sh
-#  使用已经构建好的依赖库
-bash sapi/quickstart/linux/run-alpine-container-full.sh
+# 使用已经构建好的依赖库 容器环境
+# bash sapi/quickstart/linux/run-alpine-container-full.sh
 
 # 进入容器
 bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
