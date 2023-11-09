@@ -45,7 +45,7 @@ make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-        set -x
+    set -x
     <?php endif ;?>
 
     <?php if ($item->enableInstallCached) : ?>
@@ -135,11 +135,11 @@ ___<?=$item->name?>__EOF___
 
     # build end
     <?php if ($item->enableBuildLibraryHttpProxy) :?>
-        unset HTTP_PROXY
-        unset HTTPS_PROXY
-        unset NO_PROXY
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    unset NO_PROXY
         <?php if ($item->enableBuildLibraryGitProxy) :?>
-        unset GIT_PROXY_COMMAND
+    unset GIT_PROXY_COMMAND
         <?php endif;?>
     <?php endif;?>
 
@@ -149,7 +149,7 @@ ___<?=$item->name?>__EOF___
     fi
     <?php endif; ?>
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-        set +x
+    set +x
     <?php endif ;?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -186,7 +186,8 @@ make_all_library() {
     return 0
 }
 
-make_ext() {
+
+make_tmp_ext_dir() {
     cd <?= $this->getPhpSrcDir() . PHP_EOL ?>
     PHP_SRC_DIR=<?= $this->getPhpSrcDir() . PHP_EOL ?>
     EXT_DIR=$PHP_SRC_DIR/ext/
@@ -253,9 +254,10 @@ EOF;
     return 0
 }
 
-make_ext_hook() {
+
+before_configure_script() {
     cd <?= $this->getPhpSrcDir() ?>/
-<?php foreach ($this->extHooks as $name => $value) : ?>
+<?php foreach ($this->beforeConfigure as $name => $value) : ?>
     # ext <?= $name ?> hook
     <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
@@ -293,10 +295,12 @@ export_variables() {
 
 
 make_config() {
-    make_ext
-    make_ext_hook
 
+    set -x
     cd <?= $this->phpSrcDir . PHP_EOL ?>
+    make_tmp_ext_dir
+    before_configure_script
+
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
     PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
     if [[ $PHP_VERSION -lt 80000 ]] ; then
@@ -307,10 +311,11 @@ make_config() {
     fi
 <?php endif ;?>
 
+    cd <?= $this->getPhpSrcDir() ?>/
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 
-<?php if ($this->osType === 'macos') : ?>
+<?php if ($this->osType == 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
         sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
@@ -324,6 +329,7 @@ make_config() {
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
+
 <?php if ($this->getOsType()=='linux') : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 <?php endif ; ?>

@@ -15,6 +15,8 @@ fi
 cd ${__PROJECT__}
 
 
+set -x
+
 # shellcheck disable=SC2034
 OS=$(uname -s)
 # shellcheck disable=SC2034
@@ -35,7 +37,7 @@ case $OS in
 esac
 
 
-WITH_DOCKER=0
+IN_DOCKER=0
 WITH_DOWNLOAD_BOX=0
 WITH_BUILD_CONTAINER=0
 WITH_WEB_UI=0
@@ -57,7 +59,7 @@ while [ $# -gt 0 ]; do
   --proxy)
     export HTTP_PROXY="$2"
     export HTTPS_PROXY="$2"
-    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
     export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
@@ -90,7 +92,7 @@ done
 
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
-        WITH_DOCKER=1
+        IN_DOCKER=1
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
@@ -141,20 +143,21 @@ alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.c
 
 php -v
 
+
 if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
-      export COMPOSER_ALLOW_SUPERUSER=1
-      # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-      # composer config -g repos.packagist composer https://packagist.org
-      if [ "$WITH_MIRROR" = 'china' ]; then
-          composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
-      fi
+    if [ "$WITH_MIRROR" = 'china' ]; then
+        composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+        # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+    else
+        composer config -g repos.packagist composer https://packagist.org
+    fi
+    # composer suggests --all
+    # composer dump-autoload
 
-      # composer suggests --all
-      # composer dump-autoload
-
-      composer update  --optimize-autoloader
-      composer config -g --unset repos.packagist
+    composer update  --optimize-autoloader
+    composer config -g --unset repos.packagist
 fi
+
 
 # 可用配置参数
 # --with-swoole-pgsql=1
@@ -165,6 +168,7 @@ fi
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos
+# --with-parallel-jobs=8
 # --with-build-type=dev
 # --with-skip-download=1
 # --with-http-proxy=http://192.168.3.26:8015
@@ -181,18 +185,30 @@ if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
 fi
 
 
+# 定制构建选项
+OPTIONS='+apcu +ds +xlswriter +ssh2'
+OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
+OPTIONS="${OPTIONS} --with-libavif=1"
 
-if [ "$OS" = 'linux' ] ; then
-   OPTIONS="${OPTIONS} +inotify  "
+
+
+if [ ${IN_DOCKER} -eq 1 ] ; then
+{
+# 容器中
+  php prepare.php +inotify ${OPTIONS}
+
+} else {
+# 容器外
+  php prepare.php ${OPTIONS}
+
+}
 fi
 
 
-
-
-php prepare.php ${OPTIONS}  +apcu +ds +xlswriter +ssh2 +pgsql  --with-swoole-pgsql=1 --with-libavif=1
-
-
-
+if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
+   echo ' please run in container !'
+   exit 0
+fi
 
 
 if [ ${WITH_DOWNLOAD_BOX} -eq 1 ] ; then
@@ -215,12 +231,6 @@ if [ ${WITH_WEB_UI} -eq 1 ] ; then
 fi
 
 
-if [ "$OS" = 'linux'  ] && [ ${WITH_DOCKER} -eq 0 ] ; then
-   echo ' please run in container !'
-   exit 0
-fi
-
-
 
 bash make-install-deps.sh
 
@@ -235,7 +245,7 @@ bash make.sh build
 
 bash make.sh archive
 
-
+exit 0
 
 # 例子
 # bash build-release-example.sh --mirror china
@@ -253,3 +263,7 @@ bash make.sh archive
 # bash build-release-example.sh --mirror china  --webui
 # bash sapi/webUI/webui-init-data.sh
 # php sapi/webUI/bootstrap.php
+
+
+
+

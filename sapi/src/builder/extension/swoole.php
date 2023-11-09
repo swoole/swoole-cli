@@ -46,7 +46,6 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
         ->withOptions($options)
-        ->withManual('https://wiki.swoole.com/#/')
         ->withFile($file)
         ->withDownloadScript(
             'swoole-src',
@@ -59,5 +58,6 @@ EOF
 
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
+
     $p->addExtension($ext);
 };

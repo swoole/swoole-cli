@@ -5,7 +5,6 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $swoole_tag = 'v5.0.3';
-
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
@@ -17,7 +16,6 @@ return function (Preprocessor $p) {
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
 
     if ($p->getInputOption('with-swoole-pgsql')) {
-        $options .= ' --enable-swoole-pgsql';
         $dependent_libraries[] = 'pgsql';
     }
 
@@ -27,7 +25,6 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
         ->withOptions($options)
-        ->withManual('https://wiki.swoole.com/#/')
         ->withFile($file)
         ->withDownloadScript(
             'swoole-src',
@@ -36,6 +33,8 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBuildCached(false);
+    ;
+
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
 

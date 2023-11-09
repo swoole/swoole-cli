@@ -5,7 +5,6 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-
     $php_version_id = BUILD_CUSTOM_PHP_VERSION_ID;
     $file = '';
     $url = '';
@@ -14,6 +13,7 @@ return function (Preprocessor $p) {
 
     $dependent_libraries = ['libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif'];
     $dependent_extensions = [];
+
     $options = '--enable-gd --with-jpeg --with-freetype --with-webp ';
 
     if ($php_version_id >= 8010) {
