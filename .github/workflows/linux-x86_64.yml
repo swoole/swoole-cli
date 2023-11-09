@@ -91,11 +91,8 @@ jobs:
           # git submodule update --init
 
           # 准备数据库容器
-<<<<<<< HEAD
+
           # bash sapi/docker/database/start.sh
-=======
-          bash sapi/src/UnitTest/scripts/database/start.sh
->>>>>>> build_native_php
 
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
