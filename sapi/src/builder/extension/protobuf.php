@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
             ->withDependentExtensions('sockets')
     );
 
-    $p->setExtHook('protobuf', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('protobuf', function (Preprocessor $p) {
         // compatible with redis
         $workdir= $p->getWorkDir();
         if ($p->getOsType() === 'macos') {
