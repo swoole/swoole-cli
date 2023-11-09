@@ -13,10 +13,10 @@ cd ${__PROJECT__}
 
 
 mkdir -p ${__PROJECT__}/var/
-mkdir -p  ${__PROJECT__}/var/libraries/
-mkdir -p  ${__PROJECT__}/var/extensions/
+mkdir -p  ${__PROJECT__}/var/download-box/lib/
+mkdir -p  ${__PROJECT__}/var/download-box/ext/
 
-cd ${__PROJECT__}/var/
+cd ${__PROJECT__}/var/download-box/
 
 
 # https://aria2.github.io/manual/en/html/aria2c.html#http-ftp-segmented-downloads
@@ -51,10 +51,10 @@ cd ${__PROJECT__}
 mkdir -p pool/lib
 mkdir -p pool/ext
 
-# cp -rf ${__PROJECT__}/var/download/* ${__PROJECT__}/pool/lib
+# cp -rf ${__PROJECT__}/var/download-box/* ${__PROJECT__}/pool/lib
 
-awk 'BEGIN { cmd="cp -ri var/libraries/* pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/extensions/* pool/ext"; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib"  ; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext"; print "n" |cmd; }'
 
 cd ${__PROJECT__}
 
