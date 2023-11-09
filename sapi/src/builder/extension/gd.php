@@ -5,7 +5,6 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-
     $options = '--enable-gd --with-jpeg --with-freetype --with-webp ';
     $dependent_libraries =['libjpeg', 'freetype', 'libwebp', 'libpng', 'libgif'];
 

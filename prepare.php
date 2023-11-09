@@ -5,6 +5,11 @@ require __DIR__ . '/vendor/autoload.php';
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
+
+$homeDir = getenv('HOME');
+$p = Preprocessor::getInstance();
+$p->parseArguments($argc, $argv);
+
 # clean old make.sh
 if (file_exists(__DIR__ . '/make.sh')) {
     unlink(__DIR__ . '/make.sh');
@@ -16,10 +21,6 @@ if (file_exists(__DIR__ . '/make.sh')) {
 if (file_exists(__DIR__ . '/make-download-box.sh')) {
     unlink(__DIR__ . '/make-download-box.sh');
 }
-
-$homeDir = getenv('HOME');
-$p = Preprocessor::getInstance();
-$p->parseArguments($argc, $argv);
 
 # PHP 默认版本
 $php_version = '8.2.11';
@@ -136,6 +137,7 @@ export NO_PROXY="${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
 EOF;
     $p->setProxyConfig($proxyConfig, $http_proxy);
 }
+
 
 if ($p->getOsType() == 'macos') {
     $p->setExtraLdflags('-undefined dynamic_lookup');
