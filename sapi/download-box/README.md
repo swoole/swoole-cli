@@ -88,7 +88,7 @@ bash  sapi/download-box/download-box-get-archive-from-server.sh
 
 ```bash
 
-bash build-release-example.sh --mirror china  --download-box
+
 bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 bash sapi/download-box/download-box-build.sh
 

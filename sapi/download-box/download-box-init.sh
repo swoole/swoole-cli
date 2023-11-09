@@ -21,8 +21,6 @@ mkdir -p lib
 mkdir -p ext
 
 
-cd "${__PROJECT__}/"
-
 if [ -f download_library_urls.txt ] && [ -f download_extension_urls.txt ]  ; then
   echo 'downloading source code '
 else
@@ -33,11 +31,29 @@ else
 fi
 
 
-cd "${__PROJECT__}/"
+cd ${__PROJECT__}
 
 # 生成扩展依赖图
 sh sapi/scripts/generate-dependency-graph.sh
 
-sh sapi/scripts/download-dependencies-use-aria2.sh
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --proxy)
+    export HTTP_PROXY="$2"
+    export HTTPS_PROXY="$2"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+    NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
+    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
+    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+sh sapi/download-box/download-dependencies-use-aria2.sh
 
 
