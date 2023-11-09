@@ -173,8 +173,7 @@ export_variables() {
 }
 
 make_config() {
-    set -exu
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    set -x
     before_configure_script
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
