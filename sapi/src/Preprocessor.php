@@ -125,8 +125,6 @@ class Preprocessor
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
 
-    protected array $extHooks = [];
-
     protected array $beforeConfigure = [];
 
     protected string $configureVarables;
