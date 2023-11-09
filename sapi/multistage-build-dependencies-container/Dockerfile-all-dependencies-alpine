@@ -41,7 +41,7 @@ RUN alias php='php -d curl.cainfo="${CERT_FILE}" -d openssl.cafile="${CERT_FILE}
 
 RUN echo "alias php='php -d curl.cainfo=\"\${CERT_FILE}\" -d openssl.cafile=\"\${CERT_FILE}\"'" >>/root/.bashrc
 
-RUN bash sapi/quickstart/linux/alpine-init.sh --mirror ${MIRROR}
+RUN sh sapi/quickstart/linux/alpine-init.sh --mirror ${MIRROR}
 
 
 WORKDIR /work

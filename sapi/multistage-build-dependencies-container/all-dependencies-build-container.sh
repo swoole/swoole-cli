@@ -69,14 +69,11 @@ done
 
 cd ${__PROJECT__}/
 
-if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
-      if test -z "$MIRROR"  ; then
-          bash sapi/quickstart/setup-php-runtime.sh --mirror china
-      else
-          bash sapi/quickstart/setup-php-runtime.sh
-      fi
+if [ ! -f make.sh ] ;then
+  echo 'please run script:'
+  echo 'php prepare.php'
+  exit 0
 fi
-
 
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
@@ -97,6 +94,7 @@ echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 
 
 # 例子：
+# php prepare.php
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'
 # 验证构建结果
 # bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh
