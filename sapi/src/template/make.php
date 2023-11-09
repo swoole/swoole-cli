@@ -146,6 +146,15 @@ make_all_library() {
     return 0
 }
 
+before_configure_script() {
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+<?php foreach ($this->beforeConfigure as $name => $value) : ?>
+    # ext <?= $name ?> hook
+    <?= $value($this) . PHP_EOL ?>
+<?php endforeach; ?>
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    return 0
+}
 
 export_variables() {
     CPPFLAGS=""
@@ -164,8 +173,9 @@ export_variables() {
 }
 
 make_config() {
+    set -x
+    before_configure_script
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-    set -exu
     test -f ./configure &&  rm ./configure
     ./buildconf --force
 <?php if ($this->osType == 'linux') : ?>

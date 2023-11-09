@@ -124,6 +124,9 @@ class Preprocessor
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
+
+    protected array $beforeConfigure = [];
+
     protected string $configureVarables;
 
     protected function __construct()
@@ -573,6 +576,11 @@ class Preprocessor
     public function setExtCallback($name, $fn)
     {
         $this->extCallbacks[$name] = $fn;
+    }
+
+    public function withBeforeConfigureScript($name, $fn)
+    {
+        $this->beforeConfigure[$name]=$fn;
     }
 
     public function parseArguments(int $argc, array $argv)
