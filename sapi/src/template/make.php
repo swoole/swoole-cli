@@ -146,7 +146,7 @@ make_all_library() {
     return 0
 }
 
-make_ext_hook() {
+before_configure_script() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
 <?php foreach ($this->extHooks as $name => $value) : ?>
     # ext <?= $name ?> hook
@@ -175,7 +175,7 @@ export_variables() {
 make_config() {
     set -exu
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-    make_ext_hook
+    before_configure_script
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
