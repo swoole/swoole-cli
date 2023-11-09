@@ -2,7 +2,7 @@
 
 ## [windows cygwin 环境 构建步骤](../../../docs/Cygwin.md)
 
-## 双击如下两个脚本，自动下载和安装
+## 双击如下两个脚本，自动下载cygwin 和 cygwin安装依赖库
 
 ```shell
 
