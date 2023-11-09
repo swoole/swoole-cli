@@ -90,10 +90,6 @@ ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 
-brew uninstall --ignore-dependencies snappy
-brew uninstall --ignore-dependencies capstone
-
-
 case "$MIRROR" in
 china|tuna)
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
@@ -103,6 +99,12 @@ ustc)
   ;;
 
 esac
+
+brew uninstall --ignore-dependencies snappy
+brew uninstall --ignore-dependencies capstone
+
+
+
 
 
 
