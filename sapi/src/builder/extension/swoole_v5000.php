@@ -5,7 +5,6 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $swoole_tag = 'v5.0.3';
-
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
@@ -17,7 +16,6 @@ return function (Preprocessor $p) {
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
 
     if ($p->getInputOption('with-swoole-pgsql')) {
-        $options .= ' --enable-swoole-pgsql';
         $dependent_libraries[] = 'pgsql';
     }
 

@@ -18,7 +18,9 @@ fi
 
 cd ${__PROJECT__}
 
+
 mkdir -p ${__PROJECT__}/var
+
 
 # export DOCKER_BUILDKIT=1
 
@@ -44,6 +46,7 @@ case $ARCH in
   PLATFORM='linux/arm64'
   ;;
 esac
+
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -79,6 +82,7 @@ cd ${__PROJECT__}/
 
 echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 
+
 # docker push ${IMAGE}
 
 
@@ -87,3 +91,4 @@ echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'
 # 验证构建结果
 # bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh
+

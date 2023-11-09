@@ -22,7 +22,7 @@ docker cp $container_id:/usr/local/swoole-cli/ .
 
 
 cat > Dockerfile <<'EOF'
-FROM alpine:edge
+FROM alpine:3.18
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV TZ=Etc/UTC

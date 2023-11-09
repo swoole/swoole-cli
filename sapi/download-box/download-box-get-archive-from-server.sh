@@ -17,6 +17,8 @@ mkdir -p  pool/ext
 test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
 
 cd ${__PROJECT__}/var
+mkdir -p lib
+mkdir -p ext
 
 DOMAIN='https://swoole-cli.jingjingxyk.com/'
 URL="${DOMAIN}/all-archive.zip"

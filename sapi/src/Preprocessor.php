@@ -642,7 +642,7 @@ EOF;
 
             if (!empty($this->getInputOption('with-download-mirror-url'))) {
                 if ($ext->enableDownloadWithOriginURL === false) {
-                    $ext->url = $this->getInputOption('with-download-mirror-url') . '/extensions/' . $ext->file;
+                    $ext->url = $this->getInputOption('with-download-mirror-url') . '/ext/' . $ext->file;
                     $ext->enableDownloadWithMirrorURL = true;
                 }
             }

@@ -34,7 +34,7 @@ make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-        set -x
+    set -x
     <?php endif ;?>
 
     <?php if ($item->enableInstallCached) : ?>
@@ -124,11 +124,11 @@ ___<?=$item->name?>__EOF___
 
     # build end
     <?php if ($item->enableBuildLibraryHttpProxy) :?>
-        unset HTTP_PROXY
-        unset HTTPS_PROXY
-        unset NO_PROXY
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    unset NO_PROXY
         <?php if ($item->enableBuildLibraryGitProxy) :?>
-        unset GIT_PROXY_COMMAND
+    unset GIT_PROXY_COMMAND
         <?php endif;?>
     <?php endif;?>
 
@@ -138,7 +138,7 @@ ___<?=$item->name?>__EOF___
     fi
     <?php endif; ?>
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-        set +x
+    set +x
     <?php endif ;?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -210,14 +210,14 @@ make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
-<?php if ($this->osType !== 'macos') : ?>
+<?php if ($this->osType == 'linux') : ?>
     mv main/php_config.h.in /tmp/cnt
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
 
-<?php if ($this->osType === 'macos') : ?>
+<?php if ($this->osType == 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
         sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
