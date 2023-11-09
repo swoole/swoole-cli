@@ -578,12 +578,12 @@ class Preprocessor
         $this->extCallbacks[$name] = $fn;
     }
 
-    public function withBeforeConfigureScript($name, $fn)
+    public function withBeforeConfigureScript($name, $fn): void
     {
-        $this->beforeConfigure[$name]=$fn;
+        $this->beforeConfigure[$name] = $fn;
     }
 
-    public function parseArguments(int $argc, array $argv)
+    public function parseArguments(int $argc, array $argv): void
     {
         $this->prepareArgs = $argv;
         // parse the parameters passed in by the user
