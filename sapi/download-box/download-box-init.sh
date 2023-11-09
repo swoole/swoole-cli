@@ -13,7 +13,12 @@ __PROJECT__=$(
 
 cd ${__PROJECT__}
 
-test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
+DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
+mkdir -p "${DOWNLOAD_BOX_DIR}"
+mkdir -p "${DOWNLOAD_BOX_DIR}/lib/"
+mkdir -p "${DOWNLOAD_BOX_DIR}/ext/"
+
+cd "${__PROJECT__}/"
 
 
 export COMPOSER_ALLOW_SUPERUSER=1
