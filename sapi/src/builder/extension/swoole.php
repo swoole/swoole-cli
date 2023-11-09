@@ -36,5 +36,6 @@ EOF
 
     call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
+
     $p->addExtension($ext);
 };
