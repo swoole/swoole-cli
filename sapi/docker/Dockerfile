@@ -12,5 +12,5 @@ RUN apk update
 RUN apk upgrade
 RUN apk add  vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
 RUN apk add  bash tini
-RUN apk add  libc++-static
+RUN apk add  libc++-static libltdl-static
 WORKDIR /work

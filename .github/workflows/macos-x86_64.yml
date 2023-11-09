@@ -117,6 +117,8 @@ jobs:
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
 
+          bash make-install-deps.sh
+
           bash ./make.sh all-library
 
           bash ./make.sh config
