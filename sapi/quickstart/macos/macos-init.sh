@@ -29,9 +29,10 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+
 case "$MIRROR" in
   china|ustc)
-    export HOMEBREW_INSTALL_FROM_API=1
+
     export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 
     export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
@@ -46,11 +47,14 @@ case "$MIRROR" in
 
     # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
     ;;
-
+tuna)
+    export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
+    export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
+    export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+    export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
+  ;;
 esac
 
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
 
 if [ ${WITH_UPDATE} -eq 1 ] ; then
   case "$MIRROR" in
@@ -74,19 +78,35 @@ if [ ${WITH_UPDATE} -eq 1 ] ; then
 fi
 
 
+export HOMEBREW_NO_ANALYTICS=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_INSTALL_FROM_API=1
+
+
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
-
-brew uninstall --ignore-dependencies snappy
-brew uninstall --ignore-dependencies capstone
 
 ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 
+brew uninstall --ignore-dependencies snappy
+brew uninstall --ignore-dependencies capstone
+
+
+case "$MIRROR" in
+china|tuna)
+  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  ;;
+ustc)
+  pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
+  ;;
+
+esac
+
+
+
 # launchctl -h
-
-
 
 
 # 配置例子

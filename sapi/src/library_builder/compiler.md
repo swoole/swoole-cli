@@ -73,3 +73,7 @@ https://github.com/coin-or/ADOL-C.git
 
 BPF CO-RE (Compile Once – Run Everywhere)
 https://github.com/libbpf/libbpf#bpf-co-re-compile-once--run-everywhere
+
+
+# static-pie
+# 位置无关的可执行文件(PIE)。PIE 是启用地址空间布局随机化 (ASLR) 的先决条件
