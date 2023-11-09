@@ -36,7 +36,7 @@ esac
 
 
 IN_DOCKER=0
-
+WITH_PHP_COMPOSER=1
 
 # 配置系统仓库  china mirror
 MIRROR='china'
@@ -117,17 +117,19 @@ php -v
 
 export COMPOSER_ALLOW_SUPERUSER=1
 
-if [ "$MIRROR" = 'china' ]; then
-    composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
-    # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-else
-    composer config -g repos.packagist composer https://packagist.org
-fi
-# composer suggests --all
-# composer dump-autoload
+if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
+    if [ "$MIRROR" = 'china' ]; then
+        composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+        # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+    else
+        composer config -g repos.packagist composer https://packagist.org
+    fi
+    # composer suggests --all
+    # composer dump-autoload
 
-composer update  --optimize-autoloader
-composer config -g --unset repos.packagist
+    composer update  --optimize-autoloader
+    composer config -g --unset repos.packagist
+fi
 
 
 # 可用配置参数
@@ -139,6 +141,12 @@ composer config -g --unset repos.packagist
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos
+# --with-parallel-jobs=8
+
+
+# 定制构建选项
+OPTIONS='+apcu +ds +xlswriter +ssh2'
+OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
 
 
 
@@ -146,15 +154,18 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
-  php prepare.php +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
+
+  php prepare.php +inotify  ${OPTIONS}
 
 } else {
 # 容器外
 
-  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
+
+  php prepare.php --without-docker=1  ${OPTIONS}
 
 }
 fi
+
 
 if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'
