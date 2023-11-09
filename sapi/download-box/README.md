@@ -32,7 +32,7 @@ bash sapi/download-box/download-box-build.sh
 
 ```
 
-## 部署依赖库容器镜像
+## 验证打包好的容器
 
 ```bash
 
