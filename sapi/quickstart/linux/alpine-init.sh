@@ -18,7 +18,7 @@ while [ $# -gt 0 ]; do
     MIRROR="$2"
     ;;
   --*)
-    echo "no found mirror option $1"
+    echo "Illegal option $1"
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
@@ -44,17 +44,11 @@ apk add bash zip unzip flex pkgconf ca-certificates
 apk add tar gzip zip unzip bzip2
 
 apk add bash 7zip
+# for alpine 3.17
 # apk add bash p7zip
-
 apk add wget git curl
-
 apk add libc++-static libltdl-static
-apk add yasm nasm
-apk add ninja python3 py3-pip
-apk add diffutils
-apk add netcat-openbsd
-apk add python3-dev
-apk add mercurial
+
 
 case "$MIRROR" in
 china|tuna)
@@ -65,9 +59,5 @@ ustc)
   ;;
 
 esac
-
-
-# pip3 install meson
-apk add meson
 
 
