@@ -57,8 +57,6 @@ RUN composer config -g --unset repos.packagist
 
 RUN php prepare.php  --with-swoole-pgsql=1
 
-RUN bash make-install-deps.sh
-
 RUN bash make.sh all-library
 
 
