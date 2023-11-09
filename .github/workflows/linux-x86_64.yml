@@ -91,7 +91,11 @@ jobs:
           # git submodule update --init
 
           # 准备数据库容器
+<<<<<<< HEAD
           # bash sapi/docker/database/start.sh
+=======
+          bash sapi/src/UnitTest/scripts/database/start.sh
+>>>>>>> build_native_php
 
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
@@ -138,11 +142,11 @@ jobs:
 
       - name: Prepare swoole-cli-builder-image
         run: |
-            if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
-                docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
-            else
-                bash .github/workflows/build-alpine-builder-container.sh
-            fi
+          if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
+              docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
+          else
+              bash .github/workflows/build-alpine-builder-container.sh
+          fi
 
       - name: Prepare Runtime and Libraries and Extensions
         run: |
@@ -178,24 +182,18 @@ jobs:
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
-            sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
-            sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # bsed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # bsed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # bash sapi/quickstart/mark-install-library-cached.sh
 
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
 
-            # composer config -g repos.packagist composer https://packagist.mirrors.sjtug.sjtu.edu.cn
-            # composer config -g repos.packagist composer https://packagist.org
-
-            composer update  --no-dev --optimize-autoloader
+            composer update   --optimize-autoloader
 
             php prepare.php  -ffmpeg +coturn  ${{ inputs.build_type }} ${{ inputs.build_options }} --with-c-compiler=clang
 
-            chmod a+x make.sh
-            head -n 20 make.sh
-
             bash make-install-deps.sh
 
-            # bash sapi/quickstart/mark-install-library-cached.sh
             sed -i.backup "s/-ldl/  /g" /usr/local/swoole-cli/openssl/lib/pkgconfig/libcrypto.pc
 
             bash ./make.sh all-library

@@ -1,4 +1,4 @@
-FROM arm64v8/alpine:latest
+FROM arm64v8/alpine:3.18
 
 ARG MIRROR=""
 
@@ -7,25 +7,24 @@ RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repo
 RUN if [ "${MIRROR}" = "ustc" -o "${MIRROR}" = "china"   ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories ; } fi
 RUN if [ "${MIRROR}" = "tuna" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories ; } fi
 
-RUN apk update --allow-untrusted
-RUN apk upgrade --allow-untrusted
-RUN apk add --allow-untrusted vim
-RUN apk add --allow-untrusted alpine-sdk
-RUN apk add --allow-untrusted xz
-RUN apk add --allow-untrusted autoconf
-RUN apk add --allow-untrusted automake
-RUN apk add --allow-untrusted linux-headers
-RUN apk add --allow-untrusted clang
-RUN apk add --allow-untrusted clang-dev
-RUN apk add --allow-untrusted lld
-RUN apk add --allow-untrusted libtool
-RUN apk add --allow-untrusted cmake
-RUN apk add --allow-untrusted bison
-RUN apk add --allow-untrusted re2c
-RUN apk add --allow-untrusted bash
-RUN apk add --allow-untrusted gettext coreutils
-RUN apk add --allow-untrusted libc++-static
-RUN apk add --allow-untrusted tini
 
+RUN apk update
+RUN apk upgrade
+RUN apk add  vim
+RUN apk add  alpine-sdk
+RUN apk add  xz
+RUN apk add  autoconf
+RUN apk add  automake
+RUN apk add  linux-headers
+RUN apk add  clang
+RUN apk add  clang-dev
+RUN apk add  lld
+RUN apk add  libtool
+RUN apk add  cmake
+RUN apk add  bison
+RUN apk add  re2c
+RUN apk add  bash
+RUN apk add  tini
+RUN apk add  libc++-static libltdl-static
 WORKDIR /work
 

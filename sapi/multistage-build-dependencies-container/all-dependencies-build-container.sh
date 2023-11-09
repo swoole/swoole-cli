@@ -18,6 +18,8 @@ fi
 
 cd ${__PROJECT__}
 
+mkdir -p ${__PROJECT__}/var
+
 
 # export DOCKER_BUILDKIT=1
 
@@ -45,6 +47,7 @@ case $ARCH in
   PLATFORM='linux/arm64'
   ;;
 esac
+
 
 while [ $# -gt 0 ]; do
   case "$1" in

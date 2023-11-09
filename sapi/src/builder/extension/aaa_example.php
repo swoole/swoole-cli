@@ -123,7 +123,7 @@ EOF
 
 
     // 扩展钩子 写法
-    $p->setExtHook('swoole', function (Preprocessor $p) {
+    $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $cmd = <<<EOF
         cd {$workdir}

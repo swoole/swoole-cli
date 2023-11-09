@@ -60,7 +60,6 @@ class Library extends Project
 
     public array $os = ['alpine', 'debian', 'ubuntu', 'macos'];
 
-
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;

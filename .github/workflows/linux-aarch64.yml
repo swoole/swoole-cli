@@ -123,6 +123,7 @@ jobs:
 
             # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # bash sapi/quickstart/mark-install-library-cached.sh
 
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
@@ -130,8 +131,6 @@ jobs:
             php prepare.php +ffmpeg
 
             bash make-install-deps.sh
-
-            # bash sapi/quickstart/mark-install-library-cached.sh
 
             bash make.sh all-library
 
@@ -157,6 +156,7 @@ jobs:
           name: php-cli-linux-aarch64-${{ env.BUILD_PHP_VERSION }}
           retention-days: 7
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

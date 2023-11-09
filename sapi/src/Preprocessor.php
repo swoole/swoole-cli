@@ -145,7 +145,7 @@ class Preprocessor
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
 
-    protected array $extHooks = [];
+    protected array $beforeConfigure = [];
 
     protected string $configureVarables;
 
@@ -887,9 +887,9 @@ EOF;
         $this->extCallbacks[$name] = $fn;
     }
 
-    public function setExtHook($name, $fn)
+    public function withBeforeConfigureScript($name, $fn)
     {
-        $this->extHooks[$name] = $fn;
+        $this->beforeConfigure[$name] = $fn;
     }
 
     public function parseArguments(int $argc, array $argv)

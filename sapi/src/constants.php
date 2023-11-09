@@ -138,8 +138,6 @@ define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/gettext');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
-
-
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unix_odbc');
 define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 

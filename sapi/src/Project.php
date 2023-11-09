@@ -52,7 +52,6 @@ abstract class Project
 
     public bool $enableInstallCached = true;
 
-
     public function __construct(string $name)
     {
         $this->name = $name;

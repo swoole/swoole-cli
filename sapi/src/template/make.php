@@ -191,11 +191,11 @@ ___<?=$item->name?>__EOF___
 
     # build end
     <?php if ($item->enableBuildLibraryHttpProxy) :?>
-        unset HTTP_PROXY
-        unset HTTPS_PROXY
-        unset NO_PROXY
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    unset NO_PROXY
         <?php if ($item->enableBuildLibraryGitProxy) :?>
-        unset GIT_PROXY_COMMAND
+    unset GIT_PROXY_COMMAND
         <?php endif;?>
     <?php endif;?>
 
@@ -215,7 +215,7 @@ ___<?=$item->name?>__EOF___
     <?php endif; ?>
 
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-        set +x
+    set +x
     <?php endif ;?>
 
     cd <?= $this->workDir . PHP_EOL ?>
@@ -253,7 +253,8 @@ make_all_library() {
     return 0
 }
 
-make_ext() {
+
+make_tmp_ext_dir() {
     cd <?= $this->getPhpSrcDir() . PHP_EOL ?>
     PHP_SRC_DIR=<?= $this->getPhpSrcDir() . PHP_EOL ?>
     EXT_DIR=$PHP_SRC_DIR/ext/
@@ -320,10 +321,10 @@ EOF;
     return 0
 }
 
-make_ext_hook() {
-    set -x
+
+before_configure_script() {
     cd <?= $this->getWorkDir() ?>/
-<?php foreach ($this->extHooks as $name => $value) : ?>
+<?php foreach ($this->beforeConfigure as $name => $value) : ?>
     # ext <?= $name ?> hook
     <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
@@ -373,9 +374,10 @@ export_variables() {
 
 make_config() {
 
-    make_ext_hook
+    set -x
 
-    # export_variables
+    before_configure_script
+
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
@@ -387,6 +389,7 @@ make_config() {
     := 是覆盖之前的值
     ?= 是如果没有被赋值过就赋予等号后面的值
     += 是添加等号后面的值
+
 
 
     # GNU C编译器的gnu11和c11 https://www.cnblogs.com/litifeng/p/8328499.html
