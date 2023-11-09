@@ -393,7 +393,7 @@ class Preprocessor
             $this->checkFileMd5sum($lib->path, $lib->md5sum);
         }
 
-        $skip_download = ($this->getInputOption('skip-download'));
+        $skip_download = ($this->getInputOption('with-skip-download'));
         if (!$skip_download) {
             if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
@@ -434,7 +434,7 @@ class Preprocessor
                 $this->checkFileMd5sum($ext->path, $ext->md5sum);
             }
 
-            if (!$this->getInputOption('skip-download')) {
+            if (!$this->getInputOption('with-skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                     $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
@@ -832,7 +832,7 @@ class Preprocessor
         $this->sortLibrary();
         $this->setExtensionDependency();
 
-        if ($this->getInputOption('skip-download')) {
+        if ($this->getInputOption('with-skip-download')) {
             $this->generateLibraryDownloadLinks();
         }
 
@@ -889,11 +889,17 @@ class Preprocessor
             }
             $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
         }
-        file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents(
+            $this->getRootDir() . '/var/download-box/download_library_urls.txt',
+            implode(PHP_EOL, $download_urls)
+        );
         $download_urls = [];
         foreach ($this->downloadExtensionList as $item) {
             $download_urls[] = $item['url'] . PHP_EOL . " out=" . $item['file'];
         }
-        file_put_contents($this->getRootDir() . '/var/download-box/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents(
+            $this->getRootDir() . '/var/download-box/download_extension_urls.txt',
+            implode(PHP_EOL, $download_urls)
+        );
     }
 }

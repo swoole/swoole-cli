@@ -26,7 +26,7 @@ if [ -f download_library_urls.txt ] && [ -f download_extension_urls.txt ]  ; the
 else
   echo 'please run script : '
   echo "cp  build-release-example.sh  build-release.sh "
-  echo "prepare.php --skip-download=1 --with-dependency-graph=1 "
+  echo "prepare.php --with-skip-download=1 --with-dependency-graph=1 "
   exit 0
 fi
 
@@ -42,7 +42,7 @@ while [ $# -gt 0 ]; do
   --proxy)
     export HTTP_PROXY="$2"
     export HTTPS_PROXY="$2"
-    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,198.18.0.0/15,169.254.0.0/16"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
     export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"

@@ -137,7 +137,7 @@ fi
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
-# --skip-download=1
+# --with-skip-download=1
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos

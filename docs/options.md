@@ -16,29 +16,29 @@
 ，需要将参数的中横线`-`替换为下划线`_`，例如：
 
 ```shell
-./prepare.php --without-docker --skip-download=1
+./prepare.php --without-docker --with-skip-download=1
 ```
 
 也可以写作：
 
 ```shell
-SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
+SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
 ```
 
 >
-参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --skip-download=no`
-，有效的值为：`--skip-download=no`，环境变量 `SWOOLE_CLI_SKIP_DOWNLOAD=yes` 无效
+参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --with-skip-download=no`
+，有效的值为：`--with-skip-download=no`，环境变量 `SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes` 无效
 
-skip-download
+with-skip-download
 ----
 跳过下载依赖库
 
 > 会自动生成，待下载链接地址
-> 链接地址生成在 项目根目录下的 `var` 目录
+> 链接地址生成在 项目根目录下的 `var/download-box/` 目录
 > 依赖 aria2
 
 ```shell
-./prepare.php --skip-download=yes --without-docker
+./prepare.php --with-skip-download=yes --without-docker
 
 # 构建依赖库之前，批量下载依赖库和扩展的脚本
 sh sapi/scripts/download-dependencies-use-aria2.sh
