@@ -8,4 +8,4 @@ __DIR__=$(
 
 cd ${__DIR__}
 
-docker exec -it swoole-cli-dev bash
+docker exec -it swoole-cli-debian-dev bash
