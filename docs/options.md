@@ -55,7 +55,7 @@ with-download-mirror-url
 
 > [使用镜像地址下载依赖库源码](/sapi/download-box/README.md)
 
-> 使用镜像地址下载下载前，需要准备镜像服务
+> 使用镜像地址下载前，需要准备镜像服务
 
 > 例如：`sh sapi/scripts/download-box/web-server-nginx.sh`
 
