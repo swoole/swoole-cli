@@ -34,6 +34,7 @@ IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
 
+
 COMPOSER_MIRROR=""
 MIRROR=""
 PLATFORM=''
@@ -69,8 +70,15 @@ done
 
 cd ${__PROJECT__}/
 
+if [ ! -f make.sh ] ;then
+  echo 'please run script:'
+  echo 'bash build-release-example.sh --mirror china  --build-contianer'
+  exit 0
+fi
+
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
+
 
 docker buildx build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
 --progress=plain \
@@ -93,6 +101,7 @@ docker tag ${IMAGE} ${ALIYUN_IMAGE}
 
 
 # 例子：
+
 # bash build-release-example.sh --mirror china  --build-contianer
 
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'

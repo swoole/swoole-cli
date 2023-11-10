@@ -32,7 +32,6 @@ done
 
 case "$MIRROR" in
   china|ustc)
-
     export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 
     export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
@@ -49,6 +48,10 @@ case "$MIRROR" in
     ;;
 esac
 
+
+export HOMEBREW_NO_ANALYTICS=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_INSTALL_FROM_API=1
 
 if [ ${WITH_UPDATE} -eq 1 ] ; then
   case "$MIRROR" in
@@ -72,16 +75,17 @@ if [ ${WITH_UPDATE} -eq 1 ] ; then
 fi
 
 
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
-export HOMEBREW_INSTALL_FROM_API=1
-
-
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
 
+
+brew uninstall --ignore-dependencies snappy
+brew uninstall --ignore-dependencies capstone
+
+
 ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
+
 
 
 case "$MIRROR" in
@@ -91,13 +95,7 @@ china|tuna)
 ustc)
   pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
   ;;
-
 esac
-
-brew uninstall --ignore-dependencies snappy
-brew uninstall --ignore-dependencies capstone
-
-
 
 
 
@@ -118,5 +116,5 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 trusted-host = https://pypi.tuna.tsinghua.edu.cn
 ===EOF===
 
-
 EOF
+

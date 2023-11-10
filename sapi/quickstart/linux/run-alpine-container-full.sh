@@ -32,9 +32,9 @@ EOF
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-DEV_SHM=0
 MIRROR=""
 DEV_SHM=0
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
@@ -42,7 +42,6 @@ while [ $# -gt 0 ]; do
     ;;
   --dev-shm)
     DEV_SHM=1
-    shift
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
@@ -67,7 +66,6 @@ case $ARCH in
   exit 0
   ;;
 esac
-
 
 
 cd ${__DIR__}

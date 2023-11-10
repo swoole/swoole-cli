@@ -6,6 +6,8 @@ __DIR__=$(
   pwd
 )
 
+test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
+
 MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -20,7 +22,7 @@ while [ $# -gt 0 ]; do
 done
 
 case "$MIRROR" in
-china | ustc | tuna)
+china | ustc)
   OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
   VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
   case $OS_ID in
@@ -62,13 +64,8 @@ china | ustc | tuna)
 
 esac
 
-test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 
-case "$MIRROR" in
-tuna)
-  sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
-  ;;
-esac
+test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 
 
 apt update -y
@@ -76,23 +73,19 @@ apt install -y git curl wget ca-certificates
 apt install -y xz-utils autoconf automake clang-tools clang lld libtool cmake bison re2c gettext coreutils lzip zip unzip
 apt install -y pkg-config bzip2 flex p7zip
 
-apt install -y gcc g++
-apt install -y libtool  libtool-bin autopoint
-apt install -y  musl-tools
+apt install -y gcc g++ musl-tools libtool-bin autopoint
 
 
 # apt install build-essential linux-headers-$(uname -r)
 apt install -y python3 python3-pip ninja-build  diffutils
 apt install -y yasm nasm
 apt install -y meson
-apt install -y netcat-openbsd
+apt install -y netcat
 
 case "$MIRROR" in
-china)
+china | ustc )
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   ;;
 
 esac
-
-
 

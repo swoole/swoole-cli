@@ -543,7 +543,7 @@ __GIT_PROXY_CONFIG_EOF;
                 unlink($lib->path);
             }
 
-            if (!$this->getInputOption('with-skip-download')) {
+            if (!$this->getInputOption('skip-download')) {
                 if (file_exists($lib->path)) {
                     echo "[Library] file cached: " . $lib->file . PHP_EOL;
                 } else {
@@ -662,7 +662,7 @@ EOF;
                 unlink($ext->path);
             }
 
-            if (!$this->getInputOption('with-skip-download')) {
+            if (!$this->getInputOption('skip-download')) {
                 if (!file_exists($ext->path)) {
                     $httpProxyConfig = $this->getProxyConfig();
                     if ($ext->enableGitProxy) {
@@ -1188,9 +1188,8 @@ EOF;
 
         $this->binPaths = array_filter(array_unique($this->binPaths));
 
-        if ($this->getInputOption('with-skip-download')) {
+        if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();
-            $this->generateFile(__DIR__ . '/template/make-download-box.php', $this->rootDir . '/make-download-box.sh');
         }
 
         $this->generateFile(__DIR__ . '/template/make-install-deps.php', $this->rootDir . '/make-install-deps.sh');
