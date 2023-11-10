@@ -2,10 +2,13 @@
 
 ## 一个脚本执行整个流程
 
+> 定制 build-release.sh 即可开始构建
+
 ```bash
   cp  build-release-example.sh  build-release.sh
 
-  # 定制 build-release.sh 即可开始构建
+
+
   bash build-release.sh
 
 ```
