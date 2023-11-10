@@ -163,8 +163,8 @@ clean_<?=$item->name?>() {
 
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
-    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
-        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
     fi
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -261,7 +261,10 @@ before_configure_script() {
 
 export_variables() {
     set -x
+<<<<<<< HEAD
     # -all-static | -static | -static-libtool-libs
+=======
+>>>>>>> experiment-webui
     CPPFLAGS=""
     CFLAGS=""
 <?php if ($this->cCompiler=='clang') : ?>
@@ -500,6 +503,7 @@ elif [ "$1" = "test" ] ;then
     <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
     set -x
+<<<<<<< HEAD
     cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
     PHP_VERSION=$(./php -r "echo PHP_VERSION;")
     PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
@@ -507,6 +511,14 @@ elif [ "$1" = "archive" ] ;then
     strip php
     tar -cJvf ${PHP_CLI_FILE} php
     mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
+=======
+    cd bin
+    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    strip swoole-cli
+    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
+    mv ${SWOOLE_CLI_FILE} ../
+>>>>>>> experiment-webui
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
@@ -516,7 +528,9 @@ elif [ "$1" = "clean-all-library" ] ;then
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
-    rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
+    fi
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "diff-configure" ] ;then

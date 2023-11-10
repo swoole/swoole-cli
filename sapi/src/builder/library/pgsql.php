@@ -26,6 +26,7 @@ return function (Preprocessor $p) {
             ../configure --help
 
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
+
             sed -i.backup "278 s/^/# /"  ../src/Makefile.shlib
             sed -i.backup "402 s/^/# /"  ../src/Makefile.shlib
 

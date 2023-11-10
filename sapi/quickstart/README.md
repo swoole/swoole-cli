@@ -1,5 +1,17 @@
 # 快速初始化构建环境
 
+## 一个脚本执行整个流程
+
+> 定制 build-release.sh 即可开始构建
+
+```bash
+  cp  build-release-example.sh  build-release.sh
+
+
+  bash build-release.sh
+
+```
+
 ## 准备 PHP 运行时
 
 ```bash
@@ -25,7 +37,7 @@ composer -v
 ## 准备依赖库源码，来自镜像
 
 > 可能部分源码包没有及时更新 ，请提 issues
-> 缺失的部分，下一步执行时会自动到原站下载
+> 缺失的部分，下一步执行时会自动到源站下载
 
 ```bash
 
@@ -56,10 +68,8 @@ alias php='php -d curl.cainfo=/etc/ssl/cert.pem -d openssl.cafile=/etc/ssl/cert.
 alias php='php -d curl.cainfo=/etc/ssl/certs/ca-certificates.crt -d openssl.cafile=/etc/ssl/certs/ca-certificates.crt'
 
 export COMPOSER_ALLOW_SUPERUSER=1
-# composer 使用阿里云镜像
-# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
-composer update --no-dev  --optimize-autoloader
+composer update   --optimize-autoloader
 
 php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
 
