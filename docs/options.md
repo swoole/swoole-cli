@@ -43,7 +43,7 @@ skip-download
 
 ```shell
 # 准备批量待下载链接地址
-./prepare.php --with-skip-download=1 --without-docker
+./prepare.php --skip-download=1 --without-docker
 
 # 构建依赖库之前，批量下载依赖库和扩展的脚本
 sh sapi/scripts/download-dependencies-use-aria2.sh
