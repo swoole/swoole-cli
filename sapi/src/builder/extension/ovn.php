@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
     ;
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->withBeforeConfigureScript('ovn', function (Preprocessor $p) {
+    $p->withReleaseArchive('ovn', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

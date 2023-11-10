@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
 
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->withBeforeConfigureScript('ceph', function (Preprocessor $p) {
+    $p->withReleaseArchive('ceph', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

@@ -25,7 +25,6 @@ return function (Preprocessor $p) {
 
     //默认这个名称应该和扩展名称一致、和本文件名称一致 ；
     $ext = (new Extension('aaa_example'))
-
         /*
 
         //设置别名 ； 定义的名字和扩展名字不一致时，需要设置别名为扩展名称
@@ -37,7 +36,6 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
-
         /*
 
         //明确申明 使用源地址下载
@@ -121,18 +119,37 @@ EOF
 
     $p->addExtension($ext);
 
+    # ffmpeg 打包例子
+    $p->withReleaseArchive('ffmpeg', function (Preprocessor $p) {
 
-    // 扩展钩子 写法
-    $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
-        $cmd = <<<EOF
-        cd {$workdir}
-        # 构建之前对 swoole 源码做一些特别处理
-        # 比如加载一个补丁等
-        # 比如修改 swoole 源码的构建文件
-        # 实例 参考 protobuf.php 扩展配置 src/builder/extension/protobuf.php
-EOF;
+        $builddir = $p->getBuildDir();
+        $ffmpeg_prefix = FFMPEG_PREFIX;
 
+        $cmd = <<<EOF
+                mkdir -p {$workdir}/bin/ffmpeg/
+                cd {$ffmpeg_prefix}/
+                cp -rf bin {$workdir}/bin/ffmpeg/
+                cd {$workdir}/bin/
+
+                {$workdir}/bin/ffmpeg/bin/ffmpeg -h
+
+                cd {$workdir}/bin/
+
+EOF;
+        if ($p->getOsType() == 'macos') {
+            $cmd .= <<<EOF
+                otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-vlatest-static-macos-x64.tar.xz ffmpeg
+EOF;
+        } else {
+            $cmd .= <<<EOF
+                file {$workdir}/bin/ffmpeg/bin/ffmpeg
+                readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
+EOF;
+        }
         return $cmd;
     });
+
 };

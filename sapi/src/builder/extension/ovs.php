@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
     $p->addExtension($ext);
 
 
-    $p->withBeforeConfigureScript('ovs', function (Preprocessor $p) {
+    $p->withReleaseArchive('ovs', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();

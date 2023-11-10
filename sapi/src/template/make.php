@@ -332,7 +332,6 @@ before_configure_script() {
     return 0
 }
 
-
 export_variables() {
     set -x
     # -all-static | -static | -static-libtool-libs
@@ -371,11 +370,27 @@ export_variables() {
     return 0
 }
 
+make_release_archive() {
+    cd <?= $this->getWorkDir() ?>/
+    <?php foreach ($this->releaseArchives as $name => $value) : ?>
+        # ext <?= $name ?> hook
+        <?= $value($this) . PHP_EOL ?>
+    <?php endforeach; ?>
+    cd <?= $this->getWorkDir() ?>/
+    return 0
+}
 
 make_config() {
 
     set -x
+    make_release_archive
 
+
+
+
+
+
+    exit 0
     before_configure_script
 
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log

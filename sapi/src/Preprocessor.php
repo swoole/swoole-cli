@@ -147,6 +147,8 @@ class Preprocessor
 
     protected array $beforeConfigure = [];
 
+    protected array $releaseArchives = [];
+
     protected string $configureVarables;
 
     protected string $buildType = 'release';
@@ -890,6 +892,11 @@ EOF;
     public function withBeforeConfigureScript($name, $fn): void
     {
         $this->beforeConfigure[$name] = $fn;
+    }
+
+    public function withReleaseArchive($name, $fn): void
+    {
+        $this->releaseArchives[$name] = $fn;
     }
 
     public function parseArguments(int $argc, array $argv): void
