@@ -49,6 +49,9 @@ case "$MIRROR" in
     ;;
 esac
 
+export HOMEBREW_NO_ANALYTICS=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_INSTALL_FROM_API=1
 
 if [ ${WITH_UPDATE} -eq 1 ] ; then
   case "$MIRROR" in
@@ -71,9 +74,6 @@ if [ ${WITH_UPDATE} -eq 1 ] ; then
 
 fi
 
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
-export HOMEBREW_INSTALL_FROM_API=1
 
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
