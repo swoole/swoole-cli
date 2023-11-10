@@ -94,7 +94,7 @@ php prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli
 
 > 2. `bash sapi/download-box/web-server.php`       (直接把 `pool` 作为web根目录)
 
-> 3. 运行包含 `pool` 目录的容器 , 如下：
+> 3. 运行包含 `lib` `ext` 目录的容器 , 如下：
 
 > > ` IMAGE=docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-1.8-20231110T092201Z `
 
