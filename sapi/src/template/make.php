@@ -261,10 +261,7 @@ before_configure_script() {
 
 export_variables() {
     set -x
-<<<<<<< HEAD
     # -all-static | -static | -static-libtool-libs
-=======
->>>>>>> experiment-webui
     CPPFLAGS=""
     CFLAGS=""
 <?php if ($this->cCompiler=='clang') : ?>
@@ -503,7 +500,6 @@ elif [ "$1" = "test" ] ;then
     <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
     set -x
-<<<<<<< HEAD
     cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
     PHP_VERSION=$(./php -r "echo PHP_VERSION;")
     PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
@@ -511,14 +507,6 @@ elif [ "$1" = "archive" ] ;then
     strip php
     tar -cJvf ${PHP_CLI_FILE} php
     mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
-=======
-    cd bin
-    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
-    strip swoole-cli
-    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
-    mv ${SWOOLE_CLI_FILE} ../
->>>>>>> experiment-webui
     cd -
 elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
