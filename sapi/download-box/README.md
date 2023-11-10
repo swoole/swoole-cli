@@ -47,7 +47,7 @@ bash sapi/download-box/download-box-server-run-test.sh
 
 1. 通过容器仓库分发
 1. 通过 web 分发
-1. 所有源码包打包为一个压缩包文件，通过 web 分发
+1. 通过 web 分发 （所有源码包打包为一个压缩包文件）
 
 ## 依赖库镜像的使用
 
