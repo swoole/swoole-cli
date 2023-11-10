@@ -32,7 +32,22 @@ bash sapi/download-box/download-box-build.sh
 
 ```
 
+### 打包完整例子
+
+```bash
+
+php prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=1 +apcu +ds +xlswriter +ssh2 +inotify
+
+bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
+
+bash sapi/download-box/download-box-build.sh
+
+
+```
+
 ## 验证打包好的容器
+
+> 本地浏览器打开地址：   [`http://0.0.0.0:9503`](http://0.0.0.0:9503)  即可查看镜像服务器
 
 ```bash
 
@@ -40,12 +55,11 @@ bash sapi/download-box/download-box-server-run-test.sh
 
 ```
 
-> 本地浏览器打开地址：   [`http://0.0.0.0:9503`](http://0.0.0.0:9503)  即可查看镜像服务器
-
 ## 依赖库镜像的分发方式
 
 1. 通过容器仓库分发
 1. 通过 web 分发
+1. 打包整合为一个压缩包文件，通过 web 分发
 
 ## 依赖库镜像的使用
 
@@ -61,16 +75,27 @@ bash sapi/download-box/download-box-get-archive-from-container.sh
 
 ### 方式二（来自web服务器）：
 
+```bash
+bash  sapi/download-box/download-box-get-archive-from-server.sh
+```
+
 > 原理： 下载：`http://127.0.0.1:9503/all-archive.zip`
 > 自动解压，并自动拷贝到 `pool/` 目录
 
-> 真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
+>
+真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
 
-```bash
+> 自建镜像站点： 3 种方式：
 
-bash  sapi/download-box/download-box-get-archive-from-server.sh
+> > 1. `bash sapi/download-box/web-server-nginx.sh`  (直接把 `pool` 作为web
+       根目录)
+>>  2. `bash sapi/download-box/web-server.php`       (直接把 `pool` 作为web
+       根目录)
+>>  3. 运行包含 `pool` 目录的容器 , 如下
 
-```
+> > > ` IMAGE=docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-1.8-20231110T092201Z `
+
+> > > ` docker run -d --rm --name download-box-web-server -p 9503:80 ${IMAGE} `
 
 ### 方式三（来自web服务器）：
 
@@ -87,15 +112,4 @@ bash  sapi/download-box/download-box-get-archive-from-server.sh
 
 ```
 
-### 完整例子
 
-```bash
-
-php prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=1
-
-bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
-
-bash sapi/download-box/download-box-build.sh
-
-
-```
