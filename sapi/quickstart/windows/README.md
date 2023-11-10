@@ -2,15 +2,23 @@
 
 ## [windows cygwin 环境 构建步骤](../../../docs/Cygwin.md)
 
-## 双击如下两个脚本，自动下载和安装
+## 双击如下两个脚本，自动下载cygwin 和 cygwin安装依赖库
 
 ```shell
 
-    # 自动下载 cygwin
-    sapi/quickstart/windows/download-cygwin.bat
-    # 自动安装 cygwin
-    sapi/quickstart/windows/install-cygwin.bat
+# 自动下载 cygwin
+sapi/quickstart/windows/download-cygwin.bat
+# 自动安装 cygwin
+sapi/quickstart/windows/install-cygwin.bat
 
+
+```
+
+# windows 软连接例子
+
+```bash
+
+mklink composer composer.phar
 
 ```
 
@@ -18,6 +26,9 @@
 
 1. [windows build native php](./windows-native.md)
 1. [install msys2 ](./install-msys2.md)
+
+
+
 
 
 

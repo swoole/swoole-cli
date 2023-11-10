@@ -49,6 +49,4 @@ test -f download_extension_urls.txt  && aria2c -c -j 10 -s 10 -x 8 -k 10M --allo
  -d ext --input-file=download_extension_urls.txt
 
 
-cd "${__PROJECT__}"
-
-exit 0
+cd ${__PROJECT__}
