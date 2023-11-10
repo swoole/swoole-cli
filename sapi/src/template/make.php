@@ -336,7 +336,9 @@ elif [ "$1" = "clean-all-library" ] ;then
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
-    rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed
+    if [ -d <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/ ] ; then
+        rm -rf <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/
+    fi
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "diff-configure" ] ;then
