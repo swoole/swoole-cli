@@ -11,16 +11,18 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
+test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download-box/
 
-TAG='download-box-nginx-alpine-20230505T112517Z'
-TAG='download-box-nginx-alpine-1.7-20231016T102427Z'
+cd ${__PROJECT__}/var/download-box/
+mkdir -p lib
+mkdir -p ext
+
 TAG='download-box-nginx-alpine-1.7-20231016T112539Z'
-
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
-cd ${__PROJECT__}/var
+cd ${__PROJECT__}/var/download-box/
+
 
 container_id=$(docker create $IMAGE) # returns container ID
 docker cp $container_id:/usr/share/nginx/html/ext ext
@@ -33,5 +35,6 @@ cd ${__PROJECT__}/
 mkdir -p pool/lib
 mkdir -p pool/ext
 
-awk 'BEGIN { cmd="cp -ri var/lib/* pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/ext/* pool/ext"; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib"  ; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext"; print "n" |cmd; }'
+

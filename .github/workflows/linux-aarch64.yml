@@ -87,6 +87,9 @@ jobs:
               container_id=$(docker create $IMAGE) # returns container ID
               docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
               docker rm $container_id
+
+              rm -rf /usr/local/swoole-cli/libwebp
+
           fi
           ls -A /usr/local/swoole-cli/
 
@@ -108,7 +111,7 @@ jobs:
         with:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
           image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
             uname -m
@@ -121,15 +124,14 @@ jobs:
 
             # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # bash sapi/quickstart/mark-install-library-cached.sh
 
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
 
             bash make-install-deps.sh
-
-            # bash sapi/quickstart/mark-install-library-cached.sh
 
             bash make.sh all-library
 
@@ -163,6 +165,7 @@ jobs:
           name: swoole-cli
           retention-days: 7
           path: ./bin/swoole-cli
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

@@ -34,7 +34,7 @@ make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
 
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-        set -x
+    set -x
     <?php endif ;?>
 
     <?php if ($item->enableInstallCached) : ?>
@@ -124,11 +124,11 @@ ___<?=$item->name?>__EOF___
 
     # build end
     <?php if ($item->enableBuildLibraryHttpProxy) :?>
-        unset HTTP_PROXY
-        unset HTTPS_PROXY
-        unset NO_PROXY
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    unset NO_PROXY
         <?php if ($item->enableBuildLibraryGitProxy) :?>
-        unset GIT_PROXY_COMMAND
+    unset GIT_PROXY_COMMAND
         <?php endif;?>
     <?php endif;?>
 
@@ -138,7 +138,7 @@ ___<?=$item->name?>__EOF___
     fi
     <?php endif; ?>
     <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
-        set +x
+    set +x
     <?php endif ;?>
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -158,8 +158,8 @@ clean_<?=$item->name?>() {
 
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
-    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
-        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
     fi
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -175,9 +175,9 @@ make_all_library() {
     return 0
 }
 
-make_ext_hook() {
+before_configure_script() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
-<?php foreach ($this->extHooks as $name => $value) : ?>
+<?php foreach ($this->beforeConfigure as $name => $value) : ?>
     # ext <?= $name ?> hook
     <?= $value($this) . PHP_EOL ?>
 <?php endforeach; ?>
@@ -186,6 +186,7 @@ make_ext_hook() {
 }
 
 export_variables() {
+    set -x
     CPPFLAGS=""
     CFLAGS=""
     LDFLAGS=""
@@ -206,18 +207,19 @@ export_variables() {
 }
 
 make_config() {
-    make_ext_hook
+    set -x
+    before_configure_script
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
-<?php if ($this->osType !== 'macos') : ?>
+<?php if ($this->osType == 'linux') : ?>
     mv main/php_config.h.in /tmp/cnt
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
 
-<?php if ($this->osType === 'macos') : ?>
+<?php if ($this->osType == 'macos') : ?>
     <?php if (isset($this->libraryMap['pgsql'])) : ?>
         sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
@@ -230,10 +232,10 @@ make_config() {
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
     ./configure $OPTIONS
+
 <?php if ($this->getOsType()=='linux') : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 <?php endif ; ?>
-
 }
 
 make_build() {
@@ -398,6 +400,7 @@ elif [ "$1" = "build" ] ;then
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
+    set -x
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
     SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
@@ -413,7 +416,9 @@ elif [ "$1" = "clean-all-library" ] ;then
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
-    rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
+    fi
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "diff-configure" ] ;then

@@ -44,7 +44,6 @@ class Library extends Project
 
     public bool $enableBuildLibraryGitProxy = false;
 
-
     public function withMirrorUrl(string $url): static
     {
         $this->mirrorUrls[] = $url;
