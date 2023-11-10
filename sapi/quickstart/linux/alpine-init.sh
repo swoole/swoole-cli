@@ -10,6 +10,7 @@ cd ${__DIR__}
 # use china mirror
 # bash sapi/quickstart/linux/alpine-init.sh --mirror china
 
+
 MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -60,5 +61,6 @@ esac
 
 # pip3 install meson
 apk add meson
+
 
 
