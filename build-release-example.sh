@@ -54,7 +54,7 @@ while [ $# -gt 0 ]; do
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
-    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
     ;;
   --*)
     echo "Illegal option $1"
@@ -137,7 +137,7 @@ fi
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
-# --with-skip-download=1
+# --skip-download=1
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos

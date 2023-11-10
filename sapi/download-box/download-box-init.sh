@@ -22,11 +22,10 @@ mkdir -p ext
 
 
 if [ -f download_library_urls.txt ] && [ -f download_extension_urls.txt ]  ; then
-  echo 'downloading source code '
+  echo 'downloading source code tarball '
 else
   echo 'please run script : '
-  echo "cp  build-release-example.sh  build-release.sh "
-  echo "prepare.php --with-skip-download=1 --with-dependency-graph=1 "
+  echo "prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=1  "
   exit 0
 fi
 

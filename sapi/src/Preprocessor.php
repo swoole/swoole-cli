@@ -393,7 +393,7 @@ class Preprocessor
             $this->checkFileMd5sum($lib->path, $lib->md5sum);
         }
 
-        $skip_download = ($this->getInputOption('with-skip-download'));
+        $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
             if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
@@ -434,7 +434,7 @@ class Preprocessor
                 $this->checkFileMd5sum($ext->path, $ext->md5sum);
             }
 
-            if (!$this->getInputOption('with-skip-download')) {
+            if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                     $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
@@ -832,7 +832,7 @@ class Preprocessor
         $this->sortLibrary();
         $this->setExtensionDependency();
 
-        if ($this->getInputOption('with-skip-download')) {
+        if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();
         }
 

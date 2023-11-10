@@ -35,10 +35,10 @@ test -d ext && test -d lib && zip -6 -r all-archive.zip ext lib
 cd "${DOWNLOAD_BOX_DIR}"
 
 TIME=$(date -u '+%Y%m%dT%H%M%SZ')
-VERSION="1.7"
+VERSION="1.8"
 TAG="download-box-nginx-alpine-${VERSION}-${TIME}"
-IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
+IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
 docker build -t ${IMAGE} -f ./Dockerfile-dowload-box . --progress=plain
 echo ${IMAGE} > download-box.txt

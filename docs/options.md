@@ -9,27 +9,27 @@
 示例：
 
 ```shell
-./prepare.php --without-docker +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
+./prepare.php --without-docker +mimalloc -mongodb  --conf-path="./conf.d" @linux
 ```
 
 参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}`
 ，需要将参数的中横线`-`替换为下划线`_`，例如：
 
 ```shell
-./prepare.php --without-docker --with-skip-download=1
+./prepare.php --without-docker --skip-download=1
 ```
 
 也可以写作：
 
 ```shell
-SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
+SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
 ```
 
 >
-参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --with-skip-download=no`
-，有效的值为：`--with-skip-download=no`，环境变量 `SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes` 无效
+参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --skip-download=no`
+，有效的值为：`--skip-download=no`，环境变量 `SWOOLE_CLI_SKIP_DOWNLOAD=yes` 无效
 
-with-skip-download
+skip-download
 ----
 跳过下载依赖库
 
@@ -38,25 +38,33 @@ with-skip-download
 > 依赖 aria2
 
 ```shell
-./prepare.php --with-skip-download=yes --without-docker
+./prepare.php --skip-download=yes --without-docker
 
 # 构建依赖库之前，批量下载依赖库和扩展的脚本
 sh sapi/scripts/download-dependencies-use-aria2.sh
 
 ```
 
-[使用镜像地址下载](/sapi/download-box/README.md)
+[使用镜像地址下载依赖库源码](sapi/download-box/README.md)
 ----
 
-> 使用镜像地址下载下载前，需要准备镜像服务器
-> 例如： `sh sapi/scripts/download-box/download-box-server-run.sh`
+> 使用镜像地址下载下载前，需要准备镜像服务器 例如：`sh sapi/scripts/download-box/web-server-nginx.sh`
+
 
 ```shell
 # 演示例子
-./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:8000
+./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:9503
 
-# 可用镜像
+#  可用镜像一 （逐个下载源码包）
 ./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+
+
+#  可用镜像二 （多个源码包整合为一个压缩文件）
+sh  sapi/download-box/download-box-get-archive-from-server.sh
+#  可用镜像三 （使用容器分发）
+sh  sapi/download-box/download-box-get-archive-from-container.sh
+
+
 ```
 
 conf-path
