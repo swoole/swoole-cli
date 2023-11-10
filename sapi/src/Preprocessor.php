@@ -543,7 +543,7 @@ __GIT_PROXY_CONFIG_EOF;
                 unlink($lib->path);
             }
 
-            if (!$this->getInputOption('with-skip-download')) {
+            if (!$this->getInputOption('skip-download')) {
                 if (file_exists($lib->path)) {
                     echo "[Library] file cached: " . $lib->file . PHP_EOL;
                 } else {
@@ -662,7 +662,7 @@ EOF;
                 unlink($ext->path);
             }
 
-            if (!$this->getInputOption('with-skip-download')) {
+            if (!$this->getInputOption('skip-download')) {
                 if (!file_exists($ext->path)) {
                     $httpProxyConfig = $this->getProxyConfig();
                     if ($ext->enableGitProxy) {
@@ -1154,7 +1154,7 @@ EOF;
         $this->sortLibrary();
         $this->setExtensionDependency();
 
-        if ($this->getInputOption('with-skip-download')) {
+        if ($this->getInputOption('skip-download')) {
             $this->generateLibraryDownloadLinks();
         }
 

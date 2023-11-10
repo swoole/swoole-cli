@@ -38,7 +38,7 @@ cd ${__PROJECT__}/var/download-box/
 mkdir -p lib
 mkdir -p ext
 
-if [ ! -f build-release.sh ] ; then
+if [ ! -f ${__PROJECT__}/build-release.sh ] ; then
     echo 'please build-release.sh'
     exit 0
 fi
