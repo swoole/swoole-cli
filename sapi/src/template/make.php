@@ -158,8 +158,8 @@ clean_<?=$item->name?>() {
 
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
-    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
-        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
     fi
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -186,6 +186,7 @@ before_configure_script() {
 }
 
 export_variables() {
+    set -x
     CPPFLAGS=""
     CFLAGS=""
     LDFLAGS=""
@@ -399,6 +400,7 @@ elif [ "$1" = "build" ] ;then
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
+    set -x
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
     SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
@@ -414,7 +416,9 @@ elif [ "$1" = "clean-all-library" ] ;then
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
-    rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
+    fi
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "diff-configure" ] ;then

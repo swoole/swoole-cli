@@ -90,7 +90,7 @@ php prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli
 
 > 1. `bash sapi/download-box/web-server-nginx.sh`  (直接把 `pool` 作为web根目录)
 
-> 2. `bash sapi/download-box/web-server.php`       (直接把 `pool` 作为web根目录)
+> 2. `php sapi/download-box/web-server.php`       (直接把 `pool` 作为web根目录)
 
 > 3. 运行包含 `lib` `ext` 目录的容器 , 如下：
 

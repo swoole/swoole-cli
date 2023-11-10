@@ -22,7 +22,7 @@ while [ $# -gt 0 ]; do
 done
 
 case "$MIRROR" in
-china | ustc )
+china | ustc)
   OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
   VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
   case $OS_ID in
@@ -69,7 +69,7 @@ apt update -y
 apt install -y git curl wget ca-certificates
 apt install -y xz-utils autoconf automake clang-tools clang lld libtool cmake bison re2c gettext coreutils lzip zip unzip
 apt install -y pkg-config bzip2 flex p7zip
-apt install -y gcc g++ musl-tools autopoint
+apt install -y gcc g++ musl-tools libtool-bin autopoint
 
 
 # apt install build-essential linux-headers-$(uname -r)
