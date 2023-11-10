@@ -29,9 +29,9 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+
 case "$MIRROR" in
   china|ustc)
-    export HOMEBREW_INSTALL_FROM_API=1
     export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 
     export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
@@ -39,7 +39,7 @@ case "$MIRROR" in
     export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
 
     export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
-    export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
+    export PIPENV_PYPI_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
 
     # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
     # pip3 config set global.index-url https://pypi.python.org/simple
@@ -51,6 +51,7 @@ esac
 
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_INSTALL_FROM_API=1
 
 if [ ${WITH_UPDATE} -eq 1 ] ; then
   case "$MIRROR" in
@@ -77,6 +78,7 @@ fi
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
 
+
 brew uninstall --ignore-dependencies snappy
 brew uninstall --ignore-dependencies capstone
 
@@ -84,9 +86,9 @@ ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 
+
+
 # launchctl -h
-
-
 
 
 # 配置例子
@@ -102,5 +104,5 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 trusted-host = https://pypi.tuna.tsinghua.edu.cn
 ===EOF===
 
-
 EOF
+

@@ -89,6 +89,9 @@ jobs:
               container_id=$(docker create $IMAGE) # returns container ID
               docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
               docker rm $container_id
+
+              rm -rf /usr/local/swoole-cli/libwebp
+
           fi
           ls -A /usr/local/swoole-cli/
 
@@ -123,15 +126,14 @@ jobs:
 
             # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # bash sapi/quickstart/mark-install-library-cached.sh
 
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update --no-dev  --optimize-autoloader
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql -mongodb --with-swoole-pgsql=1
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql -mongodb --with-swoole-pgsql=1 --with-libavif
 
             bash make-install-deps.sh
-
-            # bash sapi/quickstart/mark-install-library-cached.sh
 
             bash make.sh all-library
 
@@ -163,6 +165,7 @@ jobs:
           name: php-cli-linux-aarch64-${{ env.BUILD_PHP_VERSION }}
           retention-days: 7
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

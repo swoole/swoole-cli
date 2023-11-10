@@ -18,6 +18,8 @@ fi
 
 cd ${__PROJECT__}
 
+mkdir -p ${__PROJECT__}/var
+
 
 # export DOCKER_BUILDKIT=1
 
@@ -27,8 +29,9 @@ TIME=$(date -u '+%Y%m%dT%H%M%SZ')
 
 VERSION="1.0.0"
 TAG="all-dependencies-alpine-3.17-php8-v${VERSION}-${ARCH}-${TIME}"
-IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
+IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
+
 
 COMPOSER_MIRROR=""
 MIRROR=""
@@ -43,6 +46,7 @@ case $ARCH in
   PLATFORM='linux/arm64'
   ;;
 esac
+
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -64,8 +68,15 @@ done
 
 cd ${__PROJECT__}/
 
+if [ ! -f make.sh ] ;then
+  echo 'please run script:'
+  echo 'bash build-release-example.sh --mirror china  --build-contianer'
+  exit 0
+fi
+
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
+
 
 docker buildx build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
 --progress=plain \
@@ -85,7 +96,10 @@ echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 
 
 # 例子：
+
 # bash build-release-example.sh --mirror china  --build-contianer
+
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'
 # 验证构建结果
 # bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh
+

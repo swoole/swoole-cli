@@ -1,10 +1,8 @@
 # 快速准备基于容器的构建环境
 
-> 提供了 debian 11 构建 和 alpine 构建环境
+## linux 快速初始化容器运行环境
 
-> 任意选一个就可以
-
-## 快速初始化容器运行环境
+> macos 环境下不需要容器
 
 ```bash
 
@@ -12,13 +10,57 @@ bash sapi/quickstart/linux/install-docker.sh --mirror china
 
 ```
 
-## 构建环境
+## 运行 alpine 构建环境
 
-> debian 和 alpine 任意选一个
+```bash
 
-> 推荐 alpine
+# 启动 alpine 容器环境
+bash sapi/quickstart/linux/run-alpine-container.sh
+# 使用已经构建好的依赖库 容器环境
+# bash sapi/quickstart/linux/run-alpine-container-full.sh
 
-## debian 11 构建环境
+# 进入容器
+bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
+
+# 准备构建基础软件
+sh  sapi/quickstart/linux/alpine-init.sh
+
+# 准备构建基础软件 使用中科大镜像源
+sh  sapi/quickstart/linux/alpine-init.sh --mirror china
+
+```
+
+## 准备依赖库源码方式一： 来自镜像站
+
+```bash
+
+bash sapi/download-box/download-box-get-archive-from-server.sh
+
+```
+
+## 准备依赖库源码方式二： 来自容器镜像
+
+```bash
+
+bash sapi/download-box/download-box-get-archive-from-container.sh
+
+```
+
+## 准备构建脚本 构建依赖库 、构建swoole 、打包
+
+```bash
+
+ cp build-release-example.sh build-release.sh
+
+ sh build-release.sh
+# 使用系统镜像源
+# sh build-release.sh --mirror china
+
+```
+
+## 运行 debian 构建环境
+
+> 验证 debian 环境下静态编译
 
 ```bash
 
@@ -34,138 +76,6 @@ bash sapi/quickstart/linux/debian-init.sh
 
 # 准备构建基础软件 使用中科大镜像源
 bash sapi/quickstart/linux/debian-init.sh --mirror china
-```
-
-## aline 构建环境
-
-```bash
-
-# 启动 alpine 容器环境
-bash sapi/quickstart/linux/run-alpine-container.sh
-
-
-# 进入容器
-bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
-
-# 准备构建基础软件
-sh  sapi/quickstart/linux/alpine-init.sh
-
-# 准备构建基础软件 使用中科大镜像源
-sh  sapi/quickstart/linux/alpine-init.sh --mirror china
 
 ```
-
-## 体检构建好 所有依赖库的容器
-
-> 跳过依赖库构建
-
-```shell
-# 启动 alpine 容器环境 (容器内包含所有依赖库、php运行时、composer )
-bash sapi/quickstart/linux/run-alpine-container-full.sh
-
-```
-
-## 准备依赖库，来自镜像
-
-> 可能部分源码包没有及时更新 ，请提 issues
-> 缺失的部分，下一步执行时会自动到原站下载
-
-```bash
-
-bash sapi/download-box/download-box-get-archive-from-server.sh
-
-```
-
-## 准备构建脚本
-
-```bash
-
-# composer 使用阿里云镜像
-# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-
-# composer 安装完毕 恢复默认
-# composer config -g --unset repos.packagist
-
-# 使用代理
-# export http_proxy=http://192.168.3.26:8015
-# export https_proxy=http://192.168.3.26:8015
-
-composer update   --optimize-autoloader
-
-php prepare.php  +inotify +apcu +ds
-
-# 不启用 mysqli soap 例子
-# php prepare.php  +inotify +apcu +ds -mysqli -soap
-
-# macos
-# php prepare.php  +inotify +apcu +ds  --without-docker=1
-
-```
-
-## 构建依赖库 、构建swoole 、打包
-
-```bash
-
-chmod a+x ./make.sh
-
-bash make.sh all-library
-
-bash make.sh config
-bash make.sh build
-bash make.sh archive
-
-```
-
-## 准备依赖库，来自镜像
-
-> 可能部分源码包没有及时更新 ，请提 issues
-> 缺失的部分，下一步执行时会自动到原站下载
-
-```bash
-
-bash sapi/download-box/download-box-get-archive-from-server.sh
-
-```
-
-## 准备构建脚本
-
-```bash
-
-# composer 使用阿里云镜像
-# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-
-# 使用代理
-# export http_proxy=http://192.168.3.26:8015
-# export https_proxy=http://192.168.3.26:8015
-
-composer update --no-dev  --optimize-autoloader
-
-php prepare.php  +inotify +apcu +ds
-
-# 不起用 mysqli soap
-# php prepare.php  +inotify +apcu +ds -mysqli -soap
-
-# macos
-# php prepare.php  +inotify +apcu +ds  --without-docker=1
-
-```
-
-## 构建依赖库 、构建swoole 、打包
-
-```bash
-
-chmod a+x ./make.sh
-
-bash make.sh all-library
-
-bash make.sh config
-bash make.sh build
-bash make.sh archive
-
-```
-
-## [进入构建 PHP 环节](../README.md#构建依赖库-构建swoole-打包)
-
-
-
 

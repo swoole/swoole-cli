@@ -10,6 +10,7 @@ cd ${__DIR__}
 # use china mirror
 # bash sapi/quickstart/linux/alpine-init.sh --mirror china
 
+
 MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -41,6 +42,7 @@ apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld li
 apk add bash 7zip zip unzip flex pkgconf ca-certificates
 # apk add bash p7zip
 apk add wget git curl
+
 apk add libc++-static libltdl-static
 apk add yasm nasm
 apk add ninja python3 py3-pip

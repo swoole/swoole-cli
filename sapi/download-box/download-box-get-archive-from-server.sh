@@ -14,9 +14,11 @@ cd ${__PROJECT__}
 mkdir -p pool/lib
 mkdir -p pool/ext
 
-test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
+test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download-box/
 
-cd ${__PROJECT__}/var
+cd ${__PROJECT__}/var/download-box/
+mkdir -p lib
+mkdir -p ext
 
 
 DOMAIN='https://swoole-cli.jingjingxyk.com/'
@@ -28,7 +30,7 @@ unzip -n all-archive.zip
 
 cd ${__PROJECT__}/
 
-awk 'BEGIN { cmd="cp -ri var/lib/* pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/ext/* pool/ext"; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib"  ; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext"; print "n" |cmd; }'
 
 echo "download all-archive.zip ok ！"

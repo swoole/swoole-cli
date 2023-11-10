@@ -19,7 +19,7 @@ cd ${__DIR__}
 }
 cd ${__DIR__}
 
-IMAGE=alpine:3.16
+IMAGE=alpine:3.18
 
 :<<'EOF'
    启动此容器
@@ -34,14 +34,14 @@ ARCH=$(uname -m)
 
 MIRROR=""
 DEV_SHM=0
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
     ;;
-    --dev-shm)
-      DEV_SHM=1
-      shift
+  --dev-shm)
+    DEV_SHM=1
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
@@ -66,7 +66,6 @@ case $ARCH in
   exit 0
   ;;
 esac
-
 
 
 cd ${__DIR__}
