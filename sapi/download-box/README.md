@@ -6,8 +6,6 @@
 
 > 系统 需要 安装 `graphviz` 用于生成扩展依赖图
 
-### 系统要求
-
 ```bash
 # macos
 brew install graphviz aria2
