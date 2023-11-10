@@ -129,8 +129,8 @@ clean_<?=$item->name?>() {
 
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
-    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
-        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
     fi
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -157,6 +157,7 @@ before_configure_script() {
 }
 
 export_variables() {
+    set -x
     CPPFLAGS=""
     CFLAGS=""
     LDFLAGS=""
@@ -336,8 +337,8 @@ elif [ "$1" = "clean-all-library" ] ;then
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
-    if [ -d <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/ ] ; then
-        rm -rf <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/
+    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
+        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
     fi
 <?php endforeach; ?>
     exit 0
