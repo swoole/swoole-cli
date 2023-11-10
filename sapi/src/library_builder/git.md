@@ -65,3 +65,9 @@ git reset --hard c761f5c # 回退到指定的版本
 git clone --recurse-submodules --single-branch -b main --progress --depth=1
 
 ```
+
+git remote show origin
+git branch -a
+git branch -r
+git rmote prune origin
+git rmote prune origin --dry-run
