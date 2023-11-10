@@ -68,7 +68,7 @@ while [ $# -gt 0 ]; do
     ;;
   --download-box)
     WITH_DOWNLOAD_BOX=1
-    OPTIONS="${OPTIONS} --without-docker=1 --with-skip-download=1 --with-dependency-graph=1  "
+    OPTIONS="${OPTIONS} --without-docker=1 --skip-download=1 --with-dependency-graph=1  "
     ;;
   --build-contianer)
     WITH_BUILD_CONTAINER=1
@@ -76,7 +76,7 @@ while [ $# -gt 0 ]; do
     ;;
   --webui)
     WITH_WEB_UI=1
-    OPTIONS="${OPTIONS}  --without-docker=1 --with-skip-download=1  --with-web-ui=1 "
+    OPTIONS="${OPTIONS}  --without-docker=1 --skip-download=1  --with-web-ui=1 "
     ;;
   --debug)
     set -x
@@ -170,7 +170,7 @@ fi
 # @macos
 # --with-parallel-jobs=8
 # --with-build-type=dev
-# --with-skip-download=1
+# --skip-download=1
 # --with-http-proxy=http://192.168.3.26:8015
 # --with-override-default-enabled-ext=0
 # --with-php-version=8.2.11
