@@ -21,27 +21,15 @@ apk add graphviz aria2
 
 ```bash
 
-prepare.php --skip-download=1 --with-dependency-graph=1
+php prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=1 +apcu +ds +xlswriter +ssh2 +inotify
 
 
 # 准备依赖库源码包，使用 aria2 批量下载
 bash sapi/download-box/download-box-init.sh
+# bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 
 # 将源码包 、扩展依赖图 打包到容器中
 bash sapi/download-box/download-box-build.sh
-
-```
-
-### 打包到容器中完整例子
-
-```bash
-
-php prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=1 +apcu +ds +xlswriter +ssh2 +inotify
-
-bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
-
-bash sapi/download-box/download-box-build.sh
-
 
 ```
 
