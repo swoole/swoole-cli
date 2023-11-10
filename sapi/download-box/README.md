@@ -75,27 +75,15 @@ bash sapi/download-box/download-box-get-archive-from-container.sh
 
 ### 方式二（来自web服务器）：
 
-```bash
-bash  sapi/download-box/download-box-get-archive-from-server.sh
-```
-
 > 原理： 下载：`http://127.0.0.1:9503/all-archive.zip`
 > 自动解压，并自动拷贝到 `pool/` 目录
 
 >
 真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
 
-> 自建镜像站点： 3 种方式：
-
-> > 1. `bash sapi/download-box/web-server-nginx.sh`  (直接把 `pool` 作为web
-       根目录)
->>  2. `bash sapi/download-box/web-server.php`       (直接把 `pool` 作为web
-       根目录)
->>  3. 运行包含 `pool` 目录的容器 , 如下
-
-> > > ` IMAGE=docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-1.8-20231110T092201Z `
-
-> > > ` docker run -d --rm --name download-box-web-server -p 9503:80 ${IMAGE} `
+```bash
+bash  sapi/download-box/download-box-get-archive-from-server.sh
+```
 
 ### 方式三（来自web服务器）：
 
@@ -104,12 +92,22 @@ bash  sapi/download-box/download-box-get-archive-from-server.sh
 ```bash
 
 # 演示例子
-./prepare.php --without-docker=1 --with-download-mirror-url=http://127.0.0.1:9503
+php prepare.php --without-docker=1 --with-download-mirror-url=http://127.0.0.1:9503
 
 # 真实可用的依赖库镜像
-./prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+php prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 
 
 ```
 
+### 自建镜像站点： 3 种方式：
 
+> 1. `bash sapi/download-box/web-server-nginx.sh`  (直接把 `pool` 作为web
+     根目录)
+> 2. `bash sapi/download-box/web-server.php`       (直接把 `pool` 作为web
+     根目录)
+> 3. 运行包含 `pool` 目录的容器 , 如下
+
+> > ` IMAGE=docker.io/jingjingxyk/build-swoole-cli:download-box-nginx-alpine-1.8-20231110T092201Z `
+
+> > ` docker run -d --rm --name download-box-web-server -p 9503:80 ${IMAGE} `
