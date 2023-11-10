@@ -43,9 +43,6 @@ jobs:
           # 准备数据库容器
           bash sapi/src/UnitTest/scripts/database/start.sh
 
-          # 准备数据库容器
-          bash sapi/src/UnitTest/scripts/database/start.sh
-
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
 
@@ -88,11 +85,11 @@ jobs:
 
       - name: Prepare swoole-cli-builder-image
         run: |
-            if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
-                docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
-            else
-                bash .github/workflows/build-alpine-builder-container.sh
-            fi
+          if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
+              docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
+          else
+              bash .github/workflows/build-alpine-builder-container.sh
+          fi
 
       - name: Prepare Runtime and Libraries and Extensions
         run: |
@@ -121,7 +118,7 @@ jobs:
         with:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-x86_64-20230917T133301Z
           image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
             uname -m
@@ -131,14 +128,14 @@ jobs:
             # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
 
+            # bash sapi/quickstart/mark-install-library-cached.sh
+
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
-            composer update --no-dev  --optimize-autoloader
+            composer update   --optimize-autoloader
 
             php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-libavif=1
 
             bash make-install-deps.sh
-
-            # bash sapi/quickstart/mark-install-library-cached.sh
 
             bash ./make.sh all-library
 
@@ -166,6 +163,7 @@ jobs:
           name: swoole-cli
           retention-days: 7
           path: ./bin/swoole-cli
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

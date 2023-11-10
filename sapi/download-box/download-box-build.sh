@@ -14,13 +14,15 @@ cd ${__PROJECT__}
 DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
 test -d "${DOWNLOAD_BOX_DIR}" || mkdir -p "${DOWNLOAD_BOX_DIR}"
 
-cp -f ${__DIR__}/Dockerfile-dowload-box "${DOWNLOAD_BOX_DIR}"
-cp -f ${__DIR__}/default.conf "${DOWNLOAD_BOX_DIR}"
-cp -f ${__PROJECT__}/setup-php-runtime.sh "${DOWNLOAD_BOX_DIR}"
+cd ${__PROJECT__}/var/download-box/
 
-cp -f ${__PROJECT__}/bin/LICENSE "${DOWNLOAD_BOX_DIR}"
-cp -f ${__PROJECT__}/bin/credits.html "${DOWNLOAD_BOX_DIR}"
-cp -f ${__PROJECT__}/bin/ext-dependency-graph.pdf "${DOWNLOAD_BOX_DIR}"
+cp -f ${__DIR__}/Dockerfile-dowload-box .
+cp -f ${__DIR__}/default.conf .
+cp -f ${__PROJECT__}/setup-php-runtime.sh .
+
+cp -f ${__PROJECT__}/bin/LICENSE .
+cp -f ${__PROJECT__}/bin/credits.html .
+cp -f ${__PROJECT__}/bin/ext-dependency-graph.pdf .
 
 
 cd "${DOWNLOAD_BOX_DIR}"
@@ -33,7 +35,7 @@ test -d ext && test -d lib && zip -6 -r all-archive.zip ext lib
 cd "${DOWNLOAD_BOX_DIR}"
 
 TIME=$(date -u '+%Y%m%dT%H%M%SZ')
-VERSION="1.7"
+VERSION="1.8"
 TAG="download-box-nginx-alpine-${VERSION}-${TIME}"
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"

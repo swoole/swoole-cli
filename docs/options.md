@@ -16,56 +16,64 @@
 ，需要将参数的中横线`-`替换为下划线`_`，例如：
 
 ```shell
-./prepare.php --without-docker --with-skip-download=1
+./prepare.php --without-docker --skip-download=1
 ```
 
 也可以写作：
 
 ```shell
-SWOOLE_CLI_SKIP_DOWNLOAD=1 ./prepare.php --without-docker
+SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
 ```
 
-> 参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，
-> 环境变量将被忽略，仅参数设置生效，<br/>
-> 例如：
-> `SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes ./prepare.php --with-skip-download=no`，
-> <br/>
-> 有效的值为：
-> `--with-skip-download=no`，环境变量 `SWOOLE_CLI_WITH_SKIP_DOWNLOAD=yes` 无效
+>
+参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --skip-download=no`
+，有效的值为：`--skip-download=no`，环境变量 `SWOOLE_CLI_SKIP_DOWNLOAD=yes` 无效
 
-with-skip-download
+
+skip-download
 ----
 跳过下载依赖库，使用脚本单独批量下载
 
-> 自动生成待下载链接地址的种子文件<br/>
-> 种子文件位于本项目的 `var` 目录 <br/>
-> 使用 aria2 下载种子文件
+
+> 会自动生成，待下载链接地址
+
+> 链接地址文件位于 项目根目录下的 `var/download-box/` 目录
+
+> 依赖 aria2
 
 ```shell
-# 准备批量下载地址
-./prepare.php --with-skip-download=1 --without-docker
+# 准备批量待下载链接地址
+./prepare.php --skip-download=1 --without-docker
 
-# 批量下载依赖库和扩展的脚本
-bash make-download-box.sh
-
-# 下载完毕，同步到 `pool/lib` 、`pool/ext ` 目录
-awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib/"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext/"  ; print "n" |cmd; }'
+# 构建依赖库之前，批量下载依赖库和扩展的脚本
+sh sapi/scripts/download-dependencies-use-aria2.sh
 
 ```
 
-[使用镜像地址下载](/sapi/download-box/README.md)
+with-download-mirror-url
 ----
 
-> 使用镜像地址下载下载前，需要准备镜像服务器
-> 例如： `sh sapi/scripts/download-box/download-box-server-run-test.sh`
+> [使用镜像地址下载依赖库源码](/sapi/download-box/README.md)
+
+> 使用镜像地址下载前，需要准备镜像服务
+
+> 例如：`sh sapi/scripts/download-box/web-server-nginx.sh`
 
 ```shell
 # 演示例子
-php ./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:9503
+./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:9503
 
-# 可用镜像
-php ./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+#  下载方式一 （逐个下载源码包）
+./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+
+
+#  下载方式二 （多个源码包整合为一个压缩文件）
+sh  sapi/download-box/download-box-get-archive-from-server.sh
+
+#  下载方式三 （使用容器分发）
+sh  sapi/download-box/download-box-get-archive-from-container.sh
+
+
 ```
 
 conf-path
