@@ -34,7 +34,9 @@ skip-download
 跳过下载依赖库
 
 > 会自动生成，待下载链接地址
-> 链接地址生成在 项目根目录下的 `var/download-box/` 目录
+
+> 链接地址文件位于 项目根目录下的 `var/download-box/` 目录
+
 > 依赖 aria2
 
 ```shell
@@ -62,6 +64,7 @@ sh sapi/scripts/download-dependencies-use-aria2.sh
 
 #  下载方式二 （多个源码包整合为一个压缩文件）
 sh  sapi/download-box/download-box-get-archive-from-server.sh
+
 #  下载方式三 （使用容器分发）
 sh  sapi/download-box/download-box-get-archive-from-container.sh
 

@@ -90,12 +90,12 @@ fi
 
 if [ "$OS" = 'macos' ] ; then
   number=$(which flex  | wc -l)
-  if test $number -eq 0 -o -f sapi/quickstart/macos/homebrew-init.sh ;then
+  if test $number -eq 0  ;then
   {
         if [ "$MIRROR" = 'china' ] ; then
-            bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+            bash sapi/quickstart/macos/macos-init.sh --mirror china
         else
-            bash sapi/quickstart/macos/homebrew-init.sh
+            bash sapi/quickstart/macos/macos-init.sh
         fi
   }
   fi
