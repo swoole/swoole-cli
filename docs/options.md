@@ -9,7 +9,7 @@
 示例：
 
 ```shell
-./prepare.php --without-docker +mimalloc -mongodb  --with-brotli=yes --conf-path="./conf.d" @linux
+./prepare.php --without-docker +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
 ```
 
 参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}`
@@ -48,20 +48,21 @@ sh sapi/scripts/download-dependencies-use-aria2.sh
 [使用镜像地址下载依赖库源码](sapi/download-box/README.md)
 ----
 
-> 使用镜像地址下载下载前，需要准备镜像服务器 例如：`sh sapi/scripts/download-box/web-server-nginx.sh`
+> 使用镜像地址下载下载前，需要准备镜像服务
 
+> 例如：`sh sapi/scripts/download-box/web-server-nginx.sh`
 
 ```shell
 # 演示例子
 ./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:9503
 
-#  可用镜像一 （逐个下载源码包）
+#  下载方式一 （逐个下载源码包）
 ./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 
 
-#  可用镜像二 （多个源码包整合为一个压缩文件）
+#  下载方式二 （多个源码包整合为一个压缩文件）
 sh  sapi/download-box/download-box-get-archive-from-server.sh
-#  可用镜像三 （使用容器分发）
+#  下载方式三 （使用容器分发）
 sh  sapi/download-box/download-box-get-archive-from-container.sh
 
 
