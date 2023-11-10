@@ -4,20 +4,20 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-      inputs:
-        build_type:
-          required: true
-          description: "定制构建选项: 指定构建类型"
-          default: '--with-build-type=release'
-          type: choice
-          options:
-            - '--with-build-type=release'
-            - '--with-build-type=dev'
-        build_options:
-          required: false
-          description: "定制构建选项: 请查看 docs/options.md"
-          default: ' '
-          type: string
+    inputs:
+      build_type:
+        required: true
+        description: "定制构建选项: 指定构建类型"
+        default: '--with-build-type=release'
+        type: choice
+        options:
+          - '--with-build-type=release'
+          - '--with-build-type=dev'
+      build_options:
+        required: false
+        description: "定制构建选项: 请查看 docs/options.md"
+        default: ' '
+        type: string
 
 jobs:
   linux-x86_64:
@@ -134,7 +134,7 @@ jobs:
           # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
           # image: alpine:3.18
           image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
             uname -m
