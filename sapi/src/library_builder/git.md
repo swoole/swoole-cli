@@ -69,5 +69,5 @@ git clone --recurse-submodules --single-branch -b main --progress --depth=1
 git remote show origin
 git branch -a
 git branch -r
-git rmote prune origin
-git rmote prune origin --dry-run
+git remote prune origin
+git remote prune origin --dry-run
