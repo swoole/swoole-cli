@@ -13,18 +13,46 @@ __PROJECT__=$(
 
 cd ${__PROJECT__}
 
-test -d ${__PROJECT__}/var || mkdir -p ${__PROJECT__}/var
+DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
+mkdir -p ${__PROJECT__}/var/download-box/
+
+cd ${__PROJECT__}/var/download-box/
+mkdir -p lib
+mkdir -p ext
 
 
-export COMPOSER_ALLOW_SUPERUSER=1
-composer update --no-dev --optimize-autoloader
+if [ -f download_library_urls.txt ] && [ -f download_extension_urls.txt ]  ; then
+  echo 'downloading source code tarball '
+else
+  echo 'please run script : '
+  echo "prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=1  "
+  exit 0
+fi
 
-php prepare.php --with-build-type=release +ds +inotify +apcu --without-docker=1 --skip-download=1
-sh sapi/scripts/download-dependencies-use-aria2.sh
 
-# for macos
-php prepare.php --with-build-type=release +ds +apcu +protobuf @macos --with-dependency-graph=1 --without-docker=1 --skip-download=1
-sh sapi/scripts/download-dependencies-use-aria2.sh
+cd ${__PROJECT__}
 
 # 生成扩展依赖图
 sh sapi/scripts/generate-dependency-graph.sh
+
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --proxy)
+    export HTTP_PROXY="$2"
+    export HTTPS_PROXY="$2"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
+    NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
+    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
+    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+sh sapi/download-box/download-dependencies-use-aria2.sh
+
+

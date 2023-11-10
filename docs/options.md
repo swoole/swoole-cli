@@ -34,7 +34,7 @@ skip-download
 跳过下载依赖库
 
 > 会自动生成，待下载链接地址
-> 链接地址生成在 项目根目录下的 `var` 目录
+> 链接地址生成在 项目根目录下的 `var/download-box/` 目录
 > 依赖 aria2
 
 ```shell
@@ -45,18 +45,27 @@ sh sapi/scripts/download-dependencies-use-aria2.sh
 
 ```
 
-[使用镜像地址下载](/sapi/download-box/README.md)
+[使用镜像地址下载依赖库源码](sapi/download-box/README.md)
 ----
 
-> 使用镜像地址下载下载前，需要准备镜像服务器
-> 例如： `sh sapi/scripts/download-box/download-box-server-run.sh`
+> 使用镜像地址下载下载前，需要准备镜像服务
+
+> 例如：`sh sapi/scripts/download-box/web-server-nginx.sh`
 
 ```shell
 # 演示例子
-./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:8000
+./prepare.php --without-docker --with-download-mirror-url=http://127.0.0.1:9503
 
-# 可用镜像
+#  下载方式一 （逐个下载源码包）
 ./prepare.php --without-docker --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+
+
+#  下载方式二 （多个源码包整合为一个压缩文件）
+sh  sapi/download-box/download-box-get-archive-from-server.sh
+#  下载方式三 （使用容器分发）
+sh  sapi/download-box/download-box-get-archive-from-container.sh
+
+
 ```
 
 conf-path
