@@ -9,7 +9,7 @@
 示例：
 
 ```shell
-./prepare.php --without-docker +mimalloc -mongodb  --conf-path="./conf.d" @linux
+./prepare.php --without-docker +mimalloc -mongodb  --with-brotli=yes --conf-path="./conf.d" @linux
 ```
 
 参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}`
