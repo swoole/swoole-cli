@@ -255,7 +255,7 @@ exit 0
 # bash build-release-example.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 
-# 例子  all_dependencies
+# 例子  build-contianer
 # bash build-release-example.sh --mirror china  --build-contianer
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
 

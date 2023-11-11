@@ -58,7 +58,7 @@ EOF
             'alpine',
             <<<EOF
             apk add ninja python3 py3-pip  nasm yasm
-            pip3 install meson
+            apk add meson
 EOF
         )
         ->withPrefix($example_prefix)
