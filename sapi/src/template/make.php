@@ -203,11 +203,11 @@ export_variables() {
 <?php endforeach; ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
+    set +x
     return 0
 }
 
 make_config() {
-    set -x
     before_configure_script
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
