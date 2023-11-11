@@ -416,9 +416,9 @@ make_config() {
 <?php endif; ?>
 
     export_variables
-    echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
-    echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
-    echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
+    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
     exit 0
 

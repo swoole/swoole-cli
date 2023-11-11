@@ -72,7 +72,7 @@ cd ${__PROJECT__}/
 
 if [ ! -f make.sh ] ;then
   echo 'please run script:'
-  echo 'bash build-release-example.sh --mirror china  --build-contianer'
+  echo 'bash build-release.sh --mirror china  --build-contianer'
   exit 0
 fi
 
@@ -102,7 +102,7 @@ docker tag ${IMAGE} ${ALIYUN_IMAGE}
 
 # 例子：
 
-# bash build-release-example.sh --mirror china  --build-contianer
+# bash build-release.sh --mirror china  --build-contianer
 
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'
 
