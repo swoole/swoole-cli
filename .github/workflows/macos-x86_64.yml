@@ -98,7 +98,7 @@ jobs:
           if [ ! -f bin/runtime/php ] ; then
               bash  sapi/quickstart/setup-php-runtime.sh
           fi
-          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+          if test $(ls -A pool/lib/ | wc -l) -le 32 ; then
               bash sapi/download-box/download-box-get-archive-from-server.sh
           fi
 
