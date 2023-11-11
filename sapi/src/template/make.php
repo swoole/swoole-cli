@@ -395,6 +395,31 @@ make_config() {
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
+<?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
+    PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
+    if [[ $PHP_VERSION -lt 80000 ]] ; then
+        echo "only support PHP >= 8.0 "
+    else
+        # 请把这个做成 patch  https://github.com/swoole/swoole-cli/pull/55/files
+
+    fi
+<?php endif ;?>
+
+    cd <?= $this->getPhpSrcDir() ?>/
+    test -f ./configure &&  rm ./configure
+    ./buildconf --force
+
+<?php if ($this->osType == 'macos') : ?>
+    <?php if (isset($this->libraryMap['pgsql'])) : ?>
+        sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
+    <?php endif;?>
+<?php endif; ?>
+
+    export_variables
+    echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
+
     exit 0
 
 :<<'_____EO_____'
