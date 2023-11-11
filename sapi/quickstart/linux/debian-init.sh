@@ -76,7 +76,7 @@ apt install -y gcc g++ musl-tools libtool-bin autopoint
 apt install -y python3 python3-pip ninja-build  diffutils
 apt install -y yasm nasm
 apt install -y meson
-apt install -y netcat
+apt install -y netcat-openbsd
 
 case "$MIRROR" in
 china | ustc )
