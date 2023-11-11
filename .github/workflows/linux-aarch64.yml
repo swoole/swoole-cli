@@ -79,19 +79,17 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/runtime
-          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+          if test $(ls -A pool/lib/ | wc -l) -le 49 ; then
               bash sapi/download-box/download-box-get-archive-from-container.sh
           fi
 
-          if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
+          if test $(ls -A /usr/local/swoole-cli/ | wc -l) -le 32 ; then
               IMAGE="docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z"
 
               container_id=$(docker create $IMAGE) # returns container ID
               docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
               docker rm $container_id
-
               rm -rf /usr/local/swoole-cli/libwebp
-
           fi
           ls -A /usr/local/swoole-cli/
 
