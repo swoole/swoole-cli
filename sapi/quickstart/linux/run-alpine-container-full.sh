@@ -49,15 +49,17 @@ done
 
 case $ARCH in
 'x86_64')
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-x86_64-20230917T133301Z
-    if [ "$MIRROR" = 'china' ] ; then
-      IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php7-v1.0.0-x86_64-20230917T133301Z
-    fi
+  TAG=all-dependencies-alpine-3.17-php7-v1.0.0-x86_64-20230917T133301Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
+  if [ "$MIRROR" = 'china' ] ; then
+    IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:${TAG}
+  fi
   ;;
 'aarch64')
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
-   if [ "$MIRROR" = 'china' ] ; then
-      IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
+  TAG=all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
+    if [ "$MIRROR" = 'china' ] ; then
+      IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:${TAG}
     fi
   ;;
 
