@@ -99,7 +99,7 @@ jobs:
           if [ ! -f bin/runtime/php ] ; then
               bash  sapi/quickstart/setup-php-runtime.sh
           fi
-          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+          if test $(ls -A pool/lib/ | wc -l) -le 32 ; then
               bash sapi/download-box/download-box-get-archive-from-server.sh
           fi
 
@@ -111,7 +111,6 @@ jobs:
           composer update   --optimize-autoloader
 
           php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql --with-build-type=release --with-swoole-pgsql=1 --with-libavif=1
-
 
       - name: Build
         run: |
