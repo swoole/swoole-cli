@@ -18,7 +18,7 @@
 
 ## 安装cygwin 和 cygwin 依赖项
 
-> 打开 windows 控制台，并找到 setup-x86_64.exe 所在目录
+> 打开 windows 控制台，并找到 setup-x86_64.exe 所在目录, 执行如下命令
 
 ```bash
 
@@ -82,8 +82,6 @@ libpq5 (如果编译pgsql扩展)
 首先需要安装上述工具和库，然后 Clone 项目，并切换 `ext/swoole`
 到对应的分支，如 `4.8.x` 或 `master` (`5.0.x`)
 
-构建步骤
-
 ```shell
 git clone --recursive https://github.com:swoole/swoole-cli.git
 
@@ -97,6 +95,7 @@ bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
 bash ./sapi/scripts/cygwin/cygwin-config.sh
 bash ./sapi/scripts/cygwin/cygwin-build.sh
 bash ./sapi/scripts/cygwin/cygwin-archive.sh
+
 ```
 
 构建步骤说明
