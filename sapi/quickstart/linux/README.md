@@ -79,3 +79,17 @@ bash sapi/quickstart/linux/debian-init.sh --mirror china
 
 ```
 
+##  从零开始 ( linux 环境)
+```bash
+
+apt update -y
+apt install -y  git socat libssl-dev  zip unzip curl wget ca-certificates
+
+git clone  https://github.com/jingjingxyk/swoole-cli.git
+
+cd swoole-cli
+
+sh sapi/quickstart/linux/install-docker.sh --mirror china
+
+```
+

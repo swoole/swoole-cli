@@ -145,6 +145,7 @@ php -v
 
 
 if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
+    export COMPOSER_ALLOW_SUPERUSER=1
     if [ "$WITH_MIRROR" = 'china' ]; then
         composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
         # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
@@ -205,12 +206,6 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 fi
 
 
-if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
-   echo ' please run in container !'
-   exit 0
-fi
-
-
 if [ ${WITH_DOWNLOAD_BOX} -eq 1 ] ; then
     echo " please exec script: "
     echo " bash sapi/download-box/download-box-init.sh "
@@ -219,7 +214,11 @@ fi
 
 if [ ${WITH_BUILD_CONTAINER} -eq 1 ] ; then
     echo " please exec script: "
-    echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc "
+        if [ "$WITH_MIRROR" = 'china' ]; then
+            echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc "
+        else
+            echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh "
+        fi
     exit 0
 fi
 
@@ -231,6 +230,10 @@ if [ ${WITH_WEB_UI} -eq 1 ] ; then
 fi
 
 
+if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
+   echo ' please run in container !'
+   exit 0
+fi
 
 bash make-install-deps.sh
 
@@ -248,19 +251,19 @@ bash make.sh archive
 exit 0
 
 # 例子
-# bash build-release-example.sh --mirror china
-# bash build-release-example.sh --mirror china --debug
+# bash build-release.sh --mirror china
+# bash build-release.sh --mirror china --debug
 
 # 例子  download-box
-# bash build-release-example.sh --mirror china  --download-box
+# bash build-release.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 
 # 例子  build-contianer
-# bash build-release-example.sh --mirror china  --build-contianer
+# bash build-release.sh --mirror china  --build-contianer
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
 
 # 例子  web ui
-# bash build-release-example.sh --mirror china  --webui
+# bash build-release.sh --mirror china  --webui
 # bash sapi/webUI/webui-init-data.sh
 # php sapi/webUI/bootstrap.php
 
