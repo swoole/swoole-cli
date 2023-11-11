@@ -48,12 +48,4 @@ mv setup-x86_64.exe C:/setup-x86_64.exe
 
 ### windows 自带默认终端
 
-```shell
 
-# windows 开始菜单，打开 新的 windows 自带终端，执行安装 cygwin
-cd c:\
-
-# 添加 pgsql
-setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages libpq5 libpq-deve
-
-```

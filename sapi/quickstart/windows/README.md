@@ -24,6 +24,9 @@ mklink composer composer.phar
 
 ## 其他
 
+> 没有 wget 可以先用 [msys2](https://www.msys2.org/docs/environments/)
+
 1. [windows build native php](./windows-native.md)
 1. [install msys2 ](./install-msys2.md)
+
 
