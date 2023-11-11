@@ -49,15 +49,17 @@ done
 
 case $ARCH in
 'x86_64')
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-x86_64-20230917T133301Z
-    if [ "$MIRROR" = 'china' ] ; then
-      IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php7-v1.0.0-x86_64-20230917T133301Z
-    fi
+  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231111T160944Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
+  if [ "$MIRROR" = 'china' ] ; then
+    IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:${TAG}
+  fi
   ;;
 'aarch64')
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
-   if [ "$MIRROR" = 'china' ] ; then
-      IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
+  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231111T174814Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
+    if [ "$MIRROR" = 'china' ] ; then
+      IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:${TAG}
     fi
   ;;
 
@@ -78,3 +80,5 @@ else
   docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
 fi
 
+# 需要执行(这些库需要重新构建 sh sapi/quickstart/clean-no-match-library-for-php.sh
+# openssl 使用v1
