@@ -367,6 +367,7 @@ export_variables() {
 <?php endforeach; ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
+    set +x
     return 0
 }
 
@@ -381,16 +382,13 @@ make_release_archive() {
 }
 
 make_config() {
-
     set -x
     make_release_archive
 
-
-
-
-
-
     exit 0
+
+    cd <?= $this->phpSrcDir . PHP_EOL ?>
+    make_tmp_ext_dir
     before_configure_script
 
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
