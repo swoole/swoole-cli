@@ -209,7 +209,11 @@ fi
 
 if [ ${WITH_BUILD_CONTAINER} -eq 1 ] ; then
     echo " please exec script: "
-    echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc "
+        if [ "$WITH_MIRROR" = 'china' ]; then
+            echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc "
+        else
+            echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh "
+        fi
     exit 0
 fi
 
