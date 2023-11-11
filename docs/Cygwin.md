@@ -2,10 +2,6 @@
 
 ## 准备 cygwin 软件包
 
-> [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
-
-> [ 构建步骤 ](/sapi/scripts/cygwin/README.md)
-
 > 打开 https://cygwin.com/
 
 > 下载 cygwin : `https://cygwin.com/setup-x86_64.exe`
