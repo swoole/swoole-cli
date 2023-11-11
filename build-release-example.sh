@@ -201,12 +201,6 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 fi
 
 
-if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
-   echo ' please run in container !'
-   exit 0
-fi
-
-
 if [ ${WITH_DOWNLOAD_BOX} -eq 1 ] ; then
     echo " please exec script: "
     echo " bash sapi/download-box/download-box-init.sh "
@@ -227,6 +221,10 @@ if [ ${WITH_WEB_UI} -eq 1 ] ; then
 fi
 
 
+if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
+   echo ' please run in container !'
+   exit 0
+fi
 
 bash make-install-deps.sh
 
