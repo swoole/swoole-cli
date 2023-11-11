@@ -36,7 +36,7 @@ esac
 
 
 IN_DOCKER=0
-
+WITH_PHP_COMPOSER=1
 
 # 配置系统仓库  china mirror
 MIRROR='china'
@@ -54,7 +54,7 @@ while [ $# -gt 0 ]; do
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
-    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
     ;;
   --*)
     echo "Illegal option $1"
@@ -90,12 +90,12 @@ fi
 
 if [ "$OS" = 'macos' ] ; then
   number=$(which flex  | wc -l)
-  if test $number -eq 0 -o -f sapi/quickstart/macos/homebrew-init.sh ;then
+  if test $number -eq 0  ;then
   {
         if [ "$MIRROR" = 'china' ] ; then
-            bash sapi/quickstart/macos/homebrew-init.sh --mirror china
+            bash sapi/quickstart/macos/macos-init.sh --mirror china
         else
-            bash sapi/quickstart/macos/homebrew-init.sh
+            bash sapi/quickstart/macos/macos-init.sh
         fi
   }
   fi
@@ -117,17 +117,19 @@ php -v
 
 export COMPOSER_ALLOW_SUPERUSER=1
 
-if [ "$MIRROR" = 'china' ]; then
-    composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
-    # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-else
-    composer config -g repos.packagist composer https://packagist.org
-fi
-# composer suggests --all
-# composer dump-autoload
+if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
+    if [ "$MIRROR" = 'china' ]; then
+        composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
+        # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+    else
+        composer config -g repos.packagist composer https://packagist.org
+    fi
+    # composer suggests --all
+    # composer dump-autoload
 
-composer update  --optimize-autoloader
-composer config -g --unset repos.packagist
+    composer update  --optimize-autoloader
+    composer config -g --unset repos.packagist
+fi
 
 
 # 可用配置参数
@@ -139,6 +141,12 @@ composer config -g --unset repos.packagist
 # --conf-path="./conf.d.extra"
 # --without-docker=1
 # @macos
+# --with-parallel-jobs=8
+
+
+# 定制构建选项
+OPTIONS='+apcu +ds +xlswriter +ssh2'
+OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
 
 
 
@@ -146,15 +154,18 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
 
-  php prepare.php +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
+
+  php prepare.php +inotify  ${OPTIONS}
 
 } else {
 # 容器外
 
-  php prepare.php --without-docker=1 +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
+
+  php prepare.php --without-docker=1  ${OPTIONS}
 
 }
 fi
+
 
 if [ "$OS" = 'linux'  ] && [ ${IN_DOCKER} -eq 0 ] ; then
    echo ' please run in container !'

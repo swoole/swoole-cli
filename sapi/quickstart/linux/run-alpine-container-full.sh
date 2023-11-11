@@ -12,14 +12,14 @@ __PROJECT__=$(
 cd ${__DIR__}
 
 {
-  docker stop swoole-cli-dev
+  docker stop swoole-cli-alpine-dev
   sleep 5
 } || {
   echo $?
 }
 cd ${__DIR__}
 
-IMAGE=alpine:3.16
+IMAGE=alpine:3.18
 
 :<<'EOF'
    启动此容器
@@ -32,16 +32,35 @@ EOF
 OS=$(uname -s)
 ARCH=$(uname -m)
 
+DEV_SHM=0
+MIRROR=""
+DEV_SHM=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    MIRROR="$2"
+    ;;
+  --dev-shm)
+    DEV_SHM=1
+    shift
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
 case $ARCH in
 'x86_64')
-  IMAGE=docker.io/phpswoole/swoole-cli-builder:all-dependencies-alpine-swoole-cli-x86_64-20230504T133110Z
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-x86_64-20230505T120137Z
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230917T123120Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
+  if [ "$MIRROR" = 'china' ] ; then
+    IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230917T123120Z
+  fi
   ;;
 'aarch64')
-  IMAGE=docker.io/phpswoole/swoole-cli-builder:1.7-arm64
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-swoole-cli-aarch64-20230505T153618Z
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230614T152332Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
+    if [ "$MIRROR" = 'china' ] ; then
+      IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
+    fi
   ;;
 *)
   echo "此 ${ARCH} 架构的容器 容器未配置"
@@ -52,4 +71,12 @@ esac
 
 
 cd ${__DIR__}
-docker run --rm --name swoole-cli-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
+
+if [ $DEV_SHM -eq 1 ] ; then
+  mkdir -p /dev/shm/swoole-cli/thirdparty/
+  mkdir -p /dev/shm/swoole-cli/ext/
+  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -v /dev/shm/swoole-cli/thirdparty/:/work/thirdparty/ -v /dev/shm/swoole-cli/ext/:/work/ext/ -w /work $IMAGE tail -f /dev/null
+else
+  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
+fi
+

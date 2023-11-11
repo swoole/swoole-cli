@@ -102,13 +102,12 @@ jobs:
               bash sapi/download-box/download-box-get-archive-from-server.sh
           fi
 
-
       - name: prepare
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
           alias php="php -d curl.cainfo=${{ github.workspace }}/bin/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/bin/runtime/cacert.pem"
 
-          composer update --no-dev  --optimize-autoloader
+          composer update   --optimize-autoloader
 
           php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release --with-swoole-pgsql=1
 
@@ -139,6 +138,7 @@ jobs:
           name: swoole-cli-macos-x64
           retention-days: 7
           path: ./bin/swoole-cli
+
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
