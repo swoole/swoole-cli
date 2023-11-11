@@ -284,13 +284,12 @@ export_variables() {
 <?php endforeach; ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
+    set +x
     return 0
 }
 
 
 make_config() {
-
-    set -x
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     make_tmp_ext_dir
     before_configure_script
