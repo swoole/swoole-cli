@@ -2,6 +2,10 @@
 
 ## 准备 cygwin 软件包
 
+> [安装 cygwin 脚本](/sapi/scripts/cygwin/install-cygwin.sh)
+
+> [ 构建步骤 ](/sapi/scripts/cygwin/README.md)
+
 > 打开 https://cygwin.com/
 
 > 下载 cygwin : `https://cygwin.com/setup-x86_64.exe`
@@ -73,7 +77,7 @@ libpq-devel (如果编译pgsql扩展)
 libpq5 (如果编译pgsql扩展)
 ```
 
-构建
+构建步骤
 ------
 首先需要安装上述工具和库，然后 Clone 项目，并切换 `ext/swoole`
 到对应的分支，如 `4.8.x` 或 `master` (`5.0.x`)
