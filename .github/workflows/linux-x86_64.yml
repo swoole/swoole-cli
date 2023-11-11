@@ -151,7 +151,8 @@ jobs:
           fi
 
           if test $(ls -A /usr/local/swoole-cli/ | wc -l) -le 32 ; then
-              IMAGE="docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z"
+              TAG=all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231111T160944Z
+              IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
               container_id=$(docker create $IMAGE) # returns container ID
               docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
