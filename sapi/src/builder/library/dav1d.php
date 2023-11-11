@@ -22,7 +22,7 @@ EOF
                 'alpine',
                 <<<EOF
 apk add ninja python3 py3-pip  nasm yasm
-pip3 install meson
+apk add meson
 EOF
             )
             ->withPreInstallCommand(
@@ -34,7 +34,7 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 
 brew install  ninja python3  nasm yasm
 # python3 -m pip install --upgrade pip
-pip3 install meson
+brew install meson
 # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 
 EOF
