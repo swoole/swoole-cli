@@ -53,6 +53,17 @@ git clone https://github.com/swoole/swoole-cli.git
 git submodule update --init
 ```
 
+## 快速准备 PHP 运行时
+
+```shell
+cd swoole-cli
+
+bash setup-php-runtime.sh
+# 或者
+bash setup-php-runtime.sh --mirror china
+
+```
+
 ## 生成构建脚本
 
 ```shell

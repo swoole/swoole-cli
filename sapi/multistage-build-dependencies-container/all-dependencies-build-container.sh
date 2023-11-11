@@ -19,6 +19,9 @@ fi
 cd ${__PROJECT__}
 
 
+mkdir -p ${__PROJECT__}/var
+
+
 # export DOCKER_BUILDKIT=1
 
 ARCH=$(uname -m)
@@ -27,19 +30,35 @@ TIME=$(date -u '+%Y%m%dT%H%M%SZ')
 
 VERSION="1.0.0"
 TAG="all-dependencies-alpine-3.17-php8-v${VERSION}-${ARCH}-${TIME}"
-IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
+IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
+
 
 COMPOSER_MIRROR=""
 MIRROR=""
+PLATFORM=''
+
+ARCH=$(uname -m)
+case $ARCH in
+'x86_64')
+  PLATFORM='linux/amd64'
+  ;;
+'aarch64')
+  PLATFORM='linux/arm64'
+  ;;
+esac
+
 
 while [ $# -gt 0 ]; do
   case "$1" in
   --composer_mirror)
-    COMPOSER_MIRROR="$2"  # "aliyun"  "tencent"
+    COMPOSER_MIRROR="$2"  # "aliyun"  "tencent" "china"
     ;;
   --mirror)
-    MIRROR="$2" # "ustc"  "tuna"
+    MIRROR="$2" # "ustc"  "tuna"  "china"
+    ;;
+  --platform)
+    PLATFORM="$2"
     ;;
   --*)
     echo "Illegal option $1"
@@ -50,24 +69,33 @@ done
 
 cd ${__PROJECT__}/
 
-cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
+if [ ! -f make.sh ] ;then
+  echo 'please run script:'
+  echo 'php prepare.php'
+  exit 0
+fi
 
-docker build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
+cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
+cp -f ${__DIR__}/php.ini .
+
+docker buildx build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
 --progress=plain \
 --build-arg="COMPOSER_MIRROR=${COMPOSER_MIRROR}" \
---build-arg="MIRROR=${MIRROR}"
+--build-arg="MIRROR=${MIRROR}" \
+--platform "${PLATFORM}"
 
 
-mkdir -p ${__PROJECT__}/var
 cd ${__PROJECT__}/
 
-echo ${IMAGE} >${__PROJECT__}/var/all-dependencies-container.txt
+echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
+
 
 # docker push ${IMAGE}
 
 
-
 # 例子：
-# bash build-release-example.sh --mirror china  --all_dependencies
-# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
-# bash sapi/multistage-build-dependencies-container/download-box-server-run-test.sh
+# php prepare.php
+# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'
+# 验证构建结果
+# bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh
+
