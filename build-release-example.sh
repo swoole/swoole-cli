@@ -145,7 +145,7 @@ php -v
 
 if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
     export COMPOSER_ALLOW_SUPERUSER=1
-    if [ "$MIRROR" = 'china' ]; then
+    if [ "$WITH_MIRROR" = 'china' ]; then
         composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
         # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
     else
