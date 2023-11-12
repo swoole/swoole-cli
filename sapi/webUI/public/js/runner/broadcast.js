@@ -20,7 +20,6 @@ signaling.onmessage = e => {
                 console.log('already in call, ignoring')
                 return
             }
-            state_box.start = true
             break
         case 'bye':
             if (pc) {
@@ -40,9 +39,6 @@ const state_box = {
     send: false
 }
 const init = async () => {
-    state_box.start = false
-    close.close = true
-
     await createPeerConnection()
     sendChannel = pc.createDataChannel('sendDataChannel')
     sendChannel.onopen = onSendChannelStateChange
@@ -55,7 +51,6 @@ const init = async () => {
 }
 
 const close = async () => {
-    hangup()
     signaling.postMessage({type: 'bye'})
 }
 
@@ -67,18 +62,8 @@ async function hangup() {
     sendChannel = null
     receiveChannel = null
     console.log('Closed peer connections')
-    state_box.start = false
-    state_box.send = false
-    startButton.disabled = false
-    sendButton.disabled = true
-    closeButton.disabled = true
-    startButton.disabled = false
-    sendButton.disabled = true
-    closeButton.disabled = true
-    dataChannelSend.value = ''
-    dataChannelReceive.value = ''
-    dataChannelSend.disabled = true
-};
+
+}
 
 function createPeerConnection() {
     pc = new RTCPeerConnection()
@@ -98,7 +83,7 @@ function createPeerConnection() {
 
 async function handleOffer(offer) {
     if (pc) {
-        console.error('existing peerconnection')
+        console.log('existing peerconnection')
         return
     }
     await createPeerConnection()
@@ -112,7 +97,7 @@ async function handleOffer(offer) {
 
 async function handleAnswer(answer) {
     if (!pc) {
-        console.error('no peerconnection')
+        console.log('no peerconnection')
         return
     }
     await pc.setRemoteDescription(answer)
@@ -120,7 +105,7 @@ async function handleAnswer(answer) {
 
 async function handleCandidate(candidate) {
     if (!pc) {
-        console.error('no peerconnection')
+        console.log('no peerconnection')
         return
     }
     if (!candidate.candidate) {
@@ -149,27 +134,22 @@ function receiveChannelCallback(event) {
 }
 
 function onReceiveChannelMessageCallback(event) {
-    console.log('Received Message')
-    dataChannelReceive.value = event.data
+    console.log('onReceiveChannel Received Message')
+    console.log(event.data)
 }
 
 function onSendChannelMessageCallback(event) {
-    console.log('Received Message')
-    dataChannelReceive.value = event.data
+    console.log('onSendChannel Received Message')
+    console.log(event.data)
 }
 
 function onSendChannelStateChange() {
     const readyState = sendChannel.readyState
     console.log('Send channel state is: ' + readyState)
     if (readyState === 'open') {
-        dataChannelSend.disabled = false
-        dataChannelSend.focus()
-        sendButton.disabled = false
-        closeButton.disabled = false
+
     } else {
-        dataChannelSend.disabled = true
-        sendButton.disabled = true
-        closeButton.disabled = true
+
     }
 }
 
@@ -177,12 +157,13 @@ function onReceiveChannelStateChange() {
     const readyState = receiveChannel.readyState
     console.log(`Receive channel state is: ${readyState}`)
     if (readyState === 'open') {
-        dataChannelSend.disabled = false
-        sendButton.disabled = false
-        closeButton.disabled = false
+
     } else {
-        dataChannelSend.disabled = true
-        sendButton.disabled = true
-        closeButton.disabled = true
+
     }
 }
+
+let broadcast = () => {
+    init()
+}
+export default broadcast

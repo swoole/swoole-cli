@@ -1,3 +1,5 @@
+import broadcast from "./broadcast.js";
+
 const app = () => {
     const URLObj = new URL(location.href)
 
@@ -11,11 +13,7 @@ const app = () => {
         websocket.send(JSON.stringify({
             action: 'get_instance_state'
         }))
-        /*
-            setInterval(() => {
-                websocket.ping();
-            }, 10*1000);
-            */
+        broadcast()
     }
 
     websocket.onclose = function (evt) {
