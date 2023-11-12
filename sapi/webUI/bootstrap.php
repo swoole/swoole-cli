@@ -14,7 +14,7 @@ run(function () {
     $server = new Server('0.0.0.0', 9502, false);
     $server->set([
         'open_websocket_ping_frame' => true,
-        'open_websocket_pong_frame' => true,
+        'open_websocket_pong_frame' => false,
     ]);
     $message = <<<EOF
 
@@ -201,7 +201,6 @@ EOF;
         //处理工作流
         while (true) {
             $frame = $ws->recv();
-            print($frame);
             if ($frame === '') {
                 $ws->close();
                 break;
@@ -227,8 +226,10 @@ EOF;
                     // WEBSOCKET_OPCODE_PONG 值为 0xa
                     if ($frame->opcode == 0xa) {
                         echo "Pong frame received: Code {$frame->opcode}\n";
-                        Swoole\Timer::tick(45 * 1000, function () use ($ws) {
-                            echo " server ping\n";
+                    } else {
+                        Swoole\Timer::tick(30 * 1000, function () use ($ws) {
+                            $time = date("c");
+                            echo " [{$time}] server ping\n";
                             $pingFrame = new Frame();
                             $pingFrame->opcode = WEBSOCKET_OPCODE_PING;
                             $ws->push($pingFrame);
