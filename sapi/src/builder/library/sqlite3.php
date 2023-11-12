@@ -15,6 +15,10 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
                 ./configure --help
+                # 参考
+                # https://github.com/sqlitebrowser/sqlitebrowser/blob/master/.github/workflows/build-appimage.yml#L38
+                # CPPFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_MAX_VARIABLE_NUMBER=250000 -DSQLITE_ENABLE_RTREE=1 -DSQLITE_ENABLE_GEOPOLY=1 -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_FTS3_PARENTHESIS=1 -DSQLITE_ENABLE_FTS5=1 -DSQLITE_ENABLE_STAT4=1 -DSQLITE_ENABLE_JSON1=1 -DSQLITE_SOUNDEX=1 -DSQLITE_ENABLE_MATH_FUNCTIONS=1 -DSQLITE_MAX_ATTACHED=125 -DSQLITE_ENABLE_MEMORY_MANAGEMENT=1 -DSQLITE_ENABLE_SNAPSHOT=1" ./configure --enable-shared=no
+
                 CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA=1" \
                 ./configure \
                 --prefix={$sqlite3_prefix} \
