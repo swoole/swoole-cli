@@ -256,7 +256,8 @@ class Library extends Project
     public function withBuildLibraryHttpProxy(
         bool $enableBuildLibraryHttpProxy = true,
         bool $enableBuildLibraryGitProxy = false
-    ): static {
+    ): static
+    {
         $this->enableBuildLibraryHttpProxy = $enableBuildLibraryHttpProxy;
         $this->enableBuildLibraryGitProxy = $enableBuildLibraryGitProxy;
         return $this;
@@ -282,7 +283,7 @@ class Library extends Project
 
     public function withSystemHttpProxy(string $os): static
     {
-        if ($os == 'debian') {
+        if (in_array($os, ['debin', 'ubuntu'])) {
             $this->enableSystemHttpProxy = true;
         }
         return $this;

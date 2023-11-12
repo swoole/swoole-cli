@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://ceph.io/')
         ->withLicense('https://github.com/ceph/ceph/blob/main/COPYING-LGPL3', Library::LICENSE_LGPL)
         ->withManual('https://github.com/ceph/ceph')
-        //->withAutoUpdateFile()
+        ->withAutoUpdateFile()
         ->withFile('ceph-latest.tar.gz')
         ->withDownloadScript(
             'ceph',
@@ -24,19 +24,16 @@ EOF
         //->withBuildCached(false)
         ->withSystemOriginEnvPath()
         ->withBuildLibraryHttpProxy()
+        ->withSystemHttpProxy('ubuntu')
+        ->withPreInstallCommand(
+            'ubuntu',
+            <<<EOF
+        apt install -y python3-venv python3-pip
+        apt install -y doxygen ditaa libxslt1-dev graphviz ant cython3
+EOF
+        )
         ->withBuildScript(
             <<<EOF
-
-test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
-
-mkdir -p /etc/apt/apt.conf.d/
-
-cat > /etc/apt/apt.conf.d/proxy.conf <<'--CEPH-EOF--'
-Acquire::http::Proxy  "{$p->getHttpProxy()}";
-Acquire::https::Proxy "{$p->getHttpProxy()}";
-
---CEPH-EOF--
-
 
             OS_RELEASE=$(cat /etc/os-release | grep "^ID=" | sed 's/ID=//g')
 
@@ -62,7 +59,6 @@ Acquire::https::Proxy "{$p->getHttpProxy()}";
                 touch build-env-ok
             fi
 
-            test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 EOF
         )
         ->disableDefaultLdflags()
