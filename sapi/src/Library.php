@@ -199,7 +199,7 @@ class Library extends Project
         return $this;
     }
 
-    public function getSkipDownload()
+    public function getSkipDownload(): bool
     {
         return $this->skipDownload;
     }
@@ -264,17 +264,9 @@ class Library extends Project
 
     public bool $enableSystemOriginEnvPath = false;
 
-    public function withSystemEnvPath(): static
+    public function withSystemOriginEnvPath(): static
     {
         $this->enableSystemOriginEnvPath = true;
-        return $this;
-    }
-
-    public bool $enableOsHttpProxy = false;
-
-    public function withSystemHttpProxy(): static
-    {
-        $this->enableOsHttpProxy = true;
         return $this;
     }
 
@@ -283,6 +275,24 @@ class Library extends Project
     public function withCompiledCached(): static
     {
         $this->enableCompiledCached = true;
+        return $this;
+    }
+
+    public bool $enableSystemHttpProxy = false;
+
+    public function withSystemHttpProxy(string $os): static
+    {
+        if ($os == 'debian') {
+            $this->enableSystemHttpProxy = true;
+        }
+        return $this;
+    }
+
+    public bool $enableEnv = false;
+
+    public function withEnv(): static
+    {
+        $this->enableEnv = true;
         return $this;
     }
 }

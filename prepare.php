@@ -5,8 +5,6 @@ require __DIR__ . '/vendor/autoload.php';
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
-
-
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
@@ -42,6 +40,7 @@ if ($p->getInputOption('with-php-version')) {
     }
 }
 
+
 define('BUILD_PHP_VERSION', $php_version);
 define('BUILD_PHP_VERSION_ID', intval($php_version_id));
 define('BUILD_PHP_VERSION_TAG', $php_version_tag);
@@ -71,12 +70,6 @@ if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
 
-
-//release 版本，屏蔽这两个函数，使其不生效
-// ->withCleanBuildDirectory()
-// ->withCleanPreInstallDirectory($prefix)
-//SWOOLE_CLI_SKIP_DEPEND_DOWNLOAD
-//SWOOLE_CLI_BUILD_TYPE=release
 
 
 if ($p->getInputOption('with-override-default-enabled-ext')) {
@@ -151,6 +144,14 @@ if ($p->getInputOption('with-c-compiler')) {
     }
 }
 
+if ($p->getInputOption('with-build-shared-lib')) {
+    define('BUILD_SHARED_LIBS', true);
+    define('BUILD_STATIC_LIBS', false);
+} else {
+    define('BUILD_SHARED_LIBS', false);
+    define('BUILD_STATIC_LIBS', false);
+}
+
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)
 # $p->setMaxJob(`nproc 2> /dev/null || sysctl -n hw.ncpu`); // nproc on macos ；
 # `grep "processor" /proc/cpuinfo | sort -u | wc -l`
@@ -166,6 +167,14 @@ export HOMEBREW_INSTALL_FROM_API=1
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_AUTO_UPDATE=1
 export PIPENV_PYPI_MIRROR=https://pypi.python.org/simple
+EOF
+    );
+} else {
+    $p->withPreInstallCommand(
+        'debian',
+        <<<'EOF'
+    test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
+    export DEBIAN_FRONTEND=noninteractive
 EOF
     );
 }

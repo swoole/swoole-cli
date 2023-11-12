@@ -22,7 +22,7 @@ EOF
         ->withPrefix($ceph_prefix)
         ->withInstallCached(false)
         //->withBuildCached(false)
-        ->withSystemEnvPath()
+        ->withSystemOriginEnvPath()
         ->withBuildLibraryHttpProxy()
         ->withBuildScript(
             <<<EOF

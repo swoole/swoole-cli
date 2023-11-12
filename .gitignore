@@ -354,7 +354,4 @@ sapi/webUI/package-lock.json
 ldflags.log
 cppflags.log
 libs.log
-
-
-/php-src
-
+.env

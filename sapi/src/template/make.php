@@ -119,11 +119,30 @@ make_<?=$item->name?>() {
 
     cd <?=$this->getBuildDir()?>/<?=$item->name . PHP_EOL?>
 
+    <?php if ($item->enableEnv) : ?>
+    if [  -f <?= $this->getWorkDir() ?>/.env ] ; then
+        for line in `cat <?= $this->getWorkDir() ?>/.env`
+        do
+            echo $line
+            export $line
+        done
+    fi
+    <?php endif;?>
+
     <?php if ($item->enableSystemOriginEnvPath) : ?>
     export PKG_CONFIG_PATH=${SYSTEM_ORIGIN_PKG_CONFIG_PATH}
     export PATH=${SYSTEM_ORIGIN_PATH}
     <?php endif;?>
 
+    <?php if ($item->enableSystemHttpProxy && !empty($this->httpProxy)) : ?>
+    mkdir -p /etc/apt/apt.conf.d/
+
+    cat > /etc/apt/apt.conf.d/proxy.conf <<'--OS-PROXY-<?=$item->name?>-EOF--'
+    Acquire::http::Proxy  "<?= $this->getHttpProxy() ?>";
+    Acquire::https::Proxy "<?= $this->getHttpProxy() ?>";
+
+--OS-PROXY-<?=$item->name?>-EOF--
+    <?php endif;?>
 
     <?php if ($item->enableBuildLibraryHttpProxy) : ?>
         <?= $this->getProxyConfig() . PHP_EOL ?>
@@ -197,6 +216,10 @@ ___<?=$item->name?>__EOF___
         <?php if ($item->enableBuildLibraryGitProxy) :?>
     unset GIT_PROXY_COMMAND
         <?php endif;?>
+    <?php endif;?>
+
+    <?php if ($item->enableSystemHttpProxy) : ?>
+    test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
     <?php endif;?>
 
     <?php if ($item->enableInstallCached) : ?>
