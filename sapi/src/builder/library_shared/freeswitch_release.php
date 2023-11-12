@@ -43,7 +43,7 @@ EOF
         apt-get update  -y
         apt-get install -y gnupg2 wget lsb-release
 
-        if [ ! -f /etc/apt/sources.list.d/freeswitch.list ] ; then
+        if [ ! -f /usr/share/keyrings/signalwire-freeswitch-repo.gpg ] ; then
 
             wget --http-user=signalwire --http-password=\$TOKEN -O /usr/share/keyrings/signalwire-freeswitch-repo.gpg https://freeswitch.signalwire.com/repo/deb/debian-release/signalwire-freeswitch-repo.gpg
 
