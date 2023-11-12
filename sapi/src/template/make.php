@@ -134,7 +134,7 @@ make_<?=$item->name?>() {
     export PATH=${SYSTEM_ORIGIN_PATH}
     <?php endif;?>
 
-    <?php if ($item->enableSystemHttpProxy && !empty($this->httpProxy)) : ?>
+    <?php if ($item->enableSystemHttpProxy && !empty($this->getHttpProxy())) : ?>
     mkdir -p /etc/apt/apt.conf.d/
 
     cat > /etc/apt/apt.conf.d/proxy.conf <<'--OS-PROXY-<?=$item->name?>-EOF--'
@@ -144,7 +144,7 @@ make_<?=$item->name?>() {
 --OS-PROXY-<?=$item->name?>-EOF--
     <?php endif;?>
 
-    <?php if ($item->enableBuildLibraryHttpProxy) : ?>
+    <?php if ($item->enableBuildLibraryHttpProxy && $this->getProxyConfig()) : ?>
         <?= $this->getProxyConfig() . PHP_EOL ?>
         <?php if ($item->enableBuildLibraryGitProxy) :?>
             <?= $this->getGitProxyConfig() . PHP_EOL ?>

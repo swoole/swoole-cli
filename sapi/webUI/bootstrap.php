@@ -30,8 +30,8 @@ EOF;
         $request_uri = str_replace('//', '/', $request_uri);
         $urlinfo = parse_url($request_uri);
         $path = empty($urlinfo['path']) ? "/" : $urlinfo['path'];
-        if($request_uri == '/'){
-            $path='/index.html';
+        if ($request_uri == '/') {
+            $path = '/index.html';
         }
         $file = realpath(__DIR__ . '/public/') . $path;
 
@@ -125,7 +125,7 @@ EOF;
                     unset($result[$key]);
                 }
             });
-            // var_dump($result);
+        // var_dump($result);
         } elseif ($action === 'extensionListAction') {
             $cmd = <<<EOF
             cd $word_dir/sapi/src/builder/extension
@@ -206,13 +206,11 @@ EOF;
                 $ws->close();
                 break;
             } else {
-
                 if ($frame === false) {
                     echo 'errorCode: ' . swoole_last_error() . "\n";
                     $ws->close();
                     break;
                 } else {
-
                     //参考 :
                     // https://wiki.swoole.com/#/websocket_server?id=%e6%95%b0%e6%8d%ae%e5%b8%a7%e7%b1%bb%e5%9e%8b
                     /*
@@ -224,17 +222,18 @@ EOF;
                         $ws->push($frame->fd, $pongFrame);
                     }
                     */
-                    Swoole\Timer::tick(45 * 1000, function () use ($ws) {
-                        echo " server ping\n";
-                        $pingFrame = new Frame;
-                        $pingFrame->opcode = WEBSOCKET_OPCODE_PING;
-                        $ws->push($pingFrame);
 
-                    });
 
                     // WEBSOCKET_OPCODE_PONG 值为 0xa
                     if ($frame->opcode == 0xa) {
                         echo "Pong frame received: Code {$frame->opcode}\n";
+                        Swoole\Timer::tick(45 * 1000, function () use ($ws) {
+                            echo " server ping\n";
+                            $pingFrame = new Frame();
+                            $pingFrame->opcode = WEBSOCKET_OPCODE_PING;
+                            $ws->push($pingFrame);
+                            $pingFrame = null;
+                        });
                     }
 
                     if ($frame->data == 'close' || get_class($frame) === CloseFrame::class) {
@@ -264,7 +263,6 @@ EOF;
 
                         $ws->push(json_encode($data));
                     }
-
                 }
             }
         }
