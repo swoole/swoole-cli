@@ -36,7 +36,7 @@ EOF;
         $file = realpath(__DIR__ . '/public/') . $path;
 
         //printf("%s,%s%s", $path, $file,PHP_EOL);
-
+        $result = [];
 
         if (is_file($file)) {
             if (str_ends_with($request_uri, '.js')) {
@@ -170,6 +170,9 @@ EOF;
                 }
                 $fp = null;
             }
+        } elseif ($action === 'workflowAction') {
+            $conf = yaml_parse_file(__DIR__ . DIRECTORY_SEPARATOR . 'workflow.yaml');
+            $result = $conf;
         }
         try {
             $response->end(

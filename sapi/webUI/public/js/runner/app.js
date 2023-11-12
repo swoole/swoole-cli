@@ -1,41 +1,41 @@
-let app=()=>{
-    let URLObj = new URL(location.href);
+const app = () => {
+    const URLObj = new URL(location.href)
 
-    let  wsServer = 'ws://'+URLObj['host'] +'/websocket';
-    console.log(URLObj,wsServer)
+    const wsServer = 'ws://' + URLObj.host + '/websocket'
+    console.log(URLObj, wsServer)
 
-    let  websocket = new WebSocket(wsServer);
-    websocket.onopen = function (evt) {
-        console.log("Connected to WebSocket server.");
+    const websocket = new WebSocket(wsServer)
+    websocket.onopen = function (event) {
+        console.log('Connected to WebSocket server.')
+
         websocket.send(JSON.stringify({
-            action:'get_instance_state',
+            action: 'get_instance_state'
         }))
-      /*
-        setInterval(() => {
-            websocket.ping();
-        }, 10*1000);
-        */
-
-    };
+        /*
+            setInterval(() => {
+                websocket.ping();
+            }, 10*1000);
+            */
+    }
 
     websocket.onclose = function (evt) {
-        console.log("Disconnected");
-    };
+        console.log('Disconnected')
+    }
 
     websocket.onmessage = function (evt) {
-        console.log('Retrieved data from server: ' + evt.data);
-    };
+        console.log('Retrieved data from server: ' + evt.data)
+    }
 
     websocket.onerror = function (evt, e) {
-        console.log('Error occured: ' + evt.data);
-    };
+        console.log('Error occured: ' + evt.data)
+    }
     console.log(websocket)
 
     /*
-    websocket.on('pong',()=>{
-        console.log("received pong");
-    });
+      websocket.on('pong',()=>{
+          console.log("received pong");
+      });
 
-     */
+       */
 }
 export default app
