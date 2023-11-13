@@ -22,7 +22,7 @@ return function (Preprocessor $p) {
                 ./autogen.sh
                 ./configure --help
 
-                PACKAGES='libpng libjpegsdl2 '
+                PACKAGES='libpng libjpeg '
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES ) -I{$libgif_prefix}/include/ " \
                 LDFLAGS="$(pkg-config --libs-only-L      --static \$PACKAGES ) -L{$libgif_prefix}/lib/ " \
                 LIBS="$(pkg-config --libs-only-l         --static \$PACKAGES ) -lgif" \
