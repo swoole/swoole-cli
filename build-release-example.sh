@@ -205,6 +205,7 @@ fi
 
 if [ ${WITH_DOWNLOAD_BOX} -eq 1 ] ; then
     echo " please exec script: "
+    echo " bash sapi/download-box/download-box-batch-downloader.sh "
     echo " bash sapi/download-box/download-box-init.sh "
     exit 0
 fi
