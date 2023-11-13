@@ -24,7 +24,7 @@ return function (Preprocessor $p) {
             ->withDocumentation('https://nginx.org/en/docs/')
             //->withUrl('http://nginx.org/download/nginx-1.25.2.tar.gz')
             //->withAutoUpdateFile()
-            ->withFile('nginx-1.25.2.tar.gz')
+            ->withFile('nginx-latest.tar.gz')
             ->withDownloadScript(
                 'nginx',
                 <<<EOF
