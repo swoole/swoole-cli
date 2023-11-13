@@ -153,7 +153,7 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update   --optimize-autoloader
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1 --with-download-mirror-url=https://php-cli.xiaoshuogeng.com/
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1 --with-download-mirror-url=https://php-cli-usa.jingjingxyk.com/
 
             bash make-install-deps.sh
 
