@@ -17,8 +17,7 @@ mkdir -p pool/ext
 test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
-mkdir -p lib
-mkdir -p ext
+
 
 
 DOMAIN='https://swoole-cli.jingjingxyk.com/'

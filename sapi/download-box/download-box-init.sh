@@ -31,6 +31,14 @@ done
 
 cd ${__PROJECT__}/
 
+
+if [ ! -f ${__PROJECT__}/build-release.sh ] ; then
+    echo 'please script:'
+    echo "bash ${__PROJECT__}/build-release.sh --mirror china  --download-box"
+    exit 0
+fi
+
+
 DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
 mkdir -p ${__PROJECT__}/var/download-box/
 
@@ -38,27 +46,15 @@ cd ${__PROJECT__}/var/download-box/
 mkdir -p lib
 mkdir -p ext
 
-if [ ! -f ${__PROJECT__}/build-release.sh ] ; then
-    echo 'please build-release.sh'
-    exit 0
-fi
-
-bash ${__PROJECT__}/build-release.sh --mirror china  --download-box
-
-
 cd ${__PROJECT__}
 
 # 生成扩展依赖图
-bash sapi/extension-dependency-graph/generate-dependency-graph.sh
+sh sapi/scripts/generate-dependency-graph.sh
 
-cd ${__PROJECT__}
-bash sapi/download-box/download-box-dependencies-use-aria2.sh
+# 准备源码
+## 兼容macos 需要的源码包 或者 跳过批量下载
 
-cd ${__PROJECT__}
-bash sapi/download-box/download-box-dependencies-use-git.sh
+awk 'BEGIN { cmd="cp -ri pool/lib/* var/download-box/lib/ "  ; print "n" |cmd; }'
+awk 'BEGIN { cmd="cp -ri pool/ext/* var/download-box/ext/ "  ; print "n" |cmd; }'
 
 
-# 例子
-# bash build-release.sh --mirror china  --download-box
-# bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
-# bash sapi/download-box/download-box-dependencies-sync.sh
