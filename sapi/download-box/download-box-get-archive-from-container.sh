@@ -16,8 +16,7 @@ test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download
 cd ${__PROJECT__}/var/download-box/
 
 
-TAG='download-box-nginx-alpine-20230505T112517Z'
-TAG='download-box-nginx-alpine-1.8-20231110T092201Z'
+TAG='download-box-nginx-alpine-1.8-20231113T083427Z'
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
