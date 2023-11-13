@@ -64,12 +64,6 @@ esac
 
 test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 
-case "$MIRROR" in
-tuna)
-  sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
-  ;;
-esac
-
 
 apt update -y
 apt install -y git curl wget ca-certificates
