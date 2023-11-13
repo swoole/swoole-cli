@@ -62,7 +62,7 @@ jobs:
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-aarch64-all-library
+          key: experiment-${{ runner.os }}-aarch64-all-library
 
       - name: Cache swoole-cli-builder-image
         uses: actions/cache@v3
