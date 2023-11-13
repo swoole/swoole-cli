@@ -174,15 +174,10 @@ fi
 # --skip-download=1
 # --with-http-proxy=http://192.168.3.26:8015
 # --with-override-default-enabled-ext=0
-
-if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
-  unset HTTP_PROXY
-  unset HTTPS_PROXY
-  unset NO_PROXY
-fi
+# --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 
 
-echo
+
 # 定制构建选项
 OPTIONS='+apcu +ds +xlswriter +ssh2'
 OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
