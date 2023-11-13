@@ -146,7 +146,7 @@ fi
 # --without-docker=1
 # @macos
 # --with-parallel-jobs=8
-
+# --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 
 echo
 # 定制构建选项
