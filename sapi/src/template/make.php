@@ -163,8 +163,8 @@ clean_<?=$item->name?>() {
 
 clean_<?=$item->name?>_cached() {
     echo "clean <?=$item->name?> [cached]"
-    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
-        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
+        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
     fi
     cd <?= $this->workDir . PHP_EOL ?>
     return 0
@@ -515,8 +515,8 @@ elif [ "$1" = "clean-all-library" ] ;then
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
-    if [ -d <?=$this->getGlobalPrefix()?>/<?=$item->name?>/ ] ;then
-        rm -rf <?=$this->getGlobalPrefix()?>/<?=$item->name?>/
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
+        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
     fi
 <?php endforeach; ?>
     exit 0

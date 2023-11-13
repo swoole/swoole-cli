@@ -62,7 +62,10 @@ while [ $# -gt 0 ]; do
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
-    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
+    NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn"
+    NO_PROXY="${NO_PROXY},.tencent.com"
+    NO_PROXY="${NO_PROXY},.sourceforge.net"
+    export NO_PROXY="${NO_PROXY},.npmmirror.com"
     WITH_HTTP_PROXY=1
     OPTIONS="${OPTIONS} --with-http-proxy=${HTTP_PROXY}  "
     ;;
@@ -179,13 +182,6 @@ fi
 # --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 
 
-if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
-  unset HTTP_PROXY
-  unset HTTPS_PROXY
-  unset NO_PROXY
-fi
-
-
 # 定制构建选项
 OPTIONS='+apcu +ds +xlswriter +ssh2'
 OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
@@ -208,6 +204,7 @@ fi
 
 if [ ${WITH_DOWNLOAD_BOX} -eq 1 ] ; then
     echo " please exec script: "
+    echo " bash sapi/download-box/download-box-batch-downloader.sh "
     echo " bash sapi/download-box/download-box-init.sh "
     exit 0
 fi
