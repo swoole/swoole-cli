@@ -1,3 +1,4 @@
+```bash
 
 git gc --prune=now
 
@@ -6,10 +7,12 @@ git shortlog -s ${1-} |
 cut -b8- |
 sort | uniq
 
+```
 
 
 # 删除子模块
 ```bash
+
 git submodule deinit ext/swoole
 
 git submodule deinit -f ext/swoole
@@ -17,6 +20,7 @@ git submodule deinit -f ext/swoole
 rm -rf .git/modules/ext/swoole/
 
 git rm -rf ext/swoole/
+
 ```
 
 ## 创建空的新分支
@@ -64,7 +68,7 @@ git reset --hard c761f5c # 回退到指定的版本
 
 git clone --recurse-submodules --single-branch -b main --progress --depth=1
 
-```
+
 git log --pretty=oneline
 
 git stash list
@@ -77,3 +81,8 @@ git remote prune origin --dry-run
 
 
 git gc --prune=now
+
+
+
+```
+
