@@ -55,14 +55,14 @@ jobs:
         id: dependency-cache
         with:
           path: ${{ github.workspace }}/pool/
-          key: ${{ runner.os }}-aarch64-pool
+          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-aarch64-pool
 
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: experiment-${{ runner.os }}-aarch64-all-library
+          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-aarch64-all-library
 
       - name: Cache swoole-cli-builder-image
         uses: actions/cache@v3
