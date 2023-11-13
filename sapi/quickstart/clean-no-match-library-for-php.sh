@@ -11,6 +11,9 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+GLOBAL_PREFIX=/usr/local/swoole-cli/
+BUILD_DIR=${__PROJECT__}/thirdparty/
+
 
 test -d ${GLOBAL_PREFIX}/openssl && rm -rf ${GLOBAL_PREFIX}/openssl
 test -d ${BUILD_DIR}/openssl && rm -rf ${BUILD_DIR}/openssl
