@@ -20,7 +20,7 @@ while [ $# -gt 0 ]; do
 done
 
 case "$MIRROR" in
-china | ustc)
+china | ustc | tuna)
   OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
   VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
   case $OS_ID in
@@ -30,10 +30,12 @@ china | ustc)
       test -f /etc/apt/sources.list.save || cp /etc/apt/sources.list /etc/apt/sources.list.save
       sed -i "s@deb.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
       sed -i "s@security.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
+      test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
       ;;
     12)
       test -f /etc/apt//etc/apt/sources.list.d/debian.sources.save || cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
       sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
+      test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list.d/debian.sources
       ;;
     *)
       echo 'no match debian os version' . $VERSION_ID
@@ -46,6 +48,7 @@ china | ustc)
       test -f /etc/apt/sources.list.save || cp /etc/apt/sources.list /etc/apt/sources.list.save
       sed -i "s@security.ubuntu.com@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
       sed -i "s@archive.ubuntu.com@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
+      test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
       ;;
     *)
       echo 'no match ubuntu os version' . $VERSION_ID
@@ -80,8 +83,11 @@ apt install -y meson
 apt install -y netcat-openbsd
 
 case "$MIRROR" in
-china)
+china | tuna)
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  ;;
+ustc)
+  pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
   ;;
 
 esac
