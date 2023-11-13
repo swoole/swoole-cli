@@ -49,14 +49,14 @@ done
 
 case $ARCH in
 'x86_64')
-  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231111T160944Z
+  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231113T125520Z
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
   if [ "$MIRROR" = 'china' ] ; then
     IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:${TAG}
   fi
   ;;
 'aarch64')
-  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231111T174814Z
+  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231113T121401Z
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
     if [ "$MIRROR" = 'china' ] ; then
       IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:${TAG}

@@ -77,12 +77,17 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/runtime
-          if test $(ls -A pool/lib/ | wc -l) -le 49 ; then
+
+          CACHE_NUM=$(ls -A pool/lib/ | wc -l)
+          LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
+          echo `expr $LIB_NUM - $CACHE_NUM`
+
+          if test $CACHE_NUM -le 32 ; then
               bash sapi/download-box/download-box-get-archive-from-container.sh
           fi
 
           if test $(ls -A /usr/local/swoole-cli/ | wc -l) -le 32 ; then
-              TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231111T174814Z
+              TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231113T121401Z
               IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
               container_id=$(docker create $IMAGE) # returns container ID
@@ -110,7 +115,6 @@ jobs:
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
           image: swoole-cli-builder:latest
           options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
@@ -143,9 +147,7 @@ jobs:
       - name: Show Build Result
         uses: addnab/docker-run-action@v3
         with:
-          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php7-v1.0.0-aarch64-20230917T133332Z
           image: swoole-cli-builder:latest
-
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             ./bin/swoole-cli -v
