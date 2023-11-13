@@ -183,15 +183,6 @@ fi
 # --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 
 
-
-if [ ${WITH_HTTP_PROXY} -eq 1 ] ; then
-  unset HTTP_PROXY
-  unset HTTPS_PROXY
-  unset NO_PROXY
-fi
-
-
-echo
 # 定制构建选项
 OPTIONS='+apcu +ds +xlswriter +ssh2'
 OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
