@@ -21,7 +21,10 @@ while [ $# -gt 0 ]; do
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
-    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
+    NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn"
+    NO_PROXY="${NO_PROXY},.tencent.com"
+    NO_PROXY="${NO_PROXY},.sourceforge.net"
+    export NO_PROXY="${NO_PROXY},.npmmirror.com"
     ;;
   --*)
     echo "Illegal option $1"
