@@ -44,6 +44,9 @@ if [[ ${CUSTOM_PHP_VERSION_ID} -lt 8030  &&   ${CUSTOM_PHP_VERSION_ID} -ge 7030 
     test -d ${GLOBAL_PREFIX}/libssh2 && rm -rf ${GLOBAL_PREFIX}/libssh2
     test -d ${BUILD_DIR}/libssh2 && rm -rf ${BUILD_DIR}/libssh2
 
+    test -d ${GLOBAL_PREFIX}/libwebp && rm -rf ${GLOBAL_PREFIX}/libwebp
+    test -d ${BUILD_DIR}/libwebp && rm -rf ${BUILD_DIR}/libwebp
+
     test -d ${GLOBAL_PREFIX}/imagemagick && rm -rf ${GLOBAL_PREFIX}/imagemagick
     test -d ${BUILD_DIR}/imagemagick && rm -rf ${BUILD_DIR}/imagemagick
 
