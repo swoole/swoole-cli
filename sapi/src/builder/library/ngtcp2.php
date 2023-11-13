@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
             ->withManual('https://curl.se/docs/http3.html')
             ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/tags/v1.0.0.tar.gz')
-            ->withFile('ngtcp2-v0.13.1.tar.gz')
+            ->withFile('ngtcp2-v1.0.0.tar.gz')
             ->withPrefix($ngtcp2_prefix)
             ->withConfigure(
                 <<<EOF
