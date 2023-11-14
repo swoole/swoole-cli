@@ -64,14 +64,14 @@ jobs:
         id: dependency-cache
         with:
           path: ${{ github.workspace }}/pool/
-          key: ${{ runner.os }}-x86_64-pool
+          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-pool
 
       - name: Cache all-library
         uses: actions/cache@v3
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ runner.os }}-x86_64-all-library
+          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-all-library
 
       - name: Cache swoole-cli-builder-image
         uses: actions/cache@v3
@@ -97,28 +97,14 @@ jobs:
           if [ ! -f bin/runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
-          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
-              bash sapi/download-box/download-box-get-archive-from-container.sh
-          fi
-
-          if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
-              IMAGE="docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z"
-
-              container_id=$(docker create $IMAGE) # returns container ID
-              docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
-              docker rm $container_id
-
-              rm -rf /usr/local/swoole-cli/libwebp
-
-          fi
+          ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          # image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230614T150918Z
           image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work -e BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }} -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
             uname -m

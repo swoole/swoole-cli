@@ -21,7 +21,10 @@
 
 ```bash
 
+bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh
+
 ## composer 使用腾讯镜像源 , 系统源使用 ustc 源
+
 bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
 
 ```

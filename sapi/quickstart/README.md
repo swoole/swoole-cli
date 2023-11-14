@@ -8,7 +8,6 @@
   cp  build-release-example.sh  build-release.sh
 
 
-
   bash build-release.sh
 
 ```
