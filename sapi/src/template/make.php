@@ -157,6 +157,7 @@ before_configure_script() {
 }
 
 export_variables() {
+    set -x
     CPPFLAGS=""
     CFLAGS=""
     LDFLAGS=""
@@ -164,16 +165,18 @@ export_variables() {
 <?php foreach ($this->variables as $name => $value) : ?>
     <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+
+    echo "export variables"
 <?php foreach ($this->exportVariables as $value) : ?>
     export  <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
     result_code=$?
-    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE]" && exit  $result_code;
+    [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
+    set +x
     return 0
 }
 
 make_config() {
-    set -x
     before_configure_script
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
@@ -321,6 +324,7 @@ elif [ "$1" = "build" ] ;then
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
+    set -x
     cd bin
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
     SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
@@ -336,7 +340,9 @@ elif [ "$1" = "clean-all-library" ] ;then
 elif [ "$1" = "clean-all-library-cached" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed"
-    rm <?= $this->getGlobalPrefix() ?>/<?= $item->name ?>/.completed
+    if [ -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed ] ;then
+        rm -f <?=$this->getGlobalPrefix()?>/<?=$item->name?>/.completed
+    fi
 <?php endforeach; ?>
     exit 0
 elif [ "$1" = "diff-configure" ] ;then

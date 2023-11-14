@@ -32,9 +32,9 @@ EOF
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-DEV_SHM=0
 MIRROR=""
 DEV_SHM=0
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
@@ -42,7 +42,6 @@ while [ $# -gt 0 ]; do
     ;;
   --dev-shm)
     DEV_SHM=1
-    shift
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
@@ -50,16 +49,17 @@ done
 
 case $ARCH in
 'x86_64')
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230917T123120Z
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231016T112104Z
+  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231113T100559Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
   if [ "$MIRROR" = 'china' ] ; then
-    IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20230917T123120Z
+    IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:${TAG}
   fi
   ;;
 'aarch64')
-  IMAGE=docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
+  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231113T101108Z
+  IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
     if [ "$MIRROR" = 'china' ] ; then
-      IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20230917T124401Z
+      IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:${TAG}
     fi
   ;;
 *)
@@ -67,7 +67,6 @@ case $ARCH in
   exit 0
   ;;
 esac
-
 
 
 cd ${__DIR__}
