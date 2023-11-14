@@ -66,6 +66,7 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},.tencent.com"
     NO_PROXY="${NO_PROXY},.sourceforge.net"
     export NO_PROXY="${NO_PROXY},.npmmirror.com"
+
     WITH_HTTP_PROXY=1
     OPTIONS="${OPTIONS} --with-http-proxy=${HTTP_PROXY}  "
     ;;
@@ -148,7 +149,7 @@ php -v
 
 if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
     export COMPOSER_ALLOW_SUPERUSER=1
-    if [ "$WITH_MIRROR" = 'china' ]; then
+    if [ "$MIRROR" = 'china' ]; then
         composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
         # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
     else
@@ -176,7 +177,7 @@ fi
 # --skip-download=1
 # --with-http-proxy=http://192.168.3.26:8015
 # --with-override-default-enabled-ext=0
-# --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+# --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 
 
 
