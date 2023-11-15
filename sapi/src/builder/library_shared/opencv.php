@@ -146,7 +146,7 @@ EOF
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
-        -DBUILD_EXAMPLES=ON \
+        -DBUILD_EXAMPLES=OFF \
         -DBUILD_opencv_apps=ON \
         -DBUILD_opencv_js=OFF \
         -DBUILD_JAVA=OFF \
