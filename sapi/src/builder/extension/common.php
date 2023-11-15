@@ -164,6 +164,9 @@ return function (Preprocessor $p) {
     $depends = ['opencl'] ;
 
     $depends = ['svt_av1'] ;
+
+    $depends = ['vulkan'] ;
+    $depends = ['mesa3d'] ;
     $depends = ['ffmpeg'] ;
 
     $ext = (new Extension('common'))

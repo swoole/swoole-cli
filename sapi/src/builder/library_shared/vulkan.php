@@ -17,8 +17,14 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($vulkan_prefix)
-        ->withCleanBuildDirectory()
         ->withBuildCached(false)
+        ->withInstallCached(false)
+        ->withPreInstallCommand(
+            'ubuntu',
+            <<<EOF
+        apt install zlib1g-dev
+EOF
+        )
 
         ->withConfigure(
             <<<EOF
@@ -28,16 +34,14 @@ EOF
              cmake .. \
             -DCMAKE_INSTALL_PREFIX={$vulkan_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
-            -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON
+            -DBUILD_SHARED_LIBS=ON  \
+            -DBUILD_STATIC_LIBS=OFF
 
 
 
 EOF
         )
-
         ->withBinPath($vulkan_prefix . '/bin/')
-        ->withDependentLibraries('zlib', 'openssl')
     ;
     $p->addLibrary($lib);
 };

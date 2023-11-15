@@ -36,7 +36,7 @@ EOF
         -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_TESTS=OFF \
-        -DBUILD_SHARED_LIBS=OFF \
+        -DBUILD_SHARED_LIBS=ON \
         -DCMAKE_PREFIX_PATH="{$ffmpeg_prefix};{$libosmesa_prefix}" \
         -DVTK_BUILD_TESTING=OFF \
         -DVTK_OPENGL_HAS_OSMESA=ON \
