@@ -168,6 +168,11 @@ return function (Preprocessor $p) {
     $depends = ['vulkan'] ;
     $depends = ['mesa3d'] ;
     $depends = ['ffmpeg'] ;
+    $depends = ['dahdi_linux'] ;
+    $depends = ['dahdi_tools'] ;
+    $depends = ['libpri'] ;
+    $depends = ['asterisk'] ;
+
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')

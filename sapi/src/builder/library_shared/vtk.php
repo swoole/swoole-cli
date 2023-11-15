@@ -48,13 +48,6 @@ EOF
         ninja install
 EOF
         )
-        ->withScriptAfterInstall(
-            <<<EOF
-            rm -rf {$vtk_prefix}/lib/*.so.*
-            rm -rf {$vtk_prefix}/lib/*.so
-            rm -rf {$vtk_prefix}/lib/*.dylib
-EOF
-        )
         ->withDependentLibraries(
             'ffmpeg',
             'libosmesa'

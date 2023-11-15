@@ -11,22 +11,30 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/asterisk/asterisk')
         ->withManual('https://github.com/asterisk/dahdi-linux/wiki')
         ->withManual('https://docs.asterisk.org/About-the-Project/')
-        ->withSkipDownload()
-        ->withBuildScript('')
+        ->withFile('asterisk-latest.tar.gz')
+        ->withDownloadScript(
+            'asterisk',
+            <<<EOF
+                git clone  --depth=1 https://github.com/asterisk/asterisk
+EOF
+        )
+        ->withBuildScript(
+            <<<EOF
+        ./configure --help
+EOF
+        )
         ->withBinPath($asterisk_prefix . '/bin/')
         ->withDependentLibraries(
-            'libpcap',
-            'openssl',
-            'zlib',
-           // 'libpri',
-            //'dahdi_linux',
-            //'dahdi_tools',
+            // 'libpcap',
+            //  'openssl',
+            // 'zlib',
+            //'libpri',
+            'dahdi_linux',
+            'dahdi_tools',
             //'dahdi_complete',
-            'pjproject',
-            'libsrtp'
-        )
-
-    ;
+            // 'pjproject',
+            //'libsrtp'
+        );
 
     $p->addLibrary($lib);
 };

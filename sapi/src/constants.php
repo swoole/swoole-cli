@@ -225,7 +225,7 @@ define("LIBG722_PREFIX", $p->getGlobalPrefix() . '/libg722');
 define("OPENXR_PREFIX", $p->getGlobalPrefix() . '/OpenXR');
 define("FREETDM_PREFIX", $p->getGlobalPrefix() . '/freetdm');
 define("LIBPRI_PREFIX", $p->getGlobalPrefix() . '/libpri');
-define("DAHDI_PREFIX", $p->getGlobalPrefix() . '/dahdi_linux');
+
 define("APR_PREFIX", $p->getGlobalPrefix() . '/apr');
 define("APR_UTIL_PREFIX", $p->getGlobalPrefix() . '/apr-util');
 define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
@@ -249,8 +249,7 @@ define("VULKAN_PREFIX", $p->getGlobalPrefix() . '/vulkan');
 define("SHADERC_PREFIX", $p->getGlobalPrefix() . '/shaderc');
 define("SPIRV_TOOLS_PREFIX", $p->getGlobalPrefix() . '/spirv_tools');
 define("FDK_AAC_PREFIX", $p->getGlobalPrefix() . '/fdk_aac');
-define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
-define("PJPROJECT_PREFIX", $p->getGlobalPrefix() . '/pjproject');
+
 define("PROMETHEUS_CLIENT_C_PREFIX", $p->getGlobalPrefix() . '/prometheus_client_c');
 
 define("LIBBSON_PREFIX", $p->getGlobalPrefix() . '/libbson');
@@ -310,4 +309,8 @@ define("MPFR_PREFIX", $p->getGlobalPrefix() . '/mpfr');
 define("LIBVA_PREFIX", $p->getGlobalPrefix() . '/libva');
 define("LIBMYSQLICLIENT_PREFIX", $p->getGlobalPrefix() . '/libmysqlclient');
 define("LIBCEPH_PREFIX", $p->getGlobalPrefix() . '/libceph');
+define("DAHDI_LINUX_PREFIX", $p->getGlobalPrefix() . '/dahdi_linux');
+define("DAHDI_TOOLS_PREFIX", $p->getGlobalPrefix() . '/dahdi_tools');
+define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
+define("PJPROJECT_PREFIX", $p->getGlobalPrefix() . '/pjproject');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

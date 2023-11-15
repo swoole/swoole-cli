@@ -9,6 +9,8 @@ return function (Preprocessor $p) {
 
     // libpri：基本速率 ISDN 的实现
 
+    $dahdi_tools_prefix = DAHDI_TOOLS_PREFIX;
+
     $lib = new Library('libpri');
     $lib->withHomePage('https://www.asterisk.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
@@ -22,26 +24,17 @@ EOF
         )
         ->withBuildCached(false)
         ->withPrefix($libpri_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libpri_prefix)
         ->withBuildScript(
             <<<EOF
 
-
-            PACKAGES='zlib  '
-            PACKAGES="\$PACKAGES zlib"
-
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)" \
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
+            CPPFLAGS=" I{$dahdi_tools_prefix}/include/dahdi/" \
             make -j {$p->maxJob}  DESTDIR={$libpri_prefix}
 
 
 EOF
         )
-        ->withPkgName('ssl')
         ->withBinPath($libpri_prefix . '/bin/')
-        ->withDependentLibraries('zlib') //'dahdi_linux'
+        ->withDependentLibraries('dahdi_tools')
     ;
 
     $p->addLibrary($lib);
