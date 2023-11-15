@@ -163,8 +163,8 @@ EOF
         -DWITH_GTK=ON \
         -DWITH_CUDA=OFF \
 
-        exit 0
         ninja
+
         ninja install
 EOF
         )
