@@ -10,17 +10,7 @@
   "autoload": {
     "psr-4": {
       "SwooleCli\\": "sapi/src"
-    },
-    "files": [
-      "sapi/src/library_builder/library_builder.php",
-      "sapi/src/library_builder/library_install_builder.php",
-      "sapi/src/library_builder/library_install_builder_test.php",
-      "sapi/src/library_builder/library_install_builder_image.php",
-      "sapi/src/library_builder/library_install_builder_vision.php",
-      "sapi/src/library_builder/library_install_builder_extra.php",
-      "sapi/src/library_builder/library_install_builder_extensions.php",
-      "sapi/src/library_builder/library_install_builder_tools.php"
-    ]
+    }
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.15",

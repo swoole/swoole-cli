@@ -78,7 +78,6 @@ return function (Preprocessor $p) {
     $lib = new Library('opencv');
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('https://github.com/opencv/opencv/blob/4.x/LICENSE', Library::LICENSE_APACHE2)
-        //->withUrl('https://github.com/opencv/opencv/archive/refs/tags/4.7.0.tar.gz')
         ->withManual('https://github.com/opencv/opencv.git')
         ->withManual('https://docs.opencv.org/5.x/db/d05/tutorial_config_reference.html')
         ->withManual('https://github.com/opencv/opencv_contrib/tree/5.x/modules/README.md')
@@ -110,6 +109,12 @@ EOF
         # apk add binaryen # WebAssembly 的优化器和编译器/工具链
 EOF
         )
+        ->withPreInstallCommand(
+            'ubuntu',
+            <<<EOF
+
+EOF
+        )
         ->withPrefix($opencv_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($opencv_prefix)
@@ -117,62 +122,29 @@ EOF
         ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
-        PACKAGES='openssl  '
-        PACKAGES="\$PACKAGES  zlib"
-        PACKAGES="\$PACKAGES  libxml-2.0"
-        PACKAGES="\$PACKAGES  liblzma  libzstd liblz4 "
-        PACKAGES="\$PACKAGES  libavcodec libavdevice libavfilter libavformat libavutil libswresample libswscale"
-        PACKAGES="\$PACKAGES  libpng libpng16 libjpeg libturbojpeg SvtAv1Enc SvtAv1Dec "
-        PACKAGES="\$PACKAGES  libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
 
-        PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " # libtiff-4
-        PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
-        PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
-        PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64  lapack64 blas"
-        PACKAGES="\$PACKAGES   harfbuzz harfbuzz-icu"
-
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
-        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)"
-        REQUIRED_LIBRARIES="$(pkg-config --libs  --static \$PACKAGES)"
-
-        CPPFLAGS="\$CPPFLAGS -I{$bzip2_prefix}/include -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include "
-        LDFLAGS="\$LDFLAGS -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib"
-        LIBS="\$LIBS -lbz2 -liconv "
-        REQUIRED_LIBRARIES="\$LDFLAGS \$LIBS"
 
         mkdir -p build
         cd  build
 
-        # export OPENCV_DOWNLOAD_PATH={$buildDir}/opencv-download-cache
-
         cmake .. \
         -G Ninja \
         -DCMAKE_INSTALL_PREFIX={$opencv_prefix} \
-        -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DOPENCV_EXTRA_MODULES_PATH="../opencv_contrib/modules" \
         -DCMAKE_CXX_STANDARD=14 \
         -DCMAKE_C_STANDARD=11 \
         -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_STATIC_LIBS=ON \
-        -DBUILD_SHARED_LIBS=OFF \
+        -DBUILD_STATIC_LIBS=OFF \
+        -DBUILD_SHARED_LIBS=ON \
         -DOPENCV_DOWNLOAD_PATH={$buildDir}/opencv-download-cache \
-        -DOpenCV_STATIC=ON \
+        -DOpenCV_STATIC=OFF \
         -DENABLE_PIC=ON \
         -DWITH_FFMPEG=ON \
-        -DFFMPEG_ROOT={$ffmpeg_prefix} \
-        -DZLIB_ROOT={$zlib_prefix} \
-        -Dfreetype2_ROOT={$freetype_prefix} \
-        -DPNG_ROOT={$png_prefix} \
-        -DJPEG_ROOT={$jpeg_prefix} \
-        -DLAPACK_ROOT={$lapack_prefix} \
-        -DOpenBLAS_ROOT={$openblas_prefix} \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
-        -DBUILD_EXAMPLES=OFF \
-        -DBUILD_opencv_apps=OFF \
-        -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
+        -DBUILD_EXAMPLES=ON \
+        -DBUILD_opencv_apps=ON \
         -DBUILD_opencv_js=OFF \
         -DBUILD_JAVA=OFF \
         -DBUILD_CUDA_STUBS=OFF  \
@@ -187,98 +159,13 @@ EOF
         -DWITH_AVIF=ON \
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
-        -DCMAKE_EXE_LINKER_FLAGS="  -Wl,--no-dynamic-linker -Wl,--as-needed -Wl,--no-undefined  \${REQUIRED_LIBRARIES} " \
-
-
-        # -DCMAKE_EXE_LINKER_FLAGS=" \${REQUIRED_LIBRARIES} " \
-        # -DWEBP_INCLUDE_DIR="{$libwebp_prefix}/include" \
-        # -DWEBP_LIBRARIES="{$libwebp_prefix}/lib/libsharpyuv.a  {$libwebp_prefix}/lib/libwebp.a  {$libwebp_prefix}/lib/libwebpdecoder.a  {$libwebp_prefix}/lib/libwebpdemux.a  {$libwebp_prefix}/lib/libwebpmux.a"
-
-        # 编译选项链接参数
-        # https://github.com/opencv/opencv/blob/5.x/cmake/OpenCVCompilerOptions.cmake
-
-        # -DCMAKE_EXE_LINKER_FLAGS_INIT=" \${REQUIRED_LIBRARIES} " \
-
-
-
-        # -DCMAKE_REQUIRED_LIBRARIES=" \${REQUIRED_LIBRARIES} "
-
-        # -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS}"
-
-        # OPENCV_LINKER_DEFENSES_FLAGS_COMMON
-        # OPENCV_EXTRA_MODULE_LINKER_FLAG
-        # OPENCV_EXTRA_MODULE_LINKER_FLAGS_RELEAS
-        # 参考 https://github.com/opencv/opencv_3rdparty/blob/ffmpeg/4.x_20230622/ffmpeg/build_videoio_plugin.sh
-
-
-        # -DCMAKE_C_STANDARD_LIBRARIES=" -llzma  -lzstd  -llz4" \
-        # -DCMAKE_STATIC_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS} "
-
-
-        #  -DENABLE_BUILD_HARDENING=ON \
-
-        # -DINCLUDE_DIRECTORIES
-
-        # -DCMAKE_REQUIRED_LIBRARIES="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
-
-
-        # -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
-
-
-        # -DCMAKE_STATIC_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
-
-        # -DLINK_LIBRARIES="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a " \
-        # -DLINK_DIRECTORIES="{$liblzma_prefix}/lib/:{$libzstd_prefix}/lib/:{$liblz4_prefix}/lib/"
-
-        # -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
-        #  -DCMAKE_TARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
-
-        # -DLINK_LIBRARIES="lzma  zstd  lz4"
-        # -DCMAKE_EXE_LINKER_FLAGS_INIT='\${LIBS}'
-        # -DCMAKE_EXE_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4 "
-        # -DCMAKE_REQUIRED_LIBRARIES="lzma  zstd  lz "
-        # -DCMAKE_C_IMPLICIT_LINK_LIBRARIES='\${LIBS}'  \
-        # -DTARGET_LINK_LIBRARIES='\${LIBS}'
-
 
         ninja
         ninja install
 EOF
         )
-        ->withScriptAfterInstall(
-            <<<EOF
-            LINE_NUMBER=$(grep -n 'Libs.private:' {$opencv_prefix}/lib/pkgconfig/opencv5.pc |cut -d ':' -f 1)
-            sed -i.save "\${LINE_NUMBER} s/-lIconv::Iconv//" {$opencv_prefix}/lib/pkgconfig/opencv5.pc
-EOF
-        )
+
         ->withPkgName('opencv5')
-        ->withDependentLibraries(
-            'ffmpeg',
-            'zlib',
-            'libjpeg',
-            'libwebp',
-            'libpng',
-            'freetype',
-            //'libtiff',
-            "gmp",
-            'liblzma',
-            'gflags',
-            'fftw3', //快速傅立叶变换库
-            'openblas', //基础线性代数程序集
-            'lapack', //线性代数计算库
-            // 'harfbuzz',
-            //'openexr',
-            //'openjpeg',
-            //'vtk',
-            //'opencl',
-            //'libdc1394'
-            'imath',
-            'gflags',
-            'glog',
-            //'libeigen', //线性运算代数库 (依赖待完善）
-            //'suitesparse',
-            'harfbuzz'
-        )   //   HDR
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
     ;

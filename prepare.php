@@ -151,7 +151,7 @@ if ($p->getInputOption('with-build-shared-lib')) {
     define('BUILD_STATIC_LIBS', false);
 } else {
     define('BUILD_SHARED_LIBS', false);
-    define('BUILD_STATIC_LIBS', false);
+    define('BUILD_STATIC_LIBS', true);
 }
 
 # 设置CPU核数 ; 获取CPU核数，用于 make -j $(nproc)

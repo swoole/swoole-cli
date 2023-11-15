@@ -1064,6 +1064,7 @@ EOF;
             $file = realpath(__DIR__ . '/builder/library/' . $library_name . '.php');
             if (BUILD_SHARED_LIBS) {
                 $file = realpath(__DIR__ . '/builder/library_shared/' . $library_name . '.php');
+                echo $file. PHP_EOL;
             }
             if (!is_file($file)) {
                 throw new Exception("The library-$library_name does not exist");

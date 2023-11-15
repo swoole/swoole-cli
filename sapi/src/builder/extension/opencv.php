@@ -5,7 +5,6 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $depends = [
-        'ffmpeg',
         'opencv'
     ];
     $ext = (new Extension('opencv'))
