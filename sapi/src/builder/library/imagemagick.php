@@ -13,7 +13,6 @@ return function (Preprocessor $p) {
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-20.tar.gz')
             ->withFile('ImageMagick-v7.1.1-20.tar.gz')
-            //->withMd5sum('37b896e9eecd379a6cd0d6359b9f525a')
             ->withPrefix($imagemagick_prefix)
             ->withConfigure(
                 <<<EOF
