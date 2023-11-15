@@ -88,14 +88,6 @@ jobs:
               bash sapi/download-box/download-box-get-archive-from-container.sh
           fi
 
-          if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
-              TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231113T121401Z
-              IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
-
-              container_id=$(docker create $IMAGE) # returns container ID
-              docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
-              docker rm $container_id
-          fi
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
