@@ -56,7 +56,7 @@ EOF
             <<<EOF
 
             #  libavresample 已弃用，默认编译时不再构建它
-  PACKAGES='openssl  libxml-2.0  freetype2 gmp liblzma' # libssh2
+            PACKAGES='openssl  libxml-2.0  freetype2 gmp liblzma' # libssh2
             PACKAGES="\$PACKAGES libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
             PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
             PACKAGES="\$PACKAGES aom "
