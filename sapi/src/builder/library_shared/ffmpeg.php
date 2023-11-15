@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
     $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
 
     $cppflags = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
-    $ldfalgs = $p->getOsType() == 'macos' ? ' ' : " -L/usr/lib ";
+    $ldfalgs = $p->getOsType() == 'macos' ? ' ' : "-L/usr/lib/x86_64-linux-gnu  -L/usr/lib ";
 
 
     $lib = new Library('ffmpeg');
@@ -49,16 +49,30 @@ EOF
         ->withPreInstallCommand(
             'ubuntu',
             <<<EOF
-        apt install -y liblcms2-dev
+        apt install -y liblcms2-dev liblcms2-2 liblcms2-utils
+        apt install -y libfdk-aac-dev
+        apt install -y libvpx-dev
+        apt install -y librabbitmq-dev
+        apt install -y libopenh264-dev
+        apt install -y libopus-dev
+        apt install -y libsdl2-dev
+        apt install -y libx264-dev
+        apt install -y libx265-dev
+        apt install -y libwebp-dev libwebpdemux2 libwebpmux3  libyuv-dev
+        apt install -y libgmp-dev
+
+
 EOF
         )
         ->withConfigure(
             <<<EOF
-
+            set -x
             #  libavresample 已弃用，默认编译时不再构建它
+            # /usr/lib/x86_64-linux-gnu/pkgconfig
+
             PACKAGES='openssl  libxml-2.0  freetype2 gmp liblzma' # libssh2
-            PACKAGES="\$PACKAGES libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
-            PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
+            PACKAGES="\$PACKAGES libwebp "
+            # PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
             PACKAGES="\$PACKAGES aom "
             PACKAGES="\$PACKAGES dav1d "
             PACKAGES="\$PACKAGES lcms2 "
@@ -73,31 +87,26 @@ EOF
             PACKAGES="\$PACKAGES fribidi "
             PACKAGES="\$PACKAGES librabbitmq "
 
-            CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
-            LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
-            LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
-
+            CPPFLAGS="$(pkg-config  --cflags-only-I   \$PACKAGES) "
+            LDFLAGS="$(pkg-config   --libs-only-L     \$PACKAGES) "
+            LIBS="$(pkg-config      --libs-only-l     \$PACKAGES) "
 
             CPPFLAGS="\$CPPFLAGS  {$cppflags} "
 
-            LDFLAGS="\$LDFLAGS  "
             LDFLAGS="\$LDFLAGS  {$ldfalgs} "
 
-            LIBS="\$LIBS   "
             LIBS="\$LIBS  {$libs} "
+
+
             ./configure  \
             --prefix=$ffmpeg_prefix \
             --enable-gpl \
             --enable-version3 \
-            --disable-shared \
             --enable-nonfree \
-            --enable-static \
             --enable-openssl \
             --enable-libwebp \
             --enable-libxml2 \
-            --enable-libsvtav1 \
             --enable-libaom \
-            --enable-lcms2 \
             --enable-gmp \
             --enable-libx264 \
             --enable-libx265 \
@@ -119,6 +128,8 @@ EOF
             --extra-ldflags="\${LDFLAGS} " \
             --extra-libs="\${LIBS} " \
 
+            #    --enable-lcms2 \
+            #             --enable-libsvtav1 \
 EOF
         )
         ->withPkgName('libavcodec')
@@ -130,6 +141,7 @@ EOF
         ->withPkgName('libswscale')
         ->withBinPath($ffmpeg_prefix . '/bin/')
         ->withDependentLibraries(
+            'svt_av1'
             //'speex' //被opus 取代
         ) //   'libssh2',
     ;

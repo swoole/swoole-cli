@@ -161,6 +161,10 @@ return function (Preprocessor $p) {
     $depends = ['libmongoc'] ;
     $depends = ['libbson'] ;
     $depends = ['libwebp'] ;
+    $depends = ['opencl'] ;
+
+    $depends = ['svt_av1'] ;
+    $depends = ['ffmpeg'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
