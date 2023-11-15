@@ -45,8 +45,8 @@ WITH_HTTP_PROXY=0
 WITH_PHP_COMPOSER=1
 
 # 配置系统仓库  china mirror
-WITH_MIRROR='china'
-WITH_MIRROR=''
+MIRROR='china'
+MIRROR=''
 
 
 OPTIONS=''
@@ -54,7 +54,7 @@ OPTIONS=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    WITH_MIRROR="$2"
+    MIRROR="$2"
     ;;
   --proxy)
     export HTTP_PROXY="$2"
@@ -66,6 +66,7 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},.tencent.com"
     NO_PROXY="${NO_PROXY},.sourceforge.net"
     export NO_PROXY="${NO_PROXY},.npmmirror.com"
+
     WITH_HTTP_PROXY=1
     OPTIONS="${OPTIONS} --with-http-proxy=${HTTP_PROXY}  "
     ;;
@@ -99,7 +100,7 @@ if [ "$OS" = 'linux' ] ; then
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
-            if [ "$WITH_MIRROR" = 'china' ] ; then
+            if [ "$MIRROR" = 'china' ] ; then
                 sh sapi/quickstart/linux/alpine-init.sh --mirror china
             else
                 sh sapi/quickstart/linux/alpine-init.sh
@@ -122,7 +123,7 @@ if [ "$OS" = 'macos' ] ; then
   number=$(which flex  | wc -l)
   if test $number -eq 0 ; then
   {
-        if [ "$WITH_MIRROR" = 'china' ] ; then
+        if [ "$MIRROR" = 'china' ] ; then
             bash sapi/quickstart/macos/macos-init.sh --mirror china
         else
             bash sapi/quickstart/macos/macos-init.sh
@@ -133,7 +134,7 @@ fi
 
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ] ;then
-      if [ "$WITH_MIRROR" = 'china' ] ; then
+      if [ "$MIRROR" = 'china' ] ; then
           bash sapi/quickstart/setup-php-runtime.sh --mirror china
       else
           bash sapi/quickstart/setup-php-runtime.sh
@@ -148,7 +149,7 @@ php -v
 
 if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
     export COMPOSER_ALLOW_SUPERUSER=1
-    if [ "$WITH_MIRROR" = 'china' ]; then
+    if [ "$MIRROR" = 'china' ]; then
         composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
         # composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
     else
@@ -176,7 +177,7 @@ fi
 # --skip-download=1
 # --with-http-proxy=http://192.168.3.26:8015
 # --with-override-default-enabled-ext=0
-# --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
+# --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 
 
 
@@ -209,7 +210,7 @@ fi
 
 if [ ${WITH_BUILD_CONTAINER} -eq 1 ] ; then
     echo " please exec script: "
-        if [ "$WITH_MIRROR" = 'china' ]; then
+        if [ "$MIRROR" = 'china' ]; then
             echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc "
         else
             echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh "
