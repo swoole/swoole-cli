@@ -136,3 +136,9 @@ EOF
 
     $p->addLibrary($lib);
 };
+
+/*
+ * 基于FFmpeg+VAAPI的硬件加速渲染技术
+ * https://zhuanlan.zhihu.com/p/533442023
+ * VDPAU和VAAPI加速规范
+ */
