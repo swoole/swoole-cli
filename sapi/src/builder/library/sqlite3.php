@@ -16,6 +16,7 @@ return function (Preprocessor $p) {
                 <<<EOF
                 ./configure --help
                 CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA=1" \
+                ./configure --prefix={$sqlite3_prefix}  \
                 ./configure \
                 --prefix={$sqlite3_prefix} \
                 --enable-shared=no \
