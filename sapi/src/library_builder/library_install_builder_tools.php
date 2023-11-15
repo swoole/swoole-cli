@@ -180,17 +180,27 @@ function install_rust(Preprocessor $p): void
                 <<<EOF
 
             ls -lh
-             # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+            # # curl https://sh.rustup.rs -sSfL -o rustup-init.sh
+
+            # curl https://sh.rustup.rs -sSf | bash -s -- --help
+            # curl https://sh.rustup.rs -sSf | bash -s -- --quiet
+
+            curl https://sh.rustup.rs -sSfL -o install-rust.sh
             RUSTUP_DIST_SERVER="https://mirrors.tuna.tsinghua.edu.cn/rustup rustup install stable " \
             RUSTUP_UPDATE_ROOT="https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup" \
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-            exit 0
-            RUSTUP_HOME=/root/.rustup
-            CARGO_HOME=/root/.cargo
-            /root/.rustup
-            /root/.cargo
-            /root/.cargo/bin
-            source "\$HOME/.cargo/env"
+
+
+            source ~/.cargo/env
+            export RUSTUP_HOME=/root/.rustup
+            export CARGO_HOME=/root/.cargo
+
+            rustc -V
+            cargo -V
+            # cargo --list
+
+            cargo install cargo-c
+            cargo install --debug cargo-udeps
 
 EOF
             )
@@ -207,22 +217,21 @@ function install_nodejs(Preprocessor $p): void
     $nodejs_prefix = NODEJS_PREFIX;
     $p->addLibrary(
         (new Library('nodejs_lang'))
-            ->withHomePage('https://www.rust-lang.org')
+            ->withHomePage('https://nodejs.org/')
             ->withLicense('https://github.com/rust-lang/rust/blob/master/LICENSE-APACHE', Library::LICENSE_SPEC)
-            ->withUrl('https://nodejs.org/dist/v18.15.0/node-v18.15.0-linux-x64.tar.xz')
+            ->withUrl('https://nodejs.org/dist/v20.9.0/node-v20.9.0-linux-x64.tar.xz')
             ->withManual('https://nodejs.org/en/docs')
-            ->withFile('node-v18.15.0-linux-x64.tar.xz')
             ->withDownloadWithOriginURL()
-            ->withUntarArchiveCommand('mv')
+            ->withUntarArchiveCommand('xz')
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($nodejs_prefix)
             ->withBuildScript(
                 <<<EOF
 
             ls -lh
-            xz -d node-v18.15.0-linux-x64.tar.xz
-            tar -xvf node-v18.15.0-linux-x64.tar
-            mv node-v18.15.0-linux-x64 /usr/nodejs
+            xz -d node-v20.9.0-linux-x64.tar.xz
+            tar -xvf node-v20.9.0-linux-x64.tar
+            mv node-v18.15.0-linux-x64 $nodejs_prefix
 
 EOF
             )
@@ -305,37 +314,7 @@ function install_gn_test(Preprocessor $p): void
 
 function install_gn(Preprocessor $p): void
 {
-    $gn_prefix = '/usr/gn';
-    $p->addLibrary(
-        (new Library('gn'))
-            ->withHomePage('https://gn.googlesource.com/gn')
-            ->withLicense('https://gn.googlesource.com/gn/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
-            //->withUrl('https://gn.googlesource.com/gn')
-            //->withUrl('https://chrome-infra-packages.appspot.com/dl/gn/gn/linux-amd64/+/latest')
-            // ->withUrl('https:chrome-infra-packages.appspot.com/dl/gn/gn/mac-amd64/+/latest')
-            ->withUrl('')
-            ->withSkipDownload()
-            ->withManual('https://gn.googlesource.com/gn/')
-            ->withUntarArchiveCommand('cp')
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($gn_prefix)
-            ->withBuildScript(
-                "
-                cd gn
-                ls -lha .
 
-                python3 build/gen.py --allow-warning
-                ninja -C out
-                exit 0
-                mkdir -p $gn_prefix
-                cp -rf gn/* $gn_prefix
-            "
-            )
-            ->withBinPath($gn_prefix . '/bin/')
-            ->disableDefaultPkgConfig()
-            ->disableDefaultLdflags()
-            ->disablePkgName()
-    );
 }
 
 

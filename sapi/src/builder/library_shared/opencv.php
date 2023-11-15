@@ -112,14 +112,17 @@ EOF
         ->withPreInstallCommand(
             'ubuntu',
             <<<EOF
-
+        apt install -y libstdc++-12-dev
+        apt install -y libavif-dev
+        apt install -y libvtk9-dev
+        apt install -y libogre-1.12-dev
+        apt install -y doxygen
+        apt install -y python3-flake8
+        apt install -y apt install -y libgflags-dev
 EOF
         )
         ->withPrefix($opencv_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($opencv_prefix)
         ->withBuildLibraryHttpProxy(true)
-        ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
 
@@ -157,14 +160,15 @@ EOF
         -DBUILD_DOCS=ON \
         -DOPENCV_ENABLE_NONFREE=ON \
         -DWITH_AVIF=ON \
-        -DWITH_GTK=OFF \
+        -DWITH_GTK=ON \
         -DWITH_CUDA=OFF \
 
+        exit 0
         ninja
         ninja install
 EOF
         )
-
+        //->withDependentLibraries('opencl', 'ffmpeg')
         ->withPkgName('opencv5')
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
