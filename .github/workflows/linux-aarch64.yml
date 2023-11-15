@@ -84,11 +84,11 @@ jobs:
           LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
           echo `expr $LIB_NUM - $CACHE_NUM`
 
-          if test $CACHE_NUM -le 32 ; then
+          if test $CACHE_NUM -eq 0  ; then
               bash sapi/download-box/download-box-get-archive-from-container.sh
           fi
 
-          if test $(ls -A /usr/local/swoole-cli/ | wc -l) -le 32 ; then
+          if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
               TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231113T121401Z
               IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
