@@ -51,7 +51,14 @@ EOF
         apt install -y libogre-1.12-dev
         apt install -y doxygen
         apt install -y python3-flake8
-        apt install -y apt install -y libgflags-dev
+        apt install -y libgflags-dev
+        apt install -y libva-dev
+        apt install -y libgtk-3-dev
+        apt install -y libgtk-4-dev
+        apt install -y libdc1394-25
+        apt install -y ccache python3-dev binaryen
+
+        pip3 install numpy setuptools utils-misc  gapi  utils lxml beautifulsoup4 graphviz pylint flake8
 EOF
         )
         ->withPrefix($opencv_prefix)
@@ -126,4 +133,11 @@ EOF
 
 /*
  * WebNN
+ */
+
+/*
+ *
+ * Libva is an implementation for VA-API (Video Acceleration API)
+ *
+ *
  */
