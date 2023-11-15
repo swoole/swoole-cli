@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://c-ares.org/')
             ->withManual('https://c-ares.org/')
             ->withLicense('https://c-ares.org/license.html', Library::LICENSE_MIT)
-            ->withUrl('https://c-ares.org/download/c-ares-1.19.0.tar.gz')
+            ->withUrl('https://c-ares.org/download/c-ares-1.20.1.tar.gz')
             ->withPrefix(CARES_PREFIX)
             ->withConfigure('./configure --prefix=' . CARES_PREFIX . ' --enable-static --disable-shared')
             ->withPkgName('libcares')

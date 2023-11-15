@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
                 'https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/GPLv2.TXT',
                 Library::LICENSE_GPL
             )
-            ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz')
+            ->withUrl('https://download.savannah.gnu.org/releases/freetype/freetype-2.13.2.tar.gz')
             ->withPrefix($freetype_prefix)
             ->withConfigure(
                 <<<EOF

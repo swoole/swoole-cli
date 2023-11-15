@@ -12,9 +12,15 @@ return function (Preprocessor $p) {
             ->withManual('https://www.sqlite.org/docs.html')
             ->withUrl('https://www.sqlite.org/2023/sqlite-autoconf-3430200.tar.gz')
             ->withPrefix($sqlite3_prefix)
-            ->withConfigure(<<<EOF
+            ->withConfigure(
+                <<<EOF
+                ./configure --help
                 CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA=1" \
                 ./configure --prefix={$sqlite3_prefix}  --enable-static --disable-shared
+                ./configure \
+                --prefix={$sqlite3_prefix} \
+                --enable-shared=no \
+                --enable-static=yes
 EOF
             )
             ->withBinPath($sqlite3_prefix)
