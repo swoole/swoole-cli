@@ -11,8 +11,6 @@ return function (Preprocessor $p) {
     //https://github.com/zshnb/ffmpeg-gpu-compile-guide.git
 
     $ffmpeg_prefix = FFMPEG_PREFIX;
-    $libxml2_prefix = LIBXML2_PREFIX;
-    $libx265_prefix = LIBX265_PREFIX;
 
     $ldflags = $p->getOsType() == 'macos' ? ' ' : ' -static ';
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
@@ -21,7 +19,6 @@ return function (Preprocessor $p) {
     $cppflags = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
     $ldfalgs = $p->getOsType() == 'macos' ? ' ' : " -L/usr/lib ";
 
-    $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
 
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
@@ -41,9 +38,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($ffmpeg_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($ffmpeg_prefix)
-        //->withBuildCached(false)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
@@ -52,21 +46,17 @@ EOF
 
 EOF
         )
-        //->withBuildCached(false)
+        ->withPreInstallCommand(
+            'ubuntu',
+            <<<EOF
+        apt install -y liblcms2-dev
+EOF
+        )
         ->withConfigure(
             <<<EOF
 
             #  libavresample 已弃用，默认编译时不再构建它
-
-            set -x
-            ./configure --help
-            ./configure --help | grep shared
-            ./configure --help | grep static
-            ./configure --help | grep  '\-\-extra'
-            ./configure --help | grep  'enable'
-            ./configure --help | grep  'disable'
-
-            PACKAGES='openssl  libxml-2.0  freetype2 gmp liblzma' # libssh2
+  PACKAGES='openssl  libxml-2.0  freetype2 gmp liblzma' # libssh2
             PACKAGES="\$PACKAGES libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
             PACKAGES="\$PACKAGES SvtAv1Dec SvtAv1Enc "
             PACKAGES="\$PACKAGES aom "
@@ -87,7 +77,7 @@ EOF
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) "
 
-            CPPFLAGS="\$CPPFLAGS -I{$libxml2_prefix}/include/  "
+
             CPPFLAGS="\$CPPFLAGS  {$cppflags} "
 
             LDFLAGS="\$LDFLAGS  "
@@ -95,7 +85,6 @@ EOF
 
             LIBS="\$LIBS   "
             LIBS="\$LIBS  {$libs} "
-
             ./configure  \
             --prefix=$ffmpeg_prefix \
             --enable-gpl \
@@ -124,27 +113,11 @@ EOF
             --enable-libfribidi \
             --enable-librabbitmq \
             --enable-random \
-            --disable-libxcb \
-            --disable-libxcb-shm \
-            --disable-libxcb-xfixes \
-            --disable-libxcb-shape  \
-            --disable-xlib  \
+            --cc={$p->get_C_COMPILER()} \
+            --cxx={$p->get_CXX_COMPILER()} \
             --extra-cflags="\${CPPFLAGS} " \
             --extra-ldflags="\${LDFLAGS} " \
             --extra-libs="\${LIBS} " \
-            --cc={$p->get_C_COMPILER()} \
-            --cxx={$p->get_CXX_COMPILER()}
-
-            # libxcb、xlib 是 x11 相关的库
-
-            # --extra-ldexeflags="{$ldexeflags}"
-            # --pkg-config-flags=" {$cflags} "
-            # --pkg-config=pkg-config
-            # --ld={$p->getLinker()}
-            # --enable-libssh
-            # --enable-cross-compile
-            # --enable-libspeex
-
 
 EOF
         )
@@ -157,28 +130,6 @@ EOF
         ->withPkgName('libswscale')
         ->withBinPath($ffmpeg_prefix . '/bin/')
         ->withDependentLibraries(
-            'openssl',
-            'zlib',
-            'liblzma',
-            'libxml2',
-            'libwebp',
-            'svt_av1',
-            'dav1d',
-            'aom',
-            'freetype',
-            "gmp",
-            "lcms2",
-            "libx264",
-            "liblzma",
-            "libvpx",
-            "sdl2",
-            'libogg',
-            'libopus',
-            'openh264',
-            'fdk_aac',
-            'libfribidi',
-            'rabbitmq_c',
-            "libx265"
             //'speex' //被opus 取代
         ) //   'libssh2',
     ;
