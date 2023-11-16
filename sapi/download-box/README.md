@@ -23,8 +23,11 @@ php prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=
 
 
 # 准备依赖库源码包，使用 aria2 批量下载
+bash sapi/download-box/download-box-batch-downloader.sh
+# bash sapi/download-box/download-box-batch-downloader.sh --proxy http://192.168.3.26:8015
+
+# 准备 源码包 、扩展依赖图
 bash sapi/download-box/download-box-init.sh
-# bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 
 # 将源码包 、扩展依赖图 打包到容器中
 bash sapi/download-box/download-box-build.sh
@@ -90,7 +93,7 @@ php prepare.php --without-docker=1 --with-download-mirror-url=https://swoole-cli
 
 > 1. `bash sapi/download-box/web-server-nginx.sh`  (直接把 `pool` 作为web根目录)
 
-> 2. `bash sapi/download-box/web-server.php`       (直接把 `pool` 作为web根目录)
+> 2. `php sapi/download-box/web-server.php`       (直接把 `pool` 作为web根目录)
 
 > 3. 运行包含 `lib` `ext` 目录的容器 , 如下：
 
