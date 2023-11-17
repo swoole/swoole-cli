@@ -19,6 +19,7 @@ cd ${__DIR__}
 }
 cd ${__DIR__}
 IMAGE=ubuntu:22.04
+IMAGE=ubuntu:23.10
 
 cd ${__DIR__}
 docker run --rm --name swoole-cli-ubuntu-dev -d -v ${__PROJECT__}:/work -w /work -e TZ='Etc/UTC' $IMAGE tail -f /dev/null
