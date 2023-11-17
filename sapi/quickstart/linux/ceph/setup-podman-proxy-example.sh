@@ -13,3 +13,6 @@ podman pull registry.k8s.io/pause:3.9
 #  registry.k8s.io (等同于gcr.io/google-containers)
 #  quay.io (Red Hat运营的镜像库)
 #  ghcr.io (github 运营的镜像库)
+
+# Registry Explorer
+# https://explore.ggcr.dev/
