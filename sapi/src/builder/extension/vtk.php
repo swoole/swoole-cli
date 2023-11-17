@@ -15,5 +15,4 @@ return function (Preprocessor $p) {
         ->withLicense('https://www.jingjingxyk.com/LICENSE', Extension::LICENSE_SPEC);
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-
 };
