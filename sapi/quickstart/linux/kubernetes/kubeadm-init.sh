@@ -24,7 +24,7 @@ sudo sysctl --system
 lsmod | grep br_netfilter
 lsmod | grep overlay
 
-# 安正结果
+# 验证设置结果
 sysctl net.bridge.bridge-nf-call-iptables net.bridge.bridge-nf-call-ip6tables net.ipv4.ip_forward net.ipv6.conf.all.forwarding
 
 
