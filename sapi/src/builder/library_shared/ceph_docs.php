@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $ceph_prefix = CEPH_PREFIX;
-    $lib = new Library('ceph');
+    $lib = new Library('ceph_docs');
     $lib->withHomePage('https://ceph.io/')
         ->withLicense('https://github.com/ceph/ceph/blob/main/COPYING-LGPL3', Library::LICENSE_LGPL)
         ->withManual('https://github.com/ceph/ceph')
@@ -44,12 +44,9 @@ EOF
             # 仅支持 ubuntu
 
             if [ -f build-env-ok ] ; then
-                bash src/cephadm/build.sh cephadm
                 admin/build-doc
             else
                 bash ./install-deps.sh
-
-                bash src/cephadm/build.sh cephadm
 
                 apt-get install -y `cat doc_deps.deb.txt`
                 pip3 install  -r admin/doc-requirements.txt
