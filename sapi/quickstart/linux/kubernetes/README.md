@@ -31,9 +31,7 @@ https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/crea
 
 [metrics-server](https://github.com/kubernetes-sigs/metrics-server)
 
-# nginx ingress
-
-# https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters
+[nginx ingress](https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters)
 
 ```bash
 
