@@ -40,6 +40,10 @@ journalctl -f
 
 kubectl get pod --all-namespaces
 
+crictl images
+crictl pods
+crictl ps
+
 ```
 
 ## debian restart networking
