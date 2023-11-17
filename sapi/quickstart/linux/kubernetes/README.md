@@ -1,12 +1,6 @@
-# kubernetes v1.28
+# 自建  kubernetes v1.28
 
-## debian restart networking
 
-```bash
-
-systemctl restart networking
-
-```
 
 [kubernetes container-runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd)
 
@@ -38,5 +32,13 @@ https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/crea
 kubeadm config images list
 
 kubeadm init --image-repository=k8s.gcr.io
+
+```
+
+## debian restart networking
+
+```bash
+
+systemctl restart networking
 
 ```
