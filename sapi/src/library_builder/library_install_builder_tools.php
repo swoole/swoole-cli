@@ -20,30 +20,7 @@ use SwooleCli\Preprocessor;
  */
 function install_qemu(Preprocessor $p): void
 {
-    $qemu_prefix = '/usr/qemu';
-    $p->addLibrary(
-        (new Library('qemu'))
-            ->withHomePage('http://www.qemu.org/')
-            ->withLicense('https://github.com/qemu/qemu/blob/master/COPYING.LIB', Library::LICENSE_GPL)
-            ->withUrl('https://download.qemu.org/qemu-7.2.0.tar.xz')
-            ->withManual('https://www.qemu.org/docs/master/')
-            ->withUntarArchiveCommand('xz')
-            ->withPrefix($qemu_prefix)
-            ->withCleanBuildDirectory()
-            ->withConfigure(
-                <<<EOF
-            set -eux
-            pwd
-            ls -lh .
 
-            mkdir build
-            cd build
-            ../configure
-            make
-EOF
-            )
-            ->withBinPath($qemu_prefix . '/bin/')
-    );
 }
 
 

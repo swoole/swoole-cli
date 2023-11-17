@@ -313,4 +313,6 @@ define("DAHDI_LINUX_PREFIX", $p->getGlobalPrefix() . '/dahdi_linux');
 define("DAHDI_TOOLS_PREFIX", $p->getGlobalPrefix() . '/dahdi_tools');
 define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
 define("PJPROJECT_PREFIX", $p->getGlobalPrefix() . '/pjproject');
+define("QEMU_PREFIX", $p->getGlobalPrefix() . '/qemu');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
