@@ -9,8 +9,8 @@ services:
       - ./etc/mime.types:/etc/nginx/mime.types
     container_name: web
     extra_hosts:
-      - "web-ui-service:192.168.3.201"
-      - "download-box-service:192.168.3.202"
+      - "web-ui-service:127.0.0.1"
+      - "download-box-service:127.0.0.1"
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
@@ -20,3 +20,5 @@ services:
       driver: "json-file"
       options:
         max-size: "200m"
+
+# host.docker.internal
