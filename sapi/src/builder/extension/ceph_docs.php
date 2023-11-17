@@ -14,12 +14,13 @@ return function (Preprocessor $p) {
 
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
-    $p->withReleaseArchive('ceph', function (Preprocessor $p) {
+    $p->withReleaseArchive('ceph_docs', function (Preprocessor $p) {
 
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
 
         $cmd = <<<EOF
+                cd {$builddir}/ceph_docs
                 mkdir -p {$workdir}/bin/
                 test -d {$workdir}/bin/ceph-docs && rm -rf {$workdir}/bin/ceph-docs
 
