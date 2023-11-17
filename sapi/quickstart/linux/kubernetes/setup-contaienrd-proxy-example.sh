@@ -3,6 +3,8 @@ set -x
 
 systemctl status containerd | cat
 
+# 使用系统源安装 目录位置为  /lib/systemd/system/containerd.service
+
 mkdir -p /usr/local/lib/systemd/system/containerd.service.d
 cat > /usr/local/lib/systemd/system/containerd.service.d/http-proxy.conf <<EOF
 [Service]

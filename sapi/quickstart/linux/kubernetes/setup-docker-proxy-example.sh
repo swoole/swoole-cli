@@ -3,6 +3,9 @@ set -x
 
 systemctl status docker | cat
 
+# 使用系统源安装 目录位置为  /lib/systemd/system/docker.service
+
+
 mkdir -p /lib/systemd/system/docker.service.d/
 cat > /lib/systemd/system/docker.service.d/http-proxy.conf <<EOF
 [Service]

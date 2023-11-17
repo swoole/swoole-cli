@@ -8,6 +8,8 @@ https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/crea
 
 [containerd getting started](https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
 
+[ crictl ](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md)
+
 [containerd releases ](https://github.com/containerd/containerd/releases)
 
 [containerd image mirroring](https://github.com/kubernetes/registry.k8s.io/blob/main/docs/mirroring/containerd.md)
@@ -43,6 +45,11 @@ kubectl get pod --all-namespaces
 crictl images
 crictl pods
 crictl ps
+
+
+
+journalctl -xe
+
 
 ```
 

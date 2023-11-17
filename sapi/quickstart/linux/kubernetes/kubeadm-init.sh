@@ -43,9 +43,12 @@ kubeadm init  \
 --token-ttl 0 \
 --v=5 \
 --apiserver-advertise-address="${ip}"
+
 # --control-plane-endpoint='control-plane-endpoint-api.intranet.jingjingxyk.com:6443'
 #--apiserver-advertise-address="${ip}"
 
+# --cri-socket="unix:///var/run/containerd/containerd.sock"
+# --cri-socket="unix:///var/run/cri-dockerd.sock"
 
 
 mkdir -p $HOME/.kube
