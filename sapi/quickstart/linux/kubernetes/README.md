@@ -1,7 +1,5 @@
 # 自建  kubernetes v1.28
 
-
-
 [kubernetes container-runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd)
 
 https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
@@ -58,5 +56,20 @@ journalctl -xe
 ```bash
 
 systemctl restart networking
+
+```
+
+## container registry
+
+```bash
+
+#  docker.io (docker hub公共镜像库)
+#  gcr.io (Google container registry)
+#  registry.k8s.io (等同于gcr.io/google-containers)
+#  quay.io (Red Hat运营的镜像库)
+#  ghcr.io (github 运营的镜像库)
+
+# Registry Explorer
+# https://explore.ggcr.dev/
 
 ```
