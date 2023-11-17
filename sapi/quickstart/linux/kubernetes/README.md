@@ -35,6 +35,11 @@ kubeadm config images list
 
 kubeadm init --image-repository=registry.k8s.io
 
+journalctl -f
+
+
+kubectl get pod --all-namespaces
+
 ```
 
 ## debian restart networking
