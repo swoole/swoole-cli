@@ -27,11 +27,13 @@ https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/crea
 
 [nginx ingress](https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters)
 
+[kubernets ipvs](https://github.com/kubernetes/kubernetes/blob/master/pkg/proxy/ipvs/README.md)
+
 ```bash
 
 kubeadm config images list
 
-kubeadm init --image-repository=k8s.gcr.io
+kubeadm init --image-repository=registry.k8s.io
 
 ```
 

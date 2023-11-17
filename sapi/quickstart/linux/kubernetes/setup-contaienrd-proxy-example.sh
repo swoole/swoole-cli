@@ -1,7 +1,7 @@
 
 set -x
 
-systemctl status containerd
+systemctl status containerd | cat
 
 mkdir -p /usr/local/lib/systemd/system/containerd.service.d
 cat > /usr/local/lib/systemd/system/containerd.service.d/http-proxy.conf <<EOF
