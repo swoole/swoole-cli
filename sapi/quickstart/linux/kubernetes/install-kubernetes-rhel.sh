@@ -9,14 +9,6 @@ __DIR__=$(
 cd ${__DIR__}
 
 
-# ip link
-ifconfig -a
-cat /sys/class/dmi/id/product_uuid
-# nc 127.0.0.1 6443
-stat -fc %T /sys/fs/cgroup/
-
-yum install -y  sudo
-
 sudo setenforce 0
 sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 

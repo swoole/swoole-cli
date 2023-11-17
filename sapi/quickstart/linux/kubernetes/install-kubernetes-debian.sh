@@ -6,24 +6,9 @@ __DIR__=$(
 )
 cd ${__DIR__}
 
-ip link
-ifconfig -a
-cat /sys/class/dmi/id/product_uuid
-nc 127.0.0.1 6443
-stat -fc %T /sys/fs/cgroup/
-
-sudo apt-get update
-
-apt install -y sudo wget curl libssl-dev ca-certificates
-apt install -y net-tools iproute2
-apt install -y ipvsadm conntrack iptables ebtables ethtool socat
-
-
 mkdir -p kubernetes
 
 cd kubernetes
-
-
 
 
 sudo apt-get update
