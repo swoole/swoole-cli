@@ -9,7 +9,6 @@ if [ ! "$BASH_VERSION" ] ; then
     exit 1
 fi
 
-apt install -y  python3 podman lvm2
 
 cat <<EOF > initial-ceph.conf
 [global]
