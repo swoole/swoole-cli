@@ -7,8 +7,8 @@ return function (Preprocessor $p) {
     $swoole_tag = 'v5.0.3';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
-    $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
-    $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'];
+    $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --enable-swoole-coro-time --enable-thread-context ';
 
@@ -35,8 +35,8 @@ EOF
         ->withBuildCached(false);
     ;
 
-    call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
-    call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
+    call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
+    call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
 
     $p->addExtension($ext);
 };
