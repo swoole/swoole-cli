@@ -19,7 +19,7 @@ P2P在NAT和防火墙上的穿透 （于对内网主机的保护,NAT仍然有其
 https://blog.csdn.net/nivana999/article/details/5311942
 https://www.cnblogs.com/colin-vio/p/13323228.html
 https://arthurchiao.art/blog/how-nat-traversal-works-zh/
-
+https://tailscale.com/blog/how-nat-traversal-works/
 “STUN”、“TURN”、“ICE”、“uPnP”
 ICE (Interactive Connectivity Establishment）
 服务器中转 （中继服务）
