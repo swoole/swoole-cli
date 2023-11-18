@@ -23,3 +23,6 @@ php sapi/webUI/bootstrap.php
 1. [公共 CDN 静态资源库](https://github.com/justjavac/ReplaceGoogleCDN/blob/master/public-cdn.md)
 1. [workflow](https://symfony.com/doc/current/workflow.html)
 1. [flowcharts](https://github.com/alyssaxuu/flowy.git)
+1. [monaco-editor 代码编辑器 ](https://microsoft.github.io/monaco-editor/)
+1. [threejs playground](https://threejs.org/playground/)
+1. [threejs](https://threejs.org/)
