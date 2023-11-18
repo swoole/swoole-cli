@@ -15,7 +15,7 @@ php sapi/webUI/bootstrap.php
 1. 工作流 workflow
 1. 状态机 state machine (由状态、事件和转换组成)
 1. 领域驱动设计 Domain Driven Design (最大的价值是梳理业务性需求，将不同的业务领域划分出来，并形成领域之间的接口交互)
-
+1. 事件图表
 
 ## 工具
 1. [xterm](http://xtermjs.org/)
