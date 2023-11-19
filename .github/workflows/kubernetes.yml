@@ -100,14 +100,14 @@ jobs:
           ls -lh /var/run/containerd/containerd.sock
 
           sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh
-          # sudo sh sapi/quickstart/linux/kubernetes/install-cni-calio.sh
+          sudo sh sapi/quickstart/linux/kubernetes/install-cni-calio.sh
 
           # sudo sh sapi/quickstart/linux/kubernetes/install-nginx-ingress.sh
           # sudo sh sapi/quickstart/linux/kubernetes/kubernetes-dashboard.sh
           # sudo sh sapi/quickstart/linux/kubernetes/install-metrics-server.sh
 
           # kubectl create -f sapi/quickstart/linux/kubernetes/kubernetes-dashboard-sample-user.yaml
-          sleep 20
+          sleep 30
           sudo kubectl get node -o wide
 
           sudo kubectl get pod --all-namespaces
