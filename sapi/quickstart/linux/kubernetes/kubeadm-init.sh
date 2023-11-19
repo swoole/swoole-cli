@@ -43,7 +43,8 @@ kubeadm init  \
 --service-cidr=10.96.0.0/16,fd00:22::/112 \
 --token-ttl 0 \
 --v=5 \
---apiserver-advertise-address="${IP}"
+--apiserver-advertise-address="${IP}" \
+--cri-socket="unix:///var/run/containerd/containerd.sock"
 
 # --control-plane-endpoint='control-plane-endpoint-api.intranet.jingjingxyk.com:6443'
 #--apiserver-advertise-address="${ip}"

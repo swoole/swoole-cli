@@ -90,10 +90,11 @@ jobs:
           sudo sh sapi/quickstart/linux/kubernetes/debian-init.sh
           sudo sh sapi/quickstart/linux/kubernetes/runtime/install-containerd.sh
           sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes.sh
-          sudo systemctl status containerd | cat
-          sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh
+          sleep 10
 
       - name: Build
         run: |
           set -x
-
+          sudo systemctl status containerd | cat
+          ls -lh
+          sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh
