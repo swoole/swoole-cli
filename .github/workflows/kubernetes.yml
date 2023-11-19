@@ -96,5 +96,5 @@ jobs:
         run: |
           set -x
           sudo systemctl status containerd | cat
-          ls -lh
+          ls -lh /var/run/containerd/containerd.sock
           sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh
