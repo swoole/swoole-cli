@@ -109,6 +109,6 @@ jobs:
 
           sleep 15
 
-          kubectl get node -o wide
+          sudo kubectl get node -o wide
 
-          kubectl get pod --all-namespaces
+          sudo kubectl get pod --all-namespaces
