@@ -95,6 +95,7 @@ jobs:
       - name: Build
         run: |
           set -x
+          cat /etc/crictl.yaml
           sudo systemctl status containerd | cat
           ls -lh /var/run/containerd/containerd.sock
           sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh
