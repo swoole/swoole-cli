@@ -33,7 +33,9 @@ kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk
 # kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
 
 IP=$(ip address show | grep eth0 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
-# ip=$(ip address show | grep enp0s3 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
+# IP=$(ip address show | grep enp0s3 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
+
+echo $IP
 
 swapoff -a
 export KUBE_PROXY_MODE=ipvs

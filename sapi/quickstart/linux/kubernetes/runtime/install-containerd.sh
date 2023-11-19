@@ -66,6 +66,7 @@ sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.to
 # sed -i s/disabled_plugins = \[\]/ / /etc/containerd/config.toml
 sed 's/^disabled_plugins/#&/' /etc/containerd/config.toml
 cat /etc/containerd/config.toml
+
 systemctl restart containerd
 
 
