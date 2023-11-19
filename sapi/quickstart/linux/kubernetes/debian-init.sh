@@ -93,5 +93,5 @@ esac
 ip link
 ifconfig -a
 cat /sys/class/dmi/id/product_uuid
-nc 127.0.0.1 6443
+# nc 127.0.0.1 6443
 stat -fc %T /sys/fs/cgroup/

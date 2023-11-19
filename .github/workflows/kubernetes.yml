@@ -83,6 +83,10 @@ jobs:
       - name: Prepare
         run: |
           set -x
+
+          sudo sed -i "s@security.ubuntu.com@azure.archive.ubuntu.com@g" /etc/apt/sources.list
+          sudo sed -i "s@archive.ubuntu.com@azure.archive.ubuntu.com@g" /etc/apt/sources.list
+
           sudo sh sapi/quickstart/linux/kubernetes/debian-init.sh
           sudo sh sapi/quickstart/linux/kubernetes/runtime/install-containerd.sh
           sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes.sh
