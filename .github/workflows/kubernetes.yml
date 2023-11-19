@@ -98,6 +98,7 @@ jobs:
           cat /etc/crictl.yaml
           sudo systemctl status containerd | cat
           ls -lh /var/run/containerd/containerd.sock
+
           sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh
           # sudo sh sapi/quickstart/linux/kubernetes/install-cni-calio.sh
 
@@ -110,3 +111,4 @@ jobs:
           sudo kubectl get node -o wide
 
           sudo kubectl get pod --all-namespaces
+          crictl ps
