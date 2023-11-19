@@ -63,6 +63,8 @@ mkdir -p /etc/containerd/
 containerd config default > /etc/containerd/config.toml
 
 sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+sed -i 's/disabled_plugins = ["cri"]/ /' /etc/containerd/config.toml
+cat /etc/containerd/config.toml
 
 
 
