@@ -107,6 +107,8 @@ jobs:
 
           # kubectl create -f sapi/quickstart/linux/kubernetes/kubernetes-dashboard-sample-user.yaml
 
+          sleep 15
+
           kubectl get node -o wide
-          sleep 10
+
           kubectl get pod --all-namespaces
