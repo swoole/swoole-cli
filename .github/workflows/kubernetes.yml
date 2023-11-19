@@ -107,8 +107,8 @@ jobs:
           # sudo sh sapi/quickstart/linux/kubernetes/install-metrics-server.sh
 
           # kubectl create -f sapi/quickstart/linux/kubernetes/kubernetes-dashboard-sample-user.yaml
-
+          sleep 20
           sudo kubectl get node -o wide
 
           sudo kubectl get pod --all-namespaces
-          crictl ps
+          sudo crictl ps
