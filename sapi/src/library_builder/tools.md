@@ -1,12 +1,3 @@
-
-
-#
-
-
-Linux man命令后数字含义  https://blog.csdn.net/u012424148/article/details/86227759
-
-
-
 ```shell
 
 pkg-config --libs libpq
@@ -18,6 +9,12 @@ pkg-config --modversion libpq
 pkg-config libpq --libs --cflags
 
 ```
+
+
+
+Linux man命令后数字含义  https://blog.csdn.net/u012424148/article/details/86227759
+
+
 
 --disable-new-dtags表示使用的是rpath，去掉后编译器默认使用runpath
 

@@ -28,6 +28,12 @@ ICE (Interactive Connectivity Establishment）
 
 signalling channel   协调作用
 
+Tailscale
 
 socat NAT 映射
 http://linux.51yip.com/search/socat
+
+tmate 终端共享神器 (fork 于 tmux)
+https://github.com/tmate-io/tmate.git
+
+ssh -R
