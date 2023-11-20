@@ -66,7 +66,11 @@ RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
 ARCH="amd64"
 cd $DOWNLOAD_DIR
 curl -L --remote-name-all https://dl.k8s.io/release/${RELEASE}/bin/linux/${ARCH}/{kubeadm,kubelet,kubectl}
-chmod +x {kubeadm,kubelet,kubectl}
+
+# chmod +x {kubeadm,kubelet,kubectl}
+chmod a+x  /usr/local/bin/kubeadm
+chmod a+x  /usr/local/bin/kubelet
+chmod a+x  /usr/local/bin/kubectl
 
 RELEASE_VERSION="v0.16.2"
 curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/krel/templates/latest/kubelet/kubelet.service" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" |  tee /etc/systemd/system/kubelet.service
@@ -76,6 +80,4 @@ curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSIO
 
 systemctl enable --now kubelet
 
-chmod a+x  /usr/local/bin/kubeadm
-chmod a+x  /usr/local/bin/kubelet
-chmod a+x  /usr/local/bin/kubectl
+

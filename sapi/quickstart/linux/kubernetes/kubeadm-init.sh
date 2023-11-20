@@ -29,11 +29,13 @@ sysctl net.bridge.bridge-nf-call-iptables net.bridge.bridge-nf-call-ip6tables ne
 
 
 kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}')
-kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}')
-# kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket="unix:///var/run/containerd/containerd.sock"
+kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
+# kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
 
-ip=$(ip address show | grep eth0 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
-ip=$(ip address show | grep enp0s3 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
+IP=$(ip address show | grep eth0 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
+# IP=$(ip address show | grep enp0s3 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
+
+echo $IP
 
 swapoff -a
 export KUBE_PROXY_MODE=ipvs
@@ -43,13 +45,14 @@ kubeadm init  \
 --service-cidr=10.96.0.0/16,fd00:22::/112 \
 --token-ttl 0 \
 --v=5 \
---apiserver-advertise-address="${ip}"
+--apiserver-advertise-address="${IP}" \
+--cri-socket "unix:///var/run/containerd/containerd.sock"
 
 # --control-plane-endpoint='control-plane-endpoint-api.intranet.jingjingxyk.com:6443'
 #--apiserver-advertise-address="${ip}"
 
-# --cri-socket="unix:///var/run/containerd/containerd.sock"
-# --cri-socket="unix:///var/run/cri-dockerd.sock"
+# --cri-socket "unix:///var/run/containerd/containerd.sock"
+# --cri-socket "unix:///var/run/cri-dockerd.sock"
 
 
 mkdir -p $HOME/.kube
