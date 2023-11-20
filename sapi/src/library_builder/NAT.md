@@ -20,9 +20,14 @@ https://blog.csdn.net/nivana999/article/details/5311942
 https://www.cnblogs.com/colin-vio/p/13323228.html
 https://arthurchiao.art/blog/how-nat-traversal-works-zh/
 https://tailscale.com/blog/how-nat-traversal-works/
+
 “STUN”、“TURN”、“ICE”、“uPnP”
 ICE (Interactive Connectivity Establishment）
 服务器中转 （中继服务）
 
 
 signalling channel   协调作用
+
+
+socat NAT 映射
+http://linux.51yip.com/search/socat

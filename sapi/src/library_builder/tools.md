@@ -55,6 +55,8 @@ https://forum.huawei.com/enterprise/zh/thread/580934319407513600
 
 
 Tmux 是一个终端复用器（terminal multiplexer）
+1. tmate 终端共享神器 (fork 于 tmux)  https://github.com/tmate-io/tmate.git
+2. tmux
 
 xtermjs
 http://xtermjs.org/
