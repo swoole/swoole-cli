@@ -28,7 +28,7 @@ ICE (Interactive Connectivity Establishment）
 
 signalling channel   协调作用
 
-Tailscale
+tailscale
 https://tailscale.com/blog/how-tailscale-works/
 
 socat NAT 映射
@@ -46,6 +46,7 @@ zerotier
   moon  相当于中继服务器 （trun)
 https://github.com/zerotier/ZeroTierOne.git
 
+openvpn
 
 FRP
 https://github.com/fatedier/frp.git
@@ -55,3 +56,6 @@ todesk
 NET-MAP
 
 UPnP (Universal Plug and Play)
+
+
+VNC
