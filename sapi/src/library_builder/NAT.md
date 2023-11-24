@@ -40,3 +40,18 @@ https://github.com/tmate-io/tmate.git
 SSH 命令的三种代理功能（-L/-R/-D）
 https://zhuanlan.zhihu.com/p/57630633
 ssh -R
+
+zerotier
+  planet  相当于 stun
+  moon  相当于中继服务器 （trun)
+https://github.com/zerotier/ZeroTierOne.git
+
+
+FRP
+https://github.com/fatedier/frp.git
+
+todesk
+
+NET-MAP
+
+UPnP (Universal Plug and Play)
