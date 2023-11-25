@@ -35,3 +35,5 @@ tcpdump -i any   not host 192.168.10.3 and not host 192.168.3.26 -v -n
 
 
 ```
+
+## ovn-controller 节点开放 6081 端口
