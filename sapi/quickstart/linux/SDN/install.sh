@@ -8,7 +8,7 @@ set -o pipefail
 __DIR__=$(cd "$(dirname "$0")";pwd)
 cd ${__DIR__}
 
-
+MIRROR=''
 while [ $# -gt 0 ]; do
  case "$1" in
  --mirror)
@@ -47,13 +47,14 @@ prepare(){
 
   apt install -y  \
   git gcc clang make cmake autoconf automake openssl python3 python3-pip  libtool  \
-  openssl  curl  graphviz libssl-dev  libcap-ng-dev uuid uuid-runtime
+  openssl  curl  libssl-dev  libcap-ng-dev uuid uuid-runtime libbpf-dev libxdp-dev
 
   apt install -y kmod iptables
   apt install -y netcat-openbsd
   apt install -y tcpdump nmap traceroute net-tools dnsutils iproute2 procps iputils-ping
   apt install -y conntrack
   apt install -y bridge-utils
+  apt install -y graphviz
 
 }
 test $(dpkg-query -l graphviz | wc -l) -eq 0 && prepare
