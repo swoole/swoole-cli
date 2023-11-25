@@ -19,3 +19,4 @@ netstat -antp | grep 6641
 netstat -antp | grep 6642
 
 
+# netstat -lntp

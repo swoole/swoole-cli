@@ -11,6 +11,9 @@ cd ${__DIR__}
 
 while [ $# -gt 0 ]; do
  case "$1" in
+ --mirror)
+   MIRROR="$2"
+   ;;
  --proxy)
    export HTTP_PROXY="$2"
    export HTTPS_PROXY="$2"
@@ -26,6 +29,14 @@ while [ $# -gt 0 ]; do
  shift $(($# > 0 ? 1 : 0))
 done
 
+case "$MIRROR" in
+china)
+      test -f /etc/apt//etc/apt/sources.list.d/debian.sources.save || cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
+      sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
+      test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list.d/debian.sources
+      ;;
+esac
+
 
 prepare(){
 
@@ -37,9 +48,12 @@ prepare(){
   apt install -y  \
   git gcc clang make cmake autoconf automake openssl python3 python3-pip  libtool  \
   openssl  curl  graphviz libssl-dev  libcap-ng-dev uuid uuid-runtime
-  apt install -y net-tools
+
   apt install -y kmod iptables
   apt install -y netcat-openbsd
+  apt install -y tcpdump nmap traceroute net-tools dnsutils iproute2 procps iputils-ping
+  apt install -y conntrack
+  apt install -y bridge-utils
 
 }
 test $(dpkg-query -l graphviz | wc -l) -eq 0 && prepare

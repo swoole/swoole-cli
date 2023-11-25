@@ -40,3 +40,4 @@ ovs-vsctl --columns external_ids list open_vswitch
 
 ovs-ctl status
 
+ss -lnup |grep 6081
