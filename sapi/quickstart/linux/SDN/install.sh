@@ -29,18 +29,17 @@ done
 
 prepare(){
 
-  sed -i "s@deb.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
-  sed -i "s@security.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
   apt update -y
 
   apt install -y git curl python3 python3-pip python3-dev wget   sudo file
   apt install -y libssl-dev ca-certificates
 
   apt install -y  \
-  git gcc clang make cmake autoconf automake openssl python3 python3-pip unbound libtool  \
-  openssl netcat curl  graphviz libssl-dev  libcap-ng-dev uuid uuid-runtime
+  git gcc clang make cmake autoconf automake openssl python3 python3-pip  libtool  \
+  openssl  curl  graphviz libssl-dev  libcap-ng-dev uuid uuid-runtime
   apt install -y net-tools
   apt install -y kmod iptables
+  apt install -y netcat-openbsd
 
 }
 test $(dpkg-query -l graphviz | wc -l) -eq 0 && prepare
@@ -57,8 +56,8 @@ then
     cd ${__DIR__}/ovs/
     git   pull --depth=1 --progress --rebase
 else
-    git clone -b master https://github.com/openvswitch/ovs.git --depth=1 --progress
-    git clone -b main https://github.com/ovn-org/ovn.git --depth=1 --progress
+    git clone -b v3.2.1 https://github.com/openvswitch/ovs.git --depth=1 --progress
+    git clone -b v23.09.0 https://github.com/ovn-org/ovn.git --depth=1 --progress
 fi
 
 cd ${__DIR__}/ovs/
