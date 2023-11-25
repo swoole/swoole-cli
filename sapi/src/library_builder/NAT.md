@@ -1,3 +1,7 @@
+```text
+
+
+
 源IP 源端口 目标IP 目标端口
 
 NAT（Network Address Translation） 网络地址转换技术
@@ -59,3 +63,5 @@ UPnP (Universal Plug and Play)
 
 
 VNC
+
+```
