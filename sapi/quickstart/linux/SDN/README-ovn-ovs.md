@@ -16,14 +16,21 @@ https://www.cnblogs.com/jingjingxyk/category/2201785.html
 
 apt update -y && apt install -y socat libssl-dev ca-certificates
 
-bash install.sh --proxy socks5h://192.168.3.26:2000
-bash install.sh --proxy http://127.0.0.1:8016
+bash install-ovn-ovs.sh --proxy socks5h://192.168.3.26:2000
+
+bash install-ovn-ovs.sh --proxy http://127.0.0.1:8016
 
 ```
 
 ## IGMP 组播协议
 
 ## OVN command
+    OVN-IC 北向数据库端口，默认为 6645
+    OVN-IC 南向数据库端口，默认为 6646
+
+    OVN 北向数据库端口，默认为 6641
+    OVN 南向数据库端口，默认为 6642
+
 
 ```bash
 ovn-nbctl ls-list

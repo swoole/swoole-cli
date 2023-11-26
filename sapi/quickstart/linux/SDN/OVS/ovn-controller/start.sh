@@ -15,7 +15,7 @@ fi
 ipv6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
 ipv4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
 
-SOUTHBOUND_DATABASE_IP="192.168.3.251"
+OVN_CENTRAL_IP="192.168.3.251"
 
 HOSTNAME="ovn-node-1"
 EXTERNAL_IP="$ipv4,$ipv6"
@@ -35,7 +35,7 @@ external_ids:hostname="${HOSTNAME}" \
 external_ids:ovn-encap-ip="${EXTERNAL_IP}" \
 external_ids:ovn-set-local-ip="${LOCAL_IP}" \
 external_ids:ovn-encap-type="${ENCAP_TYPE}" \
-external_ids:ovn-remote="tcp:${SOUTHBOUND_DATABASE_IP}:6642"
+external_ids:ovn-remote="tcp:${OVN_CENTRAL_IP}:6642"
 
 # external_ids:ovn-nb="tcp:$CENTRAL_IP:6641"
 
