@@ -30,7 +30,7 @@ done
 
 
 case "$MIRROR" in
-china)
+  china)
     case "$OS_RELEASE" in
       almalinux)
         sed -e 's|^mirrorlist=|#mirrorlist=|g' \

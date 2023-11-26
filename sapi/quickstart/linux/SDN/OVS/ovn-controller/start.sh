@@ -31,8 +31,9 @@ external_ids:ovn-encap-ip="$EXTERNAL_IP" \
 external_ids:local_ip="$LOCAL_IP" \
 external_ids:ovn-encap-type="$ENCAP_TYPE" \
 external_ids:system-id=${chassis_name} \
-external_ids:ovn-remote="tcp:${CENTRAL_IP}:6642" \
-external_ids:ovn-nb="tcp:$CENTRAL_IP:6641"
+external_ids:ovn-remote="tcp:${CENTRAL_IP}:6642"
+
+# external_ids:ovn-nb="tcp:$CENTRAL_IP:6641"
 
 ovn-ctl start_controller
 
@@ -40,4 +41,4 @@ ovs-vsctl --columns external_ids list open_vswitch
 
 ovs-ctl status
 
-ss -lnup |grep 6081
+ss -lnup | grep 6081

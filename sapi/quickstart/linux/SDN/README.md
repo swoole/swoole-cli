@@ -10,14 +10,20 @@ https://en.m.wikipedia.org/wiki/Routing#Delivery_schemes
 
 https://www.cnblogs.com/jingjingxyk/category/2201785.html
 
+## debian 下 安装 OVN
+
 ```bash
- apt install -y socat libssl-dev ca-certificates
+
+apt install -y socat libssl-dev ca-certificates
+
+bash install.sh --proxy socks5h://192.168.3.26:2000
+
 ```
 
 ## IGMP 组播协议
 
-
 ## OVN command
+
 ```bash
 ovn-nbctl ls-list
 
