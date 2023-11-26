@@ -16,6 +16,7 @@ jobs:
 
           brew install  wget curl  libtool automake  re2c llvm flex
           brew install  gettext coreutils binutils libunistring
+          brew install  bison
 
           # brew uninstall --ignore-dependencies oniguruma
           # brew uninstall --ignore-dependencies brotli
