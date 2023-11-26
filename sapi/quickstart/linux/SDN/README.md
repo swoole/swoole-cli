@@ -14,9 +14,10 @@ https://www.cnblogs.com/jingjingxyk/category/2201785.html
 
 ```bash
 
-apt install -y socat libssl-dev ca-certificates
+apt update -y && apt install -y socat libssl-dev ca-certificates
 
 bash install.sh --proxy socks5h://192.168.3.26:2000
+bash install.sh --proxy http://127.0.0.1:8016
 
 ```
 

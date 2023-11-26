@@ -56,14 +56,18 @@ prepare(){
 
   apt install -y  \
   git gcc clang make cmake autoconf automake openssl python3 python3-pip  libtool  \
-  openssl  curl  libssl-dev  libcap-ng-dev uuid uuid-runtime libbpf-dev libxdp-dev
+  openssl  curl  libssl-dev  libcap-ng-dev uuid uuid-runtime
 
   apt install -y kmod iptables
   apt install -y netcat-openbsd
-  apt install -y tcpdump nmap traceroute net-tools dnsutils iproute2 procps iputils-ping
+  apt install -y tcpdump nmap traceroute net-tools dnsutils iproute2 procps iputils-ping iputils-arping
   apt install -y conntrack
   apt install -y bridge-utils
+  apt install -y libelf-dev  libbpf-dev libxdp-dev
   apt install -y graphviz
+  apt install -y libjemalloc2   libjemalloc-dev  libnuma-dev   libpcap-dev  libunbound-dev  libunwind-dev  llvm-dev
+  apt install -y bc init ncat
+  # apt install -y isc-dhcp-server
 
 }
 test $(dpkg-query -l graphviz | wc -l) -eq 0 && prepare
