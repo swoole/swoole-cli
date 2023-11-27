@@ -10,3 +10,13 @@
 
 ## FPV 模拟器
     Liftoff模拟器
+
+
+## 判断命令是否支持
+
+```bash
+
+command -v debian-sa1 > /dev/null && debian-sa1 1 1
+
+```
+

@@ -55,3 +55,6 @@ ipv4_num=$(ovn-nbctl --bare --columns=_uuid find dhcp_options cidr="10.1.20.0/24
 
 
 ```
+
+
+混杂模式（promiscuous mode）

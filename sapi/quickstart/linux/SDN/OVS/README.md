@@ -62,6 +62,9 @@ apt install -y conntrack
 conntrack -L
  # 可显示经过源 NAT 的连接跟踪项
 conntrack -L -p tcp –src-nat
+
+conntrack -L -p udp –src-nat
+
 tcpdump -i any   not host 192.168.10.3 and not host 192.168.3.26 -v -n
 
 
@@ -107,3 +110,40 @@ ovs-dpctl show
 ovs-dpctl dump-flows
 
 ```
+
+```bash
+ovs-vsctl get interface vm1  statistics
+
+ovs-vsctl get interface vm1  statistics | sed -e 's#[{}]##g' -e 's#, #\n#g' | grep packets= | grep -v '=0$'
+
+ovs-appctl coverage/show
+
+
+# package trace
+
+ovs-ofctl show
+
+ovs-appctl ofproto/trace br-int in_port=vm1,tcp,nw_src=10.1.20.2,tcp_dst=6081
+
+ovs-appctl ofproto/trace br-int in_port=vm1,dl_src=00:02:00:00:00:02,dl_dst=00:02:00:00:00:03
+
+ovs-appctl ofproto/trace br-int in_port=vm1,tcp,nw_src=10.1.20.2,nw_dst=10.1.20.3,ct_state=trk
+
+ovs-appctl bridge/dump-flows br-int
+
+ovs-ofctl -O OpenFlow13 show br-int
+
+ovs-ofctl -O OpenFlow13 dump-flows br-int
+
+
+```
+
+```bash
+ovs-ofctl show br-int
+ovs-ofctl dump-ports br-int
+
+
+```
+
+## SDN｜OpenFlow流表简述
+    https://baijiahao.baidu.com/s?id=1690694392596006484
