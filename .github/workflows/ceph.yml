@@ -103,3 +103,5 @@ jobs:
           --initial-dashboard-password ceph \
           --allow-fqdn-hostname \
           --single-host-defaults
+
+          sleep 30
