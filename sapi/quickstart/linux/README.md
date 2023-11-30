@@ -93,3 +93,11 @@ cd swoole-cli
 sh sapi/quickstart/linux/install-docker.sh --mirror china
 
 ```
+
+## 非 root 用户运行docker
+
+```bash
+
+sudo usermod -aG docker ${USER}
+
+```
