@@ -96,8 +96,9 @@ jobs:
       - name: Run
         run: |
           set -x
-          cephadm bootstrap \
+          sudo cephadm bootstrap \
           --no-cleanup-on-failure \
+          --mon-ip ${{ env.X_IPV4 }} \
           --dashboard-password-noupdate \
           --initial-dashboard-user admin \
           --initial-dashboard-password ceph \
