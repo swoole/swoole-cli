@@ -74,3 +74,11 @@ socat - PROXY:your.proxy.ip:%h:%p,proxyport=8015,proxyauth=user:pwd
 
 EOF
 
+
+
+# 参考 https://adangel.org/2020/10/15/github-behind-proxy/
+
+
+# export GIT_TRACE_PACKET=1
+# export GIT_TRACE=1
+# export GIT_CURL_VERBOSE=1

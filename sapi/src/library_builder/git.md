@@ -86,3 +86,13 @@ git gc --prune=now
 
 ```
 
+
+## 单个文件回滚
+```bash
+git log
+
+git checkout commit_id filename
+
+
+
+```

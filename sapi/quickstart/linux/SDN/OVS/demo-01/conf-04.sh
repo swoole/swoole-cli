@@ -18,26 +18,19 @@ test -z "$flag"  || ip netns del vm1
 ip netns add vm1
 
 ovs-vsctl --if-exists del-port br-int vm1
-# ovs-vsctl --may-exist add-port br-int vm1 -- set interface vm1 type=internal -- set Interface vm1 external_ids:iface-id=ls01_port02
-ovs-vsctl --may-exist add-port br-int vm1 -- set interface vm1 type=internal
+ovs-vsctl --may-exist add-port br-int vm1 -- set interface vm1 type=internal -- set Interface vm1 external_ids:iface-id=ls01_port04
 
 ip link set vm1 netns vm1
 
-ip netns exec vm1 ip link set vm1 address 00:02:00:00:00:02
-ip netns exec vm1 ip addr add 10.1.20.2/24 dev vm1
-# ip netns exec vm1 ip address add dev vm1 10.1.20.2 netmask 255.255.255.0
-ip netns exec vm1 ip route add default via 10.1.20.2 dev vm1
+ip netns exec vm1 ip link set vm1 address 00:02:00:00:00:04
+ip netns exec vm1 ip addr add 10.1.20.4/24 dev vm1
+ip netns exec vm1 ip route add default via 10.1.20.4 dev vm1
 # ip netns exec vm1 ip link set dev vm1  mtu 1400
 ip netns exec vm1 ip link set vm1 up
 ip netns exec vm1 ip link set lo up
-
-ovs-vsctl set Interface vm1 external_ids:iface-id=ls01_port02
-
 ip netns exec vm1 ip a
 
 ip netns exec vm1 ip addr show
 ip netns exec vm1 ip route show
 ip netns exec vm1 ip neighbor
 ip netns exec vm1 ip n
-
-

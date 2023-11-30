@@ -39,6 +39,9 @@ external_ids:ovn-remote="tcp:${OVN_CENTRAL_IP}:6642"
 
 # external_ids:ovn-nb="tcp:$CENTRAL_IP:6641"
 
+# ovs-vsctl set open . external_ids:ovn-remote-probe-interval=<TIME IN MS>
+ovs-vsctl set open . external_ids:ovn-remote-probe-interval=30000
+
 ovn-ctl start_controller
 
 ovs-vsctl --columns external_ids list open_vswitch

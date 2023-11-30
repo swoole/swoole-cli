@@ -30,19 +30,21 @@ while [ $# -gt 0 ]; do
 done
 
 case "$MIRROR" in
-china)
+china | tuna | ustc | aliyuncs )
       # 详情 http://mirrors.ustc.edu.cn/help/debian.html
       # 容器内和容器外 镜像源配置不一样
       if [ -f /.dockerenv ]; then
-        test -f /etc/apt//etc/apt/sources.list.d/debian.sources.save || cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
+        test -f /etc/apt/sources.list.d/debian.sources.save || cp -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
         sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
         sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
         test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list.d/debian.sources
+        test "$MIRROR" = "aliyuncs" && sed -i "s@mirrors.ustc.edu.cn@mirrors.cloud.aliyuncs.com@g" /etc/apt/sources.list.d/debian.sources
       else
-        test -f /etc/apt/sources.list.save || cp /etc/apt/sources.list /etc/apt/sources.list.save
+        test -f /etc/apt/sources.list.save || cp -f /etc/apt/sources.list /etc/apt/sources.list.save
         sed -i "s@deb.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
         sed -i "s@security.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
         test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
+        test "$MIRROR" = "aliyuncs" && sed -i "s@mirrors.ustc.edu.cn@mirrors.cloud.aliyuncs.com@g" /etc/apt/sources.list
       fi
       ;;
 esac
@@ -63,15 +65,17 @@ prepare(){
   apt install -y tcpdump nmap traceroute net-tools dnsutils iproute2 procps iputils-ping iputils-arping
   apt install -y conntrack
   apt install -y bridge-utils
-  apt install -y libelf-dev  libbpf-dev libxdp-dev
+  apt install -y libelf-dev  libbpf-dev # libxdp-dev
   apt install -y graphviz
   apt install -y libjemalloc2   libjemalloc-dev  libnuma-dev   libpcap-dev  libunbound-dev  libunwind-dev  llvm-dev
   apt install -y bc init ncat
   # apt install -y isc-dhcp-server
 
 }
-test $(dpkg-query -l graphviz | wc -l) -eq 0 && prepare
 
+# test $(dpkg-query -l graphviz | wc -l) -eq 0 && prepare
+
+test $(command -v ncat | wc -l) -eq 0 && prepare
 
 
 cpu_nums=$(nproc)

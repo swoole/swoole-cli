@@ -14,7 +14,7 @@ set -exu
 	echo $?
 }
 
-#ovs-etc-dir:
+# ovs etcdir:
 # /usr/local/etc/openvswitch
 # /usr/local/etc/ovn
 

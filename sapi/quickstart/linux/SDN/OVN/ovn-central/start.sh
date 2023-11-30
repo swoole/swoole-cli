@@ -8,8 +8,8 @@ export PATH=$PATH:/usr/local/share/ovn/scripts
 
 
 ovn-ctl start_northd # center need
-ovn-nbctl set-connection ptcp:6641
-ovn-sbctl set-connection ptcp:6642
+ovn-nbctl set-connection ptcp:6641 -- set connection . inactivity_probe=60000
+ovn-sbctl set-connection ptcp:6642 -- set connection . inactivity_probe=60000
 ovn-nbctl show
 ovn-sbctl show
 
