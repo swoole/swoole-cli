@@ -93,4 +93,4 @@ jobs:
       - name: Run
         run: |
           set -x
-          bash sapi/quickstart/linux/SDN/OVN/ovn-central/start.sh
+          sudo bash sapi/quickstart/linux/SDN/OVN/ovn-central/start.sh
