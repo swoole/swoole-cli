@@ -7,8 +7,8 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $swoole_tag = '4.8.x';
     $file = "swoole-v{$swoole_tag}.tar.gz";
-    $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
-    $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
+    $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --enable-http2  --enable-brotli  ';
@@ -27,10 +27,10 @@ return function (Preprocessor $p) {
             git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
-        ->withAutoUpdateFile()
-    ;
+        ->withAutoUpdateFile();
 
-    call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
-    call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
+    call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
+    call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
+
     $p->addExtension($ext);
 };
