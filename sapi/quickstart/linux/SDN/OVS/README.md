@@ -63,11 +63,19 @@ tcpdump -i any   not host 192.168.10.3 and not host 192.168.3.26 -v -n
 
 apt install -y conntrack
 # 跟踪它看到的所有报文流
+modinfo nf_conntrack
+
+cat /proc/net/nf_conntrack
+
 conntrack -L
  # 可显示经过源 NAT 的连接跟踪项
 conntrack -L -p tcp –src-nat
 
 conntrack -L -p udp –src-nat
+
+conntrack -L -o extended | awk '{sum[$3]++} END {for(i in sum) print i, sum[i]}' && echo "-----------" && cat /proc/net/nf_conntrack | awk '{sum[$3]++} END {for(i in sum) print i, sum[i]}'
+
+
 
 cat /proc/net/udp
 
@@ -110,7 +118,7 @@ ethtool -S eth0 | grep rx_ | grep -E "errors|drops"
 netstat -i
 cat /proc/net/dev
 
- ethtool -k genev_sys_6081
+ethtool -k genev_sys_6081
 
 
 # 查看 udp 端口是否开启
@@ -154,9 +162,12 @@ ip netns exec vm1 iperf3 -c 10.1.20.2 -R -t 600
 
 ## OVS command
 ```bash
+ovs-appctl ofproto/list-tunnels
+
 
 ovs-ofctl dump-flows br-int
 ovs-appctl ofproto/list-tunnels
+
 ovs-appctl ofproto/trace ovs-dummy
 
 ovs-appctl ovs/route/show
@@ -178,7 +189,7 @@ ovs-appctl coverage/show
 
 # package trace
 
-ovs-ofctl show
+ovs-ofctl show br-int
 
 ovs-appctl ofproto/trace br-int in_port=vm1,tcp,nw_src=10.1.20.3,tcp_dst=6081
 
