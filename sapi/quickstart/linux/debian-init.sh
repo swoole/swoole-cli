@@ -20,6 +20,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+
 case "$MIRROR" in
 china | ustc | tuna)
   OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
