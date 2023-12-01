@@ -5,8 +5,8 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $dependent_libraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
-    $dependent_extensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
+    $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --enable-swoole-coro-time --enable-thread-context ';
@@ -30,7 +30,7 @@ return function (Preprocessor $p) {
 EOF
         )
     ;
-    call_user_func_array([$ext, 'withDependentLibraries'], $dependent_libraries);
-    call_user_func_array([$ext, 'withDependentExtensions'], $dependent_extensions);
+    call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
+    call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
     $p->addExtension($ext);
 };

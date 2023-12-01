@@ -198,7 +198,7 @@ if [ ${IN_DOCKER} -eq 1 ] ; then
 
 } else {
 # 容器外
-  php prepare.php ${OPTIONS}
+  php prepare.php --without-docker=1  ${OPTIONS}
 
 }
 fi
