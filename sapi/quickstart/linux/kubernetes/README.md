@@ -76,3 +76,49 @@ systemctl restart networking
 dockerd --debug
 
 ```
+
+## enable ipvs mod
+
+```bash
+
+kubectl edit configmap kube-proxy -n kube-system
+
+```
+
+```text
+#  enable ipvs mod
+
+   ## change mode from "" to ipvs
+   ## mode: ipvs
+
+```
+
+## ingress-nginx nodeport
+
+```bash
+
+kubectl edit service/ingress-nginx-controller  -n ingress-nginx
+
+```
+
+```yaml
+
+type: NodePort
+externalIPs:
+  - 192.168.3.26
+externalTrafficPolicy: Local
+
+
+```
+
+## restart pod
+
+```bash
+
+kubectl rollout restart deployment <deployment-name>
+
+kubectl rollout restart statefulset <statefulset-name>
+
+kubectl delete pod <pod-name>
+
+```
