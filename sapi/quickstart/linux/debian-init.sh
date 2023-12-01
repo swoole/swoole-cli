@@ -29,7 +29,6 @@ china | ustc | tuna)
   debian)
     case $VERSION_ID in
     11 | 12 )
-      # 详情 http://mirrors.ustc.edu.cn/help/debian.html
       # 容器内和容器外 镜像源配置不一样
       if [ -f /.dockerenv ]; then
         test -f /etc/apt//etc/apt/sources.list.d/debian.sources.save || cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
