@@ -34,13 +34,16 @@ ovs-dpctl dump-flows
 ovs-ofctl dump-flows br-int
 
 
-
-
-
 ovs-appctl ofproto/list-tunnels
-ovs-appctl ofproto/list-tunnels
+
 ovs-appctl ofproto/trace ovs-dummy
 ovs-appctl ovs/route/show
+
+ovs-dpctl-top
+
+ovs-dpctl show
+ovs-dpctl dump-flows
+
 ```
 
 
@@ -155,28 +158,6 @@ ip netns exec vm1 iperf3 -s
 # 测试10分钟
 ip netns exec vm1 iperf3 -c 10.1.20.2 -R -t 600
 
-
-```
-
-
-
-
-## OVS command
-```bash
-ovs-appctl ofproto/list-tunnels
-
-
-ovs-ofctl dump-flows br-int
-ovs-appctl ofproto/list-tunnels
-
-ovs-appctl ofproto/trace ovs-dummy
-
-ovs-appctl ovs/route/show
-
-ovs-dpctl-top
-
-ovs-dpctl show
-ovs-dpctl dump-flows
 
 ```
 
