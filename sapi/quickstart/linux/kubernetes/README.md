@@ -72,4 +72,7 @@ systemctl restart networking
 # Registry Explorer
 # https://explore.ggcr.dev/
 
+
+dockerd --debug
+
 ```

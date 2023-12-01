@@ -69,6 +69,8 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
    ## change mode from "" to ipvs
    ## mode: ipvs
 
+lsmod | grep -e ip_vs -e nf_conntrack_ipv4
+
 ipvsadm -ln
 iptables -t nat -nL
 

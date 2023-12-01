@@ -1,5 +1,6 @@
 
 ## ovn-controller 节点开放 6081 端口
+    ovn Geneve使用UDP封包
 
 ## 验证命令
 

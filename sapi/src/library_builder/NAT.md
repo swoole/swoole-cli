@@ -50,6 +50,14 @@ zerotier
   moon  相当于中继服务器 （trun)
 https://github.com/zerotier/ZeroTierOne.git
 
+wireguard
+    51820/51820
+
+strongswan-ikev2
+    500/500
+    4500/4500
+
+
 openvpn
 
 FRP

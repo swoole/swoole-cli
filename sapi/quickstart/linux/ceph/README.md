@@ -37,3 +37,11 @@ BOX_IMAGE = 'cephadm-box:latest'
 
 ```
 
+```bash
+sudo apt-get install nfs-common
+
+
+# depend
+# pen-iscsi watchdog keyutils libevent-core-2.1-7 libnfsidmap1 nfs-common rpcbind
+
+```
