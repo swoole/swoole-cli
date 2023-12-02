@@ -72,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cygwin-php-cli-dist
-          path: bin/php-cli.exe
+          path: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64.tar.xz
 
       - name: gh release
         uses: softprops/action-gh-release@v1
