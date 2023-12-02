@@ -1,5 +1,5 @@
-
 ## ovn-controller 节点开放 6081 端口
+
     ovn Geneve使用UDP封包
 
 ## 验证命令
@@ -22,17 +22,29 @@ ip netns exec vm1 ip n
 
 ```
 
+## 查看网卡 MTU
+
+```bash
+
+# 确认使用的网卡
+ip route list match 0.0.0.0/0 | awk '{print $5 }'
+
+# apt install -y  network-manager
+
+nmcli
+
+nmcli connection show
+
+nmcli -g connection.interface-name c show genev_sys_6081
+
+
+```
+
 ```bash
 
 ovs-vsctl show
 ovs-vsctl list-br
 ovs-vsctl list bridge
-
-ovs-dpctl show
-ovs-dpctl dump-flows
-
-ovs-ofctl dump-flows br-int
-
 
 ovs-appctl ofproto/list-tunnels
 
@@ -43,9 +55,8 @@ ovs-dpctl-top
 
 ovs-dpctl show
 ovs-dpctl dump-flows
-
+ovs-ofctl dump-flows br-int
 ```
-
 
 ## tools
 
@@ -56,13 +67,8 @@ netstat -nr
 
 iptables -t nat -L  -n --line-number
 
-tcpdump -i any   port 6081 -v
 
 ethtool
-
-tcpdump -i any   port 6081 -v -n
-
-tcpdump -i any   not host 192.168.10.3 and not host 192.168.3.26 -v -n
 
 
 apt install -y conntrack
@@ -99,13 +105,18 @@ perf record -g -a -e skb:kfree_skb
 
 
 
-
-
 ```
 
 ```bash
 
+tcpdump -i any   port 6081 -v
+
+tcpdump -i any   port 6081 -v -n
+
+tcpdump -i any   not host 192.168.10.3 and not host 192.168.3.26 -v -n
+
 tcpdump -i any -nn port 6081
+
 tcpdump -i any -nnn udp  port 6081
 
 tcpdump -i genev_sys_6081 -vvnn icmp
@@ -137,11 +148,12 @@ ip netns exec vm1 ping -M do -s 1350 10.1.20.2
 
 ip netns exec vm1 python3 -m http.server 8000
 
-ip netns exec vm1 curl -v http://10.1.20.5
+ip netns exec vm1 curl -v http://10.1.20.2:8000
 
 ```
 
-##  iperf3 测速
+## iperf3 测速
+
 ```bash
 
 # 服务端：
@@ -198,6 +210,7 @@ dmesg | tail
 ```
 
 ## 查看日志
+
 ```bash
 
 tail -f  /usr/local/var/log/ovn/ovn-controller.log
@@ -209,6 +222,7 @@ tail -f  /usr/local/var/log/openvswitch/ovsdb-server.log
 ```
 
 ## SDN｜OpenFlow流表简述
+
     https://baijiahao.baidu.com/s?id=1690694392596006484
 
 
