@@ -7,7 +7,7 @@ env:
 
 jobs:
   windows-cygwin:
-    if: 0
+    if: 1
     runs-on: windows-latest
     steps:
       - name: Prepare git
@@ -24,6 +24,7 @@ jobs:
         run: |
           ipconfig /all
           # git submodule update --init
+
       - name: Cache cygwin packages
         id: cache-cygwin
         uses: actions/cache@v3
@@ -41,17 +42,21 @@ jobs:
       - name: Install re2c
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
+
       - name: Prepare
         run: |
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           # git submodule update --init
           bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
+
       - name: Configure
         run: |
           bash ./sapi/scripts/cygwin/cygwin-config.sh
+
       - name: Build
         run: |
           bash ./sapi/scripts/cygwin/cygwin-build.sh
+
       - name: Show Build Result
         run: |
           ./bin/php-cli.exe -v
@@ -61,11 +66,13 @@ jobs:
       - name: Archive
         run: |
           bash ./sapi/scripts/cygwin/cygwin-archive.sh
+
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: cygwin-php-cli-dist
           path: bin/php-cli.exe
+
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
