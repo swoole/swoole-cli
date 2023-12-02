@@ -64,6 +64,7 @@ jobs:
           ./bin/php-cli.exe -m
           ./bin/php-cli.exe --ri pdo_pgsql
           ./bin/php-cli.exe --ri swoole
+
       - name: Archive
         run: |
           bash ./sapi/scripts/cygwin/cygwin-archive.sh
