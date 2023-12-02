@@ -73,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cygwin-php-cli-dist
-          path: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64.tar.xz
+          path: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64.zip
 
       - name: gh release
         uses: softprops/action-gh-release@v1
@@ -81,6 +81,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64.tar.xz
+          files: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64.zip
           draft: true
           prerelease: true
