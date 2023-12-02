@@ -96,14 +96,23 @@ netstat -su
 
 netstat -s -u
 netstat -s --udp
+watch netstat -su
 
 ethtool -S eth0
 
-apt install -y  linux-perf
+# 查看某个端口被哪个进程占用
+lsof -i:6081
+lsof -i:6081 -u
+netstat -tlnp | grep 6081
+netstat -nlnp | grep 6081
 
-perf record -g -a -e skb:kfree_skb
 
+# 测试UDP 端口
+nc -ul 6081
 
+nc -u 192.168.3.26 6081
+
+tcpdump -i eth1 udp port xxxx -A -nn
 
 ```
 
