@@ -102,7 +102,7 @@ ethtool -S eth0
 
 # 查看某个端口被哪个进程占用
 lsof -i:6081
-lsof -i:6081 -u
+
 netstat -tlnp | grep 6081
 netstat -nlnp | grep 6081
 
