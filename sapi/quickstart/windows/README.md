@@ -30,3 +30,5 @@ mklink composer composer.phar
 1. [install msys2 ](./install-msys2.md)
 
 
+## cygwin mirror
+    https://cygwin.com/mirrors.html
