@@ -18,6 +18,8 @@ jobs:
           ipconfig
           uname -a
           pwd
+          ipconfig /all
+
 
       - uses: actions/checkout@v3
       - name: Prepare submodule
@@ -64,6 +66,7 @@ jobs:
           ./bin/php-cli.exe -m
           ./bin/php-cli.exe --ri pdo_pgsql
           ./bin/php-cli.exe --ri swoole
+
 
       - name: Archive
         run: |
