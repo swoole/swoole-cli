@@ -17,3 +17,7 @@ IPOE     机顶盒就是采用 IPOE 方式认证
 
 
 https://info.support.huawei.com/info-finder/encyclopedia/zh/IPoE.html
+
+
+APN 指一种网络接入技术
+    https://baike.baidu.com/item/apn/96667

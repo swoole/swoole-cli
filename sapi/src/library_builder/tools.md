@@ -80,3 +80,6 @@ brew install iTerm2
 
     gns3   https://baike.baidu.com/item/gns3/8995165
            https://www.gns3.com/
+
+## Android 设备 控制工具
+    https://github.com/Genymobile/scrcpy
