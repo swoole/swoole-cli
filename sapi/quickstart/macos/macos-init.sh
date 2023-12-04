@@ -78,14 +78,20 @@ fi
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
 
+brew install  jq
+
+# brew uninstall --ignore-dependencies oniguruma
+# brew uninstall --ignore-dependencies brotli
+# brew uninstall --ignore-dependencies freetype
+# brew uninstall --ignore-dependencies zstd
 
 brew uninstall --ignore-dependencies snappy
 brew uninstall --ignore-dependencies capstone
 
+which glibtool
 
 ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-
 
 
 case "$MIRROR" in
@@ -96,8 +102,6 @@ ustc)
   pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
   ;;
 esac
-
-
 
 
 # launchctl -h
