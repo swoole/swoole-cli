@@ -82,27 +82,10 @@ brew install gettext coreutils binutils libunistring
 brew uninstall --ignore-dependencies snappy
 brew uninstall --ignore-dependencies capstone
 
+which glibtool
+
+
 ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
-
-
-
-# launchctl -h
-
-
-# 配置例子
-:<<'EOF'
-# pip3 install meson virtualenv -i https://pypi.tuna.tsinghua.edu.cn/simple
-
-mkdir -p ~/.pip
-
-cat > ~/.pip/pip.conf <<===EOF===
-[global]
-index-url = https://pypi.tuna.tsinghua.edu.cn/simple
-[install]
-trusted-host = https://pypi.tuna.tsinghua.edu.cn
-===EOF===
-
-EOF
 
