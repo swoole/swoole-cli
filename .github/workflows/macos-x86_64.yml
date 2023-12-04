@@ -17,21 +17,7 @@ jobs:
           echo $HOME
           brew config
 
-          brew install  wget curl  libtool automake  re2c llvm flex
-          brew install  gettext coreutils binutils libunistring
-          brew install  bison
-
-          # brew uninstall --ignore-dependencies oniguruma
-          # brew uninstall --ignore-dependencies brotli
-          # brew uninstall --ignore-dependencies freetype
-          # brew uninstall --ignore-dependencies zstd
-
-          brew uninstall --ignore-dependencies snappy
-          brew uninstall --ignore-dependencies capstone
-
-          which glibtool
-          ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
-          ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
+          bash sapi/quickstart/macos/macos-init.sh
 
           # sudo rm -rf /Library/Developer/CommandLineTools
           # xcode-select --install
