@@ -78,6 +78,8 @@ fi
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
 
+which glibtool
+
 ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
