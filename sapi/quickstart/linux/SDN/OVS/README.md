@@ -49,7 +49,20 @@ ovs-vsctl list bridge
 ovs-appctl ofproto/list-tunnels
 
 ovs-appctl ofproto/trace ovs-dummy
+
+# userspace datapath端口信息
+ovs-appctl dpctl/show
+# 查看路由信息
 ovs-appctl ovs/route/show
+
+ethtool -i genev_sys_6081
+ethtool -k genev_sys_6081
+
+ovs-appctl dpctl/dump-flows
+tcpdump -vne -i  genev_sys_6081
+tcpdump -vne -i eth0
+tcpdump -vne -i eth0 src host  47.241.228.11
+
 
 ovs-dpctl-top
 
@@ -98,19 +111,34 @@ netstat -s -u
 netstat -s --udp
 watch netstat -su
 
-ethtool -S eth0
+
 
 # 查看某个端口被哪个进程占用
 lsof -i:6081
 
+# tcp
 netstat -tlnp | grep 6081
+# udp
 netstat -nlnp | grep 6081
 
+netstat -anup
 
-# 测试UDP 端口
-nc -ul 6081
+# 测试UDP 服务端端口
+# 参考 https://cloud.tencent.com/developer/article/1432599
+nc -v -u -l 0.0.0.0 6081
+# 客户端
+nc -u -v  192.168.1.1 6081
 
-nc -u 192.168.3.26 6081
+
+
+
+
+
+
+tcpdump -i any -n udp and src host 192.168.1.1
+tcpdump -i any -n udp and src host 192.168.1.1 and dst port 12345
+
+tcpdump -i any -n udp and src host  47.241.228.11
 
 tcpdump -i eth1 udp port xxxx -A -nn
 
@@ -137,6 +165,13 @@ tcpdump -i eth0 -nnn udp  port 6081
 
 tcpdump -ni eth0 -e -c 5
 
+ethtool -S eth0
+ethtool eth0 | egrep 'Speed|Duplex'
+ethtool -S eth0 | grep crc
+ethtool -S eth0 | grep -i error
+
+ethtool --offload eth0 tx off
+
 # 查看丢包
 ethtool -S eth0 | grep rx_ | grep -E "errors|drops"
 netstat -i
@@ -158,6 +193,10 @@ ip netns exec vm1 ping -M do -s 1350 10.1.20.2
 ip netns exec vm1 python3 -m http.server 8000
 
 ip netns exec vm1 curl -v http://10.1.20.2:8000
+
+tcpdump -i any port 6081 or icmp  -nneev
+
+ovs-appctl ofproto/trace-packet-out br-int
 
 ```
 
@@ -206,13 +245,13 @@ ovs-ofctl -O OpenFlow13 show br-int
 
 ovs-ofctl -O OpenFlow13 dump-flows br-int
 
-
 ```
 
 ```bash
 ovs-ofctl show br-int
 ovs-ofctl dump-ports br-int
-
+ovs-vsctl show
+ovs-ofctl show br-int
 
 dmesg | tail
 
@@ -235,4 +274,6 @@ tail -f  /usr/local/var/log/openvswitch/ovsdb-server.log
     https://baijiahao.baidu.com/s?id=1690694392596006484
 
 
-
+Ethernet over UDP
+网络标识符（Virtual Network Identifier，VNI）
+通用网络虚拟化封装 Generic Network Virtualization Encapsulation，GENEVE
