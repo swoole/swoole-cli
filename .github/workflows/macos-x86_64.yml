@@ -130,5 +130,3 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: swoole-cli-*-x64.tar.xz
-          draft: true
-          prerelease: true
