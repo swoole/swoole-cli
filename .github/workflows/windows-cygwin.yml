@@ -81,5 +81,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: swoole-cli-*-cygwin-x64.zip
-          draft: true
-          prerelease: true
