@@ -144,5 +144,3 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: php-cli-v${{ env.BUILD_PHP_VERSION }}-macos-x64.tar.xz
-          draft: true
-          prerelease: true
