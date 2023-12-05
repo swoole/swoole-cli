@@ -85,5 +85,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64.zip
-          draft: true
-          prerelease: true
