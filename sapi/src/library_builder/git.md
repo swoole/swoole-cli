@@ -96,3 +96,33 @@ git checkout commit_id filename
 
 
 ```
+
+## git commits 出现累积叠加 解决办法
+
+```bash
+
+git merge dev --squash
+
+git branch -D dev
+git checkout -b dev
+
+```
+
+## 创建新的空分支
+
+```bash
+
+git checkout -b --orphan  new_branch
+
+git rm -rf .
+
+```
+
+## 获取提交时间
+
+```bash
+
+ # 获得提交时间
+ TZ=UTC git show --date=format-local:%Y%m%d%k%M%S
+
+```

@@ -20,3 +20,17 @@ command -v debian-sa1 > /dev/null && debian-sa1 1 1
 
 ```
 
+
+包管理（Package Management）
+版本管理（Version Management）
+环境管理（Environmental Management）
+
+版本管理
+    PYTHON3
+        Python 管理工具 —— conda  详情： https://zhuanlan.zhihu.com/p/638540652
+        pyenv pipenv venv
+    PHP
+        phpbrew
+    nodejs
+        nvm
+        npm-check-updates
