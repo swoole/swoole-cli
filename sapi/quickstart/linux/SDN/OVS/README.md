@@ -69,6 +69,8 @@ ovs-dpctl-top
 ovs-dpctl show
 ovs-dpctl dump-flows
 ovs-ofctl dump-flows br-int
+
+ovs-appctl ofproto/trace br-int
 ```
 
 ## tools

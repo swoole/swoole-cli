@@ -73,13 +73,18 @@ brew install iTerm2
 ```
 
 ## 网络仿真工具平台
-
     eNSP(Enterprise Network Simulation Platform)是一款由华为提供的、可扩展的、图形化操作的网络仿真工具平台，
         主要对企业网络路由器、交换机进行软件仿真，完美呈现真实设备实景，支持大型网络模拟，让广大用户有机会在没有真实设备的情况下能够模拟演练，学习网络技术。
         ENSP已于2019年12月31日正式停止服务，ENSP软件目前仅对渠道合作伙伴开放。不面向个人用户开放下载
-
     gns3   https://baike.baidu.com/item/gns3/8995165
            https://www.gns3.com/
 
 ## Android 设备 控制工具
     https://github.com/Genymobile/scrcpy
+
+## 查看内存
+```bash
+
+  lsmem
+
+```
