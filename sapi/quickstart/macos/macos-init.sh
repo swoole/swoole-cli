@@ -84,7 +84,6 @@ brew uninstall --ignore-dependencies capstone
 
 which glibtool
 
-
 ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
