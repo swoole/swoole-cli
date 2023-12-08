@@ -33,7 +33,6 @@ return function (Preprocessor $p) {
             -Daom_ROOT={$aom_prefix} \
             -Dlibgav1_ROOT={$libgav1_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
-            -Ddav1d_ROOT={$dav1d_prefix} \
             -Dlibyuv_ROOT={$libwebp_prefix} \
             -DAVIF_CODEC_AOM=ON \
             -DAVIF_CODEC_DAV1D=ON \
@@ -54,5 +53,4 @@ EOF
         #   'rav1e'
         #   'libgav1'  # 测试例子依赖 absl
     );
-
 };
