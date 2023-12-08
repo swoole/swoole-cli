@@ -162,7 +162,7 @@ jobs:
           retention-days: 7
           path: ./bin/swoole-cli
 
-      - name: Release
+      - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
