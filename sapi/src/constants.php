@@ -59,7 +59,6 @@ define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
 define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
 define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
-define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
 define("DAV1D_PREFIX", $p->getGlobalPrefix() . '/dav1d');
 define("LIBGAV1_PREFIX", $p->getGlobalPrefix() . '/libgav1');
 define("AOM_PREFIX", $p->getGlobalPrefix() . '/aom');
