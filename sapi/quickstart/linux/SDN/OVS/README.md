@@ -320,3 +320,8 @@ ovn-trace --summary ls01 'inport == "ls01_port04" && eth.src == 00:02:00:00:00:0
 
 
 ```
+
+自建SNAT策略后网络不通
+    https://help.aliyun.com/zh/vpc/network-failure-after-self-built-snat-policy
+网络最大传输单元MTU
+https://help.aliyun.com/zh/ecs/user-guide/mtus
