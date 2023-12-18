@@ -41,10 +41,17 @@ nmcli -g connection.interface-name c show genev_sys_6081
 ```
 
 ```bash
+ovs-vsctl list open_vswitch
+ovs-vsctl -- --columns=name,ofport list Interface
+
+ss -tuxlpn | grep -e '^\s*tcp\s.*\b:664[0-5]\b' -e '^\s*udp\s.*\b:6081\b' -e '^\s*u_str\s.*\bovn\b' | sed -r -e 's/\s+$//'
+
+ss -tlpn
 
 ovs-vsctl show
 ovs-vsctl list-br
 ovs-vsctl list bridge
+ovs-appctl dpif/show
 
 ovs-appctl ofproto/list-tunnels
 
@@ -61,7 +68,7 @@ ethtool -k genev_sys_6081
 ovs-appctl dpctl/dump-flows
 tcpdump -vne -i  genev_sys_6081
 tcpdump -vne -i eth0
-tcpdump -vne -i eth0 src host  47.241.228.11
+tcpdump -vne -i eth0 src host  192.168.3.26
 
 
 ovs-dpctl-top
@@ -69,6 +76,8 @@ ovs-dpctl-top
 ovs-dpctl show
 ovs-dpctl dump-flows
 ovs-ofctl dump-flows br-int
+
+ovs-appctl bridge/dump-flows br-int
 
 ovs-appctl ofproto/trace br-int
 ```
@@ -140,7 +149,7 @@ nc -u -v  192.168.1.1 6081
 tcpdump -i any -n udp and src host 192.168.1.1
 tcpdump -i any -n udp and src host 192.168.1.1 and dst port 12345
 
-tcpdump -i any -n udp and src host  47.241.228.11
+tcpdump -i any -n udp and src host  192.168.3.26
 
 tcpdump -i eth1 udp port xxxx -A -nn
 
@@ -151,6 +160,11 @@ tcpdump -i eth1 udp port xxxx -A -nn
 tcpdump -i any   port 6081 -v
 
 tcpdump -i any   port 6081 -v -n
+
+# 获得抓包文件
+tcpdump -i any   port 6081 -v -n  -w ovn-node-chendu-test.cap
+
+
 
 tcpdump -i any   not host 192.168.10.3 and not host 192.168.3.26 -v -n
 
@@ -237,23 +251,38 @@ ovs-ofctl show br-int
 
 ovs-appctl ofproto/trace br-int in_port=vm1,tcp,nw_src=10.1.20.3,tcp_dst=6081
 
+ovs-appctl ofproto/trace br-int in_port=vm1,icmp,nw_src=10.1.20.3,nw_dst=10.1.20.2,dl_src=00:02:00:00:00:03,dl_dst=00:02:00:00:00:02
+ovs-appctl ofproto/trace br-int in_port=vm1,tcp,nw_src=10.1.20.3,nw_dst=10.1.20.2,dl_src=00:02:00:00:00:03,dl_dst=00:02:00:00:00:02
+
+ovs-appctl ofproto/trace br-int in_port=vm1,icmp,nw_src=10.1.20.3,nw_dst=10.1.20.4,dl_src=00:02:00:00:00:03,dl_dst=00:02:00:00:00:04
+ovs-appctl ofproto/trace br-int in_port=vm1,icmp,nw_src=10.1.20.4,nw_dst=10.1.20.3,dl_src=00:02:00:00:00:04,dl_dst=00:02:00:00:00:03
+
 ovs-appctl ofproto/trace br-int in_port=vm1,dl_src=00:02:00:00:00:02,dl_dst=00:02:00:00:00:03
 
 ovs-appctl ofproto/trace br-int in_port=vm1,tcp,nw_src=10.1.20.2,nw_dst=10.1.20.3,ct_state=trk
 
-ovs-appctl bridge/dump-flows br-int
+
+
 
 ovs-ofctl -O OpenFlow13 show br-int
 
-ovs-ofctl -O OpenFlow13 dump-flows br-int
+
 
 ```
 
 ```bash
+
+ovs-vsctl list open .
+ovs-dpctl show -v
+
+
+ovs-appctl bridge/dump-flows br-int
+ovs-ofctl -O OpenFlow13 dump-flows br-int
+
 ovs-ofctl show br-int
 ovs-ofctl dump-ports br-int
 ovs-vsctl show
-ovs-ofctl show br-int
+
 
 dmesg | tail
 
@@ -279,3 +308,15 @@ tail -f  /usr/local/var/log/openvswitch/ovsdb-server.log
 Ethernet over UDP
 网络标识符（Virtual Network Identifier，VNI）
 通用网络虚拟化封装 Generic Network Virtualization Encapsulation，GENEVE
+
+
+```bash
+# 参考 https://www.jianshu.com/p/c308ecc3b191
+
+ovs-appctl ofproto/trace br-int in_port="vm1",icmp,dl_src=00:02:00:00:00:04,dl_dst=00:02:00:00:00:03,nw_src=10.1.20.4,nw_dst=10.1.20.3,nw_ttl=64
+
+
+ovn-trace --summary ls01 'inport == "ls01_port04" && eth.src == 00:02:00:00:00:04 && eth.dst == 00:02:00:00:00:03 && ip4.src==10.1.20.4 && ip4.dst==10.1.20.3 && ip.ttl==64'
+
+
+```

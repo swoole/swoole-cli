@@ -33,5 +33,15 @@ ovn-nbctl lsp-add ls01 ls01_port06
 ovn-nbctl lsp-set-addresses ls01_port06 '00:02:00:00:00:06 10.1.20.6'
 ovn-nbctl lsp-set-port-security ls01_port06 '00:02:00:00:00:06 10.1.20.6'
 
+# 添加第六个 logical port
+ovn-nbctl lsp-add ls01 ls01_port07
+ovn-nbctl lsp-set-addresses ls01_port07 '00:02:00:00:00:07 10.1.20.7'
+ovn-nbctl lsp-set-port-security ls01_port07 '00:02:00:00:00:07 10.1.20.7'
+
+# 添加第七个 logical port
+ovn-nbctl lsp-add ls01 ls01_port08
+ovn-nbctl lsp-set-addresses ls01_port08 '00:02:00:00:00:08 10.1.20.8'
+ovn-nbctl lsp-set-port-security ls01_port08 '00:02:00:00:00:08 10.1.20.8'
+
 
 ovn-nbctl show

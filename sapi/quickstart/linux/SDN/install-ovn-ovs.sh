@@ -4,6 +4,8 @@
 set -eux
 set -o pipefail
 
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 __DIR__=$(cd "$(dirname "$0")";pwd)
 cd ${__DIR__}
@@ -78,19 +80,30 @@ prepare(){
 test $(command -v ncat | wc -l) -eq 0 && prepare
 
 
+
 cpu_nums=$(nproc)
 cpu_nums=$(grep "processor" /proc/cpuinfo | sort -u | wc -l)
+
+cd ${__DIR__}
+if test -d ovs
+then
+    cd ${__DIR__}/ovs/
+    git   pull --depth=1 --progress --rebase
+else
+    git clone -b v3.2.1 https://github.com/openvswitch/ovs.git --depth=1 --progress
+fi
+
+cd ${__DIR__}
 
 if test -d ovn
 then
     cd ${__DIR__}/ovn/
     git   pull --depth=1 --progress --rebase
-    cd ${__DIR__}/ovs/
-    git   pull --depth=1 --progress --rebase
 else
-    git clone -b v3.2.1 https://github.com/openvswitch/ovs.git --depth=1 --progress
     git clone -b v23.09.0 https://github.com/ovn-org/ovn.git --depth=1 --progress
 fi
+
+cd ${__DIR__}
 
 cd ${__DIR__}/ovs/
 ./boot.sh
