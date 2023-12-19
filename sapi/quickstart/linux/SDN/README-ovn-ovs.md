@@ -11,6 +11,15 @@ https://en.m.wikipedia.org/wiki/Routing#Delivery_schemes
 https://www.cnblogs.com/jingjingxyk/category/2201785.html
 
 
+SDN网络有3大特征, 分别是[6]:
+
+1) 集中式控制.
+
+2) 控制功能与转发功能分离.
+
+3) 可编程.
+
+
 ## install ovn
 
     https://github.com/ovn-org/ovn/blob/main/Documentation/intro/install/general.rst
@@ -102,3 +111,8 @@ ovn-sbctl set connection . inactivity_probe=180000
 
 Geneve：通用网络虚拟化封装草案
     https://datatracker.ietf.org/doc/draft-ietf-nvo3-geneve/16/
+
+
+# 使用UDP协议交互数据
+nc -v -u -l 0.0.0.0 6081
+nc -u -v 8.137.54.132 6081
