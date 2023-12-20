@@ -338,5 +338,10 @@ MTU配置说明
 
 ## 配置网络的工具
 1. netplan
-1. NetworkManager
+1. NetworkManager （nmcli)
+1. systemd-networkd (systemd的一部分 )
 
+```bash
+systemctl status systemd-networkd
+systemctl status systemd-resolved
+```

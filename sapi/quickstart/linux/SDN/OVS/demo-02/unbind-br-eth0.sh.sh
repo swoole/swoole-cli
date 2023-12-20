@@ -17,7 +17,7 @@ ovs-vsctl set Open_vSwitch .  external-ids:ovn-bridge-mappings=' '
 
     ip route add  100.100.2.136 via  172.16.127.253 dev eth0
     ip route add  100.100.2.138 via  172.16.127.253 dev eth0
-
+    ip route add  0.0.0.0       via  172.16.127.253 dev eth0
 
 } || {
   echo $?

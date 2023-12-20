@@ -6,5 +6,3 @@ set -uex
 
 
 ovn-nbctl show
-
-

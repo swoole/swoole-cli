@@ -21,10 +21,9 @@ ip link set br-eth0 up # 激活网桥
     ip addr add  172.16.124.59/20 dev br-eth0
     ip route replace  default via 172.16.127.253  dev br-eth0
 
-
     ip route add  100.100.2.136 via  172.16.127.253 dev br-eth0
     ip route add  100.100.2.138 via  172.16.127.253 dev br-eth0
-
+    ip route add  0.0.0.0       via  172.16.127.253 dev br-eth0
 
     # 测试例子
     # ip route del 100.100.2.136

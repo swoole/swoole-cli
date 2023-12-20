@@ -19,6 +19,7 @@ ip a show eth0
 
 arp -a
 
+ip -s link
 
 lsmod | grep openvswitch
 
@@ -26,6 +27,13 @@ lsmod | grep openvswitch
 cat /etc/systemd/resolved.con
 
 cat /etc/netplan/50-cloud-init.yaml
+
+
+systemctl is-active systemd-resolved
+
+systemctl status systemd-resolved
+systemctl restart systemd-resolved
+
 ```
 
 

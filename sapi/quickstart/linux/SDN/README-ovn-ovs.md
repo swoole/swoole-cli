@@ -1,3 +1,14 @@
+## SDN
+SDN网络有3大特征, 分别是[6]:
+
+1) 集中式控制.
+
+2) 控制功能与转发功能分离.
+
+3) 可编程.
+
+
+
 ## IPSEC over geneve
 1. GENEVE 代表“通用网络虚拟化封装”
 2. MAC-in-IP 封装 mac in udp
@@ -14,6 +25,8 @@
 SDN 关注于网络控制面和转发面的分离
 NFV 关注网络转发功能的虚拟化和通用化.
 
+Geneve：通用网络虚拟化封装草案
+    https://datatracker.ietf.org/doc/draft-ietf-nvo3-geneve/16/
 
 ## Centralized vs. Distributed
 
@@ -32,13 +45,6 @@ https://en.m.wikipedia.org/wiki/Routing#Delivery_schemes
 https://www.cnblogs.com/jingjingxyk/category/2201785.html
 
 
-SDN网络有3大特征, 分别是[6]:
-
-1) 集中式控制.
-
-2) 控制功能与转发功能分离.
-
-3) 可编程.
 
 
 ## install ovn
@@ -130,8 +136,6 @@ ovn-sbctl set connection . inactivity_probe=180000
 
 ```
 
-Geneve：通用网络虚拟化封装草案
-    https://datatracker.ietf.org/doc/draft-ietf-nvo3-geneve/16/
 
 
 # 使用UDP协议交互数据
