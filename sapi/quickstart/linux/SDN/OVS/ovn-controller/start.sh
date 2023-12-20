@@ -12,6 +12,8 @@ if test $PROC_NUM -gt 0 ; then
    exit 0
 fi
 
+sh reset.sh
+
 ipv6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
 ipv4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
 

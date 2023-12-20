@@ -321,6 +321,9 @@ ovn-trace --summary ls01 'inport == "ls01_port04" && eth.src == 00:02:00:00:00:0
 
 ```
 
+OVS mtu
+    https://docs.openvswitch.org/en/latest/faq/issues/
+
 自建SNAT策略后网络不通
     https://help.aliyun.com/zh/vpc/network-failure-after-self-built-snat-policy
 网络最大传输单元MTU 修改ECS网卡MTU
@@ -331,3 +334,9 @@ ovn-trace --summary ls01 'inport == "ls01_port04" && eth.src == 00:02:00:00:00:0
     https://help.aliyun.com/zh/vpn/product-overview/what-is-vpn-gateway
 MTU配置说明
     https://help.aliyun.com/zh/vpn/user-guide/set-mtu-values
+
+
+## 配置网络的工具
+1. netplan
+1. NetworkManager
+

@@ -1,3 +1,24 @@
+## IPSEC over geneve
+1. GENEVE 代表“通用网络虚拟化封装”
+2. MAC-in-IP 封装 mac in udp
+3. IPSec over GENEVE 只是因为私网流量从隧道转发，将策略应用在了Tunnel接口下
+
+- L2TP over IPsec: looks like a big overhead to me, ie 128 bytes of headers
+- OpenVPN tap: well OpenVPN is very slow compared to IPSec / Wireguard, and I would like to achieve as much bandwidth and low latency as I may get. So OpenVPN is the fallback if I don't get anything to work
+- VxLAN (or GENEVE, or GRETAP) over Wireguard: looks promising ?
+- Tinc ?
+- Zerotier ?
+- IPIP
+- GRE
+
+SDN 关注于网络控制面和转发面的分离
+NFV 关注网络转发功能的虚拟化和通用化.
+
+
+## Centralized vs. Distributed
+
+
+
 ## IPv6 Address Auto Configuration
 
 https://l8liliang.github.io/2022/01/05/ipv6-address-autoconfig.html
