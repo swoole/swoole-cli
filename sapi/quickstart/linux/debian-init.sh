@@ -30,8 +30,8 @@ china | ustc | tuna)
     case $VERSION_ID in
     11 | 12 )
       # 容器内和容器外 镜像源配置不一样
-      if [ -f /.dockerenv ]; then
-        test -f /etc/apt//etc/apt/sources.list.d/debian.sources.save || cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
+      if [ -f /.dockerenv ] && [ "$VERSION_ID" = 12 ]; then
+        test -f /etc/apt/sources.list.d/debian.sources.save || cp -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
         sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
         sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
         test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list.d/debian.sources
@@ -43,7 +43,7 @@ china | ustc | tuna)
       fi
       ;;
     *)
-      echo 'no match debian os version' . $VERSION_ID
+      echo 'no match debian OS version' . $VERSION_ID
       ;;
     esac
     ;;
@@ -56,7 +56,7 @@ china | ustc | tuna)
       test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
       ;;
     *)
-      echo 'no match ubuntu os version' . $VERSION_ID
+      echo 'no match ubuntu OS version' . $VERSION_ID
       ;;
     esac
     ;;
