@@ -9,4 +9,7 @@ __DIR__=$(
 cd ${__DIR__}
 
 docker exec -it swoole-cli-rhel-dev bash
+<<<<<<< HEAD
 
+=======
+>>>>>>> build_native_php
