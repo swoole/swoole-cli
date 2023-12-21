@@ -17,8 +17,8 @@ ss -tuxlpn | grep -e '^\s*tcp\s.*\b:664[0-5]\b' -e '^\s*udp\s.*\b:6081\b' -e '^\
 
 ```bash
 
-ovn-nbctl lr-policy-list lr1
-ovn-nbctl lr-route-list lr1
+ovn-nbctl lr-policy-list lr01
+ovn-nbctl lr-route-list lr01
 ovn-nbctl ls-lb-list ls10
 ovn-nbctl list address_set
 ovn-nbctl list acl

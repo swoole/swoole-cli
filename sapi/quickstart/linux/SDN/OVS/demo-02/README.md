@@ -3,6 +3,7 @@
 
 
 ```bash
+ss -tlnp
 
 ip route show
 ip route list

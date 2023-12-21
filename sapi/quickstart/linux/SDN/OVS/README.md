@@ -4,6 +4,15 @@
 
 ## 验证命令
 
+````bash
+
+tcpdump -i any -nn port 6081
+
+tcpdump -i any -nnn udp  port 6081
+
+````
+
+
 ```bash
 ip netns list
 

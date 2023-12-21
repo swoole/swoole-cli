@@ -28,6 +28,10 @@ NFV 关注网络转发功能的虚拟化和通用化.
 Geneve：通用网络虚拟化封装草案
     https://datatracker.ietf.org/doc/draft-ietf-nvo3-geneve/16/
 
+BFD（Bidirectional Forwarding Detection，双向转发检测）
+
+ECMP（Equal-Cost Multipath Routing，等价多路径路由）
+
 ## Centralized vs. Distributed
 
 
