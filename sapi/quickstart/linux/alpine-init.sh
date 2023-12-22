@@ -25,9 +25,10 @@ while [ $# -gt 0 ]; do
 done
 
 case "$MIRROR" in
-china|tuna)
+china | tuna | aliyuncs)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+  test "$MIRROR" = "aliyuncs" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.aliyuncs.com/g' /etc/apk/repositories
   ;;
 ustc)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
@@ -56,8 +57,9 @@ apk add python3-dev
 apk add mercurial
 
 case "$MIRROR" in
-china|tuna)
+china | tuna | aliyuncs)
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  test "$MIRROR" = "aliyuncs" && pip3 config set global.index-url http://mirrors.cloud.aliyuncs.com/pypi/simple/
   ;;
 ustc)
   pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple

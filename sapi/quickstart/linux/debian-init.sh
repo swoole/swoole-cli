@@ -22,7 +22,7 @@ done
 
 
 case "$MIRROR" in
-china | ustc | tuna)
+china | ustc | tuna | aliyuncs )
   OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
   VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
   case $OS_ID in
@@ -36,11 +36,13 @@ china | ustc | tuna)
         sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
         sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
         test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list.d/debian.sources
+        test "$MIRROR" = "aliyuncs" && sed -i "s@mirrors.ustc.edu.cn@mirrors.cloud.aliyuncs.com@g" /etc/apt/sources.list.d/debian.sources
       else
         test -f /etc/apt/sources.list.save || cp /etc/apt/sources.list /etc/apt/sources.list.save
         sed -i "s@deb.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
         sed -i "s@security.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
         test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
+        test "$MIRROR" = "aliyuncs" && sed -i "s@mirrors.ustc.edu.cn@mirrors.cloud.aliyuncs.com@g" /etc/apt/sources.list
       fi
       ;;
     *)
@@ -55,6 +57,7 @@ china | ustc | tuna)
       sed -i "s@security.ubuntu.com@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
       sed -i "s@archive.ubuntu.com@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
       test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
+      test "$MIRROR" = "aliyuncs" && sed -i "s@mirrors.ustc.edu.cn@mirrors.cloud.aliyuncs.com@g" /etc/apt/sources.list
       ;;
     *)
       echo 'no match ubuntu OS version' . $VERSION_ID
@@ -93,8 +96,9 @@ apt install -y meson
 apt install -y netcat-openbsd
 
 case "$MIRROR" in
-china | tuna)
+china | tuna )
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  test "$MIRROR" = "aliyuncs" && pip3 config set global.index-url http://mirrors.cloud.aliyuncs.com/pypi/simple/
   ;;
 ustc)
   pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple

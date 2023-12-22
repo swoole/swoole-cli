@@ -80,6 +80,7 @@ bash install-ovn-ovs.sh --proxy http://127.0.0.1:8016
 
 bash install-ovn-ovs.sh --proxy http://127.0.0.1:8016  --mirror china
 
+
 ```
 
 ## IGMP 组播协议

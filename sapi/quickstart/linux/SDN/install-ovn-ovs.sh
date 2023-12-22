@@ -31,11 +31,18 @@ while [ $# -gt 0 ]; do
  shift $(($# > 0 ? 1 : 0))
 done
 
+OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
+VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
+
+if [ ${OS_ID} != 'debian' ] ; then
+  echo 'no support config'
+  exit 0
+fi
 case "$MIRROR" in
 china | tuna | ustc | aliyuncs )
       # 详情 http://mirrors.ustc.edu.cn/help/debian.html
       # 容器内和容器外 镜像源配置不一样
-      if [ -f /.dockerenv ]; then
+      if [ -f /.dockerenv ] && [ ${VERSION_ID} = 12 ] ; then
         test -f /etc/apt/sources.list.d/debian.sources.save || cp -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
         sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
         sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
@@ -81,8 +88,8 @@ test $(command -v ncat | wc -l) -eq 0 && prepare
 
 
 
-cpu_nums=$(nproc)
-cpu_nums=$(grep "processor" /proc/cpuinfo | sort -u | wc -l)
+CPU_NUMS=$(nproc)
+CPU_NUMS=$(grep "processor" /proc/cpuinfo | sort -u | wc -l)
 
 cd ${__DIR__}
 if test -d ovs
@@ -111,7 +118,7 @@ cd ${__DIR__}/ovs/
 
 
 ./configure --enable-ssl
-make -j $cpu_nums
+make -j $CPU_NUMS
 sudo make install
 
 cd ${__DIR__}/ovn/
@@ -124,7 +131,7 @@ cd ${__DIR__}/ovn/
 --with-ovs-source=${__DIR__}/ovs/ \
 --with-ovs-build=${__DIR__}/ovs/
 
-make -j $cpu_nums
+make -j $CPU_NUMS
 sudo make install
 
 
