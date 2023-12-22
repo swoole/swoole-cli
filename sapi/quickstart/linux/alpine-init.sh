@@ -25,10 +25,12 @@ while [ $# -gt 0 ]; do
 done
 
 case "$MIRROR" in
-china | tuna | aliyuncs)
+china | tuna | aliyuncs | tencentyun | huaweicloud)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
   test "$MIRROR" = "aliyuncs" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.aliyuncs.com/g' /etc/apk/repositories
+  test "$MIRROR" = "tencentyun" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tencentyun.com/g' /etc/apk/repositories
+  test "$MIRROR" = "huaweicloud" && sed -i 's/dl-cdn.alpinelinux.org/repo.huaweicloud.com/g' /etc/apk/repositories
   ;;
 ustc)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
@@ -57,9 +59,11 @@ apk add python3-dev
 apk add mercurial
 
 case "$MIRROR" in
-china | tuna | aliyuncs)
+china | tuna | aliyuncs | tencentyun | huaweicloud)
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   test "$MIRROR" = "aliyuncs" && pip3 config set global.index-url http://mirrors.cloud.aliyuncs.com/pypi/simple/
+  test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple
+  test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple
   ;;
 ustc)
   pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
