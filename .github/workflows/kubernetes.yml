@@ -88,11 +88,11 @@ jobs:
           sudo sed -i "s@archive.ubuntu.com@azure.archive.ubuntu.com@g" /etc/apt/sources.list
 
           sudo sh sapi/quickstart/linux/kubernetes/debian-init.sh
-          # sudo sh sapi/quickstart/linux/kubernetes/runtime/install-containerd.sh
-          # sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes.sh
+          sudo sh sapi/quickstart/linux/kubernetes/runtime/install-containerd.sh
+          sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes.sh
 
-          sudo sh sapi/quickstart/linux/kubernetes/runtime/install-cri-dockerd.sh
-          sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes-debian.sh
+          # sudo sh sapi/quickstart/linux/kubernetes/runtime/install-cri-dockerd.sh
+          # sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes-debian.sh
 
 
       - name: Build
@@ -102,7 +102,8 @@ jobs:
           sudo systemctl status containerd | cat
           ls -lh /var/run/containerd/containerd.sock
 
-          sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh --cri-socket dockerd
+          # sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh --cri-socket dockerd
+          sudo sh sapi/quickstart/linux/kubernetes/kubeadm-init.sh --cri-socket containerd
           sudo sh sapi/quickstart/linux/kubernetes/install-cni-calio.sh
 
           # sudo sh sapi/quickstart/linux/kubernetes/install-nginx-ingress.sh
