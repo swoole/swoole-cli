@@ -82,12 +82,11 @@ prepare(){
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
   export DEBIAN_FRONTEND=noninteractive
-  DEBIAN_FRONTEND=noninteractive apt install -y locales tzdata keyboard-configuration
+  export TZ=Etc/UTC
+  DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y locales tzdata keyboard-configuration
 
-
-
-  localedef -i en_US -f UTF-8 en_US.UTF-8
-  dpkg-reconfigure locales
+  # localedef -i en_US -f UTF-8 en_US.UTF-8
+  # dpkg-reconfigure locales
 
   apt install -y kmod iptables
   apt install -y netcat-openbsd
