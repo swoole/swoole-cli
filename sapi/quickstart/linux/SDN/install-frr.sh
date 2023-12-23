@@ -77,7 +77,7 @@ prepare(){
   export DEBIAN_FRONTEND=noninteractive
   export TZ="UTC"
   export TZ="Etc/UTC"
-  export ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
   DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y locales tzdata keyboard-configuration
 
   # localedef -i en_US -f UTF-8 en_US.UTF-8
