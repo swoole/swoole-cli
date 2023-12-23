@@ -54,13 +54,6 @@ curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_
 DOWNLOAD_DIR="/usr/local/bin"
 mkdir -p "$DOWNLOAD_DIR"
 
-# https://github.com/kubernetes-sigs/cri-tools/tags
-CRICTL_VERSION="v1.29.0"
-ARCH="amd64"
-curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${ARCH}.tar.gz" |  tar -C $DOWNLOAD_DIR -xz
-
-
-
 
 RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
 ARCH="amd64"

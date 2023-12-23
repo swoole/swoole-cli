@@ -99,7 +99,7 @@ tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v${VERSION}.tgz
 
 VERSION="1.29.0"
 # check latest version in /releases page
-curl  -L -O https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-v${VERSION}-linux-amd64.tar.gz
+curl  -L -o crictl-v${VERSION}-linux-amd64.tar.gz  https://github.com/kubernetes-sigs/cri-tools/releases/download/v$VERSION/crictl-v${VERSION}-linux-amd64.tar.gz
 tar zxvf crictl-v${VERSION}-linux-amd64.tar.gz -C /usr/local/bin
 rm -f crictl-v${VERSION}-linux-amd64.tar.gz
 
