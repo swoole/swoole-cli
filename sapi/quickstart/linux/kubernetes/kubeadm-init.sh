@@ -29,9 +29,29 @@ sysctl net.bridge.bridge-nf-call-iptables net.bridge.bridge-nf-call-ip6tables ne
 
 
 
-kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}')
-kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
-# kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
+CRI_SOCKET="unix:///var/run/containerd/containerd.sock"
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --cri-socket)
+      case "$2" in
+      dockerd)
+        CRI_SOCKET="unix:///var/run/cri-dockerd.sock"
+        ;;
+      containerd)
+        CRI_SOCKET="unix:///var/run/containerd/containerd.sock"
+        ;;
+      esac
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket ${CRI_SOCKET}
+kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket ${CRI_SOCKET}
+
 
 ip route show | grep -E '^default'
 IP=$(ip address show | grep eth0 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
@@ -48,8 +68,8 @@ kubeadm init  \
 --token-ttl 0 \
 --v=5 \
 --apiserver-advertise-address="${IP}" \
---cri-socket "unix:///var/run/cri-dockerd.sock"
-# --cri-socket "unix:///var/run/containerd/containerd.sock"
+--cri-socket ${CRI_SOCKET}
+
 
 # --control-plane-endpoint='control-plane-endpoint-api.intranet.jingjingxyk.com:6443'
 #--apiserver-advertise-address="${ip}"
