@@ -88,8 +88,11 @@ jobs:
           sudo sed -i "s@archive.ubuntu.com@azure.archive.ubuntu.com@g" /etc/apt/sources.list
 
           sudo sh sapi/quickstart/linux/kubernetes/debian-init.sh
-          sudo sh sapi/quickstart/linux/kubernetes/runtime/install-containerd.sh
-          sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes.sh
+          # sudo sh sapi/quickstart/linux/kubernetes/runtime/install-containerd.sh
+          # sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes.sh
+
+          sudo sh sapi/quickstart/linux/kubernetes/runtime/install-cri-dockerd.sh
+          sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes-debian.sh
 
 
       - name: Build
