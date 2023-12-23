@@ -112,4 +112,4 @@ jobs:
 
           sudo kubectl get pod --all-namespaces
           sudo crictl ps
-          ipvsadm -ln
+          sudo ipvsadm -ln

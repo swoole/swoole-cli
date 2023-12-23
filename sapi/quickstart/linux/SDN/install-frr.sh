@@ -131,7 +131,7 @@ then
     cd ${__DIR__}/frr/
     git   pull --depth=1 --progress --rebase
 else
-    git clone -b frr-9.0.2 https://github.com/FRRouting/frr.git --depth=1 --progress
+    git clone -b master https://github.com/FRRouting/frr.git --depth=1 --progress
 fi
 
 cd ${__DIR__}
