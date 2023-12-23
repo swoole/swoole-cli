@@ -49,7 +49,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket ${CRI_SOCKET}
+kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}')
 kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket ${CRI_SOCKET}
 
 
