@@ -28,6 +28,7 @@ lsmod | grep overlay
 sysctl net.bridge.bridge-nf-call-iptables net.bridge.bridge-nf-call-ip6tables net.ipv4.ip_forward net.ipv6.conf.all.forwarding
 
 
+
 kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}')
 kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
 # kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
@@ -47,7 +48,8 @@ kubeadm init  \
 --token-ttl 0 \
 --v=5 \
 --apiserver-advertise-address="${IP}" \
---cri-socket "unix:///var/run/containerd/containerd.sock"
+--cri-socket "unix:///var/run/cri-dockerd.sock"
+# --cri-socket "unix:///var/run/containerd/containerd.sock"
 
 # --control-plane-endpoint='control-plane-endpoint-api.intranet.jingjingxyk.com:6443'
 #--apiserver-advertise-address="${ip}"
