@@ -35,6 +35,14 @@ systemctl is-active systemd-resolved
 systemctl status systemd-resolved
 systemctl restart systemd-resolved
 
+
+systemctl stop systemd-resolved
+
+
+
+systemctl status  systemd-networkd
+
+
 ```
 
 

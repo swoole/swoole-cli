@@ -35,11 +35,9 @@ done
 OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
 VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
 
-if [ ${OS_ID} = 'debian'  ] || [ ${OS_ID} = 'ubuntu' ] ; then
-    echo 'supported OS'
-else
-    echo 'no supported OS'
-    exit 0
+if [ ${OS_ID} != 'debian' ] ; then
+  echo 'no support config'
+  exit 0
 fi
 case "$MIRROR" in
 china | tuna | ustc | aliyuncs )
@@ -83,6 +81,25 @@ prepare(){
   apt install -y bc init ncat
   # apt install -y isc-dhcp-server
 
+
+  export LANGUAGE=en_US.UTF-8
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  export DEBIAN_FRONTEND=noninteractive
+  apt install -y locales
+  apt install -y  keyboard-configuration
+
+  localedef -i en_US -f UTF-8 en_US.UTF-8
+  dpkg-reconfigure locales
+
+  apt install -y libjson-c-dev
+  apt install -y libprotobuf-c-dev protobuf-c-compiler
+  apt install -y libreadline-dev
+  apt install -y libyang2-dev
+  apt install -y libcap-dev
+  apt install -y sphinx
+  apt install -y yacc python3-ply
+  apt install -y flex
 }
 
 # test $(dpkg-query -l graphviz | wc -l) -eq 0 && prepare
@@ -95,50 +112,28 @@ CPU_NUMS=$(nproc)
 CPU_NUMS=$(grep "processor" /proc/cpuinfo | sort -u | wc -l)
 
 cd ${__DIR__}
-if test -d ovs
+if test -d frr
 then
-    cd ${__DIR__}/ovs/
+    cd ${__DIR__}/frr/
     git   pull --depth=1 --progress --rebase
 else
-    git clone -b v3.2.1 https://github.com/openvswitch/ovs.git --depth=1 --progress
+    git clone -b frr-9.0.2 https://github.com/FRRouting/frr.git --depth=1 --progress
 fi
 
 cd ${__DIR__}
 
-if test -d ovn
-then
-    cd ${__DIR__}/ovn/
-    git   pull --depth=1 --progress --rebase
-else
-    git clone -b v23.09.0 https://github.com/ovn-org/ovn.git --depth=1 --progress
-fi
-
-cd ${__DIR__}
-
-cd ${__DIR__}/ovs/
-./boot.sh
-cd ${__DIR__}/ovs/
 
 
-./configure --enable-ssl
-make -j $CPU_NUMS
-sudo make install
+cd ${__DIR__}/frr/
 
-cd ${__DIR__}/ovn/
+sh bootstrap.sh
+./configure --help
+./configure
 
-#test -d build &&  rm -rf build
-#mkdir build
-./boot.sh
-cd ${__DIR__}/ovn/
-./configure  --enable-ssl \
---with-ovs-source=${__DIR__}/ovs/ \
---with-ovs-build=${__DIR__}/ovs/
 
 make -j $CPU_NUMS
-sudo make install
+make install
 
 
 cd ${__DIR__}
-rm -rf ${__DIR__}/ovn
-rm -rf ${__DIR__}/ovs
-
+rm -rf ${__DIR__}/frr

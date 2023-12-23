@@ -345,12 +345,15 @@ MTU配置说明
     https://help.aliyun.com/zh/vpn/user-guide/set-mtu-values
 
 
-## 配置网络的工具
+## 网络管理配置工具
 1. netplan
 1. NetworkManager （nmcli)
 1. systemd-networkd (systemd的一部分 )
 
 ```bash
+
 systemctl status systemd-networkd
 systemctl status systemd-resolved
+
+
 ```

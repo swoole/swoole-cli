@@ -53,3 +53,46 @@ ovn-sbctl --bare --columns name find Chassis hostname=ovn-gateway-test-01
 ovs-appctl ovs/route/show
 
 ```
+
+```bash
+
+ovn-nbctl list Logical_Switch
+
+ovn-nbctl list Logical_Switch_Port
+
+ovn-nbctl list ACL
+
+ovn-nbctl list Logical_Router
+
+ovn-nbctl list Logical_Router_Port
+
+ovn-nbctl list Logical_Router_Static_Route
+
+ovn-nbctl list NAT
+
+ovn-nbctl list DHCP_Options
+
+ovn-nbctl list Gateway_Chassis
+
+
+
+ovn-sbctl list Chassis
+
+ovn-sbctl list Encap
+
+ovn-sbctl lflow-list
+
+ovn-sbctl --ovs lflow-list
+
+ovn-sbctl list Multicast_Group
+
+ovn-sbctl list Datapath_Binding
+
+ovn-sbctl list Port_Binding
+
+ovn-sbctl list MAC_Binding
+
+ovn-sbctl list DHCP_Options
+
+ovn-sbctl list Gateway_Chassis
+```

@@ -14,10 +14,16 @@ VPDN：Virtual Private Dial-Network
 
 IPOE     机顶盒就是采用 IPOE 方式认证
          增加了大量接入层 MESH 的连接  P2P 访问需求
-
-
-https://info.support.huawei.com/info-finder/encyclopedia/zh/IPoE.html
+    https://info.support.huawei.com/info-finder/encyclopedia/zh/IPoE.html
 
 
 APN 指一种网络接入技术
     https://baike.baidu.com/item/apn/96667
+
+
+BGP（Border Gateway Protocol）
+
+EVPN（Ethernet Virtual Private Network）
+什么是EVPN？为什么需要EVPN？
+    https://forum.huawei.com/enterprise/zh/thread/580933081286721536
+    https://info.support.huawei.com/info-finder/encyclopedia/zh/EVPN.html
