@@ -35,10 +35,15 @@ done
 OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
 VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
 
-if [ ${OS_ID} != 'debian' ] ; then
-  echo 'no support config'
-  exit 0
+if [ ${OS_ID} = 'debian'  ] || [ ${OS_ID} = 'ubuntu' ] ; then
+    echo 'supported OS'
+else
+    echo 'no supported OS'
+    exit 0
 fi
+
+# 推荐使用 ubuntu 构建
+
 case "$MIRROR" in
 china | tuna | ustc | aliyuncs )
       # 详情 http://mirrors.ustc.edu.cn/help/debian.html
@@ -53,6 +58,9 @@ china | tuna | ustc | aliyuncs )
         test -f /etc/apt/sources.list.save || cp -f /etc/apt/sources.list /etc/apt/sources.list.save
         sed -i "s@deb.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
         sed -i "s@security.debian.org@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
+        # ubuntu
+        sed -i "s@security.ubuntu.com@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
+        sed -i "s@archive.ubuntu.com@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
         test "$MIRROR" = "tuna" && sed -i "s@mirrors.ustc.edu.cn@mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list
         test "$MIRROR" = "aliyuncs" && sed -i "s@mirrors.ustc.edu.cn@mirrors.cloud.aliyuncs.com@g" /etc/apt/sources.list
       fi
@@ -70,6 +78,16 @@ prepare(){
   git gcc clang make cmake autoconf automake openssl python3 python3-pip  libtool  \
   openssl  curl  libssl-dev  libcap-ng-dev uuid uuid-runtime
 
+  export LANGUAGE=en_US.UTF-8
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  export DEBIAN_FRONTEND=noninteractive
+  apt install -y locales
+  apt install -y  keyboard-configuration
+
+  localedef -i en_US -f UTF-8 en_US.UTF-8
+  dpkg-reconfigure locales
+
   apt install -y kmod iptables
   apt install -y netcat-openbsd
   apt install -y tcpdump nmap traceroute net-tools dnsutils iproute2 procps iputils-ping iputils-arping
@@ -82,23 +100,16 @@ prepare(){
   # apt install -y isc-dhcp-server
 
 
-  export LANGUAGE=en_US.UTF-8
-  export LANG=en_US.UTF-8
-  export LC_ALL=en_US.UTF-8
-  export DEBIAN_FRONTEND=noninteractive
-  apt install -y locales
-  apt install -y  keyboard-configuration
-
-  localedef -i en_US -f UTF-8 en_US.UTF-8
-  dpkg-reconfigure locales
-
   apt install -y libjson-c-dev
   apt install -y libprotobuf-c-dev protobuf-c-compiler
   apt install -y libreadline-dev
   apt install -y libyang2-dev
+  # apt install -y  libyang-dev
   apt install -y libcap-dev
   apt install -y sphinx
-  apt install -y yacc python3-ply
+  apt install -y libbison-dev
+  apt install -y yacc
+  apt install -y python3-ply
   apt install -y flex
 }
 
