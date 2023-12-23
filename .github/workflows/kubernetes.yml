@@ -95,7 +95,7 @@ jobs:
           # sudo sh sapi/quickstart/linux/kubernetes/install-kubernetes-debian.sh
 
 
-      - name: Build
+      - name: Kubernetes Init
         run: |
           set -x
           cat /etc/crictl.yaml
