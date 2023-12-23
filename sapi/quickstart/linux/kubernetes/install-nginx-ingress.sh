@@ -18,7 +18,8 @@ done
 
 # nginx ingress
 # https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters
+# https://github.com/kubernetes/ingress-nginx/tags
+VERSION="1.9.5"
+curl  -L -o nginx-ingress-v${VERSION}-deploy.yaml  https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v${VERSION}/deploy/static/provider/baremetal/deploy.yaml
 
-curl  -L -o nginx-ingress-v1.8.2-deploy.yaml  https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/baremetal/deploy.yaml
-
-kubectl create -f nginx-ingress-v1.8.2-deploy.yaml
+kubectl create -f nginx-ingress-v${VERSION}-deploy.yaml

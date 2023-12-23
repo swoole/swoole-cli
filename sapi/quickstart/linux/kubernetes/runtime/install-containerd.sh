@@ -41,14 +41,16 @@ cd containerd
 stat -fc %T /sys/fs/cgroup/
 
 # containerd
-VERSION=1.7.9
+# https://github.com/containerd/containerd/tags
 
-CONTAINERD_RELEASE_URL=https://github.com/containerd/containerd/releases/download/v1.7.9/containerd-1.7.9-linux-amd64.tar.gz
-CONTAINERD_RELEASE=containerd-1.7.9-linux-amd64.tar.gz
+VERSION="1.7.11"
+
+CONTAINERD_RELEASE_URL=https://github.com/containerd/containerd/releases/download/v${VERSION}/containerd-${VERSION}-linux-amd64.tar.gz
+CONTAINERD_RELEASE=containerd-${VERSION}-linux-amd64.tar.gz
 
 curl  -L -o $CONTAINERD_RELEASE  $CONTAINERD_RELEASE_URL
 
-tar Cxzvf /usr/local containerd-1.7.9-linux-amd64.tar.gz
+tar Cxzvf /usr/local $CONTAINERD_RELEASE
 
 
 
@@ -71,7 +73,10 @@ systemctl restart containerd
 
 
 # runc
-curl  -L -o runc.amd64 https://github.com/opencontainers/runc/releases/download/v1.1.10/runc.amd64
+# https://github.com/opencontainers/runc/tags
+
+VERSION="1.1.10"
+curl  -L -o runc.amd64 https://github.com/opencontainers/runc/releases/download/v${VERSION}/runc.amd64
 
 install -m 755 runc.amd64 /usr/local/sbin/runc
 
@@ -81,24 +86,28 @@ install -m 755 runc.amd64 /usr/local/sbin/runc
 # kubernetes 需要如下配置
 
 # cni-plugins
+# https://github.com/containernetworking/plugins/tags
 
+VERSION="1.4.0"
 mkdir -p /opt/cni/bin
-curl  -L -o cni-plugins-linux-amd64-v1.3.0.tgz https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz
-tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.3.0.tgz
+curl  -L -o cni-plugins-linux-amd64-v${VERSION}.tgz https://github.com/containernetworking/plugins/releases/download/v${VERSION}/cni-plugins-linux-amd64-v${VERSION}.tgz
+tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v${VERSION}.tgz
 
 
 # crictl
+# https://github.com/kubernetes-sigs/cri-tools/tags
 
-VERSION="v1.28.0" # check latest version in /releases page
-curl  -L -O https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-$VERSION-linux-amd64.tar.gz
-tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
-rm -f crictl-$VERSION-linux-amd64.tar.gz
+VERSION="1.29.0"
+# check latest version in /releases page
+curl  -L -O https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-v${VERSION}-linux-amd64.tar.gz
+tar zxvf crictl-v${VERSION}-linux-amd64.tar.gz -C /usr/local/bin
+rm -f crictl-v${VERSION}-linux-amd64.tar.gz
 
 cat > /etc/crictl.yaml <<EOF
 runtime-endpoint: unix:///var/run/containerd/containerd.sock
 image-endpoint: unix:///var/run/containerd/containerd.sock
 timeout: 10
-#debug: true
+# debug: true
 EOF
 
 

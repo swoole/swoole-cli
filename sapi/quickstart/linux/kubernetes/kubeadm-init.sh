@@ -32,6 +32,7 @@ kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version |  awk
 kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
 # kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version |  awk -F ' ' '{print $2}') --cri-socket "unix:///var/run/containerd/containerd.sock"
 
+ip route show | grep -E '^default'
 IP=$(ip address show | grep eth0 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
 # IP=$(ip address show | grep enp0s3 | grep 'inet' | awk '{print $2}' | awk -F '/' '{print $1}')
 

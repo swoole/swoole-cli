@@ -43,8 +43,8 @@ cat /sys/class/dmi/id/product_uuid
 nc 127.0.0.1 6443
 
 
-
-CNI_PLUGINS_VERSION="v1.3.0"
+# https://github.com/containernetworking/plugins/tags
+CNI_PLUGINS_VERSION="v1.4.0"
 ARCH="amd64"
 DEST="/opt/cni/bin"
 mkdir -p "$DEST"
@@ -54,8 +54,8 @@ curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_
 DOWNLOAD_DIR="/usr/local/bin"
 mkdir -p "$DOWNLOAD_DIR"
 
-
-CRICTL_VERSION="v1.28.0"
+# https://github.com/kubernetes-sigs/cri-tools/tags
+CRICTL_VERSION="v1.29.0"
 ARCH="amd64"
 curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${ARCH}.tar.gz" |  tar -C $DOWNLOAD_DIR -xz
 
@@ -72,7 +72,8 @@ chmod a+x  /usr/local/bin/kubeadm
 chmod a+x  /usr/local/bin/kubelet
 chmod a+x  /usr/local/bin/kubectl
 
-RELEASE_VERSION="v0.16.2"
+# https://github.com/kubernetes/release/tags
+RELEASE_VERSION="v0.16.4"
 curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/krel/templates/latest/kubelet/kubelet.service" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" |  tee /etc/systemd/system/kubelet.service
 mkdir -p /etc/systemd/system/kubelet.service.d
 curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/krel/templates/latest/kubeadm/10-kubeadm.conf" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" |  tee /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
