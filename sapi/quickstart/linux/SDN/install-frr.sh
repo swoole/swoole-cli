@@ -80,10 +80,10 @@ prepare(){
   ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
   DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y locales tzdata keyboard-configuration
 
-  # localedef -i en_US -f UTF-8 en_US.UTF-8
-  # dpkg-reconfigure locales
+  localedef -i en_US -f UTF-8 en_US.UTF-8
+  dpkg-reconfigure locales
 
-  apt install -y git curl python3 python3-pip python3-dev wget   sudo file
+  apt install -y git curl python3 python3-pip python3-dev wget   sudo file texinfo
   apt install -y libssl-dev ca-certificates
 
   apt install -y  \
