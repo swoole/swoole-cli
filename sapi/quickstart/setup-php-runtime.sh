@@ -85,7 +85,7 @@ done
 case "$MIRROR" in
 china)
   SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
-  COMPOSER_DOWNLOAD_URL="https://mirrors.aliyun.com/composer/composer.phar"
+  COMPOSER_DOWNLOAD_URL="https://mirrors.tencent.com/composer/composer.phar"
   ;;
 
 esac
