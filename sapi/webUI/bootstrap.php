@@ -198,7 +198,7 @@ EOF;
         //The Pong frame contains an opcode of 0xA.
         //chrome是实现了ping/pong的，只要服务端发送了ping, 那么会立即收到一个pong
         //https://wiki.swoole.com/#/websocket_server?id=%E5%8F%91%E9%80%81ping%E5%B8%A7
-        https://wiki.swoole.com/#/websocket_server?id=%e6%95%b0%e6%8d%ae%e5%b8%a7%e7%b1%bb%e5%9e%8b
+        //https://wiki.swoole.com/#/websocket_server?id=%e6%95%b0%e6%8d%ae%e5%b8%a7%e7%b1%bb%e5%9e%8b
 
 
         //处理工作流

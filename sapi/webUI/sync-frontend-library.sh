@@ -7,7 +7,7 @@ __DIR__=$(
 )
 __PROJECT__=${__DIR__}
 
-cd ${__PROJECT__}
+cd ${__PROJECT__}/
 
 
 # npm install xterm@3.14.5
