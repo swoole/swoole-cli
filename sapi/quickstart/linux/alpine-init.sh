@@ -8,7 +8,7 @@ __DIR__=$(
 cd ${__DIR__}
 
 # use china mirror
-# bash sapi/quickstart/linux/alpine-init.sh --mirror china
+# bash sapi/quickstart/linux/alpine-init.sh --mirror [china | ustc | tuna | aliyuncs | tencentyun | huaweicloud]
 
 
 MIRROR=''
@@ -25,13 +25,17 @@ while [ $# -gt 0 ]; do
 done
 
 case "$MIRROR" in
-china|tuna)
+china | tuna | ustc)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
-  sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+  test "$MIRROR" = "china" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+  test "$MIRROR" = "tuna"  && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+  test "$MIRROR" = "ustc"  && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
   ;;
-ustc)
+aliyuncs | tencentyun | huaweicloud) # 云服务的内网镜像源
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
-  sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+  test "$MIRROR" = "aliyuncs" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.aliyuncs.com/g' /etc/apk/repositories
+  test "$MIRROR" = "tencentyun" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tencentyun.com/g' /etc/apk/repositories
+  test "$MIRROR" = "huaweicloud" && sed -i 's/dl-cdn.alpinelinux.org/repo.huaweicloud.com/g' /etc/apk/repositories
   ;;
 
 esac
