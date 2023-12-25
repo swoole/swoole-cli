@@ -23,6 +23,7 @@ while [ $# -gt 0 ]; do
 done
 
 
+
 OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
 VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
 case $OS_ID in
