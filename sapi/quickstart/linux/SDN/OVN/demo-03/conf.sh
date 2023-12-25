@@ -20,3 +20,5 @@ ovn-nbctl set logical_router lr02 \
 # ovn-nbctl lrp-add router lr-lr2 52:54:00:c1:69:50 172.16.0.1/24 peer=lr2-lr
 # ovn-nbctl lrp-add router2 lr2-lr 52:54:00:c1:70:51 172.16.0.2/24 peer=lr-lr2
 
+# 移除路由绑定
+# ovn-nbctl set logical_router lr02 options:chassis=" "
