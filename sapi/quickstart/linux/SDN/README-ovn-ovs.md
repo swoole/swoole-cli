@@ -51,10 +51,10 @@ https://en.m.wikipedia.org/wiki/Routing#Delivery_schemes
 https://www.cnblogs.com/jingjingxyk/category/2201785.html
 
 
-
+## ovn-architecture cn
+    https://github.com/oilbeater/ovn-doc-cn/blob/master/ovn-architecture.md
 
 ## install ovn
-
     https://github.com/ovn-org/ovn/blob/main/Documentation/intro/install/general.rst
 
 ## ovn conf dir
@@ -71,6 +71,10 @@ https://www.cnblogs.com/jingjingxyk/category/2201785.html
 ## debian 环境下 安装 OVN
 
 ```bash
+
+# apt -o Acquire::Check-Valid-Until=false -y update
+# echo 'Acquire::Check-Valid-Until no;' > /etc/apt/apt.conf.d/10no--check-valid-until
+
 
 apt update -y && apt install -y socat libssl-dev ca-certificates
 

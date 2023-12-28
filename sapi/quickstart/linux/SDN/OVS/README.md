@@ -12,6 +12,15 @@ tcpdump -i any -nnn udp  port 6081
 
 ````
 
+## OVS 设置MTU
+```bash
+ovs-vsctl list-ports  br-int
+ovs-vsctl set int br-int mtu_request=1450
+
+# https://docs.openvswitch.org/en/latest/faq/issues/
+
+```
+
 
 ```bash
 ip netns list

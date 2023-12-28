@@ -59,7 +59,7 @@ jobs:
 
           sudo apt install -y jq curl
 
-          curl https://detect-ip.xiaoshuogeng.com/ip/json  | jq
+          # curl https://detect-ip.xiaoshuogeng.com/ip/json  | jq
 
           echo ${{ env.BRANCH_NAME }}
           echo ${{ github.actor }}
@@ -89,8 +89,9 @@ jobs:
 
           sudo bash sapi/quickstart/linux/ceph/debian-init.sh
 
-          sudo curl -lo /usr/local/bin/cephadm https://php-cli.jingjingxyk.com/cephadm
-          sudo chmod a+x /usr/local/bin/cephadm
+          # sudo curl -lo /usr/local/bin/cephadm https://php-cli.jingjingxyk.com/cephadm
+          # sudo chmod a+x /usr/local/bin/cephadm
+          sudo apt install -y cephadm
 
 
       - name: Run
