@@ -25,10 +25,16 @@ jobs:
           ipconfig
           uname -a
           pwd
-          ipconfig /all
+          # ipconfig /all
 
 
       - uses: actions/checkout@v3
+      - name: set php version
+        shell: bash
+        run: |
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
+          # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
+
       - name: Prepare submodule
         run: |
           ipconfig /all
@@ -55,7 +61,7 @@ jobs:
 
       - name: Prepare
         run: |
-          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
+
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           # git submodule update --init
           bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version=${{ env.BUILD_PHP_VERSION }}
