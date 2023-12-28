@@ -13,7 +13,7 @@ cd ${__PROJECT__}
 
 ROOT=${__PROJECT__}
 
-PHP_VERSION='8.2.11'
+PHP_VERSION='8.2.13'
 SWOOLE_VERSION=v5.1.1
 
 while [ $# -gt 0 ]; do
