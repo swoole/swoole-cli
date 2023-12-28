@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version:
+        php:
           - "8.1.27"
           - "8.2.13"
           - "8.3.0"
