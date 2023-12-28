@@ -46,6 +46,13 @@ jobs:
   linux-x86_64:
     if: 1
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.1.27"
+          - "8.2.13"
+          - "8.3.0"
+
     steps:
       - uses: actions/checkout@v3
       - name: Prepare Source Code
@@ -76,6 +83,8 @@ jobs:
           echo $IPV6
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+          echo "BUILD_PHP_VERSION=${{ matrix.php }}" >> $GITHUB_ENV
 
           echo ${{ github.actor }}
           echo ${{ github.repository }}
