@@ -27,7 +27,6 @@ jobs:
           pwd
           ipconfig /all
 
-          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
       - uses: actions/checkout@v3
       - name: Prepare submodule
@@ -56,6 +55,7 @@ jobs:
 
       - name: Prepare
         run: |
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           # git submodule update --init
           bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version=${{ env.BUILD_PHP_VERSION }}
