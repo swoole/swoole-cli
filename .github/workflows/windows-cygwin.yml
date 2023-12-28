@@ -3,12 +3,19 @@ name: build-php-cli-windows-cygwin
 on: [ push ]
 
 env:
-  BUILD_PHP_VERSION: 8.2.11
+  BUILD_PHP_VERSION: 8.2.13
 
 jobs:
   windows-cygwin:
     if: 1
     runs-on: windows-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.1.27"
+          - "8.2.13"
+          - "8.3.0"
+
     steps:
       - name: Prepare git
         run: |
@@ -20,6 +27,7 @@ jobs:
           pwd
           ipconfig /all
 
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
       - uses: actions/checkout@v3
       - name: Prepare submodule
@@ -50,7 +58,7 @@ jobs:
         run: |
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           # git submodule update --init
-          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
+          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version=${{ env.BUILD_PHP_VERSION }}
 
       - name: Configure
         run: |
@@ -75,7 +83,7 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: cygwin-php-cli-dist
+          name: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64
           path: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64.zip
 
       - name: gh release
