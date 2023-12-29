@@ -1,14 +1,22 @@
 name: build-php-cli-macos-x86_64
 
-on: [ push, pull_request ]
+on:
+  push:
+  schedule:
+    - cron: "00 00 01 * *"
+  pull_request:
 
 env:
-  BUILD_PHP_VERSION: 8.2.11
+  BUILD_PHP_VERSION: 8.2.13
 
 jobs:
   macos-x86_64:
     if: 0
     runs-on: macos-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.2.13"
     steps:
       - uses: actions/checkout@v3
       - name: Prepare build environment
@@ -44,6 +52,8 @@ jobs:
           echo $IPV6
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
           export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
           # brew bison --debug
@@ -151,7 +161,7 @@ jobs:
         if: 0
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-macos-x64-${{ env.BUILD_PHP_VERSION }}
+          name: php-cli-v${{ env.BUILD_PHP_VERSION }}-macos-x64
           retention-days: 7
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
