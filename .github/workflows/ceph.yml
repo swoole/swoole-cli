@@ -97,6 +97,7 @@ jobs:
           sudo apt install -y python3-venv python3-pip
           sudo apt install -y doxygen ditaa libxslt1-dev graphviz ant cython3
           git clone -b main  --depth=1  https://github.com/ceph/ceph.git
+          cd ceph
           bash ./install-deps.sh
 
           bash src/cephadm/build.sh cephadm
