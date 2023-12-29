@@ -1,6 +1,10 @@
 name: build-php-cli-macos-x86_64
 
-on: [ push, pull_request ]
+on:
+  push:
+  schedule:
+    - cron: "00 00 01 * *"
+  pull_request:
 
 env:
   BUILD_PHP_VERSION: 8.2.13
@@ -137,7 +141,7 @@ jobs:
           # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
           ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          # ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3

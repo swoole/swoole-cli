@@ -1,6 +1,10 @@
 name: build-php-cli-windows-cygwin
 
-on: [ push ]
+on:
+  push:
+  schedule:
+    - cron: "00 00 01 * *"
+  pull_request:
 
 env:
   BUILD_PHP_VERSION: 8.2.13
