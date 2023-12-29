@@ -24,9 +24,9 @@ if (file_exists(__DIR__ . '/make-download-box.sh')) {
 }
 
 # PHP 默认版本
-$php_version = '8.2.11';
-$php_version_id = '802011';
-$php_version_tag = 'php-8.2.11';
+$php_version = '8.2.13';
+$php_version_id = '802013';
+$php_version_tag = 'php-8.2.13';
 
 if ($p->getInputOption('with-php-version')) {
     $subject = $p->getInputOption('with-php-version');

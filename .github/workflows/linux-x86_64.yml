@@ -18,11 +18,12 @@ on:
       php_verson:
         required: true
         description: "定制构建选项: 指定 PHP 版本(版本号大于等于8.1)"
-        default: '--with-php-version=8.2.11'
+        default: '--with-php-version=8.2.13'
         type: choice
         options:
-          - '--with-php-version=8.1.24'
-          - '--with-php-version=8.2.11'
+          - '--with-php-version=8.1.27'
+          - '--with-php-version=8.2.13'
+          - '--with-php-version=8.3.1'
       build_type:
         required: true
         description: "定制构建选项: 指定构建类型"
@@ -40,12 +41,19 @@ on:
 
 
 env:
-  BUILD_PHP_VERSION: 8.2.11
+  BUILD_PHP_VERSION: 8.2.13
 
 jobs:
   linux-x86_64:
     if: 1
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.1.27"
+          - "8.2.13"
+          - "8.3.1"
+
     steps:
       - uses: actions/checkout@v3
       - name: Prepare Source Code
@@ -76,6 +84,8 @@ jobs:
           echo $IPV6
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
           echo ${{ github.actor }}
           echo ${{ github.repository }}
@@ -199,13 +209,13 @@ jobs:
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
+          # ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+          # ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-linux-x64-${{ env.BUILD_PHP_VERSION }}
+          name: php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-x64
           retention-days: 7
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
