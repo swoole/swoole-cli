@@ -98,9 +98,9 @@ jobs:
           sudo apt install -y doxygen ditaa libxslt1-dev graphviz ant cython3
           git clone -b main  --depth=1  https://github.com/ceph/ceph.git
           cd ceph
-          bash ./install-deps.sh
+          sudo bash ./install-deps.sh
 
-          bash src/cephadm/build.sh cephadm
+          sudo bash src/cephadm/build.sh cephadm
           sudo cp cephadm /usr/local/bin/
           sudo chmod a+x /usr/local/bin/cephadm
           cephadm version --verbose
