@@ -2,8 +2,8 @@ name: build-php-cli-windows-cygwin
 
 on:
   push:
-  schedule:
-    - cron: "00 00 01 * *"
+#  schedule:
+#    - cron: "00 00 01 * *"
   pull_request:
 
 env:

@@ -2,8 +2,8 @@ name: build-php-cli-linux-x86_64
 
 on:
   push:
-  schedule:
-    - cron: "00 00 01 * *"
+#  schedule:
+#    - cron: "00 00 01 * *"
   pull_request:
   workflow_dispatch:
     inputs:
@@ -39,8 +39,6 @@ on:
         description: "定制构建选项: 请查看 docs/options.md"
         default: ' '
         type: string
-
-
 
 env:
   BUILD_PHP_VERSION: 8.2.13
