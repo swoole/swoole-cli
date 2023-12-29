@@ -64,7 +64,7 @@ jobs:
 
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           # git submodule update --init
-          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version=${{ env.BUILD_PHP_VERSION }}
+          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version ${{ env.BUILD_PHP_VERSION }}
 
       - name: Configure
         run: |
