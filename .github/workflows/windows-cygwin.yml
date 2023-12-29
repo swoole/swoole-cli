@@ -2,8 +2,6 @@ name: build-php-cli-windows-cygwin
 
 on:
   push:
-  schedule:
-    - cron: "00 00 01 * *"
   pull_request:
 
 env:
@@ -17,7 +15,8 @@ jobs:
       matrix:
         php-version:
           - "8.2.13"
-
+    #          - "8.1.27"
+    #          - "8.3.1"
     steps:
       - name: Prepare git
         run: |
