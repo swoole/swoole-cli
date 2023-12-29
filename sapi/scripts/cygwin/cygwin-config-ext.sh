@@ -13,12 +13,30 @@ cd ${__PROJECT__}
 
 ROOT=${__PROJECT__}
 
-PHP_VERSION='8.2.11'
-REDIS_VERSION=5.3.7
-MONGODB_VERSION=1.14.2
+PHP_VERSION='8.2.13'
+SWOOLE_VERSION=v5.1.1
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --php-version)
+    PHP_VERSION="$2"
+    ;;
+  --swoole-version)
+    SWOOLE_VERSION="$2"
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+
+REDIS_VERSION=6.0.2
+MONGODB_VERSION=1.17.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
-SWOOLE_VERSION=v5.1.0
+
 
 if [ ! -d pool/ext ]; then
   mkdir -p pool/ext

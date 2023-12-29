@@ -1,14 +1,22 @@
 name: build-php-cli-windows-cygwin
 
-on: [ push ]
+on:
+  push:
+  pull_request:
 
 env:
-  BUILD_PHP_VERSION: 8.2.11
+  BUILD_PHP_VERSION: 8.2.13
 
 jobs:
   windows-cygwin:
     if: 1
     runs-on: windows-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.2.13"
+    #          - "8.1.27"
+    #          - "8.3.1"
     steps:
       - name: Prepare git
         run: |
@@ -18,10 +26,15 @@ jobs:
           ipconfig
           uname -a
           pwd
-          ipconfig /all
-
+          # ipconfig /all
 
       - uses: actions/checkout@v3
+      - name: set php version
+        shell: bash   # # https://docs.github.com/zh/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
+        run: |
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
+          # https://docs.github.com/zh/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
+
       - name: Prepare submodule
         run: |
           ipconfig /all
@@ -50,7 +63,7 @@ jobs:
         run: |
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           # git submodule update --init
-          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
+          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version ${{ env.BUILD_PHP_VERSION }}
 
       - name: Configure
         run: |
@@ -75,7 +88,7 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: cygwin-php-cli-dist
+          name: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64
           path: php-cli-v${{ env.BUILD_PHP_VERSION }}-cygwin-x64.zip
 
       - name: gh release

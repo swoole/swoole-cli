@@ -34,7 +34,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-client-side-encryption=no ';
     $options .= ' --with-mongodb-snappy=no ';
 
-    $mongodb_version = '1.16.2';
+    $mongodb_version = '1.17.2';
 
     $ext = new Extension('mongodb');
 
