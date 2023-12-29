@@ -91,7 +91,16 @@ jobs:
 
           # sudo curl -lo /usr/local/bin/cephadm https://php-cli.jingjingxyk.com/cephadm
           # sudo chmod a+x /usr/local/bin/cephadm
-          sudo apt install -y cephadm
+          # sudo apt install -y cephadm
+
+          sudo apt install -y python3-venv python3-pip
+          sudo apt install -y doxygen ditaa libxslt1-dev graphviz ant cython3
+          git clone -b main  --depth=1  https://github.com/ceph/ceph.git
+          bash ./install-deps.sh
+
+          bash src/cephadm/build.sh cephadm
+          sudo cp cephadm /usr/local/bin/
+          sudo chmod a+x /usr/local/bin/cephadm
 
 
       - name: Run
