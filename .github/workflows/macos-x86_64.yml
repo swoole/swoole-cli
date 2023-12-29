@@ -2,8 +2,8 @@ name: build-php-cli-macos-x86_64
 
 on:
   push:
-#  schedule:
-#    - cron: "00 00 01 * *"
+  #  schedule:
+  #    - cron: "00 00 01 * *"
   pull_request:
 
 env:
@@ -17,7 +17,8 @@ jobs:
       matrix:
         php-version:
           - "8.2.13"
-
+    #          - "8.1.27"
+    #          - "8.3.1"
     steps:
       - uses: actions/checkout@v3
       - name: Prepare build environment
