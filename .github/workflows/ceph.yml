@@ -98,12 +98,13 @@ jobs:
         run: |
           set -x
           sudo cephadm bootstrap \
-          --no-cleanup-on-failure \
           --mon-ip ${{ env.X_IPV4 }} \
           --dashboard-password-noupdate \
           --initial-dashboard-user admin \
           --initial-dashboard-password ceph \
           --allow-fqdn-hostname \
           --single-host-defaults
+
+          #--no-cleanup-on-failure \
 
           sleep 30
