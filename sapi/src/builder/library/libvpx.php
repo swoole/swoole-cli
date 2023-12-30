@@ -46,7 +46,7 @@ EOF
             --enable-vp9 \
             --enable-pic \
             --disable-examples \
-            --disable-tools \
+            --enable-tools \
             --disable-docs \
             --disable-unit-tests \
             --enable-vp9-highbitdepth \
