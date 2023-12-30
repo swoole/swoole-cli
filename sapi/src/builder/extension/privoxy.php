@@ -23,6 +23,7 @@ return function (Preprocessor $p) {
                 mkdir -p {$workdir}/bin/
                 test -d {$workdir}/bin/privoxy && rm -rf {$workdir}/bin/privoxy
                 cd {$privoxy_prefix}/../
+                ls -lh privoxy
                 cp -rf privoxy {$workdir}/bin/
                 PRIVOXY_VERSION=$({$workdir}/bin/privoxy/sbin/privoxy --help | grep 'Privoxy version' | awk '{print $3}')
 
