@@ -12,7 +12,13 @@ return function (Preprocessor $p) {
         (new Library('socat'))
             ->withHomePage('http://www.dest-unreach.org/socat/')
             ->withLicense('http://www.dest-unreach.org/socat/doc/README', Library::LICENSE_GPL)
-            ->withUrl('http://www.dest-unreach.org/socat/download/socat-1.7.4.4.tar.gz')
+            //->withUrl('http://www.dest-unreach.org/socat/download/socat-1.7.4.4.tar.gz')
+            ->withDownloadScript(
+                'socat',
+                <<<EOF
+                git clone -b tag-1.8.0.0	 https://repo.or.cz/socat.git
+EOF
+            )
             ->withBuildScript(
                 <<<EOF
             pkg-config --cflags --static readline
