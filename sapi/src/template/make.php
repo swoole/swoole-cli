@@ -277,74 +277,6 @@ make_all_library() {
 }
 
 
-make_tmp_ext_dir() {
-    cd <?= $this->getPhpSrcDir() . PHP_EOL ?>
-    PHP_SRC_DIR=<?= $this->getPhpSrcDir() . PHP_EOL ?>
-    EXT_DIR=$PHP_SRC_DIR/ext/
-    EXT_TMP_DIR=$PHP_SRC_DIR/ext-tmp/
-    test -d $EXT_TMP_DIR && rm -rf $EXT_TMP_DIR
-    mkdir -p $EXT_TMP_DIR
-<?php
-if ($this->buildType == 'dev') {
-    echo <<<'EOF'
-    cd $EXT_DIR
-
-    cp -rf date $EXT_TMP_DIR
-    test -d hash && cp -rf hash $EXT_TMP_DIR
-    test -d json && cp -rf json $EXT_TMP_DIR
-    cp -rf pcre $EXT_TMP_DIR
-    test -d random && cp -rf random $EXT_TMP_DIR
-    cp -rf reflection $EXT_TMP_DIR
-    cp -rf session $EXT_TMP_DIR
-    cp -rf spl $EXT_TMP_DIR
-    cp -rf standard $EXT_TMP_DIR
-    cp -rf date $EXT_TMP_DIR
-    cp -rf phar $EXT_TMP_DIR
-
-EOF;
-}
-
-foreach ($this->extensionMap as $extension) {
-    $name = $extension->name;
-    if ($extension->aliasName) {
-        $name = $extension->aliasName;
-    }
-    if (!empty($extension->peclVersion) || $extension->enableDownloadScript || !empty($extension->url)) {
-        echo <<<EOF
-    cp -rf {$this->getRootDir()}/ext/{$name} \$EXT_TMP_DIR
-EOF;
-        echo PHP_EOL;
-    } else {
-        if ($this->buildType == 'dev') {
-            echo <<<EOF
-    cp -rf \$EXT_DIR/{$name} \$EXT_TMP_DIR
-EOF;
-            echo PHP_EOL;
-        }
-    }
-}
-if ($this->buildType == 'dev') {
-    echo <<<'EOF'
-    mv $EXT_DIR/ $PHP_SRC_DIR/ext-del/
-    mv $EXT_TMP_DIR $EXT_DIR
-EOF;
-    echo PHP_EOL;
-} else {
-    echo <<<'EOF'
-    NUM=$(ls $EXT_TMP_DIR/ | wc -l )
-    if [ $NUM -gt 0 ] ; then
-        cp -rf ${EXT_TMP_DIR}/* $EXT_DIR
-    fi
-
-EOF;
-}
-    echo PHP_EOL;
-?>
-    cd <?= $this->getPhpSrcDir() ?>/
-    return 0
-}
-
-
 before_configure_script() {
     cd <?= $this->getWorkDir() ?>/
 <?php foreach ($this->beforeConfigure as $name => $value) : ?>
@@ -360,7 +292,7 @@ export_variables() {
     # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
     CFLAGS=""
-<?php if ($this->cCompiler=='clang') : ?>
+<?php if ($this->cCompiler == 'clang') : ?>
     LDFLAGS="-static"
 <?php else :?>
     LDFLAGS="-static-libgcc -static-libstdc++"
@@ -405,37 +337,12 @@ make_release_archive() {
 
 make_config() {
     set -x
+
     make_release_archive
 
+
     exit 0
-
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-    make_tmp_ext_dir
     before_configure_script
-
-    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
-    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
-    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
-
-<?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
-    PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
-    if [[ $PHP_VERSION -lt 80000 ]] ; then
-        echo "only support PHP >= 8.0 "
-    else
-        # 请把这个做成 patch  https://github.com/swoole/swoole-cli/pull/55/files
-
-    fi
-<?php endif ;?>
-
-    cd <?= $this->getPhpSrcDir() ?>/
-    test -f ./configure &&  rm ./configure
-    ./buildconf --force
-
-<?php if ($this->osType == 'macos') : ?>
-    <?php if (isset($this->libraryMap['pgsql'])) : ?>
-        sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
-    <?php endif;?>
-<?php endif; ?>
 
     export_variables
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
@@ -549,7 +456,7 @@ make_build() {
             echo $item->ldflags;
             echo ' ';
         }
-                            } ?>'  -j <?= $this->maxJob ?> && echo ""
+    } ?>'  -j <?= $this->maxJob ?> && echo ""
 _____EO_____
 
 
@@ -584,6 +491,7 @@ make_build_old() {
 }
 
 make_clean() {
+    exit 0
     set -ex
     find . -name \*.gcno -o -name \*.gcda | grep -v "^\./thirdparty" | xargs rm -f
     find . -name \*.lo -o -name \*.o -o -name \*.dep | grep -v "^\./thirdparty" | xargs rm -f
@@ -615,10 +523,10 @@ lib_dep_pkg() {
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
     <?php
-    $pkgs=[];
+    $pkgs = [];
     $this->getLibraryDependenciesByName($item->name, $pkgs);
     $pkgs = array_unique($pkgs);
-    $res=implode(' ', $pkgs);
+    $res = implode(' ', $pkgs);
     ?>
     array_name[<?= $item->name ?>]="<?= $res?>"
 <?php endforeach ;?>
@@ -639,10 +547,10 @@ lib_dep() {
     declare -A array_name
 <?php foreach ($this->libraryList as $item) :?>
     <?php
-    $libs=[];
+    $libs = [];
     $this->getLibraryDependentLibraryByName($item->name, $libs);
     $libs = array_unique($libs);
-    $res=implode(' ', $libs);
+    $res = implode(' ', $libs);
     ?>
     array_name[<?= $item->name ?>]="<?= $res?>"
 <?php endforeach ;?>
@@ -671,6 +579,7 @@ help() {
     echo "./make.sh docker-commit"
     echo "./make.sh docker-push"
     echo "./make.sh docker-stop"
+    echo "./make.sh config"
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh test"
