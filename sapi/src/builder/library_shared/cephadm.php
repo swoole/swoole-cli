@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
             <<<EOF
                 # git clone -b main  --depth=1 --recursive https://github.com/ceph/ceph.git
                 # for docs
-                git clone -b main  --depth=1  https://github.com/ceph/ceph.git
+                git clone -b main  --depth=1 --recurse-submodules https://github.com/ceph/ceph.git
 EOF
         )
         ->withPrefix($ceph_prefix)

@@ -256,8 +256,7 @@ class Library extends Project
     public function withBuildLibraryHttpProxy(
         bool $enableBuildLibraryHttpProxy = true,
         bool $enableBuildLibraryGitProxy = false
-    ): static
-    {
+    ): static {
         $this->enableBuildLibraryHttpProxy = $enableBuildLibraryHttpProxy;
         $this->enableBuildLibraryGitProxy = $enableBuildLibraryGitProxy;
         return $this;
