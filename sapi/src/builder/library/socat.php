@@ -22,6 +22,9 @@ EOF
             )
             ->withBuildScript(
                 <<<EOF
+            libtoolize -ci
+            autoreconf -fi
+
             pkg-config --cflags --static readline
             pkg-config  --libs --static readline
             ./configure --help ;
