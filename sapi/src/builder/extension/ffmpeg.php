@@ -25,6 +25,7 @@ return function (Preprocessor $p) {
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/ffmpeg/
                 cd {$ffmpeg_prefix}/
+                pwd
                 cp -rf bin {$workdir}/bin/ffmpeg/
                 cd {$workdir}/bin/
 

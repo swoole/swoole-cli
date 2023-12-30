@@ -326,6 +326,7 @@ export_variables() {
 }
 
 make_release_archive() {
+    set -eux
     cd <?= $this->getWorkDir() ?>/
     <?php foreach ($this->releaseArchives as $name => $value) : ?>
         # ext <?= $name ?> hook
