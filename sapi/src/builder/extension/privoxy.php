@@ -21,6 +21,7 @@ return function (Preprocessor $p) {
 
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
+                test -d {$workdir}/bin/privoxy && rm -rf {$workdir}/bin/privoxy
                 cd {$privoxy_prefix}/../
                 cp -rf privoxy {$workdir}/bin/
                 PRIVOXY_VERSION=$({$workdir}/bin/privoxy/sbin/privoxy --help | grep 'Privoxy version' | awk '{print $3}')
