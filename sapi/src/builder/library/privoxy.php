@@ -26,7 +26,7 @@ return function (Preprocessor $p) {
             ->withPrefix($privoxy_prefix)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($privoxy_prefix)
-            ->withBuildCached(false)
+            //->withBuildCached(false)
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
@@ -57,6 +57,11 @@ EOF
                 --with-brotli \
                 --with-docbook=yes
  EOF
+            )
+            ->withScriptAfterInstall(
+                <<<EOF
+            cp -rf doc/webserver {$privoxy_prefix}/docs
+EOF
             )
             ->withDependentLibraries('openssl', 'pcre', 'zlib', 'brotli')
     );

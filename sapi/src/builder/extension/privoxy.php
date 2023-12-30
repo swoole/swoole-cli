@@ -21,25 +21,21 @@ return function (Preprocessor $p) {
 
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
-                test -d {$workdir}/bin/privoxy-docs && rm -rf {$workdir}/bin/privoxy-docs
-                cd {$builddir}/privoxy
-                cp -rf privoxy {$workdir}/bin/
-                cp -rf doc/webserver {$workdir}/bin/privoxy-docs
-                cd {$installdir}/privoxy
-                mkdir -p {$workdir}/bin/privoxy-conf
-                cp -rf etc {$workdir}/bin/privoxy-conf/
                 cd {$privoxy_prefix}/../
+                cp -rf privoxy {$workdir}/bin/
+                PRIVOXY_VERSION=$({$workdir}/bin/privoxy/sbin/privoxy --help | grep 'Privoxy version' | awk '{print $3}')
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
-            otool -L {$workdir}/bin/privoxy
+            otool -L {$workdir}/bin/privoxy/sbin/privoxy
+            tar -cJvf {$workdir}/privoxy-\${PRIVOXY_VERSION}-macos-x64.tar.xz privoxy
 EOF;
         } else {
             $cmd .= <<<EOF
-              file {$workdir}/bin/privoxy
-              readelf -h {$workdir}/bin/privoxy
-              tar -cJvf {$workdir}/privoxy-vlatest-static-linux-x64.tar.xz privoxy
+              file {$workdir}/bin/privoxy/sbin/privoxy
+              readelf -h {$workdir}/bin/privoxy/sbin/privoxy
+              tar -cJvf {$workdir}/privoxy-\${PRIVOXY_VERSION}-linux-x64.tar.xz privoxy
 EOF;
         }
         return $cmd;
