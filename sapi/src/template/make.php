@@ -580,7 +580,6 @@ help() {
     echo "./make.sh docker-push"
     echo "./make.sh docker-stop"
     echo "./make.sh config"
-    echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh test"
     echo "./make.sh archive"
