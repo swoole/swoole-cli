@@ -23,7 +23,7 @@ return function (Preprocessor $p) {
                 mkdir -p {$workdir}/bin/
                 cp -rf {$nginx_prefix} {$workdir}/bin/
                 cd {$workdir}/bin/
-                NGINX_VERSION=$(echo $({$workdir}/bin/nginx/sbin/nginx -v 2>&1) | awk -F '/' '{print $2})
+                NGINX_VERSION=$(echo $({$workdir}/bin/nginx/sbin/nginx -v 2>&1) | awk -F '/' '{print $2}')
 
 EOF;
         if ($p->getOsType() == 'macos') {
