@@ -13,7 +13,11 @@ MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
-    MIRROR="$2"
+    case "$2" in
+    china | ustc | tuna | aliyuncs | tencentyun | huaweicloud )
+      MIRROR="$2"
+      ;;
+    esac
     ;;
   --*)
     echo "Illegal option $1"
@@ -23,7 +27,8 @@ while [ $# -gt 0 ]; do
 done
 
 
-if test -n ${MIRROR} ; then
+
+if test -n "$MIRROR" ; then
 {
   OS_ID=$(cat /etc/os-release | grep '^ID=' | awk -F '=' '{print $2}')
   VERSION_ID=$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F '=' '{print $2}' | sed "s/\"//g")
