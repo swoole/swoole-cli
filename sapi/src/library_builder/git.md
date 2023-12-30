@@ -126,3 +126,8 @@ git rm -rf .
  TZ=UTC git show --date=format-local:%Y%m%d%k%M%S
 
 ```
+
+## 合并两个无关的仓库
+```bash
+git merge  --allow-unrelated-histories
+```
