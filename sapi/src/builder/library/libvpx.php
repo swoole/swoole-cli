@@ -49,7 +49,12 @@ EOF
             --disable-tools \
             --disable-docs \
             --disable-unit-tests \
-            --enable-vp9-highbitdepth
+            --enable-vp9-highbitdepth \
+            --enable-libyuv \
+            --enable-internal-stats \
+            --enable-postproc \
+            --enable-vp9-temporal-denoising \
+            --enable-webm-io
 
 EOF
         )
