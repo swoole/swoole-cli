@@ -23,18 +23,20 @@ return function (Preprocessor $p) {
                 cp -f socat {$workdir}/bin/
                 cp -rf doc {$workdir}/bin/socat-docs
                 cd {$builddir}/socat
+                SOCAT_VERSION=$({$workdir}/bin/socat -V | grep 'socat version' | awk '{ print $3 }')
+
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/socat
-            tar -cJvf {$workdir}/socat-vlatest-static-macos-x64.tar.xz socat
+            tar -cJvf {$workdir}/socat-\${SOCAT_VERSION}-macos-x64.tar.xz socat
 EOF;
         } else {
             $cmd .= <<<EOF
               file {$workdir}/bin/socat
               readelf -h {$workdir}/bin/socat
-              tar -cJvf {$workdir}/socat-vlatest-static-linux-x64.tar.xz socat
+              tar -cJvf {$workdir}/socat-\${SOCAT_VERSION}-linux-x64.tar.xz socat
 
 EOF;
         }
