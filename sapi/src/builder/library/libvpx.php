@@ -59,7 +59,9 @@ EOF
 EOF
         )
         ->withPkgName('vpx')
-        ->withBinPath($libvpx_prefix . '/bin/');
+        ->withBinPath($libvpx_prefix . '/bin/')
+        ->withDependentLibraries('libwebp')
+    ;
 
     $p->addLibrary($lib);
 };
