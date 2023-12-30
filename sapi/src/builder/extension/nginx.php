@@ -23,18 +23,19 @@ return function (Preprocessor $p) {
                 mkdir -p {$workdir}/bin/
                 cp -rf {$nginx_prefix} {$workdir}/bin/
                 cd {$workdir}/bin/
+                NGINX_VERSION=$(echo $(./nginx -v 2>&1) | awk -F '/' '{print $2})
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
                 otool -L {$workdir}/bin/nginx/sbin/nginx
-                tar -cJvf {$workdir}/nginx-vlatest-static-macos-x64.tar.xz nginx
+                tar -cJvf {$workdir}/nginx-\${NGINX_VERSION}-macos-x64.tar.xz nginx
 EOF;
         } else {
             $cmd .= <<<EOF
                 file {$workdir}/bin/nginx/sbin/nginx
                 readelf -h {$workdir}/bin/nginx/sbin/nginx
-                tar -cJvf {$workdir}/nginx-vlatest-static-linux-x64.tar.xz nginx
+                tar -cJvf {$workdir}/nginx-\${NGINX_VERSION}-linux-x64.tar.xz nginx
 EOF;
         }
         return $cmd;
