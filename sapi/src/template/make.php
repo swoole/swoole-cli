@@ -398,8 +398,8 @@ make_release_archive() {
     <?php foreach ($this->releaseArchives as $name => $value) : ?>
         # ext <?= $name ?> hook
         <?= $value($this) . PHP_EOL ?>
-    <?php endforeach; ?>
     cd <?= $this->getWorkDir() ?>/
+    <?php endforeach; ?>
     return 0
 }
 
