@@ -90,7 +90,6 @@ jobs:
           key: ${{ runner.os }}-x86_64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
-        if: 0
         uses: actions/cache@v3
         id: dependency-cache
         with:
@@ -98,7 +97,6 @@ jobs:
           key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-pool
 
       - name: Cache all-library
-        if: 0
         uses: actions/cache@v3
         id: all-library-cache
         with:
@@ -143,7 +141,6 @@ jobs:
           # bash ./make.sh archive
 
       - name: Show Build Result
-        if: 0
         run: |
           export PATH="/usr/local/opt/binutils/bin:$PATH"
 
@@ -158,7 +155,6 @@ jobs:
 
 
       - name: Archive production artifacts
-        if: 0
         uses: actions/upload-artifact@v3
         with:
           name: php-cli-v${{ env.BUILD_PHP_VERSION }}-macos-x64

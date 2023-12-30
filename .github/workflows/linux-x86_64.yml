@@ -122,7 +122,6 @@ jobs:
           key: ${{ runner.os }}-x86_64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
-        if: 0
         uses: actions/cache@v3
         id: dependency-cache
         with:
@@ -130,7 +129,6 @@ jobs:
           key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-pool
 
       - name: Cache all-library
-        if: 0
         uses: actions/cache@v3
         id: all-library-cache
         with:
@@ -138,7 +136,6 @@ jobs:
           key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-all-library
 
       - name: Cache swoole-cli-builder-image
-        if: 0
         uses: actions/cache@v3
         id: swoole-cli-builder-image-cache
         with:
@@ -211,7 +208,6 @@ jobs:
             # bash ./make.sh archive
 
       - name: Show Build Result
-        if: 0
         run: |
           ./thirdparty/php-src/sapi/cli/php -v
           ./thirdparty/php-src/sapi/cli/php -m
@@ -228,7 +224,6 @@ jobs:
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts
-        if: 1
         uses: actions/upload-artifact@v3
         with:
           name: php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-x64
