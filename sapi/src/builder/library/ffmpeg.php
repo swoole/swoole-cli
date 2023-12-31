@@ -130,7 +130,7 @@ EOF
             --disable-libxcb-xfixes \
             --disable-libxcb-shape  \
             --disable-xlib  \
-            --extra-cflags="\ {$cflags}  \${CPPFLAGS} " \
+            --extra-cflags=" \${CPPFLAGS} " \
             --extra-cxxflags="\${CPPFLAGS} " \
             --extra-ldflags="\${LDFLAGS} " \
             --extra-libs="\${LIBS} " \
