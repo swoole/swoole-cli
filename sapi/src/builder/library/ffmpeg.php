@@ -151,8 +151,7 @@ EOF
 
             # --enable-libx264 \
 
-
-            # --enable-random \
+            # --enable-random \  # 需要外部组件
 EOF
         )
         ->withPkgName('libavcodec')
