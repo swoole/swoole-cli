@@ -18,8 +18,8 @@ return function (Preprocessor $p) {
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
     $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
 
-    $cppflags = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
-    $ldfalgs = $p->getOsType() == 'macos' ? ' ' : " -L/usr/lib ";
+    $cppflags = $p->getOsType() == 'macos' ? ' ' : "  "; # -I/usr/include
+    $ldfalgs = $p->getOsType() == 'macos' ? ' ' : "  "; #-L/usr/lib
 
     $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
 
