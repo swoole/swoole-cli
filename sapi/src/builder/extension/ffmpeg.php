@@ -29,7 +29,7 @@ return function (Preprocessor $p) {
                 cp -rf bin {$workdir}/bin/ffmpeg/
 
                 {$workdir}/bin/ffmpeg/bin/ffmpeg -h
-                FFMPEG_VERSION=\$({$workdir}/bin/ffmpeg/bin/ffmpeg -version | grep 'ffmpeg version' | awk '{print $3}' | cut -d '-' -f 1)
+                FFMPEG_VERSION=\$({$workdir}/bin/ffmpeg/bin/ffmpeg -version | grep 'ffmpeg version' | awk '{print $3}')
 
                 for f in `ls {$workdir}/bin/ffmpeg/bin/` ; do
                     echo \$f
