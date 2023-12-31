@@ -22,9 +22,9 @@ return function (Preprocessor $p) {
                 cd {$builddir}/socat
                 cp -f socat {$workdir}/bin/
                 cp -rf doc {$workdir}/bin/socat-docs
-                cd {$builddir}/socat
+                cd {$workdir}/bin/
                 SOCAT_VERSION=$({$workdir}/bin/socat -V | grep 'socat version' | awk '{ print $3 }')
-                strip {$builddir}/socat
+                strip {$workdir}/bin/socat
 
 EOF;
         if ($p->getOsType() == 'macos') {
