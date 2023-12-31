@@ -31,10 +31,11 @@ EOF
         --disable-avs \
         --disable-swscale \
         --disable-lavf  \
-        --disable-ffms  \
+        --enable-ffms \
         --disable-gpac  \
         --disable-lsmash  \
 
+        # --disable-ffms  \
 
 EOF
         )
