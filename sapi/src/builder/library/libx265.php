@@ -5,6 +5,8 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libx265_prefix = LIBX265_PREFIX;
+    $options = $p->getOsType() == 'macos' ? "" : ' -DSTATIC_LINK_CRT=ON ';
+
 
     $lib = new Library('libx265');
     $lib->withHomePage('https://www.videolan.org/developers/x265.html')
@@ -26,11 +28,13 @@ EOF
         )
         ->withConfigure(
             <<<EOF
+            ls source/CMakeLists.txt
+
             mkdir -p build-dir
             cd build-dir
 
             cmake \
-            -G"Unix Makefiles" ../source  \
+            -G "Unix Makefiles" ../source  \
             -DCMAKE_INSTALL_PREFIX={$libx265_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
@@ -39,9 +43,11 @@ EOF
             -DCMAKE_C_COMPILER={$p->get_C_COMPILER()} \
             -DCMAKE_CXX_COMPILER={$p->get_CXX_COMPILER()} \
             -DENABLE_SHARED=OFF \
-            -DSTATIC_LINK_CRT=ON \
-            -DENABLE_LIBNUMA=OFF
+            -DENABLE_LIBNUMA=OFF \
+            -DENABLE_PIC=ON \
+            -DENABLE_CLI=OFF
 
+            #  {$options} \
             # -DCMAKE_CXX_IMPLICIT_LINK_LIBRARIES=' -lm -lstdc++ '
 
 
@@ -56,8 +62,7 @@ EOF
 EOF
         )
         ->withPkgName('x265')
-        ->withBinPath($libx265_prefix . '/bin/')
-        // ->withDependentLibraries('numa')
+        ->withBinPath($libx265_prefix . '/bin/')// ->withDependentLibraries('numa')
     ;
     $p->addLibrary($lib);
 };
