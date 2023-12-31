@@ -25,6 +25,7 @@ return function (Preprocessor $p) {
                 cd {$privoxy_prefix}/../
                 ls -lh privoxy
                 cp -rf privoxy {$workdir}/bin/
+                strip {$workdir}/bin/privoxy/sbin/privoxy
                 PRIVOXY_VERSION=$({$workdir}/bin/privoxy/sbin/privoxy --help | grep 'Privoxy version' | awk '{print $3}')
 
 EOF;
