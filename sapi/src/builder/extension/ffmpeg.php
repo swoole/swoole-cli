@@ -27,23 +27,22 @@ return function (Preprocessor $p) {
                 cd {$ffmpeg_prefix}/
                 pwd
                 cp -rf bin {$workdir}/bin/ffmpeg/
-                cd {$workdir}/bin/
 
                 {$workdir}/bin/ffmpeg/bin/ffmpeg -h
-
+                FFMPEG_VERSION=\$({$workdir}/bin/ffmpeg/bin/ffmpeg -version | grep 'ffmpeg version' | awk '{print $3}' | cut -d '-' -f 1)
                 cd {$workdir}/bin/
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
                 otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
-                tar -cJvf {$workdir}/ffmpeg-vlatest-static-macos-x64.tar.xz ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-\${FFMPEG_VERSION}-macos-x64.tar.xz ffmpeg
 EOF;
         } else {
             $cmd .= <<<EOF
                 file {$workdir}/bin/ffmpeg/bin/ffmpeg
                 readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
-                tar -cJvf {$workdir}/ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-\${FFMPEG_VERSION}-linux-x64.tar.xz ffmpeg
 EOF;
         }
         return $cmd;
