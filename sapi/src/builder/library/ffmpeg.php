@@ -106,7 +106,7 @@ EOF
             --disable-shared \
             --enable-nonfree \
             --enable-static \
-            -enable-pic \
+            --enable-pic \
             --enable-gray \
             --enable-ffplay \
             --enable-openssl \
