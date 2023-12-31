@@ -27,8 +27,8 @@ return function (Preprocessor $p) {
                 cp -rf {$coturn_prefix}/etc/*  {$workdir}/bin/coturn/etc/
 
                 for f in `ls {$workdir}/bin/coturn/bin/` ; do
-                echo \$f
-                strip {$workdir}/bin/coturn/bin/\$f
+                    echo \$f
+                    strip {$workdir}/bin/coturn/bin/\$f
                 done
 
 

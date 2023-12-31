@@ -30,6 +30,13 @@ return function (Preprocessor $p) {
 
                 {$workdir}/bin/ffmpeg/bin/ffmpeg -h
                 FFMPEG_VERSION=\$({$workdir}/bin/ffmpeg/bin/ffmpeg -version | grep 'ffmpeg version' | awk '{print $3}' | cut -d '-' -f 1)
+
+                for f in `ls {$workdir}/bin/ffmpeg/bin/` ; do
+                    echo \$f
+                    strip {$workdir}/bin/ffmpeg/bin/\$f
+                done
+
+                # 打包
                 cd {$workdir}/bin/
 
 EOF;
