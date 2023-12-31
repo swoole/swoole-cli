@@ -110,7 +110,6 @@ EOF
             --enable-libaom \
             --enable-lcms2 \
             --enable-gmp \
-            --enable-libx264 \
             --enable-libx265 \
             --enable-random \
             --enable-libfreetype \
@@ -146,7 +145,7 @@ EOF
             # --enable-cross-compile
             # --enable-libspeex
 
-
+            # --enable-libx264 \
 EOF
         )
         ->withPkgName('libavcodec')
@@ -169,7 +168,7 @@ EOF
             'freetype',
             "gmp",
             "lcms2",
-            "libx264",
+           // "libx264",
             "liblzma",
             "libvpx",
             "sdl2",
