@@ -83,7 +83,7 @@ EOF
             PACKAGES="\$PACKAGES vpx "
             PACKAGES="\$PACKAGES fdk-aac "
             PACKAGES="\$PACKAGES fribidi "
-            PACKAGES="\$PACKAGES librabbitmq "
+            # PACKAGES="\$PACKAGES librabbitmq "
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
@@ -112,7 +112,6 @@ EOF
             --enable-libaom \
             --enable-lcms2 \
             --enable-gmp \
-            --enable-libx265 \
             --enable-random \
             --enable-libfreetype \
             --enable-libvpx \
@@ -123,7 +122,6 @@ EOF
             --enable-libopenh264 \
             --enable-libfdk-aac \
             --enable-libfribidi \
-            --enable-librabbitmq \
             --enable-random \
             --disable-libxcb \
             --disable-libxcb-shm \
@@ -148,6 +146,8 @@ EOF
             # --enable-libspeex
 
             # --enable-libx264 \
+            # --enable-libx265 \
+            # --enable-librabbitmq \
 EOF
         )
         ->withPkgName('libavcodec')
