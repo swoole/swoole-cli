@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
 
     # $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
-    $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ /usr/lib/libc.a /usr/lib/libstdc++.a /usr/lib/libm.a /usr/lib/librt.a';
+    $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lc -lstdc++ /usr/lib/libc.a /usr/lib/libstdc++.a /usr/lib/libm.a /usr/lib/librt.a';
 
     $cppflags = $p->getOsType() == 'macos' ? ' ' : "  "; # -I/usr/include
     $ldfalgs = $p->getOsType() == 'macos' ? ' ' : "  "; #-L/usr/lib
@@ -75,7 +75,7 @@ EOF
             PACKAGES="\$PACKAGES dav1d "
             PACKAGES="\$PACKAGES lcms2 "
             # PACKAGES="\$PACKAGES x264 "
-            PACKAGES="\$PACKAGES x265 " # numa
+            # PACKAGES="\$PACKAGES x265 " # numa
             PACKAGES="\$PACKAGES sdl2 "
             PACKAGES="\$PACKAGES ogg "
             PACKAGES="\$PACKAGES opus "
@@ -170,7 +170,7 @@ EOF
             'freetype',
             "gmp",
             "lcms2",
-           // "libx264",
+             "libx264",
             "liblzma",
             "libvpx",
             "sdl2",
