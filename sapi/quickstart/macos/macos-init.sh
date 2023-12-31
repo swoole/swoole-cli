@@ -78,7 +78,7 @@ fi
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
 
-brew install  jq
+brew install  jq mercurial
 
 # brew uninstall --ignore-dependencies oniguruma
 # brew uninstall --ignore-dependencies brotli
