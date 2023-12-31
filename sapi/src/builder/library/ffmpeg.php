@@ -20,7 +20,8 @@ return function (Preprocessor $p) {
     $ldfalgs = $p->getOsType() == 'macos' ? ' ' : " -static "; #-L/usr/lib
 
     # $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
-    $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lc -lstdc++ /usr/lib/libc.a /usr/lib/libstdc++.a /usr/lib/libm.a /usr/lib/librt.a';
+    # $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lc -lstdc++ /usr/lib/libc.a /usr/lib/libstdc++.a /usr/lib/libm.a /usr/lib/librt.a';
+    $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lc -lstdc++ ';
 
 
     $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
