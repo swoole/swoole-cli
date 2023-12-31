@@ -47,9 +47,9 @@ EOF;
 EOF;
         } else {
             $cmd .= <<<EOF
-                ldd {$workdir}/bin/ffmpeg/bin/ffmpeg
                 file {$workdir}/bin/ffmpeg/bin/ffmpeg
                 readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
+                test $(ldd {$workdir}/bin/ffmpeg/bin/ffmpeg | wc -l) -gt 0 && ldd {$workdir}/bin/ffmpeg/bin/ffmpeg
                 tar -cJvf {$workdir}/ffmpeg-\${FFMPEG_VERSION}-linux-x64.tar.xz ffmpeg
 EOF;
         }

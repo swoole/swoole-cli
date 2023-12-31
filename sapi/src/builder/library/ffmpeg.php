@@ -14,14 +14,15 @@ return function (Preprocessor $p) {
     $libxml2_prefix = LIBXML2_PREFIX;
     $libx265_prefix = LIBX265_PREFIX;
 
-    $ldflags = $p->getOsType() == 'macos' ? ' ' : ' -static ';
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
+
+    $cppflags = $p->getOsType() == 'macos' ? ' ' : "  "; # -I/usr/include
+    $ldfalgs = $p->getOsType() == 'macos' ? ' ' : " -static "; #-L/usr/lib
 
     # $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
     $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lc -lstdc++ /usr/lib/libc.a /usr/lib/libstdc++.a /usr/lib/libm.a /usr/lib/librt.a';
 
-    $cppflags = $p->getOsType() == 'macos' ? ' ' : "  "; # -I/usr/include
-    $ldfalgs = $p->getOsType() == 'macos' ? ' ' : "  "; #-L/usr/lib
+
 
     $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
 
@@ -62,11 +63,11 @@ EOF
 
             set -x
             ./configure --help
-            ./configure --help | grep shared
-            ./configure --help | grep static
-            ./configure --help | grep  '\-\-extra'
-            ./configure --help | grep  'enable'
-            ./configure --help | grep  'disable'
+            # ./configure --help | grep shared
+            # ./configure --help | grep static
+            # ./configure --help | grep  '\-\-extra'
+            # ./configure --help | grep  'enable'
+            # ./configure --help | grep  'disable'
 
             PACKAGES='openssl  libxml-2.0  freetype2 gmp liblzma' # libssh2
             PACKAGES="\$PACKAGES libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
@@ -83,7 +84,7 @@ EOF
             PACKAGES="\$PACKAGES vpx "
             PACKAGES="\$PACKAGES fdk-aac "
             PACKAGES="\$PACKAGES fribidi "
-            # PACKAGES="\$PACKAGES librabbitmq "
+            PACKAGES="\$PACKAGES librabbitmq "
 
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) "
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
@@ -105,6 +106,9 @@ EOF
             --disable-shared \
             --enable-nonfree \
             --enable-static \
+            -enable-pic \
+            --enable-gray \
+            --enable-ffplay \
             --enable-openssl \
             --enable-libwebp \
             --enable-libxml2 \
@@ -112,23 +116,22 @@ EOF
             --enable-libaom \
             --enable-lcms2 \
             --enable-gmp \
-            --enable-random \
             --enable-libfreetype \
             --enable-libvpx \
-            --enable-ffplay \
             --enable-sdl2 \
             --enable-libdav1d \
             --enable-libopus \
             --enable-libopenh264 \
             --enable-libfdk-aac \
             --enable-libfribidi \
-            --enable-random \
+            --enable-librabbitmq \
             --disable-libxcb \
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \
             --disable-libxcb-shape  \
             --disable-xlib  \
-            --extra-cflags="\${CPPFLAGS} " \
+            --extra-cflags="\ {$cflags}  \${CPPFLAGS} " \
+            --extra-cxxflags="\${CPPFLAGS} " \
             --extra-ldflags="\${LDFLAGS} " \
             --extra-libs="\${LIBS} " \
             --cc={$p->get_C_COMPILER()} \
@@ -147,7 +150,8 @@ EOF
 
             # --enable-libx264 \
             # --enable-libx265 \
-            # --enable-librabbitmq \
+
+            # --enable-random \
 EOF
         )
         ->withPkgName('libavcodec')
@@ -170,7 +174,7 @@ EOF
             'freetype',
             "gmp",
             "lcms2",
-             "libx264",
+            "libx264",
             "liblzma",
             "libvpx",
             "sdl2",
