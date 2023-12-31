@@ -12,19 +12,15 @@ return function (Preprocessor $p) {
 
     $ffmpeg_prefix = FFMPEG_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
-    $libx265_prefix = LIBX265_PREFIX;
-
-    $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
 
     $cppflags = $p->getOsType() == 'macos' ? ' ' : "  "; # -I/usr/include
     $ldfalgs = $p->getOsType() == 'macos' ? ' ' : " -static "; #-L/usr/lib
 
-    # $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
+
     # $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lc -lstdc++ /usr/lib/libc.a /usr/lib/libstdc++.a /usr/lib/libm.a /usr/lib/librt.a';
     $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lc -lstdc++ ';
 
-
-    $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
+    # $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
 
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
@@ -44,14 +40,11 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($ffmpeg_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($ffmpeg_prefix)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
             # 汇编编译器
             apk add yasm nasm
-
 EOF
         )
         ->withBuildCached(false)
@@ -75,7 +68,7 @@ EOF
             PACKAGES="\$PACKAGES aom "
             PACKAGES="\$PACKAGES dav1d "
             PACKAGES="\$PACKAGES lcms2 "
-            # PACKAGES="\$PACKAGES x264 "
+            PACKAGES="\$PACKAGES x264 "
             PACKAGES="\$PACKAGES x265 " # numa
             PACKAGES="\$PACKAGES sdl2 "
             PACKAGES="\$PACKAGES ogg "
@@ -126,6 +119,7 @@ EOF
             --enable-libfribidi \
             --enable-librabbitmq \
             --enable-libx265 \
+            --enable-libx264 \
             --disable-libxcb \
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \
@@ -141,15 +135,11 @@ EOF
 
             # libxcb、xlib 是 x11 相关的库
 
-            # --extra-ldexeflags="{$ldexeflags}"
-            # --pkg-config-flags=" {$cflags} "
-            # --pkg-config=pkg-config
+
             # --ld={$p->getLinker()}
             # --enable-libssh
             # --enable-cross-compile
             # --enable-libspeex
-
-            # --enable-libx264 \
 
             # --enable-random \  # 需要外部组件
 EOF
@@ -187,8 +177,7 @@ EOF
             "libx265"
         //'speex' //被opus 取代
         //   'libssh2',
-        )
-    ;
+        );
 
     $p->addLibrary($lib);
 };
