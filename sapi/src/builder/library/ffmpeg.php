@@ -23,7 +23,6 @@ return function (Preprocessor $p) {
     $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lc -lstdc++ /usr/lib/libc.a /usr/lib/libstdc++.a /usr/lib/libm.a /usr/lib/librt.a';
 
 
-
     $ldexeflags = $p->getOsType() == 'macos' ? ' ' : ' -Bstatic '; # -wl,-Bstatic -ldl
 
     $lib = new Library('ffmpeg');
@@ -76,7 +75,7 @@ EOF
             PACKAGES="\$PACKAGES dav1d "
             PACKAGES="\$PACKAGES lcms2 "
             # PACKAGES="\$PACKAGES x264 "
-            # PACKAGES="\$PACKAGES x265 " # numa
+            PACKAGES="\$PACKAGES x265 " # numa
             PACKAGES="\$PACKAGES sdl2 "
             PACKAGES="\$PACKAGES ogg "
             PACKAGES="\$PACKAGES opus "
@@ -125,6 +124,7 @@ EOF
             --enable-libfdk-aac \
             --enable-libfribidi \
             --enable-librabbitmq \
+            --enable-libx265 \
             --disable-libxcb \
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \
@@ -149,7 +149,7 @@ EOF
             # --enable-libspeex
 
             # --enable-libx264 \
-            # --enable-libx265 \
+
 
             # --enable-random \
 EOF
@@ -185,7 +185,7 @@ EOF
             'libfribidi',
             'rabbitmq_c',
             "libx265"
-            //'speex' //被opus 取代
+        //'speex' //被opus 取代
         ) //   'libssh2',
     ;
 
