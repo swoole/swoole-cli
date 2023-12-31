@@ -133,7 +133,8 @@ EOF
             --extra-ldflags="\${LDFLAGS} " \
             --extra-libs="\${LIBS} " \
             --cc={$p->get_C_COMPILER()} \
-            --cxx={$p->get_CXX_COMPILER()}
+            --cxx={$p->get_CXX_COMPILER()} \
+            --pkg-config-flags="--static"
 
             # libxcb、xlib 是 x11 相关的库
 
