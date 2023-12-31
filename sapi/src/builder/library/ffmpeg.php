@@ -16,7 +16,9 @@ return function (Preprocessor $p) {
 
     $ldflags = $p->getOsType() == 'macos' ? ' ' : ' -static ';
     $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
-    $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
+
+    # $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
+    $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ /usr/lib/libc.a /usr/lib/libstdc++.a ';
 
     $cppflags = $p->getOsType() == 'macos' ? ' ' : "  "; # -I/usr/include
     $ldfalgs = $p->getOsType() == 'macos' ? ' ' : "  "; #-L/usr/lib
@@ -43,7 +45,6 @@ EOF
         ->withPrefix($ffmpeg_prefix)
         ->withCleanBuildDirectory()
         ->withCleanPreInstallDirectory($ffmpeg_prefix)
-        //->withBuildCached(false)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
@@ -52,7 +53,7 @@ EOF
 
 EOF
         )
-        //->withBuildCached(false)
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
 

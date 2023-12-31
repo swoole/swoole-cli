@@ -79,3 +79,7 @@ https://github.com/libbpf/libbpf#bpf-co-re-compile-once--run-everywhere
 
 # static-pie
 # 位置无关的可执行文件(PIE)。PIE 是启用地址空间布局随机化 (ASLR) 的先决条件
+
+
+## macos 库支持静态编译， 二进制程序不支持静态编译
+    LIBS='-framework CoreFoundation -framework CoreServices -framework SystemConfiguration"
