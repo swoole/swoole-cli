@@ -26,8 +26,7 @@ EOF
         --prefix={$libx264_prefix} \
         --enable-static \
         --enable-pic \
-        --enable-lto \
-        --enable-strip
+        --enable-lto
 
 EOF
         )
