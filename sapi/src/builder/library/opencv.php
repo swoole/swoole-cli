@@ -188,6 +188,9 @@ EOF
         -DWITH_AVIF=ON \
         -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
+        -DENABLE_PYLINT=OFF \
+        -DENABLE_FLAKE8=OFF \
+        -DBUILD_opencv_python3=OFF \
         -DCMAKE_EXE_LINKER_FLAGS="  -Wl,--no-dynamic-linker -Wl,--as-needed -Wl,--no-undefined  \${REQUIRED_LIBRARIES} " \
 
 
@@ -267,7 +270,6 @@ EOF
             'fftw3', //快速傅立叶变换库
             'openblas', //基础线性代数程序集
             'lapack', //线性代数计算库
-            // 'harfbuzz',
             //'openexr',
             //'openjpeg',
             //'vtk',
