@@ -22,16 +22,23 @@ return function (Preprocessor $p) {
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/aria2/src
                 cp -f aria2c {$workdir}/bin/
+                strip {$workdir}/bin/aria2c
+                cd {$workdir}/bin/
+                ARIA2_VERSION=\$({$workdir}/bin/aria2c -v | head -n 1 | awk '{print $3}')
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/aria2c
+            tar -cJvf {$workdir}/aria2c-\${ARIA2_VERSION}-macos-x64.tar.xz aria2c
+
 EOF;
         } else {
             $cmd .= <<<EOF
               file {$workdir}/bin/aria2c
               readelf -h {$workdir}/bin/aria2c
+              tar -cJvf {$workdir}/aria2c-\${ARIA2_VERSION}-linux-x64.tar.xz aria2c
+
 EOF;
         }
         return $cmd;
