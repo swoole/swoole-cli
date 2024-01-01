@@ -109,7 +109,7 @@ EOF
             -Db_pie=true \
             -Dtests=false \
             -Dexamples=all
-            -Dexamples=''
+
 
             ninja -C build
             ninja -C build install
