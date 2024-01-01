@@ -59,9 +59,7 @@ EOF
         )
         //->withPkgName('example')
         ->withBinPath($libdc1394_prefix . '/bin/')
-
-
-
+        ->withDependentLibraries('libusb')
     ;
 
     $p->addLibrary($lib);

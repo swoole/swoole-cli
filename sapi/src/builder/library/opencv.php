@@ -279,7 +279,7 @@ EOF
             //'openjpeg',
             //'vtk',
             //'opencl',
-            'libdc1394',
+            //'libdc1394',
             'imath',
             'gflags',
             'glog',
