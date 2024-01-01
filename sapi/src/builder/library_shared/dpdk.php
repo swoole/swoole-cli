@@ -67,6 +67,8 @@ EOF
             apt install -y libipsec-mb-dev libipsec-mb1 librte-crypto-ipsec-mb23
             apt install -y libdlpack-dev
             apt install -y libdmlc-dev  #  分布式机器学习库
+            apt install -y libfdt-dev
+            apt install -y libisal-dev # Intel(R) Intelligent Storage Acceleration Library
 
             apt install -y python3-sphinx
             apt install -y doxygen

@@ -125,6 +125,8 @@ EOF
             --enable-libfdk-aac \
             --enable-libfribidi \
             --enable-librabbitmq \
+            --enable-lcms2 \
+            --enable-libsvtav1 \
             --enable-random \
             --cc={$p->get_C_COMPILER()} \
             --cxx={$p->get_CXX_COMPILER()} \
@@ -132,8 +134,6 @@ EOF
             --extra-ldflags="\${LDFLAGS} " \
             --extra-libs="\${LIBS} " \
 
-            #    --enable-lcms2 \
-            #    --enable-libsvtav1 \
 EOF
         )
         ->withPkgName('libavcodec')
