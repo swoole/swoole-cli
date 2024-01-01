@@ -48,7 +48,7 @@ EOF
 EOF
         )
         ->withBuildCached(false)
-        ->withInstallCached(false)
+        //->withInstallCached(false)
         ->withConfigure(
             <<<EOF
 

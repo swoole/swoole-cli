@@ -223,7 +223,7 @@ EOF
         # -DCMAKE_STATIC_LINKER_FLAGS="-Wl,--no-dynamic-linker -Wl,-Bstatic \${LIBS} "
 
 
-        #  -DENABLE_BUILD_HARDENING=ON \
+        # -DENABLE_BUILD_HARDENING=ON \
 
         # -DINCLUDE_DIRECTORIES
 
@@ -231,15 +231,13 @@ EOF
 
 
         # -DCMAKE_STATIC_LINKER_FLAGS="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a"
-
-
         # -DCMAKE_STATIC_LINKER_FLAGS="-L{$liblzma_prefix}/lib/ -L{$libzstd_prefix}/lib/ -L{$liblz4_prefix}/lib/ -llzma  -lzstd  -llz4"
 
         # -DLINK_LIBRARIES="{$liblzma_prefix}/lib/liblzma.a {$libzstd_prefix}/lib/libzstd.a {$liblz4_prefix}/lib/liblz4.a " \
         # -DLINK_DIRECTORIES="{$liblzma_prefix}/lib/:{$libzstd_prefix}/lib/:{$liblz4_prefix}/lib/"
 
         # -DTARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
-        #  -DCMAKE_TARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
+        # -DCMAKE_TARGET_LINK_LIBRARIES="-llzma  -lzstd  -llz4 "
 
         # -DLINK_LIBRARIES="lzma  zstd  lz4"
         # -DCMAKE_EXE_LINKER_FLAGS_INIT='\${LIBS}'
