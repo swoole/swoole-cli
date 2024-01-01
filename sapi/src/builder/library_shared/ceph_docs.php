@@ -44,7 +44,9 @@ EOF
             # 仅支持 ubuntu
 
             if [ -f build-env-ok ] ; then
+                source venv/bin/activate
                 admin/build-doc
+                deactivate
             else
                 bash ./install-deps.sh
 
