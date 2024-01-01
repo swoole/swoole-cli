@@ -58,7 +58,11 @@ EOF
         apt install -y libdc1394-25
         apt install -y ccache python3-dev binaryen
 
-        pip3 install numpy setuptools utils-misc  gapi  utils lxml beautifulsoup4 graphviz pylint flake8
+        apt install -y python3-numpy python3-setuptools utils-misc gapi
+        apt install -y python3-lxml python3-graphviz python3-flake8
+        apt install -y  python3-hgapi
+        apt install -y python3-python-utils
+        # pip3 install beautifulsoup4 pylint
 EOF
         )
         ->withPrefix($opencv_prefix)

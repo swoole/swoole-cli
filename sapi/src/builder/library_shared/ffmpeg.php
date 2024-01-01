@@ -12,13 +12,9 @@ return function (Preprocessor $p) {
 
     $ffmpeg_prefix = FFMPEG_PREFIX;
 
-    $ldflags = $p->getOsType() == 'macos' ? ' ' : ' -static ';
-    $cflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
+
+    $cflags = $p->getOsType() == 'macos' ? ' ' : '';
     $libs = $p->getOsType() == 'macos' ? ' -lc++ ' : ' -lstdc++ ';
-
-    $cppflags = $p->getOsType() == 'macos' ? ' ' : " -I/usr/include ";
-    $ldfalgs = $p->getOsType() == 'macos' ? ' ' : "-L/usr/lib/x86_64-linux-gnu  -L/usr/lib ";
-
 
     $lib = new Library('ffmpeg');
     $lib->withHomePage('https://ffmpeg.org/')
@@ -95,9 +91,9 @@ EOF
             LDFLAGS="$(pkg-config   --libs-only-L     \$PACKAGES) "
             LIBS="$(pkg-config      --libs-only-l     \$PACKAGES) "
 
-            CPPFLAGS="\$CPPFLAGS  {$cppflags} "
+            CPPFLAGS="\$CPPFLAGS   "
 
-            LDFLAGS="\$LDFLAGS  {$ldfalgs} "
+            LDFLAGS="\$LDFLAGS   "
 
             LIBS="\$LIBS  {$libs} "
 
