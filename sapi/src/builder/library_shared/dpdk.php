@@ -45,6 +45,7 @@ EOF
                 'ubuntu',
                 <<<EOF
             apt install -y python3-pyelftools
+            apt install -y zlib1g-dev
             apt install -y libjansson-dev
             apt install -y nettle-dev
             apt install -y libhogweed6
@@ -57,6 +58,15 @@ EOF
             apt install -y librdmacm-dev
             apt install -y libibnetdisc-dev
             apt install -y libibverbs-dev
+            apt install -y libibmad-dev
+            apt install -y libbsd-dev
+            apt install -y libpcap-dev
+            apt install -y libelf-dev
+            apt install -y libxdp-dev
+            apt install -y libbpf-dev
+
+            apt install -y sphinx-build
+            apt install -y doxygen
 EOF
             )
             ->withCleanBuildDirectory()
