@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
         (new Library('aria2'))
             ->withHomePage('https://aria2.github.io/')
             ->withLicense('https://github.com/aria2/aria2/blob/master/COPYING', Library::LICENSE_GPL)
-            ->withUrl('https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0.tar.gz')
+            ->withUrl('https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0.tar.gz')
             ->withManual('https://aria2.github.io/manual/en/html/README.html')
             ->withCleanBuildDirectory()
             ->withConfigure(
