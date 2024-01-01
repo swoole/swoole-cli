@@ -26,7 +26,6 @@ return function (Preprocessor $p) {
                 git clone -b v22.11.3 --depth=1 https://dpdk.org/git/dpdk-stable
 EOF
             )
-
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
@@ -59,10 +58,10 @@ EOF
             # meson configure -h
 
             PACKAGES=" jansson  openssl libxml-2.0  nettle hogweed gmp  "
-            # PACKAGES="\$PACKAGES numa "
+            PACKAGES="\$PACKAGES numa "
             PACKAGES="\$PACKAGES zlib  liblzma liblz4 libzstd "
             # PACKAGES="\$PACKAGES  liblzma  "
-            # PACKAGES="\$PACKAGES libarchive "
+            PACKAGES="\$PACKAGES libarchive "
             # PACKAGES="\$PACKAGES libpcap "
             # PACKAGES="\$PACKAGES  libbpf "
             PACKAGES="\$PACKAGES libmlx4 libibverbs libmlx5 libefa libibmad libibnetdisc libibumad libmana librdmacm  "
@@ -108,6 +107,7 @@ EOF
 EOF
             )
             ->withBinPath($dpdk_prefix . '/bin/')
+            /*
             ->withDependentLibraries(
                 'jansson',
                 'zlib',
@@ -123,25 +123,18 @@ EOF
                 'bzip2',
                 'libxml2',
                 'libiconv',
-                'gmp'
-                //'libarchive',
-                //'numa',
-                //'libpcap',
-                //'libxdp',
-                //'libbpf',
-                //'libbsd',
+                'gmp',
+                'libarchive',
+                'numa',
+                'libpcap',
+                'libxdp',
+                'libbpf',
+                'libbsd',
 
             )
-            ->withScriptAfterInstall(
-                <<<EOF
-            rm -rf {$dpdk_prefix}/lib/*.so.*
-            rm -rf {$dpdk_prefix}/lib/*.so
-            rm -rf {$dpdk_prefix}/lib/*.dylib
-            rm -rf {$dpdk_prefix}/lib/dpdk/
-EOF
-            )
-        ->withPkgName('libdpdk-libs')
-        ->withPkgName('libdpdk')
+            */
+            ->withPkgName('libdpdk-libs')
+            ->withPkgName('libdpdk')
     );
 };
 
@@ -155,7 +148,7 @@ PMD（Poll Mode Driver）
 
 UIO（Userspace I/O）
 
-Zero Copy、无系统调用的好处
+Zero Copy、无系统调用的好处  零拷贝
 
 
 https://cloud.tencent.com/developer/article/1198333
