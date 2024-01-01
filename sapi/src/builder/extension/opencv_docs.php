@@ -32,7 +32,7 @@ return function (Preprocessor $p) {
 
                 cd {$workdir}/bin/
 
-                tar -czvf opencv-docs-vlatest.tar.gz opencv-docs
+                tar -czvf {$workdir}/opencv-docs-vlatest.tar.gz opencv-docs
 
                 cd {$workdir}/
 
