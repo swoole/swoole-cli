@@ -17,7 +17,9 @@ return function (Preprocessor $p) {
     call_user_func_array([$ext, 'withDependentLibraries'], $depends);
     $p->addExtension($ext);
     $p->withReleaseArchive('ffmpeg', function (Preprocessor $p) {
-
+        if (BUILD_SHARED_LIBS) {
+            return '';
+        }
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $ffmpeg_prefix = FFMPEG_PREFIX;
