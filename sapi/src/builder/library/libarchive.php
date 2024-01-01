@@ -44,7 +44,8 @@ EOF
                 sh build/autogen.sh
                 ./configure --help
 
-                PACKAGES=" openssl gmp libxml-2.0 liblz4 liblzma zlib libzstd nettle"
+                PACKAGES=" openssl gmp libxml-2.0 liblz4 liblzma zlib libzstd nettle expat"
+                PACKAGES=" \$PACKAGES  libpcre2-16 libpcre2-32 libpcre2-8  libpcre2-posix"
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include -I{$libiconv_prefix}/include -I{$bzip2_prefix}/include -I{$libxml2_prefix}/include " \
                 LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib -L{$libiconv_prefix}/lib" \
                 LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 -liconv " \
@@ -63,9 +64,13 @@ EOF
                 --with-bz2lib \
                 --with-zlib \
                 --with-libiconv-prefix={$libiconv_prefix} \
+                --with-expat \
+                --enable-posix-regex-lib=libpcre2posix \
+                --with-openssl \
                 --without-mbedtls \
                 --enable-bsdcpio=static \
-                --enable-bsdtar=static
+                --enable-bsdtar=static \
+                --enable-bsdunzip=static
 EOF
             )
             ->withScriptAfterInstall(
@@ -93,7 +98,9 @@ EOF
                 'nettle',
                 'bzip2',
                 'libiconv',
-                'gmp'
+                'gmp',
+                'libexpat',
+                'pcre2'
             )
     );
 };
