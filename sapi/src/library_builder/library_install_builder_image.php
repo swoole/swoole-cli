@@ -6,12 +6,10 @@ use SwooleCli\Preprocessor;
 
 function install_libjpeg(Preprocessor $p)
 {
-
 }
 
 function install_libgif(Preprocessor $p)
 {
-
 }
 
 function install_libpng(Preprocessor $p)
@@ -20,25 +18,21 @@ function install_libpng(Preprocessor $p)
 
 function install_libwebp(Preprocessor $p)
 {
-
 }
 
 
 function install_freetype(Preprocessor $p)
 {
-
 }
 
 
 function install_libtiff(Preprocessor $p)
 {
-
 }
 
 
 function install_lcms2(Preprocessor $p): void
 {
-
 }
 
 

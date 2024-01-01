@@ -24,30 +24,24 @@ function install_openssl(Preprocessor $p)
 
 function install_openssl_v1(Preprocessor $p)
 {
-
 }
 
 function install_openssl_v3(Preprocessor $p)
 {
-
 }
 
 function install_openssl_v3_quic(Preprocessor $p)
 {
-
 }
 
 function install_libiconv(Preprocessor $p): void
 {
-
 }
 
 
 // Dependent libiconv
 function install_libxml2(Preprocessor $p)
 {
-
-
 }
 
 // Dependent libxml2
@@ -102,7 +96,6 @@ function install_brotli(Preprocessor $p)
 
     -Wno-dev
   */
-
 }
 
 function install_cares(Preprocessor $p)
@@ -136,17 +129,14 @@ function install_libyaml(Preprocessor $p): void
 
 function install_libsodium(Preprocessor $p)
 {
-
 }
 
 function install_bzip2(Preprocessor $p)
 {
-
 }
 
 function install_zlib(Preprocessor $p)
 {
-
 }
 
 
@@ -162,7 +152,6 @@ function install_liblz4(Preprocessor $p)
 
 function install_liblzma(Preprocessor $p)
 {
-
 }
 
 
@@ -205,13 +194,11 @@ function install_libzstd(Preprocessor $p)
 // MUST be in the /usr directory
 function install_libzip(Preprocessor $p)
 {
-
 }
 
 
 function install_sqlite3(Preprocessor $p)
 {
-
 }
 
 
@@ -227,12 +214,10 @@ function install_icu(Preprocessor $p)
         auto     build shared if possible (default)
     */
     //https://github.com/unicode-org/icu/
-
 }
 
 function install_oniguruma(Preprocessor $p)
 {
-
 }
 
 function install_mimalloc(Preprocessor $p)
@@ -258,12 +243,10 @@ function install_mimalloc(Preprocessor $p)
 
 function install_libidn2(Preprocessor $p)
 {
-
 }
 
 function install_libssh2(Preprocessor $p)
 {
-
 }
 
 
@@ -427,7 +410,6 @@ EOF
 
 function install_pgsql(Preprocessor $p): void
 {
-
 }
 
 function install_re2c(Preprocessor $p)
@@ -641,5 +623,4 @@ EOF
 
 function install_libevent($p)
 {
-
 }

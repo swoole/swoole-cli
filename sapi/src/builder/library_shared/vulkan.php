@@ -37,8 +37,6 @@ EOF
             -DBUILD_SHARED_LIBS=ON  \
             -DBUILD_STATIC_LIBS=OFF
 
-
-
 EOF
         )
         ->withBinPath($vulkan_prefix . '/bin/')

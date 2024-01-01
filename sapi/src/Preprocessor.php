@@ -1110,7 +1110,7 @@ EOF;
         $this->mkdirIfNotExists($this->libraryDir, 0777, true);
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         if (BUILD_SHARED_LIBS) {
-            $this->globalPrefix = '/usr/local/swoole-cli-shared/';
+            $this->globalPrefix = '/usr/local/swoole-cli-shared';
         }
         include __DIR__ . '/constants.php';
         //构建依赖库安装脚本
