@@ -53,8 +53,8 @@ EOF
         apt install -y python3-flake8
         apt install -y libgflags-dev
         apt install -y libva-dev
-        apt install -y libgtk-3-dev
-        apt install -y libgtk-4-dev
+        # apt install -y libgtk-3-dev
+        # apt install -y libgtk-4-dev
         apt install -y libdc1394-25
         apt install -y ccache python3-dev binaryen
 
@@ -100,7 +100,7 @@ EOF
         -DBUILD_DOCS=ON \
         -DOPENCV_ENABLE_NONFREE=ON \
         -DWITH_AVIF=ON \
-        -DWITH_GTK=ON \
+        -DWITH_GTK=OFF \
         -DWITH_CUDA=OFF \
 
         ninja
