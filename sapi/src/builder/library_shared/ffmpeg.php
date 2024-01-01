@@ -60,6 +60,10 @@ EOF
         apt install -y libx265-dev
         apt install -y libwebp-dev libwebpdemux2 libwebpmux3  libyuv-dev
         apt install -y libgmp-dev
+        apt install -y liblzma-dev
+        apt install -y libdav1d-dev libaom-dev libogg-dev
+        apt install -y libfribidi-dev
+        apt install -y libfreetype-dev
 
 
 EOF
