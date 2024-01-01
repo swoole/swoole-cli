@@ -89,6 +89,7 @@ define("LIBTASN1_PREFIX", $p->getGlobalPrefix() . '/libtasn1');
 define("GNUTLS_PREFIX", $p->getGlobalPrefix() . '/gnutls');
 
 define("OPENCV_PREFIX", $p->getGlobalPrefix() . '/opencv');
+define("OPENCV_DOCS_PREFIX", $p->getGlobalPrefix() . '/opencv_docs');
 
 
 define("GNUPG_PREFIX", $p->getGlobalPrefix() . '/gnupg');

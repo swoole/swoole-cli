@@ -4,7 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $opencv_prefix = OPENCV_PREFIX;
+    $opencv_prefix = OPENCV_DOCS_PREFIX;
 
     $workDir = $p->getWorkDir();
     $buildDir = $p->getBuildDir();
