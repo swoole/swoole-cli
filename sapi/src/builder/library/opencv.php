@@ -130,6 +130,7 @@ EOF
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
         PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64  lapack64 blas"
         PACKAGES="\$PACKAGES   harfbuzz harfbuzz-icu"
+        PACKAGES="\$PACKAGES   libarchive"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)"
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) "
@@ -277,8 +278,10 @@ EOF
             'glog',
             //'libeigen', //线性运算代数库 (依赖待完善）
             //'suitesparse',
-            'harfbuzz'
-        )   //   HDR
+            'harfbuzz',
+        //   HDR
+            'libarchive'
+        )
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')
     ;
