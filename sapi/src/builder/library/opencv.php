@@ -126,7 +126,9 @@ EOF
         PACKAGES="\$PACKAGES  libpng libpng16 libjpeg libturbojpeg SvtAv1Enc SvtAv1Dec "
         PACKAGES="\$PACKAGES  libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
 
-        PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " # libtiff-4
+        PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " #
+        PACKAGES="\$PACKAGES  libtiff-4 "
+        PACKAGES="\$PACKAGES  libavif " #
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"
         PACKAGES="\$PACKAGES  x264 vpx ogg opus openh264 libpcap fdk-aac fribidi librabbitmq x265 gflags "
         PACKAGES="\$PACKAGES  fftw3q  Imath  libglog openblas blas64  lapack64 blas"
@@ -266,7 +268,7 @@ EOF
             'libwebp',
             'libpng',
             'freetype',
-            //'libtiff',
+            'libtiff',
             "gmp",
             'liblzma',
             'gflags',
@@ -277,15 +279,16 @@ EOF
             //'openjpeg',
             //'vtk',
             //'opencl',
-            //'libdc1394'
+            'libdc1394',
             'imath',
             'gflags',
             'glog',
             //'libeigen', //线性运算代数库 (依赖待完善）
             //'suitesparse',
             'harfbuzz',
-        //   HDR
-            'libarchive'
+            //   HDR ,
+            'libarchive',
+            'libavif'
         )
         ->withBinPath($opencv_prefix . '/bin/')
         ->withLdflags(" -L" . $opencv_prefix . '/lib/opencv5/3rdparty/ ')

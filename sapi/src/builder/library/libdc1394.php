@@ -23,22 +23,7 @@ return function (Preprocessor $p) {
                git clone https://git.code.sf.net/p/libdc1394/code libdc1394
 EOF
         )
-
         ->withPrefix($libdc1394_prefix)
-
-         // 当--with-build_type=dev 时 如下2个配置才生效
-
-        // 自动清理构建目录
-        ->withCleanBuildDirectory()
-
-        // 自动清理安装目录
-        ->withCleanPreInstallDirectory($libdc1394_prefix)
-
-
-        //明确申明 不使用构建缓存 例子： thirdparty/openssl (每次都解压全新源代码到此目录）
-        ->withBuildCached(false)
-
-        /* 使用 autoconfig automake  构建 start  */
         ->withConfigure(
             <<<EOF
 
@@ -72,7 +57,7 @@ EOF
 
 EOF
         )
-        ->withPkgName('example')
+        //->withPkgName('example')
         ->withBinPath($libdc1394_prefix . '/bin/')
 
 
@@ -80,5 +65,4 @@ EOF
     ;
 
     $p->addLibrary($lib);
-
 };
