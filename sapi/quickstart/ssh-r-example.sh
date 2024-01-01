@@ -17,4 +17,4 @@ keyfile=/home/jingingxyk/private-key.pem
 }
 
 
-# curl -x socks5h://127.0.0.1:2000 -v https://www.googlec.om
+# curl -x socks5h://127.0.0.1:2000 -v https://www.google.com

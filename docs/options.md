@@ -209,3 +209,12 @@ GD 库支持 AVIF 图片
 ```shell
 php ./prepare.php --with-libavif=1
 ```
+
+=======
+with-build-shared-lib
+---
+设置默认构建共享库
+
+```shell
+php ./prepare.php --with-build-shared-lib=1
+```
