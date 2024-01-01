@@ -117,6 +117,7 @@ EOF
         ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
+
         PACKAGES='openssl  '
         PACKAGES="\$PACKAGES  zlib"
         PACKAGES="\$PACKAGES  libxml-2.0"
@@ -172,7 +173,7 @@ EOF
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=OFF \
-        -DBUILD_opencv_apps=ON \
+        -DBUILD_opencv_apps=OFF \
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DBUILD_opencv_js=OFF \
         -DBUILD_JAVA=OFF \
