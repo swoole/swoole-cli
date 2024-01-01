@@ -23,7 +23,7 @@ return function (Preprocessor $p) {
                 <<<EOF
                 # https://git.dpdk.org/dpdk-stable/refs
 
-                git clone -b v22.11.3 --depth=1 https://dpdk.org/git/dpdk-stable
+                git clone -b v23.11 --depth=1 https://dpdk.org/git/dpdk-stable
 EOF
             )
             ->withPreInstallCommand(
