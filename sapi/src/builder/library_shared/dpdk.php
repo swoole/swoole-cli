@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
             ->withManual('https://github.com/DPDK/dpdk.git')
             ->withManual('http://core.dpdk.org/doc/')
             ->withManual('https://core.dpdk.org/doc/quick-start/')
-            ->withFile('dpdk-v22.11.3.tar.gz')
+            ->withFile('dpdk-v23.11.tar.gz')
             ->withDownloadScript(
                 'dpdk-stable',
                 <<<EOF
