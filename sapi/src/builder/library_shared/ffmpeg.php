@@ -124,6 +124,7 @@ EOF
             --enable-lcms2 \
             --enable-libsvtav1 \
             --enable-shared \
+            --disable-static \
             --cc={$p->get_C_COMPILER()} \
             --cxx={$p->get_CXX_COMPILER()} \
             --extra-cflags="\${CPPFLAGS} " \
