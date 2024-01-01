@@ -42,9 +42,21 @@ EOF
 EOF
             )
             ->withPreInstallCommand(
-                'debian',
+                'ubuntu',
                 <<<EOF
-            apt install python3-pyelftools
+            apt install -y python3-pyelftools
+            apt install -y libjansson-dev
+            apt install -y nettle-dev
+            apt install -y libhogweed6
+            apt install -y libnuma-dev
+            apt install -y liblz4-dev
+            apt install -y libzstd-dev
+            apt install -y libarchive-dev
+            apt install -y libnl-3-dev libnl-genl-3-dev libnl-nf-3-dev libnl-xfrm-3-dev libnl-route-3-dev libnl-idiag-3-dev
+            apt install -y libibumad-dev
+            apt install -y librdmacm-dev
+            apt install -y libibnetdisc-dev
+            apt install -y libibverbs-dev
 EOF
             )
             ->withCleanBuildDirectory()
