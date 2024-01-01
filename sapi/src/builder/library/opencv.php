@@ -172,7 +172,7 @@ EOF
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DBUILD_EXAMPLES=OFF \
-        -DBUILD_opencv_apps=OFF \
+        -DBUILD_opencv_apps=ON \
         -DCMAKE_PREFIX_PATH="{$CMAKE_PREFIX_PATH}" \
         -DBUILD_opencv_js=OFF \
         -DBUILD_JAVA=OFF \
@@ -192,6 +192,10 @@ EOF
         -DENABLE_FLAKE8=OFF \
         -DBUILD_opencv_python3=OFF \
         -DCMAKE_EXE_LINKER_FLAGS="  -Wl,--no-dynamic-linker -Wl,--as-needed -Wl,--no-undefined  \${REQUIRED_LIBRARIES} " \
+
+
+
+
 
 
         # -DCMAKE_EXE_LINKER_FLAGS=" \${REQUIRED_LIBRARIES} " \
