@@ -47,7 +47,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$png_prefix};";
     $CMAKE_PREFIX_PATH .= "{$libwebp_prefix};";
     $CMAKE_PREFIX_PATH .= "{$freetype_prefix};";
-    # $CMAKE_PREFIX_PATH .= "{$libtiff_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$libtiff_prefix};";
 
     $CMAKE_PREFIX_PATH .= "{$gmp_prefix};";
 
