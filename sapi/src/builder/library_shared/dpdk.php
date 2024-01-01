@@ -106,20 +106,10 @@ EOF
             -Dprefix={$dpdk_prefix} \
             -Dbackend=ninja \
             -Dbuildtype=release \
-            -Ddefault_library=static \
-            -Db_staticpic=true \
             -Db_pie=true \
-            -Dprefer_static=true \
-            -Dibverbs_link=static \
             -Dtests=false \
-            -Dibverbs_link=static \
-            -Dexamples='cmdline' \
-            -Denable_apps='dumpcap,pdump,proc-info' \
-            -Dcheck_includes=true
-
-            # -Dexamples=all
-            # -Dexamples=''
-
+            -Dexamples=all
+            -Dexamples=''
 
             ninja -C build
             ninja -C build install
