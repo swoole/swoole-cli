@@ -64,6 +64,7 @@ EOF
             apt install -y libelf-dev
             apt install -y libxdp-dev
             apt install -y libbpf-dev
+            apt install -y libipsec-mb-dev libipsec-mb1 librte-crypto-ipsec-mb23
 
             apt install -y python3-sphinx
             apt install -y doxygen
