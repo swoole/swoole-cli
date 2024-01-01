@@ -65,7 +65,7 @@ EOF
             apt install -y libxdp-dev
             apt install -y libbpf-dev
 
-            apt install -y sphinx-build
+            apt install -y python3-sphinx
             apt install -y doxygen
 EOF
             )
