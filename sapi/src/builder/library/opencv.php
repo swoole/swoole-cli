@@ -59,7 +59,7 @@ return function (Preprocessor $p) {
     $CMAKE_PREFIX_PATH .= "{$openblas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$blas_prefix};";
     $CMAKE_PREFIX_PATH .= "{$lapack_prefix};";
-    # $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
+    $CMAKE_PREFIX_PATH .= "{$libeigen_prefix};";
     $CMAKE_PREFIX_PATH .= "{$glog_prefix};";
     # $CMAKE_PREFIX_PATH .= "{$vtk_prefix};";
     $CMAKE_PREFIX_PATH .= "{$ffmpeg_prefix};";
