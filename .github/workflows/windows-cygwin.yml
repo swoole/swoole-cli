@@ -79,7 +79,7 @@ jobs:
           ./bin/swoole-cli  -v
           $cmdOutput=./bin/swoole-cli  -v
           $cmdOutput -match "(\d{1,2}\.\d{1,2}\.\d{1,2})"
-          CYGWIN_APP_VERSION=$Matches[1]
+          $CYGWIN_APP_VERSION=$Matches[1]
           echo $CYGWIN_APP_VERSION
           echo "APP_VERSION=$CYGWIN_APP_VERSION" >> $Env:GITHUB_ENV
 
