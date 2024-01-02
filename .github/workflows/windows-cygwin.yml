@@ -33,6 +33,13 @@ jobs:
           path: C:/cygwin-packages
           key: ${{ runner.os }}-build-${{ env.cache-name }}
 
+      - name: Cache pool
+        id: cache-cygwin-pool
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}\pool\
+          key: ${{ runner.os }}-build-pool-cache
+
       - name: Install deps
         uses: cygwin/cygwin-install-action@v4
         with:
@@ -63,6 +70,33 @@ jobs:
           ./bin/swoole-cli -m
           ./bin/swoole-cli --ri pdo_pgsql
           ./bin/swoole-cli --ri swoole
+          ./bin/swoole-cli -r "echo PHP_VERSION;"
+
+      - name: get app version with bash
+        # 参考 https://github.com/marketplace/actions/install-cygwin
+        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
+        # shell: C:\cygwin\bin\bash.EXE --login --noprofile --norc -e -o pipefail -o igncr   {0}
+        run: |
+          ./bin/swoole-cli  -v | awk '{print $2}'
+
+          APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
+          echo $APP_VERSION
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+
+      - name: get app version with PowerShell
+        run: |
+          ./bin/swoole-cli  -v
+          $cmdOutput=./bin/swoole-cli  -v
+          $cmdOutput -match "(\d{1,2}\.\d{1,2}\.\d{1,2})"
+          CYGWIN_APP_VERSION=$Matches[1]
+          echo $CYGWIN_APP_VERSION
+          echo "APP_VERSION=$CYGWIN_APP_VERSION" >> $Env:GITHUB_ENV
+
+          # 参考 https://github.com/orgs/community/discussions/26641
+          # echo "APP_VERSION=${APP_VERSION}" >> $Env:GITHUB_ENV
+          # echo "APP_VERSION=$APP_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
+          # Add-Content -Path $env:GITHUB_ENV -Value "name=$value"
+          # Add-Content -Path $env:GITHUB_ENV -Value "APP_VERSION=$APP_VERSION"
 
       - name: Archive
         run: |
@@ -71,9 +105,9 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: cygwin-swoole-cli-dist
-          path: |
-            bin/swoole-cli.exe
+          name: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64
+          retention-days: 90
+          path: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
 
       - name: gh release
         uses: softprops/action-gh-release@v1
@@ -81,4 +115,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: swoole-cli-*-cygwin-x64.zip
+          files: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip

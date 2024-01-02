@@ -4,6 +4,8 @@ require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
 
+$php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
+define('BUILD_PHP_VERSION', $php_version_tag);
 
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
@@ -21,8 +23,6 @@ if (file_exists(__DIR__ . '/make.sh')) {
 if (file_exists(__DIR__ . '/make-download-box.sh')) {
     unlink(__DIR__ . '/make-download-box.sh');
 }
-
-const BUILD_PHP_VERSION = '8.1.12';
 
 // Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
