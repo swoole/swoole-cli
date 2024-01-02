@@ -31,7 +31,7 @@ jobs:
         id: cache-cygwin-pool
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}\pool\
+          path: "${{ github.workspace }}\\pool\\"
           key: ${{ runner.os }}-build-pool-cache
 
       - name: Install deps
