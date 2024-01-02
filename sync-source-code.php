@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+$project_dir = __DIR__;
+$php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
+
+$sync_dest_dir = $project_dir . '/var/sync-source-code-tmp/';
+
 # command
 # php sync-source-code.php --action run
 $action = 'dry_run';
@@ -11,31 +16,40 @@ $longopts = array(
 $options = getopt('', $longopts);
 if (!empty($options['action']) && $options['action'] == 'run') {
     $action = 'run';
+    $sync_dest_dir = $project_dir;
 }
 
-$php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
-$project_dir = __DIR__;
-$file = __DIR__ . "/pool/lib/php-{$php_version_tag}.tar.gz";
-$cmd = "curl -L https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o $file";
+$php_source_folder = $project_dir . "/var/php-{$php_version_tag}";
+$php_file = $project_dir . "/pool/lib/php-{$php_version_tag}.tar.gz";
+$download_dir = dirname($php_file);
+`test -d {$sync_dest_dir} || mkdir -p {$sync_dest_dir}`;
+
+
+$cmd = "curl -L https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_file}";
 echo $cmd . PHP_EOL;
-if (!file_exists($file)) {
+if (!file_exists($php_file)) {
+    `test -d {$download_dir} || mkdir -p {$download_dir}`;
     `{$cmd}`;
 }
-$php_source_folder = __DIR__ . "/var/php-{$php_version_tag}";
+
 
 # tar -zxvf 文件名.tar.gz --strip-components=1 -C 指定解压目录
-
 $cmd = <<<EOF
     test -d {$php_source_folder} && rm -rf {$php_source_folder}
     mkdir -p {$php_source_folder}
-    tar -zxvf {$file} --strip-components=1 -C  {$php_source_folder}
+    tar -zxvf {$php_file} --strip-components=1 -C  {$php_source_folder}
+EOF;
+
+$cmd .= PHP_EOL . <<<EOF
 
     SRC={$php_source_folder}
 
-    cd {$project_dir}
+    # 默认同步到测试验证目录:
+    # 正式同步，请执行命令： php sync-source-code.php --action run
+    cd {$sync_dest_dir}
 EOF;
 
-$cmd .= <<<'EOF'
+$cmd .= PHP_EOL . <<<'EOF'
 
     echo "sync"
     # ZendVM
@@ -113,10 +127,6 @@ EOF;
 
 
 echo $cmd . PHP_EOL;
-
-if ($action == 'run') {
-    `$cmd`;
-}
-echo "action : " . $action . ' done !'.PHP_EOL;
-
-
+`$cmd`;
+echo PHP_EOL;
+echo "action : " . $action . ' done !' . PHP_EOL;
