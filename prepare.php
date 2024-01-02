@@ -6,7 +6,6 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
 
-
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
@@ -23,7 +22,7 @@ if (file_exists(__DIR__ . '/make-download-box.sh')) {
     unlink(__DIR__ . '/make-download-box.sh');
 }
 
-# PHP 默认版本
+# PHP 默认版本 （此文件配置 /sapi/PHP-VERSION.conf 在 build_native_php分支 和 衍生分支 无效）
 $php_version = '8.2.13';
 $php_version_id = '802013';
 $php_version_tag = 'php-8.2.13';
@@ -78,6 +77,7 @@ echo "PHP_VERSION_ID: " . BUILD_PHP_VERSION_ID . PHP_EOL;
 echo "PHP_VERSION_TAG: " . BUILD_PHP_VERSION_TAG . PHP_EOL;
 echo "CUSTOM_PHP_VERSION_ID: " . BUILD_CUSTOM_PHP_VERSION_ID . PHP_EOL;
 echo PHP_EOL;
+
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
