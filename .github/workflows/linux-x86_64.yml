@@ -215,7 +215,7 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-${{ env.APP_VERSION }}-linux-x64
+          name: php-cli-v${{ env.APP_VERSION }}-linux-x64
           retention-days: 90
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
@@ -223,5 +223,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: php-cli-${{ env.APP_VERSION }}-linux-x64.tar.xz
+          files: php-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
 
