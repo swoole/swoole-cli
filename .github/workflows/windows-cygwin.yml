@@ -81,7 +81,7 @@ jobs:
           $cmdOutput -match "(\d{1,2}\.\d{1,2}\.\d{1,2})"
           $CYGWIN_APP_VERSION=$Matches[1]
           echo $CYGWIN_APP_VERSION
-          echo "APP_VERSION=$CYGWIN_APP_VERSION" >> $Env:GITHUB_ENV
+          echo "CYGWIN_APP_VERSION=$CYGWIN_APP_VERSION" >> $Env:GITHUB_ENV
 
           # 参考 https://github.com/orgs/community/discussions/26641
           # echo "APP_VERSION=${APP_VERSION}" >> $Env:GITHUB_ENV
