@@ -95,14 +95,15 @@ jobs:
         run: |
           ./bin/php-cli.exe  -v | awk '{print $2}'
 
-          APP_VERSION=$(./bin/php-cli.exe  -v | awk '{print $2}')
+          APP_VERSION=$(./bin/php-cli.exe  -v | head -n 1 | awk '{print $2}')
           echo $APP_VERSION
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
 
       - name: get app version with PowerShell
         run: |
           ./bin/php-cli.exe  -v
-          $cmdOutput=./bin/php-cli.exe  -v
+          $cmdOutput=./bin/php-cli.exe  -v |
+          $cmdOutput=$cmdOutput | select -first 1
           $cmdOutput -match "(\d{1,2}\.\d{1,2}\.\d{1,2})"
           $CYGWIN_APP_VERSION=$Matches[1]
           echo $CYGWIN_APP_VERSION
