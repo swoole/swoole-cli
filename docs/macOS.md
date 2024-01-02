@@ -9,8 +9,7 @@
 ## 快速 初始化macos 构建环境
 
 运行此命令解决构建过程中遇到的绝大部分问题
-已经`homebrew`已安装，可以跳过
-执行 `bash sapi/quickstart/macos/install-homebrew.sh`
+如`homebrew`已安装，跳过执行此命令`bash sapi/quickstart/macos/install-homebrew.sh`
 
 ```bash
 
