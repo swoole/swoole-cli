@@ -102,7 +102,7 @@ jobs:
       - name: get app version with PowerShell
         run: |
           ./bin/php-cli.exe  -v
-          $cmdOutput=./bin/php-cli.exe  -v |
+          $cmdOutput=./bin/php-cli.exe  -v
           $cmdOutput=$cmdOutput | select -first 1
           $cmdOutput -match "(\d{1,2}\.\d{1,2}\.\d{1,2})"
           $CYGWIN_APP_VERSION=$Matches[1]
