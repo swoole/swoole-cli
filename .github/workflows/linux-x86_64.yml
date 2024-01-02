@@ -217,6 +217,9 @@ jobs:
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
 
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
@@ -226,13 +229,13 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-x64
-          retention-days: 7
+          name: php-cli-v${{ env.APP_VERSION }}-linux-x64
+          retention-days: 90
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            php-cli-v${{ env.BUILD_PHP_VERSION }}-linux-x64.tar.xz
+          files: php-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
+

@@ -189,6 +189,7 @@ fi
 OPTIONS='+apcu +ds +xlswriter +ssh2'
 OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
 OPTIONS="${OPTIONS} --with-libavif=1"
+# OPTIONS="${OPTIONS} @macos"
 
 
 

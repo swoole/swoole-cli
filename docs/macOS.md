@@ -6,6 +6,28 @@
 3. 配置 `./make.sh config`
 4. 构建 `./make.sh build`
 
+## 快速 初始化macos 构建环境
+
+运行此命令解决构建过程中遇到的绝大部分问题
+如`homebrew`已安装，跳过执行此命令`bash sapi/quickstart/macos/install-homebrew.sh`
+
+```bash
+
+
+bash sapi/quickstart/macos/install-homebrew.sh
+bash sapi/quickstart/macos/macos-init.sh
+
+# 使用homebrew镜像源
+# bash sapi/quickstart/macos/install-homebrew.sh --mirror ustc
+# bash sapi/quickstart/macos/macos-init.sh --mirror ustc
+
+# 设置默认安装库目录的权限
+CURRENT_USER=$(whoami)
+sudo mkdir -p /usr/local/swoole-cli
+CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
+
+```
+
 ## 清理
 
 使用 `brew` 安装的库可能会干扰 `swoole-cli` 的编译，必须要在构建之前将关联的软件进行卸载。在构建完成后再重新安装。
@@ -124,7 +146,14 @@ export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 > 解压以后执行如下命令：
 
 ```bash
-  sudo xattr -d com.apple.quarantine  ./swoole-cli
+
+    sudo xattr -d com.apple.quarantine  ./swoole-cli
+
+    file ./bin/swoole-cli
+    otool -L ./bin/swoole-cli
+
 ```
 
 ## [macOS doesn't officially support fully static linking ](https://developer.apple.com/library/archive/qa/qa1118/_index.html)
+
+macos 支持构建静态库，不支持构建静态链接的二进制文件

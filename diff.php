@@ -3,7 +3,9 @@
 $list_swoole_cli = swoole_string(`./bin/swoole-cli -m | tail -n +2 | head -n -3`)->trim()->lower()->split(PHP_EOL)
     ->remove('core');
 
-$list_php_src = swoole_string(`ls -1 ~/soft/php-8.1.5/ext`)->trim()->lower()->split(PHP_EOL)
+$php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
+$php_source_folder = __DIR__ . '/var/php-' . $php_version_tag . '/ext/';
+$list_php_src = swoole_string(`ls -1 {$php_source_folder}`)->trim()->lower()->split(PHP_EOL)
     ->remove('ext_skel.php')
     ->remove('zend_test');
 

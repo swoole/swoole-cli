@@ -5,6 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
+
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
@@ -21,7 +22,7 @@ if (file_exists(__DIR__ . '/make-download-box.sh')) {
     unlink(__DIR__ . '/make-download-box.sh');
 }
 
-# PHP 默认版本
+# PHP 默认版本 （此文件配置 /sapi/PHP-VERSION.conf 在 build_native_php分支 和 衍生分支 无效）
 $php_version = '8.2.13';
 $php_version_id = '802013';
 $php_version_tag = 'php-8.2.13';
@@ -45,6 +46,7 @@ define('BUILD_PHP_VERSION', $php_version);
 define('BUILD_PHP_VERSION_ID', intval($php_version_id));
 define('BUILD_PHP_VERSION_TAG', $php_version_tag);
 define('BUILD_CUSTOM_PHP_VERSION_ID', intval(substr($php_version_id, 0, 4))); //取主版本号和次版本号
+
 
 
 // Compile directly on the host machine, not in the docker container
