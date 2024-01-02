@@ -2,6 +2,16 @@
 
 declare(strict_types=1);
 
+# command
+# php sync-source-code.php --action run
+$action = 'dry_run';
+$longopts = array(
+    "action:"
+);
+$options = getopt('', $longopts);
+if (!empty($options['action']) && $options['action'] == 'run') {
+    $action = 'run';
+}
 
 $php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
 $project_dir = __DIR__;
@@ -101,5 +111,12 @@ $cmd .= <<<'EOF'
 
 EOF;
 
+
 echo $cmd . PHP_EOL;
-`$cmd`;
+
+if ($action == 'run') {
+    `$cmd`;
+}
+echo "action : " . $action . ' done !'.PHP_EOL;
+
+
