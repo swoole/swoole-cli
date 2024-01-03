@@ -6,7 +6,8 @@
 
 `php-cli` 是一个 `PHP`的 运行时 ，默认包含 swoole 扩展
 
-> 本项目 派生于 [`soole-cli 项目的 build_native_php 分支`](https://github.com/swoole/swoole-cli/tree/build_native_php) , 构建流程 与 swoole-cli 构建流程一致
+> 本项目 派生于 [`soole-cli 项目的 build_native_php 分支`](https://github.com/swoole/swoole-cli/tree/build_native_php) ,
+> 构建流程 与 swoole-cli 构建流程一致
 
 > 项目继承 `swoole_cli` 项目的 `main` 分支、`experiment` 分支的构建功能
 
@@ -17,7 +18,6 @@
 > 可指定 C 编译器 为GCC
 
 > 可编译包含 swow 扩展
-
 
 ## 下载`php-cli`发行版
 
@@ -50,12 +50,35 @@ bash setup-php-runtime.sh --mirror china
 
 ```
 
+## 快速准备运行环境
+
+### linux
+
+```bash
+
+sh sapi/quickstart/linux/install-docker.sh
+sh sapi/quickstart/linux/run-alpine-container.sh
+sh sapi/quickstart/linux/connection-swoole-cli-alpine.sh
+
+```
+
+### macos
+
+```bash
+
+bash sapi/quickstart/macos/install-homebrew.sh
+bash sapi/quickstart/macos/macos-init.sh
+
+```
+
 ## 生成构建脚本
 
 ```shell
+
 composer install
 php prepare.php
 php prepare.php +inotify +mongodb -mysqli with-php-version=8.2.13
+
 ```
 
 * 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
