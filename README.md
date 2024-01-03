@@ -1,6 +1,6 @@
 # build static php-cli runtime
 
-构建静态 原生 php-cli
+构建静态 原生 php-cli 运行时
 
 ## 说明
 
@@ -18,16 +18,6 @@
 
 > 可编译包含 swow 扩展
 
-## swoole-cli 相关文章
-
-- [Swoole-Cli 介绍](https://zhuanlan.zhihu.com/p/581695339)
-- [Swoole-Cli 使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://zhuanlan.zhihu.com/p/459983471)
-- [Swoole-Cli 5.0.1 使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole-Cli v5.0.1 PHP 的二进制发行版](https://zhuanlan.zhihu.com/p/581695339)
-- [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://zhuanlan.zhihu.com/p/610014616)
-- [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
-- [Swoole 5.1 增加更多数据库协程客户端支持](https://wenda.swoole.com/detail/109023)
 
 ## 下载`php-cli`发行版
 
