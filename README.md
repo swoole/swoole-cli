@@ -1,66 +1,51 @@
-# swoole-cli
+# build static php-cli runtime
 
-`Swoole-Cli` 是一个 `PHP`的二进制发行版，<br/>
-集成了 `swoole`、`php 内核`、`php-cli`、`php-fpm`以及多个常用扩展。<br/>
-`Swoole-Cli`是全部静态编译打包的，不依赖任何操作系统的`so`
-动态链接库，具备非常好的移植性，<br/>
-可以在任意 `Linux`/`macOS`/`Windows(CygWin)`系统之间复制，下载即可使用。
+构建静态 原生 php-cli 运行时
 
-> 作为 PHP 开发者都应该知道 PHP 有两种运行模式：php-fpm和php-cli，<br/>
-> 那么在 Swoole 5.0 中将迎来一种新的运行模式：swoole-cli。<br/>
-> <strong>
-> Swoole将像node.js这样作为独立程序提供给用户，而不是作为PHP的一个扩展。
-> </strong><br/>
-> 除此之外swoole-cli会尽可能地对php-src进行裁剪，<br/>
-> 移除一些不用的机制、模块、扩展、函数、类型、常量、代码，
-> 使得整个程序可以在几分钟之内编译完成。<br/>
-> swoole-cli 是在 PHP 源码的基础上对功能做了裁剪、优化、添加新功能
+## 说明
 
-## 相关文章
+`php-cli` 是一个 `PHP`的 运行时 ，默认包含 swoole 扩展
 
-- [Swoole-Cli 介绍](https://zhuanlan.zhihu.com/p/581695339)
-- [Swoole-Cli 使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://zhuanlan.zhihu.com/p/459983471)
-- [Swoole-Cli 5.0.1 使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole-Cli v5.0.1 PHP 的二进制发行版](https://zhuanlan.zhihu.com/p/581695339)
-- [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://zhuanlan.zhihu.com/p/610014616)
-- [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
-- [Swoole 5.1 增加更多数据库协程客户端支持](https://wenda.swoole.com/detail/109023)
+> 本项目 派生于 [swoole-cli](https://github.com/swoole/swoole-cli/)
 
-## 下载`swoole-cli`发行版
+> 本项目代码与 swoole-cli 项目的 build_native_php 分支的代码 保持一致
 
-- [https://www.swoole.com/download](https://www.swoole.com/download) (recommend)
-- [https://github.com/swoole/swoole-src/releases](https://github.com/swoole/swoole-src/releases)
-- [https://github.com/swoole/swoole-cli/releases](https://github.com/swoole/swoole-cli/releases)
+> 构建流程 与 swoole-cli 构建流程一致
 
-## `swoole-cli`构建文档
+> 项目继承 `swoole_cli` 项目的 `main` 分支、`experiment` 分支的构建功能
+
+> 未对 PHP 源码 执行 裁剪、优化、添加新功能等操作
+
+> 可指定 PHP 版本 构建原生 PHP 版本
+
+> 可指定 C 编译器 为GCC
+
+> 可编译包含 swow 扩展
+
+## 下载`php-cli`发行版
+
+- [https://github.com/swoole/build-static-php/releases](https://github.com/swoole/build-static-php/releases)
+
+## `php-cli`构建文档
 
 - [linux 版构建文档](docs/linux.md)
 - [macOS 版构建文档](docs/macOS.md)
 - [windows Cygwin 版构建文档](docs/Cygwin.md)
 - [windows WSL 版构建文档](docs/wsl.md)
-- [swoole-cli 构建选项文档](docs/options.md)
-- [打包成二进制可执行文件 文档](sapi/samples/sfx/README.md)
-- [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
+- [php-cli 构建选项文档](docs/options.md)
+- [php-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
 - [quickstart](sapi/quickstart/README.md)
-- [构建 原生 `php-cli` 版本 使用build_native_php分支](https://github.com/swoole/swoole-cli/tree/build_native_php)
-
-## build_native_php 分支与主分支的区别
-
-> 继承 experiment 分支的功能
-
-> 构建原生 PHP 版本
-
-> 可指定 C 编译器 为GCC
-
-> 可编译包含 swow扩展的 PHP二进制可执行文件
-
-> 可禁用编译缓存
 
 ## Clone
 
 ```shell
+
+git clone -b main https://github.com/swoole/build-static-php.git
+
+# 或者
+
 git clone --recursive -b build_native_php  https://github.com/swoole/swoole-cli.git
+
 ```
 
 ## 快速准备 PHP 运行时
@@ -74,12 +59,39 @@ bash setup-php-runtime.sh --mirror china
 
 ```
 
+## 快速准备运行环境
+
+### linux
+
+> 如容器已经安装，可跳过执行安装 docker 命令
+
+```bash
+
+sh sapi/quickstart/linux/install-docker.sh
+sh sapi/quickstart/linux/run-alpine-container.sh
+sh sapi/quickstart/linux/connection-swoole-cli-alpine.sh
+
+```
+
+### macos
+
+> 如 homebrew 已安装，可跳过执行安装 homebrew 命令
+
+```bash
+
+bash sapi/quickstart/macos/install-homebrew.sh
+bash sapi/quickstart/macos/macos-init.sh
+
+```
+
 ## 生成构建脚本
 
 ```shell
+
 composer install
 php prepare.php
-php prepare.php +inotify +mongodb -mysqli
+php prepare.php +inotify +mongodb -mysqli with-php-version=8.2.13
+
 ```
 
 * 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
