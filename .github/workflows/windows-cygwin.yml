@@ -26,7 +26,7 @@ jobs:
           ipconfig
           uname -a
           pwd
-          # ipconfig /all
+          ipconfig /all
 
       - uses: actions/checkout@v3
       - name: set php version
