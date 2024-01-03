@@ -54,6 +54,8 @@ bash setup-php-runtime.sh --mirror china
 
 ### linux
 
+> 如容器已经安装，可跳过执行安装 docker 命令
+
 ```bash
 
 sh sapi/quickstart/linux/install-docker.sh
@@ -63,6 +65,8 @@ sh sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 ```
 
 ### macos
+
+> 如 homebrew 已安装，可跳过执行安装 homebrew 命令
 
 ```bash
 
