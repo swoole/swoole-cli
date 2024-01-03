@@ -129,6 +129,8 @@ jobs:
             ./bin/swoole-cli --ri swoole
             file ./bin/swoole-cli
             readelf -h ./bin/swoole-cli
+            APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
+            echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
             ./bin/swoole-cli -r "echo PHP_VERSION;"
 
             ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
@@ -137,12 +139,12 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: swoole-cli
-          retention-days: 7
+          name: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64
+          retention-days: 90
           path: ./bin/swoole-cli
 
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-*-linux-x64.tar.xz
+          files: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64.tar.xz
