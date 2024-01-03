@@ -39,7 +39,13 @@
 ## Clone
 
 ```shell
+
+git clone -b main https://github.com/swoole/build-static-php.git
+
+# 或者
+
 git clone --recursive -b build_native_php  https://github.com/swoole/swoole-cli.git
+
 ```
 
 ## 快速准备 PHP 运行时
