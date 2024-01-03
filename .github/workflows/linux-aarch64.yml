@@ -167,4 +167,3 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64.tar.xz
-
