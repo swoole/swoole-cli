@@ -8,7 +8,7 @@
 
 > 本项目 派生于 [swoole-cli](https://github.com/swoole/swoole-cli/)
 
-> 本项目代码 soole-cli 项目的 build_native_php 分支的代码 保持一致
+> 本项目代码 swoole-cli 项目的 build_native_php 分支的代码 保持一致
 
 > 构建流程 与 swoole-cli 构建流程一致
 
