@@ -8,7 +8,7 @@ __DIR__=$(
 cd ${__DIR__}
 
 # use china mirror
-# bash sapi/quickstart/linux/alpine-init.sh --mirror [china | ustc | tuna | aliyuncs | tencentyun | huaweicloud]
+# sh sapi/quickstart/linux/alpine-init.sh --mirror [ china | ustc | tuna | tencentyun | huaweicloud ]
 
 
 MIRROR=''
@@ -31,9 +31,8 @@ china | tuna | ustc)
   test "$MIRROR" = "tuna"  && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
   test "$MIRROR" = "ustc"  && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
   ;;
-aliyuncs | tencentyun | huaweicloud) # 云服务的内网镜像源
+tencentyun | huaweicloud) # 云服务的内网镜像源
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
-  test "$MIRROR" = "aliyuncs" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.aliyuncs.com/g' /etc/apk/repositories
   test "$MIRROR" = "tencentyun" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tencentyun.com/g' /etc/apk/repositories
   test "$MIRROR" = "huaweicloud" && sed -i 's/dl-cdn.alpinelinux.org/repo.huaweicloud.com/g' /etc/apk/repositories
   ;;
@@ -64,8 +63,7 @@ china | tuna | ustc)
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   test "$MIRROR" = "ustc" && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
   ;;
-aliyuncs | tencentyun | huaweicloud)
-  test "$MIRROR" = "aliyuncs" && pip3 config set global.index-url https://mirrors.cloud.aliyuncs.com/pypi/simple/
+tencentyun | huaweicloud)
   test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
   test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
 esac
