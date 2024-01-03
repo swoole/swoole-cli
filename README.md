@@ -6,9 +6,8 @@
 
 `php-cli` 是一个 `PHP`的 运行时 ，默认包含 swoole 扩展
 
-> 本项目 派生于 [`soole-cli 项目的 build_native_php 分支`](https://github.com/swoole/swoole-cli/tree/build_native_php)
+> 本项目 派生于 [`soole-cli 项目的 build_native_php 分支`](https://github.com/swoole/swoole-cli/tree/build_native_php) ， 构建流程 与 swoole-cli 构建流程一致
 
-> 本项目构建流程 与 swoole-cli 构建流程一致
 
 > 未对 PHP 源码 执行 裁剪、优化、添加新功能等操作
 
