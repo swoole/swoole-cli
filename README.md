@@ -24,7 +24,7 @@
 
 ## 下载`php-cli`发行版
 
-- [https://github.com/swoole/build-static-php/releases](https://github.com/swoole/swoole-src/releases)
+- [https://github.com/swoole/build-static-php/releases](https://github.com/swoole/build-static-php/releases)
 
 ## `php-cli`构建文档
 
