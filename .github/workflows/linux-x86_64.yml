@@ -224,4 +224,3 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: php-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
-
