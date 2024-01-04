@@ -31,7 +31,6 @@ if ($p->getInputOption('with-build-type')) {
     $buildType = $p->getInputOption('with-build-type');
     $p->setBuildType($buildType);
 }
-define('CLI_BUILD_TYPE', $buildType);
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
