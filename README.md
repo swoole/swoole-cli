@@ -8,7 +8,7 @@
 
 > 本项目 派生于 [swoole-cli](https://github.com/swoole/swoole-cli/)
 
-> 本项目代码与 swoole-cli 项目的 build_native_php 分支的代码 保持一致
+> 代码与 swoole-cli 项目的 build_native_php 分支的代码 保持一致
 
 > 构建流程 与 swoole-cli 构建流程一致
 
@@ -63,24 +63,48 @@ bash setup-php-runtime.sh --mirror china
 
 ### linux
 
-> 如容器已经安装，可跳过执行安装 docker 命令
+如容器已经安装，可跳过执行安装 docker 命令
 
 ```bash
 
 sh sapi/quickstart/linux/install-docker.sh
 sh sapi/quickstart/linux/run-alpine-container.sh
 sh sapi/quickstart/linux/connection-swoole-cli-alpine.sh
+sh sapi/quickstart/linux/alpine-init.sh
+
+# 使用镜像源安装
+sh sapi/quickstart/linux/install-docker.sh --mirror china
+sh sapi/quickstart/linux/alpine-init.sh --mirror china
 
 ```
 
 ### macos
 
-> 如 homebrew 已安装，可跳过执行安装 homebrew 命令
+如 homebrew 已安装，可跳过执行安装 homebrew 命令
 
 ```bash
 
 bash sapi/quickstart/macos/install-homebrew.sh
 bash sapi/quickstart/macos/macos-init.sh
+
+# 使用镜像源安装
+bash sapi/quickstart/macos/install-homebrew.sh --mirror china
+bash sapi/quickstart/macos/macos-init.sh --mirror china
+
+```
+
+### 一条命令执行整个构建流程
+
+```bash
+
+cp build-release-example.sh build-release.sh
+
+# 按你的需求修改配置  OPTIONS="${OPTIONS} --with-libavif=1 "
+vi build-release.sh
+
+# 执行构建流程
+bash build-release.sh
+
 
 ```
 
@@ -88,30 +112,25 @@ bash sapi/quickstart/macos/macos-init.sh
 
 ```shell
 
-composer install
+composer update
 php prepare.php
-php prepare.php +inotify +mongodb -mysqli with-php-version=8.2.13
+
+# 指定PHP 版本
+php prepare.php +inotify +mongodb -mysqli --with-php-version=8.2.13
+
+# 使用镜像站下载依赖库
+php prepare.php +inotify +mongodb -mysqli --with-download-mirror-url=https://php-cli.jingjingxyk.com/
+
+# 使用代理下载依赖库
+php prepare.php +inotify +mongodb -mysqli --with-http-proxy=socks5h://192.168.3.26:2000
+
+# 只编译单个扩展（swoole)
+php prepare.php +swoole --with-override-default-enabled-ext=1
 
 ```
 
 * 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
 * 可使用`+{ext}`或者`-{ext}`增减扩展
-
-## 进入 Docker Bash
-
-```shell
-# 启动 alpine 容器环境
-bash sapi/quickstart/linux/run-alpine-container.sh
-
-# 进入容器
-bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
-
-# 准备构建基础软件
-sh  sapi/quickstart/linux/alpine-init.sh
-
-```
-
-> 需要将 `swoole-cli` 的目录映射到容器的 `/work` 目录
 
 ## 构建 `C/C++` 依赖库
 
@@ -139,7 +158,7 @@ sh  sapi/quickstart/linux/alpine-init.sh
 ./make.sh archive
 ```
 
-> 打包成功后会生成 `swoole-cli-{version}-{os}-{arch}.tar.xz`
+> 打包成功后会生成 `php-cli-{version}-{os}-{arch}.tar.xz`
 > 压缩包，包含 `swoole-cli` 可执行文件、`LICENSE` 授权协议文件。
 
 ## 授权协议
