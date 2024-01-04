@@ -8,11 +8,7 @@ use SwooleCli\Preprocessor;
 ?>
 #!/usr/bin/env bash
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
-<<<<<<< HEAD
-
-=======
 CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
->>>>>>> experiment-webui
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
