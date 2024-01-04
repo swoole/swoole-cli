@@ -8,7 +8,7 @@
 
 > 本项目 派生于 [swoole-cli](https://github.com/swoole/swoole-cli/)
 
-> 项目代码与 swoole-cli 项目的 build_native_php 分支的代码 保持一致
+> 代码与 swoole-cli 项目的 build_native_php 分支的代码 保持一致
 
 > 构建流程 与 swoole-cli 构建流程一致
 
@@ -117,12 +117,12 @@ php prepare.php
 
 # 指定PHP 版本
 php prepare.php +inotify +mongodb -mysqli --with-php-version=8.2.13
-
 # 使用镜像站下载依赖库
 php prepare.php +inotify +mongodb -mysqli --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 # 使用代理下载依赖库
-php prepare.php +inotify +mongodb -mysqli --with-http-proxy=http://192.168.3.26:8015
-
+php prepare.php +inotify +mongodb -mysqli --with-http-proxy=socks5h://192.168.3.26:2000
+# 只编译单个扩展
+php prepare.php +swoole --with-override-default-enabled-ext=1
 
 ```
 
