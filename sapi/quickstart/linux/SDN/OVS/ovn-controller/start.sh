@@ -50,7 +50,7 @@ ovs-vsctl --columns external_ids list open_vswitch
 
 sleep 5
 ovs-vsctl list-ports  br-int
-ovs-vsctl set int br-int mtu_request=1450
+# ovs-vsctl set int br-int mtu_request=1450
 
 ovs-ctl status
 

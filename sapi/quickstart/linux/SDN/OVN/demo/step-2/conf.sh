@@ -4,8 +4,6 @@ __DIR__=$(cd "$(dirname "$0")";pwd)
 cd ${__DIR__}
 set -uex
 
-ovn-nbctl --if-exists lrp-del lr01-join
-ovn-nbctl lrp-add lr01 lr01-join   ee:ee:02:00:00:01 10.2.20.1/24 peer=lr02-join
 
 
 ovn-nbctl --if-exists ls-del join
@@ -14,8 +12,20 @@ ovn-nbctl ls-add join
 ovn-nbctl lsp-add join join-lr01
 ovn-nbctl lsp-set-type join-lr01 router
 ovn-nbctl lsp-set-addresses join-lr01 router
+# ovn-nbctl lsp-set-addresses join-lr01 ee:ee:02:00:00:01
 ovn-nbctl lsp-set-options join-lr01 router-port=lr01-join
 
+ovn-nbctl lsp-add join join-lr02
+ovn-nbctl lsp-set-type join-lr02 router
+ovn-nbctl lsp-set-addresses join-lr02 router
+# ovn-nbctl lsp-set-addresses join-lr02 ee:ee:03:00:00:02
+ovn-nbctl lsp-set-options join-lr02 router-port=lr02-join
+
+
+
+
+ovn-nbctl --if-exists lrp-del lr01-join
+ovn-nbctl lrp-add lr01 lr01-join   ee:ee:02:00:00:01 10.2.20.1/24 peer=lr02-join
 
 
 
@@ -26,18 +36,7 @@ ovn-nbctl  lrp-add lr02 lr02-join  ee:ee:03:00:00:02 10.3.20.1/24 peer=lr01-join
 
 
 
-ovn-nbctl lsp-add join join-lr02
-ovn-nbctl lsp-set-type join-lr02 router
-ovn-nbctl lsp-set-addresses join-lr02 router
-ovn-nbctl lsp-set-options join-lr02 router-port=lr02-join
-
-
-
-
-
-
-
-ovn-nbctl set logical_router lr02 options:chassis="c2253781-ce27-49f2-a6e0-61ca51f10823"
+ovn-nbctl set logical_router lr02 options:chassis="7946e836-32e1-4f43-8123-c0d281e5af45"
 
 
 # 路由器互联 例子

@@ -11,7 +11,7 @@ cd ${__DIR__}
 ovs-vsctl set Open_vSwitch .  external-ids:ovn-bridge-mappings=' '
 
 {
-    ip addr add  172.16.124.59/20 dev eth0
+    ip addr add  172.16.124.60/20 dev eth0
 
     ip route replace  default via 172.16.127.253  dev eth0
 

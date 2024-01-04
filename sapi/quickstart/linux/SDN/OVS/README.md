@@ -179,6 +179,10 @@ tcpdump -i any   port 6081 -v
 
 tcpdump -i any   port 6081 -v -n
 
+netstat -ni
+netstat -s
+# https://www.cnblogs.com/andy6/p/8094183.html
+
 # 获得抓包文件
 tcpdump -i any   port 6081 -v -n  -w ovn-node-chendu-test.cap
 

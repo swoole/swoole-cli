@@ -18,7 +18,7 @@ ip link set br-eth0 up # 激活网桥
     # 本机掩码：   255.255.240.0
     # 广播地址：    172.16.127.255
 
-    ip addr add  172.16.124.59/20 dev br-eth0
+    ip addr add  172.16.124.60/20 dev br-eth0
     ip route replace  default via 172.16.127.253  dev br-eth0
 
     ip route add  100.100.2.136 via  172.16.127.253 dev br-eth0
