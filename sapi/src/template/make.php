@@ -8,6 +8,7 @@ use SwooleCli\Preprocessor;
 
 ?>
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
+CLI_BUILD$_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -222,6 +223,32 @@ make_build() {
 
 }
 
+make_archive() {
+    set -x
+    cd ${__PROJECT_DIR__}/bin/
+    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+
+    mkdir -p dist
+    cp -f swoole-cli    dist/
+    cp -f LICENSE       dist/
+    cp -f pack-sfx.php  dist/
+
+    if test $CLI_BUILD_TYPE != 'debug' ; then
+        strip dist/swoole-cli
+    fi
+
+    cd ${__PROJECT_DIR__}/bin/dist/
+    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
+    mv ${SWOOLE_CLI_FILE} ${__PROJECT_DIR__}/
+
+    if test -d ${__PROJECT_DIR__}/bin/dist/ ; then
+        rm -rf ${__PROJECT_DIR__}/bin/dist/
+    fi
+
+    cd ${__PROJECT_DIR__}/
+}
+
 make_clean() {
     set -ex
     find . -name \*.gcno -o -name \*.gcda | grep -v "^\./thirdparty" | xargs rm -f
@@ -324,14 +351,8 @@ elif [ "$1" = "build" ] ;then
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
-    set -x
-    cd bin
-    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
-    strip swoole-cli
-    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
-    mv ${SWOOLE_CLI_FILE} ../
-    cd -
+    make_archive
+    exit 0
 elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"
@@ -385,7 +406,7 @@ elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
     test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
     $PHP_CLI -v
-    $PHP_CLI sync-source-code.php
+    $PHP_CLI sync-source-code.php --action run
     exit 0
 else
     help

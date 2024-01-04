@@ -26,6 +26,13 @@ if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
+$buildType = $p->getBuildType();
+if ($p->getInputOption('with-build-type')) {
+    $buildType = $p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
+}
+define('PHP_CLI_BUILD_TYPE', $buildType);
+
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
