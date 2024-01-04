@@ -366,7 +366,7 @@ make_archive() {
     cp -f LICENSE       dist/
 
     if test $CLI_BUILD_TYPE = 'release' ; then
-        strip dist/php
+        strip dist/php-cli
     fi
 
     cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
