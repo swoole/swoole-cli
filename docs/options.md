@@ -162,6 +162,12 @@ with-parallel-jobs
 php ./prepare.php --with-parallel-jobs=8
 ```
 
+with-build-type
+----
+构建类型，默认是 release
+可选项： release debug dev
+
+
 with-http-proxy
 ----
 使用HTTP代理下载扩展和扩展依赖库<br/>
@@ -208,3 +214,6 @@ GD 库支持 AVIF 图片
 ```shell
 php ./prepare.php --with-libavif=1
 ```
+
+
+

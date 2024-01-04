@@ -156,7 +156,6 @@ class Preprocessor
 
     protected string $gitProxyConfig = '';
 
-
     protected function __construct()
     {
         switch (PHP_OS) {
