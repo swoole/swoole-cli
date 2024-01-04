@@ -124,7 +124,7 @@ php prepare.php +inotify +mongodb -mysqli --with-download-mirror-url=https://php
 # 使用代理下载依赖库
 php prepare.php +inotify +mongodb -mysqli --with-http-proxy=socks5h://192.168.3.26:2000
 
-# 只编译单个扩展
+# 只编译单个扩展（swoole)
 php prepare.php +swoole --with-override-default-enabled-ext=1
 
 ```
