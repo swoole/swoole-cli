@@ -8,7 +8,7 @@ use SwooleCli\Preprocessor;
 ?>
 #!/usr/bin/env bash
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
-
+CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -359,7 +359,6 @@ make_config() {
     += 是添加等号后面的值
 
 
-
     # GNU C编译器的gnu11和c11 https://www.cnblogs.com/litifeng/p/8328499.html
     # -g是生成调试信息
     # -Wall 是打开警告开关,-O代表默认优化,可选：-O0不优化,-O1低级优化,-O2中级优化,-O3高级优化,-Os代码空间优化
@@ -489,6 +488,32 @@ make_build_old() {
     <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php -v
 
     # elfedit --output-osabi linux sapi/cli/php
+}
+
+make_archive() {
+    set -x
+    cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
+    PHP_VERSION=$(./php -r "echo PHP_VERSION;")
+    PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+
+    mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
+    cp -f php           dist/
+    cp -f LICENSE       dist/
+
+    if test $CLI_BUILD_TYPE = 'release' ; then
+        strip dist/php-cli
+    fi
+
+    cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
+
+    tar -cJvf ${PHP_CLI_FILE} php LICENSE
+    mv ${PHP_CLI_FILE} ${__PROJECT_DIR__}/
+
+    if [[ -d <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist &&  $CLI_BUILD_TYPE = 'release' ]] ; then
+        rm -rf <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
+    fi
+
+    cd ${__PROJECT_DIR__}/
 }
 
 make_clean() {
@@ -667,15 +692,8 @@ elif [ "$1" = "test" ] ;then
     <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php vendor/bin/phpunit
     exit 0
 elif [ "$1" = "archive" ] ;then
-    set -x
-    cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
-    PHP_VERSION=$(./php -r "echo PHP_VERSION;")
-    PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
-    cp -f php php-dbg
-    strip php
-    tar -cJvf ${PHP_CLI_FILE} php
-    mv ${PHP_CLI_FILE} <?= $this->workDir ?>/
-    cd -
+    make_archive
+    exit 0
 elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"
@@ -738,7 +756,7 @@ elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
     test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
     $PHP_CLI -v
-    $PHP_CLI sync-source-code.php
+    $PHP_CLI sync-source-code.php --action run
     exit 0
 else
     help
