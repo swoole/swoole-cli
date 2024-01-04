@@ -117,10 +117,13 @@ php prepare.php
 
 # 指定PHP 版本
 php prepare.php +inotify +mongodb -mysqli --with-php-version=8.2.13
+
 # 使用镜像站下载依赖库
 php prepare.php +inotify +mongodb -mysqli --with-download-mirror-url=https://php-cli.jingjingxyk.com/
+
 # 使用代理下载依赖库
 php prepare.php +inotify +mongodb -mysqli --with-http-proxy=socks5h://192.168.3.26:2000
+
 # 只编译单个扩展
 php prepare.php +swoole --with-override-default-enabled-ext=1
 
