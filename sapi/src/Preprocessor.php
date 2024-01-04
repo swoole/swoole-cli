@@ -154,7 +154,6 @@ class Preprocessor
 
     protected string $gitProxyConfig = '';
 
-
     protected function __construct()
     {
         switch (PHP_OS) {
@@ -350,7 +349,6 @@ class Preprocessor
         $this->logicalProcessors = $logicalProcessors;
         return $this;
     }
-
 
     public function setBuildType(string $buildType): static
     {
