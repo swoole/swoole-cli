@@ -8,7 +8,7 @@ use SwooleCli\Preprocessor;
 
 ?>
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
-CLI_BUILD$_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
+CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -229,12 +229,12 @@ make_archive() {
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
     SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
 
-    mkdir -p dist
+    mkdir -p ${__PROJECT_DIR__}/bin/dist
     cp -f swoole-cli    dist/
     cp -f LICENSE       dist/
     cp -f pack-sfx.php  dist/
 
-    if test $CLI_BUILD_TYPE != 'debug' ; then
+    if test $CLI_BUILD_TYPE = 'release' ; then
         strip dist/swoole-cli
     fi
 
@@ -242,7 +242,7 @@ make_archive() {
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
     mv ${SWOOLE_CLI_FILE} ${__PROJECT_DIR__}/
 
-    if test -d ${__PROJECT_DIR__}/bin/dist/ ; then
+    if [[ -d ${__PROJECT_DIR__}/bin/dist/ &&  $CLI_BUILD_TYPE = 'release' ]] ; then
         rm -rf ${__PROJECT_DIR__}/bin/dist/
     fi
 

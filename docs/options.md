@@ -150,5 +150,5 @@ php ./prepare.php --with-parallel-jobs=8
 
 with-build-type
 ----
-构建类型，默认是release
-可选项： release debuge dev
+构建类型，默认是 release
+可选项： release  debug  dev
