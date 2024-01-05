@@ -82,27 +82,27 @@ jobs:
 
       - name: Show Build Result
         run: |
-          ./bin/php-cli.exe -v
-          ./bin/php-cli.exe -m
-          ./bin/php-cli.exe --ri pdo_pgsql
-          ./bin/php-cli.exe --ri swoole
-          ./bin/php-cli.exe  -r "echo PHP_VERSION;"
+          ./bin/php.exe -v
+          ./bin/php.exe -m
+          ./bin/php.exe --ri pdo_pgsql
+          ./bin/php.exe --ri swoole
+          ./bin/php.exe  -r "echo PHP_VERSION;"
 
       - name: get app version with bash
         # 参考 https://github.com/marketplace/actions/install-cygwin
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         # shell: C:\cygwin\bin\bash.EXE --login --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
-          ./bin/php-cli.exe  -v | awk '{print $2}'
+          ./bin/php.exe  -v | awk '{print $2}'
 
-          APP_VERSION=$(./bin/php-cli.exe  -v | head -n 1 | awk '{print $2}')
+          APP_VERSION=$(./bin/php.exe  -v | head -n 1 | awk '{print $2}')
           echo $APP_VERSION
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
 
       - name: get app version with PowerShell
         run: |
-          ./bin/php-cli.exe  -v
-          $cmdOutput=./bin/php-cli.exe  -v
+          ./bin/php.exe  -v
+          $cmdOutput=./bin/php.exe  -v
           $cmdOutput=$cmdOutput | select -first 1
           $cmdOutput -match "(\d{1,2}\.\d{1,2}\.\d{1,2})"
           $CYGWIN_APP_VERSION=$Matches[1]

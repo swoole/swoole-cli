@@ -127,10 +127,24 @@ php prepare.php +inotify +mongodb -mysqli --with-http-proxy=socks5h://192.168.3.
 # 只编译单个扩展（swoole)
 php prepare.php +swoole --with-override-default-enabled-ext=1
 
+# 编译最新版 swoole
+php prepare.php -swoole +swoole_latest
+
+# 编译最新版 swow
+php prepare.php -swoole +swow_latest
+
 ```
 
 * 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
 * 可使用`+{ext}`或者`-{ext}`增减扩展
+
+## 构建库之前安装 库依赖 构建环境
+
+```shell
+
+bash make-install-deps.sh
+
+```
 
 ## 构建 `C/C++` 依赖库
 

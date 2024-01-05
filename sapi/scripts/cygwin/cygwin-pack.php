@@ -10,7 +10,7 @@ if (!is_dir($dst)) {
 
 $match = "";
 $patten = "#\s+(\S+)\s+\=\>\s+(\S+)\s+\(0x[a-f0-9]+\)#i";
-$list = `ldd {$src}/bin/php-cli.exe`;
+$list = `ldd {$src}/bin/php.exe`;
 
 preg_match_all($patten, $list, $match);
 
@@ -30,8 +30,8 @@ foreach ($match[2] as $file) {
 }
 
 
-echo `chmod a+x {$src}/bin/php-cli.exe`;
-copy("{$src}/bin/php-cli.exe", $dst . "/bin/php-cli.exe");
+echo `chmod a+x {$src}/bin/php.exe`;
+copy("{$src}/bin/php.exe", $dst . "/bin/php.exe");
 if (is_file("{$src}/bin/LICENSE")) {
     copy("{$src}/bin/LICENSE", $dst . "/LICENSE");
 }
