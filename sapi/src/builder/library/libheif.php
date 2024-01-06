@@ -34,8 +34,6 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/strukturag/libheif.git')
         ->withUrl('https://github.com/strukturag/libheif/releases/download/v1.17.6/libheif-1.17.6.tar.gz')
         ->withPrefix($libheif_prefix)
-        ->withBuildCached(false)
-        ->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
          mkdir -p build
@@ -68,11 +66,21 @@ return function (Preprocessor $p) {
 EOF
         )
         /* 使用 cmake 构建 end  */
-        ->withPkgName('example')
+        ->withPkgName('libheif')
         ->withBinPath($libheif_prefix . '/bin/')
 
         //依赖其它静态链接库
-        ->withDependentLibraries('libx265', 'libde265', 'aom', 'dav1d', 'svt_av1', 'libjpeg', 'zlib', 'libpng','libwebp');
+        ->withDependentLibraries(
+            'libx265',
+            'libde265',
+            //'aom',
+            //'dav1d',
+            //'svt_av1',
+            'libjpeg',
+            'zlib',
+            'libpng',
+            'libwebp'
+        );
     $p->addLibrary($lib);
 
 };
