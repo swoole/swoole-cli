@@ -65,10 +65,9 @@ jobs:
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
-        id: dependency-cache
         with:
           path: ${{ github.workspace }}/pool/
-          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-pool
+          key: source-code-tarball-pool
 
       - name: Cache all-library
         uses: actions/cache@v3
