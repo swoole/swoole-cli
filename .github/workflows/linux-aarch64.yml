@@ -119,7 +119,7 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update   --optimize-autoloader
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1 --with-libavif=1
 
             bash make.sh all-library
 
