@@ -23,13 +23,13 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($depot_tools_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($depot_tools_prefix)
         ->withBuildCached(false)
+        ->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
+            mkdir -p {$depot_tools_prefix}
             cd ..
-            cp -rf depot_tools $depot_tools_prefix
+            cp -rf depot_tools/* {$depot_tools_prefix}
 
             # 禁止 DEPOT_TOOLS 自动更新
             export DEPOT_TOOLS_UPDATE=0

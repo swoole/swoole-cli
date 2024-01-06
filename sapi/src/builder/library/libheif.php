@@ -56,7 +56,7 @@ return function (Preprocessor $p) {
         -DWITH_DAV1D=OFF \
         -DWITH_AOM_ENCODER=OFF \
         -DWITH_AOM_DECODER=OFF \
-        -DWITH_SvtEnc=OFF \
+        -DWITH_SvtEnc=OFF
 
 
         cmake --build . --config Release

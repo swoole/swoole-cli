@@ -1,3 +1,0 @@
-LVS
-ipvsadm
-ipset 

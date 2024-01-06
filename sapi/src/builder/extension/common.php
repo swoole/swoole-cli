@@ -175,6 +175,7 @@ return function (Preprocessor $p) {
     $depends = ['libarchive'] ;
     $depends = ['libde265'] ;
     $depends = ['libheif'] ;
+    $depends = ['webrtc'] ;
 
 
     $ext = (new Extension('common'))
