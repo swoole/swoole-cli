@@ -363,10 +363,10 @@ make_archive() {
 
     mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
     cp -f php           dist/
-    cp -f LICENSE       dist/
+    cp -f ${__PROJECT_DIR__}/bin/LICENSE       dist/
 
     if test $CLI_BUILD_TYPE = 'release' ; then
-        strip dist/php-cli
+        strip dist/php
     fi
 
     cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
