@@ -7,7 +7,7 @@ env:
 
 jobs:
   linux-aarch64:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -54,10 +54,9 @@ jobs:
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
-        id: dependency-cache
         with:
           path: ${{ github.workspace }}/pool/
-          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-aarch64-pool
+          key: source-code-tarball-pool
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -104,6 +103,20 @@ jobs:
               bash .github/workflows/build-alpine-builder-container.sh --platform "linux/arm64"
           fi
 
+      - name: prepare pre-built library
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240106T114724Z
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/tmp/
+          run: |
+            for i in `ls /usr/local/swoole-cli/`
+            do
+               if [ ! -d /usr/local/tmp/${i} ] ; then
+                    echo $i
+                    cp -rf /usr/local/swoole-cli/${i}/  /usr/local/tmp/${i}
+               fi
+            done
+
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
@@ -123,8 +136,8 @@ jobs:
             # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             # bash sapi/quickstart/mark-install-library-cached.sh
 
-            sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
-            composer update --no-dev  --optimize-autoloader
+            sh  sapi/quickstart/linux/alpine-init.sh
+            composer update   --optimize-autoloader
 
             php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql -mongodb --with-swoole-pgsql=1 --with-libavif
 
@@ -150,10 +163,17 @@ jobs:
             file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
-            echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+            echo ${APP_VERSION}
+            echo ${APP_VERSION}  > APP_VERSION
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+
+      - name: get app version
+        run: |
+          APP_VERSION=$(cat ./APP_VERSION)
+          echo $APP_VERSION
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
