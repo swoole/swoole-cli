@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-aarch64:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -92,6 +92,15 @@ jobs:
           else
               bash .github/workflows/build-alpine-builder-container.sh --platform "linux/arm64"
           fi
+
+      - name: Prepare Depend All Library
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240106T110130Z
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/swoole-cli
+          run: |
+            cp -rf /usr/local/swoole-cli/*  /swoole-cli
+
       - name: Build
         uses: addnab/docker-run-action@v3
         with:
