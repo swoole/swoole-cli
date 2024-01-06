@@ -17,10 +17,10 @@ return function (Preprocessor $p) {
     $libwebp_prefix = WEBP_PREFIX;
 
     $cmake_prefix_path = "";
-    $cmake_prefix_path .= "{$aom_prefix};";
+    # $cmake_prefix_path .= "{$aom_prefix};";
+    # $cmake_prefix_path .= "{$dav1d_prefix};";
+    # $cmake_prefix_path .= "{$svt_av1_prefix};";
     $cmake_prefix_path .= "{$libx265_prefix};";
-    $cmake_prefix_path .= "{$dav1d_prefix};";
-    $cmake_prefix_path .= "{$svt_av1_prefix};";
     $cmake_prefix_path .= "{$libjpeg_prefix};";
     $cmake_prefix_path .= "{$libde265_prefix};";
     $cmake_prefix_path .= "{$zlib_prefix};";
@@ -40,23 +40,25 @@ return function (Preprocessor $p) {
             <<<EOF
          mkdir -p build
          cd build
-         # cmake 查看选项
-         # cmake -LH ..
+
          cmake .. \
         -DCMAKE_INSTALL_PREFIX={$libheif_prefix} \
         -DCMAKE_BUILD_TYPE=Release  \
         -DBUILD_SHARED_LIBS=OFF  \
         -DBUILD_STATIC_LIBS=ON \
         -DCMAKE_PREFIX_PATH="{$cmake_prefix_path}" \
-        -DWITH_DAV1D=ON \
         -DWITH_LIBDE265=ON \
         -DWITH_X265=ON \
-        -DWITH_DAV1D=ON \
-        -DWITH_AOM_ENCODER=ON \
-        -DWITH_AOM_DECODER=ON \
         -DWITH_JPEG_ENCODER=ON \
         -DWITH_JPEG_DECODER=ON \
-        -DWITH_SvtEnc=ON
+        -DWITH_EXAMPLES=OFF \
+        -DWITH_GDK_PIXBUF=OFF \
+        -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON \
+        -DBUILD_TESTING=OFF \
+        -DWITH_DAV1D=OFF \
+        -DWITH_AOM_ENCODER=OFF \
+        -DWITH_AOM_DECODER=OFF \
+        -DWITH_SvtEnc=OFF \
 
 
         cmake --build . --config Release
