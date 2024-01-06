@@ -173,6 +173,8 @@ return function (Preprocessor $p) {
     $depends = ['libpri'] ;
     $depends = ['asterisk'] ;
     $depends = ['libarchive'] ;
+    $depends = ['libde265'] ;
+    $depends = ['libheif'] ;
 
 
     $ext = (new Extension('common'))

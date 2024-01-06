@@ -162,28 +162,7 @@ EOF
 
 function install_libde265(Preprocessor $p)
 {
-    $libde265_prefix = LIBDE265_PREFIX;
-    $lib = new Library('libde265');
-    $lib->withHomePage('https://github.com/strukturag/libde265.git')
-        ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
-        ->withUrl('https://github.com/strukturag/libde265/archive/refs/tags/v1.0.11.tar.gz')
-        ->withFile('libde265-v1.0.11.tar.gz')
-        ->withPrefix($libde265_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libde265_prefix)
-        ->withConfigure(
-            <<<EOF
-        ./autogen.sh
-        ./configure --help
-        ./configure --prefix={$libde265_prefix} \
-        --enable-shared=no \
-        --enable-static=yes \
-        --with-pic
-EOF
-        )
-        ->withPkgName('libde265');
 
-    $p->addLibrary($lib);
 }
 
 function install_svt_av1(Preprocessor $p)
@@ -192,29 +171,7 @@ function install_svt_av1(Preprocessor $p)
 
 function install_libheif(Preprocessor $p)
 {
-    $libheif_prefix = LIBHEIF_PREFIX;
-    $lib = new Library('libheif');
-    $lib->withHomePage('https://github.com/strukturag/libheif.git')
-        ->withLicense('https://github.com/strukturag/libheif/blob/master/COPYING', Library::LICENSE_GPL)
-        ->withUrl('https://github.com/strukturag/libheif/releases/download/v1.15.1/libheif-1.15.1.tar.gz')
-        ->withPrefix($libheif_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libheif_prefix)
-        ->withConfigure(
-            <<<EOF
-        mkdir -p build
-        cd build
-        cmake .. -G"Unix Makefiles" \
-        -DCMAKE_INSTALL_PREFIX={$libheif_prefix} \
-        -DCMAKE_BUILD_TYPE=Release  \
-        -DBUILD_SHARED_LIBS=OFF  \
-        -DBUILD_STATIC_LIBS=ON \
-        -DWITH_EXAMPLES=OFF
-EOF
-        )
-        ->withPkgName('libheif');
 
-    $p->addLibrary($lib);
 }
 
 
@@ -524,7 +481,7 @@ EOF
 EOF
             )
             ->disableDefaultPkgConfig()
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -554,7 +511,7 @@ function install_wolfssl($p)
 EOF
             )
             ->withPkgName('wolfssl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -582,7 +539,7 @@ function install_libressl($p)
 EOF
             )
             ->withPkgName('libressl')
-        //->withSkipBuildInstall()
+    //->withSkipBuildInstall()
     );
 }
 
@@ -974,10 +931,10 @@ function install_fastdfs($p)
             ->withLdflags('-L/usr/fastdfs/lib/')
             ->withBinPath('/usr/fastdfs/bin/')
             ->withSkipBuildInstall()
-        //->withSkipInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->withSkipInstall()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -998,9 +955,9 @@ function install_libserverframe($p)
             )
             ->withPkgName('')
             ->withSkipBuildInstall()
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 
@@ -1024,9 +981,9 @@ function install_libfastcommon($p)
             ->withPkgName('')
             ->withPkgConfig('/usr/libfastcommon/usr/lib/pkgconfig')
             ->withLdflags('-L/usr/libfastcommon/usr/lib -L/usr/libfastcommon/usr/lib64')
-        //->disablePkgName()
-        //->disableDefaultPkgConfig()
-        //->disableDefaultLdflags()
+    //->disablePkgName()
+    //->disableDefaultPkgConfig()
+    //->disableDefaultLdflags()
     );
 }
 

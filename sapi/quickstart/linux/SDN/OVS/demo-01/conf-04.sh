@@ -39,3 +39,6 @@ ip netns exec vm1 ip addr show
 ip netns exec vm1 ip route show
 ip netns exec vm1 ip neighbor
 ip netns exec vm1 ip n
+
+
+ip netns exec vm1 ip route replace  default via 10.1.20.2

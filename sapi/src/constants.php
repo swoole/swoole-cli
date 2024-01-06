@@ -60,7 +60,6 @@ define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 define("PRIVOXY_PREFIX", $p->getGlobalPrefix() . '/privoxy');
 
 
-//  test
 define("LIBDE265_PREFIX", $p->getGlobalPrefix() . '/libde265');
 define("LIBX264_PREFIX", $p->getGlobalPrefix() . '/libx264');
 define("NUMA_PREFIX", $p->getGlobalPrefix() . '/numa');
@@ -324,5 +323,6 @@ define("DAHDI_TOOLS_PREFIX", $p->getGlobalPrefix() . '/dahdi_tools');
 define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
 define("PJPROJECT_PREFIX", $p->getGlobalPrefix() . '/pjproject');
 define("QEMU_PREFIX", $p->getGlobalPrefix() . '/qemu');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
