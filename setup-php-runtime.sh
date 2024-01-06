@@ -95,17 +95,17 @@ china)
 
 esac
 
-test -f composer.phar || wget -O composer.phar ${COMPOSER_DOWNLOAD_URL}
+test -f composer.phar || curl -LSo composer.phar ${COMPOSER_DOWNLOAD_URL}
 chmod a+x composer.phar
 
-test -f cacert.pem || wget -O cacert.pem ${CACERT_DOWNLOAD_URL}
+test -f cacert.pem || curl -LSo cacert.pem ${CACERT_DOWNLOAD_URL}
 
 SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-${OS}-${ARCH}"
 
 if [ $OS = 'windows' ]; then
   {
     SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-cygwin-${ARCH}"
-    test -f ${SWOOLE_CLI_RUNTIME}.zip || wget -O ${SWOOLE_CLI_RUNTIME}.zip ${SWOOLE_CLI_DOWNLOAD_URL}
+    test -f ${SWOOLE_CLI_RUNTIME}.zip || curl -LSo ${SWOOLE_CLI_RUNTIME}.zip ${SWOOLE_CLI_DOWNLOAD_URL}
     test -d ${SWOOLE_CLI_RUNTIME} && rm -rf ${SWOOLE_CLI_RUNTIME}
     unzip "${SWOOLE_CLI_RUNTIME}.zip"
     test -d ${__PROJECT__}/${SWOOLE_CLI_RUNTIME} && rm -rf ${__PROJECT__}/${SWOOLE_CLI_RUNTIME}
@@ -116,7 +116,7 @@ if [ $OS = 'windows' ]; then
     exit 0
   }
 else
-  test -f ${SWOOLE_CLI_RUNTIME}.tar.xz || wget -O ${SWOOLE_CLI_RUNTIME}.tar.xz ${SWOOLE_CLI_DOWNLOAD_URL}
+  test -f ${SWOOLE_CLI_RUNTIME}.tar.xz || curl -LSo ${SWOOLE_CLI_RUNTIME}.tar.xz ${SWOOLE_CLI_DOWNLOAD_URL}
   test -f ${SWOOLE_CLI_RUNTIME}.tar || xz -d -k ${SWOOLE_CLI_RUNTIME}.tar.xz
   test -f swoole-cli || tar -xvf ${SWOOLE_CLI_RUNTIME}.tar
   chmod a+x swoole-cli
