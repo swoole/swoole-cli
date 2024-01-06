@@ -93,7 +93,7 @@ jobs:
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         # shell: C:\cygwin\bin\bash.EXE --login --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
-          ./bin/php-cli.exe  -v | awk '{print $2}'
+          ./bin/php.exe  -v | awk '{print $2}'
 
           APP_VERSION=$(./bin/php.exe  -v | head -n 1 | awk '{print $2}')
           echo $APP_VERSION
