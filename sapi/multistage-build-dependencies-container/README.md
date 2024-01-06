@@ -33,13 +33,14 @@ bash sapi/multistage-build-dependencies-container/all-dependencies-build-contain
 
 ```bash
 
-bash sapi/multistage-build-dependencies-container/all-dependencies-run-container.sh
+bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh
 
 # 新开终端进入容器
 docker exec -it swoole-cli-alpine-dev sh
 
 
-bash build-release-example.sh --mirror china
+# 执行构建测试
+sh build-release-example.sh --mirror china
 
 ```
 
