@@ -222,6 +222,9 @@ export_variables() {
 
 make_config() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
+    # 添加扩展
+    cp -rf ${__PROJECT_DIR__}/ext/*  <?= $this->phpSrcDir ?>/ext/
+
     before_configure_script
 
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
