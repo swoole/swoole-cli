@@ -16,8 +16,7 @@ ROOT=${__PROJECT__}
 
 PHP_VERSION=$(cat ${__PROJECT__}/sapi/PHP-VERSION.conf)
 SWOOLE_VERSION=v5.1.1
-echo $PHP_VERSION
-exit 0
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --swoole-version)
