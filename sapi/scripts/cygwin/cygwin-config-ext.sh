@@ -33,7 +33,6 @@ REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
-SWOOLE_VERSION=v5.1.0
 
 if [ ! -d pool/ext ]; then
   mkdir -p pool/ext
