@@ -181,74 +181,6 @@ make_all_library() {
 }
 
 
-make_tmp_ext_dir() {
-    cd <?= $this->getPhpSrcDir() . PHP_EOL ?>
-    PHP_SRC_DIR=<?= $this->getPhpSrcDir() . PHP_EOL ?>
-    EXT_DIR=$PHP_SRC_DIR/ext/
-    EXT_TMP_DIR=$PHP_SRC_DIR/ext-tmp/
-    test -d $EXT_TMP_DIR && rm -rf $EXT_TMP_DIR
-    mkdir -p $EXT_TMP_DIR
-<?php
-if ($this->buildType == 'dev') {
-    echo <<<'EOF'
-    cd $EXT_DIR
-
-    cp -rf date $EXT_TMP_DIR
-    test -d hash && cp -rf hash $EXT_TMP_DIR
-    test -d json && cp -rf json $EXT_TMP_DIR
-    cp -rf pcre $EXT_TMP_DIR
-    test -d random && cp -rf random $EXT_TMP_DIR
-    cp -rf reflection $EXT_TMP_DIR
-    cp -rf session $EXT_TMP_DIR
-    cp -rf spl $EXT_TMP_DIR
-    cp -rf standard $EXT_TMP_DIR
-    cp -rf date $EXT_TMP_DIR
-    cp -rf phar $EXT_TMP_DIR
-
-EOF;
-}
-
-foreach ($this->extensionMap as $extension) {
-    $name = $extension->name;
-    if ($extension->aliasName) {
-        $name = $extension->aliasName;
-    }
-    if (!empty($extension->peclVersion) || $extension->enableDownloadScript || !empty($extension->url)) {
-        echo <<<EOF
-    cp -rf {$this->getRootDir()}/ext/{$name} \$EXT_TMP_DIR
-EOF;
-        echo PHP_EOL;
-    } else {
-        if ($this->buildType == 'dev') {
-            echo <<<EOF
-    cp -rf \$EXT_DIR/{$name} \$EXT_TMP_DIR
-EOF;
-            echo PHP_EOL;
-        }
-    }
-}
-if ($this->buildType == 'dev') {
-    echo <<<'EOF'
-    mv $EXT_DIR/ $PHP_SRC_DIR/ext-del/
-    mv $EXT_TMP_DIR $EXT_DIR
-EOF;
-    echo PHP_EOL;
-} else {
-    echo <<<'EOF'
-    NUM=$(ls $EXT_TMP_DIR/ | wc -l )
-    if [ $NUM -gt 0 ] ; then
-        cp -rf ${EXT_TMP_DIR}/* $EXT_DIR
-    fi
-
-EOF;
-}
-    echo PHP_EOL;
-?>
-    cd <?= $this->getPhpSrcDir() ?>/
-    return 0
-}
-
-
 before_configure_script() {
     cd <?= $this->getPhpSrcDir() ?>/
 <?php foreach ($this->beforeConfigure as $name => $value) : ?>
@@ -290,7 +222,6 @@ export_variables() {
 
 make_config() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
-    make_tmp_ext_dir
     before_configure_script
 
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
