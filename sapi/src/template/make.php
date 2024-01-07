@@ -289,25 +289,24 @@ make_build() {
 make_archive() {
     set -x
     cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin
+    cp -f ${__PROJECT_DIR__}/bin/LICENSE .
+
     PHP_VERSION=$(./php -r "echo PHP_VERSION;")
-    PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    PHP_CLI_FILE_DEBUG=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
+    tar -cJvf ${PHP_CLI_FILE_DEBUG} php LICENSE
+
 
     mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
     cp -f php           dist/
-    cp -f ${__PROJECT_DIR__}/bin/LICENSE       dist/
-
-    if test $CLI_BUILD_TYPE = 'release' ; then
-        strip dist/php
-    fi
+    cp -f LICENSE       dist/
 
     cd <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
-
+    strip php
+    PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     tar -cJvf ${PHP_CLI_FILE} php LICENSE
-    mv ${PHP_CLI_FILE} ${__PROJECT_DIR__}/
 
-    if [[ -d <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist &&  $CLI_BUILD_TYPE = 'release' ]] ; then
-        rm -rf <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
-    fi
+    mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist/${PHP_CLI_FILE}  ${__PROJECT_DIR__}/
+    mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/${PHP_CLI_FILE_DEBUG} ${__PROJECT_DIR__}/
 
     cd ${__PROJECT_DIR__}/
 }
