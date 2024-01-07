@@ -227,24 +227,25 @@ make_archive() {
     set -x
     cd ${__PROJECT_DIR__}/bin/
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+
+    SWOOLE_CLI_FILE_DEBUG=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
+    tar -cJvf ${SWOOLE_CLI_FILE_DEBUG} swoole-cli LICENSE pack-sfx.php
+
 
     mkdir -p ${__PROJECT_DIR__}/bin/dist
     cp -f swoole-cli    dist/
     cp -f LICENSE       dist/
     cp -f pack-sfx.php  dist/
 
-    if test $CLI_BUILD_TYPE = 'release' ; then
-        strip dist/swoole-cli
-    fi
-
     cd ${__PROJECT_DIR__}/bin/dist/
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    strip swoole-cli
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
-    mv ${SWOOLE_CLI_FILE} ${__PROJECT_DIR__}/
 
-    if [[ -d ${__PROJECT_DIR__}/bin/dist/ &&  $CLI_BUILD_TYPE = 'release' ]] ; then
-        rm -rf ${__PROJECT_DIR__}/bin/dist/
-    fi
+
+    cd ${__PROJECT_DIR__}/
+    mv bin/dist/${SWOOLE_CLI_FILE}  ${__PROJECT_DIR__}/
+    mv bin/${SWOOLE_CLI_FILE_DEBUG} ${__PROJECT_DIR__}/
 
     cd ${__PROJECT_DIR__}/
 }
