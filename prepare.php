@@ -4,7 +4,8 @@ require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
 
-const BUILD_PHP_VERSION = '8.1.12';
+$php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
+define('BUILD_PHP_VERSION', $php_version_tag);
 
 
 $homeDir = getenv('HOME');
@@ -23,6 +24,12 @@ $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
 if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
+}
+
+$buildType = $p->getBuildType();
+if ($p->getInputOption('with-build-type')) {
+    $buildType = $p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
 }
 
 if ($p->getInputOption('with-global-prefix')) {
