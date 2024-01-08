@@ -85,7 +85,6 @@ if test -n "$MIRROR" ; then
 }
 fi
 
-
 test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 
 
