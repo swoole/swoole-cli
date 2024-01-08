@@ -97,6 +97,7 @@ if ($p->getInputOption('with-php-src')) {
 //设置PHP 安装目录
 define("BUILD_PHP_INSTALL_PREFIX", $p->getRootDir() . '/bin/php-' . BUILD_PHP_VERSION);
 
+
 if ($p->getInputOption('with-override-default-enabled-ext')) {
     $p->setExtEnabled([]);
 }
