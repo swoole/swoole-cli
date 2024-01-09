@@ -152,3 +152,7 @@ ovn-sbctl set connection . inactivity_probe=180000
 # 使用UDP协议交互数据
 nc -v -u -l 0.0.0.0 6081
 nc -u -v 8.137.54.132 6081
+
+
+# SD-WAN 系列（5）SD-WAN = SDN + Internet线路 +专线 + WAN加速 + IPsec + DPI + ？
+    https://blog.csdn.net/zhengmx100/article/details/103565072
