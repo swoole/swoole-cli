@@ -204,4 +204,3 @@ jobs:
           files: |
             php-cli-v${{ env.APP_VERSION }}-linux-arm64.tar.xz
             php-cli-v${{ env.APP_VERSION }}-linux-arm64-debug.tar.xz
-
