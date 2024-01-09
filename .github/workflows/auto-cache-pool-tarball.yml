@@ -71,16 +71,16 @@ jobs:
           fi
 
           ls -A pool/lib/
-
+          WORK_DIR=${{ github.workspace }}
           uname -m
-          export PATH=/work/bin/runtime:$PATH
-          alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
+          export PATH=${WORK_DIR}/bin/runtime:$PATH
+          alias php="php -d curl.cainfo=${WORK_DIR}/bin/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/bin/runtime/cacert.pem"
 
           composer update   --optimize-autoloader
 
           php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
           cd ${{ github.workspace }}/pool/
-          zip -6 -r ${{ github.workspace }}/all-archive.zip ext lib
+          zip -6 -r ${WORK_DIR}/all-archive.zip ext lib
           cd ${{ github.workspace }}
 
       - name: Show Build Result
