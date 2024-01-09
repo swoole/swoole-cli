@@ -27,7 +27,7 @@ china)
   DOMAIN='https://swoole-cli.jingjingxyk.com/'
   ;;
 esac
-DOMAIN='https://swoole-cli.jingjingxyk.com/'
+
 
 mkdir -p  pool/lib
 mkdir -p  pool/ext
@@ -39,7 +39,7 @@ cd ${__PROJECT__}/var/download-box/
 
 URL="${DOMAIN}/all-archive.zip"
 
-test -f  all-archive.zip || wget -O all-archive.zip ${URL}
+test -f  all-archive.zip || curl -LSo all-archive.zip ${URL}
 
 unzip -n all-archive.zip
 
