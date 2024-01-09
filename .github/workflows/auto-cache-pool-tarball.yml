@@ -1,0 +1,103 @@
+name: auto-cache-pool-tarball
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 */6 * *'
+
+jobs:
+  auto-cache-pool:
+    if: 1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prepare Source Code
+        run: |
+          echo $PATH
+          env
+          docker info
+          id -u
+          id -g
+          who
+          cat /etc/os-release
+          hostnamectl
+          uname -s
+          uname -m
+          uname -r
+
+          cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+          cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+          cat /proc/cpuinfo | grep "cpu cores" | uniq
+          cat /proc/cpuinfo| grep "processor"| wc -l
+          lscpu
+
+          export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
+          export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
+          echo $IPV4
+          echo $IPV6
+          echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
+          echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+      - name: Cache PHP Runtime
+        uses: actions/cache@v3
+        id: php-runtime-cache
+        with:
+          path: ${{ github.workspace }}/bin/runtime
+          key: ${{ runner.os }}-x86_64-php-runtime
+
+      - name: Cache PHP Vendor
+        uses: actions/cache@v3
+        id: php-vendor-cache
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-x86_64-php-vendor
+
+      - name: Cache Dependency Source Code Tarball
+        uses: actions/cache@v3
+        id: pool-cache
+        with:
+          path: ${{ github.workspace }}/pool/
+          key: source-code-tarball-pool
+
+      - name: Prepare Runtime and Libraries and Extensions
+        run: |
+          set -x
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
+          if [ ! -f bin/runtime/php ] ; then
+              bash  setup-php-runtime.sh
+          fi
+
+          ls -A pool/lib/
+          WORK_DIR=${{ github.workspace }}
+          uname -m
+          export PATH=${WORK_DIR}/bin/runtime:$PATH
+          alias php="php -d curl.cainfo=${WORK_DIR}/bin/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/bin/runtime/cacert.pem"
+
+          composer update   --optimize-autoloader
+
+          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
+          cd ${{ github.workspace }}/pool/
+          zip -6 -r ${WORK_DIR}/all-archive.zip ext lib
+          cd ${{ github.workspace }}
+
+      - name: Show Build Result
+        run: |
+          ls -A pool/lib/
+          ls -A pool/ext/
+
+      - name: production artifacts
+        if: 1
+        uses: actions/upload-artifact@v3
+        with:
+          name: cached-all-archive
+          retention-days: 90
+          path: all-archive.zip
+
+      - name: gh release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: all-archive.zip

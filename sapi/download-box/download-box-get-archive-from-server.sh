@@ -11,19 +11,35 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-mkdir -p pool/lib
-mkdir -p pool/ext
+MIRROR=''
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    MIRROR="$2"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
 
-test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download-box/
+DOMAIN='https://github.com/jingjingxyk/swoole-cli/releases/download/all-archive-2024-01-09/'
+case "$MIRROR" in
+china)
+  DOMAIN='https://swoole-cli.jingjingxyk.com/'
+  ;;
+esac
+
+
+mkdir -p  pool/lib
+mkdir -p  pool/ext
+
+mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 
 
-
-DOMAIN='https://swoole-cli.jingjingxyk.com/'
 URL="${DOMAIN}/all-archive.zip"
 
-test -f all-archive.zip || wget -O all-archive.zip ${URL}
+test -f  all-archive.zip || curl -LSo all-archive.zip ${URL}
 
 # https://www.runoob.com/linux/linux-comm-unzip.html
 # -o 不必先询问用户，unzip执行后覆盖原有文件。
