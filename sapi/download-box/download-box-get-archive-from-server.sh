@@ -27,7 +27,7 @@ china)
   DOMAIN='https://swoole-cli.jingjingxyk.com/'
   ;;
 esac
-
+DOMAIN='https://swoole-cli.jingjingxyk.com/'
 
 mkdir -p  pool/lib
 mkdir -p  pool/ext
