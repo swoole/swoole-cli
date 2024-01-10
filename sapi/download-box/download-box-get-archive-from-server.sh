@@ -21,13 +21,12 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-DOMAIN='https://github.com/jingjingxyk/swoole-cli/releases/download/all-archive-2024-01-09/'
+DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.0.2/'
 case "$MIRROR" in
 china)
   DOMAIN='https://swoole-cli.jingjingxyk.com/'
   ;;
 esac
-
 
 mkdir -p  pool/lib
 mkdir -p  pool/ext
