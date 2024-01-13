@@ -15,8 +15,8 @@ jobs:
       matrix:
         php-version:
           - "8.2.13"
-    #          - "8.1.27"
-    #          - "8.3.1"
+          - "8.1.27"
+        #  - "8.3.1"
     steps:
       - uses: actions/checkout@v3
       - name: Prepare build environment
@@ -78,6 +78,7 @@ jobs:
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
+        id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
