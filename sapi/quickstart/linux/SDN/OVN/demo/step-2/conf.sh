@@ -36,7 +36,7 @@ ovn-nbctl  lrp-add lr02 lr02-join  ee:ee:03:00:00:02 10.3.20.1/24 peer=lr01-join
 
 
 
-ovn-nbctl set logical_router lr02 options:chassis="9029ec6b-b20d-4df7-aa69-1e7b2cc5588b"
+ovn-nbctl set logical_router lr02 options:chassis="be91d5b5-d942-4d17-b489-5bff9315700f"
 
 
 # 路由器互联 例子
