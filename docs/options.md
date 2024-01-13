@@ -153,8 +153,12 @@ php ./prepare.php --with-parallel-jobs=8
 
 with-build-type
 ----
-构建类型，默认是 release
-可选项： release debug dev
+构建过程 指定构建类型<br/>
+
+debug 调试版本 （构建过程显示，正在执行的构建命令）<br/>
+dev 开发版本 （便于调试单个扩展）<br/>
+release 默认版本<br/>
+
 
 with-http-proxy
 ----
@@ -164,14 +168,6 @@ with-http-proxy
 ```shell
 php ./prepare.php --with-http-proxy=http://192.168.3.26:8015
 ```
-
-with-build-type
-----
-构建过程 指定构建类型<br/>
-
-debug 调试版本 （构建过程显示，正在执行的构建命令）<br/>
-dev 开发版本 （便于调试单个扩展）<br/>
-release 默认版本<br/>
 
 ```shell
 php ./prepare.php  --with-build-type=dev
