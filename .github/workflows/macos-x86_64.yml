@@ -65,6 +65,7 @@ jobs:
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
+        id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
@@ -147,6 +148,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            swoole-cli-v${{ env.APP_VERSION }}-macos-x64.tar.xz
-            swoole-cli-v${{ env.APP_VERSION }}-macos-x64-debug.tar.xz
+          files: swoole-cli-v${{ env.APP_VERSION }}-macos-x64.tar.xz
