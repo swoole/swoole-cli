@@ -24,11 +24,11 @@ ip link set vm1 netns vm1
 
 ip netns exec vm1 ip link set vm1 address 00:02:00:00:00:07
 ip netns exec vm1 ip addr add 10.1.20.7/24 dev vm1
-ip netns exec vm1 ip route add default via 10.1.20.1 dev vm1
 # ip netns exec vm1 ip link set dev vm1  mtu 1410
 ip netns exec vm1 ip link set vm1 up
 ip netns exec vm1 ip link set lo up
 ip netns exec vm1 ip a
+ip netns exec vm1 ip route add default via 10.1.20.1 dev vm1
 
 ip netns exec vm1 ip addr show
 ip netns exec vm1 ip route show

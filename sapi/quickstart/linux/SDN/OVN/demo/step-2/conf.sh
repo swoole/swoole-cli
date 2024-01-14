@@ -36,7 +36,7 @@ ovn-nbctl  lrp-add lr02 lr02-join  ee:ee:03:00:00:02 10.3.20.1/24 peer=lr01-join
 
 
 
-ovn-nbctl set logical_router lr02 options:chassis="be91d5b5-d942-4d17-b489-5bff9315700f"
+ovn-nbctl set logical_router lr02 options:chassis="0210009f-24f4-4643-a528-4e6e9f1d28ad"
 
 
 # 路由器互联 例子
@@ -45,3 +45,18 @@ ovn-nbctl set logical_router lr02 options:chassis="be91d5b5-d942-4d17-b489-5bff9
 
 # 移除路由绑定
 # ovn-nbctl set logical_router lr02 options:chassis=" "
+
+
+exit 0
+
+ovn-nbctl list logical-router-port lr02-join
+
+ovn-nbctl set logical-router-port lr02-join peer=[]
+
+ovn-nbctl list logical-router-port lr02-join
+
+
+ovn-nbctl set logical-router-port lr02-join peer=lr01-join
+ovn-nbctl set logical-router-port lr01-join peer=lr02-join
+
+# ovn-appctl -t ovn-controller recompute
