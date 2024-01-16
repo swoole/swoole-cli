@@ -746,6 +746,7 @@ PHP_INI_BEGIN()
 	PHP_INI_ENTRY("disable_functions",			"",			PHP_INI_SYSTEM,		NULL)
 	PHP_INI_ENTRY("disable_classes",			"",			PHP_INI_SYSTEM,		NULL)
 	PHP_INI_ENTRY("max_file_uploads",			"20",			PHP_INI_SYSTEM|PHP_INI_PERDIR,		NULL)
+	PHP_INI_ENTRY("max_multipart_body_parts",	"-1",			PHP_INI_SYSTEM|PHP_INI_PERDIR,		NULL)
 
 	STD_PHP_INI_BOOLEAN("allow_url_fopen",		"1",		PHP_INI_SYSTEM,		OnUpdateBool,		allow_url_fopen,		php_core_globals,		core_globals)
 	STD_PHP_INI_BOOLEAN("allow_url_include",	"0",		PHP_INI_SYSTEM,		OnUpdateBool,		allow_url_include,		php_core_globals,		core_globals)
@@ -1584,15 +1585,24 @@ static void php_free_request_globals(void)
 static ZEND_COLD void php_message_handler_for_zend(zend_long message, const void *data)
 {
 	switch (message) {
-		case ZMSG_FAILED_INCLUDE_FOPEN:
-			php_error_docref("function.include", E_WARNING, "Failed opening '%s' for inclusion (include_path='%s')", php_strip_url_passwd((char *) data), STR_PRINT(PG(include_path)));
+		case ZMSG_FAILED_INCLUDE_FOPEN: {
+			char *tmp = estrdup((char *) data);
+			php_error_docref("function.include", E_WARNING, "Failed opening '%s' for inclusion (include_path='%s')", php_strip_url_passwd(tmp), STR_PRINT(PG(include_path)));
+			efree(tmp);
 			break;
-		case ZMSG_FAILED_REQUIRE_FOPEN:
-			zend_throw_error(NULL, "Failed opening required '%s' (include_path='%s')", php_strip_url_passwd((char *) data), STR_PRINT(PG(include_path)));
+		}
+		case ZMSG_FAILED_REQUIRE_FOPEN: {
+			char *tmp = estrdup((char *) data);
+			zend_throw_error(NULL, "Failed opening required '%s' (include_path='%s')", php_strip_url_passwd(tmp), STR_PRINT(PG(include_path)));
+			efree(tmp);
 			break;
-		case ZMSG_FAILED_HIGHLIGHT_FOPEN:
-			php_error_docref(NULL, E_WARNING, "Failed opening '%s' for highlighting", php_strip_url_passwd((char *) data));
+		}
+		case ZMSG_FAILED_HIGHLIGHT_FOPEN: {
+			char *tmp = estrdup((char *) data);
+			php_error_docref(NULL, E_WARNING, "Failed opening '%s' for highlighting", php_strip_url_passwd(tmp));
+			efree(tmp);
 			break;
+		}
 		case ZMSG_MEMORY_LEAK_DETECTED:
 		case ZMSG_MEMORY_LEAK_REPEATED:
 #if ZEND_DEBUG
@@ -1935,7 +1945,7 @@ static void core_globals_dtor(php_core_globals *core_globals)
 		free(core_globals->php_binary);
 	}
 
-	php_shutdown_ticks();
+	php_shutdown_ticks(core_globals);
 }
 /* }}} */
 

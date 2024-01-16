@@ -376,6 +376,16 @@ int mbfl_encoding_detector_feed(mbfl_encoding_detector *identd, mbfl_string *str
 	unsigned char *p = string->val;
 	int bad = 0;
 
+	if (identd->strict) {
+		for (int i = 0; i < num; i++) {
+			mbfl_convert_filter *filter = identd->filter_list[i];
+			mbfl_encoding_detector_data *data = &identd->filter_data[i];
+			if (filter->from->check != NULL && !(filter->from->check)(p, n)) {
+				data->num_illegalchars++;
+			}
+		}
+	}
+
 	while (n--) {
 		for (int i = 0; i < num; i++) {
 			mbfl_convert_filter *filter = identd->filter_list[i];
@@ -1276,6 +1286,7 @@ mbfl_strcut(
 			bk = _bk;
 		}
 
+		decoder->illegal_mode = MBFL_OUTPUTFILTER_ILLEGAL_MODE_NONE;
 		(*encoder->filter_flush)(encoder);
 
 		if (bk.decoder.filter_dtor)

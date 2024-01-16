@@ -72,8 +72,10 @@
 /* constants used in ext/phar/util.c, keep in sync */
 #define OPENSSL_ALGO_SHA1 	1
 #define OPENSSL_ALGO_MD5	2
+#ifndef OPENSSL_NO_MD4
 #define OPENSSL_ALGO_MD4	3
-#ifdef HAVE_OPENSSL_MD2_H
+#endif
+#ifndef OPENSSL_NO_MD2
 #define OPENSSL_ALGO_MD2	4
 #endif
 #if PHP_OPENSSL_API_VERSION < 0x10100
@@ -83,7 +85,9 @@
 #define OPENSSL_ALGO_SHA256 7
 #define OPENSSL_ALGO_SHA384 8
 #define OPENSSL_ALGO_SHA512 9
+#ifndef OPENSSL_NO_RMD160
 #define OPENSSL_ALGO_RMD160 10
+#endif
 #define DEBUG_SMIME	0
 
 #if !defined(OPENSSL_NO_EC) && defined(EVP_PKEY_EC)
@@ -1121,10 +1125,12 @@ static EVP_MD * php_openssl_get_evp_md_from_algo(zend_long algo) { /* {{{ */
 		case OPENSSL_ALGO_MD5:
 			mdtype = (EVP_MD *) EVP_md5();
 			break;
+#ifndef OPENSSL_NO_MD4
 		case OPENSSL_ALGO_MD4:
 			mdtype = (EVP_MD *) EVP_md4();
 			break;
-#ifdef HAVE_OPENSSL_MD2_H
+#endif
+#ifndef OPENSSL_NO_MD2
 		case OPENSSL_ALGO_MD2:
 			mdtype = (EVP_MD *) EVP_md2();
 			break;
@@ -1146,9 +1152,11 @@ static EVP_MD * php_openssl_get_evp_md_from_algo(zend_long algo) { /* {{{ */
 		case OPENSSL_ALGO_SHA512:
 			mdtype = (EVP_MD *) EVP_sha512();
 			break;
+#ifndef OPENSSL_NO_RMD160
 		case OPENSSL_ALGO_RMD160:
 			mdtype = (EVP_MD *) EVP_ripemd160();
 			break;
+#endif
 		default:
 			return NULL;
 			break;
@@ -1274,8 +1282,10 @@ PHP_MINIT_FUNCTION(openssl)
 	/* digest algorithm constants */
 	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_SHA1", OPENSSL_ALGO_SHA1, CONST_CS|CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_MD5", OPENSSL_ALGO_MD5, CONST_CS|CONST_PERSISTENT);
+#ifndef OPENSSL_NO_MD4
 	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_MD4", OPENSSL_ALGO_MD4, CONST_CS|CONST_PERSISTENT);
-#ifdef HAVE_OPENSSL_MD2_H
+#endif
+#ifndef OPENSSL_NO_MD2
 	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_MD2", OPENSSL_ALGO_MD2, CONST_CS|CONST_PERSISTENT);
 #endif
 #if PHP_OPENSSL_API_VERSION < 0x10100
@@ -1285,7 +1295,9 @@ PHP_MINIT_FUNCTION(openssl)
 	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_SHA256", OPENSSL_ALGO_SHA256, CONST_CS|CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_SHA384", OPENSSL_ALGO_SHA384, CONST_CS|CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_SHA512", OPENSSL_ALGO_SHA512, CONST_CS|CONST_PERSISTENT);
+#ifndef OPENSSL_NO_RMD160
 	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_RMD160", OPENSSL_ALGO_RMD160, CONST_CS|CONST_PERSISTENT);
+#endif
 
 	/* flags for S/MIME */
 	REGISTER_LONG_CONSTANT("PKCS7_DETACHED", PKCS7_DETACHED, CONST_CS|CONST_PERSISTENT);
@@ -1335,7 +1347,7 @@ PHP_MINIT_FUNCTION(openssl)
 
 	/* Values for key types */
 	REGISTER_LONG_CONSTANT("OPENSSL_KEYTYPE_RSA", OPENSSL_KEYTYPE_RSA, CONST_CS|CONST_PERSISTENT);
-#ifndef NO_DSA
+#ifndef OPENSSL_NO_DSA
 	REGISTER_LONG_CONSTANT("OPENSSL_KEYTYPE_DSA", OPENSSL_KEYTYPE_DSA, CONST_CS|CONST_PERSISTENT);
 #endif
 	REGISTER_LONG_CONSTANT("OPENSSL_KEYTYPE_DH", OPENSSL_KEYTYPE_DH, CONST_CS|CONST_PERSISTENT);
@@ -2704,11 +2716,13 @@ PHP_FUNCTION(openssl_pkcs12_export_to_file)
 	if (p12 != NULL) {
 		bio_out = BIO_new_file(file_path, PHP_OPENSSL_BIO_MODE_W(PKCS7_BINARY));
 		if (bio_out != NULL) {
-
-			i2d_PKCS12_bio(bio_out, p12);
+			if (i2d_PKCS12_bio(bio_out, p12) == 0) {
+				php_openssl_store_errors();
+				php_error_docref(NULL, E_WARNING, "Error writing to file %s", file_path);
+			} else {
+				RETVAL_TRUE;
+			}
 			BIO_free(bio_out);
-
-			RETVAL_TRUE;
 		} else {
 			php_openssl_store_errors();
 			php_error_docref(NULL, E_WARNING, "Error opening file %s", file_path);
@@ -3747,7 +3761,7 @@ static int php_openssl_get_evp_pkey_type(int key_type) {
 	switch (key_type) {
 	case OPENSSL_KEYTYPE_RSA:
 		return EVP_PKEY_RSA;
-#if !defined(NO_DSA)
+#if !defined(OPENSSL_NO_DSA)
 	case OPENSSL_KEYTYPE_DSA:
 		return EVP_PKEY_DSA;
 #endif
@@ -3799,7 +3813,7 @@ static EVP_PKEY * php_openssl_generate_private_key(struct php_x509_request * req
 		}
 
 		switch (type) {
-#if !defined(NO_DSA)
+#if !defined(OPENSSL_NO_DSA)
 		case EVP_PKEY_DSA:
 			if (EVP_PKEY_CTX_set_dsa_paramgen_bits(ctx, req->priv_key_bits) <= 0) {
 				php_openssl_store_errors();
@@ -4818,6 +4832,7 @@ static void php_openssl_copy_bn_param(
 	}
 }
 
+#ifdef HAVE_EVP_PKEY_EC
 static zend_string *php_openssl_get_utf8_param(
 		EVP_PKEY *pkey, const char *param, const char *name) {
 	char buf[64];
@@ -4830,6 +4845,7 @@ static zend_string *php_openssl_get_utf8_param(
 	}
 	return NULL;
 }
+#endif
 #endif
 
 /* {{{ returns an array with the key details (bits, pkey, type)*/
@@ -4895,6 +4911,7 @@ PHP_FUNCTION(openssl_pkey_get_details)
 			php_openssl_copy_bn_param(&ary, pkey, OSSL_PKEY_PARAM_PRIV_KEY, "priv_key");
 			php_openssl_copy_bn_param(&ary, pkey, OSSL_PKEY_PARAM_PUB_KEY, "pub_key");
 			break;
+#ifdef HAVE_EVP_PKEY_EC
 		case EVP_PKEY_EC: {
 			ktype = OPENSSL_KEYTYPE_EC;
 			array_init(&ary);
@@ -4923,6 +4940,7 @@ PHP_FUNCTION(openssl_pkey_get_details)
 			php_openssl_copy_bn_param(&ary, pkey, OSSL_PKEY_PARAM_PRIV_KEY, "d");
 			break;
 		}
+#endif
 		EMPTY_SWITCH_DEFAULT_CASE();
 	}
 #else
@@ -5364,7 +5382,7 @@ PHP_FUNCTION(openssl_pkcs7_verify)
 					signersfilename, signersfilename_len, 3, PHP_OPENSSL_BIO_MODE_W(PKCS7_BINARY));
 			if (certout) {
 				int i;
-				signers = PKCS7_get0_signers(p7, NULL, (int)flags);
+				signers = PKCS7_get0_signers(p7, others, (int)flags);
 				if (signers != NULL) {
 
 					for (i = 0; i < sk_X509_num(signers); i++) {
@@ -5388,7 +5406,11 @@ PHP_FUNCTION(openssl_pkcs7_verify)
 			}
 
 			if (p7bout) {
-				PEM_write_bio_PKCS7(p7bout, p7);
+				if (PEM_write_bio_PKCS7(p7bout, p7) == 0) {
+					php_error_docref(NULL, E_WARNING, "Failed to write PKCS7 to file");
+					php_openssl_store_errors();
+					RETVAL_FALSE;
+				}
 			}
 		}
 	} else {
@@ -5878,10 +5900,13 @@ PHP_FUNCTION(openssl_cms_verify)
 		goto clean_exit;
 	}
 	if (sigfile && (flags & CMS_DETACHED)) {
-		sigbio = php_openssl_bio_new_file(sigfile, sigfile_len, 1, PHP_OPENSSL_BIO_MODE_R(flags));
 		if (encoding == ENCODING_SMIME)  {
 			php_error_docref(NULL, E_WARNING,
 					 "Detached signatures not possible with S/MIME encoding");
+			goto clean_exit;
+		}
+		sigbio = php_openssl_bio_new_file(sigfile, sigfile_len, 1, PHP_OPENSSL_BIO_MODE_R(flags));
+		if (sigbio == NULL) {
 			goto clean_exit;
 		}
 	} else  {
@@ -5973,7 +5998,11 @@ PHP_FUNCTION(openssl_cms_verify)
 			}
 
 			if (p7bout) {
-				PEM_write_bio_CMS(p7bout, cms);
+				if (PEM_write_bio_CMS(p7bout, cms) == 0) {
+					php_error_docref(NULL, E_WARNING, "Failed to write CMS to file");
+					php_openssl_store_errors();
+					RETVAL_FALSE;
+				}
 			}
 		}
 	} else {

@@ -745,7 +745,7 @@ static PHP_INI_MH(OnUpdate_mbstring_http_input)
 		php_error_docref("ref.mbstring", E_DEPRECATED, "Use of mbstring.http_input is deprecated");
 	}
 
-	if (!new_value || !ZSTR_VAL(new_value)) {
+	if (!new_value || !ZSTR_LEN(new_value)) {
 		const char *encoding = php_get_input_encoding();
 		MBSTRG(http_input_set) = 0;
 		_php_mb_ini_mbstring_http_input_set(encoding, strlen(encoding));
@@ -2446,6 +2446,9 @@ MBSTRING_API HashTable *php_mb_convert_encoding_recursive(HashTable *input, cons
 			ckey = php_mb_convert_encoding(
 				ZSTR_VAL(key), ZSTR_LEN(key),
 				to_encoding, from_encodings, num_from_encodings, &ckey_len);
+			if (!ckey) {
+				continue;
+			}
 			key = zend_string_init(ckey, ckey_len, 0);
 			efree(ckey);
 		}
@@ -2457,6 +2460,12 @@ try_again:
 				cval = php_mb_convert_encoding(
 					Z_STRVAL_P(entry), Z_STRLEN_P(entry),
 					to_encoding, from_encodings, num_from_encodings, &cval_len);
+				if (!cval) {
+					if (key) {
+						zend_string_release(key);
+					}
+					continue;
+				}
 				ZVAL_STRINGL(&entry_tmp, cval, cval_len);
 				efree(cval);
 				break;
@@ -2838,6 +2847,9 @@ PHP_FUNCTION(mb_encode_mimeheader)
 	if (charset_name != NULL) {
 		charset = php_mb_get_encoding(charset_name, 2);
 		if (!charset) {
+			RETURN_THROWS();
+		} else if (charset->mime_name == NULL || charset->mime_name[0] == '\0') {
+			zend_argument_value_error(2, "\"%s\" cannot be used for MIME header encoding", ZSTR_VAL(charset_name));
 			RETURN_THROWS();
 		}
 	} else {
@@ -3904,6 +3916,11 @@ static int mbfl_filt_check_errors(int c, void* data)
 MBSTRING_API int php_mb_check_encoding(const char *input, size_t length, const mbfl_encoding *encoding)
 {
 	mbfl_convert_filter *filter = mbfl_convert_filter_new(encoding, &mbfl_encoding_wchar, mbfl_filt_check_errors, NULL, &filter);
+
+	if (encoding->check != NULL) {
+		mbfl_convert_filter_delete(filter);
+		return encoding->check((unsigned char*)input, length);
+	}
 
 	while (length--) {
 		unsigned char c = *input++;

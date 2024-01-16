@@ -650,7 +650,11 @@ static zend_property_info* zend_get_known_property_info(const zend_op_array *op_
 		return info;
 	} else if (on_this) {
 		if (ce == info->ce) {
-			return info;
+			if (ce == op_array->scope) {
+				return info;
+			} else {
+				return NULL;
+			}
 		} else if ((info->flags & ZEND_ACC_PROTECTED)
 				&& instanceof_function_slow(ce, info->ce)) {
 			return info;
@@ -4287,7 +4291,7 @@ static int ZEND_FASTCALL zend_runtime_jit(void)
 			/* perform real JIT for this function */
 			zend_real_jit_func(op_array, NULL, NULL);
 		} zend_catch {
-			do_bailout = 0;
+			do_bailout = true;
 		} zend_end_try();
 
 		zend_jit_protect();
@@ -4759,6 +4763,13 @@ static void zend_jit_globals_ctor(zend_jit_globals *jit_globals)
 	zend_jit_trace_init_caches();
 }
 
+#ifdef ZTS
+static void zend_jit_globals_dtor(zend_jit_globals *jit_globals)
+{
+	zend_jit_trace_free_caches(jit_globals);
+}
+#endif
+
 static int zend_jit_parse_config_num(zend_long jit)
 {
 	if (jit == 0) {
@@ -4871,7 +4882,7 @@ ZEND_EXT_API int zend_jit_debug_config(zend_long old_val, zend_long new_val, int
 ZEND_EXT_API void zend_jit_init(void)
 {
 #ifdef ZTS
-	jit_globals_id = ts_allocate_id(&jit_globals_id, sizeof(zend_jit_globals), (ts_allocate_ctor) zend_jit_globals_ctor, NULL);
+	jit_globals_id = ts_allocate_id(&jit_globals_id, sizeof(zend_jit_globals), (ts_allocate_ctor) zend_jit_globals_ctor, (ts_allocate_dtor) zend_jit_globals_dtor);
 #else
 	zend_jit_globals_ctor(&jit_globals);
 #endif
@@ -5071,9 +5082,11 @@ ZEND_EXT_API void zend_jit_shutdown(void)
 		zend_jit_perf_jitdump_close();
 	}
 #endif
-	if (JIT_G(exit_counters)) {
-		free(JIT_G(exit_counters));
-	}
+#ifdef ZTS
+	ts_free_id(jit_globals_id);
+#else
+	zend_jit_trace_free_caches(&jit_globals);
+#endif
 }
 
 static void zend_jit_reset_counters(void)
@@ -5100,7 +5113,7 @@ ZEND_EXT_API void zend_jit_activate(void)
 
 ZEND_EXT_API void zend_jit_deactivate(void)
 {
-	if (zend_jit_profile_counter) {
+	if (zend_jit_profile_counter && !CG(unclean_shutdown)) {
 		zend_class_entry *ce;
 
 		zend_shared_alloc_lock();
@@ -5118,9 +5131,9 @@ ZEND_EXT_API void zend_jit_deactivate(void)
 		zend_jit_protect();
 		SHM_PROTECT();
 		zend_shared_alloc_unlock();
-
-		zend_jit_profile_counter = 0;
 	}
+
+	zend_jit_profile_counter = 0;
 }
 
 static void zend_jit_restart_preloaded_op_array(zend_op_array *op_array)
@@ -5153,6 +5166,11 @@ static void zend_jit_restart_preloaded_op_array(zend_op_array *op_array)
 			opline->handler = (const void*)zend_jit_profile_jit_handler;
 		}
 #endif
+	}
+	if (op_array->num_dynamic_func_defs) {
+		for (uint32_t i = 0; i < op_array->num_dynamic_func_defs; i++) {
+			zend_jit_restart_preloaded_op_array(op_array->dynamic_func_defs[i]);
+		}
 	}
 }
 
@@ -5203,6 +5221,13 @@ ZEND_EXT_API void zend_jit_restart(void)
 		}
 
 		zend_jit_protect();
+
+#ifdef HAVE_DISASM
+		if (JIT_G(debug) & (ZEND_JIT_DEBUG_ASM|ZEND_JIT_DEBUG_ASM_STUBS)) {
+			zend_jit_disasm_shutdown();
+			zend_jit_disasm_init();
+		}
+#endif
 	}
 }
 

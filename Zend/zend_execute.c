@@ -1207,6 +1207,7 @@ static void zend_verify_internal_read_property_type(zend_object *obj, zend_strin
 	zend_property_info *prop_info =
 		zend_get_property_info(obj->ce, name, /* silent */ true);
 	if (prop_info && prop_info != ZEND_WRONG_PROPERTY_INFO && ZEND_TYPE_IS_SET(prop_info->type)) {
+		ZVAL_OPT_DEREF(val);
 		zend_verify_property_type(prop_info, val, /* strict */ true);
 	}
 }
@@ -2230,7 +2231,7 @@ static zend_never_inline ZEND_COLD void ZEND_FASTCALL zend_use_scalar_as_array(v
 	zend_throw_error(NULL, "Cannot use a scalar value as an array");
 }
 
-static zend_never_inline ZEND_COLD void ZEND_FASTCALL zend_cannot_add_element(void)
+ZEND_API zend_never_inline ZEND_COLD void ZEND_FASTCALL zend_cannot_add_element(void)
 {
 	zend_throw_error(NULL, "Cannot add element to the array as the next element is already occupied");
 }
@@ -3086,7 +3087,7 @@ static zend_never_inline bool zend_handle_fetch_obj_flags(
 	return 1;
 }
 
-static zend_always_inline void zend_fetch_property_address(zval *result, zval *container, uint32_t container_op_type, zval *prop_ptr, uint32_t prop_op_type, void **cache_slot, int type, uint32_t flags, bool init_undef OPLINE_DC EXECUTE_DATA_DC)
+static zend_always_inline void zend_fetch_property_address(zval *result, zval *container, uint32_t container_op_type, zval *prop_ptr, uint32_t prop_op_type, void **cache_slot, int type, uint32_t flags OPLINE_DC EXECUTE_DATA_DC)
 {
 	zval *ptr;
 	zend_object *zobj;
@@ -3202,9 +3203,6 @@ static zend_always_inline void zend_fetch_property_address(zval *result, zval *c
 			}
 		}
 	}
-	if (init_undef && UNEXPECTED(Z_TYPE_P(ptr) == IS_UNDEF)) {
-		ZVAL_NULL(ptr);
-	}
 
 end:
 	if (prop_op_type != IS_CONST) {
@@ -3218,7 +3216,7 @@ static zend_always_inline void zend_assign_to_property_reference(zval *container
 	void **cache_addr = (prop_op_type == IS_CONST) ? CACHE_ADDR(opline->extended_value & ~ZEND_RETURNS_FUNCTION) : NULL;
 
 	zend_fetch_property_address(variable_ptr, container, container_op_type, prop_ptr, prop_op_type,
-		cache_addr, BP_VAR_W, 0, 0 OPLINE_CC EXECUTE_DATA_CC);
+		cache_addr, BP_VAR_W, 0 OPLINE_CC EXECUTE_DATA_CC);
 
 	if (EXPECTED(Z_TYPE_P(variable_ptr) == IS_INDIRECT)) {
 		variable_ptr = Z_INDIRECT_P(variable_ptr);
@@ -4113,6 +4111,136 @@ static zend_always_inline zend_generator *zend_get_running_generator(EXECUTE_DAT
 }
 /* }}} */
 
+ZEND_API void zend_unfinished_calls_gc(zend_execute_data *execute_data, zend_execute_data *call, uint32_t op_num, zend_get_gc_buffer *buf) /* {{{ */
+{
+	zend_op *opline = EX(func)->op_array.opcodes + op_num;
+	int level;
+	int do_exit;
+	uint32_t num_args;
+
+	if (UNEXPECTED(opline->opcode == ZEND_INIT_FCALL ||
+		opline->opcode == ZEND_INIT_FCALL_BY_NAME ||
+		opline->opcode == ZEND_INIT_NS_FCALL_BY_NAME ||
+		opline->opcode == ZEND_INIT_DYNAMIC_CALL ||
+		opline->opcode == ZEND_INIT_USER_CALL ||
+		opline->opcode == ZEND_INIT_METHOD_CALL ||
+		opline->opcode == ZEND_INIT_STATIC_METHOD_CALL ||
+		opline->opcode == ZEND_NEW)) {
+		ZEND_ASSERT(op_num);
+		opline--;
+	}
+
+	do {
+		/* find the number of actually passed arguments */
+		level = 0;
+		do_exit = 0;
+		num_args = ZEND_CALL_NUM_ARGS(call);
+		do {
+			switch (opline->opcode) {
+				case ZEND_DO_FCALL:
+				case ZEND_DO_ICALL:
+				case ZEND_DO_UCALL:
+				case ZEND_DO_FCALL_BY_NAME:
+					level++;
+					break;
+				case ZEND_INIT_FCALL:
+				case ZEND_INIT_FCALL_BY_NAME:
+				case ZEND_INIT_NS_FCALL_BY_NAME:
+				case ZEND_INIT_DYNAMIC_CALL:
+				case ZEND_INIT_USER_CALL:
+				case ZEND_INIT_METHOD_CALL:
+				case ZEND_INIT_STATIC_METHOD_CALL:
+				case ZEND_NEW:
+					if (level == 0) {
+						num_args = 0;
+						do_exit = 1;
+					}
+					level--;
+					break;
+				case ZEND_SEND_VAL:
+				case ZEND_SEND_VAL_EX:
+				case ZEND_SEND_VAR:
+				case ZEND_SEND_VAR_EX:
+				case ZEND_SEND_FUNC_ARG:
+				case ZEND_SEND_REF:
+				case ZEND_SEND_VAR_NO_REF:
+				case ZEND_SEND_VAR_NO_REF_EX:
+				case ZEND_SEND_USER:
+					if (level == 0) {
+						/* For named args, the number of arguments is up to date. */
+						if (opline->op2_type != IS_CONST) {
+							num_args = opline->op2.num;
+						}
+						do_exit = 1;
+					}
+					break;
+				case ZEND_SEND_ARRAY:
+				case ZEND_SEND_UNPACK:
+				case ZEND_CHECK_UNDEF_ARGS:
+					if (level == 0) {
+						do_exit = 1;
+					}
+					break;
+			}
+			if (!do_exit) {
+				opline--;
+			}
+		} while (!do_exit);
+		if (call->prev_execute_data) {
+			/* skip current call region */
+			level = 0;
+			do_exit = 0;
+			do {
+				switch (opline->opcode) {
+					case ZEND_DO_FCALL:
+					case ZEND_DO_ICALL:
+					case ZEND_DO_UCALL:
+					case ZEND_DO_FCALL_BY_NAME:
+						level++;
+						break;
+					case ZEND_INIT_FCALL:
+					case ZEND_INIT_FCALL_BY_NAME:
+					case ZEND_INIT_NS_FCALL_BY_NAME:
+					case ZEND_INIT_DYNAMIC_CALL:
+					case ZEND_INIT_USER_CALL:
+					case ZEND_INIT_METHOD_CALL:
+					case ZEND_INIT_STATIC_METHOD_CALL:
+					case ZEND_NEW:
+						if (level == 0) {
+							do_exit = 1;
+						}
+						level--;
+						break;
+				}
+				opline--;
+			} while (!do_exit);
+		}
+
+		if (EXPECTED(num_args > 0)) {
+			zval *p = ZEND_CALL_ARG(call, 1);
+			do {
+				zend_get_gc_buffer_add_zval(buf, p);
+				p++;
+			} while (--num_args);
+		}
+		if (ZEND_CALL_INFO(call) & ZEND_CALL_RELEASE_THIS) {
+			zend_get_gc_buffer_add_obj(buf, Z_OBJ(call->This));
+		}
+		if (ZEND_CALL_INFO(call) & ZEND_CALL_HAS_EXTRA_NAMED_PARAMS) {
+			zval *val;
+			ZEND_HASH_FOREACH_VAL(call->extra_named_params, val) {
+				zend_get_gc_buffer_add_zval(buf, val);
+			} ZEND_HASH_FOREACH_END();
+		}
+		if (call->func->common.fn_flags & ZEND_ACC_CLOSURE) {
+			zend_get_gc_buffer_add_obj(buf, ZEND_CLOSURE_OBJECT(call->func));
+		}
+
+		call = call->prev_execute_data;
+	} while (call);
+}
+/* }}} */
+
 static void cleanup_unfinished_calls(zend_execute_data *execute_data, uint32_t op_num) /* {{{ */
 {
 	if (UNEXPECTED(EX(call))) {
@@ -4318,6 +4446,95 @@ static void cleanup_live_vars(zend_execute_data *execute_data, uint32_t op_num, 
 ZEND_API void zend_cleanup_unfinished_execution(zend_execute_data *execute_data, uint32_t op_num, uint32_t catch_op_num) {
 	cleanup_unfinished_calls(execute_data, op_num);
 	cleanup_live_vars(execute_data, op_num, catch_op_num);
+}
+
+ZEND_API ZEND_ATTRIBUTE_DEPRECATED HashTable *zend_unfinished_execution_gc(zend_execute_data *execute_data, zend_execute_data *call, zend_get_gc_buffer *gc_buffer)
+{
+	bool suspended_by_yield = false;
+
+	if (Z_TYPE_INFO(EX(This)) & ZEND_CALL_GENERATOR) {
+		ZEND_ASSERT(EX(return_value));
+
+		/* The generator object is stored in EX(return_value) */
+		zend_generator *generator = (zend_generator*) EX(return_value);
+		ZEND_ASSERT(execute_data == generator->execute_data);
+
+		suspended_by_yield = !(generator->flags & ZEND_GENERATOR_CURRENTLY_RUNNING);
+	}
+
+	return zend_unfinished_execution_gc_ex(execute_data, call, gc_buffer, suspended_by_yield);
+}
+
+ZEND_API HashTable *zend_unfinished_execution_gc_ex(zend_execute_data *execute_data, zend_execute_data *call, zend_get_gc_buffer *gc_buffer, bool suspended_by_yield)
+{
+	if (!EX(func) || !ZEND_USER_CODE(EX(func)->common.type)) {
+		return NULL;
+	}
+
+	zend_op_array *op_array = &EX(func)->op_array;
+
+	if (!(EX_CALL_INFO() & ZEND_CALL_HAS_SYMBOL_TABLE)) {
+		uint32_t i, num_cvs = EX(func)->op_array.last_var;
+		for (i = 0; i < num_cvs; i++) {
+			zend_get_gc_buffer_add_zval(gc_buffer, EX_VAR_NUM(i));
+		}
+	}
+
+	if (EX_CALL_INFO() & ZEND_CALL_FREE_EXTRA_ARGS) {
+		zval *zv = EX_VAR_NUM(op_array->last_var + op_array->T);
+		zval *end = zv + (EX_NUM_ARGS() - op_array->num_args);
+		while (zv != end) {
+			zend_get_gc_buffer_add_zval(gc_buffer, zv++);
+		}
+	}
+
+	if (EX_CALL_INFO() & ZEND_CALL_RELEASE_THIS) {
+		zend_get_gc_buffer_add_obj(gc_buffer, Z_OBJ(execute_data->This));
+	}
+	if (EX_CALL_INFO() & ZEND_CALL_CLOSURE) {
+		zend_get_gc_buffer_add_obj(gc_buffer, ZEND_CLOSURE_OBJECT(EX(func)));
+	}
+	if (EX_CALL_INFO() & ZEND_CALL_HAS_EXTRA_NAMED_PARAMS) {
+		zval extra_named_params;
+		ZVAL_ARR(&extra_named_params, EX(extra_named_params));
+		zend_get_gc_buffer_add_zval(gc_buffer, &extra_named_params);
+	}
+
+	if (call) {
+		uint32_t op_num = execute_data->opline - op_array->opcodes;
+		if (suspended_by_yield) {
+			/* When the execution was suspended by yield, EX(opline) points to
+			 * next opline to execute. Otherwise, it points to the opline that
+			 * suspended execution. */
+			op_num--;
+			ZEND_ASSERT(EX(func)->op_array.opcodes[op_num].opcode == ZEND_YIELD
+				|| EX(func)->op_array.opcodes[op_num].opcode == ZEND_YIELD_FROM);
+		}
+		zend_unfinished_calls_gc(execute_data, call, op_num, gc_buffer);
+	}
+
+	if (execute_data->opline != op_array->opcodes) {
+		uint32_t i, op_num = execute_data->opline - op_array->opcodes - 1;
+		for (i = 0; i < op_array->last_live_range; i++) {
+			const zend_live_range *range = &op_array->live_range[i];
+			if (range->start > op_num) {
+				break;
+			} else if (op_num < range->end) {
+				uint32_t kind = range->var & ZEND_LIVE_MASK;
+				uint32_t var_num = range->var & ~ZEND_LIVE_MASK;
+				zval *var = EX_VAR(var_num);
+				if (kind == ZEND_LIVE_TMPVAR || kind == ZEND_LIVE_LOOP) {
+					zend_get_gc_buffer_add_zval(gc_buffer, var);
+				}
+			}
+		}
+	}
+
+	if (EX_CALL_INFO() & ZEND_CALL_HAS_SYMBOL_TABLE) {
+		return execute_data->symbol_table;
+	} else {
+		return NULL;
+	}
 }
 
 #if ZEND_VM_SPEC
