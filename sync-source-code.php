@@ -86,7 +86,6 @@ $cmd .= PHP_EOL . <<<'EOF'
     cp -r $SRC/ext/pcre/ ./ext
     cp -r $SRC/ext/pdo/ ./ext
     cp -r $SRC/ext/pdo_mysql/ ./ext
-    cp -r $SRC/ext/pdo_sqlite/ ./ext
     cp -r $SRC/ext/phar/ ./ext
     echo -e '\n#include "sapi/cli/sfx/hook_stream.h"' >> ext/phar/phar_internal.h
     cp -r $SRC/ext/posix/ ./ext
@@ -119,9 +118,14 @@ $cmd .= PHP_EOL . <<<'EOF'
     cp -r ./TSRM/TSRM.h main/TSRM.h
     cp -r $SRC/configure.ac ./
 
-    # fpm
+    # fpm [Need to manually compare fpm_main.c]
     cp -r $SRC/sapi/fpm/fpm ./sapi/cli
     exit 0
+
+    # cli
+    cp -r $SRC/sapi/cli/ps_title.c ./sapi/cli
+    cp -r $SRC/sapi/cli/generate_mime_type_map.php ./sapi/cli
+    cp -r $SRC/sapi/cli/php.1.in ./sapi/cli
 
 EOF;
 
