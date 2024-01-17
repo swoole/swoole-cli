@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
             ->withConfigure(
                 <<<EOF
                 # Fix openssl error, "-ldl" should not be added when compiling statically
-                sed -i.backup "s/add("-ldld", threads("-pthread")),/add(threads("-pthread"))/g" ./Configurations/10-main.conf
+                sed -i 's/add("-ldl", threads("-pthread"))/add(threads("-pthread"))/g' ./Configurations/10-main.conf
                 # ./Configure LIST
                ./config {$static} no-shared  enable-tls1_3 --release \
                --prefix={$openssl_prefix} \
