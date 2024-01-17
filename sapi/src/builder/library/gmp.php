@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://gmplib.org/')
             ->withManual('https://gmplib.org/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            ->withUrl('https://ftp.gnu.org/gnu/gmp//gmp-6.2.1.tar.lz')
+            ->withUrl('https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.lz')
             ->withPrefix($gmp_prefix)
             ->withConfigure(
                 <<<EOF

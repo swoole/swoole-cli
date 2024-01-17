@@ -5,14 +5,13 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $ngtcp2_prefix = NGTCP2_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
     $p->addLibrary(
         (new Library('ngtcp2'))
             ->withHomePage('https://github.com/ngtcp2/ngtcp2')
             ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
             ->withManual('https://curl.se/docs/http3.html')
-            ->withUrl('https://github.com/ngtcp2/ngtcp2/archive/refs/tags/v0.13.1.tar.gz')
-            ->withFile('ngtcp2-v0.13.1.tar.gz')
+            ->withUrl('https://github.com/ngtcp2/ngtcp2/releases/download/v1.1.0/ngtcp2-1.1.0.tar.gz')
+            ->withFile('ngtcp2-1.1.0.tar.gz')
             ->withPrefix($ngtcp2_prefix)
             ->withConfigure(
                 <<<EOF
@@ -40,7 +39,8 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('libngtcp2')
-            ->withPkgName('libngtcp2_crypto_openssl')
+            ->withPkgName('libngtcp2_crypto_quictls')
+            //->withPkgName('libngtcp2_crypto_openssl') # v1.0 版本 以后变更为 quictls
             ->withDependentLibraries('openssl', 'nghttp3')
     );
 };

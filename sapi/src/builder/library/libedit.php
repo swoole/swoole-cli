@@ -7,9 +7,9 @@ return function (Preprocessor $p) {
     $libedit_prefix = LIBEDIT_PREFIX;
     $p->addLibrary(
         (new Library('libedit'))
-            ->withLicense('http://www.netbsd.org/Goals/redistribution.html', Library::LICENSE_BSD)
             ->withHomePage('https://thrysoee.dk/editline/')
-            ->withUrl('https://thrysoee.dk/editline/libedit-20210910-3.1.tar.gz')
+            ->withLicense('http://www.netbsd.org/Goals/redistribution.html', Library::LICENSE_BSD)
+            ->withUrl('https://thrysoee.dk/editline/libedit-20230828-3.1.tar.gz')
             ->withPrefix($libedit_prefix)
             ->withConfigure(
                 <<<EOF
