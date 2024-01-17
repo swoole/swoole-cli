@@ -915,4 +915,24 @@ class Preprocessor
             implode(PHP_EOL, $download_urls)
         );
     }
+
+    public function isLinux(): bool
+    {
+        return $this->osType === 'linux';
+    }
+
+    public function isMacos(): bool
+    {
+        return $this->osType === 'macos';
+    }
+
+    public function hasLibrary(string $lib): bool
+    {
+        return isset($this->libraryMap[$lib]);
+    }
+
+    public function hasExtension(string $ext): bool
+    {
+        return isset($this->extensionMap[$ext]);
+    }
 }

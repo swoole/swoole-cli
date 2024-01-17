@@ -79,7 +79,6 @@ $cmd .= PHP_EOL . <<<'EOF'
     cp -r $SRC/ext/mysqlnd/ ./ext
     cp -r $SRC/ext/opcache/ ./ext
     sed -i 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4 && sed -i 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
-    sed -i 's/-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1/-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DPHP_ENABLE_OPCACHE/g' ext/opcache/config.m4
     echo '#include "php.h"\n\nextern zend_module_entry opcache_module_entry;\n#define phpext_opcache_ptr  &opcache_module_entry\n' > ext/opcache/php_opcache.h
     cp -r $SRC/ext/openssl/ ./ext
     cp -r $SRC/ext/pcntl/ ./ext
