@@ -2245,7 +2245,6 @@ static int php_cli_server_mime_type_ctor(php_cli_server *server,
 
 static void php_cli_server_dtor(php_cli_server *server) /* {{{ */
 {
-    zend_hash_destroy(&server->clients);
     zend_hash_destroy(&server->extension_mime_types);
     if (ZEND_VALID_SOCKET(server->server_sock)) {
         closesocket(server->server_sock);
