@@ -57,10 +57,10 @@ jobs:
 
       - name: Cache swoole-cli-builder-image
         uses: actions/cache@v3
-        id: swoole-cli-builder-image-aarch64-cache
+        id: swoole-cli-builder-image-mips64le-cache
         with:
           path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
-          key: ${{ runner.os }}-aarch64-swoole-cli-builder-image
+          key: ${{ runner.os }}-mips64le-swoole-cli-builder-image
 
       - name: Prepare Libraries and Extensions
         run: |
