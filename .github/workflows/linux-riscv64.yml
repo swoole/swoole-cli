@@ -1,0 +1,185 @@
+name: build-php-cli-linux-riscv
+
+on: [ push, pull_request ]
+
+jobs:
+  linux-riscv:
+    if: 1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prepare Source Code
+        run: |
+          lscpu
+          echo $PATH
+          env
+          docker info
+          id -u
+          id -g
+          who
+          cat /etc/os-release
+          hostnamectl
+          uname -s
+          uname -m
+          uname -r
+          export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
+          export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
+          echo $IPV4
+          echo $IPV6
+          echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
+          echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+          # git submodule update --init
+
+          sudo mkdir -p /usr/local/swoole-cli
+          uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
+
+          mkdir -p ${{ github.workspace }}/var/build-github-action-container/
+
+      - name: Cache Dependency Source Code Tarball
+        uses: actions/cache@v3
+        id: pool-cache
+        with:
+          path: ${{ github.workspace }}/pool/
+          key: source-code-tarball-pool
+
+
+      - name: Cache swoole-cli-builder-image
+        uses: actions/cache@v3
+        id: swoole-cli-builder-image-aarch64-cache
+        with:
+          path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
+          key: ${{ runner.os }}-riscv64-swoole-cli-builder-image
+
+      - name: Prepare Libraries and Extensions
+        run: |
+          set -x
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
+
+          CACHE_NUM=$(ls -A pool/lib/ | wc -l)
+          LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
+          echo `expr $LIB_NUM - $CACHE_NUM`
+
+          if test $CACHE_NUM -eq 0  ; then
+              bash sapi/download-box/download-box-get-archive-from-container.sh
+          fi
+
+          ls -A pool/lib/
+          ls -A /usr/local/swoole-cli/
+
+      - name: Prepare QEMU
+        run: |
+          set -x
+          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - name: Prepare swoole-cli-builder-image
+        if: 0
+        run: |
+          if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
+              docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
+          else
+              bash .github/workflows/build-alpine-builder-container.sh --platform "linux/riscv64"
+          fi
+
+      - name: prepare pre-built library
+        if: 0
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240106T114724Z
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/tmp/
+          run: |
+            for i in `ls /usr/local/swoole-cli/`
+            do
+               if [ ! -d /usr/local/tmp/${i} ] ; then
+                    echo $i
+                    cp -rf /usr/local/swoole-cli/${i}/  /usr/local/tmp/${i}
+               fi
+            done
+
+      - name: Build
+        if: 0
+        uses: addnab/docker-run-action@v3
+        with:
+          image: swoole-cli-builder:latest
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          run: |
+            set -eux
+            uname -m
+            if [ ! -f bin/runtime/php ] ; then
+              bash  setup-php-runtime.sh
+            fi
+
+            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
+            alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
+
+            # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # bash sapi/quickstart/mark-install-library-cached.sh
+
+            sh  sapi/quickstart/linux/alpine-init.sh
+            composer update   --optimize-autoloader
+
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
+
+            bash make-install-deps.sh
+
+            bash make.sh all-library
+
+            bash make.sh config
+            bash make.sh build
+            bash make.sh archive
+
+      - name: Show Build Result
+        if: 0
+        uses: addnab/docker-run-action@v3
+        with:
+          image: swoole-cli-builder:latest
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            ./bin/swoole-cli -v
+            ./bin/swoole-cli -m
+            ./bin/swoole-cli --ri swoole
+            ./bin/swoole-cli --ri gd
+            ./bin/swoole-cli --ri pgsql
+
+            file ./bin/swoole-cli
+            readelf -h ./bin/swoole-cli
+            APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
+            echo ${APP_VERSION}
+            echo ${APP_VERSION}  > APP_VERSION
+
+            ./bin/swoole-cli -r "echo PHP_VERSION;"
+
+            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+
+      - name: get app version
+        if: 0
+        run: |
+          APP_VERSION=$(cat ./APP_VERSION)
+          echo $APP_VERSION
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+
+      - name: production artifacts debug
+        if: 0
+        uses: actions/upload-artifact@v3
+        with:
+          name: swoole-cli-v${{ env.APP_VERSION }}-linux-riscv64-debug
+          retention-days: 90
+          path: ./bin/swoole-cli
+
+      - name: production artifacts
+        if: 0
+        uses: actions/upload-artifact@v3
+        with:
+          name: swoole-cli-v${{ env.APP_VERSION }}-linux-riscv64
+          retention-days: 90
+          path: ./bin/dist/swoole-cli
+
+      - name: gh release
+        uses: softprops/action-gh-release@v1
+        if: 0 && startsWith(github.ref, 'refs/tags/')
+        with:
+          files: swoole-cli-v${{ env.APP_VERSION }}-linux-riscv64.tar.xz
