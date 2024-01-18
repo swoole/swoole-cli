@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
     $options .= ' --enable-thread-context ';
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
-    $options .= ' --enable-swoole-pgsql ';
+    $options .= ' --enable-swoole-sqlite ';
     $options .= ' --enable-swoole-pgsql ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
 
