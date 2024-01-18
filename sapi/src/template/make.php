@@ -174,6 +174,13 @@ clean_<?=$item->name?>_cached() {
 <?php endforeach; ?>
 
 make_all_library() {
+<?php if ($this->inVirtualMachine): ?>
+    if [! -d <?= $this->getGlobalPrefix() ?>/sources ] ;then
+        mkdir -p <?= $this->getGlobalPrefix() ?>/sources
+        rm -rf <?= $this->getBuildDir() . PHP_EOL ?>
+        ln -s <?= $this->getGlobalPrefix() ?>/sources <?= $this->getBuildDir() . PHP_EOL ?>
+    fi
+<?php endif; ?>
 <?php foreach ($this->libraryList as $item) : ?>
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 <?php endforeach; ?>
