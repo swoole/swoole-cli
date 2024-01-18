@@ -107,6 +107,7 @@ jobs:
             uname -a
             uname -s
             uname -m
+            apt install -y php-dev php-cli
 
 
       - name: Build
