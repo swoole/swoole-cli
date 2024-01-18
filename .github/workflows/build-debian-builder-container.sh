@@ -19,8 +19,9 @@ cp -f ${__PROJECT__}/sapi/quickstart/linux/debian-init.sh .
 cat > Dockerfile <<'EOF'
 FROM debian:unstable-20240110-slim
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ADD ./debian-init.sh /debian-init.sh
 
