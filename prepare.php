@@ -49,7 +49,7 @@ define('BUILD_CUSTOM_PHP_VERSION_ID', intval(substr($php_version_id, 0, 4))); //
 
 
 // Compile directly on the host machine, not in the docker container
-if ($p->getInputOption('without-docker') || ($p->getOsType() == 'macos')) {
+if ($p->getInputOption('without-docker') || ($p->isMacos())) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
@@ -113,15 +113,16 @@ EOF;
 }
 
 
-if ($p->getOsType() == 'macos') {
+if ($p->isMacos()) {
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
     $p->setLogicalProcessors('$(nproc 2> /dev/null)');
 }
 
-if ($p->getOsType() == 'macos') {
+if ($p->isMacos()) {
     // -lintl -Wl,-framework -Wl,CoreFoundation
     //$p->setExtraLdflags('-framework CoreFoundation -framework SystemConfiguration -undefined dynamic_lookup');
+
     $p->setExtraLdflags('-undefined dynamic_lookup');
     $p->setLinker('ld');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {

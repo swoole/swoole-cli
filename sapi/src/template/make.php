@@ -270,6 +270,13 @@ clean_<?=$item->name?>_cached() {
 <?php endforeach; ?>
 
 make_all_library() {
+<?php if ($this->inVirtualMachine): ?>
+    if [! -d <?= $this->getGlobalPrefix() ?>/sources ] ;then
+        mkdir -p <?= $this->getGlobalPrefix() ?>/sources
+        rm -rf <?= $this->getBuildDir() . PHP_EOL ?>
+        ln -s <?= $this->getGlobalPrefix() ?>/sources <?= $this->getBuildDir() . PHP_EOL ?>
+    fi
+<?php endif; ?>
 <?php foreach ($this->libraryList as $item) : ?>
     make_<?= $item->name ?> && [[ $? -eq 0 ]] && echo "[SUCCESS] make <?= $item->name ?>"
 <?php endforeach; ?>
@@ -317,8 +324,18 @@ export_variables() {
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     echo "export variables"
 <?php foreach ($this->exportVariables as $value) : ?>
-    export  <?= key($value) ?>="<?= current($value) ?>"
+    export <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+
+<?php if ($this->hasExtension('opcache')):?>
+    export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
+    export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
+<?php endif; ?>
+
+    export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     set +x
@@ -470,14 +487,14 @@ _____EO_____
 make_build_old() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType() == 'linux') : ?>
+    <?php if ($this->isLinux()) : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
 
-<?php if ($this->osType == 'macos') : ?>
+<?php if ($this->isMacos()) : ?>
     otool -L <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php else : ?>
     file <?= $this->phpSrcDir  ?>/sapi/cli/php
@@ -626,6 +643,7 @@ help() {
     echo "./make.sh lib-pkg"
     echo "./make.sh lib-dep-pkg"
     echo "./make.sh lib-dep"
+    echo "./make.sh variables"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -759,6 +777,16 @@ elif [ "$1" = "list-extension" ] ;then
 elif [ "$1" = "clean" ] ;then
     make_clean
     exit 0
+elif [ "$1" = "variables" ] ;then
+    export_variables
+    echo "===========================[CPPFLAGS]================================"
+	echo $CPPFLAGS
+    echo "===========================[CFLAGS]================================"
+	echo $CFLAGS
+    echo "===========================[LDFLAGS]================================"
+	echo $LDFLAGS
+    echo "===========================[LIBS]================================"
+	echo $LIBS
 elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
     test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
@@ -768,4 +796,3 @@ elif [ "$1" = "sync" ] ;then
 else
     help
 fi
-

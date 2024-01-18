@@ -144,14 +144,13 @@ class Preprocessor
     protected array $extEnabledBuff = [];
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
-
     protected array $beforeConfigure = [];
 
     protected array $releaseArchives = [];
 
     protected string $configureVarables;
-
     protected string $buildType = 'release';
+    protected bool $inVirtualMachine = false;
 
     protected string $proxyConfig = '';
 
@@ -161,20 +160,9 @@ class Preprocessor
 
     protected function __construct()
     {
-        switch (PHP_OS) {
-            default:
-            case 'Linux':
-                $this->setOsType('linux');
-                break;
-            case 'Darwin':
-                $this->setOsType('macos');
-                break;
-            case 'WINNT':
-                $this->setOsType('win');
-                break;
-        }
         //重置默认扩展
         $this->extEnabled = [];
+        $this->setOsType($this->getRealOsType());
     }
 
 
@@ -186,7 +174,7 @@ class Preprocessor
         return self::$instance;
     }
 
-    protected function setOsType(string $osType)
+    protected function setOsType(string $osType): void
     {
         $this->osType = $osType;
     }
@@ -924,6 +912,7 @@ EOF;
                     }
                 }
             } elseif ($op == '@') {
+                $this->inVirtualMachine = $value != $this->getRealOsType();
                 $this->setOsType($value);
             }
         }
@@ -1140,7 +1129,7 @@ EOF;
             }
         }
 
-        if ($this->getOsType() == 'macos') {
+        if ($this->isMacos()) {
             if (is_file('/usr/local/opt/bison/bin/bison')) {
                 $this->withBinPath('/usr/local/opt/bison/bin');
             } else {
@@ -1170,7 +1159,7 @@ EOF;
         $this->sortLibrary();
         $this->setExtensionDependency();
 
-        if ($this->getOsType() == 'macos') {
+        if ($this->isMacos()) {
             $libcpp = '-lc++';
         } else {
             $libcpp = '-lstdc++';
@@ -1247,5 +1236,38 @@ EOF;
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
         }
+    }
+
+    public function getRealOsType(): string
+    {
+        switch (PHP_OS) {
+            default:
+            case 'Linux':
+                return 'linux';
+            case 'Darwin':
+                return 'macos';
+            case 'WINNT':
+                return 'win';
+        }
+    }
+
+    public function isLinux(): bool
+    {
+        return $this->osType === 'linux';
+    }
+
+    public function isMacos(): bool
+    {
+        return $this->osType === 'macos';
+    }
+
+    public function hasLibrary(string $lib): bool
+    {
+        return isset($this->libraryMap[$lib]);
+    }
+
+    public function hasExtension(string $ext): bool
+    {
+        return isset($this->extensionMap[$ext]);
     }
 }
