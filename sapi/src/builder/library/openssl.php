@@ -18,7 +18,6 @@ return function (Preprocessor $p) {
                 <<<EOF
                 # php 8 之前的版本不支持 openssl v3    详情 https://github.com/swoole/swoole-cli/issues/84
 
-                 # ./Configure LIST
                ./config {$static} no-shared  enable-tls1_3 --release \
                --prefix={$openssl_prefix} \
                --libdir={$openssl_prefix}/lib \

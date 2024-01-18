@@ -69,11 +69,13 @@
 #include "php_getopt.h"
 
 #ifndef PHP_WIN32
+#define php_select(m, r, w, e, t) select(m, r, w, e, t)
 #define SOCK_EINVAL EINVAL
 #define SOCK_EAGAIN EAGAIN
 #define SOCK_EINTR EINTR
 #define SOCK_EADDRINUSE EADDRINUSE
 #else
+#include "win32/select.h"
 #define SOCK_EINVAL WSAEINVAL
 #define SOCK_EAGAIN WSAEWOULDBLOCK
 #define SOCK_EINTR WSAEINTR
@@ -370,10 +372,28 @@ static void append_http_status_line(smart_str *buffer,
     smart_str_appendl_ex(buffer, "\r\n", 2, persistent);
 } /* }}} */
 
-static void append_essential_headers(smart_str *buffer, php_cli_server_client *client, int persistent) /* {{{ */
+static void append_essential_headers(smart_str *buffer,
+                                     php_cli_server_client *client,
+                                     int persistent,
+                                     sapi_headers_struct *sapi_headers) /* {{{ */
 {
     char *val;
     struct timeval tv = {0};
+    bool append_date_header = true;
+
+    if (sapi_headers != NULL) {
+        zend_llist_position pos;
+        sapi_header_struct *h = (sapi_header_struct *) zend_llist_get_first_ex(&sapi_headers->headers, &pos);
+        while (h) {
+            if (h->header_len > strlen("Date:")) {
+                if (strncasecmp(h->header, "Date:", strlen("Date:")) == 0) {
+                    append_date_header = false;
+                    break;
+                }
+            }
+            h = (sapi_header_struct *) zend_llist_get_next_ex(&sapi_headers->headers, &pos);
+        }
+    }
 
     if (NULL != (val = zend_hash_str_find_ptr(&client->request.headers, "host", sizeof("host") - 1))) {
         smart_str_appends_ex(buffer, "Host: ", persistent);
@@ -381,7 +401,7 @@ static void append_essential_headers(smart_str *buffer, php_cli_server_client *c
         smart_str_appends_ex(buffer, "\r\n", persistent);
     }
 
-    if (!gettimeofday(&tv, NULL)) {
+    if (append_date_header && !gettimeofday(&tv, NULL)) {
         zend_string *dt = php_format_date("D, d M Y H:i:s", sizeof("D, d M Y H:i:s") - 1, tv.tv_sec, 0);
         smart_str_appends_ex(buffer, "Date: ", persistent);
         smart_str_appends_ex(buffer, dt->val, persistent);
@@ -578,7 +598,7 @@ static int sapi_cli_server_send_headers(sapi_headers_struct *sapi_headers) /* {{
         append_http_status_line(&buffer, client->request.protocol_version, SG(sapi_headers).http_response_code, 0);
     }
 
-    append_essential_headers(&buffer, client, 0);
+    append_essential_headers(&buffer, client, 0, sapi_headers);
 
     h = (sapi_header_struct *) zend_llist_get_first_ex(&sapi_headers->headers, &pos);
     while (h) {
@@ -1286,7 +1306,9 @@ static int php_cli_server_request_ctor(php_cli_server_request *req) /* {{{ */
     req->query_string = NULL;
     req->query_string_len = 0;
     zend_hash_init(&req->headers, 0, NULL, char_ptr_dtor_p, 1);
+    GC_MAKE_PERSISTENT_LOCAL(&req->headers);
     zend_hash_init(&req->headers_original_case, 0, NULL, NULL, 1);
+    GC_MAKE_PERSISTENT_LOCAL(&req->headers_original_case);
     req->content = NULL;
     req->content_len = 0;
     req->ext = NULL;
@@ -1954,7 +1976,7 @@ static int php_cli_server_send_error_page(php_cli_server *server, php_cli_server
             /* out of memory */
             goto fail;
         }
-        append_essential_headers(&buffer, client, 1);
+        append_essential_headers(&buffer, client, 1, NULL);
         smart_str_appends_ex(&buffer, "Content-Type: text/html; charset=UTF-8\r\n", 1);
         smart_str_appends_ex(&buffer, "Content-Length: ", 1);
         smart_str_append_unsigned_ex(&buffer, php_cli_server_buffer_size(&client->content_sender.buffer), 1);
@@ -2051,7 +2073,7 @@ static int php_cli_server_begin_send_static(php_cli_server *server, php_cli_serv
             php_cli_server_log_response(client, 500, NULL);
             return FAILURE;
         }
-        append_essential_headers(&buffer, client, 1);
+        append_essential_headers(&buffer, client, 1, NULL);
         if (mime_type) {
             smart_str_appendl_ex(&buffer, "Content-Type: ", sizeof("Content-Type: ") - 1, 1);
             smart_str_appends_ex(&buffer, mime_type, 1);
@@ -2159,14 +2181,14 @@ static int php_cli_server_dispatch(php_cli_server *server, php_cli_server_client
     if (server->router || !is_static_file) {
         if (FAILURE == php_cli_server_request_startup(server, client)) {
             php_cli_server_request_shutdown(server, client);
-            return FAILURE;
+            return SUCCESS;
         }
     }
 
     if (server->router) {
         if (!php_cli_server_dispatch_router(server, client)) {
             php_cli_server_request_shutdown(server, client);
-            return FAILURE;
+            return SUCCESS;
         }
     }
 
@@ -2177,7 +2199,7 @@ static int php_cli_server_dispatch(php_cli_server *server, php_cli_server_client
                 SG(sapi_headers).send_default_content_type = 0;
             }
             php_cli_server_request_shutdown(server, client);
-            return FAILURE;
+            return SUCCESS;
         }
     } else {
         if (server->router) {
@@ -2194,8 +2216,6 @@ static int php_cli_server_dispatch(php_cli_server *server, php_cli_server_client
         }
         if (SUCCESS != php_cli_server_begin_send_static(server, client)) {
             php_cli_server_close_connection(server, client);
-            SG(server_context) = NULL;
-            return FAILURE;
         }
         SG(server_context) = NULL;
         return SUCCESS;
@@ -2213,6 +2233,7 @@ static int php_cli_server_mime_type_ctor(php_cli_server *server,
     const php_cli_server_ext_mime_type_pair *pair;
 
     zend_hash_init(&server->extension_mime_types, 0, NULL, NULL, 1);
+    GC_MAKE_PERSISTENT_LOCAL(&server->extension_mime_types);
 
     for (pair = mime_type_map; pair->ext; pair++) {
         size_t ext_len = strlen(pair->ext);

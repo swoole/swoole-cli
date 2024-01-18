@@ -120,4 +120,3 @@ aliyuncs | tencentyun | huaweicloud)
   test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
   test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
 esac
-

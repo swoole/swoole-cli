@@ -27,10 +27,9 @@ return function (Preprocessor $p) {
             git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
-        ->withAutoUpdateFile();
-
-    call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
-    call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
-
+        ->withAutoUpdateFile()
+        ->withBuildCached(false)
+        ->withDependentLibraries(...$dependentLibraries)
+        ->withDependentExtensions(...$dependentExtensions);
     $p->addExtension($ext);
 };

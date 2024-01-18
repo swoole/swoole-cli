@@ -52,7 +52,7 @@ zend_smm_shared_globals *smm_shared_globals;
 #ifdef ZTS
 static MUTEX_T zts_lock;
 #endif
-int lock_file;
+int lock_file = -1;
 static char lockfile_name[MAXPATHLEN];
 #endif
 
@@ -179,8 +179,8 @@ int zend_shared_alloc_startup(size_t requested_size, size_t reserved_size)
 				res = zend_shared_alloc_try(he, requested_size, &ZSMMG(shared_segments), &ZSMMG(shared_segments_count), &error_in);
 				if (res) {
 					/* this model works! */
+					break;
 				}
-				break;
 			}
 		}
 	}
@@ -191,6 +191,7 @@ int zend_shared_alloc_startup(size_t requested_size, size_t reserved_size)
 	}
 #if ENABLE_FILE_CACHE_FALLBACK
 	if (ALLOC_FALLBACK == res) {
+		smm_shared_globals = NULL;
 		return ALLOC_FALLBACK;
 	}
 #endif
@@ -216,6 +217,7 @@ int zend_shared_alloc_startup(size_t requested_size, size_t reserved_size)
 	}
 #if ENABLE_FILE_CACHE_FALLBACK
 	if (ALLOC_FALLBACK == res) {
+		smm_shared_globals = NULL;
 		return ALLOC_FALLBACK;
 	}
 #endif
@@ -250,7 +252,7 @@ int zend_shared_alloc_startup(size_t requested_size, size_t reserved_size)
 	free(ZSMMG(shared_segments));
 	ZSMMG(shared_segments) = tmp_shared_segments;
 
-	ZSMMG(shared_memory_state).positions = (int *)zend_shared_alloc(sizeof(int) * ZSMMG(shared_segments_count));
+	ZSMMG(shared_memory_state).positions = (size_t *)zend_shared_alloc(sizeof(size_t) * ZSMMG(shared_segments_count));
 	if (!ZSMMG(shared_memory_state).positions) {
 		zend_accel_error_noreturn(ACCEL_LOG_FATAL, "Insufficient shared memory!");
 		return ALLOC_FAILURE;

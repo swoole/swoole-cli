@@ -17,7 +17,7 @@ dnl Basic autoconf initialization, generation of config.nice.
 dnl ----------------------------------------------------------------------------
 
 AC_PREREQ([2.68])
-AC_INIT([PHP],[8.1.12],[https://bugs.php.net],[php],[https://www.php.net])
+AC_INIT([PHP],[8.1.27],[https://github.com/php/php-src/issues],[php],[https://www.php.net])
 AC_CONFIG_SRCDIR([main/php_version.h])
 AC_CONFIG_AUX_DIR([build])
 AC_PRESERVE_HELP_ORDER
@@ -128,7 +128,9 @@ PKG_PROG_PKG_CONFIG
 AC_PROG_CC([cc gcc])
 PHP_DETECT_ICC
 PHP_DETECT_SUNCC
-AC_PROG_CC_C99
+
+dnl AC_PROG_CC_C99 is obsolete with autoconf >= 2.70 yet necessary for <= 2.69.
+m4_version_prereq([2.70],,[AC_PROG_CC_C99])
 AC_PROG_CPP
 AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_LN_S
@@ -364,6 +366,12 @@ if test "$ac_cv_func_dlopen" = "yes"; then
   AC_DEFINE(HAVE_LIBDL, 1, [ ])
 fi
 AC_CHECK_LIB(m, sin)
+
+case $host_alias in
+  riscv64*)
+    PHP_CHECK_FUNC(__atomic_exchange_1, atomic)
+    ;;
+esac
 
 dnl Check for inet_aton in -lc, -lbind and -lresolv.
 PHP_CHECK_FUNC(inet_aton, resolv, bind)
@@ -610,6 +618,9 @@ asprintf \
 nanosleep \
 memmem \
 )
+
+dnl Check for strerror_r, and if its a POSIX-compatible or a GNU specific version.
+AC_FUNC_STRERROR_R
 
 AX_FUNC_WHICH_GETHOSTBYNAME_R
 
@@ -1523,6 +1534,23 @@ if test "$PHP_UNDEFINED_SANITIZER" = "yes"; then
   AX_CHECK_COMPILE_FLAG([-fsanitize=undefined], [
     CFLAGS="$CFLAGS -fsanitize=undefined"
     CXXFLAGS="$CXXFLAGS -fsanitize=undefined"
+
+    dnl Clang 17 adds stricter function pointer compatibility checks where pointer args cannot be
+    dnl cast to void*. In that case, set -fno-sanitize=function.
+    OLD_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS -fno-sanitize-recover=undefined"
+    AC_RUN_IFELSE([AC_LANG_SOURCE([[
+void foo(char *string) {}
+int main(void) {
+  void (*f)(void *) = (void (*)(void *))foo;
+  f("foo");
+}
+    ]])],,[ubsan_needs_no_function=yes],)
+    CFLAGS="$OLD_CFLAGS"
+    if test "$ubsan_needs_no_function" = yes; then
+      CFLAGS="$CFLAGS -fno-sanitize=function"
+      CXXFLAGS="$CFLAGS -fno-sanitize=function"
+    fi
   ], [AC_MSG_ERROR([UndefinedBehaviorSanitizer is not available])])
 fi
 
@@ -1633,7 +1661,7 @@ PHP_ADD_SOURCES(Zend, \
     zend_closures.c zend_weakrefs.c zend_float.c zend_string.c zend_signal.c zend_generators.c \
     zend_virtual_cwd.c zend_ast.c zend_objects.c zend_object_handlers.c zend_objects_API.c \
     zend_default_classes.c zend_inheritance.c zend_smart_str.c zend_cpuinfo.c zend_gdb.c \
-    zend_observer.c zend_system_id.c zend_enum.c zend_fibers.c \
+    zend_observer.c zend_system_id.c zend_enum.c zend_fibers.c zend_max_execution_timer.c \
 	Optimizer/zend_optimizer.c \
 	Optimizer/pass1.c \
 	Optimizer/pass3.c \

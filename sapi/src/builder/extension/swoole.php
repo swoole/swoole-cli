@@ -28,10 +28,8 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBuildCached(false)
+        ->withDependentLibraries(...$dependentLibraries)
+        ->withDependentExtensions(...$dependentExtensions)
     ;
-
-    call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
-    call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
-
     $p->addExtension($ext);
 };
