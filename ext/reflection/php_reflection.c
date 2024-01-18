@@ -639,6 +639,7 @@ static int format_default_value(smart_str *str, zval *value) {
 		} ZEND_HASH_FOREACH_END();
 		smart_str_appendc(str, ']');
 	} else if (Z_TYPE_P(value) == IS_OBJECT) {
+		/* This branch may only be reached for default properties, which don't support arbitrary objects. */
 		zend_object *obj = Z_OBJ_P(value);
 		zend_class_entry *class = obj->ce;
 		ZEND_ASSERT(class->ce_flags & ZEND_ACC_ENUM);
@@ -1747,6 +1748,9 @@ ZEND_METHOD(ReflectionFunctionAbstract, getClosureUsedVariables)
 		}
 
 		zend_op *opline = ops->opcodes + ops->num_args;
+		if (ops->fn_flags & ZEND_ACC_VARIADIC) {
+			opline++;
+		}
 
 		for (; opline->opcode == ZEND_BIND_STATIC; opline++)  {
 			if (!(opline->extended_value & (ZEND_BIND_IMPLICIT|ZEND_BIND_EXPLICIT))) {
@@ -6795,7 +6799,7 @@ ZEND_METHOD(ReflectionEnum, getCase)
 
 	GET_REFLECTION_OBJECT_PTR(ce);
 
-	zend_class_constant *constant = zend_hash_find_ptr(&ce->constants_table, name);
+	zend_class_constant *constant = zend_hash_find_ptr(CE_CONSTANTS_TABLE(ce), name);
 	if (constant == NULL) {
 		zend_throw_exception_ex(reflection_exception_ptr, 0, "Case %s::%s does not exist", ZSTR_VAL(ce->name), ZSTR_VAL(name));
 		RETURN_THROWS();
@@ -6822,7 +6826,7 @@ ZEND_METHOD(ReflectionEnum, getCases)
 	GET_REFLECTION_OBJECT_PTR(ce);
 
 	array_init(return_value);
-	ZEND_HASH_FOREACH_STR_KEY_PTR(&ce->constants_table, name, constant) {
+	ZEND_HASH_FOREACH_STR_KEY_PTR(CE_CONSTANTS_TABLE(ce), name, constant) {
 		if (ZEND_CLASS_CONST_FLAGS(constant) & ZEND_CLASS_CONST_IS_CASE) {
 			zval class_const;
 			reflection_enum_case_factory(ce, name, constant, &class_const);
@@ -7013,7 +7017,13 @@ ZEND_METHOD(ReflectionFiber, getExecutingLine)
 		prev_execute_data = fiber->execute_data->prev_execute_data;
 	}
 
-	RETURN_LONG(prev_execute_data->opline->lineno);
+	while (prev_execute_data && (!prev_execute_data->func || !ZEND_USER_CODE(prev_execute_data->func->common.type))) {
+		prev_execute_data = prev_execute_data->prev_execute_data;
+	}
+	if (prev_execute_data && prev_execute_data->func && ZEND_USER_CODE(prev_execute_data->func->common.type)) {
+		RETURN_LONG(prev_execute_data->opline->lineno);
+	}
+	RETURN_NULL();
 }
 
 ZEND_METHOD(ReflectionFiber, getExecutingFile)
@@ -7031,7 +7041,13 @@ ZEND_METHOD(ReflectionFiber, getExecutingFile)
 		prev_execute_data = fiber->execute_data->prev_execute_data;
 	}
 
-	RETURN_STR_COPY(prev_execute_data->func->op_array.filename);
+	while (prev_execute_data && (!prev_execute_data->func || !ZEND_USER_CODE(prev_execute_data->func->common.type))) {
+		prev_execute_data = prev_execute_data->prev_execute_data;
+	}
+	if (prev_execute_data && prev_execute_data->func && ZEND_USER_CODE(prev_execute_data->func->common.type)) {
+		RETURN_STR_COPY(prev_execute_data->func->op_array.filename);
+	}
+	RETURN_NULL();
 }
 
 ZEND_METHOD(ReflectionFiber, getCallable)

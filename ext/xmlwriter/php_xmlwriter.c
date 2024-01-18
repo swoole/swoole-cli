@@ -110,6 +110,9 @@ static char *_xmlwriter_get_valid_file_path(char *source, char *resolved_path, i
 	int isFileUri = 0;
 
 	uri = xmlCreateURI();
+	if (uri == NULL) {
+		return NULL;
+	}
 	escsource = xmlURIEscapeStr((xmlChar *)source, (xmlChar *) ":");
 	xmlParseURIReference(uri, (char *)escsource);
 	xmlFree(escsource);
@@ -449,7 +452,7 @@ PHP_FUNCTION(xmlwriter_write_element)
 			if (retval == -1) {
 				RETURN_FALSE;
 			}
-			xmlTextWriterEndElement(ptr);
+			retval = xmlTextWriterEndElement(ptr);
 			if (retval == -1) {
 				RETURN_FALSE;
 			}

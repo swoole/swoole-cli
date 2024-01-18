@@ -302,7 +302,7 @@ tmp-php.ini
 /pool/
 /vendor
 /thirdparty
-/usr
+/var
 /ext/redis
 /ext/memcached
 /ext/imagick

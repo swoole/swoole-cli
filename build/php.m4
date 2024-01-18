@@ -1892,7 +1892,7 @@ AC_DEFUN([PHP_PROG_PHP],[
 
   if test -n "$PHP"; then
     AC_MSG_CHECKING([for php version])
-    php_version=$($PHP -v | head -n1 | cut -d ' ' -f 2)
+    php_version=$($PHP -v | head -n1 | cut -d ' ' -f 2 | cut -d '-' -f 1)
     if test -z "$php_version"; then
       php_version=0.0.0
     fi
@@ -2152,7 +2152,7 @@ EOF
    else
     break
    fi
-   $as_echo "$CURRENT_ARG \\" >>$1
+   AS_ECHO(["$CURRENT_ARG \\"]) >>$1
    CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS $CURRENT_ARG"
   done
   echo '"[$]@"' >> $1
@@ -2700,7 +2700,7 @@ AC_DEFUN([PHP_CHECK_BUILTIN_CPU_INIT], [
   AC_MSG_CHECKING([for __builtin_cpu_init])
 
   AC_LINK_IFELSE([AC_LANG_PROGRAM([], [[
-    return __builtin_cpu_init()? 1 : 0;
+    __builtin_cpu_init();
   ]])], [
     have_builtin_cpu_init=1
     AC_MSG_RESULT([yes])

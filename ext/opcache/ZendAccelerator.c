@@ -354,6 +354,10 @@ static inline void accel_unlock_all(void)
 #ifdef ZEND_WIN32
 	accel_deactivate_sub();
 #else
+	if (lock_file == -1) {
+		return;
+	}
+
 	struct flock mem_usage_unlock_all;
 
 	mem_usage_unlock_all.l_type = F_UNLCK;
@@ -1318,6 +1322,7 @@ int zend_accel_invalidate(zend_string *filename, bool force)
 {
 	zend_string *realpath;
 	zend_persistent_script *persistent_script;
+	zend_bool file_found = true;
 
 	if (!ZCG(accelerator_enabled) || accelerator_shm_read_lock() != SUCCESS) {
 		return FAILURE;
@@ -1326,7 +1331,10 @@ int zend_accel_invalidate(zend_string *filename, bool force)
 	realpath = accelerator_orig_zend_resolve_path(filename);
 
 	if (!realpath) {
-		return FAILURE;
+		//file could have been deleted, but we still need to invalidate it.
+		//so instead of failing, just use the provided filename for the lookup
+		realpath = zend_string_copy(filename);
+		file_found = false;
 	}
 
 	if (ZCG(accel_directives).file_cache) {
@@ -1362,12 +1370,13 @@ int zend_accel_invalidate(zend_string *filename, bool force)
 
 		file_handle.opened_path = NULL;
 		zend_destroy_file_handle(&file_handle);
+		file_found = true;
 	}
 
 	accelerator_shm_read_unlock();
 	zend_string_release_ex(realpath, 0);
 
-	return SUCCESS;
+	return file_found ? SUCCESS : FAILURE;
 }
 
 static zend_string* accel_new_interned_key(zend_string *key)
@@ -2354,18 +2363,18 @@ static zend_class_entry* zend_accel_inheritance_cache_add(zend_class_entry *ce, 
 	SHM_UNPROTECT();
 	zend_shared_alloc_lock();
 
-	entry = ce->inheritance_cache;
+	entry = proto->inheritance_cache;
 	while (entry) {
-		entry = zend_accel_inheritance_cache_find(entry, ce, parent, traits_and_interfaces, &needs_autoload);
+		entry = zend_accel_inheritance_cache_find(entry, proto, parent, traits_and_interfaces, &needs_autoload);
 		if (entry) {
+			zend_shared_alloc_unlock();
+			SHM_PROTECT();
 			if (!needs_autoload) {
-				zend_shared_alloc_unlock();
-				SHM_PROTECT();
-
 				zend_map_ptr_extend(ZCSG(map_ptr_last));
 				return entry->ce;
+			} else {
+				return NULL;
 			}
-			ZEND_ASSERT(0); // entry = entry->next; // This shouldn't be posible ???
 		}
 	}
 
@@ -2852,15 +2861,15 @@ static int zend_accel_init_shm(void)
 	zend_shared_alloc_lock();
 
 	if (ZCG(accel_directives).interned_strings_buffer) {
-		accel_shared_globals = zend_shared_alloc((ZCG(accel_directives).interned_strings_buffer * 1024 * 1024));
+		accel_shared_globals = zend_shared_alloc(sizeof(zend_accel_shared_globals) + (ZCG(accel_directives).interned_strings_buffer * 1024 * 1024));
 	} else {
 		/* Make sure there is always at least one interned string hash slot,
 		 * so the table can be queried unconditionally. */
 		accel_shared_globals = zend_shared_alloc(sizeof(zend_accel_shared_globals) + sizeof(uint32_t));
 	}
 	if (!accel_shared_globals) {
-		zend_accel_error_noreturn(ACCEL_LOG_FATAL, "Insufficient shared memory!");
 		zend_shared_alloc_unlock();
+		zend_accel_error_noreturn(ACCEL_LOG_FATAL, "Insufficient shared memory!");
 		return FAILURE;
 	}
 	memset(accel_shared_globals, 0, sizeof(zend_accel_shared_globals));
@@ -2889,7 +2898,7 @@ static int zend_accel_init_shm(void)
 		ZCSG(interned_strings).top =
 			ZCSG(interned_strings).start;
 		ZCSG(interned_strings).end =
-			(zend_string*)((char*)accel_shared_globals +
+			(zend_string*)((char*)(accel_shared_globals + 1) + /* table data is stored after accel_shared_globals */
 				ZCG(accel_directives).interned_strings_buffer * 1024 * 1024);
 		ZCSG(interned_strings).saved_top = NULL;
 
@@ -3029,7 +3038,7 @@ static void accel_move_code_to_huge_pages(void)
 		int ret;
 
 		while (1) {
-			ret = fscanf(f, "%lx-%lx %4s %lx %9s %ld %s\n", &start, &end, perm, &offset, dev, &inode, name);
+			ret = fscanf(f, "%lx-%lx %4s %lx %9s %lu %s\n", &start, &end, perm, &offset, dev, &inode, name);
 			if (ret == 7) {
 				if (perm[0] == 'r' && perm[1] == '-' && perm[2] == 'x' && name[0] == '/') {
 					long unsigned int  seg_start = ZEND_MM_ALIGNED_SIZE_EX(start, huge_page_size);
@@ -3197,7 +3206,7 @@ static zend_result accel_post_startup(void)
 			size_t page_size;
 
 			page_size = zend_get_page_size();
-			if (!page_size && (page_size & (page_size - 1))) {
+			if (!page_size || (page_size & (page_size - 1))) {
 				zend_accel_error_noreturn(ACCEL_LOG_FATAL, "Failure to initialize shared memory structures - can't get page size.");
 				abort();
 			}
@@ -3261,6 +3270,11 @@ static zend_result accel_post_startup(void)
 			 || zend_jit_startup(ZSMMG(reserved), jit_size, reattached) != SUCCESS) {
 				JIT_G(enabled) = 0;
 				JIT_G(on) = 0;
+				/* The JIT is implicitly disabled with opcache.jit_buffer_size=0, so we don't want to
+				 * emit a warning here. */
+				if (JIT_G(buffer_size) != 0) {
+					zend_accel_error(ACCEL_LOG_WARNING, "Could not enable JIT!");
+				}
 			}
 		}
 #endif
@@ -3975,7 +3989,7 @@ static void preload_link(void)
 			if (ce->type == ZEND_INTERNAL_CLASS) {
 				break;
 			}
-			if (!(ce->ce_flags & ZEND_ACC_CONSTANTS_UPDATED)) {
+			if ((ce->ce_flags & ZEND_ACC_LINKED) && !(ce->ce_flags & ZEND_ACC_CONSTANTS_UPDATED)) {
 				if (!(ce->ce_flags & ZEND_ACC_TRAIT)) { /* don't update traits */
 					CG(in_compilation) = 1; /* prevent autoloading */
 					if (preload_try_resolve_constants(ce)) {
@@ -4444,6 +4458,8 @@ static int accel_preload(const char *config, bool in_child)
 
 		if (PG(auto_globals_jit)) {
 			ping_auto_globals_mask = zend_accel_get_auto_globals();
+		} else {
+			ping_auto_globals_mask = 0;
 		}
 
 		if (EG(zend_constants)) {
@@ -4774,6 +4790,8 @@ static int accel_finish_startup(void)
 			SIGG(check) = 0;
 #endif
 			php_request_shutdown(NULL); /* calls zend_shared_alloc_unlock(); */
+			EG(class_table) = NULL;
+			EG(function_table) = NULL;
 			PG(report_memleaks) = orig_report_memleaks;
 		} else {
 			zend_shared_alloc_unlock();

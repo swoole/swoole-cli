@@ -50,6 +50,8 @@
 # define NSIG 32
 #endif
 
+#include "Zend/zend_max_execution_timer.h"
+
 ZEND_DECLARE_MODULE_GLOBALS(pcntl)
 static PHP_GINIT_FUNCTION(pcntl);
 
@@ -485,10 +487,18 @@ PHP_MSHUTDOWN_FUNCTION(pcntl)
 PHP_RSHUTDOWN_FUNCTION(pcntl)
 {
 	struct php_pcntl_pending_signal *sig;
+	zend_long signo;
+	zval *handle;
 
-	/* FIXME: if a signal is delivered after this point, things will go pear shaped;
-	 * need to remove signal handlers */
+	/* Reset all signals to their default disposition */
+	ZEND_HASH_FOREACH_NUM_KEY_VAL(&PCNTL_G(php_signal_table), signo, handle) {
+		if (Z_TYPE_P(handle) != IS_LONG || Z_LVAL_P(handle) != (zend_long)SIG_DFL) {
+			php_signal(signo, (Sigfunc *)(zend_long)SIG_DFL, 0);
+		}
+	} ZEND_HASH_FOREACH_END();
+
 	zend_hash_destroy(&PCNTL_G(php_signal_table));
+
 	while (PCNTL_G(head)) {
 		sig = PCNTL_G(head);
 		PCNTL_G(head) = sig->next;
@@ -499,6 +509,7 @@ PHP_RSHUTDOWN_FUNCTION(pcntl)
 		PCNTL_G(spares) = sig->next;
 		efree(sig);
 	}
+
 	return SUCCESS;
 }
 
@@ -522,6 +533,8 @@ PHP_FUNCTION(pcntl_fork)
 	if (id == -1) {
 		PCNTL_G(last_error) = errno;
 		php_error_docref(NULL, E_WARNING, "Error %d", errno);
+	} else if (id == 0) {
+		zend_max_execution_timer_init();
 	}
 
 	RETURN_LONG((zend_long) id);
@@ -1325,9 +1338,7 @@ static void pcntl_signal_handler(int signo, siginfo_t *siginfo, void *context)
 static void pcntl_signal_handler(int signo)
 #endif
 {
-	struct php_pcntl_pending_signal *psig;
-
-	psig = PCNTL_G(spares);
+	struct php_pcntl_pending_signal *psig = PCNTL_G(spares);
 	if (!psig) {
 		/* oops, too many signals for us to track, so we'll forget about this one */
 		return;

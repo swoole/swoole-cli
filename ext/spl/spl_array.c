@@ -29,7 +29,6 @@
 #include "php_spl.h"
 #include "spl_array_arginfo.h"
 #include "spl_functions.h"
-#include "spl_engine.h"
 #include "spl_iterators.h"
 #include "spl_array.h"
 #include "spl_exceptions.h"
@@ -63,6 +62,8 @@ typedef struct _spl_array_object {
 	uint32_t          ht_iter;
 	int               ar_flags;
 	unsigned char	  nApplyCount;
+	bool			  is_child;
+	Bucket			  *bucket;
 	zend_function     *fptr_offset_get;
 	zend_function     *fptr_offset_set;
 	zend_function     *fptr_offset_has;
@@ -71,6 +72,13 @@ typedef struct _spl_array_object {
 	zend_class_entry* ce_get_iterator;
 	zend_object       std;
 } spl_array_object;
+
+typedef struct _spl_array_iterator {
+	zend_object_iterator it;
+	zend_class_entry *ce;
+	zval value;
+	bool by_ref;
+} spl_array_iterator;
 
 static inline spl_array_object *spl_array_from_obj(zend_object *obj) /* {{{ */ {
 	return (spl_array_object*)((char*)(obj) - XtOffsetOf(spl_array_object, std));
@@ -167,6 +175,8 @@ static zend_object *spl_array_object_new_ex(zend_class_entry *class_type, zend_o
 	object_properties_init(&intern->std, class_type);
 
 	intern->ar_flags = 0;
+	intern->is_child = false;
+	intern->bucket = NULL;
 	intern->ce_get_iterator = spl_ce_ArrayIterator;
 	if (orig) {
 		spl_array_object *other = spl_array_from_obj(orig);
@@ -477,6 +487,22 @@ static zval *spl_array_read_dimension(zend_object *object, zval *offset, int typ
 	return spl_array_read_dimension_ex(1, object, offset, type, rv);
 } /* }}} */
 
+/*
+ * The assertion(HT_ASSERT_RC1(ht)) failed because the refcount was increased manually when intern->is_child is true.
+ * We have to set the refcount to 1 to make assertion success and restore the refcount to the original value after
+ * modifying the array when intern->is_child is true.
+ */
+static uint32_t spl_array_set_refcount(bool is_child, HashTable *ht, uint32_t refcount) /* {{{ */
+{
+	uint32_t old_refcount = 0;
+	if (is_child) {
+		old_refcount = GC_REFCOUNT(ht);
+		GC_SET_REFCOUNT(ht, refcount);
+	}
+
+	return old_refcount;
+} /* }}} */
+
 static void spl_array_write_dimension_ex(int check_inherited, zend_object *object, zval *offset, zval *value) /* {{{ */
 {
 	spl_array_object *intern = spl_array_from_obj(object);
@@ -500,9 +526,16 @@ static void spl_array_write_dimension_ex(int check_inherited, zend_object *objec
 	}
 
 	Z_TRY_ADDREF_P(value);
+
+	uint32_t refcount = 0;
 	if (!offset || Z_TYPE_P(offset) == IS_NULL) {
 		ht = spl_array_get_hash_table(intern);
+		refcount = spl_array_set_refcount(intern->is_child, ht, 1);
 		zend_hash_next_index_insert(ht, value);
+
+		if (refcount) {
+			spl_array_set_refcount(intern->is_child, ht, refcount);
+		}
 		return;
 	}
 
@@ -513,11 +546,16 @@ static void spl_array_write_dimension_ex(int check_inherited, zend_object *objec
 	}
 
 	ht = spl_array_get_hash_table(intern);
+	refcount = spl_array_set_refcount(intern->is_child, ht, 1);
 	if (key.key) {
 		zend_hash_update_ind(ht, key.key, value);
 		spl_hash_key_release(&key);
 	} else {
 		zend_hash_index_update(ht, key.h, value);
+	}
+
+	if (refcount) {
+		spl_array_set_refcount(intern->is_child, ht, refcount);
 	}
 } /* }}} */
 
@@ -548,6 +586,8 @@ static void spl_array_unset_dimension_ex(int check_inherited, zend_object *objec
 	}
 
 	ht = spl_array_get_hash_table(intern);
+	uint32_t refcount = spl_array_set_refcount(intern->is_child, ht, 1);
+
 	if (key.key) {
 		zval *data = zend_hash_find(ht, key.key);
 		if (data) {
@@ -569,6 +609,10 @@ static void spl_array_unset_dimension_ex(int check_inherited, zend_object *objec
 		spl_hash_key_release(&key);
 	} else {
 		zend_hash_index_del(ht, key.h);
+	}
+
+	if (refcount) {
+		spl_array_set_refcount(intern->is_child, ht, refcount);
 	}
 } /* }}} */
 
@@ -970,18 +1014,42 @@ static int spl_array_it_valid(zend_object_iterator *iter) /* {{{ */
 
 static zval *spl_array_it_get_current_data(zend_object_iterator *iter) /* {{{ */
 {
+	spl_array_iterator *array_iter = (spl_array_iterator*)iter;
 	spl_array_object *object = Z_SPLARRAY_P(&iter->data);
 	HashTable *aht = spl_array_get_hash_table(object);
 
+	zval *data;
 	if (object->ar_flags & SPL_ARRAY_OVERLOADED_CURRENT) {
-		return zend_user_it_get_current_data(iter);
+		data = zend_user_it_get_current_data(iter);
 	} else {
-		zval *data = zend_hash_get_current_data_ex(aht, spl_array_get_pos_ptr(aht, object));
+		data = zend_hash_get_current_data_ex(aht, spl_array_get_pos_ptr(aht, object));
 		if (data && Z_TYPE_P(data) == IS_INDIRECT) {
 			data = Z_INDIRECT_P(data);
 		}
-		return data;
 	}
+	// ZEND_FE_FETCH_RW converts the value to a reference but doesn't know the source is a property.
+	// Typed properties must add a type source to the reference, and readonly properties must fail.
+	if (array_iter->by_ref
+	 && Z_TYPE_P(data) != IS_REFERENCE
+	 && Z_TYPE(object->array) == IS_OBJECT
+	 && !(object->ar_flags & (SPL_ARRAY_IS_SELF|SPL_ARRAY_USE_OTHER))) {
+		zend_string *key;
+		zend_hash_get_current_key_ex(aht, &key, NULL, spl_array_get_pos_ptr(aht, object));
+		zend_class_entry *ce = Z_OBJCE(object->array);
+		zend_property_info *prop_info = zend_get_property_info(ce, key, true);
+		ZEND_ASSERT(prop_info != ZEND_WRONG_PROPERTY_INFO);
+		if (EXPECTED(prop_info != NULL) && ZEND_TYPE_IS_SET(prop_info->type)) {
+			if (prop_info->flags & ZEND_ACC_READONLY) {
+				zend_throw_error(NULL,
+					"Cannot acquire reference to readonly property %s::$%s",
+					ZSTR_VAL(prop_info->ce->name), ZSTR_VAL(key));
+				return NULL;
+			}
+			ZVAL_NEW_REF(data, data);
+			ZEND_REF_ADD_TYPE_SOURCE(Z_REF_P(data), prop_info);
+		}
+	}
+	return data;
 }
 /* }}} */
 
@@ -1058,6 +1126,15 @@ static void spl_array_set_array(zval *object, spl_array_object *intern, zval *ar
 		} else {
 			//??? TODO: try to avoid array duplication
 			ZVAL_ARR(&intern->array, zend_array_dup(Z_ARR_P(array)));
+
+			if (intern->is_child) {
+				Z_TRY_DELREF(intern->bucket->val);
+				/*
+				 * replace bucket->val with copied array, so the changes between
+				 * parent and child object can affect each other.
+				 */
+				ZVAL_COPY(&intern->bucket->val, &intern->array);
+			}
 		}
 	} else {
 		if (Z_OBJ_HT_P(array) == &spl_handler_ArrayObject || Z_OBJ_HT_P(array) == &spl_handler_ArrayIterator) {
@@ -1109,7 +1186,7 @@ static const zend_object_iterator_funcs spl_array_it_funcs = {
 
 zend_object_iterator *spl_array_get_iterator(zend_class_entry *ce, zval *object, int by_ref) /* {{{ */
 {
-	zend_user_iterator *iterator;
+	spl_array_iterator *iterator;
 	spl_array_object *array_object = Z_SPLARRAY_P(object);
 
 	if (by_ref && (array_object->ar_flags & SPL_ARRAY_OVERLOADED_CURRENT)) {
@@ -1117,7 +1194,7 @@ zend_object_iterator *spl_array_get_iterator(zend_class_entry *ce, zval *object,
 		return NULL;
 	}
 
-	iterator = emalloc(sizeof(zend_user_iterator));
+	iterator = emalloc(sizeof(*iterator));
 
 	zend_iterator_init(&iterator->it);
 
@@ -1125,6 +1202,7 @@ zend_object_iterator *spl_array_get_iterator(zend_class_entry *ce, zval *object,
 	iterator->it.funcs = &spl_array_it_funcs;
 	iterator->ce = ce;
 	ZVAL_UNDEF(&iterator->value);
+	iterator->by_ref = by_ref;
 
 	return &iterator->it;
 }
@@ -1544,6 +1622,22 @@ PHP_METHOD(RecursiveArrayIterator, hasChildren)
 }
 /* }}} */
 
+static void spl_instantiate_child_arg(zend_class_entry *pce, zval *retval, zval *arg1, zval *arg2) /* {{{ */
+{
+	object_init_ex(retval, pce);
+	spl_array_object *new_intern = Z_SPLARRAY_P(retval);
+	/*
+	 * set new_intern->is_child is true to indicate that the object was created by
+	 * RecursiveArrayIterator::getChildren() method.
+	 */
+	new_intern->is_child = true;
+
+	/* find the bucket of parent object. */
+	new_intern->bucket = (Bucket *)((char *)(arg1) - XtOffsetOf(Bucket, val));;
+	zend_call_known_instance_method_with_2_params(pce->constructor, Z_OBJ_P(retval), NULL, arg1, arg2);
+}
+/* }}} */
+
 /* {{{ Create a sub iterator for the current element (same class as $this) */
 PHP_METHOD(RecursiveArrayIterator, getChildren)
 {
@@ -1574,7 +1668,7 @@ PHP_METHOD(RecursiveArrayIterator, getChildren)
 	}
 
 	ZVAL_LONG(&flags, intern->ar_flags);
-	spl_instantiate_arg_ex2(Z_OBJCE_P(ZEND_THIS), return_value, entry, &flags);
+	spl_instantiate_child_arg(Z_OBJCE_P(ZEND_THIS), return_value, entry, &flags);
 }
 /* }}} */
 

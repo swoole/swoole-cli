@@ -65,7 +65,7 @@
 
 static int mbfl_filt_conv_cp932_wchar_flush(mbfl_convert_filter *filter);
 
-static const unsigned char mblen_table_sjis[] = { /* 0x80-0x9f,0xE0-0xFF */
+static const unsigned char mblen_table_sjis[] = { /* 0x81-0x9f,0xE0-0xFF */
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -74,7 +74,7 @@ static const unsigned char mblen_table_sjis[] = { /* 0x80-0x9f,0xE0-0xFF */
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+  1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -95,7 +95,8 @@ const mbfl_encoding mbfl_encoding_cp932 = {
 	mblen_table_sjis,
 	MBFL_ENCTYPE_GL_UNSAFE,
 	&vtbl_cp932_wchar,
-	&vtbl_wchar_cp932
+	&vtbl_wchar_cp932,
+	NULL
 };
 
 const struct mbfl_convert_vtbl vtbl_cp932_wchar = {
@@ -126,7 +127,8 @@ const mbfl_encoding mbfl_encoding_sjiswin = {
 	mblen_table_sjis,
 	MBFL_ENCTYPE_GL_UNSAFE,
 	&vtbl_sjiswin_wchar,
-	&vtbl_wchar_sjiswin
+	&vtbl_wchar_sjiswin,
+	NULL
 };
 
 const struct mbfl_convert_vtbl vtbl_sjiswin_wchar = {
