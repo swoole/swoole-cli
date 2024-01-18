@@ -86,7 +86,6 @@ jobs:
           sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Prepare swoole-cli-builder-image
-        if: 1
         run: |
           if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
               docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
