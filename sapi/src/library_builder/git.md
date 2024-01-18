@@ -131,3 +131,10 @@ git rm -rf .
 ```bash
 git merge  --allow-unrelated-histories
 ```
+
+## 查看提交日志
+```bash
+
+git log --oneline
+
+```
