@@ -17,7 +17,7 @@ cd ${__PROJECT__}/var/build-github-action-container/
 cp -f ${__PROJECT__}/sapi/quickstart/linux/debian-init.sh .
 
 cat > Dockerfile <<'EOF'
-FROM debian:stable-20240110-slim
+FROM debian:unstable-20240110-slim
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV TZ=Etc/UTC
