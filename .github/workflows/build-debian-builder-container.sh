@@ -15,6 +15,7 @@ mkdir -p var/build-github-action-container/
 cd ${__PROJECT__}/var/build-github-action-container/
 
 cp -f ${__PROJECT__}/sapi/quickstart/linux/debian-init.sh .
+cp -f ${__PROJECT__}/sapi/quickstart/linux/extra/debian-php-init.sh .
 
 cat > Dockerfile <<'EOF'
 FROM debian:unstable-20240110-slim
@@ -27,6 +28,9 @@ ADD ./debian-init.sh /debian-init.sh
 
 RUN bash /debian-init.sh
 # RUN sh /debian-init.sh --mirror china
+
+ADD ./debian-php-init.sh /debian-php-init.sh
+RUN bash /debian-php-init.sh
 
 RUN uname -m
 RUN mkdir /work
