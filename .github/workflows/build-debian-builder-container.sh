@@ -81,3 +81,5 @@ linux/riscv64
 linux/s390x
 EOF
 
+# Debian 全球镜像站
+# https://www.debian.org/mirror/list
