@@ -1,4 +1,4 @@
-name: build-php-cli-linux-riscv
+name: build-swoole-cli-linux-riscv
 
 on: [ push, pull_request ]
 

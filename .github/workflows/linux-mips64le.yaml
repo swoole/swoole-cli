@@ -1,4 +1,4 @@
-name: build-php-cli-linux-mips64le
+name: build-swoole-cli-linux-mips64le
 
 on: [ push, pull_request ]
 
