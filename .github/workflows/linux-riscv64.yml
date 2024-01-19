@@ -1,4 +1,4 @@
-name: build-swoole-cli-linux-riscv
+name: build-swoole-cli-linux-riscv64
 
 on: [ push, pull_request ]
 

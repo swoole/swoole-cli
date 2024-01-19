@@ -87,11 +87,13 @@ fi
 
 test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 
+export DEBIAN_FRONTEND=noninteractive
 
-export LANG="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
-export DEBIAN_FRONTEND=noninteractive
+export LANG="en_US.UTF-8"
+
 export TZ="UTC"
 export TZ="Etc/UTC"
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
