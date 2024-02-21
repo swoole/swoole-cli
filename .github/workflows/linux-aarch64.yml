@@ -52,6 +52,7 @@ jobs:
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
+        id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
@@ -176,12 +177,19 @@ jobs:
           echo $APP_VERSION
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
 
+      - name: production artifacts debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64-debug
+          retention-days: 90
+          path: ./bin/swoole-cli
+
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64
           retention-days: 90
-          path: ./bin/swoole-cli
+          path: ./bin/dist/swoole-cli
 
       - name: gh release
         uses: softprops/action-gh-release@v1

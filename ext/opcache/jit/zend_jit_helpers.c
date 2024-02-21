@@ -1135,7 +1135,8 @@ try_string_offset:
 				goto try_string_offset;
 			default:
 				zend_jit_illegal_string_offset(dim);
-				break;
+				ZVAL_NULL(result);
+				return;
 		}
 
 		offset = zval_get_long_func(dim, /* is_strict */ false);
@@ -1938,7 +1939,7 @@ static void ZEND_FASTCALL zend_jit_fetch_obj_is_dynamic(zend_object *zobj, intpt
 		if (EXPECTED(retval)) {
 			intptr_t idx = (char*)retval - (char*)zobj->properties->arData;
 			CACHE_PTR_EX(cache_slot + 1, (void*)ZEND_ENCODE_DYN_PROP_OFFSET(idx));
-			ZVAL_COPY(result, retval);
+			ZVAL_COPY_DEREF(result, retval);
 			return;
 		}
 	}
@@ -2655,6 +2656,13 @@ static ZEND_COLD zend_long _zend_jit_throw_dec_prop_error(zend_property_info *pr
 
 static void ZEND_FASTCALL zend_jit_inc_typed_prop(zval *var_ptr, zend_property_info *prop_info)
 {
+	ZEND_ASSERT(Z_TYPE_P(var_ptr) != IS_UNDEF);
+
+	if (UNEXPECTED((prop_info->flags & ZEND_ACC_READONLY))) {
+		zend_readonly_property_modification_error(prop_info);
+		return;
+	}
+
 	zend_execute_data *execute_data = EG(current_execute_data);
 	zval tmp;
 
@@ -2678,6 +2686,13 @@ static void ZEND_FASTCALL zend_jit_inc_typed_prop(zval *var_ptr, zend_property_i
 
 static void ZEND_FASTCALL zend_jit_dec_typed_prop(zval *var_ptr, zend_property_info *prop_info)
 {
+	ZEND_ASSERT(Z_TYPE_P(var_ptr) != IS_UNDEF);
+
+	if (UNEXPECTED((prop_info->flags & ZEND_ACC_READONLY))) {
+		zend_readonly_property_modification_error(prop_info);
+		return;
+	}
+
 	zend_execute_data *execute_data = EG(current_execute_data);
 	zval tmp;
 
@@ -2715,6 +2730,16 @@ static void ZEND_FASTCALL zend_jit_pre_dec_typed_prop(zval *var_ptr, zend_proper
 
 static void ZEND_FASTCALL zend_jit_post_inc_typed_prop(zval *var_ptr, zend_property_info *prop_info, zval *result)
 {
+	ZEND_ASSERT(Z_TYPE_P(var_ptr) != IS_UNDEF);
+
+	if (UNEXPECTED((prop_info->flags & ZEND_ACC_READONLY))) {
+		zend_readonly_property_modification_error(prop_info);
+		if (result) {
+			ZVAL_UNDEF(result);
+		}
+		return;
+	}
+
 	zend_execute_data *execute_data = EG(current_execute_data);
 
 	ZVAL_DEREF(var_ptr);
@@ -2736,6 +2761,16 @@ static void ZEND_FASTCALL zend_jit_post_inc_typed_prop(zval *var_ptr, zend_prope
 
 static void ZEND_FASTCALL zend_jit_post_dec_typed_prop(zval *var_ptr, zend_property_info *prop_info, zval *result)
 {
+	ZEND_ASSERT(Z_TYPE_P(var_ptr) != IS_UNDEF);
+
+	if (UNEXPECTED((prop_info->flags & ZEND_ACC_READONLY))) {
+		zend_readonly_property_modification_error(prop_info);
+		if (result) {
+			ZVAL_UNDEF(result);
+		}
+		return;
+	}
+
 	zend_execute_data *execute_data = EG(current_execute_data);
 
 	ZVAL_DEREF(var_ptr);
@@ -3035,7 +3070,19 @@ static zend_result ZEND_FASTCALL zval_jit_update_constant_ex(zval *p, zend_class
 		} else {
 			zval tmp;
 
-			if (UNEXPECTED(zend_ast_evaluate(&tmp, ast, scope) != SUCCESS)) {
+			// Increase the refcount during zend_ast_evaluate to avoid releasing the ast too early
+			// on nested calls to zval_update_constant_ex which can happen when retriggering ast
+			// evaluation during autoloading.
+			zend_ast_ref *ast_ref = Z_AST_P(p);
+			bool ast_is_refcounted = !(GC_FLAGS(ast_ref) & GC_IMMUTABLE);
+			if (ast_is_refcounted) {
+				GC_ADDREF(ast_ref);
+			}
+			zend_result result = zend_ast_evaluate(&tmp, ast, scope);
+			if (ast_is_refcounted && !GC_DELREF(ast_ref)) {
+				rc_dtor_func((zend_refcounted *)ast_ref);
+			}
+			if (UNEXPECTED(result != SUCCESS)) {
 				return FAILURE;
 			}
 			zval_ptr_dtor_nogc(p);

@@ -97,7 +97,7 @@ PHP_METHOD(DOMElement, __construct)
 	intern = Z_DOMOBJ_P(ZEND_THIS);
 	oldnode = dom_object_get_node(intern);
 	if (oldnode != NULL) {
-		php_libxml_node_free_resource(oldnode );
+		php_libxml_node_decrement_resource((php_libxml_node_object *)intern);
 	}
 	php_libxml_increment_node_ptr((php_libxml_node_object *)intern, nodep, (void *)intern);
 }
@@ -150,6 +150,7 @@ int dom_element_schema_type_info_read(dom_object *obj, zval *retval)
 
 /* }}} */
 
+/* Note: the object returned is not necessarily a node, but can be an attribute or a namespace declaration. */
 static xmlNodePtr dom_get_dom1_attribute(xmlNodePtr elem, xmlChar *name) /* {{{ */
 {
 	int len;
@@ -376,25 +377,13 @@ PHP_METHOD(DOMElement, getAttributeNode)
 	}
 
 	if (attrp->type == XML_NAMESPACE_DECL) {
-		xmlNsPtr curns;
-		xmlNodePtr nsparent;
-
-		nsparent = attrp->_private;
-		curns = xmlNewNs(NULL, attrp->name, NULL);
-		if (attrp->children) {
-			curns->prefix = xmlStrdup((xmlChar *) attrp->children);
-		}
-		if (attrp->children) {
-			attrp = xmlNewDocNode(nodep->doc, NULL, (xmlChar *) attrp->children, attrp->name);
-		} else {
-			attrp = xmlNewDocNode(nodep->doc, NULL, (xmlChar *)"xmlns", attrp->name);
-		}
-		attrp->type = XML_NAMESPACE_DECL;
-		attrp->parent = nsparent;
-		attrp->ns = curns;
+		xmlNsPtr original = (xmlNsPtr) attrp;
+		/* Keep parent alive, because we're a fake child. */
+		GC_ADDREF(&intern->std);
+		(void) php_dom_create_fake_namespace_decl(nodep, original, return_value, intern);
+	} else {
+		DOM_RET_OBJ((xmlNodePtr) attrp, &ret, intern);
 	}
-
-	DOM_RET_OBJ((xmlNodePtr) attrp, &ret, intern);
 }
 /* }}} end dom_element_get_attribute_node */
 
@@ -735,6 +724,83 @@ PHP_METHOD(DOMElement, setAttributeNS)
 }
 /* }}} end dom_element_set_attribute_ns */
 
+static void dom_remove_eliminated_ns_single_element(xmlNodePtr node, xmlNsPtr eliminatedNs)
+{
+	ZEND_ASSERT(node->type == XML_ELEMENT_NODE);
+	if (node->ns == eliminatedNs) {
+		node->ns = NULL;
+	}
+
+	for (xmlAttrPtr attr = node->properties; attr != NULL; attr = attr->next) {
+		if (attr->ns == eliminatedNs) {
+			attr->ns = NULL;
+		}
+	}
+}
+
+static void dom_remove_eliminated_ns(xmlNodePtr node, xmlNsPtr eliminatedNs)
+{
+	dom_remove_eliminated_ns_single_element(node, eliminatedNs);
+
+	xmlNodePtr base = node;
+	node = node->children;
+	while (node != NULL) {
+		ZEND_ASSERT(node != base);
+
+		if (node->type == XML_ELEMENT_NODE) {
+			dom_remove_eliminated_ns_single_element(node, eliminatedNs);
+
+			if (node->children) {
+				node = node->children;
+				continue;
+			}
+		}
+
+		if (node->next) {
+			node = node->next;
+		} else {
+			/* Go upwards, until we find a parent node with a next sibling, or until we hit the base. */
+			do {
+				node = node->parent;
+				if (node == base) {
+					return;
+				}
+			} while (node->next == NULL);
+			node = node->next;
+		}
+	}
+}
+
+static void dom_eliminate_ns(xmlNodePtr nodep, xmlNsPtr nsptr)
+{
+	if (nsptr->href != NULL) {
+		xmlFree((char *) nsptr->href);
+		nsptr->href = NULL;
+	}
+	if (nsptr->prefix != NULL) {
+		xmlFree((char *) nsptr->prefix);
+		nsptr->prefix = NULL;
+	}
+
+	/* Remove it from the list and move it to the old ns list */
+	xmlNsPtr current_ns = nodep->nsDef;
+	if (current_ns == nsptr) {
+		nodep->nsDef = nsptr->next;
+	} else {
+		do {
+			if (current_ns->next == nsptr) {
+				current_ns->next = nsptr->next;
+				break;
+			}
+			current_ns = current_ns->next;
+		} while (current_ns != NULL);
+	}
+	nsptr->next = NULL;
+	dom_set_old_ns(nodep->doc, nsptr);
+
+	dom_remove_eliminated_ns(nodep, nsptr);
+}
+
 /* {{{ URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-ElRemAtNS
 Since: DOM Level 2
 */
@@ -765,14 +831,7 @@ PHP_METHOD(DOMElement, removeAttributeNS)
 	nsptr = dom_get_nsdecl(nodep, (xmlChar *)name);
 	if (nsptr != NULL) {
 		if (xmlStrEqual((xmlChar *)uri, nsptr->href)) {
-			if (nsptr->href != NULL) {
-				xmlFree((char *) nsptr->href);
-				nsptr->href = NULL;
-			}
-			if (nsptr->prefix != NULL) {
-				xmlFree((char *) nsptr->prefix);
-				nsptr->prefix = NULL;
-			}
+			dom_eliminate_ns(nodep, nsptr);
 		} else {
 			RETURN_NULL();
 		}
@@ -798,7 +857,7 @@ Since: DOM Level 2
 PHP_METHOD(DOMElement, getAttributeNodeNS)
 {
 	zval *id;
-	xmlNodePtr elemp, fakeAttrp;
+	xmlNodePtr elemp;
 	xmlAttrPtr attrp;
 	dom_object *intern;
 	size_t uri_len, name_len;
@@ -819,21 +878,9 @@ PHP_METHOD(DOMElement, getAttributeNodeNS)
 			xmlNsPtr nsptr;
 			nsptr = dom_get_nsdecl(elemp, (xmlChar *)name);
 			if (nsptr != NULL) {
-				xmlNsPtr curns;
-				curns = xmlNewNs(NULL, nsptr->href, NULL);
-				if (nsptr->prefix) {
-					curns->prefix = xmlStrdup((xmlChar *) nsptr->prefix);
-				}
-				if (nsptr->prefix) {
-					fakeAttrp = xmlNewDocNode(elemp->doc, NULL, (xmlChar *) nsptr->prefix, nsptr->href);
-				} else {
-					fakeAttrp = xmlNewDocNode(elemp->doc, NULL, (xmlChar *)"xmlns", nsptr->href);
-				}
-				fakeAttrp->type = XML_NAMESPACE_DECL;
-				fakeAttrp->parent = elemp;
-				fakeAttrp->ns = curns;
-
-				DOM_RET_OBJ(fakeAttrp, &ret, intern);
+				/* Keep parent alive, because we're a fake child. */
+				GC_ADDREF(&intern->std);
+				(void) php_dom_create_fake_namespace_decl(elemp, nsptr, return_value, intern);
 			} else {
 				RETURN_NULL();
 			}
@@ -885,7 +932,7 @@ PHP_METHOD(DOMElement, setAttributeNodeNS)
 
 	nsp = attrp->ns;
 	if (nsp != NULL) {
-		existattrp = xmlHasNsProp(nodep, nsp->href, attrp->name);
+		existattrp = xmlHasNsProp(nodep, attrp->name, nsp->href);
 	} else {
 		existattrp = xmlHasProp(nodep, attrp->name);
 	}
@@ -1160,12 +1207,12 @@ PHP_METHOD(DOMElement, remove)
 
 PHP_METHOD(DOMElement, after)
 {
-	int argc;
+	int argc = 0;
 	zval *args, *id;
 	dom_object *intern;
 	xmlNode *context;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "+", &args, &argc) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "*", &args, &argc) == FAILURE) {
 		RETURN_THROWS();
 	}
 
@@ -1177,12 +1224,12 @@ PHP_METHOD(DOMElement, after)
 
 PHP_METHOD(DOMElement, before)
 {
-	int argc;
+	int argc = 0;
 	zval *args, *id;
 	dom_object *intern;
 	xmlNode *context;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "+", &args, &argc) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "*", &args, &argc) == FAILURE) {
 		RETURN_THROWS();
 	}
 
@@ -1197,12 +1244,12 @@ Since: DOM Living Standard (DOM4)
 */
 PHP_METHOD(DOMElement, append)
 {
-	int argc;
+	int argc = 0;
 	zval *args, *id;
 	dom_object *intern;
 	xmlNode *context;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "+", &args, &argc) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "*", &args, &argc) == FAILURE) {
 		RETURN_THROWS();
 	}
 
@@ -1218,12 +1265,12 @@ Since: DOM Living Standard (DOM4)
 */
 PHP_METHOD(DOMElement, prepend)
 {
-	int argc;
+	int argc = 0;
 	zval *args, *id;
 	dom_object *intern;
 	xmlNode *context;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "+", &args, &argc) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "*", &args, &argc) == FAILURE) {
 		RETURN_THROWS();
 	}
 
@@ -1234,25 +1281,24 @@ PHP_METHOD(DOMElement, prepend)
 }
 /* }}} end DOMElement::prepend */
 
-/* {{{ URL: https://dom.spec.whatwg.org/#dom-parentnode-prepend
+/* {{{ URL: https://dom.spec.whatwg.org/#dom-parentnode-replacechildren
 Since: DOM Living Standard (DOM4)
 */
 PHP_METHOD(DOMElement, replaceWith)
 {
-	int argc;
+	int argc = 0;
 	zval *args, *id;
 	dom_object *intern;
 	xmlNode *context;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "+", &args, &argc) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "*", &args, &argc) == FAILURE) {
 		RETURN_THROWS();
 	}
 
 	id = ZEND_THIS;
 	DOM_GET_OBJ(context, id, xmlNodePtr, intern);
 
-	dom_parent_node_after(intern, args, argc);
-	dom_child_node_remove(intern);
+	dom_child_replace_with(intern, args, argc);
 }
 /* }}} end DOMElement::prepend */
 

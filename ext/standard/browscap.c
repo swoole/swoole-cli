@@ -228,7 +228,7 @@ static zend_string *browscap_intern_str(
 	} else {
 		interned = zend_string_copy(str);
 		if (persistent) {
-			interned = zend_new_interned_string(str);
+			interned = zend_new_interned_string(interned);
 		}
 		zend_hash_add_new_ptr(&ctx->str_interned, interned, interned);
 	}
@@ -397,10 +397,6 @@ static void php_browscap_parser_cb(zval *arg1, zval *arg2, zval *arg3, int callb
 }
 /* }}} */
 
-static void str_interned_dtor(zval *zv) {
-	zend_string_release(Z_STR_P(zv));
-}
-
 static int browscap_read_file(char *filename, browser_data *browdata, int persistent) /* {{{ */
 {
 	zend_file_handle fh;
@@ -430,9 +426,11 @@ static int browscap_read_file(char *filename, browser_data *browdata, int persis
 	ctx.bdata = browdata;
 	ctx.current_entry = NULL;
 	ctx.current_section_name = NULL;
-	zend_hash_init(&ctx.str_interned, 8, NULL, str_interned_dtor, persistent);
+	/* No dtor because we don't inc the refcount for the reference stored within the hash table's entry value
+	 * as the hash table is only temporary anyway. */
+	zend_hash_init(&ctx.str_interned, 8, NULL, NULL, persistent);
 
-	zend_parse_ini_file(&fh, 1, ZEND_INI_SCANNER_RAW,
+	zend_parse_ini_file(&fh, persistent, ZEND_INI_SCANNER_RAW,
 			(zend_ini_parser_cb_t) php_browscap_parser_cb, &ctx);
 
 	/* Destroy parser context */
@@ -612,7 +610,7 @@ static int browser_reg_compare(browscap_entry *entry, zend_string *agent_name, b
 	}
 	rc = pcre2_match(re, (PCRE2_SPTR)ZSTR_VAL(agent_name), ZSTR_LEN(agent_name), 0, 0, match_data, php_pcre_mctx());
 	php_pcre_free_match_data(match_data);
-	if (PCRE2_ERROR_NOMATCH != rc) {
+	if (rc >= 0) {
 		/* If we've found a possible browser, we need to do a comparison of the
 		   number of characters changed in the user agent being checked versus
 		   the previous match found and the current match. */

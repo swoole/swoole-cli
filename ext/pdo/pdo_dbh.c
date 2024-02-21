@@ -792,6 +792,9 @@ static bool pdo_dbh_attribute_set(pdo_dbh_t *dbh, zend_long attr, zval *value) /
 				return false;
 			}
 			dbh->stringify = bval;
+			if (dbh->methods->set_attribute) {
+				dbh->methods->set_attribute(dbh, attr, value);
+			}
 			return true;
 
 		case PDO_ATTR_STATEMENT_CLASS: {
@@ -1161,7 +1164,7 @@ PHP_METHOD(PDO, query)
 PHP_METHOD(PDO, quote)
 {
 	pdo_dbh_t *dbh = Z_PDO_DBH_P(ZEND_THIS);
-	zend_string *str;
+	zend_string *str, *quoted;
 	zend_long paramtype = PDO_PARAM_STR;
 
 	ZEND_PARSE_PARAMETERS_START(1, 2)
@@ -1177,8 +1180,14 @@ PHP_METHOD(PDO, quote)
 		pdo_raise_impl_error(dbh, NULL, "IM001", "driver does not support quoting");
 		RETURN_FALSE;
 	}
+	quoted = dbh->methods->quoter(dbh, str, paramtype);
 
-	RETURN_STR(dbh->methods->quoter(dbh, str, paramtype));
+	if (quoted == NULL) {
+		PDO_HANDLE_DBH_ERR();
+		RETURN_FALSE;
+	}
+
+	RETURN_STR(quoted);
 }
 /* }}} */
 

@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
     $p->withBeforeConfigureScript('protobuf', function (Preprocessor $p) {
         // compatible with redis
         $workdir= $p->getWorkDir();
-        if ($p->getOsType() === 'macos') {
+        if ($p->isMacos()) {
             $cmd = <<<EOF
                 cd {$workdir}
                 sed -i '.bak' 's/arginfo_void,/arginfo_void_protobuf,/g' ext/protobuf/*.c ext/protobuf/*.h ext/protobuf/*.inc

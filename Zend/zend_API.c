@@ -2271,7 +2271,8 @@ ZEND_API void zend_collect_module_handlers(void) /* {{{ */
 			post_deactivate_count++;
 		}
 	} ZEND_HASH_FOREACH_END();
-	module_request_startup_handlers = (zend_module_entry**)malloc(
+	module_request_startup_handlers = (zend_module_entry**)realloc(
+		module_request_startup_handlers,
 	    sizeof(zend_module_entry*) *
 		(startup_count + 1 +
 		 shutdown_count + 1 +
@@ -2303,7 +2304,8 @@ ZEND_API void zend_collect_module_handlers(void) /* {{{ */
 		}
 	} ZEND_HASH_FOREACH_END();
 
-	class_cleanup_handlers = (zend_class_entry**)malloc(
+	class_cleanup_handlers = (zend_class_entry**)realloc(
+		class_cleanup_handlers,
 		sizeof(zend_class_entry*) *
 		(class_count + 1));
 	class_cleanup_handlers[class_count] = NULL;
@@ -2329,7 +2331,9 @@ ZEND_API void zend_startup_modules(void) /* {{{ */
 ZEND_API void zend_destroy_modules(void) /* {{{ */
 {
 	free(class_cleanup_handlers);
+	class_cleanup_handlers = NULL;
 	free(module_request_startup_handlers);
+	module_request_startup_handlers = NULL;
 	zend_hash_graceful_reverse_destroy(&module_registry);
 }
 /* }}} */
@@ -4120,6 +4124,9 @@ ZEND_API zend_property_info *zend_declare_typed_property(zend_class_entry *ce, z
 		    (property_info_ptr->flags & ZEND_ACC_STATIC) != 0) {
 			property_info->offset = property_info_ptr->offset;
 			zval_ptr_dtor(&ce->default_static_members_table[property_info->offset]);
+			if (property_info_ptr->doc_comment && property_info_ptr->ce == ce) {
+				zend_string_release(property_info_ptr->doc_comment);
+			}
 			zend_hash_del(&ce->properties_info, name);
 		} else {
 			property_info->offset = ce->default_static_members_count++;
@@ -4142,6 +4149,9 @@ ZEND_API zend_property_info *zend_declare_typed_property(zend_class_entry *ce, z
 		    (property_info_ptr->flags & ZEND_ACC_STATIC) == 0) {
 			property_info->offset = property_info_ptr->offset;
 			zval_ptr_dtor(&ce->default_properties_table[OBJ_PROP_TO_NUM(property_info->offset)]);
+			if (property_info_ptr->doc_comment && property_info_ptr->ce == ce) {
+				zend_string_release_ex(property_info_ptr->doc_comment, 1);
+			}
 			zend_hash_del(&ce->properties_info, name);
 
 			ZEND_ASSERT(ce->type == ZEND_INTERNAL_CLASS);
@@ -4658,7 +4668,7 @@ ZEND_API zend_result zend_update_static_property_ex(zend_class_entry *scope, zen
 ZEND_API zend_result zend_update_static_property(zend_class_entry *scope, const char *name, size_t name_length, zval *value) /* {{{ */
 {
 	zend_string *key = zend_string_init(name, name_length, 0);
-	bool retval = zend_update_static_property_ex(scope, key, value);
+	zend_result retval = zend_update_static_property_ex(scope, key, value);
 	zend_string_efree(key);
 	return retval;
 }

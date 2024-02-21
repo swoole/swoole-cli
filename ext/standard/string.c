@@ -1238,7 +1238,7 @@ PHP_FUNCTION(implode)
 
 	if (pieces == NULL) {
 		if (arg1_array == NULL) {
-			zend_type_error("%s(): Argument #1 ($pieces) must be of type array, string given", get_active_function_name());
+			zend_type_error("%s(): Argument #1 ($array) must be of type array, string given", get_active_function_name());
 			RETURN_THROWS();
 		}
 
@@ -1373,7 +1373,7 @@ PHPAPI zend_string *php_string_toupper(zend_string *s)
 			if (c != (unsigned char*)ZSTR_VAL(s)) {
 				memcpy(ZSTR_VAL(res), ZSTR_VAL(s), c - (unsigned char*)ZSTR_VAL(s));
 			}
-			r = c + (ZSTR_VAL(res) - ZSTR_VAL(s));
+			r = (unsigned char*) ZSTR_VAL(res) + (c - (unsigned char*) ZSTR_VAL(s));
 			while (c < e) {
 				*r = toupper(*c);
 				r++;
@@ -1438,7 +1438,7 @@ PHPAPI zend_string *php_string_tolower(zend_string *s)
 				if (c != (unsigned char*)ZSTR_VAL(s)) {
 					memcpy(ZSTR_VAL(res), ZSTR_VAL(s), c - (unsigned char*)ZSTR_VAL(s));
 				}
-				r = c + (ZSTR_VAL(res) - ZSTR_VAL(s));
+				r = (unsigned char*) ZSTR_VAL(res) + (c - (unsigned char*) ZSTR_VAL(s));
 				while (c < e) {
 					*r = tolower(*c);
 					r++;
@@ -2472,7 +2472,7 @@ PHP_FUNCTION(substr_replace)
 			if (repl_ht) {
 				while (repl_idx < repl_ht->nNumUsed) {
 					tmp_repl = &repl_ht->arData[repl_idx].val;
-					if (repl_ht != IS_UNDEF) {
+					if (Z_TYPE_P(tmp_repl) != IS_UNDEF) {
 						break;
 					}
 					repl_idx++;
@@ -3988,19 +3988,23 @@ static zend_always_inline char *php_stripslashes_impl(const char *str, char *out
 		quad_word q;
 		vst1q_u8(q.mem, vceqq_u8(x, vdupq_n_u8('\\')));
 		if (q.dw[0] | q.dw[1]) {
-			int i = 0;
-			for (; i < 16; i++) {
+			unsigned int i = 0;
+			while (i < 16) {
 				if (q.mem[i] == 0) {
 					*out++ = str[i];
+					i++;
 					continue;
 				}
 
 				i++;			/* skip the slash */
-				char s = str[i];
-				if (s == '0')
-					*out++ = '\0';
-				else
-					*out++ = s;	/* preserve the next character */
+				if (i < len) {
+					char s = str[i];
+					if (s == '0')
+						*out++ = '\0';
+					else
+						*out++ = s;	/* preserve the next character */
+					i++;
+				}
 			}
 			str += i;
 			len -= i;
@@ -5288,7 +5292,7 @@ PHP_FUNCTION(count_chars)
 	ZEND_PARSE_PARAMETERS_END();
 
 	if (mymode < 0 || mymode > 4) {
-		zend_argument_value_error(2, "must be between 1 and 4 (inclusive)");
+		zend_argument_value_error(2, "must be between 0 and 4 (inclusive)");
 		RETURN_THROWS();
 	}
 
@@ -5956,7 +5960,7 @@ PHP_FUNCTION(substr_compare)
 	}
 
 	if ((size_t)offset > ZSTR_LEN(s1)) {
-		zend_argument_value_error(3, "must be contained in argument #1 ($main_str)");
+		zend_argument_value_error(3, "must be contained in argument #1 ($haystack)");
 		RETURN_THROWS();
 	}
 

@@ -6,6 +6,7 @@ pdo_mysql
 <?php
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'mysql_pdo_test.inc');
 MySQLPDOTest::skip();
+if (getenv('CIRCLECI')) die('xfail Broken on CicleCI');
 ?>
 --FILE--
 <?php

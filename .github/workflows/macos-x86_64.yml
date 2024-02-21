@@ -65,6 +65,7 @@ jobs:
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
+        id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
@@ -129,12 +130,19 @@ jobs:
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
+      - name: Archive production artifacts debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64-debug
+          retention-days: 90
+          path: ./bin/swoole-cli
+
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64
           retention-days: 90
-          path: ./bin/swoole-cli
+          path: ./bin/dist/swoole-cli
 
       - name: gh release
         uses: softprops/action-gh-release@v1

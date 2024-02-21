@@ -867,6 +867,8 @@ static void zend_file_cache_serialize_class(zval                     *zv,
 
 	ZEND_MAP_PTR_INIT(ce->static_members_table, NULL);
 	ZEND_MAP_PTR_INIT(ce->mutable_data, NULL);
+
+	ce->inheritance_cache = NULL;
 }
 
 static void zend_file_cache_serialize_warnings(
@@ -1786,6 +1788,7 @@ zend_persistent_script *zend_file_cache_script_load(zend_file_handle *file_handl
 
 	if (!file_cache_only &&
 	    !ZCSG(restart_in_progress) &&
+	    !ZCSG(restart_pending) &&
 		!ZSMMG(memory_exhausted) &&
 	    accelerator_shm_read_lock() == SUCCESS) {
 		/* exclusive lock */

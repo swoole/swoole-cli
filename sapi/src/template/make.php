@@ -170,6 +170,13 @@ clean_<?=$item->name?>_cached() {
 <?php endforeach; ?>
 
 make_all_library() {
+<?php if ($this->inVirtualMachine): ?>
+    if [! -d <?= $this->getGlobalPrefix() ?>/sources ] ;then
+        mkdir -p <?= $this->getGlobalPrefix() ?>/sources
+        rm -rf <?= $this->getBuildDir() . PHP_EOL ?>
+        ln -s <?= $this->getGlobalPrefix() ?>/sources <?= $this->getBuildDir() . PHP_EOL ?>
+    fi
+<?php endif; ?>
 <?php foreach ($this->libraryList as $item) : ?>
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 <?php endforeach; ?>
@@ -199,8 +206,18 @@ export_variables() {
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     echo "export variables"
 <?php foreach ($this->exportVariables as $value) : ?>
-    export  <?= key($value) ?>="<?= current($value) ?>"
+    export <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+
+<?php if ($this->hasExtension('opcache')):?>
+    export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
+    export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
+<?php endif; ?>
+
+    export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     set +x
@@ -212,16 +229,16 @@ make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
-<?php if ($this->osType == 'linux') : ?>
+<?php if ($this->isLinux()) : ?>
     mv main/php_config.h.in /tmp/cnt
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
 
-<?php if ($this->osType == 'macos') : ?>
-    <?php if (isset($this->libraryMap['pgsql'])) : ?>
-        sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
+<?php if ($this->isMacos()) : ?>
+    <?php if ($this->hasLibrary('pgsql')) : ?>
+    sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
 <?php endif; ?>
 
@@ -233,7 +250,7 @@ make_config() {
 
     ./configure $OPTIONS
 
-<?php if ($this->getOsType()=='linux') : ?>
+<?php if ($this->isLinux()) : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 <?php endif ; ?>
 }
@@ -241,14 +258,14 @@ make_config() {
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType() == 'linux') : ?>
+    <?php if ($this->isLinux()) : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
 
-<?php if ($this->osType == 'macos') : ?>
+<?php if ($this->isMacos()) : ?>
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php else : ?>
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
@@ -261,24 +278,25 @@ make_archive() {
     set -x
     cd ${__PROJECT_DIR__}/bin/
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+
+    SWOOLE_CLI_FILE_DEBUG=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
+    tar -cJvf ${SWOOLE_CLI_FILE_DEBUG} swoole-cli LICENSE pack-sfx.php
+
 
     mkdir -p ${__PROJECT_DIR__}/bin/dist
     cp -f swoole-cli    dist/
     cp -f LICENSE       dist/
     cp -f pack-sfx.php  dist/
 
-    if test $CLI_BUILD_TYPE = 'release' ; then
-        strip dist/swoole-cli
-    fi
-
     cd ${__PROJECT_DIR__}/bin/dist/
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    strip swoole-cli
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
-    mv ${SWOOLE_CLI_FILE} ${__PROJECT_DIR__}/
 
-    if [[ -d ${__PROJECT_DIR__}/bin/dist/ &&  $CLI_BUILD_TYPE = 'release' ]] ; then
-        rm -rf ${__PROJECT_DIR__}/bin/dist/
-    fi
+
+    cd ${__PROJECT_DIR__}/
+    mv bin/dist/${SWOOLE_CLI_FILE}  ${__PROJECT_DIR__}/
+    mv bin/${SWOOLE_CLI_FILE_DEBUG} ${__PROJECT_DIR__}/
 
     cd ${__PROJECT_DIR__}/
 }
@@ -354,6 +372,7 @@ help() {
     echo "./make.sh pkg-check"
     echo "./make.sh lib-pkg"
     echo "./make.sh lib-dep-pkg"
+    echo "./make.sh variables"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -483,6 +502,16 @@ elif [ "$1" = "list-extension" ] ;then
 elif [ "$1" = "clean" ] ;then
     make_clean
     exit 0
+elif [ "$1" = "variables" ] ;then
+    export_variables
+    echo "===========================[CPPFLAGS]================================"
+	echo $CPPFLAGS
+    echo "===========================[CFLAGS]================================"
+	echo $CFLAGS
+    echo "===========================[LDFLAGS]================================"
+	echo $LDFLAGS
+    echo "===========================[LIBS]================================"
+	echo $LIBS
 elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
     test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
@@ -492,4 +521,3 @@ elif [ "$1" = "sync" ] ;then
 else
     help
 fi
-

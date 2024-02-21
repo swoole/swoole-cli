@@ -4,7 +4,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    if ($p->getOsType() != 'linux') {
+    if (!$p->isLinux()) {
         throw new \RuntimeException("Only supports linux");
     }
     $p->addExtension(
