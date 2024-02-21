@@ -20,10 +20,10 @@ return function (Preprocessor $p) {
             if test -d {$php_src} ; then
                 rm -rf {$php_src}
             fi
-            cd ..
+            cd {$build_dir}/
             cp -rf php {$php_src}
-            cd {$build_dir}/php
-
+            rm -rf php
+            cd {$build_dir}/
 EOF
             )
             ->withLdflags('')

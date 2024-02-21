@@ -14,18 +14,23 @@ cd ${__PROJECT__}
 mkdir -p var/build-github-action-container/
 cd ${__PROJECT__}/var/build-github-action-container/
 
-cp -f ${__PROJECT__}/sapi/quickstart/linux/alpine-init.sh .
+cp -f ${__PROJECT__}/sapi/quickstart/linux/debian-init.sh .
+cp -f ${__PROJECT__}/sapi/quickstart/linux/extra/debian-php-init.sh .
 
 cat > Dockerfile <<'EOF'
-FROM alpine:3.18
+FROM debian:unstable-20240110-slim
 
+ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-ADD ./alpine-init.sh /alpine-init.sh
+ADD ./debian-init.sh /debian-init.sh
 
-RUN sh /alpine-init.sh
-# RUN sh /alpine-init.sh --mirror china
+RUN bash /debian-init.sh
+# RUN sh /debian-init.sh --mirror china
+
+ADD ./debian-php-init.sh /debian-php-init.sh
+RUN bash /debian-php-init.sh
 
 RUN uname -m
 RUN mkdir /work
@@ -60,16 +65,21 @@ docker save -o "swoole-cli-builder-image.tar" ${IMAGE}
 
 
 
-# alpine 可设置的架构选项
-# https://hub.docker.com/_/alpine/tags
+# debian 可设置的架构选项
+# https://hub.docker.com/_/debian/tags
+
 :<<'EOF'
 linux/386
 linux/amd64
-linux/arm/v6
+linux/arm/v5
 linux/arm/v7
 linux/arm64/v8
+linux/arm64
+linux/mips64le
 linux/ppc64le
+linux/riscv64
 linux/s390x
 EOF
 
-
+# Debian 全球镜像站
+# https://www.debian.org/mirror/list

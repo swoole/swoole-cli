@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $icu_prefix = ICU_PREFIX;
-    $os = $p->getOsType() == 'macos' ? 'MacOSX' : 'Linux';
+    $os = $p->isMacos() ? 'MacOSX' : 'Linux';
     $p->addLibrary(
         (new Library('icu'))
             ->withHomePage('https://icu.unicode.org/')
