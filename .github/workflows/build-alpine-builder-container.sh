@@ -19,8 +19,8 @@ cp -f ${__PROJECT__}/sapi/quickstart/linux/alpine-init.sh .
 cat > Dockerfile <<'EOF'
 FROM alpine:3.18
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ADD ./alpine-init.sh /alpine-init.sh
 
@@ -72,17 +72,4 @@ linux/ppc64le
 linux/s390x
 EOF
 
-# debian 可设置的架构选项
-:<<'EOF'
-linux/386
-linux/amd64
-linux/arm/v5
-linux/arm/v7
-linux/arm64/v8
-linux/arm64
-linux/mips64le
-linux/ppc64le
-linux/riscv64
-linux/s390x
-EOF
 

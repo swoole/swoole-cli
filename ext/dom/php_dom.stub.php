@@ -56,7 +56,6 @@ interface DOMChildNode
     public function replaceWith(...$nodes): void;
 }
 
-/** @not-serializable */
 class DOMNode
 {
     /** @readonly */
@@ -103,6 +102,10 @@ class DOMNode
     public ?string $baseURI;
 
     public string $textContent;
+
+    public function __sleep(): array {}
+
+    public function __wakeup(): void {}
 
     /** @return DOMNode|false */
     public function appendChild(DOMNode $node) {}
@@ -156,7 +159,6 @@ class DOMNode
     public function replaceChild(DOMNode $node, DOMNode $child) {}
 }
 
-/** @not-serializable */
 class DOMNameSpaceNode
 {
     /** @readonly */
@@ -182,6 +184,12 @@ class DOMNameSpaceNode
 
     /** @readonly */
     public ?DOMNode $parentNode;
+
+    /** @implementation-alias DOMNode::__sleep */
+    public function __sleep(): array {}
+
+    /** @implementation-alias DOMNode::__wakeup */
+    public function __wakeup(): void {}
 }
 
 class DOMImplementation
@@ -232,7 +240,7 @@ class DOMNodeList implements IteratorAggregate, Countable
 
     public function getIterator(): Iterator {}
 
-    /** @return DOMNode|DOMNameSpaceNode|null */
+    /** @return DOMElement|DOMNode|DOMNameSpaceNode|null */
     public function item(int $index) {}
 }
 
@@ -433,7 +441,7 @@ class DOMDocument extends DOMNode implements DOMParentNode
      * @readonly
      * @deprecated
      */
-    public mixed $config = null;
+    public mixed $config;
 
     public bool $formatOutput;
 

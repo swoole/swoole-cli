@@ -535,9 +535,8 @@ ZEND_API uint32_t *zend_get_property_guard(zend_object *zobj, zend_string *membe
 	if (EXPECTED(Z_TYPE_P(zv) == IS_STRING)) {
 		zend_string *str = Z_STR_P(zv);
 		if (EXPECTED(str == member) ||
-		     /* "str" always has a pre-calculated hash value here */
-		    (EXPECTED(ZSTR_H(str) == zend_string_hash_val(member)) &&
-		     EXPECTED(zend_string_equal_content(str, member)))) {
+		    /* str and member don't necessarily have a pre-calculated hash value here */
+		    EXPECTED(zend_string_equal_content(str, member))) {
 			return &Z_PROPERTY_GUARD_P(zv);
 		} else if (EXPECTED(Z_PROPERTY_GUARD_P(zv) == 0)) {
 			zval_ptr_dtor_str(zv);
@@ -1038,6 +1037,8 @@ ZEND_API zval *zend_std_get_property_ptr_ptr(zend_object *zobj, zend_string *nam
 				} else if (prop_info && UNEXPECTED(prop_info->flags & ZEND_ACC_READONLY)) {
 					/* Readonly property, delegate to read_property + write_property. */
 					retval = NULL;
+				} else if (!prop_info || !ZEND_TYPE_IS_SET(prop_info->type)) {
+					ZVAL_NULL(retval);
 				}
 			} else {
 				/* we do have getter - fail and let it try again with usual get/set */
@@ -1254,6 +1255,12 @@ ZEND_API zend_function *zend_get_call_trampoline_func(zend_class_entry *ce, zend
 	ZEND_MAP_PTR_INIT(func->run_time_cache, (void***)&dummy);
 	func->scope = fbc->common.scope;
 	/* reserve space for arguments, local and temporary variables */
+	/* EG(trampoline) is reused from other places, like FFI (e.g. zend_ffi_cdata_get_closure()) where
+	 * it is used as an internal function. It may set fields that don't belong to common, thus
+	 * modifying zend_op_array specific data, most significantly last_var. We need to reset this
+	 * value so that it doesn't contain garbage when the engine allocates space for the next stack
+	 * frame. This didn't cause any issues until now due to "lucky" structure layout. */
+	func->last_var = 0;
 	func->T = (fbc->type == ZEND_USER_FUNCTION)? MAX(fbc->op_array.last_var + fbc->op_array.T, 2) : 2;
 	func->filename = (fbc->type == ZEND_USER_FUNCTION)? fbc->op_array.filename : ZSTR_EMPTY_ALLOC();
 	func->line_start = (fbc->type == ZEND_USER_FUNCTION)? fbc->op_array.line_start : 0;

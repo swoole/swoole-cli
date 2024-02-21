@@ -94,6 +94,8 @@ zend_class_entry *php_session_update_timestamp_iface_entry;
 		return FAILURE;													\
 	}
 
+#define SESSION_FORBIDDEN_CHARS "=,;.[ \t\r\n\013\014"
+
 #define APPLY_TRANS_SID (PS(use_trans_sid) && !PS(use_only_cookies))
 
 static int php_session_send_cookie(void);
@@ -1268,7 +1270,7 @@ static void php_session_remove_cookie(void) {
 	size_t session_cookie_len;
 	size_t len = sizeof("Set-Cookie")-1;
 
-	ZEND_ASSERT(strpbrk(PS(session_name), "=,; \t\r\n\013\014") == NULL);
+	ZEND_ASSERT(strpbrk(PS(session_name), SESSION_FORBIDDEN_CHARS) == NULL);
 	spprintf(&session_cookie, 0, "Set-Cookie: %s=", PS(session_name));
 
 	session_cookie_len = strlen(session_cookie);
@@ -1316,8 +1318,8 @@ static int php_session_send_cookie(void) /* {{{ */
 	}
 
 	/* Prevent broken Set-Cookie header, because the session_name might be user supplied */
-	if (strpbrk(PS(session_name), "=,; \t\r\n\013\014") != NULL) {   /* man isspace for \013 and \014 */
-		php_error_docref(NULL, E_WARNING, "session.name cannot contain any of the following '=,; \\t\\r\\n\\013\\014'");
+	if (strpbrk(PS(session_name), SESSION_FORBIDDEN_CHARS) != NULL) {   /* man isspace for \013 and \014 */
+		php_error_docref(NULL, E_WARNING, "session.name cannot contain any of the following '=,;.[ \\t\\r\\n\\013\\014'");
 		return FAILURE;
 	}
 
@@ -1501,7 +1503,7 @@ PHPAPI int php_session_start(void) /* {{{ */
 {
 	zval *ppid;
 	zval *data;
-	char *p, *value;
+	char *value;
 	size_t lensess;
 
 	switch (PS(session_status)) {
@@ -1568,21 +1570,6 @@ PHPAPI int php_session_start(void) /* {{{ */
 				ZVAL_DEREF(data);
 				if (Z_TYPE_P(data) == IS_ARRAY && (ppid = zend_hash_str_find(Z_ARRVAL_P(data), PS(session_name), lensess))) {
 					ppid2sid(ppid);
-				}
-			}
-			/* Check the REQUEST_URI symbol for a string of the form
-			 * '<session-name>=<session-id>' to allow URLs of the form
-			 * http://yoursite/<session-name>=<session-id>/script.php */
-			if (!PS(id) && zend_is_auto_global(ZSTR_KNOWN(ZEND_STR_AUTOGLOBAL_SERVER)) == SUCCESS &&
-				(data = zend_hash_str_find(Z_ARRVAL(PG(http_globals)[TRACK_VARS_SERVER]), "REQUEST_URI", sizeof("REQUEST_URI") - 1)) &&
-				Z_TYPE_P(data) == IS_STRING &&
-				(p = strstr(Z_STRVAL_P(data), PS(session_name))) &&
-				p[lensess] == '='
-				) {
-				char *q;
-				p += lensess + 1;
-				if ((q = strpbrk(p, "/?\\"))) {
-					PS(id) = zend_string_init(p, q - p, 0);
 				}
 			}
 			/* Check whether the current request was referred to by
