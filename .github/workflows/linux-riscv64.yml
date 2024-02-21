@@ -1,10 +1,10 @@
-name: build-php-cli-linux-riscv
+name: build-php-cli-linux-riscv64
 
 on: [ push, pull_request ]
 
 jobs:
   linux-riscv:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -43,10 +43,9 @@ jobs:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
 
-
       - name: Cache swoole-cli-builder-image
         uses: actions/cache@v3
-        id: swoole-cli-builder-image-aarch64-cache
+        id: swoole-cli-builder-image-riscv64-cache
         with:
           path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
           key: ${{ runner.os }}-riscv64-swoole-cli-builder-image
@@ -86,16 +85,17 @@ jobs:
         if: 0
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240106T114724Z
-          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/tmp/
+          image: swoole-cli-builder:latest
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/swoole-cli
           run: |
             for i in `ls /usr/local/swoole-cli/`
             do
-               if [ ! -d /usr/local/tmp/${i} ] ; then
                     echo $i
-                    cp -rf /usr/local/swoole-cli/${i}/  /usr/local/tmp/${i}
-               fi
             done
+            uname -a
+            uname -s
+            uname -m
+            apt install -y php-dev php-cli
 
       - name: Build
         if: 0

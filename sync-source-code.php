@@ -78,7 +78,7 @@ $cmd .= PHP_EOL . <<<'EOF'
     cp -r $SRC/ext/mysqli/ ./ext
     cp -r $SRC/ext/mysqlnd/ ./ext
     cp -r $SRC/ext/opcache/ ./ext
-    sed -i 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4 && sed -i 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
+    sed -i.backup 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4 && sed -i.backup 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
     echo '#include "php.h"\n\nextern zend_module_entry opcache_module_entry;\n#define phpext_opcache_ptr  &opcache_module_entry\n' > ext/opcache/php_opcache.h
     cp -r $SRC/ext/openssl/ ./ext
     cp -r $SRC/ext/pcntl/ ./ext
@@ -109,7 +109,7 @@ $cmd .= PHP_EOL . <<<'EOF'
 
     # main
     cp -r $SRC/main ./
-    sed -i 's/\/\* start Zend extensions \*\//\/\* start Zend extensions \*\/\n#ifdef PHP_ENABLE_OPCACHE\n\textern zend_extension zend_extension_entry;\n\tzend_register_extension(\&zend_extension_entry, NULL);\n#endif/g' main/main.c
+    sed -i.backup 's/\/\* start Zend extensions \*\//\/\* start Zend extensions \*\/\n#ifdef PHP_ENABLE_OPCACHE\n\textern zend_extension zend_extension_entry;\n\tzend_register_extension(\&zend_extension_entry, NULL);\n#endif/g' main/main.c
 
     # build
     cp -r $SRC/build ./
