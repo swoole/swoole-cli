@@ -81,7 +81,7 @@ jobs:
           php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1
           php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 @macos
           cd ${{ github.workspace }}/pool/
-          zip -6 -r ${WORK_DIR}/all-archive.zip ext lib
+          zip -9 -r ${WORK_DIR}/all-archive.zip ext lib
           cd ${{ github.workspace }}
 
       - name: Show Build Result
