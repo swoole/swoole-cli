@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>soft</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="keywords" content="swoole-cli ui"/>
+    <meta name="description" content="swoole-cli ui"/>
+    <link rel="stylesheet" type="text/css" href="/public/css/base.css"/>
+    <link rel="stylesheet" type="text/css" href="/public/css/app.css"/>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <div class="main">
+        <div class="main-container">
+            <div class="container">
+                <header>
+                    <div>
+                        <label>
+                            <span>📁当前分支：</span>
+                            <select name="branch_list"></select>
+                        </label>
+                        <div class="options-list">
+                            <label>
+                                <span>🛠️构建环境 OS：</span>
+                                <select name="os">
+                                    <option value="linux" selected>linux</option>
+                                    <option value="macos">macos</option>
+                                </select>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️是否容器环境：</span>
+                                <select name="without-docker">
+                                    <option value="0" selected>容器</option>
+                                    <option value="1">不使用容器</option>
+                                </select>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️跳过下载依赖库源码，生成aria2批量下载地址：</span>
+                                <select name="skip-download">
+                                    <option value="0" selected>不跳过</option>
+                                    <option value="1">跳过</option>
+                                </select>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️使用依赖库镜像站下载依赖：</span>
+                                <select name="with-download-mirror-url">
+                                    <option value="0" selected>不使用</option>
+                                    <option value="https://swoole-cli.jingjingxyk.com/">使用</option>
+                                </select>
+                            </label>
+                            <br/>
+                            <label>
+                                <span>🛠️生成扩展依赖图（graphviz）：</span>
+                                <select name="with-dependency-graph">
+                                    <option value="0" selected>不生成</option>
+                                    <option value="1">生成</option>
+                                </select>
+                            </label>
+                            <label>
+                                <span>🛠️依赖和扩展下载器：</span>
+                                <select name="with-downloader">
+                                    <option value="curl" selected>curl</option>
+                                    <option value="wget">wget</option>
+                                </select>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️生成webUI必要数据：</span>
+                                <select name="with-web-ui">
+                                    <option value="0">不生成</option>
+                                    <option value="1">生成</option>
+                                </select>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <span>🛠️swoole 启用 libpq：</span>
+                                <select name="with-swoole-pgsql">
+                                    <option value="0">不启用</option>
+                                    <option value="1">启用</option>
+                                </select>
+                            </label>
+                            <br/>
+                            <label>
+                                <span>🛠️依赖库安装目录：</span>
+                                <input
+                                    name="with-global-prefix"
+                                    type="text"
+                                    placeholder="/usr/local/swoole-cli"
+                                    value="/usr/local/swoole-cli"
+                                    size="40"
+                                />
+                            </label>
+                            <br/>
+                            <label>
+                                <span>🛠️使用项目外配置：</span>
+                                <input
+                                    name="conf-path"
+                                    type="text"
+                                    placeholder="例子： ~/swoole-cli/conf.d.extra"
+                                    value=""
+                                    size="80"
+                                />
+                            </label>
+                            <br/>
+                            <label>
+                                <span>🛠️使用http代理：</span>
+                                <input
+                                    name="with-http-proxy"
+                                    type="text"
+                                    placeholder="例子：http://192.168.3.26:8015"
+                                    value=""
+                                    size="50"
+                                />
+                            </label>
+                        </div>
+                    </div>
+                </header>
+                <section class="extension-list">
+                    <div>
+                        支持的扩展列表 ：
+                       <ul class="all_extentions" id="all_extentions"></ul>
+                    </div>
+                </section>
+                <section class="controller-gen">
+                    <div>
+                        <button class="btn-success generate-cmd-button">生成构建命令</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button class="btn-success reset-cmd-button" data-status="enable">停用默认扩展</button>
+                        <br/>
+                    </div>
+                </section>
+                <section>
+                    <br/>
+                    <br/>
+                    <div class="preview-code">
+                        <code class="pre-code preprocessor"></code>
+                        <br/>
+                        <code class="pre-code">
+                            <br/>
+                            bash make.sh all-library
+                            <br/>
+                            bash make.sh config
+                            <br/>
+                            bash make.sh build
+                            <br/>
+                        </code>
+                        <br/>
+                        <code class="pre-code">
+                            bash make.sh archive
+                        </code>
+                    </div>
+                </section>
+                <section class="controller-run">
+                    <div>
+                        <br/>
+                        <br/>
+                        <button class="btn-success exec-button">运行构建命令</button>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module">
+    import app from '/public/js/app.js'
+
+    app()
+</script>
+</body>
+</html>
