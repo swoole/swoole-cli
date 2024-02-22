@@ -1,5 +1,7 @@
-public/data
+./data
 ./.idea
 ./deploy.sh
-package-lock.json
-node_modules
+./node_modules
+./public/ajax/
+./public/data/
+./package-lock.json
