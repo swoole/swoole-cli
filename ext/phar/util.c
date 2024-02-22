@@ -1579,7 +1579,15 @@ int phar_verify_signature(php_stream *fp, size_t end_of_phar, uint32_t sig_type,
 			}
 
 			md_ctx = EVP_MD_CTX_create();
-			EVP_VerifyInit(md_ctx, mdtype);
+			if (!md_ctx || !EVP_VerifyInit(md_ctx, mdtype)) {
+				if (md_ctx) {
+					EVP_MD_CTX_destroy(md_ctx);
+				}
+				if (error) {
+					spprintf(error, 0, "openssl signature could not be verified");
+				}
+				return FAILURE;
+			}
 			read_len = end_of_phar;
 
 			if ((size_t)read_len > sizeof(buf)) {
@@ -1591,7 +1599,9 @@ int phar_verify_signature(php_stream *fp, size_t end_of_phar, uint32_t sig_type,
 			php_stream_seek(fp, 0, SEEK_SET);
 
 			while (read_size && (len = php_stream_read(fp, (char*)buf, read_size)) > 0) {
-				EVP_VerifyUpdate (md_ctx, buf, len);
+				if (UNEXPECTED(EVP_VerifyUpdate (md_ctx, buf, len) == 0)) {
+					goto failure;
+				}
 				read_len -= (zend_off_t)len;
 
 				if (read_len < read_size) {
@@ -1600,6 +1610,7 @@ int phar_verify_signature(php_stream *fp, size_t end_of_phar, uint32_t sig_type,
 			}
 
 			if (EVP_VerifyFinal(md_ctx, (unsigned char *)sig, sig_len, key) != 1) {
+				failure:
 				/* 1: signature verified, 0: signature does not match, -1: failed signature operation */
 				EVP_PKEY_free(key);
 				EVP_MD_CTX_destroy(md_ctx);

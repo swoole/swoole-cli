@@ -30,9 +30,9 @@
 # include "timelib_config.h"
 #endif
 
-#define TIMELIB_VERSION 202117
-#define TIMELIB_EXTENDED_VERSION 20211701
-#define TIMELIB_ASCII_VERSION "2021.17"
+#define TIMELIB_VERSION 202119
+#define TIMELIB_EXTENDED_VERSION 20211901
+#define TIMELIB_ASCII_VERSION "2021.19"
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -378,7 +378,7 @@ typedef struct _timelib_tzdb {
 #define TIMELIB_OVERRIDE_TIME    0x01
 #define TIMELIB_NO_CLONE         0x02
 
-#define TIMELIB_UNSET   -99999
+#define TIMELIB_UNSET   -9999999
 
 /* An entry for each of these error codes is also in the
  * timelib_error_messages array in timelib.c.

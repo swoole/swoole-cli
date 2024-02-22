@@ -74,19 +74,19 @@ done
 case "$MIRROR" in
 china)
   SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
-  COMPOSER_DOWNLOAD_URL="https://mirrors.aliyun.com/composer/composer.phar"
+  COMPOSER_DOWNLOAD_URL="https://mirrors.tencent.com/composer/composer.phar"
   ;;
 
 esac
 
-test -f composer.phar || wget -O composer.phar ${COMPOSER_DOWNLOAD_URL}
+test -f composer.phar || curl -LSo composer.phar ${COMPOSER_DOWNLOAD_URL}
 chmod a+x composer.phar
 
-test -f cacert.pem || wget -O cacert.pem ${CACERT_DOWNLOAD_URL}
+test -f cacert.pem || curl -LSo cacert.pem ${CACERT_DOWNLOAD_URL}
 
 SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-${OS}-${ARCH}"
 
-test -f ${SWOOLE_CLI_RUNTIME}.tar.xz || wget -O ${SWOOLE_CLI_RUNTIME}.tar.xz ${SWOOLE_CLI_DOWNLOAD_URL}
+test -f ${SWOOLE_CLI_RUNTIME}.tar.xz || curl -LSo ${SWOOLE_CLI_RUNTIME}.tar.xz ${SWOOLE_CLI_DOWNLOAD_URL}
 test -f ${SWOOLE_CLI_RUNTIME}.tar || xz -d -k ${SWOOLE_CLI_RUNTIME}.tar.xz
 test -f swoole-cli || tar -xvf ${SWOOLE_CLI_RUNTIME}.tar
 chmod a+x swoole-cli

@@ -141,12 +141,17 @@ static void xsl_ext_function_php(xmlXPathParserContextPtr ctxt, int nargs, int t
 		return;
 	}
 
+	if (UNEXPECTED(nargs == 0)) {
+		zend_throw_error(NULL, "Function name must be passed as the first argument");
+		return;
+	}
+
 	fci.param_count = nargs - 1;
 	if (fci.param_count > 0) {
 		args = safe_emalloc(fci.param_count, sizeof(zval), 0);
 	}
 	/* Reverse order to pop values off ctxt stack */
-	for (i = nargs - 2; i >= 0; i--) {
+	for (i = fci.param_count - 1; i >= 0; i--) {
 		obj = valuePop(ctxt);
 		if (obj == NULL) {
 			ZVAL_NULL(&args[i]);
@@ -221,7 +226,7 @@ static void xsl_ext_function_php(xmlXPathParserContextPtr ctxt, int nargs, int t
 		fci.params = NULL;
 	}
 
-
+	/* Last element of the stack is the function name */
 	obj = valuePop(ctxt);
 	if (obj == NULL || obj->stringval == NULL) {
 		php_error_docref(NULL, E_WARNING, "Handler name must be a string");
@@ -315,7 +320,7 @@ PHP_METHOD(XSLTProcessor, importStylesheet)
 	xmlDoc *doc = NULL, *newdoc = NULL;
 	xsltStylesheetPtr sheetp, oldsheetp;
 	xsl_object *intern;
-	int prevSubstValue, prevExtDtdValue, clone_docu = 0;
+	int clone_docu = 0;
 	xmlNode *nodep = NULL;
 	zval *cloneDocu, rv;
 	zend_string *member;
@@ -339,13 +344,12 @@ PHP_METHOD(XSLTProcessor, importStylesheet)
 	stylesheet document otherwise the node proxies will be a mess */
 	newdoc = xmlCopyDoc(doc, 1);
 	xmlNodeSetBase((xmlNodePtr) newdoc, (xmlChar *)doc->URL);
-	prevSubstValue = xmlSubstituteEntitiesDefault(1);
-	prevExtDtdValue = xmlLoadExtDtdDefaultValue;
+	PHP_LIBXML_SANITIZE_GLOBALS(parse);
+	xmlSubstituteEntitiesDefault(1);
 	xmlLoadExtDtdDefaultValue = XML_DETECT_IDS | XML_COMPLETE_ATTRS;
 
 	sheetp = xsltParseStylesheetDoc(newdoc);
-	xmlSubstituteEntitiesDefault(prevSubstValue);
-	xmlLoadExtDtdDefaultValue = prevExtDtdValue;
+	PHP_LIBXML_RESTORE_GLOBALS(parse);
 
 	if (!sheetp) {
 		xmlFreeDoc(newdoc);

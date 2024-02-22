@@ -152,7 +152,7 @@ fi
 # 定制构建选项
 OPTIONS='+apcu +ds +xlswriter +ssh2'
 OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
-
+# OPTIONS="${OPTIONS} @macos"
 
 
 if [ ${IN_DOCKER} -eq 1 ] ; then

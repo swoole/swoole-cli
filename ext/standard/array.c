@@ -345,7 +345,27 @@ static zend_always_inline int php_array_key_compare_string_locale_unstable_i(Buc
 
 static zend_always_inline int php_array_data_compare_unstable_i(Bucket *f, Bucket *s) /* {{{ */
 {
-	return zend_compare(&f->val, &s->val);
+	int result = zend_compare(&f->val, &s->val);
+	/* Special enums handling for array_unique. We don't want to add this logic to zend_compare as
+	 * that would be observable via comparison operators. */
+	zval *rhs = &s->val;
+	ZVAL_DEREF(rhs);
+	if (UNEXPECTED(Z_TYPE_P(rhs) == IS_OBJECT)
+	 && result == ZEND_UNCOMPARABLE
+	 && (Z_OBJCE_P(rhs)->ce_flags & ZEND_ACC_ENUM)) {
+		zval *lhs = &f->val;
+		ZVAL_DEREF(lhs);
+		if (Z_TYPE_P(lhs) == IS_OBJECT && (Z_OBJCE_P(lhs)->ce_flags & ZEND_ACC_ENUM)) {
+			// Order doesn't matter, we just need to group the same enum values
+			uintptr_t lhs_uintptr = (uintptr_t)Z_OBJ_P(lhs);
+			uintptr_t rhs_uintptr = (uintptr_t)Z_OBJ_P(rhs);
+			return lhs_uintptr == rhs_uintptr ? 0 : (lhs_uintptr < rhs_uintptr ? -1 : 1);
+		} else {
+			// Shift enums to the end of the array
+			return -1;
+		}
+	}
+	return result;
 }
 /* }}} */
 
@@ -1073,6 +1093,10 @@ PHP_FUNCTION(end)
 	ZEND_PARSE_PARAMETERS_END();
 
 	HashTable *array = get_ht_for_iap(array_zv, /* separate */ true);
+	if (zend_hash_num_elements(array) == 0) {
+		/* array->nInternalPointer is already 0 if the array is empty, even after removing elements */
+		RETURN_FALSE;
+	}
 	zend_hash_internal_pointer_end(array);
 
 	if (USED_RET()) {
@@ -1100,6 +1124,10 @@ PHP_FUNCTION(prev)
 	ZEND_PARSE_PARAMETERS_END();
 
 	HashTable *array = get_ht_for_iap(array_zv, /* separate */ true);
+	if (zend_hash_num_elements(array) == 0) {
+		/* array->nInternalPointer is already 0 if the array is empty, even after removing elements */
+		RETURN_FALSE;
+	}
 	zend_hash_move_backwards(array);
 
 	if (USED_RET()) {
@@ -1127,6 +1155,10 @@ PHP_FUNCTION(next)
 	ZEND_PARSE_PARAMETERS_END();
 
 	HashTable *array = get_ht_for_iap(array_zv, /* separate */ true);
+	if (zend_hash_num_elements(array) == 0) {
+		/* array->nInternalPointer is already 0 if the array is empty, even after removing elements */
+		RETURN_FALSE;
+	}
 	zend_hash_move_forward(array);
 
 	if (USED_RET()) {
@@ -1154,6 +1186,10 @@ PHP_FUNCTION(reset)
 	ZEND_PARSE_PARAMETERS_END();
 
 	HashTable *array = get_ht_for_iap(array_zv, /* separate */ true);
+	if (zend_hash_num_elements(array) == 0) {
+		/* array->nInternalPointer is already 0 if the array is empty, even after removing elements */
+		RETURN_FALSE;
+	}
 	zend_hash_internal_pointer_reset(array);
 
 	if (USED_RET()) {
@@ -3559,7 +3595,12 @@ PHPAPI int php_array_merge_recursive(HashTable *dest, HashTable *src) /* {{{ */
 					}
 				} else {
 					Z_TRY_ADDREF_P(src_zval);
-					zend_hash_next_index_insert(Z_ARRVAL_P(dest_zval), src_zval);
+					zval *zv = zend_hash_next_index_insert(Z_ARRVAL_P(dest_zval), src_zval);
+					if (EXPECTED(!zv)) {
+						Z_TRY_DELREF_P(src_zval);
+						zend_cannot_add_element();
+						return 0;
+					}
 				}
 				zval_ptr_dtor(&tmp);
 			} else {
@@ -3568,6 +3609,10 @@ PHPAPI int php_array_merge_recursive(HashTable *dest, HashTable *src) /* {{{ */
 			}
 		} else {
 			zval *zv = zend_hash_next_index_insert(dest, src_entry);
+			if (UNEXPECTED(!zv)) {
+				zend_cannot_add_element();
+				return 0;
+			}
 			zval_add_ref(zv);
 		}
 	} ZEND_HASH_FOREACH_END();
@@ -5553,6 +5598,9 @@ PHP_FUNCTION(array_multisort)
 
 	/* Do the actual sort magic - bada-bim, bada-boom. */
 	zend_sort(indirect, array_size, sizeof(Bucket *), php_multisort_compare, (swap_func_t)array_bucket_p_sawp);
+	if (EG(exception)) {
+		goto clean_up;
+	}
 
 	/* Restructure the arrays based on sorted indirect - this is mostly taken from zend_hash_sort() function. */
 	for (i = 0; i < num_arrays; i++) {
@@ -5578,15 +5626,15 @@ PHP_FUNCTION(array_multisort)
 			zend_hash_rehash(hash);
 		}
 	}
+	RETVAL_TRUE;
 
-	/* Clean up. */
+clean_up:
 	for (i = 0; i < array_size; i++) {
 		efree(indirect[i]);
 	}
 	efree(indirect);
 	efree(func);
 	efree(arrays);
-	RETURN_TRUE;
 }
 /* }}} */
 

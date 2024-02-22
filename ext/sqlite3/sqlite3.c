@@ -1820,7 +1820,6 @@ PHP_METHOD(SQLite3Stmt, __construct)
 	zval *db_zval;
 	zend_string *sql;
 	int errcode;
-	zend_error_handling error_handling;
 	php_sqlite3_free_list *free_item;
 
 	stmt_obj = Z_SQLITE3_STMT_P(object);
@@ -1831,9 +1830,7 @@ PHP_METHOD(SQLite3Stmt, __construct)
 
 	db_obj = Z_SQLITE3_DB_P(db_zval);
 
-	zend_replace_error_handling(EH_THROW, NULL, &error_handling);
 	SQLITE3_CHECK_INITIALIZED(db_obj, db_obj->initialised, SQLite3)
-	zend_restore_error_handling(&error_handling);
 
 	if (!ZSTR_LEN(sql)) {
 		RETURN_FALSE;
@@ -2040,14 +2037,8 @@ static int php_sqlite3_authorizer(void *autharg, int action, const char *arg1, c
 			if (memcmp(arg1, ":memory:", sizeof(":memory:")) && *arg1) {
 				if (strncmp(arg1, "file:", 5) == 0) {
 					/* starts with "file:" */
-					if (!arg1[5]) {
-						return SQLITE_DENY;
-					}
-					if (php_check_open_basedir(arg1 + 5)) {
-						return SQLITE_DENY;
-					}
-				}
-				if (php_check_open_basedir(arg1)) {
+					return SQLITE_DENY;
+				} else if (php_check_open_basedir(arg1)) {
 					return SQLITE_DENY;
 				}
 			}
@@ -2203,6 +2194,42 @@ static void php_sqlite3_object_free_storage(zend_object *object) /* {{{ */
 }
 /* }}} */
 
+static HashTable *php_sqlite3_get_gc(zend_object *object, zval **table, int *n)
+{
+	php_sqlite3_db_object *intern = php_sqlite3_db_from_obj(object);
+
+	if (intern->funcs == NULL && intern->collations == NULL) {
+		/* Fast path without allocations */
+		*table = NULL;
+		*n = 0;
+		return zend_std_get_gc(object, table, n);
+	} else {
+		zend_get_gc_buffer *gc_buffer = zend_get_gc_buffer_create();
+
+		php_sqlite3_func *func = intern->funcs;
+		while (func != NULL) {
+			zend_get_gc_buffer_add_zval(gc_buffer, &func->func);
+			zend_get_gc_buffer_add_zval(gc_buffer, &func->step);
+			zend_get_gc_buffer_add_zval(gc_buffer, &func->fini);
+			func = func->next;
+		}
+
+		php_sqlite3_collation *collation = intern->collations;
+		while (collation != NULL) {
+			zend_get_gc_buffer_add_zval(gc_buffer, &collation->cmp_func);
+			collation = collation->next;
+		}
+
+		zend_get_gc_buffer_use(gc_buffer, table, n);
+
+		if (object->properties == NULL && object->ce->default_properties_count == 0) {
+			return NULL;
+		} else {
+			return zend_std_get_properties(object);
+		}
+	}
+}
+
 static void php_sqlite3_stmt_object_free_storage(zend_object *object) /* {{{ */
 {
 	php_sqlite3_stmt *intern = php_sqlite3_stmt_from_obj(object);
@@ -2336,6 +2363,7 @@ PHP_MINIT_FUNCTION(sqlite3)
 	sqlite3_object_handlers.offset = XtOffsetOf(php_sqlite3_db_object, zo);
 	sqlite3_object_handlers.clone_obj = NULL;
 	sqlite3_object_handlers.free_obj = php_sqlite3_object_free_storage;
+	sqlite3_object_handlers.get_gc = php_sqlite3_get_gc;
 	php_sqlite3_sc_entry = register_class_SQLite3();
 	php_sqlite3_sc_entry->create_object = php_sqlite3_object_new;
 

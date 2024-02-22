@@ -61,10 +61,10 @@ jobs:
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
-        id: dependency-cache
+        id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
-          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-pool
+          key: source-code-tarball-pool
 
       - name: Cache all-library
         uses: actions/cache@v3
@@ -129,20 +129,29 @@ jobs:
           ./bin/swoole-cli --ri swoole
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
+          APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
           ./bin/swoole-cli -r "echo PHP_VERSION;"
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
+      - name: production artifacts debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: swoole-cli-v${{ env.APP_VERSION }}-linux-x64-debug
+          retention-days: 90
+          path: ./bin/swoole-cli
+
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: swoole-cli
-          retention-days: 7
-          path: ./bin/swoole-cli
+          name: swoole-cli-v${{ env.APP_VERSION }}-linux-x64
+          retention-days: 90
+          path: ./bin/dist/swoole-cli
 
-      - name: Release
+      - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-*-linux-x64.tar.xz
+          files: swoole-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz

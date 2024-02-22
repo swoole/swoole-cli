@@ -475,8 +475,7 @@ static zend_result zend_ast_add_unpacked_element(zval *result, zval *expr) {
 		return SUCCESS;
 	}
 
-	/* Objects or references cannot occur in a constant expression. */
-	zend_throw_error(NULL, "Only arrays and Traversables can be unpacked");
+	zend_throw_error(NULL, "Only arrays can be unpacked in constant expression");
 	return FAILURE;
 }
 
@@ -663,8 +662,8 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			if (UNEXPECTED(zend_ast_evaluate(&op2, ast->child[0], scope) != SUCCESS)) {
 				ret = FAILURE;
 			} else {
-				ZVAL_LONG(&op1, 0);
-				ret = sub_function(result, &op1, &op2);
+				ZVAL_LONG(&op1, -1);
+				ret = mul_function(result, &op1, &op2);
 				zval_ptr_dtor_nogc(&op2);
 			}
 			break;

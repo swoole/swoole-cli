@@ -834,7 +834,7 @@ PHP_FUNCTION(tempnam)
 	ZEND_PARSE_PARAMETERS_END();
 
 	p = php_basename(prefix, prefix_len, NULL, 0);
-	if (ZSTR_LEN(p) > 64) {
+	if (ZSTR_LEN(p) >= 64) {
 		ZSTR_VAL(p)[63] = '\0';
 	}
 
@@ -1669,8 +1669,9 @@ PHPAPI int php_copy_file_ctx(const char *src, const char *dest, int src_flg, php
 	php_stream *srcstream = NULL, *deststream = NULL;
 	int ret = FAILURE;
 	php_stream_statbuf src_s, dest_s;
+	int src_stat_flags = (src_flg & STREAM_DISABLE_OPEN_BASEDIR) ? PHP_STREAM_URL_STAT_IGNORE_OPEN_BASEDIR : 0;
 
-	switch (php_stream_stat_path_ex(src, 0, &src_s, ctx)) {
+	switch (php_stream_stat_path_ex(src, src_stat_flags, &src_s, ctx)) {
 		case -1:
 			/* non-statable stream */
 			goto safe_to_copy;
@@ -2088,7 +2089,7 @@ PHPAPI void php_fgetcsv(php_stream *stream, char delimiter, char enclosure, int 
 			while ((*tmp != delimiter) && isspace((int)*(unsigned char *)tmp)) {
 				tmp++;
 			}
-			if (*tmp == enclosure) {
+			if (*tmp == enclosure && tmp < limit) {
 				bptr = tmp;
 			}
 		}

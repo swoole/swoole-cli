@@ -8,6 +8,7 @@ use SwooleCli\Preprocessor;
 
 ?>
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
+CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
 ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
@@ -140,6 +141,13 @@ clean_<?=$item->name?>_cached() {
 <?php endforeach; ?>
 
 make_all_library() {
+<?php if ($this->inVirtualMachine): ?>
+    if [! -d <?= $this->getGlobalPrefix() ?>/sources ] ;then
+        mkdir -p <?= $this->getGlobalPrefix() ?>/sources
+        rm -rf <?= $this->getBuildDir() . PHP_EOL ?>
+        ln -s <?= $this->getGlobalPrefix() ?>/sources <?= $this->getBuildDir() . PHP_EOL ?>
+    fi
+<?php endif; ?>
 <?php foreach ($this->libraryList as $item) : ?>
     make_<?=$item->name?> && echo "[SUCCESS] make <?=$item->name?>"
 <?php endforeach; ?>
@@ -168,8 +176,18 @@ export_variables() {
 
     echo "export variables"
 <?php foreach ($this->exportVariables as $value) : ?>
-    export  <?= key($value) ?>="<?= current($value) ?>"
+    export <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+
+<?php if ($this->hasExtension('opcache')):?>
+    export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
+    export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
+<?php endif; ?>
+
+    export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     set +x
@@ -181,15 +199,15 @@ make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force
-<?php if ($this->osType == 'linux') : ?>
+<?php if ($this->isLinux()) : ?>
     mv main/php_config.h.in /tmp/cnt
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
     cat /tmp/cnt >> main/php_config.h.in
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
 
-<?php if ($this->osType == 'macos') : ?>
-    <?php if (isset($this->libraryMap['pgsql'])) : ?>
+<?php if ($this->isMacos()) : ?>
+    <?php if ($this->hasLibrary('pgsql')) : ?>
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
 <?php endif; ?>
@@ -201,25 +219,56 @@ make_config() {
     echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
 
     ./configure $OPTIONS
+
+<?php if ($this->isLinux()) : ?>
+    sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
+<?php endif ; ?>
 }
 
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType() == 'linux') : ?>
+    <?php if ($this->isLinux()) : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
 
-<?php if ($this->osType == 'macos') : ?>
+<?php if ($this->isMacos()) : ?>
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php else : ?>
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php endif; ?>
 
+}
+
+make_archive() {
+    set -x
+    cd ${__PROJECT_DIR__}/bin/
+    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
+
+    SWOOLE_CLI_FILE_DEBUG=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
+    tar -cJvf ${SWOOLE_CLI_FILE_DEBUG} swoole-cli LICENSE pack-sfx.php
+
+
+    mkdir -p ${__PROJECT_DIR__}/bin/dist
+    cp -f swoole-cli    dist/
+    cp -f LICENSE       dist/
+    cp -f pack-sfx.php  dist/
+
+    cd ${__PROJECT_DIR__}/bin/dist/
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    strip swoole-cli
+    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
+
+
+    cd ${__PROJECT_DIR__}/
+    mv bin/dist/${SWOOLE_CLI_FILE}  ${__PROJECT_DIR__}/
+    mv bin/${SWOOLE_CLI_FILE_DEBUG} ${__PROJECT_DIR__}/
+
+    cd ${__PROJECT_DIR__}/
 }
 
 make_clean() {
@@ -252,6 +301,7 @@ help() {
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
     echo "./make.sh pkg-check"
+    echo "./make.sh variables"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -324,14 +374,8 @@ elif [ "$1" = "build" ] ;then
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
-    set -x
-    cd bin
-    SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
-    strip swoole-cli
-    tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
-    mv ${SWOOLE_CLI_FILE} ../
-    cd -
+    make_archive
+    exit 0
 elif [ "$1" = "clean-all-library" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     clean_<?=$item->name?> && echo "[SUCCESS] make clean [<?=$item->name?>]"
@@ -381,74 +425,22 @@ elif [ "$1" = "list-extension" ] ;then
     exit 0
 elif [ "$1" = "clean" ] ;then
     make_clean
+elif [ "$1" = "variables" ] ;then
+    export_variables
+    echo "===========================[CPPFLAGS]================================"
+	echo $CPPFLAGS
+    echo "===========================[CFLAGS]================================"
+	echo $CFLAGS
+    echo "===========================[LDFLAGS]================================"
+	echo $LDFLAGS
+    echo "===========================[LIBS]================================"
+	echo $LIBS
 elif [ "$1" = "sync" ] ;then
-  echo "sync"
-  # ZendVM
-  cp -r $SRC/Zend ./
-  # Extension
-  cp -r $SRC/ext/bcmath/ ./ext
-  cp -r $SRC/ext/bz2/ ./ext
-  cp -r $SRC/ext/calendar/ ./ext
-  cp -r $SRC/ext/ctype/ ./ext
-  cp -r $SRC/ext/curl/ ./ext
-  cp -r $SRC/ext/date/ ./ext
-  cp -r $SRC/ext/dom/ ./ext
-  cp -r $SRC/ext/exif/ ./ext
-  cp -r $SRC/ext/fileinfo/ ./ext
-  cp -r $SRC/ext/filter/ ./ext
-  cp -r $SRC/ext/gd/ ./ext
-  cp -r $SRC/ext/gettext/ ./ext
-  cp -r $SRC/ext/gmp/ ./ext
-  cp -r $SRC/ext/hash/ ./ext
-  cp -r $SRC/ext/iconv/ ./ext
-  cp -r $SRC/ext/intl/ ./ext
-  cp -r $SRC/ext/json/ ./ext
-  cp -r $SRC/ext/libxml/ ./ext
-  cp -r $SRC/ext/mbstring/ ./ext
-  cp -r $SRC/ext/mysqli/ ./ext
-  cp -r $SRC/ext/mysqlnd/ ./ext
-  cp -r $SRC/ext/opcache/ ./ext
-  sed -i 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4 && sed -i 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
-  sed -i 's/-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1/-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DPHP_ENABLE_OPCACHE/g' ext/opcache/config.m4
-  echo -e '#include "php.h"\n\nextern zend_module_entry opcache_module_entry;\n#define phpext_opcache_ptr  &opcache_module_entry\n' > ext/opcache/php_opcache.h
-  cp -r $SRC/ext/openssl/ ./ext
-  cp -r $SRC/ext/pcntl/ ./ext
-  cp -r $SRC/ext/pcre/ ./ext
-  cp -r $SRC/ext/pdo/ ./ext
-  cp -r $SRC/ext/pdo_mysql/ ./ext
-  cp -r $SRC/ext/pdo_sqlite/ ./ext
-  cp -r $SRC/ext/phar/ ./ext
-  echo -e '\n#include "sapi/cli/sfx/hook_stream.h"' >> ext/phar/phar_internal.h
-  cp -r $SRC/ext/posix/ ./ext
-  cp -r $SRC/ext/readline/ ./ext
-  cp -r $SRC/ext/reflection/ ./ext
-  cp -r $SRC/ext/session/ ./ext
-  cp -r $SRC/ext/simplexml/ ./ext
-  cp -r $SRC/ext/soap/ ./ext
-  cp -r $SRC/ext/sockets/ ./ext
-  cp -r $SRC/ext/sodium/ ./ext
-  cp -r $SRC/ext/spl/ ./ext
-  cp -r $SRC/ext/sqlite3/ ./ext
-  cp -r $SRC/ext/standard/ ./ext
-  cp -r $SRC/ext/sysvshm/ ./ext
-  cp -r $SRC/ext/tokenizer/ ./ext
-  cp -r $SRC/ext/xml/ ./ext
-  cp -r $SRC/ext/xmlreader/ ./ext
-  cp -r $SRC/ext/xmlwriter/ ./ext
-  cp -r $SRC/ext/xsl/ ./ext
-  cp -r $SRC/ext/zip/ ./ext
-  cp -r $SRC/ext/zlib/ ./ext
-  # main
-  cp -r $SRC/main ./
-  sed -i 's/\/\* start Zend extensions \*\//\/\* start Zend extensions \*\/\n#ifdef PHP_ENABLE_OPCACHE\n\textern zend_extension zend_extension_entry;\n\tzend_register_extension(\&zend_extension_entry, NULL);\n#endif/g' main/main.c
-  # build
-  cp -r $SRC/build ./
-  # TSRM
-  cp -r ./TSRM/TSRM.h main/TSRM.h
-  cp -r $SRC/configure.ac ./
-  # fpm
-  cp -r $SRC/sapi/fpm/fpm ./sapi/cli
-  exit 0
+    PHP_CLI=$(which php)
+    test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
+    $PHP_CLI -v
+    $PHP_CLI sync-source-code.php --action run
+    exit 0
 else
     help
 fi

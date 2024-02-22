@@ -3,7 +3,8 @@
 `Linux` 下需要在容器中构建，因此需要先构建 `swoole-cli-builder:base` 基础镜像。
 基础镜像 `Dockerfile` 参考 [sapi/Dockerfile](/sapi/docker/Dockerfile)
 
-1. 构建基础镜像：`./make.sh docker-build`，也可以直接使用官方构建好的镜像 `docker pull phpswoole/swoole-cli-builder:base`
+1. 构建基础镜像：`./make.sh docker-build [china|ustc|tuna] `
+   ，也可以直接使用官方构建好的镜像 `docker pull phpswoole/swoole-cli-builder:base`
 1. 构建完成之后，使用 `./make.sh docker-bash` 进入容器
 2. 构建所有 `C/C++`库： `./make.sh all-library`
 3. 提交镜像：`./make.sh docker-commit` 提交 `swoole-cli-builder` 镜像
@@ -11,6 +12,27 @@
 
 > 当 `C库` 变更时，应该修改 `swoole-cli-builder` 镜像的版本
 > `make.sh all-library` 是可重入的，它会自动跳过已构建成功的库
+
+快速初始化构建环境
+====
+
+不执行 `./make.sh docker-build [china|ustc|tuna] ` 生成基础镜像
+使用如下命令快速进入容器环境
+便捷调整构建环境
+
+```bash
+# 安装容器运行环境
+# bash sapi/quickstart/linux/install-docker.sh
+
+bash sapi/quickstart/linux/run-alpine-container.sh
+bash sapi/quickstart/linux/alpine-init.sh
+
+# 使用镜像源 例子
+# bash sapi/quickstart/linux/install-docker.sh --mirror [ china | ustc | tuna ]
+# bash sapi/quickstart/linux/alpine-init.sh --mirror [ china | ustc | tuna | tencentyun | huaweicloud ]
+# bash sapi/quickstart/linux/alpine-init.sh --mirror  china
+
+```
 
 构建 swoole-cli
 ====
@@ -26,6 +48,7 @@
 
 其他指令
 ====
+
 * `./make.sh list-library`：列出所有 `C/C++` 库
 * `./make.sh list-extension`：列出所有扩展
 * `./make.sh clean-all-library`：清理所有 `C/C++` 库
@@ -37,7 +60,6 @@
 * `./make.sh [library-name]`：单独编译某个 `C/C++` 库
 * `./make.sh clean-[library-name]`：单独清理某个 `C/C++` 库
 * `./make.sh clean-[library-name]-cached`：单独清理某个 `C/C++` 库，保留缓存文件
-
 
 常见错误
 =====

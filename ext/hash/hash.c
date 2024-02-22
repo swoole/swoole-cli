@@ -449,7 +449,7 @@ PHP_FUNCTION(hash_file)
 	bool raw_output = 0;
 	HashTable *args = NULL;
 
-	ZEND_PARSE_PARAMETERS_START(2, 3)
+	ZEND_PARSE_PARAMETERS_START(2, 4)
 		Z_PARAM_STR(algo)
 		Z_PARAM_STRING(data, data_len)
 		Z_PARAM_OPTIONAL
@@ -680,7 +680,7 @@ PHP_FUNCTION(hash_init)
 
 #define PHP_HASHCONTEXT_VERIFY(hash) { \
 	if (!hash->context) { \
-		zend_argument_type_error(1, "must be a valid Hash Context resource"); \
+		zend_argument_type_error(1, "must be a valid, non-finalized HashContext"); \
 		RETURN_THROWS(); \
 	} \
 }
@@ -837,10 +837,14 @@ PHP_FUNCTION(hash_final)
 PHP_FUNCTION(hash_copy)
 {
 	zval *zhash;
+	php_hashcontext_object *context;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "O", &zhash, php_hashcontext_ce) == FAILURE) {
 		RETURN_THROWS();
 	}
+
+	context = php_hashcontext_from_object(Z_OBJ_P(zhash));
+	PHP_HASHCONTEXT_VERIFY(context);
 
 	RETVAL_OBJ(Z_OBJ_HANDLER_P(zhash, clone_obj)(Z_OBJ_P(zhash)));
 
@@ -992,7 +996,7 @@ PHP_FUNCTION(hash_pbkdf2)
 	bool raw_output = 0;
 	const php_hash_ops *ops;
 	void *context;
-	HashTable *args;
+	HashTable *args = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "Sssl|lbh", &algo, &pass, &pass_len, &salt, &salt_len, &iterations, &length, &raw_output, &args) == FAILURE) {
 		RETURN_THROWS();
@@ -1404,6 +1408,11 @@ static zend_object *php_hashcontext_clone(zend_object *zobj) {
 	php_hashcontext_object *oldobj = php_hashcontext_from_object(zobj);
 	zend_object *znew = php_hashcontext_create(zobj->ce);
 	php_hashcontext_object *newobj = php_hashcontext_from_object(znew);
+
+	if (!oldobj->context) {
+		zend_throw_exception(zend_ce_value_error, "Cannot clone a finalized HashContext", 0);
+		return znew;
+	}
 
 	zend_objects_clone_members(znew, zobj);
 
