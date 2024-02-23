@@ -18,11 +18,24 @@ test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download
 
 cd ${__PROJECT__}/var/download-box/
 
+DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.1.0/'
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    if [ "$2" = 'china' ] ; then
+      DOMAIN='https://swoole-cli.jingjingxyk.com/'
+    fi
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
 
-DOMAIN='https://swoole-cli.jingjingxyk.com/'
+
 URL="${DOMAIN}/all-archive.zip"
-
-test -f  all-archive.zip || wget -O all-archive.zip ${URL}
+test -f  all-archive.zip || curl -Lo  all-archive.zip ${URL}
 
 unzip -n all-archive.zip
 
