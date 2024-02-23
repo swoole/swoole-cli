@@ -11,23 +11,6 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-MIRROR=''
-while [ $# -gt 0 ]; do
-  case "$1" in
-  --mirror)
-    MIRROR="$2"
-    ;;
-  esac
-  shift $(($# > 0 ? 1 : 0))
-done
-
-DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.0.2/'
-case "$MIRROR" in
-china)
-  DOMAIN='https://swoole-cli.jingjingxyk.com/'
-  ;;
-esac
-
 mkdir -p  pool/lib
 mkdir -p  pool/ext
 
@@ -35,10 +18,29 @@ mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 
+if [ -f "${__PROJECT__}/sapi/PHP-VERSION.conf"  ] ; then
+  DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.1.0/'
+else
+  DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.1.0/'
+fi
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    if [ "$2" = 'china' ] ; then
+      DOMAIN='https://swoole-cli.jingjingxyk.com/'
+    fi
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
 
 URL="${DOMAIN}/all-archive.zip"
-
-test -f  all-archive.zip || curl -LSo all-archive.zip ${URL}
+test -f  all-archive.zip || curl -Lo  all-archive.zip ${URL}
 
 # https://www.runoob.com/linux/linux-comm-unzip.html
 # -o 不必先询问用户，unzip执行后覆盖原有文件。
