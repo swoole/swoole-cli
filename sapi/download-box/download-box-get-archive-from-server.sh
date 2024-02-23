@@ -18,7 +18,12 @@ mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 
-DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.1.0/'
+if [ -f "${__PROJECT__}/sapi/PHP-VERSION.conf"  ] ; then
+  DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.1.0/'
+else
+  DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.1.0/'
+fi
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
