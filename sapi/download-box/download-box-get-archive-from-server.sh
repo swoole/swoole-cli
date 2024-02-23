@@ -11,24 +11,6 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-MIRROR=''
-while [ $# -gt 0 ]; do
-  case "$1" in
-  --mirror)
-    MIRROR="$2"
-    ;;
-  esac
-  shift $(($# > 0 ? 1 : 0))
-done
-
-DOMAIN='https://github.com/jingjingxyk/swoole-cli/releases/download/all-archive-2024-01-09/'
-case "$MIRROR" in
-china)
-  DOMAIN='https://swoole-cli.jingjingxyk.com/'
-  ;;
-esac
-DOMAIN='https://swoole-cli.jingjingxyk.com/'
-
 mkdir -p  pool/lib
 mkdir -p  pool/ext
 
@@ -36,10 +18,24 @@ mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 
+DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.1.0/'
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    if [ "$2" = 'china' ] ; then
+      DOMAIN='https://swoole-cli.jingjingxyk.com/'
+    fi
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
 
 URL="${DOMAIN}/all-archive.zip"
-
-test -f  all-archive.zip || curl -LSo all-archive.zip ${URL}
+test -f  all-archive.zip || curl -Lo  all-archive.zip ${URL}
 
 unzip -n all-archive.zip
 
