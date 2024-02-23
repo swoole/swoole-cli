@@ -125,7 +125,7 @@ EOF;
                     unset($result[$key]);
                 }
             });
-        // var_dump($result);
+            // var_dump($result);
         } elseif ($action === 'extensionListAction') {
             $cmd = <<<EOF
             cd $word_dir/sapi/src/builder/extension
