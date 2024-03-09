@@ -14,16 +14,19 @@ ip link set br-eth0 up # 激活网桥
 
 {
     # 本机IP地址： 172.16.124.59
-    # 本机网关：   172.16.127.253
+    # 本机网关：   172.18.255.253
     # 本机掩码：   255.255.240.0
     # 广播地址：    172.16.127.255
 
-    ip addr add  172.16.124.60/20 dev br-eth0
-    ip route replace  default via 172.16.127.253  dev br-eth0
+    ip addr add  172.18.246.98/20 dev br-eth0
+    ip route replace  default via 172.18.255.253  dev br-eth0
 
-    ip route add  100.100.2.136 via  172.16.127.253 dev br-eth0
-    ip route add  100.100.2.138 via  172.16.127.253 dev br-eth0
-    ip route add  0.0.0.0/0     via  172.16.127.253 dev br-eth0
+    ip route add  100.100.2.136 via  172.18.255.253 dev br-eth0
+    ip route add  100.100.2.138 via  172.18.255.253 dev br-eth0
+    ip route add  0.0.0.0/0     via  172.18.255.253 dev br-eth0
+
+    ip addr add  10.4.20.2/24 dev br-eth0
+    # ip route add 10.4.20.0/24 via 10.4.20.1 dev br-eth0
 
     # 测试例子
     # ip route del 100.100.2.136
