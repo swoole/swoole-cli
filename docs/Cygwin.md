@@ -17,13 +17,18 @@
 > 打开 windows 控制台，并找到 setup-x86_64.exe 所在目录, 执行如下命令
 
 ```bash
+# 安装 cygwin
+setup-x86_64.exe     --site  https://mirrors.ustc.edu.cn/cygwin/
 
+# 安装 cygwin 依赖项
 setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl,libpcre2-devel,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel,libgmp-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel,libsqlite3-devel,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel,libMagick-devel,libzstd-devel,libbrotli-devel,libreadline-devel,libintl-devel,libpq-devel,libssh2-devel,libidn2-devel,gettext-devel,coreutils,openssl-devel
 
-setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages zip unzip
+setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages zip unzip icu libicu-devel
 
 setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages libpq5 libpq-devel
 
+
+# 打开 cygwin64 Terminal
 ```
 
 工具列表
@@ -71,6 +76,9 @@ libreadline-devel
 libintl-devel
 libpq-devel (如果编译pgsql扩展)
 libpq5 (如果编译pgsql扩展)
+libicu-devel
+icu
+
 ```
 
 构建步骤
@@ -79,7 +87,10 @@ libpq5 (如果编译pgsql扩展)
 到对应的分支，如 `4.8.x` 或 `master` (`5.0.x`)
 
 ```shell
-git clone --recursive https://github.com:swoole/swoole-cli.git
+
+# 打开 cygwin64 Terminal
+
+git clone --recursive https://github.com/swoole/swoole-cli.git
 
 cd swoole-cli
 
