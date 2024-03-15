@@ -101,6 +101,7 @@ export LANG="en_US.UTF-8"
 
 dpkg-reconfigure locales
 localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
+update-locale
 
 export TZ="UTC"
 export TZ="Etc/UTC"
