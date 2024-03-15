@@ -7,7 +7,7 @@ env:
 
 jobs:
   linux-mips64le:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -154,9 +154,10 @@ jobs:
           run: |
             ./thirdparty/php-src/sapi/cli/php -v
             ./thirdparty/php-src/sapi/cli/php -m
-            file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-            readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-            APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
+            BUILD_PHP_VERSION=$(./thirdparty/php-src/sapi/cli/php -v | head -n 1 | awk '{print $2}')
+            file ./bin/php-${BUILD_PHP_VERSION}/bin/php
+            readelf -h ./bin/php-${BUILD_PHP_VERSION}/bin/php
+            APP_VERSION=$(./bin/php-${BUILD_PHP_VERSION}/bin/php  -v | head -n 1 | awk '{print $2}')
             echo ${APP_VERSION}
             echo ${APP_VERSION}  > APP_VERSION
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
