@@ -106,7 +106,7 @@ jobs:
             apt install -y php-dev php-cli
 
       - name: Build
-        if: 0
+        if: 1
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
