@@ -31,6 +31,52 @@ setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disa
 # 打开 cygwin64 Terminal
 ```
 
+构建步骤
+------
+首先需要安装上述工具和库，然后 Clone 项目，并切换 `ext/swoole`
+到对应的分支，如 `4.8.x` 或 `master` (`5.0.x`)
+
+```shell
+
+# 打开 cygwin64 Terminal
+
+git clone --recursive https://github.com/swoole/swoole-cli.git
+
+cd swoole-cli
+
+# git submodule update --init
+
+bash ./sapi/scripts/cygwin/install-re2c.sh
+
+bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
+bash ./sapi/scripts/cygwin/cygwin-config.sh
+bash ./sapi/scripts/cygwin/cygwin-build.sh
+bash ./sapi/scripts/cygwin/cygwin-archive.sh
+
+```
+
+构建步骤说明
+----
+
+- 准备re2c：` bash ./sapi/scripts/cygwin/install-re2c.sh`
+- 准备扩展：`  bash ./sapi/scripts/cygwin/cygwin-config-ext.sh`
+- 预处理：`  bash ./sapi/scripts/cygwin/cygwin-config.sh`
+- 构建：`   bash ./sapi/scripts/cygwin/cygwin-build.sh`
+- 打包：`   bash ./sapi/scripts/cygwin/cygwin-archive.sh`
+
+打包完成后会在当前目录下生成 `swoole-cli-{version}-cygwin-x64.zip` 压缩包。
+
+备注
+----
+
+1. Cygwin 下不支持 `mongodb`
+   扩展，参考：[https://github.com/mongodb/mongo-php-driver/issues/1381](https://github.com/mongodb/mongo-php-driver/issues/1381)
+
+2. 编译pgsql扩展，在`./sapi/scripts/cygwin/cygwin-build.sh`脚本 `./configure`
+   后面增加一行： `--with-pgsql --with-pdo-pgsql --enable-swoole-pgsql \`
+   ，并将相同版本（如8.1.12）php-src中`ext`目录下的`pgsql` `pdo_pgsql`
+   两个文件夹拷贝到当前项目的ext目录下，再执行构建脚本
+
 工具列表
 ----
 
@@ -80,50 +126,3 @@ libicu-devel
 icu
 
 ```
-
-构建步骤
-------
-首先需要安装上述工具和库，然后 Clone 项目，并切换 `ext/swoole`
-到对应的分支，如 `4.8.x` 或 `master` (`5.0.x`)
-
-```shell
-
-# 打开 cygwin64 Terminal
-
-git clone --recursive https://github.com/swoole/swoole-cli.git
-
-cd swoole-cli
-
-# git submodule update --init
-
-bash ./sapi/scripts/cygwin/install-re2c.sh
-
-bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
-bash ./sapi/scripts/cygwin/cygwin-config.sh
-bash ./sapi/scripts/cygwin/cygwin-build.sh
-bash ./sapi/scripts/cygwin/cygwin-archive.sh
-
-```
-
-构建步骤说明
-----
-
-- 准备re2c：` bash ./sapi/scripts/cygwin/install-re2c.sh`
-- 准备扩展：`  bash ./sapi/scripts/cygwin/cygwin-config-ext.sh`
-- 预处理：`  bash ./sapi/scripts/cygwin/cygwin-config.sh`
-- 构建：`   bash ./sapi/scripts/cygwin/cygwin-build.sh`
-- 打包：`   bash ./sapi/scripts/cygwin/cygwin-archive.sh`
-
-打包完成后会在当前目录下生成 `swoole-cli-{version}-cygwin-x64.zip` 压缩包。
-
-备注
-----
-
-1. Cygwin 下不支持 `mongodb`
-   扩展，参考：[https://github.com/mongodb/mongo-php-driver/issues/1381](https://github.com/mongodb/mongo-php-driver/issues/1381)
-
-2. 编译pgsql扩展，在`./sapi/scripts/cygwin/cygwin-build.sh`脚本 `./configure`
-   后面增加一行： `--with-pgsql --with-pdo-pgsql --enable-swoole-pgsql \`
-   ，并将相同版本（如8.1.12）php-src中`ext`目录下的`pgsql` `pdo_pgsql`
-   两个文件夹拷贝到当前项目的ext目录下，再执行构建脚本
-
