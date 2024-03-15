@@ -92,7 +92,8 @@ export DEBIAN_FRONTEND=noninteractive
 apt update -y
 apt install -y locales
 
-dpkg-reconfigure locales
+locale-gen en_US.UTF-8
+# dpkg-reconfigure locales
 localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
 update-locale
 
