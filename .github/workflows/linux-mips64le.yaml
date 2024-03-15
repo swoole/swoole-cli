@@ -117,7 +117,7 @@ jobs:
 
 
       - name: Build
-        if: 1
+        if: 0
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
@@ -146,6 +146,7 @@ jobs:
             bash make.sh archive
 
       - name: Show Build Result
+        if: 0
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
@@ -161,6 +162,7 @@ jobs:
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
 
       - name: get app version
+        if: 0
         run: |
           APP_VERSION=$(cat ./APP_VERSION)
           echo $APP_VERSION
