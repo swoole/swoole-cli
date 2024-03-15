@@ -94,8 +94,8 @@ apt install -y locales
 
 locale-gen en_US.UTF-8
 # dpkg-reconfigure locales
-localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
-update-locale
+# localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
+# update-locale
 
 export LANGUAGE="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
