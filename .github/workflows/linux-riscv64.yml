@@ -36,6 +36,13 @@ jobs:
 
           mkdir -p ${{ github.workspace }}/var/build-github-action-container/
 
+      - name: Cache PHP Vendor
+        uses: actions/cache@v3
+        id: php-vendor-cache
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-riscv64-php-vendor
+
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v3
         id: pool-cache
