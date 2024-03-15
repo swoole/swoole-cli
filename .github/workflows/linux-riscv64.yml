@@ -154,7 +154,7 @@ jobs:
             APP_VERSION=$(./bin/php-${BUILD_PHP_VERSION}/bin/php  -v | head -n 1 | awk '{print $2}')
             echo ${APP_VERSION}
             echo ${APP_VERSION}  > APP_VERSION
-            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
+            ./bin/php-${BUILD_PHP_VERSION}/bin/php -r "echo PHP_VERSION;"
 
       - name: get app version
         if: 1
@@ -162,6 +162,7 @@ jobs:
           APP_VERSION=$(cat ./APP_VERSION)
           echo $APP_VERSION
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+          echo "BUILD_PHP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
 
       - name: production artifacts debug
         uses: actions/upload-artifact@v3
