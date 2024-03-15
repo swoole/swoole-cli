@@ -103,9 +103,6 @@ export LC_CTYPE="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 
 
-
-
-
 export TZ="UTC"
 export TZ="Etc/UTC"
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
