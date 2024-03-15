@@ -134,6 +134,7 @@ jobs:
 
             bash make.sh all-library
             rm -rf /work/thirdparty/php-src/ext/pcre/
+            rm -rf /work/thirdparty/php-src/ext/spl/
             bash make.sh config
             bash make.sh build
             bash make.sh archive

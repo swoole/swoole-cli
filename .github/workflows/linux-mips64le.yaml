@@ -140,7 +140,7 @@ jobs:
             bash make-install-deps.sh
 
             bash make.sh all-library
-
+            rm -rf /work/thirdparty/php-src/ext/standard/
             bash make.sh config
             bash make.sh build
             bash make.sh archive
