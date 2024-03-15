@@ -89,14 +89,17 @@ test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 
 export DEBIAN_FRONTEND=noninteractive
 
+apt update -y
+apt install -y locales
+
 export LANGUAGE="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 
-apt update -y
-apt install -y locales
 
+
+dpkg-reconfigure locales
 localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
 
 export TZ="UTC"
