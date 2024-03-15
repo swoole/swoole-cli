@@ -134,37 +134,28 @@ jobs:
 
             bash make.sh all-library
             # rm -rf /work/thirdparty/php-src/ext/pcre/
-            # rm -rf /work/thirdparty/php-src/ext/spl/
+
             bash make.sh config
             bash make.sh build
             bash make.sh archive
 
       - name: Show Build Result
-        if: 0
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
-            ./bin/swoole-cli -v
-            ./bin/swoole-cli -m
-            ./bin/swoole-cli --ri swoole
-            ./bin/swoole-cli --ri gd
-            ./bin/swoole-cli --ri pgsql
+            ./thirdparty/php-src/sapi/cli/php -v
+            ./thirdparty/php-src/sapi/cli/php -m
 
-            file ./bin/swoole-cli
-            readelf -h ./bin/swoole-cli
-            APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
+            file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+            readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+            APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
             echo ${APP_VERSION}
             echo ${APP_VERSION}  > APP_VERSION
-
-            ./bin/swoole-cli -r "echo PHP_VERSION;"
-
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
 
       - name: get app version
-        if: 0
         run: |
           APP_VERSION=$(cat ./APP_VERSION)
           echo $APP_VERSION

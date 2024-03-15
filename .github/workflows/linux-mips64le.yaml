@@ -140,19 +140,19 @@ jobs:
             bash make-install-deps.sh
 
             bash make.sh all-library
-            # rm -rf /work/thirdparty/php-src/ext/standard/
+
             bash make.sh config
             bash make.sh build
             bash make.sh archive
 
       - name: Show Build Result
-        if: 0
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
           options: -v ${{ github.workspace }}:/work -w /work
           run: |
             ./thirdparty/php-src/sapi/cli/php -v
+            ./thirdparty/php-src/sapi/cli/php -m
             file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
             APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
@@ -161,11 +161,11 @@ jobs:
             ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
 
       - name: get app version
-        if: 0
         run: |
           APP_VERSION=$(cat ./APP_VERSION)
           echo $APP_VERSION
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+
 
       - name: production artifacts debug
         if: 0
