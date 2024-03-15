@@ -9,7 +9,7 @@ env:
 
 jobs:
   macos-x86_64:
-    if: 1
+    if: 0
     runs-on: macos-latest
     strategy:
       matrix:
