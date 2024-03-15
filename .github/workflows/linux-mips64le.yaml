@@ -7,7 +7,7 @@ env:
 
 jobs:
   linux-mips64le:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -111,7 +111,7 @@ jobs:
 
 
       - name: Build
-        if: 0
+        if: 1
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
@@ -126,14 +126,10 @@ jobs:
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
-            # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
-            # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
-            # bash sapi/quickstart/mark-install-library-cached.sh
-
-            sh  sapi/quickstart/linux/alpine-init.sh
+            sh  sapi/quickstart/linux/debian-init.sh
             composer update   --optimize-autoloader
 
-            php prepare.php +ffmpeg
+            php prepare.php --with-override-default-enabled-ext=1
 
             bash make-install-deps.sh
 
