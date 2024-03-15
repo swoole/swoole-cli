@@ -29,12 +29,12 @@ ROOT=${__PROJECT__}
 ## 多个包之间，用逗号分隔
 
 
-SITE='http://mirrors.kernel.org/sourceware/cygwin/'
+SITE='https://mirrors.kernel.org/sourceware/cygwin/'
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     if [ "$2" = 'china' ] ; then
-      SITE='http://mirrors.ustc.edu.cn/cygwin/'
+      SITE='https://mirrors.ustc.edu.cn/cygwin/'
     fi
     ;;
   --*)
