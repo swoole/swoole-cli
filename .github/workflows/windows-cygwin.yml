@@ -46,7 +46,7 @@ jobs:
         env:
           cache-name: cache-cygwin-packages
         with:
-          path: C:/cygwin-packages
+          path: C:\cygwin-packages
           key: ${{ runner.os }}-build-${{ env.cache-name }}
 
       - name: Cache pool
@@ -56,11 +56,21 @@ jobs:
           path: "${{ github.workspace }}\\pool\\"
           key: ${{ runner.os }}-build-pool-cache
 
-      - name: Install deps
-        uses: cygwin/cygwin-install-action@v4
-        with:
-          platform: x86_64
-          packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel zip unzip libpq5 libpq-devel git curl
+      - name: Install Cygwin
+        uses: cygwin/cygwin-install-action@v2
+        # with:
+        #  platform: x64
+        #  packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel zip unzip
+
+      - name: Install Cygwin Packages
+        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
+        run: |
+          ls -lah /cygdrive/c/
+          ls -lah /cygdrive/d/
+
+          cp -f /cygdrive/c/setup.exe  /cygdrive/c/cygwin/bin/setup-x86_64.exe
+
+          bash ./sapi/scripts/cygwin/install-cygwin.sh
 
       - name: Install re2c
         run: |
