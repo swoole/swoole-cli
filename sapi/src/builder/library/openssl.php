@@ -7,13 +7,19 @@ return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->isMacos() ? '' : ' -static --static';
     $c_compiler = $p->get_C_COMPILER();
-    if ($c_compiler === 'musl-gcc') {
-        $custom_include = '/usr/include/x86_64-linux-musl/';
-    } else {
-        $custom_include = '/usr/include/x86_64-linux-gnu/';
+
+    if ($p->isLinux()) {
+        $cc = '${CC}';
+        if ($c_compiler === 'musl-gcc') {
+            $custom_include = '/usr/include/x86_64-linux-musl/';
+            # $custom_include = '/usr/include/x86_64-linux-gnu/';
+
+            $cc = '${CC} -fPIE -pie -static -idirafter /usr/include/ -idirafter ' . $custom_include;
+
+        }
     }
+
     # 参考 https://github.com/openssl/openssl/issues/7207#issuecomment-880121450
-    $cc = $p->isLinux() ? '${CC} -fPIE -pie -static -idirafter /usr/include/ -idirafter ' . $custom_include : '';
 
     $p->addLibrary(
         (new Library('openssl'))
