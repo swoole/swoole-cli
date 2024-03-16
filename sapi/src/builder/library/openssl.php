@@ -12,8 +12,8 @@ return function (Preprocessor $p) {
         # 参考 https://github.com/openssl/openssl/issues/7207#issuecomment-880121450
         # -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/"
         if ($p->get_C_COMPILER() === 'musl-gcc') {
-            $custom_include = '/usr/include/x86_64-linux-musl/';
-            # $custom_include = '/usr/include/x86_64-linux-gnu/';
+            # $custom_include = '/usr/include/x86_64-linux-musl/';
+            $custom_include = '/usr/include/x86_64-linux-gnu/';
 
             $cc = 'CC="${CC} -idirafter /usr/include/ -idirafter ' . $custom_include . '"';
 
