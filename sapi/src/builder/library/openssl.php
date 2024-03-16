@@ -6,11 +6,10 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->isMacos() ? '' : ' -static --static';
-    $c_compiler = $p->get_C_COMPILER();
 
+    $cc = '${CC}';
     if ($p->isLinux()) {
-        $cc = '${CC}';
-        if ($c_compiler === 'musl-gcc') {
+        if ($p->get_C_COMPILER() === 'musl-gcc') {
             $custom_include = '/usr/include/x86_64-linux-musl/';
             # $custom_include = '/usr/include/x86_64-linux-gnu/';
 
