@@ -13,12 +13,13 @@ return function (Preprocessor $p) {
             $custom_include = '/usr/include/x86_64-linux-musl/';
             # $custom_include = '/usr/include/x86_64-linux-gnu/';
 
-            $cc = 'CC=\'${CC} -fPIE -pie -static -idirafter /usr/include/ -idirafter ' . $custom_include . '\'';
+            $cc = 'CC=\"${CC} -fPIE -pie -static -idirafter /usr/include/ -idirafter ' . $custom_include . '\"';
 
         }
     }
 
     # 参考 https://github.com/openssl/openssl/issues/7207#issuecomment-880121450
+    # # -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/"
 
     $p->addLibrary(
         (new Library('openssl'))
@@ -36,9 +37,6 @@ return function (Preprocessor $p) {
                --prefix={$openssl_prefix} \
                --libdir={$openssl_prefix}/lib \
                --openssldir=/etc/ssl
-
-               # -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/"
-
 EOF
             )
             ->withMakeOptions('build_sw')
