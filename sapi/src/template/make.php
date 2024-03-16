@@ -268,7 +268,9 @@ make_config() {
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
-
+<?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
+    export LDFLAGS="$LDFLAGS  -static-libstdc++ "
+<?php endif ;?>
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
