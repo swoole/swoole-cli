@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-riscv:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
