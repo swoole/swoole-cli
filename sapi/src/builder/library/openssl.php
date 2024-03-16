@@ -6,6 +6,14 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $openssl_prefix = OPENSSL_PREFIX;
     $static = $p->isMacos() ? '' : ' -static --static';
+    $c_compiler = $p->get_C_COMPILER();
+    if ($c_compiler === 'musl-gcc') {
+        $custom_include = '/usr/include/x86_64-linux-musl/';
+    } else {
+        $custom_include = '/usr/include/x86_64-linux-gnu/';
+    }
+    # 参考 https://github.com/openssl/openssl/issues/7207#issuecomment-880121450
+    $cc = $p->isLinux() ? '${CC} -fPIE -pie -static -idirafter /usr/include/ -idirafter ' . $custom_include : '';
 
     $p->addLibrary(
         (new Library('openssl'))
@@ -19,10 +27,12 @@ return function (Preprocessor $p) {
                 # Fix openssl error, "-ldl" should not be added when compiling statically
                 sed -i.backup 's/add("-ldl", threads("-pthread"))/add(threads("-pthread"))/g' ./Configurations/10-main.conf
                 # ./Configure LIST
-               ./config {$static} no-shared  enable-tls1_3 --release \
+               {$cc} ./config {$static} no-shared  enable-tls1_3 --release \
                --prefix={$openssl_prefix} \
                --libdir={$openssl_prefix}/lib \
                --openssldir=/etc/ssl
+
+               # -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/"
 
 EOF
             )

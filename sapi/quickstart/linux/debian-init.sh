@@ -116,8 +116,8 @@ apt install -y musl-dev musl-tools
 
 # apt install -y linux-headers-$(uname -r)
 
+# apt install -y build-essential linux-headers-$(uname -r)
 
-# apt install build-essential linux-headers-$(uname -r)
 apt install -y python3 python3-pip ninja-build  diffutils
 apt install -y yasm nasm
 apt install -y meson
