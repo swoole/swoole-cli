@@ -25,7 +25,7 @@ return function (Preprocessor $p) {
             -DZSTD_BUILD_STATIC=ON \
             -DZSTD_BUILD_SHARED=OFF \
             -DCMAKE_BUILD_TYPE=Release \
-            -DZSTD_BUILD_CONTRIB=ON \
+            -DZSTD_BUILD_CONTRIB=OFF \
             -DZSTD_BUILD_PROGRAMS=ON \
             -DZSTD_BUILD_TESTS=OFF \
             -DZSTD_LEGACY_SUPPORT=ON \
