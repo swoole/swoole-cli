@@ -128,7 +128,7 @@ jobs:
             sh  sapi/quickstart/linux/debian-init.sh
             composer update   --optimize-autoloader
 
-            php prepare.php --with-override-default-enabled-ext=1 --with-php-version=8.3.4
+            php prepare.php --with-override-default-enabled-ext=1 --with-php-version=8.3.4 --with-c-compiler=musl-gcc
 
             bash make-install-deps.sh
 
