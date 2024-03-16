@@ -64,12 +64,11 @@ test -f Makefile && make clean
   --with-imagick \
   --with-yaml \
   --with-readline \
-  --with-pdo-pgsql \
   --with-pgsql
 
 
-#   --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)
-#  --with-pdo-pgsql \
-#  --with-pgsql \
+# --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)
+# --with-pdo-pgsql \
+# --with-pgsql \
 # --with-pdo-sqlite \
 
