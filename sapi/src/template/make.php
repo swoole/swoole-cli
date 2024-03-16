@@ -269,7 +269,7 @@ make_config() {
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 <?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
-    export LDFLAGS="$LDFLAGS  -static-libstdc++ "
+    export LDFLAGS="$LDFLAGS  -static-libstdc++ -L/usr/lib/gcc/x86_64-linux-gnu/12 "
 <?php endif ;?>
     ./configure $OPTIONS
 
