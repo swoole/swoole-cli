@@ -129,7 +129,7 @@ jobs:
               bash  setup-php-runtime.sh
             fi
 
-            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
+            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             # alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
             sh  sapi/quickstart/linux/debian-init.sh

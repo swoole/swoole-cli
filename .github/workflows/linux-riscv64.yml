@@ -118,7 +118,7 @@ jobs:
               bash  setup-php-runtime.sh
             fi
 
-            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
+            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             # alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
             # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
