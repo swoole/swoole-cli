@@ -164,6 +164,11 @@ if ($p->getInputOption('with-c-compiler')) {
         $p->set_CXX_COMPILER('g++');
         $p->setLinker('ld');
     }
+    if ($c_compiler == 'musl-gcc') {
+        $p->set_C_COMPILER('musl-gcc');
+        $p->set_CXX_COMPILER('g++');
+        $p->setLinker('ld');
+    }
 }
 
 $p->setExtraCflags(' -Os');
