@@ -226,9 +226,17 @@ export_variables() {
     export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
 <?php endif; ?>
 
+<?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
+    set +x
+    #  -I/usr/include/x86_64-linux-gnu/c++/12 -I/usr/include/x86_64-linux-gnu
+    export CPPFLAGS="$CPPFLAGS   -I/usr/include/x86_64-linux-musl  "
+    export LDFLAGS="$LDFLAGS -static -fpie -static-pie -static-libstdc++ -L/usr/lib/gcc/x86_64-linux-gnu/12/ -L/usr/lib/x86_64-linux-musl/ "
+<?php endif ;?>
+
     export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+
 
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
@@ -268,12 +276,7 @@ make_config() {
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
-<?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
-    set +x
-    #  -I/usr/include/x86_64-linux-gnu/c++/12 -I/usr/include/x86_64-linux-gnu
-    export CPPFLAGS="$CPPFLAGS   -I/usr/include/x86_64-linux-musl  "
-    export LDFLAGS="$LDFLAGS -static -fpie -static-pie -static-libstdc++ -L/usr/lib/gcc/x86_64-linux-gnu/12/ -L/usr/lib/x86_64-linux-musl/ "
-<?php endif ;?>
+
     ./configure $OPTIONS
 
     # more info https://stackoverflow.com/questions/19456518/error-when-using-sed-with-find-command-on-os-x-invalid-command-code
