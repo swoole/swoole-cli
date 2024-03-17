@@ -228,7 +228,7 @@ export_variables() {
 
 <?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
     #  -I/usr/include/x86_64-linux-gnu/c++/12
-    export CPPFLAGS="$CPPFLAGS    -I/usr/include/ -I/usr/include/x86_64-linux-gnu/ -I/usr/include/x86_64-linux-musl "
+    export CPPFLAGS="$CPPFLAGS -I/usr/include/x86_64-linux-musl -I/usr/include/x86_64-linux-gnu/  -I/usr/include/   "
     export LDFLAGS="$LDFLAGS -static -fpie -static-pie -static-libstdc++ -L/usr/lib/gcc/x86_64-linux-gnu/12/ -L/usr/lib/x86_64-linux-musl/ "
 <?php endif ;?>
 
