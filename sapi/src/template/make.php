@@ -272,7 +272,7 @@ make_config() {
     set +x
     #  -I/usr/include/x86_64-linux-gnu/c++/12
     export CPPFLAGS="$CPPFLAGS   -I/usr/include/x86_64-linux-musl -I/usr/include/x86_64-linux-gnu "
-    export LDFLAGS="$LDFLAGS  -static-libstdc++ -L/usr/lib/gcc/x86_64-linux-gnu/12/ -L/usr/lib/x86_64-linux-musl/ "
+    export LDFLAGS="$LDFLAGS -static -fpie -static-pie -static-libstdc++ -L/usr/lib/gcc/x86_64-linux-gnu/12/ -L/usr/lib/x86_64-linux-musl/ "
 <?php endif ;?>
     ./configure $OPTIONS
 
