@@ -809,19 +809,13 @@ class Preprocessor
         $this->pkgConfigPaths[] = '$PKG_CONFIG_PATH';
         $this->pkgConfigPaths = array_unique($this->pkgConfigPaths);
 
-        if ($this->isMacos()) {
-            $libcpp = '-lc++';
-        } else {
-            $libcpp = '-lstdc++';
-        }
-
         $packagesArr = $this->getLibraryPackages();
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);
             $this->withVariable('PACKAGES', $packages);
             $this->withVariable('CPPFLAGS', '$CPPFLAGS $(pkg-config --cflags-only-I --static $PACKAGES ) ');
             $this->withVariable('LDFLAGS', '$LDFLAGS $(pkg-config --libs-only-L --static $PACKAGES ) ');
-            $this->withVariable('LIBS', '$LIBS $(pkg-config --libs-only-l --static $PACKAGES ) ' . $libcpp);
+            $this->withVariable('LIBS', '$LIBS $(pkg-config --libs-only-l --static $PACKAGES ) ');
         }
         if (!empty($this->varables) || !empty($packagesArr)) {
             $this->withExportVariable('CPPFLAGS', '$CPPFLAGS');
