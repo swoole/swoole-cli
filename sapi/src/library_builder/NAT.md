@@ -61,6 +61,7 @@ strongswan-ikev2
     500/500
     4500/4500
 
+    https://docs.strongswan.org/docs/5.9/howtos/ipsecProtocol.html
 
 openvpn
 
