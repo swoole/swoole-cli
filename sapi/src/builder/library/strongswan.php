@@ -27,7 +27,7 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES zlib"
         PACKAGES="\$PACKAGES gmp"
 
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I/usr/include/" \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
         ./configure \
