@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
     $make_options .= "GCC_VER='11.2.0' ";
 
     $make_common_options = 'CC="x86_64-linux-musl-gcc -static --static" ';
-    $make_common_options .= 'CXX="x86_64-linux-musl-g++ -static --static" ';
+    $make_common_options .= 'CXX="x86_64-linux-musl-g++ -static --static -std=gnu++11" ';
     $make_common_options .= 'CFLAGS="-g0 -Os" ';
     $make_common_options .= 'CXXFLAGS="-g0 -Os" ';
     $make_common_options .= 'LDFLAGS="-s" ';
