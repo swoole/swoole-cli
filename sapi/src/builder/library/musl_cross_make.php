@@ -22,6 +22,7 @@ EOF
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
         ->withMakeOptions("TARGET='x86_64-linux-musl' OUTPUT={$musl_cross_make_prefix} DL_CMD='curl -C - -L -o'")
+        ->withMakeInstallOptions("OUTPUT={$musl_cross_make_prefix}")
         ->withBinPath($musl_cross_make_prefix . '/bin/')
 
     ;
