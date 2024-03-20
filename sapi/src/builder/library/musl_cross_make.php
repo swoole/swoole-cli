@@ -45,7 +45,7 @@ EOF
         make -j {$make_options} install
 EOF
 )
-        ->withBinPath($musl_cross_make_prefix . '/bin/;'. $musl_cross_make_prefix . '/x86_64-linux-musl/bin/');
+        ->withBinPath($musl_cross_make_prefix . '/bin/:'. $musl_cross_make_prefix . '/x86_64-linux-musl/bin/');
 
     $p->addLibrary($lib);
 
