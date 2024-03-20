@@ -15,6 +15,7 @@ return function (Preprocessor $p) {
     $make_common_options = 'CFLAGS="-g0 -Os" ';
     $make_common_options .= 'CXXFLAGS="-g0 -Os" ';
     $make_common_options .= 'LDFLAGS="-s" ';
+    $make_common_options = '';
 
     $make_gcc_options = '--disable-libquadmath --disable-decimal-float ';
     $make_gcc_options .= '--disable-libitm ';
