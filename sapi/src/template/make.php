@@ -227,10 +227,9 @@ export_variables() {
 <?php endif; ?>
 
 <?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
-    #  -I/usr/include/x86_64-linux-gnu/c++/12  -I/usr/include/x86_64-linux-musl
-    # export CPPFLAGS="$CPPFLAGS  -I/usr/include/x86_64-linux-gnu/  -I/usr/include/  "
-    #  -static-pie -fpie
-    # export LDFLAGS="$LDFLAGS -all-static  -static-libstdc++ -L/usr/lib/gcc/x86_64-linux-gnu/12/ -L/usr/lib/x86_64-linux-gnu/ -L/usr/lib/x86_64-linux-musl/ "
+    ln -sf /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
+    ln -sf /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
+    ln -sf /usr/include/asm-generic/ /usr/include/x86_64-linux-musl/asm-generic
 <?php endif ;?>
 
     export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
