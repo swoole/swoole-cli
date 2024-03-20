@@ -21,16 +21,7 @@ EOF
         )
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
-
-        /* 使用 autoconfig automake  构建 start  */
-        ->withConfigure(
-            <<<EOF
-        TARGET="x86_64-linux-musl"
-        OUTPUT={$musl_cross_make_prefix}
-        DL_CMD="curl -C - -L -o"
-EOF
-        )
-        ->withPkgName('example')
+        ->withMakeOptions("TARGET='x86_64-linux-musl' OUTPUT={$musl_cross_make_prefix} DL_CMD='curl -C - -L -o'")
         ->withBinPath($musl_cross_make_prefix . '/bin/')
 
     ;
