@@ -236,7 +236,6 @@ export_variables() {
     ln -sf /usr/include/asm-generic/ /usr/include/x86_64-linux-musl/asm-generic
 
     export LDFLAGS="${LDFLAGS} -static -L/usr/lib/x86_64-linux-musl/"
-    export LIBS="${LIBS} -lc++ "
 
 <?php endif ;?>
 
