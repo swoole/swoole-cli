@@ -42,7 +42,12 @@ EOF
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
         ->withBuildCached(false)
-        ->withMakeOptions($make_options)
+        ->withConfigure(<<<EOF
+        cp -f {$p->getWorkDir()}/sapi/musl-cross-make/config.mak .
+
+EOF
+        )
+        //->withMakeOptions($make_options)
         ->withBinPath($musl_cross_make_prefix . '/bin/');
 
     $p->addLibrary($lib);
