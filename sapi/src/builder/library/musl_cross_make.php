@@ -11,11 +11,10 @@ return function (Preprocessor $p) {
     $make_options .= "GCC_VER='11.2.0' ";
 
     $make_common_options = 'CC="x86_64-linux-musl-gcc -static --static" ';
-    $make_common_options .= 'CXX="x86_64-linux-musl-g++ -static --static -std=gnu++11" ';
+    $make_common_options .= 'CXX="x86_64-linux-musl-g++ -static --static" ';
     $make_common_options .= 'CFLAGS="-g0 -Os" ';
     $make_common_options .= 'CXXFLAGS="-g0 -Os" ';
     $make_common_options .= 'LDFLAGS="-s" ';
-
 
     $make_gcc_options = '--disable-libquadmath --disable-decimal-float ';
     $make_gcc_options .= '--disable-libitm ';
@@ -33,7 +32,6 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/richfelker/musl-cross-make/blob/master/README.md')
         /* 下载依赖库源代码方式二 start */
         ->withFile('musl-cross-make-latest.tar.gz')
-        ->withBuildCached(false)
         ->withDownloadScript(
             'musl-cross-make',
             <<<EOF
@@ -43,18 +41,14 @@ EOF
         )
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
-        ->withBuildScript(<<<EOF
-        make -j {$make_options}
-        # make install
+        ->withBuildCached(false)
+        ->withConfigure(<<<EOF
+        cp -f {$p->getWorkDir()}/sapi/musl-cross-make/config.mak .
+
 EOF
         )
-        ->withScriptAfterInstall(
-            <<<EOF
-           echo 'build musl-cross-make ok!'
-           exit 255
-EOF
-        )
-        ->withBinPath($musl_cross_make_prefix . '/bin/:'. $musl_cross_make_prefix . '/x86_64-linux-musl/bin/');
+        //->withMakeOptions($make_options)
+        ->withBinPath($musl_cross_make_prefix . '/bin/');
 
     $p->addLibrary($lib);
 
