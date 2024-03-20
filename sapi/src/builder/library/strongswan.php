@@ -28,7 +28,7 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES gmp"
         PACKAGES="\$PACKAGES libxml-2.0"
 
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I/usr/include/ -I/usr/include/x86_64-linux-gnu/ -I/usr/include/x86_64-linux-musl/ " \
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I/usr/include/ -I/usr/include/x86_64-linux-gnu/ " \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
         ./configure \
