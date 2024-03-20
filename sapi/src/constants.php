@@ -326,5 +326,6 @@ define("QEMU_PREFIX", $p->getGlobalPrefix() . '/qemu');
 
 define("STRONGSWAN_PREFIX", $p->getGlobalPrefix() . '/strongswan');
 
+define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
