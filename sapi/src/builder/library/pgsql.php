@@ -5,8 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
-    $ldflags = $p->isMacos() ? '' : ' -static  ';
-    $libs = '-lc++';
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')

@@ -44,5 +44,6 @@ EOF
 
     $p->addExtension($ext);
 
-    $p->withVariable('LIBS', '$LIBS -lc++ ');
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+    $p->withVariable('LIBS', '$LIBS ' . $libs);
 };
