@@ -324,5 +324,7 @@ define("ASTERISK_PREFIX", $p->getGlobalPrefix() . '/asterisk');
 define("PJPROJECT_PREFIX", $p->getGlobalPrefix() . '/pjproject');
 define("QEMU_PREFIX", $p->getGlobalPrefix() . '/qemu');
 
+define("STRONGSWAN_PREFIX", $p->getGlobalPrefix() . '/strongswan');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
