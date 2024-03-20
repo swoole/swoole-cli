@@ -158,8 +158,12 @@ if ($p->isMacos()) {
 
 
 $c_compiler = $p->getInputOption('with-c-compiler');
-if ($c_compiler == 'musl-gcc' || $c_compiler == 'gcc') {
+if ($c_compiler == 'musl-gcc') {
     $p->set_C_COMPILER('musl-gcc');
+    $p->set_CXX_COMPILER('musl-g++');
+    $p->setLinker('ld');
+} elseif ($c_compiler == 'gcc') {
+    $p->set_C_COMPILER('gcc');
     $p->set_CXX_COMPILER('g++');
     $p->setLinker('ld');
 }

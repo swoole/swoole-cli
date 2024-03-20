@@ -41,7 +41,7 @@ EOF
         )
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
-        ->withBuildCached(false)
+        //->withBuildCached(false)
         ->withMakeOptions($make_options)
         ->withBinPath($musl_cross_make_prefix . '/bin/');
 
