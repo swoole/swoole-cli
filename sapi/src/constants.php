@@ -76,6 +76,8 @@ define("RAV1E_PREFIX", $p->getGlobalPrefix() . '/rav1e');
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
+define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
 
