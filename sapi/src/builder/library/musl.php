@@ -4,12 +4,9 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $musl_libc_prefix = EXAMPLE_PREFIX;
     $musl_libc_prefix = MUSL_LIBC_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
-
     //文件名称 和 库名称一致
-    $lib = new Library('musl_Libc');
+    $lib = new Library('musl_libc');
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://musl.libc.org/')
