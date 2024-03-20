@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
 
     $cc = '';
     if ($p->isLinux()) {
-        $cc = '${CC}';
+
         # 参考 https://github.com/openssl/openssl/issues/7207#issuecomment-880121450
         # -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/"
         if ($p->get_C_COMPILER() === 'musl-gcc') {
