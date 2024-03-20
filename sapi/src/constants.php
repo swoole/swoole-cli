@@ -78,6 +78,7 @@ define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
 
+define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
 
