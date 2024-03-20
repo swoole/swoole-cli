@@ -27,7 +27,7 @@ EOF
             <<<EOF
         TARGET=x86_64-linux-musl
         OUTPUT={$musl_cross_make_prefix}
-        DL_CMD = curl -C - -L -o
+        DL_CMD ="curl -C - -L -o"
 EOF
         )
         ->withPkgName('example')
