@@ -33,6 +33,7 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/richfelker/musl-cross-make/blob/master/README.md')
         /* 下载依赖库源代码方式二 start */
         ->withFile('musl-cross-make-latest.tar.gz')
+        ->withBuildCached(false)
         ->withDownloadScript(
             'musl-cross-make',
             <<<EOF
