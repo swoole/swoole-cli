@@ -169,7 +169,7 @@ if ($c_compiler == 'musl-gcc') {
 } elseif ($c_compiler == 'x86_64-linux-musl-gcc') {
     $p->set_C_COMPILER('x86_64-linux-musl-g++');
     $p->set_CXX_COMPILER('x86_64-linux-musl-gcc');
-    $p->setLinker('x86_64-linux-musl-ld');
+    $p->setLinker('ld');
 }
 
 
