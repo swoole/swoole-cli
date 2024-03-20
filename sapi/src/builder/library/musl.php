@@ -27,9 +27,7 @@ return function (Preprocessor $p) {
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
         ./configure \
-        --prefix={$musl_libc_prefix} \
-        --enable-shared=no \
-        --enable-static=yes
+        --prefix={$musl_libc_prefix}
 EOF
         )
         ->withBinPath($musl_libc_prefix . '/bin/')
