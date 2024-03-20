@@ -43,7 +43,8 @@ EOF
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
         ->withBuildScript(<<<EOF
-        make -j {$make_options} install
+        make -j {$make_options}
+        make install
 EOF
         )
         ->withScriptAfterInstall(
