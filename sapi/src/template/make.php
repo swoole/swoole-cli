@@ -236,6 +236,7 @@ export_variables() {
     ln -sf /usr/include/asm-generic/ /usr/include/x86_64-linux-musl/asm-generic
 
     export LDFLAGS="${LDFLAGS} -static -L/usr/lib/x86_64-linux-musl/"
+    export LIBS="${LIBS} -lc++ "
 
 <?php endif ;?>
 
@@ -293,9 +294,6 @@ make_build() {
     export_variables
     <?php if ($this->isLinux()) : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
-        <?php if ($this->get_C_COMPILER() == 'musl-gcc') : ?>
-    export LIBS="${LIBS} -lc++ "
-        <?php endif ;?>
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
