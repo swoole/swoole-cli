@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
 
     $make_common_options = 'CC="x86_64-linux-musl-gcc -static --static" ';
     $make_common_options .= 'CXX="x86_64-linux-musl-g++ -static --static" ';
-    $make_common_options .= 'CFLAGS="-g0 -Os" ';
+    $make_common_options = 'CFLAGS="-g0 -Os" ';
     $make_common_options .= 'CXXFLAGS="-g0 -Os" ';
     $make_common_options .= 'LDFLAGS="-s" ';
 

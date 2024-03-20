@@ -17,19 +17,19 @@ return function (Preprocessor $p) {
         ->withConfigure(
             <<<EOF
         ./configure --help
-
-        # LDFLAGS="\$LDFLAGS -static"
-
-        PACKAGES='openssl  '
-        PACKAGES="\$PACKAGES zlib"
-
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
-        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
         ./configure \
         --prefix={$musl_libc_prefix}
 EOF
         )
+        ->withScriptAfterInstall(
+            <<<EOF
+        ln -sf /usr/include/linux/ {$musl_libc_prefix}/include/linux
+        ln -sf /usr/include/x86_64-linux-gnu/asm/ {$musl_libc_prefix}/include/asm
+        ln -sf /usr/include/asm-generic/ {$musl_libc_prefix}/include/asm-generic
+
+EOF
+        )
+
         ->withBinPath($musl_libc_prefix . '/bin/')
     ;
     $p->addLibrary($lib);
