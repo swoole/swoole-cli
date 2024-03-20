@@ -4,10 +4,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $musl_cross_make_prefix = EXAMPLE_PREFIX;
     $musl_cross_make_prefix = MUSL_CROSS_MAKE_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
-    $gettext_prefix = GETTEXT_PREFIX;
 
     //文件名称 和 库名称一致
     $lib = new Library('musl_cross_make');

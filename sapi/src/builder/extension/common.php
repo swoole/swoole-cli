@@ -177,6 +177,7 @@ return function (Preprocessor $p) {
     $depends = ['libheif'] ;
     $depends = ['webrtc'] ;
     $depends = ['strongswan'] ;
+    $depends = ['musl_cross_make'] ;
 
 
     $ext = (new Extension('common'))
