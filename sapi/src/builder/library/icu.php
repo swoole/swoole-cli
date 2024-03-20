@@ -37,7 +37,5 @@ EOF
             ->withPkgName('icu-uc')
             ->withBinPath($icu_prefix . '/bin/:' . $icu_prefix . "/sbin")
     );
-
-    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
-    $p->withVariable('LIBS', '$LIBS ' . $libs);
+    $p->withVariable('LIBS', '$LIBS -lc++ ');
 };
