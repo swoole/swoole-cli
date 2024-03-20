@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
 
     $make_common_options = 'CC="x86_64-linux-musl-gcc -static --static" ';
     $make_common_options .= 'CXX="x86_64-linux-musl-g++ -static --static" ';
-    $make_common_options = 'CFLAGS="-g0 -Os" ';
+    $make_common_options .= 'CFLAGS="-g0 -Os" ';
     $make_common_options .= 'CXXFLAGS="-g0 -Os" ';
     $make_common_options .= 'LDFLAGS="-s" ';
 
@@ -23,7 +23,7 @@ return function (Preprocessor $p) {
     $make_gcc_options .= '--enable-languages=c,c++ ';
     $make_gcc_options .= '--disable-nls ';
 
-    $make_options = $make_options . "COMMON_CONFIG='{$make_common_options}' ";
+    # $make_options = $make_options . "COMMON_CONFIG='{$make_common_options}' ";
     $make_options = $make_options . "GCC_CONFIG='{$make_gcc_options}' ";
 
     //文件名称 和 库名称一致
