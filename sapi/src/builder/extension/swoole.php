@@ -23,6 +23,5 @@ return function (Preprocessor $p) {
     $ext->withDependentLibraries(...$depends);
     $p->addExtension($ext);
 
-    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
-    $p->withVariable('LIBS', '$LIBS ' . $libs);
+    $p->withVariable('LIBS', '$LIBS -lc++ ');
 };
