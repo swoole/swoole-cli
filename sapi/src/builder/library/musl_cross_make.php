@@ -44,7 +44,7 @@ EOF
         ->withBuildLibraryHttpProxy()
         ->withBuildScript(<<<EOF
         make -j {$make_options}
-        make install
+        # make install
 EOF
         )
         ->withScriptAfterInstall(
