@@ -42,7 +42,10 @@ EOF
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
         //->withBuildCached(false)
-        ->withMakeOptions($make_options)
+        ->withBuildScript(<<<EOF
+        make -j {$make_options} install
+EOF
+)
         ->withBinPath($musl_cross_make_prefix . '/bin/');
 
     $p->addLibrary($lib);
