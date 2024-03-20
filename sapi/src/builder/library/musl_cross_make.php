@@ -8,6 +8,7 @@ return function (Preprocessor $p) {
     $make_options = "TARGET='x86_64-linux-musl' ";
     $make_options .= "OUTPUT='{$musl_cross_make_prefix}' ";
     $make_options .= "DL_CMD='curl -C - -L -o' ";
+    $make_options .= "GCC_VER='1.2.0' ";
 
     $make_common_options = 'CC="x86_64-linux-musl-gcc -static --static" ';
     $make_common_options .= 'CXX="x86_64-linux-musl-g++ -static --static" ';
