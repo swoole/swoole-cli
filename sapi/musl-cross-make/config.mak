@@ -60,6 +60,7 @@ DL_CMD = curl -C - -L -o
 # binaries produced by the existing toolchain (in this example, i486).
 
 # COMMON_CONFIG += CC="i486-linux-musl-gcc -static --static" CXX="i486-linux-musl-g++ -static --static"
+COMMON_CONFIG += CC="x86_64-linux-musl-gcc -static --static" CXX="x86_64-linux-musl-g++ -static --static"
 
 # Recommended options for smaller build for deploying binaries:
 
