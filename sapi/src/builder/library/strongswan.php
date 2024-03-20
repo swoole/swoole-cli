@@ -46,5 +46,10 @@ EOF
     ;
 
     $p->addLibrary($lib);
+    /*
+ln -s /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
+ln -s /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
+ln -s /usr/include/asm-generic/ /usr/include/x86_64-linux-musl/asm-generic
+     */
 
 };
