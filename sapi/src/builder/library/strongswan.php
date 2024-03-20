@@ -26,8 +26,9 @@ return function (Preprocessor $p) {
         PACKAGES='openssl  '
         PACKAGES="\$PACKAGES zlib"
         PACKAGES="\$PACKAGES gmp"
+        PACKAGES="\$PACKAGES libxml-2.0"
 
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I/usr/include/ -I/usr/include/x86_64-linux-gnu/" \
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I/usr/include/ -I/usr/include/x86_64-linux-gnu/ -I/usr/include/x86_64-linux-musl/ " \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
         ./configure \
@@ -42,7 +43,7 @@ EOF
 
         ->withPkgName('example')
         ->withBinPath($example_prefix . '/bin/')
-        ->withDependentLibraries('zlib', 'openssl','gmp')
+        ->withDependentLibraries('zlib', 'openssl','gmp','libxml2')
 
     ;
 
