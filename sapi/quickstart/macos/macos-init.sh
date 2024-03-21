@@ -32,7 +32,6 @@ done
 
 case "$MIRROR" in
   china|ustc)
-
     export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 
     export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
@@ -47,6 +46,7 @@ case "$MIRROR" in
 
     # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
     ;;
+
 esac
 
 export HOMEBREW_NO_ANALYTICS=1
@@ -78,11 +78,13 @@ fi
 brew install wget curl libtool automake re2c llvm flex bison
 brew install gettext coreutils binutils libunistring
 
+
+brew uninstall --ignore-dependencies snappy
+brew uninstall --ignore-dependencies capstone
+
 which glibtool
 
 ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 
-brew uninstall --ignore-dependencies snappy
-brew uninstall --ignore-dependencies capstone

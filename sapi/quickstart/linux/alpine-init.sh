@@ -42,7 +42,6 @@ esac
 apk update
 
 apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils gcc g++
-
 apk add bash zip unzip flex pkgconf ca-certificates
 apk add tar gzip zip unzip bzip2
 
@@ -68,8 +67,5 @@ tencentyun | huaweicloud)
   test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
 esac
 
-
 # pip3 install meson
 apk add meson
-
-

@@ -7,6 +7,7 @@ return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
     $ldflags = $p->isMacos() ? '' : ' -static  ';
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
@@ -24,6 +25,9 @@ return function (Preprocessor $p) {
             ../configure --help
 
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
+
+            sed -i.backup "278 s/^/# /"  ../src/Makefile.shlib
+            sed -i.backup "402 s/^/# /"  ../src/Makefile.shlib
 
             PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \

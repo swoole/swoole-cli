@@ -13,6 +13,7 @@ return function (Preprocessor $p) {
             ->withPrefix(ZLIB_PREFIX)
             ->withConfigure('./configure --prefix=' . ZLIB_PREFIX . ' --static')
             ->withPkgName('zlib')
-            ->withDependentLibraries('libxml2', 'bzip2')
     );
+    $p->withExportVariable('ZLIB_CFLAGS', '$(pkg-config  --cflags --static zlib)');
+    $p->withExportVariable('ZLIB_LIBS', '$(pkg-config    --libs   --static zlib)');
 };

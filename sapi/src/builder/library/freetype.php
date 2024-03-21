@@ -25,6 +25,7 @@ return function (Preprocessor $p) {
             CPPFLAGS="$(pkg-config --cflags-only-I --static \$PACKAGES)" \
             LDFLAGS="$(pkg-config  --libs-only-L   --static \$PACKAGES)" \
             LIBS="$(pkg-config     --libs-only-l   --static \$PACKAGES)" \
+            CFLAGS="-std=gnu11" \
             ./configure \
             --prefix={$freetype_prefix} \
             --enable-shared=no \

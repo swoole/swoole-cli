@@ -12,11 +12,12 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 
-mkdir -p ${__PROJECT__}/var/
-mkdir -p  ${__PROJECT__}/var/download-box/lib/
-mkdir -p  ${__PROJECT__}/var/download-box/ext/
+DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
+mkdir -p "${DOWNLOAD_BOX_DIR}"
+mkdir -p "${DOWNLOAD_BOX_DIR}/lib/"
+mkdir -p "${DOWNLOAD_BOX_DIR}/ext/"
 
-cd ${__PROJECT__}/var/download-box/
+cd "${DOWNLOAD_BOX_DIR}"
 
 
 # https://aria2.github.io/manual/en/html/aria2c.html#http-ftp-segmented-downloads
@@ -26,7 +27,7 @@ cd ${__PROJECT__}/var/download-box/
 # aria2c -h
 # aria2c --conf-path=/etc/aria2/aria2.conf
 
-:<<EOF
+: <<EOF
 -c, --continue [true|false]
 -s, --split=<N>
 -x, --max-connection-per-server=<NUM>
@@ -36,6 +37,8 @@ cd ${__PROJECT__}/var/download-box/
 EOF
 
 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+
+# --user-agent=$user_agent
 
 
 test -f download_library_urls.txt  && aria2c -c -j 10 -s 10 -x 8 -k 10M --allow-overwrite=true --max-tries=30  --retry-wait=15  \
@@ -47,16 +50,3 @@ test -f download_extension_urls.txt  && aria2c -c -j 10 -s 10 -x 8 -k 10M --allo
 
 
 cd ${__PROJECT__}
-
-mkdir -p pool/lib
-mkdir -p pool/ext
-
-# cp -rf ${__PROJECT__}/var/download-box/* ${__PROJECT__}/pool/lib
-
-awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib"  ; print "n" |cmd; }'
-awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext"; print "n" |cmd; }'
-
-cd ${__PROJECT__}
-
-exit 0
-

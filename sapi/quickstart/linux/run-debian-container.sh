@@ -18,7 +18,6 @@ cd ${__DIR__}
   echo $?
 }
 cd ${__DIR__}
-IMAGE=debian:11
 IMAGE=debian:12
 
 cd ${__DIR__}

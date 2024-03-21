@@ -20,7 +20,7 @@ apk add graphviz aria2
 ```bash
 
 php prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=1 +apcu +ds +xlswriter +ssh2 +inotify
-
+# bash build-release-example.sh --mirror china  --download-box
 
 # 准备依赖库源码包，使用 aria2 批量下载
 bash sapi/download-box/download-box-batch-downloader.sh

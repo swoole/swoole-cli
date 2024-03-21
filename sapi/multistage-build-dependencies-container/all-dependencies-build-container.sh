@@ -71,12 +71,13 @@ cd ${__PROJECT__}/
 
 if [ ! -f make.sh ] ;then
   echo 'please run script:'
-  echo 'php prepare.php'
+  echo 'bash build-release.sh --mirror china  --build-contianer'
   exit 0
 fi
 
 cp -f ${__DIR__}/Dockerfile-all-dependencies-alpine .
 cp -f ${__DIR__}/php.ini .
+
 
 docker buildx build -t ${IMAGE} -f ./Dockerfile-all-dependencies-alpine . \
 --progress=plain \
@@ -94,7 +95,9 @@ echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 
 
 # 例子：
-# php prepare.php
+
+# bash build-release.sh --mirror china  --build-contianer
+
 # bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'
 # 验证构建结果
 # bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh

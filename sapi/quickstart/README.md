@@ -67,6 +67,7 @@ alias php='php -d curl.cainfo=/etc/ssl/cert.pem -d openssl.cafile=/etc/ssl/cert.
 # linux
 alias php='php -d curl.cainfo=/etc/ssl/certs/ca-certificates.crt -d openssl.cafile=/etc/ssl/certs/ca-certificates.crt'
 
+export COMPOSER_ALLOW_SUPERUSER=1
 
 composer update   --optimize-autoloader
 

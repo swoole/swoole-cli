@@ -29,7 +29,7 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          git submodule update --init
+          # git submodule update --init
 
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
@@ -77,6 +77,15 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/runtime
+
+          CACHE_NUM=$(ls -A pool/lib/ | wc -l)
+          LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
+          echo `expr $LIB_NUM - $CACHE_NUM`
+
+          if test $CACHE_NUM -eq 0  ; then
+              bash sapi/download-box/download-box-get-archive-from-container.sh
+          fi
+
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
@@ -122,10 +131,16 @@ jobs:
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
+            # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # bash sapi/quickstart/mark-install-library-cached.sh
+
             sh  sapi/quickstart/linux/alpine-init.sh
             composer update   --optimize-autoloader
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1 --with-libavif=1
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
+
+            bash make-install-deps.sh
 
             bash make.sh all-library
 
@@ -142,6 +157,9 @@ jobs:
             ./bin/swoole-cli -v
             ./bin/swoole-cli -m
             ./bin/swoole-cli --ri swoole
+            ./bin/swoole-cli --ri gd
+            ./bin/swoole-cli --ri pgsql
+
             file ./bin/swoole-cli
             readelf -h ./bin/swoole-cli
             APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')

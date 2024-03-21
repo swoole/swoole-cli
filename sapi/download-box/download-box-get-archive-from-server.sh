@@ -14,7 +14,7 @@ cd ${__PROJECT__}
 mkdir -p  pool/lib
 mkdir -p  pool/ext
 
-test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download-box/
+mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 

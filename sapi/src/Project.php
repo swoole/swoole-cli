@@ -6,6 +6,8 @@ abstract class Project
 {
     public string $name;
 
+    public string $aliasName = '';
+
     public string $url;
 
     public string $path = '';
@@ -24,6 +26,12 @@ abstract class Project
 
     public array $deps = [];
 
+    public string $downloadScript = '';
+
+    public string $downloadDirName = '';
+
+    public bool $enableDownloadScript = false;
+
     public int $licenseType = self::LICENSE_SPEC;
 
     public const LICENSE_SPEC = 0;
@@ -33,7 +41,18 @@ abstract class Project
     public const LICENSE_LGPL = 4;
 
     public const LICENSE_MIT = 5;
+
     public const LICENSE_PHP = 6;
+
+    public bool $enableLatestTarball = false;
+
+    public bool $enableHttpProxy = true;
+
+    public bool $enableGitProxy = false;
+
+    public bool $enableDownloadWithMirrorURL = false;
+
+    public bool $enableDownloadWithOriginURL = false;
 
     public bool $enableBuildCached = true;
 
@@ -81,6 +100,41 @@ abstract class Project
         return $this;
     }
 
+    public function withFile(string $file): static
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    public function withDownloadScript(string $downloadDirName, string $script): static
+    {
+        $this->enableDownloadScript = true;
+        $this->downloadScript = $script;
+        $this->downloadDirName = $downloadDirName;
+        return $this;
+    }
+
+    public function withAliasName(string $name): static
+    {
+        $this->aliasName = $name;
+        return $this;
+    }
+
+    public function withAutoUpdateFile(bool $enableLatestTarball = true): static
+    {
+        $this->enableLatestTarball = $enableLatestTarball;
+        $this->enableBuildCached = false;
+        $this->enableInstallCached = false;
+        return $this;
+    }
+
+    public function withHttpProxy(bool $enableHttpProxy = true, $enableGitProxy = false): static
+    {
+        $this->enableHttpProxy = $enableHttpProxy;
+        $this->enableGitProxy = $enableGitProxy;
+        return $this;
+    }
+
     public function withBuildCached(bool $enableBuildCached = true): static
     {
         $this->enableBuildCached = $enableBuildCached;
@@ -90,6 +144,12 @@ abstract class Project
     public function withInstallCached(bool $enableInstallCached = true): static
     {
         $this->enableInstallCached = $enableInstallCached;
+        return $this;
+    }
+
+    public function withDownloadWithOriginURL(bool $enableDownloadWithOriginURL = true): static
+    {
+        $this->enableDownloadWithOriginURL = $enableDownloadWithOriginURL;
         return $this;
     }
 }
