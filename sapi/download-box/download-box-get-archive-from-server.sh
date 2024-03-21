@@ -40,6 +40,8 @@ done
 
 
 URL="${DOMAIN}/all-archive.zip"
+# URL="${DOMAIN}/all-deps.zip" # 下一个版本启用此命名
+
 test -f  all-archive.zip || curl -Lo  all-archive.zip ${URL}
 
 unzip -n all-archive.zip
