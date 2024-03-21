@@ -28,9 +28,9 @@ cp -f ${__PROJECT__}/bin/ext-dependency-graph.pdf .
 cd "${DOWNLOAD_BOX_DIR}"
 
 
-test -f all-archive.zip && rm -rf all-archive.zip
+test -f all-deps.zip && rm -rf all-deps.zip
 
-test -d ext && test -d lib && zip -6 -r all-archive.zip ext lib
+test -d ext && test -d lib && zip -9 -r all-deps.zip ext lib
 
 cd "${DOWNLOAD_BOX_DIR}"
 
