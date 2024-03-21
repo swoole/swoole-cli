@@ -4,7 +4,7 @@ RUN  rm -rf /usr/share/nginx/html/*
 ADD  ./default.conf /etc/nginx/conf.d/default.conf
 ADD  ./ext  /usr/share/nginx/html/ext
 ADD  ./lib  /usr/share/nginx/html/lib
-ADD  ./all-archive.zip  /usr/share/nginx/html/
+ADD  ./all-deps.zip  /usr/share/nginx/html/
 ADD  ./LICENSE /usr/share/nginx/html/
 ADD  ./credits.html /usr/share/nginx/html/
 ADD  ./ext-dependency-graph.pdf /usr/share/nginx/html/
