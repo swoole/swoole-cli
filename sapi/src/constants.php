@@ -125,8 +125,7 @@ define("XORGPROTO_PREFIX", $p->getGlobalPrefix() . '/xorgproto');
 define("LIBX11_PREFIX", $p->getGlobalPrefix() . '/libX11');
 define("LIBXPM_PREFIX", $p->getGlobalPrefix() . '/libXpm');
 define("GRAPHVIZ_PREFIX", $p->getGlobalPrefix() . '/graphviz');
-define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
-define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
+
 define('LIBRSVG_PREFIX', $p->getGlobalPrefix() . '/librsvg');
 
 define('GETTEXT_PREFIX', $p->getGlobalPrefix() . '/gettext');
@@ -240,8 +239,6 @@ define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
 
 
-
-
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 define("FFTW3_PREFIX", $p->getGlobalPrefix() . '/fftw3');
 define("LIBSAMPLERATE_PREFIX", $p->getGlobalPrefix() . '/libsamplerate');
@@ -327,5 +324,5 @@ define("QEMU_PREFIX", $p->getGlobalPrefix() . '/qemu');
 define("STRONGSWAN_PREFIX", $p->getGlobalPrefix() . '/strongswan');
 
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
+define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
-

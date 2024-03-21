@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $musl_cross_make_prefix = MUSL_CROSS_MAKE_PREFIX;
+
     $make_options = "TARGET='x86_64-linux-musl' ";
     $make_options .= "OUTPUT='{$musl_cross_make_prefix}' ";
     $make_options .= "DL_CMD='curl -C - -L -o' ";
@@ -35,20 +36,18 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'musl-cross-make',
             <<<EOF
-                git clone -b master  --depth=1 https://github.com/richfelker/musl-cross-make.git
-
+            git clone -b master  --depth=1 https://github.com/richfelker/musl-cross-make.git
 EOF
         )
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
-        ->withBuildCached(false)
+        //->withBuildCached(false)
         ->withConfigure(<<<EOF
         cp -f {$p->getWorkDir()}/sapi/musl-cross-make/config.mak .
 
 EOF
         )
-        //->withMakeOptions($make_options)
-        ->withBinPath($musl_cross_make_prefix . '/bin/');
+        ->withBinPath($musl_cross_make_prefix . '/bin/:' . $musl_cross_make_prefix . '/x86_64-linux-musl/bin/');
 
     $p->addLibrary($lib);
 
