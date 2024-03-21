@@ -20,7 +20,7 @@ TARGET = x86_64-linux-musl
 # can safely be installed in the same location. Some examples:
 
 # OUTPUT = /opt/cross
-  OUTPUT = /usr/local/swoole-cli/musl-cross-make/
+  OUTPUT = /usr/local/swoole-cli/musl_cross_make/
 
 # By default, latest supported release versions of musl and the toolchain
 # components are used. You can override those here, but the version selected
