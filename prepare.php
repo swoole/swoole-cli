@@ -157,19 +157,21 @@ if ($p->isMacos()) {
 }
 
 
-if ($p->getInputOption('with-c-compiler')) {
-    $c_compiler = $p->getInputOption('with-c-compiler');
-    if ($c_compiler == 'gcc') {
-        $p->set_C_COMPILER('gcc');
-        $p->set_CXX_COMPILER('g++');
-        $p->setLinker('ld');
-    }
-    if ($c_compiler == 'musl-gcc') {
-        $p->set_C_COMPILER('musl-gcc');
-        $p->set_CXX_COMPILER('g++');
-        $p->setLinker('ld');
-    }
+$c_compiler = $p->getInputOption('with-c-compiler');
+if ($c_compiler == 'musl-gcc') {
+    $p->set_C_COMPILER('musl-gcc');
+    $p->set_CXX_COMPILER('g++');
+    $p->setLinker('ld');
+} elseif ($c_compiler == 'gcc') {
+    $p->set_C_COMPILER('gcc');
+    $p->set_CXX_COMPILER('g++');
+    $p->setLinker('ld');
+} elseif ($c_compiler == 'x86_64-linux-musl-gcc') {
+    $p->set_C_COMPILER('x86_64-linux-musl-gcc');
+    $p->set_CXX_COMPILER('x86_64-linux-musl-g++');
+    $p->setLinker('ld');
 }
+
 
 $p->setExtraCflags(' -Os');
 
@@ -180,5 +182,9 @@ $p->execute();
 
 function install_libraries(Preprocessor $p): void
 {
+    if ($p->getInputOption('with-c-compiler') == 'x86_64-linux-musl-gcc') {
+        $p->loadDependentLibrary('musl_cross_make');
+    }
+
     $p->loadDependentLibrary('php');
 }
