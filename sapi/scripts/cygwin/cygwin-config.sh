@@ -48,8 +48,6 @@ test -f Makefile && make clean
   --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
   --enable-gd --with-jpeg --with-freetype \
   --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares  \
-  --enable-swoole-pgsql \
-  --enable-swoole-sqlite \
   --enable-redis \
   --with-imagick \
   --with-yaml \
@@ -58,3 +56,5 @@ test -f Makefile && make clean
 #  --with-pdo-pgsql \
 #  --with-pgsql
 #  --with-pdo-sqlite \
+# --enable-swoole-pgsql \
+# --enable-swoole-sqlite \
