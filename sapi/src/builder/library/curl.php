@@ -5,7 +5,6 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $curl_prefix = CURL_PREFIX;
-    $openssl_prefix = OPENSSL_PREFIX;
     $zlib_prefix = ZLIB_PREFIX;
     $cares_prefix = CARES_PREFIX;
 

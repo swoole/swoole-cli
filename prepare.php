@@ -1,11 +1,9 @@
-#!/usr/bin/env php
 <?php
+
 require __DIR__ . '/vendor/autoload.php';
 
 use SwooleCli\Preprocessor;
-
-$php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
-define('BUILD_PHP_VERSION', $php_version_tag);
+use SwooleCli\Library;
 
 
 $homeDir = getenv('HOME');
@@ -13,12 +11,73 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 # clean old make.sh
-if (($p->getInputOption('with-build-type') == 'dev') && file_exists(__DIR__ . '/make.sh')) {
+if (file_exists(__DIR__ . '/make.sh')) {
     unlink(__DIR__ . '/make.sh');
+    unlink(__DIR__ . '/make-install-deps.sh');
+    unlink(__DIR__ . '/make-env.sh');
+    unlink(__DIR__ . '/make-export-variables.sh');
 }
 
-// Sync code from php-src
-$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
+if (file_exists(__DIR__ . '/make-download-box.sh')) {
+    unlink(__DIR__ . '/make-download-box.sh');
+}
+
+# PHP 默认版本 （此文件配置 /sapi/PHP-VERSION.conf 在 build_native_php分支 和 衍生分支 无效）
+$php_version = '8.2.13';
+$php_version_id = '802013';
+$php_version_tag = 'php-8.2.13';
+
+if ($p->getInputOption('with-php-version')) {
+    $subject = $p->getInputOption('with-php-version');
+    $pattern = '/(\d{1,2})\.(\d{1,2})\.(\d{1,})\w*/';
+    if (preg_match($pattern, $subject, $match)) {
+        if (intval($match[1]) >= 8 && intval($match[2]) >= 1) {
+            $php_version = $match[0];
+            $php_version_id =
+                str_pad($match[1], 2, '0') .
+                str_pad($match[2], 2, '0') .
+                sprintf('%02d', $match[3]);
+            $php_version_tag = 'php-' . $match[0];
+        } else {
+            echo <<<EOF
+
+    extra support PHP8.0  PHP7.4  PHP7.3  PHP8.2-micro
+
+    php-8-micro:  (https://github.com/dixyes/phpmicro.git）
+
+        git clone -b build_native_php_sfx_micro  https://github.com/jingjingxyk/swoole-cli/
+
+    php-8.0
+
+        git clone -b build_php_8.0  https://github.com/jingjingxyk/swoole-cli/
+
+    php-7.4:
+
+        git clone -b build_php_7.4  https://github.com/jingjingxyk/swoole-cli/
+
+    php-7.3:
+
+        git clone -b build_php_7.3  https://github.com/jingjingxyk/swoole-cli/
+
+EOF;
+            echo PHP_EOL;
+            die;
+        }
+        echo PHP_EOL;
+    }
+}
+
+define('BUILD_PHP_VERSION', $php_version);
+define('BUILD_PHP_VERSION_ID', intval($php_version_id));
+define('BUILD_PHP_VERSION_TAG', $php_version_tag);
+define('BUILD_CUSTOM_PHP_VERSION_ID', intval(substr($php_version_id, 0, 4))); //取主版本号和次版本号
+
+echo "PHP_VERSION: " . BUILD_PHP_VERSION . PHP_EOL;
+echo "PHP_VERSION_ID: " . BUILD_PHP_VERSION_ID . PHP_EOL;
+echo "PHP_VERSION_TAG: " . BUILD_PHP_VERSION_TAG . PHP_EOL;
+echo "CUSTOM_PHP_VERSION_ID: " . BUILD_CUSTOM_PHP_VERSION_ID . PHP_EOL;
+echo PHP_EOL;
+
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->isMacos())) {
@@ -26,19 +85,64 @@ if ($p->getInputOption('without-docker') || ($p->isMacos())) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
-$buildType = $p->getBuildType();
-if ($p->getInputOption('with-build-type')) {
-    $buildType = $p->getInputOption('with-build-type');
-    $p->setBuildType($buildType);
+$p->setRootDir(__DIR__);
+
+//设置 PHP 源码所在目录 (构建时将进入此目录进行构建)
+if ($p->getInputOption('with-php-src')) {
+    $p->setPhpSrcDir($p->getInputOption('with-php-src'));
+} else {
+    $p->setPhpSrcDir($p->getRootDir() . '/thirdparty/php-src');
+}
+
+//设置PHP 安装目录
+define("BUILD_PHP_INSTALL_PREFIX", $p->getRootDir() . '/bin/php-' . BUILD_PHP_VERSION);
+
+
+if ($p->getInputOption('with-override-default-enabled-ext')) {
+    $p->setExtEnabled([]);
 }
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }
 
+$buildType = $p->getBuildType();
+if ($p->getInputOption('with-build-type')) {
+    $buildType = $p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
+}
+define('PHP_CLI_BUILD_TYPE', $buildType);
+define('PHP_CLI_GLOBAL_PREFIX', $p->getGlobalPrefix());
+
+
 if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
+
+
+if ($p->getInputOption('with-http-proxy')) {
+    $http_proxy = $p->getInputOption('with-http-proxy');
+    $proxyConfig = <<<EOF
+export HTTP_PROXY={$http_proxy}
+export HTTPS_PROXY={$http_proxy}
+EOF;
+    $proxyConfig .= PHP_EOL;
+    $proxyConfig .= <<<'EOF'
+export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
+export NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
+export NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com,.tencent.com"
+export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+export NO_PROXY="${NO_PROXY},dl-cdn.alpinelinux.org"
+export NO_PROXY="${NO_PROXY},deb.debian.org,security.debian.org"
+export NO_PROXY="${NO_PROXY},archive.ubuntu.com,security.ubuntu.com"
+export NO_PROXY="${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
+export NO_PROXY="${NO_PROXY},.sourceforge.net"
+export NO_PROXY="${NO_PROXY},.gitee.com"
+
+EOF;
+    $p->setProxyConfig($proxyConfig, $http_proxy);
+}
+
 
 if ($p->isMacos()) {
     $p->setExtraLdflags('-undefined dynamic_lookup');
@@ -52,7 +156,29 @@ if ($p->isMacos()) {
     $p->setLogicalProcessors('$(nproc 2> /dev/null)');
 }
 
-$p->setExtraCflags('-fno-ident -Os');
+
+if ($p->getInputOption('with-c-compiler')) {
+    $c_compiler = $p->getInputOption('with-c-compiler');
+    if ($c_compiler == 'gcc') {
+        $p->set_C_COMPILER('gcc');
+        $p->set_CXX_COMPILER('g++');
+        $p->setLinker('ld');
+    }
+    if ($c_compiler == 'musl-gcc') {
+        $p->set_C_COMPILER('musl-gcc');
+        $p->set_CXX_COMPILER('g++');
+        $p->setLinker('ld');
+    }
+}
+
+$p->setExtraCflags(' -Os');
+
 
 // Generate make.sh
 $p->execute();
+
+
+function install_libraries(Preprocessor $p): void
+{
+    $p->loadDependentLibrary('php');
+}

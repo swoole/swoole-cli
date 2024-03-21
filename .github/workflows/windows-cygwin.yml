@@ -1,22 +1,44 @@
-name: build-swoole-cli-windows-cygwin
+name: build-php-cli-windows-cygwin
 
-on: [ push, pull_request ]
+on:
+  push:
+  pull_request:
+
+env:
+  BUILD_PHP_VERSION: 8.2.13
 
 jobs:
   windows-cygwin:
     if: 1
     runs-on: windows-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.2.13"
+          - "8.1.27"
+          - "8.3.3"
     steps:
       - name: Prepare git
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
+          env
           ipconfig
+          uname -a
+          pwd
+          ipconfig /all
 
       - uses: actions/checkout@v3
+      - name: set php version
+        # 参考文档：  https://docs.github.com/zh/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
+        shell: bash
+        run: |
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
+
       - name: Prepare submodule
         run: |
-          git submodule update --init
+          ipconfig /all
+          # git submodule update --init
 
       - name: Cache cygwin packages
         id: cache-cygwin
@@ -24,7 +46,7 @@ jobs:
         env:
           cache-name: cache-cygwin-packages
         with:
-          path: C:/cygwin-packages
+          path: C:\cygwin-packages
           key: ${{ runner.os }}-build-${{ env.cache-name }}
 
       - name: Cache pool
@@ -34,22 +56,34 @@ jobs:
           path: "${{ github.workspace }}\\pool\\"
           key: ${{ runner.os }}-build-pool-cache
 
-      - name: Install deps
+      - name: Install Cygwin
         uses: cygwin/cygwin-install-action@v2
-        with:
-          platform: x64
-          packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel zip unzip
+        # with:
+        #  platform: x64
+        #  packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel zip unzip
+
+      - name: Install Cygwin Packages
+        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
+        run: |
+          ls -lah /cygdrive/c/
+          ls -lah /cygdrive/d/
+
+          cp -f /cygdrive/c/setup.exe  /cygdrive/c/cygwin/bin/setup-x86_64.exe
+
+          bash ./sapi/scripts/cygwin/install-cygwin.sh
 
       - name: Install re2c
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
 
-      - name: Configure
+      - name: Prepare
         run: |
-          uname -a
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           # git submodule update --init
-          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh
+          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version ${{ env.BUILD_PHP_VERSION }}
+
+      - name: Configure
+        run: |
           bash ./sapi/scripts/cygwin/cygwin-config.sh
 
       - name: Build
@@ -58,26 +92,28 @@ jobs:
 
       - name: Show Build Result
         run: |
-          ./bin/swoole-cli -v
-          ./bin/swoole-cli -m
-          ./bin/swoole-cli --ri swoole
-          ./bin/swoole-cli -r "echo PHP_VERSION;"
+          ./bin/php.exe -v
+          ./bin/php.exe -m
+          ./bin/php.exe --ri pdo_pgsql
+          ./bin/php.exe --ri swoole
+          ./bin/php.exe  -r "echo PHP_VERSION;"
 
       - name: get app version with bash
         # 参考 https://github.com/marketplace/actions/install-cygwin
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         # shell: C:\cygwin\bin\bash.EXE --login --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
-          ./bin/swoole-cli  -v | awk '{print $2}'
+          ./bin/php.exe  -v | awk '{print $2}'
 
-          APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
+          APP_VERSION=$(./bin/php.exe  -v | head -n 1 | awk '{print $2}')
           echo $APP_VERSION
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
 
       - name: get app version with PowerShell
         run: |
-          ./bin/swoole-cli  -v
-          $cmdOutput=./bin/swoole-cli  -v
+          ./bin/php.exe  -v
+          $cmdOutput=./bin/php.exe  -v
+          $cmdOutput=$cmdOutput | select -first 1
           $cmdOutput -match "(\d{1,2}\.\d{1,2}\.\d{1,2})"
           $CYGWIN_APP_VERSION=$Matches[1]
           echo $CYGWIN_APP_VERSION
@@ -96,9 +132,9 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64
+          name: php-cli-v${{ env.APP_VERSION }}-cygwin-x64
           retention-days: 90
-          path: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
+          path: php-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
 
       - name: gh release
         uses: softprops/action-gh-release@v1
@@ -106,4 +142,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
+          files: php-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip

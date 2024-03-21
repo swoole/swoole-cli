@@ -1,18 +1,29 @@
 #!/bin/bash
 
-set -exu
+
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-__PROJECT__=$(
-  cd ${__DIR__}/../../
-  pwd
-)
+if [ -f ${__DIR__}/prepare.php ] ; then
+  __PROJECT__=$(
+    cd ${__DIR__}/
+    pwd
+  )
+else
+  __PROJECT__=$(
+    cd ${__DIR__}/../../
+    pwd
+  )
+fi
+
 cd ${__DIR__}
 
-sh setup-php-runtime.sh
-
+if [ ! -f ${__PROJECT__}/var/runtime/swoole-cli ];then
+    echo '   please run  setup-php-runtime.sh '
+    exit 0
+fi
+set -exu
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 
 cd ${__PROJECT__}/var/runtime

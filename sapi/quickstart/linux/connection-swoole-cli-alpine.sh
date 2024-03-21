@@ -9,4 +9,3 @@ __DIR__=$(
 cd ${__DIR__}
 
 docker exec -it swoole-cli-alpine-dev sh
-

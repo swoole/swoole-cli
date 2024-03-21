@@ -42,6 +42,11 @@ libwebp
 pgsql
 libyaml
 imagemagick
+libavif
+aom
+dav1d
+libgav1
+svt_av1
 EOF
 )
 echo $LIBRARIES

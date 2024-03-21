@@ -8,12 +8,15 @@ return function (Preprocessor $p) {
         (new Extension('protobuf'))
             ->withOptions('--enable-protobuf')
             ->withPeclVersion('3.21.6')
+            ->withPeclVersion('3.23.2')
             ->withHomePage('https://developers.google.com/protocol-buffers')
             ->withManual('https://protobuf.dev/reference/php/php-generated/')
+            ->withDependentExtensions('sockets')
     );
 
     $p->withBeforeConfigureScript('protobuf', function (Preprocessor $p) {
         // compatible with redis
+
         $workdir= $p->getWorkDir();
         if ($p->isMacos()) {
             $cmd = <<<EOF

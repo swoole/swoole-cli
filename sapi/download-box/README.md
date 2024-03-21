@@ -20,7 +20,7 @@ apk add graphviz aria2
 ```bash
 
 php prepare.php --skip-download=1 --with-dependency-graph=1 --with-swoole-pgsql=1 +apcu +ds +xlswriter +ssh2 +inotify
-
+# bash build-release-example.sh --mirror china  --download-box
 
 # 准备依赖库源码包，使用 aria2 批量下载
 bash sapi/download-box/download-box-batch-downloader.sh
@@ -67,8 +67,7 @@ bash sapi/download-box/download-box-get-archive-from-container.sh
 > 原理： 下载：`http://127.0.0.1:9503/all-archive.zip`
 > 自动解压，并自动拷贝到 `pool/` 目录
 
->
-真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
+> 真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
 
 ```bash
 bash  sapi/download-box/download-box-get-archive-from-server.sh

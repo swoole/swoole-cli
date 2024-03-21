@@ -16,7 +16,7 @@ test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download
 cd ${__PROJECT__}/var/download-box/
 
 
-TAG='download-box-nginx-alpine-1.8-20231113T173944Z'
+TAG='download-box-nginx-alpine-1.7-20231016T112539Z'
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
@@ -36,3 +36,4 @@ mkdir -p pool/ext
 
 awk 'BEGIN { cmd="cp -ri var/download-box/lib/* pool/lib"  ; print "n" |cmd; }'
 awk 'BEGIN { cmd="cp -ri var/download-box/ext/* pool/ext"; print "n" |cmd; }'
+

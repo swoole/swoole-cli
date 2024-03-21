@@ -11,13 +11,21 @@ class Library extends Project
     public string $ldflags = '';
 
     public string $buildScript = '';
+
     public string $makeOptions = '';
+
     public string $makeVariables = '';
+
     public string $makeInstallCommand = 'install';
+
     public string $makeInstallOptions = '';
+
     public string $beforeInstallScript = '';
+
     public string $afterInstallScript = '';
+
     public string $pkgConfig = '';
+
     public array $pkgNames = [];
 
     public string $prefix = '/usr';
@@ -25,6 +33,16 @@ class Library extends Project
     public string $binPath = '';
 
     public bool $cleanBuildDirectory = false;
+
+    public bool $cleanPreInstallDirectory = false;
+
+    public string $preInstallDirectory = '';
+
+    public array $preInstallCommands = [];
+
+    public bool $enableBuildLibraryHttpProxy = false;
+
+    public bool $enableBuildLibraryGitProxy = false;
 
     public function withMirrorUrl(string $url): static
     {
@@ -126,6 +144,34 @@ class Library extends Project
     public function withCleanBuildDirectory(bool $cleanBuildDirectory = true): static
     {
         $this->cleanBuildDirectory = $cleanBuildDirectory;
+        return $this;
+    }
+
+    public function withCleanPreInstallDirectory(string $preInstallDir): static
+    {
+        if (!empty($preInstallDir) && (str_starts_with($preInstallDir, PHP_CLI_GLOBAL_PREFIX))) {
+            if (PHP_CLI_BUILD_TYPE == 'dev') {
+                $this->cleanPreInstallDirectory = true;
+                $this->preInstallDirectory = $preInstallDir;
+            }
+        }
+        return $this;
+    }
+
+    public function withPreInstallCommand(string $os, string $preInstallCommand): static
+    {
+        if (!empty($os) && in_array($os, ['alpine','debian','ubuntu','macos']) && !empty($preInstallCommand)) {
+            $this->preInstallCommands[$os][] = $preInstallCommand;
+        }
+        return $this;
+    }
+
+    public function withBuildLibraryHttpProxy(
+        bool $enableBuildLibraryHttpProxy = true,
+        bool  $enableBuildLibraryGitProxy = false
+    ): static {
+        $this->enableBuildLibraryHttpProxy = $enableBuildLibraryHttpProxy;
+        $this->enableBuildLibraryGitProxy = $enableBuildLibraryGitProxy;
         return $this;
     }
 }

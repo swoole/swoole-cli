@@ -29,9 +29,11 @@ SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --without-docker
 参数设置优先于环境变量，当同时使用相同名称的参数设置和环境变量时，环境变量将被忽略，仅参数设置生效，例如：`SWOOLE_CLI_SKIP_DOWNLOAD=yes ./prepare.php --skip-download=no`
 ，有效的值为：`--skip-download=no`，环境变量 `SWOOLE_CLI_SKIP_DOWNLOAD=yes` 无效
 
+
 skip-download
 ----
-跳过下载依赖库
+跳过下载依赖库，使用脚本单独批量下载
+
 
 > 会自动生成，待下载链接地址
 
@@ -40,7 +42,8 @@ skip-download
 > 依赖 aria2
 
 ```shell
-./prepare.php --skip-download=yes --without-docker
+# 准备批量待下载链接地址
+./prepare.php --skip-download=1 --without-docker
 
 # 构建依赖库之前，批量下载依赖库和扩展的脚本
 sh sapi/scripts/download-dependencies-use-aria2.sh
@@ -94,7 +97,7 @@ with-global-prefix
 默认安装目录前缀： `/usr/local/swoole-cli/`
 
 ```shell
-./prepare.php --with-global-prefix=/usr/local/swoole-cli/
+php ./prepare.php --with-global-prefix=/usr/local/swoole-cli/
 ```
 
 with-dependency-graph
@@ -104,22 +107,25 @@ with-dependency-graph
 > 依赖 graphviz
 
 ```shell
+
 # macos
 brew install graphviz
 # debian
 apt install -y graphviz
 # alpine
 apk add graphviz
+
 ```
 
 > 生成扩展依赖库 图 步骤
 
 ```shell
+
 # 生成扩展依赖图模板
 php ./prepare.php --without-docker --with-dependency-graph=1
 
 # 生成扩展依赖图
-sh sapi/scripts/generate-dependency-graph.sh
+sh sapi/extension-dependency-graph/generate-dependency-graph.sh
 
 ```
 
@@ -139,9 +145,17 @@ swoole 启用 --enable-swoole-pgsql
 php ./prepare.php --with-swoole-pgsql=1
 ```
 
+with-php-version
+----
+切换 PHP 版本
+
+```shell
+php ./prepare.php --with-php-version=8.1.18
+```
+
 with-parallel-jobs
 ----
-构建时最大并发进程数；
+构建时最大并发进程数；<br/>
 默认值是 CPU 逻辑处理器数
 
 ```shell
@@ -150,5 +164,51 @@ php ./prepare.php --with-parallel-jobs=8
 
 with-build-type
 ----
-构建类型，默认是 release
-可选项： release  debug  dev
+构建过程 指定构建类型<br/>
+
+debug 调试版本 （构建过程显示，正在执行的构建命令）<br/>
+dev 开发版本 （便于调试单个扩展）<br/>
+release 默认版本<br/>
+
+
+with-http-proxy
+----
+使用HTTP代理下载扩展和扩展依赖库<br/>
+需要提前准备好代理
+
+```shell
+php ./prepare.php --with-http-proxy=http://192.168.3.26:8015
+```
+
+with-c-compiler
+----
+设置编译器
+默认编译器 clang
+
+```shell
+php ./prepare.php --with-c-compiler=gcc
+```
+
+```shell
+php ./prepare.php  --with-build-type=dev
+```
+
+with-override-default-enabled-ext
+----
+覆盖默认启用的扩展<br/>
+例子：当添加新扩展时，便于调试
+
+```shell
+php ./prepare.php +uuid --with-override-default-enabled-ext=1 --with-build-type=dev
+```
+
+with-libavif
+---
+GD 库支持 AVIF 图片
+
+```shell
+php ./prepare.php --with-libavif=1
+```
+
+
+

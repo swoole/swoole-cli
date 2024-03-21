@@ -8,13 +8,13 @@ return function (Preprocessor $p) {
     $p->addLibrary(
         (new Library('oniguruma'))
             ->withHomePage('https://github.com/kkos/oniguruma.git')
+            ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withUrl('https://github.com/kkos/oniguruma/archive/refs/tags/v6.9.9.tar.gz')
             ->withFile('oniguruma-v6.9.9.tar.gz')
             ->withPrefix($oniguruma_prefix)
             ->withConfigure(
                 './autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared'
             )
-            ->withLicense('https://github.com/kkos/oniguruma/blob/master/COPYING', Library::LICENSE_SPEC)
             ->withPkgName('oniguruma')
             ->withBinPath($oniguruma_prefix . '/bin/')
     );

@@ -15,8 +15,10 @@ return function (Preprocessor $p) {
             ->withMakeInstallOptions('PREFIX=' . $bzip2_prefix)
             ->withLicense('https://www.sourceware.org/bzip2/', Library::LICENSE_BSD)
             ->withBinPath($bzip2_prefix . '/bin/')
+            ->withLdflags('-L' . $bzip2_prefix . '/lib')
+            ->withPkgConfig('')
     );
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . BZIP2_PREFIX . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . BZIP2_PREFIX . '/lib');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $bzip2_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $bzip2_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lbz2');
 };

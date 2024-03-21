@@ -1,0 +1,26 @@
+{
+  "name": "webui",
+  "version": "1.0.0",
+  "description": "## 启动 web ui",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fix-code-format": "npx standard --fix"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "xterm": "^3.14.5"
+  },
+  "devDependencies": {
+    "standard": "*"
+  },
+  "standard": {
+    "ignore": [
+      "node_modules",
+      "data",
+      "*.html",
+      "public/ajax/"
+    ]
+  }
+}

@@ -37,7 +37,9 @@ define("LIBXLSXWRITER_PREFIX", $p->getGlobalPrefix() . '/libxlsxwriter');
 define("LIBMCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmcrypt');
 define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
+
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
+
 
 const DOWNLOAD_FILE_RETRY_NUMBE = 5;
 const DOWNLOAD_FILE_WAIT_RETRY = 5;
@@ -49,5 +51,31 @@ define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
+
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unix_odbc');
+define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
+define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
+
+define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
+define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
+define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
+
+define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
+define("DAV1D_PREFIX", $p->getGlobalPrefix() . '/dav1d');
+define("LIBGAV1_PREFIX", $p->getGlobalPrefix() . '/libgav1');
+define("AOM_PREFIX", $p->getGlobalPrefix() . '/aom');
+define("SVT_AV1_PREFIX", $p->getGlobalPrefix() . '/svt_av1');
+
+define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
+define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
+define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
+
+define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
+define("RAV1E_PREFIX", $p->getGlobalPrefix() . '/rav1e');
+define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
+define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
+
+define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
+

@@ -1,11 +1,56 @@
-name: build-swoole-cli-linux-x86_64
+name: build-php-cli-linux-x86_64
 
-on: [ push, pull_request ]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      build_latest_swoole_or_swow:
+        required: true
+        description: "定制构建选项: 构建最新版的 swoole 或者 swow （此二者扩展不能同时启用）"
+        default: ' '
+        type: choice
+        options:
+          - ' '
+          - '-swoole +swoole_latest'
+          - '-swoole +swow_latest'
+          - '-swoole +swow'
+      php_version:
+        required: true
+        description: "定制构建选项: 指定 PHP 版本(版本号大于等于8.1)"
+        default: '--with-php-version=8.2.13'
+        type: choice
+        options:
+          - '--with-php-version=8.1.27'
+          - '--with-php-version=8.2.13'
+          - '--with-php-version=8.3.1'
+      build_type:
+        required: true
+        description: "定制构建选项: 指定构建类型"
+        default: '--with-build-type=release'
+        type: choice
+        options:
+          - '--with-build-type=release'
+          - '--with-build-type=dev'
+      build_options:
+        required: false
+        description: "定制构建选项: 请查看 docs/options.md"
+        default: ' '
+        type: string
+
+env:
+  BUILD_PHP_VERSION: 8.2.13
 
 jobs:
   linux-x86_64:
     if: 1
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.2.13"
+          - "8.1.27"
+          - "8.3.3"
     steps:
       - uses: actions/checkout@v3
       - name: Prepare Source Code
@@ -22,6 +67,8 @@ jobs:
           uname -m
           uname -r
 
+          # echo "BUILD_PHP_VERSION=8.2.4" >> "$GITHUB_ENV"
+
           cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
           cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
           cat /proc/cpuinfo | grep "cpu cores" | uniq
@@ -35,7 +82,16 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          git submodule update --init
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
+
+          echo ${{ github.actor }}
+          echo ${{ github.repository }}
+          echo ${{ github.repository_owner }}
+          echo ${{ github.head_ref }}
+          echo ${{ github.ref_name }}
+
+
+          # git submodule update --init
 
           # 准备数据库容器
           bash sapi/src/UnitTest/scripts/database/start.sh
@@ -97,6 +153,15 @@ jobs:
           if [ ! -f bin/runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
+
+          CACHE_NUM=$(ls -A pool/lib/ | wc -l)
+          LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
+          echo `expr $LIB_NUM - $CACHE_NUM`
+
+          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
+              bash sapi/download-box/download-box-get-archive-from-container.sh
+          fi
+
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
@@ -104,17 +169,24 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          options: -v ${{ github.workspace }}:/work -w /work -e BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }} -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
             uname -m
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
+            # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+            # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
+
+            # bash sapi/quickstart/mark-install-library-cached.sh
+
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update   --optimize-autoloader
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql -mongodb --with-swoole-pgsql=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }}  --with-libavif=1
+
+            bash make-install-deps.sh
 
             bash ./make.sh all-library
 
@@ -124,34 +196,40 @@ jobs:
 
       - name: Show Build Result
         run: |
-          ./bin/swoole-cli -v
-          ./bin/swoole-cli -m
-          ./bin/swoole-cli --ri swoole
-          file ./bin/swoole-cli
-          readelf -h ./bin/swoole-cli
-          APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
+          ./thirdparty/php-src/sapi/cli/php -v
+          ./thirdparty/php-src/sapi/cli/php -m
+          ./thirdparty/php-src/sapi/cli/php --ri gd
+          ./thirdparty/php-src/sapi/cli/php --ri swoole
+          ./thirdparty/php-src/sapi/cli/php --ri pgsql
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
+          file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
-          ./bin/swoole-cli -r "echo PHP_VERSION;"
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
+
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts debug
         uses: actions/upload-artifact@v3
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-linux-x64-debug
+          name: php-cli-v${{ env.APP_VERSION }}-linux-x64-debug
           retention-days: 90
-          path: ./bin/swoole-cli
+          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
       - name: production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-linux-x64
+          name: php-cli-v${{ env.APP_VERSION }}-linux-x64
           retention-days: 90
-          path: ./bin/dist/swoole-cli
+          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/dist/php
 
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
+          files: |
+            php-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
+            php-cli-v${{ env.APP_VERSION }}-linux-x64-debug.tar.xz

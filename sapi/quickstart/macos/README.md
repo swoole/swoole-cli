@@ -11,7 +11,7 @@ bash sapi/quickstart/macos/install-homebrew.sh
 # bash sapi/quickstart/macos/install-homebrew.sh --mirror china
 
 
-# brew 安装 库
+# brew 安装 依赖库
 bash sapi/quickstart/macos/macos-init.sh
 # 使用中国大陆镜像
 # bash sapi/quickstart/macos/macos-init.sh --mirror china
