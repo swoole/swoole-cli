@@ -40,7 +40,6 @@ test -f Makefile && make clean
   --with-mysqli \
   --enable-fileinfo \
   --with-pdo_mysql \
-  --with-pdo-sqlite \
   --enable-soap \
   --with-xsl \
   --with-gmp \
@@ -52,7 +51,10 @@ test -f Makefile && make clean
   --enable-redis \
   --with-imagick \
   --with-yaml \
-  --with-readline \
+  --with-readline
+
 #  --with-pdo-pgsql \
 #  --with-pgsql
-# --enable-swoole-pgsql
+#  --with-pdo-sqlite \
+# --enable-swoole-pgsql \
+# --enable-swoole-sqlite \
