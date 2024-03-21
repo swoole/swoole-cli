@@ -1,0 +1,6 @@
+workflows:
+    build-app:
+      type: 'workflow' # or 'state_machine'
+
+
+

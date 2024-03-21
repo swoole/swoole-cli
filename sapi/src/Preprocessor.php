@@ -6,9 +6,12 @@ use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
 use RuntimeException;
+use SwooleCli\PreprocessorTrait\WebUITrait;
 
 class Preprocessor
 {
+    use WebUITrait;
+
     public const VERSION = '1.6';
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
     public const CONTAINER_NAME = 'swoole-cli-builder';
@@ -844,7 +847,9 @@ class Preprocessor
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
-
+        if ($this->getInputOption('with-web-ui')) {
+            $this->generateWebUIData();
+        }
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
