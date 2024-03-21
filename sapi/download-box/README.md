@@ -64,11 +64,11 @@ bash sapi/download-box/download-box-get-archive-from-container.sh
 
 ### 方式二（来自web服务器）：
 
-> 原理： 下载：`http://127.0.0.1:9503/all-archive.zip`
+> 原理： 下载：`http://127.0.0.1:9503/all-deps.zip`
 > 自动解压，并自动拷贝到 `pool/` 目录
 
 >
-真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-archive.zip`
+真实可用的依赖库镜像地址：  `https://swoole-cli.jingjingxyk.com/all-deps.zip`
 
 ```bash
 bash  sapi/download-box/download-box-get-archive-from-server.sh
