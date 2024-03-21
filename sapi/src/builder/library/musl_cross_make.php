@@ -22,7 +22,7 @@ EOF
         )
         ->withPrefix($musl_cross_make_prefix)
         ->withBuildLibraryHttpProxy()
-        ->withBuildCached(false)
+        //->withBuildCached(false)
         ->withConfigure(<<<EOF
         cp -f {$p->getWorkDir()}/sapi/musl-cross-make/config.mak .
 
