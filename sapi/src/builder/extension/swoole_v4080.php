@@ -31,4 +31,6 @@ EOF
     call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
     $p->addExtension($ext);
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+    $p->withVariable('LIBS', '$LIBS ' . $libs);
 };
