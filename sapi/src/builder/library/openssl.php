@@ -9,12 +9,16 @@ return function (Preprocessor $p) {
 
     $cc = '';
     if ($p->isLinux()) {
+/*
+        ln -sf /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
+        ln -sf /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
+        ln -sf /usr/include/asm-generic/ /usr/include/x86_64-linux-musl/asm-generic
 
+ */
         # 参考 https://github.com/openssl/openssl/issues/7207#issuecomment-880121450
         # -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/"
         if ($p->get_C_COMPILER() === 'musl-gcc') {
-            # $custom_include = '/usr/include/x86_64-linux-musl/';
-            $custom_include = '/usr/include/x86_64-linux-gnu/';
+            $custom_include = '/usr/include/x86_64-linux-musl/';
 
             $cc = 'CC="${CC} -idirafter /usr/include/ -idirafter ' . $custom_include . '"';
 
