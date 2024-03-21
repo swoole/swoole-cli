@@ -56,19 +56,16 @@ test -f Makefile && make clean
   --enable-exif \
   --with-sodium \
   --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
-  --enable-gd --with-jpeg --with-freetype \
-  --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares  \
+  --enable-gd --with-jpeg  --with-freetype \
+  --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
   --enable-swoole-pgsql \
   --enable-swoole-sqlite \
   --enable-redis \
   --with-imagick \
   --with-yaml \
-  --with-readline \
-  --with-pgsql
-
+  --with-readline
 
 # --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)
 # --with-pdo-pgsql \
 # --with-pgsql \
 # --with-pdo-sqlite \
-

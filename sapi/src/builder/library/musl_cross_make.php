@@ -31,7 +31,6 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://github.com/richfelker/musl-cross-make.git')
         ->withLicense('https://github.com/richfelker/musl-cross-make?tab=MIT-1-ov-file#readme', Library::LICENSE_MIT)
         ->withManual('https://github.com/richfelker/musl-cross-make/blob/master/README.md')
-        /* 下载依赖库源代码方式二 start */
         ->withFile('musl-cross-make-latest.tar.gz')
         ->withDownloadScript(
             'musl-cross-make',

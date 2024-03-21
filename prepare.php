@@ -207,6 +207,9 @@ $p->execute();
 
 function install_libraries(Preprocessor $p): void
 {
-    # $p->loadDependentLibrary('musl_cross_make');
-    # $p->loadDependentLibrary('musl_libc');
+    if ($p->getInputOption('with-c-compiler') == 'x86_64-linux-musl-gcc') {
+        $p->loadDependentLibrary('musl_cross_make');
+    }
+
+    $p->loadDependentLibrary('php');
 }
