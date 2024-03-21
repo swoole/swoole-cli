@@ -7,7 +7,6 @@ return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
     $ldflags = $p->isMacos() ? '' : ' -static  ';
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
-
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
