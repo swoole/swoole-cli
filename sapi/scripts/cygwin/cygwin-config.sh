@@ -57,4 +57,4 @@ test -f Makefile && make clean
 
 #  --with-pdo-pgsql \
 #  --with-pgsql
-# --with-pdo-sqlite \
+#  --with-pdo-sqlite \
