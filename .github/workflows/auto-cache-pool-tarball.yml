@@ -79,8 +79,10 @@ jobs:
           composer update   --optimize-autoloader
 
           php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
+          php prepare.php           +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1 @macos
+
           cd ${{ github.workspace }}/pool/
-          zip -6 -r ${WORK_DIR}/all-archive.zip ext lib
+          zip -9 -r ${WORK_DIR}/all-archive.zip ext lib
           cd ${{ github.workspace }}
 
       - name: Show Build Result
@@ -92,12 +94,12 @@ jobs:
         if: 1
         uses: actions/upload-artifact@v3
         with:
-          name: cached-all-archive
+          name: cached-all-deps
           retention-days: 90
-          path: all-archive.zip
+          path: all-deps.zip
 
       - name: gh release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: all-archive.zip
+          files: all-deps.zip

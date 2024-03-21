@@ -7,6 +7,7 @@ return function (Preprocessor $p) {
     $swoole_tag = 'v4.8.13';
     $file = "swoole-v{$swoole_tag}.tar.gz";
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
+
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
@@ -32,4 +33,7 @@ EOF
         ->withDependentExtensions(...$dependentExtensions)
     ;
     $p->addExtension($ext);
+
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+    $p->withVariable('LIBS', '$LIBS ' . $libs);
 };
