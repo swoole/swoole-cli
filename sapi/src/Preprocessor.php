@@ -1120,14 +1120,6 @@ EOF;
 
         $this->pkgConfigPaths = array_filter(array_unique($this->pkgConfigPaths));
 
-<<<<<<< HEAD
-=======
-        if ($this->isMacos()) {
-            $libcpp = '-lc++';
-        } else {
-            $libcpp = '-lstdc++';
-        }
->>>>>>> origin/build_native_php
         $packagesArr = $this->getLibraryPackages();
         if (!empty($packagesArr)) {
             $packages = implode(' ', $packagesArr);
