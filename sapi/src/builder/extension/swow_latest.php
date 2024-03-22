@@ -5,6 +5,13 @@ use SwooleCli\Extension;
 use SwooleCli\Library;
 
 return function (Preprocessor $p) {
+    $options = ' --enable-swow ';
+    $options .= ' --enable-swow-ssl ';
+    $options .= ' --enable-swow-curl ';
+    $options .= ' --enable-swow-pdo-pgsql ';
+    $options .= ' --enable-swow-thread-context ';
+
+
     $p->addExtension(
         (new Extension('swow_latest'))
             ->withAliasName('swow')
@@ -23,6 +30,6 @@ return function (Preprocessor $p) {
                 rm -rf swow-t
 EOF
             )
-            ->withDependentLibraries('openssl')
+            ->withDependentLibraries('openssl', 'pgsql', 'curl')
     );
 };
