@@ -34,7 +34,7 @@ EOF
             ->withDependentLibraries(...$dependentLibraries)
             ->withDependentExtensions(...$dependentExtensions)
     );
-    $p->withExportVariable('POSTGRESQL_INCL', '$(pkg-config  --cflags --static libpq)');
+    $p->withExportVariable('POSTGRESQL_CFLAGS', '$(pkg-config  --cflags --static libpq)');
     $p->withExportVariable('POSTGRESQL_LIBS', '$(pkg-config    --libs   --static libpq)');
 
 };
