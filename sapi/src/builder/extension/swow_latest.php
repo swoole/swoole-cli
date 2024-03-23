@@ -8,8 +8,8 @@ return function (Preprocessor $p) {
     $options = ' --enable-swow ';
     $options .= ' --enable-swow-ssl ';
     $options .= ' --enable-swow-curl ';
-    $options .= ' --enable-swow-pdo-pgsql ';
-    #$options .= ' --enable-swow-thread-context ';
+    # $options .= ' --enable-swow-pdo-pgsql ';
+    # $options .= ' --enable-swow-thread-context ';
 
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'pdo'];
     $dependentLibraries = ['openssl', 'pgsql', 'curl'];
