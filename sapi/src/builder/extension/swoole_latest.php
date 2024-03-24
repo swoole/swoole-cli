@@ -16,6 +16,7 @@ return function (Preprocessor $p) {
     $options .= ' --enable-swoole-pgsql ';
     $options .= ' --enable-swoole-pgsql ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
+    $options .= ' --enable-swoole-thread ' ;
 
     $ext = (new Extension('swoole_latest'))
         ->withAliasName('swoole')
