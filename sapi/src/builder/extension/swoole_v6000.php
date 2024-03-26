@@ -21,6 +21,7 @@ return function (Preprocessor $p) {
     $options .= ' --enable-swoole-sqlite ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
     $options .= ' --enable-swoole-thread ' ;
+    $options .= ' --enable-zts ' ;
 
     $ext = (new Extension('swoole_v6000'))
         ->withAliasName('swoole')
