@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --enable-swoole-coro-time ';
-    $options .= ' --enable-thread-context ';
+    # $options .= ' --enable-thread-context ';
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
     $options .= ' --enable-swoole-pgsql ';
