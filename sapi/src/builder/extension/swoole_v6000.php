@@ -37,6 +37,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBuildCached(false)
+        ->withAutoUpdateFile()
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions)
     ;
