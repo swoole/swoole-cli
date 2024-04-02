@@ -73,6 +73,8 @@ define("RAV1E_PREFIX", $p->getGlobalPrefix() . '/rav1e');
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
+define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
 
