@@ -10,6 +10,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-python-version=3.11';
     # $options .= ' --with-python-dir=/opt/anaconda3';
     $options .= ' --with-python-dir=/work/python/';
+    $options .= ' --with-python-config=/work/python/bin/python3-config';
 
     $tag='v1.0.4';
 
