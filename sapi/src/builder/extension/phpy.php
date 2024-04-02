@@ -8,7 +8,8 @@ return function (Preprocessor $p) {
 
     $options = '--enable-phpy ';
     $options .= ' --with-python-version=3.11';
-    $options .= ' --with-python-dir=/opt/anaconda3';
+    # $options .= ' --with-python-dir=/opt/anaconda3';
+    $options .= ' --with-python-dir=/work/python/';
 
     $tag='v1.0.4';
 
