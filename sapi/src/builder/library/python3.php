@@ -37,7 +37,8 @@ return function (Preprocessor $p) {
         echo \$LDFLAGS
         echo \$LIBS
 
-        CPPFLAGS="\$CPPFLAGS" \
+        CFLAGS="-DOPENSSL_THREADS " \
+        CPPFLAGS="\$CPPFLAGS -DOPENSSL_THREADS " \
         LDFLAGS="\$LDFLAGS" \
         LIBS="\$LIBS" \
         ./configure \
