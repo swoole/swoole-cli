@@ -6,7 +6,10 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $python3_prefix = PYTHON3_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
-    //文件名称 和 库名称一致
+
+    $ldflags = $p->isMacos() ? '' : ' -static  ';
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+
     $lib = new Library('python3');
     $lib->withHomePage('https://www.python.org/')
         ->withLicense('https://docs.python.org/3/license.html', Library::LICENSE_LGPL)
@@ -26,8 +29,8 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES liblzma"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include/ "
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  "
-        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 "
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  {$ldflags}"
+        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 {$libs}"
 
         echo \$CPPFLAGS
         echo \$LDFLAGS
