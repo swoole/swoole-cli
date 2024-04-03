@@ -215,7 +215,7 @@ export_variables() {
 <?php endif; ?>
 
 <?php if ($this->hasExtension('phpy')):?>
-    CPPFLAGS="$CPPFLAGS -I<?= $this->getWorkDir() ?>/phpy/include "
+    CPPFLAGS="$CPPFLAGS -I<?= $this->getWorkDir() ?>/ext/phpy/include "
 <?php endif; ?>
 
     export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
