@@ -18,6 +18,7 @@ return function (Preprocessor $p) {
         ->withUrl('https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz')
         ->withPrefix($python3_prefix)
         ->withBuildCached(false)
+        ->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
 
@@ -31,18 +32,21 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES ncursesw"
         PACKAGES="\$PACKAGES readline"
 
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include/ "
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  "
+        CFLAGS="-DOPENSSL_THREADS {$ldflags} "
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include/ {$ldflags}  "
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  {$ldflags} -DOPENSSL_THREADS  -Wl,–no-export-dynamic "
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 {$libs}"
 
+        echo \$CFLAGS
         echo \$CPPFLAGS
         echo \$LDFLAGS
         echo \$LIBS
 
-        CFLAGS="-DOPENSSL_THREADS {$ldflags} " \
-        CPPFLAGS="\$CPPFLAGS -DOPENSSL_THREADS {$ldflags} " \
-        LDFLAGS="\$LDFLAGS {$ldflags}" \
+        CFLAGS=\$CFLAGS \
+        CPPFLAGS="\$CPPFLAGS " \
+        LDFLAGS="\$LDFLAGS " \
         LIBS="\$LIBS" \
+        LINKFORSHARED=" " \
         ./configure \
         --prefix={$python3_prefix} \
         --enable-shared=no \
@@ -55,8 +59,12 @@ return function (Preprocessor $p) {
 
         # --enable-optimizations \
         # --without-system-ffi \
+        # 参考文档： https://wiki.python.org/moin/BuildStatically
+        # echo '*static*' >> Modules/Setup.local
 
-        echo '*static*' >> Modules/Setup.local
+        sed -i.bak "s/^\*shared\*/\*static\*/g" Modules/Setup.stdlib
+        cat Modules/Setup.stdlib > Modules/Setup.local
+
         make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
 
         # make install
