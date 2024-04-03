@@ -56,9 +56,9 @@ return function (Preprocessor $p) {
         # --enable-optimizations \
         # --without-system-ffi \
 
-        echo '*static*' >> Modules/Setup.local
-        make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
 
+        make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
+        echo '*static*' >> Modules/Setup.local
         make install
 EOF
         )
