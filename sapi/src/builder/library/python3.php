@@ -55,8 +55,11 @@ return function (Preprocessor $p) {
 
         # --enable-optimizations \
         # --without-system-ffi \
+
+        echo '*static*' >> Modules/Setup.local
 EOF
         )
+        ->withMakeOptions(' LDFLAGS="-static" LINKFORSHARED=" " ')
         //->withPkgName('example')
         ->withBinPath($python3_prefix . '/bin/')
         //依赖其它静态链接库
