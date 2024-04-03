@@ -19,7 +19,7 @@ return function (Preprocessor $p) {
                 # Fix openssl error, "-ldl" should not be added when compiling statically
                 sed -i.backup 's/add("-ldl", threads("-pthread"))/add(threads("-pthread"))/g' ./Configurations/10-main.conf
                 # ./Configure LIST
-               ./config {$static} no-shared  enable-tls1_3 --release threads \
+               ./config {$static} no-shared  enable-tls1_3 --release enable-threads \
                --prefix={$openssl_prefix} \
                --libdir={$openssl_prefix}/lib \
                --openssldir=/etc/ssl
