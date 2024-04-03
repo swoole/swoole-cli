@@ -39,7 +39,12 @@ return function (Preprocessor $p) {
         ./configure \
         --prefix={$python3_prefix} \
         --enable-shared=no \
-        --disable-shared
+        --disable-shared \
+        --enable-optimizations \
+        --without-system-ffi \
+        --without-system-expat \
+        --without-system-libmpdec \
+        --disable-test-modules
 EOF
         )
         //->withPkgName('example')
