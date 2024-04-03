@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
 
         CFLAGS="-DOPENSSL_THREADS {$ldflags} " \
         CPPFLAGS="\$CPPFLAGS -DOPENSSL_THREADS {$ldflags} " \
-        LDFLAGS="\$LDFLAGS" \
+        LDFLAGS="\$LDFLAGS {$ldflags}" \
         LIBS="\$LIBS" \
         ./configure \
         --prefix={$python3_prefix} \
