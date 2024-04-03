@@ -44,12 +44,13 @@ return function (Preprocessor $p) {
         --prefix={$python3_prefix} \
         --enable-shared=no \
         --disable-shared \
-        --enable-optimizations \
-        --without-system-ffi \
         --without-system-expat \
         --without-system-libmpdec \
         --disable-test-modules
 
+
+        # --enable-optimizations \
+        # --without-system-ffi \
 EOF
         )
         //->withPkgName('example')
