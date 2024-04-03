@@ -71,7 +71,8 @@ return function (Preprocessor $p) {
         make install
 EOF
         )
-        //->withPkgName('example')
+        ->withPkgName('python3')
+        ->withPkgName('python3-embed.pc')
         ->withBinPath($python3_prefix . '/bin/')
         //依赖其它静态链接库
         ->withDependentLibraries('zlib', 'openssl', 'sqlite3', 'bzip2', 'liblzma','readline','ncurses');
