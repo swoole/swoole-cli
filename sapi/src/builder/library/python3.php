@@ -72,7 +72,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPkgName('python3')
-        ->withPkgName('python3-embed.pc')
+        ->withPkgName('python3-embed')
         ->withBinPath($python3_prefix . '/bin/')
         //依赖其它静态链接库
         ->withDependentLibraries('zlib', 'openssl', 'sqlite3', 'bzip2', 'liblzma','readline','ncurses');
