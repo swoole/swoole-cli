@@ -33,9 +33,9 @@ return function (Preprocessor $p) {
         echo \$LDFLAGS
         echo \$LIBS
 
-        CPPFLAGS=\$CPPFLAGS \
-        LDFLAGS=\$LDFLAGS \
-        LIBS=\$LIBS \
+        CPPFLAGS="\$CPPFLAGS" \
+        LDFLAGS="\$LDFLAGS" \
+        LIBS="\$LIBS" \
         ./configure \
         --prefix={$python3_prefix} \
         --enable-shared=no \
