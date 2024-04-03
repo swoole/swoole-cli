@@ -30,15 +30,15 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES liblzma"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include/ "
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  {$ldflags}"
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  "
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 {$libs}"
 
         echo \$CPPFLAGS
         echo \$LDFLAGS
         echo \$LIBS
 
-        CFLAGS="-DOPENSSL_THREADS " \
-        CPPFLAGS="\$CPPFLAGS -DOPENSSL_THREADS " \
+        CFLAGS="-DOPENSSL_THREADS {$ldflags} " \
+        CPPFLAGS="\$CPPFLAGS -DOPENSSL_THREADS {$ldflags} " \
         LDFLAGS="\$LDFLAGS" \
         LIBS="\$LIBS" \
         ./configure \
