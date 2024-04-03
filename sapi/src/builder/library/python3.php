@@ -65,7 +65,7 @@ return function (Preprocessor $p) {
         sed -i.bak "s/^\*shared\*/\*static\*/g" Modules/Setup.stdlib
         cat Modules/Setup.stdlib > Modules/Setup.local
 
-        make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
+        # make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
 
         # make install
 EOF
