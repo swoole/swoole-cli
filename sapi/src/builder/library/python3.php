@@ -59,7 +59,7 @@ return function (Preprocessor $p) {
         echo '*static*' >> Modules/Setup.local
 EOF
         )
-        ->withMakeOptions(' LDFLAGS="-static" LINKFORSHARED=" " ')
+        ->withMakeOptions(' LDFLAGS="\$LDFLAGS -static" LINKFORSHARED=" " ')
         //->withPkgName('example')
         ->withBinPath($python3_prefix . '/bin/')
         //依赖其它静态链接库
