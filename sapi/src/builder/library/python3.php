@@ -68,7 +68,7 @@ return function (Preprocessor $p) {
 
         make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
 
-        # make install
+        make install
 EOF
         )
         //->withPkgName('example')
