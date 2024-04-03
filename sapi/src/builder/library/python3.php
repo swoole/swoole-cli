@@ -32,9 +32,9 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES ncursesw"
         PACKAGES="\$PACKAGES readline"
 
-        CFLAGS="-DOPENSSL_THREADS {$ldflags} "
+        CFLAGS="-DOPENSSL_THREADS {$ldflags} -Wl,–no-export-dynamic  "
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include/ {$ldflags}  "
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  {$ldflags} -DOPENSSL_THREADS  -Wl,–no-export-dynamic "
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  {$ldflags} -DOPENSSL_THREADS  "
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 {$libs}"
 
         echo \$CFLAGS
