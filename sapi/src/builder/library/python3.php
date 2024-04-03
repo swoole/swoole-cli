@@ -57,7 +57,7 @@ return function (Preprocessor $p) {
         # --without-system-ffi \
 
         echo '*static*' >> Modules/Setup.local
-        # make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
+        make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
 
         # make install
 EOF
