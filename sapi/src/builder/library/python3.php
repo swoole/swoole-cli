@@ -25,9 +25,17 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES sqlite3"
         PACKAGES="\$PACKAGES liblzma"
 
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include/ " \
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  " \
-        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 " \
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include/ "
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  "
+        LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) -lbz2 "
+
+        echo \$CPPFLAGS
+        echo \$LDFLAGS
+        echo \$LIBS
+
+        CPPFLAGS=\$CPPFLAGS \
+        LDFLAGS=\$LDFLAGS \
+        LIBS=\$LIBS \
         ./configure \
         --prefix={$python3_prefix} \
         --enable-shared=no \
