@@ -28,6 +28,8 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES zlib"
         PACKAGES="\$PACKAGES sqlite3"
         PACKAGES="\$PACKAGES liblzma"
+        PACKAGES="\$PACKAGES ncursesw"
+        PACKAGES="\$PACKAGES readline"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) -I{$bzip2_prefix}/include/ "
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) -L{$bzip2_prefix}/lib/  "
@@ -57,7 +59,7 @@ EOF
         //->withPkgName('example')
         ->withBinPath($python3_prefix . '/bin/')
         //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl', 'sqlite3', 'bzip2', 'liblzma');
+        ->withDependentLibraries('zlib', 'openssl', 'sqlite3', 'bzip2', 'liblzma','readline','ncurses');
 
     $p->addLibrary($lib);
 
