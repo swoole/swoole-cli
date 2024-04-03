@@ -49,7 +49,8 @@ return function (Preprocessor $p) {
         --disable-shared \
         --without-system-expat \
         --without-system-libmpdec \
-        --disable-test-modules
+        --disable-test-modules \
+        --with-static-libpython
 
 
         # --enable-optimizations \
