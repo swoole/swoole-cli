@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         ->withUrl('https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz')
         ->withPrefix($python3_prefix)
         ->withBuildCached(false)
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
 
         ./configure --help
@@ -57,9 +57,11 @@ return function (Preprocessor $p) {
         # --without-system-ffi \
 
         echo '*static*' >> Modules/Setup.local
+        make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
+
+        make install
 EOF
         )
-        ->withMakeOptions(' LDFLAGS="\$LDFLAGS -static" LINKFORSHARED=" " ')
         //->withPkgName('example')
         ->withBinPath($python3_prefix . '/bin/')
         //依赖其它静态链接库
