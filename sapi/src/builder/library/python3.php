@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         ->withUrl('https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz')
         ->withPrefix($python3_prefix)
         ->withBuildCached(false)
-        ->withInstallCached(false)
+        //->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
 
