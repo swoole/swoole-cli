@@ -14,7 +14,8 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://www.python.org/')
         ->withLicense('https://docs.python.org/3/license.html', Library::LICENSE_LGPL)
         ->withManual('https://www.python.org')
-        ->withUrl('https://www.python.org/ftp/python/3.11.8/Python-3.11.8.tgz')
+        //->withUrl('https://www.python.org/ftp/python/3.11.8/Python-3.11.8.tgz')
+        ->withUrl('https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz')
         ->withPrefix($python3_prefix)
         ->withBuildCached(false)
         ->withConfigure(
