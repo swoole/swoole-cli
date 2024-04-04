@@ -257,6 +257,7 @@ define("SPIRV_TOOLS_PREFIX", $p->getGlobalPrefix() . '/spirv_tools');
 define("FDK_AAC_PREFIX", $p->getGlobalPrefix() . '/fdk_aac');
 
 define("PROMETHEUS_CLIENT_C_PREFIX", $p->getGlobalPrefix() . '/prometheus_client_c');
+define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
 
 define("LIBBSON_PREFIX", $p->getGlobalPrefix() . '/libbson');
 define("LIBMONGOCRYPT_PREFIX", $p->getGlobalPrefix() . '/libmongocrypt');

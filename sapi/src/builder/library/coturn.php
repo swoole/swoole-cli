@@ -61,6 +61,7 @@ EOF
            cmake .. \
            -DCMAKE_INSTALL_PREFIX={$coturn_prefix} \
            -DCMAKE_C_STANDARD=C11 \
+           -DCMAKE_C_FLAGS="-D_OPENSSL_THREADS=1" \
            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
            -DCMAKE_POLICY_DEFAULT_CMP0077=NEW \
            -DCMAKE_BUILD_TYPE=Release \
