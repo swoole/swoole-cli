@@ -115,15 +115,11 @@ jobs:
           if [ ! -f bin/runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
-
           CACHE_NUM=$(ls -A pool/lib/ | wc -l)
           LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
           echo `expr $LIB_NUM - $CACHE_NUM`
 
-          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
-              bash sapi/download-box/download-box-get-archive-from-container.sh
-          fi
-
+          bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
