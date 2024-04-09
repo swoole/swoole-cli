@@ -17,7 +17,8 @@ class Preprocessor
 
     use WebUITrait;
 
-    public const VERSION = '1.6';
+    public const VERSION = '1.7';
+
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
     public const CONTAINER_NAME = 'swoole-cli-builder';
 
