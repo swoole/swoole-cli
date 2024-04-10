@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
         (new Library('libpng'))
             ->withHomePage('http://www.libpng.org/pub/png/libpng.html')
             ->withLicense('http://www.libpng.org/pub/png/src/libpng-LICENSE.txt', Library::LICENSE_SPEC)
-            ->withUrl('https://nchc.dl.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz')
+            ->withUrl('https://sourceforge.net/projects/libpng/files/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withMd5sum('6c7519f6c75939efa0ed3053197abd54')
             ->withPrefix($libpng_prefix)
             ->withConfigure(
