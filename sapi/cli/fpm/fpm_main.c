@@ -141,6 +141,7 @@ static const opt_struct OPTIONS[] = {
 	{'D', 0, "daemonize"},
 	{'F', 0, "nodaemonize"},
 	{'O', 0, "force-stderr"},
+    {'P', 0, "fpm"},
 	{'-', 0, NULL} /* end of args */
 };
 
