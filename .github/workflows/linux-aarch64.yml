@@ -92,9 +92,6 @@ jobs:
           LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
           echo `expr $LIB_NUM - $CACHE_NUM`
 
-          if test $CACHE_NUM -eq 0  ; then
-              bash sapi/download-box/download-box-get-archive-from-container.sh
-          fi
           if test $(ls -A /usr/local/swoole-cli/ | wc -l) -eq 0 ; then
               TAG=all-dependencies-alpine-3.17-php8-v1.0.0-aarch64-20231113T121401Z
               IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
@@ -102,6 +99,9 @@ jobs:
               docker cp $container_id:/usr/local/swoole-cli/ /usr/local/
               docker rm $container_id
           fi
+
+          bash sapi/download-box/download-box-get-archive-from-server.sh
+
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
@@ -154,7 +154,11 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh
             composer update   --optimize-autoloader
 
+<<<<<<< HEAD
             php prepare.php +ffmpeg
+=======
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql -mongodb --with-swoole-pgsql=1 --with-libavif --with-php-version=${{ env.BUILD_PHP_VERSION }}
+>>>>>>> build_native_php
 
             bash make-install-deps.sh
 
