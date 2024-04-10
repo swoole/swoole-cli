@@ -71,7 +71,7 @@ https://github.com/coin-or/ADOL-C.git
        *    位置无关的可执行文件
        *    直接编译可执行文件 -fPIE
        *    直接编译成库      -fPIC
-
+       地址无关代码（Position Independent Code, PIC）
 
 BPF CO-RE (Compile Once – Run Everywhere)
 https://github.com/libbpf/libbpf#bpf-co-re-compile-once--run-everywhere
