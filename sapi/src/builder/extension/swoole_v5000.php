@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
 
     if ($p->getInputOption('with-swoole-pgsql')) {
-        $dependent_libraries[] = 'pgsql';
+        $dependentLibraries[] = 'pgsql';
     }
 
     $ext = (new Extension('swoole_v5000'))
