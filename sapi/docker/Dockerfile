@@ -10,7 +10,8 @@ RUN if [ "${MIRROR}" = "tuna" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors
 
 RUN apk update
 RUN apk upgrade
-RUN apk add  vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
-RUN apk add  bash tini
-RUN apk add  libc++-static libltdl-static
+
+RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c gettext coreutils
+RUN apk add bash tini
+RUN apk add libc++-static libltdl-static
 WORKDIR /work
