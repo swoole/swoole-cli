@@ -31,6 +31,7 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES liblzma"
         PACKAGES="\$PACKAGES ncursesw"
         PACKAGES="\$PACKAGES readline"
+        PACKAGES="\$PACKAGES uuid"
 
         # -Wl,–no-export-dynamic
         CFLAGS="-DOPENSSL_THREADS {$ldflags}  "
@@ -75,7 +76,7 @@ EOF
         ->withPkgName('python3-embed')
         ->withBinPath($python3_prefix . '/bin/')
         //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl', 'sqlite3', 'bzip2', 'liblzma','readline','ncurses');
+        ->withDependentLibraries('zlib', 'openssl', 'sqlite3', 'bzip2', 'liblzma', 'readline', 'ncurses', 'libuuid', 'libintl');
 
     $p->addLibrary($lib);
 
