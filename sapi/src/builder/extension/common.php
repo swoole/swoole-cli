@@ -179,6 +179,7 @@ return function (Preprocessor $p) {
     $depends = ['strongswan'] ;
     $depends = ['musl_cross_make'] ;
     $depends = ['libuuid'] ;
+    $depends = ['python3'] ;
 
 
     $ext = (new Extension('common'))
