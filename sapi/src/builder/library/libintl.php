@@ -47,4 +47,8 @@ EOF
             )
             ->withDependentLibraries('libunistring', 'libiconv', 'ncurses', 'libxml2')
     );
+
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libintl_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libintl_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -lintl ');
 };
