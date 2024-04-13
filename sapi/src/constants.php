@@ -129,7 +129,7 @@ define("GRAPHVIZ_PREFIX", $p->getGlobalPrefix() . '/graphviz');
 define('LIBRSVG_PREFIX', $p->getGlobalPrefix() . '/librsvg');
 
 define('GETTEXT_PREFIX', $p->getGlobalPrefix() . '/gettext');
-define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/gettext');
+define('LIBINTL_PREFIX', $p->getGlobalPrefix() . '/libintl');
 
 
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
