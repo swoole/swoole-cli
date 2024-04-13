@@ -7,6 +7,7 @@ return function (Preprocessor $p) {
     $python3_prefix = PYTHON3_PREFIX;
     $libintl_prefix = LIBINTL_PREFIX;
     $libunistring_prefix = LIBUNISTRING_PREFIX;
+    $libiconv_prefix = ICONV_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
 
     $ldflags = $p->isMacos() ? '' : ' -static  ';
@@ -49,9 +50,9 @@ return function (Preprocessor $p) {
         LDFLAGS=" \$LDFLAGS -L{$libintl_prefix}/lib/ "
         LIBS=" \$LIBS -lintl "
 
-        CPPFLAGS=" \$CPPFLAGS "
-        LDFLAGS=" \$LDFLAGS "
-        LIBS=" \$LIBS "
+        CPPFLAGS=" \$CPPFLAGS -I{$libiconv_prefix}/include/ "
+        LDFLAGS=" \$LDFLAGS -L{$libiconv_prefix}/lib/ "
+        LIBS=" \$LIBS -liconv "
 
         echo \$CFLAGS
         echo \$CPPFLAGS
