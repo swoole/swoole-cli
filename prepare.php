@@ -211,5 +211,5 @@ function install_libraries(Preprocessor $p): void
         $p->loadDependentLibrary('musl_cross_make');
     }
 
-    $p->loadDependentLibrary('php');
+    # $p->loadDependentLibrary('php');
 }

@@ -28,7 +28,9 @@ EOF
         --enable-static=yes \
         --disable-all-programs \
         --enable-libuuid \
-        --enable-static-programs=uuidd,uuidgen
+        --enable-uuidgen \
+        --enable-static-programs=uuidd,uuidgen \
+
 
 EOF
         )

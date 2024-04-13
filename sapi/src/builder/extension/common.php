@@ -178,6 +178,7 @@ return function (Preprocessor $p) {
     $depends = ['webrtc'] ;
     $depends = ['strongswan'] ;
     $depends = ['musl_cross_make'] ;
+    $depends = ['libuuid'] ;
 
 
     $ext = (new Extension('common'))
