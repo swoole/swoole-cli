@@ -138,3 +138,11 @@ git merge  --allow-unrelated-histories
 git log --oneline
 
 ```
+
+```bash
+
+GITVERSION="git --git-dir $(pwd)/.git rev-parse --short HEAD"
+GITTAG="git --git-dir $(pwd)/.git describe --all --always --dirty"
+GITBRANCH="git --git-dir $(pwd)/.git name-rev --name-only HEAD"
+
+```
