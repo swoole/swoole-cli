@@ -99,7 +99,7 @@ jobs:
 
           composer update   --optimize-autoloader
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql --with-build-type=release -swoole  +swoole_v6000 --with-libavif=1
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql --with-build-type=release  --with-libavif=1
 
       - name: Build
         run: |
