@@ -120,9 +120,7 @@ jobs:
           LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
           echo `expr $LIB_NUM - $CACHE_NUM`
 
-          if test $(ls -A pool/lib/ | wc -l) -eq 0 ; then
-              bash sapi/download-box/download-box-get-archive-from-container.sh
-          fi
+          bash sapi/download-box/download-box-get-archive-from-server.sh
 
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
@@ -146,7 +144,7 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh --mirror ""
             composer update   --optimize-autoloader
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql  --with-libavif=1
 
             bash make-install-deps.sh
 

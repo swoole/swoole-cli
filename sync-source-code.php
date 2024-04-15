@@ -117,8 +117,10 @@ $cmd .= PHP_EOL . <<<'EOF'
     cp -r ./TSRM/TSRM.h main/TSRM.h
     cp -r $SRC/configure.ac ./
 
-    # fpm [Need to manually compare fpm_main.c]
+    # fpm
     cp -r $SRC/sapi/fpm/fpm ./sapi/cli
+    sed 's/int main(int argc, char *argv[])/int fpm_main(int argc, char *argv[])/g' ./sapi/cli/fpm/main.c
+    sed 's/{'-', 0, NULL}/{'P', 0, "fpm"},\n	{'-', 0, NULL}/g' ./sapi/cli/fpm/main.c
     exit 0
 
     # cli
