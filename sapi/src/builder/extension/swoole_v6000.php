@@ -5,7 +5,7 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
 
-    $swoole_tag = 'v5.1.2';
+    $swoole_tag = 'v6.0';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
@@ -14,15 +14,17 @@ return function (Preprocessor $p) {
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
     $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
     $options .= ' --enable-swoole-coro-time ';
-    $options .= ' --enable-thread-context ';
+    # $options .= ' --enable-thread-context ';
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
     $options .= ' --enable-swoole-pgsql ';
     $options .= ' --enable-swoole-sqlite ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
+    $options .= ' --enable-swoole-thread ' ;
+    $options .= ' --enable-zts ' ;
 
-
-    $ext = (new Extension('swoole'))
+    $ext = (new Extension('swoole_v6000'))
+        ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
@@ -35,6 +37,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withBuildCached(false)
+        ->withAutoUpdateFile()
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions)
     ;

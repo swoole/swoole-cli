@@ -33,6 +33,7 @@ EOF
         )
         ->withAutoUpdateFile()
         ->withBuildCached(false)
+        ->withAutoUpdateFile()
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions)
     ;

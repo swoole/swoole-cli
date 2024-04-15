@@ -50,7 +50,6 @@ const DOWNLOAD_FILE_CONNECTION_TIMEOUT = 15;
 define("NGHTTP3_PREFIX", $p->getGlobalPrefix() . '/nghttp3');
 define("NGTCP2_PREFIX", $p->getGlobalPrefix() . '/ngtcp2');
 define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
-define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unix_odbc');
@@ -77,6 +76,13 @@ define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
+
+define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
+define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
+define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
+define("MPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/mpdecimal');
+define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
+define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 

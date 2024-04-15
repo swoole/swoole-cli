@@ -5,10 +5,19 @@ use SwooleCli\Extension;
 use SwooleCli\Library;
 
 return function (Preprocessor $p) {
+    $options = ' --enable-swow ';
+    $options .= ' --enable-swow-ssl ';
+    $options .= ' --enable-swow-curl ';
+    $options .= ' --enable-swow-pdo-pgsql=no ';
+    # $options .= ' --enable-swow-thread-context ';
+
+    $dependentExtensions = ['curl', 'openssl', 'sockets', 'pdo'];
+    $dependentLibraries = ['openssl', 'pgsql', 'curl'];
+
     $p->addExtension(
         (new Extension('swow_latest'))
             ->withAliasName('swow')
-            ->withOptions('--enable-swow  --enable-swow-ssl --enable-swow-curl ')
+            ->withOptions($options)
             ->withHomePage('https://github.com/swow/swow')
             ->withLicense('https://github.com/swow/swow/blob/develop/LICENSE', Extension::LICENSE_APACHE2)
             ->withManual('https://docs.toast.run/swow/en/install.html')
@@ -23,6 +32,10 @@ return function (Preprocessor $p) {
                 rm -rf swow-t
 EOF
             )
-            ->withDependentLibraries('openssl')
+            ->withDependentLibraries(...$dependentLibraries)
+            ->withDependentExtensions(...$dependentExtensions)
     );
+    $p->withExportVariable('POSTGRESQL_CFLAGS', '$(pkg-config  --cflags --static libpq)');
+    $p->withExportVariable('POSTGRESQL_LIBS', '$(pkg-config    --libs   --static libpq)');
+
 };
