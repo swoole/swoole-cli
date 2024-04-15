@@ -29,7 +29,10 @@ EOF
         )
         ->withAutoUpdateFile()
         ->withBuildCached(false)
+        ->withAutoUpdateFile()
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions);
     $p->addExtension($ext);
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+    $p->withVariable('LIBS', '$LIBS ' . $libs);
 };
