@@ -203,12 +203,6 @@ export_variables() {
     # -all-static | -static | -static-libtool-libs
     CPPFLAGS=""
     CFLAGS=""
-<?php if ($this->cCompiler == 'clang') : ?>
-    LDFLAGS="-static"
-<?php else :?>
-    LDFLAGS="-static-libgcc -static-libstdc++"
-<?php endif ;?>
-
     LDFLAGS=""
     LIBS=""
 <?php foreach ($this->variables as $name => $value) : ?>
