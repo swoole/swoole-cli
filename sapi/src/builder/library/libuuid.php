@@ -18,6 +18,10 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libuuid_prefix)
+        ->withPreInstallCommand('alpine', <<<EOF
+        apk add gettext-dev
+EOF
+        )
         ->withConfigure(
             <<<EOF
         sh autogen.sh
@@ -29,14 +33,13 @@ EOF
         --disable-all-programs \
         --enable-libuuid \
         --enable-uuidgen \
-        --enable-static-programs=uuidd,uuidgen \
+        --enable-static-programs=uuidd,uuidgen
 
 
 EOF
         )
         ->withPkgName('uuid')
-        ->withBinPath($libuuid_prefix . '/bin/:' . $libuuid_prefix. '/sbin/')
-    ;
+        ->withBinPath($libuuid_prefix . '/bin/:' . $libuuid_prefix . '/sbin/');
 
     $p->addLibrary($lib);
 };
