@@ -76,10 +76,11 @@ jobs:
           export PATH=${WORK_DIR}/bin/runtime:$PATH
           alias php="php -d curl.cainfo=${WORK_DIR}/bin/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/bin/runtime/cacert.pem"
 
-          composer update   --optimize-autoloader
+          composer install  --no-interaction --no-autoloader --no-scripts --profile
+          composer dump-autoload --optimize --profile
 
-          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
-          php prepare.php           +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1 @macos
+          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-libavif=1
+          php prepare.php           +apcu +ds +xlswriter +ssh2 +pgsql --with-libavif=1 @macos
 
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
