@@ -125,8 +125,9 @@ jobs:
             # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             # bash sapi/quickstart/mark-install-library-cached.sh
 
-            sh  sapi/quickstart/linux/debian-init.sh
-            composer update   --optimize-autoloader
+            sh  sapi/quickstart/linux/alpine-init.sh
+            composer install  --no-interaction --no-autoloader --no-scripts --profile
+            composer dump-autoload --optimize --profile
 
             php prepare.php --with-override-default-enabled-ext=1 --with-php-version=8.3.4 --with-c-compiler=musl-gcc
 

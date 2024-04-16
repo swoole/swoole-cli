@@ -140,7 +140,8 @@ jobs:
             # bash sapi/quickstart/mark-install-library-cached.sh
 
             sh  sapi/quickstart/linux/alpine-init.sh
-            composer update   --optimize-autoloader
+            composer install  --no-interaction --no-autoloader --no-scripts --profile
+            composer dump-autoload --optimize --profile
 
             php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql -mongodb --with-swoole-pgsql=1 --with-libavif --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
