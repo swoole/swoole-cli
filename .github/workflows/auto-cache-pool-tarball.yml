@@ -76,7 +76,7 @@ jobs:
           export PATH=${WORK_DIR}/bin/runtime:$PATH
           alias php="php -d curl.cainfo=${WORK_DIR}/bin/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/bin/runtime/cacert.pem"
 
-          composer install  --no-interaction --no-autoloader --no-scripts
+          composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
           php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql
