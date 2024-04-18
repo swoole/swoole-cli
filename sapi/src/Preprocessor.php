@@ -330,7 +330,7 @@ class Preprocessor
      * @param string $md5sum
      * @throws Exception
      */
-    protected function downloadFile(string $url, string $file, string $md5sum)
+    protected function downloadFile(string $url, string $file, string $md5sum, object $obj = null)
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
@@ -355,6 +355,10 @@ class Preprocessor
         // 下载文件的 MD5 不一致
         if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
             throw new Exception("The md5 of downloaded file[$file] is inconsistent with the configuration");
+        }
+
+        if ($obj->enableHashVerify && !$obj->fileHashVerify($file)) {
+            throw new Exception("The {$obj->$this->hashVerifyMethod} of downloaded file[$file] is inconsistent with the configuration");
         }
     }
 
@@ -397,7 +401,7 @@ class Preprocessor
         if (!$skip_download) {
             if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
+                $this->downloadFile($lib->url, $lib->path, $lib->md5sum, $lib);
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -437,7 +441,7 @@ class Preprocessor
             if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
+                    $this->downloadFile($ext->url, $ext->path, $ext->md5sum, $ext);
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }

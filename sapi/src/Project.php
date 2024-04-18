@@ -14,9 +14,13 @@ abstract class Project
 
     public string $md5sum = '';
 
+    public string $sha1 = '';
     public bool $hashVerify = false;
 
-    public string $hash = '';
+    public bool $enableHashVerify = false;
+
+    public string $hashVerifyMethod = '';
+
 
     public string $manual = '';
 
@@ -76,8 +80,42 @@ abstract class Project
     public function withMd5sum(string $md5sum): static
     {
         $this->md5sum = $md5sum;
-        $this->hash = $md5sum;
+        $this->hashVerifyMethod = 'md5';
+        $this->enableHashVerify = true;
         return $this;
+    }
+
+    public function withSha1(string $sha1): static
+    {
+        $this->sha1 = $sha1;
+        $this->hashVerifyMethod = 'sha1';
+        $this->enableHashVerify = true;
+        return $this;
+    }
+
+    public function fileHashVerify(string $file): bool
+    {
+        if ($this->enableHashVerify) {
+            switch ($this->hashVerifyMethod) {
+                case 'md5':
+                    if (md5_file($file) === $this->md5sum) {
+                        $this->hashVerify = true;
+                    } else {
+                        unlink($file);
+                    }
+                    break;
+                case 'sha1':
+                    if (sha1_file($file) === $this->sha1) {
+                        $this->hashVerify = true;
+                    } else {
+                        unlink($file);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $this->hashVerify;
     }
 
     public function withUrl(string $url): static
