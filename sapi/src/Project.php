@@ -14,6 +14,10 @@ abstract class Project
 
     public string $md5sum = '';
 
+    public bool $hashVerify = false;
+
+    public string $hash = '';
+
     public string $manual = '';
 
     public string $homePage = '';
@@ -72,6 +76,7 @@ abstract class Project
     public function withMd5sum(string $md5sum): static
     {
         $this->md5sum = $md5sum;
+        $this->hash = $md5sum;
         return $this;
     }
 
