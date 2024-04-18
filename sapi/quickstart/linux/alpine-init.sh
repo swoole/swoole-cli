@@ -57,6 +57,7 @@ apk add netcat-openbsd
 apk add python3-dev
 apk add mercurial
 apk add gettext-dev
+apk add pigz parallel
 
 case "$MIRROR" in
 china | tuna | ustc)
