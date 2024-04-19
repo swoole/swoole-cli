@@ -15,6 +15,7 @@ return function (Preprocessor $p) {
                 Library::LICENSE_GPL
             )
             ->withUrl('https://sourceforge.net/projects/freetype/files/freetype2/2.13.2/freetype-2.13.2.tar.gz')
+            ->withMd5sum('d99447cf00c5f2679918f66f2b5771f6')
             ->withPrefix($freetype_prefix)
             ->withConfigure(
                 <<<EOF
