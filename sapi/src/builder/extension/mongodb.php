@@ -27,15 +27,17 @@ return function (Preprocessor $p) {
 
     $options = ' --enable-mongodb ';
     $options .= ' --with-mongodb-system-libs=no ';
+    $options .= ' --with-mongodb-client-side-encryption=no ';
+    /*
     $options .= ' --with-mongodb-ssl=openssl ';
     $options .= ' --with-mongodb-sasl=no ';
     $options .= ' --with-mongodb-icu=yes ';
 
     $options .= ' --with-mongodb-client-side-encryption=no ';
-    $options .= ' --with-mongodb-snappy=no ';
-
-    $mongodb_version = '1.17.2';
-
+    $options .= ' --with-mongodb-snappy=yes ';
+    */
+    $mongodb_version = '1.18.1';
+    $depends = ['icu', 'openssl', 'zlib', 'libzstd', 'snappy'];
     $ext = new Extension('mongodb');
 
     $ext->withHomePage('https://www.php.net/mongodb')
@@ -49,15 +51,8 @@ return function (Preprocessor $p) {
             <<<EOF
         git clone -b {$mongodb_version} --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
 EOF
-        )//->withDependentExtensions('date','json','standar','spl')
-
-    ;
-    $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
-
-    //$depends[] = 'libsasl';
-    //$depends[] = 'snappy';
-
-    call_user_func_array([$ext, 'withDependentLibraries'], $depends);
+        )
+        ->withDependentLibraries(...$depends);
 
     $p->addExtension($ext);
 };

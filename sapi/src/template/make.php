@@ -267,10 +267,14 @@ make_config() {
     <?php endif;?>
 <?php endif; ?>
 
+
+
     export_variables
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
+
+    ./configure --help
 
     ./configure $OPTIONS
 

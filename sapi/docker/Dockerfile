@@ -15,4 +15,5 @@ RUN apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang ll
 RUN apk add bash tini
 RUN apk add libc++-static libltdl-static
 RUN apk add gettext-dev
+RUN apk add pigz parallel
 WORKDIR /work
