@@ -4,7 +4,7 @@
 __DIR__=$(cd "$(dirname "$0")"; pwd)
 
 if [ -f ${__DIR__}/make-env.sh ] ; then
-source ${__DIR__}/make-env.sh
+    source ${__DIR__}/make-env.sh
 fi
 
 CPPFLAGS=""
