@@ -21,11 +21,12 @@ return function (Preprocessor $p) {
 
 EOF
         )
-        ->withDependentLibraries('abseil_cpp','grpc')
+        ->withDependentLibraries('grpc')
     ;
     $p->addExtension($ext);
     $p->withExportVariable('GRPC_LIB_SUBDIR', GRPC_PREFIX . '/lib/');
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
+    $p->withVariable('CXXFLAGS', '$CXXFLAGS -std=c++17 ');
 };

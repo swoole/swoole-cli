@@ -48,6 +48,14 @@ EOF
 
 EOF
         )
+        ->withScriptAfterInstall(
+            <<<EOF
+            rm -rf {$grpc_prefix}/lib/*.so.*
+            rm -rf {$grpc_prefix}/lib/*.so
+            rm -rf {$grpc_prefix}/lib/*.dylib
+EOF
+        )
+        ->withPkgName('grpc')
         ->withDependentLibraries('zlib','cares','openssl','abseil_cpp')
     ;
 
