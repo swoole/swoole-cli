@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-__PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
-CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
+export __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
+export CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
 export LOGICAL_PROCESSORS=<?= trim($this->logicalProcessors). PHP_EOL ?>
 export CMAKE_BUILD_PARALLEL_LEVEL=<?= $this->maxJob. PHP_EOL ?>
 

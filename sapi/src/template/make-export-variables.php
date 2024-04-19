@@ -1,4 +1,5 @@
 CPPFLAGS=""
+CXXFLAGS=""
 CFLAGS=""
 LDFLAGS=""
 LIBS=""
