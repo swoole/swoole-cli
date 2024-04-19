@@ -196,6 +196,7 @@ before_configure_script() {
 export_variables() {
     set -x
     CPPFLAGS=""
+    CXXFLAGS=""
     CFLAGS=""
     LDFLAGS=""
     LIBS=""
@@ -213,11 +214,11 @@ export_variables() {
     export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
     export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
 <?php endif; ?>
-
     export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export CXXFLAGS=$(echo $CXXFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     set +x
