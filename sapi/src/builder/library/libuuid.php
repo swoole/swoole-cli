@@ -10,18 +10,9 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/util-linux/util-linux/blob/master/COPYING', Library::LICENSE_GPL)
         ->withManual('http://en.wikipedia.org/wiki/Util-linux')
         ->withManual('http://en.wikipedia.org/wiki/Util-linux/util-linux/tree/v2.39.1/Documentation')
-        ->withFile('util-linux-v2.39.1.tar.gz')
-        ->withDownloadScript(
-            'util-linux',
-            <<<EOF
-                git clone -b v2.39.1  --depth=1 https://github.com/util-linux/util-linux.git
-EOF
-        )
+        ->withUrl('https://github.com/util-linux/util-linux/archive/refs/tags/v2.39.3.tar.gz')
+        ->withFile('util-linux-v2.39.3.tar.gz')
         ->withPrefix($libuuid_prefix)
-        ->withPreInstallCommand('alpine', <<<EOF
-        apk add gettext-dev
-EOF
-        )
         ->withConfigure(
             <<<EOF
         sh autogen.sh
@@ -33,8 +24,7 @@ EOF
         --disable-all-programs \
         --enable-libuuid \
         --enable-uuidgen \
-        --enable-static-programs=uuidd,uuidgen \
-
+        --enable-static-programs=uuidd,uuidgen
 
 EOF
         )
