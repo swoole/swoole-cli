@@ -99,9 +99,7 @@ jobs:
           if [ ! -f bin/runtime/php ] ; then
               bash  sapi/quickstart/setup-php-runtime.sh
           fi
-
           bash sapi/download-box/download-box-get-archive-from-server.sh
-
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
