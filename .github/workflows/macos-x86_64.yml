@@ -108,8 +108,8 @@ jobs:
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
           alias php="php -d curl.cainfo=${{ github.workspace }}/bin/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/bin/runtime/cacert.pem"
 
-          composer install  --no-interaction --no-autoloader --no-scripts --profile
-          composer dump-autoload --optimize --profile
+          composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
+          composer dump-autoload --optimize --profile --no-dev
 
           php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-libavif=1 --with-php-version=${{ env.BUILD_PHP_VERSION }}
 

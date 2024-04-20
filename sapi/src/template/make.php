@@ -220,12 +220,11 @@ export_variables() {
     export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
     export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
 <?php endif; ?>
-
     export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export CXXFLAGS=$(echo $CXXFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-    export CXXFLAGS=$(echo $CXXFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-
 <?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
     ln -sf /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
     ln -sf /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
@@ -234,7 +233,6 @@ export_variables() {
     export LDFLAGS="${LDFLAGS} -static -L/usr/lib/x86_64-linux-musl "
 
 <?php endif ;?>
-
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     set +x
