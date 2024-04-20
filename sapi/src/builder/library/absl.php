@@ -4,8 +4,8 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $abseil_cpp_prefix = ABSL_CPP_PREFIX;
-    $lib = new Library('abseil_cpp');
+    $absl_prefix = ABSL_PREFIX;
+    $lib = new Library('absl');
     $lib->withHomePage('https://github.com/abseil/abseil-cpp.git')
         ->withLicense('https://github.com/abseil/abseil-cpp/blob/master/LICENSE', Library::LICENSE_APACHE2)
         ->withManual('https://github.com/abseil/abseil-cpp#build')
@@ -17,13 +17,13 @@ return function (Preprocessor $p) {
         git clone -b 20230802.1 --depth=1  https://github.com/abseil/abseil-cpp.git
 EOF
         )
-        ->withPrefix($abseil_cpp_prefix)
+        ->withPrefix($absl_prefix)
         ->withConfigure(
             <<<EOF
             mkdir -p build
             cd build
              cmake ..  \
-            -DCMAKE_INSTALL_PREFIX={$abseil_cpp_prefix} \
+            -DCMAKE_INSTALL_PREFIX={$absl_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
@@ -36,7 +36,7 @@ EOF
 
 EOF
         )
-        ->withBinPath($abseil_cpp_prefix . '/bin/')
+        ->withBinPath($absl_prefix . '/bin/')
         ->withPkgName('absl_base') # 有很多 packages,按需配置
     ;
 

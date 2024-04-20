@@ -4,14 +4,12 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $grpc_prefix = EXAMPLE_PREFIX;
     $grpc_prefix = GRPC_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
-    $zlib_prefix =ZLIB_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
     $cares_prefix = CARES_PREFIX;
-    $absl_prefix =ABSL_PREFIX;
+    $absl_prefix = ABSL_PREFIX;
 
-    //文件名称 和 库名称一致
     $lib = new Library('grpc');
     $lib->withLicense('https://github.com/grpc/grpc/blob/master/src/php/ext/grpc/LICENSE', Library::LICENSE_APACHE2)
         ->withHomePage('grpc.io')
@@ -25,11 +23,8 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($grpc_prefix)
-
         ->withBuildScript(
             <<<EOF
-
-         # EXTRA_DEFINES=GRPC_POSIX_FORK_ALLOW_PTHREAD_ATFORK make
 
          mkdir -p build
          cd build
@@ -40,8 +35,25 @@ EOF
         -DCMAKE_BUILD_TYPE=Release  \
         -DBUILD_SHARED_LIBS=OFF  \
         -DBUILD_STATIC_LIBS=ON \
-        -DCMAKE_PREFIX_PATH="{$zlib_prefix};{$cares_prefix};{$openssl_prefix};{$absl_prefix}"
-
+        -DCMAKE_CXX_STANDARD=17 \
+        -DgRPC_ZLIB_PROVIDER=package \
+        -DgRPC_CARES_PROVIDER=module \
+        -DgRPC_RE2_PROVIDER=module \
+        -DgRPC_SSL_PROVIDER=package \
+        -DgRPC_PROTOBUF_PROVIDER=module \
+        -DgRPC_ABSL_PROVIDER=module \
+        -DABSL_CXX_STANDARD=17 \
+        -DgRPC_OPENTELEMETRY_PROVIDER=module \
+        -DCMAKE_DISABLE_FIND_PACKAGE_libsystemd=ON \
+        -DgRPC_BUILD_GRPC_CPP_PLUGIN=OFF \
+        -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
+        -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
+        -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
+        -DgRPC_BUILD_GRPC_PHP_PLUGIN=ON \
+        -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
+        -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
+        -DgRPC_BUILD_TESTS=OFF \
+        -DCMAKE_PREFIX_PATH="{$zlib_prefix};{$openssl_prefix};{$cares_prefix};{$absl_prefix}"
 
         cmake --build . --config Release --target install
 
@@ -56,8 +68,14 @@ EOF
 EOF
         )
         ->withPkgName('grpc')
-        ->withDependentLibraries('zlib','cares','openssl','abseil_cpp')
-    ;
+        ->withDependentLibraries(
+            'zlib',
+            //'cares',
+            'openssl',
+            //'absl',
+            're2'
+
+        );
 
     $p->addLibrary($lib);
 

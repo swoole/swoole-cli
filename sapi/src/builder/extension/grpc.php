@@ -6,7 +6,8 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     return null;//待改进
-    $options = ' --enable-grpc ';
+    $grpc_prefix = GRPC_PREFIX;
+    $options = ' --enable-grpc=' . $grpc_prefix;
     $ext = (new Extension('grpc'))
         ->withOptions($options)
         ->withLicense('https://github.com/grpc/grpc/blob/master/src/php/ext/grpc/LICENSE', Extension::LICENSE_APACHE2)
