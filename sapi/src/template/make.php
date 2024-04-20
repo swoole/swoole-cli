@@ -243,8 +243,10 @@ export_variables() {
 make_config() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     # 添加扩展
-    cp -rf ${__PROJECT_DIR__}/ext/*  <?= $this->phpSrcDir ?>/ext/
-
+    if [ ! -z  "$(ls -A ${__PROJECT_DIR__}/ext/)" ] ;then
+        cp -rf ${__PROJECT_DIR__}/ext/*  <?= $this->phpSrcDir ?>/ext/
+    fi
+    # 对扩展源代码执行预处理
     before_configure_script
 
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
@@ -266,8 +268,6 @@ make_config() {
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
 <?php endif; ?>
-
-
 
     export_variables
     echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
