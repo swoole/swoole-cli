@@ -325,7 +325,8 @@ define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
 define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
-define("ABSL_CPP_PREFIX", $p->getGlobalPrefix() . '/abseil_cpp');
+define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
 
+define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

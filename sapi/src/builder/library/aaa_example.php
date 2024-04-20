@@ -7,7 +7,7 @@ return function (Preprocessor $p) {
     $example_prefix = EXAMPLE_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $gettext_prefix = GETTEXT_PREFIX;
-
+    $cares_prefix = CARES_PREFIX;
     //文件名称 和 库名称一致
     $lib = new Library('aaa_example');
     $lib->withHomePage('https://opencv.org/')
@@ -128,11 +128,18 @@ EOF
         # -DGIF_INCLUDE_DIR=/usr/local/swoole-cli/libgif/include/ \
         # -DGIF_LIBRARY=/usr/local/swoole-cli/libgif/lib/libgif.a \
 
+        # -DCARES_INCLUDE_DIR={$cares_prefix}/include
+        # -DCARES_LIBRARY={$cares_prefix}/lib
+        # -DCARES_DIR={$cares_prefix}/
+        # -DCARES_ROOT={$cares_prefix}/
+
 
         # ccmake  ..  # 对cmake的cache进行修改，重新生成makefile文件
 
 
         cmake --build . --config Release
+
+
 
         cmake --build . --config Release --target install
 

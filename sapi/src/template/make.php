@@ -368,8 +368,10 @@ make_config() {
 
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     # 添加扩展
-    cp -rf ${__PROJECT_DIR__}/ext/*  <?= $this->phpSrcDir ?>/ext/
-
+    if [ ! -z  "$(ls -A ${__PROJECT_DIR__}/ext/)" ] ;then
+        cp -rf ${__PROJECT_DIR__}/ext/*  <?= $this->phpSrcDir ?>/ext/
+    fi
+    # 对扩展源代码执行预处理
     before_configure_script
 
     export_variables
@@ -386,7 +388,6 @@ make_config() {
     := 是覆盖之前的值
     ?= 是如果没有被赋值过就赋予等号后面的值
     += 是添加等号后面的值
-
 
     # GNU C编译器的gnu11和c11 https://www.cnblogs.com/litifeng/p/8328499.html
     # -g是生成调试信息
@@ -437,6 +438,11 @@ make_config() {
     #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
     #  ll /Library/Developer/CommandLineTools/
     #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+
+    export_variables
+    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
     ./configure --help
     ./configure --help | grep -e '--enable'
