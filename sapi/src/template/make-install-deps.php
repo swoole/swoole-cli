@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 <?php if (in_array($this->buildType, ['dev','debug'])) : ?>
-    set -x
+set -x
 <?php  endif; ?>
 
 __CURRENT_DIR__=$(cd "$(dirname "$0")";pwd)

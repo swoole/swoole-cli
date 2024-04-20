@@ -37,8 +37,7 @@ EOF
 EOF
         )
         ->withBinPath($abseil_cpp_prefix . '/bin/')
-        ->withPkgName('absl_hash_function_defaults') # 有很多 packages
-        ->withPkgName('absl_flat_hash_map')
+        ->withPkgName('absl_base') # 有很多 packages,按需配置
     ;
 
     $p->addLibrary($lib);

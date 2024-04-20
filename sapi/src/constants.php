@@ -150,8 +150,6 @@ define("COTURN_PREFIX", $p->getGlobalPrefix() . '/coturn');
 define("HIREDIS_PREFIX", $p->getGlobalPrefix() . '/hiredis');
 define("LIBMICROHTTP_PREFIX", $p->getGlobalPrefix() . '/libmicrohttp');
 
-define("ABSL_CPP_PREFIX", $p->getGlobalPrefix() . '/abseil_cpp');
-
 define("VTK_PREFIX", $p->getGlobalPrefix() . '/vtk');
 define("JEMALLOC_PREFIX", $p->getGlobalPrefix() . '/jemalloc');
 define("TCMALLOC_PREFIX", $p->getGlobalPrefix() . '/tcmalloc');
@@ -261,12 +259,8 @@ define("GFLAGS_PREFIX", $p->getGlobalPrefix() . '/gflags');
 define("LEVELDB_PREFIX", $p->getGlobalPrefix() . '/leveldb');
 
 define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
-define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
-define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
 define("MPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/mpdecimal');
 define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
-define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
-
 
 define("LIBOPENCC_PREFIX", $p->getGlobalPrefix() . '/libopencc');
 define("LIBYAML_CPP_PREFIX", $p->getGlobalPrefix() . '/libyaml_cpp');
@@ -326,4 +320,12 @@ define("STRONGSWAN_PREFIX", $p->getGlobalPrefix() . '/strongswan');
 
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
 define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
+
+define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
+define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
+define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
+
+define("ABSL_CPP_PREFIX", $p->getGlobalPrefix() . '/abseil_cpp');
+define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');

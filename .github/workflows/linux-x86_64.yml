@@ -188,13 +188,11 @@ jobs:
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
-            # bsed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
-            # bsed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             # bash sapi/quickstart/mark-install-library-cached.sh
 
             sh  sapi/quickstart/linux/alpine-init.sh
-            composer install  --no-interaction --no-autoloader --no-scripts --profile
-            composer dump-autoload --optimize --profile
+            composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
+            composer dump-autoload --optimize --profile --no-dev
 
             php prepare.php  -ffmpeg +coturn  ${{ inputs.build_type }} ${{ inputs.build_options }} --with-c-compiler=clang
 

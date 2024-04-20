@@ -39,4 +39,5 @@ EOF
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $snappy_prefix . '/include');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $snappy_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lsnappy');
+
 };
