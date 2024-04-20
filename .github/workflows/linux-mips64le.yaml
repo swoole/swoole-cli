@@ -132,8 +132,9 @@ jobs:
             # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             # alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
-            sh  sapi/quickstart/linux/debian-init.sh
-            composer update   --optimize-autoloader
+            sh  sapi/quickstart/linux/alpine-init.sh
+            composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
+            composer dump-autoload --optimize --profile --no-dev
 
             php prepare.php --with-override-default-enabled-ext=1 --with-php-version=8.3.4
 

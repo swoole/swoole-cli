@@ -158,8 +158,16 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
     fi
     # composer suggests --all
     # composer dump-autoload
+    # composer fund
 
-    composer update  --optimize-autoloader
+    # composer update  --optimize-autoloader
+    # composer update  --optimize-autoloader --no-dev
+
+    # composer update --no-interaction --optimize-autoloader
+    # composer install --no-interaction --optimize-autoloader
+    composer install  --no-interaction --no-autoloader --no-scripts # --no-dev
+    composer dump-autoload --optimize --profile
+
     composer config -g --unset repos.packagist
 fi
 
@@ -174,11 +182,11 @@ fi
 # --without-docker=1
 # @macos
 # --with-parallel-jobs=8
-# --with-build-type=dev
+# --with-build-type=[ dev|debug|release ] 默认release
 # --skip-download=1
 # --with-http-proxy=http://192.168.3.26:8015
 # --with-override-default-enabled-ext=0
-# --with-php-version=8.2.11
+# --with-php-version=8.3.4
 # --with-c-compiler=[gcc|clang] 默认clang
 # --with-download-mirror-url=https://php-cli.jingjingxyk.com/
 
@@ -186,7 +194,7 @@ fi
 
 # 定制构建选项
 OPTIONS='+apcu +ds +xlswriter +ssh2'
-OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
+OPTIONS="${OPTIONS} "
 OPTIONS="${OPTIONS} --with-libavif=1"
 # OPTIONS="${OPTIONS} @macos"
 

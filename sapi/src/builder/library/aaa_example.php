@@ -109,6 +109,11 @@ EOF
         # 查找PKGCONFIG配置目录多个使用分号隔开
         # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
 
+        # -DCARES_INCLUDE_DIR={$cares_prefix}/include
+        # -DCARES_LIBRARY={$cares_prefix}/lib
+        # -DCARES_DIR={$cares_prefix}/
+        # -DCARES_ROOT={$cares_prefix}/
+
 
         cmake --build . --config Release --target install
 

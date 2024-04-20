@@ -15,6 +15,10 @@ return function (Preprocessor $p) {
 
     $tag = 'v1.0.4';
 
+    if (BUILD_PHP_VERSION_ID < 803000) {
+        throw new \RuntimeException(" PHPY extension Only supports PHP 8.3.0 or higher");
+    }
+
     $ext = (new Extension('phpy'))
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/phpy/blob/main/LICENSE', Extension::LICENSE_APACHE2)
@@ -28,13 +32,17 @@ return function (Preprocessor $p) {
             git clone -b main --depth=1 https://github.com/swoole/phpy.git
 EOF
         )
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo')
-        ->withDependentLibraries('curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'python3');
+        ->withDependentLibraries('python3');
     $p->addExtension($ext);
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getWorkDir(). '/ext/phpy/include');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getPhpSrcDir() . '/ext/phpy/include');
+
+    $python3_prefix = PYTHON3_PREFIX;
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $python3_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $python3_prefix . '/lib/');
+    $p->withVariable('LIBS', '$LIBS -lpython3.12');
 
 
 };

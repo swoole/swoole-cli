@@ -10,8 +10,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/google/snappy')
             ->withManual('https://github.com/google/snappy/blob/main/README.md')
             ->withLicense('https://github.com/google/snappy/blob/main/COPYING', Library::LICENSE_BSD)
-            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.1.10.tar.gz')
-            ->withFile('snappy-1.1.10.tar.gz')
+            ->withUrl('https://github.com/google/snappy/archive/refs/tags/1.2.0.tar.gz')
+            ->withFile('snappy-1.2.0.tar.gz')
             ->withPrefix($snappy_prefix)
             ->withConfigure(
                 <<<EOF
@@ -29,10 +29,9 @@ return function (Preprocessor $p) {
                 -DSNAPPY_BUILD_BENCHMARKS=OFF
 EOF
             )
-            ->withBinPath($snappy_prefix . '/bin/')
     );
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . SNAPPY_PREFIX . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . SNAPPY_PREFIX . '/lib');
-    $p->withVariable('LIBS', '$LIBS -liconv');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $snappy_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $snappy_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -lsnappy');
 
 };
