@@ -358,7 +358,7 @@ class Preprocessor
         // 下载文件的 hash 不一致
         if ($project->enableHashVerify) {
             if (!$project->hashVerify($file)) {
-                throw new Exception("The {$project->hashVerifyMethod} of downloaded file[$file] is inconsistent with the configuration");
+                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
             }
         }
     }
