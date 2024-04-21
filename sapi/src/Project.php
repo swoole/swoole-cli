@@ -14,7 +14,13 @@ abstract class Project
 
     public string $file = '';
 
-    public string $md5sum = '';
+    public string $hash = '';
+    public bool $hashVerify = false;
+
+    public bool $enableHashVerify = false;
+
+    public string $hashAlgo = '';
+
 
     public string $manual = '';
 
@@ -90,8 +96,46 @@ abstract class Project
 
     public function withMd5sum(string $md5sum): static
     {
-        $this->md5sum = $md5sum;
+        $this->withHash('md5', $md5sum);
         return $this;
+    }
+
+    /**
+     * https://www.php.net/manual/zh/function.hash-algos.php
+     * print_r(hash_algos());
+     * @param string $algo
+     * @param string $hash
+     * @return $this
+     */
+    public function withHash(string $algo, string $hash): static
+    {
+        $this->hashAlgo = $algo;
+        $this->hash = $hash;
+        $this->enableHashVerify = true;
+        return $this;
+    }
+
+    /*
+     * hash 签名验证 ，hash 不匹配，删除文件
+     */
+    public function hashVerify(string $file): bool
+    {
+        if ($this->enableHashVerify && file_exists($file)) {
+            switch ($this->hashAlgo) {
+                case 'md5':
+                case 'sha1':
+                case 'sha256':
+                    if (hash_file($this->hashAlgo, $file) === $this->hash) {
+                        $this->hashVerify = true;
+                    } else {
+                        unlink($file);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $this->hashVerify;
     }
 
     public function withUrl(string $url): static
