@@ -84,6 +84,8 @@ jobs:
 
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
+          HASH=$(sha256sum all-deps.zip | awk '{print $1}')
+          echo -n ${HASH} > ${WORK_DIR}/all-deps.zip.sha256sum
           cd ${{ github.workspace }}
 
       - name: Show Build Result
@@ -97,7 +99,9 @@ jobs:
         with:
           name: cached-all-deps
           retention-days: 90
-          path: all-deps.zip
+          path: |
+            all-deps.zip
+            all-deps.zip.sha256sum
 
       - name: gh release
         uses: softprops/action-gh-release@v1

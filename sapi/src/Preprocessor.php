@@ -330,7 +330,7 @@ class Preprocessor
      * @param string $md5sum
      * @throws Exception
      */
-    protected function downloadFile(string $url, string $file, string $md5sum, object $project = null)
+    protected function downloadFile(string $url, string $file, object $project = null)
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
@@ -384,7 +384,7 @@ class Preprocessor
         if (!$skip_download) {
             if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, $lib->path, $lib->md5sum, $lib);
+                $this->downloadFile($lib->url, $lib->path, $lib);
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -422,7 +422,7 @@ class Preprocessor
             if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path, $ext->md5sum, $ext);
+                    $this->downloadFile($ext->url, $ext->path, $ext);
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
