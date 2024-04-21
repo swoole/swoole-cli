@@ -93,6 +93,9 @@ abstract class Project
         return $this;
     }
 
+    /*
+     * hash 验证 ，hash 不匹配，删除文件
+     */
     public function fileHashVerify(string $file): bool
     {
         if ($this->enableHashVerify) {

@@ -330,7 +330,7 @@ class Preprocessor
      * @param string $md5sum
      * @throws Exception
      */
-    protected function downloadFile(string $url, string $file, string $md5sum, object $obj = null)
+    protected function downloadFile(string $url, string $file, string $md5sum, object $project = null)
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
@@ -352,29 +352,10 @@ class Preprocessor
         if (!is_file($file) or filesize($file) == 0) {
             throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
         }
-        // 下载文件的 MD5 不一致
-        if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
-            throw new Exception("The md5 of downloaded file[$file] is inconsistent with the configuration");
+        // 下载文件的 hash 不一致
+        if ($project->enableHashVerify && !$project->fileHashVerify($file)) {
+            throw new Exception("The {$project->$this->hashVerifyMethod} of downloaded file[$file] is inconsistent with the configuration");
         }
-
-        if ($obj->enableHashVerify && !$obj->fileHashVerify($file)) {
-            throw new Exception("The {$obj->$this->hashVerifyMethod} of downloaded file[$file] is inconsistent with the configuration");
-        }
-    }
-
-    /**
-     * @param string $path
-     * @param string $md5
-     * @return bool
-     */
-    protected function checkFileMd5sum(string $path, string $md5): bool
-    {
-        // md5 不匹配，删除文件
-        if ($md5 != md5_file($path)) {
-            unlink($path);
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -392,9 +373,9 @@ class Preprocessor
         }
 
         $lib->path = $this->libraryDir . '/' . $lib->file;
-        if (!empty($lib->md5sum) and is_file($lib->path)) {
-            // 本地文件被修改，MD5 不一致，删除后重新下载
-            $this->checkFileMd5sum($lib->path, $lib->md5sum);
+        if($lib->enableHashVerify){
+            // 本地文件被修改，hash 不一致，删除后重新下载
+            $lib->fileHashVerify($lib->path);
         }
 
         $skip_download = ($this->getInputOption('skip-download'));
@@ -432,12 +413,10 @@ class Preprocessor
                 $ext->url = $this->getInputOption('with-download-mirror-url') . '/ext/' . $ext->file;
             }
 
-            // 检查文件的 MD5，若不一致删除后重新下载
-            if (!empty($ext->md5sum) and is_file($ext->path)) {
-                // 本地文件被修改，MD5 不一致，删除后重新下载
-                $this->checkFileMd5sum($ext->path, $ext->md5sum);
+            if($ext->enableHashVerify){
+                // 检查文件的 hash，若不一致删除后重新下载
+                $ext->fileHashVerify($ext->path);
             }
-
             if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
