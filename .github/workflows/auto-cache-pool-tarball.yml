@@ -85,6 +85,7 @@ jobs:
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
           HASH=$(sha256sum all-deps.zip | awk '{print $1}')
+          echo " all-deps.zip sha265: ${HASH}
           echo -n ${HASH} > ${WORK_DIR}/all-deps.zip.sha256sum
           cd ${{ github.workspace }}
 
