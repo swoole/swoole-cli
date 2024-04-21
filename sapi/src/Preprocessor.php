@@ -353,8 +353,10 @@ class Preprocessor
             throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
         }
         // 下载文件的 hash 不一致
-        if ($project->enableHashVerify && !$project->fileHashVerify($file)) {
-            throw new Exception("The {$project->$this->hashVerifyMethod} of downloaded file[$file] is inconsistent with the configuration");
+        if ($project->enableHashVerify) {
+            if (!$project->fileHashVerify($file)) {
+                throw new Exception("The {$project->$this->hashVerifyMethod} of downloaded file[$file] is inconsistent with the configuration");
+            }
         }
     }
 
@@ -373,7 +375,7 @@ class Preprocessor
         }
 
         $lib->path = $this->libraryDir . '/' . $lib->file;
-        if($lib->enableHashVerify){
+        if ($lib->enableHashVerify) {
             // 本地文件被修改，hash 不一致，删除后重新下载
             $lib->fileHashVerify($lib->path);
         }
@@ -413,7 +415,7 @@ class Preprocessor
                 $ext->url = $this->getInputOption('with-download-mirror-url') . '/ext/' . $ext->file;
             }
 
-            if($ext->enableHashVerify){
+            if ($ext->enableHashVerify) {
                 // 检查文件的 hash，若不一致删除后重新下载
                 $ext->fileHashVerify($ext->path);
             }
