@@ -151,4 +151,10 @@ php ./prepare.php --with-parallel-jobs=8
 with-build-type
 ----
 构建类型，默认是 release
-可选项： release  debug  dev
+可选项： release debug dev
+
+
+show-tarball-hash
+---
+计算已下载的源码包 HASH 值
+

@@ -79,8 +79,8 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql
-          php prepare.php           +apcu +ds +xlswriter +ssh2 +pgsql @macos
+          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --show-tarball-hash=1
+          php prepare.php           +apcu +ds +xlswriter +ssh2 +pgsql @macos --show-tarball-hash=1
 
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib

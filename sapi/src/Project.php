@@ -12,14 +12,12 @@ abstract class Project
 
     public string $file = '';
 
-    public string $md5sum = '';
-
-    public string $sha1 = '';
+    public string $hash = '';
     public bool $hashVerify = false;
 
     public bool $enableHashVerify = false;
 
-    public string $hashVerifyMethod = '';
+    public string $hashAlgo = '';
 
 
     public string $manual = '';
@@ -79,36 +77,36 @@ abstract class Project
 
     public function withMd5sum(string $md5sum): static
     {
-        $this->md5sum = $md5sum;
-        $this->hashVerifyMethod = 'md5';
-        $this->enableHashVerify = true;
+        $this->withHash('md5', $md5sum);
         return $this;
     }
 
-    public function withSha1(string $sha1): static
+    /**
+     * https://www.php.net/manual/zh/function.hash-algos.php
+     * print_r(hash_algos());
+     * @param string $algo
+     * @param string $hash
+     * @return $this
+     */
+    public function withHash(string $algo, string $hash): static
     {
-        $this->sha1 = $sha1;
-        $this->hashVerifyMethod = 'sha1';
+        $this->hashAlgo = $algo;
+        $this->hash = $hash;
         $this->enableHashVerify = true;
         return $this;
     }
 
     /*
-     * hash 验证 ，hash 不匹配，删除文件
+     * hash 签名验证 ，hash 不匹配，删除文件
      */
-    public function fileHashVerify(string $file): bool
+    public function hashVerify(string $file): bool
     {
-        if ($this->enableHashVerify) {
-            switch ($this->hashVerifyMethod) {
+        if ($this->enableHashVerify && file_exists($file)) {
+            switch ($this->hashAlgo) {
                 case 'md5':
-                    if (md5_file($file) === $this->md5sum) {
-                        $this->hashVerify = true;
-                    } else {
-                        unlink($file);
-                    }
-                    break;
                 case 'sha1':
-                    if (sha1_file($file) === $this->sha1) {
+                case 'sha256':
+                    if (hash_file($this->hashAlgo, $file) === $this->hash) {
                         $this->hashVerify = true;
                     } else {
                         unlink($file);

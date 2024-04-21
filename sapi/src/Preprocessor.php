@@ -22,6 +22,7 @@ class Preprocessor
 
     protected string $cCompiler = 'clang';
     protected string $cppCompiler = 'clang++';
+
     protected string $lld = 'ld.lld';
 
     protected array $downloadExtensionList = [];
@@ -56,6 +57,7 @@ class Preprocessor
     protected string $globalPrefix = '/usr/local/swoole-cli';
 
     protected string $extraLdflags = '';
+
     protected string $extraOptions = '';
     protected string $extraCflags = '';
 
@@ -77,6 +79,7 @@ class Preprocessor
     protected array $inputOptions = [];
 
     protected array $binPaths = [];
+
     /**
      * Extensions enabled by default
      * @var array|string[]
@@ -354,8 +357,8 @@ class Preprocessor
         }
         // 下载文件的 hash 不一致
         if ($project->enableHashVerify) {
-            if (!$project->fileHashVerify($file)) {
-                throw new Exception("The {$project->$this->hashVerifyMethod} of downloaded file[$file] is inconsistent with the configuration");
+            if (!$project->hashVerify($file)) {
+                throw new Exception("The {$project->hashVerifyMethod} of downloaded file[$file] is inconsistent with the configuration");
             }
         }
     }
@@ -377,7 +380,7 @@ class Preprocessor
         $lib->path = $this->libraryDir . '/' . $lib->file;
         if ($lib->enableHashVerify) {
             // 本地文件被修改，hash 不一致，删除后重新下载
-            $lib->fileHashVerify($lib->path);
+            $lib->hashVerify($lib->path);
         }
 
         $skip_download = ($this->getInputOption('skip-download'));
@@ -387,6 +390,11 @@ class Preprocessor
                 $this->downloadFile($lib->url, $lib->path, $lib);
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
+                if ($this->getInputOption('show-tarball-hash')) {
+                    echo "md5:   " . hash_file('md5', $lib->path) . PHP_EOL;
+                    echo "sha1:  " . hash_file('sha1', $lib->path) . PHP_EOL;
+                    echo "sha256:" . hash_file('sha256', $lib->path) . PHP_EOL;
+                }
             }
         }
 
@@ -417,7 +425,7 @@ class Preprocessor
 
             if ($ext->enableHashVerify) {
                 // 检查文件的 hash，若不一致删除后重新下载
-                $ext->fileHashVerify($ext->path);
+                $ext->hashVerify($ext->path);
             }
             if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
@@ -425,6 +433,11 @@ class Preprocessor
                     $this->downloadFile($ext->url, $ext->path, $ext);
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                    if ($this->getInputOption('show-tarball-hash')) {
+                        echo "md5:   " . hash_file('md5', $ext->path) . PHP_EOL;
+                        echo "sha1:  " . hash_file('sha1', $ext->path) . PHP_EOL;
+                        echo "sha256:" . hash_file('sha256', $ext->path) . PHP_EOL;
+                    }
                 }
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
