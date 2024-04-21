@@ -85,6 +85,7 @@ jobs:
           if [ ! -f bin/runtime/php ] ; then
               bash  sapi/quickstart/setup-php-runtime.sh
           fi
+          bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
@@ -93,7 +94,8 @@ jobs:
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
           alias php="php -d curl.cainfo=${{ github.workspace }}/bin/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/bin/runtime/cacert.pem"
 
-          composer update   --optimize-autoloader
+          composer install  --no-interaction --no-autoloader --no-scripts --profile
+          composer dump-autoload --optimize --profile
 
           php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release --with-swoole-pgsql=1
 
