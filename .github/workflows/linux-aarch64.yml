@@ -143,7 +143,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif --with-php-version=${{ env.BUILD_PHP_VERSION }}
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql +mongodb --with-libavif --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
             bash make-install-deps.sh
 
