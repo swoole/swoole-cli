@@ -115,7 +115,7 @@ jobs:
       - name: Build
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
-          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          # export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
           export PATH="/opt/homebrew/opt/flex/bin:$PATH"
           export PATH="/opt/homebrew/opt/bison/bin:$PATH"
           export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"
