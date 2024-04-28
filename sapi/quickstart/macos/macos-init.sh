@@ -76,7 +76,7 @@ fi
 
 
 brew install wget curl libtool automake re2c llvm flex bison
-brew install gettext coreutils binutils libunistring
+brew install gettext coreutils  libunistring
 
 which glibtool
 
@@ -84,5 +84,7 @@ ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 
-brew uninstall --ignore-dependencies snappy
-brew uninstall --ignore-dependencies capstone
+brew uninstall --ignore-dependencies --force snappy
+brew uninstall --ignore-dependencies --force capstone
+
+which libtool
