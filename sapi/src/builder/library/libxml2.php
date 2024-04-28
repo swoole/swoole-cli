@@ -16,7 +16,8 @@ return function (Preprocessor $p) {
             ->withPrefix($libxml2_prefix)
             ->withConfigure(
                 <<<EOF
-                    ./autogen.sh
+                    which libtool
+                    sh ./autogen.sh
                     ./configure --help
                     ./configure \
                     --prefix=$libxml2_prefix \
