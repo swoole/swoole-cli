@@ -686,21 +686,23 @@ EOF;
                         echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                         $this->downloadFile($ext->url, $ext->path, $ext, $httpProxyConfig);
                     }
-
-                    if ($this->getInputOption('show-tarball-hash')) {
-                        echo "md5:    " . hash_file('md5', $ext->path) . PHP_EOL;
-                        echo "sha1:   " . hash_file('sha1', $ext->path) . PHP_EOL;
-                        echo "sha256: " . hash_file('sha256', $ext->path) . PHP_EOL;
-                        echo PHP_EOL;
-                    }
-
                 }
+
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $ext_name = $ext->name;
                 if (!empty($ext->aliasName)) {
                     $dst_dir = "{$this->rootDir}/ext/{$ext->aliasName}";
                     $ext_name = $ext->aliasName;
                 }
+
+                if ($this->getInputOption('show-tarball-hash')) {
+                    echo "[Extension] {$ext_name} " . PHP_EOL;
+                    echo "md5:    " . hash_file('md5', $ext->path) . PHP_EOL;
+                    echo "sha1:   " . hash_file('sha1', $ext->path) . PHP_EOL;
+                    echo "sha256: " . hash_file('sha256', $ext->path) . PHP_EOL;
+                    echo PHP_EOL;
+                }
+
                 if (($ext->enableLatestTarball || !$ext->enableBuildCached)
                     &&
                     (!empty($ext->peclVersion) || $ext->enableDownloadScript || !empty($ext->url))
