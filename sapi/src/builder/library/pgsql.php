@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
             ->withUrl('https://ftp.postgresql.org/pub/source/v16.0/postgresql-16.0.tar.gz')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
-            ->withHash('md5', '30baf5fda60a34230d89c1451119ff91')
+            ->withFileHash('md5', '30baf5fda60a34230d89c1451119ff91')
             ->withPrefix($pgsql_prefix)
             ->withBuildScript(
                 <<<EOF
