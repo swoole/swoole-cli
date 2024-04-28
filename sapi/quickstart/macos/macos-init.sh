@@ -84,5 +84,6 @@ ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
 ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 
-brew uninstall --ignore-dependencies snappy
-brew uninstall --ignore-dependencies capstone
+brew uninstall --ignore-dependencies --force snappy
+brew uninstall --ignore-dependencies --force capstone
+brew cleanup --prune-prefix

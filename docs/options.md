@@ -156,5 +156,5 @@ with-build-type
 
 show-tarball-hash
 ---
-计算已下载的源码包 HASH 值
+计算并显示已下载的源码包 HASH 值
 
