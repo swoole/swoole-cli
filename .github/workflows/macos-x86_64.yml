@@ -45,9 +45,13 @@ jobs:
           echo 'export PATH="/opt/homebrew/opt/bison/bin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/opt/homebrew/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
+
+          ln -sf /opt/homebrew/opt/libtool/libexec/gnubin/glibtool /usr/local/bin/libtool
+          ln -sf /opt/homebrew/opt/libtool/libexec/gnubin/glibtoolize /usr/local/bin/libtoolize
+
           ls -lha  /usr/local/bin/
           ls -lha  /opt/homebrew/bin/
-          ls -lha /opt/homebrew/opt/libtool/libexec/gnubin
+          ls -lha  /opt/homebrew/opt/libtool/libexec/gnubin
 
           # brew bison --debug
 
