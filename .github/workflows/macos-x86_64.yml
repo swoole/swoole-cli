@@ -40,15 +40,17 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-
           echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/opt/homebrew/opt/flex/bin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/opt/homebrew/opt/bison/bin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/opt/homebrew/opt/binutils/bin:$PATH"' >> /Users/runner/.bash_profile
 
-          ls -lha  /usr/local/bin/
-          ls -lha /opt/homebrew/opt/libtool/libexec/gnubin
+          ln -sf /opt/homebrew/opt/libtool/libexec/gnubin/glibtool /usr/local/bin/libtool
+          ln -sf /opt/homebrew/opt/libtool/libexec/gnubin/glibtoolize /usr/local/bin/libtoolize
+
+          ls -lha  /opt/homebrew/bin/
+          ls -lha  /opt/homebrew/opt/libtool/libexec/gnubin
 
           # brew bison --debug
 

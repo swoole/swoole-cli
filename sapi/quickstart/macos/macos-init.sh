@@ -76,7 +76,7 @@ fi
 
 
 brew install wget curl libtool automake re2c llvm flex bison
-brew install gettext coreutils binutils libunistring
+brew install gettext coreutils libunistring
 
 which glibtool
 
