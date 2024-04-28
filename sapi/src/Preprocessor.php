@@ -390,11 +390,12 @@ class Preprocessor
                 $this->downloadFile($lib->url, $lib->path, $lib);
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
-                if ($this->getInputOption('show-tarball-hash')) {
-                    echo "md5:    " . hash_file('md5', $lib->path) . PHP_EOL;
-                    echo "sha1:   " . hash_file('sha1', $lib->path) . PHP_EOL;
-                    echo "sha256: " . hash_file('sha256', $lib->path) . PHP_EOL;
-                }
+            }
+            if ($this->getInputOption('show-tarball-hash')) {
+                echo "md5:    " . hash_file('md5', $lib->path) . PHP_EOL;
+                echo "sha1:   " . hash_file('sha1', $lib->path) . PHP_EOL;
+                echo "sha256: " . hash_file('sha256', $lib->path) . PHP_EOL;
+                echo PHP_EOL;
             }
         }
 
@@ -433,11 +434,12 @@ class Preprocessor
                     $this->downloadFile($ext->url, $ext->path, $ext);
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
-                    if ($this->getInputOption('show-tarball-hash')) {
-                        echo "md5:    " . hash_file('md5', $ext->path) . PHP_EOL;
-                        echo "sha1:   " . hash_file('sha1', $ext->path) . PHP_EOL;
-                        echo "sha256: " . hash_file('sha256', $ext->path) . PHP_EOL;
-                    }
+                }
+                if ($this->getInputOption('show-tarball-hash')) {
+                    echo "md5:    " . hash_file('md5', $ext->path) . PHP_EOL;
+                    echo "sha1:   " . hash_file('sha1', $ext->path) . PHP_EOL;
+                    echo "sha256: " . hash_file('sha256', $ext->path) . PHP_EOL;
+                    echo PHP_EOL;
                 }
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
