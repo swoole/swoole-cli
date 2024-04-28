@@ -50,9 +50,6 @@ jobs:
           ls -lha  /usr/local/bin/
           ls -lha /opt/homebrew/opt/libtool/libexec/gnubin
 
-          ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
-          ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-
           # brew bison --debug
 
           CURRENT_USER=$(whoami)
