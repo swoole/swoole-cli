@@ -115,6 +115,10 @@ jobs:
       - name: Build
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export PATH="/opt/homebrew/opt/flex/bin:$PATH"
+          export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"
+          echo $PATH
 
           bash make-install-deps.sh
 
