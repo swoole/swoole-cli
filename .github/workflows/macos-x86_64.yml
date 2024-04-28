@@ -38,7 +38,12 @@ jobs:
           echo $IPV6
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+          ls -lha /opt/homebrew/opt/libtool/libexec/gnubin
+          ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
+          ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
+          export PATH=/opt/homebrew/opt/libtool/libexec/gnubin:$PATH
+          export PATH=/opt/homebrew/opt/bison/bin:$PATH
           export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
           # brew bison --debug
 

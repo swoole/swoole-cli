@@ -785,9 +785,6 @@ class Preprocessor
         }
 
         if ($this->isMacos()) {
-            $this->withBinPath('/opt/homebrew/opt/libtool/libexec/gnubin');
-            $this->withBinPath('/opt/homebrew/opt/llvm/bin');
-            $this->withBinPath('/opt/homebrew/opt/bison/bin');
             if (is_file('/usr/local/opt/bison/bin/bison')) {
                 $this->withBinPath('/usr/local/opt/bison/bin');
             } else {
