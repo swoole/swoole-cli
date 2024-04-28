@@ -86,4 +86,4 @@ ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
 brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
-brew cleanup --prune-prefix
+
