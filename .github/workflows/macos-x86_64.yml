@@ -5,7 +5,10 @@ on: [ push, pull_request ]
 jobs:
   macos-x86_64:
     if: 1
-    runs-on: macos-latest
+    runs-on: macos-13
+    # macos-latest (macos-14)  变更了 CPU 架构，由x86_64 变更为 arm64
+    # macos-14 CPU 架构 变更为 arm64
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
     steps:
       - uses: actions/checkout@v4
       - name: Prepare build environment
