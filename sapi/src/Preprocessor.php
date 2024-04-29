@@ -564,7 +564,9 @@ EOF;
                         $this->downloadFile($lib->url, $lib->path, $lib, $httpProxyConfig);
                     }
                 }
+
                 if ($this->getInputOption('show-tarball-hash')) {
+                    echo "[Library] {$lib->name} " . PHP_EOL;
                     echo "md5:    " . hash_file('md5', $lib->path) . PHP_EOL;
                     echo "sha1:   " . hash_file('sha1', $lib->path) . PHP_EOL;
                     echo "sha256: " . hash_file('sha256', $lib->path) . PHP_EOL;
