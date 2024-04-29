@@ -46,6 +46,9 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
+          export PATH=/usr/local/opt/bison/bin:$PATH
+          export PATH=/usr/local/opt/llvm/bin:$PATH
+
           libtoolize --version
           libtool --help-all
           # brew bison --debug
@@ -110,6 +113,8 @@ jobs:
       - name: Build
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
+          export PATH=/usr/local/opt/bison/bin:$PATH
+          export PATH=/usr/local/opt/llvm/bin:$PATH
 
           bash ./make.sh all-library
 
