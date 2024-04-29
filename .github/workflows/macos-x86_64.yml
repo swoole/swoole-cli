@@ -46,10 +46,17 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
-          echo 'export PATH="/usr/local/opt/flex/bin:$PATH"' >> /Users/runner/.bash_profile
-          echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> /Users/runner/.bash_profile
+          export PATH="/usr/local/opt/llvm/bin:$PATH"
+          export PATH="/usr/local/opt/flex/bin:$PATH"
+          export PATH="/usr/local/opt/bison/bin:$PATH"
+          export PATH="/usr/local/opt/libtool/bin:$PATH"
 
+          ln -sf /usr/local/opt/libtool/bin/glibtool /usr/local/opt/libtool/bin/libtool
+          ln -sf /usr/local/opt/libtool/bin/glibtoolize /usr/local/opt/libtool/bin/libtoolize
+          ls -lha /usr/local/opt/libtool/bin/
+
+          libtoolize --version
+          libtool --help-all
           # brew bison --debug
 
           CURRENT_USER=$(whoami)
@@ -114,7 +121,8 @@ jobs:
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
           export PATH="/usr/local/opt/llvm/bin:$PATH"
           export PATH="/usr/local/opt/flex/bin:$PATH"
-          # export PATH="/usr/local/opt/libtool/libexec/gnubin:$PATH"
+          export PATH="/usr/local/opt/bison/bin:$PATH"
+          export PATH="/usr/local/opt/libtool/bin:$PATH"
 
           bash ./make.sh all-library
 
