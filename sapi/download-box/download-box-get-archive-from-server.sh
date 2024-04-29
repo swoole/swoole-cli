@@ -47,22 +47,22 @@ done
 URL="${DOMAIN}/all-archive.zip"
 # URL="${DOMAIN}/all-deps.zip" # 下一个版本启用此命名
 
-test -f  all-archive.zip || curl -Lo  all-archive.zip ${URL}
+test -f  all-deps.zip || curl -Lo  all-deps.zip ${URL}
 
 # hash 签名
-HASH=$(sha256sum all-archive.zip | awk '{print $1}')
+HASH=$(sha256sum all-deps.zip | awk '{print $1}')
 
 # 签名验证失败，删除下载文件
 if [ ${HASH} !=	 ${ALL_DEPS_HASH} ] ; then
     echo 'hash signature is invalid ！'
-    rm -f all-archive.zip
+    rm -f all-deps.zip
     echo '                       '
     echo ' Please Download Again '
     echo '                       '
     exit 0
 fi
 
-unzip -n all-archive.zip
+unzip -n all-deps.zip
 
 cd ${__PROJECT__}/
 
