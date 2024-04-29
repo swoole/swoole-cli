@@ -112,9 +112,9 @@ jobs:
       - name: Build
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
-          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-          export PATH="/opt/homebrew/opt/flex/bin:$PATH"
-          export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"
+          export PATH="/usr/local/opt/llvm/bin:$PATH"
+          export PATH="/usr/local/opt/flex/bin:$PATH"
+          export PATH="/usr/local/opt/libtool/libexec/gnubin:$PATH"
 
           bash ./make.sh all-library
 
