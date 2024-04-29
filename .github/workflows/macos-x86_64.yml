@@ -5,11 +5,18 @@ on: [ push, pull_request ]
 jobs:
   macos-x86_64:
     if: 1
-    runs-on: macos-latest
+    runs-on: macos-13
+    # macos-latest (macos-14)  变更了 CPU 架构，由x86_64 变更为 arm64
+    # macos-14 CPU 架构 变更为 arm64
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Prepare build environment
         run: |
+          set -x
+          uname -s
+          uname -m
+          uname -r
           env
           echo $HOME
           brew config
@@ -39,7 +46,8 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
+          libtoolize --version
+          libtool --help-all
           # brew bison --debug
 
           CURRENT_USER=$(whoami)
@@ -49,28 +57,28 @@ jobs:
           git submodule update --init
 
       - name: Cache PHP Runtime
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: php-runtime-cache
         with:
           path: ${{ github.workspace }}/bin/runtime
           key: ${{ runner.os }}-x86_64-php-runtime
 
       - name: Cache PHP Vendor
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-x86_64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
 
       - name: Cache all-library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
@@ -123,21 +131,21 @@ jobs:
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts debug
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64-debug
           retention-days: 90
           path: ./bin/swoole-cli
 
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64
           retention-days: 90
           path: ./bin/dist/swoole-cli
 
       - name: gh release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: swoole-cli-v${{ env.APP_VERSION }}-macos-x64.tar.xz
