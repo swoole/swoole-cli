@@ -130,6 +130,10 @@ define('GETTEXT_PREFIX', $p->getGlobalPrefix() . '/gettext');
 
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unix_odbc');
+define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
+define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
+define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
+
 define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
@@ -321,12 +325,11 @@ define("STRONGSWAN_PREFIX", $p->getGlobalPrefix() . '/strongswan');
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
 define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
 
-define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
-define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
-define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
 define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
-define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
 
+define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
 define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+

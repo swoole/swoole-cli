@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
             ->withManual('https://www.postgresql.org/download/')
             ->withManual('https://git.postgresql.org/gitweb/?p=postgresql.git;a=summary')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
-            ->withHash('md5', '30baf5fda60a34230d89c1451119ff91')
+            ->withFileHash('md5', '30baf5fda60a34230d89c1451119ff91')
             ->withPrefix($pgsql_prefix)
             /*
                 https://git.postgresql.org/gitweb/

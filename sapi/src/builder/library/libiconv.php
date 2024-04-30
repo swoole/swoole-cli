@@ -13,6 +13,7 @@ return function (Preprocessor $p) {
             ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/libiconv/libiconv-1.17.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/libiconv/libiconv-1.17.tar.gz')
+            ->withFileHash('md5', 'd718cd5a59438be666d1575855be72c3')
             ->withPrefix($libiconv_prefix)
             ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
             ->withBinPath($libiconv_prefix . '/bin/')

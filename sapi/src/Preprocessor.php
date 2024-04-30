@@ -141,7 +141,7 @@ class Preprocessor
         'swoole',
         'yaml',
         'imagick',
-        'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
+        //'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
         'gd',
     ];
     protected array $extEnabledBuff = [];
@@ -424,6 +424,7 @@ __GIT_PROXY_CONFIG_EOF;
      * @param string $httpProxyConfig
      * @return void
      */
+
     protected function downloadFile(string $url, string $file, object $project = null, string $httpProxyConfig = ''): void
     {
         # $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
@@ -524,14 +525,10 @@ __GIT_PROXY_CONFIG_EOF;
                 unlink($lib->path);
             }
 
-            if (!$this->getInputOption('skip-download')) {
+            $skip_download = ($this->getInputOption('skip-download'));
+            if (!$skip_download) {
                 if (file_exists($lib->path)) {
                     echo "[Library] file cached: " . $lib->file . PHP_EOL;
-                    if ($this->getInputOption('show-tarball-hash')) {
-                        echo "md5:    " . hash_file('md5', $lib->path) . PHP_EOL;
-                        echo "sha1:   " . hash_file('sha1', $lib->path) . PHP_EOL;
-                        echo "sha256: " . hash_file('sha256', $lib->path) . PHP_EOL;
-                    }
                 } else {
                     $httpProxyConfig = $this->getProxyConfig();
                     if ($lib->enableGitProxy) {
@@ -571,6 +568,14 @@ EOF;
                         echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
                         $this->downloadFile($lib->url, $lib->path, $lib, $httpProxyConfig);
                     }
+                }
+
+                if ($this->getInputOption('show-tarball-hash')) {
+                    echo "[Library] {$lib->name} " . PHP_EOL;
+                    echo "md5:    " . hash_file('md5', $lib->path) . PHP_EOL;
+                    echo "sha1:   " . hash_file('sha1', $lib->path) . PHP_EOL;
+                    echo "sha256: " . hash_file('sha256', $lib->path) . PHP_EOL;
+                    echo PHP_EOL;
                 }
             }
         } else {
@@ -651,8 +656,8 @@ EOF;
             if (file_exists($ext->path) && $ext->enableLatestTarball) {
                 unlink($ext->path);
             }
-
-            if (!$this->getInputOption('skip-download')) {
+            $skip_download = ($this->getInputOption('skip-download'));
+            if (!$skip_download) {
                 if (!file_exists($ext->path)) {
                     $httpProxyConfig = $this->getProxyConfig();
                     if ($ext->enableGitProxy) {
@@ -692,13 +697,6 @@ EOF;
                         echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
                         $this->downloadFile($ext->url, $ext->path, $ext, $httpProxyConfig);
                     }
-                } else {
-                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
-                    if ($this->getInputOption('show-tarball-hash')) {
-                        echo "md5:    " . hash_file('md5', $ext->path) . PHP_EOL;
-                        echo "sha1:   " . hash_file('sha1', $ext->path) . PHP_EOL;
-                        echo "sha256: " . hash_file('sha256', $ext->path) . PHP_EOL;
-                    }
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
@@ -707,6 +705,15 @@ EOF;
                     $dst_dir = "{$this->rootDir}/ext/{$ext->aliasName}";
                     $ext_name = $ext->aliasName;
                 }
+
+                if ($this->getInputOption('show-tarball-hash')) {
+                    echo "[Extension] {$ext_name} " . PHP_EOL;
+                    echo "md5:    " . hash_file('md5', $ext->path) . PHP_EOL;
+                    echo "sha1:   " . hash_file('sha1', $ext->path) . PHP_EOL;
+                    echo "sha256: " . hash_file('sha256', $ext->path) . PHP_EOL;
+                    echo PHP_EOL;
+                }
+
                 if (($ext->enableLatestTarball || !$ext->enableBuildCached)
                     &&
                     (!empty($ext->peclVersion) || $ext->enableDownloadScript || !empty($ext->url))
@@ -1134,6 +1141,8 @@ EOF;
         if ($this->isMacos()) {
             if (is_file('/usr/local/opt/bison/bin/bison')) {
                 $this->withBinPath('/usr/local/opt/bison/bin');
+            } elseif (is_file('/opt/homebrew/opt/bison/bin/bison')) { //兼容 github action
+                $this->withBinPath('/opt/homebrew/opt/bison/bin/');
             } else {
                 $this->loadDependentLibrary("bison");
             }

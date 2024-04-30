@@ -90,7 +90,7 @@ abstract class Project
 
     public function withMd5sum(string $md5sum): static
     {
-        $this->withHash('md5', $md5sum);
+        $this->withFileHash('md5', $md5sum);
         return $this;
     }
 
@@ -101,7 +101,7 @@ abstract class Project
      * @param string $hash
      * @return $this
      */
-    public function withHash(string $algo, string $hash): static
+    public function withFileHash(string $algo, string $hash): static
     {
         $this->hashAlgo = $algo;
         $this->hash = $hash;
