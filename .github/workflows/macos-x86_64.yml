@@ -30,6 +30,7 @@ jobs:
           uname -s
           uname -m
           uname -r
+          sysctl -n hw.ncpu
           env
           echo $HOME
           brew config
@@ -58,6 +59,8 @@ jobs:
           echo $IPV6
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
           export PATH=/usr/local/opt/llvm/bin:$PATH
           export PATH=/usr/local/opt/flex/bin:$PATH
