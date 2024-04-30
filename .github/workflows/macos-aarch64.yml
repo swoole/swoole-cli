@@ -127,6 +127,8 @@ jobs:
           export PATH="/opt/homebrew/opt/bison/bin:$PATH"
           export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
 
+          bash make-install-deps.sh
+
           bash ./make.sh all-library
 
           bash ./make.sh config
