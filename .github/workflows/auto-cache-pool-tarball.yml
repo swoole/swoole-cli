@@ -98,7 +98,7 @@ jobs:
         if: 1
         uses: actions/upload-artifact@v4
         with:
-          name: cached-all-deps
+          name: all-deps
           retention-days: 90
           path: |
             all-deps.zip
