@@ -51,6 +51,10 @@ define("LIBSSH2_PREFIX", $p->getGlobalPrefix() . '/libssh2');
 
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unix_odbc');
+define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
+define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
+define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
+
 define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
@@ -73,12 +77,8 @@ define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
 define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
-define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
-define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
 define("MPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/mpdecimal');
 define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
-define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
-
 

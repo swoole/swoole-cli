@@ -13,6 +13,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withManual('https://www.openssl.org/docs/')
             ->withUrl('https://www.openssl.org/source/openssl-1.1.1w.tar.gz')
+            ->withFileHash('sha1','76fbf3ca4370e12894a408ef75718f32cdab9671')
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF
