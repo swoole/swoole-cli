@@ -2,6 +2,9 @@ name: build-php-cli-macos-aarch64
 
 on: [ push, pull_request ]
 
+env:
+  BUILD_PHP_VERSION: 8.2.13
+
 jobs:
   macos-aarch64:
     if: 1
@@ -11,6 +14,12 @@ jobs:
     # macos-13 CPU 架构 x86_64
     # macos-12 CPU 架构 x86_64
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
+    strategy:
+      matrix:
+        php-version:
+          - "8.2.13"
+          - "8.1.27"
+          - "8.3.3"
 
     steps:
       - uses: actions/checkout@v4
@@ -117,7 +126,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release --with-swoole-pgsql=1
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
       - name: Build
         run: |
