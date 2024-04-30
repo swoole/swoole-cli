@@ -10,7 +10,7 @@ jobs:
     if: 0
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Prepare Source Code
         run: |
           echo $PATH
@@ -48,21 +48,21 @@ jobs:
           key: ${{ runner.os }}-mips64le-php-vendor
 
       - name: Cache Dependency Source Code Tarball
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
 
       - name: Cache all-library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
           key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-mips64le-all-library
 
       - name: Cache swoole-cli-builder-image
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: swoole-cli-builder-image-mips64le-cache
         with:
           path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
@@ -172,22 +172,24 @@ jobs:
           echo "BUILD_PHP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
 
       - name: production artifacts debug
-        uses: actions/upload-artifact@v3
+        if: 0
+        uses: actions/upload-artifact@v4
         with:
           name: php-cli-v${{ env.APP_VERSION }}-linux-mips64le-debug
           retention-days: 90
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
       - name: production artifacts
-        uses: actions/upload-artifact@v3
+        if: 0
+        uses: actions/upload-artifact@v4
         with:
           name: php-cli-v${{ env.APP_VERSION }}-linux-mips64le
           retention-days: 90
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/dist/php
 
       - name: gh release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        if: 0 && startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             php-cli-v${{ env.APP_VERSION }}-linux-mips64le.tar.xz

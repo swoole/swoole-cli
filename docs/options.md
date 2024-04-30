@@ -212,5 +212,5 @@ php ./prepare.php --with-libavif=1
 
 show-tarball-hash
 ---
-计算已下载的源码包 HASH 值
+计算并显示已下载的源码包 HASH 值
 

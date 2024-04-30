@@ -146,9 +146,12 @@ EOF;
 
 if ($p->isMacos()) {
     $p->setExtraLdflags('-undefined dynamic_lookup');
-    $p->setLinker('ld');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
+    } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) { //兼容 github action
+        $p->withBinPath('/opt/homebrew/opt/llvm/bin/')->setLinker('ld64.lld');
+    } else {
+        $p->setLinker('lld');
     }
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
