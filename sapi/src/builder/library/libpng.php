@@ -13,6 +13,21 @@ return function (Preprocessor $p) {
             ->withUrl('https://sourceforge.net/projects/libpng/files/libpng16/1.6.37/libpng-1.6.37.tar.gz')
             ->withMd5sum('6c7519f6c75939efa0ed3053197abd54')
             ->withPrefix($libpng_prefix)
+            ->withConfigure(
+                <<<EOF
+                ./configure --help
+                CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
+                LDFLAGS="$(pkg-config   --libs-only-L    --static zlib )" \
+                LIBS="$(pkg-config      --libs-only-l    --static zlib )" \
+                ./configure \
+                --prefix={$libpng_prefix} \
+                --enable-static=yes \
+                --enable-shared=no \
+                --with-zlib-prefix={$libzlib_prefix} \
+                --with-binconfigs
+EOF
+            )
+            /*
             ->withBuildScript(<<<EOF
                 mkdir -p build
                 cd build
@@ -31,6 +46,7 @@ return function (Preprocessor $p) {
 
 EOF
             )
+            */
             ->withPkgName('libpng')
             ->withPkgName('libpng16')
             ->withBinPath($libpng_prefix . '/bin')
