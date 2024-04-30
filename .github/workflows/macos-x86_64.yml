@@ -5,22 +5,24 @@ on: [ push, pull_request ]
 jobs:
   macos-x86_64:
     if: 1
-    runs-on: macos-13
-    # macos-latest (macos-14)  变更了 CPU 架构，由x86_64 变更为 arm64
-    # macos-14 CPU 架构 变更为 arm64
+    runs-on: macos-12
+    # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
+    # macos-14 CPU 架构 arm64
+    # macos-13 CPU 架构 x86_64
+    # macos-12 CPU 架构 x86_64
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
+
     steps:
       - uses: actions/checkout@v4
       - name: Prepare build environment
         run: |
-          set -x
           uname -s
           uname -m
           uname -r
           env
           echo $HOME
           brew config
-
+          set -x
           bash sapi/quickstart/macos/macos-init.sh
 
           # sudo rm -rf /Library/Developer/CommandLineTools
@@ -46,8 +48,10 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          export PATH=/usr/local/opt/bison/bin:$PATH
           export PATH=/usr/local/opt/llvm/bin:$PATH
+          export PATH=/usr/local/opt/flex/bin:$PATH
+          export PATH=/usr/local/opt/bison/bin:$PATH
+          export PATH=/usr/local/opt/libtool/bin:$PATH
 
           libtoolize --version
           libtool --help-all
@@ -108,13 +112,15 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release --with-swoole-pgsql=1
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release
 
       - name: Build
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
-          export PATH=/usr/local/opt/bison/bin:$PATH
           export PATH=/usr/local/opt/llvm/bin:$PATH
+          export PATH=/usr/local/opt/flex/bin:$PATH
+          export PATH=/usr/local/opt/bison/bin:$PATH
+          export PATH=/usr/local/opt/libtool/bin:$PATH
 
           bash ./make.sh all-library
 
