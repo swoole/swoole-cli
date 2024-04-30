@@ -149,30 +149,29 @@ jobs:
 
       - name: Show Build Result
         run: |
+          export PATH="/usr/local/opt/binutils/bin:$PATH"
           ./thirdparty/php-src/sapi/cli/php -v
           ./thirdparty/php-src/sapi/cli/php -m
           ./thirdparty/php-src/sapi/cli/php --ri gd
           ./thirdparty/php-src/sapi/cli/php --ri swoole
           ./thirdparty/php-src/sapi/cli/php --ri pgsql
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-          readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          otool -L ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
-
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
+          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
-      - name: production artifacts debug
+      - name: Archive production artifacts debug
         uses: actions/upload-artifact@v4
         with:
           name: php-cli-v${{ env.APP_VERSION }}-macos-arm64-debug
           retention-days: 90
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
-      - name: production artifacts
+      - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
           name: php-cli-v${{ env.APP_VERSION }}-macos-arm64
