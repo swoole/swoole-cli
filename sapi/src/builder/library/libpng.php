@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
                 ./configure --help
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
                 LDFLAGS="$(pkg-config   --libs-only-L    --static zlib )" \
-                LIBS="$(pkg-config      --libs-only-l    --static zlib ) -lm " \
+                LIBS="$(pkg-config      --libs-only-l    --static zlib )" \
                 ./configure \
                 --prefix={$libpng_prefix} \
                 --enable-static \
