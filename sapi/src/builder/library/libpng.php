@@ -19,8 +19,10 @@ return function (Preprocessor $p) {
                 CPPFLAGS="$(pkg-config  --cflags-only-I  --static zlib )" \
                 LDFLAGS="$(pkg-config   --libs-only-L    --static zlib )" \
                 LIBS="$(pkg-config      --libs-only-l    --static zlib )" \
-                ./configure --prefix={$libpng_prefix} \
-                --enable-static --disable-shared \
+                ./configure \
+                --prefix={$libpng_prefix} \
+                --enable-static=yes \
+                --enable-shared=no \
                 --with-zlib-prefix={$libzlib_prefix} \
                 --with-binconfigs
 EOF

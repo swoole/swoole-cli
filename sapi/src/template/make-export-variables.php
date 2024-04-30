@@ -1,4 +1,14 @@
+<?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
+    set -x
+<?php endif ;?>
+__DIR__=$(cd "$(dirname "$0")"; pwd)
+
+if [ -f ${__DIR__}/make-env.sh ] ; then
+    source ${__DIR__}/make-env.sh
+fi
+
 CPPFLAGS=""
+CXXFLAGS=""
 CFLAGS=""
 LDFLAGS=""
 LIBS=""
@@ -11,6 +21,8 @@ result_code=$?
 export  <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
 export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+export CXXFLAGS=$(echo $CXXFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 result_code=$?
