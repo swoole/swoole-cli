@@ -1,39 +1,29 @@
-name: build-php-cli-macos-x86_64
+name: build-swoole-cli-macos-aarch64
 
-on:
-  push:
-  pull_request:
-
-env:
-  BUILD_PHP_VERSION: 8.2.13
+on: [ push, pull_request ]
 
 jobs:
-  macos-x86_64:
+  macos-aarch64:
     if: 1
-    runs-on: macos-12
+    runs-on: macos-14
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
     # macos-13 CPU 架构 x86_64
     # macos-12 CPU 架构 x86_64
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
-    strategy:
-      matrix:
-        php-version:
-          - "8.2.13"
-          - "8.1.27"
-          - "8.3.3"
 
     steps:
       - uses: actions/checkout@v4
       - name: Prepare build environment
         run: |
+          set -x
           uname -s
           uname -m
           uname -r
           env
           echo $HOME
           brew config
-          set -x
+
           bash sapi/quickstart/macos/macos-init.sh
 
           # sudo rm -rf /Library/Developer/CommandLineTools
@@ -59,39 +49,38 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          export PATH=/usr/local/opt/llvm/bin:$PATH
-          export PATH=/usr/local/opt/flex/bin:$PATH
-          export PATH=/usr/local/opt/bison/bin:$PATH
-          export PATH=/usr/local/opt/libtool/bin:$PATH
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export PATH="/opt/homebrew/opt/flex/bin:$PATH"
+          export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+          export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
 
-          ln -sf /usr/local/opt/libtool/bin/glibtool /usr/local/opt/libtool/bin/libtool
-          ln -sf /usr/local/opt/libtool/bin/glibtoolize /usr/local/opt/libtool/bin/libtoolize
-          ls -lha /usr/local/opt/libtool/bin/
-
+          ln -sf /opt/homebrew/opt/libtool/bin/glibtool /opt/homebrew/opt/libtool/bin/libtool
+          ln -sf /opt/homebrew/opt/libtool/bin/glibtoolize /opt/homebrew/opt/libtool/bin/libtoolize
+          ls -lha /opt/homebrew/opt/libtool/bin/
           libtoolize --version
           libtool --help-all
+
           # brew bison --debug
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
           sudo mkdir -p /usr/local/swoole-cli
           CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
-
-          # git submodule update --init
+          git submodule update --init
 
       - name: Cache PHP Runtime
         uses: actions/cache@v4
         id: php-runtime-cache
         with:
           path: ${{ github.workspace }}/bin/runtime
-          key: ${{ runner.os }}-x86_64-php-runtime
+          key: ${{ runner.os }}-aarch64-php-runtime
 
       - name: Cache PHP Vendor
         uses: actions/cache@v4
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
-          key: ${{ runner.os }}-x86_64-php-vendor
+          key: ${{ runner.os }}-aarch64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v4
@@ -105,7 +94,7 @@ jobs:
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-all-library
+          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-aarch64-all-library
 
       - name: Prepare Runtime and Libraries and Extensions
         run: |
@@ -114,7 +103,7 @@ jobs:
           mkdir -p pool/ext
           mkdir -p bin/runtime
           if [ ! -f bin/runtime/php ] ; then
-              bash  sapi/quickstart/setup-php-runtime.sh
+              bash  sapi/quickstart/setup-php-runtime.sh --mirror china
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
@@ -125,21 +114,18 @@ jobs:
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
           alias php="php -d curl.cainfo=${{ github.workspace }}/bin/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/bin/runtime/cacert.pem"
 
-          composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
-          composer dump-autoload --optimize --profile --no-dev
+          composer install  --no-interaction --no-autoloader --no-scripts --profile
+          composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-libavif=1 --with-php-version=${{ env.BUILD_PHP_VERSION }}
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release --with-swoole-pgsql=1
 
       - name: Build
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
-
-          export PATH=/usr/local/opt/llvm/bin:$PATH
-          export PATH=/usr/local/opt/flex/bin:$PATH
-          export PATH=/usr/local/opt/bison/bin:$PATH
-          export PATH=/usr/local/opt/libtool/bin:$PATH
-
-          bash make-install-deps.sh
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export PATH="/opt/homebrew/opt/flex/bin:$PATH"
+          export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+          export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
 
           bash ./make.sh all-library
 
@@ -149,39 +135,33 @@ jobs:
 
       - name: Show Build Result
         run: |
-          export PATH="/usr/local/opt/binutils/bin:$PATH"
-          ./thirdparty/php-src/sapi/cli/php -v
-          ./thirdparty/php-src/sapi/cli/php -m
-          ./thirdparty/php-src/sapi/cli/php --ri gd
-          ./thirdparty/php-src/sapi/cli/php --ri swoole
-          ./thirdparty/php-src/sapi/cli/php --ri pgsql
-          file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-          otool -L ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-          # greadelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-          APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
+          ./bin/swoole-cli -v
+          ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri swoole
+          file ./bin/swoole-cli
+          otool -L ./bin/swoole-cli
+          APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
-          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          ./thirdparty/php-src/sapi/cli/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+          ./bin/swoole-cli -r "echo PHP_VERSION;"
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts debug
         uses: actions/upload-artifact@v4
         with:
-          name: php-cli-v${{ env.APP_VERSION }}-macos-x64-debug
+          name: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64-debug
           retention-days: 90
-          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          path: ./bin/swoole-cli
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: php-cli-v${{ env.APP_VERSION }}-macos-x64
+          name: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64
           retention-days: 90
-          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/dist/php
+          path: ./bin/dist/swoole-cli
 
       - name: gh release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            php-cli-v${{ env.APP_VERSION }}-macos-x64.tar.xz
-            php-cli-v${{ env.APP_VERSION }}-macos-x64-debug.tar.xz
+          files: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64.tar.xz

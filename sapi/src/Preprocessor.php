@@ -423,6 +423,7 @@ __GIT_PROXY_CONFIG_EOF;
      * @param string $httpProxyConfig
      * @return void
      */
+
     protected function downloadFile(string $url, string $file, object $project = null, string $httpProxyConfig = ''): void
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
