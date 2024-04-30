@@ -149,7 +149,6 @@ jobs:
 
       - name: Show Build Result
         run: |
-          export PATH="/usr/local/opt/binutils/bin:$PATH"
           ./thirdparty/php-src/sapi/cli/php -v
           ./thirdparty/php-src/sapi/cli/php -m
           ./thirdparty/php-src/sapi/cli/php --ri gd
