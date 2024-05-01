@@ -89,3 +89,8 @@ https://github.com/libbpf/libbpf#bpf-co-re-compile-once--run-everywhere
 MIPS架构  龙芯处理器
 s390x    IBMSystemz系列大型机硬件平台
 ppc64le  基于Power架构
+
+
+clang with MUSL
+
+clang hello.c  -I /usr/include/x86_64-linux-musl --target=x86_64-unknown-linux-musl  -nostdlib
