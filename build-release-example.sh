@@ -95,15 +95,31 @@ done
 
 
 if [ "$OS" = 'linux' ] ; then
+    OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release |tr -d '\n' | tr -d '\"')
+
     if [ -f /.dockerenv ]; then
         IN_DOCKER=1
         number=$(which flex  | wc -l)
         if test $number -eq 0 ;then
         {
             if [ "$MIRROR" = 'china' ] ; then
-                sh sapi/quickstart/linux/alpine-init.sh --mirror china
+                if [ "$OS_RELEASE" = 'alpine' ]; then
+                    sh sapi/quickstart/linux/alpine-init.sh --mirror china
+                elif [ "$OS_RELEASE" = 'debian' ]; then
+                    bash  sapi/quickstart/linux/debian-init.sh  --mirror china
+                else
+                    echo 'no support OS'
+                    exit 0
+                fi
             else
-                sh sapi/quickstart/linux/alpine-init.sh
+                if [ "$OS_RELEASE" = 'alpine' ]; then
+                    sh sapi/quickstart/linux/alpine-init.sh
+                elif [ "$OS_RELEASE" = 'debian' ]; then
+                    bash  sapi/quickstart/linux/debian-init.sh
+                else
+                    echo 'no support OS'
+                    exit 0
+                fi
             fi
         }
         fi
