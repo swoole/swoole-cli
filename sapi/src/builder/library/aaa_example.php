@@ -14,11 +14,17 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/opencv/opencv.git')
         /*
 
+         //设置现在文件 hash 值验证，hash 值不匹配，下载文件的自动被丢弃
+        ->withFileHash('sha1', '32ead1982fed95c52060cd92187a411de3376ac9')
+        ->withFileHash('md5','538378de497a830092cd497e2f963b5d')
+        ->withFileHash('sha256','5dc841d2dc9f492d57d4550c114f15a03d5ee0275975571ebd82a1fca8604176')
+
+
         //设置别名
         ->withAliasName('example')
 
         //明确申明 使用源地址下载
-        ->withDownloadWithOriginURL()
+        ->withDownloadWithOriginURL("https://ftpmirror.gnu.org/gnu/bison/bison-3.8.tar.gz")
 
         //明确申明 不使用代理
         ->withHttpProxy(false)
@@ -76,6 +82,9 @@ EOF
         //明确申明 不使用构建缓存 例子： thirdparty/openssl (每次都解压全新源代码到此目录）
         ->withBuildCached(false)
 
+        //明确申明 不使用库缓存  例子： /usr/local/swoole-cli/zlib (每次构建都需要安装到此目录）
+        ->withBuildCached(false)
+
        */
 
 
@@ -87,8 +96,7 @@ EOF
             <<<EOF
          mkdir -p build
          cd build
-         # cmake 查看选项
-         # cmake -LH ..
+
          cmake .. \
         -DCMAKE_INSTALL_PREFIX={$example_prefix} \
         -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
@@ -96,9 +104,12 @@ EOF
         -DBUILD_SHARED_LIBS=OFF  \
         -DBUILD_STATIC_LIBS=ON
 
-
+        # cmake 查看选项
+        # cmake -LH ..
         # 更多配置选项，请查看 CMakeLists.txt 文件
         # 配置选项例子 ；
+        # -DCMAKE_INSTALL_LIBDIR={$example_prefix}/lib \
+        # -DCMAKE_INSTALL_INCLUDEDIR={$example_prefix}/include \
         # -DCMAKE_CXX_STANDARD=14
         # -DCMAKE_C_STANDARD=11
         # -DCMAKE_C_COMPILER=clang \
@@ -108,6 +119,9 @@ EOF
         # -DOpenSSL_ROOT={$openssl_prefix} \
         # 查找PKGCONFIG配置目录多个使用分号隔开
         # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
+        # 显示构建详情
+        # -DCMAKE_VERBOSE_MAKEFILE=ON
+        # CMakeLists.txt 设置 set(CMAKE_VERBOSE_MAKEFILEON ON)
 
         # -DCARES_INCLUDE_DIR={$cares_prefix}/include
         # -DCARES_LIBRARY={$cares_prefix}/lib
@@ -176,6 +190,13 @@ EOF
         --prefix={$example_prefix} \
         --enable-shared=no \
         --enable-static=yes
+
+        # 显示构建详情
+        # make VERBOSE=1
+        # 指定安装目录
+        # make DESTDIR=/usr/local/swoole-cli/example
+        #
+
 EOF
         )
         /* 使用 autoconfig automake  构建 end  */
@@ -194,14 +215,36 @@ EOF
         )
 
         */
+        /*
+        //没有pkgconfig 配置的库，手动生成 pkgconfig 配置
+        ->withScriptAfterInstall(
+            <<<EOF
+            mkdir -p {$example_prefix}/lib/pkgconfig
+
+            cat << '__example_PKGCONFIG_EOF__' > {$example_prefix}/lib/pkgconfig/libexample.pc
+prefix={$example_prefix}/
+exec_prefix=\${prefix}/
+libdir=\${prefix}/lib
+includedir=\${prefix}/include/
+
+Name: example
+Description: example
+Version: 1.0.0
+Requires: zlib
+Libs: -L\${libdir} -lexample
+Libs.private: -lz -lm
+Cflags: -I\${includedir}
+
+__example_PKGCONFIG_EOF__
 
 
-        ->withPkgName('example')
+EOF
+        )
+        */
+        ->withPkgName('libexample')
         ->withBinPath($example_prefix . '/bin/')
         //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')
-
-        /*
+        ->withDependentLibraries('zlib', 'openssl')/*
 
         //默认不需要此配置，特殊目录才需要配置
         ->withLdflags('-L' . $example_prefix . '/lib64')
@@ -224,4 +267,13 @@ EOF
     $p->withVariable('LIBS', '$LIBS -lexample ');
 
     */
+
+    /*
+     //导入需要的变量
+
+    $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
+    $p->withExportVariable('LIBPQ_LIBS', '$(pkg-config    --libs   --static libpq)');
+
+     */
 };
+
