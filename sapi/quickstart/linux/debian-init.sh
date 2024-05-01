@@ -36,7 +36,7 @@ if test -n "$MIRROR" ; then
   debian)
     case $VERSION_ID in
     11 | 12 )
-      # 容器内和容器外 镜像源配置不一样
+      # debian 容器内和容器外 镜像源配置不一样
       if [ -f /.dockerenv ] && [ "$VERSION_ID" = 12 ]; then
         test -f /etc/apt/sources.list.d/debian.sources.save || cp -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
         sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
