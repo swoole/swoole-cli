@@ -100,12 +100,12 @@ jobs:
         with:
           name: all-deps
           retention-days: 90
-          path: |
-            all-deps.zip
-            all-deps.zip.sha256sum
+          path: all-deps.zip
 
       - name: gh release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: all-deps.zip
+          files: |
+            all-deps.zip
+            all-deps.zip.sha256sum
