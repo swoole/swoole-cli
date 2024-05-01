@@ -116,7 +116,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 -swoole +swoole_v6
 
             bash ./make.sh all-library
 
@@ -136,7 +136,7 @@ jobs:
           ./bin/swoole-cli -r "echo PHP_VERSION;"
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
+          # ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts debug
         uses: actions/upload-artifact@v3
