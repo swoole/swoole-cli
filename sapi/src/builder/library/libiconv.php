@@ -16,9 +16,34 @@ return function (Preprocessor $p) {
             ->withFileHash('md5', 'd718cd5a59438be666d1575855be72c3')
             ->withPrefix($libiconv_prefix)
             ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
+            ->withInstallCached(false)
+            ->withScriptAfterInstall(
+                <<<EOF
+            mkdir -p {$libiconv_prefix}/lib/pkgconfig
+
+            cat << '__example_PKGCONFIG_EOF__' > {$libiconv_prefix}/lib/pkgconfig/libiconv.pc
+prefix={$libiconv_prefix}/
+exec_prefix=\${prefix}/
+libdir=\${prefix}/lib
+includedir=\${prefix}/include/
+
+Name: libiconv
+Description: libiconv
+Version: 1.17.0
+Requires: zlib
+Libs: -L\${libdir} -liconv
+Libs.private: -lz
+Cflags: -I\${includedir}
+
+__example_PKGCONFIG_EOF__
+
+
+EOF
+            )
             ->withBinPath($libiconv_prefix . '/bin/')
             ->withLdflags('-L' . $libiconv_prefix . '/lib')
-            ->withPkgConfig('')
+            ->withPkgConfig( $libiconv_prefix . '/lib/pkgconfig/')
+            ->withPkgName('libiconv')
     );
 
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libiconv_prefix . '/include');
