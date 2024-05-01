@@ -39,13 +39,13 @@ return function (Preprocessor $p) {
     $p->withVariable('LIBS', '$LIBS ' . $libs);
 
 
-    // 扩展钩子 写法
+    // 扩展钩子 写法 (下载 swoole v6 源码）
     $p->withBeforeConfigureScript('swoole_v6', function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $cmd = <<<EOF
         cd {$workdir}
         mkdir -p {$workdir}/ext/
-        mkdir -p {$workdir}var/cache/
+        mkdir -p {$workdir}/var/cache/
         cd {$workdir}/var/cache/
         git clone -b v6.0 --depth=1  https://github.com/swoole/swoole-src.git
         if [ -d {$workdir}/ext/swoole ] ; then
