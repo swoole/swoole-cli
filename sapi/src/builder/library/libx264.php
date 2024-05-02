@@ -25,7 +25,6 @@ EOF
             <<<EOF
         ./configure --help
 
-        LDFLAGS=" -std=gnu++11 " \
         LIBS=" {$libs} " \
         ./configure \
         --prefix={$libx264_prefix} \
