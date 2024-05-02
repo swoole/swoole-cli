@@ -105,7 +105,7 @@ if [ "$OS" = 'linux' ] ; then
             if [ "$MIRROR" = 'china' ] ; then
                 if [ "$OS_RELEASE" = 'alpine' ]; then
                     sh sapi/quickstart/linux/alpine-init.sh --mirror china
-                elif [ "$OS_RELEASE" = 'debian' ]; then
+                elif [ "$OS_RELEASE" = 'debian' ] || [ "$OS_RELEASE" = 'ubuntu'  ] ; then
                     bash  sapi/quickstart/linux/debian-init.sh  --mirror china
                 else
                     echo 'no support OS'
@@ -114,7 +114,7 @@ if [ "$OS" = 'linux' ] ; then
             else
                 if [ "$OS_RELEASE" = 'alpine' ]; then
                     sh sapi/quickstart/linux/alpine-init.sh
-                elif [ "$OS_RELEASE" = 'debian' ]; then
+                elif [ "$OS_RELEASE" = 'debian' ] || [ "$OS_RELEASE" = 'ubuntu'  ] ; then
                     bash  sapi/quickstart/linux/debian-init.sh
                 else
                     echo 'no support OS'
