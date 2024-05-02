@@ -181,6 +181,7 @@ return function (Preprocessor $p) {
     $depends = ['libuuid'] ;
     $depends = ['python3'] ;
     $depends = ['libarchive'] ;
+    $depends = ['libx264'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
