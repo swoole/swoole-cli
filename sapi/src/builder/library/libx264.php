@@ -20,26 +20,24 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libx264_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libx264_prefix)
+        ->withInstallCached(false)
         ->withConfigure(
             <<<EOF
         ./configure --help
 
-        LIBS="{$libs}" \
+        LDFLAGS=" -std=gnu11 " \
+        LIBS=" {$libs} " \
         ./configure \
         --prefix={$libx264_prefix} \
         --enable-static \
         --enable-pic \
-        --enable-bashcompletion
-
-
-        #--disable-avs \
-        #--disable-swscale \
-        ##--disable-lavf \
-        #--disable-ffms \
-        #--disable-gpac \
-        #--disable-lsmash \
+        --disable-opencl \
+        --disable-avs \
+        --disable-swscale \
+        --disable-lavf \
+        --disable-ffms \
+        --disable-gpac \
+        --disable-lsmash
 
 
 EOF
