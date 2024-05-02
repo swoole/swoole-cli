@@ -148,10 +148,10 @@ EOF
         # -DCARES_DIR={$cares_prefix}/
         # -DCARES_ROOT={$cares_prefix}/
         # -DCMAKE_POLICY_DEFAULT_CMP0065=NEW \
-        # -DCMAKE_POLICY_DEFAULT_CMP0065=NEW \
+        # -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         # -DCMAKE_POLICY_DEFAULT_CMP0075=NEW \
         # cmake_policy(SET CMP0065 NEW) #3.4 don't use `-rdynamic` with executables
-        # cmake_policy(SET CMP0065 NEW) #3.12.0 `find_package()`` uses ``<PackageName>_ROOT`` variables.
+        # cmake_policy(SET CMP0074 NEW) #3.12.0 `find_package()`` uses ``<PackageName>_ROOT`` variables.
         # cmake_policy(SET CMP0075 NEW) #3.12.0 `check_include_file()`` and friends use ``CMAKE_REQUIRED_LIBRARIES``.
         # -DCMAKE_TOOLCHAIN_FILE=/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake \
         # -DVCPKG_TARGET_TRIPLET=x64-linux \
