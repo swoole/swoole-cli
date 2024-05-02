@@ -96,8 +96,9 @@ abstract class Project
 
     /**
      * https://www.php.net/manual/zh/function.hash-algos.php
-     * print_r(hash_algos());
-     * @param string $algo
+     * https://www.php.net/manual/en/function.hash
+     * hash 可用算法 print_r(hash_algos());
+     * @param string $algo ('md5' ｜ 'sha1'｜ 'sha256')
      * @param string $hash
      * @return $this
      */

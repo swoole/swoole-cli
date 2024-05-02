@@ -41,9 +41,10 @@ EOF
         PACKAGES="\$PACKAGES zlib"
         PACKAGES="\$PACKAGES libnghttp2"
         PACKAGES="\$PACKAGES libopenjp2"
-        PACKAGES="\$PACKAGES freetype"
+        PACKAGES="\$PACKAGES freetype2"
         PACKAGES="\$PACKAGES libjpeg"
         PACKAGES="\$PACKAGES liblzma"
+        PACKAGES="\$PACKAGES sdl2"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
@@ -54,7 +55,8 @@ EOF
         --static-bin \
         --disable-x11 \
         --disable-x11-shm \
-        --disable-x11-xv
+        --disable-x11-xv \
+        --static-modules
 
 EOF
         )
@@ -71,7 +73,8 @@ EOF
             'openjpeg',
             'freetype',
             'libjpeg',
-            'liblzma'
+            'liblzma',
+            'sdl2'
         );
 
     $p->addLibrary($lib);
