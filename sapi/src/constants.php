@@ -331,5 +331,6 @@ define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
 define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
 
+define("GPAC_PREFIX", $p->getGlobalPrefix() . '/gpac');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 

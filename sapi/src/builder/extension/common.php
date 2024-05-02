@@ -182,6 +182,7 @@ return function (Preprocessor $p) {
     $depends = ['python3'] ;
     $depends = ['libarchive'] ;
     $depends = ['libx264'] ;
+    $depends = ['gpac'] ;
 
     $ext = (new Extension('common'))
         ->withHomePage('https://www.jingjingxyk.com')
