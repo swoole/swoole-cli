@@ -37,10 +37,13 @@ EOF
 
         ./configure --help
 
-        # LDFLAGS="\$LDFLAGS -static"
-
         PACKAGES='openssl  '
         PACKAGES="\$PACKAGES zlib"
+        PACKAGES="\$PACKAGES libnghttp2"
+        PACKAGES="\$PACKAGES libopenjp2"
+        PACKAGES="\$PACKAGES freetype"
+        PACKAGES="\$PACKAGES libjpeg"
+        PACKAGES="\$PACKAGES liblzma"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
@@ -55,17 +58,21 @@ EOF
 
 EOF
         )
-
         ->withPkgName('example')
         ->withBinPath($gpac_prefix . '/bin/')
 
-        //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')
         ->withPkgName('libexample')
         ->withBinPath($gpac_prefix . '/bin/')
-        //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'libpng')
-    ;
+        ->withDependentLibraries(
+            'zlib',
+            'libpng',
+            'openssl',
+            'nghttp2',
+            'openjpeg',
+            'freetype',
+            'libjpeg',
+            'liblzma'
+        );
 
     $p->addLibrary($lib);
 
