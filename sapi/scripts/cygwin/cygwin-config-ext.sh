@@ -14,8 +14,8 @@ cd ${__PROJECT__}
 ROOT=${__PROJECT__}
 
 
-PHP_VERSION=$(cat ${__PROJECT__}/sapi/PHP-VERSION.conf)
-SWOOLE_VERSION=v5.1.1
+
+
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -29,6 +29,8 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+PHP_VERSION=$(cat ${__PROJECT__}/sapi/PHP-VERSION.conf)
+SWOOLE_VERSION=v5.1.2
 REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
