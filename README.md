@@ -93,7 +93,7 @@ bash sapi/quickstart/macos/macos-init.sh --mirror china
 
 ```
 
-### 一条命令执行整个构建流程
+## 一条命令执行整个构建流程
 
 ```bash
 
