@@ -26,21 +26,22 @@ return function (Preprocessor $p) {
             ->withDownloadScript(
                 'mongo-c-driver',
                 <<<EOF
+
                 # git clone -b master --depth=1   https://github.com/mongodb/mongo-c-driver.git
-                # git clone -b static-build --depth=1   https://github.com/jingjingxyk/mongo-c-driver.git
+                git clone -b static-build --depth=1   https://github.com/jingjingxyk/mongo-c-driver.git
 
 EOF
             )
             ->withPrefix($libmongoc_prefix)
-            ->withAutoUpdateFile()
-            ->withBuildCached(false)
+            //->withAutoUpdateFile()
+            //->withBuildCached(false)
             ->withInstallCached(false)
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($libmongoc_prefix)
             ->withBuildScript(
                 <<<EOF
-             mkdir -p cmake-build
-            cd cmake-build
+             mkdir -p build-dir
+            cd build-dir
 
             cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libmongoc_prefix} \
@@ -54,7 +55,7 @@ EOF
             -DENABLE_TESTS=OFF \
             -DENABLE_EXAMPLES=OFF \
             -DENABLE_SRV=ON \
-            -DENABLE_SNAPPY=ON \
+            -DENABLE_SNAPPY=OFF \
             -DENABLE_ZLIB=SYSTEM \
             -DZLIB_ROOT={$zlib_prefix} \
             -DENABLE_ZSTD=ON \

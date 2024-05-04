@@ -15,6 +15,9 @@ return function (Preprocessor $p) {
     $ldflags  = $p->getOsType() == 'macos' ? ' ' : ' --static ';
     $libsctp = $p->getOsType() == 'macos' ? ' ' : ' libsctp ';
     $libcpp = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
+
+    $snappy_prefix = SNAPPY_PREFIX;
+
     $p->addLibrary(
         (new Library('coturn'))
             ->withHomePage('https://github.com/coturn/coturn/')
@@ -41,7 +44,7 @@ EOF
             ->withCleanBuildDirectory()
             ->withCleanPreInstallDirectory($coturn_prefix)
             ->withBuildCached(false)
-
+/*
             ->withConfigure(
                 <<<EOF
 
@@ -103,6 +106,7 @@ EOF
 
 EOF
             )
+*/
             ->withConfigure(
                 <<<EOF
             set -x
@@ -133,9 +137,9 @@ EOF
             export SSL_LIBS="$(pkg-config    --libs           --static openssl ) "
 
 
-            export CPPFLAGS="$(pkg-config  --cflags-only-I --static  \$PACKAGES)"
-            export LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES) {$ldflags} "
-            export LIBS="$(pkg-config      --libs-only-l   --static    \$PACKAGES)  {$libcpp} -lm " #
+            export CPPFLAGS="$(pkg-config  --cflags-only-I --static  \$PACKAGES)  -I{$snappy_prefix}/include"
+            export LDFLAGS="$(pkg-config   --libs-only-L   --static  \$PACKAGES)  -L{$snappy_prefix}/lib/ {$ldflags} "
+            export LIBS="$(pkg-config      --libs-only-l   --static    \$PACKAGES)  {$libcpp} -lm -lsnappy -pthread -lsocket -lrt "
             export CFLAGS="-O3  -g  -std=gnu11 -Wall {$cflags} "
 
             export DBCFLAGS="$(pkg-config  --cflags --static libpq sqlite3 hiredis libbson-static-1.0 libmongoc-ssl-1.0 libmongoc-static-1.0     )"
@@ -143,7 +147,7 @@ EOF
 
 
 
-            export OSLIBS="$(pkg-config    --libs          --static \$PACKAGES) {$libcpp} -lm "
+            export OSLIBS="$(pkg-config    --libs          --static \$PACKAGES)  {$libcpp} -lm -lsnappy -pthread -lsocket -lrt"
             export OSCFLAGS=\$CPPFLAGS
 
             sed -i.backup  "s/libmongoc-1.0/libmongoc-static-1.0/" ./configure
