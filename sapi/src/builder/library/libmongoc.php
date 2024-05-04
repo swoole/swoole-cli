@@ -34,10 +34,8 @@ EOF
             )
             ->withPrefix($libmongoc_prefix)
             //->withAutoUpdateFile()
-            //->withBuildCached(false)
+            ->withBuildCached(false)
             ->withInstallCached(false)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($libmongoc_prefix)
             ->withBuildScript(
                 <<<EOF
              mkdir -p build-dir

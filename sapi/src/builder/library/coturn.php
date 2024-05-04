@@ -41,8 +41,7 @@ EOF
             )
             ->withAutoUpdateFile()
             ->withPrefix($coturn_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($coturn_prefix)
+            ->withAutoUpdateFile()
             ->withBuildCached(false)
 /*
             ->withConfigure(
