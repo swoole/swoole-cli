@@ -22,6 +22,7 @@ class Preprocessor
 
     protected string $cCompiler = 'clang';
     protected string $cppCompiler = 'clang++';
+
     protected string $lld = 'ld.lld';
 
     protected array $downloadExtensionList = [];
@@ -56,6 +57,7 @@ class Preprocessor
     protected string $globalPrefix = '/usr/local/swoole-cli';
 
     protected string $extraLdflags = '';
+
     protected string $extraOptions = '';
     protected string $extraCflags = '';
 
@@ -77,6 +79,7 @@ class Preprocessor
     protected array $inputOptions = [];
 
     protected array $binPaths = [];
+
     /**
      * Extensions enabled by default
      * @var array|string[]
@@ -330,7 +333,7 @@ class Preprocessor
      * @param string $md5sum
      * @throws Exception
      */
-    protected function downloadFile(string $url, string $file, string $md5sum)
+    protected function downloadFile(string $url, string $file, object $project = null)
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
@@ -352,25 +355,12 @@ class Preprocessor
         if (!is_file($file) or filesize($file) == 0) {
             throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
         }
-        // 下载文件的 MD5 不一致
-        if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
-            throw new Exception("The md5 of downloaded file[$file] is inconsistent with the configuration");
+        // 下载文件的 hash 不一致
+        if ($project->enableHashVerify) {
+            if (!$project->hashVerify($file)) {
+                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+            }
         }
-    }
-
-    /**
-     * @param string $path
-     * @param string $md5
-     * @return bool
-     */
-    protected function checkFileMd5sum(string $path, string $md5): bool
-    {
-        // md5 不匹配，删除文件
-        if ($md5 != md5_file($path)) {
-            unlink($path);
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -388,18 +378,25 @@ class Preprocessor
         }
 
         $lib->path = $this->libraryDir . '/' . $lib->file;
-        if (!empty($lib->md5sum) and is_file($lib->path)) {
-            // 本地文件被修改，MD5 不一致，删除后重新下载
-            $this->checkFileMd5sum($lib->path, $lib->md5sum);
+        if ($lib->enableHashVerify) {
+            // 本地文件被修改，hash 不一致，删除后重新下载
+            $lib->hashVerify($lib->path);
         }
 
         $skip_download = ($this->getInputOption('skip-download'));
         if (!$skip_download) {
             if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, $lib->path, $lib->md5sum);
+                $this->downloadFile($lib->url, $lib->path, $lib);
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
+            }
+            if ($this->getInputOption('show-tarball-hash')) {
+                echo "[Library] {$lib->name} " . PHP_EOL;
+                echo "md5:    " . hash_file('md5', $lib->path) . PHP_EOL;
+                echo "sha1:   " . hash_file('sha1', $lib->path) . PHP_EOL;
+                echo "sha256: " . hash_file('sha256', $lib->path) . PHP_EOL;
+                echo PHP_EOL;
             }
         }
 
@@ -428,18 +425,23 @@ class Preprocessor
                 $ext->url = $this->getInputOption('with-download-mirror-url') . '/ext/' . $ext->file;
             }
 
-            // 检查文件的 MD5，若不一致删除后重新下载
-            if (!empty($ext->md5sum) and is_file($ext->path)) {
-                // 本地文件被修改，MD5 不一致，删除后重新下载
-                $this->checkFileMd5sum($ext->path, $ext->md5sum);
+            if ($ext->enableHashVerify) {
+                // 检查文件的 hash，若不一致删除后重新下载
+                $ext->hashVerify($ext->path);
             }
-
             if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path, $ext->md5sum);
+                    $this->downloadFile($ext->url, $ext->path, $ext);
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
+                }
+                if ($this->getInputOption('show-tarball-hash')) {
+                    echo "[Extension] {$ext->name} " . PHP_EOL;
+                    echo "md5:    " . hash_file('md5', $ext->path) . PHP_EOL;
+                    echo "sha1:   " . hash_file('sha1', $ext->path) . PHP_EOL;
+                    echo "sha256: " . hash_file('sha256', $ext->path) . PHP_EOL;
+                    echo PHP_EOL;
                 }
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
@@ -787,6 +789,8 @@ class Preprocessor
         if ($this->isMacos()) {
             if (is_file('/usr/local/opt/bison/bin/bison')) {
                 $this->withBinPath('/usr/local/opt/bison/bin');
+            } elseif (is_file('/opt/homebrew/opt/bison/bin/bison')) { //兼容 github action
+                $this->withBinPath('/opt/homebrew/opt/bison/bin/');
             } else {
                 $this->loadDependentLibrary("bison");
             }
