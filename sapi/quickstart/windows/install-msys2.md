@@ -29,7 +29,7 @@ sed -i "s#https\?://mirror.msys2.org/#https://mirrors.tuna.tsinghua.edu.cn/msys2
 # 更新源
 pacman -Syy --noconfirm
 # 无须确认安装包
-pacman -Syy --noconfirm git curl wget openssl zip unzip xz gcc gcc-g++  cmake make
+pacman -Syy --noconfirm git curl wget openssl zip unzip xz gcc  cmake make
 
 pacman -Syy --noconfirm openssl-devel libreadline
 
