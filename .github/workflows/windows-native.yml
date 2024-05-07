@@ -70,7 +70,7 @@ jobs:
         with:
           msbuild-architecture: x64
           vs-version: '[16.5]'
-          vs-prerelease: true
+        run: cl /?
 
       - name: echo msbuild path
         run: |
