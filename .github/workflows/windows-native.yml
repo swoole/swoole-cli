@@ -68,8 +68,11 @@ jobs:
             cd php-src
             buildconf
             configure --help
+            configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
+            nmake
 
       - name: echo MSBuild
+        shell: cmd
         run: msbuild -version
 
 
