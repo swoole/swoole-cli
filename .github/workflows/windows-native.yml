@@ -66,6 +66,7 @@ jobs:
             phpsdk-vs17-x64.bat
             cd ..
             cd php-src
+            dir
             buildconf
             configure --help
             configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
