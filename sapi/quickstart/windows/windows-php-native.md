@@ -33,3 +33,8 @@ git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools
 
 ## 通过命令行使用 MSBuild
     https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-170
+
+
+// C:\Program Files\Microsoft Visual Studio\2022\Enterprise //
+// C:\Program Files\Microsoft Visual Studio\2022\Community //
+cl /?
