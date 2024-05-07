@@ -20,6 +20,8 @@ jobs:
         #  - "8.1.27"
           - "8.3.3"
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v1
       - name: Prepare git
         run: |
           git config --global core.autocrlf false
@@ -30,7 +32,7 @@ jobs:
           pwd
           ipconfig /all
 
-      - uses: actions/checkout@v4
+
       - name: set php version
         # 参考文档：  https://docs.github.com/zh/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
         shell: bash
