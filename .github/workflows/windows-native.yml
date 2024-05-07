@@ -49,7 +49,7 @@ jobs:
       - name: Install curl and download VisualStudioSetup.exe
         shell: msys2 {0}
         run: |
-              pacman -Syy --noconfirm curl
+              pacman -Syy --noconfirm curl git
               # curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
               curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
               curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
@@ -58,18 +58,6 @@ jobs:
               # git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git
               git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
               ls -lha
-
-
-      - name: install VS2022
-        if: 0
-        shell: cmd
-        run: |
-          dir
-          VisualStudioSetup.exe /?
-          start /wait vs_buildtools.exe  --norestart --force --passive --wait > nul
-          echo %errorlevel%
-          start /wait VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools  --path install="D:\VS" --path cache="D:\VS\cache" --path shared="D:\VS\shared"  --norestart --force --passive --wait  > nul
-          echo %errorlevel%
 
       - name: prepare build environment
         shell: cmd
@@ -84,6 +72,18 @@ jobs:
       - name: echo MSBuild
         run: msbuild -version
 
+
+
+      - name: install VS2022
+        if: 0
+        shell: cmd
+        run: |
+          dir
+          VisualStudioSetup.exe /?
+          start /wait vs_buildtools.exe  --norestart --force --passive --wait > nul
+          echo %errorlevel%
+          start /wait VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools  --path install="D:\VS" --path cache="D:\VS\cache" --path shared="D:\VS\shared"  --norestart --force --passive --wait  > nul
+          echo %errorlevel%
       - name: Configure
         if: 0
         run: |
