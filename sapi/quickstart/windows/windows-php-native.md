@@ -28,7 +28,6 @@ VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.T
 
 
 
-
 vs_buildtools.exe  --quiet --force  --norestart
 
 git clone -b php-8.3.6     --depth=1 https://github.com/php/php-src.git
@@ -49,6 +48,9 @@ cl /?
 ## Microsoft Visual C++ 可再发行程序包最新支持的下载
     https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170
 
+
+Windows SDK
+https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
 
 消息编译器是 Windows SDK 的一部分
 消息编译器命令行在这里描述：MC.EXE
