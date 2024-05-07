@@ -14,20 +14,9 @@ https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-paramete
 
 # uninstall ^
 
-VisualStudioSetup.exe ^
---locale en-US ^
---add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 ^
---add Microsoft.Component.MSBuild ^
---add Microsoft.VisualStudio.Component.Roslyn.Compiler ^
---add Microsoft.Component.MSBuild ^
---add Microsoft.VisualStudio.Component.CoreBuildTools ^
---add Microsoft.VisualStudio.Workload.MSBuildTools ^
---quiet --force  ^
---path install="C:\VS" ^
---path cache="C:\VS\cache" ^
---path shared="C:\VS\shared" ^
+VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools --quiet --force --path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:\VS\shared"
+--norestart --force
 --channelId VisualStudio.16.Release ^
---norestart --force ^
 
 
 
