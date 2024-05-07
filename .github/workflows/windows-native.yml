@@ -46,18 +46,15 @@ jobs:
       - name: Install msys2  Packages
         shell: msys2 {0}
         run: |
-              pacman -Syy --noconfirm curl wget openssl zip unzip
+              pacman -Syy --noconfirm curl
               curl -Lo VisualStudioSetup.exe https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
+              ls -lha
+              pwd
 
-
-
-
-      - name: Prepare
-        if: 0
+      - name: install VS2022
+        shell: cmd
         run: |
-          # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
-          # git submodule update --init
-          bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version ${{ env.BUILD_PHP_VERSION }}
+          dir
 
       - name: Configure
         if: 0
