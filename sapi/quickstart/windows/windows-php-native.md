@@ -14,12 +14,12 @@ https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-paramete
 
 # uninstall ^
 
-VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools --quiet --force --path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:\VS\shared"
---norestart --force
+VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools  --path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:\VS\shared"
+--quiet --force --norestart
 --channelId VisualStudio.16.Release ^
 
 
-
+vs_buildtools.exe  --quiet --force  --norestart
 
 git clone -b php-8.3.6     --depth=1 https://github.com/php/php-src.git
 git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git

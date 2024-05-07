@@ -49,6 +49,7 @@ jobs:
               pacman -Syy --noconfirm curl
               # curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
               curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
+              curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
               ls -lha
               pwd
 
@@ -57,7 +58,8 @@ jobs:
         run: |
           dir
           :: VisualStudioSetup.exe --help
-          VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools --quiet --force --path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:\VS\shared" --norestart --force
+          vs_buildtools.exe  --quiet --force
+          VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools  --path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:\VS\shared" --quiet --norestart --force
 
       - uses: microsoft/setup-msbuild@v2
         with:
