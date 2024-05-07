@@ -67,7 +67,7 @@ jobs:
       - name: install VS2022
         shell: cmd
         run: |
-          cl /?
+            cl /?
 
       - uses: microsoft/setup-msbuild@v2
         with:
