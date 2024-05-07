@@ -13,6 +13,7 @@ jobs:
     runs-on: windows-2022
     # windows-latest, windows-2022, windows-2019
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
+    # https://github-com.proxy.ofote.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
     strategy:
       matrix:
         php-version:
@@ -22,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v1
-      - name: Prepare git
+      - name: show build environment
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
@@ -52,8 +53,12 @@ jobs:
               # curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
               curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
               curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
-              ls -lha
               pwd
+              git clone -b php-8.3.6     --depth=1 https://github.com/php/php-src.git
+              # git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git
+              git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
+              ls -lha
+
 
       - name: install VS2022
         if: 0
@@ -66,25 +71,15 @@ jobs:
           start /wait VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools  --path install="D:\VS" --path cache="D:\VS\cache" --path shared="D:\VS\shared"  --norestart --force --passive --wait  > nul
           echo %errorlevel%
 
-      - name: setup vs2022
-        uses: microsoft/setup-msbuild@v2
-        # https://github.com/microsoft/setup-msbuild?tab=readme-ov-file
-        with:
-          msbuild-architecture: x64
-          vs-version: '[16.5]'
-
-      - name: Setup Visual Studio
-        uses: microsoft/setup-visual-studio@v1
-        with:
-          vs-version: '16.5' # The Visual Studio version to install
-          components: 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64,Microsoft.Component.MSBuild,Microsoft.VisualStudio.Component.Roslyn.Compiler,Microsoft.Component.MSBuild,Microsoft.VisualStudio.Component.CoreBuildTools,Microsoft.VisualStudio.Workload.MSBuildTools,Microsoft.VisualStudio.Component.Windows11SDK.22000,Microsoft.VisualStudio.Component.Windows10SDK.20348,Microsoft.VisualStudio.Component.Windows10SDK' # The Workload to install
-
-
-      - name: echo msbuild path
+      - name: prepare build environment
+        shell: cmd
         run: |
-          echo "vswhere-path: ${{ steps.setup_msbuild_explicit.outputs.msbuildPath }}"
-          echo "PATH: ${{ steps.setup_msbuild_path.outputs.msbuildPath }}"
-          echo "Fallback: ${{ steps.setup_msbuild_fallback.outputs.msbuildPath }}"
+            cd php-sdk-binary-tools
+            phpsdk-vs17-x64.bat
+            cd ..
+            cd php-src
+            buildconf
+            configure --help
 
       - name: echo MSBuild
         run: msbuild -version
