@@ -47,6 +47,9 @@ jobs:
         shell: msys2 {0}
         run: |
               pacman -Syy --noconfirm curl wget openssl zip unzip
+              curl -Lo VisualStudioSetup.exe https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
+
+
 
 
       - name: Prepare
