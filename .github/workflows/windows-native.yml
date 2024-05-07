@@ -57,9 +57,8 @@ jobs:
         shell: cmd
         run: |
           dir
-          :: VisualStudioSetup.exe --help
-          vs_buildtools.exe  --norestart --force --passive
-          vs_buildtools.exe  --norestart --force --passive --verify
+          VisualStudioSetup.exe /?
+          vs_buildtools.exe  --norestart --force --passive --wait
           VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools  --path install="D:\VS" --path cache="D:\VS\cache" --path shared="D:\VS\shared"  --norestart --force --passive
 
       - uses: microsoft/setup-msbuild@v2
