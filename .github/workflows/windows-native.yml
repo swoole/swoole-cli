@@ -54,6 +54,7 @@ jobs:
               pwd
 
       - name: install VS2022
+        if: 0
         shell: cmd
         run: |
           dir
