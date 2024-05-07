@@ -73,7 +73,14 @@ jobs:
           msbuild-architecture: x64
           vs-version: '[16.5]'
 
-      - name: echo msbuild path
+      - name: Setup Visual Studio
+        uses: microsoft/setup-visual-studio@v1
+        with:
+          vs-version: '16.5' # The Visual Studio version to install
+          components: 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64,Microsoft.Component.MSBuild,Microsoft.VisualStudio.Component.Roslyn.Compiler,Microsoft.Component.MSBuild,Microsoft.VisualStudio.Component.CoreBuildTools,Microsoft.VisualStudio.Workload.MSBuildTools,Microsoft.VisualStudio.Component.Windows11SDK.22000,Microsoft.VisualStudio.Component.Windows10SDK.20348,Microsoft.VisualStudio.Component.Windows10SDK' # The Workload to install
+
+
+        - name: echo msbuild path
         run: |
           echo "vswhere-path: ${{ steps.setup_msbuild_explicit.outputs.msbuildPath }}"
           echo "PATH: ${{ steps.setup_msbuild_path.outputs.msbuildPath }}"
