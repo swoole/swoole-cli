@@ -42,19 +42,12 @@ jobs:
           ipconfig /all
           # git submodule update --init
 
-      - name: Install Cygwin Packages
-        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
+      - uses: msys2/setup-msys2@v2
+      - name: Install msys2  Packages
+        shell: msys2 {0}
         run: |
-          ls -lah /cygdrive/c/
-          ls -lah /cygdrive/d/
+              pacman -Syy --noconfirm curl wget openssl zip unzip
 
-          cp -f /cygdrive/c/setup.exe  /cygdrive/c/cygwin/bin/setup-x86_64.exe
-
-          bash ./sapi/scripts/cygwin/install-cygwin.sh
-
-      - name: Install re2c
-        run: |
-          bash ./sapi/scripts/cygwin/install-re2c.sh
 
       - name: Prepare
         if: 0
