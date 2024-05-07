@@ -9,7 +9,7 @@ https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=R
 https://aka.ms/vs/17/release/vs_buildtools.exe
 
 
-# 使用命令行安装
+# 使用命令行参数安装、更新和管理 Visual Studio
 https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
 
 # uninstall ^

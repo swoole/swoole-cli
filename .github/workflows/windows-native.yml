@@ -47,7 +47,8 @@ jobs:
         shell: msys2 {0}
         run: |
               pacman -Syy --noconfirm curl
-              curl -Lo VisualStudioSetup.exe https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
+              # curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
+              curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
               ls -lha
               pwd
 
@@ -55,7 +56,6 @@ jobs:
         shell: cmd
         run: |
           dir
-          VisualStudioSetup.exe --help --norestart --force --quiet
           VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools --quiet --force --path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:\VS\shared" --norestart --force
 
       - uses: microsoft/setup-msbuild@v2
