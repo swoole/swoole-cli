@@ -63,7 +63,7 @@ jobs:
         shell: cmd
         run: |
             cd php-sdk-binary-tools
-            phpsdk-vs17-x64.bat
+            phpsdk-starter.bat -c vs17 -a x64
             cd ..
             cd php-src
             dir
