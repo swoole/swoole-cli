@@ -24,8 +24,8 @@ mklink composer composer.phar
 
 ## 其他
 
-1. [windows build native php](./windows-native.md)
-1. [install msys2 ](./install-msys2.md)
+1. [windows build native php](windows-native.md)
+1. [install msys2 ](native-build/install-msys2.md)
 
 
 

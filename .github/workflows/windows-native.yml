@@ -69,7 +69,7 @@ jobs:
           dir
           phpsdk-vs17-x64.bat
           cd ..
-          sapi\quickstart\windows\native-build.bat
+          sapi\quickstart\windows\native-build\native-build.bat
 
       - name: install VS2022
         if: 0
