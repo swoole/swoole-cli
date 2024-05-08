@@ -60,7 +60,10 @@ jobs:
               ls -lha
 
       - name: build
-        shell: cmd
+      #  shell: cmd
+      #  shell: C:\Windows\system32\cmd.EXE /D /E:ON /V:OFF /S /C "CALL "{0}""
+        shell: C:\Windows\system32\cmd.EXE /D /E:ON /V:ON /S /C "CALL "{0}""
+      #   shell: C:\Windows\system32\cmd.EXE /E:ON /V:ON /F:ON /k "%1" %*
         run: |
             sapi\quickstart\windows\build.bat
 
