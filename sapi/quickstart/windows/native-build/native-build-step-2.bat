@@ -15,3 +15,7 @@ buildconf
 configure --help
 configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
 nmake
+
+dir %PROJECT_DIR%\php-src\sapi\cli\
+
+cd %PROJECT_DIR%\

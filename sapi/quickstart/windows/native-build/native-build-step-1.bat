@@ -12,3 +12,5 @@ cd %PROJECT_DIR%\php-sdk-binary-tools
 echo %cd%
 
 phpsdk-vs17-x64.bat
+
+cd %PROJECT_DIR%\
