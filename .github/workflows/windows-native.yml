@@ -49,9 +49,9 @@ jobs:
       - name: download source code
         shell: msys2 {0}
         run: |
-            bash api/quickstart/windows/native-build/msys2-install-soft.sh
-            bash api/quickstart/windows/native-build/msys2-download-vs.sh
-            bash api/quickstart/windows/native-build/msys2-download-source-code.sh
+            bash sapi/quickstart/windows/native-build/msys2-install-soft.sh
+            bash sapi/quickstart/windows/native-build/msys2-download-vs.sh
+            bash sapi/quickstart/windows/native-build/msys2-download-source-code.sh
 
       - name: build
         if: 0
