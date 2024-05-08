@@ -16,5 +16,6 @@ test -d php-sdk-2.2.0 && rm -rf php-sdk-binary-tools
 
 
 git clone -b php-8.3.6     --depth=1 https://github.com/php/php-src.git
-git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git
+# git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git
+git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
 
