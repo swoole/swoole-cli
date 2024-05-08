@@ -74,9 +74,7 @@ jobs:
       - name: phpsdk init
         shell: cmd
         run: |
-          dir
-
-      # sapi\quickstart\windows\native-build\native-build-step-1.bat
+          sapi\quickstart\windows\native-build\native-build-step-1.bat
 
       - name: php buildconf
         shell: cmd
