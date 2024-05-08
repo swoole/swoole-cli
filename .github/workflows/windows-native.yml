@@ -70,7 +70,7 @@ jobs:
         run: |
           sapi\quickstart\windows\native-build\native-build-step-1.bat
 
-      - name: php buildconf
+      - name: php prepare
         shell: cmd
         run: |
           sapi\quickstart\windows\native-build\native-build-step-2.bat
