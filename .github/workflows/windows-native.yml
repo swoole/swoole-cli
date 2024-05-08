@@ -46,7 +46,7 @@ jobs:
           # git submodule update --init
 
       - uses: msys2/setup-msys2@v2
-      - name: Install curl and download VisualStudioSetup.exe
+      - name: download source code
         shell: msys2 {0}
         run: |
               pacman -Syy --noconfirm curl git
@@ -59,20 +59,9 @@ jobs:
               git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
               ls -lha
 
-      - name: prepare build environment
+      - name: build
         shell: cmd
-        run: |
-            cd php-sdk-binary-tools
-            dir
-            phpsdk-starter.bat -c vs17 -a x64 %*
-            cd ..
-            echo %~dp0
-            cd php-src
-            dir
-            buildconf
-            configure --help
-            configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
-            nmake
+        run: %~dp0\sapi\quickstart\windows\build.bat
 
       - name: install VS2022
         if: 0
