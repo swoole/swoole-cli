@@ -49,15 +49,9 @@ jobs:
       - name: download source code
         shell: msys2 {0}
         run: |
-              pacman -Syy --noconfirm curl git
-              # curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
-              curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
-              curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
-              pwd
-              git clone -b php-8.3.6     --depth=1 https://github.com/php/php-src.git
-              # git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git
-              git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
-              ls -lha
+            bash api/quickstart/windows/native-build/msys2-install-soft.sh
+            bash api/quickstart/windows/native-build/msys2-download-vs.sh
+            bash api/quickstart/windows/native-build/msys2-download-source-code.sh
 
       - name: build
         if: 0
