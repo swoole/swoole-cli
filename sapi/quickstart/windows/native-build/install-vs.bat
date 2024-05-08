@@ -1,4 +1,10 @@
 @echo off
+cd %~dp0
+echo %~dp0
+
+cd ..\..\..\..\
+
+echo %cd%
 
 VisualStudioSetup.exe ^
 --locale en-US ^
