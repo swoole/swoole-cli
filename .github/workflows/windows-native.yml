@@ -65,6 +65,10 @@ jobs:
           sapi\quickstart\windows\native-build\native-build-step-3.bat
           sapi\quickstart\windows\native-build\native-build-step-4.bat
 
+      - name: Display the path
+        shell: cmd
+        run: echo %PATH%
+
       - name: phpsdk init
         shell: cmd
         run: |
