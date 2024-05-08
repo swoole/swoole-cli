@@ -72,8 +72,7 @@ jobs:
           sapi\quickstart\windows\native-build\native-build-step-4.bat
 
       - name: phpsdk init
-      #  shell: cmd
-        shell: C:\Windows\system32\cmd.EXE /D /E:ON /V:OFF /S /C "CALL "{0}""
+        shell: cmd
         run: |
           dir
 
