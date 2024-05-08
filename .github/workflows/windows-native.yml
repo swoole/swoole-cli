@@ -63,8 +63,9 @@ jobs:
         shell: cmd
         run: |
             cd php-sdk-binary-tools
-            phpsdk-starter.bat -c vs17 -a x64
+            call %~dp0phpsdk-starter.bat -c vs17 -a x64 %*
             cd ..
+            echo %~dp0
             cd php-src
             dir
             buildconf
