@@ -14,5 +14,6 @@ echo %cd%
 nmake
 
 dir %PROJECT_DIR%\php-src\sapi\cli\
-
+%PROJECT_DIR%\php-src\sapi\cli\php.exe -v
+%PROJECT_DIR%\php-src\sapi\cli\php.exe -m
 cd %PROJECT_DIR%\
