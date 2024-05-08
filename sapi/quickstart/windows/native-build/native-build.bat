@@ -9,10 +9,12 @@ echo %cd%
 SET PROJECT_DIR=%cd%
 
 cd %PROJECT_DIR%\php-sdk-binary-tools
+echo %cd%
 
 phpsdk-vs17-x64.bat
 
 cd %PROJECT_DIR%\php-src
+echo %cd%
 
 buildconf
 configure --help
