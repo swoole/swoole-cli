@@ -64,7 +64,12 @@ jobs:
       #  shell: C:\Windows\system32\cmd.EXE /D /E:ON /V:OFF /S /C "CALL "{0}""
         shell: C:\Windows\system32\cmd.EXE /D /E:ON /V:ON /F:ON /S /C "CALL "{0}""
       #   shell: C:\Windows\system32\cmd.EXE /E:ON /V:ON /F:ON /k "%1" %*
-        run: sapi\quickstart\windows\native-build.bat
+        run: |
+          cd php-sdk-binary-tools
+          dir
+          phpsdk-vs17-x64.bat
+          cd ..
+          sapi\quickstart\windows\native-build.bat
 
       - name: install VS2022
         if: 0
