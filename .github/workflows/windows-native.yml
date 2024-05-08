@@ -74,7 +74,9 @@ jobs:
       - name: phpsdk init
       #  shell: cmd
         shell: C:\Windows\system32\cmd.EXE /D /E:ON /V:OFF /S /C "CALL "{0}""
-        run: sapi\quickstart\windows\native-build\native-build-step-1.bat
+        run: |
+          dir
+          sapi\quickstart\windows\native-build\native-build-step-1.bat
 
       - name: php buildconf
         shell: cmd
