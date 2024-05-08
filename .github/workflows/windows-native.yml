@@ -61,7 +61,8 @@ jobs:
 
       - name: build
         shell: cmd
-        run: %~dp0\sapi\quickstart\windows\build.bat
+        run: |
+          %~dp0\sapi\quickstart\windows\build.bat
 
       - name: install VS2022
         if: 0
