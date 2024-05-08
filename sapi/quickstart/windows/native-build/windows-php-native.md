@@ -55,3 +55,6 @@ https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
 
 消息编译器是 Windows SDK 的一部分
 消息编译器命令行在这里描述：MC.EXE
+
+Visual Studio 教程 | C++
+https://learn.microsoft.com/zh-cn/cpp/get-started/?view=msvc-170
