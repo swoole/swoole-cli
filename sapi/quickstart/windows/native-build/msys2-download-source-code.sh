@@ -11,6 +11,9 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+test -d php-src && rm -rf php-src
+test -d php-src && rm -rf php-src
+
 git clone -b php-8.3.6     --depth=1 https://github.com/php/php-src.git
-git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git
+git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-src.git
 
