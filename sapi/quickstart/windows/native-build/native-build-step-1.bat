@@ -8,9 +8,7 @@ echo %cd%
 
 SET PROJECT_DIR=%cd%
 
-cd %PROJECT_DIR%\php-sdk-binary-tools
+cd %PROJECT_DIR%\
 echo %cd%
 
-phpsdk-vs17-x64.bat
-
-cd %PROJECT_DIR%\
+%PROJECT_DIR%\php-sdk-binary-tools\phpsdk-vs17-x64.bat
