@@ -11,8 +11,9 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-unset http_proxy
-unset https_proxy
+unset HTTP_PROXY
+unset HTTPS_PROXY
+unset NO_PROXY
 
 # curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
 curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
