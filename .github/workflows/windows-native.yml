@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v1
-      - name: show build environment
+      - name: show environment
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
@@ -62,7 +62,7 @@ jobs:
       - name: build
         shell: cmd
         run: |
-          %~dp0\sapi\quickstart\windows\build.bat
+            sapi\quickstart\windows\build.bat
 
       - name: install VS2022
         if: 0
