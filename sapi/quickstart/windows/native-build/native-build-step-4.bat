@@ -11,5 +11,8 @@ SET PROJECT_DIR=%cd%
 cd %PROJECT_DIR%\php-src
 echo %cd%
 
-buildconf
+nmake
 
+dir %PROJECT_DIR%\php-src\sapi\cli\
+
+cd %PROJECT_DIR%\

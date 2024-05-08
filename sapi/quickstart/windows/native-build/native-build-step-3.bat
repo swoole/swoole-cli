@@ -11,5 +11,5 @@ SET PROJECT_DIR=%cd%
 cd %PROJECT_DIR%\php-src
 echo %cd%
 
-buildconf
-
+configure --help
+configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
