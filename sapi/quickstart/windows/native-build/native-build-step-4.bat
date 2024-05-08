@@ -13,7 +13,7 @@ echo %cd%
 
 nmake
 
-dir %PROJECT_DIR%\php-src\sapi\cli\
-%PROJECT_DIR%\php-src\sapi\cli\php.exe -v
-%PROJECT_DIR%\php-src\sapi\cli\php.exe -m
+dir %PROJECT_DIR%\php-src\x64\Release_TS\
+%PROJECT_DIR%\php-src\x64\Release_TS\php.exe -v
+%PROJECT_DIR%\php-src\x64\Release_TS\php.exe -m
 cd %PROJECT_DIR%\
