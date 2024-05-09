@@ -184,6 +184,7 @@ return function (Preprocessor $p) {
     $depends = ['gpac'] ;
     $depends = ['libx264'] ;
     $depends = ['libmongoc'] ;
+    $depends = ['ovn'] ;
 
 
     $ext = (new Extension('common'))
