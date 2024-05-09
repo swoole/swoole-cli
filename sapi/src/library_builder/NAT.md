@@ -82,3 +82,6 @@ VNC
 
 Web前端WebRTC 攻略(五) NAT 穿越与 ICE
     https://mp.weixin.qq.com/s/yIC3pNvQp-YrLUD-pjz1iw
+
+【译】 NAT 穿透是如何工作的：技术原理及企业级实践
+    https://arthurchiao.art/blog/how-nat-traversal-works-zh/
