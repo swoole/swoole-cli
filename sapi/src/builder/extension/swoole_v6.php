@@ -48,7 +48,7 @@ return function (Preprocessor $p) {
         mkdir -p {$workdir}/ext/
         mkdir -p {$workdir}/var/cache/
         cd {$workdir}/var/cache/
-        git clone -b v6.0 --depth=1  https://github.com/swoole/swoole-src.git
+        git clone -b master --depth=1  https://github.com/swoole/swoole-src.git
         if [ -d {$workdir}/ext/swoole ] ; then
             rm -rf {$workdir}/ext/swoole
         fi
