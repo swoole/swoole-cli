@@ -64,9 +64,7 @@ EOF
 
         ./configure \
         --prefix={$ovs_prefix} \
-        --enable-ssl \
-        --enable-shared=no \
-        --enable-static=yes
+        --enable-ssl
 
         make -j {$p->maxJob}
 

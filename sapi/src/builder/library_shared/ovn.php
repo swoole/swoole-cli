@@ -62,8 +62,6 @@ EOF
         ./configure  \
         --prefix={$ovn_prefix} \
         --enable-ssl \
-        --enable-shared=no \
-        --enable-static=yes \
         --with-ovs-source={$workdir}/ovs/ \
         --with-ovs-build={$workdir}/ovs/
 
