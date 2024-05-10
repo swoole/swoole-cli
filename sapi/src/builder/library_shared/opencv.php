@@ -43,7 +43,7 @@ EOF
 EOF
         )
         ->withPreInstallCommand(
-            'ubuntu',
+            'debian',
             <<<EOF
         apt install -y libstdc++-12-dev
         apt install -y libavif-dev
