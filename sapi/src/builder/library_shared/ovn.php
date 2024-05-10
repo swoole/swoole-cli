@@ -32,21 +32,33 @@ EOF
         pip3 install pipenv
 EOF
         )
+        ->withPreInstallCommand('debian', <<<EOF
+        apt install -y git curl python3 python3-pip python3-dev wget   sudo file
+        apt install -y libssl-dev ca-certificates
+
+        apt install -y  \
+        git gcc clang make cmake autoconf automake openssl python3 python3-pip  libtool  \
+        openssl  curl  libssl-dev  libcap-ng-dev uuid uuid-runtime
+
+        apt install -y kmod iptables
+        apt install -y netcat-openbsd
+        apt install -y tcpdump nmap traceroute net-tools dnsutils iproute2 procps iputils-ping iputils-arping
+        apt install -y conntrack
+        apt install -y bridge-utils
+        apt install -y libelf-dev  libbpf-dev # libxdp-dev
+        apt install -y graphviz
+        apt install -y libjemalloc2   libjemalloc-dev  libnuma-dev   libpcap-dev  libunbound-dev  libunwind-dev  llvm-dev
+        apt install -y bc init ncat
+EOF
+        )
         ->withBuildScript(
             <<<EOF
         set -x
 
-        virtualenv .venv
-        source .venv/bin/activate
-        pip3 install -r Documentation/requirements.txt
-        pip3 install jinja2==3.0.0
 
         sh ./boot.sh
         ./configure --help
-        PACKAGES="openssl " # libsctp
-        CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
-        LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
-        LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
+
         ./configure  \
         --prefix={$ovn_prefix} \
         --enable-ssl \
@@ -55,26 +67,14 @@ EOF
         --with-ovs-source={$workdir}/ovs/ \
         --with-ovs-build={$workdir}/ovs/
 
-        make dist-docs -j {$p->maxJob}
-        make docs-check -j {$p->maxJob}
         make -j {$p->maxJob}
-        deactivate
 
-        # make -j {$p->maxJob}
-        # make install
+        make install
 
-        # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-        # cd Documentation/
-        # pipenv --python 3
-        # pipenv shell
 
-        # pipenv install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-        # pipenv install jinja2==3.0.0
-        # pipenv run python3 conf.py
 EOF
         )
-        ->withPkgName('ovn')
-        ->withDependentLibraries('ovs') //'libsctp'
+        ->withDependentLibraries('ovs')
         ->withBinPath($ovn_prefix . '/bin/');
 
     $p->addLibrary($lib);

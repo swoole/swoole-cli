@@ -37,70 +37,45 @@ EOF
         # sysctl -w net.ipv6.conf.default.disable_ipv6=1
 EOF
         )
+        ->withPreInstallCommand('debian', <<<EOF
+        apt install -y git curl python3 python3-pip python3-dev wget   sudo file
+        apt install -y libssl-dev ca-certificates
+
+        apt install -y  \
+        git gcc clang make cmake autoconf automake openssl python3 python3-pip  libtool  \
+        openssl  curl  libssl-dev  libcap-ng-dev uuid uuid-runtime
+
+        apt install -y kmod iptables
+        apt install -y netcat-openbsd
+        apt install -y tcpdump nmap traceroute net-tools dnsutils iproute2 procps iputils-ping iputils-arping
+        apt install -y conntrack
+        apt install -y bridge-utils
+        apt install -y libelf-dev  libbpf-dev # libxdp-dev
+        apt install -y graphviz
+        apt install -y libjemalloc2   libjemalloc-dev  libnuma-dev   libpcap-dev  libunbound-dev  libunwind-dev  llvm-dev
+        apt install -y bc init ncat
+EOF
+        )
         ->withBuildScript(
             <<<EOF
         set -x
-
-
-        virtualenv .venv
-        source .venv/bin/activate
-        pip3 install -r Documentation/requirements.txt
-        pip3 install jinja2==3.0.0
-
         ./boot.sh
         ./configure --help
-        PACKAGES="openssl libcap-ng"
-        CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES ) " \
-        LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) " \
-        LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) " \
+
         ./configure \
         --prefix={$ovs_prefix} \
         --enable-ssl \
         --enable-shared=no \
         --enable-static=yes
 
-        # --with-dpdk=static \
-
-        # 文档构建  https://github.com/openvswitch/ovs/blob/master/Documentation/intro/install/documentation.rst
-        make dist-docs -j {$p->maxJob}
-        make docs-check -j {$p->maxJob}
-
         make -j {$p->maxJob}
 
-        deactivate
-
-
-
-        # make install
-
-        # export PIPENV_PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple
-        # cd Documentation/
-        # pipenv --rm
-        # pipenv --python 3
-        # pipenv shell
-
-        # 参考 文档 https://pipenv-fork.readthedocs.io/en/latest/advanced.html
-        # pipenv install -r requirements.txt -i https://pypi.python.org/simple
-        # pipenv install -r requirements.txt --pypi-mirror https://pypi.tuna.tsinghua.edu.cn/simple
-        # pipenv install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-        # pipenv run pip3 install -r requirements.txt
-
-        # pipenv install jinja2==3.0.0
-        # pipenv run python3 conf.py
-
-
+        make install
 
 
 EOF
         )
-        //->withMakeOptions( " dist-docs ")
-        //->withPkgName('libofproto')
-        //->withPkgName('libopenvswitch')
-        //->withPkgName('libovsdb')
-        //->withPkgName('libsflow')
-        ->withBinPath($ovs_prefix . '/bin/')
-        ->withDependentLibraries('openssl', 'libcap_ng') //'dpdk','unbound'
-    ;
+        ->withBinPath($ovs_prefix . '/bin/');
 
     $p->addLibrary($lib);
 };
