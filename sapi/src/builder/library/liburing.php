@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $liburing_prefix = LIBURING_PREFIX;
     $p->addLibrary(
-        (new Library('liburing'))
+        (new Library('liburing')) # io_uring
             ->withHomePage('https://github.com/axboe/liburing.git')
             ->withLicense('https://github.com/axboe/liburing/blob/master/COPYING', Library::LICENSE_LGPL)
             ->withManual('https://github.com/libgeos/geos/blob/main/INSTALL.md')
