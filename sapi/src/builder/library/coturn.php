@@ -30,10 +30,10 @@ return function (Preprocessor $p) {
                 'coturn',
                 <<<EOF
                 # git clone -b 4.6.2 --depth=1 https://github.com/coturn/coturn.git
-                # git clone -b master --depth=1 https://github.com/coturn/coturn.git
+                git clone -b master --depth=1 https://github.com/coturn/coturn.git
                 # git clone -b test --depth=1 https://github.com/jingjingxyk/coturn.git
                 # git clone -b fix_openssl_no_threads --depth=1 https://github.com/jingjingxyk/coturn.git
-                git clone -b t --depth=1 https://github.com/jingjingxyk/coturn.git
+                # git clone -b t --depth=1 https://github.com/jingjingxyk/coturn.git
 
                 # 代码变更 https://github.com/coturn/coturn/pull/1282/files
 
