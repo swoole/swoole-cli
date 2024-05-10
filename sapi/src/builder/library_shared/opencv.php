@@ -105,6 +105,7 @@ EOF
         -DOPENCV_ENABLE_NONFREE=ON \
         -DWITH_AVIF=ON \
         -DWITH_GTK=OFF \
+
         -DWITH_CUDA=OFF \
 
         ninja

@@ -22,8 +22,6 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($ovn_prefix)
-        ->withInstallCached(false)
-        ->withBuildCached(false)
         ->withPreInstallCommand(
             'alpine',
             <<<EOF
