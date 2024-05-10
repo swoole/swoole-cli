@@ -101,6 +101,16 @@ bash install-ovn-ovs.sh --proxy http://127.0.0.1:8016  --mirror china
 
     ovn-controller 节点 Geneve协议使用 6081 端口
 
+    mac in UDP
+
+    geneve  UDP port 6081
+    VXLAN   UDP port 4789
+    STT     UDP port 7471
+
+
+    northbound databases  TCP ports 6641
+    southbound databases  TCP ports 6642
+
 ```bash
 ovn-nbctl ls-list
 
