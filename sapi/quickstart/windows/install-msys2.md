@@ -9,6 +9,7 @@
 > 使用镜像站点 https://mirror.tuna.tsinghua.edu.cn/help/msys2/  下载 msys2 安装包
 
 > https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20230526.exe
+> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20240113.exe
 
 > 安装 msys2
 
@@ -29,7 +30,7 @@ sed -i "s#https\?://mirror.msys2.org/#https://mirrors.tuna.tsinghua.edu.cn/msys2
 # 更新源
 pacman -Syy --noconfirm
 # 无须确认安装包
-pacman -Syy --noconfirm git curl wget openssl zip unzip xz gcc gcc-g++  cmake make
+pacman -Syy --noconfirm git curl wget openssl zip unzip xz gcc  cmake make
 
 pacman -Syy --noconfirm openssl-devel libreadline
 
@@ -37,15 +38,6 @@ pacman -Syy --noconfirm openssl-devel libreadline
 # msys2 环境下 拉取 swoole-cli 源码
 git clone --recursive https://github.com:swoole/swoole-cli.git
 
-# msys2 环境下下载 cygwin (也可以用浏览器下载) 安装包
-wget https://cygwin.com/setup-x86_64.exe
-
-# 将 cygwin 安装包 移动到 window  指定盘符根目 （这里以 C盘为例）
-mv setup-x86_64.exe C:/setup-x86_64.exe
-
 
 ```
-
-### windows 自带默认终端
-
 
