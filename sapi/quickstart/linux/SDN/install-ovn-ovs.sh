@@ -64,7 +64,9 @@ esac
 prepare(){
 
   apt update -y
-
+  apt install -y locales
+  locale-gen en_US.UTF-8
+  update-locale LANG=en_US.UTF-8
   apt install -y git curl python3 python3-pip python3-dev wget   sudo file
   apt install -y libssl-dev ca-certificates
 
