@@ -24,8 +24,8 @@ EXTERNAL_IP="$ipv4,$ipv6"
 LOCAL_IP="$ipv4,$ipv6"
 ENCAP_TYPE=geneve
 
-rm -rf /usr/local/etc/openvswitch/conf.db
-rm -rf /usr/local/etc/ovn/conf.db
+test -f /usr/local/etc/openvswitch/conf.db && rm -rf /usr/local/etc/openvswitch/conf.db
+test -f /usr/local/etc/ovn/conf.db         && rm -rf /usr/local/etc/ovn/conf.db
 
 ID_FILE=system-id.conf
 test -s $ID_FILE || cat /proc/sys/kernel/random/uuid > $ID_FILE
