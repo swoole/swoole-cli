@@ -48,6 +48,7 @@ jobs:
           # softwareupdate --list --verbose
           # softwareupdate --install -a
           # xcode-select --install
+          # xcode-select --print-path
 
           # export SDKROOT=$(xcrun --show-sdk-path)
           ls -lh $(xcrun --show-sdk-path)
