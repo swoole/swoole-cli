@@ -65,7 +65,7 @@ jobs:
           set
           cd php-src
           call buildconf
-          configure --help
-          configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
-          nmake
+          call configure --help
+          call configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
+          call nmake
 
