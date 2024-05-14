@@ -47,7 +47,7 @@ jobs:
           bash setup-php-runtime.sh
 
       - name: prepare source code
-        shell: cmd
+        # shell: cmd
         run: |
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
