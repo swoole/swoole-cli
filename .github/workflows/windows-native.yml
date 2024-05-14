@@ -48,7 +48,7 @@ jobs:
           echo %cd%
           SET  CURRENT_DIR=%~dp0
 
-          call script.batphp-sdk-binary-tools\phpsdk-vs17-x64.bat
+          call php-sdk-binary-tools\phpsdk-vs17-x64.bat
 
           set
 
