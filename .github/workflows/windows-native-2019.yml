@@ -46,7 +46,7 @@ jobs:
         run: |
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
-          # 本命令无效 在这里无效，只是为了看输出
+          : 本命令无效 在这里无效，只是为了看输出
           call php-sdk-binary-tools\phpsdk-vs16-x64.bat
 
       - name: test
