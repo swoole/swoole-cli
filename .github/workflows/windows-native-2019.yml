@@ -46,7 +46,9 @@ jobs:
         run: |
           bash setup-php-runtime.sh
           pwd
-          ls -lh swoole-cli-v*-cygwin-x64/bin/
+          ls -lh swoole-cli-v*-cygwin-x64/
+          swoole-cli-v5.0.3-cygwin-x64/swoole-cli.exec -v
+          swoole-cli-v5.0.3-cygwin-x64/swoole-cli.exec -m
 
       - name: prepare source code
         shell: cmd
