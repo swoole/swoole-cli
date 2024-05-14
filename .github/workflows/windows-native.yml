@@ -56,18 +56,18 @@ jobs:
 
           call php-sdk-binary-tools\phpsdk-vs17-x64.bat
 
-          :set PHP_SDK_ARCH=x64
-          :set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
-          :set PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin
-          :set PHP_SDK_OS_ARCH=x64
-          :set PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat
-          :set PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools
-          :set PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC
-          :set PHP_SDK_VC_TOOLSET_VER=$VCToolsVersion
-          :set PHP_SDK_VS=vs17
-          :set PHP_SDK_VS_NUM=17
-          :set PHP_SDK_VS_SHELL_CMD="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
-          :set PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%
+          set PHP_SDK_ARCH=x64
+          set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
+          set PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin
+          set PHP_SDK_OS_ARCH=x64
+          set PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat
+          set PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools
+          set PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC
+          set PHP_SDK_VC_TOOLSET_VER=$VCToolsVersion
+          set PHP_SDK_VS=vs17
+          set PHP_SDK_VS_NUM=17
+          set PHP_SDK_VS_SHELL_CMD="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
+          set PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%
 
           set
           cd php-src
