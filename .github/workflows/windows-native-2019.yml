@@ -47,7 +47,7 @@ jobs:
           bash setup-php-runtime.sh
           pwd
           ls -lh swoole-cli-v*-cygwin-x64/
-
+          swoole-cli-v*-cygwin-x64/bin/swoole-cli -v
 
       - name: prepare source code
         shell: cmd
@@ -65,8 +65,6 @@ jobs:
           SET  CURRENT_DIR=%~dp0
           set "PATH=%CURRENT_DIR%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%"
           echo %PATH%
-          swoole-cli-v5.0.3-cygwin-x64\bin\swoole-cli.exe -v
-          swoole-cli-v5.0.3-cygwin-x64\bin\swoole-cli.exe -m
 
           set PHP_SDK_ARCH=x64
           set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
