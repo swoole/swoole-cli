@@ -14,7 +14,10 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.3.3"
+          - "8.2.13"
+          - "8.1.27"
+          - "8.3.7"
+
     steps:
       - uses: actions/checkout@v4
       - name: show environment info
@@ -26,6 +29,7 @@ jobs:
           uname -a
           pwd
           ipconfig /all
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }" >> $Env:GITHUB_ENV
 
 #      - uses: msys2/setup-msys2@v2
 #        with:
@@ -40,8 +44,8 @@ jobs:
       - name: prepare source code
         shell: cmd
         run: |
-          git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
-          git clone -b php-8.3.7 --depth=1 https://github.com/php/php-src.git
+          # git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
+          git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
 
       - name: test
         shell: cmd
