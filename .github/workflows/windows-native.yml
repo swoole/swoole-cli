@@ -94,6 +94,11 @@ jobs:
         run: |
           sapi\quickstart\windows\native-build\native-build-step-4.bat
 
+      - name: Compile Visual Studio project with MSBuild
+        shell: cmd
+        run: ${{ '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild' }}
+        working-directory: path/to/your/project
+
       - name: install VS2022
         if: 0
         shell: cmd
