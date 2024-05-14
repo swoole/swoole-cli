@@ -40,7 +40,6 @@ jobs:
       - name: test
         shell: cmd
         run: |
-          set
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-8.3.7 --depth=1 https://github.com/php/php-src.git
 
