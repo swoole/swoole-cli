@@ -26,6 +26,11 @@ jobs:
           uname -a
           pwd
           ipconfig /all
+      - uses: msys2/setup-msys2@v2
+      - uses: actions/setup-dotnet@v1
+      - uses: ilammy/msvc-dev-cmd@v1.9.0
+        with:
+          arch: amd64
 
       - name: test
         shell: cmd
