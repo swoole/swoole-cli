@@ -45,6 +45,7 @@ jobs:
         shell: msys2 {0}
         run: |
           bash setup-php-runtime.sh
+          bash bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: prepare source code
         shell: cmd
