@@ -63,8 +63,8 @@ jobs:
           echo %cd%
           SET  CURRENT_DIR=%~dp0
           set "PATH=%CURRENT_DIR%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%"
-          php -v
-          php -m
+          swoole-cli -v
+          swoole-cli -m
 
           set PHP_SDK_ARCH=x64
           set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
