@@ -41,8 +41,14 @@ jobs:
         with:
           arch: amd64
 
+      - uses: cygwin/cygwin-install-action@master
+        with:
+          platform: x86_64
+          packages: git curl wget zip unzip tar xz
+
       - name: download cygwin php runtime
-        shell: msys2 {0}
+        # shell: msys2 {0}
+        shell: C:\cygwin\bin\bash.exe '{0}'
         run: |
           bash setup-php-runtime.sh
           pwd
