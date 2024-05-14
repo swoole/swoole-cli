@@ -50,7 +50,7 @@ jobs:
           echo %cd%
           SET  CURRENT_DIR=%~dp0
 
-          call php-sdk-binary-tools\phpsdk-vs17-x64.bat
+          # call php-sdk-binary-tools\phpsdk-vs17-x64.bat
 
           set PHP_SDK_ARCH=x64
           set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
