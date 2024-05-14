@@ -47,7 +47,7 @@ jobs:
           packages: git curl wget zip unzip tar xz
 
       - name: download cygwin php runtime
-        # shell: msys2 {0}
+        shell: msys2 {0}
         # shell: C:\cygwin\bin\bash.exe  --norc -eo pipefail -o igncr '{0}'
         run: |
           bash setup-php-runtime.sh
