@@ -26,6 +26,9 @@ jobs:
           uname -a
           pwd
           ipconfig /all
+      - name: test
+        shell: cmd
+        run: |
           set
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           echo %~dp0
