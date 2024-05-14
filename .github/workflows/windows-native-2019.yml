@@ -46,7 +46,7 @@ jobs:
         run: |
           bash setup-php-runtime.sh
           pwd
-          cd swoole-cli-v*-cygwin-x64/bin
+          cd swoole-cli-v5.0.3-cygwin-x64/bin
           swoole-cli.exe -v
 
 
