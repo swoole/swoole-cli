@@ -44,7 +44,7 @@ jobs:
       - name: prepare source code
         shell: cmd
         run: |
-          # git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
+          git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
 
       - name: test
@@ -54,7 +54,7 @@ jobs:
           echo %cd%
           SET  CURRENT_DIR=%~dp0
 
-          # call php-sdk-binary-tools\phpsdk-vs17-x64.bat
+          call php-sdk-binary-tools\phpsdk-vs17-x64.bat
 
           set PHP_SDK_ARCH=x64
           set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
