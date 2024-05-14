@@ -48,7 +48,7 @@ jobs:
           pwd
           cd swoole-cli-v5.0.3-cygwin-x64/bin
           ls -lha .
-          ./swoole-cli.exe -v
+          ./swoole-cli -v
 
 
 
