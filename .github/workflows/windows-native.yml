@@ -40,12 +40,12 @@ jobs:
         run: |
           set
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
+          git clone -b php-8.3.7 --depth=1 https://github.com/php/php-src.git
 
           echo %~dp0
           echo %cd%
           SET  CURRENT_DIR=%~dp0
-          cd php-sdk-binary-tools
 
-          phpsdk-vs17-x64.bat
+          php-sdk-binary-tools\phpsdk-vs17-x64.bat -cur_console:d:%CURRENT_DIR%\php-src
           set
 
