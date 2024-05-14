@@ -37,12 +37,15 @@ jobs:
         with:
           arch: amd64
 
-      - name: test
+      - name: prepare source code
         shell: cmd
         run: |
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-8.3.7 --depth=1 https://github.com/php/php-src.git
 
+      - name: test
+        shell: cmd
+        run: |
           echo %~dp0
           echo %cd%
           SET  CURRENT_DIR=%~dp0
