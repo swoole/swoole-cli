@@ -29,7 +29,7 @@ jobs:
           uname -a
           pwd
           ipconfig /all
-          echo "BUILD_PHP_VERSION=${{ matrix.php-version }" >> $Env:GITHUB_ENV
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
 
 #      - uses: msys2/setup-msys2@v2
 #        with:
