@@ -63,7 +63,7 @@ jobs:
           echo %~dp0
           echo %cd%
           SET  CURRENT_DIR=%~dp0
-          set "PATH=%CURRENT_DIR%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%"
+          set "PATH=%CURRENT_DIR%\swoole-cli-v5.0.3-cygwin-x64\;%PATH%"
           swoole-cli -v
           swoole-cli -m
 
