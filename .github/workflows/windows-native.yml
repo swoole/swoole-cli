@@ -63,7 +63,7 @@ jobs:
           set PHP_SDK_VS=vs17
           set PHP_SDK_VS_NUM=17
           set PHP_SDK_VS_SHELL_CMD="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
-          set PATH="D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
+          set PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%
 
           set
           cd php-src
