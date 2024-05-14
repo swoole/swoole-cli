@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-2022
     # windows-latest, windows-2022, windows-2019
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
-    # https://github-com.proxy.ofote.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
+    # https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
     strategy:
       matrix:
         php-version:
