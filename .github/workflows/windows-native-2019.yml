@@ -46,7 +46,9 @@ jobs:
         run: |
           pacman -Syy --noconfirm php
           pwd
-          ls -lh swoole-cli-v*-cygwin-x64/
+          cd swoole-cli-v*-cygwin-x64/bin
+          swoole-cli.exe -v
+
 
 
       - name: prepare source code
