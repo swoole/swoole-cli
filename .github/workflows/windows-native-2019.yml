@@ -52,7 +52,8 @@ jobs:
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
           set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
-          swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update
+          swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-source -vvv --profile
+          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-dist -vvv --profile
           swoole-cli.exe prepare.php ++without-docker=1
 
           : 本命令无效 ，只是为了看输出
