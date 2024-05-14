@@ -55,12 +55,15 @@ VisualStudioSetup.exe ^
 --add Microsoft.VisualStudio.Component.Windows10SDK ^
 --passive  --force --norestart
 ```
+
 ## CMD 环境 编译构建
 ```bat
 cd c:\msys64\home\Administrator\php-sdk-binary-tools
 phpsdk-vs17-x64.bat
 
+```
 
+```bat
 cd c:\msys64\home\Administrator\php-src
 buildconf
 configure --help
