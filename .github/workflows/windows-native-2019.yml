@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.13"
-          - "8.1.27"
+        #  - "8.2.13"
+        #  - "8.1.27"
           - "8.3.7"
 
     steps:
@@ -31,10 +31,14 @@ jobs:
           ipconfig /all
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
 
-#      - uses: msys2/setup-msys2@v2
-#        with:
-#          install: >-
-#            curl git
+      - uses: msys2/setup-msys2@v2
+        with:
+          install: >-
+            curl git
+      - name: msys environment
+        shell: msys2 {0}
+        run: |
+            bash setup-php-runtime.sh
 
       - uses: actions/setup-dotnet@v1
       - uses: ilammy/msvc-dev-cmd@v1.9.0
