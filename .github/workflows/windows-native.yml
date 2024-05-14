@@ -68,4 +68,6 @@ jobs:
           call configure --help
           call configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
           call nmake
+          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
+          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
 
