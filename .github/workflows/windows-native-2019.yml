@@ -45,15 +45,16 @@ jobs:
         shell: msys2 {0}
         run: |
           bash setup-php-runtime.sh
-          pwd
-          export PATH=$(pwd)/swoole-cli-v5.0.3-cygwin-x64/bin:$PATH
-          swoole-cli -v
 
       - name: prepare source code
         shell: cmd
         run: |
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
+          set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
+
+          swoole-cli.exe prepare.php ++without-docker=1
+
           : 本命令无效 ，只是为了看输出
           call php-sdk-binary-tools\phpsdk-vs16-x64.bat
 
