@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.13"
-          - "8.1.27"
+        #  - "8.2.13"
+        #  - "8.1.27"
           - "8.3.7"
 
     steps:
@@ -31,22 +31,36 @@ jobs:
           ipconfig /all
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
 
-#      - uses: msys2/setup-msys2@v2
-#        with:
-#          install: >-
-#            curl git
+      - uses: msys2/setup-msys2@v2
+        with:
+          install: >-
+            curl git unzip tar xz
 
       - uses: actions/setup-dotnet@v1
       - uses: ilammy/msvc-dev-cmd@v1.9.0
         with:
           arch: amd64
 
+      - name: download cygwin php runtime
+        shell: msys2 {0}
+        run: |
+          bash setup-php-runtime.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
+
       - name: prepare source code
         shell: cmd
         run: |
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
-          : 本命令无效 在这里无效，只是为了看输出
+          set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
+
+          swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar config -g repos.packagist composer https://packagist.org
+          swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-dist -vvv --profile --no-dev
+          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-source  -vvv --profile --no-dev
+
+          swoole-cli.exe prepare.php --without-docker=1 --skip-download=1
+
+          : 本命令无效 ，只是为了看输出
           call php-sdk-binary-tools\phpsdk-vs16-x64.bat
 
       - name: test
@@ -55,7 +69,9 @@ jobs:
           echo %~dp0
           echo %cd%
           SET  CURRENT_DIR=%~dp0
-
+          set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
+          echo %PATH%
+          swoole-cli.exe -v
           set PHP_SDK_ARCH=x64
           set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
           set PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin

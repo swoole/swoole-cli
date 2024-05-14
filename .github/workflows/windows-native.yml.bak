@@ -46,6 +46,12 @@ jobs:
           # git submodule update --init
 
       - uses: msys2/setup-msys2@v2
+      #      - uses: cygwin/cygwin-install-action@master
+      #        with:
+      #          platform: x86_64
+      #          packages: git curl wget zip unzip tar xz
+      #        shell: C:\cygwin\bin\bash.exe  --norc -eo pipefail -o igncr '{0}'
+
       - name: download source code
         shell: msys2 {0}
         run: |
