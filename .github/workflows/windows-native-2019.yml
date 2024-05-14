@@ -34,7 +34,8 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           install: >-
-            curl git
+            curl git unzip tar xz
+
       - name: msys environment
         shell: msys2 {0}
         run: |
