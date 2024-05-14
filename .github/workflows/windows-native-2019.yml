@@ -44,10 +44,10 @@ jobs:
       - name: download cygwin php runtime
         shell: msys2 {0}
         run: |
-          bash setup-php-runtime.sh
+          pacman -Syy --noconfirm php
           pwd
           ls -lh swoole-cli-v*-cygwin-x64/
-          swoole-cli-v*-cygwin-x64/bin/swoole-cli -v
+
 
       - name: prepare source code
         shell: cmd
