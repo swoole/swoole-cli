@@ -63,13 +63,13 @@ jobs:
           : 本命令无效 ，只是为了看输出
           call php-sdk-binary-tools\phpsdk-vs16-x64.bat
 
-      - name: "Install PHP for official runners"
-        uses: "shivammathur/setup-php@v2"
-        with:
-          coverage: none
-          tools: composer:v2
-          php-version: 8.2
-          ini-values: memory_limit=-1
+#      - name: "Install PHP for official runners"
+#        uses: "shivammathur/setup-php@v2"
+#        with:
+#          coverage: none
+#          tools: composer:v2
+#          php-version: 8.2
+#          ini-values: memory_limit=-1
 
       - name: Set PHP SDK  Github ENV variables
         run: |
