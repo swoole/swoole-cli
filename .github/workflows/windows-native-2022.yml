@@ -9,13 +9,13 @@ env:
 
 jobs:
   windows-native:
-    if: 0
+    if: 1
     runs-on: windows-2022
     strategy:
       matrix:
         php-version:
-          - "8.2.13"
-          - "8.1.27"
+        #  - "8.2.13"
+        #  - "8.1.27"
           - "8.3.7"
 
     steps:
@@ -37,7 +37,7 @@ jobs:
 #            curl git
 
       - uses: actions/setup-dotnet@v1
-      - uses: ilammy/msvc-dev-cmd@v1.9.0
+      - uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
           arch: amd64
 
