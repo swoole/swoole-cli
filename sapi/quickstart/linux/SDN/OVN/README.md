@@ -27,8 +27,11 @@ ovn-nbctl list acl
 ovn-sbctl show
 ovn-nbctl find logical_router_policy priority=100
 
-ovn-nbctl list logical_router_port
 
+ovn-nbctl list logical_router
+ovn-nbctl list logical_router_port
+ovn-nbctl list logical_switch
+ovn-nbctl list logical_switch_port
 
 ```
 
