@@ -237,6 +237,7 @@ make_build() {
     make -j <?= $this->maxJob ?> ;
 
 <?php if ($this->isMacos()) : ?>
+    xattr -cr <?= $this->getWorkDir() ?>/bin/swoole-cli
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php else : ?>
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
