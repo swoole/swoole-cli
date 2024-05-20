@@ -75,7 +75,7 @@ if [ ${WITH_UPDATE} -eq 1 ] ; then
 fi
 
 brew install wget curl libtool automake re2c llvm flex bison
-brew install libtool coreutils libunistring pkg-config cmake
+brew install libtool gettext coreutils libunistring pkg-config cmake
 # macos 环境下 Homebrew packages :   coreutils binutils 不兼容
 # 详见： https://github.com/pyenv/pyenv/wiki/Common-build-problems#keg-only-homebrew-packages-are-forcibly-linked--added-to-path
 which glibtool

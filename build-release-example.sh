@@ -68,7 +68,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-# 构建环境依赖
+# 构建环境依赖检查
 CMD_NUMS=0
 CMDS=("flex" "pkg-config" "cmake" "re2c" "bison" "curl" "automake" "libtool" "clang" "xz" "zip" "unzip" "autoconf")
 CMDS_ARR_LEN=${#CMDS[@]}
