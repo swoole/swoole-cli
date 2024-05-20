@@ -59,7 +59,7 @@ git submodule update --init
 cd swoole-cli
 
 bash setup-php-runtime.sh
-# 或者
+# 或者使用镜像
 bash setup-php-runtime.sh --mirror china
 
 ```
