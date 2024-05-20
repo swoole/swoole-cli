@@ -87,7 +87,7 @@ PACKAGES_2=(libtool gettext coreutils libunistring pkg-config cmake)
 
 PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}")
 for PACKAGE in "${PACKAGES[@]}"; do
-  brew list "$PACKAGE" || brew install "$PACKAGE"
+  brew list "$PACKAGE" &>/dev/null || brew install "$PACKAGE"
 done
 
 
