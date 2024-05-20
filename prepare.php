@@ -12,17 +12,18 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 
+# clean
 # clean old make.sh
-if (file_exists(__DIR__ . '/make.sh')) {
-    unlink(__DIR__ . '/make.sh');
-    unlink(__DIR__ . '/make-install-deps.sh');
-    unlink(__DIR__ . '/make-env.sh');
-    unlink(__DIR__ . '/make-export-variables.sh');
-}
+$p->cleanFile(__DIR__ . '/make.sh');
+$p->cleanFile(__DIR__ . '/make-install-deps.sh');
+$p->cleanFile(__DIR__ . '/make-env.sh');
+$p->cleanFile(__DIR__ . '/make-export-variables.sh');
+$p->cleanFile(__DIR__ . '/make-download-box.sh');
+$p->cleanFile(__DIR__ . '/cppflags.log');
+$p->cleanFile(__DIR__ . '/ldflags.log');
+$p->cleanFile(__DIR__ . '/libs.log');
+$p->cleanFile(__DIR__ . '/configure.backup');
 
-if (file_exists(__DIR__ . '/make-download-box.sh')) {
-    unlink(__DIR__ . '/make-download-box.sh');
-}
 
 // Sync code from php-src
 $p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
