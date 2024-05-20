@@ -14,7 +14,6 @@ fi
 
 cd ${__PROJECT__}
 
-
 set -x
 
 # shellcheck disable=SC2034
