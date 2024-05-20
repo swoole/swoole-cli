@@ -11,16 +11,17 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 # clean old make.sh
-if (file_exists(__DIR__ . '/make.sh') && file_exists($homeDir . '/make-install-deps.sh')) {
-    unlink(__DIR__ . '/make.sh');
-    unlink(__DIR__ . '/make-install-deps.sh');
-    unlink(__DIR__ . '/make-env.sh');
-    unlink(__DIR__ . '/make-export-variables.sh');
-}
+$p->cleanFile(__DIR__ . '/make.sh');
+$p->cleanFile(__DIR__ . '/make-install-deps.sh');
+$p->cleanFile(__DIR__ . '/make-env.sh');
+$p->cleanFile(__DIR__ . '/make-export-variables.sh');
+$p->cleanFile(__DIR__ . '/make-download-box.sh');
+$p->cleanFile(__DIR__ . '/cppflags.log');
+$p->cleanFile(__DIR__ . '/ldflags.log');
+$p->cleanFile(__DIR__ . '/libs.log');
+$p->cleanFile(__DIR__ . '/configure.backup');
 
-if (file_exists(__DIR__ . '/make-download-box.sh')) {
-    unlink(__DIR__ . '/make-download-box.sh');
-}
+
 
 # PHP 默认版本 （此文件配置 /sapi/PHP-VERSION.conf 在 build_native_php分支 和 衍生分支 无效）
 $php_version = '8.2.13';

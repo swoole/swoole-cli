@@ -74,6 +74,5 @@ if [[ $ACTION = "delete" ]]; then
   test -f conftest.c && rm -rf conftest.c
   test -d scripts && rm -rf scripts
   test -d sapi/cli && rm -rf sapi/cli/
-  test -f composer.lock && rm -rf composer.lock
   echo $?
 fi
