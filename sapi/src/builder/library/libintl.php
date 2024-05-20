@@ -17,7 +17,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.gnu.org/software/gettext/')
             ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
             ->withManual('https://www.gnu.org/software/gettext/')
-            ->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.22.tar.xz')
+            //->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.22.tar.xz')
+            ->withUrl('https://ftpmirror.gnu.org/gnu/gettext/gettext-0.22.tar.xz')
             ->withPrefix($libintl_prefix)
             ->withConfigure(
                 <<<EOF

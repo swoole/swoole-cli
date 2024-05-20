@@ -11,7 +11,7 @@ $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
 # clean old make.sh
-if (file_exists(__DIR__ . '/make.sh')) {
+if (file_exists(__DIR__ . '/make.sh') && file_exists($homeDir . '/make-install-deps.sh')) {
     unlink(__DIR__ . '/make.sh');
     unlink(__DIR__ . '/make-install-deps.sh');
     unlink(__DIR__ . '/make-env.sh');
