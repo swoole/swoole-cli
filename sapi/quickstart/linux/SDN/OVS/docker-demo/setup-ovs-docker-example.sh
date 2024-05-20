@@ -3,7 +3,7 @@
 set -x
 
 docker inspect demo -f '{{.Name}}' > /dev/null
-if [[ $? -eq 0 ]] ; then
+if [[ "$?" -eq 0 ]] ; then
   docker stop demo
   docker rm demo
 fi
@@ -12,7 +12,7 @@ docker run --name demo  -d --network=none  alpine:edge tail -f /dev/null
 
 PORT=$(ovs-vsctl --data=bare --no-heading --columns=name find interface external_ids:container_id=demo)
 
-if [[ -n $PORT ]] ; then
+if [[ -n "$PORT" ]] ; then
   ovs-vsctl del-port br-int $PORT
 fi
 
