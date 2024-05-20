@@ -54,7 +54,7 @@ git clone --recursive -b build_native_php  https://github.com/swoole/swoole-cli.
 cd swoole-cli
 
 bash setup-php-runtime.sh
-# 或者
+# 或者使用镜像
 bash setup-php-runtime.sh --mirror china
 
 ```
