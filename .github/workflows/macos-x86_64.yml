@@ -107,6 +107,7 @@ jobs:
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
+          rm -rf /usr/local/swoole-cli/*
 
       - name: prepare
         run: |

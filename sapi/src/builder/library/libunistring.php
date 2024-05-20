@@ -12,6 +12,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.gnu.org/software/libunistring/')
             ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
             ->withUrl('https://ftp.gnu.org/gnu/libunistring/libunistring-1.1.tar.gz')
+            ->withUrl('https://ftpmirror.gnu.org/gnu/libunistring/libunistring-1.1.tar.gz')
             ->withPrefix($libunistring_prefix)
             ->withConfigure(
                 <<<EOF
