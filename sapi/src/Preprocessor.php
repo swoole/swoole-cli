@@ -1223,4 +1223,13 @@ EOF;
     {
         return isset($this->extensionMap[$ext]);
     }
+
+    public function cleanFile(string $file): bool
+    {
+        if (is_file($file)) {
+            unlink($file);
+            return true;
+        }
+        return false;
+    }
 }
