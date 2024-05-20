@@ -14,7 +14,6 @@ fi
 
 cd ${__PROJECT__}
 
-
 set -x
 
 # shellcheck disable=SC2034
@@ -48,6 +47,8 @@ WITH_PHP_COMPOSER=1
 MIRROR='china'
 MIRROR=''
 
+# 依赖库默认安装目录
+LIBRARY_INSTALL_PREFIX=/usr/local/swoole-cli
 
 OPTIONS=''
 
@@ -93,14 +94,23 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+# 构建环境依赖检查
+CMDS_NUMS=0
+CMDS=("flex" "pkg-config" "cmake" "re2c" "bison" "curl" "automake" "libtool" "clang" "xz" "zip" "unzip" "autoconf")
+CMDS_ARRAY_LEN=${#CMDS[@]}
+for cmd in "${CMDS[@]}"; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+        # echo "$cmd exists"
+        ((CMDS_NUMS++))
+    fi
+done
 
 if [ "$OS" = 'linux' ] ; then
     OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release |tr -d '\n' | tr -d '\"')
 
     if [ -f /.dockerenv ]; then
         IN_DOCKER=1
-        number=$(which flex  | wc -l)
-        if test $number -eq 0 ;then
+        if test $CMDS_ARRAY_LEN -ne $CMDS_NUMS ;then
         {
             if [ "$MIRROR" = 'china' ] ; then
                 if [ "$OS_RELEASE" = 'alpine' ]; then
@@ -136,8 +146,7 @@ if [ "$OS" = 'linux' ] ; then
 fi
 
 if [ "$OS" = 'macos' ] ; then
-  number=$(which flex  | wc -l)
-  if test $number -eq 0 ; then
+  if test $CMDS_ARRAY_LEN -ne $CMDS_NUMS ; then
   {
         if [ "$MIRROR" = 'china' ] ; then
             bash sapi/quickstart/macos/macos-init.sh --mirror china
@@ -146,6 +155,15 @@ if [ "$OS" = 'macos' ] ; then
         fi
   }
   fi
+  OWNER=$(stat -f "%Su" "${LIBRARY_INSTALL_PREFIX}")
+  CURRENT_USER=$(whoami)
+  if test "${OWNER}" != "${CURRENT_USER}" ; then
+    id -u ${CURRENT_USER}
+    echo "创建目录： ${LIBRARY_INSTALL_PREFIX} ，并修改所属者为： ${CURRENT_USER} "
+    sudo mkdir -p ${LIBRARY_INSTALL_PREFIX}
+    CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff ${LIBRARY_INSTALL_PREFIX}
+  fi
+
 fi
 
 bash sapi/quickstart/clean-folder.sh
@@ -213,13 +231,15 @@ fi
 OPTIONS='+apcu +ds +xlswriter +ssh2'
 OPTIONS="${OPTIONS} "
 OPTIONS="${OPTIONS} --with-libavif=1"
+OPTIONS="${OPTIONS} --with-global-prefix=${LIBRARY_INSTALL_PREFIX}"
 # OPTIONS="${OPTIONS} @macos"
 
 
 if [ ${IN_DOCKER} -eq 1 ] ; then
 {
 # 容器中
-  php prepare.php +inotify ${OPTIONS}
+
+  php prepare.php +inotify  ${OPTIONS}
 
 } else {
 # 容器外

@@ -517,6 +517,7 @@ make_build_old() {
     <?php endif ;?>
 
 <?php if ($this->isMacos()) : ?>
+    xattr -cr <?= $this->phpSrcDir  ?>/sapi/cli/php
     otool -L <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php else : ?>
     file <?= $this->phpSrcDir  ?>/sapi/cli/php

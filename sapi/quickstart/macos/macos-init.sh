@@ -74,13 +74,26 @@ if [ ${WITH_UPDATE} -eq 1 ] ; then
 
 fi
 
-brew install wget curl libtool automake re2c llvm flex bison
-brew install gettext coreutils libunistring
+
+
+# brew install wget curl libtool automake re2c llvm flex bison
+# brew install libtool gettext coreutils libunistring pkg-config cmake
 # macos 环境下 Homebrew packages :   coreutils binutils 不兼容
 # 详见： https://github.com/pyenv/pyenv/wiki/Common-build-problems#keg-only-homebrew-packages-are-forcibly-linked--added-to-path
-brew install  jq mercurial
+# brew install  jq mercurial
+
+# 已安装的包 跳过安装
+PACKAGES_1=(wget curl libtool automake re2c llvm flex bison)
+PACKAGES_2=(libtool gettext coreutils libunistring pkg-config cmake)
+PACKAGES_3=(jq mercurial)
+
+PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}" "${PACKAGES_3[@]}")
+for PACKAGE in "${PACKAGES[@]}"; do
+  brew list "$PACKAGE" &>/dev/null || brew install "$PACKAGE"
+done
 
 which glibtool
+
 
 # maocs intel
 #  HOMEBREW_PREFIX: /usr/local
@@ -108,6 +121,7 @@ libtoolize --version
 libtool --help-all
 
 which glibtool
+which libtool
 
 brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
