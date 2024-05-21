@@ -111,7 +111,8 @@ if [ $OS = 'windows' ]; then
     test -d ${__PROJECT__}/${SWOOLE_CLI_RUNTIME} && rm -rf ${__PROJECT__}/${SWOOLE_CLI_RUNTIME}
     cp -f composer.phar ${SWOOLE_CLI_RUNTIME}/bin/
     #cp -f ${SWOOLE_CLI_RUNTIME}/bin/swoole-cli.exe ${SWOOLE_CLI_RUNTIME}/bin/php.exe
-    mv ${SWOOLE_CLI_RUNTIME} ${__PROJECT__}
+    test -d ${__PROJECT__}/runtime/ && rm -rf ${__PROJECT__}/runtime/
+    mv ${SWOOLE_CLI_RUNTIME}/ ${__PROJECT__}/runtime/
     echo
     exit 0
   }
