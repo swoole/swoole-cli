@@ -8,16 +8,9 @@ __CURRENT_DIR__=$(cd "$(dirname "$0")";pwd)
 echo " install deps "
 
 <?php if ($this->osType == 'macos') : ?>
-
-{
     <?php foreach ($this->preInstallCommands['macos'] as $item) :?>
         <?= $item . PHP_EOL ?>
     <?php endforeach ;?>
-
-} || {
-    echo $?
-}
-
 <?php endif ;?>
 
 <?php if ($this->osType == 'linux') : ?>
