@@ -21,7 +21,7 @@ case $OS in
   ;;
 *)
   case $OS in
-  'MSYS_NT'*)
+  'MSYS_NT'* | 'CYGWIN_NT'* )
     OS="windows"
     ;;
   'MINGW64_NT'*)
