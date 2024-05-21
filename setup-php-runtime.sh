@@ -112,7 +112,7 @@ if [ $OS = 'windows' ]; then
     #cp -f ${SWOOLE_CLI_RUNTIME}/bin/swoole-cli.exe ${SWOOLE_CLI_RUNTIME}/bin/php.exe
     test -d ${__PROJECT__}/runtime/ && rm -rf ${__PROJECT__}/runtime/
     mv ${SWOOLE_CLI_RUNTIME}/ ${__PROJECT__}/runtime/
-    cp -f ${__PROJECT__}/runtime/swoole-cli.exe ${__PROJECT__}/runtime/php.exe
+    cp -f ${__PROJECT__}/runtime/bin/swoole-cli.exe ${__PROJECT__}/runtime/bin/php.exe
     echo
     exit 0
   }
