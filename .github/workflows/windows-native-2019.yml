@@ -49,9 +49,11 @@ jobs:
           curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
           unzip -d php-8.2.19-nts-Win32-vs16-x64 php-8.2.19-nts-Win32-vs16-x64.zip
           ls -lha .
+          pwd
           cp -f php-8.2.19-nts-Win32-vs16-x64/php.ini-production php-8.2.19-nts-Win32-vs16-x64/php.ini
           mkdir -p bin/runtime/
           curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
+
           echo 'extension_dir="${{ github.workspace }}\php-8.2.19-nts-Win32-vs16-x64\ext" ' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
           echo 'extension=php_curl.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
           echo 'extension=php_bz2.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
