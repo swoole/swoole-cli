@@ -23,7 +23,7 @@ mkdir -p ${__DIR__}/ext
 
 EOF;
 
-    protected function generateLibraryDownloadLinks(): void
+    protected function generateDownloadLinks(): void
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
@@ -34,6 +34,8 @@ EOF;
         $download_commands = ['POOL=$(realpath ${__DIR__}/../../pool/)'];
         $download_commands[] = PHP_EOL;
 
+        $extract_files = [];
+
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
             echo $item->name . PHP_EOL;
@@ -42,6 +44,9 @@ EOF;
                 $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
 
                 $download_commands[] = "test -f \${POOL}/ext/{$item->file} || curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry} -Lo ext/{$item->file} {$item->url}" . PHP_EOL;
+
+                $extract_files[] = "mkdir -p ext/{$item->name}" . PHP_EOL;
+                $extract_files[] = "tar --strip-components=1 -C ext/{$item->name} -xf pool/ext/{$item->file}" . PHP_EOL;
             }
         }
         file_put_contents($this->getRootDir() . '/var/download-box/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
@@ -66,6 +71,10 @@ cd {$workDir}
 EOF;
 
                 $download_scripts[] = $downloadScript . PHP_EOL;
+
+                $extract_files[] = "mkdir -p ext/{$item->name}" . PHP_EOL;
+                $extract_files[] = "tar --strip-components=1 -C ext/{$item->name} -xf pool/ext/{$item->file}" . PHP_EOL;
+
             }
         }
         file_put_contents(
@@ -89,6 +98,10 @@ EOF;
                 $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
 
                 $download_commands[] = "test -f \${POOL}/lib/{$item->file} || curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry} -Lo lib/{$item->file} {$item->url}" . PHP_EOL;
+
+                $extract_files[] = "mkdir -p thirdparty/{$item->name}" . PHP_EOL;
+                $extract_files[] = "tar --strip-components=1 -C thirdparty/{$item->name} -xf pool/lib/{$item->file}" . PHP_EOL;
+
             }
         }
         file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt',
@@ -121,6 +134,11 @@ cd {$workDir}
 EOF;
 
                 $download_scripts[] = $downloadScript . PHP_EOL;
+
+
+                $extract_files[] = "mkdir -p thirdparty/{$item->name}" . PHP_EOL;
+                $extract_files[] = "tar --strip-components=1 -C thirdparty/{$item->name} -xf pool/lib/{$item->file}" . PHP_EOL;
+
             }
         }
         file_put_contents(
@@ -128,5 +146,11 @@ EOF;
             $this->downloadScriptHeader . PHP_EOL .
             implode(PHP_EOL, $download_scripts)
         );
+
+        file_put_contents(
+            $this->rootDir . '/var/download-box/extract-files.sh',
+            implode(PHP_EOL, $extract_files)
+        );
+
     }
 }

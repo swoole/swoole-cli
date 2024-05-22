@@ -1159,7 +1159,7 @@ EOF;
         $this->setExtensionDependency();
 
         if ($this->getInputOption('skip-download')) {
-            $this->generateLibraryDownloadLinks();
+            $this->generateDownloadLinks();
         }
 
         $this->generateFile(__DIR__ . '/template/make-install-deps.php', $this->rootDir . '/make-install-deps.sh');

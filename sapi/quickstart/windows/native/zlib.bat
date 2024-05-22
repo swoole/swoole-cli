@@ -1,10 +1,5 @@
 @echo off
 
-cmake --version
-
-mkdir thirdparty\zlib
-
-tar --strip-components=1 -C thirdparty\zlib -xf pool\lib\zlib-1.3.tar.gz
 
 cd thirdparty\zlib
 dir

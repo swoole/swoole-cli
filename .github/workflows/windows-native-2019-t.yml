@@ -75,6 +75,7 @@ jobs:
           bash var/download-box/download_library_use_script_for_windows.sh
           bash var/download-box/download_library_use_git.sh
           bash sapi/download-box/download-box-dependencies-sync.sh
+          bash var/download-box/extract-files.sh
 
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
@@ -150,8 +151,8 @@ jobs:
           perl -v
           nasm -v
 
-          cmd /c  sapi\quickstart\windows\zlib.bat
-          cmd /c  sapi\quickstart\windows\openssl.bat
+          cmd /c  sapi\quickstart\windows\native\zlib.bat
+          cmd /c  sapi\quickstart\windows\native\openssl.bat
 
 
       - name: build php
@@ -160,7 +161,7 @@ jobs:
           cd php-src
           cmd /c buildconf
           cmd /c configure --help
-          cmd /c ${CURRENT_DIR}\sapi\quickstart\windows\build-php.bat
+          cmd /c ${CURRENT_DIR}\sapi\quickstart\windows\build-native-php.bat
           cmd /c nmake
 
           cd ${CURRENT_DIR}\
