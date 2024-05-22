@@ -152,7 +152,7 @@ jobs:
           cd php-src
           call buildconf
           call configure --help
-          call configure --disable-all  --disable-cgi --enable-cli --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  --enable-xmlreader  --enable-xmlwriter
+          call configure --disable-all  --disable-cgi --enable-cli --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  --enable-xmlreader  --enable-xmlwriter --enable-zlib
           call nmake
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
