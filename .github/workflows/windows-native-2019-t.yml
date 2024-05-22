@@ -156,13 +156,16 @@ jobs:
 
       - name: build php
         run: |
+          $CURRENT_DIR = Get-Location
           cd php-src
           cmd /c buildconf
           cmd /c configure --help
-          cmd /c sapi\quickstart\windows\build-php.bat
+          cmd /c ${CURRENT_DIR}\sapi\quickstart\windows\build-php.bat
           cmd /c nmake
-          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
-          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
+
+          cd ${CURRENT_DIR}\
+          php-src\x64\Release_TS\php.exe -v
+          php-src\x64\Release_TS\php.exe -m
 
 
       - name: test set env in cmd
