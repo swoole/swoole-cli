@@ -85,6 +85,7 @@ jobs:
           ls -lh nasm
 
           curl -Lo strawberry-perl-5.38.2.2-64bit.msi https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit.msi
+          dir
 
       - name: install  soft
         shell: cmd
@@ -92,12 +93,14 @@ jobs:
           : 命令行安装 msi
           : msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
           msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
-          dir
+
           SET  CURRENT_DIR=%cd%
           echo %CURRENT_DIR%
-          echo "PATH=%PATH%;%CURRENT_DIR%\nasm\" >> $Env:GITHUB_ENV
+          set   PATH="%CURRENT_DIR%\nasm\nasm-2.16.03\;%CURRENT_DIR%\php\;%PATH%"
 
-      - name: show phpsdk env
+          echo "PATH=%PATH%;" >> $Env:GITHUB_ENV
+
+      - name: show PHPSDK env
         shell: cmd
         run: |
 
@@ -133,6 +136,7 @@ jobs:
           echo "PHP_SDK_VS=vs17" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
+
           SET  CURRENT_DIR=%cd%
           echo %CURRENT_DIR%
           set   PATH="D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%CURRENT_DIR%\php\;%PATH%"
