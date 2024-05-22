@@ -87,10 +87,10 @@ jobs:
           curl -Lo strawberry-perl-5.38.2.2-64bit.msi https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit.msi
           dir
 
-      - name: install  soft
+      - name: install  soft and set env path
         shell: cmd
         run: |
-          : 命令行安装 msi
+          : 命令行静默安装 msi
           : msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
           msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
 
@@ -98,22 +98,23 @@ jobs:
           echo %CURRENT_DIR%
           set   PATH="%CURRENT_DIR%\nasm\nasm-2.16.03\;%CURRENT_DIR%\php\;%PATH%"
 
-          echo "PATH=%PATH%;" >> $Env:GITHUB_ENV
-
-      - name: show PHPSDK env
-        shell: cmd
-        run: |
-
-          : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
-
-          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar config -g repos.packagist composer https://packagist.org
-          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-dist -vvv --profile --no-dev
-          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-source  -vvv --profile --no-dev
-
-          : swoole-cli.exe prepare.php --without-docker=1 --skip-download=1
-
-          : 本命令无效 ，只是为了看输出
-          call php-sdk-binary-tools\phpsdk-vs16-x64.bat
+          echo "PATH=%PATH%" >> $Env:GITHUB_ENV
+          echo %PATH%
+#
+#      - name: show PHPSDK env
+#        shell: cmd
+#        run: |
+#
+#          : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
+#
+#          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar config -g repos.packagist composer https://packagist.org
+#          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-dist -vvv --profile --no-dev
+#          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-source  -vvv --profile --no-dev
+#
+#          : swoole-cli.exe prepare.php --without-docker=1 --skip-download=1
+#
+#          : 本命令无效 ，只是为了看输出
+#          call php-sdk-binary-tools\phpsdk-vs16-x64.bat
 
 #      - name: "Install PHP for official runners"
 #        uses: "shivammathur/setup-php@v2"
@@ -139,8 +140,9 @@ jobs:
 
           SET  CURRENT_DIR=%cd%
           echo %CURRENT_DIR%
-          set   PATH="D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%CURRENT_DIR%\php\;%PATH%"
+          set   PATH="D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
           echo "PATH=%PATH%"  >> $Env:GITHUB_ENV
+          echo %PATH%
 
 
       - name: build all library
