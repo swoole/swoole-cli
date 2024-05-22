@@ -156,11 +156,10 @@ jobs:
 
       - name: build php
         run: |
-
           cd php-src
           cmd /c buildconf
           cmd /c configure --help
-          cmd /c configure --disable-all  --disable-cgi --enable-cli --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  --enable-xmlreader  --enable-xmlwriter --enable-zlib
+          cmd /c sapi\quickstart\windows\build-php.bat
           cmd /c nmake
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
