@@ -15,7 +15,8 @@ cmake .. ^
 -DUSE_GNUTLS=OFF ^
 -DUSE_MBEDTLS=OFF ^
 -DENABLE_WEBSOCKETS=OFF ^
--DCURL_USE_LIBSSH2=OFF
+-DCURL_USE_LIBSSH2=OFF ^
+-DCMAKE_PREFIX_PATH="C:/Program Files/OpenSSL/;C:/Program Files (x86)/zlib/"
 
 
 cmake --build . --config Release --target install
