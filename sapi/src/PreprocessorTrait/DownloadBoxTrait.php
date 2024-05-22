@@ -78,9 +78,17 @@ EOF;
                     $url = implode("\t", $newMirrorUrls);
                 }
                 $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
+                $download_commands[] = "curl -Lo {$item->file} {$url}" . PHP_EOL;
             }
         }
-        file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt', implode(PHP_EOL, $download_urls));
+        file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt',
+            implode(PHP_EOL, $download_urls)
+        );
+        file_put_contents(
+            $this->rootDir . '/var/download-box/download_library_use_script_for_windows.sh',
+            $this->downloadScriptHeader . PHP_EOL .
+            implode(PHP_EOL, $download_commands)
+        );
 
 
         $download_scripts = [];
