@@ -36,7 +36,6 @@ jobs:
           install: >-
             curl git zip unzip tar xz
 
-      - uses: actions/setup-dotnet@v1
       - uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
           arch: amd64
