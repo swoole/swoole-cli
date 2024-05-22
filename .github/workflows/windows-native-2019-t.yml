@@ -80,6 +80,8 @@ jobs:
           git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
 
+          cp -rf ext/* php-src/ext/
+
           # https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/
           curl -Lo nasm-2.16.03-win64.zip https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/win64/nasm-2.16.03-win64.zip
           unzip -d nasm nasm-2.16.03-win64.zip
@@ -146,7 +148,6 @@ jobs:
       - name: build all library
         shell: cmd
         run: |
-          ： 脚本所在目录
           echo %cd%
           perl -v
           nasm -v
