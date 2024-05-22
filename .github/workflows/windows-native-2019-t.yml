@@ -139,13 +139,12 @@ jobs:
       - name: build library
         shell: cmd
         run: |
-          echo %~dp0
+          ： 脚本所在目录
           echo %cd%
-          SET  CURRENT_DIR=%~dp0
+          SET  CURRENT_DIR=%cd%
 
           : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
           : swoole-cli.exe -v
-
 
           set PHP_SDK_ARCH=x64
           set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
@@ -169,9 +168,7 @@ jobs:
       - name: build php
         shell: cmd
         run: |
-          echo %~dp0
-          echo %cd%
-          SET  CURRENT_DIR=%~dp0
+          SET  CURRENT_DIR=%cd%
 
           call sapi\quickstart\windows\zlib.bat
           cd %CURRENT_DIR%
