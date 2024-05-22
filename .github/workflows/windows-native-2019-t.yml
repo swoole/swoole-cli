@@ -34,7 +34,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           install: >-
-            curl git zip unzip tar xz aria2c
+            curl git zip unzip tar xz aria2
 
       - uses: actions/setup-dotnet@v1
       - uses: ilammy/msvc-dev-cmd@v1.13.0
