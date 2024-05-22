@@ -87,13 +87,14 @@ jobs:
           curl -Lo strawberry-perl-5.38.2.2-64bit.msi https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit.msi
           dir
 
-      - name: install  soft and set env path
+      - name: Install Soft And  Set  Github ENV variables
+
         run: |
           # 命令行静默安装 msi
           # msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
           msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
 
-          set   X_PATH="%cd%\nasm\nasm-2.16.03\;%cd%\php\;$env:PATH"
+          $X_PATH="%cd%\nasm\nasm-2.16.03\;%cd%\php\;$env:PATH"
           echo %X_PATH%
           echo "PATH=%X_PATH%" >> $Env:GITHUB_ENV
 
@@ -136,7 +137,7 @@ jobs:
           echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
 
-          set   X_PATH="%cd%\php-sdk-binary-tools\bin;%cd%\php-sdk-binary-tools\msys2\usr\bin;$env:PATH"
+          $X_PATH="%cd%\php-sdk-binary-tools\bin;%cd%\php-sdk-binary-tools\msys2\usr\bin;$env:PATH"
           echo %X_PATH%
           echo "PATH=%X_PATH%"  >> $Env:GITHUB_ENV
 
