@@ -157,6 +157,22 @@ jobs:
         run: |
           ： 脚本所在目录
           echo %cd%
+
+          cd php-src
+          call buildconf
+          call configure --help
+          call configure --disable-all  --disable-cgi --enable-cli --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  --enable-xmlreader  --enable-xmlwriter --enable-zlib
+          call nmake
+          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
+          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
+
+
+      - name: test set env in cmd
+        if: 0
+        shell: cmd
+        run: |
+          ： 脚本所在目录
+          echo %cd%
           SET  CURRENT_DIR=%cd%
 
           : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
@@ -187,4 +203,7 @@ jobs:
           call nmake
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
+
+
+
 
