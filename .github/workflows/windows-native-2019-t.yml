@@ -1,0 +1,139 @@
+name: build-php-cli-windows-2019
+
+on:
+  push:
+  pull_request:
+
+env:
+  BUILD_PHP_VERSION: 8.2.13
+
+jobs:
+  windows-native:
+    if: 1
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        php-version:
+        #  - "8.2.13"
+        #  - "8.1.27"
+          - "8.3.7"
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: show environment info
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          env
+          ipconfig
+          uname -a
+          pwd
+          ipconfig /all
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          install: >-
+            curl git zip unzip tar xz
+
+      - uses: actions/setup-dotnet@v1
+      - uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: amd64
+
+      - name: download cygwin php runtime
+        shell: msys2 {0}
+        run: |
+          # bash setup-php-runtime.sh
+          # bash sapi/download-box/download-box-get-archive-from-server.sh
+          curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
+          unzip -d php-8.2.19-nts-Win32-vs16-x64 php-8.2.19-nts-Win32-vs16-x64.zip
+          ls -lha .
+          pwd
+          cp -f php-8.2.19-nts-Win32-vs16-x64/php.ini-production php-8.2.19-nts-Win32-vs16-x64/php.ini
+          mkdir -p bin/runtime/
+          curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
+
+          echo 'extension_dir="${{ github.workspace }}\php-8.2.19-nts-Win32-vs16-x64\ext" ' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension=php_curl.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension=php_bz2.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension=php_openssl.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension=php_fileinfo.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+
+          php-8.2.19-nts-Win32-vs16-x64/php -v
+          php-8.2.19-nts-Win32-vs16-x64/php -m
+          php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar install  --no-interaction --no-autoloader --no-scripts --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
+          php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar dump-autoload --optimize --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
+          php-8.2.19-nts-Win32-vs16-x64/php prepare.php --without-docker=1
+
+      - name: prepare source code
+        shell: cmd
+        run: |
+          git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
+          git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
+          set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
+
+          swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar config -g repos.packagist composer https://packagist.org
+          swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-dist -vvv --profile --no-dev
+          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-source  -vvv --profile --no-dev
+
+          swoole-cli.exe prepare.php --without-docker=1 --skip-download=1
+
+          : 本命令无效 ，只是为了看输出
+          call php-sdk-binary-tools\phpsdk-vs16-x64.bat
+
+#      - name: "Install PHP for official runners"
+#        uses: "shivammathur/setup-php@v2"
+#        with:
+#          coverage: none
+#          tools: composer:v2
+#          php-version: 8.2
+#          ini-values: memory_limit=-1
+#
+#      - name: Set PHP SDK  Github ENV variables
+#        run: |
+#          echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_OS_ARCH=x64" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_VC_TOOLSET_VER=$env:VCToolsVersion" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_VS=vs17" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
+#          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
+#          echo "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"  >> $Env:GITHUB_ENV
+
+      - name: test
+        shell: cmd
+        run: |
+          set
+          echo %~dp0
+          echo %cd%
+          SET  CURRENT_DIR=%~dp0
+          set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
+          echo %PATH%
+          swoole-cli.exe -v
+          set PHP_SDK_ARCH=x64
+          set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
+          set PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin
+          set PHP_SDK_OS_ARCH=x64
+          set PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat
+          set PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools
+          set "PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2019\Enterprise\VC"
+          set "PHP_SDK_VC_TOOLSET_VER=%VCToolsVersion%"
+          set PHP_SDK_VS=vs16
+          set PHP_SDK_VS_NUM=16
+          set "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64"
+          set "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
+
+          set
+          cd php-src
+          call buildconf
+          call configure --help
+          call configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
+          call nmake
+          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
+          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
+
