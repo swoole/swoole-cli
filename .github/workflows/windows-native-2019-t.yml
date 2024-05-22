@@ -89,8 +89,8 @@ jobs:
 
       - name: install  soft and set env path
         run: |
-          : 命令行静默安装 msi
-          : msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
+          # 命令行静默安装 msi
+          # msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
           msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
 
           set   X_PATH="%cd%\nasm\nasm-2.16.03\;%cd%\php\;$env:PATH"
@@ -141,6 +141,7 @@ jobs:
           echo "PATH=%X_PATH%"  >> $Env:GITHUB_ENV
 
       - name: build all library
+        shell: cmd
         run: |
           ： 脚本所在目录
           echo %cd%
