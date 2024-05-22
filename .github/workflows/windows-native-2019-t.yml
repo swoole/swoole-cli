@@ -20,6 +20,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: amd64
       - name: show environment info
         run: |
           git config --global core.autocrlf false
@@ -36,9 +39,7 @@ jobs:
           install: >-
             curl git zip unzip tar xz
 
-      - uses: ilammy/msvc-dev-cmd@v1.13.0
-        with:
-          arch: amd64
+
 
       - name: download library and  php runtime
         shell: msys2 {0}
