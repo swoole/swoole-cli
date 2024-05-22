@@ -41,7 +41,7 @@ jobs:
 
 
 
-      - name: download library and  php runtime
+      - name: prepare build environment and download source code
         shell: msys2 {0}
         run: |
           CURRENT_DIR=$(pwd)
@@ -77,11 +77,12 @@ jobs:
           bash var/download-box/download_library_use_git.sh
           bash sapi/download-box/download-box-dependencies-sync.sh
 
+          git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
+          git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
+
       - name: prepare source code
         shell: cmd
         run: |
-          git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
-          git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
 
           : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
 
