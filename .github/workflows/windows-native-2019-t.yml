@@ -44,7 +44,7 @@ jobs:
       - name: download library and  php runtime
         shell: msys2 {0}
         run: |
-          CURRENT_DIR=$(cd "$(dirname "$0")" ; pwd )
+          CURRENT_DIR=$(pwd)
           echo $CURRENT_DIR
 
           # bash setup-php-runtime.sh
