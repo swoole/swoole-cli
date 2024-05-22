@@ -69,6 +69,7 @@ jobs:
           php -m
           php bin/runtime/composer.phar install  --no-interaction --no-autoloader --no-scripts --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
           php bin/runtime/composer.phar dump-autoload --optimize --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
+
           php prepare.php --without-docker=1 --skip-download=1 --with-libavif=1 +uuid +apcu +ds +xlswriter +ssh2
 
           ls -lh var/download-box/
@@ -151,7 +152,7 @@ jobs:
           cd php-src
           call buildconf
           call configure --help
-          call configure --disable-all  --disable-cgi --enable-cli --enable-static=yes --enable-shared=no --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar --enable-mysqlnd --enable-xml  --enable-xmlreader  --enable-xmlwriter --enable-dom --enable-simplexml
+          call configure --disable-all  --disable-cgi --enable-cli --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  --enable-xmlreader  --enable-xmlwriter
           call nmake
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
