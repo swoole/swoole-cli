@@ -94,9 +94,7 @@ jobs:
           : msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
           msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
 
-          SET  CURRENT_DIR=%cd%
-          echo %CURRENT_DIR%
-          set   PATH="%CURRENT_DIR%\nasm\nasm-2.16.03\;%CURRENT_DIR%\php\;%PATH%"
+          set   PATH="%cd%\nasm\nasm-2.16.03\;%cd%\php\;%PATH%"
 
           echo "PATH=%PATH%" >> $Env:GITHUB_ENV
           echo %PATH%
@@ -124,7 +122,7 @@ jobs:
 #          php-version: 8.2
 #          ini-values: memory_limit=-1
 #
-      - name: Set PHP SDK  Github ENV variables
+      - name: Set PHPSDK  Github ENV variables
         run: |
           echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
           echo "PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
@@ -138,9 +136,7 @@ jobs:
           echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
 
-          SET  CURRENT_DIR=%cd%
-          echo %CURRENT_DIR%
-          set   PATH="D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
+          set   PATH="%cd%\php-sdk-binary-tools\bin;%cd%\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
           echo "PATH=%PATH%"  >> $Env:GITHUB_ENV
           echo %PATH%
 
@@ -150,12 +146,9 @@ jobs:
         run: |
           ： 脚本所在目录
           echo %cd%
-          SET  CURRENT_DIR=%cd%
 
           call sapi\quickstart\windows\zlib.bat
           call sapi\quickstart\windows\openssl.bat
-          cd %CURRENT_DIR%
-          echo %cd%
 
 
       - name: build php
