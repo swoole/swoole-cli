@@ -94,10 +94,10 @@ jobs:
           : msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
           msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
 
-          set   PATH="%cd%\nasm\nasm-2.16.03\;%cd%\php\;%PATH%"
+          set   X_PATH="%cd%\nasm\nasm-2.16.03\;%cd%\php\;$env:PATH"
 
-          echo "PATH=%PATH%" >> $Env:GITHUB_ENV
-          echo %PATH%
+          echo "PATH=%X_PATH%" >> $Env:GITHUB_ENV
+          echo $env:PATH
 #
 #      - name: show PHPSDK env
 #        shell: cmd
@@ -136,8 +136,8 @@ jobs:
           echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
 
-          set   PATH="%cd%\php-sdk-binary-tools\bin;%cd%\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
-          echo "PATH=%PATH%"  >> $Env:GITHUB_ENV
+          set   X_PATH="%cd%\php-sdk-binary-tools\bin;%cd%\php-sdk-binary-tools\msys2\usr\bin;$env:PATH"
+          echo "PATH=%X_PATH%"  >> $Env:GITHUB_ENV
           echo %PATH%
 
 
