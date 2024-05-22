@@ -7,6 +7,7 @@ mkdir thirdparty\zlib
 tar --strip-components=1 -C thirdpartyzlib  -xf pool\lib\zlib-1.3.tar.gz
 
 cd thirdparty\zlib
+dir
 mkdir build
 cd build
 cmake .. ^
