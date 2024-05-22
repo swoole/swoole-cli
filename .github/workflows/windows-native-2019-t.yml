@@ -147,6 +147,8 @@ jobs:
         run: |
           ： 脚本所在目录
           echo %cd%
+          perl -v
+          nasm -v
 
           cmd /c  sapi\quickstart\windows\zlib.bat
           cmd /c  sapi\quickstart\windows\openssl.bat

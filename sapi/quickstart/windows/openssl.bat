@@ -8,7 +8,7 @@ cd thirdparty\openssl
 dir
 
 
-perl Configure VC-WIN64A
+perl Configure VC-WIN64A no-shared
 
 nmake
 nmake install
