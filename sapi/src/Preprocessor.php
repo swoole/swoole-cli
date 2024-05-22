@@ -188,15 +188,20 @@ class Preprocessor
 
     public function getSystemArch(): string
     {
-        $uname = posix_uname();
-        switch ($uname['machine']) {
-            case 'x86_64':
-                return 'x64';
-            case 'aarch64':
-                return 'arm64';
-            default:
-                return $uname['machine'];
+        if (function_exists('posix_uname')) {
+            $uname = posix_uname();
+            switch ($uname['machine']) {
+                case 'x86_64':
+                    return 'x64';
+                case 'aarch64':
+                    return 'arm64';
+                default:
+                    return $uname['machine'];
+            }
+        } else {
+            return 'x64';
         }
+
     }
 
     public function getImageTag(): string
