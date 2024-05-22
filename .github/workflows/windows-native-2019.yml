@@ -34,7 +34,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           install: >-
-            curl git unzip tar xz
+            curl git zip unzip tar xz
 
       - uses: actions/setup-dotnet@v1
       - uses: ilammy/msvc-dev-cmd@v1.13.0
@@ -44,8 +44,24 @@ jobs:
       - name: download cygwin php runtime
         shell: msys2 {0}
         run: |
-          bash setup-php-runtime.sh
-          bash sapi/download-box/download-box-get-archive-from-server.sh
+          # bash setup-php-runtime.sh
+          # bash sapi/download-box/download-box-get-archive-from-server.sh
+          curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
+          unzip php-8.2.19-nts-Win32-vs16-x64.zip
+          cp -f php-8.2.19-nts-Win32-vs16-x64/php.ini-production php-8.2.19-nts-Win32-vs16-x64/php.ini
+          mkdir -p bin/runtime/
+          export PATH=$PATH:${{ github.workspace }}/php-8.2.19-nts-Win32-vs16-x64/
+          curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
+          # echo 'extension_dir="" ' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension=php_curl.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension=php_bz2.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension=php_openssl.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension=php_fileinfo.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+
+          php -v
+          php -m
+          php bin/runtime/composer.phar install  --no-interaction --no-autoloader --no-scripts
+          php bin/runtime/composer.phar dump-autoload --optimize --profile
 
       - name: prepare source code
         shell: cmd
