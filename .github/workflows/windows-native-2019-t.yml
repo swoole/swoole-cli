@@ -125,10 +125,12 @@ jobs:
           echo %~dp0
           echo %cd%
           SET  CURRENT_DIR=%~dp0
+
           : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
-          set PATH=%cd%\php\;%PATH%
-          echo %PATH%
           : swoole-cli.exe -v
+
+
+
           set PHP_SDK_ARCH=x64
           set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
           set PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin
@@ -140,9 +142,12 @@ jobs:
           set PHP_SDK_VS=vs16
           set PHP_SDK_VS_NUM=16
           set "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64"
+          set PATH=%cd%\php\;%PATH%
           set "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
+          echo %PATH%
 
           set
+
           cd php-src
           call buildconf
           call configure --help
