@@ -81,6 +81,7 @@ jobs:
           git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
 
           cp -rf ext/* php-src/ext/
+          ls -lh php-src/ext/
 
           # https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/
           curl -Lo nasm-2.16.03-win64.zip https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/win64/nasm-2.16.03-win64.zip
