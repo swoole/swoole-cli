@@ -78,7 +78,8 @@ EOF;
                     $url = implode("\t", $newMirrorUrls);
                 }
                 $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
-                $download_commands[] = "curl -Lo {$item->file} {$url}" . PHP_EOL;
+
+                $download_commands[] = "curl -Lo lib/{$item->file} {$item->url}" . PHP_EOL;
             }
         }
         file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt',
