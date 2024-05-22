@@ -62,8 +62,9 @@ jobs:
 
           php-8.2.19-nts-Win32-vs16-x64/php -v
           php-8.2.19-nts-Win32-vs16-x64/php -m
-          php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar install  --no-interaction --no-autoloader --no-scripts
-          php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar dump-autoload --optimize --profile
+          php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar install  --no-interaction --no-autoloader --no-scripts --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
+          php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar dump-autoload --optimize --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
+          php prepare.php --without-docker=1
 
       - name: prepare source code
         shell: cmd
