@@ -101,7 +101,7 @@ jobs:
           echo $X_PATH
           echo "PATH=$X_PATH" >> $Env:GITHUB_ENV
 
-          Get-WmiObject –class Win32_processor | ft NumberOfCores,NumberOfLogicalProcessors
+          # Get-WmiObject –class Win32_processor | ft NumberOfCores,NumberOfLogicalProcessors
 
 
 #
