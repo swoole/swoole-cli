@@ -119,22 +119,24 @@ jobs:
 #          php-version: 8.2
 #          ini-values: memory_limit=-1
 #
-#      - name: Set PHP SDK  Github ENV variables
-#        run: |
-#          echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_OS_ARCH=x64" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_VC_TOOLSET_VER=$env:VCToolsVersion" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_VS=vs17" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
-#          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
-#          echo "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"  >> $Env:GITHUB_ENV
+      - name: Set PHP SDK  Github ENV variables
+        run: |
+          echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_OS_ARCH=x64" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VC_TOOLSET_VER=$env:VCToolsVersion" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS=vs17" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
+          set   PATH=%cd%\php\;%PATH%
+          echo "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"  >> $Env:GITHUB_ENV
 
-      - name: build
+
+      - name: build library
         shell: cmd
         run: |
           echo %~dp0
@@ -159,6 +161,17 @@ jobs:
           set PATH=%cd%\php\;%PATH%
           set "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
           echo %PATH%
+
+          call sapi\quickstart\windows\zlib.bat
+          cd %CURRENT_DIR%
+          echo %cd%
+
+      - name: build php
+        shell: cmd
+        run: |
+          echo %~dp0
+          echo %cd%
+          SET  CURRENT_DIR=%~dp0
 
           call sapi\quickstart\windows\zlib.bat
           cd %CURRENT_DIR%
