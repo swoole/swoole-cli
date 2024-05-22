@@ -155,16 +155,13 @@ jobs:
 
 
       - name: build php
-        shell: cmd
         run: |
-          ： 脚本所在目录
-          echo %cd%
 
           cd php-src
-          call buildconf
-          call configure --help
-          call configure --disable-all  --disable-cgi --enable-cli --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  --enable-xmlreader  --enable-xmlwriter --enable-zlib
-          call nmake
+          cmd /c buildconf
+          cmd /c configure --help
+          cmd /c configure --disable-all  --disable-cgi --enable-cli --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  --enable-xmlreader  --enable-xmlwriter --enable-zlib
+          cmd /c nmake
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
 
