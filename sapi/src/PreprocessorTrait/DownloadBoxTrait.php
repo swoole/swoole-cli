@@ -25,6 +25,10 @@ EOF;
 
     protected function generateLibraryDownloadLinks(): void
     {
+        $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
+        $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
+        $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
+
         $this->mkdirIfNotExists($this->getRootDir() . '/var/download-box/', 0755, true);
 
         $download_commands = ['POOL=$(realpath ${__DIR__}/../../pool/)'];
@@ -36,9 +40,8 @@ EOF;
 
             if ((!empty($item->peclVersion) || !empty($item->url)) || $item->enableDownloadWithMirrorURL) {
                 $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
-                $download_commands[] = PHP_EOL;
-                $download_commands[] = "test -f \${POOL}/ext/{$item->file} || curl -Lo ext/{$item->file} {$item->url}" . PHP_EOL;
 
+                $download_commands[] = "test -f \${POOL}/ext/{$item->file} || curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry} -Lo ext/{$item->file} {$item->url}" . PHP_EOL;
             }
         }
         file_put_contents($this->getRootDir() . '/var/download-box/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
@@ -85,7 +88,7 @@ EOF;
                 }
                 $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
 
-                $download_commands[] = "test -f \${POOL}/lib/{$item->file} || curl -Lo lib/{$item->file} {$item->url}" . PHP_EOL;
+                $download_commands[] = "test -f \${POOL}/lib/{$item->file} || curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry} -Lo lib/{$item->file} {$item->url}" . PHP_EOL;
             }
         }
         file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt',

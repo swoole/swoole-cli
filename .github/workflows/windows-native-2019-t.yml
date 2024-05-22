@@ -57,7 +57,7 @@ jobs:
 
           mkdir -p bin/runtime/
           curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
-          export PATH=$PATH:${CURRENT_DIR}/php
+          export PATH=$PATH:${CURRENT_DIR}/php/
 
           echo 'extension_dir="${{ github.workspace }}\php\ext" ' >> php/php.ini
           echo 'extension=php_curl.dll' >> php/php.ini

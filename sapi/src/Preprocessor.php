@@ -201,7 +201,6 @@ class Preprocessor
         } else {
             return 'x64';
         }
-
     }
 
     public function getImageTag(): string
