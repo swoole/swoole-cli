@@ -116,7 +116,7 @@ jobs:
 #          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
 #          echo "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"  >> $Env:GITHUB_ENV
 
-      - name: test
+      - name: build
         shell: cmd
         run: |
           set
@@ -144,7 +144,7 @@ jobs:
           cd php-src
           call buildconf
           call configure --help
-          call configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
+          call configure --disable-all  --disable-cgi --enable-cli --enable-static=yes --enable-shared=no --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar --enable-mysqlnd --enable-xml  --enable-xmlreader  --enable-xmlwriter --enable-dom --enable-simplexml
           call nmake
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
           D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
