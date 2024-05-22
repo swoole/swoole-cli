@@ -47,7 +47,7 @@ jobs:
           # bash setup-php-runtime.sh
           # bash sapi/download-box/download-box-get-archive-from-server.sh
           curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
-          unzip php-8.2.19-nts-Win32-vs16-x64.zip
+          unzip -d php-8.2.19-nts-Win32-vs16-x64 php-8.2.19-nts-Win32-vs16-x64.zip
           ls -lha .
           cp -f php-8.2.19-nts-Win32-vs16-x64/php.ini-production php-8.2.19-nts-Win32-vs16-x64/php.ini
           mkdir -p bin/runtime/
