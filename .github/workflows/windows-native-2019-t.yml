@@ -41,7 +41,7 @@ jobs:
         with:
           arch: amd64
 
-      - name: download cygwin php runtime
+      - name: download library and  php runtime
         shell: msys2 {0}
         run: |
           # bash setup-php-runtime.sh
