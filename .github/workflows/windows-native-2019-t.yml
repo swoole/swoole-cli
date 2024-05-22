@@ -92,7 +92,7 @@ jobs:
           : 命令行安装 msi
           : msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
           msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
-
+          dir
 
           echo "PATH=%PATH%;${{ github.workspace }}\nasm\" >> $Env:GITHUB_ENV
 
