@@ -27,12 +27,18 @@ EOF;
     {
         $this->mkdirIfNotExists($this->getRootDir() . '/var/download-box/', 0755, true);
 
+        $download_commands = ['POOL=$(realpath ${__DIR__}/../../pool/)'];
+        $download_commands[] = PHP_EOL;
+
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
             echo $item->name . PHP_EOL;
 
             if ((!empty($item->peclVersion) || !empty($item->url)) || $item->enableDownloadWithMirrorURL) {
                 $download_urls[] = $item->url . PHP_EOL . " out=" . $item->file;
+                $download_commands[] = PHP_EOL;
+                $download_commands[] = "test -f \${POOL}/ext/{$item->file} || curl -Lo ext/{$item->file} {$item->url}" . PHP_EOL;
+
             }
         }
         file_put_contents($this->getRootDir() . '/var/download-box/download_extension_urls.txt', implode(PHP_EOL, $download_urls));
@@ -66,7 +72,6 @@ EOF;
         );
 
         $download_urls = [];
-        $download_commands = ['POOL=$(realpath ${__DIR__}/../../pool/)' . PHP_EOL];
         foreach ($this->libraryList as $item) {
             if ((!empty($item->url) && !$item->enableDownloadScript) || $item->enableDownloadWithMirrorURL) {
                 $url = '';
@@ -80,7 +85,7 @@ EOF;
                 }
                 $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
 
-                $download_commands[] = "test -f \${POOL}/lib/lib/{$item->file} || curl -Lo lib/{$item->file} {$item->url}" . PHP_EOL;
+                $download_commands[] = "test -f \${POOL}/lib/{$item->file} || curl -Lo lib/{$item->file} {$item->url}" . PHP_EOL;
             }
         }
         file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt',
