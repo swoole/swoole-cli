@@ -39,8 +39,6 @@ jobs:
           install: >-
             curl git zip unzip tar xz
 
-
-
       - name: prepare build environment and download source code
         shell: msys2 {0}
         run: |
@@ -122,14 +120,12 @@ jobs:
       - name: build
         shell: cmd
         run: |
-          set
           echo %~dp0
           echo %cd%
           SET  CURRENT_DIR=%~dp0
 
           : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
           : swoole-cli.exe -v
-
 
 
           set PHP_SDK_ARCH=x64
@@ -147,7 +143,6 @@ jobs:
           set "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
           echo %PATH%
 
-          set
           call sapi\quickstart\windows\zlib.bat
           cd php-src
           call buildconf
