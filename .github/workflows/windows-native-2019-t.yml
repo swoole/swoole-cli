@@ -144,6 +144,7 @@ jobs:
           echo %PATH%
 
           call sapi\quickstart\windows\zlib.bat
+          cd %CURRENT_DIR%
           cd php-src
           call buildconf
           call configure --help
