@@ -50,20 +50,20 @@ jobs:
           # bash setup-php-runtime.sh
           bash sapi/download-box/download-box-get-archive-from-server.sh
           curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
-          unzip -d php-8.2.19-nts-Win32-vs16-x64 php-8.2.19-nts-Win32-vs16-x64.zip
+          unzip -d php php-8.2.19-nts-Win32-vs16-x64.zip
 
           pwd
-          cp -f php-8.2.19-nts-Win32-vs16-x64/php.ini-production php-8.2.19-nts-Win32-vs16-x64/php.ini
+          cp -f php/php.ini-production php/php.ini
 
           mkdir -p bin/runtime/
           curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
-          export PATH=$PATH:${CURRENT_DIR}/php-8.2.19-nts-Win32-vs16-x64
+          export PATH=$PATH:${CURRENT_DIR}/php
 
-          echo 'extension_dir="${{ github.workspace }}\php-8.2.19-nts-Win32-vs16-x64\ext" ' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
-          echo 'extension=php_curl.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
-          echo 'extension=php_bz2.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
-          echo 'extension=php_openssl.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
-          echo 'extension=php_fileinfo.dll' >> php-8.2.19-nts-Win32-vs16-x64/php.ini
+          echo 'extension_dir="${{ github.workspace }}\php\ext" ' >> php/php.ini
+          echo 'extension=php_curl.dll' >> php/php.ini
+          echo 'extension=php_bz2.dll'  >> php/php.ini
+          echo 'extension=php_openssl.dll' >>  php/php.ini
+          echo 'extension=php_fileinfo.dll' >> php/php.ini
 
           php -v
           php -m
