@@ -101,6 +101,8 @@ jobs:
           echo $X_PATH
           echo "PATH=$X_PATH" >> $Env:GITHUB_ENV
 
+          Get-WmiObject –class Win32_processor | ft NumberOfCores,NumberOfLogicalProcessors
+
 
 #
 #      - name: show PHPSDK env
@@ -154,8 +156,6 @@ jobs:
 
           cmd /c  sapi\quickstart\windows\native\zlib.bat
           cmd /c  sapi\quickstart\windows\native\openssl.bat
-          cmd /c  sapi\quickstart\windows\native\curl.bat
-
 
       - name: build php
         run: |
