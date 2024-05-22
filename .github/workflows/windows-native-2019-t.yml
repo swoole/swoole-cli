@@ -136,7 +136,20 @@ jobs:
           echo "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"  >> $Env:GITHUB_ENV
 
 
-      - name: build library
+      - name: build all library
+        shell: cmd
+        run: |
+          ： 脚本所在目录
+          echo %cd%
+          SET  CURRENT_DIR=%cd%
+
+          call sapi\quickstart\windows\zlib.bat
+          call sapi\quickstart\windows\openssl.bat
+          cd %CURRENT_DIR%
+          echo %cd%
+
+
+      - name: build php
         shell: cmd
         run: |
           ： 脚本所在目录
@@ -161,16 +174,9 @@ jobs:
           set "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
           echo %PATH%
 
-          call sapi\quickstart\windows\zlib.bat
-          call sapi\quickstart\windows\openssl.bat
           cd %CURRENT_DIR%
           echo %cd%
 
-      - name: build php
-        shell: cmd
-        run: |
-          SET  CURRENT_DIR=%cd%
-          echo %cd%
           cd php-src
           call buildconf
           call configure --help
