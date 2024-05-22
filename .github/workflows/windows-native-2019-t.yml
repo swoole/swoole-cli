@@ -132,7 +132,7 @@ jobs:
           echo "PHP_SDK_VS=vs17" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
-          set   PATH=%cd%\php\;%PATH%
+          set   PATH="%cd%\php\;%PATH%"
           echo "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"  >> $Env:GITHUB_ENV
 
 
