@@ -135,8 +135,8 @@ jobs:
           echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
           SET  CURRENT_DIR=%cd%
           echo %CURRENT_DIR%
-          set   PATH="%CURRENT_DIR%\php\;%PATH%"
-          echo "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"  >> $Env:GITHUB_ENV
+          set   PATH="D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%CURRENT_DIR%\php\;%PATH%"
+          echo "PATH=%PATH%"  >> $Env:GITHUB_ENV
 
 
       - name: build all library
