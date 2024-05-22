@@ -162,6 +162,7 @@ jobs:
           echo %PATH%
 
           call sapi\quickstart\windows\zlib.bat
+          call sapi\quickstart\windows\openssl.bat
           cd %CURRENT_DIR%
           echo %cd%
 
@@ -169,9 +170,6 @@ jobs:
         shell: cmd
         run: |
           SET  CURRENT_DIR=%cd%
-
-          call sapi\quickstart\windows\zlib.bat
-          cd %CURRENT_DIR%
           echo %cd%
           cd php-src
           call buildconf
