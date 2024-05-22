@@ -10,5 +10,5 @@ configure ^
 --enable-zlib ^
 --with-openssl ^
 --with-curl ^
---with-extra-includes="C:\Program Files\OpenSSL\include\:C:\Program Files (x86)\zlib\include/" ^
---with-extra-libs=C:\Program Files\OpenSSL\lib\:C:\Program Files (x86)\zlib\lib/"
+--with-extra-includes="'C:\Program Files\OpenSSL\include\':'C:\Program Files (x86)\zlib\include/'" ^
+--with-extra-libs="'C:\Program Files\OpenSSL\lib\':'C:\Program Files (x86)\zlib\lib/'"
