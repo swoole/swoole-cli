@@ -45,7 +45,7 @@ jobs:
         shell: msys2 {0}
         run: |
           # bash setup-php-runtime.sh
-          # bash sapi/download-box/download-box-get-archive-from-server.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
           curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
           unzip -d php-8.2.19-nts-Win32-vs16-x64 php-8.2.19-nts-Win32-vs16-x64.zip
           ls -lha .
@@ -64,7 +64,7 @@ jobs:
           php-8.2.19-nts-Win32-vs16-x64/php -m
           php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar install  --no-interaction --no-autoloader --no-scripts --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
           php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar dump-autoload --optimize --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
-          php-8.2.19-nts-Win32-vs16-x64/php prepare.php --without-docker=1 --skip-download=1
+          php-8.2.19-nts-Win32-vs16-x64/php prepare.php --without-docker=1 --skip-download=1 --with-libavif=1
           ls -lh var/download-box/
 
           bash var/download-box/download_library_use_script_for_windows.sh

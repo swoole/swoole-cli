@@ -66,6 +66,7 @@ EOF;
         );
 
         $download_urls = [];
+        $download_commands = ['POOL=$(realpath ${__DIR__}/../../pool/)' . PHP_EOL];
         foreach ($this->libraryList as $item) {
             if ((!empty($item->url) && !$item->enableDownloadScript) || $item->enableDownloadWithMirrorURL) {
                 $url = '';
@@ -79,7 +80,7 @@ EOF;
                 }
                 $download_urls[] = $url . PHP_EOL . " out=" . $item->file;
 
-                $download_commands[] = "curl -Lo lib/{$item->file} {$item->url}" . PHP_EOL;
+                $download_commands[] = "test -f \${POOL}/lib/lib/{$item->file} || curl -Lo lib/{$item->file} {$item->url}" . PHP_EOL;
             }
         }
         file_put_contents($this->getRootDir() . '/var/download-box/download_library_urls.txt',
