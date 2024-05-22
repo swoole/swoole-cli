@@ -88,7 +88,6 @@ jobs:
           dir
 
       - name: Install Soft And  Set  Github ENV variables
-
         run: |
           # 命令行静默安装 msi
           # msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
@@ -142,13 +141,12 @@ jobs:
           echo "PATH=%X_PATH%"  >> $Env:GITHUB_ENV
 
       - name: build all library
-        shell: cmd
         run: |
           ： 脚本所在目录
           echo %cd%
 
-          call sapi\quickstart\windows\zlib.bat
-          call sapi\quickstart\windows\openssl.bat
+          cmd /c  sapi\quickstart\windows\zlib.bat
+          cmd /c  sapi\quickstart\windows\openssl.bat
 
 
       - name: build php
