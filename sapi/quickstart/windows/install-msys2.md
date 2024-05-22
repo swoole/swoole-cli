@@ -6,10 +6,11 @@
 
 > 打开站点 https://www.msys2.org/ 下载 msys2 安装包
 
-> 使用镜像站点 https://mirror.tuna.tsinghua.edu.cn/help/msys2/  下载 msys2 安装包
+> 使用镜像站点 https://mirror.tuna.tsinghua.edu.cn/help/msys2/  下载 msys2 安装包 帮助
+> 浏览器打开进行下载： https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/
 
-> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20230526.exe
-> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20240113.exe
+> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20230526.exe （支持 windows7 最后一个版本
+> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20240507.exe
 
 > 安装 msys2
 
