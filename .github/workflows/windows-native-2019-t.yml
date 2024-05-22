@@ -64,11 +64,12 @@ jobs:
           php-8.2.19-nts-Win32-vs16-x64/php -m
           php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar install  --no-interaction --no-autoloader --no-scripts --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
           php-8.2.19-nts-Win32-vs16-x64/php bin/runtime/composer.phar dump-autoload --optimize --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
-          php-8.2.19-nts-Win32-vs16-x64/php prepare.php --without-docker=1 --skip-download=1 --with-libavif=1
+          php-8.2.19-nts-Win32-vs16-x64/php prepare.php --without-docker=1 --skip-download=1 --with-libavif=1 +uuid +apcu +ds +xlswriter +ssh2
           ls -lh var/download-box/
 
           bash var/download-box/download_library_use_script_for_windows.sh
           bash var/download-box/download_library_use_git.sh
+          bash sapi/download-box/download-box-dependencies-sync.sh
 
       - name: prepare source code
         shell: cmd
