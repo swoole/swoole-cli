@@ -88,7 +88,6 @@ jobs:
           dir
 
       - name: install  soft and set env path
-        shell: cmd
         run: |
           : 命令行静默安装 msi
           : msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
@@ -124,7 +123,6 @@ jobs:
 #          ini-values: memory_limit=-1
 #
       - name: Set PHPSDK  Github ENV variables
-        shell: cmd
         run: |
           echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
           echo "PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
@@ -143,7 +141,6 @@ jobs:
           echo "PATH=%X_PATH%"  >> $Env:GITHUB_ENV
 
       - name: build all library
-        shell: cmd
         run: |
           ： 脚本所在目录
           echo %cd%
