@@ -11,8 +11,8 @@ VisualStudioSetup.exe export 	--passive  --force --norestart
 
 
 VisualStudioSetup.exe uninstall	--passive  --force --norestart ^
---add Microsoft.VisualStudio.Component.Windows11SDK.22000   ^
---add Microsoft.VisualStudio.Workload.NativeDesktop ^
---add Microsoft.VisualStudio.Component.VC.CLI.Support ^
---add Microsoft.VisualStudio.Component.VC.Redist.MSM
+--remove Microsoft.VisualStudio.Component.Windows11SDK.22000   ^
+--remove Microsoft.VisualStudio.Workload.NativeDesktop ^
+--remove Microsoft.VisualStudio.Component.VC.CLI.Support ^
+--remove Microsoft.VisualStudio.Component.VC.Redist.MSM
 
