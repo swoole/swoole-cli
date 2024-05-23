@@ -4,7 +4,8 @@
 
 set INCLUDE="%INCLUDE%;C:\Program Files\OpenSSL\include\;C:\Program Files (x86)\zlib\include"
 set LIB="%LIB%;C:\Program Files\OpenSSL\lib\;C:\Program Files (x86)\zlib\lib"
-
+echo %INCLUDE%
+echo %LIB%
 
 configure ^
 --disable-all      --disable-cgi      --enable-cli ^
