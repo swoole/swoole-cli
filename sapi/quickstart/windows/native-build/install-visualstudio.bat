@@ -18,4 +18,5 @@ VisualStudioSetup.exe ^
 --add Microsoft.VisualStudio.Component.Windows11SDK.22000   ^
 --add Microsoft.VisualStudio.Component.Windows10SDK.20348	^
 --add Microsoft.VisualStudio.Component.Windows10SDK ^
+--add Microsoft.VisualStudio.Component.VC.CMake.Project ^
 --passive  --force --norestart
