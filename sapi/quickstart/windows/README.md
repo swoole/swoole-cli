@@ -7,8 +7,8 @@
 
 ### [windows 原生构建步骤](../../../docs/Cygwin.md)
 
-    1. [install msys2 ](native-build/msys2/install-msys2.md)
-    1. [windows build native php](native-build/windows-native.md)
+1. [install msys2 ](native-build/msys2/install-msys2.md)
+1. [windows build native php](native-build/windows-native.md)
 
 ### windows 软连接例子
 
@@ -17,6 +17,7 @@
 mklink composer composer.phar
 
 ```
+
 ## cygwin 环境 构建
 
 ### [windows cygwin 环境 构建步骤](../../../docs/Cygwin.md)
