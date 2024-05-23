@@ -30,7 +30,7 @@ sed -i "s#https\?://mirror.msys2.org/#https://mirrors.tuna.tsinghua.edu.cn/msys2
 # 更新源
 pacman -Syy --noconfirm
 # 无须确认安装包
-pacman -Syy --noconfirm git curl wget openssl zip unzip xz  lzip
+pacman -Syy --noconfirm git
 
 # msys2 环境下 拉取 swoole-cli 源码
 git clone --recursive https://github.com/swoole/swoole-cli.git

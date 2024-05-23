@@ -1,5 +1,19 @@
 @echo off
 
+
+
+cd php-src
+cmd /c buildconf
+cmd /c configure --help
+cmd /c ${CURRENT_DIR}\sapi\quickstart\windows\build-native-php.bat
+
+
+cd ${CURRENT_DIR}\
+php-src\x64\Release_TS\php.exe -v
+php-src\x64\Release_TS\php.exe -m
+
+
+
 : set LDFLAGS=" -L"C:/Program Files/OpenSSL/lib/" -lssl -lcrypto -lssl -L"C:/Program Files (x86)/zlib/lib" -lz "
 
 set INCLUDE="%INCLUDE%;c:\php-cli\openssl\include\;c:\php-cli\zlib\include"

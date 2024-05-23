@@ -7,9 +7,9 @@
 ```shell
 
 # 自动下载 cygwin
-sapi/quickstart/windows/download-cygwin.bat
+sapi/quickstart/windows/cygwin-build/download-cygwin.bat
 # 自动安装 cygwin
-sapi/quickstart/windows/install-cygwin.bat
+sapi/quickstart/windows/cygwin-build/install-cygwin.bat
 
 
 ```
@@ -24,8 +24,8 @@ mklink composer composer.phar
 
 ## 其他
 
-1. [windows build native php](./windows-native.md)
-1. [install msys2 ](./install-msys2.md)
+1. [windows build native php](native-build/windows-native.md)
+1. [install msys2 ](native-build/msys2/install-msys2.md)
 
 
 
