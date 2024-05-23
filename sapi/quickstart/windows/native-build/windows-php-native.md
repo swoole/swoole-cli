@@ -26,13 +26,8 @@ VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.T
 --channelId VisualStudio.16.Release ^
 
 
-
-
 vs_buildtools.exe  --quiet --force  --norestart
 
-git clone -b php-8.3.6     --depth=1 https://github.com/php/php-src.git
-# git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git
-git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
 
 ## 通过命令行使用 MSVC 工具集
     https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170

@@ -22,5 +22,7 @@ ls -lh nasm
 
 test -f strawberry-perl-5.38.2.2-64bit.msi ||  curl -Lo strawberry-perl-5.38.2.2-64bit.msi https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit.msi
 
+test -f vc_redist.x64.exe || curl -Lo vc_redist.x64.exe https://aka.ms/vs/17/release/vc_redist.x64.exe
+test -f vc_redist.x86.exe || curl -Lo vc_redist.x86.exe https://aka.ms/vs/17/release/vc_redist.x86.exe
 
 
