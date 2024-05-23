@@ -10,6 +10,8 @@ cd %__PROJECT__%
 
 mkdir  build /S /Q
 
+
+
 cd thirdparty\curl
 dir
 
