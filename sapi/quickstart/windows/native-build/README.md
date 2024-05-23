@@ -94,6 +94,9 @@ https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-paramete
 
 https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022
 
+```shell
+
+
 VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add
 Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild
 --add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools --add
@@ -105,20 +108,22 @@ Microsoft.VisualStudio.Component.Windows10SDK --path install="C:\VS" --path cach
 
 vs_buildtools.exe --quiet --force --norestart
 
+```
+
 Microsoft Visual C++ 运行时库
 https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170
 https://aka.ms/vs/17/release/vc_redist.x64.exe
 
-# 下载 visual studio 安装器
+## 下载 visual studio 安装器
 
-https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022
-https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2019
+    https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022
+    https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2019
 
-https://aka.ms/vs/17/release/vs_buildtools.exe
+    https://aka.ms/vs/17/release/vs_buildtools.exe
 
-curl -Lo
-VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
-curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
-curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
+    curl -Lo
+    VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
+    curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
+    curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
 
 
