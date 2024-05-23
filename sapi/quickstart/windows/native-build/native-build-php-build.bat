@@ -9,7 +9,7 @@ echo %cd%
 cd %__PROJECT__%\php-src\
 
 
-: set LDFLAGS=" -L"C:/Program Files/OpenSSL/lib/" -lssl -lcrypto -lssl -L"C:/Program Files (x86)/zlib/lib" -lz "
+:: set LDFLAGS=" -L"C:/Program Files/OpenSSL/lib/" -lssl -lcrypto -lssl -L"C:/Program Files (x86)/zlib/lib" -lz "
 
 set INCLUDE="%INCLUDE%;%__PROJECT__%\openssl\include\;%__PROJECT__%\zlib\include"
 set LIB="%LIB%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib"

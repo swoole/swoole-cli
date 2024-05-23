@@ -134,3 +134,14 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
     curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
 
 
+## 参考文档
+1. [通过命令行使用 MSVC 工具集](https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170)
+1. [通过命令行使用 MSBuild](https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-1700)
+1. [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
+1. [windows 环境下 构建 php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2)
+1. [VisualStudio 导入或导出安装配置](https://learn.microsoft.com/zh-cn/visualstudio/install/import-export-installation-configurations?view=vs-2022)
+1. [Visual Studio 2019 版本 16.11 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2019/release-notes)
+1. [Visual Studio 2022 版本 17.9 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2022/release-notes)
+
+
+

@@ -9,8 +9,8 @@ set __PROJECT__=%cd%
 echo %cd%
 
 
-: 命令行静默安装 msi
-:  msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
+:: 命令行静默安装 msi
+::  msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
 
 msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
 
