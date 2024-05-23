@@ -2,8 +2,8 @@
 
 : set LDFLAGS=" -L"C:/Program Files/OpenSSL/lib/" -lssl -lcrypto -lssl -L"C:/Program Files (x86)/zlib/lib" -lz "
 
-set INCLUDE="%INCLUDE%;C:\Program Files\OpenSSL\include\;C:\Program Files (x86)\zlib\include"
-set LIB="%LIB%;C:\Program Files\OpenSSL\lib\;C:\Program Files (x86)\zlib\lib"
+set INCLUDE="%INCLUDE%;c:\php-cli\openssl\include\;c:\php-cli\zlib\include"
+set LIB="%LIB%;c:\php-cli\openssl\lib\;c:\php-cli\zlib\lib"
 echo %INCLUDE%
 echo %LIB%
 
