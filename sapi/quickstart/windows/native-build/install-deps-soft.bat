@@ -14,8 +14,8 @@ echo %cd%
 
 msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
 
-vc_redist.x64.exe /quiet /install
-vc_redist.x86.exe /quiet /install
+vc_redist.x64.exe /install /passive /norestart
+vc_redist.x86.exe /install /passive /norestart
 
 set PATH="%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\"
 echo %PATH%
