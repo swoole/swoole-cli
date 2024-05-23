@@ -9,6 +9,5 @@ echo %cd%
 cd %__PROJECT__%\php-src\
 
 
-cd %__PROJECT__%\php-src\
 x64\Release_TS\php.exe -v
 x64\Release_TS\php.exe -m
