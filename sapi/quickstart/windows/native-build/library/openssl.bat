@@ -10,6 +10,7 @@ cd %__PROJECT__%
 
 mkdir  build /S /Q
 
+set PATH=%__PROJECT__%\nasm\
 
 cd thirdparty\openssl
 dir
