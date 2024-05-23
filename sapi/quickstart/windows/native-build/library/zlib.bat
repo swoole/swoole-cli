@@ -11,7 +11,8 @@ cd %__PROJECT__%
 mkdir -p  build
 cd thirdparty\zlib
 dir
-mkdir build
+mkdir -p  build
+
 cd build
 cmake .. ^
 -DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\zlib" ^

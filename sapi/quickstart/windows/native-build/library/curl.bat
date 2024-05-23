@@ -8,11 +8,12 @@ set __PROJECT__=%cd%
 echo %cd%
 cd %__PROJECT__%
 
-mkdir build
+mkdir -p  build
 
 cd thirdparty\curl
 dir
-mkdir build
+
+mkdir -p  build
 cd build
 cmake .. ^
 -DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\curl" ^
