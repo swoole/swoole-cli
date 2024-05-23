@@ -13,6 +13,8 @@ cd ${__PROJECT__}
 
 test -d ext && rm -rf ext
 
+export PATH=$PATH:${__PROJECT__}/php/
+
 php prepare.php --without-docker=1 --skip-download=1 --with-libavif=1 +uuid +apcu +ds +xlswriter +ssh2
 
 ls -lh var/download-box/
