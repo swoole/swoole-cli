@@ -2,8 +2,10 @@
 
 : set LDFLAGS=" -L"C:/Program Files/OpenSSL/lib/" -lssl -lcrypto -lssl -L"C:/Program Files (x86)/zlib/lib" -lz "
 
-set INCLUDE="%INCLUDE%;c:\php-cli\openssl\include\;c:\php-cli\zlib\include"
+set CPPFLAGS="%INCLUDE%;c:\php-cli\openssl\include\;c:\php-cli\zlib\include"
+set LDFLAGS="%LIB%;c:\php-cli\openssl\lib\;c:\php-cli\zlib\lib"
 set LIB="%LIB%;c:\php-cli\openssl\lib\;c:\php-cli\zlib\lib"
+set LIBPATH="%LIBPATH%;c:\php-cli\openssl\lib\;c:\php-cli\zlib\lib"
 echo %INCLUDE%
 echo %LIB%
 
@@ -13,10 +15,9 @@ configure ^
 --enable-fileinfo   --enable-filter ^
 --enable-xmlreader  --enable-xmlwriter ^
 --enable-zlib ^
---with-openssl=static
+--with-openssl=static ^
+--with-extra-includes="c:\php-cli\openssl\include\;c:\php-cli\zlib\include" ^
+--with-extra-libs="c:\php-cli\openssl\lib\;c:\php-cli\zlib\lib"
 
 
 : --with-curl=static
-
-: --with-extra-includes="'C:\Program Files\OpenSSL\include\':'C:\Program Files (x86)\zlib\include/'" ^
-: --with-extra-libs="'C:\Program Files\OpenSSL\lib\':'C:\Program Files (x86)\zlib\lib/'"
