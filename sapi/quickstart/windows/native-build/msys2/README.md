@@ -1,5 +1,9 @@
 # msys2 环境准备
 
+## [安装 msys2 ](msys2/install-msys2.md)
+
+## 下载 msys2 环境 软件包 运行时
+
 ```bash
 
 # 下载安装  git curl wget openssl zip unzip xz  lzip 软件包

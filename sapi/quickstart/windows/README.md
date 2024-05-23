@@ -5,18 +5,7 @@
 
 ## 原生构建
 
-### [windows 原生构建步骤](../../../docs/Cygwin.md)
-
-1. [install msys2 ](native-build/msys2/install-msys2.md)
-1. [windows build native php](native-build/windows-native.md)
-
-### windows 软连接例子
-
-```bash
-
-mklink composer composer.phar
-
-```
+### [windows 原生构建步骤](native-build/README.md)
 
 ## cygwin 环境 构建
 
@@ -34,7 +23,13 @@ sapi/quickstart/windows/cygwin-build/install-cygwin.bat
 
 ```
 
+## windows 软连接例子
 
+```bash
+
+mklink composer composer.phar
+
+```
 
 
 
