@@ -34,7 +34,8 @@ EOF;
         $download_commands = ['POOL=$(realpath ${__DIR__}/../../pool/)'];
         $download_commands[] = PHP_EOL;
 
-        $extract_files = [];
+        $extract_files = ['set -x'];
+        $extract_files[] = PHP_EOL;
 
         $download_urls = [];
         foreach ($this->extensionMap as $item) {
