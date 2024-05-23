@@ -22,4 +22,5 @@ VisualStudioSetup.exe ^
 --add Microsoft.VisualStudio.Component.VC.Redist.14.Latest	^
 --add Microsoft.VisualStudio.Component.VC.Redist.MSM	 ^
 --add Microsoft.Component.VC.Runtime.UCRTSDK	^
+--add Microsoft.VisualStudio.Component.VC.CLI.Support ^
 --passive  --force --norestart
