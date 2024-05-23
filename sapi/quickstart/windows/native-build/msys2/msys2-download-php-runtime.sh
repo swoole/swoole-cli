@@ -25,7 +25,7 @@ export PATH=$PATH:${__PROJECT__}/php/
 
 echo $PATH
 
-echo 'extension_dir="C:\msys64\home\Administrator\swoole-cli\php\ext\" ' >> php/php.ini
+echo 'extension_dir=C:\msys64\home\Administrator\swoole-cli\php\ext\' >> php/php.ini
 echo 'extension=php_curl.dll' >> php/php.ini
 echo 'extension=php_bz2.dll'  >> php/php.ini
 echo 'extension=php_openssl.dll' >>  php/php.ini
