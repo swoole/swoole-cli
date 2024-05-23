@@ -1,6 +1,7 @@
 # 构建原生 PHP
     1. 准备 msys2 环境
-    2. 执行构建
+    2. msys2 环境下 下载软件包 、PHP 运行时 、PHP SDK 等
+    2. COMMAND 环境执行构建
 
 
 
@@ -9,7 +10,7 @@
 ## 一 、[msys2 环境 下载必要的软件 和 运行时](msys2/READEME.md)
 
 
-# 二、CMD 环境构建
+## 二、CMD 环境构建
 
 ```bash
 
