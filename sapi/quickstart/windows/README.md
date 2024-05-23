@@ -22,7 +22,9 @@ sapi/quickstart/windows/cygwin-build/install-cygwin.bat
 
 ### [windows cygwin 环境 构建步骤](../../../docs/Cygwin.md)
 
-## windows 软连接例子
+## 其它
+
+### windows 软连接例子
 
 ```bash
 
