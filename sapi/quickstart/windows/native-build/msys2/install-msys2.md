@@ -18,11 +18,9 @@
 
 > MSYS2 包搜索 https://packages.msys2.org/queue
 
-> [ msys2环境信息 ](https://www.msys2.org/docs/environments/)
+> [ msys2 各版本环境 区别 ](https://www.msys2.org/docs/environments/)
 
 > msys2 集成了 Mingw 和 Cygwin ，同时还提供了包管理工具 `pacman`
-
-> [msys2 各环境的区别](https://www.msys2.org/docs/environments/)
 
 ## msys2 安装后初始化
 
