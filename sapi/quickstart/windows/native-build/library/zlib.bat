@@ -5,7 +5,8 @@ cd %~dp0
 cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
-echo %__PROJECT__%
+echo %cd%
+cd %__PROJECT__%
 
 mkdir -p  build
 cd thirdparty\zlib

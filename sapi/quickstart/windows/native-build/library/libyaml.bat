@@ -6,6 +6,7 @@ cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
 echo %cd%
+cd %__PROJECT__%
 
 mkdir build
 
