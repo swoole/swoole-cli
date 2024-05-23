@@ -7,4 +7,4 @@ cd ..\..\..\..\
 set __PROJECT__=%cd%
 echo %cd%
 
-VisualStudioSetup.exe export 	--passive  --force --norestart
+VisualStudioSetup.exe export 	--passive  --force
