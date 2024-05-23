@@ -165,7 +165,7 @@ jobs:
           cmd /c buildconf
           cmd /c configure --help
           cmd /c ${CURRENT_DIR}\sapi\quickstart\windows\build-native-php.bat
-          cmd /c nmake
+
 
           cd ${CURRENT_DIR}\
           php-src\x64\Release_TS\php.exe -v
