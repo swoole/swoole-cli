@@ -24,5 +24,6 @@ VisualStudioSetup.exe ^
 --add Microsoft.Component.VC.Runtime.UCRTSDK	^
 --add Microsoft.VisualStudio.Component.VC.CLI.Support ^
 --add Microsoft.VisualStudio.Workload.NativeDesktop ^
+--add Microsoft.VisualStudio.Component.VC.Modules.x86.x64 ^
 --passive  --force --norestart
 
