@@ -6,13 +6,10 @@ cd ..\..\..\..\
 
 set __PROJECT__=%cd%
 echo %cd%
-cd %__PROJECT__%
+cd %__PROJECT__%\php-src
 
+buildconf -f
 
-cd php-src
-start /B buildconf
-start /B  configure --help
-
-
+configure --help
 
 cd %__PROJECT__%
