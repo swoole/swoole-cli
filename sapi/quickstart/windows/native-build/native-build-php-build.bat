@@ -9,9 +9,6 @@ echo %cd%
 cd %__PROJECT__%\php-src\
 
 
-configure --help
-
-
 : set LDFLAGS=" -L"C:/Program Files/OpenSSL/lib/" -lssl -lcrypto -lssl -L"C:/Program Files (x86)/zlib/lib" -lz "
 
 set INCLUDE="%INCLUDE%;c:\php-cli\openssl\include\;c:\php-cli\zlib\include"
