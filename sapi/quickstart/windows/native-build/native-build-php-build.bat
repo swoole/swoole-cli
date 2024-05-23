@@ -14,11 +14,12 @@ cd %__PROJECT__%\php-src\
 set INCLUDE="%INCLUDE%;%__PROJECT__%\openssl\include\;%__PROJECT__%\zlib\include"
 set LIB="%LIB%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib"
 set LIBPATH="%LIBPATH%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib\"
-: echo %INCLUDE%
-: echo %LIB%
-: echo %LIBPATH%
 
-configure ^
+echo %INCLUDE%
+echo %LIB%
+echo %LIBPATH%
+
+configure.bat ^
 --disable-all      --disable-cgi      --enable-cli ^
 --enable-sockets    --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  ^
 --enable-filter ^

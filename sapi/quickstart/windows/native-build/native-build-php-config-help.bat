@@ -8,6 +8,6 @@ set __PROJECT__=%cd%
 echo %cd%
 cd %__PROJECT__%\php-src
 
-configure --help
+configure.bat --help
 
 cd %__PROJECT__%
