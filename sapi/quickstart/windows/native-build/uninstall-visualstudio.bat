@@ -7,8 +7,6 @@ cd ..\..\..\..\
 set __PROJECT__=%cd%
 echo %cd%
 
-VisualStudioSetup.exe export 	--passive  --force --norestart
-
 
 VisualStudioSetup.exe uninstall	--passive  --force --norestart ^
 --remove Microsoft.VisualStudio.Component.Windows11SDK.22000   ^
