@@ -14,7 +14,7 @@ echo %cd%
 msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
 
 
-set PATH="%PATH%;%cd%\php\;%cd%\nasm\"
+set PATH=%PATH%;%cd%\php\;%cd%\nasm\
 echo %PATH%
 
 php -v
