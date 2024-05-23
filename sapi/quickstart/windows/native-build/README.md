@@ -97,11 +97,18 @@ https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-
 ```shell
 
 
-VisualStudioSetup.exe --locale en-US --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add
-Microsoft.Component.MSBuild --add Microsoft.VisualStudio.Component.Roslyn.Compiler --add Microsoft.Component.MSBuild
---add Microsoft.VisualStudio.Component.CoreBuildTools --add Microsoft.VisualStudio.Workload.MSBuildTools --add
-Microsoft.VisualStudio.Component.Windows11SDK.22000 --add Microsoft.VisualStudio.Component.Windows10SDK.20348 --add
-Microsoft.VisualStudio.Component.Windows10SDK --path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:
+VisualStudioSetup.exe
+--locale en-US
+--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+--add Microsoft.Component.MSBuild
+--add Microsoft.VisualStudio.Component.Roslyn.Compiler
+--add Microsoft.Component.MSBuild
+--add Microsoft.VisualStudio.Component.CoreBuildTools
+--add Microsoft.VisualStudio.Workload.MSBuildTools
+--add Microsoft.VisualStudio.Component.Windows11SDK.22000
+--add Microsoft.VisualStudio.Component.Windows10SDK.20348
+--add Microsoft.VisualStudio.Component.Windows10SDK
+--path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:
 \VS\shared"
 --quiet --force --norestart
 --channelId VisualStudio.16.Release ^
