@@ -65,9 +65,9 @@ phpsdk-vs17-x64.bat
 
 ```bat
 cd c:\msys64\home\Administrator\php-src
-buildconf
-configure --help
-configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
+buildconf.bat
+configure.bat --help
+configure.bat --disable-all --enable-cli --enable-static=yes --enable-shared=no
 nmake
 
 
