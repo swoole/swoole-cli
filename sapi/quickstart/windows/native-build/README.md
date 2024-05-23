@@ -69,9 +69,9 @@ Windows PowerShell ISE 文本编辑器
 
     https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-170
 
-// C:\Program Files\Microsoft Visual Studio\2022\Enterprise //
-// C:\Program Files\Microsoft Visual Studio\2022\Community //
-cl /?
+    // C:\Program Files\Microsoft Visual Studio\2022\Enterprise //
+    // C:\Program Files\Microsoft Visual Studio\2022\Community //
+    cl /?
 
 ## Microsoft Visual C++ 可再发行程序包最新支持的下载
 
