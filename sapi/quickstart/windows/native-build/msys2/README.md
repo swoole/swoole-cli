@@ -15,7 +15,7 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code-and-php-sdk.sh
 
 # 构建库准备环境依赖
-bash sapi/quickstart/windows/native-build/msys2/msys2-download-environment-deps-soft.sh
+bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
 
 
 ```

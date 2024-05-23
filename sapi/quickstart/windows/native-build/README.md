@@ -7,6 +7,11 @@
 # 二、CMD 环境构建
 
 ```bash
+
+sapi\quickstart\windows\native-build\install-visualstudio.bat
+sapi\quickstart\windows\native-build\install-deps-soft.bat
+
+
 # start /B
 # cmd /c
 
@@ -14,10 +19,15 @@ sapi\quickstart\windows\native-build\library\zlib.bat
 sapi\quickstart\windows\native-build\library\openssl.bat
 
 
-# sapi\quickstart\windows\native-build\native-build-php-sdk.bat
+sapi\quickstart\windows\native-build\native-build-php-sdk.bat
 
 sapi\quickstart\windows\native-build\native-build-php-config.bat
 
 sapi\quickstart\windows\native-build\native-build-php-build.bat
+
+sapi\quickstart\windows\native-build\native-build-php-build-release.bat
+
+sapi\quickstart\windows\native-build\native-build-php-build-archive.bat
+
 
 ```
