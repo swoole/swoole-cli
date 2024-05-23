@@ -20,3 +20,6 @@ nmake
 
 nmake install
 
+
+cd %__PROJECT__%
+
