@@ -32,12 +32,4 @@ configure ^
 : --enable-fileinfo
 : --with-curl=static
 
-nmake
-
-
-cd %__PROJECT__%\php-src\
-
-.\x64\Release_TS\php.exe -v
-.\x64\Release_TS\php.exe -m
-
 cd %__PROJECT__%
