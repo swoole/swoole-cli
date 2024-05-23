@@ -22,8 +22,8 @@ bash var/download-box/download_library_use_git.sh
 bash sapi/download-box/download-box-dependencies-sync.sh
 bash var/download-box/extract-files.sh
 
-git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
-git clone -b php-8.3.7 --depth=1 https://github.com/php/php-src.git
+test -d php-sdk-binary-tools ||  git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
+test -d php-src || git clone -b php-8.3.7 --depth=1 https://github.com/php/php-src.git
 
 cp -rf ext/* php-src/ext/
 ls -lh php-src/ext/
