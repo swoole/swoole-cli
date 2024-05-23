@@ -2,7 +2,7 @@
 
     1. 准备 msys2 环境
     2. msys2 环境下 下载软件包 、PHP 运行时 、PHP SDK 等
-    3. COMMAND 环境执行构建
+    3. CMD 环境执行构建
 
 ## 一 、[msys2 环境 下载必要的软件 和 运行时](msys2/README.md)
 

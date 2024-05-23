@@ -9,9 +9,7 @@
 
 ## cygwin 环境 构建
 
-### [windows cygwin 环境 构建步骤](../../../docs/Cygwin.md)
-
-### 双击如下两个脚本，自动下载cygwin 和 cygwin安装依赖库
+### cygwin 环境 构建 快速开始，双击如下两个脚本，自动下载cygwin 和 cygwin安装依赖库
 
 ```shell
 
@@ -20,8 +18,9 @@ sapi/quickstart/windows/cygwin-build/download-cygwin.bat
 # 自动安装 cygwin
 sapi/quickstart/windows/cygwin-build/install-cygwin.bat
 
-
 ```
+
+### [windows cygwin 环境 构建步骤](../../../docs/Cygwin.md)
 
 ## windows 软连接例子
 
