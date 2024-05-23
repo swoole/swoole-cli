@@ -13,8 +13,10 @@ configure ^
 --enable-fileinfo   --enable-filter ^
 --enable-xmlreader  --enable-xmlwriter ^
 --enable-zlib ^
---with-openssl ^
---with-curl
+--with-openssl=static
+
+
+: --with-curl=static
 
 : --with-extra-includes="'C:\Program Files\OpenSSL\include\':'C:\Program Files (x86)\zlib\include/'" ^
 : --with-extra-libs="'C:\Program Files\OpenSSL\lib\':'C:\Program Files (x86)\zlib\lib/'"
