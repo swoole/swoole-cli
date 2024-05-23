@@ -23,7 +23,8 @@ configure ^
 --enable-sockets    --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  ^
 --enable-filter ^
 --enable-xmlreader  --enable-xmlwriter ^
---with-zlib=static ^
+--enable-redis ^
+--enable-zlib  ^
 --with-openssl=static ^
 --with-extra-includes="%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include" ^
 --with-extra-libs="%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib"
