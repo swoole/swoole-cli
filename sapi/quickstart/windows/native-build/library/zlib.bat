@@ -8,10 +8,13 @@ set __PROJECT__=%cd%
 echo %cd%
 cd %__PROJECT__%
 
-mkdir -p  build
+mkdir  build /S /Q
+
+
+
 cd thirdparty\zlib
 dir
-mkdir -p  build
+mkdir  build /S /Q
 
 cd build
 cmake .. ^

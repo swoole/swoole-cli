@@ -8,11 +8,12 @@ set __PROJECT__=%cd%
 echo %cd%
 cd %__PROJECT__%
 
-mkdir build
+mkdir  build /S /Q
+
 
 cd thirdparty\libyaml
 dir
-mkdir -p  build
+mkdir  build /S /Q
 cd build
 cmake .. ^
 -DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\libyaml" ^
