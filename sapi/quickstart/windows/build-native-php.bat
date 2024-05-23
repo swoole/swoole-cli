@@ -14,9 +14,8 @@ configure ^
 --enable-sockets    --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  ^
 --enable-filter ^
 --enable-xmlreader  --enable-xmlwriter ^
---enable-zlib ^
+--with-zlib=static ^
 --with-openssl=static ^
---with-fileinfo=static ^
 --with-extra-includes="c:\php-cli\openssl\include\;c:\php-cli\zlib\include" ^
 --with-extra-libs="c:\php-cli\openssl\lib\;c:\php-cli\zlib\lib"
 
