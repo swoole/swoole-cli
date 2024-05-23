@@ -12,18 +12,20 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 
+test -f php-8.2.19-nts-Win32-vs16-x64.zip ||  curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
 
-curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
-unzip -d php php-8.2.19-nts-Win32-vs16-x64.zip
+unzip -f -d php php-8.2.19-nts-Win32-vs16-x64.zip
 
 pwd
 cp -f php/php.ini-production php/php.ini
 
 mkdir -p bin/runtime/
-curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
+test -f bin/runtime/composer.phar || curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
 export PATH=$PATH:${__PROJECT__}/php/
 
-echo 'extension_dir="ext\" ' >> php/php.ini
+echo $PATH
+
+echo 'extension_dir="C:\msys64\home\Administrator\swoole-cli\php\ext\" ' >> php/php.ini
 echo 'extension=php_curl.dll' >> php/php.ini
 echo 'extension=php_bz2.dll'  >> php/php.ini
 echo 'extension=php_openssl.dll' >>  php/php.ini
