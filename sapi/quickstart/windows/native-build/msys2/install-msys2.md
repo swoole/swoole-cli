@@ -8,7 +8,8 @@
 
 > 使用镜像站点 https://mirror.tuna.tsinghua.edu.cn/help/msys2/  下载 msys2 安装包
 
-> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20230526.exe (支持win7 最后一版本)
+> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20230526.exe (支持 win7 的最后一版本)
+
 > https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20240507.exe
 
 > 安装 msys2
@@ -21,7 +22,9 @@
 
 > msys2 集成了 Mingw 和 Cygwin ，同时还提供了包管理工具 `pacman`
 
-### msys2 终端下
+> [msys2 各环境的区别](https://www.msys2.org/docs/environments/)
+
+## msys2 安装后初始化
 
 ```shell
 # 换源 （ 不换源，不需要执行此条命令）
