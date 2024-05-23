@@ -6,11 +6,9 @@ cd ..\..\..\..\
 
 set __PROJECT__=%cd%
 echo %cd%
-cd %__PROJECT__%
+cd %__PROJECT__%\php-src\
 
 
-cd php-src
-buildconf
 configure --help
 
 
@@ -40,5 +38,8 @@ nmake
 
 
 cd %__PROJECT__%\php-src\
-x64\Release_TS\php.exe -v
-x64\Release_TS\php.exe -m
+
+.\x64\Release_TS\php.exe -v
+.\x64\Release_TS\php.exe -m
+
+cd %__PROJECT__%
