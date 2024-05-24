@@ -1,7 +1,7 @@
 @echo off
 
 echo %~dp0
-set CURRENT_DIR=%~dp0
+set "CURRENT_DIR=%~dp0"
 
 cd ..\..\..\..\
 
