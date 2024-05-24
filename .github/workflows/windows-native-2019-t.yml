@@ -101,11 +101,11 @@ jobs:
           echo "PHP_SDK_OS_ARCH=x64" >> $Env:GITHUB_ENV
           echo "PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat" >> $Env:GITHUB_ENV
           echo "PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VC_DIR=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VC_TOOLSET_VER=$env:VCToolsVersion" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS=vs17" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
 
           $CURRENT_DIR = Get-Location
           $X_PATH="${CURRENT_DIR}\php-sdk-binary-tools\bin;${CURRENT_DIR}\php-sdk-binary-tools\msys2\usr\bin;$env:PATH"
