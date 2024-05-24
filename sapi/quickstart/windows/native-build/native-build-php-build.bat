@@ -29,6 +29,7 @@ configure.bat ^
 --enable-zlib  ^
 --with-openssl=static ^
 --enable-tokenizer ^
+--with-toolset=vs ^
 --with-extra-includes="%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include" ^
 --with-extra-libs="%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib\"
 
