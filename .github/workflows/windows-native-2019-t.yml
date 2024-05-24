@@ -63,12 +63,12 @@ jobs:
           # 构建库准备环境依赖
           bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
 
-      - name: Install Soft And  Set  Github ENV variables
+      - name: Install Soft
         shell: cmd
         run: |
           sapi\quickstart\windows\native-build\install-deps-soft.bat
 
-      - name: Set PHPSDK  Github ENV variables
+      - name: Set  Github ENV variables
         run: |
           echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
           echo "PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
