@@ -15,11 +15,15 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
 # 准备 PHP 运行时 并执行 composer install
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
 
-# 准备 库  和  PHP SDK
-bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code-and-php-sdk.sh
+# 准备PHP SDK
+bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-and-php-sdk.sh
+
+# 准备 库
+bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code.sh
 
 # 构建库准备环境依赖
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
+
 
 
 ```

@@ -55,7 +55,7 @@ jobs:
           bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
 
           # 准备 库  和  PHP SDK
-          bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code-and-php-sdk.sh
+          bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code.sh
 
           # 提前准备下载依赖库
           bash sapi/download-box/download-box-get-archive-from-server.sh
