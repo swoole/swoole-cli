@@ -7,13 +7,13 @@ cd ..\..\..\..\..\
 set __PROJECT__=%cd%
 echo %cd%
 cd %__PROJECT__%
-
 mkdir  build /S /Q
-
 
 
 cd thirdparty\zlib
 dir
+
+
 mkdir  build /S /Q
 
 cd build

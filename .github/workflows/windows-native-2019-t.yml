@@ -68,31 +68,6 @@ jobs:
         run: |
           sapi\quickstart\windows\native-build\install-deps-soft.bat
 
-
-#
-#      - name: show PHPSDK env
-#        shell: cmd
-#        run: |
-#
-#          : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
-#
-#          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar config -g repos.packagist composer https://packagist.org
-#          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-dist -vvv --profile --no-dev
-#          : swoole-cli.exe /cygdrive/d/a/swoole-cli/swoole-cli/swoole-cli-v5.0.3-cygwin-x64/bin/composer.phar update --prefer-source  -vvv --profile --no-dev
-#
-#          : swoole-cli.exe prepare.php --without-docker=1 --skip-download=1
-#
-#          : 本命令无效 ，只是为了看输出
-#          call php-sdk-binary-tools\phpsdk-vs16-x64.bat
-
-#      - name: "Install PHP for official runners"
-#        uses: "shivammathur/setup-php@v2"
-#        with:
-#          coverage: none
-#          tools: composer:v2
-#          php-version: 8.2
-#          ini-values: memory_limit=-1
-#
       - name: Set PHPSDK  Github ENV variables
         run: |
           echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
