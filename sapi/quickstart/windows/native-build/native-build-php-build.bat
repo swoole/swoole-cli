@@ -19,6 +19,8 @@ echo %INCLUDE%
 echo %LIB%
 echo %LIBPATH%
 
+se "LIBPATH=%LIBPATH%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib"
+
 set "LDFLAGS=%__PROJECT__%\build\openssl\lib\libcrypto.lib;%__PROJECT__%\build\openssl\lib\libssl.lib;"
 set "LDFLAGS=%LDFLAGS%;%__PROJECT__%\build\zlib\lib\zlib.lib;%__PROJECT__%\build\zlib\lib\zlibstatic.lib;"
 
