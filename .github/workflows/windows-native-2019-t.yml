@@ -128,8 +128,6 @@ jobs:
         run: |
           $CURRENT_DIR = Get-Location
 
-          # cmd /c sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
-
           cmd /c sapi\quickstart\windows\native-build\native-build-php-config.bat
 
           cmd /c sapi\quickstart\windows\native-build\native-build-php-config-help.bat
