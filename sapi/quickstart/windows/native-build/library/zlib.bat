@@ -5,16 +5,14 @@ cd %~dp0
 cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
-echo %cd%
 cd %__PROJECT__%
-mkdir  build /S /Q
+mkdir -p build
 
 
-cd thirdparty\zlib
-echo %cd%
+cd %__PROJECT__%\thirdparty\zlib
 dir
 
-mkdir  build /S /Q
+mkdir -p build
 
 cd build
 dir
