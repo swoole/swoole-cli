@@ -35,10 +35,6 @@ jobs:
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
 
       - uses: msys2/setup-msys2@v2
-        with:
-          install: >-
-            curl git zip unzip tar xz
-
       - name: prepare build environment and download source code
         shell: msys2 {0}
         run: |
