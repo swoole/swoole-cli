@@ -27,6 +27,7 @@ rem openssl\Configurations\windows-makefile.tmpl
 
 nmake install_sw
 
+copy ms\applink.c  %__PROJECT__%\thirdparty\openssl\include\openssl\applink.c
 
 cd %__PROJECT__%
 
