@@ -13,17 +13,15 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-install-soft.sh
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
 
 
-
 # 提前准备下载依赖库
 bash sapi/download-box/download-box-get-archive-from-server.sh
 
-# 准备 PHP 源码 和 PHP SDK
-bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-and-php-sdk.sh
 
 # 准备 依赖库 和 扩展
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code.sh
 
-
+# 准备 PHP 源码 和 PHP SDK
+bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-and-php-sdk.sh
 
 # 构建库准备环境依赖
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
