@@ -90,6 +90,7 @@ jobs:
       - name: build all library
         run: |
           $CURRENT_DIR = Get-Location
+          where perl
           php -v
           perl -v
           nasm -v
