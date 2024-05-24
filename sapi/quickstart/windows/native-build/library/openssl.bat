@@ -9,7 +9,7 @@ cd %__PROJECT__%
 mkdir  build
 
 
-set "PATH=%__PROJECT__%\nasm\;"
+set "PATH=%__PROJECT__%\nasm\;%PATH%"
 
 cd %__PROJECT__%\thirdparty\openssl
 dir
