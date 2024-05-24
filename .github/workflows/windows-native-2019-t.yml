@@ -94,7 +94,6 @@ jobs:
 #          ini-values: memory_limit=-1
 #
       - name: Set PHPSDK  Github ENV variables
-        if: 0
         run: |
           echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
           echo "PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
@@ -129,7 +128,7 @@ jobs:
         run: |
           $CURRENT_DIR = Get-Location
 
-          cmd /c sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
+          # cmd /c sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
 
           cmd /c sapi\quickstart\windows\native-build\native-build-php-config.bat
 

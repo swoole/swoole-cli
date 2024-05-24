@@ -17,6 +17,7 @@ test -f php-8.2.19-nts-Win32-vs16-x64.zip ||  curl -Lo php-8.2.19-nts-Win32-vs16
 
 unzip  php-8.2.19-nts-Win32-vs16-x64.zip
 mv php-8.2.19-nts-Win32-vs16-x64 php
+
 pwd
 cp -f php/php.ini-production php/php.ini
 
