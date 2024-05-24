@@ -29,11 +29,11 @@ configure.bat ^
 --enable-redis ^
 --enable-zlib  ^
 --with-openssl=static ^
---enable-redis ^
 --enable-tokenizer ^
 --with-extra-includes="%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include" ^
 --with-extra-libs="%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib"
 
+:: --enable-redis ^
 :: --enable-phar-native-ssl
 :: --enable-fileinfo
 :: --with-curl=static
