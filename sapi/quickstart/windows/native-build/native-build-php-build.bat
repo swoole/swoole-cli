@@ -19,8 +19,8 @@ echo %INCLUDE%
 echo %LIB%
 echo %LIBPATH%
 
-set "LDFLAGS=%__PROJECT__%\openssl\lib\libcrypto.lib;%__PROJECT__%\openssl\lib\libssl.lib;"
-set "LDFLAGS=%LDFLAGS%;%__PROJECT__%\zlib\lib\zlib.lib;%__PROJECT__%\zlib\lib\zlibstatic.lib;"
+set "LDFLAGS=%__PROJECT__%\build\openssl\lib\libcrypto.lib;%__PROJECT__%\build\openssl\lib\libssl.lib;"
+set "LDFLAGS=%LDFLAGS%;%__PROJECT__%\build\zlib\lib\zlib.lib;%__PROJECT__%\build\zlib\lib\zlibstatic.lib;"
 
 
 configure.bat ^
