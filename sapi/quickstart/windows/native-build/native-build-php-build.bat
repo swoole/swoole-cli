@@ -23,7 +23,7 @@ set "LDFLAGS=%LDFLAGS%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib"
 
 configure.bat ^
 --disable-all      --disable-cgi      --enable-cli ^
---enable-sockets    --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  ^
+--enable-sockets      --enable-ctype  --enable-pdo --enable-phar  ^
 --enable-filter ^
 --enable-xmlreader  --enable-xmlwriter ^
 --enable-zlib  ^
@@ -32,6 +32,7 @@ configure.bat ^
 --with-extra-includes="%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include" ^
 --with-extra-libs="%__PROJECT__%\build\openssl\lib\libcrypto.lib;%__PROJECT__%\build\openssl\lib\libssl.lib;%__PROJECT__%\build\zlib\lib\zlibstatic.lib"
 
+:: --enable-mbstring
 :: --enable-redis ^
 :: --enable-phar-native-ssl
 :: --enable-fileinfo
