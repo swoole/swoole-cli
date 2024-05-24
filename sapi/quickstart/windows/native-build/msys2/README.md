@@ -9,8 +9,8 @@
 # 下载安装  git curl wget openssl zip unzip xz  lzip 软件包
 bash sapi/quickstart/windows/native-build/msys2/msys2-install-soft.sh
 
-# 下载 visualstudio 2022
-bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs.sh
+# 下载 visualstudio 2019
+bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
 
 # 准备 PHP 运行时 并执行 composer install
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
@@ -22,4 +22,11 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code-and-p
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
 
 
+```
+
+## 实验
+
+```bash
+# 下载 visualstudio 2022
+bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
 ```

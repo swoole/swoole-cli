@@ -9,6 +9,8 @@
 ## 二、CMD 环境构建
 
 ```bash
+# vs2019
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
 
 sapi\quickstart\windows\native-build\install-visualstudio.bat
 sapi\quickstart\windows\native-build\install-deps-soft.bat
@@ -22,7 +24,8 @@ sapi\quickstart\windows\native-build\library\zlib.bat
 sapi\quickstart\windows\native-build\library\openssl.bat
 
 
-sapi\quickstart\windows\native-build\native-build-php-sdk.bat
+sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
+
 
 sapi\quickstart\windows\native-build\native-build-php-config.bat
 
@@ -32,6 +35,16 @@ sapi\quickstart\windows\native-build\native-build-php-build-release.bat
 
 sapi\quickstart\windows\native-build\native-build-php-build-archive.bat
 
+
+```
+
+## 实验 vs2022 环境构建
+
+```bash
+# vs2022
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
+
+sapi\quickstart\windows\native-build\native-build-php-sdk-vs2022.bat
 
 ```
 
@@ -133,8 +146,8 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
     curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
     curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
 
-
 ## 参考文档
+
 1. [通过命令行使用 MSVC 工具集](https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170)
 1. [通过命令行使用 MSBuild](https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-1700)
 1. [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
