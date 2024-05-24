@@ -26,7 +26,6 @@ configure.bat ^
 --enable-sockets    --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  ^
 --enable-filter ^
 --enable-xmlreader  --enable-xmlwriter ^
---enable-redis ^
 --enable-zlib  ^
 --with-openssl=static ^
 --enable-tokenizer ^
