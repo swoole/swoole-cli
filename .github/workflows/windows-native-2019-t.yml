@@ -96,8 +96,8 @@ jobs:
           php -v
           perl -v
           nasm -v
-          cmd /c sapi\quickstart\windows\native-build\library\zlib.bat
-          cmd /c sapi\quickstart\windows\native-build\library\openssl.bat
+          sapi\quickstart\windows\native-build\library\zlib.bat
+          sapi\quickstart\windows\native-build\library\openssl.bat
 
       - name: build php
         run: |
