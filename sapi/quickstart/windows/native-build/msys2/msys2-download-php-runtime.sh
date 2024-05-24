@@ -28,7 +28,7 @@ echo $PATH
 
 
 PHP_EXT_DIR=''
-if [ -v "$GITHUB_WORKSPACE" ] && [ -v "$GITHUB_ACTION" ] ; then
+if [[ -n  "$GITHUB_WORKSPACE" ]] && [[ -n "$GITHUB_ACTION" ]] ; then
   PHP_EXT_DIR=${GITHUB_WORKSPACE}'\php\ext\'
 else
   PHP_EXT_DIR='C:\msys64\home\Administrator\swoole-cli\php\ext\'
