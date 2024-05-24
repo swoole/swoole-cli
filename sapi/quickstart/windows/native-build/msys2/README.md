@@ -12,6 +12,8 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-install-soft.sh
 # 下载 visualstudio 2019
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
 
+# 准备 PHP 运行时
+bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
 
 # 提前准备下载依赖库
 bash sapi/download-box/download-box-get-archive-from-server.sh
