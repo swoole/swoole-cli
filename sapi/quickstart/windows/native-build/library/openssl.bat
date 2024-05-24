@@ -20,6 +20,7 @@ perl Configure VC-WIN64A threads no-shared  no-tests --release --prefix="%__PROJ
 
 nmake
 
+rem document
 rem openssl\Configurations\windows-makefile.tmpl
 
 nmake install_sw
