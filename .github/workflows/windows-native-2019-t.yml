@@ -88,16 +88,13 @@ jobs:
           echo "PATH=$X_PATH"  >> $Env:GITHUB_ENV
 
       - name: build all library
-        shell: cmd
         run: |
-          echo %cd%
-          set __PROJECT__=%cd%
-          set "PATH=%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\"
+          $CURRENT_DIR = Get-Location
           php -v
           perl -v
           nasm -v
-          sapi\quickstart\windows\native-build\library\zlib.bat
-          sapi\quickstart\windows\native-build\library\openssl.bat
+          cmd /c  sapi\quickstart\windows\native-build\library\zlib.bat
+          cmd /c  sapi\quickstart\windows\native-build\library\openssl.bat
 
       - name: build php
         run: |
