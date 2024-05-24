@@ -32,6 +32,10 @@ jobs:
           uname -a
           pwd
           ipconfig /all
+          :: 显示逻辑cpu 个数
+          wmic cpu get NumberOfLogicalProcessors /value
+          echo %NUMBER_OF_PROCESSORS%
+          systeminfo
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
 
       - uses: msys2/setup-msys2@v2
