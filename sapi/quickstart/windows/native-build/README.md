@@ -13,6 +13,7 @@
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
 
 sapi\quickstart\windows\native-build\install-visualstudio.bat
+
 sapi\quickstart\windows\native-build\install-deps-soft.bat
 
 
