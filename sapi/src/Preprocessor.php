@@ -202,7 +202,6 @@ class Preprocessor
         } else {
             return 'x64';
         }
-
     }
 
     public function getImageTag(): string
@@ -1209,7 +1208,7 @@ EOF;
         $this->binPaths = array_filter(array_unique($this->binPaths));
 
         if ($this->getInputOption('skip-download')) {
-            $this->generateLibraryDownloadLinks();
+            $this->generateDownloadLinks();
         }
 
         $this->generateFile(__DIR__ . '/template/make-install-deps.php', $this->rootDir . '/make-install-deps.sh');

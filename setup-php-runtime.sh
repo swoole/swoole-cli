@@ -107,15 +107,7 @@ if [ $OS = 'windows' ]; then
     SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-cygwin-${ARCH}"
     test -f ${SWOOLE_CLI_RUNTIME}.zip || curl -LSo ${SWOOLE_CLI_RUNTIME}.zip ${SWOOLE_CLI_DOWNLOAD_URL}
     test -d ${SWOOLE_CLI_RUNTIME} && rm -rf ${SWOOLE_CLI_RUNTIME}
-    cp -f ${SWOOLE_CLI_RUNTIME}.zip ${__PROJECT__}
-    # unzip "${SWOOLE_CLI_RUNTIME}.zip"
-    # cp -f composer.phar ${SWOOLE_CLI_RUNTIME}/bin/
-    # cp -f ${SWOOLE_CLI_RUNTIME}/bin/swoole-cli.exe ${SWOOLE_CLI_RUNTIME}/bin/php.exe
-    # test -d ${__PROJECT__}/runtime/ && rm -rf ${__PROJECT__}/runtime/
-    # mkdir -p ${__PROJECT__}/runtime/
-    # cp -rf ${SWOOLE_CLI_RUNTIME}/* ${__PROJECT__}/runtime/
-    # cp -f ${__PROJECT__}/runtime/bin/swoole-cli.exe ${__PROJECT__}/runtime/bin/php.exe
-
+    unzip "${SWOOLE_CLI_RUNTIME}.zip"
     exit 0
   }
 else

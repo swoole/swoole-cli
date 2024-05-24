@@ -1,84 +1,153 @@
-可以借助 MSYS2 环境 和 CMD 环境  进行构建
+# 构建原生 PHP
 
-1. MSYS2 环境 用于下载软件     (msys2 集成了 Mingw 和 Cygwin ，同时还提供了包管理工具 `pacman`)
-2. CMD  环境 安装Visual Studio
-3. CMD 环境 执行编译
+    1. 准备 msys2 环境
+    2. msys2 环境下 下载软件包 、PHP 运行时 、PHP SDK 等
+    3. CMD 环境执行构建
 
-##  msys2下载软件
-1.  下载 msys2  [msys2](https://www.msys2.org/])
-    > 浏览器打开,自动给下载 msys2： https://mirror.msys2.org/distrib/x86_64/msys2-x86_64-20240507.exe
-1.  安装 msys2
-    > 双击 `msys2-x86_64-20240507.exe ` 进行安装
-1.  msys2安装软件
-    ```shell
-     pacman -Syy --noconfirm git curl
-    ```
-1. msys2 环境下使用curl 下载软件
-    ```shell
-   # 下载 vs2022
+## 一 、[msys2 环境 下载软件包 、PHP 运行时 、PHP SDK 等 ](msys2/README.md)
 
-   # 方式一
-   curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
-   # 方式二
-   curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
+## 二、CMD 环境构建
 
-   ```
+```bash
+# vs2019
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
 
-   ```shell
-   # 下载 php 源码
-   git clone -b php-8.3.6     --depth=1 https://github.com/php/php-src.git
+sapi\quickstart\windows\native-build\install-visualstudio.bat
+sapi\quickstart\windows\native-build\install-deps-soft.bat
 
-   # 下载 php-sdk for windows
-   # git clone -b php-sdk-2.2.0 --depth=1 https://github.com/php/php-sdk-binary-tools.git
-   git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
 
-   ```
+# start /B
+# cmd /c
 
-## CMD 环境 安装VisualStudio
-1. [使用命令行参数安装、更新和管理 Visual Studio](https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022)
-1. [Visual Studio 生成工具组件目录](https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022)
+sapi\quickstart\windows\native-build\library\zlib.bat
 
-> 使用命令行快速安装 VisualStudio 组件
-```bat
-cd c:\msys64\home\Administrator\
+sapi\quickstart\windows\native-build\library\openssl.bat
 
-VisualStudioSetup.exe ^
---locale en-US ^
---add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 ^
---add Microsoft.Component.MSBuild ^
---add Microsoft.VisualStudio.Component.Roslyn.Compiler ^
---add Microsoft.Component.MSBuild ^
---add Microsoft.VisualStudio.Component.CoreBuildTools ^
---add Microsoft.VisualStudio.Workload.MSBuildTools ^
---add Microsoft.VisualStudio.Component.Windows11SDK.22000   ^
---add Microsoft.VisualStudio.Component.Windows10SDK.20348	^
---add Microsoft.VisualStudio.Component.Windows10SDK ^
---passive  --force --norestart
-```
 
-## CMD 环境 编译构建
-```bat
-cd c:\msys64\home\Administrator\php-sdk-binary-tools
-phpsdk-vs17-x64.bat
+sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
+
+
+sapi\quickstart\windows\native-build\native-build-php-config.bat
+
+sapi\quickstart\windows\native-build\native-build-php-build.bat
+
+sapi\quickstart\windows\native-build\native-build-php-build-release.bat
+
+sapi\quickstart\windows\native-build\native-build-php-build-archive.bat
+
 
 ```
 
-```bat
-cd c:\msys64\home\Administrator\php-src
-buildconf
-configure --help
-configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
-nmake
+## 实验 vs2022 环境构建
 
+```bash
+# vs2022
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
 
-x64\Release_TS\php.exe -v
-x64\Release_TS\php.exe -m
+sapi\quickstart\windows\native-build\native-build-php-sdk-vs2022.bat
 
 ```
 
+## 构建window  PHP 工具 和 参考
 
+[ download windows PHP ](https://windows.php.net/download#php-8.2)
+
+[windows build php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild)
+
+[internals/windows/libs](https://wiki.php.net/internals/windows/libs)
+
+```shell
+git config core.ignorecase false # 设置 Git 在 Windows 上也区分大小写
+```
+
+Latest VC++
+https://learn.microsoft.com/en-AU/cpp/windows/latest-supported-vc-redist
+
+7zip
+https://7-zip.org/
+
+visualstudio
+https://visualstudio.microsoft.com/zh-hans/downloads/
+
+windows-sdk
+https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
+
+Windows PowerShell ISE 文本编辑器
+
+## 通过命令行使用 MSVC 工具集
+
+    https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170
+
+## 通过命令行使用 MSBuild
+
+    https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-170
+
+    // C:\Program Files\Microsoft Visual Studio\2022\Enterprise //
+    // C:\Program Files\Microsoft Visual Studio\2022\Community //
+    cl /?
+
+## Microsoft Visual C++ 可再发行程序包最新支持的下载
+
+    https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170
+
+Windows SDK
+https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
+
+消息编译器是 Windows SDK 的一部分
+消息编译器命令行在这里描述：MC.EXE
+
+Visual Studio 教程 | C++
+https://learn.microsoft.com/zh-cn/cpp/get-started/?view=msvc-170
+
+## 使用命令行参数安装、更新和管理 Visual Studio
+
+https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
+
+## Visual Studio 生成工具组件目录
+
+https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022
+
+```shell
+
+
+VisualStudioSetup.exe
+--locale en-US
+--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+--add Microsoft.Component.MSBuild
+--add Microsoft.VisualStudio.Component.Roslyn.Compiler
+--add Microsoft.Component.MSBuild
+--add Microsoft.VisualStudio.Component.CoreBuildTools
+--add Microsoft.VisualStudio.Workload.MSBuildTools
+--add Microsoft.VisualStudio.Component.Windows11SDK.22000
+--add Microsoft.VisualStudio.Component.Windows10SDK.20348
+--add Microsoft.VisualStudio.Component.Windows10SDK
+--path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:
+\VS\shared"
+--quiet --force --norestart
+--channelId VisualStudio.16.Release ^
+
+vs_buildtools.exe --quiet --force --norestart
+
+```
+
+Microsoft Visual C++ 运行时库
+https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170
+https://aka.ms/vs/17/release/vc_redist.x64.exe
+
+## 下载 visual studio 安装器
+
+    https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022
+    https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2019
+
+    https://aka.ms/vs/17/release/vs_buildtools.exe
+
+    curl -Lo
+    VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
+    curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
+    curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
 
 ## 参考文档
+
 1. [通过命令行使用 MSVC 工具集](https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170)
 1. [通过命令行使用 MSBuild](https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-1700)
 1. [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
@@ -86,3 +155,4 @@ x64\Release_TS\php.exe -m
 1. [VisualStudio 导入或导出安装配置](https://learn.microsoft.com/zh-cn/visualstudio/install/import-export-installation-configurations?view=vs-2022)
 1. [Visual Studio 2019 版本 16.11 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2019/release-notes)
 1. [Visual Studio 2022 版本 17.9 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2022/release-notes)
+

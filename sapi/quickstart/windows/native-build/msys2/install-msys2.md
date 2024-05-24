@@ -9,7 +9,9 @@
 > 使用镜像站点 https://mirror.tuna.tsinghua.edu.cn/help/msys2/  下载 msys2 安装包 帮助
 > 浏览器打开进行下载： https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/
 
-> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20230526.exe （支持 windows7 最后一个版本
+
+> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20230526.exe (支持 win7 的最后一版本)
+
 > https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20240507.exe
 
 > 安装 msys2
@@ -18,11 +20,11 @@
 
 > MSYS2 包搜索 https://packages.msys2.org/queue
 
-> [ msys2环境信息 ](https://www.msys2.org/docs/environments/)
+> [ msys2 各版本环境 区别 ](https://www.msys2.org/docs/environments/)
 
 > msys2 集成了 Mingw 和 Cygwin ，同时还提供了包管理工具 `pacman`
 
-### msys2 终端下
+## msys2 安装后初始化
 
 ```shell
 # 换源 （ 不换源，不需要执行此条命令）
@@ -31,14 +33,11 @@ sed -i "s#https\?://mirror.msys2.org/#https://mirrors.tuna.tsinghua.edu.cn/msys2
 # 更新源
 pacman -Syy --noconfirm
 # 无须确认安装包
-pacman -Syy --noconfirm git curl wget openssl zip unzip xz gcc  cmake make
 
-pacman -Syy --noconfirm openssl-devel libreadline
-
+pacman -Syy --noconfirm git
 
 # msys2 环境下 拉取 swoole-cli 源码
-git clone --recursive https://github.com/jingjingxyk/swoole-cli.git
+git clone --recursive https://github.com/swoole/swoole-cli.git
 
 
 ```
-
