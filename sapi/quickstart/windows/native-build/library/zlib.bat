@@ -17,6 +17,7 @@ dir
 mkdir  build /S /Q
 
 cd build
+dir
 echo %cd%
 
 cmake .. ^
