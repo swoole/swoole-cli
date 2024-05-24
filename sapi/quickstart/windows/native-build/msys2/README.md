@@ -18,7 +18,7 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
 sapi\quickstart\windows\native-build\install-visualstudio.bat
 ```
 
-```shell
+```bash
 # 准备 PHP 运行时 (需要 vc 运行时）
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
 
