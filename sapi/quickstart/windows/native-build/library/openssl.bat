@@ -6,10 +6,10 @@ cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
 cd %__PROJECT__%
-mkdir -p build
+mkdir build
 
 
-set PATH=%__PROJECT__%\nasm\
+set "PATH=%__PROJECT__%\nasm\;c:\perl"
 
 cd %__PROJECT__%\thirdparty\openssl
 dir

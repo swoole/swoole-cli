@@ -6,13 +6,13 @@ cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
 cd %__PROJECT__%
-mkdir -p build
+mkdir  build
 
 
 cd %__PROJECT__%\thirdparty\zlib
 dir
 
-mkdir -p build
+mkdir build
 
 cd build
 dir
