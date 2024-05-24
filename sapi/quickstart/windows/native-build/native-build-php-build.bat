@@ -30,7 +30,7 @@ configure.bat ^
 --with-openssl=static ^
 --enable-tokenizer ^
 --with-extra-includes="%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include" ^
---with-extra-libs="%__PROJECT__%\build\openssl\lib\libcrypto.lib;%__PROJECT__%\build\openssl\lib\libssl.lib;%__PROJECT__%\build\zlib\lib\zlibstatic.lib"
+--with-extra-libs="%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib\"
 
 :: --enable-mbstring
 :: --enable-redis ^
