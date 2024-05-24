@@ -12,11 +12,11 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 
-
+test -d php/ && rm -rf php/
 test -f php-8.2.19-nts-Win32-vs16-x64.zip ||  curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
 
-unzip -f -d php php-8.2.19-nts-Win32-vs16-x64.zip
-
+unzip -f  php-8.2.19-nts-Win32-vs16-x64.zip
+mv php-8.2.19-nts-Win32-vs16-x64 php
 pwd
 cp -f php/php.ini-production php/php.ini
 
