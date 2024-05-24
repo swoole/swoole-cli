@@ -8,13 +8,12 @@ set __PROJECT__=%cd%
 cd %__PROJECT__%
 mkdir  build
 
-
-cd thirdparty\libyaml
+cd thirdparty\libssh2
 dir
 mkdir  build
 cd build
 cmake .. ^
--DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\libyaml" ^
+-DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\libssh2" ^
 -DCMAKE_BUILD_TYPE=Release  ^
 -DBUILD_SHARED_LIBS=OFF  ^
 -DBUILD_STATIC_LIBS=ON

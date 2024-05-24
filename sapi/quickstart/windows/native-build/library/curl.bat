@@ -5,17 +5,15 @@ cd %~dp0
 cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
-echo %cd%
 cd %__PROJECT__%
-
-mkdir  build /S /Q
+mkdir  build
 
 
 
 cd thirdparty\curl
 dir
 
-mkdir  build /S /Q
+mkdir  build
 cd build
 cmake .. ^
 -DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\curl" ^
@@ -29,8 +27,8 @@ cmake .. ^
 -DUSE_GNUTLS=OFF ^
 -DUSE_MBEDTLS=OFF ^
 -DENABLE_WEBSOCKETS=OFF ^
--DCURL_USE_LIBSSH2=OFF ^
--DCMAKE_PREFIX_PATH="C:/Program Files/OpenSSL/;C:/Program Files (x86)/zlib/"
+-DCURL_USE_LIBSSH2=ON ^
+-DCMAKE_PREFIX_PATH="%__PROJECT__%\OpenSSL\;%__PROJECT__%\zlib\;%__PROJECT__%\libssh2\"
 
 
 cmake --build . --config Release --target install
