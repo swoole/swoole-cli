@@ -100,6 +100,7 @@ jobs:
           cmd /c  sapi\quickstart\windows\native-build\library\libyaml.bat
           cmd /c  sapi\quickstart\windows\native-build\library\libexpat.bat
           cmd /c  sapi\quickstart\windows\native-build\library\liblz4.bat
+          cmd /c  sapi\quickstart\windows\native-build\library\curl.bat
           cmd /c  sapi\quickstart\windows\native-build\library\brotli.bat
           cmd /c  sapi\quickstart\windows\native-build\library\libpng.bat
 
