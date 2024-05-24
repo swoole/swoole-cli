@@ -11,12 +11,14 @@ mkdir  build /S /Q
 
 
 cd thirdparty\zlib
+echo %cd%
 dir
-
 
 mkdir  build /S /Q
 
 cd build
+echo %cd%
+
 cmake .. ^
 -DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\zlib" ^
 -DCMAKE_BUILD_TYPE=Release  ^
