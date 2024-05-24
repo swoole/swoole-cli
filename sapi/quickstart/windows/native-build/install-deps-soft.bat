@@ -1,7 +1,8 @@
 @echo off
 
 echo %~dp0
-cd %~dp0
+set CURRENT_DIR=%~dp0
+
 cd ..\..\..\..\
 
 set __PROJECT__=%cd%
