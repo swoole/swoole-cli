@@ -118,6 +118,7 @@ jobs:
           echo %cd%
           set __PROJECT__=%cd%
           set "PATH=%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\"
+          php -v
           perl -v
           nasm -v
 
