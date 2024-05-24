@@ -108,11 +108,6 @@ if [ $OS = 'windows' ]; then
     test -f ${SWOOLE_CLI_RUNTIME}.zip || curl -LSo ${SWOOLE_CLI_RUNTIME}.zip ${SWOOLE_CLI_DOWNLOAD_URL}
     test -d ${SWOOLE_CLI_RUNTIME} && rm -rf ${SWOOLE_CLI_RUNTIME}
     unzip "${SWOOLE_CLI_RUNTIME}.zip"
-    test -d ${__PROJECT__}/${SWOOLE_CLI_RUNTIME} && rm -rf ${__PROJECT__}/${SWOOLE_CLI_RUNTIME}
-    cp -f composer.phar ${SWOOLE_CLI_RUNTIME}/bin/
-    #cp -f ${SWOOLE_CLI_RUNTIME}/bin/swoole-cli.exe ${SWOOLE_CLI_RUNTIME}/bin/php.exe
-    mv ${SWOOLE_CLI_RUNTIME} ${__PROJECT__}
-    echo
     exit 0
   }
 else

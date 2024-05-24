@@ -12,6 +12,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 
+
 test -f php-8.2.19-nts-Win32-vs16-x64.zip ||  curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
 
 unzip -f -d php php-8.2.19-nts-Win32-vs16-x64.zip
@@ -25,7 +26,25 @@ export PATH=$PATH:${__PROJECT__}/php/
 
 echo $PATH
 
-echo 'extension_dir=C:\msys64\home\Administrator\swoole-cli\php\ext\' >> php/php.ini
+
+PHP_EXT_DIR=''
+if [ -v "$GITHUB_WORKSPACE" ] && [ -v "$GITHUB_ACTION" ] ; then
+  PHP_EXT_DIR=${GITHUB_WORKSPACE}'\php\ext\'
+else
+  PHP_EXT_DIR='C:\msys64\home\Administrator\swoole-cli\php\ext\'
+fi
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --php-ext-dir)
+    PHP_EXT_DIR="$2"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+#echo 'extension_dir=C:\msys64\home\Administrator\swoole-cli\php\ext\' >> php/php.ini
+echo "extension_dir=${PHP_EXT_DIR}" >> php/php.ini
 echo 'extension=php_curl.dll' >> php/php.ini
 echo 'extension=php_bz2.dll'  >> php/php.ini
 echo 'extension=php_openssl.dll' >>  php/php.ini

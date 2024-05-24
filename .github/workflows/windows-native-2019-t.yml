@@ -9,7 +9,7 @@ env:
 
 jobs:
   windows-native:
-    if: 0
+    if: 1
     runs-on: windows-2019
     strategy:
       matrix:
@@ -45,64 +45,28 @@ jobs:
           CURRENT_DIR=$(pwd)
           echo $CURRENT_DIR
 
-          # bash setup-php-runtime.sh
+          # 下载安装  git curl wget openssl zip unzip xz  lzip 软件包
+          bash sapi/quickstart/windows/native-build/msys2/msys2-install-soft.sh
+
+          # 下载 visualstudio 2019 (github action 已经安装）
+          # bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
+
+          # 准备 PHP 运行时 并执行 composer install
+          bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
+
+          # 准备 库  和  PHP SDK
+          bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code-and-php-sdk.sh
+
+          # 提前准备下载依赖库
           bash sapi/download-box/download-box-get-archive-from-server.sh
-          curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
-          unzip -d php php-8.2.19-nts-Win32-vs16-x64.zip
 
-          pwd
-          cp -f php/php.ini-production php/php.ini
-
-          mkdir -p bin/runtime/
-          curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
-          export PATH=$PATH:${CURRENT_DIR}/php/
-
-          echo 'extension_dir="${{ github.workspace }}\php\ext" ' >> php/php.ini
-          echo 'extension=php_curl.dll' >> php/php.ini
-          echo 'extension=php_bz2.dll'  >> php/php.ini
-          echo 'extension=php_openssl.dll' >>  php/php.ini
-          echo 'extension=php_fileinfo.dll' >> php/php.ini
-
-          php -v
-          php -m
-          php bin/runtime/composer.phar install  --no-interaction --no-autoloader --no-scripts --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
-          php bin/runtime/composer.phar dump-autoload --optimize --profile --ignore-platform-req=ext-posix --ignore-platform-req=ext-yaml
-
-          php prepare.php --without-docker=1 --skip-download=1 --with-libavif=1 +uuid +apcu +ds +xlswriter +ssh2
-
-          ls -lh var/download-box/
-
-          bash var/download-box/download_library_use_script_for_windows.sh
-          bash var/download-box/download_library_use_git.sh
-          bash sapi/download-box/download-box-dependencies-sync.sh
-          bash var/download-box/extract-files.sh
-
-          git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
-          git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
-
-          cp -rf ext/* php-src/ext/
-          ls -lh php-src/ext/
-
-          # https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/
-          curl -Lo nasm-2.16.03-win64.zip https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/win64/nasm-2.16.03-win64.zip
-          unzip -d nasm nasm-2.16.03-win64.zip
-          ls -lh nasm
-
-          curl -Lo strawberry-perl-5.38.2.2-64bit.msi https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit.msi
-          dir
+          # 构建库准备环境依赖
+          bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
 
       - name: Install Soft And  Set  Github ENV variables
+        shell: cmd
         run: |
-          # 命令行静默安装 msi
-          # msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
-          msiexec /i strawberry-perl-5.38.2.2-64bit.msi /passive
-
-          $CURRENT_DIR = Get-Location
-          $X_PATH="$CURRENT_DIR\nasm\nasm-2.16.03\;$CURRENT_DIR\php\;$env:PATH"
-          echo $X_PATH
-          echo "PATH=$X_PATH" >> $Env:GITHUB_ENV
-
-          # Get-WmiObject –class Win32_processor | ft NumberOfCores,NumberOfLogicalProcessors
+          sapi\quickstart\windows\native-build\install-deps-soft.bat
 
 
 #
@@ -130,6 +94,7 @@ jobs:
 #          ini-values: memory_limit=-1
 #
       - name: Set PHPSDK  Github ENV variables
+        if: 0
         run: |
           echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
           echo "PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
@@ -152,6 +117,8 @@ jobs:
         shell: cmd
         run: |
           echo %cd%
+          set __PROJECT__=%cd%
+          set "PATH=%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\"
           perl -v
           nasm -v
 
@@ -161,15 +128,18 @@ jobs:
       - name: build php
         run: |
           $CURRENT_DIR = Get-Location
-          cd php-src
-          cmd /c buildconf
-          cmd /c configure --help
-          cmd /c ${CURRENT_DIR}\sapi\quickstart\windows\build-native-php.bat
 
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
 
-          cd ${CURRENT_DIR}\
-          php-src\x64\Release_TS\php.exe -v
-          php-src\x64\Release_TS\php.exe -m
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-config.bat
+
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-config-help.bat
+
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-build.bat
+
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-build-release.bat
+
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-build-archive.bat
 
 
       - name: test set env in cmd
