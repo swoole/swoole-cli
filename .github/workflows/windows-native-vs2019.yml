@@ -32,6 +32,11 @@ jobs:
           uname -a
           pwd
           ipconfig /all
+          # 显示逻辑cpu 个数
+          wmic cpu get NumberOfLogicalProcessors /value
+          # echo %NUMBER_OF_PROCESSORS%
+          Write-Output $env:NUMBER_OF_PROCESSORS
+          systeminfo
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
 
       - uses: msys2/setup-msys2@v2
@@ -114,44 +119,15 @@ jobs:
 
           cmd /c sapi\quickstart\windows\native-build\native-build-php-build-archive.bat
 
+      - name: production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: php-cli-v${{ env.BUILD_PHP_VERSION }}-vs16-x64
+          retention-days: 90
+          path: "php-src/x64/Release_TS/php.exe"
 
-      - name: test set env in cmd
-        if: 0
-        shell: cmd
-        run: |
-          ： 脚本所在目录
-          echo %cd%
-          SET  CURRENT_DIR=%cd%
-
-          : set PATH=%cd%\swoole-cli-v5.0.3-cygwin-x64\bin\;%PATH%
-          : swoole-cli.exe -v
-
-          set PHP_SDK_ARCH=x64
-          set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
-          set PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin
-          set PHP_SDK_OS_ARCH=x64
-          set PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat
-          set PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools
-          set "PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2019\Enterprise\VC"
-          set "PHP_SDK_VC_TOOLSET_VER=%VCToolsVersion%"
-          set PHP_SDK_VS=vs16
-          set PHP_SDK_VS_NUM=16
-          set "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64"
-          set PATH=%cd%\php\;%PATH%
-          set "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
-          echo %PATH%
-
-          cd %CURRENT_DIR%
-          echo %cd%
-
-          cd php-src
-          call buildconf
-          call configure --help
-          call configure --disable-all  --disable-cgi --enable-cli --enable-sockets  --enable-mbstring  --enable-ctype  --enable-pdo --enable-phar  --enable-xmlreader  --enable-xmlwriter --enable-zlib
-          call nmake
-          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
-          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
-
-
-
-
+      - name: gh release
+        uses: softprops/action-gh-release@v2
+        if: 0 && startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "php-src/x64/Release_TS/php.exe"

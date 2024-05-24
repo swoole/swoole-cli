@@ -9,6 +9,7 @@ cd %__PROJECT__%
 mkdir  build
 
 
+set CMAKE_BUILD_PARALLEL_LEVEL=%NUMBER_OF_PROCESSORS%
 
 cd thirdparty\curl
 dir

@@ -3,13 +3,13 @@
     1. 原生构建
     2. cygwin 环境 构建
 
-## 原生构建
+## 一、原生构建
 
 ### [windows 原生构建步骤](native-build/README.md)
 
-## cygwin 环境 构建
+## 二、cygwin 环境 构建
 
-### cygwin 环境 构建 快速开始，双击如下两个脚本，自动下载cygwin 和 cygwin安装依赖库
+     cygwin 环境 构建 快速开始，双击如下两个脚本，自动下载cygwin 和 cygwin安装依赖库
 
 ```shell
 
@@ -20,9 +20,9 @@ sapi/quickstart/windows/cygwin-build/install-cygwin.bat
 
 ```
 
-### [windows cygwin 环境 构建步骤](../../../docs/Cygwin.md)
+### [windows cygwin 构建步骤](../../../docs/Cygwin.md)
 
-## 其它
+## 三、其它
 
 ### windows 软连接例子
 

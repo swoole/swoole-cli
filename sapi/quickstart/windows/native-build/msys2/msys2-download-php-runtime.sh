@@ -24,7 +24,7 @@ mkdir -p bin/runtime/
 test -f bin/runtime/composer.phar || curl -Lo bin/runtime/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
 export PATH=$PATH:${__PROJECT__}/php/
 
-echo $PATH
+php -v
 
 
 PHP_EXT_DIR=''

@@ -8,6 +8,8 @@ set __PROJECT__=%cd%
 cd %__PROJECT__%
 mkdir  build
 
+set CMAKE_BUILD_PARALLEL_LEVEL=%NUMBER_OF_PROCESSORS%
+
 cd thirdparty\ngtcp2\
 dir
 mkdir  build-dir
