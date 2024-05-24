@@ -1,12 +1,12 @@
 @echo off
 
 echo %~dp0
-set "CURRENT_DIR=%~dp0"
-
+cd %~dp0
 cd ..\..\..\..\
 
 set __PROJECT__=%cd%
 echo %cd%
+
 
 
 rem 命令行静默安装 msi
