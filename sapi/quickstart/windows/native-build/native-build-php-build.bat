@@ -18,7 +18,6 @@ echo %INCLUDE%
 echo %LIB%
 echo %LIBPATH%
 
-set "LIBPATH=%LIBPATH%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib"
 
 
 configure.bat ^
