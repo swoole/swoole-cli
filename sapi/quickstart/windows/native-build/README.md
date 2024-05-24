@@ -40,7 +40,7 @@ sapi\quickstart\windows\native-build\native-build-php-build-archive.bat
 
 ## 实验 vs2022 环境构建
 
-```bash
+```bat
 # vs2022
 "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
 
