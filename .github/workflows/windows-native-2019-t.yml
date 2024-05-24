@@ -83,7 +83,7 @@ jobs:
           echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
 
           $CURRENT_DIR = Get-Location
-          $X_PATH="${CURRENT_DIR}\php-sdk-binary-tools\bin;${CURRENT_DIR}\php-sdk-binary-tools\msys2\usr\bin;${CURRENT_DIR}\nasm\;$env:PATH"
+          $X_PATH = "${CURRENT_DIR}\php-sdk-binary-tools\bin;${CURRENT_DIR}\php-sdk-binary-tools\msys2\usr\bin;${CURRENT_DIR}\nasm\;c:\per\;$env:PATH"
           echo $X_PATH
           echo "PATH=$X_PATH"  >> $Env:GITHUB_ENV
 
