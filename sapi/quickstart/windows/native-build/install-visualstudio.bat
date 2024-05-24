@@ -7,6 +7,10 @@ cd ..\..\..\..\
 set __PROJECT__=%cd%
 echo %cd%
 
+vc_redist.x64.exe /install /passive /norestart
+vc_redist.x86.exe /install /passive /norestart
+
+
 VisualStudioSetup.exe ^
 --locale en-US ^
 --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 ^
