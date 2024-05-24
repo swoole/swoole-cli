@@ -2,7 +2,7 @@
 
 echo %~dp0
 cd %~dp0
-cd '..\..\..\..\'
+cd ..\..\..\..\
 
 set "__PROJECT__=%cd%"
 echo %cd%
