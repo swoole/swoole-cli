@@ -22,14 +22,14 @@ cmake .. ^
 -DBUILD_SHARED_LIBS=OFF  ^
 -DBUILD_STATIC_LIBS=ON ^
 -DENABLE_ZLIB_COMPRESSION=ON ^
--DZLIB_ROOT="%__PROJECT__%\build\zlib\" ^
 -DCLEAR_MEMORY=ON ^
 -DENABLE_GEX_NEW=ON ^
 -DENABLE_CRYPT_NONE=OFF ^
--DOpenSSL_ROOT="%__PROJECT__%\build\openssl\" ^
 -DCRYPTO_BACKEND=OpenSSL ^
 -DBUILD_TESTING=OFF ^
--DBUILD_EXAMPLES=OFF
+-DBUILD_EXAMPLES=OFF ^
+-DCMAKE_PREFIX_PATH="%__PROJECT__%\build\zlib\;%__PROJECT__%\build\openssl\"
+
 
 cmake --build . --config Release --target install
 
