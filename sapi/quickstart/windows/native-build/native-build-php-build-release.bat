@@ -15,7 +15,7 @@ set "LIB=%LIB%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib"
 set "LIBPATH=%LIBPATH%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib\"
 
 set CL=/MP
-nmake
+nmake cli
 
 cd %__PROJECT__%
 endlocal
