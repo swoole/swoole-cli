@@ -1,10 +1,12 @@
 @echo off
 
+setlocal
+rem 显示当前脚本所在目录
 echo %~dp0
-cd %~dp0
-cd ..\..\..\..\
+cd /d %~dp0
+cd /d ..\..\..\..\
 
-set __PROJECT__=%cd%
+set "__PROJECT__=%cd%"
 echo %cd%
 cd %__PROJECT__%\php-src\
 
@@ -41,4 +43,7 @@ configure.bat ^
 :: --enable-fileinfo
 :: --with-curl=static
 
-cd %__PROJECT__%
+cd /d %__PROJECT__%
+
+set __PROJECT__=
+endlocal

@@ -1,10 +1,13 @@
 @echo off
 
+setlocal
+rem 显示当前脚本所在目录
 echo %~dp0
-cd %~dp0
-cd /d  ..\..\..\..\
+cd /d %~dp0
+cd /d ..\..\..\..\
 
-set __PROJECT__=%cd%
+set "__PROJECT__=%cd%"
+echo %cd%
 cd /d %__PROJECT__%\
 dir
 
@@ -14,3 +17,5 @@ dir
 
 rem .\php -v
 rem .\php -m
+
+endlocal
