@@ -55,7 +55,7 @@ sapi\quickstart\windows\native-build\native-build-php-sdk-vs2022.bat
 
 [ download windows PHP ](https://windows.php.net/download#php-8.2)
 
-[windows build php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild)
+[windows build php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2)
 
 [internals/windows/libs](https://wiki.php.net/internals/windows/libs)
 
