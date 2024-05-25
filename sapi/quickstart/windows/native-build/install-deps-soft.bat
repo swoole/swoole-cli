@@ -18,7 +18,7 @@ rem msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
 msiexec /i strawberry-perl-5.38.2.2-64bit.msi  /passive
 
 
-set "PATH=%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\;"
+set "PATH=%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\;C:\Strawberry\perl\bin"
 echo %PATH%
 
 
