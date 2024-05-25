@@ -20,7 +20,7 @@ echo %INCLUDE%
 echo %LIB%
 echo %LIBPATH%
 
-
+set "LDFLAGS=/MT"
 
 configure.bat ^
 --disable-all      --disable-cgi      --enable-cli ^
