@@ -1,10 +1,12 @@
 @echo off
 
+setlocal
+rem show current file location
 echo %~dp0
-cd %~dp0
-cd ..\..\..\..\
+cd /d %~dp0
+cd /d ..\..\..\..\
 
-set __PROJECT__=%cd%
+set "__PROJECT__=%cd%"
 echo %cd%
 cd %__PROJECT__%\php-src\
 
@@ -19,7 +21,6 @@ echo %LIB%
 echo %LIBPATH%
 
 
-
 configure.bat ^
 --disable-all      --disable-cgi      --enable-cli ^
 --enable-sockets      --enable-ctype  --enable-pdo --enable-phar  ^
@@ -28,6 +29,9 @@ configure.bat ^
 --enable-zlib  ^
 --with-openssl=static ^
 --enable-tokenizer ^
+--disable-zts ^
+--enable-apcu ^
+--enable-bcmath ^
 --with-toolset=vs ^
 --with-extra-includes="%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include" ^
 --with-extra-libs="%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib\"
@@ -38,4 +42,7 @@ configure.bat ^
 :: --enable-fileinfo
 :: --with-curl=static
 
-cd %__PROJECT__%
+cd /d %__PROJECT__%
+
+set __PROJECT__=
+endlocal

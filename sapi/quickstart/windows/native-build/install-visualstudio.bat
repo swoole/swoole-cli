@@ -1,11 +1,14 @@
 @echo off
 
+setlocal
+rem show current file location
 echo %~dp0
-cd %~dp0
-cd ..\..\..\..\
+cd /d %~dp0
+cd /d .\..\..\..\..\
 
-set __PROJECT__=%cd%
+set "__PROJECT__=%cd%"
 echo %cd%
+
 
 vc_redist.x64.exe /install /passive /norestart
 vc_redist.x86.exe /install /passive /norestart
@@ -32,3 +35,6 @@ rem --add Microsoft.VisualStudio.Workload.NativeDesktop ^
 rem --add Microsoft.VisualStudio.Component.VC.Redist.14.Latest	^
 rem --add Microsoft.VisualStudio.Component.VC.CLI.Support ^
 rem --add Microsoft.VisualStudio.Component.VC.Redist.MSM	 ^
+
+
+endlocal

@@ -1,11 +1,13 @@
 @echo off
 
+setlocal
+rem show current file location
 echo %~dp0
 cd %~dp0
 cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
-cd %__PROJECT__%
+cd /d %__PROJECT__%
 mkdir  build
 
 set CMAKE_BUILD_PARALLEL_LEVEL=%NUMBER_OF_PROCESSORS%
@@ -22,4 +24,5 @@ cmake .. ^
 
 cmake --build . --config Release --target install
 
-cd %__PROJECT__%
+cd /d %__PROJECT__%
+endlocal

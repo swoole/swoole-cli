@@ -9,13 +9,15 @@
 ## 二、CMD 环境构建
 
 ```bat
-# vs2019
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
 
 sapi\quickstart\windows\native-build\install-visualstudio.bat
 
 sapi\quickstart\windows\native-build\install-deps-soft.bat
 
+
+# vs2019
+
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 # start /B
 # cmd /c
@@ -34,7 +36,7 @@ sapi\quickstart\windows\native-build\native-build-php-build.bat
 
 sapi\quickstart\windows\native-build\native-build-php-build-release.bat
 
-sapi\quickstart\windows\native-build\native-build-php-build-archive.bat
+sapi\quickstart\windows\native-build\native-build-php-archive.bat
 
 
 ```
@@ -43,7 +45,7 @@ sapi\quickstart\windows\native-build\native-build-php-build-archive.bat
 
 ```bat
 # vs2022
-"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 sapi\quickstart\windows\native-build\native-build-php-sdk-vs2022.bat
 
@@ -53,7 +55,7 @@ sapi\quickstart\windows\native-build\native-build-php-sdk-vs2022.bat
 
 [ download windows PHP ](https://windows.php.net/download#php-8.2)
 
-[windows build php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild)
+[windows build php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2)
 
 [internals/windows/libs](https://wiki.php.net/internals/windows/libs)
 

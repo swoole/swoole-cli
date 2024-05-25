@@ -1,11 +1,13 @@
 @echo off
 
+setlocal
+rem show current file location
 echo %~dp0
 cd %~dp0
 cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
-cd %__PROJECT__%
+cd /d %__PROJECT__%
 mkdir  build
 
 
@@ -34,4 +36,6 @@ cmake .. ^
 
 cmake --build . --config Release --target install
 
-cd %__PROJECT__%
+
+cd /d %__PROJECT__%
+endlocal

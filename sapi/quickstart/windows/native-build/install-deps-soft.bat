@@ -1,24 +1,29 @@
 @echo off
 
+rem chcp 65001
+
+setlocal
+rem show current file location
 echo %~dp0
-cd %~dp0
-cd ..\..\..\..\
+cd /d %~dp0
+cd /d .\..\..\..\..\
 
 set "__PROJECT__=%cd%"
 echo %cd%
 
 
-rem 命令行静默安装 msi
+rem silent installation msi
 rem msiexec /i strawberry-perl-5.38.2.2-64bit.msi /quiet
 
 msiexec /i strawberry-perl-5.38.2.2-64bit.msi  /passive
 
 
 set "PATH=%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\;"
-
-
 echo %PATH%
+
 
 perl -v
 php -v
 nasm -v
+
+endlocal

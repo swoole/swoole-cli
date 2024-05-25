@@ -1,11 +1,13 @@
 @echo off
 
+setlocal
+rem show current file location
 echo %~dp0
 cd %~dp0
 cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
-cd %__PROJECT__%
+cd /d %__PROJECT__%
 mkdir  build
 
 
@@ -13,7 +15,7 @@ set "PATH=%__PROJECT__%\nasm\;%PATH%"
 
 
 
-cd %__PROJECT__%\thirdparty\openssl
+cd /d %__PROJECT__%\thirdparty\openssl
 dir
 echo %cd%
 perl -v
@@ -27,8 +29,9 @@ rem openssl\Configurations\windows-makefile.tmpl
 
 nmake install_sw
 
-rem 修复 php 编译找不到 openssl/applink.c
+rem fix no found file " openssl/applink.c "
 copy %__PROJECT__%\thirdparty\openssl\ms\applink.c  %__PROJECT__%\build\openssl\include\openssl\applink.c
 
-cd %__PROJECT__%
 
+cd /d %__PROJECT__%
+endlocal

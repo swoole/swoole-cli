@@ -1,14 +1,21 @@
 @echo off
 
+setlocal
+rem show current file location
 echo %~dp0
-cd %~dp0
-cd ..\..\..\..\
+cd /d %~dp0
+cd /d ..\..\..\..\
 
-set __PROJECT__=%cd%
+set "__PROJECT__=%cd%"
 echo %cd%
-cd %__PROJECT__%\
+cd /d %__PROJECT__%\
 dir
-cd %__PROJECT__%\php-src\x64\Release_TS\
+
+rem cd %__PROJECT__%\php-src\x64\Release_TS\
+cd /d %__PROJECT__%\php-src\x64\Release\
 dir
-php.exe -v
-php.exe -m
+
+rem .\php -v
+rem .\php -m
+
+endlocal
