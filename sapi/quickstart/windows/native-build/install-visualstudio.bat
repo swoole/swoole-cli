@@ -1,7 +1,7 @@
 @echo off
 
 setlocal
-rem 显示当前脚本所在目录
+rem show current file location
 echo %~dp0
 cd /d %~dp0
 cd /d .\..\..\..\..\

@@ -1,7 +1,7 @@
 @echo off
 
 setlocal
-rem 显示当前脚本所在目录
+rem show current file location
 echo %~dp0
 cd %~dp0
 cd ..\..\..\..\..\
@@ -29,7 +29,7 @@ rem openssl\Configurations\windows-makefile.tmpl
 
 nmake install_sw
 
-rem 修复 php 编译找不到 openssl/applink.c
+rem fix no found file " openssl/applink.c "
 copy %__PROJECT__%\thirdparty\openssl\ms\applink.c  %__PROJECT__%\build\openssl\include\openssl\applink.c
 
 
