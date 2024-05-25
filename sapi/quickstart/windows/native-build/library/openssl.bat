@@ -5,7 +5,7 @@ cd %~dp0
 cd ..\..\..\..\..\
 
 set __PROJECT__=%cd%
-cd %__PROJECT__%
+cd /d %__PROJECT__%
 mkdir  build
 
 
@@ -13,7 +13,7 @@ set "PATH=%__PROJECT__%\nasm\;%PATH%"
 
 
 
-cd %__PROJECT__%\thirdparty\openssl
+cd /d %__PROJECT__%\thirdparty\openssl
 dir
 echo %cd%
 perl -v
