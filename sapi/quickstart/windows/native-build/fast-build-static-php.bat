@@ -8,4 +8,7 @@ cd /d ..\..\..\..\
 
 set "__PROJECT__=%cd%"
 echo %cd%
+
+start /d %__PROJECT__%
+
 endlocal
