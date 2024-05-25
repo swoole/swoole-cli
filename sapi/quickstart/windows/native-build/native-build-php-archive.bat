@@ -15,7 +15,7 @@ rem cd %__PROJECT__%\php-src\x64\Release_TS\
 cd /d %__PROJECT__%\php-src\x64\Release\
 dir
 
-.\php -v
-.\php -m
+rem .\php -v
+rem .\php -m
 
 endlocal
