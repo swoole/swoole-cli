@@ -1,5 +1,7 @@
 @echo off
 
+chcp 65001
+
 setlocal
 rem 显示当前脚本所在目录
 echo %~dp0
