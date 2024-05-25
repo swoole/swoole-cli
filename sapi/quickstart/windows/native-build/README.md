@@ -9,13 +9,13 @@
 ## 二、CMD 环境构建
 
 ```bat
-
+# 安装 vc 运行时 已经安装过（可以跳过此步）
 sapi\quickstart\windows\native-build\install-visualstudio.bat
 
 sapi\quickstart\windows\native-build\install-deps-soft.bat
 
 
-# vs2019
+# vs2019 （也可以开始菜单点击 打开）
 
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
