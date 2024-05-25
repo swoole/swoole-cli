@@ -8,7 +8,7 @@ set __PROJECT__=%cd%
 echo %cd%
 cd %__PROJECT__%\
 dir
-
-
-php-src\x64\Release_TS\php.exe -v
-php-src\x64\Release_TS\php.exe -m
+cd %__PROJECT__%\php-src\x64\Release_TS\
+dir
+php.exe -v
+php.exe -m
