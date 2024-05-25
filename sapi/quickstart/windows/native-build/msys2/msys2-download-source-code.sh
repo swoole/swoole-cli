@@ -19,6 +19,7 @@ php prepare.php --without-docker=1 --skip-download=1 --with-libavif=1 -swoole +s
 
 ls -lh var/download-box/
 
+bash var/download-box/download_extension_use_git.sh
 bash var/download-box/download_library_use_script_for_windows.sh
 bash var/download-box/download_library_use_git.sh
 bash sapi/download-box/download-box-dependencies-sync.sh
