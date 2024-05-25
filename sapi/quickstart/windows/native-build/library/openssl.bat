@@ -28,7 +28,7 @@ rem openssl\Configurations\windows-makefile.tmpl
 nmake install_sw
 
 rem 修复 php 编译找不到 openssl/applink.c
-copy ms\applink.c  %__PROJECT__%\build\openssl\include\openssl\applink.c
+copy %__PROJECT__%\thirdparty\openssl\ms\applink.c  %__PROJECT__%\build\openssl\include\openssl\applink.c
 
 cd %__PROJECT__%
 

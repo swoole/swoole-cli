@@ -122,8 +122,7 @@ VisualStudioSetup.exe
 --add Microsoft.VisualStudio.Component.Windows11SDK.22000
 --add Microsoft.VisualStudio.Component.Windows10SDK.20348
 --add Microsoft.VisualStudio.Component.Windows10SDK
---path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:
-\VS\shared"
+--path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:\VS\shared"
 --quiet --force --norestart
 --channelId VisualStudio.16.Release ^
 
@@ -142,8 +141,7 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 
     https://aka.ms/vs/17/release/vs_buildtools.exe
 
-    curl -Lo
-    VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
+    curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
     curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
     curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
 
