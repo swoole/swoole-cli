@@ -10,7 +10,7 @@ SET PROJECT_DIR=%cd%
 cd %PROJECT_DIR%\
 echo %cd%
 
-rem %PROJECT_DIR%\php-sdk-binary-tools\phpsdk-vs17-x64.bat
+rem %PROJECT_DIR%\php-sdk-binary-tools\phpsdk-vs16-x64.bat
 
 
 set PHP_SDK_ARCH=x64

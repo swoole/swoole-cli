@@ -10,5 +10,5 @@ cd %__PROJECT__%\
 dir
 cd %__PROJECT__%\php-src\x64\Release_TS\
 dir
-php.exe -v
-php.exe -m
+.\php -v
+.\php.exe -m
