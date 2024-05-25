@@ -28,6 +28,7 @@ cmake .. ^
 -DCRYPTO_BACKEND=OpenSSL ^
 -DBUILD_TESTING=OFF ^
 -DBUILD_EXAMPLES=OFF ^
+-DOPENSSL_ROOT_DIR="%__PROJECT__%\build\openssl\" ^
 -DCMAKE_PREFIX_PATH="%__PROJECT__%\build\zlib\;%__PROJECT__%\build\openssl\"
 
 
