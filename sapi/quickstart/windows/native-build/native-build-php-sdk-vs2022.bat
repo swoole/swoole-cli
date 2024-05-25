@@ -3,7 +3,7 @@
 rem show current file location
 echo %~dp0
 cd %~dp0
-cd ..\..\..\..\..\
+cd ..\..\..\..\
 
 set __PROJECT__=%cd%
 cd /d %__PROJECT__%
