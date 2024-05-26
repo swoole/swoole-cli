@@ -28,7 +28,8 @@ set "INSTALL_PATH=C:\Program Files\Git"
 if not exist "%INSTALL_PATH%" mkdir "%INSTALL_PATH%"
 
 :: 静默安装Git
-%__PROJECT__%\Git-2.45.1-64-bit.exe /?
+:: 查看git 安装参数
+:: %__PROJECT__%\Git-2.45.1-64-bit.exe /?
 start /wait "" "%__PROJECT__%\Git-2.45.1-64-bit.exe" /VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEONEXIT=1 /DIR="%INSTALL_PATH%"
 
 
