@@ -43,5 +43,6 @@ echo %PATH%
 perl -v
 php -v
 nasm -v
+git version
 
 endlocal
