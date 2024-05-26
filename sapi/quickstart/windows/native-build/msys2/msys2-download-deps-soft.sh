@@ -24,4 +24,4 @@ ls -lh nasm
 test -f strawberry-perl-5.38.2.2-64bit.msi ||  curl -Lo strawberry-perl-5.38.2.2-64bit.msi https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit.msi
 
 
-test -f Git-2.45.1-32-bit.exe ||  curl -Lo Git-2.45.1-32-bit.exe https://github.com/git-for-windows/git/releases/download/v2.45.1.windows.1/Git-2.45.1-32-bit.exe
+test -f Git-2.45.1-64-bit.exe ||  curl -Lo Git-2.45.1-64-bit.exe https://github.com/git-for-windows/git/releases/download/v2.45.1.windows.1/Git-2.45.1-64-bit.exe
