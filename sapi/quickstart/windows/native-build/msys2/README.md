@@ -14,8 +14,10 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
 ```
 
 ```bat
-# 打开 CMD 窗口 安装 vs20219 和 vc 运行时
-sapi\quickstart\windows\native-build\install-visualstudio.bat
+
+# 打开 CMD 窗口 安装  vc 运行时
+sapi\quickstart\windows\native-build\install-vc-runtime.bat
+
 ```
 
 ```bash
