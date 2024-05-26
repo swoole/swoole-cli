@@ -22,10 +22,10 @@ echo %LIBPATH%
 
 
 configure.bat ^
---disable-all      --disable-cgi      --enable-cli ^
---enable-sockets      --enable-ctype  --enable-pdo --enable-phar  ^
+--disable-all         --disable-cgi      --enable-cli    --enable-cli-win32 ^
+--enable-sockets      --enable-ctype     --enable-pdo    --enable-phar  ^
 --enable-filter ^
---enable-xmlreader  --enable-xmlwriter ^
+--enable-xmlreader   --enable-xmlwriter ^
 --enable-zlib  ^
 --with-openssl=static ^
 --enable-tokenizer ^
