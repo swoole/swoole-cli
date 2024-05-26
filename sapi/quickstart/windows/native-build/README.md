@@ -30,7 +30,8 @@ sapi\quickstart\windows\native-build\library\openssl.bat
 
 
 sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
-
+:: phpsdk_deps -u
+:: phpsdk_buildtree phpdev
 
 sapi\quickstart\windows\native-build\native-build-php-config.bat
 
