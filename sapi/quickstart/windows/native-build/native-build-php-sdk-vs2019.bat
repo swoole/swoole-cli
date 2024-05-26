@@ -10,6 +10,8 @@ cd /d %__PROJECT__%
 
 rem %__PROJECT__%\php-sdk-binary-tools\phpsdk-vs16-x64.bat
 
+set "PATH=%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\;C:\Strawberry\perl\bin;C:\Program Files\Git\bin;"
+
 
 set PHP_SDK_ARCH=x64
 set PHP_SDK_BIN_PATH=%__PROJECT__%\php-sdk-binary-tools\bin\

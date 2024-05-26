@@ -36,7 +36,7 @@ start /wait "" "%__PROJECT__%\Git-2.45.1-64-bit.exe" /VERYSILENT /NORESTART /NOC
 
 :: 更新环境变量
 
-
+echo git installing
 set "PATH=%PATH%;%__PROJECT__%\php\;%__PROJECT__%\nasm\;C:\Strawberry\perl\bin;C:\Program Files\Git\bin;"
 echo %PATH%
 
