@@ -9,7 +9,7 @@
 ## 二、CMD 环境构建
 
 ```bat
-
+# 安装  vc 运行时 （ 可跳过 ）
 sapi\quickstart\windows\native-build\install-vc-runtime.bat
 
 sapi\quickstart\windows\native-build\install-visualstudio.bat
