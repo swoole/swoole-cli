@@ -22,7 +22,7 @@ echo %LIBPATH%
 
 
 configure.bat ^
---disable-all         --disable-cgi      --enable-cli    --enable-cli-win32  --eanble-embed ^
+--disable-all         --disable-cgi      --enable-cli   ^
 --enable-sockets      --enable-ctype     --enable-pdo    --enable-phar  ^
 --enable-filter ^
 --enable-xmlreader   --enable-xmlwriter ^
