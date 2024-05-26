@@ -46,6 +46,12 @@ sapi\quickstart\windows\native-build\native-build-php-archive.bat
 ## 实验 vs2022 环境构建
 
 ```bat
+# 自动打开指定文件夹
+start C:\msys64\home\Administrator\swoole-cli
+start C:\msys64\home\Administrator\swoole-cli\php-src\
+start C:\msys64\home\Administrator\swoole-cli\php-src\x64\Release
+
+
 # vs2022
 "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
