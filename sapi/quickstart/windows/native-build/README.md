@@ -10,7 +10,8 @@
 
 ```bat
 
-sapi\quickstart\windows\native-build\install-visualstudio.bat
+sapi\quickstart\windows\native-build\install-vc-runtime.bat
+
 sapi\quickstart\windows\native-build\install-visualstudio.bat
 
 sapi\quickstart\windows\native-build\install-deps-soft.bat
