@@ -11,6 +11,7 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-install-soft.sh
 
 # 下载 visualstudio 2019
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
+
 ```
 
 ```bat
@@ -49,5 +50,7 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-helper-soft.sh
 
 # 下载 visualstudio 2022
-bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
+bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2022.sh
+
+
 ```

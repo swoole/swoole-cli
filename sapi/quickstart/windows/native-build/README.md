@@ -69,7 +69,9 @@ sapi\quickstart\windows\native-build\native-build-php-sdk-vs2022.bat
 [internals/windows/libs](https://wiki.php.net/internals/windows/libs)
 
 ```shell
+
 git config core.ignorecase false # 设置 Git 在 Windows 上也区分大小写
+
 ```
 
 Latest VC++
@@ -162,11 +164,15 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 
 1. [通过命令行使用 MSVC 工具集](https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170)
 1. [通过命令行使用 MSBuild](https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-1700)
+1. [Microsoft Visual C++ 最新运行时库](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+1. [Visual Studio 生成工具组件目录](https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022)
+1. [使用命令行参数安装、更新和管理 Visual Studio](https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022)
 1. [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
 1. [windows 环境下 构建 php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2)
 1. [VisualStudio 导入或导出安装配置](https://learn.microsoft.com/zh-cn/visualstudio/install/import-export-installation-configurations?view=vs-2022)
 1. [Visual Studio 2019 版本 16.11 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2019/release-notes)
 1. [Visual Studio 2022 版本 17.9 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2022/release-notes)
-
-
+1. [如何将清单嵌入到 C/C++ 应用程序中](https://learn.microsoft.com/zh-cn/cpp/build/understanding-manifest-generation-for-c-cpp-programs?view=msvc-170)
+1. [Visual Studio 教程 | C++](https://learn.microsoft.com/zh-cn/cpp/get-started/?view=msvc-170)
+1. [7zip](https://7-zip.org/)
 
