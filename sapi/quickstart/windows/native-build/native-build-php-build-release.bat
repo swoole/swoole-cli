@@ -18,7 +18,7 @@ set CL=/MP
 rem set RTLIBCFG=static
 rem nmake   mode=static debug=false
 nmake all
-nmake php.exe
+rm nmake php.exe
 
 rem nmake install
 
