@@ -155,8 +155,7 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 
     https://aka.ms/vs/17/release/vs_buildtools.exe
 
-    curl -Lo
-    VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
+    curl -Lo VisualStudioSetup.exe 'https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022'
     curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
     curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
 
@@ -175,4 +174,5 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 1. [如何将清单嵌入到 C/C++ 应用程序中](https://learn.microsoft.com/zh-cn/cpp/build/understanding-manifest-generation-for-c-cpp-programs?view=msvc-170)
 1. [Visual Studio 教程 | C++](https://learn.microsoft.com/zh-cn/cpp/get-started/?view=msvc-170)
 1. [7zip](https://7-zip.org/)
+1. [Visual Studio 许可证目录](https://visualstudio.microsoft.com/zh-hans/license-terms/)
 
