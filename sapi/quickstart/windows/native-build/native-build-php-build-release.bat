@@ -17,7 +17,7 @@ set "LIBPATH=%LIBPATH%;%__PROJECT__%\openssl\lib\;%__PROJECT__%\zlib\lib\"
 set CL=/MP
 rem set RTLIBCFG=static
 rem nmake   mode=static debug=false
-nmake dist
+nmake build-dist
 
 rem nmake install
 
