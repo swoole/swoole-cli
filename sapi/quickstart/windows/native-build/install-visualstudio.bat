@@ -27,6 +27,7 @@ VisualStudioSetup.exe ^
 --add Microsoft.Component.VC.Runtime.UCRTSDK	^
 --add Microsoft.Component.MSBuild ^
 --add Microsoft.VisualStudio.Workload.MSBuildTools ^
+--add Microsoft.VisualStudio.Workload.NativeDesktop ^
 --passive  --force --norestart
 
 
