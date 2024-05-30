@@ -32,7 +32,6 @@ VisualStudioSetup.exe ^
 
 
 
-rem --add Microsoft.VisualStudio.Workload.NativeDesktop ^
 rem --add Microsoft.VisualStudio.Component.VC.Redist.14.Latest	^
 rem --add Microsoft.VisualStudio.Component.VC.CLI.Support ^
 rem --add Microsoft.VisualStudio.Component.VC.Redist.MSM	 ^
