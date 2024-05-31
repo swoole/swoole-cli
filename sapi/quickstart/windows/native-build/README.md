@@ -175,4 +175,5 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 1. [Visual Studio 教程 | C++](https://learn.microsoft.com/zh-cn/cpp/get-started/?view=msvc-170)
 1. [7zip](https://7-zip.org/)
 1. [Visual Studio 许可证目录](https://visualstudio.microsoft.com/zh-hans/license-terms/)
+1. [windows环境 使用ssh](https://learn.microsoft.com/zh-cn/windows-server/administration/openssh/openssh_install_firstuse)
 
