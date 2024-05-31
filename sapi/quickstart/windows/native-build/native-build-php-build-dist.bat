@@ -19,12 +19,12 @@ rem set RTLIBCFG=static
 rem nmake   mode=static debug=false
 
 (
-echo "release-php: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)\$(PHPLIB) $(BUILD_DIR)\php.exe.res $(BUILD_DIR)\php.exe.manifest" ^
+echo 'release-php: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)\$(PHPLIB) $(BUILD_DIR)\php.exe.res $(BUILD_DIR)\php.exe.manifest' ^
 echo "	@echo DEPS_CLI: $(DEPS_CLI)" ^
 echo "	@echo ==================" ^
 echo "	@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS)" ^
 echo "	@echo ==================" ^
-echo "	@echo BUILD_DIR\PHPLIB: $(BUILD_DIR)\$(PHPLIB)" ^
+echo '	@echo BUILD_DIR\PHPLIB: $(BUILD_DIR)\$(PHPLIB)' ^
 echo "	@echo ==================" ^
 echo "	@echo CLI_GLOBAL_OBJS_RESP: $(CLI_GLOBAL_OBJS_RESP)" ^
 echo "	@echo ==================" ^
