@@ -20,7 +20,7 @@ rem nmake   mode=static debug=false
 
 set x_makefile=%__PROJECT__%\php-src\Makefile
 
-echo "  "  >> %x_makefile%
+echo     >> %x_makefile%
 echo release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)^\$(PHPLIB) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
 echo 	^@echo DEPS_CLI: $(DEPS_CLI)  >> %x_makefile%
 echo 	^@echo ==================  >> %x_makefile%
