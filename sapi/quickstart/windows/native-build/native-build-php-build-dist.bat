@@ -18,36 +18,37 @@ set CL=/MP
 rem set RTLIBCFG=static
 rem nmake   mode=static debug=false
 
-(
-echo 'release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)^\$(PHPLIB) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest' ^
-echo "	@echo DEPS_CLI: $(DEPS_CLI)" ^
-echo "	@echo ==================" ^
-echo "	@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS)" ^
-echo "	@echo ==================" ^
-echo '	@echo BUILD_DIR\PHPLIB: $(BUILD_DIR)\$(PHPLIB)' ^
-echo "	@echo ==================" ^
-echo "	@echo CLI_GLOBAL_OBJS_RESP: $(CLI_GLOBAL_OBJS_RESP)" ^
-echo "	@echo ==================" ^
-echo "	@echo LIBS_CLI: $(LIBS_CLI)" ^
-echo "	@echo ==================" ^
-echo "	@echo LDFLAGS: $(LDFLAGS)" ^
-echo "	@echo ==================" ^
-echo "	@echo LDFLAGS_CLI: $(LDFLAGS_CLI)" ^
-echo "	@echo ==================" ^
-echo "	@echo _VC_MANIFEST_EMBED_EXE: $(_VC_MANIFEST_EMBED_EXE)" ^
-echo "	@echo ==================" ^
-echo "	@echo PHPDEF: $(PHPDEF)" ^
-echo "	@echo ==================" ^
-echo "	@echo PHPDLL_RES: $(PHPDLL_RES)" ^
-echo "	@echo ================== ^
-echo "	@echo ASM_OBJS: $(ASM_OBJS)" ^
-echo "	@echo ==================" ^
-echo "	@echo MCFILE: $(MCFILE)" ^
-echo "	@echo ==================" ^
-echo '	@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP) $(BUILD_DIR)^\$(PHPLIB) $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI) '  ^
-echo "	-@$(_VC_MANIFEST_EMBED_EXE)" ^
-echo "	@echo SAPI sapi\cli build complete"
-) >> %__PROJECT__%\Makefile
+set x_makefile=%__PROJECT__%\php-src\Makefile
+
+echo release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)^\$(PHPLIB) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
+echo "	^@echo DEPS_CLI: $(DEPS_CLI)"  >> %x_makefile%
+echo "	^@echo =================="  >> %x_makefile%
+echo "	^@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS)" >> %x_makefile%
+echo "	^@echo ==================" >> %x_makefile%
+echo '	^@echo BUILD_DIR\PHPLIB: $(BUILD_DIR)\$(PHPLIB)' >> %x_makefile%
+echo "	^@echo =================="  >> %x_makefile%
+echo "	^@echo CLI_GLOBAL_OBJS_RESP: $(CLI_GLOBAL_OBJS_RESP)"  >> %x_makefile%
+echo "	^@echo ==================" >> %x_makefile%
+echo "	^@echo LIBS_CLI: $(LIBS_CLI)" >> %x_makefile%
+echo "	^@echo =================="  >> %x_makefile%
+echo "	^@echo LDFLAGS: $(LDFLAGS)" >> %x_makefile%
+echo "	^@echo ==================" >> %x_makefile%
+echo "	^@echo LDFLAGS_CLI: $(LDFLAGS_CLI)"  >> %x_makefile%
+echo "	^@echo ==================" >> %x_makefile%
+echo "	^@echo _VC_MANIFEST_EMBED_EXE: $(_VC_MANIFEST_EMBED_EXE)"  >> %x_makefile%
+echo "	^@echo ==================" >> %x_makefile%
+echo "	^@echo PHPDEF: $(PHPDEF)" >> %x_makefile%
+echo "	^@echo ==================" >> %x_makefile%
+echo "	^@echo PHPDLL_RES: $(PHPDLL_RES)" >> %x_makefile%
+echo "	^@echo ==================  >> %x_makefile%
+echo "	^@echo ASM_OBJS: $(ASM_OBJS)" >> %x_makefile%
+echo "	^@echo ==================" >> %x_makefile%
+echo "	^@echo MCFILE: $(MCFILE)" >> %x_makefile%
+echo "	^@echo =================="   >> %x_makefile%
+echo '	^@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP) $(BUILD_DIR)^\$(PHPLIB) $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI) '   >> %x_makefile%
+echo "	-@$(_VC_MANIFEST_EMBED_EXE)"   >> %x_makefile%
+echo "	^@echo SAPI sapi\cli build complete"  >> %x_makefile%
+
 
 
 nmake release-php
