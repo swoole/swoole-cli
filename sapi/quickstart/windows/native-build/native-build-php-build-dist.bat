@@ -19,7 +19,7 @@ rem set RTLIBCFG=static
 rem nmake   mode=static debug=false
 
 (
-echo 'release-php: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)\$(PHPLIB) $(BUILD_DIR)\php.exe.res $(BUILD_DIR)\php.exe.manifest' ^
+echo 'release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)^\$(PHPLIB) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest' ^
 echo "	@echo DEPS_CLI: $(DEPS_CLI)" ^
 echo "	@echo ==================" ^
 echo "	@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS)" ^
@@ -44,7 +44,7 @@ echo "	@echo ASM_OBJS: $(ASM_OBJS)" ^
 echo "	@echo ==================" ^
 echo "	@echo MCFILE: $(MCFILE)" ^
 echo "	@echo ==================" ^
-echo '	@"$(LINK)" /nologo  $(CLI_GLOBAL_OBJS_RESP) $(BUILD_DIR)\$(PHPLIB) $(LIBS_CLI) $(BUILD_DIR)\php.exe.res /out:$(BUILD_DIR)\php.exe $(LDFLAGS) $(LDFLAGS_CLI) '  ^
+echo '	@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP) $(BUILD_DIR)^\$(PHPLIB) $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI) '  ^
 echo "	-@$(_VC_MANIFEST_EMBED_EXE)" ^
 echo "	@echo SAPI sapi\cli build complete"
 ) >> %__PROJECT__%\Makefile
