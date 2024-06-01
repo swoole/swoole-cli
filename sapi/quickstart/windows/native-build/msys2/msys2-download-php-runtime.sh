@@ -31,6 +31,10 @@ PHP_EXT_DIR=''
 if [[ -n  "$GITHUB_WORKSPACE" ]] && [[ -n "$GITHUB_ACTION" ]] ; then
   PHP_EXT_DIR=${GITHUB_WORKSPACE}'\php\ext\'
 else
+  DISK_DRIVE=$( df -h / | sed -n '2p' | awk '{ print $1 }' )$(pwd)
+  echo $DISK_DRIVE
+  echo $DISK_DRIVE | sed 's/\//\\/g'
+
   PHP_EXT_DIR='C:\msys64\home\Administrator\swoole-cli\php\ext\'
 fi
 
