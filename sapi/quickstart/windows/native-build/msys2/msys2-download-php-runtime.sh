@@ -33,9 +33,11 @@ if [[ -n  "$GITHUB_WORKSPACE" ]] && [[ -n "$GITHUB_ACTION" ]] ; then
 else
   DISK_DRIVE=$( df -h / | sed -n '2p' | awk '{ print $1 }' )$(pwd)
   echo $DISK_DRIVE
-  echo $DISK_DRIVE | sed 's/\//\\/g'
+  WIND_DIR=$(echo $DISK_DRIVE | sed 's/\//\\/g')
 
-  PHP_EXT_DIR='C:\msys64\home\Administrator\swoole-cli\php\ext\'
+  # PHP_EXT_DIR='C:\msys64\home\Administrator\swoole-cli\php\ext\'
+  PHP_EXT_DIR=${WIND_DIR}'\php\ext\'
+  echo $PHP_EXT_DIR
 fi
 
 while [ $# -gt 0 ]; do
