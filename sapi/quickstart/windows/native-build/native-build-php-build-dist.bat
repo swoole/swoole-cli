@@ -31,7 +31,7 @@ if %errorlevel% 1 (
 echo create makefile x-release-php config!
 goto x-release-php-start
 ) else (
-	echo create makefile x-release-php exits !
+echo create makefile x-release-php exits !
 goto x-release-php-end
 )
 
