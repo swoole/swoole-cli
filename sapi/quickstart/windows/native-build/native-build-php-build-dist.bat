@@ -27,7 +27,7 @@ set x_makefile=%__PROJECT__%\php-src\Makefile
 findstr /C:"x-release-php: " %x_makefile%
 findstr /C:"x-release-php: " %x_makefile% >nul
 
-if %errorlevel% 1 (
+if errorlevel 1 (
 echo create makefile x-release-php config!
 goto x-release-php-start
 ) else (
