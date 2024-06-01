@@ -26,7 +26,7 @@ export PATH=$PATH:${__PROJECT__}/php/
 
 php -v
 
-
+df -h /
 PHP_EXT_DIR=''
 if [[ -n  "$GITHUB_WORKSPACE" ]] && [[ -n "$GITHUB_ACTION" ]] ; then
   PHP_EXT_DIR=${GITHUB_WORKSPACE}'\php\ext\'
