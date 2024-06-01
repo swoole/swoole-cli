@@ -57,14 +57,16 @@ echo 	^@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP) $(BUILD_DIR)^\$(PHPLIB) $(LI
 echo 	-@$(_VC_MANIFEST_EMBED_EXE)   >> %x_makefile%
 echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
 
+echo create makefile x-release-php config ok!
+
 ) else (
-	echo 已经配置makefile配置
+	echo create makefile x-release-php exits !
 )
 
 
 
 
-nmake release-php
+nmake x-release-php
 
 rem nmake install
 
