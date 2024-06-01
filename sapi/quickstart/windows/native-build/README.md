@@ -12,7 +12,7 @@
 # 安装  vc 运行时 （ 可跳过 ）
 sapi\quickstart\windows\native-build\install-vc-runtime.bat
 
-sapi\quickstart\windows\native-build\install-visualstudio.bat
+sapi\quickstart\windows\native-build\install-visualstudio-2019.bat
 
 sapi\quickstart\windows\native-build\install-deps-soft.bat
 
@@ -54,6 +54,7 @@ start C:\msys64\home\Administrator\swoole-cli
 start C:\msys64\home\Administrator\swoole-cli\php-src\
 start C:\msys64\home\Administrator\swoole-cli\php-src\x64\Release
 
+sapi\quickstart\windows\native-build\install-visualstudio-2022.bat
 
 # vs2022
 "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
