@@ -1,6 +1,6 @@
 @echo off
 
-setlocal
+setlocal enabledelayedexpansion
 rem show current file location
 echo %~dp0
 cd /d %~dp0
@@ -18,10 +18,17 @@ set CL=/MP
 rem set RTLIBCFG=static
 rem nmake   mode=static debug=false
 
+
+
 set x_makefile=%__PROJECT__%\php-src\Makefile
 
+findstr /C:"x-release-php: " %x_makefile%
+findstr /C:"x-release-php: " %x_makefile% >nul
+
+if errorlevel 1 (
+
 echo #custom build static link php   >> %x_makefile%
-echo release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)^\$(PHPLIB) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
+echo x-release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) $(BUILD_DIR)^\$(PHPLIB) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
 echo 	^@echo DEPS_CLI: $(DEPS_CLI)  >> %x_makefile%
 echo 	^@echo ==================  >> %x_makefile%
 echo 	^@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS) >> %x_makefile%
@@ -49,6 +56,11 @@ echo 	^@echo ==================   >> %x_makefile%
 echo 	^@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP) $(BUILD_DIR)^\$(PHPLIB) $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)    >> %x_makefile%
 echo 	-@$(_VC_MANIFEST_EMBED_EXE)   >> %x_makefile%
 echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
+
+) else (
+	echo 已经配置makefile配置
+)
+
 
 
 
