@@ -20,9 +20,13 @@ VisualStudioSetup.exe ^
 --add Microsoft.VisualStudio.Component.VC.Modules.x86.x64 ^
 --add Microsoft.VisualStudio.Component.VC.CMake.Project ^
 --add Microsoft.VisualStudio.Component.Roslyn.Compiler ^
+--add Microsoft.VisualStudio.Component.CoreBuildTools ^
+--add Microsoft.VisualStudio.Component.Windows10SDK.20348	^
 --add Microsoft.VisualStudio.Component.Windows10SDK ^
 --add Microsoft.VisualStudio.Component.Windows11SDK.22000   ^
+--add Microsoft.Component.VC.Runtime.UCRTSDK	^
 --add Microsoft.Component.MSBuild ^
+--add Microsoft.VisualStudio.Workload.MSBuildTools ^
 --add Microsoft.VisualStudio.Workload.NativeDesktop ^
 --passive  --force --norestart
 
