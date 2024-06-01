@@ -28,10 +28,10 @@ findstr /C:"x-release-php: " %x_makefile%
 findstr /C:"x-release-php: " %x_makefile% >nul
 
 if errorlevel 1 (
-echo create makefile x-release-php config!
+echo custom makefile x-release-php config!
 goto x-release-php-start
 ) else (
-echo create makefile x-release-php exits !
+echo custom makefile file exits !
 goto x-release-php-end
 )
 
