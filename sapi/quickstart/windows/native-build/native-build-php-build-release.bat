@@ -18,7 +18,7 @@ set CL=/MP
 rem set RTLIBCFG=static
 rem nmake   mode=static debug=false
 
-nmake all
+rem nmake all
 
 
 set x_makefile=%__PROJECT__%\php-src\Makefile
