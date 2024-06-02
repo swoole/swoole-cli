@@ -172,9 +172,11 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 1. [VisualStudio 导入或导出安装配置](https://learn.microsoft.com/zh-cn/visualstudio/install/import-export-installation-configurations?view=vs-2022)
 1. [Visual Studio 2019 版本 16.11 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2019/release-notes)
 1. [Visual Studio 2022 版本 17.9 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2022/release-notes)
-1. [如何将清单嵌入到 C/C++ 应用程序中](https://learn.microsoft.com/zh-cn/cpp/build/understanding-manifest-generation-for-c-cpp-programs?view=msvc-170)
+1. [MSVC 如何将清单嵌入到 C/C++ 应用程序中](https://learn.microsoft.com/zh-cn/cpp/build/understanding-manifest-generation-for-c-cpp-programs?view=msvc-170)
 1. [Visual Studio 教程 | C++](https://learn.microsoft.com/zh-cn/cpp/get-started/?view=msvc-170)
 1. [7zip](https://7-zip.org/)
 1. [Visual Studio 许可证目录](https://visualstudio.microsoft.com/zh-hans/license-terms/)
 1. [windows环境 使用ssh](https://learn.microsoft.com/zh-cn/windows-server/administration/openssh/openssh_install_firstuse)
+1. [MSVC链接器选项](https://learn.microsoft.com/zh-cn/cpp/build/reference/linker-options?view=msvc-170)
+1. [MSVC Mt.exe](https://learn.microsoft.com/en-us/windows/win32/sbscs/mt-exe?redirectedfrom=MSDN)
 

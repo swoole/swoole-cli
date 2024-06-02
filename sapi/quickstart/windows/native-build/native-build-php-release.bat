@@ -37,10 +37,8 @@ goto x-release-php-end
 )
 
 :x-release-php-start
-echo #custom build static link php 2  >> %x_makefile%
-echo x-build-php-lib^: generated_files  $(PHP_GLOBAL_OBJS) $(STATIC_EXT_OBJS)  $(ASM_OBJS) $(MCFILE) >> %x_makefile%
-echo #custom build static link php 1  >> %x_makefile%
-echo x-release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) x-build-php-lib $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
+echo #show variable  >> %x_makefile%
+echo show-variable:   >> %x_makefile%
 echo 	^@echo DEPS_CLI: $(DEPS_CLI)  >> %x_makefile%
 echo 	^@echo ==================  >> %x_makefile%
 echo 	^@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS) >> %x_makefile%
@@ -65,6 +63,10 @@ echo 	^@echo ASM_OBJS: $(ASM_OBJS) >> %x_makefile%
 echo 	^@echo ================== >> %x_makefile%
 echo 	^@echo MCFILE: $(MCFILE) >> %x_makefile%
 echo 	^@echo ==================   >> %x_makefile%
+echo #custom build static link php library  >> %x_makefile%
+echo x-build-php-lib^: generated_files  $(PHP_GLOBAL_OBJS) $(STATIC_EXT_OBJS)  $(ASM_OBJS) $(MCFILE) >> %x_makefile%
+echo #custom build static link php 1  >> %x_makefile%
+echo x-release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) x-build-php-lib $(PHP_GLOBAL_OBJS) $(CLI_GLOBAL_OBJS) $(STATIC_EXT_OBJS) $(ASM_OBJS) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
 echo 	^@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP)  $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)    >> %x_makefile%
 echo 	-@$(_VC_MANIFEST_EMBED_EXE)   >> %x_makefile%
 echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
@@ -72,7 +74,8 @@ echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
 :x-release-php-end
 
 
-nmake x-release-php
+nmake show-variable
+rem nmake x-release-php
 
 rem nmake install
 
