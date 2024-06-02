@@ -45,7 +45,7 @@ echo 	^@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS) >> %x_makefile%
 echo 	^@echo ================== >> %x_makefile%
 rem echo 	^@echo PHP_GLOBAL_OBJS: $(PHP_GLOBAL_OBJS) >> %x_makefile%
 echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo STATIC_EXT_OBJS: $(STATIC_EXT_OBJS) >> %x_makefile%
+rem echo 	^@echo STATIC_EXT_OBJS: $(STATIC_EXT_OBJS) >> %x_makefile%
 echo 	^@echo ================== >> %x_makefile%
 echo 	^@echo ASM_OBJS: $(ASM_OBJS) >> %x_makefile%
 echo 	^@echo ================== >> %x_makefile%
