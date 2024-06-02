@@ -65,7 +65,7 @@ echo 	^@echo ASM_OBJS: $(ASM_OBJS) >> %x_makefile%
 echo 	^@echo ================== >> %x_makefile%
 echo 	^@echo MCFILE: $(MCFILE) >> %x_makefile%
 echo 	^@echo ==================   >> %x_makefile%
-echo 	^@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP) $(BUILD_DIR)^\$(PHPLIB) $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)    >> %x_makefile%
+echo 	^@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP)  $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)    >> %x_makefile%
 echo 	-@$(_VC_MANIFEST_EMBED_EXE)   >> %x_makefile%
 echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
 
