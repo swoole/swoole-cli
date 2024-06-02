@@ -43,6 +43,18 @@ echo 	^@echo DEPS_CLI: $(DEPS_CLI)  >> %x_makefile%
 echo 	^@echo ==================  >> %x_makefile%
 echo 	^@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS) >> %x_makefile%
 echo 	^@echo ================== >> %x_makefile%
+echo 	^@echo PHP_GLOBAL_OBJS: $(PHP_GLOBAL_OBJS) >> %x_makefile%
+echo 	^@echo ================== >> %x_makefile%
+echo 	^@echo STATIC_EXT_OBJS: $(STATIC_EXT_OBJS) >> %x_makefile%
+echo 	^@echo ================== >> %x_makefile%
+echo 	^@echo ASM_OBJS: $(ASM_OBJS) >> %x_makefile%
+echo 	^@echo ================== >> %x_makefile%
+echo 	^@echo STATIC_EXT_LIBS: $(STATIC_EXT_LIBS) >> %x_makefile%
+echo 	^@echo ================== >> %x_makefile%
+echo 	^@echo STATIC_EXT_LDFLAGS: $(STATIC_EXT_LDFLAGS) >> %x_makefile%
+echo 	^@echo ================== >> %x_makefile%
+echo 	^@echo STATIC_EXT_CFLAGS: $(STATIC_EXT_CFLAGS) >> %x_makefile%
+echo 	^@echo ================== >> %x_makefile%
 echo 	^@echo BUILD_DIR\PHPLIB: $(BUILD_DIR)\$(PHPLIB) >> %x_makefile%
 echo 	^@echo ==================  >> %x_makefile%
 echo 	^@echo CLI_GLOBAL_OBJS_RESP: $(CLI_GLOBAL_OBJS_RESP)  >> %x_makefile%
