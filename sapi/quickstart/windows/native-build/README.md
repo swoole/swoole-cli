@@ -37,7 +37,7 @@ sapi\quickstart\windows\native-build\native-build-php-config.bat
 
 sapi\quickstart\windows\native-build\native-build-php-build.bat
 
-sapi\quickstart\windows\native-build\native-build-php-build-release.bat
+sapi\quickstart\windows\native-build\native-build-php-release.bat
 
 sapi\quickstart\windows\native-build\native-build-php-archive.bat
 

@@ -38,7 +38,7 @@ goto x-release-php-end
 
 :x-release-php-start
 echo #custom build static link php 2  >> %x_makefile%
-echo x-build-php-lib^: generated_files >> %x_makefile%
+echo x-build-php-lib^: generated_files  $(PHP_GLOBAL_OBJS) $(STATIC_EXT_OBJS)  $(ASM_OBJS) $(MCFILE) >> %x_makefile%
 echo #custom build static link php 1  >> %x_makefile%
 echo x-release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) x-build-php-lib $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
 echo 	^@echo DEPS_CLI: $(DEPS_CLI)  >> %x_makefile%
