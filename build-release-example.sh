@@ -97,7 +97,7 @@ done
 # 构建环境依赖检查
 CMDS_NUMS=0
 CMDS=("flex" "pkg-config" "cmake" "re2c" "bison" "curl" "automake" "libtool" "clang" "xz" "zip" "unzip" "autoconf")
-CMDS_ARRAY_LEN=${#CMDS[@]}
+CMDS_LEN=${#CMDS[@]}
 for cmd in "${CMDS[@]}"; do
     if command -v "$cmd" >/dev/null 2>&1; then
         # echo "$cmd exists"
@@ -108,7 +108,7 @@ done
 if [ "$OS" = 'linux' ] ; then
     if [ -f /.dockerenv ]; then
         IN_DOCKER=1
-        if test $CMDS_ARRAY_LEN -ne $CMDS_NUMS ;then
+        if test $CMDS_LEN -ne $CMDS_NUMS ;then
         {
             if [ "$MIRROR" = 'china' ] ; then
                 sh sapi/quickstart/linux/alpine-init.sh --mirror china
@@ -130,7 +130,7 @@ if [ "$OS" = 'linux' ] ; then
 fi
 
 if [ "$OS" = 'macos' ] ; then
-  if test $CMDS_ARRAY_LEN -ne $CMDS_NUMS ; then
+  if test $CMDS_LEN -ne $CMDS_NUMS ; then
   {
         if [ "$MIRROR" = 'china' ] ; then
             bash sapi/quickstart/macos/macos-init.sh --mirror china
