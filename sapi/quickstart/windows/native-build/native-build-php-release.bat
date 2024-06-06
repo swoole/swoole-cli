@@ -84,6 +84,7 @@ echo x-release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) x-build-php-lib $(PHP_GLOBAL
 echo 	^@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP)  $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)    >> %x_makefile%
 echo 	-@$(_VC_MANIFEST_EMBED_EXE)   >> %x_makefile%
 echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
+echo 	if exist php.exe.manifest "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\mt.exe" -nologo -manifest php.exe.manifest -outputresource:php.exe;1
 
 :x-release-php-end
 

@@ -179,4 +179,5 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 1. [windows环境 使用ssh](https://learn.microsoft.com/zh-cn/windows-server/administration/openssh/openssh_install_firstuse)
 1. [MSVC链接器选项](https://learn.microsoft.com/zh-cn/cpp/build/reference/linker-options?view=msvc-170)
 1. [MSVC Mt.exe](https://learn.microsoft.com/en-us/windows/win32/sbscs/mt-exe?redirectedfrom=MSDN)
-
+1. [Install PowerShell on Windows, Linux, and macOS](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4)
+1. [Sysinternals Utilities Index](https://learn.microsoft.com/en-us/sysinternals/downloads/)
