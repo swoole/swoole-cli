@@ -14,6 +14,10 @@ fi
 
 cd ${__PROJECT__}
 
+if [ ! -d ext/swoole/.git ] ; then
+  git submodule update --init --recursive
+fi
+
 set -x
 
 # shellcheck disable=SC2034
@@ -49,8 +53,8 @@ MIRROR=''
 
 # 依赖库默认安装目录
 LIBRARY_INSTALL_PREFIX=/usr/local/swoole-cli
-
 OPTIONS=''
+
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -97,7 +101,7 @@ done
 # 构建环境依赖检查
 CMDS_NUMS=0
 CMDS=("flex" "pkg-config" "cmake" "re2c" "bison" "curl" "automake" "libtool" "clang" "xz" "zip" "unzip" "autoconf")
-CMDS_ARRAY_LEN=${#CMDS[@]}
+CMDS_LEN=${#CMDS[@]}
 for cmd in "${CMDS[@]}"; do
     if command -v "$cmd" >/dev/null 2>&1; then
         # echo "$cmd exists"
@@ -110,7 +114,7 @@ if [ "$OS" = 'linux' ] ; then
 
     if [ -f /.dockerenv ]; then
         IN_DOCKER=1
-        if test $CMDS_ARRAY_LEN -ne $CMDS_NUMS ;then
+        if test $CMDS_LEN -ne $CMDS_NUMS ;then
         {
             if [ "$MIRROR" = 'china' ] ; then
                 if [ "$OS_RELEASE" = 'alpine' ]; then
@@ -146,7 +150,7 @@ if [ "$OS" = 'linux' ] ; then
 fi
 
 if [ "$OS" = 'macos' ] ; then
-  if test $CMDS_ARRAY_LEN -ne $CMDS_NUMS ; then
+  if test $CMDS_LEN -ne $CMDS_NUMS ; then
   {
         if [ "$MIRROR" = 'china' ] ; then
             bash sapi/quickstart/macos/macos-init.sh --mirror china

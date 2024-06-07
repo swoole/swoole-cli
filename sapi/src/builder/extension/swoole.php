@@ -5,7 +5,7 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
 
-    $swoole_tag = 'v5.1.2';
+    $swoole_tag = 'v5.1.3';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
@@ -46,4 +46,7 @@ EOF
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
+
+    $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
+    $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 };
