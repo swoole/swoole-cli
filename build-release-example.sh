@@ -208,11 +208,7 @@ fi
 
 # 定制构建选项
 OPTIONS='+apcu +ds +xlswriter +ssh2'
-<<<<<<< HEAD
 OPTIONS="${OPTIONS} --with-libavif=1"
-=======
-OPTIONS="${OPTIONS} --with-swoole-pgsql=1"
->>>>>>> main
 OPTIONS="${OPTIONS} --with-global-prefix=${LIBRARY_INSTALL_PREFIX}"
 # OPTIONS="${OPTIONS} @macos"
 
