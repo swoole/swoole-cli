@@ -75,15 +75,50 @@ if [ ${WITH_UPDATE} -eq 1 ] ; then
 fi
 
 
-brew install wget curl libtool automake re2c llvm flex bison
-brew install gettext coreutils libunistring
+
+# brew install wget curl libtool automake re2c llvm flex bison
+# brew install libtool gettext coreutils libunistring pkg-config cmake
 # macos 环境下 Homebrew packages :   coreutils binutils 不兼容
 # 详见： https://github.com/pyenv/pyenv/wiki/Common-build-problems#keg-only-homebrew-packages-are-forcibly-linked--added-to-path
+
+# 已安装的包 跳过安装
+PACKAGES_1=(wget curl libtool automake re2c llvm flex bison)
+PACKAGES_2=(libtool gettext coreutils libunistring pkg-config cmake)
+
+PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}")
+for PACKAGE in "${PACKAGES[@]}"; do
+  brew list "$PACKAGE" &>/dev/null || brew install "$PACKAGE"
+done
+
+
 which glibtool
 
-ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
-ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
 
+# maocs intel
+#  HOMEBREW_PREFIX: /usr/local
+if [ -d /usr/local/opt/libtool/bin/ ] ; then
+  ln -sf /usr/local/opt/libtool/bin/glibtool /usr/local/opt/libtool/bin/libtool
+  ln -sf /usr/local/opt/libtool/bin/glibtoolize /usr/local/opt/libtool/bin/libtoolize
+  export PATH=/usr/local/opt/libtool/bin/:$PATH
+  ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
+  ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
+
+fi
+
+# macos M1
+# HOMEBREW_PREFIX=/opt/homebrew
+# HOMEBREW_REPOSITORY=/opt/homebrew
+if [ -d /opt/homebrew/opt/libtool/bin ] ; then
+    ln -sf /opt/homebrew/opt/libtool/bin/glibtool /opt/homebrew/opt/libtool/bin/libtool
+    ln -sf /opt/homebrew/opt/libtool/bin/glibtoolize /opt/homebrew/opt/libtool/bin/libtoolize
+    export PATH=/opt/homebrew/opt/libtool/bin/:$PATH
+    ln -sf /opt/homebrew/opt/libtool/bin/glibtool /usr/local/bin/libtool
+    ln -sf /opt/homebrew/opt/libtool/bin/glibtoolize /usr/local/bin/libtoolize
+
+fi
+
+libtoolize --version
+libtool --help-all
 
 brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
