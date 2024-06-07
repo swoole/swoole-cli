@@ -58,5 +58,6 @@ EOF;
 
         return $cmd;
     });
-
+    $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
+    $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 };
