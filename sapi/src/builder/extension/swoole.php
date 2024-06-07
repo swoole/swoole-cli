@@ -30,10 +30,12 @@ EOF
         )
         ->withBuildCached(false)
         ->withDependentLibraries(...$dependentLibraries)
-        ->withDependentExtensions(...$dependentExtensions)
-    ;
+        ->withDependentExtensions(...$dependentExtensions);
     $p->addExtension($ext);
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
+
+    $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
+    $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 };
