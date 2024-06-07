@@ -14,6 +14,10 @@ fi
 
 cd ${__PROJECT__}
 
+if [ ! -d ext/swoole/.git ] ; then
+  git submodule update --init --recursive
+fi
+
 set -x
 
 # shellcheck disable=SC2034
@@ -49,8 +53,8 @@ MIRROR=''
 
 # 依赖库默认安装目录
 LIBRARY_INSTALL_PREFIX=/usr/local/swoole-cli
-
 OPTIONS=''
+
 
 while [ $# -gt 0 ]; do
   case "$1" in
