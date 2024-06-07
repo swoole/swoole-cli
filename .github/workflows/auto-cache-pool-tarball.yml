@@ -100,7 +100,9 @@ jobs:
         with:
           name: all-deps
           retention-days: 90
-          path: all-deps.zip
+          path: |
+            all-deps.zip
+            all-deps.zip.sha256sum
 
       - name: gh release
         uses: softprops/action-gh-release@v2
