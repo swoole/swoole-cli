@@ -94,6 +94,12 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+if [ ! "$BASH_VERSION" ]; then
+  echo "Please do not use sh to run this script ($0), just execute it directly" 1>&2
+  exit 1
+  # reconfigure  #
+  # dpkg-reconfigure dash
+fi
 # 构建环境依赖检查
 CMDS_NUMS=0
 CMDS=("flex" "pkg-config" "cmake" "re2c" "bison" "curl" "automake" "libtool" "clang" "xz" "zip" "unzip" "autoconf")
