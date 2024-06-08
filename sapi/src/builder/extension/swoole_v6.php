@@ -56,6 +56,7 @@ return function (Preprocessor $p) {
         fi
         mv swoole-src {$workdir}/ext/swoole
 
+        cd {$workdir}
         # 临时解决 编译出现多重定义
         sed -i.backup 's/TSRMLS_CACHE_DEFINE();/TSRMLS_CACHE_EXTERN();/' ext/swoole/ext-src/swoole_thread.cc
 
