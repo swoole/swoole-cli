@@ -6,17 +6,10 @@ __DIR__=$(
   pwd
 )
 
-if [ -f ${__DIR__}/prepare.php ] ; then
-  __PROJECT__=$(
-    cd ${__DIR__}/
-    pwd
-  )
-else
-  __PROJECT__=$(
-    cd ${__DIR__}/../../
-    pwd
-  )
-fi
-
+__PROJECT__=$(
+  cd ${__DIR__}/../../
+  pwd
+)
+cd ${__PROJECT__}
 
 bash ${__PROJECT__}/setup-php-runtime.sh "$@"
