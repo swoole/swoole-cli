@@ -1,11 +1,11 @@
-name: build-swoole-cli-macos-x86_64
+name: build-swoole-cli-macos-aarch64
 
 on: [ push, pull_request ]
 
 jobs:
-  macos-x86_64:
+  macos-aarch64:
     if: 1
-    runs-on: macos-12
+    runs-on: macos-14
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
     # macos-13 CPU 架构 x86_64
@@ -16,13 +16,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare build environment
         run: |
+          set -x
           uname -s
           uname -m
           uname -r
           env
           echo $HOME
           brew config
-          set -x
+
           bash sapi/quickstart/macos/macos-init.sh
 
           # sudo rm -rf /Library/Developer/CommandLineTools
@@ -48,17 +49,17 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          export PATH=/usr/local/opt/llvm/bin:$PATH
-          export PATH=/usr/local/opt/flex/bin:$PATH
-          export PATH=/usr/local/opt/bison/bin:$PATH
-          export PATH=/usr/local/opt/libtool/bin:$PATH
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export PATH="/opt/homebrew/opt/flex/bin:$PATH"
+          export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+          export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
 
-          ln -sf /usr/local/opt/libtool/bin/glibtool /usr/local/opt/libtool/bin/libtool
-          ln -sf /usr/local/opt/libtool/bin/glibtoolize /usr/local/opt/libtool/bin/libtoolize
-          ls -lha /usr/local/opt/libtool/bin/
-
+          ln -sf /opt/homebrew/opt/libtool/bin/glibtool /opt/homebrew/opt/libtool/bin/libtool
+          ln -sf /opt/homebrew/opt/libtool/bin/glibtoolize /opt/homebrew/opt/libtool/bin/libtoolize
+          ls -lha /opt/homebrew/opt/libtool/bin/
           libtoolize --version
           libtool --help-all
+
           # brew bison --debug
 
           CURRENT_USER=$(whoami)
@@ -72,14 +73,14 @@ jobs:
         id: php-runtime-cache
         with:
           path: ${{ github.workspace }}/bin/runtime
-          key: ${{ runner.os }}-x86_64-php-runtime
+          key: ${{ runner.os }}-aarch64-php-runtime
 
       - name: Cache PHP Vendor
         uses: actions/cache@v4
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
-          key: ${{ runner.os }}-x86_64-php-vendor
+          key: ${{ runner.os }}-aarch64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v4
@@ -93,7 +94,7 @@ jobs:
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
-          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-all-library
+          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-aarch64-all-library
 
       - name: Prepare Runtime and Libraries and Extensions
         run: |
@@ -102,7 +103,7 @@ jobs:
           mkdir -p pool/ext
           mkdir -p bin/runtime
           if [ ! -f bin/runtime/php ] ; then
-              bash  sapi/quickstart/setup-php-runtime.sh
+              bash  sapi/quickstart/setup-php-runtime.sh --mirror china
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
@@ -116,15 +117,15 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release --with-swoole-pgsql=1
 
       - name: Build
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
-          export PATH=/usr/local/opt/llvm/bin:$PATH
-          export PATH=/usr/local/opt/flex/bin:$PATH
-          export PATH=/usr/local/opt/bison/bin:$PATH
-          export PATH=/usr/local/opt/libtool/bin:$PATH
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export PATH="/opt/homebrew/opt/flex/bin:$PATH"
+          export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+          export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
 
           bash ./make.sh all-library
 
@@ -148,14 +149,14 @@ jobs:
       - name: Archive production artifacts debug
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64-debug
+          name: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64-debug
           retention-days: 90
           path: ./bin/swoole-cli
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64
+          name: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64
           retention-days: 90
           path: ./bin/dist/swoole-cli
 
@@ -163,4 +164,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-v${{ env.APP_VERSION }}-macos-x64.tar.xz
+          files: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64.tar.xz
