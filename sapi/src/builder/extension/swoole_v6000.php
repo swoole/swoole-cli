@@ -21,7 +21,9 @@ return function (Preprocessor $p) {
     $options .= ' --enable-swoole-sqlite ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
     $options .= ' --enable-swoole-thread ' ;
+    # $options .= ' --enable-iouring ' ;
     $options .= ' --enable-zts ' ;
+
 
     $ext = (new Extension('swoole_v6000'))
         ->withAliasName('swoole')
@@ -33,7 +35,8 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'swoole-src',
             <<<EOF
-            git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
+            # git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
+            git clone -b dev  --depth=1 https://github.com/jingjingxyk/swoole-src.git
 EOF
         )
         ->withBuildCached(false)
