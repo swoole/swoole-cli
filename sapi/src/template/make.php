@@ -212,7 +212,8 @@ make_config() {
     sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
     <?php endif;?>
 <?php endif; ?>
-
+    # 临时解决 编译出现多重定义
+    sed -i.backup 's/TSRMLS_CACHE_DEFINE();/TSRMLS_CACHE_EXTERN();/' ext/swoole/ext-src/swoole_thread.cc
     ./configure --help
     export_variables
     echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
