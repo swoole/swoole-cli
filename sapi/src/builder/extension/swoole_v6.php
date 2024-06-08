@@ -24,6 +24,8 @@ return function (Preprocessor $p) {
     if ($p->isLinux()) {
         $options .= ' --enable-iouring ';
         $dependentLibraries[] = 'liburing';
+        $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
+        $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
     }
 
     $options .= ' --enable-zts ';
