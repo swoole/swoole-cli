@@ -42,7 +42,6 @@ return function (Preprocessor $p) {
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
 
-    /*
     // 扩展钩子 写法 (下载 swoole v6 源码）
     $p->withBeforeConfigureScript('swoole_v6', function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
@@ -57,11 +56,14 @@ return function (Preprocessor $p) {
         fi
         mv swoole-src {$workdir}/ext/swoole
 
+        # 临时解决 编译出现多重定义
+        sed -i.backup 's/TSRMLS_CACHE_DEFINE();/TSRMLS_CACHE_EXTERN();/' ext/swoole/ext-src/swoole_thread.cc
+
 EOF;
 
         return $cmd;
     });
-    */
+
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 };
