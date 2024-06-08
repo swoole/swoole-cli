@@ -20,9 +20,13 @@ return function (Preprocessor $p) {
     $options .= ' --enable-swoole-pgsql ';
     $options .= ' --enable-swoole-sqlite ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
-    $options .= ' --enable-swoole-thread ' ;
-    # $options .= ' --enable-iouring ' ;
-    $options .= ' --enable-zts ' ;
+    $options .= ' --enable-swoole-thread ';
+    if ($p->isLinux()) {
+        $options .= ' --enable-iouring ';
+        $dependentLibraries[] = 'liburing';
+    }
+
+    $options .= ' --enable-zts ';
 
     $ext = (new Extension('swoole_v6'))
         ->withHomePage('https://github.com/swoole/swoole-src')
@@ -31,8 +35,7 @@ return function (Preprocessor $p) {
         ->withOptions($options)
         ->withBuildCached(false)
         ->withDependentLibraries(...$dependentLibraries)
-        ->withDependentExtensions(...$dependentExtensions)
-    ;
+        ->withDependentExtensions(...$dependentExtensions);
 
     $p->addExtension($ext);
 
