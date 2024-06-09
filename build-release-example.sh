@@ -65,11 +65,14 @@ while [ $# -gt 0 ]; do
     export HTTP_PROXY="$2"
     export HTTPS_PROXY="$2"
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
-    NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
+    NO_PROXY="${NO_PROXY},::1/128,fe80::/10,fd00::/8,ff00::/8"
+    NO_PROXY="${NO_PROXY},localhost"
     NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
     NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn"
     NO_PROXY="${NO_PROXY},.tencent.com"
-    NO_PROXY="${NO_PROXY},.sourceforge.net"
+    NO_PROXY="${NO_PROXY},ftpmirror.gnu.org"
+    NO_PROXY="${NO_PROXY},gitee.com,gitcode.com"
+    NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
     export NO_PROXY="${NO_PROXY},.npmmirror.com"
 
     WITH_HTTP_PROXY=1
@@ -98,12 +101,17 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-if [ ! "$BASH_VERSION" ]; then
-  echo "Please do not use sh to run this script ($0), just execute it directly" 1>&2
-  exit 1
-  # reconfigure  #
-  # dpkg-reconfigure dash
+if [ "$OS" = 'linux' ] ; then
+  if [ ! "$BASH_VERSION" ] ; then
+      echo "Please  use bash to run this script ($0) " 1>&2
+      echo "fix : " 1>&2
+      echo "apk add bash'  or  sh sapi/quickstart/linux/alpine-init.sh " 1>&2
+      exit 1
+      # reconfigure  #
+      # dpkg-reconfigure dash
+  fi
 fi
+
 # 构建环境依赖检查
 CMDS_NUMS=0
 CMDS=("flex" "pkg-config" "cmake" "re2c" "bison" "curl" "automake" "libtool" "clang" "xz" "zip" "unzip" "autoconf")
@@ -238,7 +246,7 @@ fi
 
 
 # 定制构建选项
-OPTIONS='+apcu +ds +xlswriter +ssh2'
+OPTIONS="${OPTIONS} +apcu +ds +xlswriter +ssh2 +uuid "
 OPTIONS="${OPTIONS} "
 OPTIONS="${OPTIONS} --with-libavif=1"
 OPTIONS="${OPTIONS} --with-global-prefix=${LIBRARY_INSTALL_PREFIX}"

@@ -7,7 +7,7 @@ return function (Preprocessor $p) {
     $liburing_prefix = LIBURING_PREFIX;
     $p->addLibrary(
         (new Library('liburing')) # io_uring iouring
-            ->withHomePage('https://github.com/axboe/liburing.git')
+        ->withHomePage('https://github.com/axboe/liburing.git')
             ->withLicense('https://github.com/axboe/liburing/blob/master/COPYING', Library::LICENSE_LGPL)
             ->withManual('hhttps://github.com/axboe/liburing')
             ->withUrl('https://github.com/axboe/liburing/archive/refs/tags/liburing-2.6.tar.gz')
@@ -17,6 +17,7 @@ return function (Preprocessor $p) {
                 ./configure --help
                 ./configure \
                 --prefix={$liburing_prefix} \
+                --use-libc
 
 EOF
             )

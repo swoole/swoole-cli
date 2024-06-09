@@ -22,7 +22,7 @@ set "PHP_SDK_VC_TOOLSET_VER=%VCToolsVersion%"
 set PHP_SDK_VS=vs16
 set PHP_SDK_VS_NUM=16
 set "PHP_SDK_VS_SHELL_CMD=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat amd64"
-set "PATH=%__PROJECT__%\php-sdk-binary-tools\bin;%__PROJECT__%\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
+set "PATH=%__PROJECT__%\php-sdk-binary-tools\bin;%__PROJECT__%\php-sdk-binary-tools\msys2\usr\bin;%__PROJECT__%\php\;%__PROJECT__%\nasm\;C:\Strawberry\perl\bin;C:\Program Files\Git\bin;%PATH%"
 echo %PATH%
 
 cd /d %__PROJECT__%

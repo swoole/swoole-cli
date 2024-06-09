@@ -194,7 +194,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php  -ffmpeg +coturn  ${{ inputs.build_type }} ${{ inputs.build_options }} --with-c-compiler=clang
+            php prepare.php  -ffmpeg +coturn  --with-build-type=release ${{ inputs.build_type }} ${{ inputs.build_options }} --with-c-compiler=clang
 
             bash make-install-deps.sh
 

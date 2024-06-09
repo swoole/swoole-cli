@@ -9,8 +9,15 @@
 ## 二、CMD 环境构建
 
 ```bat
+
 # 安装 vc 运行时 已经安装过（可以跳过此步）
 sapi\quickstart\windows\native-build\install-visualstudio.bat
+
+# 安装  vc 运行时 （ 可跳过 ）
+sapi\quickstart\windows\native-build\install-vc-runtime.bat
+
+sapi\quickstart\windows\native-build\install-visualstudio-2019.bat
+
 
 sapi\quickstart\windows\native-build\install-deps-soft.bat
 
@@ -28,13 +35,14 @@ sapi\quickstart\windows\native-build\library\openssl.bat
 
 
 sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
-
+:: phpsdk_deps -u
+:: phpsdk_buildtree phpdev
 
 sapi\quickstart\windows\native-build\native-build-php-config.bat
 
 sapi\quickstart\windows\native-build\native-build-php-build.bat
 
-sapi\quickstart\windows\native-build\native-build-php-build-release.bat
+sapi\quickstart\windows\native-build\native-build-php-release.bat
 
 sapi\quickstart\windows\native-build\native-build-php-archive.bat
 
@@ -44,6 +52,13 @@ sapi\quickstart\windows\native-build\native-build-php-archive.bat
 ## 实验 vs2022 环境构建
 
 ```bat
+# 自动打开指定文件夹
+start C:\msys64\home\Administrator\swoole-cli
+start C:\msys64\home\Administrator\swoole-cli\php-src\
+start C:\msys64\home\Administrator\swoole-cli\php-src\x64\Release
+
+sapi\quickstart\windows\native-build\install-visualstudio-2022.bat
+
 # vs2022
 "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
@@ -60,7 +75,9 @@ sapi\quickstart\windows\native-build\native-build-php-sdk-vs2022.bat
 [internals/windows/libs](https://wiki.php.net/internals/windows/libs)
 
 ```shell
+
 git config core.ignorecase false # 设置 Git 在 Windows 上也区分大小写
+
 ```
 
 Latest VC++
@@ -151,9 +168,21 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 
 1. [通过命令行使用 MSVC 工具集](https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170)
 1. [通过命令行使用 MSBuild](https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-1700)
+1. [Microsoft Visual C++ 最新运行时库](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+1. [Visual Studio 生成工具组件目录](https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022)
+1. [使用命令行参数安装、更新和管理 Visual Studio](https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022)
 1. [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
 1. [windows 环境下 构建 php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2)
 1. [VisualStudio 导入或导出安装配置](https://learn.microsoft.com/zh-cn/visualstudio/install/import-export-installation-configurations?view=vs-2022)
 1. [Visual Studio 2019 版本 16.11 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2019/release-notes)
 1. [Visual Studio 2022 版本 17.9 发行说明](https://learn.microsoft.com/zh-cn/visualstudio/releases/2022/release-notes)
+1. [MSVC 如何将清单嵌入到 C/C++ 应用程序中](https://learn.microsoft.com/zh-cn/cpp/build/understanding-manifest-generation-for-c-cpp-programs?view=msvc-170)
+1. [Visual Studio 教程 | C++](https://learn.microsoft.com/zh-cn/cpp/get-started/?view=msvc-170)
+1. [7zip](https://7-zip.org/)
+1. [Visual Studio 许可证目录](https://visualstudio.microsoft.com/zh-hans/license-terms/)
+1. [windows环境 使用ssh](https://learn.microsoft.com/zh-cn/windows-server/administration/openssh/openssh_install_firstuse)
+1. [MSVC链接器选项](https://learn.microsoft.com/zh-cn/cpp/build/reference/linker-options?view=msvc-170)
+1. [MSVC Mt.exe](https://learn.microsoft.com/en-us/windows/win32/sbscs/mt-exe?redirectedfrom=MSDN)
+1. [Install PowerShell on Windows, Linux, and macOS](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4)
+1. [Sysinternals Utilities Index](https://learn.microsoft.com/en-us/sysinternals/downloads/)
 

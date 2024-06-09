@@ -11,7 +11,7 @@ cd /d %__PROJECT__%
 mkdir  build
 
 
-set "PATH=%__PROJECT__%\nasm\;%PATH%"
+set "PATH=%__PROJECT__%\nasm\;C:\Strawberry\perl\bin;%PATH%"
 
 
 

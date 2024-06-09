@@ -155,7 +155,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php +ffmpeg
+            php prepare.php +ffmpeg --with-build-type=release
 
             bash make-install-deps.sh
 

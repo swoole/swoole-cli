@@ -20,7 +20,10 @@ cmake .. ^
 -DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\liblz4" ^
 -DCMAKE_BUILD_TYPE=Release  ^
 -DBUILD_SHARED_LIBS=OFF  ^
--DBUILD_STATIC_LIBS=ON
+-DBUILD_STATIC_LIBS=ON  ^
+-DLZ4_POSITION_INDEPENDENT_LIB=ON  ^
+-DLZ4_BUILD_LEGACY_LZ4C=ON  ^
+-DLZ4_BUILD_CLI=ON
 
 cmake --build . --config Release --target install
 
