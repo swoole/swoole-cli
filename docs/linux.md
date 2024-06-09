@@ -1,9 +1,10 @@
 # linux 环境下构建
 
-## 要求
+## 运行环境要求
+
 1. 容器 docker 运行环境
 
-构建步骤 - 执行的命令
+构建步骤 - 运行命令
 ====
 
 ```shell
@@ -48,7 +49,7 @@ file ./bin/swoole-cli
 快速初始化构建环境
 ====
 
-不执行 `./make.sh docker-build [china|ustc|tuna] ` 生成基础镜像
+跳过生成容器基础镜像
 使用如下命令快速进入容器环境
 便捷调整构建环境
 
@@ -104,4 +105,18 @@ make: ext/opcache/minilua: No such file or directory
 ```bash
 rm ext/opcache/minilua
 ./make.sh build
+```
+
+docker no found
+----
+> 快速安装 docker 运行环境
+
+```bash
+
+bash sapi/quickstart/linux/install-docker.sh
+
+# 使用中国镜像
+bash sapi/quickstart/linux/install-docker.sh --mirror china
+
+
 ```
