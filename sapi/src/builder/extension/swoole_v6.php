@@ -60,8 +60,8 @@ return function (Preprocessor $p) {
 
         cd {$workdir}
         # 临时解决 编译出现多重定义
-        # sed -i.backup 's/TSRMLS_CACHE_DEFINE();/TSRMLS_CACHE_EXTERN();/' ext/swoole/ext-src/swoole_thread.cc
-        sed -i.backup 's/TSRMLS_CACHE_DEFINE();/ZEND_TSRMLS_CACHE_DEFINE();/' ext/swoole/ext-src/swoole_thread.cc
+        sed -i.backup 's/TSRMLS_CACHE_DEFINE();/TSRMLS_CACHE_EXTERN();/' ext/swoole/ext-src/swoole_thread.cc
+        # sed -i.backup 's/TSRMLS_CACHE_DEFINE();/ZEND_TSRMLS_CACHE_DEFINE();/' ext/swoole/ext-src/swoole_thread.cc
 
 EOF;
 
