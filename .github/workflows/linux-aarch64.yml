@@ -133,7 +133,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql  --with-libavif=1
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-build-type=release
 
             bash make-install-deps.sh
 
