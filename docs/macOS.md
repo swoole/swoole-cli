@@ -1,7 +1,39 @@
-# 步骤
+# macOS 环境下构建 swoole-cli
+
+构建步骤 - 运行命令
+====
+
+```shell
+
+git clone --recursive https://github.com/swoole/swoole-cli.git
+cd swoole-cli
+
+bash setup-php-runtime.sh
+composer install  --no-interaction --no-autoloader --no-scripts --profile
+composer dump-autoload --optimize --profile
+
+php prepare.php --without-docker=1  +inotify +apcu +ds +xlswriter +ssh2 +uuid
+
+bash sapi/quickstart/macos/macos-init.sh
+
+bash ./make.sh all-library
+bash ./make.sh config
+bash ./make.sh build
+bash ./make.sh archive
+
+./bin/swoole-cli -m
+./bin/swoole-cli --ri swoole
+xattr -cr ./bin/swoole-cli
+otool -L ./bin/swoole-cli
+
+
+```
+
+构建步骤简述
+====
 
 0. 清理 `brew` 安装的软件
-1. 执行 `php prepare.php --without-docker=1`
+1. 执行 `php prepare.php --without-docker=1` 生成构建shell 脚本
 2. 编译所有依赖的库 `./make.sh all-library`
 3. 配置 `./make.sh config`
 4. 构建 `./make.sh build`

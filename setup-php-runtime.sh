@@ -48,19 +48,20 @@ case $ARCH in
   ;;
 esac
 
-VERSION='v5.0.3'
+SWOOLE_VERSION='v5.1.3'
+VERSION='v5.1.3.0'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
 cd ${__PROJECT__}/var/runtime
 
-SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
+SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/swoole-cli-${SWOOLE_VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
 if [ $OS = 'windows' ]; then
-  SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-src/releases/download/${VERSION}/swoole-cli-${VERSION}-cygwin-${ARCH}.zip"
+  SWOOLE_CLI_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/swoole-cli-${SWOOLE_VERSION}-cygwin-${ARCH}.zip"
 fi
 
 MIRROR=''
@@ -73,9 +74,11 @@ while [ $# -gt 0 ]; do
     export HTTP_PROXY="$2"
     export HTTPS_PROXY="$2"
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
-    NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
-    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
-    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com,.tencent.com"
+    NO_PROXY="${NO_PROXY},::1/128,fe80::/10,fd00::/8,ff00::/8"
+    NO_PROXY="${NO_PROXY},localhost"
+    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com,.tencent.com"
+    NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
+    export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
     ;;
   --*)
     echo "Illegal option $1"
@@ -86,10 +89,10 @@ done
 
 case "$MIRROR" in
 china)
-  SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${VERSION}-${OS}-${ARCH}.tar.xz"
+  SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${SWOOLE_VERSION}-${OS}-${ARCH}.tar.xz"
   COMPOSER_DOWNLOAD_URL="https://mirrors.tencent.com/composer/composer.phar"
   if [ $OS = 'windows' ]; then
-    SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${VERSION}-cygwin-${ARCH}.zip"
+    SWOOLE_CLI_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/swoole-cli-${SWOOLE_VERSION}-cygwin-${ARCH}.zip"
   fi
   ;;
 
@@ -100,11 +103,11 @@ chmod a+x composer.phar
 
 test -f cacert.pem || curl -LSo cacert.pem ${CACERT_DOWNLOAD_URL}
 
-SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-${OS}-${ARCH}"
+SWOOLE_CLI_RUNTIME="swoole-cli-${SWOOLE_VERSION}-${OS}-${ARCH}"
 
 if [ $OS = 'windows' ]; then
   {
-    SWOOLE_CLI_RUNTIME="swoole-cli-${VERSION}-cygwin-${ARCH}"
+    SWOOLE_CLI_RUNTIME="swoole-cli-${SWOOLE_VERSION}-cygwin-${ARCH}"
     test -f ${SWOOLE_CLI_RUNTIME}.zip || curl -LSo ${SWOOLE_CLI_RUNTIME}.zip ${SWOOLE_CLI_DOWNLOAD_URL}
     test -d ${SWOOLE_CLI_RUNTIME} && rm -rf ${SWOOLE_CLI_RUNTIME}
     unzip "${SWOOLE_CLI_RUNTIME}.zip"

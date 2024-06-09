@@ -19,8 +19,8 @@ mkdir -p ${__PROJECT__}/var/download-box/
 cd ${__PROJECT__}/var/download-box/
 
 if [ -f "${__PROJECT__}/sapi/PHP-VERSION.conf"  ] ; then
-  DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.1.0/'
-  ALL_DEPS_HASH="1b8bbd1b64e196b1d56c940fc62079fac8c2cd106867f9534fadb40ee02beaec"
+  DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.3.0/'
+  ALL_DEPS_HASH="5fa1485c2408f05cbc548712917e6dbb8ecd5a631b558d6d512d4a6671f071e5"
 else
   DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.1.0/'
   ALL_DEPS_HASH="49fc4e76422c3b182258c95def6c2cbb45d952bde39cec958f3a17ec0e579116"
@@ -44,8 +44,7 @@ while [ $# -gt 0 ]; do
 done
 
 
-URL="${DOMAIN}/all-archive.zip"
-# URL="${DOMAIN}/all-deps.zip" # 下一个版本启用此命名
+URL="${DOMAIN}/all-deps.zip"
 
 test -f  all-deps.zip || curl -Lo  all-deps.zip ${URL}
 
