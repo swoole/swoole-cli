@@ -243,7 +243,7 @@ fi
 
 
 # 定制构建选项
-OPTIONS='${OPTIONS} +apcu +ds +xlswriter +ssh2 +uuid '
+OPTIONS="${OPTIONS} +apcu +ds +xlswriter +ssh2 +uuid "
 OPTIONS="${OPTIONS} "
 OPTIONS="${OPTIONS} --with-libavif=1"
 OPTIONS="${OPTIONS} --with-global-prefix=${LIBRARY_INSTALL_PREFIX}"
