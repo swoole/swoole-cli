@@ -18,9 +18,9 @@ mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 
-ALL_DEPS_HASH="1b8bbd1b64e196b1d56c940fc62079fac8c2cd106867f9534fadb40ee02beaec"
+ALL_DEPS_HASH="5fa1485c2408f05cbc548712917e6dbb8ecd5a631b558d6d512d4a6671f071e5"
 
-DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.1.0/'
+DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.3.0/'
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
@@ -36,8 +36,7 @@ while [ $# -gt 0 ]; do
 done
 
 
-URL="${DOMAIN}/all-archive.zip"
-# URL="${DOMAIN}/all-deps.zip" # 下一个版本启用此命名
+URL="${DOMAIN}/all-deps.zip"
 
 test -f  all-deps.zip || curl -Lo  all-deps.zip ${URL}
 

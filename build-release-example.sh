@@ -70,6 +70,9 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn"
     NO_PROXY="${NO_PROXY},.tencent.com"
     NO_PROXY="${NO_PROXY},.sourceforge.net"
+    NO_PROXY="${NO_PROXY},ftpmirror.gnu.org"
+    NO_PROXY="${NO_PROXY},gitee.com"
+    NO_PROXY="${NO_PROXY},gitcode.com"
     export NO_PROXY="${NO_PROXY},.npmmirror.com"
 
     WITH_HTTP_PROXY=1
@@ -97,6 +100,15 @@ while [ $# -gt 0 ]; do
   esac
   shift $(($# > 0 ? 1 : 0))
 done
+
+if [ "$OS" = 'linux' ] ; then
+  if [ ! "$BASH_VERSION" ] ; then
+      echo "Please  use bash to run this script ($0) " 1>&2
+      echo "fix : " 1>&2
+      echo "apk add bash'  or  sh sapi/quickstart/linux/alpine-init.sh " 1>&2
+      exit 1
+  fi
+fi
 
 # 构建环境依赖检查
 CMDS_NUMS=0
