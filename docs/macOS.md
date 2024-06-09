@@ -15,7 +15,7 @@ composer dump-autoload --optimize --profile
 php prepare.php --without-docker=1  +inotify +apcu +ds +xlswriter +ssh2 +uuid
 
 bash sapi/quickstart/macos/macos-init.sh
-
+bash make-install-deps.sh
 bash ./make.sh all-library
 bash ./make.sh config
 bash ./make.sh build
