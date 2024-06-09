@@ -23,7 +23,7 @@
 - [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
 - [Swoole 5.1 增加更多数据库协程客户端支持](https://wenda.swoole.com/detail/109023)
 - [Swoole v6 要来了！即将增加多线程支持](https://segmentfault.com/a/1190000044737434)
-- [v6.0 开发计划 - 支持多线程运行模式](https://github.com/swoole/rfc/issues/85)
+- [Swoole v6 开发计划 - 支持多线程运行模式](https://github.com/swoole/rfc/issues/85)
 - [phpy：连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://wenda.swoole.com/detail/109176)
 
 ### 相关文章 知乎
@@ -32,13 +32,12 @@
 - [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://zhuanlan.zhihu.com/p/610014616)
 - [Swoole v6 即将增加多线程支持](https://zhuanlan.zhihu.com/p/688462525)
 - [phpy：连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://zhuanlan.zhihu.com/p/670373512)
-- [Swoole v6 即将增加多线程支持](https://zhuanlan.zhihu.com/p/688462525)
 
 ## 下载`swoole-cli`发行版
 
 - [https://www.swoole.com/download](https://www.swoole.com/download) (recommend)
-- [https://github.com/swoole/swoole-src/releases](https://github.com/swoole/swoole-src/releases)
 - [https://github.com/swoole/swoole-cli/releases](https://github.com/swoole/swoole-cli/releases)
+- [https://github.com/swoole/swoole-src/releases](https://github.com/swoole/swoole-src/releases)
 
 ## `swoole-cli`构建文档
 
