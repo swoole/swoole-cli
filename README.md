@@ -6,27 +6,7 @@
 
 `php-cli` 是一个 `PHP`的 运行时 ，默认包含 swoole 扩展
 
-<<<<<<< HEAD
 > 本项目 派生于 [swoole-cli](https://github.com/swoole/swoole-cli/)
-=======
-- [Swoole-Cli 介绍、使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole-Cli 5.0.1 使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://wenda.swoole.com/detail/108706)
-- [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://wenda.swoole.com/detail/108931)
-- [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
-- [Swoole 5.1 增加更多数据库协程客户端支持](https://wenda.swoole.com/detail/109023)
-- [Swoole v6 要来了！即将增加多线程支持](https://segmentfault.com/a/1190000044737434)
-- [v6.0 开发计划 - 支持多线程运行模式](https://github.com/swoole/rfc/issues/85)
-- [phpy：连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://wenda.swoole.com/detail/109176)
-
-### 相关文章 知乎
-
-- [Swoole-Cli v5.0.1 PHP 的二进制发行版](https://zhuanlan.zhihu.com/p/581695339)
-- [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://zhuanlan.zhihu.com/p/610014616)
-- [Swoole v6 即将增加多线程支持](https://zhuanlan.zhihu.com/p/688462525)
-- [phpy：连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://zhuanlan.zhihu.com/p/670373512)
-- [Swoole v6 即将增加多线程支持](https://zhuanlan.zhihu.com/p/688462525)
->>>>>>> experiment-webui
 
 > 代码与 swoole-cli 项目的 build_native_php 分支的代码 保持一致
 
