@@ -128,16 +128,19 @@ export HTTPS_PROXY={$http_proxy}
 EOF;
     $proxyConfig .= PHP_EOL;
     $proxyConfig .= <<<'EOF'
-export NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
-export NO_PROXY="${NO_PROXY},127.0.0.1,localhost"
-export NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com,.tencent.com"
-export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
-export NO_PROXY="${NO_PROXY},dl-cdn.alpinelinux.org"
-export NO_PROXY="${NO_PROXY},deb.debian.org,security.debian.org"
-export NO_PROXY="${NO_PROXY},archive.ubuntu.com,security.ubuntu.com"
-export NO_PROXY="${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
-export NO_PROXY="${NO_PROXY},.sourceforge.net"
-export NO_PROXY="${NO_PROXY},.gitee.com"
+NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
+NO_PROXY="${NO_PROXY},::1/128,fe80::/10,fd00::/8,ff00::/8"
+NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com,.tencent.com"
+NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
+NO_PROXY="${NO_PROXY},ftpmirror.gnu.org"
+NO_PROXY="${NO_PROXY},gitee.com,gitcode.com"
+NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
+NO_PROXY="${NO_PROXY},dl-cdn.alpinelinux.org"
+NO_PROXY="${NO_PROXY},deb.debian.org,security.debian.org"
+NO_PROXY="${NO_PROXY},archive.ubuntu.com,security.ubuntu.com"
+NO_PROXY="${NO_PROXY},pypi.python.org,bootstrap.pypa.io"
+export NO_PROXY="${NO_PROXY},localhost"
+
 
 EOF;
     $p->setProxyConfig($proxyConfig, $http_proxy);
