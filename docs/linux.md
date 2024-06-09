@@ -1,4 +1,4 @@
-# linux 环境下构建
+# linux 环境下构建  swoole-cli
 
 ## 运行环境要求
 
