@@ -1,3 +1,35 @@
+# linux 环境下构建
+
+## 要求
+1. 容器 docker 运行环境
+
+构建步骤 - 执行的命令
+====
+
+```shell
+
+git clone --recursive https://github.com/swoole/swoole-cli.git
+cd swoole-cli
+bash setup-php-runtime.sh
+composer install  --no-interaction --no-autoloader --no-scripts --profile
+composer dump-autoload --optimize --profile
+php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
+bash ./make.sh docker-build
+bash ./make.sh docker-bash
+bash sapi/quickstart/linux/alpine-init.sh
+# 进入容器后需要再一次执行此命令
+php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
+bash ./make.sh all-library
+bash ./make.sh config
+bash ./make.sh build
+bash ./make.sh archive
+
+./bin/swoole-cli -m
+./bin/swoole-cli --ri swoole
+file ./bin/swoole-cli
+
+```
+
 构建镜像
 ====
 `Linux` 下需要在容器中构建，因此需要先构建 `swoole-cli-builder:base` 基础镜像。
