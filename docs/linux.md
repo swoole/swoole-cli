@@ -11,13 +11,17 @@
 
 git clone --recursive https://github.com/swoole/swoole-cli.git
 cd swoole-cli
+
 bash setup-php-runtime.sh
 composer install  --no-interaction --no-autoloader --no-scripts --profile
 composer dump-autoload --optimize --profile
+
 php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
 bash ./make.sh docker-build
 bash ./make.sh docker-bash
+
 bash sapi/quickstart/linux/alpine-init.sh
+
 # 进入容器后需要再一次执行此命令
 php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
 bash ./make.sh all-library

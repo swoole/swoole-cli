@@ -7,11 +7,15 @@
 
 git clone --recursive https://github.com/swoole/swoole-cli.git
 cd swoole-cli
+
 bash setup-php-runtime.sh
 composer install  --no-interaction --no-autoloader --no-scripts --profile
 composer dump-autoload --optimize --profile
+
 php prepare.php --without-docker=1  +inotify +apcu +ds +xlswriter +ssh2 +uuid
+
 bash sapi/quickstart/macos/macos-init.sh
+
 bash ./make.sh all-library
 bash ./make.sh config
 bash ./make.sh build
