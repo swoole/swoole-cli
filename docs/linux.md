@@ -124,3 +124,12 @@ bash sapi/quickstart/linux/install-docker.sh --mirror china
 
 
 ```
+
+fix slow alpine apk installations
+----
+
+```bash
+
+bash sapi/quickstart/linux/alpine-init.sh --mirror china
+
+```
