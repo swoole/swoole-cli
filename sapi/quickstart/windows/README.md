@@ -7,9 +7,9 @@
 ```shell
 
 # 自动下载 cygwin
-sapi/quickstart/windows/download-cygwin.bat
+sapi\quickstart\windows\download-cygwin.bat
 # 自动安装 cygwin
-sapi/quickstart/windows/install-cygwin.bat
+sapi\quickstart\windows\install-cygwin.bat
 
 
 ```
