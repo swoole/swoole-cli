@@ -28,6 +28,7 @@ return function (Preprocessor $p) {
                 mv swow swow-t
                 mv swow-t/ext  swow
                 rm -rf swow-t
+
 EOF
             )
             ->withBuildCached(false)
