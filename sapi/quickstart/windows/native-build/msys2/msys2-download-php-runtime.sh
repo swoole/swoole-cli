@@ -11,9 +11,10 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+# https://windows.php.net/downloads/releases/archives/
 
 test -d php/ && rm -rf php/
-test -f php-8.2.19-nts-Win32-vs16-x64.zip ||  curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/php-8.2.19-nts-Win32-vs16-x64.zip
+test -f php-8.2.19-nts-Win32-vs16-x64.zip ||  curl -Lo php-8.2.19-nts-Win32-vs16-x64.zip https://windows.php.net/downloads/releases/archives/php-8.2.19-nts-Win32-vs16-x64.zip
 
 unzip -d php php-8.2.19-nts-Win32-vs16-x64.zip
 

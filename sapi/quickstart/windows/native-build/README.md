@@ -10,21 +10,18 @@
 
 ```bat
 
-# 安装 vc 运行时 已经安装过（可以跳过此步）
-sapi\quickstart\windows\native-build\install-visualstudio.bat
-
 # 安装  vc 运行时 （ 可跳过 ）
 sapi\quickstart\windows\native-build\install-vc-runtime.bat
 
 sapi\quickstart\windows\native-build\install-visualstudio-2019.bat
 
-
 sapi\quickstart\windows\native-build\install-deps-soft.bat
 
 
-# vs2019 （也可以开始菜单点击 打开）
+# vs2019
 
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
+cmd /k "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
+
 
 # start /B
 # cmd /c
@@ -34,7 +31,8 @@ sapi\quickstart\windows\native-build\library\zlib.bat
 sapi\quickstart\windows\native-build\library\openssl.bat
 
 
-sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
+cmd /k sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
+
 :: phpsdk_deps -u
 :: phpsdk_buildtree phpdev
 
@@ -164,9 +162,21 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
     curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
     curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
 
+
+```shell
+# 编译cpp
+cl /EHsc /MT test-vc.cpp /link LIBCMT.LIB /NODEFAULTLIB:msvcrt.lib
+
+# 查看连接信息
+
+dumpbin /DEPENDENTS test-vc.exe
+
+```
+
 ## 参考文档
 
 1. [通过命令行使用 MSVC 工具集](https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170)
+1. [从命令行使用 Microsoft C++ 工具集](https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#download-and-install-the-tools)
 1. [通过命令行使用 MSBuild](https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-1700)
 1. [Microsoft Visual C++ 最新运行时库](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 1. [Visual Studio 生成工具组件目录](https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022)
@@ -183,6 +193,7 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 1. [windows环境 使用ssh](https://learn.microsoft.com/zh-cn/windows-server/administration/openssh/openssh_install_firstuse)
 1. [MSVC链接器选项](https://learn.microsoft.com/zh-cn/cpp/build/reference/linker-options?view=msvc-170)
 1. [MSVC Mt.exe](https://learn.microsoft.com/en-us/windows/win32/sbscs/mt-exe?redirectedfrom=MSDN)
+1. [/MD、/MT、/LD（使用运行时库）](https://learn.microsoft.com/zh-cn/cpp/build/reference/md-mt-ld-use-run-time-library?view=msvc-170)
 1. [Install PowerShell on Windows, Linux, and macOS](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4)
 1. [Sysinternals Utilities Index](https://learn.microsoft.com/en-us/sysinternals/downloads/)
 

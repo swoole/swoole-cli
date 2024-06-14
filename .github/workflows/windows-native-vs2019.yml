@@ -116,7 +116,7 @@ jobs:
 
           cmd /c sapi\quickstart\windows\native-build\native-build-php-build.bat
 
-          # cmd /c sapi\quickstart\windows\native-build\native-build-php-build-release.bat
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-release.bat
 
           # cmd /c sapi\quickstart\windows\native-build\native-build-php-archive.bat
 

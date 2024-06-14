@@ -20,14 +20,14 @@ echo %INCLUDE%
 echo %LIB%
 echo %LIBPATH%
 
+rem set "CFLAGS=/EHsc /MT "
+rem set "LDFLAGS=/WHOLEARCHIVE /FORCE:MULTIPLE"
 
 configure.bat ^
 --disable-all         --disable-cgi      --enable-cli   ^
 --enable-sockets      --enable-ctype     --enable-pdo    --enable-phar  ^
 --enable-filter ^
 --enable-xmlreader   --enable-xmlwriter ^
---enable-zlib  ^
---with-openssl=static ^
 --enable-tokenizer ^
 --disable-zts ^
 --enable-apcu ^
@@ -36,6 +36,8 @@ configure.bat ^
 --with-extra-includes="%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include" ^
 --with-extra-libs="%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib\"
 
+rem --enable-zlib  ^
+rem --with-openssl=static ^
 :: --enable-mbstring
 :: --enable-redis ^
 :: --enable-phar-native-ssl

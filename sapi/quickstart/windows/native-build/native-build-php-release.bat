@@ -37,62 +37,36 @@ goto x-release-php-end
 )
 
 :x-release-php-start
-echo #show variable  >> %x_makefile%
-echo show-variable:   >> %x_makefile%
-echo 	^@echo DEPS_CLI: $(DEPS_CLI)  >> %x_makefile%
-echo 	^@echo ==================  >> %x_makefile%
-echo 	^@echo CLI_GLOBAL_OBJ: $(CLI_GLOBAL_OBJS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-rem echo 	^@echo PHP_GLOBAL_OBJS: $(PHP_GLOBAL_OBJS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-rem echo 	^@echo STATIC_EXT_OBJS: $(STATIC_EXT_OBJS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo ASM_OBJS: $(ASM_OBJS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo STATIC_EXT_LIBS: $(STATIC_EXT_LIBS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo STATIC_EXT_LDFLAGS: $(STATIC_EXT_LDFLAGS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo STATIC_EXT_CFLAGS: $(STATIC_EXT_CFLAGS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo BUILD_DIR\PHPLIB: $(BUILD_DIR)\$(PHPLIB) >> %x_makefile%
-echo 	^@echo ==================  >> %x_makefile%
-echo 	^@echo CLI_GLOBAL_OBJS_RESP: $(CLI_GLOBAL_OBJS_RESP)  >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo LIBS_CLI: $(LIBS_CLI) >> %x_makefile%
-echo 	^@echo ==================  >> %x_makefile%
-echo 	^@echo LDFLAGS: $(LDFLAGS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo LDFLAGS_CLI: $(LDFLAGS_CLI)  >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo _VC_MANIFEST_EMBED_EXE: $(_VC_MANIFEST_EMBED_EXE)  >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo PHPDEF: $(PHPDEF) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo PHPDLL_RES: $(PHPDLL_RES) >> %x_makefile%
-echo 	^@echo ==================  >> %x_makefile%
-echo 	^@echo ASM_OBJS: $(ASM_OBJS) >> %x_makefile%
-echo 	^@echo ================== >> %x_makefile%
-echo 	^@echo MCFILE: $(MCFILE) >> %x_makefile%
-echo 	^@echo ==================   >> %x_makefile%
 echo #custom build static link php library  >> %x_makefile%
-echo x-build-php-lib^: generated_files  $(PHP_GLOBAL_OBJS) $(STATIC_EXT_OBJS)  $(ASM_OBJS) $(MCFILE) >> %x_makefile%
-echo #custom build static link php 1  >> %x_makefile%
-$(BUILD_DIR)\php.exe: generated_files $(DEPS_CLI) $(PHP_GLOBAL_OBJS) $(CLI_GLOBAL_OBJS) $(STATIC_EXT_OBJS) $(ASM_OBJS) $(BUILD_DIR)\php.exe.res $(BUILD_DIR)\php.exe.manifest
+echo x-build-php-lib^: generated_files  $(PHP_GLOBAL_OBJS) $(CLI_GLOBAL_OBJS) $(STATIC_EXT_OBJS)  $(ASM_OBJS) $(MCFILE) >> %x_makefile%
+echo #custom build php.exe  >> %x_makefile%
+echo x-release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) x-build-php-lib $(PHP_GLOBAL_OBJS)  $(STATIC_EXT_OBJS) $(ASM_OBJS) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
+rem https://www.cnblogs.com/sherry-best/archive/2013/04/15/3022705.html
+rem https://learn.microsoft.com/zh-CN/cpp/c-runtime-library/crt-library-features?view=msvc-170&viewFallbackFrom=vs-2019
+rem echo 	^@"$(LINK)" ^/nologo $(PHP_GLOBAL_OBJS) $(PHP_GLOBAL_OBJS_RESP) $(CLI_GLOBAL_OBJS) $(CLI_GLOBAL_OBJS_RESP)  $(STATIC_EXT_OBJS_RESP)  $(STATIC_EXT_OBJS)  $(ASM_OBJS) $(LIBS) $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)    >> %x_makefile%
+echo 	^@"$(LINK)" ^/nologo  $(PHP_GLOBAL_OBJS) $(CLI_GLOBAL_OBJS_RESP) $(CLI_GLOBAL_OBJS) $(STATIC_EXT_OBJS) $(STATIC_EXT_LIBS)  $(ASM_OBJS) $(LIBS) $(LIBS_CLI)    $(BUILD_DIR)^\php.exe.res  /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)  >> %x_makefile%
+rem echo 	-@$(_VC_MANIFEST_EMBED_EXE)   >> %x_makefile%
+rem echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
+rem echo 	@if exist php.exe.manifest $(MT) -nologo -manifest php.exe.manifest -outputresource:php.exe    >> %x_makefile%
 
-echo x-release-php^: $(DEPS_CLI) $(CLI_GLOBAL_OBJS) x-build-php-lib $(PHP_GLOBAL_OBJS) $(CLI_GLOBAL_OBJS) $(STATIC_EXT_OBJS) $(ASM_OBJS) $(BUILD_DIR)^\php.exe.res $(BUILD_DIR)^\php.exe.manifest  >> %x_makefile%
-echo 	^@"$(LINK)" ^/nologo  $(CLI_GLOBAL_OBJS_RESP)  $(LIBS_CLI) $(BUILD_DIR)^\php.exe.res /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)    >> %x_makefile%
-echo 	-@$(_VC_MANIFEST_EMBED_EXE)   >> %x_makefile%
-echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
-echo 	if exist php.exe.manifest "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\mt.exe" -nologo -manifest php.exe.manifest -outputresource:php.exe;1
+rem  /WHOLEARCHIVE  /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:msvcrtd.lib /FORCE:MULTIPLE
+rem libcpmt.lib  libvcruntime.lib libucrt.lib msvcrt.lib
+rem  /NODEFAULTLIB:libc.lib /NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:libcd.lib /NODEFAULTLIB:libcmtd.lib /NODEFAULTLIB:msvcrtd.lib
+rem libvcruntime.lib libcmt.lib
+
+rem /MANIFEST:php.exe.manifest /MANIFESTUAC:uiAccess /SUBSYSTEM:CONSOLE  /subsystem:windows
+
 
 :x-release-php-end
 
 
 rem nmake show-variable
-nmake x-release-php
+nmake /E x-release-php
+rem nmake x-build-php-lib
 
 rem nmake install
+
+dumpbin /DEPENDENTS ".\x64\Release\php.exe"
 
 cd %__PROJECT__%
 endlocal

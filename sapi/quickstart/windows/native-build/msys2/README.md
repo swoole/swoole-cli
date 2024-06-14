@@ -6,23 +6,24 @@
 
 ```bash
 
+bash sapi/quickstart/windows/native-build/msys2/prepare.sh
+
+bash sapi/quickstart/windows/native-build/msys2/download.sh
+
+```
+
+```bash
+
 # msys2 下载安装  git curl wget openssl zip unzip xz  lzip 软件包
 bash sapi/quickstart/windows/native-build/msys2/msys2-install-soft.sh
 
 # 下载 visualstudio 2019
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2019.sh
 
-```
+# 调用 CMD 窗口 安装  vc 运行时
+bash sapi/quickstart/windows/native-build/msys2/msys2-install-vc-runtime.sh
 
-```bat
-
-# 打开 CMD 窗口 安装  vc 运行时
-sapi\quickstart\windows\native-build\install-vc-runtime.bat
-
-```
-
-```bash
-# 准备 PHP 运行时 (需要 vc 运行时）
+# 准备 PHP 运行时
 bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
 
 # 提前准备下载依赖库
@@ -54,3 +55,8 @@ bash sapi/quickstart/windows/native-build/msys2/msys2-download-vs-2022.sh
 
 
 ```
+
+
+## 参考文档
+1. [windows php release ](https://windows.php.net/downloads/releases/archives/)
+
