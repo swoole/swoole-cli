@@ -31,12 +31,12 @@ return function (Preprocessor $p) {
         //->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
         //->withFile('ffmpeg-v6.tar.gz')
         ->withManual('https://trac.ffmpeg.org/wiki/CompilationGuide')
-        ->withFile('ffmpeg-latest.tar.gz')
+        ->withFile('ffmpeg-n7.0.1.tar.gz')
         ->withDownloadScript(
             'FFmpeg',
             <<<EOF
             # git clone --depth=1  --single-branch  https://git.ffmpeg.org/ffmpeg.git
-            git clone -b master --depth=1  https://github.com/FFmpeg/FFmpeg.git
+            git clone -b n7.0.1 --depth=1  https://github.com/FFmpeg/FFmpeg.git
 EOF
         )
         ->withPrefix($ffmpeg_prefix)
