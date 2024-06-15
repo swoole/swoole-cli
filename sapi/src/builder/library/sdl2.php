@@ -18,6 +18,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($sdl2_prefix)
+        ->withAutoUpdateFile()
         /*
         ->withConfigure(
             <<<EOF
