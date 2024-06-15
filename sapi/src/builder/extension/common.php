@@ -186,6 +186,7 @@ return function (Preprocessor $p) {
     $depends = ['libmongoc'] ;
     $depends = ['ovn'] ;
     $depends = ['liburing'] ;
+    $depends = ['sdl2'] ;
 
 
     $ext = (new Extension('common'))
