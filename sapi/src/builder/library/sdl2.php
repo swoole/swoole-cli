@@ -39,7 +39,7 @@ EOF
         )
         */
         ->withBuildScript(<<<EOF
-        mkdir -p build
+         mkdir -p build
          cd build
 
          cmake .. \
@@ -50,7 +50,7 @@ EOF
         -DBUILD_STATIC_LIBS=ON
         -DSDL_TEST=OFF
 EOF
-)
+        )
         ->withPkgName('sdl2')
         ->withBinPath($sdl2_prefix . '/bin/')
         ->withDependentLibraries('openssl', 'libiconv', 'zlib')
