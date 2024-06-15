@@ -12,10 +12,6 @@ function install_ovn(Preprocessor $p)
 {
 }
 
-function install_nginx($p)
-{
-}
-
 function install_dpdk(Preprocessor $p): void
 {
 }
