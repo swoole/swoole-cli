@@ -22,8 +22,8 @@ return function (Preprocessor $p) {
 
         # LDFLAGS="\$LDFLAGS -static"
 
-        PACKAGES='openssl  '
-        PACKAGES="\$PACKAGES zlib"
+        PACKAGES='libbsd '
+        PACKAGES="\$PACKAGES alsa"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
@@ -32,7 +32,8 @@ return function (Preprocessor $p) {
         --prefix={$sndio_audio_prefix} \
         --enable-shared=no \
         --enable-static=yes \
-        --enable-alsa
+        --enable-alsa \
+        --with-libbsd
 
 EOF
         )
