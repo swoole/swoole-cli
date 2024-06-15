@@ -19,7 +19,6 @@ if [ $GIT_BRANCH = 'new_dev' ] ;then
   exit 0
 fi
 
-exit 0
 
 cd ${__DIR__}/linux/
 
