@@ -6,6 +6,10 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $sdl2_prefix = SDL2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
+    $libunwind_prefix = LIBUNWIND_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
+    $alsa_prefix = ALSA_PREFIX;
+
     $lib = new Library('sdl2');
     $lib->withHomePage('https://libsdl.org')
         ->withLicense('https://github.com/libsdl-org/SDL/blob/main/LICENSE.txt', Library::LICENSE_SPEC)
@@ -47,13 +51,37 @@ EOF
         -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
         -DCMAKE_BUILD_TYPE=Release  \
         -DBUILD_SHARED_LIBS=OFF  \
-        -DBUILD_STATIC_LIBS=ON
-        -DSDL_TEST=OFF
+        -DBUILD_STATIC_LIBS=ON  \
+        -DSDL_TEST=OFF  \
+        -DSDL_LIBICONV=ON \
+        -DLIBICONV_INCLUDE_DIR={$libiconv_prefix}/include
+        -DLIBICONV_LIBRARY={$libiconv_prefix}/lib
+        -DSDL_ALSA_SHARED=OFF \
+        -DSDL_JACK_SHARED=OFF \
+        -DSDL_PIPEWIRE_SHARED=OFF \
+        -DSDL_PULSEAUDIO_SHARED=OFF \
+        -DSDL_SNDIO_SHARED=OFF \
+        -DSDL_X11=OFF \
+        -DSDL_X11_SHARED=OFF \
+        -DCMAKE_DISABLE_FIND_PACKAGE_wayland-client=ON \
+        -DCMAKE_DISABLE_FIND_PACKAGE_wayland-egl=ON \
+        -DCMAKE_DISABLE_FIND_PACKAGE_wayland-cursor=ON \
+        -DCMAKE_DISABLE_FIND_PACKAGE_egl=ON \
+        -DCMAKE_DISABLE_FIND_PACKAGE_egl=libdrm \
+        -DCMAKE_DISABLE_FIND_PACKAGE_egl=gbm \
+        -DCMAKE_DISABLE_FIND_PACKAGE_egl=egl \
+        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$alsa_prefix};{$libunwind_prefix}"
+
 EOF
         )
         ->withPkgName('sdl2')
         ->withBinPath($sdl2_prefix . '/bin/')
-        ->withDependentLibraries('openssl', 'libiconv', 'zlib')
+        ->withDependentLibraries(
+            'alsa',
+            'openssl',
+            'libiconv',
+            'zlib'
+        )
     ;
 
     $p->addLibrary($lib);
