@@ -23,7 +23,8 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($sdl2_prefix)
-        ->withAutoUpdateFile()
+        ->withBuildCached(false)
+        ->withInstallCached(false)
         /*
         ->withConfigure(
             <<<EOF
@@ -55,35 +56,35 @@ EOF
         -DBUILD_STATIC_LIBS=ON  \
         -DSDL_TEST=OFF  \
         -DSDL_LIBICONV=ON \
-        -DLIBICONV_INCLUDE_DIR={$libiconv_prefix}/include \
-        -DLIBICONV_LIBRARY={$libiconv_prefix}/lib \
+        -DICONV_INCLUDE_DIR={$libiconv_prefix}/include \
+        -DICONV_LIBRARY={$libiconv_prefix}/lib \
         -DSDL_PTHREADS_SEM=ON \
-        -DSDL_ALSA=ON \
+        -DSDL_ALSA=OFF \
         -DSDL_ALSA_SHARED=OFF \
+        -DSDL_JACK=OFF \
         -DSDL_JACK_SHARED=OFF \
+        -DSDL_PIPEWIRE=OFF \
         -DSDL_PIPEWIRE_SHARED=OFF \
+        -DSDL_PULSEAUDIO=OFF \
         -DSDL_PULSEAUDIO_SHARED=OFF \
+        -DSDL_SNDIO=OFF \
         -DSDL_SNDIO_SHARED=OFF \
         -DSDL_X11=OFF \
         -DSDL_X11_SHARED=OFF \
-        -DCMAKE_DISABLE_FIND_PACKAGE_wayland-client=ON \
-        -DCMAKE_DISABLE_FIND_PACKAGE_wayland-egl=ON \
-        -DCMAKE_DISABLE_FIND_PACKAGE_wayland-cursor=ON \
-        -DCMAKE_DISABLE_FIND_PACKAGE_egl=ON \
-        -DCMAKE_DISABLE_FIND_PACKAGE_egl=libdrm \
-        -DCMAKE_DISABLE_FIND_PACKAGE_egl=gbm \
-        -DCMAKE_DISABLE_FIND_PACKAGE_egl=egl \
-        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$alsa_audio_prefix};{$libunwind_prefix}"
+        -DSDL_WAYLAND=OFF \
+        -DSDL_VULKAN=OFF \
+        -DSDL_STATIC_PIC=ON \
+        -DSDL_SYSTEM_ICONV=OFF
+
+        cmake --build . --config Release
+        cmake --build . --config Release --target install
 
 EOF
         )
         ->withPkgName('sdl2')
         ->withBinPath($sdl2_prefix . '/bin/')
         ->withDependentLibraries(
-            'alsa_audio',
-            'openssl',
-            'libiconv',
-            'zlib'
+            'libiconv'
         )
     ;
 

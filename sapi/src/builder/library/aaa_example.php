@@ -163,8 +163,6 @@ EOF
 
         cmake --build . --config Release
 
-
-
         cmake --build . --config Release --target install
 
 
@@ -257,9 +255,6 @@ EOF
         )
         /** 使用GN 构建 end **/
 
-
-        ->withPkgName('example')
-        ->withBinPath($example_prefix . '/bin/')
         /*
 
         //默认不需要此配置

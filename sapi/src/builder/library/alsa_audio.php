@@ -27,7 +27,6 @@ return function (Preprocessor $p) {
             --enable-shared=no \
             --enable-static=yes \
 
-
 EOF
         )
         ->withPkgName('alsa')
