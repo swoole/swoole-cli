@@ -186,7 +186,7 @@ define("SOFIA_SIP_PREFIX", $p->getGlobalPrefix() . '/sofia_sip');
 define("AUDIOFILE_PREFIX", $p->getGlobalPrefix() . '/audiofile');
 define("FLAC_PREFIX", $p->getGlobalPrefix() . '/flac');
 define("LIBOGG_PREFIX", $p->getGlobalPrefix() . '/libogg');
-define("ALSA_PREFIX", $p->getGlobalPrefix() . '/alsa');
+define("ALSA_AUDIO_PREFIX", $p->getGlobalPrefix() . '/alsa_audio');
 define("LIBOPUS_PREFIX", $p->getGlobalPrefix() . '/libopus');
 define("LIBOPUSENC_PREFIX", $p->getGlobalPrefix() . '/libopusenc');
 define("LIBOPUSFILE_PREFIX", $p->getGlobalPrefix() . '/libopusfile');

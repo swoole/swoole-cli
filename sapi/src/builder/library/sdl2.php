@@ -8,7 +8,8 @@ return function (Preprocessor $p) {
     $libiconv_prefix = ICONV_PREFIX;
     $libunwind_prefix = LIBUNWIND_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
-    $alsa_prefix = ALSA_PREFIX;
+    $alsa_audio_prefix = ALSA_AUDIO_PREFIX;
+    $sndio_audio_prefix = SNDIO_AUDIO_PREFIX;
 
     $lib = new Library('sdl2');
     $lib->withHomePage('https://libsdl.org')
@@ -72,14 +73,14 @@ EOF
         -DCMAKE_DISABLE_FIND_PACKAGE_egl=libdrm \
         -DCMAKE_DISABLE_FIND_PACKAGE_egl=gbm \
         -DCMAKE_DISABLE_FIND_PACKAGE_egl=egl \
-        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$alsa_prefix};{$libunwind_prefix}"
+        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$alsa_audio_prefix};{$libunwind_prefix}"
 
 EOF
         )
         ->withPkgName('sdl2')
         ->withBinPath($sdl2_prefix . '/bin/')
         ->withDependentLibraries(
-            'alsa',
+            'alsa_audio',
             'openssl',
             'libiconv',
             'zlib'

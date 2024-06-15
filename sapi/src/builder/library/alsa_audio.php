@@ -4,9 +4,9 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-    $alsa_prefix = ALSA_PREFIX;
+    $alsa_audio_prefix = ALSA_AUDIO_PREFIX;
 
-    $lib = new Library('alsa'); //The Advanced Linux Sound Architecture (ALSA)
+    $lib = new Library('alsa_audio'); //The Advanced Linux Sound Architecture (ALSA)
     $lib->withHomePage('https://www.alsa-project.org/')
         ->withLicense('https://github.co/alsa-project/alsa-lib/blob/master/COPYING', Library::LICENSE_LGPL)
         ->withManual('https://github.com/alsa-project/alsa-lib.git')

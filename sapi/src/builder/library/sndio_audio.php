@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $sndio_audio_prefix = SNDIO_AUDIO_PREFIX;
+    $alsa_audio_prefix = ALSA_AUDIO_PREFIX;
     $lib = new Library('sndio_audio');
     $lib->withHomePage('https://sndio.org/')
         ->withLicense('https://www.gnu.org/licenses/', Library::LICENSE_BSD)
@@ -30,12 +31,16 @@ return function (Preprocessor $p) {
         ./configure \
         --prefix={$sndio_audio_prefix} \
         --enable-shared=no \
-        --enable-static=yes
+        --enable-static=yes \
+        --enable-alsa
 
 EOF
         )
         ->withPkgName('example')
         ->withBinPath($sndio_audio_prefix . '/bin/')
+        ->withDependentLibraries(
+            'alsa_audio',
+        )
     ;
 
     $p->addLibrary($lib);
