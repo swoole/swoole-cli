@@ -44,7 +44,7 @@ EOF
         PACKAGES="\$PACKAGES freetype2"
         PACKAGES="\$PACKAGES libjpeg"
         PACKAGES="\$PACKAGES liblzma"
-        PACKAGES="\$PACKAGES sdl2"
+        # PACKAGES="\$PACKAGES sdl2"
 
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
@@ -74,7 +74,7 @@ EOF
             'freetype',
             'libjpeg',
             'liblzma',
-            'sdl2'
+            //'sdl2'
         );
 
     $p->addLibrary($lib);
