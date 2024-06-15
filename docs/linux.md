@@ -24,6 +24,8 @@ bash sapi/quickstart/linux/alpine-init.sh
 
 # 进入容器后需要再一次执行此命令
 php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
+
+bash make-install-deps.sh
 bash ./make.sh all-library
 bash ./make.sh config
 bash ./make.sh build
