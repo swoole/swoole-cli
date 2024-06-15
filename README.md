@@ -26,14 +26,12 @@
 
 - [https://github.com/swoole/build-static-php/releases](https://github.com/swoole/build-static-php/releases)
 
-## `php-cli`构建文档
+## 构建文档
 
 - [linux 版构建文档](docs/linux.md)
 - [macOS 版构建文档](docs/macOS.md)
-- [windows Cygwin 版构建文档](docs/Cygwin.md)
-- [windows WSL 版构建文档](docs/wsl.md)
-- [php-cli 构建选项文档](docs/options.md)
-- [php-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
+- [构建选项文档](docs/options.md)
+- [搭建依赖库镜像服务](sapi/download-box/README.md)
 - [quickstart](sapi/quickstart/README.md)
 
 ## Clone
