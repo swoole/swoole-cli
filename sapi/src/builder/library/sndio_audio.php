@@ -32,7 +32,7 @@ return function (Preprocessor $p) {
         --prefix={$sndio_audio_prefix} \
         --enable-shared=no \
         --enable-static=yes \
-        --enable-alsa \
+        --enable-alsa=yes \
         --with-libbsd
 
 EOF
