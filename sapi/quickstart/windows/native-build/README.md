@@ -22,7 +22,6 @@ sapi\quickstart\windows\native-build\install-deps-soft.bat
 
 cmd /k "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
-
 # start /B
 # cmd /c
 
@@ -32,7 +31,6 @@ sapi\quickstart\windows\native-build\library\openssl.bat
 
 
 cmd /k sapi\quickstart\windows\native-build\native-build-php-sdk-vs2019.bat
-
 :: phpsdk_deps -u
 :: phpsdk_buildtree phpdev
 

@@ -120,6 +120,15 @@ jobs:
 
           # cmd /c sapi\quickstart\windows\native-build\native-build-php-archive.bat
 
+      - name: Show Build Result
+        run: |
+          $CURRENT_DIR = Get-Location
+          cd $CURRENT_DIR\php-src\
+
+          .\x64\Release\php.exe -v
+          .\x64\Release\php.exe -m
+          dumpbin /DEPENDENTS ".\x64\Release\php.exe"
+
       - name: production artifacts
         uses: actions/upload-artifact@v4
         with:

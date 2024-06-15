@@ -68,7 +68,6 @@ rem nmake x-build-php-lib
 
 rem nmake install
 
-
 .\x64\Release\php.exe -v
 .\x64\Release\php.exe -m
 
