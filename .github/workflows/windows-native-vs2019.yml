@@ -112,7 +112,7 @@ jobs:
 
           cmd /c sapi\quickstart\windows\native-build\native-build-php-config.bat
 
-          cmd /c sapi\quickstart\windows\native-build\native-build-php-config-help.bat
+          # cmd /c sapi\quickstart\windows\native-build\native-build-php-config-help.bat
 
           cmd /c sapi\quickstart\windows\native-build\native-build-php-build.bat
 

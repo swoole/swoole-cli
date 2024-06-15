@@ -32,9 +32,12 @@ configure.bat ^
 --disable-zts ^
 --enable-apcu ^
 --enable-bcmath ^
+--enable-zlib  ^
+--with-openssl=static ^
 --with-toolset=vs ^
---with-extra-includes="%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include" ^
---with-extra-libs="%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib\"
+--with-extra-includes="%INCLUDE%" ^
+--with-extra-libs="%LIB%"
+
 
 rem --enable-zlib  ^
 rem --with-openssl=static ^

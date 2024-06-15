@@ -8,3 +8,4 @@ pacman -Syy --noconfirm git curl wget openssl zip unzip xz  lzip
 # pacman -Syy --noconfirm binutils
 
 
+

@@ -162,7 +162,6 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
     curl -Lo VisualStudioSetup.exe 'https://aka.ms/vs/17/release/vs_community.exe'
     curl -Lo vs_buildtools.exe 'https://aka.ms/vs/17/release/vs_buildtools.exe'
 
-
 ```shell
 # 编译cpp
 cl /EHsc /MT test-vc.cpp /link LIBCMT.LIB /NODEFAULTLIB:msvcrt.lib

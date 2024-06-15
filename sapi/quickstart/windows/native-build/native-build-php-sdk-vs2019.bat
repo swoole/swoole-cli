@@ -28,4 +28,3 @@ echo %PATH%
 cd /d %__PROJECT__%
 
 set __PROJECT__=
-
