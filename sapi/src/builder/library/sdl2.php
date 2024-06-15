@@ -54,8 +54,10 @@ EOF
         -DBUILD_STATIC_LIBS=ON  \
         -DSDL_TEST=OFF  \
         -DSDL_LIBICONV=ON \
-        -DLIBICONV_INCLUDE_DIR={$libiconv_prefix}/include
-        -DLIBICONV_LIBRARY={$libiconv_prefix}/lib
+        -DLIBICONV_INCLUDE_DIR={$libiconv_prefix}/include \
+        -DLIBICONV_LIBRARY={$libiconv_prefix}/lib \
+        -DSDL_PTHREADS_SEM=ON \
+        -DSDL_ALSA=ON \
         -DSDL_ALSA_SHARED=OFF \
         -DSDL_JACK_SHARED=OFF \
         -DSDL_PIPEWIRE_SHARED=OFF \
