@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -exu
+
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
@@ -10,6 +10,16 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
+
+GIT_BRANCH=$(git branch | grep '* ' | awk '{print $2}')
+echo "git branch : "$GIT_BRANCH
+
+if [ $GIT_BRANCH = 'new_dev' ] ;then
+  echo ' Deleting  folder is not allow in this branch : ' $GIT_BRANCH ;
+  exit 0
+fi
+
+exit 0
 
 cd ${__DIR__}/linux/
 
