@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/alsa-project/alsa-lib/blob/master/INSTALL')
         ->withUrl('https://github.com/alsa-project/alsa-lib/archive/refs/tags/v1.2.9.tar.gz')
         ->withFile('alsa-v1.2.9.tar.gz')
-        ->withPrefix($alsa_prefix)
+        ->withPrefix($alsa_audio_prefix)
         ->withConfigure(
             <<<EOF
             libtoolize --force --copy --automake
@@ -23,7 +23,7 @@ return function (Preprocessor $p) {
             autoconf
             ./configure --help
             ./configure \
-            --prefix={$alsa_prefix} \
+            --prefix={$alsa_audio_prefix} \
             --enable-shared=no \
             --enable-static=yes \
 
@@ -32,7 +32,7 @@ EOF
         )
         ->withPkgName('alsa')
         ->withPkgName('alsa-topology')
-        ->withBinPath($alsa_prefix . '/bin/')
+        ->withBinPath($alsa_audio_prefix . '/bin/')
     ;
 
 
