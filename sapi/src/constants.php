@@ -200,9 +200,6 @@ define("UTIL_LINUX_PREFIX", $p->getGlobalPrefix() . '/util_linux');
 define("LIBATOMIC_PREFIX", $p->getGlobalPrefix() . '/libatomic');
 define("UPNP_PREFIX", $p->getGlobalPrefix() . '/upnp');
 
-
-define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
-
 define("USRSCTP_PREFIX", $p->getGlobalPrefix() . '/usrsctp');
 define("RABBITMQ_C_PREFIX", $p->getGlobalPrefix() . '/rabbitmq_c');
 define("LIBCONFIG_PREFIX", $p->getGlobalPrefix() . '/libconfig');

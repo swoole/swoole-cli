@@ -14,8 +14,6 @@ return function (Preprocessor $p) {
         ->withPrefix($sndio_audio_prefix)
         ->withBuildCached(false)
         ->withBuildCached(false)
-
-        /* 使用 autoconfig automake  构建 start  */
         ->withConfigure(
             <<<EOF
 
