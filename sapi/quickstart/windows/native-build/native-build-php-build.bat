@@ -39,8 +39,6 @@ configure.bat ^
 --with-extra-libs="%LIB%"
 
 
-rem --enable-zlib  ^
-rem --with-openssl=static ^
 :: --enable-mbstring
 :: --enable-redis ^
 :: --enable-phar-native-ssl
