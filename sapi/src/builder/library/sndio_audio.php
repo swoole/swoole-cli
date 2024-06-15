@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://sndio.org/')
         ->withLicense('https://www.gnu.org/licenses/', Library::LICENSE_BSD)
         ->withManual('https://sndio.org/install.html')
-        ->withfile('https://sndio.org/sndio-1.9.0.tar.gz')
+        ->withUrl('https://sndio.org/sndio-1.9.0.tar.gz')
         ->withFileHash('sha256','f30826fc9c07e369d3924d5fcedf6a0a53c0df4ae1f5ab50fe9cf280540f699a')
         ->withPrefix($sndio_audio_prefix)
         ->withBuildCached(false)
