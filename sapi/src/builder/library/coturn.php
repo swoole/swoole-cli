@@ -45,7 +45,6 @@ EOF
             //->withAutoUpdateFile()
             ->withBuildCached(false)
             ->withInstallCached(false)
-            ->withBuildCached(false)
             /*
                         ->withConfigure(
                             <<<EOF
