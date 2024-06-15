@@ -187,6 +187,7 @@ return function (Preprocessor $p) {
     $depends = ['ovn'] ;
     $depends = ['liburing'] ;
     $depends = ['sdl2'] ;
+    $depends = ['sndio_audio'] ;
 
 
     $ext = (new Extension('common'))

@@ -333,6 +333,9 @@ define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
 define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
 
 define("GPAC_PREFIX", $p->getGlobalPrefix() . '/gpac');
+
+define("SNDIO_AUDIO_PREFIX", $p->getGlobalPrefix() . '/sndio_audio');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
 
