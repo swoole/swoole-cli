@@ -28,9 +28,8 @@ return function (Preprocessor $p) {
             */
             ->withFile('privoxy-3.0.34.tar.gz')
             ->withPrefix($privoxy_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($privoxy_prefix)
-            //->withBuildCached(false)
+            ->withBuildCached(false)
+            ->withInstallCached(false)
             ->withPreInstallCommand(
                 'alpine',
                 <<<EOF
