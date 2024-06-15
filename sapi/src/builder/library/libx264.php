@@ -20,7 +20,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libx264_prefix)
-        ->withInstallCached(false)
+        //->withInstallCached(false)
         ->withConfigure(
             <<<EOF
         ./configure --help

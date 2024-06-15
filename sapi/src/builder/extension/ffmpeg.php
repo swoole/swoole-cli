@@ -44,6 +44,7 @@ return function (Preprocessor $p) {
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
+                xattr -cr {$workdir}/bin/ffmpeg/bin/ffmpeg
                 otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
                 tar -cJvf {$workdir}/ffmpeg-\${FFMPEG_VERSION}-macos-x64.tar.xz ffmpeg
 EOF;
