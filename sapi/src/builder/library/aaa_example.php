@@ -184,6 +184,7 @@ EOF
         CPPFLAGS="-I{$gettext_prefix}/include" \
         LDFLAGS="-L{$gettext_prefix}/lib" \
         LIBS=" -lintl " \
+
         meson setup  build \
         -Dprefix={$example_prefix} \
         -Dlibdir={$example_prefix}/lib \
@@ -199,7 +200,7 @@ EOF
         # -Dexamples=disabled
         # -Dc_args=-fmax-errors=10 \
         # -Dcpp_args=-DMAGIC=123
-
+        # LIBRARY_PATH={$gettext_prefix}/lib \
 
         # meson compile -C build
         # meson install -C build

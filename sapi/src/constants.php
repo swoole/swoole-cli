@@ -332,6 +332,9 @@ define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
 define("GPAC_PREFIX", $p->getGlobalPrefix() . '/gpac');
 
 define("SNDIO_AUDIO_PREFIX", $p->getGlobalPrefix() . '/sndio_audio');
+define("JACK_AUDIO_PREFIX", $p->getGlobalPrefix() . '/jack_audio');
+define("OPEN_SOUND_AUDIO_PREFIX", $p->getGlobalPrefix() . '/opensound_audio');
+define("PULSE_AUDIO_PREFIX", $p->getGlobalPrefix() . '/pulse_audio');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
