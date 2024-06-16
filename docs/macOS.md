@@ -178,7 +178,9 @@ export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 > 解压以后执行如下命令：
 
 ```bash
+    xattr ./swoole-cli
 
+    xattr -cr ./swoole-cli
     sudo xattr -d com.apple.quarantine  ./swoole-cli
 
     file ./bin/swoole-cli

@@ -135,3 +135,11 @@ fix slow alpine apk installations
 bash sapi/quickstart/linux/alpine-init.sh --mirror china
 
 ```
+
+show file info
+----
+
+```bash
+    file ./bin/php-8.2.4/bin/php
+    readelf -h ./bin/php-8.2.4/bin/php
+```
