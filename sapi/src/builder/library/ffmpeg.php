@@ -119,6 +119,7 @@ EOF
             --enable-librabbitmq \
             --enable-libx265 \
             --enable-libx264 \
+            --disable-libv4l2 \
             --disable-libxcb \
             --disable-libxcb-shm \
             --disable-libxcb-xfixes \

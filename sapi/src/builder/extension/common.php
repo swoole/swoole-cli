@@ -192,6 +192,7 @@ return function (Preprocessor $p) {
     $depends = ['opensound_audio'] ;
     $depends = ['dav1d'] ;
     $depends = ['sdl2'] ;
+    $depends = ['v4l_utils'] ;
 
 
     $ext = (new Extension('common'))
