@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         $builddir = $p->getBuildDir();
         $installdir = $p->getGlobalPrefix();
         $privoxy_prefix = PRIVOXY_PREFIX;
-
+        $system_arch=$p->getSystemArch();
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
                 test -d {$workdir}/bin/privoxy && rm -rf {$workdir}/bin/privoxy
@@ -32,13 +32,13 @@ EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/privoxy/sbin/privoxy
-            tar -cJvf {$workdir}/privoxy-\${PRIVOXY_VERSION}-macos-x64.tar.xz privoxy
+            tar -cJvf {$workdir}/privoxy-\${PRIVOXY_VERSION}-macos-{$system_arch}.tar.xz privoxy
 EOF;
         } else {
             $cmd .= <<<EOF
               file {$workdir}/bin/privoxy/sbin/privoxy
               readelf -h {$workdir}/bin/privoxy/sbin/privoxy
-              tar -cJvf {$workdir}/privoxy-\${PRIVOXY_VERSION}-linux-x64.tar.xz privoxy
+              tar -cJvf {$workdir}/privoxy-\${PRIVOXY_VERSION}-linux-{$system_arch}.tar.xz privoxy
 EOF;
         }
         return $cmd;

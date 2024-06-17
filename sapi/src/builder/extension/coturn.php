@@ -18,6 +18,7 @@ return function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $coturn_prefix = COTURN_PREFIX;
+        $system_arch=$p->getSystemArch();
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/coturn/bin/
                 mkdir -p {$workdir}/bin/coturn/etc/
@@ -39,15 +40,15 @@ EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/coturn/bin/turnserver
-            tar -cJvf {$workdir}/coturn-\${COTURN_VERSION}-macos-x64.tar.xz coturn/
-            zip -v  {$workdir}/coturn-\${COTURN_VERSION}-macos-x64.tar.xz.zip {$workdir}/coturn-\${COTURN_VERSION}-macos-x64.tar.xz
+            tar -cJvf {$workdir}/coturn-\${COTURN_VERSION}-macos-{$system_arch}.tar.xz coturn/
+            zip -v  {$workdir}/coturn-\${COTURN_VERSION}-macos-{$system_arch}.tar.xz.zip {$workdir}/coturn-\${COTURN_VERSION}-macos-{$system_arch}.tar.xz
 EOF;
         } else {
             $cmd .= <<<EOF
             file {$workdir}/bin/coturn/bin/turnserver
             readelf -h {$workdir}/bin/coturn/bin/turnserver
-            tar -cJvf {$workdir}/coturn-\${COTURN_VERSION}-linux-x64.tar.xz coturn/
-            zip -v  {$workdir}/coturn-\${COTURN_VERSION}-linux-x64.tar.xz.zip {$workdir}/coturn-\${COTURN_VERSION}-linux-x64.tar.xz
+            tar -cJvf {$workdir}/coturn-\${COTURN_VERSION}-linux-{$system_arch}.tar.xz coturn/
+            zip -v  {$workdir}/coturn-\${COTURN_VERSION}-linux-{$system_arch}.tar.xz.zip {$workdir}/coturn-\${COTURN_VERSION}-linux-{$system_arch}.tar.xz
 EOF;
         }
         return $cmd;
