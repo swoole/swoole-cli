@@ -49,6 +49,7 @@
 
 #ifdef ZTS
 int jit_globals_id;
+ZEND_TSRMLS_CACHE_DEFINE()
 #else
 zend_jit_globals jit_globals;
 #endif
