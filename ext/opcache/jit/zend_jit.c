@@ -49,7 +49,7 @@
 
 #ifdef ZTS
 int jit_globals_id;
-ZEND_TSRMLS_CACHE_DEFINE()
+ZEND_TSRMLS_CACHE_EXTERN()
 #else
 zend_jit_globals jit_globals;
 #endif
