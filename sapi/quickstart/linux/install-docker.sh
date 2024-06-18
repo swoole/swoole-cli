@@ -15,7 +15,7 @@ mkdir -p ${__PROJECT__}/var
 
 cd ${__PROJECT__}/var
 
-curl -fsSL https://get.docker.com -o get-docker.sh
+test -f get-docker.sh || curl -fsSL https://get.docker.com -o get-docker.sh
 
 MIRROR=''
 while [ $# -gt 0 ]; do
