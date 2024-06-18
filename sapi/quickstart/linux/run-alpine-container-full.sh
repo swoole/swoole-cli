@@ -47,7 +47,6 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-docker pull jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240618T091126Z
 
 case $ARCH in
 'x86_64')
