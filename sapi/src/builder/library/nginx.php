@@ -26,6 +26,7 @@ return function (Preprocessor $p) {
             //->withAutoUpdateFile()
             ->withBuildCached(false)
             ->withInstallCached(false)
+            ->withHttpProxy(false,true)
             ->withFile('nginx-release-1.25.5.tar.gz')
             ->withDownloadScript(
                 'nginx',
