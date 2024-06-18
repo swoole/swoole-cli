@@ -21,6 +21,13 @@ cd ${__PROJECT__}/var
 # test -f get-docker.sh || curl -fsSL https://get.docker.com -o get-docker.sh
 test -f get-docker.sh || curl -fsSL https://github.com/docker/docker-install/blob/master/install.sh?raw=true -o get-docker.sh
 
+if [ -n "$http_proxy" ] || [ -n "$https_proxy" ] || [ -n "$HTTP_PROXY" ] || [ -n "$HTTPS_PROXY" ]; then
+    unset http_proxy
+    unset https_proxy
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+fi
+
 MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in

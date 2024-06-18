@@ -7,7 +7,7 @@ __DIR__=$(
 )
 
 # use china mirror
-# bash sapi/quickstart/linux/debian-init.sh --mirror [china | ustc | tuna | aliyuncs | tencentyun | huaweicloud]
+# bash sapi/quickstart/linux/debian-init.sh --mirror [ china | ustc | tuna | aliyuncs | tencentyun | huaweicloud ]
 
 MIRROR=''
 while [ $# -gt 0 ]; do
