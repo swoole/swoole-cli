@@ -23,6 +23,7 @@ test -f get-docker.sh || curl -fsSL https://github.com/docker/docker-install/blo
 
 if [ -n "$http_proxy" ] || [ -n "$https_proxy" ] || [ -n "$HTTP_PROXY" ] || [ -n "$HTTPS_PROXY" ]; then
     echo 'Please delete proxy settings !'
+    echo 'Execute this script again ！'
     exit 0
 fi
 
