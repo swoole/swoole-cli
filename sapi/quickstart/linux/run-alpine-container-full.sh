@@ -59,7 +59,7 @@ case $ARCH in
   TAG=all-dependencies-alpine-3.18-php7-v1.0.0-aarch64-20240106T123157Z
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
     if [ "$MIRROR" = 'china' ] ; then
-      IMAGE=registry.cn-shanghai.aliyuncs.com/jingjingxyk-public/app:${TAG}
+      IMAGE=registry.cn-hangzhou.aliyuncs.com/jingjingxyk-public/app:${TAG}
     fi
   ;;
 
