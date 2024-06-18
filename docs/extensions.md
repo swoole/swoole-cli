@@ -5,7 +5,7 @@
 | curl           | ✅      | ✅     | ✅               | ✅               |
 | iconv          | ✅      | ✅     | ✅               | ✅               |
 | bcmath         | ✅      | ✅     | ✅               | ✅               |
-| pcntl          | ✅      | ✅     | ❌               | ✅               |
+| pcntl          | ✅      | ✅     | ✅               | ✅               |
 | filter         | ✅      | ✅     | ✅               | ✅               |
 | session        | ✅      | ✅     | ✅               | ✅               |
 | tokenizer      | ✅      | ✅     | ✅               | ✅               |
@@ -41,7 +41,7 @@
 | yaml           | ✅      | ✅     | ✅               | ✅               |
 | imagick        | ✅      | ✅     | ✅               | ✅               |
 | gd             | ✅      | ✅     | ✅               | ✅               |
-| opcache        | ✅      | ✅     | ❌               | ✅               |
+| opcache        | ✅      | ✅     | ✅               | ✅               |
 | ssh2           | ✅      | ✅     | ❌               | ❌               |
 | apcu           | ✅      | ✅     | ❌               | ❌               |
 | ds             | ✅      | ✅     | ✅               | ❌               |
