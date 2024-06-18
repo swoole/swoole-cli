@@ -105,7 +105,7 @@ if [ "$OS" = 'linux' ] ; then
   if [ ! "$BASH_VERSION" ] ; then
       echo "Please  use bash to run this script ($0) " 1>&2
       echo "fix : " 1>&2
-      echo "apk add bash'  or  sh sapi/quickstart/linux/alpine-init.sh " 1>&2
+      echo "apk add bash  OR sh sapi/quickstart/linux/alpine-init-mini.sh " 1>&2
       exit 1
   fi
 fi
