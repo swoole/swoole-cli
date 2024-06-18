@@ -101,9 +101,10 @@ abstract class Project
     }
 
     /**
+     * 配置 文件 签名验证
      * https://www.php.net/manual/zh/function.hash-algos.php
      * print_r(hash_algos());
-     * @param string $algo
+     * @param string $algo [ 'md5' | 'sha1' | 'sha256' ]
      * @param string $hash
      * @return $this
      */
@@ -115,8 +116,10 @@ abstract class Project
         return $this;
     }
 
-    /*
+    /**
      * hash 签名验证 ，hash 不匹配，删除文件
+     * @param string $file
+     * @return bool
      */
     public function hashVerify(string $file): bool
     {
