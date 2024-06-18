@@ -15,7 +15,11 @@ mkdir -p ${__PROJECT__}/var
 
 cd ${__PROJECT__}/var
 
-test -f get-docker.sh || curl -fsSL https://get.docker.com -o get-docker.sh
+# https://github.com/docker/docker-install.git
+
+
+# test -f get-docker.sh || curl -fsSL https://get.docker.com -o get-docker.sh
+test -f get-docker.sh || curl -fsSL https://github.com/docker/docker-install/blob/master/install.sh?raw=true -o get-docker.sh
 
 MIRROR=''
 while [ $# -gt 0 ]; do
