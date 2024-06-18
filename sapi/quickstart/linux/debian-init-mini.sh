@@ -7,7 +7,7 @@ __DIR__=$(
 )
 
 # use china mirror
-# bash sapi/quickstart/linux/debian-init.sh --mirror [ china | ustc | tuna | aliyuncs | tencentyun | huaweicloud ]
+# bash sapi/quickstart/linux/debian-init-mini.sh --mirror [ china | ustc | tuna | aliyuncs | tencentyun | huaweicloud ]
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -90,21 +90,5 @@ test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 export DEBIAN_FRONTEND=noninteractive
 
 apt update -y
-apt install -y locales
-
-locale-gen en_US.UTF-8
-# dpkg-reconfigure locales
-# localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
-# update-locale
-
-export LANGUAGE="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-export LC_CTYPE="en_US.UTF-8"
-export LANG="en_US.UTF-8"
-
-
-export TZ="UTC"
-export TZ="Etc/UTC"
-ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 apt install -y git curl wget ca-certificates xz-utils bzip2 p7zip lzip zip unzip

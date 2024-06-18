@@ -8,7 +8,7 @@ __DIR__=$(
 cd ${__DIR__}
 
 # use china mirror
-# sh sapi/quickstart/linux/alpine-init.sh --mirror [ china | ustc | tuna | tencentyun | huaweicloud ]
+# sh sapi/quickstart/linux/alpine-init-mini.sh --mirror [ china | ustc | tuna | tencentyun | huaweicloud ]
 
 
 MIRROR=''
