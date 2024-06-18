@@ -15,7 +15,17 @@ mkdir -p ${__PROJECT__}/var
 
 cd ${__PROJECT__}/var
 
-curl -fsSL https://get.docker.com -o get-docker.sh
+# https://github.com/docker/docker-install.git
+
+
+# test -f get-docker.sh || curl -fsSL https://get.docker.com -o get-docker.sh
+test -f get-docker.sh || curl -fsSL https://github.com/docker/docker-install/blob/master/install.sh?raw=true -o get-docker.sh
+
+if [ -n "$http_proxy" ] || [ -n "$https_proxy" ] || [ -n "$HTTP_PROXY" ] || [ -n "$HTTPS_PROXY" ]; then
+    echo 'Please delete proxy settings !'
+    echo 'Execute this script again ！'
+    exit 0
+fi
 
 MIRROR=''
 while [ $# -gt 0 ]; do

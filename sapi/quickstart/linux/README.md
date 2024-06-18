@@ -36,11 +36,14 @@ bash sapi/quickstart/linux/run-alpine-container.sh
 # 进入容器
 bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
 
+# 准备构建基础软件 bash git
+sh sapi/quickstart/linux/alpine-init-minimal.sh
+
 # 准备构建基础软件
-sh  sapi/quickstart/linux/alpine-init.sh
+bash  sapi/quickstart/linux/alpine-init.sh
 
 # 准备构建基础软件 使用中科大镜像源
-sh  sapi/quickstart/linux/alpine-init.sh --mirror china
+bash   sapi/quickstart/linux/alpine-init.sh --mirror china
 
 ```
 

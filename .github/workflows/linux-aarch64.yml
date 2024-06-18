@@ -121,7 +121,7 @@ jobs:
       - name: prepare pre-built library
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240106T114724Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240618T091126Z
           options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/tmp/
           run: |
             for i in `ls /usr/local/swoole-cli/`

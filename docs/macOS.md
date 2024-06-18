@@ -12,10 +12,12 @@ bash setup-php-runtime.sh
 composer install  --no-interaction --no-autoloader --no-scripts --profile
 composer dump-autoload --optimize --profile
 
-php prepare.php --without-docker=1  +inotify +apcu +ds +xlswriter +ssh2 +uuid
+php prepare.php --without-docker=1  +apcu +ds +xlswriter +ssh2 +uuid
 
 bash sapi/quickstart/macos/macos-init.sh
+
 bash make-install-deps.sh
+
 bash ./make.sh all-library
 bash ./make.sh config
 bash ./make.sh build
