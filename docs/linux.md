@@ -26,6 +26,7 @@ bash sapi/quickstart/linux/alpine-init.sh
 php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
 
 bash make-install-deps.sh
+
 bash ./make.sh all-library
 bash ./make.sh config
 bash ./make.sh build

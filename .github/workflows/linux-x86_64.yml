@@ -181,7 +181,7 @@ jobs:
             composer dump-autoload --optimize --profile --no-dev
 
             # php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +mongodb --with-libavif=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }}
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +mongodb  --with-libavif=1 --with-build-type=release --with-php-version=${{ env.BUILD_PHP_VERSION }}
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +mongodb +uuid --with-libavif=1 --with-build-type=release --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
             bash make-install-deps.sh
 
