@@ -26,7 +26,7 @@ return function (Preprocessor $p) {
             //->withAutoUpdateFile()
             ->withBuildCached(false)
             ->withInstallCached(false)
-            ->withFile('nginx-release-1.27.0.tar.gz')
+            ->withFile('nginx-release-1.25.5.tar.gz')
             ->withDownloadScript(
                 'nginx',
                 <<<EOF
@@ -34,7 +34,7 @@ return function (Preprocessor $p) {
                 # hg update -C release-1.25.2
                 # git clone -b release-1.25.2 --depth 1 --progress  https://github.com/nginx/nginx.git
 
-                hg  clone -r release-1.27.0 --rev=1  http://hg.nginx.org/nginx
+                hg  clone -r release-1.25.5 --rev=1  http://hg.nginx.org/nginx
                 # hg  clone -r default --rev=1  http://hg.nginx.org/nginx
 
 EOF
