@@ -22,10 +22,8 @@ cd ${__PROJECT__}/var
 test -f get-docker.sh || curl -fsSL https://github.com/docker/docker-install/blob/master/install.sh?raw=true -o get-docker.sh
 
 if [ -n "$http_proxy" ] || [ -n "$https_proxy" ] || [ -n "$HTTP_PROXY" ] || [ -n "$HTTPS_PROXY" ]; then
-    unset http_proxy
-    unset https_proxy
-    unset HTTP_PROXY
-    unset HTTPS_PROXY
+    echo 'Please delete proxy settings !'
+    exit 0
 fi
 
 MIRROR=''

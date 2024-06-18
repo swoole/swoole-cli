@@ -41,4 +41,4 @@ esac
 
 apk update
 
-apk add bash xz zip unzip flex pkgconf ca-certificates
+apk add bash git curl wget  xz zip unzip  ca-certificates
