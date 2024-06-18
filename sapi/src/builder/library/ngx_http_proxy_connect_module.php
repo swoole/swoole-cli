@@ -11,15 +11,16 @@ return function (Preprocessor $p) {
             Library::LICENSE_BSD
         )
         ->withManual('https://github.com/chobits/ngx_http_proxy_connect_module.git')
-        ->withFile('ngx_http_proxy_connect_module-v0.0.5.tar.gz')
+        ->withFile('ngx_http_proxy_connect_module-v0.0.6.tar.gz')
         ->withDownloadScript(
             'ngx_http_proxy_connect_module',
             <<<EOF
-            git clone -b v0.0.5 --depth 1 --progress   https://github.com/chobits/ngx_http_proxy_connect_module.git
+            git clone -b v0.0.6 --depth 1 --progress   https://github.com/chobits/ngx_http_proxy_connect_module.git
 EOF
         )
         ->withBuildScript('return 0')
         ->withBuildCached(false)
+        ->withInstallCached(false)
 
     ;
 
