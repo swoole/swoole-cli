@@ -20,7 +20,6 @@
 | phar           | ✅      | ✅     | ✅               | ✅               |
 | mysqlnd        | ✅      | ✅     | ✅               | ✅               |
 | mysqli         | ✅      | ✅     | ✅               | ✅               |
-| zip            | ✅      | ✅     | ✅               | ✅               |
 | intl           | ✅      | ✅     | ✅               | ✅               |
 | fileinfo       | ✅      | ✅     | ✅               | ✅               |
 | pdo_mysql      | ✅      | ✅     | ✅               | ✅               |
