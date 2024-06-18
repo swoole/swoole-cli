@@ -20,6 +20,9 @@ php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
 bash ./make.sh docker-build
 bash ./make.sh docker-bash
 
+# 准备bash 命令
+sh sapi/quickstart/linux/alpine-init-minimal.sh
+
 bash sapi/quickstart/linux/alpine-init.sh
 
 # 进入容器后需要再一次执行此命令
