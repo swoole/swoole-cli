@@ -94,3 +94,16 @@ ppc64le  基于Power架构
 clang with MUSL
 
 clang hello.c  -I /usr/include/x86_64-linux-musl --target=x86_64-unknown-linux-musl  -nostdlib
+
+
+
+TLS的四种模式 Global Dynamic,Local Dynamic,Initial Exec和Local Exec
+
+单词缩写解释
+Acronyms relevant to Executable and Linkable Format (ELF)
+https://stevens.netmeister.org/631/elf.html
+
+ABI： Application binary interface
+a.out： Assembler output file format
+PIC： Position independent code
+PIE： Position independent executable
