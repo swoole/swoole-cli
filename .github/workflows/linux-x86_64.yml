@@ -116,7 +116,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 -swoole +swoole_v6
+            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 -swoole +swoole_v6 -opcache
 
             bash ./make.sh all-library
 
