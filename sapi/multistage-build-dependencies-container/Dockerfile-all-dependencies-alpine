@@ -55,7 +55,7 @@ RUN composer update  --optimize-autoloader
 RUN composer config -g --unset repos.packagist
 
 
-RUN php prepare.php  --with-swoole-pgsql=1
+RUN php prepare.php +apcu +ds +xlswriter +ssh2 +uuid
 
 RUN bash make.sh all-library
 
