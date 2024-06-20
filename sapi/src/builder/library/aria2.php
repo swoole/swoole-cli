@@ -43,7 +43,7 @@ return function (Preprocessor $p) {
             --with-openssl \
             --with-libiconv-prefix={$libiconv_prefix} \
             --with-libz \
-            --with-libssh2
+            --with-libssh2 \
             --without-appletls \
             --without-wintls \
             --without-gnutls \
