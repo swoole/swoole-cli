@@ -19,6 +19,8 @@ return function (Preprocessor $p) {
             set -x
             PACKAGES='zlib openssl sqlite3 nettle libxml-2.0 libcares'
             PACKAGES="\$PACKAGES  libssh2 libuv"
+            PACKAGES="\$PACKAGES gmp"
+            PACKAGES="\$PACKAGES expat"
             CPPFLAGS="-I{$libiconv_prefix}/include"
             LDFLAGS="-L{$libiconv_prefix}/lib"
             LIBS="-liconv"
@@ -50,7 +52,9 @@ EOF
                 'nettle',
                 'libxml2',
                 'cares',
-                'libssh2'
+                'libssh2',
+                'gmp',
+                'libexpat'
             )
     );
 };
