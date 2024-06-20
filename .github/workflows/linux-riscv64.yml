@@ -1,4 +1,4 @@
-name: build-php-cli-linux-riscv64
+name: build-linux-riscv64
 
 on: [ push, pull_request ]
 

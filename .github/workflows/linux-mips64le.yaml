@@ -1,4 +1,4 @@
-name: build-php-cli-linux-mips64le
+name: build-linux-mips64le
 
 on: [ push, pull_request ]
 

@@ -1,4 +1,4 @@
-name: build-php-cli-linux-x86_64
+name: build-linux-x86_64
 
 on:
   push:
