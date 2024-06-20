@@ -125,6 +125,7 @@ EOF
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $ffmpeg_prefix = FFMPEG_PREFIX;
+        $system_arch=$p->getSystemArch();
 
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/ffmpeg/
@@ -133,20 +134,21 @@ EOF
                 cd {$workdir}/bin/
 
                 {$workdir}/bin/ffmpeg/bin/ffmpeg -h
-
+                APP_VERSION=\$({$workdir}/bin/ffmpeg/bin/ffmpeg -version | head -n 1 | awk '{ print $3 }')
                 cd {$workdir}/bin/
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
+                xattr -cr  {$workdir}/bin/ffmpeg/bin/ffmpeg
                 otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
-                tar -cJvf {$workdir}/ffmpeg-vlatest-static-macos-x64.tar.xz ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-\${APP_VERSION}-macos-{$system_arch}.tar.xz ffmpeg
 EOF;
         } else {
             $cmd .= <<<EOF
                 file {$workdir}/bin/ffmpeg/bin/ffmpeg
                 readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
-                tar -cJvf {$workdir}/ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-\${APP_VERSION}-linux-{$system_arch}.tar.xz ffmpeg
 EOF;
         }
         return $cmd;
