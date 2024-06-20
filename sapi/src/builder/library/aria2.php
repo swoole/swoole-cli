@@ -22,6 +22,8 @@ return function (Preprocessor $p) {
             PACKAGES="\$PACKAGES  libssh2 libuv"
             PACKAGES="\$PACKAGES gmp"
             PACKAGES="\$PACKAGES expat"
+            PACKAGES="\$PACKAGES libssh2"
+            PACKAGES="\$PACKAGES nettle hogweed"
             CPPFLAGS="-I{$libiconv_prefix}/include -I{$libintl_prefix}/include "
             LDFLAGS="-L{$libiconv_prefix}/lib -L{$libintl_prefix}/lib"
             LIBS="-liconv -lintl"
@@ -39,7 +41,12 @@ return function (Preprocessor $p) {
             --without-gnutls \
             --with-openssl \
             --with-libiconv-prefix={$libiconv_prefix} \
-            --with-libz
+            --with-libz \
+            --with-libssh2
+            --without-appletls \
+            --without-wintls \
+            --without-gnutls \
+            --without-libgcrypt
             # --with-tcmalloc
 EOF
             )
@@ -56,7 +63,9 @@ EOF
                 'libssh2',
                 'gmp',
                 'libexpat',
-                'libintl'
+                'libintl',
+                'libssh2',
+                'nettle'
             )
     );
 };
