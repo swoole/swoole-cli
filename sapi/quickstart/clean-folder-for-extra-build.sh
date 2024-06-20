@@ -49,4 +49,11 @@ test -d nginx && rm -rf nginx
 test -d postgis && rm -rf postgis
 
 
+cd ${__PROJECT__}/.github/workflows
+test -f ceph.yml  && rm -rf ceph.yml
+test -f kubernetes.yml  && rm -rf kubernetes.yml
+test -f ovn.yml  && rm -rf ovn.yml
+test -f ovn.yml  && rm -rf ovn.yml
+
+
 cd ${__PROJECT__}
