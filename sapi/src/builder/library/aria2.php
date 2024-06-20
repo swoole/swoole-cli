@@ -13,7 +13,8 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/aria2/aria2/blob/master/COPYING', Library::LICENSE_GPL)
             ->withUrl('https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0.tar.gz')
             ->withManual('https://aria2.github.io/manual/en/html/README.html')
-            ->withCleanBuildDirectory()
+            ->withInstallCached(false)
+            ->withBuildCached(false)
             ->withConfigure(
                 <<<EOF
             ./configure --help
