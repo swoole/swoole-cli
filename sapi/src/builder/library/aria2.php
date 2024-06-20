@@ -6,6 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $aria2_prefix = ARIA2_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
+    $libintl_prefix = LIBINTL_PREFIX;
     $p->addLibrary(
         (new Library('aria2'))
             ->withHomePage('https://aria2.github.io/')
@@ -21,9 +22,9 @@ return function (Preprocessor $p) {
             PACKAGES="\$PACKAGES  libssh2 libuv"
             PACKAGES="\$PACKAGES gmp"
             PACKAGES="\$PACKAGES expat"
-            CPPFLAGS="-I{$libiconv_prefix}/include"
-            LDFLAGS="-L{$libiconv_prefix}/lib"
-            LIBS="-liconv"
+            CPPFLAGS="-I{$libiconv_prefix}/include -I{$libintl_prefix}/include "
+            LDFLAGS="-L{$libiconv_prefix}/lib -L{$libintl_prefix}/lib"
+            LIBS="-liconv -lintl"
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) \$CPPFLAGS " \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) \$LDFLAGS " \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) \$LIBS " \
@@ -54,7 +55,8 @@ EOF
                 'cares',
                 'libssh2',
                 'gmp',
-                'libexpat'
+                'libexpat',
+                'libintl'
             )
     );
 };
