@@ -7,7 +7,7 @@ __DIR__=$(
 )
 
 # use china mirror
-# bash sapi/quickstart/linux/debian-init.sh --mirror [ china | ustc | tuna | aliyuncs | tencentyun | huaweicloud ]
+# bash sapi/quickstart/linux/debian-init-mini.sh --mirror [ china | ustc | tuna | aliyuncs | tencentyun | huaweicloud ]
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -36,7 +36,7 @@ if test -n "$MIRROR" ; then
   debian)
     case $VERSION_ID in
     11 | 12 )
-      # 容器内和容器外 镜像源配置不一样
+      # debian 容器内和容器外 镜像源配置不一样
       if [ -f /.dockerenv ] && [ "$VERSION_ID" = 12 ]; then
         test -f /etc/apt/sources.list.d/debian.sources.save || cp -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.save
         sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
@@ -87,38 +87,8 @@ fi
 
 test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 
-
-export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-export LC_CTYPE="en_US.UTF-8"
 export DEBIAN_FRONTEND=noninteractive
-export TZ="UTC"
-export TZ="Etc/UTC"
-ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 
 apt update -y
-apt install -y git curl wget ca-certificates
-apt install -y xz-utils autoconf automake clang-tools clang lld libtool cmake bison re2c gettext coreutils lzip zip unzip
-apt install -y pkg-config bzip2 flex p7zip
 
-apt install -y gcc g++ musl-tools libtool-bin autopoint
-
-
-# apt install build-essential linux-headers-$(uname -r)
-apt install -y python3 python3-pip ninja-build  diffutils
-apt install -y yasm nasm
-apt install -y meson
-apt install -y netcat-openbsd
-
-case "$MIRROR" in
-china | tuna | ustc)
-  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-  test "$MIRROR" = "ustc" && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
-  ;;
-aliyuncs | tencentyun | huaweicloud)
-  test "$MIRROR" = "aliyuncs" && pip3 config set global.index-url https://mirrors.cloud.aliyuncs.com/pypi/simple/
-  test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
-  test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
-esac
-
+apt install -y git curl wget ca-certificates xz-utils bzip2 p7zip lzip zip unzip
