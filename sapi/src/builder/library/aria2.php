@@ -32,6 +32,12 @@ return function (Preprocessor $p) {
             CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES) \$CPPFLAGS " \
             LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) \$LDFLAGS " \
             LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES) \$LIBS " \
+            EXPAT_CFLAGS="$(pkg-config    --cflags --static  expat) " \
+            EXPAT_LIBS="$(pkg-config      --libs   --static  expat)" \
+            LIBNETTLE_CFLAGS="$(pkg-config   --cflags --static   nettle hogweed) " \
+            LIBNETTLE_LIBS="$(pkg-config     --libs   --static   nettle hogweed)" \
+            GMP_CFLAGS="$(pkg-config   --cflags --static   gmp) " \
+            GMP_LIBS="$(pkg-config     --libs   --static   gmp)" \
             ARIA2_STATIC=yes \
             ./configure \
             --with-ca-bundle="/etc/ssl/certs/ca-certificates.crt" \
@@ -44,11 +50,11 @@ return function (Preprocessor $p) {
             --with-openssl \
             --with-libiconv-prefix={$libiconv_prefix} \
             --with-libz \
-            --with-libssh2 \
-            --without-appletls \
+            --without-libssh2 \
             --without-wintls \
             --without-gnutls \
             --without-libgcrypt
+            # --without-appletls \
             # --with-tcmalloc
 EOF
             )
