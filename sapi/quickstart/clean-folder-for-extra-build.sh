@@ -19,6 +19,7 @@ if [ $GIT_BRANCH = 'new_dev' ] ;then
   exit 0
 fi
 
+echo '执行删除无关的文件或者文件建'
 
 cd ${__DIR__}/linux/
 
@@ -55,5 +56,8 @@ test -f kubernetes.yml  && rm -rf kubernetes.yml
 test -f ovn.yml  && rm -rf ovn.yml
 test -f ovn.yml  && rm -rf ovn.yml
 
+
+cd ${__PROJECT__}
+test -f setup-supervisord.sh && rm -rf setup-supervisord.sh
 
 cd ${__PROJECT__}
