@@ -131,7 +131,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
           composer dump-autoload --optimize --profile --no-dev
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql -mongodb  --with-build-type=release --with-libavif=1 --with-php-version=${{ env.BUILD_PHP_VERSION }}
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql +uuid -mongodb  --with-build-type=release --with-libavif=1 --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
       - name: Build
         run: |

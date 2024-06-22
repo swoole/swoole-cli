@@ -7,7 +7,7 @@ __DIR__=$(
 )
 
 # use china mirror
-# bash sapi/quickstart/linux/debian-init.sh --mirror [ china | ustc | tuna | aliyuncs | tencentyun | huaweicloud ]
+# bash sapi/quickstart/linux/debian-init-mini.sh --mirror [ china | ustc | tuna | aliyuncs | tencentyun | huaweicloud ]
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -90,46 +90,5 @@ test -f /etc/apt/apt.conf.d/proxy.conf && rm -rf /etc/apt/apt.conf.d/proxy.conf
 export DEBIAN_FRONTEND=noninteractive
 
 apt update -y
-apt install -y locales
 
-locale-gen en_US.UTF-8
-# dpkg-reconfigure locales
-# localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
-# update-locale
-
-export LANGUAGE="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-export LC_CTYPE="en_US.UTF-8"
-export LANG="en_US.UTF-8"
-
-
-export TZ="UTC"
-export TZ="Etc/UTC"
-ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-apt install -y git curl wget ca-certificates
-apt install -y xz-utils autoconf automake clang-tools clang lld libtool cmake bison re2c gettext coreutils lzip zip unzip
-apt install -y pkg-config bzip2 flex p7zip
-apt install -y gcc g++  libtool-bin autopoint
-apt install -y linux-headers-generic
-apt install -y musl-dev musl-tools
-
-# apt install -y linux-headers-$(uname -r)
-
-# apt install -y build-essential linux-headers-$(uname -r)
-
-apt install -y python3 python3-pip ninja-build  diffutils
-apt install -y yasm nasm
-apt install -y meson
-apt install -y netcat-openbsd
-
-case "$MIRROR" in
-china | tuna | ustc)
-  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-  test "$MIRROR" = "ustc" && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
-  ;;
-aliyuncs | tencentyun | huaweicloud)
-  test "$MIRROR" = "aliyuncs" && pip3 config set global.index-url https://mirrors.cloud.aliyuncs.com/pypi/simple/
-  test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
-  test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
-esac
+apt install -y git curl wget ca-certificates xz-utils bzip2 p7zip lzip zip unzip
