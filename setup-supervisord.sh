@@ -61,3 +61,6 @@ else
 fi
 
 
+# config systemd  for supervisord
+
+# https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
