@@ -6,6 +6,8 @@ __DIR__=$(
   pwd
 )
 
+# debian mirror site : https://www.debian.org/mirror/list.zh-cn.html
+
 # use china mirror
 # bash sapi/quickstart/linux/debian-init.sh --mirror [ china | ustc | tuna | aliyuncs | tencentyun | huaweicloud ]
 
