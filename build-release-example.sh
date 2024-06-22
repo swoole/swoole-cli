@@ -105,7 +105,7 @@ if [ "$OS" = 'linux' ] ; then
   if [ ! "$BASH_VERSION" ] ; then
       echo "Please  use bash to run this script ($0) " 1>&2
       echo "fix : " 1>&2
-      echo "apk add bash  OR sh sapi/quickstart/linux/alpine-init-mini.sh " 1>&2
+      echo "apk add bash  OR sh sapi/quickstart/linux/alpine-init-minimal.sh " 1>&2
       exit 1
   fi
 fi
@@ -244,8 +244,6 @@ fi
 
 # 定制构建选项
 OPTIONS="${OPTIONS} +apcu +ds +xlswriter +ssh2 +uuid "
-OPTIONS="${OPTIONS} "
-OPTIONS="${OPTIONS} --with-libavif=1"
 OPTIONS="${OPTIONS} --with-global-prefix=${LIBRARY_INSTALL_PREFIX}"
 # OPTIONS="${OPTIONS} @macos"
 
