@@ -48,21 +48,20 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v8.2.13'
-APP_NAME='php-fpm'
-VERSION='php-fpm-v0.0.1'
+APP_VERSION='1.27.0'
+APP_NAME='nginx'
+VERSION='v1.0.2'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
 cd ${__PROJECT__}/var/runtime
 
-APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
-COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
+APP_DOWNLOAD_URL="https://github.com/jingjingxyk/build-static-nginx/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
 if [ $OS = 'windows' ]; then
-  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-vs2022-${ARCH}.zip"
+  APP_DOWNLOAD_URL="https://github.com/jingjingxyk/build-static-nginx/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
 fi
 
 MIRROR=''
@@ -91,7 +90,6 @@ done
 case "$MIRROR" in
 china)
   APP_DOWNLOAD_URL="https://php-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
-  COMPOSER_DOWNLOAD_URL="https://mirrors.tencent.com/composer/composer.phar"
   if [ $OS = 'windows' ]; then
     APP_DOWNLOAD_URL="https://php-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
   fi
@@ -99,16 +97,13 @@ china)
 
 esac
 
-test -f composer.phar || curl -LSo composer.phar ${COMPOSER_DOWNLOAD_URL}
-chmod a+x composer.phar
-
 test -f cacert.pem || curl -LSo cacert.pem ${CACERT_DOWNLOAD_URL}
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
 
 if [ $OS = 'windows' ]; then
   {
-    APP_RUNTIME="${APP_NAME}-${APP_VERSION}-vs2022-${ARCH}"
+    APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
     test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
@@ -118,41 +113,29 @@ if [ $OS = 'windows' ]; then
 else
   test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
-  test -f php || tar -xvf ${APP_RUNTIME}.tar
-  chmod a+x php
-  cp -f ${__PROJECT__}/var/runtime/php ${__PROJECT__}/bin/runtime/php
+  test -d nginx && rm -rf nginx
+  test -d nginx || tar -xvf ${APP_RUNTIME}.tar
+  chmod a+x nginx/sbin/nginx
+  cp -rf ${__PROJECT__}/var/runtime/nginx ${__PROJECT__}/bin/runtime/nginx
 fi
 
 cd ${__PROJECT__}/var/runtime
 
-cp -f ${__PROJECT__}/var/runtime/composer.phar ${__PROJECT__}/bin/runtime/composer
 cp -f ${__PROJECT__}/var/runtime/cacert.pem ${__PROJECT__}/bin/runtime/cacert.pem
-
-cat >${__PROJECT__}/bin/runtime/php.ini <<EOF
-curl.cainfo="${__PROJECT__}/bin/runtime/cacert.pem"
-openssl.cafile="${__PROJECT__}/bin/runtime/cacert.pem"
-swoole.use_shortname=off
-display_errors = On
-error_reporting = E_ALL
-
-upload_max_filesize="128M"
-post_max_size="128M"
-memory_limit="1G"
-date.timezone="UTC"
-
-EOF
 
 cd ${__PROJECT__}/
 
 set +x
 
 echo " "
-echo " USE PHP-FPM :"
+echo " USE NGINX RUNTIME :"
 echo " "
-echo " export PATH=\"${__PROJECT__}/runtime/:\$PATH\" "
+echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
 echo " "
-echo " php-fpm.conf example  :  https://gitee.com/jingjingxyk/quickstart-nginx-php-fpm/blob/main/php-fpm.example.conf"
+echo " ./bin/runtime/nginx/sbin/nginx -p ./bin/runtime/nginx/ "
 echo " "
-echo " enable start php-fpm ${APP_VERSION}"
+echo " nginx.conf example  :  https://gitee.com/jingjingxyk/quickstart-nginx-php-fpm/blob/main/nginx.example.conf"
 echo " "
-echo " ${__PROJECT__}/bin/runtime/php-fpm -c ${__PROJECT__}/bin/runtime/php.ini --fpm-config ${__PROJECT__}/runtime/php-fpm.conf "
+echo " nginx docs :  http://nginx.org/en/docs/configure.html"
+echo " "
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
