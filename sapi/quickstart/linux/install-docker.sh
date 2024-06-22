@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -exu
+set -ex
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
