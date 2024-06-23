@@ -145,4 +145,12 @@ GITVERSION="git --git-dir $(pwd)/.git rev-parse --short HEAD"
 GITTAG="git --git-dir $(pwd)/.git describe --all --always --dirty"
 GITBRANCH="git --git-dir $(pwd)/.git name-rev --name-only HEAD"
 
+
+GIT_COMMIT:=$(git describe --dirty --always)
+GIT_BRANCH:=$(git rev-parse --abbrev-ref HEAD -- | head -1)
+DATE:=$(date +"%Y-%m-%d")
+
+git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
 ```
+

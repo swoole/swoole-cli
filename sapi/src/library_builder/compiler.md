@@ -107,3 +107,13 @@ ABI： Application binary interface
 a.out： Assembler output file format
 PIC： Position independent code
 PIE： Position independent executable
+
+
+
+
+libtoolize --force --copy --automake
+aclocal
+autoheader
+automake --foreign --copy --add-missing
+autoconf
+export CFLAGS="-O2 -Wall -W -Wunused-const-variable=0 -pipe -g"
