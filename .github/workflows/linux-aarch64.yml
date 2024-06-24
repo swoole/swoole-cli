@@ -127,7 +127,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1 --with-libavif=1
+            php prepare.php +inotify +apcu +ds +xlswriter +ssh2  -swoole +swoole_v6  --with-libavif=1
 
             bash make.sh all-library
 
