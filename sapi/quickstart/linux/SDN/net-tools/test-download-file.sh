@@ -22,6 +22,8 @@ set -uex
 
 EOF
 
+# 解决 /dev/null 目录无权限
+# rm -f /dev/null ; mknod -m 666 /dev/null c 1 3
 
 RESULT_CODE=0
 while [ $RESULT_CODE -eq 0 ]; do

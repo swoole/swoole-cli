@@ -38,9 +38,5 @@ services:
 
 # Runtime privilege and Linux capabilities
 # https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
-  neo4j-service:
-    image: neo4j:latest
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-   #  # 容器内数据目录  # /data
+
+# https://www.cnblogs.com/jingjingxyk/p/16826605.html
