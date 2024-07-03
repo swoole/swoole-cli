@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
                 ./configure --help
                 ./configure \
                 --prefix={$liburing_prefix} \
-                --use-libc=yes
+                --use-libc
 
 EOF
             )

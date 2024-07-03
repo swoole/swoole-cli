@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
     $options .= ' --enable-swoole-sqlite ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
     $options .= ' --enable-swoole-thread ';
-    if ($p->isLinux() && 0 ) {
+    if ($p->isLinux()) {
         $options .= ' --enable-iouring ';
         $dependentLibraries[] = 'liburing';
         $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
