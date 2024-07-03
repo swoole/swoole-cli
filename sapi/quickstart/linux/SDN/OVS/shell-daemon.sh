@@ -6,4 +6,4 @@ nohup ./run > output.log 2> error.log &
 nohup ./run > output.log 2>&1 &
 
 # nohup : 不挂断的运行  脱离tty 脱离控制台
-# &符号表示将该命令或脚本放入后台运行
+# & 符号表示将该命令或脚本放入后台运行
