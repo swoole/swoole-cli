@@ -23,7 +23,7 @@ echo '执行删除无关的文件或者文件建'
 
 cd ${__DIR__}/linux/
 
-test -d ceph && rm -rf ceph
+test -d SDS && rm -rf SDS
 test -d kubernetes && rm -rf kubernetes
 test -d qemu && rm -rf qemu
 test -d SDN && rm -rf SDN
@@ -43,11 +43,23 @@ test -d database && rm -rf database
 
 test -d database-ui && rm -rf database-ui
 
-test -d elasticsearch-neo4j && rm -rf elasticsearch-neo4j
+test -d elasticsearch && rm -rf elasticsearch
+
+test -d grafana && rm -rf grafana
+
+test -d minio && rm -rf minio
+
+test -d mysql && rm -rf mysql
+
+test -d neo4j && rm -rf neo4j
 
 test -d nginx && rm -rf nginx
 
 test -d postgis && rm -rf postgis
+
+test -d rabbitmq && rm -rf rabbitmq
+
+test -d redis && rm -rf redis
 
 
 cd ${__PROJECT__}/.github/workflows
