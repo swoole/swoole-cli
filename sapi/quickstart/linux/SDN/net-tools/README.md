@@ -30,3 +30,8 @@ TargetDirPath=/data/
 find $TargetDirPath -name ".*" -ls
 
 ```
+
+
+## 带宽测速工具
+    webBenchmark
+    https://github.com/maintell/webBenchmark.git
