@@ -58,10 +58,6 @@ mkdir -p var/runtime
 
 cd ${__PROJECT__}/var/runtime
 
-https://github.com/maintell/webBenchmark/releases/download/0.9/webBenchmark_linux_arm
-https://github.com/maintell/webBenchmark/releases/download/0.9/webBenchmark_linux_x64
-https://github.com/maintell/webBenchmark/releases/download/0.9/webBenchmark_x64.exe
-
 APP_DOWNLOAD_URL="https://github.com/maintell/webBenchmark/releases/download/${VERSION}/${APP_NAME}_${OS}_${ARCH}"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
