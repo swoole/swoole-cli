@@ -214,6 +214,7 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ] ; then
 
     # composer update  --optimize-autoloader
     # composer update  --optimize-autoloader --no-dev
+    # composer update --profile --prefer-dist --no-dev --optimize-autoloader
 
     # composer update --no-interaction --optimize-autoloader
     # composer install --no-interaction --optimize-autoloader
