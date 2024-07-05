@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
     $options .= ' --enable-swoole-sqlite ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
     $options .= ' --enable-swoole-thread ';
-    if ($p->isLinux()) {
+    if ($p->isLinux() && 0) {
         $options .= ' --enable-iouring ';
         $dependentLibraries[] = 'liburing';
         $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
@@ -52,7 +52,8 @@ return function (Preprocessor $p) {
         mkdir -p {$workdir}/ext/
         mkdir -p {$workdir}/var/cache/
         cd {$workdir}/var/cache/
-        git clone -b v6.0.0-alpha --depth=1  https://github.com/swoole/swoole-src.git
+        # git clone -b v6.0.0-alpha --depth=1  https://github.com/swoole/swoole-src.git
+        git clone -b master --depth=1  https://github.com/swoole/swoole-src.git
         if [ -d {$workdir}/ext/swoole ] ; then
             rm -rf {$workdir}/ext/swoole
         fi
