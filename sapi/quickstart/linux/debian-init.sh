@@ -113,7 +113,7 @@ apt install -y gcc g++ musl-tools libtool-bin autopoint
 apt install -y python3 python3-pip ninja-build  diffutils
 apt install -y yasm nasm
 apt install -y meson
-apt install -y netcat-openbsd
+apt install -y netcat-openbsd  socat
 
 case "$MIRROR" in
 china | tuna | ustc)
