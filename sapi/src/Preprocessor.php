@@ -357,8 +357,9 @@ class Preprocessor
     }
 
     /**
-     * @param string $shell
-     * @param string $httpProxy
+     * 生成代理配置
+     * @param string $shell (http_proxy 代理配置 + no_proxy配置 )
+     * @param string $httpProxy (http 代理配置 )
      * @return $this
      */
     public function setProxyConfig(string $shell = '', string $httpProxy = ''): static
@@ -394,12 +395,11 @@ class Preprocessor
              * socat - proxy:<proxy-server>:%h:%p,proxyport=2000
              */
 
-            $socat_proxy_cmd='';
-            if($socat_proxy_proto == 'socks4a')
-            {
-                $socat_proxy_cmd="socat - socks4a:{$proxyInfo['host']}:%h:%p,socksport={$proxyInfo['port']}";
-            }else{
-                $socat_proxy_cmd="socat - proxy:{$proxyInfo['host']}:%h:%p,proxyport={$proxyInfo['port']}";
+            $socat_proxy_cmd = '';
+            if ($socat_proxy_proto == 'socks4a') {
+                $socat_proxy_cmd = "socat - socks4a:{$proxyInfo['host']}:\\$1:\\$2,socksport={$proxyInfo['port']}";
+            } else {
+                $socat_proxy_cmd = "socat - proxy:{$proxyInfo['host']}:\\$1:\\$2,proxyport={$proxyInfo['port']}";
             }
 
             $this->gitProxyConfig = <<<__GIT_PROXY_CONFIG_EOF
