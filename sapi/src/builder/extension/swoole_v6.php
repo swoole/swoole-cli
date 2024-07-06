@@ -77,6 +77,7 @@ return function (Preprocessor $p) {
         mv swoole {$workdir}/ext/
 EOF;
 
-        return $cmd;
+        //return $cmd;
+        return '';
     });
 };

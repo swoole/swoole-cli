@@ -52,6 +52,8 @@ test -f Makefile && make clean
     --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
     --enable-swoole-pgsql \
     --enable-swoole-sqlite \
+    --enable-swoole-thread \
+    --enable-zts \
     --enable-redis \
     --with-imagick \
     --with-yaml \
