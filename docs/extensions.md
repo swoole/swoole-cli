@@ -48,5 +48,8 @@
 | inotify        | ✅      | ❌     | ❌               | ❌               |
 | protobuf       | ❌      | ❌     | ❌               | ❌               |
 | uuid           | ✅      | ✅     | ❌               | ❌               |
+| mailparse      | ✅      | ✅     | ❌               | ❌               |
+| mongodb        | ✅      | ✅     | ❌               | ✅               |
+
 
 

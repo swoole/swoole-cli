@@ -127,3 +127,32 @@ brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
 
 
+
+
+brew install  xz zip unzip gzip bzip2 7zip p7zip
+brew install  git ca-certificates
+
+brew install  yasm nasm
+brew install  ninja python3
+brew install  diffutils
+brew install  netcat socat
+brew install  mercurial
+
+
+case "$MIRROR" in
+china | tuna | ustc)
+  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  test "$MIRROR" = "ustc" && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
+  ;;
+tencentyun | huaweicloud)
+  test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
+  test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
+esac
+
+pip3 install meson
+
+
+brew uninstall --ignore-dependencies --force snappy
+brew uninstall --ignore-dependencies --force capstone
+
+

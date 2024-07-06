@@ -31,6 +31,7 @@ EOF
         ->withBuildCached(false)
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions);
+
     $p->addExtension($ext);
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
