@@ -154,4 +154,15 @@ EOF;
         return $cmd;
     });
 
+
+    //导入环境变量
+
+    $p->withExportVariable('FREETYPE2_CFLAGS', '$(pkg-config  --cflags --static  libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+    $p->withExportVariable('FREETYPE2_LIBS', '$(pkg-config    --libs   --static  libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+
+    $libiconv_prefix = ICONV_PREFIX;
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libiconv_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libiconv_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -liconv');
+
 };

@@ -53,7 +53,7 @@ apk add libc++-static libltdl-static
 apk add yasm nasm
 apk add ninja python3 py3-pip
 apk add diffutils
-apk add netcat-openbsd
+apk add netcat-openbsd socat
 apk add python3-dev
 apk add mercurial
 apk add gettext-dev
