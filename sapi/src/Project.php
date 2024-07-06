@@ -141,18 +141,34 @@ abstract class Project
         return $this->hashVerify;
     }
 
+    /**
+     * https 下载地址
+     * @param string $url
+     * @return $this
+     */
     public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
     }
 
+    /**
+     * 指定下载的源码包名称
+     * @param string $file
+     * @return $this
+     */
     public function withFile(string $file): static
     {
         $this->file = $file;
         return $this;
     }
 
+    /**
+     * 使用脚本下载源码包
+     * @param string $downloadDirName 被打包压缩的的目录
+     * @param string $script 待执行的下载脚本
+     * @return $this
+     */
     public function withDownloadScript(string $downloadDirName, string $script): static
     {
         $this->enableDownloadScript = true;

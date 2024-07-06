@@ -36,8 +36,7 @@ EOF
         )
         ->withBuildCached(false)
         ->withDependentLibraries(...$dependentLibraries)
-        ->withDependentExtensions(...$dependentExtensions)
-    ;
+        ->withDependentExtensions(...$dependentExtensions);
 
     //call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
     //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);

@@ -341,6 +341,11 @@ class Preprocessor
         return $this;
     }
 
+    /**
+     * @param string $buildType 构建类型 [ release | dev | debug ]
+     * @return $this
+     *
+     */
     public function setBuildType(string $buildType): static
     {
         $this->buildType = $buildType;
@@ -352,6 +357,12 @@ class Preprocessor
         return $this->buildType;
     }
 
+    /**
+     * 生成代理配置
+     * @param string $shell (http_proxy 代理配置 + no_proxy配置 )
+     * @param string $httpProxy (http 代理配置 )
+     * @return $this
+     */
     public function setProxyConfig(string $shell = '', string $httpProxy = ''): static
     {
         $this->proxyConfig = $shell;
@@ -359,26 +370,50 @@ class Preprocessor
         $proxyInfo = parse_url($httpProxy);
         if (!empty($proxyInfo['scheme']) && !empty($proxyInfo['host']) && !empty($proxyInfo['port'])) {
             $proto = '';
+            $socat_proxy_proto = '';
+
             switch (strtolower($proxyInfo['scheme'])) {
                 case 'socks5':
                 case "socks5h":
                     $proto = 5;
+                    $socat_proxy_proto = 'socks4a';
                     break;
                 case "socks4a":
                 case 'socks4':
                     $proto = 4;
+                    $socat_proxy_proto = 'socks4a';
                     break;
                 default:
                     $proto = "connect";
+                    $socat_proxy_proto = 'proxy';
                     break;
             }
+
+            /*
+             * sockat 代理例子
+             * http://www.dest-unreach.org/socat/doc/socat.html
+             * socat - socks4a:<socks-server>::%h:%p,socksport=2000
+             * socat - proxy:<proxy-server>:%h:%p,proxyport=2000
+             */
+
+            $socat_proxy_cmd = '';
+            if ($socat_proxy_proto == 'socks4a') {
+                $socat_proxy_cmd = "socat - socks4a:{$proxyInfo['host']}:\\$1:\\$2,socksport={$proxyInfo['port']}";
+            } else {
+                $socat_proxy_cmd = "socat - proxy:{$proxyInfo['host']}:\\$1:\\$2,proxyport={$proxyInfo['port']}";
+            }
+
             $this->gitProxyConfig = <<<__GIT_PROXY_CONFIG_EOF
 export GIT_PROXY_COMMAND=/tmp/git-proxy;
 
 cat  > \$GIT_PROXY_COMMAND <<___EOF___
 #!/bin/bash
 
-nc -X {$proto}  -x {$proxyInfo['host']}:{$proxyInfo['port']} "\\$1" "\\$2"
+# macos环境下 nc 不可用, 使用 socat 代替
+# nc -X {$proto}  -x {$proxyInfo['host']}:{$proxyInfo['port']} "\\$1" "\\$2"
+
+{$socat_proxy_cmd};
+
 ___EOF___
 
 chmod +x \$GIT_PROXY_COMMAND;
