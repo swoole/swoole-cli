@@ -17,7 +17,6 @@ cd ${__PROJECT__}
 test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
     --disable-fiber-asm \
-    --enable-opcache \
     --without-pcre-jit \
     --with-openssl --enable-openssl \
     --with-curl \
@@ -61,3 +60,4 @@ test -f Makefile && make clean
 
 
 #    --with-pdo-sqlite \
+#     --enable-opcache \
