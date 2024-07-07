@@ -11,30 +11,30 @@ $download_dir = dirname($php_file);
 
 
 # 下载 PHP 源码
-$cmd = "curl -L https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_file}";
-echo $cmd . PHP_EOL;
+$DOWNLOAD_PHP_CMD = "curl -L https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_file}";
+echo $DOWNLOAD_PHP_CMD . PHP_EOL;
 if (!file_exists($php_file)) {
     `test -d {$download_dir} || mkdir -p {$download_dir}`;
-    `{$cmd}`;
+    `{$DOWNLOAD_PHP_CMD}`;
 }
 
 # 解压 PHP 源码
 # tar -zxvf 文件名.tar.gz --strip-components=1 -C 指定解压目录
-$cmd = <<<EOF
+$UNTAR_PHP_SOURCE_CMD = <<<EOF
     set -x
     # test -d {$php_source_folder} && rm -rf {$php_source_folder}
     mkdir -p {$php_source_folder}
     test -f {$php_source_folder}/configure.ac || tar -zxf {$php_file} --strip-components=1 -C  {$php_source_folder}
 EOF;
 
-`{$cmd}`;
+`{$UNTAR_PHP_SOURCE_CMD}`;
 
 
 # 默认同步代码 到测试验证目录: php sync-source-code.php --action dry_run
 # 正式同步代码 请执行命令： php sync-source-code.php --action run
 
 
-$cmd='set -x';
+$SYNC_SOURCE_CODE_CMD = 'set -x';
 $action = 'dry_run';
 $longopts = array(
     "action:"
@@ -42,27 +42,27 @@ $longopts = array(
 $options = getopt('', $longopts);
 
 if (!empty($options['action']) && $options['action'] == 'run') {
+    //正式同步
     $action = 'run';
     $sync_dest_dir = $project_dir;
-}else{
-
-    # 测试目录 准备工作
+} else {
+    //测试同步
+    # 准备工作 测试目录
 
     $scanned_directory_source = array_diff(scandir($php_source_folder . '/ext/'), array('..', '.'));
     $scanned_directory_destination = array_diff(scandir($project_dir . '/ext/'), array('..', '.'));
-    $directories = array_intersect($scanned_directory_source,$scanned_directory_destination);
+    $directories = array_intersect($scanned_directory_source, $scanned_directory_destination);
 
     `test -d {$sync_dest_dir} && rm -rf {$sync_dest_dir}`;
     `mkdir -p {$sync_dest_dir}`;
 
-    foreach( $directories as $directory)
-    {
-        # echo "mkdir -p {$sync_dest_dir}/ext/{$directory}" . PHP_EOL;
+    foreach ($directories as $directory) {
+        echo "mkdir -p {$sync_dest_dir}/ext/{$directory}" . PHP_EOL;
         `mkdir -p {$sync_dest_dir}/ext/{$directory}`;
 
     }
 
-    $cmd .= PHP_EOL . <<<EOF
+    $SYNC_SOURCE_CODE_CMD .= PHP_EOL . <<<EOF
     cd {$sync_dest_dir}
     mkdir -p ./sapi/cli
     mkdir -p ./sapi/cli/fpm/
@@ -71,14 +71,14 @@ EOF;
 
 }
 
-#  执行同步代码之前准备
-$cmd .= PHP_EOL . <<<EOF
+#  执行代码同步之前准备
+$SYNC_SOURCE_CODE_CMD .= PHP_EOL . <<<EOF
     SRC={$php_source_folder}
     cd {$sync_dest_dir}
 EOF;
 
-# 执行同步代码操作
-$cmd .= PHP_EOL . <<<'EOF'
+# 执行代码同步
+$SYNC_SOURCE_CODE_CMD .= PHP_EOL . <<<'EOF'
 
     echo "sync"
     # ZendVM
@@ -166,12 +166,12 @@ EOF;
 
 echo PHP_EOL;
 # 显示将要执行的命令
-echo $cmd;
+echo $SYNC_SOURCE_CODE_CMD;
 echo PHP_EOL;
 echo PHP_EOL;
 # 执行同步
 echo "synchronizing  .... ";
 echo PHP_EOL;
-echo `$cmd`;
+echo `$SYNC_SOURCE_CODE_CMD`;
 echo PHP_EOL;
 echo "action: " . $action . ' done !' . PHP_EOL;
