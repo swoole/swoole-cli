@@ -50,6 +50,7 @@ if (!empty($options['action']) && $options['action'] == 'run') {
     mkdir -p ./TSRM/
     mkdir -p ./Zend/
     mkdir -p ./build/
+    mkdir -p ./main/
 
 EOF;
 
@@ -102,6 +103,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     cp -r $SRC/ext/pdo_mysql/ ./ext/pdo_mysql
     cp -r $SRC/ext/phar/ ./ext/phar
     echo '\n#include "sapi/cli/sfx/hook_stream.h"' >> ext/phar/phar_internal.h
+
     cp -r $SRC/ext/posix/ ./ext/posix
     cp -r $SRC/ext/readline/ ./ext/readline
     cp -r $SRC/ext/reflection/ ./ext/reflection
@@ -123,7 +125,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     cp -r $SRC/ext/zlib/ ./ext/zlib
 
     # main
-    cp -r $SRC/main ./
+    cp -r $SRC/main/ ./main
     sed -i.backup 's/\/\* start Zend extensions \*\//\/\* start Zend extensions \*\/\n#ifdef PHP_ENABLE_OPCACHE\n\textern zend_extension zend_extension_entry;\n\tzend_register_extension(\&zend_extension_entry, NULL);\n#endif/g' main/main.c
 
     # build
