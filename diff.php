@@ -1,6 +1,20 @@
 #!/usr/bin/env php
 <?php
-$list_swoole_cli = swoole_string(`./bin/swoole-cli -m | tail -n +2 | head -n -3`)->trim()->lower()->split(PHP_EOL)
+$shell = "";
+switch (PHP_OS) {
+    case 'Linux':
+        $shell = "./bin/swoole-cli -m | tail -n +2 | head -n -3 ";
+        break;
+    case 'Darwin':
+        $shell = "./bin/swoole-cli -m | tail -n +2 | ghead -n -3 ";
+        break;
+    case 'WINNT':
+    default:
+        echo 'no support os !';
+        exit(0);
+
+}
+$list_swoole_cli = swoole_string(`$shell`)->trim()->lower()->split(PHP_EOL)
     ->remove('core');
 
 $php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
