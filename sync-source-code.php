@@ -138,7 +138,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     cp -rf $SRC/TSRM/ ./TSRM
     cp -rf $SRC/TSRM/TSRM.h main/TSRM.h
 
-    cp -f $SRC/configure.ac ./
+    cp -f $SRC/configure.ac ./configure.ac
     cp -f $SRC/buildconf ./buildconf
     cp -f $SRC/run-tests.php ./run-tests.php
 
