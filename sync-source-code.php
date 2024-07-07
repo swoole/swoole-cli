@@ -47,6 +47,10 @@ if (!empty($options['action']) && $options['action'] == 'run') {
     cd {$sync_dest_dir}
     mkdir -p ./sapi/cli
     mkdir -p ./sapi/cli/fpm/
+    mkdir -p ./TSRM/
+    mkdir -p ./Zend/
+    mkdir -p ./build/
+    mkdir -p ./main/
 
 EOF;
 
@@ -63,7 +67,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     echo "sync"
     # ZendVM
-    cp -r $SRC/Zend ./
+    cp -r $SRC/Zend ./Zend
 
     # Extension
     cp -r $SRC/ext/bcmath/ ./ext/bcmath
@@ -99,6 +103,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     cp -r $SRC/ext/pdo_mysql/ ./ext/pdo_mysql
     cp -r $SRC/ext/phar/ ./ext/phar
     echo '\n#include "sapi/cli/sfx/hook_stream.h"' >> ext/phar/phar_internal.h
+
     cp -r $SRC/ext/posix/ ./ext/posix
     cp -r $SRC/ext/readline/ ./ext/readline
     cp -r $SRC/ext/reflection/ ./ext/reflection
@@ -120,11 +125,11 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     cp -r $SRC/ext/zlib/ ./ext/zlib
 
     # main
-    cp -r $SRC/main ./
+    cp -r $SRC/main/ ./main
     sed -i.backup 's/\/\* start Zend extensions \*\//\/\* start Zend extensions \*\/\n#ifdef PHP_ENABLE_OPCACHE\n\textern zend_extension zend_extension_entry;\n\tzend_register_extension(\&zend_extension_entry, NULL);\n#endif/g' main/main.c
 
     # build
-    cp -r $SRC/build ./
+    cp -r $SRC/build ./build
 
     # TSRM
     cp -r $SRC/TSRM/TSRM.h main/TSRM.h
