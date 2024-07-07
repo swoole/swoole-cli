@@ -148,6 +148,8 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     # 在sed命令中，常见的需要转义的字符有：\、/、$、&、.、*、[、]等
     #                                反斜杠、正斜杠、美元符号、引用符号、点号、星号、方括号等
 
+    test -f main/main.c.backup && rm -f main/main.c.backup
+    test -f ext/opcache/config.m4.backup && rm -f ext/opcache/config.m4.backup
     exit 0
 
     # fpm
