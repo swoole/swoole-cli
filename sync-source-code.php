@@ -3,28 +3,14 @@
 declare(strict_types=1);
 
 $project_dir = __DIR__;
+$sync_dest_dir = __DIR__ . '/var/sync-source-code-tmp';
 $php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
-
-$sync_dest_dir = $project_dir . '/var/sync-source-code-tmp/';
-
-# command
-# php sync-source-code.php --action run
-$action = 'dry_run';
-$longopts = array(
-    "action:"
-);
-$options = getopt('', $longopts);
-if (!empty($options['action']) && $options['action'] == 'run') {
-    $action = 'run';
-    $sync_dest_dir = $project_dir;
-}
-
-$php_source_folder = $project_dir . "/var/php-{$php_version_tag}";
-$php_file = $project_dir . "/pool/lib/php-{$php_version_tag}.tar.gz";
+$php_source_folder = __DIR__ . "/var/php-{$php_version_tag}";
+$php_file = __DIR__ . "/pool/lib/php-{$php_version_tag}.tar.gz";
 $download_dir = dirname($php_file);
-`test -d {$sync_dest_dir} || mkdir -p {$sync_dest_dir}`;
 
 
+# 下载 PHP 源码
 $cmd = "curl -L https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_file}";
 echo $cmd . PHP_EOL;
 if (!file_exists($php_file)) {
@@ -32,23 +18,66 @@ if (!file_exists($php_file)) {
     `{$cmd}`;
 }
 
-
+# 解压 PHP 源码
 # tar -zxvf 文件名.tar.gz --strip-components=1 -C 指定解压目录
 $cmd = <<<EOF
-    test -d {$php_source_folder} && rm -rf {$php_source_folder}
+    set -x
+    # test -d {$php_source_folder} && rm -rf {$php_source_folder}
     mkdir -p {$php_source_folder}
-    tar -zxvf {$php_file} --strip-components=1 -C  {$php_source_folder}
+    test -f {$php_source_folder}/configure.ac || tar -zxf {$php_file} --strip-components=1 -C  {$php_source_folder}
 EOF;
 
+`{$cmd}`;
+
+
+# 默认同步代码 到测试验证目录: php sync-source-code.php --action dry_run
+# 正式同步代码 请执行命令： php sync-source-code.php --action run
+
+
+$cmd='set -x';
+$action = 'dry_run';
+$longopts = array(
+    "action:"
+);
+$options = getopt('', $longopts);
+
+if (!empty($options['action']) && $options['action'] == 'run') {
+    $action = 'run';
+    $sync_dest_dir = $project_dir;
+}else{
+
+    # 测试目录 准备工作
+
+    $scanned_directory_source = array_diff(scandir($php_source_folder . '/ext/'), array('..', '.'));
+    $scanned_directory_destination = array_diff(scandir($project_dir . '/ext/'), array('..', '.'));
+    $directories = array_intersect($scanned_directory_source,$scanned_directory_destination);
+
+    `test -d {$sync_dest_dir} && rm -rf {$sync_dest_dir}`;
+    `mkdir -p {$sync_dest_dir}`;
+
+    foreach( $directories as $directory)
+    {
+        # echo "mkdir -p {$sync_dest_dir}/ext/{$directory}" . PHP_EOL;
+        `mkdir -p {$sync_dest_dir}/ext/{$directory}`;
+
+    }
+
+    $cmd .= PHP_EOL . <<<EOF
+    cd {$sync_dest_dir}
+    mkdir -p ./sapi/cli
+    mkdir -p ./sapi/cli/fpm/
+
+EOF;
+
+}
+
+#  执行同步代码之前准备
 $cmd .= PHP_EOL . <<<EOF
-
     SRC={$php_source_folder}
-
-    # 默认同步到测试验证目录:
-    # 正式同步，请执行命令： php sync-source-code.php --action run
     cd {$sync_dest_dir}
 EOF;
 
+# 执行同步代码操作
 $cmd .= PHP_EOL . <<<'EOF'
 
     echo "sync"
@@ -56,56 +85,58 @@ $cmd .= PHP_EOL . <<<'EOF'
     cp -r $SRC/Zend ./
 
     # Extension
-    cp -r $SRC/ext/bcmath/ ./ext
-    cp -r $SRC/ext/bz2/ ./ext
-    cp -r $SRC/ext/calendar/ ./ext
-    cp -r $SRC/ext/ctype/ ./ext
-    cp -r $SRC/ext/curl/ ./ext
-    cp -r $SRC/ext/date/ ./ext
-    cp -r $SRC/ext/dom/ ./ext
-    cp -r $SRC/ext/exif/ ./ext
-    cp -r $SRC/ext/fileinfo/ ./ext
-    cp -r $SRC/ext/filter/ ./ext
-    cp -r $SRC/ext/gd/ ./ext
-    cp -r $SRC/ext/gettext/ ./ext
-    cp -r $SRC/ext/gmp/ ./ext
-    cp -r $SRC/ext/hash/ ./ext
-    cp -r $SRC/ext/iconv/ ./ext
-    cp -r $SRC/ext/intl/ ./ext
-    cp -r $SRC/ext/json/ ./ext
-    cp -r $SRC/ext/libxml/ ./ext
-    cp -r $SRC/ext/mbstring/ ./ext
-    cp -r $SRC/ext/mysqli/ ./ext
-    cp -r $SRC/ext/mysqlnd/ ./ext
-    cp -r $SRC/ext/opcache/ ./ext
-    sed -i.backup 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4 && sed -i.backup 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
+    cp -r $SRC/ext/bcmath/ ./ext/bcmath
+    cp -r $SRC/ext/bz2/ ./ext/bz2
+    cp -r $SRC/ext/calendar/ ./ext/calendar
+    cp -r $SRC/ext/ctype/ ./ext/ctype
+    cp -r $SRC/ext/curl/ ./ext/curl
+    cp -r $SRC/ext/date/ ./ext/date
+    cp -r $SRC/ext/dom/ ./ext/dom
+    cp -r $SRC/ext/exif/ ./ext/exif
+    cp -r $SRC/ext/fileinfo/ ./ext/fileinfo
+    cp -r $SRC/ext/filter/ ./ext/filter
+    cp -r $SRC/ext/gd/ ./ext/gd
+    cp -r $SRC/ext/gettext/ ./ext/gettext
+    cp -r $SRC/ext/gmp/ ./ext/gmp
+    cp -r $SRC/ext/hash/ ./ext/hash
+    cp -r $SRC/ext/iconv/ ./ext/iconv
+    cp -r $SRC/ext/intl/ ./ext/intl
+    cp -r $SRC/ext/json/ ./ext/json
+    cp -r $SRC/ext/libxml/ ./ext/libxml
+    cp -r $SRC/ext/mbstring/ ./ext/mbstring
+    cp -r $SRC/ext/mysqli/ ./ext/mysqli
+    cp -r $SRC/ext/mysqlnd/ ./ext/mysqlnd
+    cp -r $SRC/ext/opcache/ ./ext/opcache
+
+    sed -i.backup 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4
+    sed -i.backup 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
     echo '#include "php.h"\n\nextern zend_module_entry opcache_module_entry;\n#define phpext_opcache_ptr  &opcache_module_entry\n' > ext/opcache/php_opcache.h
-    cp -r $SRC/ext/openssl/ ./ext
-    cp -r $SRC/ext/pcntl/ ./ext
-    cp -r $SRC/ext/pcre/ ./ext
-    cp -r $SRC/ext/pdo/ ./ext
-    cp -r $SRC/ext/pdo_mysql/ ./ext
-    cp -r $SRC/ext/phar/ ./ext
+    cp -r $SRC/ext/openssl/ ./ext/openssl
+    cp -r $SRC/ext/pcntl/ ./ext/pcntl
+    cp -r $SRC/ext/pcre/ ./ext/pcre
+    cp -r $SRC/ext/pdo/ ./ext/pdo
+    cp -r $SRC/ext/pdo_mysql/ ./ext/pdo_mysql
+    cp -r $SRC/ext/phar/ ./ext/phar
     echo '\n#include "sapi/cli/sfx/hook_stream.h"' >> ext/phar/phar_internal.h
-    cp -r $SRC/ext/posix/ ./ext
-    cp -r $SRC/ext/readline/ ./ext
-    cp -r $SRC/ext/reflection/ ./ext
-    cp -r $SRC/ext/session/ ./ext
-    cp -r $SRC/ext/simplexml/ ./ext
-    cp -r $SRC/ext/soap/ ./ext
-    cp -r $SRC/ext/sockets/ ./ext
-    cp -r $SRC/ext/sodium/ ./ext
-    cp -r $SRC/ext/spl/ ./ext
-    cp -r $SRC/ext/sqlite3/ ./ext
-    cp -r $SRC/ext/standard/ ./ext
-    cp -r $SRC/ext/sysvshm/ ./ext
-    cp -r $SRC/ext/tokenizer/ ./ext
-    cp -r $SRC/ext/xml/ ./ext
-    cp -r $SRC/ext/xmlreader/ ./ext
-    cp -r $SRC/ext/xmlwriter/ ./ext
-    cp -r $SRC/ext/xsl/ ./ext
-    cp -r $SRC/ext/zip/ ./ext
-    cp -r $SRC/ext/zlib/ ./ext
+    cp -r $SRC/ext/posix/ ./ext/posix
+    cp -r $SRC/ext/readline/ ./ext/readline
+    cp -r $SRC/ext/reflection/ ./ext/reflection
+    cp -r $SRC/ext/session/ ./ext/session
+    cp -r $SRC/ext/simplexml/ ./ext/simplexml
+    cp -r $SRC/ext/soap/ ./ext/soap
+    cp -r $SRC/ext/sockets/ ./ext/sockets
+    cp -r $SRC/ext/sodium/ ./ext/sodium
+    cp -r $SRC/ext/spl/ ./ext/spl
+    cp -r $SRC/ext/sqlite3/ ./ext/sqlite3
+    cp -r $SRC/ext/standard/ ./ext/standard
+    cp -r $SRC/ext/sysvshm/ ./ext/sysvshm
+    cp -r $SRC/ext/tokenizer/ ./ext/tokenizer
+    cp -r $SRC/ext/xml/ ./ext/xml
+    cp -r $SRC/ext/xmlreader/ ./ext/xmlreader
+    cp -r $SRC/ext/xmlwriter/ ./ext/xmlwriter
+    cp -r $SRC/ext/xsl/ ./ext/xsl
+    cp -r $SRC/ext/zip/ ./ext/zip
+    cp -r $SRC/ext/zlib/ ./ext/zlib
 
     # main
     cp -r $SRC/main ./
@@ -114,14 +145,17 @@ $cmd .= PHP_EOL . <<<'EOF'
     # build
     cp -r $SRC/build ./
     # TSRM
-    cp -r ./TSRM/TSRM.h main/TSRM.h
+    cp -r $SRC/TSRM/TSRM.h main/TSRM.h
     cp -r $SRC/configure.ac ./
 
+    # 在sed命令中，常见的需要转义的字符有：\、/、$、&、.、*、[、]等
+    #                                反斜杠、正斜杠、美元符号、引用符号、点号、星号、方括号等
+
     # fpm
-    cp -r $SRC/sapi/fpm/fpm ./sapi/cli
-    sed 's/int main(int argc, char *argv[])/int fpm_main(int argc, char *argv[])/g' ./sapi/cli/fpm/main.c
-    sed 's/{'-', 0, NULL}/{'P', 0, "fpm"},\n	{'-', 0, NULL}/g' ./sapi/cli/fpm/main.c
-    exit 0
+    cp -r $SRC/sapi/fpm/fpm ./sapi/cli/
+    sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
+    sed -i.backup 's/{'-', 0, NULL}/{'P', 0, "fpm"},\n	{'-', 0, NULL}/g' ./sapi/cli/fpm/fpm_main.c
+
 
     # cli
     cp -r $SRC/sapi/cli/ps_title.c ./sapi/cli
@@ -130,8 +164,14 @@ $cmd .= PHP_EOL . <<<'EOF'
 
 EOF;
 
-
-echo $cmd . PHP_EOL;
-`$cmd`;
 echo PHP_EOL;
-echo "action : " . $action . ' done !' . PHP_EOL;
+# 显示将要执行的命令
+echo $cmd;
+echo PHP_EOL;
+echo PHP_EOL;
+# 执行同步
+echo "synchronizing  .... ";
+echo PHP_EOL;
+echo `$cmd`;
+echo PHP_EOL;
+echo "action: " . $action . ' done !' . PHP_EOL;
