@@ -58,7 +58,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<EOF
     cd {$sync_dest_dir}
 EOF;
 
-# 执行代码同步
+# 准备 同步代码脚本
 $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     echo "sync"
@@ -125,6 +125,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     # build
     cp -r $SRC/build ./
+
     # TSRM
     cp -r $SRC/TSRM/TSRM.h main/TSRM.h
     cp -r $SRC/configure.ac ./
@@ -156,6 +157,9 @@ echo "synchronizing  .... ";
 echo PHP_EOL;
 echo PHP_EOL;
 echo `$SYNC_SOURCE_CODE_SHELL`;
+echo PHP_EOL;
+echo PHP_EOL;
+echo "synchronizing  end  ";
 echo PHP_EOL;
 echo PHP_EOL;
 echo "action: " . $action . ' done !' . PHP_EOL;
