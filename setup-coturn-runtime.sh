@@ -130,7 +130,7 @@ set +x
 echo " "
 echo " USE COTURN RUNTIME :"
 echo " "
-echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
+echo " export PATH=\"${__PROJECT__}/bin/runtime/coturn/bin/:\$PATH\" "
 echo " "
 echo " ./bin/runtime/coturn/bin/turnserver -c ./bin/runtime/coturn/etc/turnserver.conf  "
 echo " "

@@ -5,4 +5,6 @@
 
 USE_ZEND_ALLOC=0 valgrind --log-file=/tmp/valgrind.log php your_file.php
 
+gdb --args php your_file.php
+
 ```
