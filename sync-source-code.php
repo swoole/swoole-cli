@@ -7,12 +7,16 @@ require_once __DIR__ . '/sapi/DownloadPHPSourceCode.php';
 $php_source_folder = PHP_SRC_DIR;
 $sync_dest_dir = $project_dir . '/var/sync-source-code-tmp';
 
+$scanned_directory_source = array_diff(scandir($php_source_folder . '/ext/'), array('..', '.'));
+$scanned_directory_destination = array_diff(scandir($project_dir . '/ext/'), array('..', '.'));
 
-# 默认同步代码 到测试验证目录: php sync-source-code.php --action dry_run
-# 正式同步代码 请执行命令： php sync-source-code.php --action run
+
+$SYNC_SOURCE_CODE_SHELL = 'set -x';
+
+# 默认同步代码 到测试验证目录:  php sync-source-code.php
+# 正式同步代码 请执行命令:     php sync-source-code.php --action run
 
 
-$SYNC_SOURCE_CODE_CMD = 'set -x';
 $action = 'dry_run';
 $longopts = array(
     "action:"
@@ -27,8 +31,7 @@ if (!empty($options['action']) && $options['action'] == 'run') {
     //测试同步
     # 准备工作 测试目录
 
-    $scanned_directory_source = array_diff(scandir($php_source_folder . '/ext/'), array('..', '.'));
-    $scanned_directory_destination = array_diff(scandir($project_dir . '/ext/'), array('..', '.'));
+
     $directories = array_intersect($scanned_directory_source, $scanned_directory_destination);
 
     `test -d {$sync_dest_dir} && rm -rf {$sync_dest_dir}`;
@@ -40,7 +43,7 @@ if (!empty($options['action']) && $options['action'] == 'run') {
 
     }
 
-    $SYNC_SOURCE_CODE_CMD .= PHP_EOL . <<<EOF
+    $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<EOF
     cd {$sync_dest_dir}
     mkdir -p ./sapi/cli
     mkdir -p ./sapi/cli/fpm/
@@ -50,13 +53,13 @@ EOF;
 }
 
 #  执行代码同步之前准备
-$SYNC_SOURCE_CODE_CMD .= PHP_EOL . <<<EOF
+$SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<EOF
     SRC={$php_source_folder}
     cd {$sync_dest_dir}
 EOF;
 
 # 执行代码同步
-$SYNC_SOURCE_CODE_CMD .= PHP_EOL . <<<'EOF'
+$SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     echo "sync"
     # ZendVM
@@ -145,14 +148,14 @@ EOF;
 
 echo PHP_EOL;
 # 显示将要执行的同步命令
-echo $SYNC_SOURCE_CODE_CMD;
+echo $SYNC_SOURCE_CODE_SHELL;
 echo PHP_EOL;
 echo PHP_EOL;
 # 执行同步
 echo "synchronizing  .... ";
 echo PHP_EOL;
 echo PHP_EOL;
-echo `$SYNC_SOURCE_CODE_CMD`;
+echo `$SYNC_SOURCE_CODE_SHELL`;
 echo PHP_EOL;
 echo PHP_EOL;
 echo "action: " . $action . ' done !' . PHP_EOL;
