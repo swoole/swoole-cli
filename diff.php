@@ -10,16 +10,19 @@ switch (PHP_OS) {
         break;
     case 'WINNT':
     default:
-        echo 'no support os !';
+        echo "no support this OS ";
         exit(0);
 
 }
 $list_swoole_cli = swoole_string(`$shell`)->trim()->lower()->split(PHP_EOL)
     ->remove('core');
 
-$php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
-$php_source_folder = __DIR__ . '/var/php-' . $php_version_tag . '/ext/';
-$list_php_src = swoole_string(`ls -1 {$php_source_folder}`)->trim()->lower()->split(PHP_EOL)
+ob_start();
+require_once __DIR__ . '/sapi/DownloadPHPSourceCode.php';
+$php_source_folder = PHP_SRC_DIR;
+ob_end_clean();
+
+$list_php_src = swoole_string(`ls -1 {$php_source_folder}/ext/`)->trim()->lower()->split(PHP_EOL)
     ->remove('ext_skel.php')
     ->remove('zend_test');
 
