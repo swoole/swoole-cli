@@ -3,31 +3,9 @@
 declare(strict_types=1);
 
 $project_dir = __DIR__;
-$sync_dest_dir = __DIR__ . '/var/sync-source-code-tmp';
-$php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
-$php_source_folder = __DIR__ . "/var/php-{$php_version_tag}";
-$php_file = __DIR__ . "/pool/lib/php-{$php_version_tag}.tar.gz";
-$download_dir = dirname($php_file);
-
-
-# 下载 PHP 源码
-$DOWNLOAD_PHP_CMD = "curl -L https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_file}";
-echo $DOWNLOAD_PHP_CMD . PHP_EOL;
-if (!file_exists($php_file)) {
-    `test -d {$download_dir} || mkdir -p {$download_dir}`;
-    `{$DOWNLOAD_PHP_CMD}`;
-}
-
-# 解压 PHP 源码
-# tar -zxvf 文件名.tar.gz --strip-components=1 -C 指定解压目录
-$UNTAR_PHP_SOURCE_CMD = <<<EOF
-    set -x
-    # test -d {$php_source_folder} && rm -rf {$php_source_folder}
-    mkdir -p {$php_source_folder}
-    test -f {$php_source_folder}/configure.ac || tar -zxf {$php_file} --strip-components=1 -C  {$php_source_folder}
-EOF;
-
-`{$UNTAR_PHP_SOURCE_CMD}`;
+require_once __DIR__ . '/sapi/DownloadPHPSourceCode.php';
+$php_source_folder = PHP_SRC_DIR;
+$sync_dest_dir = $project_dir . '/var/sync-source-code-tmp';
 
 
 # 默认同步代码 到测试验证目录: php sync-source-code.php --action dry_run
@@ -57,7 +35,7 @@ if (!empty($options['action']) && $options['action'] == 'run') {
     `mkdir -p {$sync_dest_dir}`;
 
     foreach ($directories as $directory) {
-        echo "mkdir -p {$sync_dest_dir}/ext/{$directory}" . PHP_EOL;
+        # echo "mkdir -p {$sync_dest_dir}/ext/{$directory}" . PHP_EOL;
         `mkdir -p {$sync_dest_dir}/ext/{$directory}`;
 
     }
@@ -166,13 +144,15 @@ $SYNC_SOURCE_CODE_CMD .= PHP_EOL . <<<'EOF'
 EOF;
 
 echo PHP_EOL;
-# 显示将要执行的命令
+# 显示将要执行的同步命令
 echo $SYNC_SOURCE_CODE_CMD;
 echo PHP_EOL;
 echo PHP_EOL;
 # 执行同步
 echo "synchronizing  .... ";
 echo PHP_EOL;
+echo PHP_EOL;
 echo `$SYNC_SOURCE_CODE_CMD`;
+echo PHP_EOL;
 echo PHP_EOL;
 echo "action: " . $action . ' done !' . PHP_EOL;
