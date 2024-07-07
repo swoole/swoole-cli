@@ -156,6 +156,7 @@ $SYNC_SOURCE_CODE_CMD .= PHP_EOL . <<<'EOF'
     sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
     sed -i.backup 's/{'-', 0, NULL}/{'P', 0, "fpm"},\n	{'-', 0, NULL}/g' ./sapi/cli/fpm/fpm_main.c
 
+    exit 0
 
     # cli
     cp -r $SRC/sapi/cli/ps_title.c ./sapi/cli
