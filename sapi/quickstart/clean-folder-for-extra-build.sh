@@ -79,6 +79,8 @@ test -f setup-nginx-runtime.sh    && rm -rf setup-nginx-runtime.sh
 test -f setup-php-fpm-runtime.sh  && rm -rf setup-php-fpm-runtime.sh
 test -f setup-privoxy-runtime.sh  && rm -rf setup-privoxy-runtime.sh
 test -f setup-socat-runtime.sh    && rm -rf setup-socat-runtime.sh
+test -f setup-webBenchmark-runtime.sh    && rm -rf setup-webBenchmark-runtime.sh
+test -f setup-socat-runtime.sh    && rm -rf setup-socat-runtime.sh
 
 cd ${__PROJECT__}
 
