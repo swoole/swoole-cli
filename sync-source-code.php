@@ -96,7 +96,14 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     sed -i.backup 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4
     sed -i.backup 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
-    echo '#include "php.h"\n\nextern zend_module_entry opcache_module_entry;\n#define phpext_opcache_ptr  &opcache_module_entry\n' > ext/opcache/php_opcache.h
+    # echo '#include "php.h"\n\nextern zend_module_entry opcache_module_entry;\n#define phpext_opcache_ptr  &opcache_module_entry\n' > ext/opcache/php_opcache.h
+    cat > ext/opcache/php_opcache2.h <<PHP_OPCACHE_H_EOF
+#include "php.h"
+
+extern zend_module_entry opcache_module_entry;
+#define phpext_opcache_ptr  &opcache_module_entry
+
+PHP_OPCACHE_H_EOF
 
     cp -rf $SRC/ext/openssl/ ./ext/openssl
     cp -rf $SRC/ext/pcntl/ ./ext/pcntl
@@ -157,7 +164,8 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
     sed -i.backup 's/{'-', 0, NULL}/{'P', 0, "fpm"},\n	{'-', 0, NULL}/g' ./sapi/cli/fpm/fpm_main.c
 
-    exit 0
+
+    # exit 0
 
     # cli
     cp -rf $SRC/sapi/cli/ps_title.c ./sapi/cli
