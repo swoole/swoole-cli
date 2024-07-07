@@ -138,6 +138,8 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     # 在sed命令中，常见的需要转义的字符有：\、/、$、&、.、*、[、]等
     #                                反斜杠、正斜杠、美元符号、引用符号、点号、星号、方括号等
 
+    exit 0
+
     # fpm
     cp -r $SRC/sapi/fpm/fpm ./sapi/cli/
     sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
