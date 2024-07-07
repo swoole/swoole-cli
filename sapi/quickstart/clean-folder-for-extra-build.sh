@@ -12,14 +12,14 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 GIT_BRANCH=$(git branch | grep '* ' | awk '{print $2}')
-echo "git branch : "$GIT_BRANCH
+echo "current  git branch : "$GIT_BRANCH
 
 if [ $GIT_BRANCH = 'new_dev' ] ;then
   echo ' Deleting  folder is not allow in this branch : ' $GIT_BRANCH ;
   exit 0
 fi
 
-echo '执行删除无关的文件或者文件建'
+echo '正在执行删除无关的文件或者文件建'
 
 cd ${__DIR__}/linux/
 
@@ -81,3 +81,5 @@ test -f setup-privoxy-runtime.sh  && rm -rf setup-privoxy-runtime.sh
 test -f setup-socat-runtime.sh    && rm -rf setup-socat-runtime.sh
 
 cd ${__PROJECT__}
+
+echo '删除完毕'
