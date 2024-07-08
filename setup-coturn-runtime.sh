@@ -50,7 +50,7 @@ esac
 
 APP_VERSION='4.6.2'
 APP_NAME='coturn'
-VERSION='v1.1.0'
+VERSION='v1.1.1'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
