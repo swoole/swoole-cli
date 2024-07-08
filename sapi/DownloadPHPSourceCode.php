@@ -1,7 +1,8 @@
 <?php
 
 $poject_dir = realpath(__DIR__ . '/../');
-$php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'));
+# $php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'));
+$php_version_tag = "8.2.13";
 define("PHP_SRC_DIR", $poject_dir . "/var/php-{$php_version_tag}");
 $php_source_folder = PHP_SRC_DIR;
 $php_file = $poject_dir . "/pool/lib/php-{$php_version_tag}.tar.gz";
