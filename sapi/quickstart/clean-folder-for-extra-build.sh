@@ -81,6 +81,7 @@ test -f setup-privoxy-runtime.sh  && rm -rf setup-privoxy-runtime.sh
 test -f setup-socat-runtime.sh    && rm -rf setup-socat-runtime.sh
 test -f setup-webBenchmark-runtime.sh    && rm -rf setup-webBenchmark-runtime.sh
 test -f setup-socat-runtime.sh    && rm -rf setup-socat-runtime.sh
+test -f setup-swoole-cli-pre-runtime.sh    && rm -rf setup-swoole-cli-pre-runtime.sh
 
 cd ${__PROJECT__}
 
