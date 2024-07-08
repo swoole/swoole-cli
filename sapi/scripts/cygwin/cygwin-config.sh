@@ -19,7 +19,8 @@ cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
 cd ${__PROJECT__}/php-src/
 
 # export CPPFLAGS="-I/usr/include"
-# export CFLAGS=""
+# export CFLAGS="-DZEND_WIN32=1 -DPHP_WIN32=1 -DWIN32 "
+# https://github.com/php/php-src/blob/php-8.1.27/win32/build/confutils.js#L3227
 # export LDFLAGS="-L/usr/lib"
 
 ./buildconf --force
