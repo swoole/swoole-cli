@@ -48,7 +48,6 @@ case $ARCH in
   ;;
 esac
 
-SWOOLE_VERSION='v5.1.3'
 APP_VERSION='v5.1.3'
 APP_NAME='swoole-cli'
 VERSION='v5.1.3.0'
