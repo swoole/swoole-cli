@@ -183,7 +183,8 @@ echo PHP_EOL;
 echo "synchronizing  .... ";
 echo PHP_EOL;
 echo PHP_EOL;
-echo `$SYNC_SOURCE_CODE_SHELL`;
+# 暂停执行
+# echo `$SYNC_SOURCE_CODE_SHELL`;
 echo PHP_EOL;
 echo PHP_EOL;
 echo "synchronizing  end  ";
