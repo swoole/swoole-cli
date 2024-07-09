@@ -193,6 +193,7 @@ return function (Preprocessor $p) {
     $depends = ['dav1d'] ;
     $depends = ['sdl2'] ;
     $depends = ['v4l_utils'] ;
+    $depends = ['prometheus_client_c'] ;
 
 
     $ext = (new Extension('common'))
