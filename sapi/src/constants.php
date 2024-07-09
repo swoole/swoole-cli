@@ -337,5 +337,7 @@ define("OPEN_SOUND_AUDIO_PREFIX", $p->getGlobalPrefix() . '/opensound_audio');
 define("PULSE_AUDIO_PREFIX", $p->getGlobalPrefix() . '/pulse_audio');
 
 define("V4L_UTILS_PREFIX", $p->getGlobalPrefix() . '/v4l_utils');
+define("LIBOAUTH2_PREFIX", $p->getGlobalPrefix() . '/liboauth2');
+define("CJOSE_PREFIX", $p->getGlobalPrefix() . '/cjose');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 

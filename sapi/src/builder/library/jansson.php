@@ -13,8 +13,6 @@ return function (Preprocessor $p) {
             ->withManual('https://github.com/akheron/jansson.git')
             ->withLicense('https://github.com/akheron/jansson/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withPrefix($jansson_prefix)
-            ->withCleanBuildDirectory()
-            ->withCleanPreInstallDirectory($jansson_prefix)
             ->withConfigure(
                 <<<EOF
              autoreconf -fi
