@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withUrl('https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/readline/readline-8.2.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/readline/readline-8.2.tar.gz')
-            ->withFileHash('md5','4aa1b31be779e6b84f9a96cb66bc50f6')
+            ->withFileHash('md5', '4aa1b31be779e6b84f9a96cb66bc50f6')
             ->withPrefix(READLINE_PREFIX)
             ->withConfigure(
                 <<<EOF
