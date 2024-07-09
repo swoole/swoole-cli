@@ -182,7 +182,8 @@ EOF
                 //'libsctp',
                 'libmongoc',
                 // 'prometheus_client_c'
-                //'libsctp'
+                //'libsctp',
+                //'liboauth2'
             )
     );
 };

@@ -20,12 +20,10 @@ return function (Preprocessor $p) {
         $coturn_prefix = COTURN_PREFIX;
         $system_arch = $p->getSystemArch();
         $cmd = <<<EOF
-                mkdir -p {$workdir}/bin/coturn/bin/
-                mkdir -p {$workdir}/bin/coturn/etc/
+                mkdir -p {$workdir}/bin/coturn/
                 cd {$coturn_prefix}/
 
-                cp -rf {$coturn_prefix}/bin/*  {$workdir}/bin/coturn/bin/
-                cp -rf {$coturn_prefix}/etc/*  {$workdir}/bin/coturn/etc/
+                cp -rf {$coturn_prefix}/*  {$workdir}/bin/coturn/
 
                 for f in `ls {$workdir}/bin/coturn/bin/` ; do
                     echo \$f
@@ -34,7 +32,7 @@ return function (Preprocessor $p) {
 
 
                 cd {$workdir}/bin/
-                COTURN_VERSION=\$({$workdir}/bin/coturn/bin//turnserver --version | tail -n 1)
+                COTURN_VERSION=\$({$workdir}/bin/coturn/bin/turnserver --version | tail -n 1)
 
 EOF;
         if ($p->getOsType() == 'macos') {
