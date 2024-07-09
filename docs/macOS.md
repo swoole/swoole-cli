@@ -172,21 +172,23 @@ export LIBSODIUM_CFLAGS=$(pkg-config --cflags libsodium)
 export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```
 
-
 ## 下载 macOS 版本 运行无权限，解决方案
 
->  Mac安装应用“提示文件已损坏”或“来自身份不明开发者”解决方法
+> Mac安装应用“提示文件已损坏”或“来自身份不明开发者”解决方法
 
-> 解压以后执行如下命令：
+> note: macos clearing the com.apple.quarantine extended attribute
+> macos环境下 首次运行提示无权限 ，通过清除扩展属性 解决
 
 ```bash
-    xattr ./swoole-cli
 
-    xattr -cr ./swoole-cli
-    sudo xattr -d com.apple.quarantine  ./swoole-cli
+# 查看扩展属性
+xattr ./bin/swoole-cli
+# 移除扩展属性
+sudo xattr -cr ./swoole-cli
+sudo xattr -d com.apple.quarantine  ./bin/swoole-cli
 
-    file ./bin/swoole-cli
-    otool -L ./bin/swoole-cli
+file ./bin/swoole-cli
+otool -L ./bin/swoole-cli
 
 ```
 
