@@ -15,6 +15,12 @@ return function (Preprocessor $p) {
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
 
+    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+        $options .= ' --enable-debug ';
+        $options .= ' --enable-debug-log ';
+        $options .= ' --enable-trace-log ';
+    }
+
     $ext = (new Extension('swoole_v5000'))
         ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')
