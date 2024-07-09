@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://en.wikipedia.org/wiki/ISC_license', Library::LICENSE_SPEC)
             ->withHomePage('https://doc.libsodium.org/')
             ->withUrl('https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz')
-            ->withFileHash('md5','3ca9ebc13b6b4735acae0a6a4c4f9a95')
+            ->withFileHash('md5', '3ca9ebc13b6b4735acae0a6a4c4f9a95')
             ->withPrefix($libsodium_prefix)
             ->withConfigure(
                 <<<EOF
@@ -22,6 +22,7 @@ return function (Preprocessor $p) {
             --enable-static=yes
 EOF
             )
+
             ->withPkgName('libsodium')
     );
 };
