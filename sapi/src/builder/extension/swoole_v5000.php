@@ -19,6 +19,12 @@ return function (Preprocessor $p) {
         $dependentLibraries[] = 'pgsql';
     }
 
+    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+        $options .= ' --enable-debug ';
+        $options .= ' --enable-debug-log ';
+        $options .= ' --enable-trace-log ';
+    }
+
     $ext = (new Extension('swoole_v5000'))
         ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')

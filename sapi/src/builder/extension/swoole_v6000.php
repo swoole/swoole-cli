@@ -6,6 +6,7 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
 
     $swoole_tag = 'v6.0';
+    $swoole_tag = 'master';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
@@ -28,6 +29,11 @@ return function (Preprocessor $p) {
 
     $options .= ' --enable-zts ';
 
+    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+        $options .= ' --enable-debug ';
+        $options .= ' --enable-debug-log ';
+        $options .= ' --enable-trace-log ';
+    }
 
     $ext = (new Extension('swoole_v6000'))
         ->withAliasName('swoole')
