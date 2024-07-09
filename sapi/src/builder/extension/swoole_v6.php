@@ -6,6 +6,7 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
 
     $swoole_tag = 'v6.0';
+    $swoole_tag = 'master';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
@@ -23,6 +24,12 @@ return function (Preprocessor $p) {
     $options .= ' --enable-swoole-thread ';
     $options .= ' --enable-zts ';
 
+    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+        $options .= ' --enable-debug ';
+        $options .= ' --enable-debug-log ';
+        $options .= ' --enable-trace-log ';
+    }
+
     //linux 环境下 启用 opcache 扩展时构建报错，需要禁用 opcache
 
     if ($p->isLinux() && 0) {
@@ -39,7 +46,15 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
         ->withOptions($options)
+        ->withFile($file)
+        ->withDownloadScript(
+            'swoole-src',
+            <<<EOF
+            git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
+EOF
+        )
         ->withBuildCached(false)
+        ->withAutoUpdateFile()
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions);
 
@@ -50,34 +65,4 @@ return function (Preprocessor $p) {
 
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
-
-
-    // 使用扩展钩子 下载 swoole v6 源码
-    $p->withBeforeConfigureScript('swoole_v6', function (Preprocessor $p) {
-        $workdir = $p->getWorkDir();
-        $cmd = <<<EOF
-        cd {$workdir}
-        if [ -d {$workdir}/ext/swoole ] ; then
-            rm -rf {$workdir}/ext/swoole
-        fi
-        mkdir -p {$workdir}/ext/
-        mkdir -p {$workdir}/var/cache/ext/
-        cd {$workdir}/var/cache/ext/
-        test -d swoole && rm -rf swoole
-        if [ -f {$workdir}/pool/ext/swoole-v6.0.0.tar.gz ] ; then
-            mkdir swoole
-            tar --strip-components=1 -C swoole -xf {$workdir}/pool/ext/swoole-v6.0.0.tar.gz
-        else
-            git clone -b master  https://github.com/swoole/swoole-src.git swoole
-            cd swoole
-            tar   -zcf {$workdir}/pool/ext/swoole-v6.0.0.tar.gz ./
-            cd {$workdir}/var/cache/ext/
-        fi
-        cd {$workdir}/var/cache/ext/
-        mv swoole {$workdir}/ext/
-EOF;
-
-        //return $cmd;
-        return '';
-    });
 };
