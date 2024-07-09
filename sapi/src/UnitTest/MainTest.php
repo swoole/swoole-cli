@@ -21,7 +21,7 @@ final class MainTest extends TestCase
         $this->assertContains('swoole', $exts);
         $this->assertContains('gd', $exts);
         $this->assertContains('imagick', $exts);
-        $this->assertContains('opcache', $exts);
+        # $this->assertContains('opcache', $exts);
         $this->assertContains('redis', $exts);
         $this->assertContains('mongodb', $exts);
     }

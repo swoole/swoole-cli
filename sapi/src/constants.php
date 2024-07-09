@@ -83,4 +83,3 @@ define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
-
