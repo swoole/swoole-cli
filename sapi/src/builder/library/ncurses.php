@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
             ->withUrl('https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/ncurses/ncurses-6.3.tar.gz')
-            ->withFileHash('md5','a2736befde5fee7d2b7eb45eb281cdbe')
+            ->withFileHash('md5', 'a2736befde5fee7d2b7eb45eb281cdbe')
             ->withPrefix($ncurses_prefix)
             ->withConfigure(
                 <<<EOF

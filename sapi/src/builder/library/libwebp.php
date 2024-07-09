@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/webmproject/libwebp/blob/main/COPYING', Library::LICENSE_SPEC)
             ->withUrl('https://github.com/webmproject/libwebp/archive/refs/tags/v1.3.2.tar.gz')
             ->withFile('libwebp-v1.3.2.tar.gz')
-            ->withFileHash('md5','827d510b73c73fca3343140556dd2943')
+            ->withFileHash('md5', '827d510b73c73fca3343140556dd2943')
             ->withPrefix($libwebp_prefix)
             ->withConfigure(
                 <<<EOF

@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://zlib.net/zlib_license.html', Library::LICENSE_SPEC)
             ->withUrl('https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz')
             ->withFile('zlib-v1.3.1.tar.gz')
-            ->withFileHash('md5','ddb17dbbf2178807384e57ba0d81e6a1')
+            ->withFileHash('md5', 'ddb17dbbf2178807384e57ba0d81e6a1')
             ->withPrefix(ZLIB_PREFIX)
             ->withConfigure('./configure --prefix=' . ZLIB_PREFIX . ' --static')
             ->withPkgName('zlib')

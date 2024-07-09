@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withManual('https://gitlab.gnome.org/GNOME/libxslt/-/wikis/home')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
             ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
-            ->withFileHash('md5','0b89ee955fd13326d40e762242da7f84')
+            ->withFileHash('md5', '0b89ee955fd13326d40e762242da7f84')
             ->withPrefix($libxslt_prefix)
             ->withConfigure(
                 <<<EOF
