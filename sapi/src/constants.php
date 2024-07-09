@@ -339,4 +339,3 @@ define("PULSE_AUDIO_PREFIX", $p->getGlobalPrefix() . '/pulse_audio');
 define("V4L_UTILS_PREFIX", $p->getGlobalPrefix() . '/v4l_utils');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
-
