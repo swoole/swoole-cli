@@ -70,6 +70,8 @@ test -f Makefile && make clean
 #  --with-pdo-pgsql \
 #  --with-pgsql
 #  --with-pdo-sqlite \
-#  --enable-opcache \
-#  --enable-swoole-thread \
-#  --enable-zts \
+
+# swoole v6 参数
+# --enable-swoole-thread \
+# --enable-zts \
+>>>>>>> experiment-feature
