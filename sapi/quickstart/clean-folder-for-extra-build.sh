@@ -75,6 +75,7 @@ test -f setup-coturn-runtime.sh   && rm -rf setup-coturn-runtime.sh
 test -f setup-ffmpeg-runtime.sh   && rm -rf setup-ffmpeg-runtime.sh
 test -f setup-go-runtime.sh && rm -rf setup-go-runtime.sh
 test -f setup-nginx-runtime.sh    && rm -rf setup-nginx-runtime.sh
+test -f setup-nodejs-runtime.sh    && rm -rf setup-nodejs-runtime.sh
 test -f setup-php-cli-runtime.sh  && rm -rf setup-php-cli-runtime.sh
 test -f setup-php-fpm-runtime.sh  && rm -rf setup-php-fpm-runtime.sh
 test -f setup-privoxy-runtime.sh  && rm -rf setup-privoxy-runtime.sh
