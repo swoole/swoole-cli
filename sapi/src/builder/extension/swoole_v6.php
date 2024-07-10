@@ -6,6 +6,7 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
 
     $swoole_tag = 'v6.0';
+    $swoole_tag = 'master';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
@@ -21,16 +22,26 @@ return function (Preprocessor $p) {
     $options .= ' --enable-swoole-sqlite ';
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
     $options .= ' --enable-swoole-thread ';
-    if ($p->isLinux()) {
-        $options .= ' --enable-iouring ';
-        $dependentLibraries[] = 'liburing';
-    }
-
     $options .= ' --enable-zts ';
 
+    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+        $options .= ' --enable-debug ';
+        $options .= ' --enable-debug-log ';
+        $options .= ' --enable-trace-log ';
+    }
 
-    $ext = (new Extension('swoole_v6000'))
-        ->withAliasName('swoole')
+    //linux 环境下 启用 opcache 扩展时构建报错，需要禁用 opcache
+
+    if ($p->isLinux() && 0) {
+        // 构建报错
+        $options .= ' --enable-iouring ';
+        $dependentLibraries[] = 'liburing';
+        $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
+        $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
+    }
+
+
+    $ext = (new Extension('swoole_v6'))
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
@@ -39,8 +50,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'swoole-src',
             <<<EOF
-            # git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
-            git clone -b master --depth=1 https://github.com/swoole/swoole-src.git
+            git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
         ->withBuildCached(false)
@@ -48,26 +58,10 @@ EOF
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions);
 
-    //call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
-    //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
-
     $p->addExtension($ext);
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
-
-    // 扩展钩子 写法 (下载 swoole v6 源码）
-    $p->withBeforeConfigureScript('swoole_v6', function (Preprocessor $p) {
-        $workdir = $p->getWorkDir();
-        $cmd = <<<EOF
-        cd {$workdir}
-        # 临时解决 编译出现多重定义
-        sed -i.backup 's/TSRMLS_CACHE_DEFINE();/TSRMLS_CACHE_EXTERN();/' ext/swoole/ext-src/swoole_thread.cc
-
-EOF;
-
-        return $cmd;
-    });
 
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');

@@ -13,6 +13,12 @@ return function (Preprocessor $p) {
     $options .= ' --with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX . ' ';
     $options .= ' --enable-swoole-sqlite ';
 
+    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+        $options .= ' --enable-debug ';
+        $options .= ' --enable-debug-log ';
+        $options .= ' --enable-trace-log ';
+    }
+
     $ext = (new Extension('swoole_v5.1.x'))
         ->withOptions($options)
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
@@ -25,7 +31,7 @@ return function (Preprocessor $p) {
             git clone -b 5.1.x --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo' );
+        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo');
 
     $ext->withDependentLibraries(...$depends);
     $p->addExtension($ext);

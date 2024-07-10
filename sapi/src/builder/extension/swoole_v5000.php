@@ -15,6 +15,12 @@ return function (Preprocessor $p) {
     $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
     $options .= ' --with-nghttp2-dir=' . NGHTTP2_PREFIX;
 
+    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+        $options .= ' --enable-debug ';
+        $options .= ' --enable-debug-log ';
+        $options .= ' --enable-trace-log ';
+    }
+
     $ext = (new Extension('swoole_v5000'))
         ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')
@@ -28,7 +34,7 @@ return function (Preprocessor $p) {
             git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
-        ->withBuildCached(false);;
+        ->withBuildCached(false);
 
     call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
     call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);

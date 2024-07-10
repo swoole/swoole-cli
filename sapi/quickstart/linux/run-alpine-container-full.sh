@@ -40,7 +40,7 @@ while [ $# -gt 0 ]; do
   --mirror)
     MIRROR="$2"
     ;;
-  --dev-shm)
+  --dev-shm) #使用 /dev/shm 目录加快构建速度
     DEV_SHM=1
     ;;
   esac
