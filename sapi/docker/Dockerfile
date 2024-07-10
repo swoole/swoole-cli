@@ -1,5 +1,5 @@
 ARG BASE_IMAGE='alpine:3.18'
-FROM ${BASH_IMAGE}
+FROM ${BASE_IMAGE}
 # FROM alpine:3.18
 
 
