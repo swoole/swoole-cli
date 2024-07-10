@@ -317,7 +317,11 @@ if [ "$1" = "docker-build" ] ;then
     CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
     if [ -n "$2" ]; then
         MIRROR=$2
-        CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
+        case "$MIRROR" in
+        china | openatom | ustc | tuna)
+            CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
+        ;;
+        esac
     fi
     cd ${__PROJECT_DIR__}/sapi/docker
     docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"

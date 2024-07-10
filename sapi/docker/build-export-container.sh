@@ -62,7 +62,7 @@ docker cp $container_id:/usr/local/swoole-cli/ .
 
 
 cat > Dockerfile <<'EOF'
-ARG BASE_IMAGE='alpine:3.18'
+ARG BASE_IMAGE="alpine:3.18"
 FROM ${BASE_IMAGE}
 # FROM alpine:3.18
 
