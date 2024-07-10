@@ -287,7 +287,7 @@ make_clean() {
 }
 
 help() {
-    echo "./make.sh docker-build [ china | ustc |tuna ]"
+    echo "./make.sh docker-build [ china | ustc | tuna ]"
     echo "./make.sh docker-bash"
     echo "./make.sh docker-commit"
     echo "./make.sh docker-push"
