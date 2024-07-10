@@ -40,7 +40,6 @@ test -f Makefile && make clean
     --enable-mbstring \
     --enable-ctype \
     --with-zlib \
-    --with-zip \
     --enable-posix \
     --enable-sockets \
     --enable-pdo \
