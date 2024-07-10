@@ -71,18 +71,17 @@ test -f ovn.yml  && rm -rf ovn.yml
 
 cd ${__PROJECT__}
 test -f setup-aria2-runtime.sh    && rm -rf setup-aria2-runtime.sh
-test -f setup-ffmpeg-runtime.sh   && rm -rf setup-ffmpeg-runtime.sh
-test -f setup-php-cli-runtime.sh  && rm -rf setup-php-cli-runtime.sh
-test -f setup-supervisord.sh      && rm -rf setup-supervisord.sh
 test -f setup-coturn-runtime.sh   && rm -rf setup-coturn-runtime.sh
+test -f setup-ffmpeg-runtime.sh   && rm -rf setup-ffmpeg-runtime.sh
+test -f setup-go-runtime.sh && rm -rf setup-go-runtime.sh
 test -f setup-nginx-runtime.sh    && rm -rf setup-nginx-runtime.sh
+test -f setup-php-cli-runtime.sh  && rm -rf setup-php-cli-runtime.sh
 test -f setup-php-fpm-runtime.sh  && rm -rf setup-php-fpm-runtime.sh
 test -f setup-privoxy-runtime.sh  && rm -rf setup-privoxy-runtime.sh
 test -f setup-socat-runtime.sh    && rm -rf setup-socat-runtime.sh
-test -f setup-webBenchmark-runtime.sh    && rm -rf setup-webBenchmark-runtime.sh
-test -f setup-socat-runtime.sh    && rm -rf setup-socat-runtime.sh
+test -f setup-supervisord.sh      && rm -rf setup-supervisord.sh
 test -f setup-swoole-cli-pre-runtime.sh    && rm -rf setup-swoole-cli-pre-runtime.sh
-test -f setup-supervisord.sh && rm -rf setup-supervisord.sh
+test -f setup-webBenchmark-runtime.sh    && rm -rf setup-webBenchmark-runtime.sh
 
 
 cd ${__PROJECT__}
