@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://giflib.sourceforge.net/intro.html', Library::LICENSE_SPEC)
             ->withUrl('https://sourceforge.net/projects/giflib/files/giflib-5.2.1.tar.gz')
             ->withMd5sum('6f03aee4ebe54ac2cc1ab3e4b0a049e5')
-            ->withFileHash('md5','6f03aee4ebe54ac2cc1ab3e4b0a049e5')
+            ->withFileHash('md5', '6f03aee4ebe54ac2cc1ab3e4b0a049e5')
             ->withPrefix($libgif_prefix)
             ->withMakeOptions('libgif.a')
             ->withMakeInstallCommand('')
