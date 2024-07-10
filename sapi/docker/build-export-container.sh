@@ -1,7 +1,8 @@
 #!/bin/bash
 
 :<<'COMMENT'
-  从运行中的容器 将 /usr/local/swoole-cli/ 文件夹 拷贝出来 并生成新容器
+  从运行中的容器 将 /usr/local/swoole-cli/ 文件夹 拷贝出来 并生成新容器镜像 和 导出镜像到磁盘
+
 COMMENT
 
 set -exu
@@ -96,6 +97,8 @@ TAG="v${VERSION}-${ARCH}-${TIME}"
 
 IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
+echo "MIRROR=${MIRROR}"
+echo "BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
 docker  build -t ${IMAGE} -f ./Dockerfile . --progress=plain  --platform ${PLATFORM} --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
 
 echo ${IMAGE}
