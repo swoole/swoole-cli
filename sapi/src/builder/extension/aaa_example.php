@@ -122,9 +122,10 @@ EOF
 
     // 扩展钩子 写法
     $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
-        $workdir = $p->getWorkDir();
+        $workDir = $p->getWorkDir();
+        $workExtDir = $p->getWorkExtDir();
         $cmd = <<<EOF
-        cd {$workdir}
+        cd {$workDir}
         # 构建之前对 swoole 源码做一些特别处理
         # 比如加载一个补丁等
         # 比如修改 swoole 源码的构建文件
