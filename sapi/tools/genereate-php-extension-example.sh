@@ -29,7 +29,7 @@ cd ${__DIR__}
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 
 alias php='php -c ${__PROJECT__}/bin/runtime/php.ini'
-php ${__PROJECT__}/sapi/DownloadPHPSourceCode.php
+php ${__PROJECT__}/sapi/scripts/DownloadPHPSourceCode.php
 
 
 php ${__PROJECT__}/var/php-8.2.13/ext/ext_skel.php --help
