@@ -1,6 +1,6 @@
 <?php
 
-$poject_dir = realpath(__DIR__ . '/../');
+$poject_dir = realpath(__DIR__ . '/../../');
 # $php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'));
 $php_version_tag = "8.2.13";
 define("PHP_SRC_DIR", $poject_dir . "/var/php-{$php_version_tag}");

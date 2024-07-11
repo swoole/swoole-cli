@@ -1,7 +1,8 @@
 #!/bin/bash
 
 :<<'COMMENT'
-  从运行中的容器 将 /usr/local/swoole-cli/ 文件夹 拷贝出来 并生成新容器镜像 和 导出镜像到磁盘
+
+  从运行中的容器 将 /usr/local/swoole-cli/ 文件夹 拷贝出来 并生成新容器镜像 ，并把新容器镜像导出为文件
 
 COMMENT
 
@@ -19,6 +20,7 @@ cd ${__PROJECT__}
 
 
 CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
+CONTAIENR_NAME='swoole-cli-builder'
 MIRROR=''
 PLATFORM=''
 ARCH=$(uname -m)
@@ -39,6 +41,10 @@ while [ $# -gt 0 ]; do
   --mirror)
     MIRROR="$2"
       ;;
+  --quickstart-container)
+    CONTAIENR_NAME='swoole-cli-alpine-dev'
+    # 从quickstart 生成的容器中拷贝 /usr/local/swoole-cli/ 文件夹，并生成新容器镜像
+      ;;
   --*)
     echo "Illegal option $1"
     ;;
@@ -58,8 +64,8 @@ cd ${__PROJECT__}/var/build-export-container/
 
 test -d swoole-cli && rm -rf swoole-cli
 
-container_id='swoole-cli-builder'
-docker cp $container_id:/usr/local/swoole-cli/ .
+
+docker cp ${CONTAIENR_NAME}:/usr/local/swoole-cli/ .
 
 
 cat > Dockerfile <<'EOF'
@@ -99,7 +105,7 @@ IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
 echo "MIRROR=${MIRROR}"
 echo "BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
-docker  build -t ${IMAGE} -f ./Dockerfile . --progress=plain  --platform ${PLATFORM} --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
+docker  build --no-cache -t ${IMAGE} -f ./Dockerfile . --progress=plain  --platform ${PLATFORM} --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
 
 echo ${IMAGE}
 echo ${IMAGE} > container-image.txt
