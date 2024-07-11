@@ -3,6 +3,11 @@
 ## 启动 web ui
 
 ```shell
+
+bash  build-release-example.sh --webui
+# 或者
+php prepare.php  --without-docker --skip-download=1 --with-web-ui=1
+
 # 准备数据
 bash sapi/webUI/sync-webui-data.sh
 
