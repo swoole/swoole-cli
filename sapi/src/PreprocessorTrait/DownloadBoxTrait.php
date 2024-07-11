@@ -23,7 +23,7 @@ mkdir -p ${__DIR__}/ext
 
 EOF;
 
-    protected function generateLibraryDownloadLinks(): void
+    protected function generateDownloadLinks(): void
     {
         $this->mkdirIfNotExists($this->getRootDir() . '/var/download-box/', 0755, true);
 
