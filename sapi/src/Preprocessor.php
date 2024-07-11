@@ -270,6 +270,10 @@ class Preprocessor
         return $this->workDir;
     }
 
+    public function getWorkExtDir(): string
+    {
+        return $this->workDir . '/ext/';
+    }
     public function setExtraLdflags(string $flags)
     {
         $this->extraLdflags = $flags;
@@ -330,8 +334,7 @@ class Preprocessor
     /**
      * @param string $url
      * @param string $file
-     * @param string $md5sum
-     * @throws Exception
+     * @param object|null $project [ $lib or $ext ]
      */
     protected function downloadFile(string $url, string $file, object $project = null)
     {
@@ -832,7 +835,7 @@ class Preprocessor
         $this->setExtensionDependency();
 
         if ($this->getInputOption('skip-download')) {
-            $this->generateLibraryDownloadLinks();
+            $this->generateDownloadLinks();
         }
 
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
@@ -868,7 +871,7 @@ class Preprocessor
         }
     }
 
-    protected function generateLibraryDownloadLinks(): void
+    protected function generateDownloadLinks(): void
     {
         $this->mkdirIfNotExists($this->getRootDir() . '/var/download-box/', 0755, true);
 
