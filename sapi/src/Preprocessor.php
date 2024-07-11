@@ -299,6 +299,11 @@ class Preprocessor
         return $this->workDir;
     }
 
+    public function getWorkExtDir(): string
+    {
+        return $this->workDir . '/ext/';
+    }
+
     public function setExtraLdflags(string $flags)
     {
         $this->extraLdflags = $flags;
@@ -459,7 +464,7 @@ __GIT_PROXY_CONFIG_EOF;
     /**
      * @param string $url
      * @param string $file
-     * @param object|null $project
+     * @param object|null $project [ $lib or $ext ]
      * @param string $httpProxyConfig
      * @return void
      */

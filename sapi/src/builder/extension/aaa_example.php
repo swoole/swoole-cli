@@ -125,7 +125,7 @@ EOF
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $ffmpeg_prefix = FFMPEG_PREFIX;
-        $system_arch=$p->getSystemArch();
+        $system_arch = $p->getSystemArch();
 
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/ffmpeg/

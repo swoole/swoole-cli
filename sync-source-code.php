@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 $project_dir = __DIR__;
-require_once __DIR__ . '/sapi/DownloadPHPSourceCode.php';
+require_once __DIR__ . '/sapi/scripts/DownloadPHPSourceCode.php';
 $php_source_folder = PHP_SRC_DIR;
 $sync_dest_dir = $project_dir . '/var/sync-source-code-tmp';
 
