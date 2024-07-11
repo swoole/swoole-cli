@@ -18,7 +18,7 @@ if [ -f ${__DIR__}/prepare.php ] ; then
   )
 else
   __PROJECT__=$(
-    cd ${__DIR__}/../
+    cd ${__DIR__}/../../
     pwd
   )
 fi
