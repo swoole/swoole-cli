@@ -18,7 +18,7 @@ $list_swoole_cli = swoole_string(`$shell`)->trim()->lower()->split(PHP_EOL)
     ->remove('core');
 
 ob_start();
-require_once __DIR__ . '/sapi/DownloadPHPSourceCode.php';
+require_once __DIR__ . '/sapi/scripts/DownloadPHPSourceCode.php';
 $php_source_folder = PHP_SRC_DIR;
 ob_end_clean();
 
