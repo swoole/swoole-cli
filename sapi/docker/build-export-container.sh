@@ -105,7 +105,7 @@ IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 
 echo "MIRROR=${MIRROR}"
 echo "BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
-docker  build -t ${IMAGE} -f ./Dockerfile . --progress=plain  --platform ${PLATFORM} --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
+docker  build --no-cache -t ${IMAGE} -f ./Dockerfile . --progress=plain  --platform ${PLATFORM} --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
 
 echo ${IMAGE}
 echo ${IMAGE} > container-image.txt
