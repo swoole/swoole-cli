@@ -12,9 +12,10 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://github.com/opencv/opencv.git')
-        /*
 
-         //设置现在文件 hash 值验证，hash 值不匹配，下载文件的自动被丢弃
+        /*
+         *
+        //设置现在文件 hash 值验证，hash 值不匹配，下载文件的自动被丢弃
         ->withFileHash('sha1', '32ead1982fed95c52060cd92187a411de3376ac9')
         ->withFileHash('md5','538378de497a830092cd497e2f963b5d')
         ->withFileHash('sha256','5dc841d2dc9f492d57d4550c114f15a03d5ee0275975571ebd82a1fca8604176')
@@ -68,25 +69,17 @@ EOF
 EOF
         )
         ->withPrefix($example_prefix)
+
+
         /*
-
-         // 当--with-build_type=dev 时 如下2个配置才生效
-
-        // 自动清理构建目录
-        ->withCleanBuildDirectory()
-
-        // 自动清理安装目录
-        ->withCleanPreInstallDirectory($example_prefix)
-
 
         //明确申明 不使用构建缓存 例子： thirdparty/openssl (每次都解压全新源代码到此目录）
         ->withBuildCached(false)
 
         //明确申明 不使用库缓存  例子： /usr/local/swoole-cli/zlib (每次构建都需要安装到此目录）
-        ->withBuildCached(false)
+         ->withInstallCached(false)
 
        */
-
 
         # 构建源码可以使用cmake 、 autoconfig 、 meson 构建等
 
@@ -183,6 +176,9 @@ EOF
         PACKAGES='openssl  '
         PACKAGES="\$PACKAGES zlib"
 
+        OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
+        OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
+
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
@@ -202,9 +198,8 @@ EOF
         /* 使用 autoconfig automake  构建 end  */
 
 
-        /*
+        /* 默认不需要此配置
 
-        //默认不需要此配置
 
         ->withScriptAfterInstall(
             <<<EOF
@@ -214,8 +209,6 @@ EOF
 EOF
         )
 
-        */
-        /*
         //没有pkgconfig 配置的库，手动生成 pkgconfig 配置
         ->withScriptAfterInstall(
             <<<EOF
@@ -240,11 +233,16 @@ __example_PKGCONFIG_EOF__
 
 EOF
         )
+
+
         */
+
         ->withPkgName('libexample')
         ->withBinPath($example_prefix . '/bin/')
         //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')/*
+        ->withDependentLibraries('zlib', 'openssl')
+        /*
+
 
         //默认不需要此配置，特殊目录才需要配置
         ->withLdflags('-L' . $example_prefix . '/lib64')
@@ -253,6 +251,7 @@ EOF
         ->withPkgConfig($example_prefix . '/lib/ib64/pkgconfig')
 
         */
+
     ;
 
     $p->addLibrary($lib);
@@ -268,12 +267,10 @@ EOF
 
     */
 
-    /*
-     //导入需要的变量
+    /* 导入需要的变量
 
     $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
     $p->withExportVariable('LIBPQ_LIBS', '$(pkg-config    --libs   --static libpq)');
 
      */
 };
-
