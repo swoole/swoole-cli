@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
             ->withManual('https://nghttp2.org/')
             ->withLicense('https://github.com/nghttp2/nghttp2/blob/master/COPYING', Library::LICENSE_MIT)
             ->withUrl('https://github.com/nghttp2/nghttp2/releases/download/v1.57.0/nghttp2-1.57.0.tar.gz')
-            ->withFileHash('md5','d4c92d9a85e551bb084964d2be05929c')
+            ->withFileHash('md5', 'd4c92d9a85e551bb084964d2be05929c')
             ->withPrefix($nghttp2_prefix)
             ->withConfigure(
                 <<<EOF

@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
             ->withManual('https://github.com/google/brotli')//有多种构建方式，选择cmake 构建
             ->withLicense('https://github.com/google/brotli/blob/master/LICENSE', Library::LICENSE_MIT)
             ->withUrl('https://github.com/google/brotli/archive/refs/tags/v1.0.9.tar.gz')
-            ->withFileHash('md5','c2274f0c7af8470ad514637c35bcee7d')
+            ->withFileHash('md5', 'c2274f0c7af8470ad514637c35bcee7d')
             ->withFile('brotli-1.0.9.tar.gz')
             ->withPrefix($brotli_prefix)
             ->withBuildScript(

@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
         (new Library('bison'))
             ->withHomePage('https://www.gnu.org/software/bison/')
             ->withUrl('https://ftpmirror.gnu.org/gnu/bison/bison-3.8.tar.gz')
-            ->withFileHash('md5','b9971f4f58690b7737ab7592d5a0a4e0')
+            ->withFileHash('md5', 'b9971f4f58690b7737ab7592d5a0a4e0')
             ->withLicense('https://www.gnu.org/licenses/gpl-3.0.html', Library::LICENSE_GPL)
             ->withConfigure(
                 "

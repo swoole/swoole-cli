@@ -3,7 +3,6 @@
 use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
-
 return function (Preprocessor $p) {
     $liblz4_prefix = LIBLZ4_PREFIX;
     $p->addLibrary(
@@ -13,7 +12,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/lz4/lz4/blob/dev/LICENSE', Library::LICENSE_BSD)
             ->withUrl('https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz')
             ->withFile('lz4-v1.9.4.tar.gz')
-            ->withFileHash('md5','e9286adb64040071c5e23498bf753261')
+            ->withFileHash('md5', 'e9286adb64040071c5e23498bf753261')
             ->withPkgName('liblz4')
             ->withPrefix($liblz4_prefix)
             ->withConfigure(

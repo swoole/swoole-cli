@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md', Library::LICENSE_BSD)
         ->withUrl('https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/refs/tags/2.1.2')
         ->withFile('libjpeg-turbo-2.1.2.tar.gz')
-        ->withFileHash('md5','f02d78311298468c5c1d278507ad42f2')
+        ->withFileHash('md5', 'f02d78311298468c5c1d278507ad42f2')
         ->withPrefix($libjpeg_prefix)
         ->withConfigure(
             <<<EOF

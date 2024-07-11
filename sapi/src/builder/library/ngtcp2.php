@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withManual('https://curl.se/docs/http3.html')
             ->withUrl('https://github.com/ngtcp2/ngtcp2/releases/download/v1.1.0/ngtcp2-1.1.0.tar.gz')
             ->withFile('ngtcp2-1.1.0.tar.gz')
-            ->withFileHash('md5','e05c501244a2af34b492753763c74e04')
+            ->withFileHash('md5', 'e05c501244a2af34b492753763c74e04')
             ->withPrefix($ngtcp2_prefix)
             ->withConfigure(
                 <<<EOF

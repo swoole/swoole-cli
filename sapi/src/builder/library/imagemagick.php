@@ -13,7 +13,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://imagemagick.org/script/license.php', Library::LICENSE_APACHE2)
             ->withUrl('https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-20.tar.gz')
             ->withFile('ImageMagick-v7.1.1-20.tar.gz')
-            ->withFileHash('md5','90eb1a9263b47b7e844eb817fe08932c')
+            ->withFileHash('md5', '90eb1a9263b47b7e844eb817fe08932c')
             ->withPrefix($imagemagick_prefix)
             ->withConfigure(
                 <<<EOF

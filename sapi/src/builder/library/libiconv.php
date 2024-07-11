@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
             ->withManual('https://www.gnu.org/software/libiconv/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             ->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz')
-            ->withFileHash('md5','d718cd5a59438be666d1575855be72c3')
+            ->withFileHash('md5', 'd718cd5a59438be666d1575855be72c3')
             ->withPrefix($libiconv_prefix)
             ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
             ->withBinPath($libiconv_prefix . '/bin/')

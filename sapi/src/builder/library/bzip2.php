@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.sourceware.org/bzip2/')
             ->withManual('https://www.sourceware.org/bzip2/docs.html')
             ->withUrl('https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz')
-            ->withFileHash('md5','67e051268d0c475ea773822f7500d0e5')
+            ->withFileHash('md5', '67e051268d0c475ea773822f7500d0e5')
             ->withPrefix($bzip2_prefix)
             ->withMakeOptions('PREFIX=' . $bzip2_prefix)
             ->withMakeInstallOptions('PREFIX=' . $bzip2_prefix)

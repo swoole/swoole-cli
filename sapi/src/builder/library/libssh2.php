@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
             ->withManual('https://github.com/libssh2/libssh2.git')
             ->withManual('https://github.com/libssh2/libssh2/blob/master/docs/INSTALL_CMAKE.md')
             ->withUrl('https://libssh2.org/download/libssh2-1.11.0.tar.gz')
-            ->withFileHash('md5','a01d543fd891ca48fe47726540d50b17')
+            ->withFileHash('md5', 'a01d543fd891ca48fe47726540d50b17')
             ->withPrefix($libssh2_prefix)
             ->withBuildScript(
                 <<<EOF

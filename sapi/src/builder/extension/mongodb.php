@@ -33,7 +33,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions($options)
         ->withPeclVersion('1.14.2')
-        ->withFileHash('md5','b6de193d467f77d8fd7b27845c19e476')
+        ->withFileHash('md5', 'b6de193d467f77d8fd7b27845c19e476')
     ;
 
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];

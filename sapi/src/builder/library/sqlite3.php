@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://www.sqlite.org/copyright.html', Library::LICENSE_SPEC)
             ->withManual('https://www.sqlite.org/docs.html')
             ->withUrl('https://www.sqlite.org/2023/sqlite-autoconf-3430200.tar.gz')
-            ->withFileHash('sha256','6d422b6f62c4de2ca80d61860e3a3fb693554d2f75bb1aaca743ccc4d6f609f0')
+            ->withFileHash('sha256', '6d422b6f62c4de2ca80d61860e3a3fb693554d2f75bb1aaca743ccc4d6f609f0')
             ->withPrefix($sqlite3_prefix)
             ->withConfigure(
                 <<<EOF
