@@ -18,3 +18,7 @@ export HOMEBREW_INSTALL_FROM_API=1
 
 brew install php
 
+php -v
+php -ini
+php --ini | grep  ".ini files"
+php --ini | grep  "Scan for additional .ini files in:"

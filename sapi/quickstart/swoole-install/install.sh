@@ -104,9 +104,10 @@ ${SWOOLE_DEBUG_OPTIONS}  \
 --enable-swoole-sqlite \
 ${SWOOLE_ODBC_OPTIONS} \
 ${SWOOLE_IO_URING} \
-${SWOOLE_THREAD_OPTION}
+${SWOOLE_THREAD_OPTION} \
 
 
+# --with-php-config=/usr/bin/php-config
 # --enable-swoole-thread  \
 # --enable-iouring
 
@@ -116,3 +117,17 @@ make  # -j  $(`nproc 2> /dev/null || sysctl -n hw.ncpu`)
 test $ENABLE_TEST -eq 1 &&  make test
 
 make install
+
+
+PHP_INI_SCAN_DIR=$(php --ini | grep  "Scan for additional .ini files in:" | awk -F 'in:' '{ print $2 }' | xargs)
+
+if [ ${OS} == 'Linux' ] && [ -n "${PHP_INI_SCAN_DIR}" ] && [ -d "${PHP_INI_SCAN_DIR}" ]; then
+  tee  ${PHP_INI_SCAN_DIR}/90-swoole.ini << EOF
+extension=swoole.so
+swoole.use_shortname=Off
+EOF
+fi
+
+php -v
+php --ini
+php --ini | grep  ".ini files"
