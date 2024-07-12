@@ -36,10 +36,6 @@ china )
   ;;
 esac
 
-OPTIONS='';
-if [ $DEBUG -eq 1 ] ;then
-  OPTIONS='--enable-debug --enable-debug-log --enable-trace-log'
-fi
 
 
 cd swoole-src
@@ -60,10 +56,15 @@ case "$OS-$ARCH" in
   ;;
 esac
 
+OPTIONS='';
+if [ $DEBUG -eq 1 ] ;then
+  OPTIONS=' --enable-debug --enable-debug-log --enable-trace-log '
+fi
 
 
 phpize
 ./configure \
+$OPTIONS  \
 --enable-openssl \
 --enable-sockets \
 --enable-mysqlnd \
@@ -72,7 +73,7 @@ phpize
 --enable-swoole-pgsql \
 --enable-swoole-sqlite \
 --with-swoole-odbc="unixODBC,${UNIXODBC_PREFIX}" \
-$OPTIONS  \
+
 
 
 # --enable-swoole-thread  \
