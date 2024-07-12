@@ -52,6 +52,7 @@ done
 # 保持源码最新
 test $VERSION_LATEST -eq 1 && test -d swoole-src && rm -rf swoole-src
 
+
 case "$MIRROR" in
 china )
   test -d swoole-src || git clone -b master --single-branch --depth=1 https://gitee.com/swoole/swoole.git swoole-src
@@ -60,7 +61,6 @@ china )
   test -d swoole-src || git clone -b master --single-branch --depth=1 https://github.com/swoole/swoole-src.git
   ;;
 esac
-
 
 
 SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=unixODBC,/usr"
@@ -129,6 +129,10 @@ ${SWOOLE_ODBC_OPTIONS} \
 ${SWOOLE_IO_URING} \
 ${SWOOLE_THREAD_OPTION} \
 
+if [ $? -ne 0 ] ; then
+    echo $?
+    exit 0
+fi
 
 # --with-php-config=/usr/bin/php-config
 # --enable-swoole-thread  \
@@ -137,15 +141,27 @@ ${SWOOLE_THREAD_OPTION} \
 
 make  -j ${CPU_LOGICAL_PROCESSORS}
 
+if [ $? -ne 0 ] ; then
+    echo $?
+    exit 0
+fi
+
 test $ENABLE_TEST -eq 1 &&  make test
 
 make install
-
+if [ $? -ne 0 ] ; then
+    echo $?
+    exit 0
+fi
 
 
 # 创建 swoole.ini
 
 PHP_INI_SCAN_DIR=$(php --ini | grep  "Scan for additional .ini files in:" | awk -F 'in:' '{ print $2 }' | xargs)
+if [ $? -ne 0 ] ; then
+    echo $?
+    exit 0
+fi
 
 if [ -n "${PHP_INI_SCAN_DIR}" ] && [ -d "${PHP_INI_SCAN_DIR}" ]; then
   SUDO=''
