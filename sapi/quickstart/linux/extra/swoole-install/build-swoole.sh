@@ -55,4 +55,7 @@ $OPTIONS  \
 
 # --enable-swoole-thread  \
 
-make && sudo make install
+
+make
+make test
+make install
