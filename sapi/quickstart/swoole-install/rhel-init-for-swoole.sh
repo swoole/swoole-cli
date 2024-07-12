@@ -1,4 +1,4 @@
-yum install glibc-headers
-yum install gcc-c++
+yum install -y  glibc-headers
+yum install -y  gcc-c++
 
-yum install c-ares-devel libcurl-devel pcre-devel postgresql-devel
+yum install-y  c-ares-devel libcurl-devel pcre-devel postgresql-devel
