@@ -116,6 +116,8 @@ esac
 
 cd swoole-src
 
+test -f ext-src/.libs/php_swoole.o && make clean
+
 phpize
 
 ./configure \
