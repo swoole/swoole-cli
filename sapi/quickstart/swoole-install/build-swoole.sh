@@ -46,27 +46,23 @@ SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=\"unixODBC,${UNIXODBC_PREFIX}\""
 OS=$(uname -s)
 ARCH=$(uname -m)
 case "$OS-$ARCH" in
-'Darwin-x86_64')
+Darwin-x86_64)
   export PKG_CONFIG_PATH=/usr/local/opt/libpq/lib/pkgconfig/:/usr/local/opt/unixodbc/lib/pkgconfig/
   UNIXODBC_PREFIX='/usr/local/opt/unixodbc/'
   SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=\"unixODBC,${UNIXODBC_PREFIX}\""
   ;;
-'Darwin-arm64')
+Darwin-arm64)
   export PKG_CONFIG_PATH=/opt/homebrew/opt/libpq/lib/pkgconfig/:/opt/homebrew/opt/unixodbc/lib/pkgconfig/
   UNIXODBC_PREFIX='/opt/homebrew/opt/unixodbc/'
   SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=\"unixODBC,${UNIXODBC_PREFIX}\""
   ;;
 Linux-*)
   OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release |tr -d '\n' | tr -d '\"')
-
   case "$OS_RELEASE" in
     'rocky' | 'almalinux' | 'rhel' |  'centos' | 'fedora' )
     SWOOLE_ODBC_OPTIONS=""
     ;;
   esac
-  echo "$OS_RELEASE"
-  echo $SWOOLE_ODBC_OPTIONS
-
   ;;
 *)
   ;;
