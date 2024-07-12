@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -x
 mkdir -p /tmp/build
 
 cd /tmp/build/
