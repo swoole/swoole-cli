@@ -50,7 +50,6 @@ phpize
 --enable-swoole-pgsql \
 --enable-swoole-sqlite \
 --enable-swoole-thread  \
---enable-zts   \
 $OPTIONS
 
 
