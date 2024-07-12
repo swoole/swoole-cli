@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 set -x
+
+
+
+
+
+
+
+
 mkdir -p /tmp/build
 
 # shellcheck disable=SC2164
@@ -60,18 +68,25 @@ if [ $(php -r "echo PHP_ZTS;") -eq 1 ] ; then
   SWOOLE_THREAD_OPTION="--enable-swoole-thread"
 fi
 
+CPU_LOGICAL_PROCESSORS=4
 OS=$(uname -s)
 ARCH=$(uname -m)
-case "$OS-$ARCH" in
-Darwin-x86_64)
-  export PKG_CONFIG_PATH=/usr/local/opt/libpq/lib/pkgconfig/:/usr/local/opt/unixodbc/lib/pkgconfig/
-  SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=unixODBC,/usr/local/opt/unixodbc/"
+case "$OS" in
+Darwin)
+  CPU_LOGICAL_PROCESSORS=$(sysctl -n hw.ncpu)
+  case "$ARCH" in
+    x86_64)
+        export PKG_CONFIG_PATH=/usr/local/opt/libpq/lib/pkgconfig/:/usr/local/opt/unixodbc/lib/pkgconfig/
+        SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=unixODBC,/usr/local/opt/unixodbc/"
+      ;;
+    arm64)
+        export PKG_CONFIG_PATH=/opt/homebrew/opt/libpq/lib/pkgconfig/:/opt/homebrew/opt/unixodbc/lib/pkgconfig/
+        SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=unixODBC,/opt/homebrew/opt/unixodbc/"
+      ;;
+  esac
   ;;
-Darwin-arm64)
-  export PKG_CONFIG_PATH=/opt/homebrew/opt/libpq/lib/pkgconfig/:/opt/homebrew/opt/unixodbc/lib/pkgconfig/
-  SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=unixODBC,/opt/homebrew/opt/unixodbc/"
-  ;;
-Linux-*)
+Linux)
+  CPU_LOGICAL_PROCESSORS=$(grep "processor" /proc/cpuinfo | sort -u | wc -l)
   OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release |tr -d '\n' | tr -d '\"')
   case "$OS_RELEASE" in
     'rocky' | 'almalinux'  ) # | 'rhel' |  'centos' | 'fedora'  # 未测试
@@ -85,7 +100,6 @@ Linux-*)
 *)
   ;;
 esac
-
 
 
 
@@ -112,12 +126,15 @@ ${SWOOLE_THREAD_OPTION} \
 # --enable-iouring
 
 
-make  # -j  $(`nproc 2> /dev/null || sysctl -n hw.ncpu`)
+make  -j $(CPU_LOGICAL_PROCESSORS)
 
 test $ENABLE_TEST -eq 1 &&  make test
 
 make install
 
+
+
+# 创建 swoole.ini
 
 PHP_INI_SCAN_DIR=$(php --ini | grep  "Scan for additional .ini files in:" | awk -F 'in:' '{ print $2 }' | xargs)
 
