@@ -23,7 +23,7 @@ return function (Preprocessor $p) {
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/proxychains
                 cd {$proxychains_prefix}/
-                cp -rf bin/ {$workdir}/bin/proxychains/
+                cp -rf bin {$workdir}/bin/proxychains/
                 cp -f {$builddir}/proxychains/src/proxychains.conf {$workdir}/bin/proxychains/
                 cd {$workdir}/bin/
 
@@ -31,6 +31,7 @@ EOF;
         $cmd = $cmd . PHP_EOL;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
+            xattr -cr {$workdir}/bin/proxychains/bin/proxychains4
             otool -L {$workdir}/bin/proxychains/bin/proxychains4
             tar -cJvf {$workdir}/proxychains-vlatest-static-macos-x64.tar.xz proxychains
 EOF;
@@ -48,6 +49,8 @@ EOF;
 /*
  * 用法：
 
-    ./bin/proxychains4 -q -f proxychains.conf firefox
+    ./bin/proxychains/bin/proxychains4  -f ./bin/proxychains/proxychains.conf curl ipinfo.io
+    ./bin/proxychains/bin/proxychains4  -f ./bin/proxychains/proxychains.conf telnet www.google.com
+    ./bin/proxychains/bin/proxychains4  -f ./bin/proxychains/proxychains.conf firefox
 
  */
