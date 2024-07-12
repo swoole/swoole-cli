@@ -135,7 +135,7 @@ ${SWOOLE_THREAD_OPTION} \
 # --enable-iouring
 
 
-make  -j $(CPU_LOGICAL_PROCESSORS)
+make  -j ${CPU_LOGICAL_PROCESSORS}
 
 test $ENABLE_TEST -eq 1 &&  make test
 
