@@ -76,6 +76,7 @@ fi
 
 
 phpize
+
 ./configure \
 ${SWOOLE_DEBUG_OPTIONS}  \
 --enable-openssl \
@@ -86,7 +87,6 @@ ${SWOOLE_DEBUG_OPTIONS}  \
 --enable-swoole-pgsql \
 --enable-swoole-sqlite \
 ${SWOOLE_ODBC_OPTIONS} \
-
 
 
 # --enable-swoole-thread  \
