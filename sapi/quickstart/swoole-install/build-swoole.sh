@@ -61,6 +61,7 @@ case "$OS-$ARCH" in
   case "$OS_RELEASE" in
     'rocky' | 'almalinux' | 'rhel' |  'centos' | 'fedora' )
     SWOOLE_ODBC_OPTIONS=''
+    ;;
   esac
   ;;
 *)
