@@ -8,6 +8,7 @@ test -d swoole-src  && rm -rf ./swoole-src
 
 MIRROR=''
 DEBUG=0
+ENABLE_TEST=0
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
@@ -16,6 +17,9 @@ while [ $# -gt 0 ]; do
   --debug)
     DEBUG=1
     ;;
+  --test)
+     ENABLE_TEST=1
+     ;;
   --*)
     echo "no found mirror option $1"
     ;;
@@ -57,5 +61,7 @@ $OPTIONS  \
 # --enable-iouring
 
 make
-make test
+
+test $ENABLE_TEST -eq 1 &&  make test
+
 make install
