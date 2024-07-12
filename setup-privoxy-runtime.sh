@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -115,7 +115,9 @@ else
   test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
   tar -xvf ${APP_RUNTIME}.tar
   chmod a+x privoxy/sbin/privoxy
-  cp -rf ${__PROJECT__}/var/runtime/${APP_NAME} ${__PROJECT__}/bin/runtime/${APP_NAME}
+  mkdir -p ${__PROJECT__}/bin/runtime/${APP_NAME}
+  test -d ${__PROJECT__}/bin/runtime/${APP_NAME} && rm -rf ${__PROJECT__}/bin/runtime/${APP_NAME}
+  cp -rf ${__PROJECT__}/var/runtime/${APP_NAME}/. ${__PROJECT__}/bin/runtime/${APP_NAME}
 fi
 
 cd ${__PROJECT__}/var/runtime
@@ -125,15 +127,41 @@ cp -f ${__PROJECT__}/var/runtime/cacert.pem ${__PROJECT__}/bin/runtime/cacert.pe
 
 cd ${__PROJECT__}/
 
+
+tee ${__PROJECT__}/bin/runtime/privoxy/privoxy-start.sh <<'EOF'
+#!/usr/bin/env bash
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+
+cd ${__DIR__}/
+ ./sbin/privoxy --no-daemon etc/config
+EOF
+
+
 set +x
 
 echo " "
 echo " USE PRIVOXY RUNTIME :"
 echo " "
-echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
-echo " "
+echo " change file ./bin/runtime/privoxy/etc/config  "
+echo ''
+echo ' listen-address  0.0.0.0:8118'
+echo ' forward-socks5   /'
+echo " confdir ${__PROJECT__}/bin/runtime/privoxy/etc"
+echo " logdir ${__PROJECT__}/bin/runtime/privoxy/var/log/privoxy"
+echo '#        debug  1'
+echo '#        debug  512'
+echo '#        debug  1024'
+echo ''
 echo " cd ./bin/runtime/privoxy "
 echo " ./sbin/privoxy --no-daemon etc/config  "
+echo ''
+echo ' OR '
+echo ''
+echo ' bash bin/runtime/privoxy/start-privoxy.sh'
 echo " "
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"

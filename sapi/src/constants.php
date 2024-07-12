@@ -73,6 +73,7 @@ define("RAV1E_PREFIX", $p->getGlobalPrefix() . '/rav1e');
 
 
 define("DEPOT_TOOLS_PREFIX", $p->getGlobalPrefix() . '/depot_tools');
+define("GN_PREFIX", $p->getGlobalPrefix() . '/gn');
 
 
 define("HARFBUZZ_PREFIX", $p->getGlobalPrefix() . '/harfbuzz');
