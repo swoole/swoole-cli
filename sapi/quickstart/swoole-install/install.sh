@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+__DIR__=$(cd "$(dirname "$0")";pwd)
 set -x
 
 PHP=$(which php)
@@ -146,7 +148,12 @@ if [ $? -ne 0 ] ; then
     exit 0
 fi
 
-test $ENABLE_TEST -eq 1 &&  make test
+if test $ENABLE_TEST -eq 1 ; then
+  cd /tmp/build/swoole-src/tests/include/lib/
+  composer install
+  cd /tmp/build/swoole-src/
+  make test
+fi
 
 make install
 if [ $? -ne 0 ] ; then
@@ -171,7 +178,7 @@ if [ -n "${PHP_INI_SCAN_DIR}" ] && [ -d "${PHP_INI_SCAN_DIR}" ]; then
 
   ${SUDO} tee  ${PHP_INI_SCAN_DIR}/90-swoole.ini << EOF
 extension=swoole.so
-swoole.use_shortname=Off
+swoole.use_shortname=On
 EOF
 
 fi
