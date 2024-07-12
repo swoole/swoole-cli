@@ -46,7 +46,7 @@ esac
 
 
 
-SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=\"unixODBC,/usr\""
+SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=unixODBC,/usr"
 SWOOLE_IO_URING=''
 SWOOLE_DEBUG_OPTIONS='';
 SWOOLE_THREAD_OPTION='';
@@ -65,11 +65,11 @@ ARCH=$(uname -m)
 case "$OS-$ARCH" in
 Darwin-x86_64)
   export PKG_CONFIG_PATH=/usr/local/opt/libpq/lib/pkgconfig/:/usr/local/opt/unixodbc/lib/pkgconfig/
-  SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=\"unixODBC,/usr/local/opt/unixodbc/\""
+  SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=unixODBC,/usr/local/opt/unixodbc/"
   ;;
 Darwin-arm64)
   export PKG_CONFIG_PATH=/opt/homebrew/opt/libpq/lib/pkgconfig/:/opt/homebrew/opt/unixodbc/lib/pkgconfig/
-  SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=\"unixODBC,/opt/homebrew/opt/unixodbc/\""
+  SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=unixODBC,/opt/homebrew/opt/unixodbc/"
   ;;
 Linux-*)
   OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release |tr -d '\n' | tr -d '\"')
