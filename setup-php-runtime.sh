@@ -144,6 +144,7 @@ opcache.jit=1254
 opcache.jit_buffer_size=480M
 
 expose_php=Off
+phar.readonly=0
 
 EOF
 
