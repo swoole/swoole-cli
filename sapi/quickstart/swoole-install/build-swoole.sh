@@ -76,7 +76,7 @@ fi
 
 phpize
 ./configure \
-"${SWOOLE_DEBUG_OPTIONS}"  \
+${SWOOLE_DEBUG_OPTIONS}  \
 --enable-openssl \
 --enable-sockets \
 --enable-mysqlnd \
@@ -84,7 +84,7 @@ phpize
 --enable-swoole-curl \
 --enable-swoole-pgsql \
 --enable-swoole-sqlite \
-"${SWOOLE_ODBC_OPTIONS}" \
+${SWOOLE_ODBC_OPTIONS} \
 
 
 
