@@ -122,10 +122,12 @@ make install
 PHP_INI_SCAN_DIR=$(php --ini | grep  "Scan for additional .ini files in:" | awk -F 'in:' '{ print $2 }' | xargs)
 
 if [ ${OS} == 'Linux' ] && [ -n "${PHP_INI_SCAN_DIR}" ] && [ -d "${PHP_INI_SCAN_DIR}" ]; then
+
   tee  ${PHP_INI_SCAN_DIR}/90-swoole.ini << EOF
 extension=swoole.so
 swoole.use_shortname=Off
 EOF
+
 fi
 
 php -v
