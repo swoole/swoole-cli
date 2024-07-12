@@ -60,7 +60,8 @@ $OPTIONS  \
 # --enable-swoole-thread  \
 # --enable-iouring
 
-make
+
+make  -j  $(`nproc 2> /dev/null || sysctl -n hw.ncpu`)
 
 test $ENABLE_TEST -eq 1 &&  make test
 
