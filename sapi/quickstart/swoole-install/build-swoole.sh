@@ -77,7 +77,7 @@ Linux-*)
     'rocky' | 'almalinux' | 'rhel' |  'centos' | 'fedora' )
       SWOOLE_ODBC_OPTIONS=""
       ;;
-    'debian' | 'ubuntu' )
+    'debian' | 'ubuntu' | 'alpine' )
       SWOOLE_IO_URING=' --enable-iouring '
       ;;
   esac
