@@ -44,6 +44,24 @@ fi
 
 cd swoole-src
 
+UNIXODBC_PREFIX='/usr/'
+OS=$(uname -s)
+ARCH=$(uname -m)
+case "$OS-$ARCH" in
+'Darwin-x86_64')
+  export PKG_CONFIG_PATH=/usr/local/opt/libpq/lib/pkgconfig/:/usr/local/opt/unixodbc/lib/pkgconfig/
+  UNIXODBC_PREFIX='/usr/local/opt/unixodbc/'
+  ;;
+'Darwin-arm64')
+  export PKG_CONFIG_PATH=/opt/homebrew/opt/libpq/lib/pkgconfig/:/opt/homebrew/opt/unixodbc/lib/pkgconfig/
+  UNIXODBC_PREFIX='/opt/homebrew/opt/unixodbc/'
+  ;;
+*)
+  ;;
+esac
+
+
+
 phpize
 ./configure \
 --enable-openssl \
@@ -53,7 +71,7 @@ phpize
 --enable-swoole-curl \
 --enable-swoole-pgsql \
 --enable-swoole-sqlite \
---with-swoole-odbc="unixODBC,/usr" \
+--with-swoole-odbc="unixODBC,${UNIXODBC_PREFIX}" \
 $OPTIONS  \
 
 
@@ -61,7 +79,7 @@ $OPTIONS  \
 # --enable-iouring
 
 
-make  -j  $(`nproc 2> /dev/null || sysctl -n hw.ncpu`)
+make  # -j  $(`nproc 2> /dev/null || sysctl -n hw.ncpu`)
 
 test $ENABLE_TEST -eq 1 &&  make test
 
