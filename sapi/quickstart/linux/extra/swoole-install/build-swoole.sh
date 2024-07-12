@@ -49,9 +49,10 @@ phpize
 --enable-swoole-curl \
 --enable-swoole-pgsql \
 --enable-swoole-sqlite \
---enable-swoole-thread  \
-$OPTIONS
+--with-swoole-odbc="unixODBC,/usr" \
+$OPTIONS  \
 
 
+# --enable-swoole-thread  \
 
 make && sudo make install
