@@ -195,6 +195,7 @@ return function (Preprocessor $p) {
     $depends = ['v4l_utils'] ;
     $depends = ['prometheus_client_c'] ;
     $depends = ['liboauth2'] ;
+    $depends = ['libyuv'] ;
 
 
     $ext = (new Extension('common'))
