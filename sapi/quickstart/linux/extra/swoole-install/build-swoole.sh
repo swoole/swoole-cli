@@ -1,11 +1,58 @@
-mkdir -p ~/build && \
-cd ~/build && \
-rm -rf ./swoole-src && \
-curl -o ./tmp/swoole.tar.gz https://github.com/swoole/swoole-src/archive/master.tar.gz -L && \
-tar zxvf ./tmp/swoole.tar.gz && \
-mv swoole-src* swoole-src && \
-cd swoole-src && \
-phpize && \
+#!/usr/bin/env bash
+
+mkdir -p /tmp/build
+
+cd /tmp/build/
+test -d swoole-src  && rm -rf ./swoole-src
+
+
+MIRROR=''
+DEBUG=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    MIRROR="$2"
+    ;;
+  --debug)
+    DEBUG=1
+    ;;
+  --*)
+    echo "no found mirror option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
+
+case "$MIRROR" in
+china )
+  git clone -b master --single-branch --depth=1 https://gitee.com/swoole/swoole.git swoole-src
+  ;;
+*)
+  git clone -b master --single-branch --depth=1 https://github.com/swoole/swoole-src.git
+  ;;
+esac
+
+OPTIONS='';
+if [ $DEBUG -eq 1 ] ;then
+  OPTIONS='--enable-debug --enable-debug-log --enable-trace-log'
+fi
+
+
+cd swoole-src
+
+phpize
 ./configure \
---enable-openssl --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares --enable-swoole-pgsql && \
-sudo make && sudo make install
+--enable-openssl \
+--enable-sockets \
+--enable-mysqlnd \
+--enable-cares \
+--enable-swoole-curl \
+--enable-swoole-pgsql \
+--enable-swoole-sqlite \
+--enable-swoole-thread  \
+--enable-zts   \
+$OPTIONS
+
+
+
+make && sudo make install
