@@ -56,7 +56,7 @@ case "$OS-$ARCH" in
   UNIXODBC_PREFIX='/opt/homebrew/opt/unixodbc/'
   SWOOLE_ODBC_OPTIONS="--with-swoole-odbc=\"unixODBC,${UNIXODBC_PREFIX}\""
   ;;
-"Linux-*")
+Linux-*)
   OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release |tr -d '\n' | tr -d '\"')
 
   case "$OS_RELEASE" in
