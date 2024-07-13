@@ -5,13 +5,24 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $python3_prefix = PYTHON3_PREFIX;
+    // anaconda 安装包
+    // https://repo.anaconda.com/archive/
 
-    $options = '--enable-phpy ';
-    $options .= ' --with-python-version=3.12';
+    $python_config = $p->getInputOption('with-python-config');
+    $python_dir = $p->getInputOption('with-python-dir');
+    $python_version = $p->getInputOption('with-python-version');
+    if(!empty($python_config) && !empty($python_dir) && !empty($python_version)) {
+        $options = '--enable-phpy ';
+    } else {
+        throw new \Exception('phpy config python-config error ');
+    }
+
+
+    # $options .= ' --with-python-version=3.12';
+    $options .= ' --with-python-version=' . $python_version;
     # $options .= ' --with-python-dir=/opt/anaconda3';
-    $options .= ' --with-python-dir=' . $python3_prefix;
-    $options .= ' --with-python-config=' . $python3_prefix . '/bin/python3-config';
+    $options .= ' --with-python-dir=' . $python_dir;
+    $options .= ' --with-python-config=' . $python_config;
 
     $tag = 'v1.0.4';
 
@@ -28,8 +39,8 @@ return function (Preprocessor $p) {
             git clone -b main --depth=1 https://github.com/swoole/phpy.git
 EOF
         )
-        ->withDependentExtensions('curl', 'openssl', 'sockets', 'mysqlnd', 'pdo')
-        ->withDependentLibraries('curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'python3');
+        ->withDependentExtensions('swoole')
+        ->withDependentLibraries('curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2'); //'python3'
     $p->addExtension($ext);
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
@@ -38,5 +49,3 @@ EOF
 
 
 };
-
-
