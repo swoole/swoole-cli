@@ -68,6 +68,8 @@ test -f kubernetes.yml  && rm -rf kubernetes.yml
 test -f ovn.yml  && rm -rf ovn.yml
 test -f ovn.yml  && rm -rf ovn.yml
 
+cd ${__PROJECT__}/sapi/quickstart
+test -d swoole-install && rm -rf swoole-install
 
 cd ${__PROJECT__}
 test -f setup-aria2-runtime.sh    && rm -rf setup-aria2-runtime.sh
