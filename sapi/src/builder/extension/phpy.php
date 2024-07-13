@@ -8,21 +8,22 @@ return function (Preprocessor $p) {
     // anaconda 安装包
     // https://repo.anaconda.com/archive/
 
+    $options = '--enable-phpy ';
+
     $python_config = $p->getInputOption('with-python-config');
     $python_dir = $p->getInputOption('with-python-dir');
     $python_version = $p->getInputOption('with-python-version');
     if(!empty($python_config) && !empty($python_dir) && !empty($python_version)) {
-        $options = '--enable-phpy ';
+        $options .= ' --with-python-version=' . $python_version;
+        $options .= ' --with-python-dir=' . $python_dir;
+        $options .= ' --with-python-config=' . $python_config;
     } else {
         throw new \Exception('phpy config python-config error ');
     }
 
 
     # $options .= ' --with-python-version=3.12';
-    $options .= ' --with-python-version=' . $python_version;
     # $options .= ' --with-python-dir=/opt/anaconda3';
-    $options .= ' --with-python-dir=' . $python_dir;
-    $options .= ' --with-python-config=' . $python_config;
 
     $tag = 'v1.0.4';
 
