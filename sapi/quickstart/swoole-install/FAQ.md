@@ -6,7 +6,7 @@ ls -lh `php --ini | grep  "Scan for additional .ini files in:" | awk -F 'in:' '{
 
 ```
 
-## php.ini 配置文件 curl、socks5、mysqld 扩展应该在 swoole 扩展之前加载
+## php.ini 配置文件 curl、sockets、mysqld 扩展应该在 swoole 扩展之前加载
     https://github.com/swoole/swoole-src/issues/4085
 
     编译php 时 扫描目录配置 --with-config-file-scan-dir
