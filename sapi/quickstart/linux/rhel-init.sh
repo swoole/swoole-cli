@@ -80,7 +80,9 @@ yum install -y autoconf automake  clang lld libtool cmake bison  gettext   zip u
 yum install -y pkg-config bzip2 flex
 
 
-yum install -y curl-minimal curl which
+{ yum install -y curl; } || { echo $?; }
+{ yum install -y curl-minimal; } || { echo $?; }
+yum install -y which
 yum install -y xz
 yum install -y socat
 
