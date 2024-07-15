@@ -120,7 +120,6 @@ done
 
 if [ "$OS" = 'linux' ]; then
   OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '\n' | tr -d '\"')
-
   if [ -f /.dockerenv ]; then
     IN_DOCKER=1
     if test $CMDS_LEN -ne $CMDS_NUMS; then
@@ -179,7 +178,9 @@ if [ "$OS" = 'macos' ]; then
 
 fi
 
-test -f sapi/quickstart/clean-folder.sh && bash sapi/quickstart/clean-folder.sh
+if git ls-files --error-unmatch sapi/quickstart/clean-folder.sh >/dev/null 2>&1; then
+  test -f sapi/quickstart/clean-folder.sh && bash sapi/quickstart/clean-folder.sh
+fi
 
 if [ ! -f "${__PROJECT__}/bin/runtime/php" ]; then
   if [ "$MIRROR" = 'china' ]; then
@@ -211,7 +212,10 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
 
   # composer update --no-interaction --optimize-autoloader
   # composer install --no-interaction --optimize-autoloader
-  composer install --no-interaction --no-autoloader --no-scripts # --no-dev
+
+  # composer update  --optimize-autoloader
+  composer install --no-interaction --no-autoloader --no-scripts --profile # --no-dev
+
   composer dump-autoload --optimize --profile
 
   composer config -g --unset repos.packagist
