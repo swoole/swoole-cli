@@ -89,9 +89,9 @@ done
 
 case "$MIRROR" in
 china)
-  APP_DOWNLOAD_URL="https://php-cli.jingjingxyk/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+  APP_DOWNLOAD_URL="https://php-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
   if [ $OS = 'windows' ]; then
-    APP_DOWNLOAD_URL="https://php-cli.jingjingxyk/${APP_NAME}-${APP_VERSION}-vs2022-${ARCH}.zip"
+    APP_DOWNLOAD_URL="https://php-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-vs2022-${ARCH}.zip"
   fi
   ;;
 
