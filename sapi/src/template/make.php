@@ -34,6 +34,8 @@ OPTIONS="--disable-all \
 <?php endforeach; ?>
 <?=$this->extraOptions?>
 "
+# --with-config-file-scan-dir=<?= $this->getGlobalPrefix() ?>/etc/php/conf.d/ \
+# --with-config-file-path=<?= $this->getGlobalPrefix() ?>/etc/php/ \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
