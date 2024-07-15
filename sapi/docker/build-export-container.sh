@@ -41,7 +41,7 @@ while [ $# -gt 0 ]; do
   --mirror)
     MIRROR="$2"
       ;;
-  --quickstart-container)
+  )
     CONTAIENR_NAME='swoole-cli-alpine-dev'
     # 从quickstart 生成的容器中拷贝 /usr/local/swoole-cli/ 文件夹，并生成新容器镜像
       ;;
