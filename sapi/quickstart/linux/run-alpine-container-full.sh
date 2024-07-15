@@ -50,7 +50,7 @@ done
 
 case $ARCH in
 'x86_64')
-  TAG=all-dependencies-alpine-3.17-php8-v1.0.0-x86_64-20231113T125520Z
+  TAG=all-dependencies-alpine-3.18-php8-v1.0.0-x86_64-20240715T132512Z
   IMAGE=docker.io/jingjingxyk/build-swoole-cli:${TAG}
   if [ "$MIRROR" = 'china' ] ; then
     IMAGE=registry.cn-beijing.aliyuncs.com/jingjingxyk-public/app:${TAG}
