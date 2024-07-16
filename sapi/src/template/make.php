@@ -24,6 +24,10 @@ export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
 --enable-shared=no \
 --enable-static=yes \
+<?php if ($this->enableIniConfigFilePath) : ?>
+    --with-config-file-scan-dir=<?= $this->getIniConfigFilePath() ?>/etc/php/conf.d/ \
+    --with-config-file-path=<?= $this->getIniConfigFilePath() ?>/etc/php/ \
+<?php endif; ?>
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
@@ -404,10 +408,10 @@ elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
     <?php if (!empty($item->pkgNames)) :?>
-        <?php foreach ($item->pkgNames as $item) : ?>
-    pkg-config --libs-only-L <?= $item . PHP_EOL ?>
-    pkg-config --libs-only-l <?= $item . PHP_EOL ?>
-    pkg-config --cflags-only-I <?= $item . PHP_EOL ?>
+        <?php foreach ($item->pkgNames as $pkgName) : ?>
+    pkg-config --libs-only-L <?= $pkgName . PHP_EOL ?>
+    pkg-config --libs-only-l <?= $pkgName . PHP_EOL ?>
+    pkg-config --cflags-only-I <?= $pkgName . PHP_EOL ?>
         <?php endforeach; ?>
     <?php else :?>
     echo "no PKG_CONFIG !"

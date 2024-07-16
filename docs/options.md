@@ -158,3 +158,7 @@ show-tarball-hash
 ---
 计算并显示已下载的源码包 HASH 值
 
+with-ini-config-file-path
+---
+设置 php.ini 配置目录
+

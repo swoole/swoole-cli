@@ -5,6 +5,7 @@ namespace SwooleCli;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
+use python\string;
 use RuntimeException;
 
 class Preprocessor
@@ -131,6 +132,9 @@ class Preprocessor
     protected string $configureVarables;
     protected string $buildType = 'release';
     protected bool $inVirtualMachine = false;
+
+    protected bool $enableIniConfigFilePath = false;
+    protected string $iniConfigFilePath = '';
 
     protected function __construct()
     {
@@ -934,4 +938,25 @@ class Preprocessor
     {
         return isset($this->extensionMap[$ext]);
     }
+
+
+    public function setIniConfigFilePath(string $PATH): static
+    {
+        $this->enableIniConfigFilePath = true;
+        $configFilePath = ($this->getInputOption('with-config-file-path'));
+        if ($configFilePath) {
+            $this->iniConfigFilePath = $configFilePath;
+        }
+        return $this;
+    }
+
+    public function getIniConfigFilePath(): string
+    {
+        if ($this->iniConfigFilePath) {
+            return $this->iniConfigFilePath;
+        } else {
+            return $this->getGlobalPrefix();
+        }
+    }
+
 }

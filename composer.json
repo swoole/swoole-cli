@@ -18,7 +18,6 @@
   },
   "scripts": {
     "test": "phpunit",
-    "format-src": "vendor/bin/php-cs-fixer fix sapi/src/ --rules=@PSR12 --verbose -vvv",
-    "format-conf.d": "vendor/bin/php-cs-fixer fix conf.d --rules=@PSR12 --verbose -vvv"
+    "format-src": "vendor/bin/php-cs-fixer fix sapi/src/ --rules=@PSR12 --verbose -vvv"
   }
 }
