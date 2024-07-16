@@ -98,23 +98,12 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-<<<<<<< HEAD
-if [ "$OS" = 'linux' ] ; then
-  if [ ! "$BASH_VERSION" ] ; then
-      echo "Please  use bash to run this script ($0) " 1>&2
-      echo "fix : " 1>&2
-      echo "apk add bash  OR sh sapi/quickstart/linux/alpine-init-minimal.sh " 1>&2
-      exit 1
-      # reconfigure  #
-      # dpkg-reconfigure dash
-=======
 if [ "$OS" = 'linux' ]; then
   if [ ! "$BASH_VERSION" ]; then
     echo "Please  use bash to run this script ($0) " 1>&2
     echo "fix : " 1>&2
     echo "apk add bash  OR sh sapi/quickstart/linux/alpine-init-minimal.sh " 1>&2
     exit 1
->>>>>>> build_native_php
   fi
 fi
 
@@ -129,43 +118,9 @@ for cmd in "${CMDS[@]}"; do
   fi
 done
 
-<<<<<<< HEAD
-if [ "$OS" = 'linux' ] ; then
-    OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release |tr -d '\n' | tr -d '\"')
-
-    if [ -f /.dockerenv ]; then
-        IN_DOCKER=1
-        if test $CMDS_LEN -ne $CMDS_NUMS ;then
-        {
-            if [ "$MIRROR" = 'china' ] ; then
-                if [ "$OS_RELEASE" = 'alpine' ]; then
-                    sh sapi/quickstart/linux/alpine-init.sh --mirror china
-                elif [ "$OS_RELEASE" = 'debian' ] || [ "$OS_RELEASE" = 'ubuntu'  ] ; then
-                    bash  sapi/quickstart/linux/debian-init.sh  --mirror china
-                else
-                    echo 'no support OS'
-                    exit 0
-                fi
-            else
-                if [ "$OS_RELEASE" = 'alpine' ]; then
-                    sh sapi/quickstart/linux/alpine-init.sh
-                elif [ "$OS_RELEASE" = 'debian' ] || [ "$OS_RELEASE" = 'ubuntu'  ] ; then
-                    bash  sapi/quickstart/linux/debian-init.sh
-                else
-                    echo 'no support OS'
-                    exit 0
-                fi
-            fi
-        }
-        fi
-        git config --global --add safe.directory ${__PROJECT__}
-    else
-        # docker inspect -f {{.State.Running}} download-box-web-server
-        if [ "`docker inspect -f {{.State.Running}} swoole-cli-builder`" = "true" ]; then
-            echo " build container is running "
-=======
 if [ "$OS" = 'linux' ]; then
   OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '\n' | tr -d '\"')
+
   if [ -f /.dockerenv ]; then
     IN_DOCKER=1
     if test $CMDS_LEN -ne $CMDS_NUMS; then
@@ -173,7 +128,7 @@ if [ "$OS" = 'linux' ]; then
         if [ "$MIRROR" = 'china' ]; then
           if [ "$OS_RELEASE" = 'alpine' ]; then
             sh sapi/quickstart/linux/alpine-init.sh --mirror china
-          elif [ "$OS_RELEASE" = 'debian' ]; then
+          elif [ "$OS_RELEASE" = 'debian' ] || [ "$OS_RELEASE" = 'ubuntu' ]; then
             bash sapi/quickstart/linux/debian-init.sh --mirror china
           else
             echo 'no support OS'
@@ -182,9 +137,8 @@ if [ "$OS" = 'linux' ]; then
         else
           if [ "$OS_RELEASE" = 'alpine' ]; then
             sh sapi/quickstart/linux/alpine-init.sh
-          elif [ "$OS_RELEASE" = 'debian' ]; then
+          elif [ "$OS_RELEASE" = 'debian' ] || [ "$OS_RELEASE" = 'ubuntu' ]; then
             bash sapi/quickstart/linux/debian-init.sh
->>>>>>> build_native_php
           else
             echo 'no support OS'
             exit 0
@@ -192,8 +146,10 @@ if [ "$OS" = 'linux' ]; then
         fi
       }
     fi
-    git config --global --add safe.directory ${__PROJECT__}
   else
+
+    git config --global --add safe.directory ${__PROJECT__}
+
     # docker inspect -f {{.State.Running}} download-box-web-server
     if [ "$(docker inspect -f {{.State.Running}} swoole-cli-builder)" = "true" ]; then
       echo " build container is running "
@@ -260,14 +216,9 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
   # composer update --no-interaction --optimize-autoloader
   # composer install --no-interaction --optimize-autoloader
 
-<<<<<<< HEAD
-    # composer update  --optimize-autoloader
-    # composer update  --optimize-autoloader --no-dev
-    # composer update --profile --prefer-dist --no-dev --optimize-autoloader
-=======
-  # composer update  --optimize-autoloader
+  # composer update --profile --prefer-dist --no-dev --optimize-autoloader
+
   composer install --no-interaction --no-autoloader --no-scripts --profile # --no-dev
->>>>>>> build_native_php
 
   composer dump-autoload --optimize --profile
 
