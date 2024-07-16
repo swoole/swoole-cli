@@ -40,6 +40,14 @@ if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
+$iniConfigFilePath = $p->getInputOption('with-ini-config-file-path');
+if ($iniConfigFilePath) {
+    if ($iniConfigFilePath == '1') {
+        $iniConfigFilePath = $p->getGlobalPrefix();
+    }
+    $p->setIniConfigFilePath($iniConfigFilePath);
+}
+
 if ($p->isMacos()) {
     $p->setExtraLdflags('-undefined dynamic_lookup');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {

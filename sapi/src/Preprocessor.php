@@ -627,6 +627,7 @@ class Preprocessor
         if (isset($this->inputOptions[$key])) {
             return $this->inputOptions[$key];
         }
+
         $env = getenv('SWOOLE_CLI_' . str_replace('-', '_', strtoupper($key)));
         if ($env !== false) {
             return $env;
@@ -939,10 +940,9 @@ class Preprocessor
     }
 
 
-    public function setIniConfigFilePath(string $PATH): static
+    public function setIniConfigFilePath(string $configFilePath): static
     {
         $this->enableIniConfigFilePath = true;
-        $configFilePath = ($this->getInputOption('with-config-file-path'));
         if ($configFilePath) {
             $this->iniConfigFilePath = $configFilePath;
         }
@@ -951,11 +951,7 @@ class Preprocessor
 
     public function getIniConfigFilePath(): string
     {
-        if ($this->iniConfigFilePath) {
-            return $this->iniConfigFilePath;
-        } else {
-            return $this->getGlobalPrefix();
-        }
+        return $this->iniConfigFilePath;
     }
 
 }
