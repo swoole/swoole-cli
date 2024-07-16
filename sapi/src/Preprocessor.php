@@ -133,6 +133,7 @@ class Preprocessor
     protected bool $inVirtualMachine = false;
 
     protected bool $enableIniConfigFilePath = false;
+
     protected string $iniConfigFilePath = '';
 
     protected function __construct()
@@ -627,7 +628,6 @@ class Preprocessor
         if (isset($this->inputOptions[$key])) {
             return $this->inputOptions[$key];
         }
-
         $env = getenv('SWOOLE_CLI_' . str_replace('-', '_', strtoupper($key)));
         if ($env !== false) {
             return $env;

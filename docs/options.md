@@ -160,5 +160,5 @@ show-tarball-hash
 
 with-ini-config-file-path
 ---
-设置 php.ini 配置目录
-
+设置 php.ini 加载目录
+默认值： `/usr/local/swoole-cli/etc/php/`
