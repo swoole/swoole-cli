@@ -5,7 +5,6 @@ namespace SwooleCli;
 use MJS\TopSort\CircularDependencyException;
 use MJS\TopSort\ElementNotFoundException;
 use MJS\TopSort\Implementations\StringSort;
-use python\string;
 use RuntimeException;
 
 class Preprocessor

@@ -407,14 +407,14 @@ elif [ "$1" = "switch-swoole-branch" ] ;then
 elif [ "$1" = "pkg-check" ] ;then
 <?php foreach ($this->libraryList as $item) : ?>
     echo "[<?= $item->name ?>]"
-    <?php if (!empty($item->pkgNames)) :?>
+    <?php if (!empty($item->pkgNames)) : ?>
         <?php foreach ($item->pkgNames as $pkgName) : ?>
-    pkg-config --libs-only-L <?= $pkgName . PHP_EOL ?>
-    pkg-config --libs-only-l <?= $pkgName . PHP_EOL ?>
-    pkg-config --cflags-only-I <?= $pkgName . PHP_EOL ?>
+            pkg-config --libs-only-L <?= $pkgName . PHP_EOL ?>
+            pkg-config --libs-only-l <?= $pkgName . PHP_EOL ?>
+            pkg-config --cflags-only-I <?= $pkgName . PHP_EOL ?>
         <?php endforeach; ?>
-    <?php else :?>
-    echo "no PKG_CONFIG !"
+    <?php else : ?>
+        echo "no PKG_CONFIG !"
     <?php endif ?>
     echo "==========================================================="
 <?php endforeach; ?>
