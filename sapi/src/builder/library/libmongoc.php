@@ -93,8 +93,8 @@ EOF
                 'zlib',
                 'libzstd',
                 'icu',
-            // 'libsasl',
-               'snappy'
+                // 'libsasl',
+                'snappy'
             ) //'libbson'
     );
 };

@@ -14,6 +14,8 @@ ip address add 10.192.99.1/24 dev wg0
 wg setconf wg0 configuration.conf
 ip link set up  dev wg0
 {
+  sysctl -w net.ipv4.ip_forward=1
+
   iptables -t filter -A FORWARD -i wg0 -j ACCEPT
 } || {
   echo $?
