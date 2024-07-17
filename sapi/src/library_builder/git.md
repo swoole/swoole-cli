@@ -103,6 +103,14 @@ git checkout commit_id filename
 
 ```
 
+## git 恢复被删除的整个文件夹
+```shell
+
+git log --oneline -- experimental-features/v3/rules/example/
+git checkout commit_id -- experimental-features/v3/rules/example/
+
+```
+
 ## git commits 出现累积叠加 解决办法
 
 ```bash
