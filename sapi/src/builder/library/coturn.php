@@ -42,7 +42,7 @@ EOF
             )
             ->withAutoUpdateFile()
             ->withPrefix($coturn_prefix)
-            //->withAutoUpdateFile()
+            ->withAutoUpdateFile()
             ->withBuildCached(false)
             ->withInstallCached(false)
             /*
