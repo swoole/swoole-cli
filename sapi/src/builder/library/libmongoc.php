@@ -27,26 +27,26 @@ return function (Preprocessor $p) {
                 'mongo-c-driver',
                 <<<EOF
 
-                # git clone -b master --depth=1   https://github.com/mongodb/mongo-c-driver.git
-                git clone -b static-build --depth=1   https://github.com/jingjingxyk/mongo-c-driver.git
+                git clone -b master --depth=1   https://github.com/mongodb/mongo-c-driver.git
+                # git clone -b static-build --depth=1   https://github.com/jingjingxyk/mongo-c-driver.git
 
 EOF
             )
             ->withPrefix($libmongoc_prefix)
-            //->withAutoUpdateFile()
-            ->withBuildCached(false)
-            ->withInstallCached(false)
+            ->withAutoUpdateFile()
+            ->withBuildCached()
+            ->withInstallCached()
             ->withBuildScript(
                 <<<EOF
              mkdir -p build-dir
             cd build-dir
+            # -DBUILD_SHARED_LIBS=OFF \
+            # -DBUILD_STATIC_LIBS=ON \
 
             cmake .. \
             -DCMAKE_INSTALL_PREFIX={$libmongoc_prefix} \
             -DCMAKE_C_STANDARD=11 \
             -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DBUILD_STATIC_LIBS=ON \
             -DENABLE_MONGOC=ON \
             -DENABLE_STATIC=ON \
             -DENABLE_SHARED=OFF \
