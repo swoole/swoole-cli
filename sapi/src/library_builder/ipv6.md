@@ -1,14 +1,14 @@
 ## 分配IPv6 的方式
 
 1. 手动配置：直接设置IPv6地址
-1. 基于ICMPv6 NDP 协议的自动配置 SLAAC
-1. 基于DHCPv6 协议的自动配置
+2. 基于ICMPv6 NDP 协议的自动配置
+3. 基于DHCPv6 协议的自动配置
 
 ## IPv6 自动配置IP 的过程中支持三种配置方式
 
 1. SLAAC Stateless address autoconfiguration，无状态地址自动配置
-1. Stateful DHCPv6
-1. Stateless DHCPv6
+2. Stateful DHCPv6
+3. Stateless DHCPv6
 
 ## 简述原理
 
@@ -29,4 +29,18 @@
 | SLAAC     |                   | 网关、子网前缀、mtu   主机根据子网前缀自动生成 IPv6 地址 |
 | Stateful  | 子网前缀、MTU、主机IP、DNS | 子网前缀、网关、主机                         |
 | Stateless | DNS               | 子网前缀、网关、主机  、DNS                   |
+
+## 图文详解NDP机制之——地址解析
+
+    NDP使用ICMPv6的5种相关报文
+
+    RS（Router Solicitation）：路由请求报文，type=133，code=0；
+
+    RA（Router Advertisement）：路由通告报文，type=134，code=0；
+
+    NS（Neighbor Solicitation）：邻居请求协议，type=135，code=0；
+
+    NA（Neighbor Advertisement）：邻居通告协议，type=136，code=0；
+
+    重定向：type=137，code=0
 
