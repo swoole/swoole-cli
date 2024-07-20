@@ -85,3 +85,33 @@ Web前端WebRTC 攻略(五) NAT 穿越与 ICE
 
 【译】 NAT 穿透是如何工作的：技术原理及企业级实践
     https://arthurchiao.art/blog/how-nat-traversal-works-zh/
+
+webrtc 场景一：双方处于同一个内网中
+
+    直接通过内网进行连接
+    通过公网后进行连接
+    通过中继服务器进行连接
+
+场景二：双方处于不同的两个地方
+
+    直接通过P2P进行连接
+    通过中继服务器进行连接
+
+candidate的字段解析
+
+    foundation:用于标志和区分来自同一个stun的不同的候选者,ID标识
+    icegroupid:ICE的组ID
+    type:协议类型
+    priority:优先级
+    ip:ip地址
+    port:端口
+    typ:标识后面字段的属性类型是候选类型
+    host:本地接口获取到的candidate（本机候选）
+    srflx:NAT网关在公网侧的IP地址，通过STUN或者TURN收集(server reflexive candidate)（内网主机映射的外网地址端口，对称性NAT）
+    prflx:可以在ICE的后续阶段中获取到(peer reflexive candidate)（TUN server为客户端分配的中继地址）
+    relay:TURN服务器的公网转发地址，通过TURN收集（中继服务器的地址）
+
+
+    generation:代号，表明当前是第几代的候选
+    ufrag: ICE分配的用户名标识
+    network-cost : 网卡标识
