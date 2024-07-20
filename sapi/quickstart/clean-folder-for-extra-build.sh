@@ -28,6 +28,9 @@ test -d kubernetes && rm -rf kubernetes
 test -d qemu && rm -rf qemu
 test -d SDN && rm -rf SDN
 
+cd ${__PROJECT__}/sapi/
+
+test -d tools && rm -rf tools
 
 cd ${__PROJECT__}/sapi/src/builder/
 
