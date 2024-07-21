@@ -149,14 +149,14 @@ jobs:
       - name: Archive production artifacts debug
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64-debug
+          name: swoole-cli-v${{ env.APP_VERSION }}-zts-macos-arm64-debug
           retention-days: 90
           path: ./bin/swoole-cli
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64
+          name: swoole-cli-v${{ env.APP_VERSION }}-zts-macos-arm64
           retention-days: 90
           path: ./bin/dist/swoole-cli
 

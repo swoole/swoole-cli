@@ -106,7 +106,7 @@ jobs:
       - name: production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64
+          name: swoole-cli-v${{ env.APP_VERSION }}-zts-cygwin-x64
           retention-days: 90
           path: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
 
