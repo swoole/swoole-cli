@@ -48,18 +48,12 @@ test -f Makefile && make clean
     --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
     --enable-gd --with-jpeg  --with-freetype \
     --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
-    --enable-swoole-pgsql \
-    --enable-swoole-sqlite \
     --enable-redis \
     --with-imagick \
     --with-yaml \
-    --with-readline
+    --with-readline \
+    --with-pdo-pgsql \
+    --with-pgsql \
+    --with-pdo-sqlite \
 
 
-#  --with-pdo-pgsql \
-#  --with-pgsql
-#  --with-pdo-sqlite \
-
-# swoole v6 参数
-# --enable-swoole-thread \
-# --enable-zts \
