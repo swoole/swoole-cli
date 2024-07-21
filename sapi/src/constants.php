@@ -232,6 +232,8 @@ define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
 
+define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
+define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
 
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 define("FFTW3_PREFIX", $p->getGlobalPrefix() . '/fftw3');
@@ -327,8 +329,6 @@ define("MUSL_LIBC_PREFIX", $p->getGlobalPrefix() . '/musl_libc');
 
 define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 
-define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
-define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
 
 define("GPAC_PREFIX", $p->getGlobalPrefix() . '/gpac');
 
@@ -342,4 +342,7 @@ define("LIBOAUTH2_PREFIX", $p->getGlobalPrefix() . '/liboauth2');
 define("CJOSE_PREFIX", $p->getGlobalPrefix() . '/cjose');
 define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
+
+
 
