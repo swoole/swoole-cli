@@ -164,14 +164,14 @@ jobs:
       - name: production artifacts debug
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64-debug
+          name: swoole-cli-v${{ env.APP_VERSION }}-zts-linux-arm64-debug
           retention-days: 90
           path: ./bin/swoole-cli
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64
+          name: swoole-cli-v${{ env.APP_VERSION }}-zts-linux-arm64
           retention-days: 90
           path: ./bin/dist/swoole-cli
 
