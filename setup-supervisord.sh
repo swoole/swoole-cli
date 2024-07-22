@@ -68,3 +68,24 @@ fi
 
 # supervisord configure
 # http://supervisord.org/configuration.html
+
+  cat  > /etc/supervisord.d/user-custom/example.conf.bak <<'EOF'
+[program:example]
+command=bash /tmp/example.sh
+;process_name=%(program_name)s ; process_name expr (default %(program_name)s)
+process_name=example ; process_name expr (default %(program_name)s)
+numprocs=1                    ; number of processes copies to start (def 1)
+directory=/                ; directory to cwd to before exec (def no cwd)
+autostart=true                ; start at supervisord start (default: true)
+startsecs=1                   ; # of secs prog must stay up to be running (def. 1)
+startretries=3                ; max # of serial start failures when starting (default 3)
+autorestart=unexpected        ; when to restart if exited after running (def: unexpected)
+exitcodes=0                   ; 'expected' exit codes used with autorestart (default 0)
+stopsignal=QUIT               ; signal used to kill process (default TERM)
+stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)
+stdout_logfile=/tmp/supervisord-example.log       ; stdout log path, NONE for none; default AUTO
+stdout_syslog=false           ; send stdout to syslog with process name (default false)
+stderr_logfile=/tmp/supervisord-example.log        ; stderr log path, NONE for none; default AUTO
+
+
+EOF

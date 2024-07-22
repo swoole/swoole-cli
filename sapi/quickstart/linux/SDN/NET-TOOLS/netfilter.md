@@ -1,6 +1,5 @@
 # iptables详解（1）：iptables概念
 
-
     https://www.cnblogs.com/jingjingxyk/p/16866170.html
 
     https://www.cnblogs.com/cheyunhua/p/15188835.html
@@ -63,10 +62,10 @@
     filter  表中的规则可以被哪些链使用：INPUT，FORWARD，OUTPUT
 
 ## iptables为我们定义了4张”表”,当他们处于同一条”链”时，执行的优先级如下
+
     优先级次序（由高而低）：
 
     raw –> mangle –> nat –> filter
-
 
 ## 链的规则存放于哪些表中（从链到表的对应关系）：
 
@@ -81,12 +80,10 @@
     POSTROUTING  的规则可以存在于：mangle表，nat表。
 
 ## ”匹配条件”与”动作”组成了规则
+
     匹配条件分为基本匹配条件与扩展匹配条件
 
     基本匹配条件: 源地址Source IP，目标地址 Destination IP
-
-
-
 
 ## 处理动作
 
@@ -111,6 +108,7 @@
 ## nftables 和 iptables 都是 netfilter 管理工具
 
 ## 实操
+
     当没有使用-t选项指定表时，默认为操作filter表
 
     iptables -t filter -L
@@ -127,8 +125,8 @@
 
     iptables -t 表名 -L 链名
 
-
 ## 主机防火墙  和 网络防火墙
+
     当iptables作为”网络防火墙”时，在配置规则时，往往需要考虑”双向性”
 
     state可以译为状态 实现”连接追踪”机制
@@ -141,3 +139,11 @@
     TCP Flags： SYN,ACK,FIN,RST,URG,PSH
 
     conntrack -L
+
+## 共享网络
+
+    iptables   -t nat  -A POSTROUTING    -s 172.16.1.0/24    -j  SNAT  MASQUERADE
+
+## 使用 nftables 代替 iptables
+
+    kubenetes 使用 nftables 代替 iptables (iptable ipvs ipset)
