@@ -21,4 +21,5 @@ ssh-keygen -t rsa -f id_rsa -N "" -C 'Gernerate SSH Key '
 # test link
 
 # ssh -vT git@github.com
-# ssh -T git@gitee.com
+# ssh -T  git@gitee.com
+# ssh -T  git@gitlab.com

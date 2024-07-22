@@ -27,7 +27,8 @@ EOF
 
 RESULT_CODE=0
 while [ $RESULT_CODE -eq 0 ]; do
-  curl -fSLo /dev/null http://10.1.20.7/all-deps.zip
+  curl -fSLo all-deps.zip http://10.1.20.7/all-deps.zip
+  echo '' > all-deps.zip && rm -f all-deps.zip
   RESULT_CODE=$?
   sleep 1  # 每隔1秒检查一次
 done
