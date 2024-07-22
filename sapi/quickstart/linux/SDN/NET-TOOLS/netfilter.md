@@ -147,3 +147,7 @@
 ## 使用 nftables 代替 iptables
 
     kubenetes 使用 nftables 代替 iptables (iptable ipvs ipset)
+
+## nftables 查看规则
+
+    nft list rulese
