@@ -20,6 +20,8 @@ export LD=ld.lld
 
 cd php-src
 
+bash ${__DIR__}/opcache-static-compile-patch.sh
+
 ./buildconf --force
 
 ./configure \
