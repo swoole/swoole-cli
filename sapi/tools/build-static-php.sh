@@ -35,6 +35,9 @@ bash ${__DIR__}/opcache-static-compile-patch.sh
   --without-valgrind \
   --enable-opcache
 
+export LDFLAGS=" -static -all-static "
+sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
+
 make -j $(nproc)
 
 file sapi/cli/php
