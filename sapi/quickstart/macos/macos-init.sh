@@ -82,7 +82,7 @@ fi
 # 详见： https://github.com/pyenv/pyenv/wiki/Common-build-problems#keg-only-homebrew-packages-are-forcibly-linked--added-to-path
 
 # 已安装的包 跳过安装
-PACKAGES_1=(wget curl libtool automake re2c llvm flex bison)
+PACKAGES_1=(wget curl libtool automake re2c llvm flex bison m4)
 PACKAGES_2=(libtool gettext coreutils libunistring pkg-config cmake)
 
 PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}")
