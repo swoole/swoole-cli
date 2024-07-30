@@ -44,6 +44,13 @@ if ($p->isMacos()) {
     $p->setExtraLdflags('-undefined dynamic_lookup');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
+    } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) {
+        $p->withBinPath('/opt/homebrew/opt/llvm/bin/')
+            ->withBinPath('/opt/homebrew/opt/flex/bin')
+            ->withBinPath('/opt/homebrew/opt/bison/bin')
+            ->withBinPath('/opt/homebrew/opt/libtool/bin')
+            ->withBinPath('/opt/homebrew/opt/m4/bin')
+            ->setLinker('ld64.lld');
     } else {
         $p->setLinker('lld');
     }
@@ -57,3 +64,4 @@ $p->setExtraCflags('-fno-ident -Os');
 
 // Generate make.sh
 $p->execute();
+
