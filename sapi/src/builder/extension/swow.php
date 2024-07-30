@@ -20,11 +20,11 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/swow/swow')
             ->withLicense('https://github.com/swow/swow/blob/develop/LICENSE', Extension::LICENSE_APACHE2)
             ->withManual('https://docs.toast.run/swow/en/install.html')
-            ->withFile('swow-v1.5.2.tar.gz')
+            ->withFile('swow-v1.5.3.tar.gz')
             ->withDownloadScript(
                 "swow",
                 <<<EOF
-                git clone -b v1.5.2 https://github.com/swow/swow.git
+                git clone -b v1.5.3 https://github.com/swow/swow.git
                 mv swow swow-t
                 mv swow-t/ext  swow
                 rm -rf swow-t
