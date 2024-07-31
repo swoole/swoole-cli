@@ -73,11 +73,6 @@ if [ ${WITH_UPDATE} -eq 1 ]; then
 
 fi
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> experiment
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
 # macos 环境下 Homebrew packages :   coreutils binutils 不兼容
@@ -89,11 +84,7 @@ brew install libtool gettext coreutils libunistring pkg-config cmake
 
 # PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}")
 # for PACKAGE in "${PACKAGES[@]}"; do
-<<<<<<< HEAD
-#   brew list "$PACKAGE" &>/dev/null || brew install "$PACKAGE"
-=======
 #  brew list "$PACKAGE" &>/dev/null || brew install "$PACKAGE"
->>>>>>> experiment
 # done
 
 which glibtool
