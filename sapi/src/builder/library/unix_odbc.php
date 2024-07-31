@@ -21,7 +21,10 @@ EOF
             )
             ->withconfigure(
                 <<<EOF
-            autoreconf -ivf
+            aclocal
+            autoconf
+            autoheader
+            automake --add-missing
             ./configure --help
 
             PACKAGES_NAMES="readline"
