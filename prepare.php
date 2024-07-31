@@ -166,6 +166,7 @@ if ($p->isMacos()) {
             ->withBinPath('/usr/local/opt/libtool/bin')
             ->withBinPath('/usr/local/opt/m4/bin')
             ->withBinPath('/usr/local/opt/automake/bin/')
+            ->withBinPath('/usr/local/opt/autoconf/bin/')
             ->setLinker('ld64.lld');
     } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) { //兼容 macos arm64
         $p->withBinPath('/opt/homebrew/opt/llvm/bin/')
@@ -174,6 +175,7 @@ if ($p->isMacos()) {
             ->withBinPath('/opt/homebrew/opt/libtool/bin')
             ->withBinPath('/opt/homebrew/opt/m4/bin')
             ->withBinPath('/opt/homebrew/opt/automake/bin/')
+            ->withBinPath('/opt/homebrew/opt/autoconf/bin/')
             ->setLinker('ld64.lld');
     } else {
         $p->setLinker('lld');
