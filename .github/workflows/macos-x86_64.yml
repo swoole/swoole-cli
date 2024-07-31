@@ -62,13 +62,7 @@ jobs:
 
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
-          export PATH=/usr/local/opt/llvm/bin:$PATH
-          export PATH=/usr/local/opt/flex/bin:$PATH
-          export PATH=/usr/local/opt/bison/bin:$PATH
           export PATH=/usr/local/opt/libtool/bin:$PATH
-
-          ln -sf /usr/local/opt/libtool/bin/glibtool /usr/local/opt/libtool/bin/libtool
-          ln -sf /usr/local/opt/libtool/bin/glibtoolize /usr/local/opt/libtool/bin/libtoolize
           ls -lha /usr/local/opt/libtool/bin/
 
           libtoolize --version
@@ -136,10 +130,6 @@ jobs:
       - name: Build
         run: |
           export PATH=${{ github.workspace }}/bin/runtime:$PATH
-          export PATH=/usr/local/opt/llvm/bin:$PATH
-          export PATH=/usr/local/opt/flex/bin:$PATH
-          export PATH=/usr/local/opt/bison/bin:$PATH
-          export PATH=/usr/local/opt/libtool/bin:$PATH
 
           bash make-install-deps.sh
 
