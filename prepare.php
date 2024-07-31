@@ -160,9 +160,23 @@ EOF;
 if ($p->isMacos()) {
     $p->setExtraLdflags('-undefined dynamic_lookup');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
-        $p->withBinPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
-    } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) { //兼容 github action
-        $p->withBinPath('/opt/homebrew/opt/llvm/bin/')->setLinker('ld64.lld');
+        $p->withBinPath('/usr/local/opt/llvm/bin')
+            ->withBinPath('/usr/local/opt/flex/bin')
+            ->withBinPath('/usr/local/opt/bison/bin')
+            ->withBinPath('/usr/local/opt/libtool/bin')
+            ->withBinPath('/usr/local/opt/m4/bin')
+            ->withBinPath('/usr/local/opt/automake/bin/')
+            ->withBinPath('/usr/local/opt/autoconf/bin/')
+            ->setLinker('ld64.lld');
+    } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) { //兼容 macos arm64
+        $p->withBinPath('/opt/homebrew/opt/llvm/bin/')
+            ->withBinPath('/opt/homebrew/opt/flex/bin')
+            ->withBinPath('/opt/homebrew/opt/bison/bin')
+            ->withBinPath('/opt/homebrew/opt/libtool/bin')
+            ->withBinPath('/opt/homebrew/opt/m4/bin')
+            ->withBinPath('/opt/homebrew/opt/automake/bin/')
+            ->withBinPath('/opt/homebrew/opt/autoconf/bin/')
+            ->setLinker('ld64.lld');
     } else {
         $p->setLinker('lld');
     }
