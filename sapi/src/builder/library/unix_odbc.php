@@ -15,7 +15,10 @@ return function (Preprocessor $p) {
             ->withPrefix($unix_odbc_prefix)
             ->withconfigure(
                 <<<EOF
-            autoreconf -ivf
+            aclocal
+            autoconf
+            autoheader
+            automake --add-missing
             ./configure --help
 
             PACKAGES_NAMES="readline"
