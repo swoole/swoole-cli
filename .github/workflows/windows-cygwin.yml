@@ -108,7 +108,7 @@ jobs:
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-zts-cygwin-x64
           retention-days: 90
-          path: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
+          path: swoole-cli-v${{ env.APP_VERSION }}-zts-cygwin-x64.zip
 
       - name: gh release
         uses: softprops/action-gh-release@v2
@@ -116,4 +116,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
+          files: swoole-cli-v${{ env.APP_VERSION }}-zts-cygwin-x64.zip
