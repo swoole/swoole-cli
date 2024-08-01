@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare Source Code
+      - name: Show Environment Info
         run: |
           echo $PATH
           env
@@ -52,10 +52,12 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
+      - name: Prepare Build Environment
+        run: |
           # git submodule update --init
 
-
           # 准备数据库容器
+          docker-compose version
           bash sapi/src/UnitTest/scripts/database/start.sh
 
           sudo mkdir -p /usr/local/swoole-cli
