@@ -21,7 +21,7 @@ case $OS in
   ;;
 *)
   case $OS in
-  'MSYS_NT'* | 'CYGWIN_NT'* )
+  'MSYS_NT'* | 'CYGWIN_NT'*)
     OS="windows"
     ;;
   'MINGW64_NT'*)
@@ -39,7 +39,7 @@ case $ARCH in
 'x86_64')
   ARCH="x64"
   ;;
-'aarch64' | 'arm64' )
+'aarch64' | 'arm64')
   ARCH="arm64"
   ;;
 *)
@@ -50,19 +50,19 @@ esac
 
 APP_VERSION='v6.0.0-dev'
 APP_NAME='swoole-cli'
-VERSION='swoole-cli-v0.0.6'
+VERSION='swoole-cli-v0.0.7'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
 cd ${__PROJECT__}/var/runtime
 
-APP_DOWNLOAD_URL="https://github.com/jingjingxyk/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+APP_DOWNLOAD_URL="https://github.com/jingjingxyk/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-zts-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
 if [ $OS = 'windows' ]; then
-  APP_DOWNLOAD_URL="https://github.com/jingjingxyk/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
+  APP_DOWNLOAD_URL="https://github.com/jingjingxyk/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-zts-cygwin-${ARCH}.zip"
 fi
 
 MIRROR=''
@@ -70,7 +70,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    # dev beta alpha
+    # dev beta alpha 不支持 镜像
     MIRROR=""
     ;;
   --proxy)
@@ -92,10 +92,10 @@ done
 
 case "$MIRROR" in
 china)
-  APP_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+  APP_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/${APP_NAME}-${APP_VERSION}-zts-${OS}-${ARCH}.tar.xz"
   COMPOSER_DOWNLOAD_URL="https://mirrors.tencent.com/composer/composer.phar"
   if [ $OS = 'windows' ]; then
-    APP_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
+    APP_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/${APP_NAME}-${APP_VERSION}-zts-cygwin-${ARCH}.zip"
   fi
   ;;
 
@@ -106,11 +106,11 @@ chmod a+x composer.phar
 
 test -f cacert.pem || curl -LSo cacert.pem ${CACERT_DOWNLOAD_URL}
 
-APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
+APP_RUNTIME="${APP_NAME}-${APP_VERSION}-zts-${OS}-${ARCH}"
 
 if [ $OS = 'windows' ]; then
   {
-    APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
+    APP_RUNTIME="${APP_NAME}-${APP_VERSION}-zts-cygwin-${ARCH}"
     test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
