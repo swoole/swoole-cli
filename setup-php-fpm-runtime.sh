@@ -50,7 +50,7 @@ esac
 
 APP_VERSION='v8.2.13'
 APP_NAME='php-fpm'
-VERSION='php-fpm-v0.0.1'
+VERSION='php-fpm-v0.0.2'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
@@ -139,6 +139,12 @@ upload_max_filesize="128M"
 post_max_size="128M"
 memory_limit="1G"
 date.timezone="UTC"
+
+opcache.enable_cli=1
+opcache.jit=1254
+opcache.jit_buffer_size=480M
+
+expose_php=Off
 
 EOF
 
