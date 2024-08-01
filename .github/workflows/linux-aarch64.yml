@@ -17,7 +17,7 @@ jobs:
         #  - "8.3.3"
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare Source Code
+      - name: Show Environment Info
         run: |
           echo $PATH
           env
@@ -37,9 +37,10 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
-
+      - name: Prepare Build Environment
+        run: |
           # git submodule update --init
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
