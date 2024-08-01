@@ -79,7 +79,7 @@ if [ ! -d $ROOT/ext/imagick ]; then
   mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
 fi
 
-if [ ! -d $ROOT/ext/swoole ]; then
+if [ ! -f $ROOT/ext/swoole/config.m4 ]; then
   if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
     test -d /tmp/swoole && rm -rf /tmp/swoole
     git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git /tmp/swoole
