@@ -1,7 +1,7 @@
 <?php
 
 $src = realpath(__DIR__ . '/../../../');
-$name = "swoole-cli-v" . SWOOLE_VERSION . "-cygwin-x64";
+$name = "swoole-cli-v" . SWOOLE_VERSION . "-zts-cygwin-x64";
 
 $dst = "/tmp/{$name}";
 if (!is_dir($dst)) {
