@@ -55,7 +55,7 @@ jobs:
         #  - "8.3.3"
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare Source Code
+      - name: Show Environment Info
         run: |
           echo $PATH
           env
@@ -96,11 +96,14 @@ jobs:
           echo ${{ github.head_ref }}
           echo ${{ github.ref_name }}
 
+      - name: Prepare Build Environment
+        run: |
           # git submodule update --init
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
           # 准备数据库容器
-
-          # bash sapi/docker/database/start.sh
+          docker-compose version
+          bash sapi/src/UnitTest/scripts/database/start.sh
 
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
