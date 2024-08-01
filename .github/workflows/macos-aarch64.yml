@@ -117,7 +117,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release --with-swoole-pgsql=1
+          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +opcache --with-build-type=release --with-swoole-pgsql=1
 
       - name: Build
         run: |

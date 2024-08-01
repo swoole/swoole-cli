@@ -85,7 +85,7 @@ class Preprocessor
      * @var array|string[]
      */
     protected array $extEnabled = [
-        'opcache',
+        //'opcache', # zts 模式下， 静态编译 opcache 报错 ，更多信息： https://github.com/php/php-src/issues/15074
         'curl',
         'iconv',
         'bz2',
