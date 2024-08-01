@@ -79,18 +79,17 @@ if [ ! -d $ROOT/ext/imagick ]; then
   mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
 fi
 
-if [ ! -f $ROOT/ext/swoole/config.m4 ]; then
-  if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
-    test -d /tmp/swoole && rm -rf /tmp/swoole
-    git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git /tmp/swoole
-    cd /tmp/swoole
-    tar -czvf $ROOT/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
-    cd $ROOT/pool/ext/
-  fi
-  mkdir -p swoole-${SWOOLE_VERSION}
-  tar --strip-components=1 -C swoole-${SWOOLE_VERSION} -xf swoole-${SWOOLE_VERSION}.tgz
-  mv swoole-${SWOOLE_VERSION} $ROOT/ext/swoole
+if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
+  test -d /tmp/swoole && rm -rf /tmp/swoole
+  git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git /tmp/swoole
+  cd /tmp/swoole
+  tar -czvf $ROOT/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
+  cd $ROOT/pool/ext/
 fi
+mkdir -p swoole-${SWOOLE_VERSION}
+tar --strip-components=1 -C swoole-${SWOOLE_VERSION} -xf swoole-${SWOOLE_VERSION}.tgz
+test -d $ROOT/ext/swoole && rm -rf $ROOT/ext/swoole
+mv swoole-${SWOOLE_VERSION} $ROOT/ext/swoole
 
 cd $ROOT
 
