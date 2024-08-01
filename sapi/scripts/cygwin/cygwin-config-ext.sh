@@ -81,6 +81,7 @@ if [ ! -f $ROOT/ext/swoole/config.m4 ]; then
   fi
   mkdir -p swoole-${SWOOLE_VERSION}
   tar --strip-components=1 -C swoole-${SWOOLE_VERSION} -xf swoole-${SWOOLE_VERSION}.tgz
+  test -d $ROOT/ext/swoole && rm -rf $ROOT/ext/swoole
   mv swoole-${SWOOLE_VERSION} $ROOT/ext/swoole
 fi
 
