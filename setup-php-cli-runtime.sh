@@ -132,6 +132,19 @@ cat >${__PROJECT__}/bin/runtime/php.ini <<EOF
 curl.cainfo="${__PROJECT__}/bin/runtime/cacert.pem"
 openssl.cafile="${__PROJECT__}/bin/runtime/cacert.pem"
 swoole.use_shortname=off
+display_errors = On
+error_reporting = E_ALL
+
+upload_max_filesize="128M"
+post_max_size="128M"
+memory_limit="1G"
+date.timezone="UTC"
+
+opcache.enable_cli=1
+opcache.jit=1254
+opcache.jit_buffer_size=480M
+
+expose_php=Off
 
 EOF
 
