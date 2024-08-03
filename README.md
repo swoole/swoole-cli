@@ -34,8 +34,7 @@ curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-run
 
 ```
 
-## `php-cli`构建文档
-
+## 构建文档
 
 - [linux 版构建文档](docs/linux.md)
 - [macOS 版构建文档](docs/macOS.md)
