@@ -50,6 +50,17 @@
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
 - [quickstart](sapi/quickstart/README.md)
 
+## 立即使用 swoole-cli
+
+```shell
+
+curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash
+
+# 来自 https://www.swoole.com/download
+curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --mirror china
+
+```
+
 ## Clone
 
 ```shell
