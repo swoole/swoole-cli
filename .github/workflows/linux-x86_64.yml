@@ -191,7 +191,9 @@ jobs:
       - name: Start Database
         run: |
           # 准备数据库容器
+          export PATH=/usr/libexec/docker/cli-plugins/:$PATH
           docker-compose version
+          docker container ls -a
           bash sapi/src/UnitTest/scripts/database/start.sh
 
       - name: Show Build Result
