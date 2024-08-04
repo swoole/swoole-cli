@@ -60,6 +60,11 @@ jobs:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
 
+      - name: Clean Source Code Tarball Cache On Release
+        if: startsWith(github.ref, 'refs/tags/')
+        run:
+          rm -rf ${{ github.workspace }}/pool/*
+
       - name: Prepare Runtime and Libraries and Extensions
         run: |
           set -x
@@ -79,8 +84,8 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile  --no-dev
           composer dump-autoload --optimize --profile --no-dev
 
-          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +mongodb --with-libavif=1 --show-tarball-hash=1
-          php prepare.php           +apcu +ds +xlswriter +ssh2 +pgsql --with-libavif=1 @macos --show-tarball-hash=1
+          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +uuid +mongodb --show-tarball-hash=1
+          php prepare.php           +apcu +ds +xlswriter +ssh2  +uuid @macos --show-tarball-hash=1
 
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
