@@ -287,7 +287,7 @@ make_clean() {
 }
 
 help() {
-    echo "./make.sh docker-build [china|ustc|tuna]"
+    echo "./make.sh docker-build [ china | ustc | tuna ]"
     echo "./make.sh docker-bash"
     echo "./make.sh docker-commit"
     echo "./make.sh docker-push"
@@ -314,17 +314,25 @@ help() {
 
 if [ "$1" = "docker-build" ] ;then
     MIRROR=""
+    CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
     if [ -n "$2" ]; then
         MIRROR=$2
+        case "$MIRROR" in
+        china | openatom | ustc | tuna)
+            CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
+        ;;
+        esac
     fi
     cd ${__PROJECT_DIR__}/sapi/docker
-    docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f <?= $this->getBaseImageDockerFile() ?>  . --build-arg="MIRROR=${MIRROR}"
+    echo "MIRROR=${MIRROR}"
+    echo "BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
+    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
     base_image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> | tail -n +2 2> /dev/null)
     image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> | tail -n +2 2> /dev/null)
-    CONTAINER_STATE=$(docker inspect -f {{.State.Running}} <?= Preprocessor::CONTAINER_NAME ?> 2> /dev/null)
+    CONTAINER_STATE=$(docker inspect -f "{{.State.Running}}" <?= Preprocessor::CONTAINER_NAME ?> 2> /dev/null)
     if [[ "${CONTAINER_STATE}" != "true" ]]; then
         bash ./make.sh docker-stop
         container=''
@@ -340,6 +348,9 @@ elif [ "$1" = "docker-bash" ] ;then
         else
             echo "<?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> image does not exist, try to pull"
             echo "create container with <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> image"
+            # check container image exists
+            # curl -fsSlL --head https://hub.docker.com/v2/repositories/$1/tags/$2/ > /dev/null && echo "exist" || echo "not exists"
+            # curl -fsSlL --head https://hub.docker.com/v2/repositories/<?= Preprocessor::IMAGE_NAME ?>/tags/<?= $this->getImageTag() ?>/ > /dev/null && echo "container image exist" || echo "container image  not exists"
             docker run -d --name <?= Preprocessor::CONTAINER_NAME ?> -v  ${__PROJECT_DIR__}:/work  <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> tini -- tail -f /dev/null
         fi
     fi
@@ -439,7 +450,7 @@ elif [ "$1" = "variables" ] ;then
 	echo $LIBS
 elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
-    test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
+    test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -c ${__PROJECT_DIR__}/bin/runtime/php.ini -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
     $PHP_CLI -v
     $PHP_CLI sync-source-code.php --action run
     exit 0
