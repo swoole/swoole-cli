@@ -10,9 +10,9 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-mkdir -p ${__PROJECT__}/var/
+mkdir -p ${__PROJECT__}/var/gnupg-verify
 
-cd ${__PROJECT__}/var/
+cd ${__PROJECT__}/var/gnupg-verify
 
 # curl https://www.gnu.org/usenet/usenet-gpg-key.txt
 # https://ftp.gnu.org/gnu/gnu-keyring.gpg
