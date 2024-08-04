@@ -39,7 +39,7 @@ case $ARCH in
 'x86_64')
   ARCH="amd64"
   ;;
-'aarch64' | 'arm64' )
+'aarch64' | 'arm64')
   ARCH="arm64"
   ;;
 *)
@@ -57,7 +57,7 @@ mkdir -p var/runtime
 
 cd ${__PROJECT__}/var/runtime
 
-:<<'EOF'
+: <<'EOF'
 
 https://go.dev/dl/go1.22.5.windows-amd64.msi
 
@@ -83,7 +83,6 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    MIRROR=""
     ;;
   --proxy)
     export HTTP_PROXY="$2"
@@ -104,25 +103,25 @@ done
 
 case "$MIRROR" in
 china)
-  APP_DOWNLOAD_URL="https://swoole-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+  APP_DOWNLOAD_URL="https://golang.google.cn/dl/${APP_NAME}${APP_VERSION}.${OS}-${ARCH}.tar.gz"
   if [ $OS = 'windows' ]; then
-    APP_DOWNLOAD_URL="https://swoole-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.zip"
+    APP_DOWNLOAD_URL="https://golang.google.cn/dl/${APP_NAME}${APP_VERSION}.${OS}-${ARCH}.zip"
   fi
   ;;
 esac
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
 if [ $OS = 'windows' ]; then
-    test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
-    test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
-    unzip "${APP_RUNTIME}.zip"
-    exit 0
+  test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+  test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
+  unzip "${APP_RUNTIME}.zip"
+  exit 0
 else
-    test -f ${APP_RUNTIME}.tar.gz || curl -LSo ${APP_RUNTIME}.tar.gz ${APP_DOWNLOAD_URL}
-    test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
-    tar -xvf ${APP_RUNTIME}.tar.gz
-    test -d ${__PROJECT__}/bin/runtime/go && rm -rf ${__PROJECT__}/bin/runtime/go
-    mv go ${__PROJECT__}/bin/runtime/go
+  test -f ${APP_RUNTIME}.tar.gz || curl -LSo ${APP_RUNTIME}.tar.gz ${APP_DOWNLOAD_URL}
+  test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
+  tar -xvf ${APP_RUNTIME}.tar.gz
+  test -d ${__PROJECT__}/bin/runtime/go && rm -rf ${__PROJECT__}/bin/runtime/go
+  mv go ${__PROJECT__}/bin/runtime/go
 fi
 
 cd ${__PROJECT__}/

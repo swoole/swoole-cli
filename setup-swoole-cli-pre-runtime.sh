@@ -50,7 +50,7 @@ esac
 
 APP_VERSION='v6.0.0-dev'
 APP_NAME='swoole-cli'
-VERSION='swoole-cli-v0.0.7'
+VERSION='swoole-cli-v0.0.8'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
