@@ -210,7 +210,7 @@ jobs:
           export PATH=/usr/libexec/docker/cli-plugins/:$PATH
           docker-compose version
           docker container ls -a
-          bash sapi/src/UnitTest/scripts/database/start.sh
+          # bash sapi/src/UnitTest/scripts/database/start.sh
 
       - name: Show Build Result
         run: |
