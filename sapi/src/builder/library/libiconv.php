@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
             ->withManual('https://www.gnu.org/software/libiconv/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
             //->withUrl('https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz')
-            ->withUrl('https://ftpmirror.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz')
+            ->withUrl('https://ftpmirror.gnu.org/gnu/libiconv/libiconv-1.17.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/libiconv/libiconv-1.17.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/libiconv/libiconv-1.17.tar.gz')
 
