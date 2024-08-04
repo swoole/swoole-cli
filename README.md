@@ -18,15 +18,23 @@
 
 > 可指定 PHP 版本 构建原生 PHP 版本
 
-> 可指定 C 编译器 为 musl-gcc、x86_64-linux-musl-gcc 、clang
-
 > 可编译包含 swow 扩展
 
 ## 下载`php-cli`发行版
 
 - [https://github.com/swoole/build-static-php/releases](https://github.com/swoole/build-static-php/releases)
 
-## `php-cli`构建文档
+## 立即使用 php-cli
+
+```shell
+
+curl -fSL https://github.com/swoole/swoole-cli/blob/build_native_php/setup-php-cli-runtime.sh?raw=true | bash
+
+curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-runtime.sh?raw=true | bash
+
+```
+
+## 构建文档
 
 - [linux 版构建文档](docs/linux.md)
 - [macOS 版构建文档](docs/macOS.md)
