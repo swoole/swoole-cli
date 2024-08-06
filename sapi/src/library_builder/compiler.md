@@ -117,3 +117,10 @@ autoheader
 automake --foreign --copy --add-missing
 autoconf
 export CFLAGS="-O2 -Wall -W -Wunused-const-variable=0 -pipe -g"
+
+
+
+预处理   gcc -E  、clang -E
+编译     gcc -S  、clang -S
+汇编     gcc -c  、clang -c
+链接     gcc -o  、clang -o
