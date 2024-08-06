@@ -74,7 +74,7 @@ EOF
 EOF
         )
         ->withPkgName('ovn')
-        ->withDependentLibraries('ovs', 'openssl') //'libsctp'
+        ->withDependentLibraries('ovs') //'libsctp'
         ->withBinPath($ovn_prefix . '/bin/');
 
     $p->addLibrary($lib);

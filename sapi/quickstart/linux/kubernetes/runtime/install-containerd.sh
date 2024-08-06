@@ -43,7 +43,7 @@ stat -fc %T /sys/fs/cgroup/
 # containerd
 # https://github.com/containerd/containerd/tags
 
-VERSION="1.7.11"
+VERSION="1.7.18"
 
 CONTAINERD_RELEASE_URL=https://github.com/containerd/containerd/releases/download/v${VERSION}/containerd-${VERSION}-linux-amd64.tar.gz
 CONTAINERD_RELEASE=containerd-${VERSION}-linux-amd64.tar.gz

@@ -10,6 +10,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.lysator.liu.se/~nisse/nettle/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
             ->withUrl('https://ftp.gnu.org/gnu/nettle/nettle-3.8.tar.gz')
+            ->withUrl('https://ftpmirror.gnu.org/gnu/nettle/nettle-3.8.tar.gz')
+            ->withHttpProxy(false)
             ->withFile('nettle-3.8.tar.gz')
             ->withPrefix($nettle_prefix)
             ->withConfigure(

@@ -24,6 +24,9 @@ EXTERNAL_IP="$ipv4,$ipv6"
 LOCAL_IP="$ipv4,$ipv6"
 ENCAP_TYPE=geneve
 
+test -f /usr/local/etc/openvswitch/conf.db && rm -rf /usr/local/etc/openvswitch/conf.db
+test -f /usr/local/etc/ovn/conf.db         && rm -rf /usr/local/etc/ovn/conf.db
+
 ID_FILE=system-id.conf
 test -s $ID_FILE || cat /proc/sys/kernel/random/uuid > $ID_FILE
 
@@ -42,7 +45,7 @@ external_ids:ovn-remote="tcp:${OVN_CENTRAL_IP}:6642"
 # external_ids:ovn-nb="tcp:$CENTRAL_IP:6641"
 
 # ovs-vsctl set open . external_ids:ovn-remote-probe-interval=<TIME IN MS>
-ovs-vsctl set open . external_ids:ovn-remote-probe-interval=30000
+# ovs-vsctl set open . external_ids:ovn-remote-probe-interval=30000
 
 ovn-ctl start_controller
 

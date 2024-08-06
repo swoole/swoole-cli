@@ -16,7 +16,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'ovs',
             <<<EOF
-            git clone -b master --depth=1 --progress https://github.com/openvswitch/ovs.git
+            git clone -b main --depth=1 --progress https://github.com/openvswitch/ovs.git
             # git clone -b v3.2.0 --depth=1 --progress https://github.com/openvswitch/ovs.git
 EOF
         )

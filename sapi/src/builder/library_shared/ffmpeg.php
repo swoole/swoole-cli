@@ -43,7 +43,7 @@ EOF
 EOF
         )
         ->withPreInstallCommand(
-            'ubuntu',
+            'debian',
             <<<EOF
         apt install -y liblcms2-dev liblcms2-2 liblcms2-utils
         apt install -y libfdk-aac-dev

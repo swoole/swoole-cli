@@ -20,6 +20,8 @@ return function (Preprocessor $p) {
                 git clone -b tag-1.8.0.0	 https://repo.or.cz/socat.git
 EOF
             )
+            ->withBuildCached(false)
+            ->withInstallCached(false)
             ->withBuildScript(
                 <<<EOF
             libtoolize -ci

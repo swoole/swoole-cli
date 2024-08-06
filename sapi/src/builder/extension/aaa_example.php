@@ -125,6 +125,7 @@ EOF
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $ffmpeg_prefix = FFMPEG_PREFIX;
+        $system_arch = $p->getSystemArch();
 
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/ffmpeg/
@@ -133,23 +134,35 @@ EOF
                 cd {$workdir}/bin/
 
                 {$workdir}/bin/ffmpeg/bin/ffmpeg -h
-
+                APP_VERSION=\$({$workdir}/bin/ffmpeg/bin/ffmpeg -version | head -n 1 | awk '{ print $3 }')
                 cd {$workdir}/bin/
 
 EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
+                xattr -cr  {$workdir}/bin/ffmpeg/bin/ffmpeg
                 otool -L {$workdir}/bin/ffmpeg/bin/ffmpeg
-                tar -cJvf {$workdir}/ffmpeg-vlatest-static-macos-x64.tar.xz ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-\${APP_VERSION}-macos-{$system_arch}.tar.xz ffmpeg
 EOF;
         } else {
             $cmd .= <<<EOF
                 file {$workdir}/bin/ffmpeg/bin/ffmpeg
                 readelf -h {$workdir}/bin/ffmpeg/bin/ffmpeg
-                tar -cJvf {$workdir}/ffmpeg-vlatest-static-linux-x64.tar.xz ffmpeg
+                tar -cJvf {$workdir}/ffmpeg-\${APP_VERSION}-linux-{$system_arch}.tar.xz ffmpeg
 EOF;
         }
         return $cmd;
     });
+
+
+    //导入环境变量
+
+    $p->withExportVariable('FREETYPE2_CFLAGS', '$(pkg-config  --cflags --static  libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+    $p->withExportVariable('FREETYPE2_LIBS', '$(pkg-config    --libs   --static  libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+
+    $libiconv_prefix = ICONV_PREFIX;
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libiconv_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libiconv_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -liconv');
 
 };

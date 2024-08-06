@@ -7,6 +7,9 @@ return function (Preprocessor $p) {
     $libmicrohttpd_prefix = LIBMICROHTTPD_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
     $curl_prefix = CURL_PREFIX;
+    if ($p->isMacos()) {
+        throw new \Exception('libmicrohttpd only linux !');
+    }
     $lib = new Library('libmicrohttpd');
     $lib->withHomePage('https://www.gnu.org/software/libmicrohttpd/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
@@ -27,14 +30,10 @@ return function (Preprocessor $p) {
         --with-libiconv-prefix={$libiconv_prefix} \
         --with-libcurl={$curl_prefix}
 
-
-
 EOF
         )
         ->withPkgName('libmicrohttpd')
-        ->withDependentLibraries('curl', 'libiconv')
-
-    ;
+        ->withDependentLibraries('curl', 'libiconv');
 
     $p->addLibrary($lib);
 };

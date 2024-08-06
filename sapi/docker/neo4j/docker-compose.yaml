@@ -1,0 +1,13 @@
+version: "3"
+services:
+  neo4j-service:
+    image: neo4j:latest
+    volumes:
+      - ./neo4j-data:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+
+# 浏览器访问
+# http://localhost:7474/browser/
+# 容器内数据目录  # /data

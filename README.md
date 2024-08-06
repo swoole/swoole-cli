@@ -1,6 +1,6 @@
-# build static php-cli runtime
+# build static php-cli runtime  and php-fpm
 
-构建静态 原生 php-cli 运行时
+构建静态 原生 php-cli 运行时 和 fastcgi 进程管理器 php-fpm
 
 ## 说明
 
@@ -18,22 +18,28 @@
 
 > 可指定 PHP 版本 构建原生 PHP 版本
 
-> 可指定 C 编译器 为GCC
-
 > 可编译包含 swow 扩展
 
 ## 下载`php-cli`发行版
 
 - [https://github.com/swoole/build-static-php/releases](https://github.com/swoole/build-static-php/releases)
 
-## `php-cli`构建文档
+## 立即使用 php-cli
+
+```shell
+
+curl -fSL https://github.com/swoole/swoole-cli/blob/build_native_php/setup-php-cli-runtime.sh?raw=true | bash
+
+curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-runtime.sh?raw=true | bash
+
+```
+
+## 构建文档
 
 - [linux 版构建文档](docs/linux.md)
 - [macOS 版构建文档](docs/macOS.md)
-- [windows Cygwin 版构建文档](docs/Cygwin.md)
-- [windows WSL 版构建文档](docs/wsl.md)
-- [php-cli 构建选项文档](docs/options.md)
-- [php-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
+- [构建选项文档](docs/options.md)
+- [搭建依赖库镜像服务](sapi/download-box/README.md)
 - [quickstart](sapi/quickstart/README.md)
 
 ## Clone
@@ -54,7 +60,7 @@ git clone --recursive -b build_native_php  https://github.com/swoole/swoole-cli.
 cd swoole-cli
 
 bash setup-php-runtime.sh
-# 或者
+# 或者使用镜像
 bash setup-php-runtime.sh --mirror china
 
 ```
@@ -93,7 +99,7 @@ bash sapi/quickstart/macos/macos-init.sh --mirror china
 
 ```
 
-### 一条命令执行整个构建流程
+## 一条命令执行整个构建流程
 
 ```bash
 
@@ -173,20 +179,17 @@ bash make-install-deps.sh
 ```
 
 > 打包成功后会生成 `php-cli-{version}-{os}-{arch}.tar.xz`
-> 压缩包，包含 `swoole-cli` 可执行文件、`LICENSE` 授权协议文件。
+> 压缩包，包含 `php` 可执行文件、`LICENSE` 授权协议文件。
 
 ## 授权协议
 
-* `swoole-cli` 使用了多个其他开源项目，请认真阅读自动生成的 `bin/LICENSE`
+* `php-cli` 使用了多个其他开源项目，请认真阅读自动生成的 `bin/LICENSE`
   文件中版权协议，遵守对应开源项目的 `LICENSE`
-* `swoole-cli`
-  本身的软件源代码、文档等内容以 `Apache 2.0 LICENSE`+`SWOOLE-CLI LICENSE`
+* `php-cli`本身的软件源代码、文档等内容以 `Apache 2.0 LICENSE`+`SWOOLE-CLI LICENSE`
   作为双重授权协议，用户需要同时遵守 `Apache 2.0 LICENSE`和`SWOOLE-CLI LICENSE`
   所规定的条款
 
 ## SWOOLE-CLI LICENSE
 
-* 对 `swoole-cli` 代码进行使用、修改、发布的新项目必须含有 `SWOOLE-CLI LICENSE`
-  的全部内容
-* 使用 `swoole-cli`
-  代码重新发布为新项目或者产品时，项目或产品名称不得包含 `swoole` 单词
+* 对 `swoole-cli` 代码进行使用、修改、发布的新项目必须含有 `SWOOLE-CLI LICENSE`的全部内容
+* 使用 `swoole-cli`代码重新发布为新项目或者产品时，项目或产品名称不得包含 `swoole` 单词

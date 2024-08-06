@@ -24,15 +24,17 @@ return function (Preprocessor $p) {
             ->withDocumentation('https://nginx.org/en/docs/')
             //->withUrl('http://nginx.org/download/nginx-1.25.2.tar.gz')
             //->withAutoUpdateFile()
-            ->withFile('nginx-release-1.25.3.tar.gz')
+            ->withBuildCached(false)
+            ->withInstallCached(false)
+            ->withFile('nginx-release-1.27.0.tar.gz')
             ->withDownloadScript(
                 'nginx',
                 <<<EOF
                 # hg clone  http://hg.nginx.org/nginx
                 # hg update -C release-1.25.2
-                # git clone -b release-1.25.2 --depth 1 --progress  https://github.com/nginx/nginx.git
+                git clone -b release-1.27.0 --depth 1 --progress  https://github.com/nginx/nginx.git
 
-                hg  clone -r release-1.25.3 --rev=1  http://hg.nginx.org/nginx
+                # hg  clone -r release-1.25.5 --rev=1  http://hg.nginx.org/nginx
                 # hg  clone -r default --rev=1  http://hg.nginx.org/nginx
 
 EOF

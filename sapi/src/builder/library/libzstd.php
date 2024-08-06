@@ -14,6 +14,7 @@ return function (Preprocessor $p) {
             ->withLicense('https://github.com/facebook/zstd/blob/dev/COPYING', Library::LICENSE_GPL)
             ->withUrl('https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz')
             ->withFile('zstd-1.5.2.tar.gz')
+            ->withFileHash('md5', '072b10f71f5820c24761a65f31f43e73')
             ->withPrefix($libzstd_prefix)
             ->withConfigure(
                 <<<EOF
@@ -25,7 +26,7 @@ return function (Preprocessor $p) {
             -DZSTD_BUILD_STATIC=ON \
             -DZSTD_BUILD_SHARED=OFF \
             -DCMAKE_BUILD_TYPE=Release \
-            -DZSTD_BUILD_CONTRIB=ON \
+            -DZSTD_BUILD_CONTRIB=OFF \
             -DZSTD_BUILD_PROGRAMS=ON \
             -DZSTD_BUILD_TESTS=OFF \
             -DZSTD_LEGACY_SUPPORT=ON \

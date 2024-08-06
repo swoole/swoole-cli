@@ -172,10 +172,31 @@ return function (Preprocessor $p) {
     $depends = ['dahdi_tools'] ;
     $depends = ['libpri'] ;
     $depends = ['asterisk'] ;
-    $depends = ['libarchive'] ;
+
     $depends = ['libde265'] ;
     $depends = ['libheif'] ;
     $depends = ['webrtc'] ;
+    $depends = ['strongswan'] ;
+    $depends = ['musl_cross_make'] ;
+    $depends = ['libuuid'] ;
+    $depends = ['python3'] ;
+    $depends = ['libarchive'] ;
+    $depends = ['gpac'] ;
+    $depends = ['libx264'] ;
+    $depends = ['libmongoc'] ;
+    $depends = ['ovn'] ;
+    $depends = ['liburing'] ;
+    $depends = ['sdl2'] ;
+    $depends = ['sndio_audio'] ;
+    $depends = ['pulse_audio'] ;
+    $depends = ['opensound_audio'] ;
+    $depends = ['dav1d'] ;
+    $depends = ['sdl2'] ;
+    $depends = ['v4l_utils'] ;
+    $depends = ['prometheus_client_c'] ;
+    $depends = ['liboauth2'] ;
+    $depends = ['depot_tools','libyuv'] ;
+    $depends = ['libmongoc'] ;
 
 
     $ext = (new Extension('common'))

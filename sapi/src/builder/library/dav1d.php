@@ -71,6 +71,6 @@ EOF
             )
             ->withPkgName('dav1d')
             ->withBinPath($dav1d_prefix . '/bin/')
-            ->withDependentLibraries('sdl2')
+            //->withDependentLibraries('sdl2')
     );
 };

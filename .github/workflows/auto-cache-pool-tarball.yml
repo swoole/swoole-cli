@@ -11,7 +11,7 @@ jobs:
     if: 0
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Prepare Source Code
         run: |
           echo $PATH
@@ -40,25 +40,30 @@ jobs:
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
       - name: Cache PHP Runtime
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: php-runtime-cache
         with:
           path: ${{ github.workspace }}/bin/runtime
           key: ${{ runner.os }}-x86_64-php-runtime
 
       - name: Cache PHP Vendor
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-x86_64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
+
+      - name: Clean Source Code Tarball Cache On Release
+        if: startsWith(github.ref, 'refs/tags/')
+        run:
+          rm -rf ${{ github.workspace }}/pool/*
 
       - name: Prepare Runtime and Libraries and Extensions
         run: |
@@ -76,11 +81,17 @@ jobs:
           export PATH=${WORK_DIR}/bin/runtime:$PATH
           alias php="php -d curl.cainfo=${WORK_DIR}/bin/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/bin/runtime/cacert.pem"
 
-          composer update   --optimize-autoloader
+          composer install  --no-interaction --no-autoloader --no-scripts --profile  --no-dev
+          composer dump-autoload --optimize --profile --no-dev
 
-          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql --with-swoole-pgsql=1 --with-libavif=1
+          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +uuid +mongodb --show-tarball-hash=1
+          php prepare.php           +apcu +ds +xlswriter +ssh2  +uuid @macos --show-tarball-hash=1
+
           cd ${{ github.workspace }}/pool/
-          zip -6 -r ${WORK_DIR}/all-archive.zip ext lib
+          zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
+          HASH=$(sha256sum ${WORK_DIR}/all-deps.zip | awk '{print $1}')
+          echo " all-deps.zip sha265: ${HASH} "
+          echo -n ${HASH} > ${WORK_DIR}/all-deps.zip.sha256sum
           cd ${{ github.workspace }}
 
       - name: Show Build Result
@@ -90,14 +101,18 @@ jobs:
 
       - name: production artifacts
         if: 1
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: cached-all-archive
+          name: all-deps
           retention-days: 90
-          path: all-archive.zip
+          path: |
+            all-deps.zip
+            all-deps.zip.sha256sum
 
       - name: gh release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: all-archive.zip
+          files: |
+            all-deps.zip
+            all-deps.zip.sha256sum

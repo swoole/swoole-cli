@@ -39,6 +39,6 @@ EOF
 EOF
             )
             ->withPkgName('hiredis')
-            ///->withDependentLibraries('openssl')
+            ->withDependentLibraries('openssl')
     );
 };

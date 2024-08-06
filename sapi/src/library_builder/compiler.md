@@ -71,7 +71,7 @@ https://github.com/coin-or/ADOL-C.git
        *    位置无关的可执行文件
        *    直接编译可执行文件 -fPIE
        *    直接编译成库      -fPIC
-
+       地址无关代码（Position Independent Code, PIC）
 
 BPF CO-RE (Compile Once – Run Everywhere)
 https://github.com/libbpf/libbpf#bpf-co-re-compile-once--run-everywhere
@@ -83,3 +83,37 @@ https://github.com/libbpf/libbpf#bpf-co-re-compile-once--run-everywhere
 
 ## macos 库支持静态编译， 二进制程序不支持静态编译
     LIBS='-framework CoreFoundation -framework CoreServices -framework SystemConfiguration"
+
+
+
+MIPS架构  龙芯处理器
+s390x    IBMSystemz系列大型机硬件平台
+ppc64le  基于Power架构
+
+
+clang with MUSL
+
+clang hello.c  -I /usr/include/x86_64-linux-musl --target=x86_64-unknown-linux-musl  -nostdlib
+
+
+
+TLS的四种模式 Global Dynamic,Local Dynamic,Initial Exec和Local Exec
+
+单词缩写解释
+Acronyms relevant to Executable and Linkable Format (ELF)
+https://stevens.netmeister.org/631/elf.html
+
+ABI： Application binary interface
+a.out： Assembler output file format
+PIC： Position independent code
+PIE： Position independent executable
+
+
+
+
+libtoolize --force --copy --automake
+aclocal
+autoheader
+automake --foreign --copy --add-missing
+autoconf
+export CFLAGS="-O2 -Wall -W -Wunused-const-variable=0 -pipe -g"

@@ -17,6 +17,7 @@ return function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $socat_prefix = SOCAT_PREFIX;
+        $system_arch=$p->getSystemArch();
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
                 cd {$builddir}/socat
@@ -30,13 +31,13 @@ EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
             otool -L {$workdir}/bin/socat
-            tar -cJvf {$workdir}/socat-\${SOCAT_VERSION}-macos-x64.tar.xz socat
+            tar -cJvf {$workdir}/socat-\${SOCAT_VERSION}-macos-{$system_arch}.tar.xz socat
 EOF;
         } else {
             $cmd .= <<<EOF
               file {$workdir}/bin/socat
               readelf -h {$workdir}/bin/socat
-              tar -cJvf {$workdir}/socat-\${SOCAT_VERSION}-linux-x64.tar.xz socat
+              tar -cJvf {$workdir}/socat-\${SOCAT_VERSION}-linux-{$system_arch}.tar.xz socat
 
 EOF;
         }

@@ -1,8 +1,42 @@
-# 步骤
+# macOS 环境下构建 swoole-cli
+
+构建步骤 - 运行命令
+====
+
+```shell
+
+git clone --recursive https://github.com/swoole/swoole-cli.git
+cd swoole-cli
+
+bash setup-php-runtime.sh
+composer install  --no-interaction --no-autoloader --no-scripts --profile
+composer dump-autoload --optimize --profile
+
+php prepare.php --without-docker=1  +apcu +ds +xlswriter +ssh2 +uuid
+
+bash sapi/quickstart/macos/macos-init.sh
+
+bash make-install-deps.sh
+
+bash ./make.sh all-library
+bash ./make.sh config
+bash ./make.sh build
+bash ./make.sh archive
+
+./bin/swoole-cli -m
+./bin/swoole-cli --ri swoole
+xattr -cr ./bin/swoole-cli
+otool -L ./bin/swoole-cli
+
+
+```
+
+构建步骤简述
+====
 
 0. 清理 `brew` 安装的软件
-1. 执行 `php prepare.php --without-docker=1 @macos`
-2. 编译所有依赖的库 `./make.sh build-all-library`
+1. 执行 `php prepare.php --without-docker=1 @macos` 生成构建shell 脚本
+2. 编译所有依赖的库 `./make.sh all-library`
 3. 配置 `./make.sh config`
 4. 构建 `./make.sh build`
 
@@ -138,19 +172,23 @@ export LIBSODIUM_CFLAGS=$(pkg-config --cflags libsodium)
 export LIBSODIUM_LIBS=$(pkg-config --libs libsodium)
 ```
 
-
 ## 下载 macOS 版本 运行无权限，解决方案
 
->  Mac安装应用“提示文件已损坏”或“来自身份不明开发者”解决方法
+> Mac安装应用“提示文件已损坏”或“来自身份不明开发者”解决方法
 
-> 解压以后执行如下命令：
+> note: macos clearing the com.apple.quarantine extended attribute
+> macos环境下 首次运行提示无权限 ，通过清除扩展属性 解决
 
 ```bash
 
-    sudo xattr -d com.apple.quarantine  ./swoole-cli
+# 查看扩展属性
+xattr ./bin/swoole-cli
+# 移除扩展属性
+sudo xattr -cr ./swoole-cli
+sudo xattr -d com.apple.quarantine  ./bin/swoole-cli
 
-    file ./bin/swoole-cli
-    otool -L ./bin/swoole-cli
+file ./bin/swoole-cli
+otool -L ./bin/swoole-cli
 
 ```
 

@@ -11,6 +11,8 @@ SDN网络有3大特征, 分别是[6]:
 「逻辑上的集中控制」。
 「控制平面与转发平面之间提供可编程接口」。
 
+管理平面  控制平面  数据平面
+
 ## IPSEC over geneve
 1. GENEVE 代表“通用网络虚拟化封装”
 2. MAC-in-IP 封装 mac in udp
@@ -101,6 +103,16 @@ bash install-ovn-ovs.sh --proxy http://127.0.0.1:8016  --mirror china
 
     ovn-controller 节点 Geneve协议使用 6081 端口
 
+    mac in UDP
+
+    geneve  UDP port 6081
+    VXLAN   UDP port 4789
+    STT     UDP port 7471
+
+
+    northbound databases  TCP ports 6641
+    southbound databases  TCP ports 6642
+
 ```bash
 ovn-nbctl ls-list
 
@@ -156,3 +168,28 @@ nc -u -v 8.137.54.132 6081
 
 # SD-WAN 系列（5）SD-WAN = SDN + Internet线路 +专线 + WAN加速 + IPsec + DPI + ？
     https://blog.csdn.net/zhengmx100/article/details/103565072
+
+
+
+## 期待
+1. DPDK支持
+1. eBPF集成
+1. BGP支持
+1. 集群互联
+1. 流量镜像
+1. QoS 选项
+1. IPSec, wireguard 等加密方式支持
+
+
+OVN有三种NAT：
+    DNAT：改变了数据包的目的地址
+    SNAT：改变了一个包的源地址
+    SNAT-DNAT：外部IP映射到内部IP，反之亦然。
+
+Linux中的conntrack模块被整合到OVS中以提供有状态匹配
+OVN实现了DHCPv4支持
+
+
+snapshot + cloudinit
+安装系统过程，是直接启动一个预配置镜像
+kvm libvirt qemu ovs

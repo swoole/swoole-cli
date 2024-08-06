@@ -11,23 +11,6 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-MIRROR=''
-while [ $# -gt 0 ]; do
-  case "$1" in
-  --mirror)
-    MIRROR="$2"
-    ;;
-  esac
-  shift $(($# > 0 ? 1 : 0))
-done
-
-DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.0.2/'
-case "$MIRROR" in
-china)
-  DOMAIN='https://swoole-cli.jingjingxyk.com/'
-  ;;
-esac
-
 mkdir -p  pool/lib
 mkdir -p  pool/ext
 
@@ -35,16 +18,54 @@ mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 
+if [ -f "${__PROJECT__}/sapi/PHP-VERSION.conf"  ] ; then
+  DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.3.0/'
+  ALL_DEPS_HASH="5fa1485c2408f05cbc548712917e6dbb8ecd5a631b558d6d512d4a6671f071e5"
+else
+  DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.3.2/'
+  ALL_DEPS_HASH="15769d1003213bf8849ac73bf96bc7629b138a694e8367fb2139756e20c2901d"
+fi
 
-URL="${DOMAIN}/all-archive.zip"
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --mirror)
+    if [ "$2" = 'china' ] ; then
+      DOMAIN='https://swoole-cli.jingjingxyk.com/'
+      if [ ! -f "${__PROJECT__}/sapi/PHP-VERSION.conf" ] ; then
+         DOMAIN='https://php-cli.jingjingxyk.com/'
+      fi
+    fi
+    ;;
+  --*)
+    echo "Illegal option $1"
+    ;;
+  esac
+  shift $(($# > 0 ? 1 : 0))
+done
 
-test -f  all-archive.zip || curl -LSo all-archive.zip ${URL}
+
+URL="${DOMAIN}/all-deps.zip"
+
+test -f  all-deps.zip || curl -Lo  all-deps.zip ${URL}
 
 # https://www.runoob.com/linux/linux-comm-unzip.html
 # -o 不必先询问用户，unzip执行后覆盖原有文件。
 # -n 解压缩时不要覆盖原有的文件。
-unzip -o all-archive.zip
-# unzip -n all-archive.zip
+
+# hash 签名
+HASH=$(sha256sum all-deps.zip | awk '{print $1}')
+
+# 签名验证失败，删除下载文件
+if [ ${HASH} !=	 ${ALL_DEPS_HASH} ] ; then
+    echo 'hash signature is invalid ！'
+    rm -f all-deps.zip
+    echo '                       '
+    echo ' Please Download Again '
+    echo '                       '
+    exit 0
+fi
+
+unzip -n all-deps.zip
 
 
 cd ${__PROJECT__}/

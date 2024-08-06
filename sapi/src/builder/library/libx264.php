@@ -5,6 +5,9 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libx264_prefix = LIBX264_PREFIX;
+
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+
     $lib = new Library('libx264');
     $lib->withHomePage('https://www.videolan.org/developers/x264.html')
         ->withManual('https://code.videolan.org/videolan/x264.git')
@@ -17,22 +20,24 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPrefix($libx264_prefix)
-        ->withCleanBuildDirectory()
-        ->withCleanPreInstallDirectory($libx264_prefix)
+        //->withInstallCached(false)
         ->withConfigure(
             <<<EOF
         ./configure --help
+
+        LIBS=" {$libs} " \
         ./configure \
         --prefix={$libx264_prefix} \
         --enable-static \
         --enable-pic \
-        --disable-cli \
+        --disable-opencl \
         --disable-avs \
         --disable-swscale \
         --disable-lavf \
         --disable-ffms \
         --disable-gpac \
         --disable-lsmash
+
 
 EOF
         )

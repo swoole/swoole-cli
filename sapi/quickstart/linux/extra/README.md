@@ -1,6 +1,7 @@
 
 
 ## 当环境中没有 PHP 解释器时  可以快速安装 PHP 解释器
+
 ```bash
 
 # alpine
@@ -13,8 +14,13 @@ bash sapi/quickstart/linux/extra/debian-php-init.sh
 
 ```
 
+## download composer
+
 ```bash
-   wget -O composer.phar https://mirrors.aliyun.com/composer/composer.phar
+curl -Lo  /usr/local/bin/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
+
+ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
+chmod a+x /usr/local/bin/composer
 
    wget -O /usr/local/bin/composer https://mirrors.tencent.com/composer/composer.phar
 

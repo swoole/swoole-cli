@@ -1,0 +1,16 @@
+version: "3"
+services:
+  grafana-service:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - "GF_SECURITY_ADMIN_PASSWORD=root"
+      - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+
+  # 内置运行用户id： 472
+
+

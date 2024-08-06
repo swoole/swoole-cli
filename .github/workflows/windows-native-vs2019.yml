@@ -1,0 +1,143 @@
+name: build-php-cli-windows-vs2019
+
+on:
+  push:
+  pull_request:
+
+env:
+  BUILD_PHP_VERSION: 8.2.13
+
+jobs:
+  windows-native:
+    if: 0
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        php-version:
+        #  - "8.2.13"
+        #  - "8.1.27"
+          - "8.3.7"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: amd64
+      - name: show environment info
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          env
+          ipconfig
+          uname -a
+          pwd
+          ipconfig /all
+          # 显示逻辑cpu 个数
+          wmic cpu get NumberOfLogicalProcessors /value
+          # echo %NUMBER_OF_PROCESSORS%
+          Write-Output $env:NUMBER_OF_PROCESSORS
+          systeminfo
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
+
+      - uses: msys2/setup-msys2@v2
+      - name: prepare build environment and download source code
+        shell: msys2 {0}
+        run: |
+          CURRENT_DIR=$(pwd)
+          echo $CURRENT_DIR
+
+          # msys2 下载安装  git curl wget openssl zip unzip xz  lzip 软件包
+          bash sapi/quickstart/windows/native-build/msys2/msys2-install-soft.sh
+
+          # 准备 PHP 运行时 并执行 composer install
+          bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
+
+          # 提前准备下载依赖库
+          bash sapi/download-box/download-box-get-archive-from-server.sh
+
+          # 准备 依赖库 和 扩展
+          bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code.sh
+
+          # 准备 PHP 源码 和 PHP SDK
+          bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-and-php-sdk.sh
+
+          # 构建库准备环境依赖
+          bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
+
+      - name: Install Soft
+        shell: cmd
+        run: |
+          sapi\quickstart\windows\native-build\install-deps-soft.bat
+
+      - name: Set  Github ENV variables
+        run: |
+          $CURRENT_DIR = Get-Location
+          echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_BIN_PATH=${CURRENT_DIR}\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_MSYS2_PATH=${CURRENT_DIR}\php-sdk-binary-tools\msys2\usr\bin" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_OS_ARCH=x64" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_PHP_CMD=${CURRENT_DIR}\php-sdk-binary-tools\bin\php\do_php.bat" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_ROOT_PATH=${CURRENT_DIR}\php-sdk-binary-tools" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VC_DIR=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VC_TOOLSET_VER=$env:VCToolsVersion" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS=vs16" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS_NUM=16" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
+
+
+          $X_PATH = "${CURRENT_DIR}\php-sdk-binary-tools\bin;${CURRENT_DIR}\php-sdk-binary-tools\msys2\usr\bin;${CURRENT_DIR}\nasm\;$env:PATH"
+          echo $X_PATH
+          echo "PATH=$X_PATH"  >> $Env:GITHUB_ENV
+
+      - name: build all library
+        run: |
+          $CURRENT_DIR = Get-Location
+          where perl
+          php -v
+          perl -v
+          nasm -v
+          cmd /c  sapi\quickstart\windows\native-build\library\zlib.bat
+          cmd /c  sapi\quickstart\windows\native-build\library\openssl.bat
+          cmd /c  sapi\quickstart\windows\native-build\library\libssh2.bat
+          # cmd /c  sapi\quickstart\windows\native-build\library\libyaml.bat
+          # cmd /c  sapi\quickstart\windows\native-build\library\libexpat.bat
+          # cmd /c  sapi\quickstart\windows\native-build\library\liblz4.bat
+          # cmd /c  sapi\quickstart\windows\native-build\library\curl.bat
+          # cmd /c  sapi\quickstart\windows\native-build\library\brotli.bat
+          # cmd /c  sapi\quickstart\windows\native-build\library\libpng.bat
+
+      - name: build php
+        run: |
+          $CURRENT_DIR = Get-Location
+
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-config.bat
+
+          # cmd /c sapi\quickstart\windows\native-build\native-build-php-config-help.bat
+
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-build.bat
+
+          cmd /c sapi\quickstart\windows\native-build\native-build-php-release.bat
+
+          # cmd /c sapi\quickstart\windows\native-build\native-build-php-archive.bat
+
+      - name: Show Build Result
+        run: |
+          $CURRENT_DIR = Get-Location
+          cd $CURRENT_DIR\php-src\
+
+          .\x64\Release\php.exe -v
+          .\x64\Release\php.exe -m
+          dumpbin /DEPENDENTS ".\x64\Release\php.exe"
+
+      - name: production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: php-cli-v${{ env.BUILD_PHP_VERSION }}-vs16-x64
+          retention-days: 90
+          path: "php-src/x64/Release/php.exe"
+
+      - name: gh release
+        uses: softprops/action-gh-release@v2
+        if: 0 && startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "php-src/x64/Release_TS/php.exe"

@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
         $workdir = $p->getWorkDir();
         $builddir = $p->getBuildDir();
         $nginx_prefix = NGINX_PREFIX;
-
+        $system_arch=$p->getSystemArch();
         $cmd = <<<EOF
                 mkdir -p {$workdir}/bin/
                 cp -rf {$nginx_prefix} {$workdir}/bin/
@@ -29,13 +29,13 @@ EOF;
         if ($p->getOsType() == 'macos') {
             $cmd .= <<<EOF
                 otool -L {$workdir}/bin/nginx/sbin/nginx
-                tar -cJvf {$workdir}/nginx-\${NGINX_VERSION}-macos-x64.tar.xz nginx
+                tar -cJvf {$workdir}/nginx-\${NGINX_VERSION}-macos-{$system_arch}.tar.xz nginx
 EOF;
         } else {
             $cmd .= <<<EOF
                 file {$workdir}/bin/nginx/sbin/nginx
                 readelf -h {$workdir}/bin/nginx/sbin/nginx
-                tar -cJvf {$workdir}/nginx-\${NGINX_VERSION}-linux-x64.tar.xz nginx
+                tar -cJvf {$workdir}/nginx-\${NGINX_VERSION}-linux-{$system_arch}.tar.xz nginx
 EOF;
         }
         return $cmd;

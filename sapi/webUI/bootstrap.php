@@ -33,7 +33,11 @@ EOF;
         if ($request_uri == '/') {
             $path = '/index.html';
         }
-        $file = realpath(__DIR__ . '/public/') . $path;
+        //$file = realpath(__DIR__ . '/public/') . $path;
+        $file = __DIR__ . '/public/' . $path;
+        echo __DIR__ . PHP_EOL;
+        echo $file;
+        echo PHP_EOL;
 
         //printf("%s,%s%s", $path, $file,PHP_EOL);
         $result = [];
@@ -125,7 +129,7 @@ EOF;
                     unset($result[$key]);
                 }
             });
-        // var_dump($result);
+            // var_dump($result);
         } elseif ($action === 'extensionListAction') {
             $cmd = <<<EOF
             cd $word_dir/sapi/src/builder/extension

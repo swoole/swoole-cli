@@ -47,6 +47,8 @@ OPTIONS="--disable-all \
 <?php endforeach; ?>
 <?=$this->extraOptions?>
 "
+# --with-config-file-scan-dir=<?= $this->getGlobalPrefix() ?>/etc/php/conf.d/ \
+# --with-config-file-path=<?= $this->getGlobalPrefix() ?>/etc/php/ \
 
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
@@ -270,6 +272,13 @@ clean_<?=$item->name?>_cached() {
 <?php endforeach; ?>
 
 make_all_library() {
+<?php if ($this->inVirtualMachine): ?>
+    if [! -d <?= $this->getGlobalPrefix() ?>/sources ] ;then
+        mkdir -p <?= $this->getGlobalPrefix() ?>/sources
+        rm -rf <?= $this->getBuildDir() . PHP_EOL ?>
+        ln -s <?= $this->getGlobalPrefix() ?>/sources <?= $this->getBuildDir() . PHP_EOL ?>
+    fi
+<?php endif; ?>
 <?php foreach ($this->libraryList as $item) : ?>
     make_<?= $item->name ?> && [[ $? -eq 0 ]] && echo "[SUCCESS] make <?= $item->name ?>"
 <?php endforeach; ?>
@@ -289,15 +298,10 @@ before_configure_script() {
 
 export_variables() {
     set -x
-    # -all-static | -static | -static-libtool-libs
-    CPPFLAGS=""
-    CFLAGS=""
-<?php if ($this->cCompiler == 'clang') : ?>
-    LDFLAGS="-static"
-<?php else :?>
-    LDFLAGS="-static-libgcc -static-libstdc++"
-<?php endif ;?>
 
+    CPPFLAGS=""
+    CXXFLAGS=""
+    CFLAGS=""
     LDFLAGS=""
     LIBS=""
     <?php if ($this->getOsType() == 'macos') :?>
@@ -317,8 +321,29 @@ export_variables() {
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     echo "export variables"
 <?php foreach ($this->exportVariables as $value) : ?>
-    export  <?= key($value) ?>="<?= current($value) ?>"
+    export <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
+
+<?php if ($this->hasExtension('opcache')):?>
+    export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
+    export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
+<?php endif; ?>
+<?php if ($this->hasExtension('phpy')):?>
+    CPPFLAGS="$CPPFLAGS -I<?= $this->getWorkDir() ?>/ext/phpy/include "
+<?php endif; ?>
+    export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export CXXFLAGS=$(echo $CXXFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+<?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
+    ln -sf /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
+    ln -sf /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
+    ln -sf /usr/include/asm-generic/ /usr/include/x86_64-linux-musl/asm-generic
+
+    export LDFLAGS="${LDFLAGS} -static -L/usr/lib/x86_64-linux-musl "
+
+<?php endif ;?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     set +x
@@ -336,17 +361,50 @@ make_release_archive() {
     return 0
 }
 
+filter_extension() {
+    cd <?= $this->phpSrcDir ?>/
+
+    PHP_SRC_EXT_DIR=<?= $this->phpSrcDir ?>/ext/
+
+    test -d /tmp/php-src-ext && rm -rf /tmp/php-src-ext
+    mv $PHP_SRC_EXT_DIR /tmp/php-src-ext
+    mkdir -p $PHP_SRC_EXT_DIR
+    cd /tmp/php-src-ext
+    test -d date && cp -rf date $PHP_SRC_EXT_DIR
+    test -d hash && cp -rf hash $PHP_SRC_EXT_DIR
+    test -d json && cp -rf json $PHP_SRC_EXT_DIR
+    test -d pcre && cp -rf pcre $PHP_SRC_EXT_DIR
+    test -d standard   && cp -rf standard $PHP_SRC_EXT_DIR
+    test -d reflection && cp -rf reflection $PHP_SRC_EXT_DIR
+    test -d spl        && cp -rf spl $PHP_SRC_EXT_DIR
+    test -d tokenizer  && cp -rf tokenizer $PHP_SRC_EXT_DIR
+    test -d session    && cp -rf session $PHP_SRC_EXT_DIR
+    test -d random     && cp -rf random $PHP_SRC_EXT_DIR
+    test -d phar       && cp -rf phar $PHP_SRC_EXT_DIR
+<?php foreach ($this->extensionList as $value) : ?>
+    test -d <?= $value->name ?> && cp -rf <?= $value->name ?> $PHP_SRC_EXT_DIR
+<?php endforeach; ?>
+    cd <?= $this->phpSrcDir ?>/
+}
+
 make_config() {
-    set -x
-
-
 
     exit 0
 
-    cd <?= $this->phpSrcDir . PHP_EOL ?>
-    # 添加扩展
-    cp -rf ${__PROJECT_DIR__}/ext/*  <?= $this->phpSrcDir ?>/ext/
+    cd <?= $this->phpSrcDir ?>/
+<?php if (in_array($this->buildType, ['dev'])) : ?>
+    # dev 环境 过滤扩展，便于调试单个扩展编译
+    filter_extension
+<?php endif ;?>
 
+    cd <?= $this->phpSrcDir ?>/
+    # 添加非内置扩展
+    if [ ! -z  "$(ls -A ${__PROJECT_DIR__}/ext/)" ] ;then
+        cp -rf ${__PROJECT_DIR__}/ext/*  <?= $this->phpSrcDir ?>/ext/
+    fi
+
+    cd <?= $this->phpSrcDir ?>/
+    # 对扩展源代码执行预处理
     before_configure_script
 
     export_variables
@@ -354,14 +412,15 @@ make_config() {
     echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getRootDir() ?>/libs.log
 
-    exit 0
+    ./configure --help
+
+    ./configure $OPTIONS
 
 :<<'_____EO_____'
     = 是最基本的赋值
     := 是覆盖之前的值
     ?= 是如果没有被赋值过就赋予等号后面的值
     += 是添加等号后面的值
-
 
     # GNU C编译器的gnu11和c11 https://www.cnblogs.com/litifeng/p/8328499.html
     # -g是生成调试信息
@@ -413,6 +472,11 @@ make_config() {
     #  ll /Library/Developer/CommandLineTools/
     #  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
 
+    export_variables
+    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
+
     ./configure --help
     ./configure --help | grep -e '--enable'
     ./configure --help | grep -e '--with'
@@ -444,9 +508,8 @@ _____EO_____
 
 make_build() {
 
+    exit 0
 
-
-   exit 0
    # export EXTRA_LDFLAGS="$(pkg-config   --libs-only-L   --static openssl libraw_r )"
    # export EXTRA_LDFLAGS_PROGRAM=""
    # EXTRA_LDFLAGS_PROGRAM='-all-static -fno-ident '
@@ -470,14 +533,23 @@ _____EO_____
 make_build_old() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
-    <?php if ($this->getOsType() == 'linux') : ?>
+    <?php if ($this->isLinux()) : ?>
     export LDFLAGS="$LDFLAGS  -static -all-static "
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
+    <?php if(!empty($this->httpProxy)) : ?>
+    <?= $this->getProxyConfig() . PHP_EOL ?>
+    <?php endif ;?>
     make -j <?= $this->maxJob ?> ;
+    <?php if(!empty($this->httpProxy)) : ?>
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    unset NO_PROXY
+    <?php endif ;?>
 
-<?php if ($this->osType == 'macos') : ?>
+<?php if ($this->isMacos()) : ?>
+    xattr -cr <?= $this->phpSrcDir  ?>/sapi/cli/php
     otool -L <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php else : ?>
     file <?= $this->phpSrcDir  ?>/sapi/cli/php
@@ -497,6 +569,7 @@ make_build_old() {
 make_archive() {
     set -x
     make_release_archive
+
     exit 0
 
     set -x
@@ -607,7 +680,8 @@ lib_dep() {
 
 
 help() {
-    echo "./make.sh docker-build [china|ustc|tuna]"
+    set +x
+    echo "./make.sh docker-build [ china | ustc | tuna ]"
     echo "./make.sh docker-bash"
     echo "./make.sh docker-commit"
     echo "./make.sh docker-push"
@@ -626,6 +700,7 @@ help() {
     echo "./make.sh lib-pkg"
     echo "./make.sh lib-dep-pkg"
     echo "./make.sh lib-dep"
+    echo "./make.sh variables"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
@@ -636,17 +711,25 @@ help() {
 
 if [ "$1" = "docker-build" ] ;then
     MIRROR=""
+    CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
     if [ -n "$2" ]; then
         MIRROR=$2
+        case "$MIRROR" in
+        china | openatom | ustc | tuna)
+            CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
+        ;;
+        esac
     fi
     cd ${__PROJECT_DIR__}/sapi/docker
-    docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f <?= $this->getBaseImageDockerFile() ?>  . --build-arg="MIRROR=${MIRROR}"
+    echo "MIRROR=${MIRROR}"
+    echo "BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
+    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
     base_image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> | tail -n +2 2> /dev/null)
     image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> | tail -n +2 2> /dev/null)
-    CONTAINER_STATE=$(docker inspect -f {{.State.Running}} <?= Preprocessor::CONTAINER_NAME ?> 2> /dev/null)
+    CONTAINER_STATE=$(docker inspect -f "{{.State.Running}}" <?= Preprocessor::CONTAINER_NAME ?> 2> /dev/null)
     if [[ "${CONTAINER_STATE}" != "true" ]]; then
         bash ./make.sh docker-stop
         container=''
@@ -662,6 +745,9 @@ elif [ "$1" = "docker-bash" ] ;then
         else
             echo "<?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> image does not exist, try to pull"
             echo "create container with <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> image"
+            # check container image exists
+            # curl -fsSlL --head https://hub.docker.com/v2/repositories/$1/tags/$2/ > /dev/null && echo "exist" || echo "not exists"
+            # curl -fsSlL --head https://hub.docker.com/v2/repositories/<?= Preprocessor::IMAGE_NAME ?>/tags/<?= $this->getImageTag() ?>/ > /dev/null && echo "container image exist" || echo "container image  not exists"
             docker run -d --name <?= Preprocessor::CONTAINER_NAME ?> -v  ${__PROJECT_DIR__}:/work  <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> tini -- tail -f /dev/null
         fi
     fi
@@ -759,13 +845,22 @@ elif [ "$1" = "list-extension" ] ;then
 elif [ "$1" = "clean" ] ;then
     make_clean
     exit 0
+elif [ "$1" = "variables" ] ;then
+    export_variables
+    echo "===========================[CPPFLAGS]================================"
+	echo $CPPFLAGS
+    echo "===========================[CFLAGS]================================"
+	echo $CFLAGS
+    echo "===========================[LDFLAGS]================================"
+	echo $LDFLAGS
+    echo "===========================[LIBS]================================"
+	echo $LIBS
 elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
-    test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
+    test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -c ${__PROJECT_DIR__}/bin/runtime/php.ini -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
     $PHP_CLI -v
     $PHP_CLI sync-source-code.php --action run
     exit 0
 else
     help
 fi
-

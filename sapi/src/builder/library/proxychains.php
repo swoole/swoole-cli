@@ -5,6 +5,12 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $proxychains_prefix = PROXYCHAINS_PREFIX;
+
+    $cflags = $p->getOsType() == 'macos' ? ' ' : ' -static ';
+    $ldflags = $p->getOsType() == 'macos' ? ' ' : ' --static ';
+    $libsctp = $p->getOsType() == 'macos' ? ' ' : ' libsctp ';
+    $libcpp = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
+
     $lib = new Library('proxychains');
     $lib        ->withHomePage('https://github.com/rofl0r/proxychains-ng.git')
         ->withManual('https://github.com/rofl0r/proxychains-ng.git')
@@ -25,7 +31,7 @@ EOF
             ./configure --help
 
             CFLAGS=" -std=gnu11 " \
-            LDFLAGS=" -static -std=gnu11 " \
+            LDFLAGS=" {$cflags} -std=gnu11 " \
             ./configure \
             --prefix={$proxychains_prefix} \
             --enable-shared=no \

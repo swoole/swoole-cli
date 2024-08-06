@@ -1,0 +1,14 @@
+version: "3"
+services:
+  mysql-server:
+    image: mysql:8-debian
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "example"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+

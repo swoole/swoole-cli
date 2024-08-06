@@ -64,7 +64,9 @@ esac
 prepare(){
 
   apt update -y
-
+  apt install -y locales
+  locale-gen en_US.UTF-8
+  update-locale LANG=en_US.UTF-8
   apt install -y git curl python3 python3-pip python3-dev wget   sudo file
   apt install -y libssl-dev ca-certificates
 
@@ -82,6 +84,7 @@ prepare(){
   apt install -y libjemalloc2   libjemalloc-dev  libnuma-dev   libpcap-dev  libunbound-dev  libunwind-dev  llvm-dev
   apt install -y bc init ncat
   # apt install -y isc-dhcp-server
+  # apt install -y libdpdk-dev
 
 }
 
@@ -98,9 +101,9 @@ cd ${__DIR__}
 if test -d ovs
 then
     cd ${__DIR__}/ovs/
-    git   pull --depth=1 --progress --rebase
+    # git   pull --depth=1 --progress --rebase
 else
-    git clone -b v3.2.1 https://github.com/openvswitch/ovs.git --depth=1 --progress
+    git clone -b v3.3.0 https://github.com/openvswitch/ovs.git --depth=1 --progress
 fi
 
 cd ${__DIR__}
@@ -108,9 +111,9 @@ cd ${__DIR__}
 if test -d ovn
 then
     cd ${__DIR__}/ovn/
-    git   pull --depth=1 --progress --rebase
+    # git   pull --depth=1 --progress --rebase
 else
-    git clone -b v23.09.0 https://github.com/ovn-org/ovn.git --depth=1 --progress
+    git clone -b v24.03.2 https://github.com/ovn-org/ovn.git  --depth=1 --progress
 fi
 
 cd ${__DIR__}
@@ -120,6 +123,7 @@ cd ${__DIR__}/ovs/
 cd ${__DIR__}/ovs/
 
 
+./configure --help
 ./configure --enable-ssl
 make -j $CPU_NUMS
 sudo make install
@@ -130,6 +134,8 @@ cd ${__DIR__}/ovn/
 #mkdir build
 ./boot.sh
 cd ${__DIR__}/ovn/
+
+./configure --help
 ./configure  --enable-ssl \
 --with-ovs-source=${__DIR__}/ovs/ \
 --with-ovs-build=${__DIR__}/ovs/

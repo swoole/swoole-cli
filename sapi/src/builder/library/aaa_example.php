@@ -7,19 +7,25 @@ return function (Preprocessor $p) {
     $example_prefix = EXAMPLE_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
     $gettext_prefix = GETTEXT_PREFIX;
-
+    $cares_prefix = CARES_PREFIX;
     //文件名称 和 库名称一致
     $lib = new Library('aaa_example');
     $lib->withHomePage('https://opencv.org/')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
         ->withManual('https://github.com/opencv/opencv.git')
         /*
+         *
+        //设置现在文件 hash 值验证，hash 值不匹配，下载文件的自动被丢弃
+        ->withFileHash('sha1', '32ead1982fed95c52060cd92187a411de3376ac9')
+        ->withFileHash('md5','538378de497a830092cd497e2f963b5d')
+        ->withFileHash('sha256','5dc841d2dc9f492d57d4550c114f15a03d5ee0275975571ebd82a1fca8604176')
+
 
         //设置别名
         ->withAliasName('example')
 
         //明确申明 使用源地址下载
-        ->withDownloadWithOriginURL()
+        ->withDownloadWithOriginURL("https://ftpmirror.gnu.org/gnu/bison/bison-3.8.tar.gz")
 
         //明确申明 不使用代理
         ->withHttpProxy(false)
@@ -79,19 +85,18 @@ EOF
         ->withPrefix($example_prefix)
         /*
 
-        // 自动清理构建目录
-        ->withCleanBuildDirectory()
-
-        // 自动清理安装目录   当--with-build_type=dev 时 配置才生效
-        ->withCleanPreInstallDirectory($example_prefix)
-
-
         //明确申明 不使用构建缓存 例子： thirdparty/openssl (每次都解压全新源代码到此目录）
         ->withBuildCached(false)
 
-       */
+        //明确申明 不使用库缓存  例子： /usr/local/swoole-cli/zlib (每次构建都需要安装到此目录）
+         ->withInstallCached(false)
 
         ->withUntarArchiveCommand('tar')
+        # ->withUntarArchiveCommand('unzip')
+
+        */
+
+
         # 构建源码可以使用cmake 、 autoconfig 、 meson 构建等
 
 
@@ -100,8 +105,7 @@ EOF
             <<<EOF
          mkdir -p build
          cd build
-         # cmake 查看选项
-         # cmake -LH ..
+
          cmake .. \
         -DCMAKE_INSTALL_PREFIX={$example_prefix} \
         -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
@@ -109,8 +113,12 @@ EOF
         -DBUILD_SHARED_LIBS=OFF  \
         -DBUILD_STATIC_LIBS=ON
 
+        # cmake 查看选项
+        # cmake -LH ..
         # 更多配置选项，请查看 CMakeLists.txt 文件
         # 配置选项例子 ；
+        # -DCMAKE_INSTALL_LIBDIR={$example_prefix}/lib \
+        # -DCMAKE_INSTALL_INCLUDEDIR={$example_prefix}/include \
         # -DCMAKE_CXX_STANDARD=14
         # -DCMAKE_C_STANDARD=11
         # -DCMAKE_C_COMPILER=clang \
@@ -121,12 +129,29 @@ EOF
 
         # 查找PKGCONFIG配置目录多个使用分号隔开
         # -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$openssl_prefix}" \
+        # 显示构建详情
+        # -DCMAKE_VERBOSE_MAKEFILE=ON
+        # CMakeLists.txt 设置 set(CMAKE_VERBOSE_MAKEFILEON ON)
 
         # -DCMAKE_CXX_FLAGS=" -Wall -std=c++11 -fopenmp=libomp "
         # -DCMAKE_C_FLAGS=" -Wall -std=11 -fopenmp=libomp "
 
         # -DGIF_INCLUDE_DIR=/usr/local/swoole-cli/libgif/include/ \
         # -DGIF_LIBRARY=/usr/local/swoole-cli/libgif/lib/libgif.a \
+
+        # -DCARES_INCLUDE_DIR={$cares_prefix}/include
+        # -DCARES_LIBRARY={$cares_prefix}/lib
+        # -DCARES_DIR={$cares_prefix}/
+        # -DCARES_ROOT={$cares_prefix}/
+        # -DCMAKE_POLICY_DEFAULT_CMP0065=NEW \
+        # -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
+        # -DCMAKE_POLICY_DEFAULT_CMP0075=NEW \
+        # cmake_policy(SET CMP0065 NEW) #3.4 don't use `-rdynamic` with executables
+        # cmake_policy(SET CMP0074 NEW) #3.12.0 `find_package()`` uses ``<PackageName>_ROOT`` variables.
+        # cmake_policy(SET CMP0075 NEW) #3.12.0 `check_include_file()`` and friends use ``CMAKE_REQUIRED_LIBRARIES``.
+        # -DCMAKE_TOOLCHAIN_FILE=/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake \
+        # -DVCPKG_TARGET_TRIPLET=x64-linux \
+
 
 
         # ccmake  ..  # 对cmake的cache进行修改，重新生成makefile文件
@@ -153,6 +178,7 @@ EOF
         CPPFLAGS="-I{$gettext_prefix}/include" \
         LDFLAGS="-L{$gettext_prefix}/lib" \
         LIBS=" -lintl " \
+
         meson setup  build \
         -Dprefix={$example_prefix} \
         -Dlibdir={$example_prefix}/lib \
@@ -168,7 +194,7 @@ EOF
         # -Dexamples=disabled
         # -Dc_args=-fmax-errors=10 \
         # -Dcpp_args=-DMAGIC=123
-
+        # LIBRARY_PATH={$gettext_prefix}/lib \
 
         # meson compile -C build
         # meson install -C build
@@ -197,6 +223,9 @@ EOF
         PACKAGES='openssl  '
         PACKAGES="\$PACKAGES zlib"
 
+        OPENSSL_CFLAGS=$(pkg-config  --cflags --static openssl)
+        OPENSSL_LIBS=$(pkg-config    --libs   --static openssl)
+
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)" \
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES) " \
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)" \
@@ -204,6 +233,12 @@ EOF
         --prefix={$example_prefix} \
         --enable-shared=no \
         --enable-static=yes
+
+        # 显示构建详情
+        # make VERBOSE=1
+        # 指定安装目录
+        # make DESTDIR=/usr/local/swoole-cli/example
+        #
 
 EOF
         )
@@ -219,16 +254,8 @@ EOF
         )
         /** 使用GN 构建 end **/
 
+        /* 默认不需要此配置
 
-        ->withPkgName('example')
-        ->withBinPath($example_prefix . '/bin/')
-
-        //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl')
-
-        /*
-
-        //默认不需要此配置
 
         ->withSkipDownload()
         ->disableDefaultLdflags()
@@ -249,10 +276,41 @@ EOF
             rm -rf {$example_prefix}/lib/*.dylib
 EOF
         )
+
+        //没有pkgconfig 配置的库，手动生成 pkgconfig 配置
+        ->withScriptAfterInstall(
+            <<<EOF
+            mkdir -p {$example_prefix}/lib/pkgconfig
+
+            cat << '__example_PKGCONFIG_EOF__' > {$example_prefix}/lib/pkgconfig/libexample.pc
+prefix={$example_prefix}/
+exec_prefix=\${prefix}/
+libdir=\${prefix}/lib
+includedir=\${prefix}/include/
+
+Name: example
+Description: example
+Version: 1.0.0
+Requires: zlib
+Libs: -L\${libdir} -lexample
+Libs.private: -lz -lm
+Cflags: -I\${includedir}
+
+
+__example_PKGCONFIG_EOF__
+
+
+EOF
+        )
+
+
         */
 
+        ->withPkgName('libexample')
+        ->withBinPath($example_prefix . '/bin/')
+        //依赖其它静态链接库
+        ->withDependentLibraries('zlib', 'openssl')/*
 
-        /*
 
         //默认不需要此配置，特殊目录才需要配置
         ->withLdflags('-L' . $example_prefix . '/lib64')
@@ -261,6 +319,7 @@ EOF
         ->withPkgConfig($example_prefix . '/lib/ib64/pkgconfig')
 
         */
+
     ;
 
     $p->addLibrary($lib);
@@ -275,4 +334,11 @@ EOF
     $p->withVariable('LIBS', '$LIBS -lexample ');
 
     */
+
+    /* 导入需要的变量
+
+    $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
+    $p->withExportVariable('LIBPQ_LIBS', '$(pkg-config    --libs   --static libpq)');
+
+     */
 };

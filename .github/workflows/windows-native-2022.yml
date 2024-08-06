@@ -1,0 +1,81 @@
+name: build-php-cli-windows-2022
+
+on:
+  push:
+  pull_request:
+
+env:
+  BUILD_PHP_VERSION: 8.2.13
+
+jobs:
+  windows-native:
+    if: 0
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        php-version:
+        #  - "8.2.13"
+        #  - "8.1.27"
+          - "8.3.7"
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: show environment info
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          env
+          ipconfig
+          uname -a
+          pwd
+          ipconfig /all
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
+
+#      - uses: msys2/setup-msys2@v2
+#        with:
+#          install: >-
+#            curl git
+
+      - uses: actions/setup-dotnet@v1
+      - uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: amd64
+
+      - name: prepare source code
+        shell: cmd
+        run: |
+          git clone -b master --depth=1 https://github.com/php/php-sdk-binary-tools.git
+          git clone -b php-${{ env.BUILD_PHP_VERSION }} --depth=1 https://github.com/php/php-src.git
+          : 本命令无效 在这里无效，只是为了看输出
+          call php-sdk-binary-tools\phpsdk-vs17-x64.bat
+
+
+      - name: test
+        shell: cmd
+        run: |
+          echo %~dp0
+          echo %cd%
+          SET  CURRENT_DIR=%~dp0
+
+          set PHP_SDK_ARCH=x64
+          set PHP_SDK_BIN_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin
+          set PHP_SDK_MSYS2_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin
+          set PHP_SDK_OS_ARCH=x64
+          set PHP_SDK_PHP_CMD=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin\php\do_php.bat
+          set PHP_SDK_ROOT_PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools
+          set "PHP_SDK_VC_DIR=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC"
+          set "PHP_SDK_VC_TOOLSET_VER=%VCToolsVersion%"
+          set PHP_SDK_VS=vs17
+          set PHP_SDK_VS_NUM=17
+          set "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64"
+          set "PATH=D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\bin;D:\a\swoole-cli\swoole-cli\php-sdk-binary-tools\msys2\usr\bin;%PATH%"
+
+          set
+          cd php-src
+          call buildconf
+          call configure --help
+          call configure --disable-all --enable-cli --enable-static=yes --enable-shared=no
+          call nmake
+          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -v
+          D:\a\swoole-cli\swoole-cli\php-src\x64\Release_TS\php.exe -m
+

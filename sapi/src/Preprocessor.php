@@ -20,7 +20,8 @@ class Preprocessor
 
     use CompilerTrait;
 
-    public const VERSION = '1.6';
+    public const VERSION = '1.7';
+
     public const IMAGE_NAME = 'phpswoole/swoole-cli-builder';
     public const CONTAINER_NAME = 'swoole-cli-builder';
 
@@ -67,6 +68,7 @@ class Preprocessor
     protected string $globalPrefix = '/usr/local/swoole-cli';
 
     protected string $extraLdflags = '';
+
     protected string $extraOptions = '';
     protected string $extraCflags = '';
 
@@ -97,12 +99,13 @@ class Preprocessor
     protected array $inputOptions = [];
 
     protected array $binPaths = [];
+
     /**
      * Extensions enabled by default
      * @var array|string[]
      */
     protected array $extEnabled = [
-        //'opcache', //需要修改源码才能实现
+        'opcache', //需要修改源码才能实现
         'curl',
         'iconv',
         'bz2',
@@ -144,14 +147,13 @@ class Preprocessor
     protected array $extEnabledBuff = [];
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
-
     protected array $beforeConfigure = [];
 
     protected array $releaseArchives = [];
 
     protected string $configureVarables;
-
     protected string $buildType = 'release';
+    protected bool $inVirtualMachine = false;
 
     protected string $proxyConfig = '';
 
@@ -161,20 +163,9 @@ class Preprocessor
 
     protected function __construct()
     {
-        switch (PHP_OS) {
-            default:
-            case 'Linux':
-                $this->setOsType('linux');
-                break;
-            case 'Darwin':
-                $this->setOsType('macos');
-                break;
-            case 'WINNT':
-                $this->setOsType('win');
-                break;
-        }
         //重置默认扩展
         $this->extEnabled = [];
+        $this->setOsType($this->getRealOsType());
     }
 
 
@@ -186,7 +177,7 @@ class Preprocessor
         return self::$instance;
     }
 
-    protected function setOsType(string $osType)
+    protected function setOsType(string $osType): void
     {
         $this->osType = $osType;
     }
@@ -198,14 +189,18 @@ class Preprocessor
 
     public function getSystemArch(): string
     {
-        $uname = \posix_uname();
-        switch ($uname['machine']) {
-            case 'x86_64':
-                return 'x64';
-            case 'aarch64':
-                return 'arm64';
-            default:
-                return $uname['machine'];
+        if (function_exists('posix_uname')) {
+            $uname = \posix_uname();
+            switch ($uname['machine']) {
+                case 'x86_64':
+                    return 'x64';
+                case 'aarch64':
+                    return 'arm64';
+                default:
+                    return $uname['machine'];
+            }
+        } else {
+            return 'x64';
         }
     }
 
@@ -304,6 +299,11 @@ class Preprocessor
         return $this->workDir;
     }
 
+    public function getWorkExtDir(): string
+    {
+        return $this->workDir . '/ext/';
+    }
+
     public function setExtraLdflags(string $flags)
     {
         $this->extraLdflags = $flags;
@@ -351,6 +351,11 @@ class Preprocessor
         return $this;
     }
 
+    /**
+     * @param string $buildType 构建类型 [ release | dev | debug ]
+     * @return $this
+     *
+     */
     public function setBuildType(string $buildType): static
     {
         $this->buildType = $buildType;
@@ -362,6 +367,12 @@ class Preprocessor
         return $this->buildType;
     }
 
+    /**
+     * 生成代理配置
+     * @param string $shell (http_proxy 代理配置 + no_proxy配置 )
+     * @param string $httpProxy (http 代理配置 )
+     * @return $this
+     */
     public function setProxyConfig(string $shell = '', string $httpProxy = ''): static
     {
         $this->proxyConfig = $shell;
@@ -369,26 +380,50 @@ class Preprocessor
         $proxyInfo = parse_url($httpProxy);
         if (!empty($proxyInfo['scheme']) && !empty($proxyInfo['host']) && !empty($proxyInfo['port'])) {
             $proto = '';
+            $socat_proxy_proto = '';
+
             switch (strtolower($proxyInfo['scheme'])) {
                 case 'socks5':
                 case "socks5h":
                     $proto = 5;
+                    $socat_proxy_proto = 'socks4a';
                     break;
                 case "socks4a":
                 case 'socks4':
                     $proto = 4;
+                    $socat_proxy_proto = 'socks4a';
                     break;
                 default:
                     $proto = "connect";
+                    $socat_proxy_proto = 'proxy';
                     break;
             }
+
+            /*
+             * sockat 代理例子
+             * http://www.dest-unreach.org/socat/doc/socat.html
+             * socat - socks4a:<socks-server>::%h:%p,socksport=2000
+             * socat - proxy:<proxy-server>:%h:%p,proxyport=2000
+             */
+
+            $socat_proxy_cmd = '';
+            if ($socat_proxy_proto == 'socks4a') {
+                $socat_proxy_cmd = "socat - socks4a:{$proxyInfo['host']}:\\$1:\\$2,socksport={$proxyInfo['port']}";
+            } else {
+                $socat_proxy_cmd = "socat - proxy:{$proxyInfo['host']}:\\$1:\\$2,proxyport={$proxyInfo['port']}";
+            }
+
             $this->gitProxyConfig = <<<__GIT_PROXY_CONFIG_EOF
 export GIT_PROXY_COMMAND=/tmp/git-proxy;
 
 cat  > \$GIT_PROXY_COMMAND <<___EOF___
 #!/bin/bash
 
-nc -X {$proto}  -x {$proxyInfo['host']}:{$proxyInfo['port']} "\\$1" "\\$2"
+# macos环境下 nc 不可用, 使用 socat 代替
+# nc -X {$proto}  -x {$proxyInfo['host']}:{$proxyInfo['port']} "\\$1" "\\$2"
+
+{$socat_proxy_cmd};
+
 ___EOF___
 
 chmod +x \$GIT_PROXY_COMMAND;
@@ -429,11 +464,12 @@ __GIT_PROXY_CONFIG_EOF;
     /**
      * @param string $url
      * @param string $file
-     * @param string $md5sum
+     * @param object|null $project [ $lib or $ext ]
      * @param string $httpProxyConfig
      * @return void
      */
-    protected function downloadFile(string $url, string $file, string $md5sum, string $httpProxyConfig = ''): void
+
+    protected function downloadFile(string $url, string $file, object $project = null, string $httpProxyConfig = ''): void
     {
         # $userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
         # echo `curl --user-agent '{$userAgent}' --connect-timeout 15 --retry 5 --retry-delay 5  -Lo '{$file}' '{$url}' `;
@@ -458,19 +494,21 @@ __GIT_PROXY_CONFIG_EOF;
         if (!is_file($file) or filesize($file) == 0) {
             throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
         }
-        // 下载文件的 MD5 不一致
-        if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
-            throw new Exception("The md5 of downloaded file[$file] is inconsistent with the configuration");
+        // 下载文件的 hash 不一致
+        if ($project->enableHashVerify) {
+            if (!$project->hashVerify($file)) {
+                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+            }
         }
     }
 
     /**
      * @param string $file
-     * @param string $md5sum
      * @param string $downloadScript
+     * @param object|null $project
      * @return void
      */
-    protected function downloadFileWithScript(string $file, string $md5sum, string $downloadScript): void
+    protected function downloadFileWithScript(string $file, string $downloadScript, object $project = null): void
     {
         echo PHP_EOL;
         echo $downloadScript;
@@ -485,25 +523,12 @@ __GIT_PROXY_CONFIG_EOF;
         if (!is_file($file) or filesize($file) == 0) {
             throw new Exception("Downloading file[" . basename($file) . "]  failed");
         }
-        // 下载文件的 MD5 不一致
-        if (!empty($md5sum) and !$this->checkFileMd5sum($file, $md5sum)) {
-            throw new Exception("The md5 of downloaded file[$file] is inconsistent with the configuration");
+        // 下载文件的 hash 不一致
+        if ($project->enableHashVerify) {
+            if (!$project->hashVerify($file)) {
+                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+            }
         }
-    }
-
-    /**
-     * @param string $path
-     * @param string $md5
-     * @return bool
-     */
-    protected function checkFileMd5sum(string $path, string $md5): bool
-    {
-        // md5 不匹配，删除文件
-        if ($md5 != md5_file($path)) {
-            unlink($path);
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -527,11 +552,11 @@ __GIT_PROXY_CONFIG_EOF;
                     $lib->enableDownloadWithMirrorURL = true;
                 }
             }
-            $lib->path = $this->libraryDir . '/' . $lib->file;
 
-            // 本地文件被修改，MD5 不一致，删除后重新下载
-            if (!empty($lib->md5sum) and is_file($lib->path)) {
-                $this->checkFileMd5sum($lib->path, $lib->md5sum);
+            $lib->path = $this->libraryDir . '/' . $lib->file;
+            if ($lib->enableHashVerify) {
+                // 本地文件被修改，hash 不一致，删除后重新下载
+                $lib->hashVerify($lib->path);
             }
 
             //文件内容为空
@@ -544,7 +569,8 @@ __GIT_PROXY_CONFIG_EOF;
                 unlink($lib->path);
             }
 
-            if (!$this->getInputOption('skip-download')) {
+            $skip_download = ($this->getInputOption('skip-download'));
+            if (!$skip_download) {
                 if (file_exists($lib->path)) {
                     echo "[Library] file cached: " . $lib->file . PHP_EOL;
                 } else {
@@ -574,8 +600,8 @@ EOF;
 
                             $this->downloadFileWithScript(
                                 $lib->path,
-                                $lib->md5sum,
-                                $lib->downloadScript
+                                $lib->downloadScript,
+                                $lib
                             );
                         } else {
                             throw new Exception(
@@ -584,8 +610,16 @@ EOF;
                         }
                     } else {
                         echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                        $this->downloadFile($lib->url, $lib->path, $lib->md5sum, $httpProxyConfig);
+                        $this->downloadFile($lib->url, $lib->path, $lib, $httpProxyConfig);
                     }
+                }
+
+                if ($this->getInputOption('show-tarball-hash')) {
+                    echo "[Library] {$lib->name} " . PHP_EOL;
+                    echo "md5:    " . hash_file('md5', $lib->path) . PHP_EOL;
+                    echo "sha1:   " . hash_file('sha1', $lib->path) . PHP_EOL;
+                    echo "sha256: " . hash_file('sha256', $lib->path) . PHP_EOL;
+                    echo PHP_EOL;
                 }
             }
         } else {
@@ -652,9 +686,9 @@ EOF;
                 }
             }
 
-            // 检查文件的 MD5，若不一致删除后重新下载
-            if (!empty($ext->md5sum) and file_exists($ext->path)) {
-                $this->checkFileMd5sum($ext->path, $ext->md5sum);
+            if ($ext->enableHashVerify) {
+                // 检查文件的 hash，若不一致删除后重新下载
+                $ext->hashVerify($ext->path);
             }
 
             //文件内容为空，重新下载
@@ -666,8 +700,8 @@ EOF;
             if (file_exists($ext->path) && $ext->enableLatestTarball) {
                 unlink($ext->path);
             }
-
-            if (!$this->getInputOption('skip-download')) {
+            $skip_download = ($this->getInputOption('skip-download'));
+            if (!$skip_download) {
                 if (!file_exists($ext->path)) {
                     $httpProxyConfig = $this->getProxyConfig();
                     if ($ext->enableGitProxy) {
@@ -695,8 +729,8 @@ EOF;
 
                             $this->downloadFileWithScript(
                                 $ext->path,
-                                $ext->md5sum,
-                                $ext->downloadScript
+                                $ext->downloadScript,
+                                $ext
                             );
                         } else {
                             throw new Exception(
@@ -705,10 +739,8 @@ EOF;
                         }
                     } else {
                         echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                        $this->downloadFile($ext->url, $ext->path, $ext->md5sum, $httpProxyConfig);
+                        $this->downloadFile($ext->url, $ext->path, $ext, $httpProxyConfig);
                     }
-                } else {
-                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
@@ -717,6 +749,15 @@ EOF;
                     $dst_dir = "{$this->rootDir}/ext/{$ext->aliasName}";
                     $ext_name = $ext->aliasName;
                 }
+
+                if ($this->getInputOption('show-tarball-hash')) {
+                    echo "[Extension] {$ext_name} " . PHP_EOL;
+                    echo "md5:    " . hash_file('md5', $ext->path) . PHP_EOL;
+                    echo "sha1:   " . hash_file('sha1', $ext->path) . PHP_EOL;
+                    echo "sha256: " . hash_file('sha256', $ext->path) . PHP_EOL;
+                    echo PHP_EOL;
+                }
+
                 if (($ext->enableLatestTarball || !$ext->enableBuildCached)
                     &&
                     (!empty($ext->peclVersion) || $ext->enableDownloadScript || !empty($ext->url))
@@ -924,6 +965,7 @@ EOF;
                     }
                 }
             } elseif ($op == '@') {
+                $this->inVirtualMachine = $value != $this->getRealOsType();
                 $this->setOsType($value);
             }
         }
@@ -988,10 +1030,15 @@ EOF;
         }
     }
 
+    /**
+     * 递归删除目录
+     * @param $path
+     * @return bool
+     */
     protected function deleteDirectoryIfExists($path): bool
     {
         try {
-            if (file_exists($path)) {
+            if (is_dir($path)) {
                 $iterator = new \DirectoryIterator($path);
                 foreach ($iterator as $fileinfo) {
                     if ($fileinfo->isDot()) {
@@ -1140,9 +1187,11 @@ EOF;
             }
         }
 
-        if ($this->getOsType() == 'macos') {
+        if ($this->isMacos()) {
             if (is_file('/usr/local/opt/bison/bin/bison')) {
                 $this->withBinPath('/usr/local/opt/bison/bin');
+            } elseif (is_file('/opt/homebrew/opt/bison/bin/bison')) { //兼容 github action
+                $this->withBinPath('/opt/homebrew/opt/bison/bin/');
             } else {
                 $this->loadDependentLibrary("bison");
             }
@@ -1170,12 +1219,6 @@ EOF;
         $this->sortLibrary();
         $this->setExtensionDependency();
 
-        if ($this->getOsType() == 'macos') {
-            $libcpp = '-lc++';
-        } else {
-            $libcpp = '-lstdc++';
-        }
-
         //$packagesArr = $this->getLibraryPackages();
         //$packagesArr = $this->extensionDependentPackageNames;
 
@@ -1186,7 +1229,7 @@ EOF;
             $this->withVariable('PACKAGES', $packages);
             $this->withVariable('CPPFLAGS', '$CPPFLAGS $(pkg-config --cflags-only-I --static $PACKAGES ) ');
             $this->withVariable('LDFLAGS', '$LDFLAGS $(pkg-config --libs-only-L --static $PACKAGES ) ');
-            $this->withVariable('LIBS', '$LIBS $(pkg-config --libs-only-l --static $PACKAGES ) ' . $libcpp);
+            $this->withVariable('LIBS', '$LIBS $(pkg-config --libs-only-l --static $PACKAGES ) ');
         }
         if (!empty($this->varables) || !empty($packagesArr)) {
             $this->withExportVariable('CPPFLAGS', '$CPPFLAGS');
@@ -1205,7 +1248,7 @@ EOF;
         $this->binPaths = array_filter(array_unique($this->binPaths));
 
         if ($this->getInputOption('skip-download')) {
-            $this->generateLibraryDownloadLinks();
+            $this->generateDownloadLinks();
         }
 
         $this->generateFile(__DIR__ . '/template/make-install-deps.php', $this->rootDir . '/make-install-deps.sh');
@@ -1247,5 +1290,47 @@ EOF;
         foreach ($this->libraryList as $item) {
             echo "{$item->name}\n";
         }
+    }
+
+    public function getRealOsType(): string
+    {
+        switch (PHP_OS) {
+            default:
+            case 'Linux':
+                return 'linux';
+            case 'Darwin':
+                return 'macos';
+            case 'WINNT':
+                return 'win';
+        }
+    }
+
+    public function isLinux(): bool
+    {
+        return $this->osType === 'linux';
+    }
+
+    public function isMacos(): bool
+    {
+        return $this->osType === 'macos';
+    }
+
+    public function hasLibrary(string $lib): bool
+    {
+        return isset($this->libraryMap[$lib]);
+    }
+
+    public function hasExtension(string $ext): bool
+    {
+        return isset($this->extensionMap[$ext]);
+    }
+
+    public function cleanFile(string $file): bool
+    {
+        if (is_file($file)) {
+            unlink($file);
+            return true;
+        }
+        return false;
     }
 }

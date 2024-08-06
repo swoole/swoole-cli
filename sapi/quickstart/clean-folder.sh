@@ -38,10 +38,16 @@ case $GIT_BRANCH in
   ACTION="delete"
   ;;
 *)
-  echo 'no need delete ext '
+  if git ls-files --error-unmatch "sapi/quickstart/clean-folder.sh" > /dev/null 2>&1 ; then
+    ACTION="delete"
+  else
+    echo 'no need delete ext '
+  fi
   ;;
 
 esac
+
+
 
 if [[ $ACTION = "delete" ]]; then
   cd ${__PROJECT__}

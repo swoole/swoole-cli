@@ -43,7 +43,7 @@ EOF
 EOF
         )
         ->withPreInstallCommand(
-            'ubuntu',
+            'debian',
             <<<EOF
         apt install -y libstdc++-12-dev
         apt install -y libavif-dev
@@ -105,6 +105,7 @@ EOF
         -DOPENCV_ENABLE_NONFREE=ON \
         -DWITH_AVIF=ON \
         -DWITH_GTK=OFF \
+
         -DWITH_CUDA=OFF \
 
         ninja

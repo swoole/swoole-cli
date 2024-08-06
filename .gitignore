@@ -307,8 +307,7 @@ tmp-php.ini
 /vendor
 /thirdparty
 !/thirdparty/.gitkeep
-var/
-/usr
+/var
 /ext/redis
 /ext/memcached
 /ext/imagick
@@ -321,7 +320,6 @@ var/
 /ext/xlswriter
 /.phpunit.result.cache
 /samples/sfx/*.phar
-composer.lock
 .php-cs-fixer.cache
 
 /packages

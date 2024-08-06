@@ -1,3 +1,47 @@
+# linux 环境下构建  swoole-cli
+
+## 运行环境要求
+
+1. 容器 docker 运行环境
+
+构建步骤 - 运行命令
+====
+
+```shell
+
+git clone --recursive https://github.com/swoole/swoole-cli.git
+cd swoole-cli
+
+bash setup-php-runtime.sh
+composer install  --no-interaction --no-autoloader --no-scripts --profile
+composer dump-autoload --optimize --profile
+
+# 生成构建脚本 make.sh
+php prepare.php  --without-docker --skip-download=1
+bash ./make.sh docker-build
+bash ./make.sh docker-bash
+
+# 准备bash 命令
+sh sapi/quickstart/linux/alpine-init-minimal.sh
+
+bash sapi/quickstart/linux/alpine-init.sh
+
+# 进入容器后需要再一次执行此命令
+php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
+
+bash make-install-deps.sh
+
+bash ./make.sh all-library
+bash ./make.sh config
+bash ./make.sh build
+bash ./make.sh archive
+
+./bin/swoole-cli -m
+./bin/swoole-cli --ri swoole
+file ./bin/swoole-cli
+
+```
+
 构建镜像
 ====
 `Linux` 下需要在容器中构建，因此需要先构建 `swoole-cli-builder:base` 基础镜像。
@@ -16,7 +60,7 @@
 快速初始化构建环境
 ====
 
-不执行 `./make.sh docker-build [china|ustc|tuna] ` 生成基础镜像
+跳过生成容器基础镜像
 使用如下命令快速进入容器环境
 便捷调整构建环境
 
@@ -72,4 +116,35 @@ make: ext/opcache/minilua: No such file or directory
 ```bash
 rm ext/opcache/minilua
 ./make.sh build
+```
+
+docker no found
+----
+> 快速安装 docker 运行环境
+
+```bash
+
+bash sapi/quickstart/linux/install-docker.sh
+
+# 使用中国镜像
+bash sapi/quickstart/linux/install-docker.sh --mirror china
+
+
+```
+
+fix slow alpine apk installations
+----
+
+```bash
+
+bash sapi/quickstart/linux/alpine-init.sh --mirror china
+
+```
+
+show file info
+----
+
+```bash
+    file ./bin/php-8.2.4/bin/php
+    readelf -h ./bin/php-8.2.4/bin/php
 ```

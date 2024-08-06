@@ -24,7 +24,6 @@ EOF
         )
         ->withPrefix($depot_tools_prefix)
         ->withBuildCached(false)
-        ->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
             mkdir -p {$depot_tools_prefix}

@@ -126,7 +126,8 @@ EOF
         PACKAGES="\$PACKAGES  libpng libpng16 libjpeg libturbojpeg SvtAv1Enc SvtAv1Dec "
         PACKAGES="\$PACKAGES  libsharpyuv  libwebp  libwebpdecoder  libwebpdemux  libwebpmux"
 
-        PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " #
+        # PACKAGES="\$PACKAGES  dav1d sdl2 aom freetype2  gmp lcms2 " #
+        PACKAGES="\$PACKAGES  dav1d  aom freetype2  gmp lcms2 " #
         PACKAGES="\$PACKAGES  libtiff-4 "
         PACKAGES="\$PACKAGES  libavif " #
         PACKAGES="\$PACKAGES  libbrotlicommon libbrotlidec libbrotlienc"

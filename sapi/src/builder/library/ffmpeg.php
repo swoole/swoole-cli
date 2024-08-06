@@ -31,12 +31,12 @@ return function (Preprocessor $p) {
         //->withUrl('https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz')
         //->withFile('ffmpeg-v6.tar.gz')
         ->withManual('https://trac.ffmpeg.org/wiki/CompilationGuide')
-        ->withFile('ffmpeg-latest.tar.gz')
+        ->withFile('ffmpeg-n7.1-dev.tar.gz')
         ->withDownloadScript(
             'FFmpeg',
             <<<EOF
             # git clone --depth=1  --single-branch  https://git.ffmpeg.org/ffmpeg.git
-            git clone -b master --depth=1  https://github.com/FFmpeg/FFmpeg.git
+            git clone -b n7.1-dev --depth=1  https://github.com/FFmpeg/FFmpeg.git
 EOF
         )
         ->withPrefix($ffmpeg_prefix)
@@ -47,8 +47,9 @@ EOF
             apk add yasm nasm
 EOF
         )
+        ->withAutoUpdateFile()
         ->withBuildCached(false)
-        //->withInstallCached(false)
+        ->withInstallCached(false)
         ->withConfigure(
             <<<EOF
 
@@ -70,7 +71,7 @@ EOF
             PACKAGES="\$PACKAGES lcms2 "
             PACKAGES="\$PACKAGES x264 "
             PACKAGES="\$PACKAGES x265 " # numa
-            PACKAGES="\$PACKAGES sdl2 "
+            # PACKAGES="\$PACKAGES sdl2 "
             PACKAGES="\$PACKAGES ogg "
             PACKAGES="\$PACKAGES opus "
             PACKAGES="\$PACKAGES openh264 "
@@ -111,7 +112,6 @@ EOF
             --enable-gmp \
             --enable-libfreetype \
             --enable-libvpx \
-            --enable-sdl2 \
             --enable-libdav1d \
             --enable-libopus \
             --enable-libopenh264 \
@@ -140,6 +140,7 @@ EOF
             # --enable-libssh
             # --enable-cross-compile
             # --enable-libspeex
+            # --enable-sdl2 \
 
             # --enable-random \  # 需要外部组件
 EOF
@@ -167,7 +168,7 @@ EOF
             "libx264",
             "liblzma",
             "libvpx",
-            "sdl2",
+            //"sdl2",
             'libogg',
             'libopus',
             'openh264',

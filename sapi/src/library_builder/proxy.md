@@ -96,3 +96,6 @@ export GIT_PROXY_COMMAND="/work/sapi/quickstart/git-proxy.sh"
 git clone --depth=1 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 
 
+
+##  与socat 有同样功能 的工具
+    https://github.com/esrrhs/spp.git

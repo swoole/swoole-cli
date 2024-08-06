@@ -5,18 +5,18 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
-    $ldflags = $p->getOsType() == 'macos' ? '' : ' -static  ';
-    $libs = $p->getOsType() == 'macos' ? '-lc++' : ' -lstdc++ ';
-
+    $ldflags = $p->isMacos() ? '' : ' -static  ';
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
             ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
-            ->withUrl('https://ftp.postgresql.org/pub/source/v16.0/postgresql-16.0.tar.gz')
+            ->withUrl('https://ftp.postgresql.org/pub/source/v16.3/postgresql-16.3.tar.gz')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS')
             ->withManual('https://www.postgresql.org/download/')
             ->withManual('https://git.postgresql.org/gitweb/?p=postgresql.git;a=summary')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
+            ->withFileHash('md5', '8a58db4009e1a50106c5e1a8c4b03bed')
             ->withPrefix($pgsql_prefix)
             /*
                 https://git.postgresql.org/gitweb/

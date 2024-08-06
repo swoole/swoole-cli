@@ -9,8 +9,8 @@ sort | uniq
 
 ```
 
-
 # 删除子模块
+
 ```bash
 
 git submodule deinit ext/swoole
@@ -24,13 +24,16 @@ git rm -rf ext/swoole/
 ```
 
 ## 创建空的新分支
+
 ```bash
 git checkout  --orphan  static-php-cli-next
 
 git rm -rf .
 
 ```
+
 ## 清理未跟踪的文件 谨慎使用
+
 ```bash
 git clean -df
 ```
@@ -43,12 +46,14 @@ git fsck --lost-found  # 查看记录
 ```
 
 ## 合并时不保留commit 信息
+
 ```bash
 git merge --squash branch_name
 
 ```
 
 ## 当前分支 hash
+
 ```bash
 git rev-parse HEAD
 
@@ -64,6 +69,7 @@ git reset --hard c761f5c # 回退到指定的版本
 ```
 
 ## 节省网络流量
+
 ```bash
 
 git clone --recurse-submodules --single-branch -b main --progress --depth=1
@@ -86,14 +92,22 @@ git gc --prune=now
 
 ```
 
-
 ## 单个文件回滚
+
 ```bash
 git log
 
 git checkout commit_id filename
 
 
+
+```
+
+## git 恢复被删除的整个文件夹
+```shell
+
+git log --oneline -- experimental-features/v3/rules/example/
+git checkout commit_id -- experimental-features/v3/rules/example/
 
 ```
 
@@ -128,6 +142,37 @@ git rm -rf .
 ```
 
 ## 合并两个无关的仓库
+
 ```bash
 git merge  --allow-unrelated-histories
+```
+
+## 查看提交日志
+
+```bash
+
+git log --oneline
+
+```
+
+```bash
+
+GITVERSION="git --git-dir $(pwd)/.git rev-parse --short HEAD"
+GITTAG="git --git-dir $(pwd)/.git describe --all --always --dirty"
+GITBRANCH="git --git-dir $(pwd)/.git name-rev --name-only HEAD"
+
+
+GIT_COMMIT:=$(git describe --dirty --always)
+GIT_BRANCH:=$(git rev-parse --abbrev-ref HEAD -- | head -1)
+DATE:=$(date +"%Y-%m-%d")
+
+git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+```
+
+## 设置 分支 跟踪
+
+```bash
+
+git branch --set-upstream-to=origin/main main
 ```
