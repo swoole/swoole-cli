@@ -91,6 +91,7 @@ test -f setup-webBenchmark-runtime.sh    && rm -rf setup-webBenchmark-runtime.sh
 test -f setup-swow-cli-runtime.sh    && rm -rf setup-swow-cli-runtime.sh
 test -f setup-php-fpm-7.4-runtime.sh    && rm -rf setup-php-fpm-7.4-runtime.sh
 test -f setup-swoole-cli-runtime.sh    && rm -rf setup-swoole-cli-runtime.sh
+test -f setup-php-cli-7.4-runtime.sh   && rm -rf setup-php-cli-7.4-runtime.sh
 
 
 cd ${__PROJECT__}
