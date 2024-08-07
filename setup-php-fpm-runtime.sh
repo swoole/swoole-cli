@@ -39,7 +39,7 @@ case $ARCH in
 'x86_64')
   ARCH="x64"
   ;;
-'aarch64' | 'arm64' )
+'aarch64' | 'arm64')
   ARCH="arm64"
   ;;
 *)
@@ -145,6 +145,42 @@ opcache.jit=1254
 opcache.jit_buffer_size=480M
 
 expose_php=Off
+
+EOF
+
+cat >${__PROJECT__}/bin/runtime/php-fpm.conf <<'EOF'
+; 更多配置参考
+; https://github.com/php/php-src/blob/master/sapi/fpm/www.conf.in
+; https://github.com/php/php-src/blob/master/sapi/fpm/php-fpm.conf.in
+
+[global]
+pid = run/php-fpm.pid
+error_log = log/php-fpm.log
+daemonize = yes
+
+[www]
+user = nobody
+group = nobody
+
+listen = 9001
+;listen = run/php-fpm.sock
+
+slowlog = log/$pool.log.slow
+request_slowlog_timeout = 30s
+
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+; MAIN_PID=$(cat var/run/php-fpm.pid)
+; 关闭 php-fpm
+; kill -QUIT $MAIN_PID
+
+; 平滑重启 php-fpm
+; kill -USR2 $MAIN_PID
 
 EOF
 
