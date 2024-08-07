@@ -39,6 +39,17 @@
 - [https://github.com/swoole/swoole-cli/releases](https://github.com/swoole/swoole-cli/releases)
 - [https://github.com/swoole/swoole-src/releases](https://github.com/swoole/swoole-src/releases)
 
+## 立即使用 swoole-cli
+
+```shell
+
+curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash
+
+# 来自 https://www.swoole.com/download
+curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --mirror china
+
+```
+
 ## `swoole-cli`构建文档
 
 - [linux 版构建文档](docs/linux.md)
