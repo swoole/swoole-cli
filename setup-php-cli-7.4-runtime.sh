@@ -48,7 +48,7 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='7.4.33'
+APP_VERSION='v7.4.33'
 APP_NAME='php-cli'
 VERSION='php-cli-7.4-v1.0.0'
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -48,9 +48,9 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v7.4.33'
-APP_NAME='php-fpm'
-VERSION='php-fpm-7.4-v1.2.1'
+APP_VERSION='v7.3.33'
+APP_NAME='php-cli'
+VERSION='php-cli-7.3-v1.0.0'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
@@ -62,7 +62,7 @@ COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.p
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
 if [ $OS = 'windows' ]; then
-  APP_DOWNLOAD_URL="https://github.com/jingjingxyk/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-vs2022-${ARCH}.zip"
+  APP_DOWNLOAD_URL="https://github.com/jingjingxyk/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
 fi
 
 MIRROR=''
@@ -108,7 +108,7 @@ APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
 
 if [ $OS = 'windows' ]; then
   {
-    APP_RUNTIME="${APP_NAME}-${APP_VERSION}-vs2022-${ARCH}"
+    APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
     test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
@@ -118,9 +118,9 @@ if [ $OS = 'windows' ]; then
 else
   test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
-  test -f php-fpm || tar -xvf ${APP_RUNTIME}.tar
-  chmod a+x php-fpm
-  cp -f ${__PROJECT__}/var/runtime/php-fpm ${__PROJECT__}/bin/runtime/php-fpm
+  test -f php || tar -xvf ${APP_RUNTIME}.tar
+  chmod a+x php
+  cp -f ${__PROJECT__}/var/runtime/php ${__PROJECT__}/bin/runtime/php
 fi
 
 cd ${__PROJECT__}/var/runtime
@@ -148,53 +148,17 @@ expose_php=Off
 
 EOF
 
-cat >${__PROJECT__}/bin/runtime/php-fpm.conf <<'EOF'
-; 更多配置参考
-; https://github.com/php/php-src/blob/master/sapi/fpm/www.conf.in
-; https://github.com/php/php-src/blob/master/sapi/fpm/php-fpm.conf.in
-
-[global]
-pid = run/php-fpm.pid
-error_log = log/php-fpm.log
-daemonize = yes
-
-[www]
-user = nobody
-group = nobody
-
-listen = 9001
-;listen = run/php-fpm.sock
-
-slowlog = log/$pool.log.slow
-request_slowlog_timeout = 30s
-
-
-pm = dynamic
-pm.max_children = 5
-pm.start_servers = 2
-pm.min_spare_servers = 1
-pm.max_spare_servers = 3
-
-; MAIN_PID=$(cat var/run/php-fpm.pid)
-; 关闭 php-fpm
-; kill -QUIT $MAIN_PID
-
-; 平滑重启 php-fpm
-; kill -USR2 $MAIN_PID
-
-EOF
-
 cd ${__PROJECT__}/
 
 set +x
 
 echo " "
-echo " USE PHP-FPM :"
+echo " USE PHP-CLI RUNTIME :"
 echo " "
-echo " export PATH=\"${__PROJECT__}/runtime/:\$PATH\" "
+echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
 echo " "
-echo " php-fpm.conf example  :  https://gitee.com/jingjingxyk/quickstart-nginx-php-fpm/blob/main/php-fpm.example.conf"
+echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
+echo " OR "
+echo " alias php='php -c ${__PROJECT__}/bin/runtime/php.ini' "
 echo " "
-echo " enable start php-fpm ${APP_VERSION}"
-echo " "
-echo " ${__PROJECT__}/bin/runtime/php-fpm -c ${__PROJECT__}/bin/runtime/php.ini --fpm-config ${__PROJECT__}/runtime/php-fpm.conf "
+echo " PHP-CLI VERSION  ${APP_VERSION}"
