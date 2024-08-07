@@ -118,9 +118,9 @@ if [ $OS = 'windows' ]; then
 else
   test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
-  test -f php || tar -xvf ${APP_RUNTIME}.tar
-  chmod a+x php
-  cp -f ${__PROJECT__}/var/runtime/php ${__PROJECT__}/bin/runtime/php
+  test -f php-fpm || tar -xvf ${APP_RUNTIME}.tar
+  chmod a+x php-fpm
+  cp -f ${__PROJECT__}/var/runtime/php-fpm ${__PROJECT__}/bin/runtime/php-fpm
 fi
 
 cd ${__PROJECT__}/var/runtime
