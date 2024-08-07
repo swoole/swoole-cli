@@ -48,21 +48,21 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v8.2.13'
-APP_NAME='php-cli'
-VERSION='v1.3.2'
+APP_VERSION='v5.1.3'
+APP_NAME='swoole-cli'
+VERSION='v5.1.3.0'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
 cd ${__PROJECT__}/var/runtime
 
-APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
 if [ $OS = 'windows' ]; then
-  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
+  APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
 fi
 
 MIRROR=''
@@ -90,10 +90,10 @@ done
 
 case "$MIRROR" in
 china)
-  APP_DOWNLOAD_URL="https://php-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+  APP_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
   COMPOSER_DOWNLOAD_URL="https://mirrors.tencent.com/composer/composer.phar"
   if [ $OS = 'windows' ]; then
-    APP_DOWNLOAD_URL="https://php-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
+    APP_DOWNLOAD_URL="https://wenda-1252906962.file.myqcloud.com/dist/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
   fi
   ;;
 
@@ -118,9 +118,9 @@ if [ $OS = 'windows' ]; then
 else
   test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
-  test -f php || tar -xvf ${APP_RUNTIME}.tar
-  chmod a+x php
-  cp -f ${__PROJECT__}/var/runtime/php ${__PROJECT__}/bin/runtime/php
+  test -f swoole-cli || tar -xvf ${APP_RUNTIME}.tar
+  chmod a+x swoole-cli
+  cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/swoole-cli
 fi
 
 cd ${__PROJECT__}/var/runtime
@@ -148,17 +148,57 @@ expose_php=Off
 
 EOF
 
+cat >${__PROJECT__}/bin/runtime/php-fpm.conf <<'EOF'
+; 更多配置参考
+; https://github.com/php/php-src/blob/master/sapi/fpm/www.conf.in
+; https://github.com/php/php-src/blob/master/sapi/fpm/php-fpm.conf.in
+
+[global]
+pid = run/php-fpm.pid
+error_log = log/php-fpm.log
+daemonize = yes
+
+[www]
+user = nobody
+group = nobody
+
+listen = 9001
+;listen = run/php-fpm.sock
+
+slowlog = log/$pool.log.slow
+request_slowlog_timeout = 30s
+
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+; MAIN_PID=$(cat var/run/php-fpm.pid)
+; 关闭 php-fpm
+; kill -QUIT $MAIN_PID
+
+; 平滑重启 php-fpm
+; kill -USR2 $MAIN_PID
+
+EOF
+
 cd ${__PROJECT__}/
 
 set +x
 
 echo " "
+echo " USE PHP-FPM RUNTIME :"
+echo " "
+echo "${__PROJECT__}/bin/runtime/swoole-cli -c ${__PROJECT__}/bin/runtime/php.ini -P --fpm-config ${__PROJECT__}/bin/runtime/php-fpm.conf -p ${__PROJECT__}/runtime/var "
+echo " "
 echo " USE PHP-CLI RUNTIME :"
 echo " "
 echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
 echo " "
-echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
+echo " alias swoole-cli='swoole-cli -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
 echo " OR "
-echo " alias php='php -c ${__PROJECT__}/bin/runtime/php.ini' "
+echo " alias swoole-cli='swoole-cli -c ${__PROJECT__}/bin/runtime/php.ini' "
 echo " "
-echo " PHP-CLI VERSION  ${APP_VERSION}"
+echo " SWOOLE-CLI VERSION  ${APP_VERSION}"
