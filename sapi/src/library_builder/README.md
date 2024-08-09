@@ -34,3 +34,8 @@ command -v debian-sa1 > /dev/null && debian-sa1 1 1
     nodejs
         nvm
         npm-check-updates
+
+
+## 桌面应用程序开发框架比较：Electron、Flutter、Tauri、React Native 和 Qt
+
+## Flatpak vs. Snap vs. AppImage
