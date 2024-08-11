@@ -125,7 +125,7 @@ apt install -y python3 python3-pip ninja-build  diffutils
 apt install -y yasm nasm
 apt install -y meson
 apt install -y netcat-openbsd  socat
-apt install -y gnupg
+apt install -y gnupg procps
 
 case "$MIRROR" in
 china | tuna | ustc)

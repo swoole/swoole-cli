@@ -92,3 +92,4 @@ export DEBIAN_FRONTEND=noninteractive
 apt update -y
 
 apt install -y git curl wget ca-certificates xz-utils bzip2 p7zip lzip zip unzip
+apt install -y procps
