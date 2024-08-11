@@ -19,7 +19,7 @@ cd ${__PROJECT__}/var/
 # https://cloud-atlas.readthedocs.io/zh-cn/latest/docker/init/docker_tini.html
 
 
-ENV TINI_VERSION v0.19.0
+TINI_VERSION v0.19.0
 curl -fsSLo tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 chmod +x /tini
 
