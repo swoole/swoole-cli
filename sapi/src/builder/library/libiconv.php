@@ -14,10 +14,21 @@ return function (Preprocessor $p) {
             ->withUrl('https://ftpmirror.gnu.org/gnu/libiconv/libiconv-1.17.tar.gz')
             ->withMirrorUrl('https://mirrors.tuna.tsinghua.edu.cn/gnu/libiconv/libiconv-1.17.tar.gz')
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/libiconv/libiconv-1.17.tar.gz')
-
             ->withFileHash('md5', 'd718cd5a59438be666d1575855be72c3')
             ->withPrefix($libiconv_prefix)
-            ->withConfigure('./configure --prefix=' . $libiconv_prefix . ' enable_static=yes enable_shared=no')
+            ->withBuildCached(false)
+            ->withInstallCached(false)
+            ->withConfigure(
+                <<<EOF
+            ./configure --help
+
+            ./configure \
+            --prefix={$libiconv_prefix} \
+            --enable-static=yes \
+            --enable-shared=no \
+            --enable-extra-encodings
+EOF
+            )
             ->withBinPath($libiconv_prefix . '/bin/')
             ->withLdflags('-L' . $libiconv_prefix . '/lib')
             ->withPkgConfig('')
