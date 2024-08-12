@@ -14,8 +14,6 @@ return function (Preprocessor $p) {
             ->withUrl('https://ftpmirror.gnu.org/gnu/libiconv/libiconv-1.17.tar.gz')
             ->withFileHash('md5', 'd718cd5a59438be666d1575855be72c3')
             ->withPrefix($libiconv_prefix)
-            ->withBuildCached(false)
-            ->withInstallCached(false)
             ->withConfigure(
                 <<<EOF
             ./configure --help
