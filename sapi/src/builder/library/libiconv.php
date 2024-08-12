@@ -16,8 +16,6 @@ return function (Preprocessor $p) {
             ->withMirrorUrl('https://mirrors.ustc.edu.cn/gnu/libiconv/libiconv-1.17.tar.gz')
             ->withFileHash('md5', 'd718cd5a59438be666d1575855be72c3')
             ->withPrefix($libiconv_prefix)
-            ->withBuildCached(false)
-            ->withInstallCached(false)
             ->withConfigure(
                 <<<EOF
             ./configure --help
