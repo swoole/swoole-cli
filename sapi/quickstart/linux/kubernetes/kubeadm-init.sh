@@ -96,3 +96,8 @@ iptables -t nat -nL
 
 openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null |
   openssl dgst -sha256 -hex | sed 's/^.* //'
+
+
+# create cluster
+
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
