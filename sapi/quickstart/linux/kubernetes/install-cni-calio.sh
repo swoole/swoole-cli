@@ -34,4 +34,5 @@ chmod +x ./calicoctl
 
 export DATASTORE_TYPE=kubernetes
 export KUBECONFIG=~/.kube/config
+calicoctl get nodes
 calicoctl get workloadendpoints
