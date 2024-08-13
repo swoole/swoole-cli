@@ -20,7 +20,7 @@ done
 # CNI calico
 # https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises
 # https://github.com/projectcalico/calico/tags
-VERSION="3.25.2"
+VERSION="3.28.1"
 curl -Lo calico-v${VERSION}.yaml https://raw.githubusercontent.com/projectcalico/calico/v${VERSION}/manifests/calico.yaml
 
 kubectl create -f calico-v${VERSION}.yaml

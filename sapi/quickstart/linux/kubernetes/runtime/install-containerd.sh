@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 set -x
 __DIR__=$(
   cd "$(dirname "$0")"
@@ -43,7 +44,7 @@ stat -fc %T /sys/fs/cgroup/
 # containerd
 # https://github.com/containerd/containerd/tags
 
-VERSION="1.7.18"
+VERSION="1.7.20"
 
 CONTAINERD_RELEASE_URL=https://github.com/containerd/containerd/releases/download/v${VERSION}/containerd-${VERSION}-linux-amd64.tar.gz
 CONTAINERD_RELEASE=containerd-${VERSION}-linux-amd64.tar.gz
@@ -75,7 +76,7 @@ systemctl restart containerd
 # runc
 # https://github.com/opencontainers/runc/tags
 
-VERSION="1.1.10"
+VERSION="1.1.13"
 curl  -L -o runc.amd64 https://github.com/opencontainers/runc/releases/download/v${VERSION}/runc.amd64
 
 install -m 755 runc.amd64 /usr/local/sbin/runc
@@ -88,7 +89,7 @@ install -m 755 runc.amd64 /usr/local/sbin/runc
 # cni-plugins
 # https://github.com/containernetworking/plugins/tags
 
-VERSION="1.4.0"
+VERSION="1.5.1"
 mkdir -p /opt/cni/bin
 curl  -L -o cni-plugins-linux-amd64-v${VERSION}.tgz https://github.com/containernetworking/plugins/releases/download/v${VERSION}/cni-plugins-linux-amd64-v${VERSION}.tgz
 tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v${VERSION}.tgz

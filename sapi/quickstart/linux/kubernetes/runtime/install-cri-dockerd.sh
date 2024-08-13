@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 set -x
 __DIR__=$(
   cd "$(dirname "$0")"
@@ -39,7 +40,7 @@ cd cri-dockerd
 # cri-dockerd
 # https://github.com/Mirantis/cri-dockerd/tags
 
-VERSION="0.3.14"
+VERSION="0.3.15"
 curl -L -O https://github.com/Mirantis/cri-dockerd/releases/download/v${VERSION}/cri-dockerd-${VERSION}.amd64.tgz
 
 tar --strip-components=1 -C . -xf  cri-dockerd-${VERSION}.amd64.tgz

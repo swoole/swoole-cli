@@ -15,6 +15,19 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+# Kubernetes Dashboard 从版本 7.0.0 开始仅支持基于 Helm 的安装
+
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+
+exit 0
+
+# docs
+https://github.com/kubernetes/dashboard/blob/master/docs/user/accessing-dashboard/README.md
+
+exit 0
+
 # https://github.com/kubernetes/dashboard/tags
 VERSION="v2.7.0"
 VERSION="v3.0.0-alpha0"

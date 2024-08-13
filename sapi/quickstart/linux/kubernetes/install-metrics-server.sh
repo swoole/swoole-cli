@@ -1,4 +1,3 @@
-
 while [ $# -gt 0 ]; do
   case "$1" in
   --proxy)
@@ -16,6 +15,9 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-curl -L -o kubernetes-metrics-server.yaml  https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+# metrics-server
+# https://github.com/kubernetes-sigs/metrics-server/
+
+curl -L -o kubernetes-metrics-server.yaml https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
 kubectl create -f kubernetes-metrics-server.yaml
