@@ -1,4 +1,4 @@
-
+#!/usr/bin/env bash
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -17,10 +17,13 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-# CNI calico
-# https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises
-# https://github.com/projectcalico/calico/tags
-VERSION="3.28.1"
-curl -Lo calico-v${VERSION}.yaml https://raw.githubusercontent.com/projectcalico/calico/v${VERSION}/manifests/calico.yaml
+# 从 Kube-OVN v1.12.0 版本开始，支持 Helm Chart 安装，默认部署为 Overlay 类型网络。
+# CNI kube-ovn
+# https://github.com/kubeovn/kube-ovn?tab=readme-ov-file
+# https://kubeovn.github.io/docs/stable/start/one-step-install/
+# https://github.com/kubeovn/kube-ovn/tags
+VERSION="release-1.12"
 
-kubectl create -f calico-v${VERSION}.yaml
+curl -fsSL kube-ovn-${VERSION}-install.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/install.sh
+
+bash kube-ovn-${VERSION}-install.sh

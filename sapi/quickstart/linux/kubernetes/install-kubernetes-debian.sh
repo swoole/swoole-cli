@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 set -x
 __DIR__=$(
   cd "$(dirname "$0")"
