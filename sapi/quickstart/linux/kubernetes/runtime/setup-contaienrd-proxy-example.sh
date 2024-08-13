@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 set -x
 
@@ -6,7 +7,7 @@ systemctl status containerd | cat
 # 使用系统源安装 目录位置为  /lib/systemd/system/containerd.service
 
 mkdir -p /usr/local/lib/systemd/system/containerd.service.d
-cat > /usr/local/lib/systemd/system/containerd.service.d/http-proxy.conf <<EOF
+cat >/usr/local/lib/systemd/system/containerd.service.d/http-proxy.conf <<EOF
 [Service]
 Environment="HTTP_PROXY=http://192.168.3.26:8015"
 Environment="HTTPS_PROXY=http://192.168.3.26:8015"
