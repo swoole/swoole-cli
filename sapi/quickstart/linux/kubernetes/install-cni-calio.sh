@@ -1,5 +1,3 @@
-
-
 while [ $# -gt 0 ]; do
   case "$1" in
   --proxy)
@@ -16,6 +14,9 @@ while [ $# -gt 0 ]; do
   esac
   shift $(($# > 0 ? 1 : 0))
 done
+
+mkdir -p calico
+cd calico
 
 # CNI calico
 # https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises

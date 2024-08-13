@@ -17,6 +17,9 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+mkdir -p kube-ovn
+cd kube-ovn
+
 # 从 Kube-OVN v1.12.0 版本开始，支持 Helm Chart 安装，默认部署为 Overlay 类型网络。
 # CNI kube-ovn
 # https://github.com/kubeovn/kube-ovn?tab=readme-ov-file
