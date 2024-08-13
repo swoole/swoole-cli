@@ -8,6 +8,10 @@ __DIR__=$(
 
 cd ${__DIR__}
 
+# more info
+# https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
+
 RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
 echo ${RELEASE}
 K8S_VERSION=$(echo ${RELEASE} | cut -d '.' -f 1,2)
