@@ -48,3 +48,15 @@ rm -fr /var/log/kube-ovn
 # reboot
 
 EOF
+
+
+# kubectl-ko more info
+# https://kubeovn.github.io/docs/stable/ops/kubectl-ko/
+
+curl -fSLo kubectl-ko https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/kubectl-ko
+
+mv kubectl-ko /usr/local/bin/kubectl-ko
+
+chmod +x /usr/local/bin/kubectl-ko
+
+kubectl plugin list

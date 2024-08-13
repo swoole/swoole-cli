@@ -25,3 +25,13 @@ VERSION="3.28.1"
 curl -Lo calico-v${VERSION}.yaml https://raw.githubusercontent.com/projectcalico/calico/v${VERSION}/manifests/calico.yaml
 
 kubectl create -f calico-v${VERSION}.yaml
+
+curl -fSL https://github.com/projectcalico/calico/releases/download/v${VERSION}/calicoctl-linux-amd64 -o calicoctl
+chmod +x ./calicoctl
+
+# more info
+# https://docs.tigera.io/calico/latest/operations/calicoctl/configure/overview
+
+export DATASTORE_TYPE=kubernetes
+export KUBECONFIG=~/.kube/config
+calicoctl get workloadendpoints
