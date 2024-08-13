@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -x
 # kubectl drain <node name> --delete-emptydir-data --force --ignore-daemonsets
 
 # kubectl -n kube-system get cm kubeadm-config -o yaml
