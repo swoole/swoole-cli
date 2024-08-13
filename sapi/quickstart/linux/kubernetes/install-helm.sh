@@ -36,6 +36,8 @@ ARCH=$(uname -m)
 
 mkdir -p helm
 
+cd helm
+
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 
 chmod a+x ./get_helm.sh
