@@ -1,2 +1,3 @@
 ./kube-ovn
 ./calico
+./helm/
