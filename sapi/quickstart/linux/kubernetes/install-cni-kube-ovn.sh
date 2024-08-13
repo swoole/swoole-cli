@@ -31,6 +31,8 @@ curl -fSLo kube-ovn-${VERSION}-install.sh https://raw.githubusercontent.com/kube
 
 bash kube-ovn-${VERSION}-install.sh
 
+ip route show
+
 # 卸载 和 清理残余
 curl -fSLo kube-ovn-${VERSION}-uninstall.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/cleanup.sh
 
