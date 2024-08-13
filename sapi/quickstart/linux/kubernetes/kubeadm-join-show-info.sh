@@ -12,7 +12,11 @@ JOIN_TOKEN=$(kubeadm token list | grep 'kubeadm init' | awk '{ print $1}')
 # more info
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
 
-echo 'swapoff -a '
+kubeadm token list
 
+echo 'swapoff -a '
 echo 'kubeadm config images pull --v=5 '
-echo "kubeadm join --token ${JOIN_TOKEN} control-plane-endpoint-api.intranet.jingjingxyk.com:6443 --discovery-token-ca-cert-hash sha256:${TOKEN_HASH} --v=5 "
+
+echo "kubeadm join  control-plane-endpoint-api.intranet.jingjingxyk.com:6443 --token ${JOIN_TOKEN} --discovery-token-ca-cert-hash sha256:${TOKEN_HASH}  --control-plane --v=5 "
+
+echo "kubeadm join  control-plane-endpoint-api.intranet.jingjingxyk.com:6443 --token ${JOIN_TOKEN} --discovery-token-ca-cert-hash sha256:${TOKEN_HASH}  --v=5 "
