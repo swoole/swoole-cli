@@ -23,6 +23,16 @@ helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dash
 
 exit 0
 
+
+kubectl -n kubernetes-dashboard get svc
+
+# To access Dashboard run:
+kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+
+# https://localhost:8443
+
+exit 0
+
 # docs
 https://github.com/kubernetes/dashboard/blob/master/docs/user/accessing-dashboard/README.md
 
