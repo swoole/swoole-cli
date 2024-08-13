@@ -24,6 +24,6 @@ done
 # https://github.com/kubeovn/kube-ovn/tags
 VERSION="release-1.12"
 
-curl -fsSL kube-ovn-${VERSION}-install.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/install.sh
+curl -fSLo kube-ovn-${VERSION}-install.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/install.sh
 
 bash kube-ovn-${VERSION}-install.sh
