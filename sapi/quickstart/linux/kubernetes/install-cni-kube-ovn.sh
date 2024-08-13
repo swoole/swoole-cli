@@ -30,8 +30,8 @@ VERSION="release-1.12"
 curl -fSLo kube-ovn-${VERSION}-install.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/install.sh
 curl -fSLo kube-ovn-${VERSION}-uninstall.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/cleanup.sh
 curl -fSLo kubectl-ko https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/kubectl-ko
-unset http_proxy
-unset https_proxy
+unset HTTP_PROXY
+unset HTTPS_PROXY
 
 
 
