@@ -8,8 +8,9 @@ __DIR__=$(
 )
 cd ${__DIR__}
 
-ovs-vsctl --if-exists del-br ovn0
-ovs-vsctl add-br ovn0 # 添加网桥
+ovs-vsctl --if-exists del-port   br-int ovn0
+ovs-vsctl --may-exist add-port br-int ovn0 -- set interface ovn0 type=internal
+
 ip link set ovn0 up # 激活网桥
 
 {
@@ -25,7 +26,7 @@ ovs-vsctl set Open_vSwitch . external-ids:ovn-bridge-mappings=external-network-p
 
 
 sysctl -w net.ipv4.ip_forward=1
-# iptables -t nat -A POSTROUTING -s 10.1.20.0/24 -o br-eth0 -j MASQUERADE
+# iptables -t nat -A POSTROUTING -s 10.1.20.0/24 -o ovn0 -j MASQUERADE
 
 ip a
 

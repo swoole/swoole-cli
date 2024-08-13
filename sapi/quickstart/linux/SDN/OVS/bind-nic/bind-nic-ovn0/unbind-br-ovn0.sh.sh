@@ -16,7 +16,6 @@ ovs-vsctl set Open_vSwitch . external-ids:ovn-bridge-mappings=' '
   echo $?
 }
 
-ovs-vsctl --if-exists del-port ovn0
-ovs-vsctl --if-exists del-br ovn0
+ovs-vsctl --if-exists del-port br-int ovn0
 
 ip a
