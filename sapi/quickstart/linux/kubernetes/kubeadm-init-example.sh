@@ -48,7 +48,10 @@ done
 
 # export CONTAINER_RUNTIME_ENDPOINT="unix:///run/containerd/containerd.sock"
 # export KUBECONFIG=/etc/kubernetes/admin.conf
+
 export KUBE_PROXY_MODE=ipvs
+
+# https://dl.k8s.io/release/stable-1.txt
 
 kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version | awk -F ' ' '{print $2}')
 kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version | awk -F ' ' '{print $2}') --cri-socket ${CRI_SOCKET}

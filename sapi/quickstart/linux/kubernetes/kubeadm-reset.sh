@@ -4,7 +4,7 @@
 
 # kubectl -n kube-system get cm kubeadm-config -o yaml
 
-kubeadm reset
+{ kubeadm reset; } || { echo $?; }
 
 iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
 
