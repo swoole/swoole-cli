@@ -48,8 +48,7 @@ done
 
 # export CONTAINER_RUNTIME_ENDPOINT="unix:///run/containerd/containerd.sock"
 # export KUBECONFIG=/etc/kubernetes/admin.conf
-# export KUBE_PROXY_MODE=ipvs
-
+export KUBE_PROXY_MODE=ipvs
 
 kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version | awk -F ' ' '{print $2}')
 kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version | awk -F ' ' '{print $2}') --cri-socket ${CRI_SOCKET}
@@ -68,11 +67,11 @@ kubeadm init \
   --service-cidr=10.96.0.0/16,fd00:22::/112 \
   --token-ttl 0 \
   --v=5 \
-  --apiserver-advertise-address="${IP}" \
-  --cri-socket ${CRI_SOCKET}
+  --cri-socket ${CRI_SOCKET} \
+  --apiserver-advertise-address="${IP}"
 
 # --control-plane-endpoint='control-plane-endpoint-api.intranet.jingjingxyk.com:6443'
-#--apiserver-advertise-address="${ip}"
+# --apiserver-advertise-address="${ip}"
 
 # --cri-socket "unix:///var/run/containerd/containerd.sock"
 # --cri-socket "unix:///var/run/cri-dockerd.sock"
@@ -94,9 +93,10 @@ lsmod | grep -e ip_vs -e nf_conntrack_ipv4
 ipvsadm -ln
 iptables -t nat -nL
 
+kubeadm token list
+
 openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null |
   openssl dgst -sha256 -hex | sed 's/^.* //'
-
 
 # create cluster
 
