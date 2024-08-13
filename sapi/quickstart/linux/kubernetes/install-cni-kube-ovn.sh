@@ -28,13 +28,19 @@ cd kube-ovn
 VERSION="release-1.12"
 
 curl -fSLo kube-ovn-${VERSION}-install.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/install.sh
+curl -fSLo kube-ovn-${VERSION}-uninstall.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/cleanup.sh
+curl -fSLo kubectl-ko https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/kubectl-ko
+unset http_proxy
+unset https_proxy
+
+
+
 
 bash kube-ovn-${VERSION}-install.sh
 
 ip route show
 
 # 卸载 和 清理残余
-curl -fSLo kube-ovn-${VERSION}-uninstall.sh https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/cleanup.sh
 
 cat >kube-ovn-${VERSION}-clean.sh <<EOF
 rm -rf /var/run/openvswitch
@@ -55,7 +61,6 @@ EOF
 # kubectl-ko more info
 # https://kubeovn.github.io/docs/stable/ops/kubectl-ko/
 
-curl -fSLo kubectl-ko https://raw.githubusercontent.com/kubeovn/kube-ovn/${VERSION}/dist/images/kubectl-ko
 
 mv kubectl-ko /usr/local/bin/kubectl-ko
 
