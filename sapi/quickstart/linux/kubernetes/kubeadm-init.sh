@@ -44,6 +44,11 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+# export CONTAINER_RUNTIME_ENDPOINT="unix:///run/containerd/containerd.sock"
+# export KUBECONFIG=/etc/kubernetes/admin.conf
+# export KUBE_PROXY_MODE=ipvs
+
+
 kubeadm config images list --v=5 --kubernetes-version=$(kubelet --version | awk -F ' ' '{print $2}')
 kubeadm config images pull --v=5 --kubernetes-version=$(kubelet --version | awk -F ' ' '{print $2}') --cri-socket ${CRI_SOCKET}
 
@@ -76,6 +81,7 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
+# https://github.com/kubernetes/kubernetes/blob/master/pkg/proxy/ipvs/README.md
 #  enable ipvs mod
 # kubectl edit configmap kube-proxy -n kube-system
 ## change mode from "" to ipvs

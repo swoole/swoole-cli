@@ -161,7 +161,7 @@ echo " ./sbin/privoxy --no-daemon etc/config  "
 echo ''
 echo ' OR '
 echo ''
-echo ' bash bin/runtime/privoxy/start-privoxy.sh'
+echo ' bash bin/runtime/privoxy/privoxy-start.sh'
 echo " "
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"

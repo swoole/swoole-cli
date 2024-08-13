@@ -93,3 +93,6 @@ apt update -y
 
 apt install -y git curl wget ca-certificates xz-utils bzip2 p7zip lzip zip unzip
 apt install -y procps
+
+apt install -y ntp
+systemctl restart ntp
