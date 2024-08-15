@@ -1,0 +1,18 @@
+
+端口是收发数据包的单元。
+OpenvSwitch中，每个端口都属于一个特定的网桥。
+端口收到的数据包会经过流规则的处理，发往其他端口；
+也会把其他端口来的数据包发送出去.主要有
+
+port：端口，类型有normal、internal、patch、tunnel
+
+类型  说明
+Normal：用户可以把操作系统中的网卡绑定到ovs上，ovs会生成一个普通端口处理这块网卡进出的数据包。
+Internal：端口类型为internal时，ovs会创建一块虚拟网卡，端口收到的所有数据包都会交给该网卡，发出的包会通过该端口交给ovs。当ovs创建一个新网桥时，默认会创建一个与网桥同名的Internal Port
+Patch：当机器中有多个ovs网桥时，可以使用Patch Port把两个网桥连起来。Patch Port总是成对出现，分别连接在两个网桥上，在两个网桥之间交换数据。
+Tunnel：隧道端口是一种虚拟端口，支持使用gre或vxlan等隧道技术与位于网络上其他位置的远程端口通讯。
+
+
+
+Interface 接口是ovs与外部交换数据包的组件。一个接口就是操作系统的一块网卡，这块网卡可能是ovs生成的虚拟网卡，也可能是物理网卡挂载在ovs上，也可能是操作系统的虚拟网卡（TUN/TAP）挂载在ovs上。
+interface：网络接口设备。port是ovs网桥上的虚拟端口，interface挂载在port上。一般port和interface是一对一的关系，只有在配置port为bond模式后，port和interface是一对多的关系。这个网络接口设备可能是创建internal类型port时ovs自动生成的，也可能是挂载的主机网卡对应的接口。

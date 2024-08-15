@@ -29,6 +29,8 @@ https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/crea
 
 [kubernets ipvs](https://github.com/kubernetes/kubernetes/blob/master/pkg/proxy/ipvs/README.md)
 
+[网络插件 kubernets networking addons (calico CNI-Genie  kube-ovn Multus)](https://kubernetes.io/docs/concepts/cluster-administration/addons/)
+
 ```bash
 
 kubeadm config images list

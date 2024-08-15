@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 set -eux
 
@@ -22,7 +22,9 @@ ip link set ovn0 up # 激活网桥
     echo $?
 }
 
-ovs-vsctl set Open_vSwitch . external-ids:ovn-bridge-mappings=external-network-provider:ovn0
+# ovs-vsctl set Open_vSwitch . external-ids:ovn-bridge-mappings=external-network-provider:ovn0
+
+ovs-vsctl set Interface ovn0  external_ids:iface-id=master01
 
 
 sysctl -w net.ipv4.ip_forward=1
