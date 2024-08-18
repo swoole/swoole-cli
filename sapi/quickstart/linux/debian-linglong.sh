@@ -2,10 +2,16 @@
 
 set -x
 
+# 如意玲珑 新时代Linux桌面应用分发和治理方案
+# https://www.linglong.space/
+# https://linglong.dev/
+
 apt install -y sudo apt-transport-https ca-certificates curl gpg
-# https://download.opensuse.org/repositories/home:/kamiyadm/Debian_12/
+
 apt install -y xdg-utils
 
+
+# https://download.opensuse.org/repositories/home:/kamiyadm/Debian_12/
 mkdir -p /etc/apt/keyrings/
 
 curl -fsSL https://download.opensuse.org/repositories/home:/kamiyadm/Debian_12/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/linglong-apt-keyring.gpg
@@ -20,3 +26,7 @@ echo "deb [signed-by=/etc/apt/keyrings/linglong-apt-keyring.gpg] https://downloa
 
 # gnome-desktop
 # apt install task-gnome-desktop
+
+
+sudo apt update
+sudo apt install linglong-builder linglong-box linglong-bin
