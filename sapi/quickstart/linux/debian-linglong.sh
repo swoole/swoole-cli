@@ -2,23 +2,6 @@
 
 set -x
 
-MIRROR=''
-while [ $# -gt 0 ]; do
-  case "$1" in
-  --mirror)
-    case "$2" in
-    china | ustc | tuna)
-      MIRROR="$2"
-      ;;
-    esac
-    ;;
-  --*)
-    echo "Illegal option $1"
-    ;;
-  esac
-  shift $(($# > 0 ? 1 : 0))
-done
-
 apt install -y sudo apt-transport-https ca-certificates curl gpg
 # https://download.opensuse.org/repositories/home:/kamiyadm/Debian_12/
 apt install -y xdg-utils
