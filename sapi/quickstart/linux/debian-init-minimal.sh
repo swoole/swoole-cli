@@ -63,7 +63,7 @@ if test -n "$MIRROR" ; then
     ;;
   ubuntu)
     case $VERSION_ID in
-    20.04 | 22.04 | 22.10 | 23.04 | 23.10)
+    20.04 | 22.04 | 22.10 | 23.04 | 23.10 | 24.04)
       test -f /etc/apt/sources.list.save || cp /etc/apt/sources.list /etc/apt/sources.list.save
       sed -i "s@security.ubuntu.com@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
       sed -i "s@archive.ubuntu.com@mirrors.ustc.edu.cn@g" /etc/apt/sources.list
