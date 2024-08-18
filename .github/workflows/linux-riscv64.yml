@@ -6,7 +6,9 @@ jobs:
   linux-riscv:
     if: 1
     runs-on:
-      - ubuntu-latest
+      # - ubuntu-latest
+      # https://github.com/apps/riscv-builders
+      # https://github.com/mengzhuo/GhostWrite/blob/main/.github/workflows/test.yml
       - riscv-builders
     steps:
       - uses: actions/checkout@v4
