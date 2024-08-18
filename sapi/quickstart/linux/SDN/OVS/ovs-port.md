@@ -16,3 +16,6 @@ Tunnel：隧道端口是一种虚拟端口，支持使用gre或vxlan等隧道技
 
 Interface 接口是ovs与外部交换数据包的组件。一个接口就是操作系统的一块网卡，这块网卡可能是ovs生成的虚拟网卡，也可能是物理网卡挂载在ovs上，也可能是操作系统的虚拟网卡（TUN/TAP）挂载在ovs上。
 interface：网络接口设备。port是ovs网桥上的虚拟端口，interface挂载在port上。一般port和interface是一对一的关系，只有在配置port为bond模式后，port和interface是一对多的关系。这个网络接口设备可能是创建internal类型port时ovs自动生成的，也可能是挂载的主机网卡对应的接口。
+
+
+

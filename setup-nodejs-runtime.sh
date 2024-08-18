@@ -142,3 +142,8 @@ export PATH="${__PROJECT__}/bin/runtime/node/bin/:$PATH"
 node -v
 npm -v
 npx -v
+
+# 换源
+# npm install -g yarn --registry=https://registry.npmmirror.com
+
+# yarn install --registry=https://registry.npmmirror.com

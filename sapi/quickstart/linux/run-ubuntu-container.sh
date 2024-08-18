@@ -20,6 +20,7 @@ cd ${__DIR__}
 cd ${__DIR__}
 IMAGE=ubuntu:22.04
 IMAGE=ubuntu:23.10
+IMAGE=ubuntu:24.04
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -28,7 +29,7 @@ while [ $# -gt 0 ]; do
     MIRROR="$2"
     case "$MIRROR" in
     china | openatom)
-      IMAGE="hub.atomgit.com/library/ubuntu:23.10"
+      IMAGE="hub.atomgit.com/library/ubuntu:24.04"
       ;;
     esac
     ;;

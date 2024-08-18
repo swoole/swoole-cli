@@ -107,3 +107,7 @@ bash sapi/quickstart/linux/debian-init.sh --mirror china
 sudo usermod -aG docker ${USER}
 
 ```
+
+## 镜像搜索
+
+    https://help.mirrors.cernet.edu.cn/

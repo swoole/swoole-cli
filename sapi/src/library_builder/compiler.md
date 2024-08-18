@@ -1,5 +1,4 @@
-交叉编译 cross-compile  binutils
-
+交叉编译 cross-compile binutils
 
 宿主机（host）
 
@@ -9,27 +8,22 @@ prefix：交叉编译器的安装位置
 
 xxx-xxxx-xxxxx 平台描述
 
-
 交叉编译器
 
 预处理器（preprocessor）
 编译器前端（frontend）
-            负责解析（parse）输入的源代码  负责语义（semantic checking）的检查  最终的结果常常是一个抽象的语法树（abstract syntax tree，或 AST）
+负责解析（parse）输入的源代码 负责语义（semantic checking）的检查 最终的结果常常是一个抽象的语法树（abstract syntax tree，或
+AST）
 编译器后端（backend）
-           主要负责分析，优化中间代码（Intermediate representation）以及生成机器代码（Code Generation）
-
+主要负责分析，优化中间代码（Intermediate representation）以及生成机器代码（Code Generation）
 
 g++ your_program.cpp -o your_program -ldl -Wl,-Bstatic -lxx -Wl,-Bdynamic
 
 -Wl,-Bstatic 表示后面的库需要静态链接，-Wl,-Bdynamic 表示后面的库需要动态链接。
 
-
-
 ld main.o -o main.out -pie --no-dynamic-linker
 
 -Wl,--no-dynamic-linker
-
-
 
 pkg-config libelf --exists
 
@@ -44,26 +38,21 @@ STRIP：以最终生成的可执行文件或者库文件作为输入，然后消
 NM：查看静态库文件中的符号表
 Objdump：查看静态库或者动态库的方法签名
 
-
 cmake 生成依赖图
 cmake --graphviz=./ffmpeg.dot
-
 
 CMake toolchain file for cross compiling
 cmake -DCMAKE_TOOLCHAIN_FILE="crosscompile.cmake"
 
-
 clang 传递编译器参数例子：
-clang -o vlc vlc.c.o -Wl,--as-needed -Wl,--no-undefined -Wl,-O1 -pie -Wl,--start-group modules/access/http/libvlc_http.a compat/libcompat.a src/libvlccore.a -pthread -lm -ldl -Wl,--end-group
-
+clang -o vlc vlc.c.o -Wl,--as-needed -Wl,--no-undefined -Wl,-O1 -pie -Wl,--start-group modules/access/http/libvlc_http.a
+compat/libcompat.a src/libvlccore.a -pthread -lm -ldl -Wl,--end-group
 
 由于 OpenMP 内置于编译器中，因此无需安装外部库即可编译此代码
 https://curc.readthedocs.io/en/latest/programming/OpenMP-C.html
 
-
-自动微分  Adolc
+自动微分 Adolc
 https://github.com/coin-or/ADOL-C.git
-
 
        * # 需要特别设置的地方
        *   //  CFLAGS='-static -O2 -Wall'
@@ -76,26 +65,21 @@ https://github.com/coin-or/ADOL-C.git
 BPF CO-RE (Compile Once – Run Everywhere)
 https://github.com/libbpf/libbpf#bpf-co-re-compile-once--run-everywhere
 
-
 # static-pie
+
 # 位置无关的可执行文件(PIE)。PIE 是启用地址空间布局随机化 (ASLR) 的先决条件
 
-
 ## macos 库支持静态编译， 二进制程序不支持静态编译
+
     LIBS='-framework CoreFoundation -framework CoreServices -framework SystemConfiguration"
 
-
-
-MIPS架构  龙芯处理器
-s390x    IBMSystemz系列大型机硬件平台
-ppc64le  基于Power架构
-
+MIPS架构 龙芯处理器
+s390x IBMSystemz系列大型机硬件平台
+ppc64le 基于Power架构
 
 clang with MUSL
 
-clang hello.c  -I /usr/include/x86_64-linux-musl --target=x86_64-unknown-linux-musl  -nostdlib
-
-
+clang hello.c -I /usr/include/x86_64-linux-musl --target=x86_64-unknown-linux-musl -nostdlib
 
 TLS的四种模式 Global Dynamic,Local Dynamic,Initial Exec和Local Exec
 
@@ -108,9 +92,6 @@ a.out： Assembler output file format
 PIC： Position independent code
 PIE： Position independent executable
 
-
-
-
 libtoolize --force --copy --automake
 aclocal
 autoheader
@@ -118,9 +99,9 @@ automake --foreign --copy --add-missing
 autoconf
 export CFLAGS="-O2 -Wall -W -Wunused-const-variable=0 -pipe -g"
 
+预处理 gcc -E 、clang -E
+编译 gcc -S 、clang -S
+汇编 gcc -c 、clang -c
+链接 gcc -o 、clang -o
 
-
-预处理   gcc -E  、clang -E
-编译     gcc -S  、clang -S
-汇编     gcc -c  、clang -c
-链接     gcc -o  、clang -o
+C++中的volatile 阻止编译器优化变量
