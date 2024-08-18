@@ -10,6 +10,8 @@ jobs:
       # https://github.com/apps/riscv-builders
       # https://github.com/mengzhuo/GhostWrite/blob/main/.github/workflows/test.yml
       - riscv-builders
+      - soc-spacemit-k1
+      - soc-starfive-jh7100
     steps:
       - uses: actions/checkout@v4
       - name: Prepare Source Code
