@@ -4,8 +4,10 @@ on: [ push, pull_request ]
 
 jobs:
   linux-riscv:
-    if: 0
-    runs-on: ubuntu-latest
+    if: 1
+    runs-on:
+      - ubuntu-latest
+      - riscv-builders
     steps:
       - uses: actions/checkout@v4
       - name: Prepare Source Code
