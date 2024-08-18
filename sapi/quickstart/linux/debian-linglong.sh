@@ -28,5 +28,5 @@ echo "deb [signed-by=/etc/apt/keyrings/linglong-apt-keyring.gpg] https://downloa
 # apt install task-gnome-desktop
 
 
-sudo apt update
-sudo apt install linglong-builder linglong-box linglong-bin
+sudo apt update -y
+sudo apt install -y linglong-builder linglong-box linglong-bin
