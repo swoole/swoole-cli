@@ -27,6 +27,11 @@ echo "deb [signed-by=/etc/apt/keyrings/linglong-apt-keyring.gpg] https://downloa
 # gnome-desktop
 # apt install task-gnome-desktop
 
+# 玲珑应用商店
+# https://store.linglong.dev/
+
+# 玲珑 的诞生
+# https://www.deepin.org/zh/deepin-linglong/
 
 sudo apt update -y
 sudo apt install -y linglong-builder linglong-box linglong-bin
