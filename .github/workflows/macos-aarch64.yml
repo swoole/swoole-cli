@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   macos-aarch64:
-    if: 0
+    if: 1
     runs-on: macos-14
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
@@ -99,7 +99,7 @@ jobs:
           mkdir -p pool/ext
           mkdir -p bin/runtime
           if [ ! -f bin/runtime/php ] ; then
-              bash  sapi/quickstart/setup-php-runtime.sh --mirror china
+              bash  sapi/quickstart/setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
