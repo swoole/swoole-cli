@@ -48,21 +48,21 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v5.1.3'
+APP_VERSION='v4.8.13'
 APP_NAME='swoole-cli'
-VERSION='v5.1.3.0'
+VERSION='swoole-cli-v4.8.13.2'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
 cd ${__PROJECT__}/var/runtime
 
-APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+APP_DOWNLOAD_URL="https://github.com/jingjingxyk/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 
 if [ $OS = 'windows' ]; then
-  APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
+  APP_DOWNLOAD_URL="https://github.com/jingjingxyk/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
 fi
 
 MIRROR=''
