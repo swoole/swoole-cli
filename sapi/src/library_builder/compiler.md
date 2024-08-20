@@ -105,3 +105,14 @@ export CFLAGS="-O2 -Wall -W -Wunused-const-variable=0 -pipe -g"
 链接 gcc -o 、clang -o
 
 C++中的volatile 阻止编译器优化变量
+
+## 生成动态库 (lib 开头 , .so 结尾 )
+
+    gcc -fPIC -shared test.c -O libtest.so
+
+## 生成静态库(lib 开头 , .a 结尾 )
+
+    gcc -c test.c
+    ar -crv libtest.a test.o
+
+
