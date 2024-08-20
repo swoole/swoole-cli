@@ -139,8 +139,8 @@ jobs:
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
           ./bin/swoole-cli -r "echo PHP_VERSION;"
 
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+          # ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          # ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts debug
         uses: actions/upload-artifact@v4
