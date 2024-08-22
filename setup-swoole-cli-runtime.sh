@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -112,6 +112,7 @@ if [ $OS = 'windows' ]; then
     test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
+    echo
     exit 0
   }
 else
@@ -119,7 +120,7 @@ else
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
   test -f swoole-cli || tar -xvf ${APP_RUNTIME}.tar
   chmod a+x swoole-cli
-  cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/php
+  cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/swoole-cli
 fi
 
 cd ${__PROJECT__}/var/runtime
@@ -144,7 +145,42 @@ opcache.jit=1254
 opcache.jit_buffer_size=480M
 
 expose_php=Off
-phar.readonly=0
+
+EOF
+
+cat >${__PROJECT__}/bin/runtime/php-fpm.conf <<'EOF'
+; 更多配置参考
+; https://github.com/php/php-src/blob/master/sapi/fpm/www.conf.in
+; https://github.com/php/php-src/blob/master/sapi/fpm/php-fpm.conf.in
+
+[global]
+pid = run/php-fpm.pid
+error_log = log/php-fpm.log
+daemonize = yes
+
+[www]
+user = nobody
+group = nobody
+
+listen = 9001
+;listen = run/php-fpm.sock
+
+slowlog = log/$pool.log.slow
+request_slowlog_timeout = 30s
+
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+; MAIN_PID=$(cat var/run/php-fpm.pid)
+; 关闭 php-fpm
+; kill -QUIT $MAIN_PID
+
+; 平滑重启 php-fpm
+; kill -USR2 $MAIN_PID
 
 EOF
 
@@ -153,12 +189,16 @@ cd ${__PROJECT__}/
 set +x
 
 echo " "
-echo " USE PHP RUNTIME :"
+echo " USE PHP-FPM RUNTIME :"
+echo " "
+echo "${__PROJECT__}/bin/runtime/swoole-cli -c ${__PROJECT__}/bin/runtime/php.ini -P --fpm-config ${__PROJECT__}/bin/runtime/php-fpm.conf -p ${__PROJECT__}/runtime/var "
+echo " "
+echo " USE PHP-CLI RUNTIME :"
 echo " "
 echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
 echo " "
-echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
+echo " alias swoole-cli='swoole-cli -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
 echo " OR "
-echo " alias php='php -c ${__PROJECT__}/bin/runtime/php.ini' "
+echo " alias swoole-cli='swoole-cli -c ${__PROJECT__}/bin/runtime/php.ini' "
 echo " "
-export PATH="${__PROJECT__}/bin/runtime:$PATH"
+echo " SWOOLE-CLI VERSION  ${APP_VERSION}"

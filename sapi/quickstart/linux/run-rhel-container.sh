@@ -61,4 +61,4 @@ esac
 
 
 cd ${__DIR__}
-docker run --rm --name swoole-cli-rhel-dev -d -v ${__PROJECT__}:/work -w /work $IMAGE tail -f /dev/null
+docker run --rm --name swoole-cli-rhel-dev -d -v ${__PROJECT__}:/work -w /work --init $IMAGE tail -f /dev/null

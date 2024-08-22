@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -39,7 +39,7 @@ case $ARCH in
 'x86_64')
   ARCH="x64"
   ;;
-'aarch64' | 'arm64' )
+'aarch64' | 'arm64')
   ARCH="arm64"
   ;;
 *)
@@ -50,7 +50,7 @@ esac
 
 APP_VERSION='v8.2.13'
 APP_NAME='php-cli'
-VERSION='v1.2.2'
+VERSION='v1.3.2'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
@@ -161,6 +161,4 @@ echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d op
 echo " OR "
 echo " alias php='php -c ${__PROJECT__}/bin/runtime/php.ini' "
 echo " "
-echo " PHP VERSION  ${APP_VERSION}"
-echo " "
-export PATH="${__PROJECT__}/bin/runtime:$PATH"
+echo " PHP-CLI VERSION  ${APP_VERSION}"
