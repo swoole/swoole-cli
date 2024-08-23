@@ -252,7 +252,7 @@ make_archive() {
     cd ${__PROJECT_DIR__}/bin/
     SWOOLE_VERSION=$(./swoole-cli -r "echo SWOOLE_VERSION;")
 
-    SWOOLE_CLI_FILE_DEBUG=swoole-cli-v${SWOOLE_VERSION}-zts-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
+    SWOOLE_CLI_FILE_DEBUG=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
     tar -cJvf ${SWOOLE_CLI_FILE_DEBUG} swoole-cli LICENSE pack-sfx.php
 
 
@@ -262,7 +262,7 @@ make_archive() {
     cp -f pack-sfx.php  dist/
 
     cd ${__PROJECT_DIR__}/bin/dist/
-    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-zts-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
+    SWOOLE_CLI_FILE=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     strip swoole-cli
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
 

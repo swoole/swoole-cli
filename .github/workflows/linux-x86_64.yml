@@ -141,14 +141,14 @@ jobs:
       - name: production artifacts debug
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-zts-linux-x64-debug
+          name: swoole-cli-v${{ env.APP_VERSION }}-linux-x64-debug
           retention-days: 90
           path: ./bin/swoole-cli
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-zts-linux-x64
+          name: swoole-cli-v${{ env.APP_VERSION }}-linux-x64
           retention-days: 90
           path: ./bin/dist/swoole-cli
 
@@ -156,4 +156,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-v${{ env.APP_VERSION }}-zts-linux-x64.tar.xz
+          files: swoole-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
