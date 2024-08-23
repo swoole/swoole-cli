@@ -54,7 +54,7 @@ if ($p->isMacos()) {
     $p->setLogicalProcessors('$(nproc 2> /dev/null)');
 }
 
-$p->setExtraCflags('-fno-ident -Os');
+$p->setExtraCflags(' -Os');
 
 // Generate make.sh
 $p->execute();
