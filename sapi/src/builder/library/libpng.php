@@ -29,7 +29,8 @@ return function (Preprocessor $p) {
 EOF
             )
             */
-            ->withBuildScript(<<<EOF
+            ->withBuildScript(
+                <<<EOF
                 mkdir -p build
                 cd build
                 cmake .. \
