@@ -27,6 +27,12 @@ return function (Preprocessor $p) {
         $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
     }
 
+    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+        $options[] = '--enable-debug';
+        $options[] = '--enable-debug-log';
+        $options[] = '--enable-trace-log';
+    }
+
     $p->addExtension((new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
