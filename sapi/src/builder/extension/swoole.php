@@ -15,14 +15,12 @@ return function (Preprocessor $p) {
     $options[] = '--enable-cares';
     $options[] = '--with-brotli-dir=' . BROTLI_PREFIX;
     $options[] = '--with-nghttp2-dir=' . NGHTTP2_PREFIX;
-    $options[] = '--enable-swoole-pgsql ';
-    $options[] = '--enable-swoole-sqlite ';
+    $options[] = '--enable-swoole-pgsql';
+    $options[] = '--enable-swoole-sqlite';
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
     $options[] = '--enable-swoole-thread';
-    $options[] = '--enable-zts';
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {
-        // 构建报错
         $options[] = '--enable-iouring';
         $dependentLibraries[] = 'liburing';
         $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
@@ -38,7 +36,7 @@ return function (Preprocessor $p) {
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions));
 
-    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : ' -lstdc++ '));
+    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 };
