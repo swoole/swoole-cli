@@ -11,11 +11,14 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/lurcher/unixODBC')
             ->withLicense('https://github.com/lurcher/unixODBC/blob/master/LICENSE', Library::LICENSE_LGPL)
             ->withUrl('https://github.com/lurcher/unixODBC/releases/download/2.3.11/unixODBC-2.3.11.tar.gz')
-            ->withFileHash('md5','0ff1fdbcb4c3c7dc2357f3fd6ba09169')
+            ->withFileHash('md5', '0ff1fdbcb4c3c7dc2357f3fd6ba09169')
             ->withPrefix($unix_odbc_prefix)
             ->withconfigure(
                 <<<EOF
-            autoreconf -ivf
+            aclocal
+            autoconf
+            autoheader
+            automake --add-missing
             ./configure --help
 
             PACKAGES_NAMES="readline"
