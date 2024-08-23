@@ -12,13 +12,19 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+$buildType = $p->getBuildType();
+if ($p->getInputOption('with-build-type')) {
+    $buildType = $p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
+}
+
 # clean old make.sh
-if (($p->getInputOption('with-build-type') == 'dev') && file_exists(__DIR__ . '/make.sh')) {
+if (($buildType == 'dev') && file_exists(__DIR__ . '/make.sh')) {
     unlink(__DIR__ . '/make.sh');
 }
 
 // Sync code from php-src
-$p->setPhpSrcDir($homeDir . '/.phpbrew/build/php-' . BUILD_PHP_VERSION);
+$p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->isMacos())) {
@@ -26,11 +32,6 @@ if ($p->getInputOption('without-docker') || ($p->isMacos())) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
-$buildType = $p->getBuildType();
-if ($p->getInputOption('with-build-type')) {
-    $buildType = $p->getInputOption('with-build-type');
-    $p->setBuildType($buildType);
-}
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
