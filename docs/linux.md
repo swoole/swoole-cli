@@ -16,7 +16,8 @@ bash setup-php-runtime.sh
 composer install  --no-interaction --no-autoloader --no-scripts --profile
 composer dump-autoload --optimize --profile
 
-php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
+# 生成构建脚本 make.sh
+php prepare.php  --without-docker --skip-download=1
 bash ./make.sh docker-build
 bash ./make.sh docker-bash
 
