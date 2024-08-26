@@ -18,14 +18,6 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-pgsql';
     $options[] = '--enable-swoole-sqlite';
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
-    $options[] = '--enable-swoole-thread';
-
-    if ($p->isLinux() && $p->getInputOption('with-iouring')) {
-        $options[] = '--enable-iouring';
-        $dependentLibraries[] = 'liburing';
-        $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
-        $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
-    }
 
     $p->addExtension((new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')
