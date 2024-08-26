@@ -11,12 +11,10 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-
-
 ./buildconf --force
 test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
-    --enable-zts \
+    --enable-opcache \
     --disable-fiber-asm \
     --without-pcre-jit \
     --with-openssl --enable-openssl \
@@ -48,14 +46,13 @@ test -f Makefile && make clean
     --enable-exif \
     --with-sodium \
     --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
-    --enable-gd --with-jpeg  --with-freetype \
+    --enable-gd --with-jpeg --with-freetype \
     --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
     --enable-swoole-pgsql \
     --enable-swoole-sqlite \
-    --enable-swoole-thread \
     --enable-redis \
     --with-imagick \
     --with-yaml \
-    --with-readline \
-    --enable-opcache \
-    --disable-opcache-jit
+    --with-readline
+
+    #    --with-pdo-sqlite \
