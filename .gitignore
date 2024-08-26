@@ -323,5 +323,4 @@ Makefile.backup
 ldflags.log
 cppflags.log
 libs.log
-/pool/php-src/
-/pool/php-tar/
+
