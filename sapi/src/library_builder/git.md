@@ -9,7 +9,29 @@ sort | uniq
 
 ```
 
-# 删除子模块
+## 添加子模块
+
+```shell
+
+
+ git submodule add https://github.com/swoole/swoole-src.git ext/swoole
+
+
+
+```
+
+## 检出
+
+```shell
+
+git submodule update --init -f
+
+# git submodule update --init --force --remote
+
+
+```
+
+## 删除子模块
 
 ```bash
 
@@ -104,6 +126,7 @@ git checkout commit_id filename
 ```
 
 ## git 恢复被删除的整个文件夹
+
 ```shell
 
 git log --oneline -- experimental-features/v3/rules/example/
@@ -175,4 +198,17 @@ git config --global --add safe.directory "$GITHUB_WORKSPACE"
 ```bash
 
 git branch --set-upstream-to=origin/main main
+```
+
+## 查看当前分支
+
+```shell
+
+git rev-parse --abbrev-ref HEAD
+
+git log --pretty=%ad-%h --date=format:'%Y%m%d%H%M' -n 1 | cat
+
+
+TZ=UTC git show --quiet --date='format-local:%Y%m%dT%H%M%SZ' --format="%cd"
+
 ```
