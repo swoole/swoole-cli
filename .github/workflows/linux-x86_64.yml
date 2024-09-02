@@ -88,7 +88,6 @@ jobs:
           fi
 
       - name: Prepare Runtime and Libraries and Extensions
-        if: 0
         run: |
           set -x
           mkdir -p pool/lib
@@ -102,7 +101,6 @@ jobs:
           ls -A /usr/local/swoole-cli/
 
       - name: Build
-        if: 0
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
@@ -126,7 +124,6 @@ jobs:
             bash ./make.sh archive
 
       - name: Start Database
-        if: 1
         run: |
           # 准备数据库容器
           export PATH=/usr/libexec/docker/cli-plugins/:$PATH
