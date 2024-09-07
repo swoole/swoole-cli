@@ -14,7 +14,7 @@
     "phpunit/phpunit": "^9.6",
     "friendsofphp/php-cs-fixer": "^3.15",
     "squizlabs/php_codesniffer": "^3.7",
-    "swoole/ide-helper": "@dev"
+    "swoole/ide-helper": "5.1.x-dev"
   },
   "scripts": {
     "test": "phpunit",
