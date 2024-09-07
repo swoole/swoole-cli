@@ -12,6 +12,11 @@ services:
     # 容器内数据目录 /var/lib/postgresql/data
     # auth_user: postgres
     # auth_password: example
+    healthcheck:
+      test: [ "CMD-SHELL", "psql -U postgres -d postgres -c 'SELECT 1' || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   mysql-server:
     image: mysql:8-debian
@@ -28,6 +33,8 @@ services:
     # 容器内数据目录 /var/lib/mysql
     volumes:
       - ./my.cnf:/etc/mysql/conf.d/my.cnf
+    healthcheck:
+      test: 'mysql --user=root --password=example --execute "SHOW DATABASES;"'
 
   redis-server:
     image: redis:7-alpine

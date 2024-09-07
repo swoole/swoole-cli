@@ -10,7 +10,7 @@ use function Swoole\Coroutine\run;
 
 error_reporting(E_ALL);
 ini_set("display_errors", "on");
-Co::set(['hook_flags' => SWOOLE_HOOK_PDO_PGSQL]);
+\Co::set(['hook_flags' => SWOOLE_HOOK_PDO_PGSQL]);
 
 final class SwoolePGSQLTest extends TestCase
 {
@@ -36,9 +36,8 @@ final class SwoolePGSQLTest extends TestCase
 
     public function createDataBase()
     {
-        $dbh = new \PDO("pgsql:dbname=postgres;host=127.0.0.1:5432", "postgres", "example");
-
-        $this->assertEquals("00000", $dbh->errorCode(), 'pgsql connection postgres  Error ,Error Info : ' . $dbh->errorInfo()[2]);
+        $dbh = new \PDO("pgsql:dbname=postgres;host=10.192.99.1;port=5432", "postgres", "example");
+        $this->assertEquals(NULL, $dbh->errorCode(), 'pgsql connection postgres  Error ,Error Info : ' . $dbh->errorInfo()[2]);
 
         $this->pg_master = $dbh;
         $res = $dbh->query("SELECT *  FROM pg_database WHERE datname = 'user_center'", \PDO::FETCH_ASSOC);
@@ -66,8 +65,8 @@ EOF;
 
     public function createTable()
     {
-        $dbh = new \PDO("pgsql:dbname=postgres;host=127.0.0.1:5432", "postgres", "example");
-        $this->assertEquals("00000", $dbh->errorCode(), 'connection database user_center  Error ,Error Info : ' . $dbh->errorInfo()[2]);
+        $dbh = new \PDO("pgsql:dbname=user_center;host=10.192.99.1;port=5432", "postgres", "example");
+        $this->assertEquals(NULL, $dbh->errorCode(), 'connection database user_center  Error ,Error Info : ' . $dbh->errorInfo()[2]);
 
         $this->pg = $dbh;
         $sql = "select *  from pg_tables where schemaname = 'public' and tablename='users'";
@@ -141,7 +140,7 @@ EOF;
         $stmt->bindValue(':login_channel', 1, \PDO::PARAM_INT);
         $res = $stmt->execute();
 
-        $this->assertTrue($res, 'insert data  Error ,Error Info : ' . $this->pg->error);
+        $this->assertTrue($res, 'insert data  Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
     public function selectTableData()
@@ -156,7 +155,7 @@ EOF;
 
         $stmt = $this->pg->query($sql);
         $list = $stmt->fetchAll();
-        $this->assertGreaterThan(1, count($list), 'select data   Error ,Error Info : ' . $this->pg->error);
+        $this->assertGreaterThan(0, count($list), 'select data   Error ,Error Info : ' . $stmt->errorInfo()[2]);
     }
 
     public function deleteTableData()
@@ -170,11 +169,11 @@ EOF;
         echo $sql . PHP_EOL;
 
         $stmt = $this->pg->prepare($sql);
-        $stmt->bindParam(":username", "username", \PDO::PARAM_STR);
+        $stmt->bindValue(":username", "username", \PDO::PARAM_STR);
 
         $stmt->execute();
 
-        $this->assertGreaterThan(1, count($stmt->rowCount()), 'delete data   Error ,Error Info : ' . $this->pg->error);
+        $this->assertGreaterThan(0, $stmt->rowCount(), 'delete data   Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
     public function dropTable()
@@ -187,7 +186,7 @@ EOF;
 
         echo $sql . PHP_EOL;
         $res = $this->pg->exec($sql);
-        $this->assertEquals(0, $res, 'drop table users   Error ,Error Info : ' . $this->pg->error);
+        $this->assertEquals(0, $res, 'drop table users   Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
     public function dropDatabase()
@@ -199,6 +198,6 @@ EOF;
 
         echo $sql . PHP_EOL;
         $this->pg_master->exec($sql);
-        $this->assertEquals("00000", $this->pg_master->errorCode, 'drop database user_center   Error ,Error Info : ' . $this->pg_master->errorInfo()[2]);
+        $this->assertEquals("00000", $this->pg_master->errorCode(), 'drop database user_center   Error ,Error Info : ' . $this->pg_master->errorInfo()[2]);
     }
 }
