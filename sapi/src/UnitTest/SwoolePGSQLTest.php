@@ -36,7 +36,7 @@ final class SwoolePGSQLTest extends TestCase
 
     public function createDataBase()
     {
-        $dbh = new \PDO("pgsql:dbname=postgres;host=10.192.99.1;port=5432", "postgres", "example");
+        $dbh = new \PDO("pgsql:dbname=postgres;host=127.0.0.1;port=5432", "postgres", "example");
         $this->assertEquals(NULL, $dbh->errorCode(), 'pgsql connection postgres  Error ,Error Info : ' . $dbh->errorInfo()[2]);
 
         $this->pg_master = $dbh;
@@ -65,7 +65,7 @@ EOF;
 
     public function createTable()
     {
-        $dbh = new \PDO("pgsql:dbname=user_center;host=10.192.99.1;port=5432", "postgres", "example");
+        $dbh = new \PDO("pgsql:dbname=user_center;host=127.0.0.1;port=5432", "postgres", "example");
         $this->assertEquals(NULL, $dbh->errorCode(), 'connection database user_center  Error ,Error Info : ' . $dbh->errorInfo()[2]);
 
         $this->pg = $dbh;
