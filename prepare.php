@@ -16,6 +16,7 @@ if ($p->getInputOption('with-build-type')) {
     $p->setBuildType($buildType);
 }
 
+
 # clean
 # clean old make.sh
 $p->cleanFile(__DIR__ . '/make.sh');
@@ -30,9 +31,9 @@ $p->cleanFile(__DIR__ . '/configure.backup');
 
 
 # PHP 默认版本 （此文件配置 /sapi/PHP-VERSION.conf 在 build_native_php分支 和 衍生分支 无效）
-$php_version = '8.2.13';
-$php_version_id = '802013';
-$php_version_tag = 'php-8.2.13';
+$php_version = '8.2.23';
+$php_version_id = '802023';
+$php_version_tag = 'php-8.2.23';
 
 if ($p->getInputOption('with-php-version')) {
     $subject = $p->getInputOption('with-php-version');
@@ -206,3 +207,4 @@ function install_libraries(Preprocessor $p): void
 {
     $p->loadDependentLibrary('php');
 }
+

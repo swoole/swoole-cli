@@ -276,8 +276,9 @@ make_config() {
 <?php endif ;?>
 
     cd <?= $this->phpSrcDir ?>/
+    set -x
     # 添加非内置扩展
-    if [ ! -z  "$(ls -A ${__PROJECT_DIR__}/ext/)" ] ;then
+    if [[ -d "${__PROJECT_DIR__}/ext/" ]] && [[ ! -z  "$(ls -A ${__PROJECT_DIR__}/ext/)" ]] ;then
         cp -rf ${__PROJECT_DIR__}/ext/*  <?= $this->phpSrcDir ?>/ext/
     fi
 

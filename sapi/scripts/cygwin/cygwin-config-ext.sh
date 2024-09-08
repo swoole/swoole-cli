@@ -13,8 +13,8 @@ cd ${__PROJECT__}
 
 ROOT=${__PROJECT__}
 
-PHP_VERSION='8.2.13'
-SWOOLE_VERSION=v5.1.3
+PHP_VERSION='8.2.23'
+SWOOLE_VERSION='v5.1.4'
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -102,4 +102,14 @@ test -d php-src && rm -rf php-src
 mkdir -p php-src
 tar --strip-components=1 -C php-src -xf php-${PHP_VERSION}.tar.gz
 
+cd $ROOT
+
+if [ ! -d $ROOT/ext/pgsql ]; then
+  mv $ROOT/php-src/ext/pgsql $ROOT/ext/pgsql
+fi
+
+cd $ROOT
+
+ls -lh $ROOT
+ls -lh $ROOT/ext/
 cd $ROOT
