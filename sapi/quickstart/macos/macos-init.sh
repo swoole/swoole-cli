@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -x
 __DIR__=$(
@@ -81,6 +81,11 @@ brew install libtool gettext coreutils libunistring pkg-config cmake
 # 已安装的包 跳过安装
 # PACKAGES_1=(wget curl libtool automake re2c llvm flex bison m4 autoconf)
 # PACKAGES_2=(libtool gettext coreutils libunistring pkg-config cmake)
+
+# PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}")
+# for PACKAGE in "${PACKAGES[@]}"; do
+#   brew list "$PACKAGE" &>/dev/null || brew install "$PACKAGE"
+# done
 
 # PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}")
 # for PACKAGE in "${PACKAGES[@]}"; do

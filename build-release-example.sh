@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 __DIR__=$(
   cd "$(dirname "$0")"
@@ -188,7 +188,6 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
   # composer dump-autoload
 
   # composer update  --optimize-autoloader
-  # composer install --no-interaction --no-autoloader --no-scripts --profile # --no-dev
   composer install --no-interaction --no-autoloader --no-scripts --prefer-dist -vv --profile # --no-dev
   composer dump-autoload --optimize --profile
 
