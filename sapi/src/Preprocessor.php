@@ -1231,6 +1231,7 @@ EOF;
         }
     }
 
+
     public function getRealOsType(): string
     {
         switch (PHP_OS) {

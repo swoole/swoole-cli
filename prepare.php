@@ -17,6 +17,7 @@ if ($p->getInputOption('with-build-type')) {
     $p->setBuildType($buildType);
 }
 
+
 # clean
 # clean old make.sh
 $p->cleanFile(__DIR__ . '/make.sh');
@@ -121,3 +122,4 @@ $p->setExtraCflags(' -Os');
 
 // Generate make.sh
 $p->execute();
+
