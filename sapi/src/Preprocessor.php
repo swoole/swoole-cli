@@ -459,11 +459,8 @@ __GIT_PROXY_CONFIG_EOF;
      * @param string $url
      * @param string $file
      * @param object|null $project [ $lib or $ext ]
-     * <<<<<<< HEAD
      * @param string $httpProxyConfig
      * @return void
-     * =======
-     * >>>>>>> feature-v5.1.x-test-swoole-pg
      */
 
     protected function downloadFile(string $url, string $file, object $project = null, string $httpProxyConfig = ''): void
