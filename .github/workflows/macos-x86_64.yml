@@ -47,16 +47,16 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
+      - name: Prepare Build Environment
+        run: |
+          bash sapi/quickstart/macos/macos-init.sh
+
           export PATH=/usr/local/opt/libtool/bin:$PATH
           ls -lha /usr/local/opt/libtool/bin/
 
           libtoolize --version
           libtool --help-all
           # brew bison --debug
-
-      - name: Prepare Build Environment
-        run: |
-          bash sapi/quickstart/macos/macos-init.sh
 
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
