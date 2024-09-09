@@ -26,8 +26,8 @@
 --enable-libspeex       [speex](https://speex.org/)  被opus 取代
 ```
 
-
 ## 视频协议标准
+
 ```text
    ONVIF 协议 onvif（Open Network Video Interface Forum）
    RTSP
@@ -36,6 +36,5 @@
 
  ```
 
-
-gpac  MP4Box
-    https://github.com/gpac/gpac.git
+gpac MP4Box
+https://github.com/gpac/gpac.git
