@@ -10,7 +10,6 @@ cd ${__DIR__}
 # use china mirror
 # sh sapi/quickstart/linux/alpine-init.sh --mirror [ china | ustc | tuna | tencentyun | huaweicloud ]
 
-
 MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -28,8 +27,8 @@ case "$MIRROR" in
 china | tuna | ustc)
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
   test "$MIRROR" = "china" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
-  test "$MIRROR" = "tuna"  && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
-  test "$MIRROR" = "ustc"  && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+  test "$MIRROR" = "tuna" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+  test "$MIRROR" = "ustc" && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
   ;;
 tencentyun | huaweicloud) # 云服务的内网镜像源
   test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repositories.save
@@ -51,6 +50,8 @@ apk add bash 7zip
 
 apk add wget git curl
 apk add libc++-static libltdl-static
+apk add gettext-dev
+
 apk add yasm nasm
 apk add ninja python3 py3-pip
 apk add diffutils
@@ -66,10 +67,8 @@ china | tuna | ustc)
 tencentyun | huaweicloud)
   test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
   test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
+  ;;
 esac
-
 
 # pip3 install meson
 apk add meson
-
-
