@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 :<<'COMMENT'
 
@@ -18,6 +18,7 @@ __PROJECT__=$(
 cd ${__DIR__}
 cd ${__PROJECT__}
 
+# alpine 基础镜像 支持多架构
 
 CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
 CONTAIENR_NAME='swoole-cli-builder'
