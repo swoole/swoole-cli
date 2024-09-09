@@ -1156,13 +1156,13 @@ EOF;
         }
         $this->mkdirIfNotExists($this->libraryDir, 0777, true);
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
-<<<<<<< HEAD
+
         if (BUILD_SHARED_LIBS) {
             $this->globalPrefix = '/usr/local/swoole-cli-shared';
         }
-=======
+
         $this->deleteDirectoryIfExists($this->getWorkExtDir());
->>>>>>> build_native_php
+
         include __DIR__ . '/constants.php';
         //构建依赖库安装脚本
         //libraries_builder($this);
