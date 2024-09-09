@@ -56,6 +56,6 @@ test -f Makefile && make clean
     --enable-redis \
     --with-imagick \
     --with-yaml \
-    --with-readline
+    --with-readline \
     --enable-opcache \
     --disable-opcache-jit
