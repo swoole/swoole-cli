@@ -54,3 +54,5 @@ define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unix_odbc');
 define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
 define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
+
+define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
