@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -139,9 +139,11 @@ post_max_size="128M"
 memory_limit="1G"
 date.timezone="UTC"
 
-opcache.enable_cli=1
-opcache.jit=1254
-opcache.jit_buffer_size=480M
+
+opcache.enable=On
+opcache.enable_cli=On
+opcache.jit=1225
+opcache.jit_buffer_size=128M
 
 expose_php=Off
 phar.readonly=0
