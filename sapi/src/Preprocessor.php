@@ -1124,6 +1124,7 @@ EOF;
         }
         $this->mkdirIfNotExists($this->libraryDir, 0777, true);
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
+        $this->deleteDirectoryIfExists($this->getWorkExtDir());
         include __DIR__ . '/constants.php';
 
         $extAvailabled = [];
@@ -1161,7 +1162,6 @@ EOF;
             }
         }
 
-        $this->deleteDirectoryIfExists($this->getWorkExtDir());
         // autoload extension depend extension
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->dependentExtensions as $extension_name) {
