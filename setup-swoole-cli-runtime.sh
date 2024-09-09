@@ -48,9 +48,9 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v5.1.3'
+APP_VERSION='v5.1.4'
 APP_NAME='swoole-cli'
-VERSION='v5.1.3.0'
+VERSION='v5.1.4.0'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
