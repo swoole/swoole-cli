@@ -2,7 +2,7 @@
 
 $poject_dir = realpath(__DIR__ . '/../../');
 # $php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'));
-$php_version_tag = '8.2.13' ;
+$php_version_tag = '8.2.23' ;
 $php_source_folder = $poject_dir . "/pool/php-src/php-{$php_version_tag}";
 $php_archive_file = $poject_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
 $download_dir = dirname($php_archive_file);
