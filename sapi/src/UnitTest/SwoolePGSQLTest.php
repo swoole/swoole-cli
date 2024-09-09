@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace SwooleCli\UnitTest;
 
 use PHPUnit\Framework\TestCase;
-
+use Swoole\Runtime;
 use function Swoole\Coroutine\run;
-
-error_reporting(E_ALL);
-ini_set("display_errors", "on");
-\Co::set(['hook_flags' => SWOOLE_HOOK_PDO_PGSQL]);
 
 final class SwoolePGSQLTest extends TestCase
 {
@@ -19,7 +15,9 @@ final class SwoolePGSQLTest extends TestCase
 
     public function testSwoolePGSQL(): void
     {
-
+        $oriErrorLevel = error_reporting(E_ALL);
+        $oriFlags = Runtime::getHookFlags();
+        Runtime::setHookFlags(SWOOLE_HOOK_PDO_PGSQL);
         run(function () {
             $this->createDataBase();
             $this->createTable();
@@ -31,10 +29,11 @@ final class SwoolePGSQLTest extends TestCase
             $this->dropDatabase();
             $this->pg_master = null;
         });
+        Runtime::setHookFlags($oriFlags);
+        error_reporting($oriErrorLevel);
     }
 
-
-    public function createDataBase()
+    protected function createDataBase()
     {
         $dbh = new \PDO("pgsql:dbname=postgres;host=127.0.0.1;port=5432", "postgres", "example");
         $this->assertEquals(NULL, $dbh->errorCode(), 'pgsql connection postgres  Error ,Error Info : ' . $dbh->errorInfo()[2]);
@@ -63,7 +62,7 @@ EOF;
         $this->assertEquals(0, $res, 'create database user_center  Error ,Error Info : ' . $dbh->errorInfo()[2]);
     }
 
-    public function createTable()
+    protected function createTable()
     {
         $dbh = new \PDO("pgsql:dbname=user_center;host=127.0.0.1;port=5432", "postgres", "example");
         $this->assertEquals(NULL, $dbh->errorCode(), 'connection database user_center  Error ,Error Info : ' . $dbh->errorInfo()[2]);
@@ -108,7 +107,7 @@ EOF;
         }
     }
 
-    public function insertTableData()
+    protected function insertTableData()
     {
         $password = 'example';
         $salt = bin2hex(openssl_random_pseudo_bytes(rand(4, 20)));
@@ -143,7 +142,7 @@ EOF;
         $this->assertTrue($res, 'insert data  Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
-    public function selectTableData()
+    protected function selectTableData()
     {
         $sql = <<<EOF
 SELECT * FROM public.users
@@ -158,7 +157,7 @@ EOF;
         $this->assertGreaterThan(0, count($list), 'select data   Error ,Error Info : ' . $stmt->errorInfo()[2]);
     }
 
-    public function deleteTableData()
+    protected function deleteTableData()
     {
         $sql = <<<'EOF'
 DELETE FROM users
@@ -176,7 +175,7 @@ EOF;
         $this->assertGreaterThan(0, $stmt->rowCount(), 'delete data   Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
-    public function dropTable()
+    protected function dropTable()
     {
         $sql = <<<'EOF'
 
@@ -189,7 +188,7 @@ EOF;
         $this->assertEquals(0, $res, 'drop table users   Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
-    public function dropDatabase()
+    protected function dropDatabase()
     {
         $sql = <<<'EOF'
 
