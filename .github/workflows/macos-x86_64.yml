@@ -14,16 +14,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare build environment
+      - name: Show Environment Info
         run: |
+          set -x
           uname -s
           uname -m
           uname -r
           env
           echo $HOME
           brew config
-          set -x
-          bash sapi/quickstart/macos/macos-init.sh
 
           # sudo rm -rf /Library/Developer/CommandLineTools
           # xcode-select --install
@@ -55,10 +54,15 @@ jobs:
           libtool --help-all
           # brew bison --debug
 
+      - name: Prepare Build Environment
+        run: |
+          bash sapi/quickstart/macos/macos-init.sh
+
           CURRENT_USER=$(whoami)
           echo ${CURRENT_USER}
           sudo mkdir -p /usr/local/swoole-cli
           CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
+
           git submodule update --init
 
       - name: Cache PHP Runtime
