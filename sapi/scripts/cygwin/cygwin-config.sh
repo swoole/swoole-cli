@@ -57,6 +57,5 @@ test -f Makefile && make clean
     --with-imagick \
     --with-yaml \
     --with-readline
-
-#    --enable-opcache \
-#    --disable-opcache-jit
+    --enable-opcache \
+    --disable-opcache-jit
