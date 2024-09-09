@@ -145,6 +145,8 @@ opcache.enable_cli=On
 opcache.jit=1225
 opcache.jit_buffer_size=128M
 
+; jit 更多配置参考 https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA
+
 expose_php=Off
 
 EOF
