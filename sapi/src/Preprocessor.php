@@ -998,7 +998,6 @@ EOF;
     protected function mkdirIfNotExists(string $dir, int $permissions = 0777, bool $recursive = false): void
     {
         if (!is_dir($dir)) {
-            echo $dir . PHP_EOL;
             mkdir($dir, $permissions, $recursive);
         }
     }
