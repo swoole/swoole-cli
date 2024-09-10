@@ -30,6 +30,7 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPkgName('uuid')
+        ->withDependentLibraries('gettext')
         ->withBinPath($util_linux_prefix . '/bin/:' . $util_linux_prefix . '/sbin/');
 
     $p->addLibrary($lib);
