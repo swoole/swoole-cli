@@ -40,7 +40,6 @@ test -f Makefile && make clean
   --enable-mbstring \
   --enable-ctype \
   --with-zlib \
-  --with-zip \
   --enable-posix \
   --enable-sockets \
   --enable-pdo \
@@ -70,4 +69,3 @@ test -f Makefile && make clean
 #  --with-pgsql
 #  --with-pdo-sqlite \
 #  --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)
-
