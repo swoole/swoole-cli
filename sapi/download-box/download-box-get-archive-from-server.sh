@@ -18,7 +18,6 @@ mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 
-<<<<<<< HEAD
 if [ -f "${__PROJECT__}/sapi/PHP-VERSION.conf"  ] ; then
   DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.4.0/'
   ALL_DEPS_HASH="ed854e2116ff663404250152af16d850ed69253079c65ee790538c51a09166dd"
