@@ -5,28 +5,28 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
 
-    //(gettext库包含libintl 、coreutils库包含libunistring
+    // gettext 包含 libintl 库
 
-    $libintl_prefix = LIBINTL_PREFIX;
+    $gettext_prefix = GETTEXT_PREFIX;
     $libunistring_prefix = LIBUNISTRING_PREFIX;
     $iconv_prefix = ICONV_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
     $ncurses_prefix = NCURSES_PREFIX;
     $p->addLibrary(
-        (new Library('libintl'))
+        (new Library('gettext'))
             ->withHomePage('https://www.gnu.org/software/gettext/')
             ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
             ->withManual('https://www.gnu.org/software/gettext/')
             //->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.22.tar.xz')
             ->withUrl('https://ftpmirror.gnu.org/gnu/gettext/gettext-0.22.tar.xz')
-            ->withPrefix($libintl_prefix)
+            ->withPrefix($gettext_prefix)
             ->withConfigure(
                 <<<EOF
 
             ./configure --help
 
             ./configure \
-            --prefix={$libintl_prefix} \
+            --prefix={$gettext_prefix} \
             --enable-shared=no \
             --enable-static=yes \
             --enable-relocatable \
@@ -47,9 +47,10 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withDependentLibraries('libunistring', 'libiconv', 'ncurses', 'libxml2')
+            ->withBinPath($gettext_prefix . '/bin')
     );
 
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libintl_prefix . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libintl_prefix . '/lib');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $gettext_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $gettext_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lintl ');
 };
