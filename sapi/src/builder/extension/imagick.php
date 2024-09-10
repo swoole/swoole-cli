@@ -19,5 +19,5 @@ return function (Preprocessor $p) {
 };
 
 
-//构建的过程中，会自动 下载 PHP-Parser
-//https://github.com/nikic/PHP-Parser/
+# 构建 imagick 扩展时 会自动下载 https://github.com/nikic/PHP-Parser  源码
+

@@ -139,7 +139,6 @@ post_max_size="128M"
 memory_limit="1G"
 date.timezone="UTC"
 
-
 opcache.enable=On
 opcache.enable_cli=On
 opcache.jit=1225
@@ -147,6 +146,7 @@ opcache.jit_buffer_size=128M
 
 expose_php=Off
 phar.readonly=0
+
 
 EOF
 
