@@ -353,6 +353,7 @@ make_build() {
     cp -f <?= $this->phpSrcDir  ?>/sapi/cli/php <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
     echo "<?= $this->phpSrcDir  ?>/sapi/cli/php -v"
     <?= $this->phpSrcDir  ?>/sapi/cli/php -v
+    <?= $this->phpSrcDir  ?>/sapi/cli/php -m
     echo "<?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php -v"
     <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php -v
 

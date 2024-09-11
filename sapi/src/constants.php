@@ -92,8 +92,11 @@ define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
 define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
+define("LIBMEMCACHED_PREFIX", $p->getGlobalPrefix() . '/libmemcached');
+define("LIBMEMCACHED_AWESOME_PREFIX", $p->getGlobalPrefix() . '/libmemcached_awesome');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
 
 
 
