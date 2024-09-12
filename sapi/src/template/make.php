@@ -23,12 +23,12 @@ export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 
 OPTIONS="--disable-all \
---disable-cgi  \
---enable-shared=no \
---enable-static=yes \
---without-valgrind \
---enable-cli  \
---disable-phpdbg \
+    --enable-shared=no \
+    --enable-static=yes \
+    --without-valgrind \
+    --disable-cgi  \
+    --enable-cli  \
+    --disable-phpdbg \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
@@ -307,9 +307,11 @@ make_config() {
 <?php endif; ?>
 
     export_variables
-    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
-    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
-    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
+    export LDFLAGS="$LDFLAGS <?= $this->extraLdflags ?>"
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
+    echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
 
     ./configure --help
 
@@ -353,6 +355,7 @@ make_build() {
     cp -f <?= $this->phpSrcDir  ?>/sapi/cli/php <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
     echo "<?= $this->phpSrcDir  ?>/sapi/cli/php -v"
     <?= $this->phpSrcDir  ?>/sapi/cli/php -v
+    <?= $this->phpSrcDir  ?>/sapi/cli/php -m
     echo "<?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php -v"
     <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/php -v
 

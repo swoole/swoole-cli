@@ -25,8 +25,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare build environment
+      - name: Show Environment Info
         run: |
+          set -x
           uname -s
           uname -m
           uname -r
@@ -34,8 +35,6 @@ jobs:
           env
           echo $HOME
           brew config
-          set -x
-          bash sapi/quickstart/macos/macos-init.sh
 
           # sudo rm -rf /Library/Developer/CommandLineTools
           # xcode-select --install
@@ -61,6 +60,12 @@ jobs:
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
+
+      - name: Prepare Build Environment
+        run: |
+          bash sapi/quickstart/macos/macos-init.sh
+
+          export PATH=/usr/local/opt/libtool/bin:$PATH
 
           export PATH=/usr/local/opt/libtool/bin:$PATH
           ls -lha /usr/local/opt/libtool/bin/

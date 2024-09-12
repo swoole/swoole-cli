@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare build environment
+      - name: Show Environment Info
         run: |
           set -x
           uname -s
@@ -33,8 +33,6 @@ jobs:
           env
           echo $HOME
           brew config
-
-          bash sapi/quickstart/macos/macos-init.sh
 
           # sudo rm -rf /Library/Developer/CommandLineTools
           # xcode-select --install
@@ -60,6 +58,12 @@ jobs:
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
+
+      - name: Prepare Build Environment
+        run: |
+          bash sapi/quickstart/macos/macos-init.sh
+
+          export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
 
           export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
           ls -lha /opt/homebrew/opt/libtool/bin/
@@ -110,7 +114,7 @@ jobs:
           mkdir -p pool/ext
           mkdir -p bin/runtime
           if [ ! -f bin/runtime/php ] ; then
-              bash  sapi/quickstart/setup-php-runtime.sh --mirror china
+              bash  sapi/quickstart/setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/

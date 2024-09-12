@@ -19,12 +19,13 @@ mkdir -p ${__PROJECT__}/var/download-box/
 cd ${__PROJECT__}/var/download-box/
 
 if [ -f "${__PROJECT__}/sapi/PHP-VERSION.conf"  ] ; then
-  DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.3.0/'
-  ALL_DEPS_HASH="5fa1485c2408f05cbc548712917e6dbb8ecd5a631b558d6d512d4a6671f071e5"
+  DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.4.0/'
+  ALL_DEPS_HASH="ed854e2116ff663404250152af16d850ed69253079c65ee790538c51a09166dd"
 else
   DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.3.2/'
   ALL_DEPS_HASH="15769d1003213bf8849ac73bf96bc7629b138a694e8367fb2139756e20c2901d"
 fi
+
 
 while [ $# -gt 0 ]; do
   case "$1" in
