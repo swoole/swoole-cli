@@ -36,9 +36,16 @@ return function (Preprocessor $p) {
 
 EOF
         )
+        ->withScriptAfterInstall(
+            <<<EOF
+            sed -i.bak 's/-lmemcachedutil/-lmemcachedutil -lhashkit /' {$libmemcached_awesome_prefix}/lib/pkgconfig/libmemcached.pc
+
+EOF
+        )
         ->withPkgName('libmemcached');
 
     $p->addLibrary($lib);
 
-
+    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+    $p->withVariable('LIBS', '$LIBS ' . $libs);
 };
