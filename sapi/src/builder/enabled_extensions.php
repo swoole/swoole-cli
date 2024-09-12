@@ -1,6 +1,6 @@
 <?php
 return [
-    'opcache',
+    'opcache', //需要修改PHP源码才能启用
     'curl',
     'iconv',
     'bz2',
@@ -35,5 +35,5 @@ return [
     'swoole',
     'yaml',
     'imagick',
-    //'mongodb',
+    //'mongodb',//php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
 ];
