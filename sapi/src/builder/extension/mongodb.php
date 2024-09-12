@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-sasl=no ';
     $options .= ' --with-mongodb-ssl=openssl ';
 
-    $mongodb_version = '1.18.1';
+    $mongodb_version = '1.19.4';
     $depends = ['icu', 'openssl', 'zlib', 'libzstd', 'snappy'];
     $ext = new Extension('mongodb');
 
