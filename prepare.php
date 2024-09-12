@@ -42,7 +42,7 @@ if ($p->getInputOption('with-parallel-jobs')) {
 }
 
 if ($p->isMacos()) {
-    $p->setExtraLdflags('-undefined dynamic_lookup -framework CoreFoundation -framework Security -fopenmp');
+    $p->setExtraLdflags('-undefined dynamic_lookup');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/usr/local/opt/llvm/bin')
             ->withBinPath('/usr/local/opt/flex/bin')
