@@ -11,8 +11,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://gitlab.gnome.org/GNOME/libxml2/')
             ->withManual('https://gitlab.gnome.org/GNOME/libxml2/-/wikis')
             ->withLicense('https://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
-            ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.10/libxml2-v2.9.10.tar.gz')
-            ->withFileHash('md5', 'b18faee9173c3378c910f6d7d1493115')
+            ->withUrl('https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.13.3/libxml2-v2.13.3.tar.gz')
+            ->withFileHash('md5', 'f312e123df5096472359b430836f653e')
             ->withPrefix($libxml2_prefix)
             ->withConfigure(
                 <<<EOF

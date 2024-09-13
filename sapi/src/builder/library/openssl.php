@@ -12,8 +12,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.openssl.org/')
             ->withLicense('https://github.com/openssl/openssl/blob/master/LICENSE.txt', Library::LICENSE_APACHE2)
             ->withManual('https://www.openssl.org/docs/')
-            ->withUrl('https://github.com/quictls/openssl/archive/refs/tags/openssl-3.1.4-quic1.tar.gz')
-            ->withFileHash('md5', 'ba2d8774a51a38f2481aad43d05aea57')
+            ->withUrl('https://github.com/quictls/openssl/archive/refs/tags/openssl-3.1.7-quic1.tar.gz')
+            ->withFileHash('md5', '62d9e9fda3522da909a3aefee54e38fd')
             ->withPrefix($openssl_prefix)
             ->withConfigure(
                 <<<EOF

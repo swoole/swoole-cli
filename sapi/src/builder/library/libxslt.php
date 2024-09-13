@@ -11,8 +11,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://gitlab.gnome.org/GNOME/libxslt/-/wikis/home')
             ->withManual('https://gitlab.gnome.org/GNOME/libxslt/-/wikis/home')
             ->withLicense('http://www.opensource.org/licenses/mit-license.html', Library::LICENSE_MIT)
-            ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.34/libxslt-v1.1.34.tar.gz')
-            ->withFileHash('md5', '0b89ee955fd13326d40e762242da7f84')
+            ->withUrl('https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.42/libxslt-v1.1.42.tar.gz')
+            ->withFileHash('md5', '839a3d767b12d37cf716b47a801254ed')
             ->withPrefix($libxslt_prefix)
             ->withConfigure(
                 <<<EOF
