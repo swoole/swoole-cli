@@ -157,7 +157,7 @@ PHP_OPCACHE_H_EOF
     test -f ext/opcache/config.m4.backup && rm -f ext/opcache/config.m4.backup
 
     # sapi目录更新
-    cp -rf $SRC/sapi/ ./
+    # cp -rf $SRC/sapi/ ./
 
     # fpm
     cp -rf $SRC/sapi/fpm/fpm ./sapi/cli/
