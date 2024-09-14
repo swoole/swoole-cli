@@ -321,7 +321,7 @@ if [ "$1" = "docker-build" ] ;then
         MIRROR=$2
     fi
     cd ${__PROJECT_DIR__}/sapi/docker
-    docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f <?= $this->getBaseImageDockerFile() ?>  . --build-arg="MIRROR=${MIRROR}"
+    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}"
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
