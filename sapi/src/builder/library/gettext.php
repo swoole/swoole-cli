@@ -46,7 +46,6 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withDependentLibraries('libunistring', 'libiconv', 'ncurses', 'libxml2')
-        //->withBinPath($gettext_prefix . '/bin')
     );
 
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $gettext_prefix . '/include');
