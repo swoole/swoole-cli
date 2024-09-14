@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
                 ./configure \
                 --prefix={$libsasl_prefix} \
                  --enable-static=yes \
-                 --enable-shared=no \
+                 --enable-shared=no
 
 EOF
             )

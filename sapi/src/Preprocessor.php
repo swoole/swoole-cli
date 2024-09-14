@@ -104,47 +104,13 @@ class Preprocessor
      * Extensions enabled by default
      * @var array|string[]
      */
-    protected array $extEnabled = [
-        'opcache', //需要修改源码才能实现
-        'curl',
-        'iconv',
-        'bz2',
-        'bcmath',
-        'pcntl',
-        'filter',
-        'session',
-        'tokenizer',
-        'mbstring',
-        'ctype',
-        'zlib',
-        'zip',
-        'posix',
-        'sockets',
-        'pdo',
-        'sqlite3',
-        'phar',
-        'mysqlnd',
-        'mysqli',
-        'intl',
-        'fileinfo',
-        'pdo_mysql',
-        //'pdo_sqlite',
-        'soap',
-        'xsl',
-        'gmp',
-        'exif',
-        'sodium',
-        'openssl',
-        'readline',
-        'xml',
-        'redis',
-        'swoole',
-        'yaml',
-        'imagick',
-        //'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
-        'gd',
-    ];
+    // 'opcache', //需要修改源码才能实现
+    // 'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
+
+    protected array $extEnabled;
+
     protected array $extEnabledBuff = [];
+
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
     protected array $beforeConfigure = [];
@@ -166,6 +132,7 @@ class Preprocessor
         //重置默认扩展
         $this->extEnabled = [];
         $this->setOsType($this->getRealOsType());
+        $this->extEnabled = require __DIR__ . '/builder/enabled_extensions.php';
     }
 
 
@@ -636,7 +603,11 @@ EOF;
         }
 
         if (!empty($lib->binPath)) {
-            $this->binPaths[] = $lib->binPath;
+            if (is_array($lib->binPath)) {
+                $this->binPaths = array_merge($this->binPaths, $lib->binPath);
+            } else {
+                $this->binPaths[] = $lib->binPath;
+            }
         }
 
         if (empty($lib->license)) {

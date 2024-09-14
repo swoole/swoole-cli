@@ -127,12 +127,11 @@ define("GRAPHVIZ_PREFIX", $p->getGlobalPrefix() . '/graphviz');
 
 define('LIBRSVG_PREFIX', $p->getGlobalPrefix() . '/librsvg');
 
-define('GETTEXT_PREFIX', $p->getGlobalPrefix() . '/gettext');
-
 define("PGSQL_PREFIX", $p->getGlobalPrefix() . '/pgsql');
 define("UNIX_ODBC_PREFIX", $p->getGlobalPrefix() . '/unix_odbc');
-define("LIBUUID_PREFIX", $p->getGlobalPrefix() . '/libuuid');
-define("LIBINTL_PREFIX", $p->getGlobalPrefix() . '/libintl');
+
+define("UTIL_LINUX_PREFIX", $p->getGlobalPrefix() . '/util_linux');
+define("GETTEXT_PREFIX", $p->getGlobalPrefix() . '/gettext');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
 
@@ -231,6 +230,9 @@ define("SVT_AV1_PREFIX", $p->getGlobalPrefix() . '/svt_av1');
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
+
+define("LIBMEMCACHED_PREFIX", $p->getGlobalPrefix() . '/libmemcached');
+define("LIBMEMCACHED_AWESOME_PREFIX", $p->getGlobalPrefix() . '/libmemcached_awesome');
 
 define("GRPC_PREFIX", $p->getGlobalPrefix() . '/grpc');
 define("RE2_PREFIX", $p->getGlobalPrefix() . '/re2');
@@ -332,15 +334,18 @@ define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 
 define("GPAC_PREFIX", $p->getGlobalPrefix() . '/gpac');
 
+
 define("SNDIO_AUDIO_PREFIX", $p->getGlobalPrefix() . '/sndio_audio');
 define("JACK_AUDIO_PREFIX", $p->getGlobalPrefix() . '/jack_audio');
 define("OPEN_SOUND_AUDIO_PREFIX", $p->getGlobalPrefix() . '/opensound_audio');
 define("PULSE_AUDIO_PREFIX", $p->getGlobalPrefix() . '/pulse_audio');
 
+
 define("V4L_UTILS_PREFIX", $p->getGlobalPrefix() . '/v4l_utils');
 define("LIBOAUTH2_PREFIX", $p->getGlobalPrefix() . '/liboauth2');
 define("CJOSE_PREFIX", $p->getGlobalPrefix() . '/cjose');
 define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
 

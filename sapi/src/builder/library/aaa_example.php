@@ -6,8 +6,11 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $example_prefix = EXAMPLE_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;
+
     $gettext_prefix = GETTEXT_PREFIX;
     $cares_prefix = CARES_PREFIX;
+
+
     //文件名称 和 库名称一致
     $lib = new Library('aaa_example');
     $lib->withHomePage('https://opencv.org/')

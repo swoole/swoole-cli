@@ -1,12 +1,12 @@
 # 快速初始化构建环境
 
-## 一个脚本执行整个流程
+## 一个脚本执行整个构建流程
 
 > 定制 build-release.sh 即可开始构建
 
 ```bash
-  cp  build-release-example.sh  build-release.sh
 
+  cp  build-release-example.sh  build-release.sh
 
   bash build-release.sh
 
@@ -19,7 +19,7 @@
 # 准备 PHP 运行时
 bash sapi/quickstart/setup-php-runtime.sh
 
-# 准备PHP 运行时 使用代理 （需提前准备好代理)
+# 准备PHP 运行时 使用代理
 bash sapi/quickstart/setup-php-runtime.sh --proxy http://192.168.3.26:8015
 
 # 准备PHP 运行时 使用镜像 （镜像源 https://www.swoole.com/download）
@@ -34,12 +34,10 @@ composer -v
 
 ```
 
-## 准备依赖库源码，来自镜像
-
-> 可能部分源码包没有及时更新 ，请提 issues
-> 缺失的部分，下一步执行时会自动到源站下载
+## 准备依赖库源码
 
 ```bash
+# 源码来源 https://github.com/swoole/swoole-cli/releases/download/${TAG}/all-deps.zip
 
 bash sapi/download-box/download-box-get-archive-from-server.sh
 
@@ -51,36 +49,7 @@ bash sapi/download-box/download-box-get-archive-from-server.sh
 
 ```bash
 
-git submodule update --init
-
-```
-
-## 准备构建脚本（会自动下载依赖库源码包）
-
-> [ 构建参数选项 ](../../docs/options.md)
-
-```bash
-
-# 准备 php 运行环境
-# macos
-alias php='php -d curl.cainfo=/etc/ssl/cert.pem -d openssl.cafile=/etc/ssl/cert.pem'
-# linux
-alias php='php -d curl.cainfo=/etc/ssl/certs/ca-certificates.crt -d openssl.cafile=/etc/ssl/certs/ca-certificates.crt'
-
-export COMPOSER_ALLOW_SUPERUSER=1
-
-composer update   --optimize-autoloader
-
-php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1
-
-# 使用镜像下载依赖库源码
-php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1 --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
-
-# 不启用用 mysqli soap
-# php prepare.php  +inotify +apcu +ds -mysqli -soap
-
-# macos
-# php prepare.php  +inotify +apcu +ds  --without-docker=1
+git submodule update --init -f
 
 ```
 
@@ -89,6 +58,7 @@ php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 --with-swoole-pgsql=1 --wit
 1. [ linux 快速启动 容器 构建环环境 ](linux/README.md)
 1. [ windows cygwin 快速启动 构建环环境 ](windows/README.md)
 1. [ macos 快速启动 构建环环境 ](macos/README.md)
+1. [ 构建选项 ](../../docs/options.md)
 
 ## 构建依赖库 、构建swoole 、打包
 
