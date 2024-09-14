@@ -20,6 +20,7 @@ return [
     'phar',
     'mysqlnd',
     'mysqli',
+    'intl',
     'fileinfo',
     'pdo_mysql',
     'soap',
