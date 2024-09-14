@@ -4,8 +4,6 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
-
-
     // gettext 包含 libintl 库
 
     $gettext_prefix = GETTEXT_PREFIX;
@@ -44,10 +42,8 @@ return function (Preprocessor $p) {
             --disable-csharp \
             --without-git
 
-
 EOF
             )
-            //->withBinPath($gettext_prefix . '/bin/') //因为只需要libintl ，其它不启用
             ->withDependentLibraries('libunistring', 'libiconv', 'ncurses', 'libxml2')
     );
 
