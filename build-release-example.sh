@@ -40,7 +40,6 @@ esac
 
 IN_DOCKER=0
 WITH_DOWNLOAD_BOX=0
-WITH_BUILD_CONTAINER=0
 WITH_WEB_UI=0
 WITH_HTTP_PROXY=0
 WITH_PHP_COMPOSER=1
@@ -78,10 +77,6 @@ while [ $# -gt 0 ]; do
   --download-box)
     WITH_DOWNLOAD_BOX=1
     OPTIONS="${OPTIONS} --without-docker=1 --skip-download=1 --with-dependency-graph=1  "
-    ;;
-  --build-contianer)
-    WITH_BUILD_CONTAINER=1
-    OPTIONS="${OPTIONS} --without-docker=1  "
     ;;
   --webui)
     WITH_WEB_UI=1
@@ -265,16 +260,6 @@ if [ ${WITH_DOWNLOAD_BOX} -eq 1 ]; then
   exit 0
 fi
 
-if [ ${WITH_BUILD_CONTAINER} -eq 1 ]; then
-  echo " please exec script: "
-  if [ "$MIRROR" = 'china' ]; then
-    echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc "
-  else
-    echo " bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh "
-  fi
-  exit 0
-fi
-
 if [ ${WITH_WEB_UI} -eq 1 ]; then
   echo " please exec script: "
   echo " bash sapi/webUI/webui-init-data.sh "
@@ -288,9 +273,6 @@ if [ "$OS" = 'linux' ] && [ ${IN_DOCKER} -eq 0 ]; then
 fi
 
 bash make-install-deps.sh
-
-# 兼容上一版本已构建完毕的依赖库
-# bash sapi/quickstart/mark-install-library-cached.sh
 
 bash make.sh all-library
 
@@ -309,10 +291,6 @@ exit 0
 # 例子  download-box
 # bash build-release.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
-
-# 例子  build-contianer
-# bash build-release.sh --mirror china  --build-contianer
-# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
 
 # 例子  web ui
 # bash build-release.sh --mirror china  --webui
