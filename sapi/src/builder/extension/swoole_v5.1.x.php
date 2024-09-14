@@ -43,3 +43,4 @@ EOF
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 
 };
+

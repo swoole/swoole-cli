@@ -101,47 +101,10 @@ class Preprocessor
      * Extensions enabled by default
      * @var array|string[]
      */
-    protected array $extEnabled = [
-        'opcache',
-        'curl',
-        'iconv',
-        'bz2',
-        'bcmath',
-        'pcntl',
-        'filter',
-        'session',
-        'tokenizer',
-        'mbstring',
-        'ctype',
-        'zlib',
-        'zip',
-        'posix',
-        'sockets',
-        'pdo',
-        'sqlite3',
-        'phar',
-        'mysqlnd',
-        'mysqli',
-        'intl',
-        'fileinfo',
-        'pdo_mysql',
-        //'pdo_sqlite',
-        'soap',
-        'xsl',
-        'gmp',
-        'exif',
-        'sodium',
-        'openssl',
-        'readline',
-        'xml',
-        'redis',
-        'swoole',
-        'yaml',
-        'imagick',
-        'mongodb',
-        'gd',
-    ];
+    protected array $extEnabled;
+
     protected array $extEnabledBuff = [];
+
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
     protected array $beforeConfigure = [];
@@ -158,6 +121,7 @@ class Preprocessor
     protected function __construct()
     {
         $this->setOsType($this->getRealOsType());
+        $this->extEnabled = require __DIR__ . '/builder/enabled_extensions.php';
     }
 
     public function setLinker(string $ld): static
@@ -624,7 +588,11 @@ EOF;
         }
 
         if (!empty($lib->binPath)) {
-            $this->binPaths[] = $lib->binPath;
+            if (is_array($lib->binPath)) {
+                $this->binPaths = array_merge($this->binPaths, $lib->binPath);
+            } else {
+                $this->binPaths[] = $lib->binPath;
+            }
         }
 
         if (empty($lib->license)) {

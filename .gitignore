@@ -313,6 +313,7 @@ tmp-php.ini
 /ext/loader8
 /ext/ds
 /ext/xlswriter
+/ext/uuid
 /.phpunit.result.cache
 /samples/sfx/*.phar
 .php-cs-fixer.cache

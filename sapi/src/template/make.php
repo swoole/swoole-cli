@@ -22,9 +22,9 @@ export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 
 OPTIONS="--disable-all \
---enable-shared=no \
---enable-static=yes \
---without-valgrind \
+    --enable-shared=no \
+    --enable-static=yes \
+    --without-valgrind \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
@@ -246,9 +246,11 @@ make_config() {
 
    ./configure --help
     export_variables
-    echo $LDFLAGS > <?= $this->getRootDir() ?>/ldflags.log
-    echo $CPPFLAGS > <?= $this->getRootDir() ?>/cppflags.log
-    echo $LIBS > <?= $this->getRootDir() ?>/libs.log
+    export LDFLAGS="$LDFLAGS <?= $this->extraLdflags ?>"
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
+    echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
+    echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
+    echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
 
     ./configure $OPTIONS
 

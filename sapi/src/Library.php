@@ -30,7 +30,7 @@ class Library extends Project
 
     public string $prefix = '/usr';
 
-    public string $binPath = '';
+    public string|array $binPath = '';
 
     public bool $cleanBuildDirectory = false;
 
@@ -135,7 +135,7 @@ class Library extends Project
         return $this;
     }
 
-    public function withBinPath(string $path): static
+    public function withBinPath(string|array $path): static
     {
         $this->binPath = $path;
         return $this;
