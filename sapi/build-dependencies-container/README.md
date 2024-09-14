@@ -21,11 +21,11 @@
 
 ```bash
 
-bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh
+bash sapi/build-dependencies-container/all-dependencies-build-container.sh
 
 ## composer 使用腾讯镜像源 , 系统源使用 ustc 源
 
-bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
+bash sapi/build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
 
 ```
 
@@ -33,7 +33,7 @@ bash sapi/multistage-build-dependencies-container/all-dependencies-build-contain
 
 ```bash
 
-bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh
+bash sapi/build-dependencies-container/all-dependencies-run-container-test.sh
 
 # 新开终端进入容器
 docker exec -it swoole-cli-alpine-dev sh

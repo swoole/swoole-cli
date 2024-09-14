@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -95,7 +95,7 @@ echo ${IMAGE} > ${__PROJECT__}/var/all-dependencies-container.txt
 
 # 例子：
 # php prepare.php
-# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'
+# bash sapi/build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc --platform 'linux/amd64'
 # 验证构建结果
-# bash sapi/multistage-build-dependencies-container/all-dependencies-run-container-test.sh
+# bash sapi/build-dependencies-container/all-dependencies-run-container-test.sh
 
