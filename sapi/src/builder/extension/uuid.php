@@ -9,9 +9,8 @@ return function (Preprocessor $p) {
     // uuid 扩展 依赖 libuuid 库 libintl 库
 
     // libuuid  库 存在于 Util-linux  (util_linux.php)
-    // libintl  库 存在于 gettext     (gettext.php)
 
-    $depends = ['util_linux', 'gettext'];
+    $depends = ['util_linux'];
     $options = '--with-uuid=' . UTIL_LINUX_PREFIX;
 
     $ext = (new Extension('uuid'))

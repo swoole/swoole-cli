@@ -43,11 +43,10 @@ return function (Preprocessor $p) {
             --disable-csharp \
             --without-git
 
-
 EOF
             )
             ->withDependentLibraries('libunistring', 'libiconv', 'ncurses', 'libxml2')
-            ->withBinPath($gettext_prefix . '/bin')
+        //->withBinPath($gettext_prefix . '/bin')
     );
 
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $gettext_prefix . '/include');
