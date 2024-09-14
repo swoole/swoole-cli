@@ -37,4 +37,6 @@ return [
     'yaml',
     'imagick',
     'mongodb',
+    'gettext',
+    'uuid'
 ];
