@@ -12,7 +12,7 @@ use function Swoole\Coroutine\run;
 error_reporting(E_ALL);
 ini_set("display_errors", "on");
 
-final class SwoolePGSQLTestV5x extends TestCase
+final class SwoolePGSQLTest extends TestCase
 {
     private $pg = null;
     private $pg_master = null;
