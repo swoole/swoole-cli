@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 : <<'COMMENT'
 
@@ -17,6 +17,8 @@ __PROJECT__=$(
 )
 cd ${__DIR__}
 cd ${__PROJECT__}
+
+# alpine 基础镜像 支持多架构
 
 CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
 CONTAIENR_NAME='swoole-cli-builder'
@@ -39,10 +41,6 @@ while [ $# -gt 0 ]; do
     ;;
   --mirror)
     MIRROR="$2"
-    ;;
-  --quickstart-container)
-    CONTAIENR_NAME='swoole-cli-alpine-dev'
-    # 从quickstart 生成的容器中拷贝 /usr/local/swoole-cli/ 文件夹，并生成新容器镜像
     ;;
   --*)
     echo "Illegal option $1"

@@ -366,7 +366,6 @@ lib_dep_pkg() {
 }
 
 help() {
-    set +x
     echo "./make.sh docker-build [ china | ustc | tuna ]"
     echo "./make.sh docker-bash"
     echo "./make.sh docker-commit"
@@ -405,10 +404,20 @@ if [ "$1" = "docker-build" ] ;then
         ;;
         esac
     fi
+    PLATFORM=''
+    ARCH=$(uname -m)
+    case $ARCH in
+    'x86_64')
+      PLATFORM='linux/amd64'
+      ;;
+    'aarch64')
+      PLATFORM='linux/arm64'
+      ;;
+    esac
     cd ${__PROJECT_DIR__}/sapi/docker
     echo "MIRROR=${MIRROR}"
     echo "BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
-    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
+    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --progress=plain  --platform=${PLATFORM} --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
