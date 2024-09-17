@@ -45,6 +45,7 @@ return function (Preprocessor $p) {
 
 EOF
             )
+            ->withBinPath($gettext_prefix . '/bin/')
             ->withDependentLibraries('libunistring', 'libiconv', 'ncurses', 'libxml2')
     );
 
