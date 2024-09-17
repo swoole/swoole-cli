@@ -37,6 +37,7 @@ jobs:
           brew config
 
           # sudo rm -rf /Library/Developer/CommandLineTools
+          # 安装命令行工具
           # xcode-select --install
 
           # sudo xcode-select --reset
@@ -50,6 +51,15 @@ jobs:
           ls -lh $(xcrun --show-sdk-path)
           # sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
+
+          # find /Applications/Xcode.app -name stdio.h
+          xcodebuild -find make
+          xcodebuild -find gcc
+          xcodebuild -find g++
+          xcodebuild -find clang
+          xcodebuild -find clang++
+          find /Applications/Xcode.app -path '*/usr/include/stdio.h'
+          find $(xcode-select --print-path) -name stdio.h
 
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')

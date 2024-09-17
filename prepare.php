@@ -159,7 +159,7 @@ EOF;
 
 
 if ($p->isMacos()) {
-    $p->setExtraLdflags('-undefined dynamic_lookup');
+    //$p->setExtraLdflags('-Wl,-undefined,dynamic_lookup');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/usr/local/opt/llvm/bin')
             ->withBinPath('/usr/local/opt/flex/bin')
