@@ -320,8 +320,18 @@ if [ "$1" = "docker-build" ] ;then
     if [ -n "$2" ]; then
         MIRROR=$2
     fi
+    PLATFORM=''
+    ARCH=$(uname -m)
+    case $ARCH in
+    'x86_64')
+      PLATFORM='linux/amd64'
+      ;;
+    'aarch64')
+      PLATFORM='linux/arm64'
+      ;;
+    esac
     cd ${__PROJECT_DIR__}/sapi/docker
-    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --progress=plain  --platform <?= $this->getBaseImagePlatform() ?>
+    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --progress=plain  --platform=${PLATFORM}
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)

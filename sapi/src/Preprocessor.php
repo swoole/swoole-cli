@@ -155,24 +155,6 @@ class Preprocessor
             return 'base' . '-' . $arch;
         }
     }
-
-    public function getBaseImagePlatform(): string
-    {
-        $arch = $this->getSystemArch();
-        $platform = '';
-        switch ($arch) {
-            case 'x64':
-                $platform = 'linux/amd64';
-                break;
-            case 'arm64':
-                $platform = 'linux/arm64';
-                break;
-            default:
-                break;
-        }
-        return $platform;
-    }
-
     public function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
