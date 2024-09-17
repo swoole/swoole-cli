@@ -156,14 +156,21 @@ class Preprocessor
         }
     }
 
-    public function getBaseImageDockerFile(): string
+    public function getBaseImagePlatform(): string
     {
         $arch = $this->getSystemArch();
-        if ($arch == 'x64') {
-            return 'Dockerfile';
-        } else {
-            return 'Dockerfile' . '-' . $arch;
+        $platform = '';
+        switch ($arch) {
+            case 'x64':
+                $platform = 'linux/amd64';
+                break;
+            case 'arm64':
+                $platform = 'linux/arm64';
+                break;
+            default:
+                break;
         }
+        return $platform;
     }
 
     public function setPhpSrcDir(string $phpSrcDir)
