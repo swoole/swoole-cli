@@ -25,6 +25,7 @@ return function (Preprocessor $p) {
             --enable-static=yes \
             --enable-shared=no \
             --enable-extra-encodings
+
 EOF
             )
             ->withBinPath($libiconv_prefix . '/bin/')

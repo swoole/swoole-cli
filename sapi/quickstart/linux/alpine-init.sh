@@ -40,9 +40,9 @@ esac
 
 apk update
 
-apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c  coreutils gcc g++
+apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld libtool cmake bison re2c coreutils gcc g++
 apk add bash zip unzip flex pkgconf ca-certificates
-apk add tar gzip zip unzip bzip2
+apk add tar gzip zip unzip bzip2 gettext gettext-dev
 
 apk add bash 7zip
 # apk add bash p7zip
@@ -57,7 +57,6 @@ apk add python3-dev
 apk add mercurial
 apk add pigz parallel
 
-
 case "$MIRROR" in
 china | tuna | ustc)
   pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
@@ -68,7 +67,6 @@ tencentyun | huaweicloud)
   test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
   ;;
 esac
-
 
 # pip3 install meson
 apk add meson
