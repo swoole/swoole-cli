@@ -84,46 +84,7 @@ class Preprocessor
      * Extensions enabled by default
      * @var array|string[]
      */
-    protected array $extEnabled = [
-        'opcache',
-        'curl',
-        'iconv',
-        'bz2',
-        'bcmath',
-        'pcntl',
-        'filter',
-        'session',
-        'tokenizer',
-        'mbstring',
-        'ctype',
-        'zlib',
-        'zip',
-        'posix',
-        'sockets',
-        'pdo',
-        'sqlite3',
-        'phar',
-        'mysqlnd',
-        'mysqli',
-        'intl',
-        'fileinfo',
-        'pdo_mysql',
-        //'pdo_sqlite',
-        'soap',
-        'xsl',
-        'gmp',
-        'exif',
-        'sodium',
-        'openssl',
-        'readline',
-        'xml',
-        'gd',
-        'redis',
-        'swoole',
-        'yaml',
-        'imagick',
-        'mongodb',
-    ];
+    protected array $extEnabled;
 
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
@@ -135,6 +96,7 @@ class Preprocessor
     protected function __construct()
     {
         $this->setOsType($this->getRealOsType());
+        $this->extEnabled = require __DIR__ . '/builder/enabled_extensions.php';
     }
 
     public function setLinker(string $ld): static
@@ -193,17 +155,6 @@ class Preprocessor
             return 'base' . '-' . $arch;
         }
     }
-
-    public function getBaseImageDockerFile(): string
-    {
-        $arch = $this->getSystemArch();
-        if ($arch == 'x64') {
-            return 'Dockerfile';
-        } else {
-            return 'Dockerfile' . '-' . $arch;
-        }
-    }
-
     public function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
@@ -408,7 +359,11 @@ class Preprocessor
             $this->pkgConfigPaths[] = $lib->pkgConfig;
         }
         if (!empty($lib->binPath)) {
-            $this->binPaths[] = $lib->binPath;
+            if (is_array($lib->binPath)) {
+                $this->binPaths = array_merge($this->binPaths, $lib->binPath);
+            } else {
+                $this->binPaths[] = $lib->binPath;
+            }
         }
         if (empty($lib->license)) {
             throw new Exception("require license");

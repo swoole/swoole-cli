@@ -22,9 +22,9 @@ export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 
 OPTIONS="--disable-all \
---enable-shared=no \
---enable-static=yes \
---enable-zts \
+    --enable-shared=no \
+    --enable-static=yes \
+    --enable-zts \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
@@ -216,6 +216,8 @@ make_config() {
 
     ./configure --help
     export_variables
+    export LDFLAGS="$LDFLAGS <?= $this->extraLdflags ?>"
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
@@ -324,10 +326,20 @@ if [ "$1" = "docker-build" ] ;then
         ;;
         esac
     fi
+    PLATFORM=''
+    ARCH=$(uname -m)
+    case $ARCH in
+    'x86_64')
+      PLATFORM='linux/amd64'
+      ;;
+    'aarch64')
+      PLATFORM='linux/arm64'
+      ;;
+    esac
     cd ${__PROJECT_DIR__}/sapi/docker
     echo "MIRROR=${MIRROR}"
     echo "BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
-    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
+    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --progress=plain  --platform=${PLATFORM} --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
