@@ -49,6 +49,11 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+case "$MIRROR" in
+china | openatom)
+  CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
+  ;;
+esac
 
 mkdir -p var/build-export-container/
 cd ${__PROJECT__}/var/build-export-container/
