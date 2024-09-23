@@ -25,7 +25,6 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-system-libs=no ';
     $options .= ' --with-mongodb-client-side-encryption=no ';
     $options .= ' --with-mongodb-ssl=openssl ';
-    $options .= ' --with-mongodb-sasl=no ';
     $options .= ' --with-mongodb-snappy=yes ';
     $options .= ' --with-mongodb-zlib=yes ';
     $options .= ' --with-mongodb-zstd=yes ';
