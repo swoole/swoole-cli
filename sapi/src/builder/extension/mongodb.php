@@ -29,7 +29,6 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-zlib=yes ';
     $options .= ' --with-mongodb-zstd=yes ';
     $options .= ' --with-mongodb-sasl=no ';
-    $options .= ' --with-mongodb-ssl=openssl ';
     $options .= ' --enable-system-ciphers=no ';
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
 
