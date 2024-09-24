@@ -29,7 +29,8 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-zlib=yes ';
     $options .= ' --with-mongodb-zstd=yes ';
     $options .= ' --with-mongodb-sasl=no ';
-    $options .= ' --enable-system-ciphers=no ';
+    $options .= ' --enable-mongodb-crypto-system-profile=no ';
+    $options .= ' --with-mongodb-utf8proc=bundled ';
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
 
     $ext = new Extension('mongodb');
