@@ -40,6 +40,7 @@ return function (Preprocessor $p) {
     $options .= ' --with-mongodb-zstd=yes ';
     $options .= ' --with-mongodb-sasl=no ';
     $options .= ' --enable-mongodb-crypto-system-profile=no ';
+
     $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
     $options .= ' --with-mongodb-utf8proc=bundled ';
 
@@ -59,6 +60,7 @@ return function (Preprocessor $p) {
             'mongo-php-driver',
             <<<EOF
         git clone -b {$mongodb_version} --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
+
 
 EOF
         )

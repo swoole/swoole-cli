@@ -160,7 +160,8 @@ EOF;
 
 
 if ($p->isMacos()) {
-    //$p->setExtraLdflags('-Wl,-undefined,dynamic_lookup');
+    //$p->setExtraLdflags('-undefined dynamic_lookup');
+    $p->setExtraLdflags('');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/usr/local/opt/llvm/bin')
             ->withBinPath('/usr/local/opt/flex/bin')
@@ -204,8 +205,7 @@ if ($c_compiler == 'gcc') {
     $p->setLinker('ld');
 }
 
-
-$p->setExtraCflags(' -Os');
+$p->setExtraCflags(' -Os -fno-openmp');
 
 
 // Generate make.sh
