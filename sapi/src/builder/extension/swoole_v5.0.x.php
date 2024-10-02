@@ -1,13 +1,12 @@
 <?php
 
-use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
 
-    $file = "swoole-v5.1.x.tar.gz";
-    $swoole_tag = '5.1.x';
+    $swoole_tag = 'v5.0.3';
+    $file = "swoole-{$swoole_tag}.tar.gz";
     $options = [];
 
     if (in_array($p->getBuildType(), ['dev', 'debug'])) {
@@ -17,7 +16,7 @@ return function (Preprocessor $p) {
         $options[] = ' --enable-swoole-coro-time  ';
     }
 
-    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'pgsql'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
@@ -28,11 +27,9 @@ return function (Preprocessor $p) {
     $options[] = '--with-brotli-dir=' . BROTLI_PREFIX;
     $options[] = '--with-nghttp2-dir=' . NGHTTP2_PREFIX;
     $options[] = '--enable-swoole-pgsql';
-    $options[] = '--enable-swoole-sqlite';
-    $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
 
 
-    $p->addExtension((new Extension('swoole_v5.1.x'))
+    $p->addExtension((new Extension('swoole_v5.0.x'))
         ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
@@ -53,4 +50,3 @@ EOF
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 };
-

@@ -23,8 +23,15 @@ return function (Preprocessor $p) {
 
     $options = ' --enable-mongodb ';
     $options .= ' --with-mongodb-system-libs=no ';
+    $options .= ' --with-mongodb-client-side-encryption=no ';
     $options .= ' --with-mongodb-ssl=openssl ';
+    $options .= ' --with-mongodb-snappy=no ';
+    $options .= ' --with-mongodb-zlib=yes ';
+    $options .= ' --with-mongodb-zstd=yes ';
     $options .= ' --with-mongodb-sasl=no ';
+    $options .= ' --enable-mongodb-crypto-system-profile=no ';
+    $options .= ' --with-mongodb-utf8proc=bundled ';
+    $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
 
     $ext = new Extension('mongodb');
 
@@ -32,8 +39,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions($options)
         ->withPeclVersion('1.19.4')
-        ->withFileHash('md5', '91f96b24df7ed5651731671f55cb68a1')
-    ;
+        ->withFileHash('md5', '91f96b24df7ed5651731671f55cb68a1');
 
     $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
 
