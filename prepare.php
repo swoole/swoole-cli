@@ -2,6 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use SwooleCli\Exception;
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
@@ -168,6 +169,7 @@ if ($p->isMacos()) {
             ->withBinPath('/usr/local/opt/m4/bin')
             ->withBinPath('/usr/local/opt/automake/bin/')
             ->withBinPath('/usr/local/opt/autoconf/bin/')
+            ->withBinPath('/usr/local/opt/gettext/bin')
             ->setLinker('ld64.lld');
     } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) { //兼容 macos arm64
         $p->withBinPath('/opt/homebrew/opt/llvm/bin/')
@@ -177,9 +179,12 @@ if ($p->isMacos()) {
             ->withBinPath('/opt/homebrew/opt/m4/bin')
             ->withBinPath('/opt/homebrew/opt/automake/bin/')
             ->withBinPath('/opt/homebrew/opt/autoconf/bin/')
+            ->withBinPath('/opt/homebrew/opt/gettext/bin/')
             ->setLinker('ld64.lld');
     } else {
         $p->setLinker('lld');
+        $msg = "Please Install Build Dependencies !" . PHP_EOL . "bash sapi/quickstart/macos/macos-init.sh";
+        throw new Exception($msg);
     }
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
