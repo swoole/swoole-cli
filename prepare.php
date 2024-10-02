@@ -91,7 +91,8 @@ EOF;
 
 
 if ($p->isMacos()) {
-    $p->setExtraLdflags('-undefined dynamic_lookup');
+    //$p->setExtraLdflags('-undefined dynamic_lookup');
+    $p->setExtraLdflags('');
     if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/usr/local/opt/llvm/bin')
             ->withBinPath('/usr/local/opt/flex/bin')
@@ -123,7 +124,7 @@ if ($p->isMacos()) {
     $p->setLogicalProcessors('$(nproc 2> /dev/null)');
 }
 
-$p->setExtraCflags(' -Os');
+$p->setExtraCflags(' -Os -fno-openmp');
 
 // Generate make.sh
 $p->execute();

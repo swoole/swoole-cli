@@ -356,7 +356,7 @@ lib_dep_pkg() {
     if test -n  "$1"  ;then
       echo -e "[$1] dependent pkgs :\n\n${array_name[$1]} \n"
     else
-      for i in ${!array_name[@]}
+      for i in "${!array_name[@]}"
       do
             echo -e "[${i}] dependent pkgs :\n\n${array_name[$i]} \n"
             echo "=================================================="
