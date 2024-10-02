@@ -1112,16 +1112,6 @@ EOF;
             }
         }
 
-        if ($this->isMacos()) {
-            if (is_file('/usr/local/opt/bison/bin/bison')) {
-                $this->withBinPath('/usr/local/opt/bison/bin');
-            } elseif (is_file('/opt/homebrew/opt/bison/bin/bison')) { //兼容 arm64
-                $this->withBinPath('/opt/homebrew/opt/bison/bin/');
-            } else {
-                $this->loadDependentLibrary("bison");
-            }
-        }
-
         // autoload extension depend extension
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->dependentExtensions as $extension_name) {
