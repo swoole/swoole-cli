@@ -114,6 +114,7 @@ class Preprocessor
     protected array $extCallbacks = [];
     protected array $beforeConfigure = [];
     protected string $configureVarables;
+
     protected string $buildType = 'release';
     protected bool $inVirtualMachine = false;
 
@@ -353,7 +354,7 @@ class Preprocessor
             /*
              * sockat 代理例子
              * http://www.dest-unreach.org/socat/doc/socat.html
-             * socat - socks4a:<socks-server>::%h:%p,socksport=2000
+             * socat - socks4a:<socks-server>:%h:%p,socksport=2000
              * socat - proxy:<proxy-server>:%h:%p,proxyport=2000
              */
 
