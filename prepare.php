@@ -102,6 +102,8 @@ if ($p->isMacos()) {
             ->withBinPath('/usr/local/opt/automake/bin/')
             ->withBinPath('/usr/local/opt/autoconf/bin/')
             ->withBinPath('/usr/local/opt/gettext/bin')
+            ->withBinPath('/usr/local/opt/python@3/bin')
+            ->withBinPath('/usr/local/opt/python@3/libexec/bin')
             ->setLinker('ld64.lld');
     } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) {
         $p->withBinPath('/opt/homebrew/opt/llvm/bin/')
@@ -112,6 +114,8 @@ if ($p->isMacos()) {
             ->withBinPath('/opt/homebrew/opt/automake/bin/')
             ->withBinPath('/opt/homebrew/opt/autoconf/bin/')
             ->withBinPath('/opt/homebrew/opt/gettext/bin/')
+            ->withBinPath('/opt/homebrew/opt/python@3/bin/')
+            ->withBinPath('/opt/homebrew/opt/python@3/libexec/bin')
             ->setLinker('ld64.lld');
     } else {
         $p->setLinker('lld');

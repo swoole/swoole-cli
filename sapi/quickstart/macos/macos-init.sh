@@ -84,11 +84,6 @@ brew install libtool gettext coreutils libunistring pkg-config cmake
 
 # PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}")
 # for PACKAGE in "${PACKAGES[@]}"; do
-#   brew list "$PACKAGE" &>/dev/null || brew install "$PACKAGE"
-# done
-
-# PACKAGES=("${PACKAGES_1[@]}" "${PACKAGES_2[@]}")
-# for PACKAGE in "${PACKAGES[@]}"; do
 #  brew list "$PACKAGE" &>/dev/null || brew install "$PACKAGE"
 # done
 
@@ -124,10 +119,18 @@ brew install xz zip unzip gzip bzip2 7zip p7zip
 brew install git ca-certificates
 
 brew install yasm nasm
-brew install ninja python3
+brew install python3
 brew install diffutils
 brew install netcat socat
 brew install mercurial
+
+
+if [ -d /usr/local/opt/libtool/bin/ ]; then
+  export PATH=/usr/local/opt/python@3/bin:/usr/local/opt/python@3/libexec/bin:$PATH
+fi
+if [ -d /opt/homebrew/opt/libtool/bin ]; then
+  export PATH=/opt/homebrew/opt/python@3/bin/:/opt/homebrew/opt/python@3/libexec/bin:$PATH
+fi
 
 case "$MIRROR" in
 china | tuna | ustc)
@@ -140,7 +143,32 @@ tencentyun | huaweicloud)
   ;;
 esac
 
-pip3 install meson
+
+# python3 -m pip install --upgrade pip
+# python3 -m pip install meson -i https://mirrors.ustc.edu.cn/pypi/web/simple
+# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
+
+type python
+which python
+python --version
+python -m ensurepip --default-pip --upgrade --user
+
+python -m pip --version
+python -m pip install meson --user
+python -m pip install ninja --user
+python -m pip list
+
+python -c "import site; print(site.USER_BASE)"
+
+export PYTHONPATH=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):$PYTHONPATH
+
+
+# pip install meson
+# pip3 install --user meson
+
 
 brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
+brew uninstall --ignore-dependencies --force php
+
