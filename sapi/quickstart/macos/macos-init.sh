@@ -66,9 +66,6 @@ china | ustc)
   export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
   export PIPENV_PYPI_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
 
-  # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-  # pip3 config set global.index-url https://pypi.python.org/simple
-
   # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
   ;;
 
@@ -92,7 +89,6 @@ if [ ${WITH_UPDATE} -eq 1 ]; then
     ;;
   esac
 
-  brew config
   brew doctor
   brew update
   brew upgrade
@@ -102,8 +98,40 @@ if [ ${WITH_UPDATE} -eq 1 ]; then
 fi
 
 
-export HOMEBREW_NO_AUTO_UPDATE=1
-brew config
+# export HOMEBREW_NO_AUTO_UPDATE=1
+brew install python3
+
+HOMEBREW_PREFIX=$(brew --prefix)
+export PATH=${HOMEBREW_PREFIX}/opt/python@3/bin:${HOMEBREW_PREFIX}/opt/python@3/libexec/bin:$PATH
+
+export PYTHONPATH=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):$PYTHONPATH
+X_PYTHON_BIN=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'bin'))")
+export PATH=${X_PYTHON_BIN}:$PATH
+
+
+case "$MIRROR" in
+china | tuna | ustc)
+  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+  test "$MIRROR" = "ustc" && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
+  ;;
+tencentyun | huaweicloud)
+  test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
+  test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
+  ;;
+esac
+
+
+which python
+which pip
+python --version
+pip --version
+
+pip install meson ninja
+
+python -c "import site; print(site.USER_BASE)"
+pip list
+which meson
+which ninja
 
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
@@ -151,29 +179,16 @@ brew install xz zip unzip gzip bzip2 7zip p7zip
 brew install git ca-certificates
 
 brew install yasm nasm
-brew install python3
 brew install diffutils
 brew install socat
 brew install mercurial
 
 
-if [ -d /usr/local/opt/libtool/bin/ ]; then
-  export PATH=/usr/local/opt/python@3/bin:/usr/local/opt/python@3/libexec/bin:$PATH
-fi
-if [ -d /opt/homebrew/opt/libtool/bin ]; then
-  export PATH=/opt/homebrew/opt/python@3/bin/:/opt/homebrew/opt/python@3/libexec/bin:$PATH
-fi
 
-case "$MIRROR" in
-china | tuna | ustc)
-  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-  test "$MIRROR" = "ustc" && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
-  ;;
-tencentyun | huaweicloud)
-  test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
-  test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
-  ;;
-esac
+
+
+
+
 
 
 # python3 -m pip install --upgrade pip
@@ -181,12 +196,17 @@ esac
 # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 
 
-type python
-which python
-python --version
-which pip
+
+
+
+brew uninstall --ignore-dependencies --force snappy
+brew uninstall --ignore-dependencies --force capstone
+brew uninstall --ignore-dependencies --force php
+
+
 exit 0
 
+# for  macos-12
 
 python -m ensurepip --default-pip --upgrade --user
 
@@ -195,18 +215,15 @@ python -m pip install meson --user
 python -m pip install ninja --user
 python -m pip list
 
-python -c "import site; print(site.USER_BASE)"
 
-export PYTHONPATH=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):$PYTHONPATH
+
 
 
 # pip install meson
 # pip3 install --user meson
 
 
-brew uninstall --ignore-dependencies --force snappy
-brew uninstall --ignore-dependencies --force capstone
-brew uninstall --ignore-dependencies --force php
+
 
 
 
