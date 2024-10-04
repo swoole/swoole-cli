@@ -11,6 +11,17 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+# show system environment
+uname -s
+uname -m
+uname -r
+echo $HOME
+sw_vers
+xcodebuild -version
+brew config
+xcrun --show-sdk-path
+
+
 MIRROR=''
 WITH_UPDATE=0
 
@@ -34,6 +45,7 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},ftpmirror.gnu.org"
     NO_PROXY="${NO_PROXY},gitee.com,gitcode.com"
     NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
+    NO_PROXY="${NO_PROXY},mirrors.cloud.tencent.com"
     export NO_PROXY="${NO_PROXY},.npmmirror.com"
     ;;
   --*)
@@ -63,7 +75,6 @@ china | ustc)
 esac
 
 export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_INSTALL_FROM_API=1
 
 if [ ${WITH_UPDATE} -eq 1 ]; then
@@ -81,11 +92,18 @@ if [ ${WITH_UPDATE} -eq 1 ]; then
     ;;
   esac
 
+  brew config
+  brew doctor
   brew update
+  brew upgrade
 
   exit 0
 
 fi
+
+
+export HOMEBREW_NO_AUTO_UPDATE=1
+brew config
 
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
@@ -189,4 +207,6 @@ export PYTHONPATH=$(python -c "import site, os; print(os.path.join(site.USER_BAS
 brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
 brew uninstall --ignore-dependencies --force php
+
+
 
