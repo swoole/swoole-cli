@@ -99,9 +99,10 @@ fi
 
 
 # export HOMEBREW_NO_AUTO_UPDATE=1
+HOMEBREW_PREFIX=$(brew --prefix)
+
 brew install python3
 
-HOMEBREW_PREFIX=$(brew --prefix)
 export PATH=${HOMEBREW_PREFIX}/opt/python@3/bin:${HOMEBREW_PREFIX}/opt/python@3/libexec/bin:$PATH
 
 export PYTHONPATH=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):$PYTHONPATH
@@ -133,6 +134,11 @@ pip list
 which meson
 which ninja
 
+# python3 -m pip install --upgrade pip
+# python3 -m pip install meson -i https://mirrors.ustc.edu.cn/pypi/web/simple
+# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
+
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
 # macos 环境下 Homebrew packages :   coreutils binutils 不兼容
@@ -149,22 +155,9 @@ brew install libtool gettext coreutils libunistring pkg-config cmake
 
 which glibtool
 
-# maocs intel
-#  HOMEBREW_PREFIX: /usr/local
-if [ -d /usr/local/opt/libtool/bin/ ]; then
-  ln -sf /usr/local/opt/libtool/bin/glibtool /usr/local/opt/libtool/bin/libtool
-  ln -sf /usr/local/opt/libtool/bin/glibtoolize /usr/local/opt/libtool/bin/libtoolize
-  export PATH=/usr/local/opt/libtool/bin/:$PATH
-fi
-
-# macos M1
-# HOMEBREW_PREFIX=/opt/homebrew
-# HOMEBREW_REPOSITORY=/opt/homebrew
-if [ -d /opt/homebrew/opt/libtool/bin ]; then
-  ln -sf /opt/homebrew/opt/libtool/bin/glibtool /opt/homebrew/opt/libtool/bin/libtool
-  ln -sf /opt/homebrew/opt/libtool/bin/glibtoolize /opt/homebrew/opt/libtool/bin/libtoolize
-  export PATH=/opt/homebrew/opt/libtool/bin/:$PATH
-fi
+ln -sf ${HOMEBREW_PREFIX}/opt/libtool/bin/glibtool ${HOMEBREW_PREFIX}/opt/libtool/bin/libtool
+ln -sf ${HOMEBREW_PREFIX}/opt/libtool/bin/glibtoolize ${HOMEBREW_PREFIX}/opt/libtool/bin/libtoolize
+export PATH=${HOMEBREW_PREFIX}/opt/libtool/bin/:$PATH
 
 libtoolize --version
 libtool --help-all
@@ -184,21 +177,6 @@ brew install socat
 brew install mercurial
 
 
-
-
-
-
-
-
-
-# python3 -m pip install --upgrade pip
-# python3 -m pip install meson -i https://mirrors.ustc.edu.cn/pypi/web/simple
-# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-
-
-
-
-
 brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
 brew uninstall --ignore-dependencies --force php
@@ -214,9 +192,6 @@ python -m pip --version
 python -m pip install meson --user
 python -m pip install ninja --user
 python -m pip list
-
-
-
 
 
 # pip install meson
