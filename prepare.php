@@ -119,8 +119,6 @@ if ($p->isMacos()) {
             ->setLinker('ld64.lld');
     } else {
         $p->setLinker('lld');
-        $msg = "Please Install Build Dependencies !" . PHP_EOL . "bash sapi/quickstart/macos/macos-init.sh";
-        throw new Exception($msg);
     }
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {

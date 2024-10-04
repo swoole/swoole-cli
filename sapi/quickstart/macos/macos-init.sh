@@ -22,6 +22,20 @@ while [ $# -gt 0 ]; do
   --update)
     WITH_UPDATE=1
     ;;
+  --proxy)
+    export HTTP_PROXY="$2"
+    export HTTPS_PROXY="$2"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
+    NO_PROXY="${NO_PROXY},::1/128,fe80::/10,fd00::/8,ff00::/8"
+    NO_PROXY="${NO_PROXY},localhost"
+    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
+    NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn"
+    NO_PROXY="${NO_PROXY},.tencent.com"
+    NO_PROXY="${NO_PROXY},ftpmirror.gnu.org"
+    NO_PROXY="${NO_PROXY},gitee.com,gitcode.com"
+    NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
+    export NO_PROXY="${NO_PROXY},.npmmirror.com"
+    ;;
   --*)
     echo "Illegal option $1"
     ;;
@@ -121,7 +135,7 @@ brew install git ca-certificates
 brew install yasm nasm
 brew install python3
 brew install diffutils
-brew install netcat socat
+brew install socat
 brew install mercurial
 
 
@@ -152,6 +166,10 @@ esac
 type python
 which python
 python --version
+which pip
+exit 0
+
+
 python -m ensurepip --default-pip --upgrade --user
 
 python -m pip --version

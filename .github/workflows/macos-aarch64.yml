@@ -22,22 +22,23 @@ jobs:
           uname -r
           env
           echo $HOME
+          sw_vers
+          xcodebuild -version
           brew config
+          xcrun --show-sdk-path
+          ls -lh $(xcrun --show-sdk-path)
 
           # sudo rm -rf /Library/Developer/CommandLineTools
           # xcode-select --install
 
           # sudo xcode-select --reset
           # sudo xcode-select -switch /Library/Developer/CommandLineTools
-
-          # softwareupdate --list --verbose
-          # softwareupdate --install -a
+          # sudo xcode-select --switch /Applications/Xcode.app
           # xcode-select --install
-
           # export SDKROOT=$(xcrun --show-sdk-path)
-          ls -lh $(xcrun --show-sdk-path)
-          # sudo  xcode-select --switch /Applications/Xcode.app
           # export MACOSX_DEPLOYMENT_TARGET=12.6
+          # softwareupdate --list --verbose
+          # softwareupdate --install --all
 
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
