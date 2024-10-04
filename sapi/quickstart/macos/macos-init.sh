@@ -100,44 +100,7 @@ fi
 
 # export HOMEBREW_NO_AUTO_UPDATE=1
 HOMEBREW_PREFIX=$(brew --prefix)
-
-brew install python3
-
-export PATH=${HOMEBREW_PREFIX}/opt/python@3/bin:${HOMEBREW_PREFIX}/opt/python@3/libexec/bin:$PATH
-
-export PYTHONPATH=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):$PYTHONPATH
-X_PYTHON_BIN=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'bin'))")
-export PATH=${X_PYTHON_BIN}:$PATH
-
-
-case "$MIRROR" in
-china | tuna | ustc)
-  pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-  test "$MIRROR" = "ustc" && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
-  ;;
-tencentyun | huaweicloud)
-  test "$MIRROR" = "tencentyun" && pip3 config set global.index-url https://mirrors.tencentyun.com/pypi/simple/
-  test "$MIRROR" = "huaweicloud" && pip3 config set global.index-url https://repo.huaweicloud.com/pypi/simple/
-  ;;
-esac
-
-
-which python
-which pip
-python --version
-pip --version
-
-pip install meson ninja
-
-python -c "import site; print(site.USER_BASE)"
-pip list
-which meson
-which ninja
-
-# python3 -m pip install --upgrade pip
-# python3 -m pip install meson -i https://mirrors.ustc.edu.cn/pypi/web/simple
-# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-
+brew install meson ninja yasm nasm
 
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
@@ -165,13 +128,9 @@ libtool --help-all
 which glibtool
 which libtool
 
-brew uninstall --ignore-dependencies --force snappy
-brew uninstall --ignore-dependencies --force capstone
-
 brew install xz zip unzip gzip bzip2 7zip p7zip
 brew install git ca-certificates
 
-brew install yasm nasm
 brew install diffutils
 brew install socat
 brew install mercurial
@@ -180,22 +139,6 @@ brew install mercurial
 brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
 brew uninstall --ignore-dependencies --force php
-
-
-exit 0
-
-# for  macos-12
-
-python -m ensurepip --default-pip --upgrade --user
-
-python -m pip --version
-python -m pip install meson --user
-python -m pip install ninja --user
-python -m pip list
-
-
-# pip install meson
-# pip3 install --user meson
 
 
 
