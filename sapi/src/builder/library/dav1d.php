@@ -5,13 +5,6 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $dav1d_prefix = DAV1D_PREFIX;
-    $env = '';
-    if ($p->isMacos()) {
-        $env = <<<'EOF'
-export PYTHONPATH=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):$PYTHONPATH
-
-EOF;
-    }
     $p->addLibrary(
         (new Library('dav1d'))
             ->withHomePage('https://code.videolan.org/videolan/dav1d/')
@@ -28,7 +21,6 @@ EOF
             ->withBuildCached(false)
             ->withBuildScript(
                 <<<EOF
-            {$env}
             mkdir build
             meson setup  build  \
             -Dprefix={$dav1d_prefix} \
