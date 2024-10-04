@@ -36,7 +36,7 @@ return [
     'swoole',
     'yaml',
     'imagick',
-    'mongodb',
+    //'mongodb',
     //'gettext',
     'uuid'
 ];
