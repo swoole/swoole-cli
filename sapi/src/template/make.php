@@ -40,16 +40,17 @@ make_<?=$item->name?>() {
     <?php endif ;?>
 
     <?php if ($item->enableInstallCached) : ?>
-    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
-        echo "[<?=$item->name?>]  library cached , skip.."
+    if [ -f <?= $this->getGlobalPrefix() . '/' . $item->name ?>/.completed ] ;then
+        echo "[<?= $item->name ?>]  library cached , skip.."
         return 0
     fi
     <?php endif; ?>
 
-    <?php if ($item->cleanBuildDirectory || ! $item->enableBuildCached) : ?>
-    if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
-        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-    fi
+    # If the install directory exist, clean the install directory
+    test -d  <?= $this->getGlobalPrefix() . '/' . $item->name ?>/ && rm -rf  <?= $this->getGlobalPrefix() . '/' . $item->name ?>/ ;
+
+    <?php if (!$item->enableBuildCached) : ?>
+        test -d <?= $this->getBuildDir() ?>/<?= $item->name ?>/ && rm -rf <?= $this->getBuildDir() ?>/<?= $item->name ?>/ ;
     <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
@@ -63,11 +64,6 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
-    <?php if ($item->cleanPreInstallDirectory) : ?>
-    # If the install directory exist, clean the install directory
-    test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
-    <?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
@@ -295,6 +291,10 @@ make_archive() {
     SWOOLE_CLI_FILE_DEBUG=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
     tar -cJvf ${SWOOLE_CLI_FILE_DEBUG} swoole-cli LICENSE pack-sfx.php
 
+    HASH=$(sha256sum ${SWOOLE_CLI_FILE_DEBUG} | awk '{print $1}')
+    echo " ${SWOOLE_CLI_FILE_DEBUG} sha256sum: ${HASH} "
+    echo -n ${HASH} > ${SWOOLE_CLI_FILE_DEBUG}.sha256sum
+
 
     mkdir -p ${__PROJECT_DIR__}/bin/dist
     cp -f swoole-cli    dist/
@@ -306,10 +306,15 @@ make_archive() {
     strip swoole-cli
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
 
+    HASH=$(sha256sum ${SWOOLE_CLI_FILE} | awk '{print $1}')
+    echo " ${SWOOLE_CLI_FILE} sha256sum: ${HASH} "
+    echo -n ${HASH} > ${SWOOLE_CLI_FILE}.sha256sum
 
     cd ${__PROJECT_DIR__}/
     mv bin/dist/${SWOOLE_CLI_FILE}  ${__PROJECT_DIR__}/
+    mv bin/dist/${SWOOLE_CLI_FILE}.sha256sum  ${__PROJECT_DIR__}/
     mv bin/${SWOOLE_CLI_FILE_DEBUG} ${__PROJECT_DIR__}/
+    mv bin/${SWOOLE_CLI_FILE_DEBUG}.sha256sum ${__PROJECT_DIR__}/
 
     cd ${__PROJECT_DIR__}/
 }
@@ -356,7 +361,7 @@ lib_dep_pkg() {
     if test -n  "$1"  ;then
       echo -e "[$1] dependent pkgs :\n\n${array_name[$1]} \n"
     else
-      for i in ${!array_name[@]}
+      for i in "${!array_name[@]}"
       do
             echo -e "[${i}] dependent pkgs :\n\n${array_name[$i]} \n"
             echo "=================================================="
@@ -399,7 +404,7 @@ if [ "$1" = "docker-build" ] ;then
     if [ -n "$2" ]; then
         MIRROR=$2
         case "$MIRROR" in
-        china | openatom | ustc | tuna)
+        china | openatom )
             CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
         ;;
         esac

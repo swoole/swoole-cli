@@ -4,7 +4,9 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $file = "swoole-latest.tar.gz";
+
+    $swoole_tag = 'v5.0.3';
+    $file = "swoole-{$swoole_tag}.tar.gz";
     $options = [];
 
     if ($p->getBuildType() === 'debug') {
@@ -14,7 +16,7 @@ return function (Preprocessor $p) {
     }
 
 
-    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'pgsql'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
@@ -25,19 +27,10 @@ return function (Preprocessor $p) {
     $options[] = '--with-brotli-dir=' . BROTLI_PREFIX;
     $options[] = '--with-nghttp2-dir=' . NGHTTP2_PREFIX;
     $options[] = '--enable-swoole-pgsql';
-    $options[] = '--enable-swoole-sqlite';
-    $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
-    $options[] = '--enable-swoole-thread';
-    $options[] = '--enable-zts';
 
-    if ($p->isLinux() && $p->getInputOption('with-iouring')) {
-        $options[] = '--enable-iouring';
-        $dependentLibraries[] = 'liburing';
-        $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
-        $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
-    }
 
-    $p->addExtension((new Extension('swoole'))
+    $p->addExtension((new Extension('swoole_v5.0.x'))
+        ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
@@ -45,7 +38,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'swoole-src',
             <<<EOF
-            git clone -b master --depth=1 https://github.com/swoole/swoole-src.git
+            git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
         ->withOptions(implode(' ', $options))

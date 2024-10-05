@@ -17,7 +17,7 @@ if [ ! -d ext/swoole/.git ]; then
   git submodule update --init --recursive
 fi
 
-set -x
+set -xue
 
 # shellcheck disable=SC2034
 OS=$(uname -s)

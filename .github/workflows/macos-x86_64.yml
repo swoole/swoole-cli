@@ -5,7 +5,7 @@ on: [ push, pull_request ]
 jobs:
   macos-x86_64:
     if: 1
-    runs-on: macos-12
+    runs-on: macos-13
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
     # macos-13 CPU 架构 x86_64
@@ -22,22 +22,11 @@ jobs:
           uname -r
           env
           echo $HOME
+          sw_vers
+          xcodebuild -version
           brew config
-
-          # sudo rm -rf /Library/Developer/CommandLineTools
-          # xcode-select --install
-
-          # sudo xcode-select --reset
-          # sudo xcode-select -switch /Library/Developer/CommandLineTools
-
-          # softwareupdate --list --verbose
-          # softwareupdate --install -a
-          # xcode-select --install
-
-          # export SDKROOT=$(xcrun --show-sdk-path)
+          xcrun --show-sdk-path
           ls -lh $(xcrun --show-sdk-path)
-          # sudo  xcode-select --switch /Applications/Xcode.app
-          # export MACOSX_DEPLOYMENT_TARGET=12.6
 
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
@@ -115,7 +104,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
           composer dump-autoload --optimize --profile --no-dev
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql +uuid --with-build-type=release  --with-libavif=1
+          php prepare.php --without-docker=1 +apcu +ds +xlswriter +ssh2 +pgsql +uuid
 
       - name: Build
         run: |

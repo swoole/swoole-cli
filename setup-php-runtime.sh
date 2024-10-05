@@ -117,7 +117,8 @@ if [ $OS = 'windows' ]; then
 else
   test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
-  test -f swoole-cli || tar -xvf ${APP_RUNTIME}.tar
+  test -f swoole-cli && rm -f swoole-cli
+  tar -xvf ${APP_RUNTIME}.tar
   chmod a+x swoole-cli
   cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/php
 fi
@@ -163,4 +164,8 @@ echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d op
 echo " OR "
 echo " alias php='php -c ${__PROJECT__}/bin/runtime/php.ini' "
 echo " "
+test $OS="macos" && echo "sudo xattr -d com.apple.quarantine ${__PROJECT__}/bin/runtime/php"
+echo " "
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
+php -v
+
