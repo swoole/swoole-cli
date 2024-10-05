@@ -42,7 +42,7 @@ make_<?=$item->name?>() {
     fi
     <?php endif; ?>
 
-    <?php if ($item->cleanBuildDirectory) : ?>
+    <?php if (!$item->enableBuildCached) : ?>
     if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
     fi
