@@ -50,9 +50,12 @@ make_<?=$item->name?>() {
         echo "[<?=$item->name?>]  library cached , skip.."
         return 0
     fi
-    <?php endif; ?>
+    <?php endif ;?>
 
-    <?php if ($item->cleanBuildDirectory || ! $item->enableBuildCached) : ?>
+    # If the install directory exist, clean the install directory
+    test -d  <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ && rm -rf  <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ;
+
+    <?php if (!$item->enableBuildCached) : ?>
     if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
     fi
@@ -69,11 +72,6 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
-    <?php if ($item->cleanPreInstallDirectory) : ?>
-    # If the install directory exist, clean the install directory
-    test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
-    <?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
