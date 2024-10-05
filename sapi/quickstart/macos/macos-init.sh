@@ -76,6 +76,8 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 
 
 if [ ${WITH_UPDATE} -eq 1 ]; then
+  unset HOMEBREW_NO_AUTO_UPDATE
+
   case "$MIRROR" in
   china | ustc)
     brew tap --custom-remote --force-auto-update homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
@@ -89,15 +91,9 @@ if [ ${WITH_UPDATE} -eq 1 ]; then
     # brew tap --custom-remote --force-auto-update homebrew/services https://mirrors.ustc.edu.cn/homebrew-services.git
     ;;
   esac
-
-  export HOMEBREW_NO_AUTO_UPDATE=0
   brew doctor
   brew update
 fi
-
-
-HOMEBREW_PREFIX=$(brew --prefix)
-
 
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
