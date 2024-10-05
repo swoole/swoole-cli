@@ -5,6 +5,7 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $swoole_tag = 'v4.8.13';
+    $swoole_tag = '4.8.x';
     $file = "swoole-v{$swoole_tag}.tar.gz";
     $options = [];
 

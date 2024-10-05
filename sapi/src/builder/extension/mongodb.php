@@ -23,50 +23,43 @@ return function (Preprocessor $p) {
     $p->withExportVariable('PHP_MONGODB_ZLIB_CFLAGS', '$(pkg-config --cflags --static zlib)');
     $p->withExportVariable('PHP_MONGODB_ZLIB_LIBS', '$(pkg-config   --libs   --static zlib)');
 
-    if ($p->isMacos()) {
-        // throw new \RuntimeException("macos 暂不支持，等待改进");
-    }
-    # PHP 8.2 以上 使用clang 编译
-    # 需要解决这个问题 https://github.com/mongodb/mongo-php-driver/issues/1445
-    # fix PR https://github.com/mongodb/mongo-php-driver/releases/tag/1.16.2
-
-    $options = ' --enable-mongodb ';
-    $options .= ' --with-mongodb-system-libs=no ';
-    $options .= ' --with-mongodb-client-side-encryption=no ';
-
-    $options .= ' --with-mongodb-ssl=openssl ';
-    $options .= ' --with-mongodb-snappy=no ';
-    $options .= ' --with-mongodb-zlib=yes ';
-    $options .= ' --with-mongodb-zstd=yes ';
-    $options .= ' --with-mongodb-sasl=no ';
-    $options .= ' --enable-mongodb-crypto-system-profile=no ';
-
-    $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
-    $options .= ' --with-mongodb-utf8proc=bundled ';
-
     $mongodb_version = '1.19.4';
-    $depends = ['icu', 'openssl', 'zlib', 'libzstd'];
 
-    // $depends [] = 'snappy';
-    // $depends [] = 'libsasl';
+    $options = [];
+    $options[] = ' --enable-mongodb ';
+    $options[] = ' --with-mongodb-system-libs=no ';
+    $options[] = ' --with-mongodb-client-side-encryption=no ';
+    $options[] = ' --with-mongodb-ssl=openssl ';
+    $options[] = ' --with-mongodb-snappy=no ';
+    $options[] = ' --with-mongodb-zlib=yes ';
+    $options[] = ' --with-mongodb-zstd=yes ';
+    $options[] = ' --with-mongodb-sasl=no ';
+    $options[] = ' --enable-mongodb-crypto-system-profile=no ';
+    $options[] = ' --with-mongodb-utf8proc=bundled ';
+    $options[] = ' --with-openssl-dir=' . OPENSSL_PREFIX;
 
+
+    $dependentLibraries = ['icu', 'openssl', 'zlib', 'libzstd'];
+    //$dependentLibraries[] = 'libsasl';
+    //$dependentLibraries[] = 'snappy';
     $ext = new Extension('mongodb');
 
-    $ext->withHomePage('https://www.php.net/mongodb')
+    $ext->withManual('https://www.php.net/mongodb')
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
-        ->withOptions($options)
+        ->withOptions(implode(' ', $options))
+        //->withPeclVersion('1.19.4')
+        //->withFileHash('md5', '91f96b24df7ed5651731671f55cb68a1')
         ->withFile("mongodb-{$mongodb_version}.tgz")
         ->withDownloadScript(
             'mongo-php-driver',
             <<<EOF
         git clone -b {$mongodb_version} --depth=1 --recursive https://github.com/mongodb/mongo-php-driver.git
-
-
 EOF
         )
         //->withAutoUpdateFile()
         ->withBuildCached(false)
-        ->withDependentLibraries(...$depends);
+        ->withDependentLibraries(...$dependentLibraries);
+
 
     $p->addExtension($ext);
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));

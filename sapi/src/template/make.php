@@ -46,17 +46,17 @@ make_<?=$item->name?>() {
     <?php endif ;?>
 
     <?php if ($item->enableInstallCached) : ?>
-    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
-        echo "[<?=$item->name?>]  library cached , skip.."
+    if [ -f <?= $this->getGlobalPrefix() . '/' . $item->name ?>/.completed ] ;then
+        echo "[<?= $item->name ?>]  library cached , skip.."
         return 0
     fi
-    <?php endif ;?>
+    <?php endif; ?>
 
     # If the install directory exist, clean the install directory
-    test -d  <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ && rm -rf  <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ;
+    test -d  <?= $this->getGlobalPrefix() . '/' . $item->name ?>/ && rm -rf  <?= $this->getGlobalPrefix() . '/' . $item->name ?>/ ;
 
     <?php if (!$item->enableBuildCached) : ?>
-    test -d <?=$this->getBuildDir()?>/<?=$item->name?>/ && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/ ;
+        test -d <?= $this->getBuildDir() ?>/<?= $item->name ?>/ && rm -rf <?= $this->getBuildDir() ?>/<?= $item->name ?>/ ;
     <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
@@ -372,6 +372,10 @@ make_archive() {
     echo " ${PHP_CLI_FILE_DEBUG} sha256sum: ${HASH} "
     echo -n ${HASH} > ${PHP_CLI_FILE_DEBUG}.sha256sum
 
+    HASH=$(sha256sum ${SWOOLE_CLI_FILE_DEBUG} | awk '{print $1}')
+    echo " ${SWOOLE_CLI_FILE_DEBUG} sha256sum: ${HASH} "
+    echo -n ${HASH} > ${SWOOLE_CLI_FILE_DEBUG}.sha256sum
+
 
     mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
     cp -f php           dist/
@@ -386,6 +390,9 @@ make_archive() {
     echo " ${PHP_CLI_FILE} sha256sum: ${HASH} "
     echo -n ${HASH} > ${PHP_CLI_FILE}.sha256sum
 
+    HASH=$(sha256sum ${SWOOLE_CLI_FILE} | awk '{print $1}')
+    echo " ${SWOOLE_CLI_FILE} sha256sum: ${HASH} "
+    echo -n ${HASH} > ${SWOOLE_CLI_FILE}.sha256sum
 
     mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist/${PHP_CLI_FILE}  ${__PROJECT_DIR__}/
     mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist/${PHP_CLI_FILE}.sha256sum  ${__PROJECT_DIR__}/

@@ -9,6 +9,7 @@ return function (Preprocessor $p) {
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
+
     $options = [];
 
     if ($p->getBuildType() === 'debug') {
