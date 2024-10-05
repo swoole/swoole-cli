@@ -9,12 +9,12 @@ return function (Preprocessor $p) {
     $file = "swoole-{$swoole_tag}.tar.gz";
     $options = [];
 
-    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+    if ($p->getBuildType() === 'debug') {
         $options[] = ' --enable-debug ';
         $options[] = ' --enable-debug-log ';
-        $options[] = ' --enable-trace-log ';
         $options[] = ' --enable-swoole-coro-time  ';
     }
+
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'pgsql'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];

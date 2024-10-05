@@ -84,7 +84,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile  --no-dev
           composer dump-autoload --optimize --profile --no-dev
 
-          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +uuid --show-tarball-hash=1
+          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +uuid        --show-tarball-hash=1
           php prepare.php           +apcu +ds +xlswriter +ssh2  +uuid @macos --show-tarball-hash=1
 
           cd ${{ github.workspace }}/pool/

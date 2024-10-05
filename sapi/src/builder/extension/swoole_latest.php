@@ -6,12 +6,13 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $file = "swoole-latest.tar.gz";
     $options = [];
-    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+
+    if ($p->getBuildType() === 'debug') {
         $options[] = ' --enable-debug ';
         $options[] = ' --enable-debug-log ';
-        $options[] = ' --enable-trace-log ';
         $options[] = ' --enable-swoole-coro-time  ';
     }
+
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];

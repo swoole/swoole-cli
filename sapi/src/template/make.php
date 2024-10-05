@@ -50,9 +50,7 @@ make_<?=$item->name?>() {
     test -d  <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ && rm -rf  <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ;
 
     <?php if (!$item->enableBuildCached) : ?>
-    if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
-        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-    fi
+    test -d <?=$this->getBuildDir()?>/<?=$item->name?>/ && rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/ ;
     <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
@@ -293,6 +291,10 @@ make_archive() {
     SWOOLE_CLI_FILE_DEBUG=swoole-cli-v${SWOOLE_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
     tar -cJvf ${SWOOLE_CLI_FILE_DEBUG} swoole-cli LICENSE pack-sfx.php
 
+    HASH=$(sha256sum ${SWOOLE_CLI_FILE_DEBUG} | awk '{print $1}')
+    echo " ${SWOOLE_CLI_FILE_DEBUG} sha256sum: ${HASH} "
+    echo -n ${HASH} > ${SWOOLE_CLI_FILE_DEBUG}.sha256sum
+
 
     mkdir -p ${__PROJECT_DIR__}/bin/dist
     cp -f swoole-cli    dist/
@@ -304,10 +306,15 @@ make_archive() {
     strip swoole-cli
     tar -cJvf ${SWOOLE_CLI_FILE} swoole-cli LICENSE pack-sfx.php
 
+    HASH=$(sha256sum ${SWOOLE_CLI_FILE} | awk '{print $1}')
+    echo " ${SWOOLE_CLI_FILE} sha256sum: ${HASH} "
+    echo -n ${HASH} > ${SWOOLE_CLI_FILE}.sha256sum
 
     cd ${__PROJECT_DIR__}/
     mv bin/dist/${SWOOLE_CLI_FILE}  ${__PROJECT_DIR__}/
+    mv bin/dist/${SWOOLE_CLI_FILE}.sha256sum  ${__PROJECT_DIR__}/
     mv bin/${SWOOLE_CLI_FILE_DEBUG} ${__PROJECT_DIR__}/
+    mv bin/${SWOOLE_CLI_FILE_DEBUG}.sha256sum ${__PROJECT_DIR__}/
 
     cd ${__PROJECT_DIR__}/
 }
