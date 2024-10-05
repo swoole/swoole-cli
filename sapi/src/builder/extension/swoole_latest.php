@@ -6,7 +6,8 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $file = "swoole-latest.tar.gz";
     $options = [];
-    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+
+    if ($p->getBuildType() === 'debug') {
         $options[] = ' --enable-debug ';
         $options[] = ' --enable-debug-log ';
         $options[] = ' --enable-trace-log ';

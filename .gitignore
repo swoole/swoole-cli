@@ -330,7 +330,6 @@ var/
 php-src/
 ext/swoole/
 sapi/webUI/.idea/
-Dockerfile-all-dependencies-alpine
 php.ini
 sapi/webUI/deploy.sh
 sapi/webUI/public/data/
@@ -338,6 +337,7 @@ Makefile.backup
 ldflags.log
 cppflags.log
 libs.log
-
-/php-src
+swool-cli-*
+php-cli-*
+php-fpm-*
 

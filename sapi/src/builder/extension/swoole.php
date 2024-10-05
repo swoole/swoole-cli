@@ -10,7 +10,8 @@ return function (Preprocessor $p) {
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
     $options = [];
-    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+
+    if ($p->getBuildType() === 'debug') {
         $options[] = ' --enable-debug ';
         $options[] = ' --enable-debug-log ';
         $options[] = ' --enable-trace-log ';

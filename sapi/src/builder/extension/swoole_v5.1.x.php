@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
     $swoole_tag = '5.1.x';
     $options = [];
 
-    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
+    if ($p->getBuildType() === 'debug') {
         $options[] = ' --enable-debug ';
         $options[] = ' --enable-debug-log ';
         $options[] = ' --enable-trace-log ';
