@@ -15,7 +15,6 @@ return function (Preprocessor $p) {
         $options[] = ' --enable-swoole-coro-time  ';
     }
 
-
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'pgsql'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
