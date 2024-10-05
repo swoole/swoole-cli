@@ -75,12 +75,27 @@ export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_INSTALL_FROM_API=1
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-if [ ${WITH_UPDATE} -eq 1 ] ; then
-  export HOMEBREW_NO_AUTO_UPDATE=0
+
+if [ ${WITH_UPDATE} -eq 1 ]; then
+
+  unset HOMEBREW_NO_AUTO_UPDATE
+
+  case "$MIRROR" in
+  china | ustc)
+    brew tap --custom-remote --force-auto-update homebrew/cask https://mirrors.ustc.edu.cn/homebrew-cask.git
+    brew tap --custom-remote --force-auto-update homebrew/cask-versions https://mirrors.ustc.edu.cn/homebrew-cask-versions.git
+    brew tap --custom-remote --force-auto-update homebrew/services https://mirrors.ustc.edu.cn/homebrew-services.git
+
+    # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
+    # reset
+    # brew tap --custom-remote --force-auto-update homebrew/cask https://github.com/Homebrew/homebrew-cask
+    # brew tap --custom-remote --force-auto-update homebrew/cask-versions https://github.com/Homebrew/homebrew-cask-versions
+    # brew tap --custom-remote --force-auto-update homebrew/services https://mirrors.ustc.edu.cn/homebrew-services.git
+    ;;
+  esac
   brew doctor
   brew update
 fi
-
 
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
