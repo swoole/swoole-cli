@@ -102,8 +102,6 @@ if ($p->isMacos()) {
         ->withBinPath($homebrew_prefix . '/opt/automake/bin/')
         ->withBinPath($homebrew_prefix . '/opt/autoconf/bin/')
         ->withBinPath($homebrew_prefix . '/opt/gettext/bin')
-        ->withBinPath($homebrew_prefix . '/opt/python@3/bin')
-        ->withBinPath($homebrew_prefix . '}/opt/python@3/libexec/bin')
         ->setLinker('ld64.lld');
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {

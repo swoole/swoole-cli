@@ -44,9 +44,13 @@ make_<?=$item->name?>() {
         echo "[<?=$item->name?>]  library cached , skip.."
         return 0
     fi
+    <?php else : ?>
+    if [ -d  <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/ ] ;then
+        rm -rf <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/*
+    fi
     <?php endif; ?>
 
-    <?php if ($item->cleanBuildDirectory || ! $item->enableBuildCached) : ?>
+    <?php if (!$item->enableBuildCached) : ?>
     if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
     fi

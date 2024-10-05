@@ -39,13 +39,11 @@ while [ $# -gt 0 ]; do
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},::1/128,fe80::/10,fd00::/8,ff00::/8"
     NO_PROXY="${NO_PROXY},localhost"
-    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com"
     NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn"
     NO_PROXY="${NO_PROXY},.tencent.com"
     NO_PROXY="${NO_PROXY},ftpmirror.gnu.org"
     NO_PROXY="${NO_PROXY},gitee.com,gitcode.com"
     NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
-    NO_PROXY="${NO_PROXY},mirrors.cloud.tencent.com"
     export NO_PROXY="${NO_PROXY},.npmmirror.com"
     ;;
   --*)
@@ -68,7 +66,6 @@ china | ustc)
 
   # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
   ;;
-
 esac
 
 export HOMEBREW_NO_ANALYTICS=1
@@ -97,8 +94,9 @@ if [ ${WITH_UPDATE} -eq 1 ]; then
 
 fi
 
-
 # export HOMEBREW_NO_AUTO_UPDATE=1
+
+
 HOMEBREW_PREFIX=$(brew --prefix)
 
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
