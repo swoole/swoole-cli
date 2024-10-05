@@ -372,10 +372,6 @@ make_archive() {
     echo " ${PHP_CLI_FILE_DEBUG} sha256sum: ${HASH} "
     echo -n ${HASH} > ${PHP_CLI_FILE_DEBUG}.sha256sum
 
-    HASH=$(sha256sum ${SWOOLE_CLI_FILE_DEBUG} | awk '{print $1}')
-    echo " ${SWOOLE_CLI_FILE_DEBUG} sha256sum: ${HASH} "
-    echo -n ${HASH} > ${SWOOLE_CLI_FILE_DEBUG}.sha256sum
-
 
     mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
     cp -f php           dist/
@@ -390,9 +386,6 @@ make_archive() {
     echo " ${PHP_CLI_FILE} sha256sum: ${HASH} "
     echo -n ${HASH} > ${PHP_CLI_FILE}.sha256sum
 
-    HASH=$(sha256sum ${SWOOLE_CLI_FILE} | awk '{print $1}')
-    echo " ${SWOOLE_CLI_FILE} sha256sum: ${HASH} "
-    echo -n ${HASH} > ${SWOOLE_CLI_FILE}.sha256sum
 
     mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist/${PHP_CLI_FILE}  ${__PROJECT_DIR__}/
     mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist/${PHP_CLI_FILE}.sha256sum  ${__PROJECT_DIR__}/
