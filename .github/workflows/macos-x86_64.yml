@@ -28,18 +28,6 @@ jobs:
           xcrun --show-sdk-path
           ls -lh $(xcrun --show-sdk-path)
 
-          # sudo rm -rf /Library/Developer/CommandLineTools
-          # xcode-select --install
-
-          # sudo xcode-select --reset
-          # sudo xcode-select -switch /Library/Developer/CommandLineTools
-          # sudo xcode-select --switch /Applications/Xcode.app
-          # xcode-select --install
-          # export SDKROOT=$(xcrun --show-sdk-path)
-          # export MACOSX_DEPLOYMENT_TARGET=12.6
-          # softwareupdate --list --verbose
-          # softwareupdate --install --all
-
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
           export IPV4=$(ifconfig en0 | grep "inet " | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')

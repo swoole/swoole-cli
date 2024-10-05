@@ -100,7 +100,6 @@ fi
 
 # export HOMEBREW_NO_AUTO_UPDATE=1
 HOMEBREW_PREFIX=$(brew --prefix)
-brew install meson ninja yasm nasm
 
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
@@ -134,6 +133,7 @@ brew install git ca-certificates
 brew install diffutils
 brew install socat
 brew install mercurial
+brew install meson ninja yasm nasm
 
 
 brew uninstall --ignore-dependencies --force snappy
