@@ -70,11 +70,13 @@ case "$MIRROR" in
 esac
 
 HOMEBREW_PREFIX=$(brew --prefix)
+
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_INSTALL_FROM_API=1
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 if [ ${WITH_UPDATE} -eq 1 ] ; then
-  export HOMEBREW_NO_AUTO_UPDATE=1
+  export HOMEBREW_NO_AUTO_UPDATE=0
   brew doctor
   brew update
 fi
