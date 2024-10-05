@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -x
 __DIR__=$(
@@ -11,6 +11,16 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+# show system environment
+uname -s
+uname -m
+uname -r
+echo $HOME
+sw_vers
+xcodebuild -version
+brew config
+xcrun --show-sdk-path
+
 MIRROR=''
 WITH_UPDATE=0
 
@@ -21,6 +31,19 @@ while [ $# -gt 0 ]; do
     ;;
   --update)
     WITH_UPDATE=1
+    ;;
+  --proxy)
+    export HTTP_PROXY="$2"
+    export HTTPS_PROXY="$2"
+    NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
+    NO_PROXY="${NO_PROXY},::1/128,fe80::/10,fd00::/8,ff00::/8"
+    NO_PROXY="${NO_PROXY},localhost"
+    NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn"
+    NO_PROXY="${NO_PROXY},.tencent.com"
+    NO_PROXY="${NO_PROXY},ftpmirror.gnu.org"
+    NO_PROXY="${NO_PROXY},gitee.com,gitcode.com"
+    NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
+    export NO_PROXY="${NO_PROXY},.npmmirror.com"
     ;;
   --*)
     echo "Illegal option $1"
@@ -42,15 +65,11 @@ case "$MIRROR" in
     export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
     export PIPENV_PYPI_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
 
-    # pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-    # pip3 config set global.index-url https://pypi.python.org/simple
-
     # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
     ;;
 esac
 
 export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_INSTALL_FROM_API=1
 
 if [ ${WITH_UPDATE} -eq 1 ] ; then
@@ -68,13 +87,17 @@ if [ ${WITH_UPDATE} -eq 1 ] ; then
       ;;
   esac
 
+  brew doctor
   brew update
+  brew upgrade
 
   exit 0
 
 fi
 
+# export HOMEBREW_NO_AUTO_UPDATE=1
 
+HOMEBREW_PREFIX=$(brew --prefix)
 
 brew install wget curl libtool automake re2c llvm flex bison m4 autoconf
 brew install libtool gettext coreutils libunistring pkg-config cmake
@@ -93,29 +116,9 @@ brew install libtool gettext coreutils libunistring pkg-config cmake
 
 which glibtool
 
-
-# maocs intel
-#  HOMEBREW_PREFIX: /usr/local
-if [ -d /usr/local/opt/libtool/bin/ ] ; then
-  ln -sf /usr/local/opt/libtool/bin/glibtool /usr/local/opt/libtool/bin/libtool
-  ln -sf /usr/local/opt/libtool/bin/glibtoolize /usr/local/opt/libtool/bin/libtoolize
-  export PATH=/usr/local/opt/libtool/bin/:$PATH
-  ln -sf /usr/local/bin/glibtool /usr/local/bin/libtool
-  ln -sf /usr/local/bin/glibtoolize /usr/local/bin/libtoolize
-
-fi
-
-# macos M1
-# HOMEBREW_PREFIX=/opt/homebrew
-# HOMEBREW_REPOSITORY=/opt/homebrew
-if [ -d /opt/homebrew/opt/libtool/bin ] ; then
-    ln -sf /opt/homebrew/opt/libtool/bin/glibtool /opt/homebrew/opt/libtool/bin/libtool
-    ln -sf /opt/homebrew/opt/libtool/bin/glibtoolize /opt/homebrew/opt/libtool/bin/libtoolize
-    export PATH=/opt/homebrew/opt/libtool/bin/:$PATH
-    ln -sf /opt/homebrew/opt/libtool/bin/glibtool /usr/local/bin/libtool
-    ln -sf /opt/homebrew/opt/libtool/bin/glibtoolize /usr/local/bin/libtoolize
-
-fi
+ln -sf ${HOMEBREW_PREFIX}/opt/libtool/bin/glibtool ${HOMEBREW_PREFIX}/opt/libtool/bin/libtool
+ln -sf ${HOMEBREW_PREFIX}/opt/libtool/bin/glibtoolize ${HOMEBREW_PREFIX}/opt/libtool/bin/libtoolize
+export PATH=${HOMEBREW_PREFIX}/opt/libtool/bin/:$PATH
 
 libtoolize --version
 libtool --help-all
