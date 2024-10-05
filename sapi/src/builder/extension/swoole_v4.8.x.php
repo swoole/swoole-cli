@@ -11,7 +11,6 @@ return function (Preprocessor $p) {
     if ($p->getBuildType() === 'debug') {
         $options[] = ' --enable-debug ';
         $options[] = ' --enable-debug-log ';
-        $options[] = ' --enable-trace-log ';
         $options[] = ' --enable-swoole-coro-time  ';
     }
 
