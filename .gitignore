@@ -340,6 +340,6 @@ libs.log
 ext/apcu/
 ext/ssh2/
 LICENSE
-swool-cli-*
+swoole-cli-*
 php-cli-*
 php-fpm-*

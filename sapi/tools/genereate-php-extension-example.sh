@@ -28,14 +28,15 @@ cd ${__DIR__}
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 
-alias php='php -c ${__PROJECT__}/bin/runtime/php.ini'
-php ${__PROJECT__}/sapi/scripts/DownloadPHPSourceCode.php
+alias php="'php -c ${__PROJECT__}/bin/runtime/php.ini'"
+
+php ${__PROJECT__}/sapi/scripts/download-php-src-archive.php
 
 
-php ${__PROJECT__}/var/php-8.2.13/ext/ext_skel.php --help
+php ${__PROJECT__}/var/php-8.2.23/ext/ext_skel.php --help
 
 # 创建扩展
 # 使用 `--dir ${__PROJECT__}/../ ` # 指定生成扩展的目录
 
-php ${__PROJECT__}/var/php-8.2.13/ext/ext_skel.php  --ext example --author jingjingxyk --std
+php ${__PROJECT__}/var/php-8.2.23/ext/ext_skel.php  --ext example --author jingjingxyk --std
 
