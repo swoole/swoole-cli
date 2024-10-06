@@ -140,8 +140,8 @@ PHP_OPCACHE_H_EOF
     # build
     cp -rf $SRC/build/ ./build
 
-    # TSRM
-    cp -rf $SRC/TSRM/ ./TSRM
+    # TSRM (more info: https://github.com/swoole/swoole-cli/commit/172c76445a631abb1b32fc2a721a2dd9d5a5fc0d)
+    # cp -rf $SRC/TSRM/ ./TSRM
 
     cp -f $SRC/configure.ac ./configure.ac
     cp -f $SRC/buildconf ./buildconf
