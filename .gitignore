@@ -337,7 +337,9 @@ Makefile.backup
 ldflags.log
 cppflags.log
 libs.log
+ext/apcu/
+ext/ssh2/
+LICENSE
 swool-cli-*
 php-cli-*
 php-fpm-*
-

@@ -17,7 +17,7 @@ if [ ! -d ext/swoole/.git ]; then
   git submodule update --init --recursive
 fi
 
-set -xue
+set -x
 
 # shellcheck disable=SC2034
 OS=$(uname -s)
@@ -215,6 +215,7 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
   composer config -g --unset repos.packagist
 fi
 
+
 # 可用配置参数
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
@@ -269,6 +270,8 @@ if [ "$OS" = 'linux' ] && [ ${IN_DOCKER} -eq 0 ]; then
   echo ' please run in container !'
   exit 0
 fi
+
+set -ue
 
 bash make-install-deps.sh
 

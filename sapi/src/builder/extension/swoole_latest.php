@@ -50,6 +50,7 @@ EOF
         ->withAutoUpdateFile()
         ->withOptions(implode(' ', $options))
         ->withBuildCached(false)
+        ->withAutoUpdateFile()
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions);
 
