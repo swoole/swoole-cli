@@ -5,6 +5,7 @@ declare(strict_types=1);
 $project_dir = __DIR__;
 $php_source_folder = require_once __DIR__ . '/sapi/scripts/download-php-src-archive.php';
 $sync_dest_dir = $project_dir . '/var/sync-source-code-tmp';
+
 $scanned_directory_source = array_diff(scandir($php_source_folder . '/ext/'), array('..', '.'));
 $scanned_directory_destination = array_diff(scandir($project_dir . '/ext/'), array('..', '.'));
 
@@ -94,7 +95,6 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     sed -i.backup 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4
     sed -i.backup 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
-
     # echo '#include "php.h"\n\nextern zend_module_entry opcache_module_entry;\n#define phpext_opcache_ptr  &opcache_module_entry\n' > ext/opcache/php_opcache.h
     cat > ext/opcache/php_opcache.h <<PHP_OPCACHE_H_EOF
 #include "php.h"
@@ -103,7 +103,6 @@ extern zend_module_entry opcache_module_entry;
 #define phpext_opcache_ptr  &opcache_module_entry
 
 PHP_OPCACHE_H_EOF
-
 
     cp -rf $SRC/ext/openssl/ ./ext/openssl
     cp -rf $SRC/ext/pcntl/ ./ext/pcntl
