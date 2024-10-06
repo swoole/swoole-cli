@@ -15,9 +15,10 @@ return function (Preprocessor $p) {
             ->withMd5sum('f7b5e9b23fb844e5eb035203d316bc63')
             ->withDependentLibraries('imagemagick')
             ->withDependentExtensions('tokenizer')
+            ->withBuildCached(false)
     );
 };
 
 
-//构建的过程中，会自动 下载 PHP-Parser
-//https://github.com/nikic/PHP-Parser/
+# 构建 imagick 扩展时 会自动下载 https://github.com/nikic/PHP-Parser  源码
+

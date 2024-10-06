@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare build environment
+      - name: Show Environment Info
         run: |
           set -x
           uname -s
@@ -22,24 +22,11 @@ jobs:
           uname -r
           env
           echo $HOME
+          sw_vers
+          xcodebuild -version
           brew config
-
-          bash sapi/quickstart/macos/macos-init.sh
-
-          # sudo rm -rf /Library/Developer/CommandLineTools
-          # xcode-select --install
-
-          # sudo xcode-select --reset
-          # sudo xcode-select -switch /Library/Developer/CommandLineTools
-
-          # softwareupdate --list --verbose
-          # softwareupdate --install -a
-          # xcode-select --install
-
-          # export SDKROOT=$(xcrun --show-sdk-path)
+          xcrun --show-sdk-path
           ls -lh $(xcrun --show-sdk-path)
-          # sudo  xcode-select --switch /Applications/Xcode.app
-          # export MACOSX_DEPLOYMENT_TARGET=12.6
 
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
@@ -48,6 +35,10 @@ jobs:
           echo $IPV6
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+      - name: Prepare Build Environment
+        run: |
+          bash sapi/quickstart/macos/macos-init.sh
 
           export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
 
@@ -113,7 +104,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2 +pgsql --with-build-type=release
+          php prepare.php --without-docker=1 +apcu +ds +xlswriter +ssh2 +pgsql +uuid
 
       - name: Build
         run: |

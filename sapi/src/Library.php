@@ -30,13 +30,7 @@ class Library extends Project
 
     public string $prefix = '/usr';
 
-    public string $binPath = '';
-
-    public bool $cleanBuildDirectory = false;
-
-    public bool $cleanPreInstallDirectory = false;
-
-    public string $preInstallDirectory = '';
+    public string|array $binPath = '';
 
     public array $preInstallCommands = [];
 
@@ -135,32 +129,15 @@ class Library extends Project
         return $this;
     }
 
-    public function withBinPath(string $path): static
+    public function withBinPath(string|array $path): static
     {
         $this->binPath = $path;
         return $this;
     }
 
-    public function withCleanBuildDirectory(bool $cleanBuildDirectory = true): static
-    {
-        $this->cleanBuildDirectory = $cleanBuildDirectory;
-        return $this;
-    }
-
-    public function withCleanPreInstallDirectory(string $preInstallDir): static
-    {
-        if (!empty($preInstallDir) && (str_starts_with($preInstallDir, SWOOLE_CLI_GLOBAL_PREFIX))) {
-            if (SWOOLE_CLI_BUILD_TYPE == 'dev') {
-                $this->cleanPreInstallDirectory = true;
-                $this->preInstallDirectory = $preInstallDir;
-            }
-        }
-        return $this;
-    }
-
     public function withPreInstallCommand(string $os, string $preInstallCommand): static
     {
-        if (!empty($os) && in_array($os, ['alpine','debian','ubuntu','macos']) && !empty($preInstallCommand)) {
+        if (!empty($os) && in_array($os, ['alpine', 'debian', 'ubuntu', 'macos']) && !empty($preInstallCommand)) {
             $this->preInstallCommands[$os][] = $preInstallCommand;
         }
         return $this;
@@ -168,8 +145,9 @@ class Library extends Project
 
     public function withBuildLibraryHttpProxy(
         bool $enableBuildLibraryHttpProxy = true,
-        bool  $enableBuildLibraryGitProxy = false
-    ): static {
+        bool $enableBuildLibraryGitProxy = false
+    ): static
+    {
         $this->enableBuildLibraryHttpProxy = $enableBuildLibraryHttpProxy;
         $this->enableBuildLibraryGitProxy = $enableBuildLibraryGitProxy;
         return $this;

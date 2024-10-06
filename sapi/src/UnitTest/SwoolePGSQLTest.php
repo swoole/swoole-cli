@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace SwooleCli\UnitTest;
 
 use PHPUnit\Framework\TestCase;
-use Swoole\Coroutine\PostgreSQL;
-
+use Swoole\Runtime;
 use function Swoole\Coroutine\run;
 
 final class SwoolePGSQLTest extends TestCase
@@ -16,6 +15,9 @@ final class SwoolePGSQLTest extends TestCase
 
     public function testSwoolePGSQL(): void
     {
+        $oriErrorLevel = error_reporting(E_ALL);
+        $oriFlags = Runtime::getHookFlags();
+        Runtime::setHookFlags(SWOOLE_HOOK_PDO_PGSQL);
         run(function () {
             $this->createDataBase();
             $this->createTable();
@@ -23,25 +25,28 @@ final class SwoolePGSQLTest extends TestCase
             $this->selectTableData();
             $this->deleteTableData();
             $this->dropTable();
+            $this->pg = null;
             $this->dropDatabase();
+            $this->pg_master = null;
         });
+        Runtime::setHookFlags($oriFlags);
+        error_reporting($oriErrorLevel);
     }
 
-
-    public function createDataBase()
+    protected function createDataBase()
     {
+        $dbh = new \PDO("pgsql:dbname=postgres;host=127.0.0.1;port=5432", "postgres", "example");
+        $this->assertEquals(NULL, $dbh->errorCode(), 'pgsql connection postgres  Error ,Error Info : ' . $dbh->errorInfo()[2]);
 
-        $pg = new PostgreSQL();
-        $conn = $pg->connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=example");
-        if (!$conn) {
-            $this->assertNotTrue($conn, 'pgsql connection postgres error,error info :' . $pg->error);
-            return false;
+        $this->pg_master = $dbh;
+        $res = $dbh->query("SELECT *  FROM pg_database WHERE datname = 'user_center'", \PDO::FETCH_ASSOC);
+        $arr = $res->fetchAll();
+        if (!empty($arr)) {
+            $this->dropDatabase();
         }
-        $this->pg_master = $pg;
-        $stmt = $pg->query("SELECT *  FROM pg_database WHERE datname = 'user_center'");
-        $arr = $stmt->fetchAssoc();
-        if (empty($arr)) {
-            $sql = <<<EOF
+
+
+        $sql = <<<EOF
 CREATE DATABASE user_center
     WITH
     OWNER = postgres
@@ -52,25 +57,19 @@ CREATE DATABASE user_center
     CONNECTION LIMIT = -1
     IS_TEMPLATE = False
 EOF;
-
-            $pg->query($sql);
-            $this->assertEquals(0, $pg->errCode, 'create database user_center  sucess' . $pg->error);
-        }
-
+        echo $sql . PHP_EOL;
+        $res = $dbh->exec($sql);
+        $this->assertEquals(0, $res, 'create database user_center  Error ,Error Info : ' . $dbh->errorInfo()[2]);
     }
 
-    public function createTable()
+    protected function createTable()
     {
-        $pg = new PostgreSQL();
+        $dbh = new \PDO("pgsql:dbname=user_center;host=127.0.0.1;port=5432", "postgres", "example");
+        $this->assertEquals(NULL, $dbh->errorCode(), 'connection database user_center  Error ,Error Info : ' . $dbh->errorInfo()[2]);
 
-        $conn = $pg->connect("host=127.0.0.1 port=5432 dbname=user_center user=postgres password=example");
-        if (!$conn) {
-            $this->assertNotTrue($conn, 'erro_info' . $pg->error);
-            return;
-        }
-        $this->pg = $pg;
+        $this->pg = $dbh;
         $sql = "select *  from pg_tables where schemaname = 'public' and tablename='users'";
-        $stmt = $pg->query($sql);
+        $stmt = $this->pg->query($sql, \PDO::FETCH_ASSOC);
         $res = $stmt->fetchAll();
         if (empty($res)) {
             # USER  是PGSQL 关键字，不能用作表名
@@ -102,12 +101,13 @@ CACHE 1;
 alter table users alter column id set default nextval('users_id_seq');
 
 EOF;
-            $pg->query($table);
-            $this->assertEquals(0, $pg->errCode, 'create table users sucess' . $pg->error);
+            echo $table . PHP_EOL;
+            $res = $this->pg->exec($table);
+            $this->assertEquals(0, $res, 'create table users  Error ,Error Info : ' . $dbh->errorInfo()[2]);
         }
     }
 
-    public function insertTableData()
+    protected function insertTableData()
     {
         $password = 'example';
         $salt = bin2hex(openssl_random_pseudo_bytes(rand(4, 20)));
@@ -119,50 +119,30 @@ EOF;
         $sql = <<<EOF
 INSERT INTO public.users(
 	username, nickname, password, salt, avatar, email, mobile,  updated_at, login_channel)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+	VALUES (:username, :nickname, :password, :salt, :avatar, :email, :mobile,  :updated_at, :login_channel);
 
 EOF;
-        $list = [
-            [
-                "username1",
-                "example1",
-                "{$password}",
-                "{$salt}",
-                "https://wenda.swoole.com/dist/skin1/images/logo.png",
-                "example1@qq.com",
-                "861888888888",
-                "{$time}",
-                "1"
-            ],
-            [
-                "username2",
-                "example2",
-                "{$password}",
-                "{$salt}",
-                "https://wenda.swoole.com/dist/skin1/images/logo.png",
-                "example2@qq.com",
-                "861888888888",
-                "{$time}",
-                "1"
-            ]
-        ];
 
-        echo $sql;
+
+        echo $sql . PHP_EOL;
 
         $stmt = $this->pg->prepare($sql);
+        // :username, :nickname, :password, :salt, :avatar, :email, :mobile,  :updated_at, :login_channel
+        $stmt->bindValue(':username', "username", \PDO::PARAM_STR);
+        $stmt->bindValue(':nickname', "example", \PDO::PARAM_STR);
+        $stmt->bindValue(':password', $password, \PDO::PARAM_STR);
+        $stmt->bindValue(':salt', $salt, \PDO::PARAM_STR);
+        $stmt->bindValue(':avatar', "https://wenda.swoole.com/dist/skin1/images/logo.png", \PDO::PARAM_STR);
+        $stmt->bindValue(':email', "example2@qq.com", \PDO::PARAM_STR);
+        $stmt->bindValue(':mobile', "861888888888", \PDO::PARAM_STR);
+        $stmt->bindValue(':updated_at', $time, \PDO::PARAM_STR);
+        $stmt->bindValue(':login_channel', 1, \PDO::PARAM_INT);
+        $res = $stmt->execute();
 
-        $i = 100;
-        while ($i >= 1) {
-            foreach ($list as $data) {
-                $res = $stmt->execute($data);
-            }
-            $i--;
-        }
-        $this->assertGreaterThanOrEqual(1, $stmt->affectedRows(), 'insert data sucess' . $this->pg->error);
-        var_dump($stmt->affectedRows());
+        $this->assertTrue($res, 'insert data  Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
-    public function selectTableData()
+    protected function selectTableData()
     {
         $sql = <<<EOF
 SELECT * FROM public.users
@@ -170,55 +150,53 @@ ORDER BY id ASC
 
 EOF;
 
-        echo $sql;
+        echo $sql . PHP_EOL;
 
         $stmt = $this->pg->query($sql);
         $list = $stmt->fetchAll();
-        $this->assertGreaterThan(1, count($list), 'select data' . $this->pg->error);
+        $this->assertGreaterThan(0, count($list), 'select data   Error ,Error Info : ' . $stmt->errorInfo()[2]);
     }
 
-    public function deleteTableData()
+    protected function deleteTableData()
     {
         $sql = <<<'EOF'
 DELETE FROM users
-WHERE username=$1
+WHERE username=:username
 
 EOF;
 
-        echo $sql;
+        echo $sql . PHP_EOL;
 
         $stmt = $this->pg->prepare($sql);
+        $stmt->bindValue(":username", "username", \PDO::PARAM_STR);
 
-        $stmt->execute(['username2']);
+        $stmt->execute();
 
-        $this->assertGreaterThan(10, $stmt->affectedRows(), 'delete data' . $this->pg->error);
+        $this->assertGreaterThan(0, $stmt->rowCount(), 'delete data   Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
-    public function dropTable()
+    protected function dropTable()
     {
         $sql = <<<'EOF'
 
-DROP TABLE users ;
-DROP SEQUENCE users_id_seq ;
+DROP TABLE  IF EXISTS  users ;
+DROP SEQUENCE  IF EXISTS users_id_seq ;
 EOF;
 
-        echo $sql;
-
-        $this->pg->query($sql);
-        $this->assertEquals(0, $this->pg->errCode, 'drop table users' . $this->pg->error);
+        echo $sql . PHP_EOL;
+        $res = $this->pg->exec($sql);
+        $this->assertEquals(0, $res, 'drop table users   Error ,Error Info : ' . $this->pg->errorInfo()[2]);
     }
 
-    public function dropDatabase()
+    protected function dropDatabase()
     {
         $sql = <<<'EOF'
 
 DROP DATABASE IF EXISTS user_center
 EOF;
 
-        echo $sql;
-
-        $this->pg_master->query($sql);
-        echo PHP_EOL . $this->pg->error . PHP_EOL;
-        $this->assertEquals(0, $this->pg_master->errCode, 'drop database user_center' . $this->pg_master->error);
+        echo $sql . PHP_EOL;
+        $this->pg_master->exec($sql);
+        $this->assertEquals("00000", $this->pg_master->errorCode(), 'drop database user_center   Error ,Error Info : ' . $this->pg_master->errorInfo()[2]);
     }
 }

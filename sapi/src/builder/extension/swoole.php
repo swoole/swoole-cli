@@ -6,26 +6,34 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $swoole_tag = 'v4.8.13';
     $file = "swoole-v{$swoole_tag}.tar.gz";
-    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
+    $options = [];
 
-    $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
-
-    $options = ' --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares ';
-    $options .= ' --enable-http2  --enable-brotli  ';
-    $options .= ' --with-openssl-dir=' . OPENSSL_PREFIX;
-    $options .= ' --with-brotli-dir=' . BROTLI_PREFIX;
-
-    if (in_array($p->getBuildType(), ['dev', 'debug'])) {
-        $options .= ' --enable-debug ';
-        $options .= ' --enable-debug-log ';
-        $options .= ' --enable-trace-log ';
+    if ($p->getBuildType() === 'debug') {
+        $options[] = ' --enable-debug ';
+        $options[] = ' --enable-debug-log ';
+        $options[] = ' --enable-swoole-coro-time  ';
     }
 
-    $ext = (new Extension('swoole'))
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
+    $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
+
+    $options[] = '--enable-swoole';
+    $options[] = '--enable-sockets';
+    $options[] = '--enable-mysqlnd';
+    $options[] = '--enable-swoole-curl';
+    $options[] = '--enable-cares';
+    $options[] = '--enable-http2';
+    $options[] = '--enable-brotli';
+    $options[] = '--with-brotli-dir=' . BROTLI_PREFIX;
+    $options[] = '--with-openssl-dir=' . OPENSSL_PREFIX;
+    $options[] = '--enable-swoole-json';
+
+
+    $p->addExtension((new Extension('swoole_v4.8.x'))
+        ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
-        ->withOptions($options)
         ->withFile($file)
         ->withDownloadScript(
             'swoole-src',
@@ -33,15 +41,12 @@ return function (Preprocessor $p) {
             git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
+        ->withOptions(implode(' ', $options))
         ->withBuildCached(false)
         ->withDependentLibraries(...$dependentLibraries)
-        ->withDependentExtensions(...$dependentExtensions);
+        ->withDependentExtensions(...$dependentExtensions));
 
-    $p->addExtension($ext);
-
-    $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
-    $p->withVariable('LIBS', '$LIBS ' . $libs);
-
+    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 };

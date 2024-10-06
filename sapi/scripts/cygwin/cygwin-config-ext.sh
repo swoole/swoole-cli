@@ -95,10 +95,6 @@ tar --strip-components=1 -C php-src -xf php-${PHP_VERSION}.tar.gz
 
 cd $ROOT
 
-if [ ! -d $ROOT/ext/pdo_pgsql ]; then
-  mv $ROOT/php-src/ext/pdo_pgsql $ROOT/ext/pdo_pgsql
-fi
-
 if [ ! -d $ROOT/ext/pgsql ]; then
   mv $ROOT/php-src/ext/pgsql $ROOT/ext/pgsql
 fi

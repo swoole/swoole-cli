@@ -313,6 +313,7 @@ tmp-php.ini
 /ext/loader8
 /ext/ds
 /ext/xlswriter
+/ext/uuid
 /.phpunit.result.cache
 /samples/sfx/*.phar
 .php-cs-fixer.cache
@@ -328,7 +329,6 @@ var/
 php-src/
 ext/swoole/
 sapi/webUI/.idea/
-Dockerfile-all-dependencies-alpine
 php.ini
 sapi/webUI/deploy.sh
 sapi/webUI/public/data/
@@ -336,4 +336,9 @@ Makefile.backup
 ldflags.log
 cppflags.log
 libs.log
+ext/apcu/
+ext/ssh2/
+LICENSE
+swoole-cli-*
+php-cli-*
 

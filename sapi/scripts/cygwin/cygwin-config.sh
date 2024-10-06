@@ -54,6 +54,4 @@ test -f Makefile && make clean
     --with-readline \
     --with-pdo-pgsql \
     --with-pgsql \
-    --with-pdo-sqlite \
-
-
+    --with-pdo-sqlite

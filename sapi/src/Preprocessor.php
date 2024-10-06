@@ -101,51 +101,15 @@ class Preprocessor
      * Extensions enabled by default
      * @var array|string[]
      */
-    protected array $extEnabled = [
-        'opcache',
-        'curl',
-        'iconv',
-        'bz2',
-        'bcmath',
-        'pcntl',
-        'filter',
-        'session',
-        'tokenizer',
-        'mbstring',
-        'ctype',
-        'zlib',
-        'zip',
-        'posix',
-        'sockets',
-        'pdo',
-        'sqlite3',
-        'phar',
-        'mysqlnd',
-        'mysqli',
-        'intl',
-        'fileinfo',
-        'pdo_mysql',
-        //'pdo_sqlite',
-        'soap',
-        'xsl',
-        'gmp',
-        'exif',
-        'sodium',
-        'openssl',
-        'readline',
-        'xml',
-        'redis',
-        'swoole',
-        'yaml',
-        'imagick',
-        'mongodb',
-        'gd',
-    ];
+    protected array $extEnabled;
+
     protected array $extEnabledBuff = [];
+
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
     protected array $beforeConfigure = [];
     protected string $configureVarables;
+
     protected string $buildType = 'release';
     protected bool $inVirtualMachine = false;
 
@@ -158,6 +122,7 @@ class Preprocessor
     protected function __construct()
     {
         $this->setOsType($this->getRealOsType());
+        $this->extEnabled = require __DIR__ . '/builder/enabled_extensions.php';
     }
 
     public function setLinker(string $ld): static
@@ -214,16 +179,6 @@ class Preprocessor
             return 'base';
         } else {
             return 'base' . '-' . $arch;
-        }
-    }
-
-    public function getBaseImageDockerFile(): string
-    {
-        $arch = $this->getSystemArch();
-        if ($arch == 'x64') {
-            return 'Dockerfile';
-        } else {
-            return 'Dockerfile' . '-' . $arch;
         }
     }
 
@@ -396,7 +351,7 @@ class Preprocessor
             /*
              * sockat 代理例子
              * http://www.dest-unreach.org/socat/doc/socat.html
-             * socat - socks4a:<socks-server>::%h:%p,socksport=2000
+             * socat - socks4a:<socks-server>:%h:%p,socksport=2000
              * socat - proxy:<proxy-server>:%h:%p,proxyport=2000
              */
 
@@ -624,7 +579,11 @@ EOF;
         }
 
         if (!empty($lib->binPath)) {
-            $this->binPaths[] = $lib->binPath;
+            if (is_array($lib->binPath)) {
+                $this->binPaths = array_merge($this->binPaths, $lib->binPath);
+            } else {
+                $this->binPaths[] = $lib->binPath;
+            }
         }
 
         if (empty($lib->license)) {
@@ -1142,16 +1101,6 @@ EOF;
             }
         }
 
-        if ($this->isMacos()) {
-            if (is_file('/usr/local/opt/bison/bin/bison')) {
-                $this->withBinPath('/usr/local/opt/bison/bin');
-            } elseif (is_file('/opt/homebrew/opt/bison/bin/bison')) { //兼容 github action
-                $this->withBinPath('/opt/homebrew/opt/bison/bin/');
-            } else {
-                $this->loadDependentLibrary("bison");
-            }
-        }
-
         // autoload extension depend extension
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->dependentExtensions as $extension_name) {
@@ -1230,6 +1179,7 @@ EOF;
             echo "{$item->name}\n";
         }
     }
+
 
     public function getRealOsType(): string
     {

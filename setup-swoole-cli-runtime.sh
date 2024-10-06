@@ -48,9 +48,9 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v5.1.3'
+APP_VERSION='v5.1.4'
 APP_NAME='swoole-cli'
-VERSION='v5.1.3.0'
+VERSION='v5.1.4.0'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
@@ -118,7 +118,8 @@ if [ $OS = 'windows' ]; then
 else
   test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
-  test -f swoole-cli || tar -xvf ${APP_RUNTIME}.tar
+  test -f swoole-cli && rm -f swoole-cli
+  tar -xvf ${APP_RUNTIME}.tar
   chmod a+x swoole-cli
   cp -f ${__PROJECT__}/var/runtime/swoole-cli ${__PROJECT__}/bin/runtime/swoole-cli
 fi
@@ -140,9 +141,12 @@ post_max_size="128M"
 memory_limit="1G"
 date.timezone="UTC"
 
-opcache.enable_cli=1
-opcache.jit=1254
-opcache.jit_buffer_size=480M
+opcache.enable=On
+opcache.enable_cli=On
+opcache.jit=1225
+opcache.jit_buffer_size=128M
+
+; jit 更多配置参考 https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA
 
 expose_php=Off
 
@@ -201,4 +205,8 @@ echo " alias swoole-cli='swoole-cli -d curl.cainfo=${__PROJECT__}/bin/runtime/ca
 echo " OR "
 echo " alias swoole-cli='swoole-cli -c ${__PROJECT__}/bin/runtime/php.ini' "
 echo " "
+test $OS="macos" && echo "sudo xattr -d com.apple.quarantine ${__PROJECT__}/bin/runtime/php"
+echo " "
 echo " SWOOLE-CLI VERSION  ${APP_VERSION}"
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
+swoole-cli -v
