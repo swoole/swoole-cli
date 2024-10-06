@@ -2,7 +2,7 @@
 /* edit configure.ac to change version number */
 #define PHP_MAJOR_VERSION 8
 #define PHP_MINOR_VERSION 1
-#define PHP_RELEASE_VERSION 27
+#define PHP_RELEASE_VERSION 29
 #define PHP_EXTRA_VERSION ""
-#define PHP_VERSION "8.1.27"
-#define PHP_VERSION_ID 80127
+#define PHP_VERSION "8.1.29"
+#define PHP_VERSION_ID 80129

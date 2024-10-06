@@ -132,7 +132,9 @@ TSRM_API void *tsrm_set_new_thread_end_handler(tsrm_thread_end_func_t new_thread
 TSRM_API void *tsrm_set_shutdown_handler(tsrm_shutdown_func_t shutdown_handler);
 
 TSRM_API void *tsrm_get_ls_cache(void);
+#ifdef HAVE_JIT
 TSRM_API size_t tsrm_get_ls_cache_tcb_offset(void);
+#endif
 TSRM_API uint8_t tsrm_is_main_thread(void);
 TSRM_API uint8_t tsrm_is_shutdown(void);
 TSRM_API const char *tsrm_api_name(void);
@@ -147,7 +149,7 @@ TSRM_API const char *tsrm_api_name(void);
 # define __has_attribute(x) 0
 #endif
 
-#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__)
+#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__) || defined(__HAIKU__)
 # define TSRM_TLS_MODEL_ATTR
 #elif __PIC__
 # define TSRM_TLS_MODEL_ATTR __attribute__((tls_model("initial-exec")))

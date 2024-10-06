@@ -30,6 +30,8 @@ if [ ! -f /usr/libexec/docker/cli-plugins/docker-compose ]; then
 
   chmod +x /usr/local/bin/docker-compose
 
+else
+  export PATH=/usr/libexec/docker/cli-plugins/:$PATH
 fi
 
 docker-compose --version

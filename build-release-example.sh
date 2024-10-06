@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 __DIR__=$(
   cd "$(dirname "$0")"
@@ -188,12 +188,12 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
   # composer dump-autoload
 
   # composer update  --optimize-autoloader
-  # composer install --no-interaction --no-autoloader --no-scripts --profile # --no-dev
   composer install --no-interaction --no-autoloader --no-scripts --prefer-dist -vv --profile # --no-dev
   composer dump-autoload --optimize --profile
 
   composer config -g --unset repos.packagist
 fi
+
 
 # 可用配置参数
 # --with-global-prefix=/usr/local/swoole-cli
@@ -258,6 +258,8 @@ if [ "$OS" = 'linux' ] && [ ${IN_DOCKER} -eq 0 ]; then
   exit 0
 fi
 
+set -ue
+
 bash make-install-deps.sh
 
 # 清理不匹配的依赖库 （比如使用 main 分支的依赖库构建，需要先清理，后构建）
@@ -277,18 +279,14 @@ bash make.sh archive
 exit 0
 
 # 例子
-# bash build-release.sh --mirror china
-# bash build-release.sh --mirror china --debug
+# bash build-release-php.sh --mirror china
+# bash build-release-php.sh --mirror china --debug
 
 # 例子  download-box
-# bash build-release.sh --mirror china  --download-box
+# bash build-release-php.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 
-# 例子  build-contianer
-# bash build-release.sh --mirror china  --build-contianer
-# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
-
 # 例子  web ui
-# bash build-release.sh --mirror china  --webui
+# bash build-release-php.sh --mirror china  --webui
 # bash sapi/webUI/webui-init-data.sh
 # php sapi/webUI/bootstrap.php
