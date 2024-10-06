@@ -291,12 +291,11 @@ make_config() {
 <?php if ($this->getInputOption('with-swoole-cli-sfx')) : ?>
     PHP_VERSION=$(cat main/php_version.h | grep 'PHP_VERSION_ID' | grep -E -o "[0-9]+")
     if [[ $PHP_VERSION -lt 80000 ]] ; then
-        echo "only support PHP >= 8.0 "
+    echo "only support PHP >= 8.0 "
     else
-        # 请把这个做成 patch  https://github.com/swoole/swoole-cli/pull/55/files
-
+    # 请把这个做成 patch  https://github.com/swoole/swoole-cli/pull/55/files
     fi
-<?php endif ;?>
+<?php endif; ?>
 
     cd <?= $this->getPhpSrcDir() ?>/
     test -f ./configure &&  rm ./configure
@@ -304,8 +303,9 @@ make_config() {
 
 <?php if ($this->isMacos()) : ?>
     <?php if ($this->hasLibrary('pgsql')) : ?>
-    sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
-    <?php endif;?>
+        sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
+        test -f ./configure.backup && rm -f ./configure.backup
+    <?php endif; ?>
 <?php endif; ?>
 
     export_variables
@@ -323,7 +323,8 @@ make_config() {
 
 <?php if ($this->isLinux()) : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
-<?php endif ; ?>
+    test -f Makefile.backup && rm -f Makefile.backup
+<?php endif; ?>
 
 }
 

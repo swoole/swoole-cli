@@ -10,11 +10,14 @@ return function (Preprocessor $p) {
             ->withOptions('--enable-opcache')
     );
 
-
     // 扩展钩子 写法
     $p->withBeforeConfigureScript('opcache', function (Preprocessor $p) {
         $php_src_dir = $p->getPhpSrcDir();
-        $cmd = "cd {$php_src_dir}/" . PHP_EOL;
+        $cmd = <<<EOF
+        cd {$php_src_dir}/ ;
+
+EOF;
+
         $cmd .= <<<'EOF'
 
         cat > ext/opcache/php_opcache.h <<PHP_OPCACHE_H_EOF
