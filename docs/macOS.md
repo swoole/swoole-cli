@@ -1,5 +1,14 @@
 # macOS 环境下构建 swoole-cli
 
+## 构建准备 - 设置默认安装库目录的权限
+
+```shell
+
+sudo mkdir -p /usr/local/swoole-cli
+CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
+
+```
+
 ## macos 环境下构建 完整步骤
 
 ```shell
@@ -89,28 +98,6 @@ bash sapi/download-box/download-box-get-archive-from-server.sh --mirror china
 2. 编译所有依赖的库 `./make.sh all-library`
 3. 配置 `./make.sh config`
 4. 构建 `./make.sh build`
-
-## 快速 初始化macos 构建环境
-
-运行此命令解决构建过程中遇到的绝大部分问题
-如`homebrew`已安装，跳过执行此命令`bash sapi/quickstart/macos/install-homebrew.sh`
-
-```bash
-
-
-bash sapi/quickstart/macos/install-homebrew.sh
-bash sapi/quickstart/macos/macos-init.sh
-
-# 使用homebrew镜像源
-# bash sapi/quickstart/macos/install-homebrew.sh --mirror ustc
-# bash sapi/quickstart/macos/macos-init.sh --mirror ustc
-
-# 设置默认安装库目录的权限
-CURRENT_USER=$(whoami)
-sudo mkdir -p /usr/local/swoole-cli
-CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
-
-```
 
 ## 清理
 
