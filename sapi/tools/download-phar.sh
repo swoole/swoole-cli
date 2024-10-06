@@ -5,9 +5,16 @@ __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-cd ${__DIR__}
-mkdir -p ${__DIR__}/var/
-cd ${__DIR__}/var/
+cd ${__DIR__}/
+
+__PROJECT__=$(
+    cd ${__DIR__}/../../ ;
+    pwd
+)
+
+
+mkdir -p ${__PROJECT__}/var/
+cd ${__PROJECT__}/var/
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -28,6 +35,14 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+# box
+# https://github.com/box-project/box/blob/main/doc/installation.md#installation
+
+# phive
+# https://github.com/phar-io/phive
+
+# comopser
+# https://getcomposer.org/
 
 test -f box.phar || curl -Lo box.phar "https://github.com/box-project/box/releases/latest/download/box.phar"
 chmod +x box.phar
@@ -38,14 +53,16 @@ chmod +x phive.phar
 test -f composer.phar || curl -Lo composer.phar https://getcomposer.org/download/latest-stable/composer.phar
 chmod +x composer.phar
 
-export PATH="${__DIR__}/bin/runtime:$PATH"
+export PATH="${__PROJECT__}/bin/runtime:$PATH"
 # shellcheck disable=SC2139
-#alias php="'php -d curl.cainfo=${__DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__DIR__}/bin/runtime/cacert.pem'"
-alias php="'php -c ${__DIR__}/bin/runtime/php.ini'"
+#alias php="'php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem'"
+alias php="'php -c ${__PROJECT__}/bin/runtime/php.ini'"
 which php
 php -v
-php --ri openssl
 
-./box.phar --help
+
+./box.phar help
+./box.phar list
+
 ./phive.phar --help
 ./composer.phar --help
