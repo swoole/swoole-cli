@@ -1,0 +1,43 @@
+From 2a15bd4c55d8d2f46d2e17d4f7e642a2387d6e01 Mon Sep 17 00:00:00 2001
+From: jingjingxyk <zonghengbaihe521@qq.com>
+Date: Sun, 6 Oct 2024 18:59:27 +0800
+Subject: [PATCH] fix readline not work
+
+---
+ ext/readline/readline_cli.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
+
+diff --git a/ext/readline/readline_cli.c b/ext/readline/readline_cli.c
+index 8bf5d23df..0adecf42a 100644
+--- a/ext/readline/readline_cli.c
++++ b/ext/readline/readline_cli.c
+@@ -744,24 +744,9 @@ typedef cli_shell_callbacks_t *(__cdecl *get_cli_shell_callbacks)(void);
+ 	} while(0)
+ 
+ #else
+-/*
+-#ifdef COMPILE_DL_READLINE
+-This dlsym() is always used as even the CGI SAPI is linked against "CLI"-only
+-extensions. If that is being changed dlsym() should only be used when building
+-this extension sharedto offer compatibility.
+-*/
+-#define GET_SHELL_CB(cb) \
+-	do { \
+-		(cb) = NULL; \
+-		cli_shell_callbacks_t *(*get_callbacks)(void); \
+-		get_callbacks = dlsym(RTLD_DEFAULT, "php_cli_get_shell_callbacks"); \
+-		if (get_callbacks) { \
+-			(cb) = get_callbacks(); \
+-		} \
+-	} while(0)
+-/*#else
++
+ #define GET_SHELL_CB(cb) (cb) = php_cli_get_shell_callbacks()
+-#endif*/
++
+ #endif
+ 
+ PHP_MINIT_FUNCTION(cli_readline)
+-- 
+2.46.2
+
