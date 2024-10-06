@@ -12,22 +12,21 @@ return function (Preprocessor $p) {
             ->withDependentLibraries('ncurses', 'readline')
     );
 
-
     // 扩展钩子
     $p->withBeforeConfigureScript('readline', function (Preprocessor $p) {
         $workDir = $p->getWorkDir();
-        $php_src = $p->getPhpSrcDir();
-        $delim = "   ";
         $cmd = <<<EOF
-        cd {$php_src}/
 
         # 获得行号
         # awk '/#ifdef COMPILE_DL_READLINE/ { print NR }' ext/readline/readline_cli.c
         # grep -n '#ifdef COMPILE_DL_READLINE' ext/readline/readline_cli.c | cut -d ':' -f 1
         # sed  -n "/#ifdef COMPILE_DL_READLINE/=" ext/readline/readline_cli.c
 
-        grep -n '#ifdef COMPILE_DL_READLINE' ext/readline/readline_cli.c
-        if [ $? = 0 ] ; then
+        cd {$workDir}/
+
+        FOUND_DL_READLINE=$(grep -c '#ifdef COMPILE_DL_READLINE' ext/readline/readline_cli.c)
+
+        if test $[FOUND_DL_READLINE] -gt 0 ; then
             # 获得待删除 区间
             START_LINE_NUM=$(sed  -n "/#ifdef COMPILE_DL_READLINE/=" ext/readline/readline_cli.c)
             START_LINE_NUM=$((\$START_LINE_NUM - 1))
