@@ -17,7 +17,7 @@ if [ ! -d ext/swoole/.git ]; then
   git submodule update --init --recursive
 fi
 
-set -xue
+set -x
 
 # shellcheck disable=SC2034
 OS=$(uname -s)
@@ -194,6 +194,7 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
   composer config -g --unset repos.packagist
 fi
 
+
 # 可用配置参数
 # --with-swoole-pgsql=1
 # --with-libavif=1
@@ -259,6 +260,8 @@ if [ "$OS" = 'linux' ] && [ ${IN_DOCKER} -eq 0 ]; then
   exit 0
 fi
 
+set -ue
+
 bash make-install-deps.sh
 
 # 兼容上一版本已构建完毕的依赖库
@@ -275,18 +278,14 @@ bash make.sh archive
 exit 0
 
 # 例子
-# bash build-release.sh --mirror china
-# bash build-release.sh --mirror china --debug
+# bash build-release-php.sh --mirror china
+# bash build-release-php.sh --mirror china --debug
 
 # 例子  download-box
-# bash build-release.sh --mirror china  --download-box
+# bash build-release-php.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-init.sh --proxy http://192.168.3.26:8015
 
-# 例子  build-contianer
-# bash build-release.sh --mirror china  --build-contianer
-# bash sapi/multistage-build-dependencies-container/all-dependencies-build-container.sh --composer_mirror tencent --mirror ustc
-
 # 例子  web ui
-# bash build-release.sh --mirror china  --webui
+# bash build-release-php.sh --mirror china  --webui
 # bash sapi/webUI/webui-init-data.sh
 # php sapi/webUI/bootstrap.php
