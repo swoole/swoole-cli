@@ -1,27 +1,41 @@
 # macOS 环境下构建 swoole-cli
 
-构建步骤 - 运行命令
-====
+## macos 环境下构建 完整步骤
 
 ```shell
 
-git clone --recursive https://github.com/swoole/swoole-cli.git
+git clone -b main https://github.com/swoole/swoole-cli.git
 cd swoole-cli
+git submodule update --init -f
+
+bash sapi/quickstart/macos/install-homebrew.sh
+bash sapi/quickstart/macos/macos-init.sh
 
 bash setup-php-runtime.sh
-composer install  --no-interaction --no-autoloader --no-scripts --profile
-composer dump-autoload --optimize --profile
 
-php prepare.php --without-docker=1   +apcu +ds +xlswriter +ssh2 +uuid
+__DIR__=$(pwd);
+export PATH=${__DIR__}/bin/runtime/:$PATH
+alias php="'${__DIR__}/bin/runtime/php -c ${__DIR__}/bin/runtime/php.ini'"
 
-bash sapi/quickstart/macos/macos-init.sh
+composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
+composer dump-autoload --optimize --profile --no-dev
+
+php prepare.php  +apcu +ds +xlswriter +ssh2 +uuid
 
 bash make-install-deps.sh
 
-bash ./make.sh all-library
-bash ./make.sh config
-bash ./make.sh build
-bash ./make.sh archive
+# 静态编译依赖库
+bash make.sh  all-library
+
+# 静态编译 PHP 预处理
+bash make.sh config
+
+# 静态编译PHP （编译、汇编、链接）
+bash make.sh build
+
+# 静态编译PHP （打包）
+bash make.sh archive
+
 
 ./bin/swoole-cli -m
 ./bin/swoole-cli --ri swoole
@@ -31,8 +45,32 @@ otool -L ./bin/swoole-cli
 
 ```
 
-构建步骤简述
-====
+## 可使中国大陆软件镜像源命令脚本
+
+```shell
+
+sh sapi/quickstart/macos/install-homebrew.sh  --mirror china
+
+sh sapi/quickstart/macos/macos-init.sh  --mirror china
+
+# 准备PHP 运行时 使用镜像 （镜像源 https://www.swoole.com/download）
+bash setup-php-runtime.sh --mirror china
+
+
+```
+
+## 可使用代理的命令脚本
+
+```bash
+
+# 准备PHP 运行时 使用代理
+bash setup-php-runtime.sh --proxy http://192.168.3.26:8015
+
+php prepare.php --without-docker=1 +apcu +ds +xlswriter +ssh2 +uuid --with-http-proxy=socks5h://127.0.0.1:2000
+
+```
+
+## 构建步骤简述
 
 0. 清理 `brew` 安装的软件
 1. 执行 `php prepare.php --without-docker=1` 生成构建shell 脚本
@@ -88,7 +126,9 @@ brew install  wget curl  libtool automake  re2c llvm flex bison
 
 brew install  gettext coreutils binutils libunistring
 
-export PATH=/usr/local/opt/bison/bin:/usr/local/opt/llvm/bin:$PATH
+HOMEBREW_PREFIX=$(brew --prefix)
+
+export PATH=${HOMEBREW_PREFIX}/opt/bison/bin:${HOMEBREW_PREFIX}/opt/llvm/bin:$PATH
 
 ```
 
