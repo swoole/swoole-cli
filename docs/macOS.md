@@ -70,6 +70,18 @@ php prepare.php --without-docker=1 +apcu +ds +xlswriter +ssh2 +uuid --with-http-
 
 ```
 
+## 准备依赖库源码
+
+> 源码来源: https://github.com/swoole/swoole-cli/releases/download/${TAG}/all-deps.zip
+
+```bash
+
+bash sapi/download-box/download-box-get-archive-from-server.sh
+
+bash sapi/download-box/download-box-get-archive-from-server.sh --mirror china
+
+```
+
 ## 构建步骤简述
 
 0. 清理 `brew` 安装的软件

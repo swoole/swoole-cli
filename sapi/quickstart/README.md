@@ -22,19 +22,6 @@ bash build-release-php.sh
 
 ## [wsl](../../docs/wsl.md)
 
-## 准备依赖库源码
-
-> pool 目录
-
-```bash
-
-# 源码来源 https://github.com/swoole/swoole-cli/releases/download/${TAG}/all-deps.zip
-
-bash sapi/download-box/download-box-get-archive-from-server.sh
-
-bash sapi/download-box/download-box-get-archive-from-server.sh --mirror china
-```
-
 ## 准备运行环境 (linux/macos/windows)
 
 1. [ linux 快速启动 容器 构建环环境 ](linux/README.md)

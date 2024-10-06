@@ -80,7 +80,9 @@ php prepare.php  +apcu +ds +xlswriter +ssh2 +uuid --with-http-proxy=socks5h://12
 
 ```
 
-## 默认生成 构建脚本 make.sh
+
+
+## 快速生成 构建脚本 make.sh (跳过下载依赖库源码)
 
 ```shell
 
@@ -88,11 +90,6 @@ php prepare.php  +apcu +ds +xlswriter +ssh2 +uuid --with-http-proxy=socks5h://12
 php prepare.php  --without-docker --skip-download=1
 bash ./make.sh docker-build
 bash ./make.sh docker-bash
-
-# 准备bash 命令
-sh sapi/quickstart/linux/alpine-init-minimal.sh
-
-bash sapi/quickstart/linux/alpine-init.sh
 
 # 进入容器后需要再一次执行此命令
 php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
