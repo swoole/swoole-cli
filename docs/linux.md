@@ -3,42 +3,96 @@
 ## 运行环境要求
 
 1. 容器 docker 运行环境
+2. debian 系列 要求linux 内核大于 5.0
 
-构建步骤 - 运行命令
-====
+## linux 环境下构建 完整步骤
 
 ```shell
 
-git clone --recursive https://github.com/swoole/swoole-cli.git
+git clone -b main https://github.com/swoole/swoole-cli.git
 cd swoole-cli
+git submodule update --init -f
+
+bash sapi/quickstart/linux/install-docker.sh
+bash sapi/quickstart/linux/run-alpine-container.sh
+bash sapi/quickstart/linux/connection-swoole-cli-alpine.sh
+
+sh sapi/quickstart/linux/alpine-init-minimal.sh
+bash sapi/quickstart/linux/alpine-init.sh
 
 bash setup-php-runtime.sh
-composer install  --no-interaction --no-autoloader --no-scripts --profile
-composer dump-autoload --optimize --profile
+
+__DIR__=$(pwd);
+export PATH=${__DIR__}/bin/runtime/:$PATH
+alias php="'${__DIR__}/bin/runtime/php -c ${__DIR__}/bin/runtime/php.ini'"
+
+composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
+composer dump-autoload --optimize --profile --no-dev
+
+php prepare.php  +apcu +ds +xlswriter +ssh2 +uuid
+
+bash make-install-deps.sh
+
+# 静态编译依赖库
+bash make.sh  all-library
+
+# 静态编译 PHP 预处理
+bash make.sh config
+
+# 静态编译PHP （编译、汇编、链接）
+bash make.sh build
+
+# 静态编译PHP （打包）
+bash make.sh archive
+
+./bin/swoole-cli -m
+./bin/swoole-cli --ri swoole
+file ./bin/swoole-cli
+
+```
+
+## 可使中国大陆软件镜像源命令脚本
+
+```shell
+
+# 准备 docker 运行时 使用镜像 （镜像源 mirrors.tuna.tsinghua.edu.cn）
+bash sapi/quickstart/linux/install-docker.sh --mirror china
+
+sh sapi/quickstart/linux/alpine-init-minimal.sh  --mirror china
+
+bash sapi/quickstart/linux/alpine-init.sh --mirror china
+
+# 准备PHP 运行时 使用镜像 （镜像源 https://www.swoole.com/download）
+bash setup-php-runtime.sh --mirror china
+
+
+
+```
+
+## 可使用代理的命令脚本
+
+```bash
+
+# 准备PHP 运行时 使用代理
+bash setup-php-runtime.sh --proxy http://192.168.3.26:8015
+
+php prepare.php  +apcu +ds +xlswriter +ssh2 +uuid --with-http-proxy=socks5h://127.0.0.1:2000
+
+```
+
+
+
+## 快速生成 构建脚本 make.sh (跳过下载依赖库源码)
+
+```shell
 
 # 生成构建脚本 make.sh
 php prepare.php  --without-docker --skip-download=1
 bash ./make.sh docker-build
 bash ./make.sh docker-bash
 
-# 准备bash 命令
-sh sapi/quickstart/linux/alpine-init-minimal.sh
-
-bash sapi/quickstart/linux/alpine-init.sh
-
 # 进入容器后需要再一次执行此命令
 php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +uuid
-
-bash make-install-deps.sh
-
-bash ./make.sh all-library
-bash ./make.sh config
-bash ./make.sh build
-bash ./make.sh archive
-
-./bin/swoole-cli -m
-./bin/swoole-cli --ri swoole
-file ./bin/swoole-cli
 
 ```
 
@@ -57,26 +111,7 @@ file ./bin/swoole-cli
 > 当 `C库` 变更时，应该修改 `swoole-cli-builder` 镜像的版本
 > `make.sh all-library` 是可重入的，它会自动跳过已构建成功的库
 
-快速初始化构建环境
-====
 
-跳过生成容器基础镜像
-使用如下命令快速进入容器环境
-便捷调整构建环境
-
-```bash
-# 安装容器运行环境
-# bash sapi/quickstart/linux/install-docker.sh
-
-bash sapi/quickstart/linux/run-alpine-container.sh
-bash sapi/quickstart/linux/alpine-init.sh
-
-# 使用镜像源 例子
-# bash sapi/quickstart/linux/install-docker.sh --mirror [ china | ustc | tuna ]
-# bash sapi/quickstart/linux/alpine-init.sh --mirror [ china | ustc | tuna | tencentyun | huaweicloud ]
-# bash sapi/quickstart/linux/alpine-init.sh --mirror  china
-
-```
 
 构建 swoole-cli
 ====

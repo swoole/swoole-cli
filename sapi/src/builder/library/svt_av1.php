@@ -21,18 +21,6 @@ EOF
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1.git')
         ->withManual('https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Build-Guide.md')
         ->withPrefix($svt_av1_prefix)
-        ->withPreInstallCommand(
-            'alpine',
-            <<<EOF
-apk add yasm nasm
-EOF
-        )
-        ->withPreInstallCommand(
-            'macos',
-            <<<EOF
-brew install yasm nasm
-EOF
-        )
         ->withBuildScript(
             <<<EOF
             cd Build

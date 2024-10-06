@@ -2,6 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use SwooleCli\Exception;
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
@@ -159,28 +160,19 @@ EOF;
 
 
 if ($p->isMacos()) {
-    //$p->setExtraLdflags('-Wl,-undefined,dynamic_lookup');
-    if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
-        $p->withBinPath('/usr/local/opt/llvm/bin')
-            ->withBinPath('/usr/local/opt/flex/bin')
-            ->withBinPath('/usr/local/opt/bison/bin')
-            ->withBinPath('/usr/local/opt/libtool/bin')
-            ->withBinPath('/usr/local/opt/m4/bin')
-            ->withBinPath('/usr/local/opt/automake/bin/')
-            ->withBinPath('/usr/local/opt/autoconf/bin/')
-            ->setLinker('ld64.lld');
-    } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) { //兼容 macos arm64
-        $p->withBinPath('/opt/homebrew/opt/llvm/bin/')
-            ->withBinPath('/opt/homebrew/opt/flex/bin')
-            ->withBinPath('/opt/homebrew/opt/bison/bin')
-            ->withBinPath('/opt/homebrew/opt/libtool/bin')
-            ->withBinPath('/opt/homebrew/opt/m4/bin')
-            ->withBinPath('/opt/homebrew/opt/automake/bin/')
-            ->withBinPath('/opt/homebrew/opt/autoconf/bin/')
-            ->setLinker('ld64.lld');
-    } else {
-        $p->setLinker('lld');
-    }
+    //$p->setExtraLdflags('-undefined dynamic_lookup');
+    $p->setExtraLdflags('');
+    $homebrew_prefix = trim(shell_exec('brew --prefix'));
+    $p->withBinPath($homebrew_prefix . '/opt/llvm/bin')
+        ->withBinPath($homebrew_prefix . '/opt/flex/bin')
+        ->withBinPath($homebrew_prefix . '/opt/bison/bin')
+        ->withBinPath($homebrew_prefix . '/opt/libtool/bin')
+        ->withBinPath($homebrew_prefix . '/opt/m4/bin')
+        ->withBinPath($homebrew_prefix . '/opt/automake/bin/')
+        ->withBinPath($homebrew_prefix . '/opt/autoconf/bin/')
+        ->withBinPath($homebrew_prefix . '/opt/gettext/bin')
+        ->setLinker('ld64.lld');
+
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
     $p->setLinker('ld.lld');
@@ -195,8 +187,7 @@ if ($c_compiler == 'gcc') {
     $p->setLinker('ld');
 }
 
-
-$p->setExtraCflags(' -Os');
+$p->setExtraCflags(' -Os -fno-openmp');
 
 
 // Generate make.sh

@@ -46,16 +46,17 @@ make_<?=$item->name?>() {
     <?php endif ;?>
 
     <?php if ($item->enableInstallCached) : ?>
-    if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
-        echo "[<?=$item->name?>]  library cached , skip.."
+    if [ -f <?= $this->getGlobalPrefix() . '/' . $item->name ?>/.completed ] ;then
+        echo "[<?= $item->name ?>]  library cached , skip.."
         return 0
     fi
     <?php endif; ?>
 
-    <?php if ($item->cleanBuildDirectory || ! $item->enableBuildCached) : ?>
-    if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
-        rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
-    fi
+    # If the install directory exist, clean the install directory
+    test -d  <?= $this->getGlobalPrefix() . '/' . $item->name ?>/ && rm -rf  <?= $this->getGlobalPrefix() . '/' . $item->name ?>/ ;
+
+    <?php if (!$item->enableBuildCached) : ?>
+        test -d <?= $this->getBuildDir() ?>/<?= $item->name ?>/ && rm -rf <?= $this->getBuildDir() ?>/<?= $item->name ?>/ ;
     <?php endif; ?>
 
     # If the source code directory does not exist, create a directory and decompress the source code archive
@@ -69,11 +70,6 @@ make_<?=$item->name?>() {
             exit  $result_code
         fi
     fi
-
-    <?php if ($item->cleanPreInstallDirectory) : ?>
-    # If the install directory exist, clean the install directory
-    test -d <?=$item->preInstallDirectory?>/ && rm -rf <?=$item->preInstallDirectory?>/ ;
-    <?php endif; ?>
 
     cd <?=$this->getBuildDir()?>/<?=$item->name?>/
 
@@ -350,6 +346,7 @@ make_build() {
     file <?= $this->phpSrcDir  ?>/sapi/cli/php
     readelf -h <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php endif; ?>
+
     # make install
     mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
     cp -f <?= $this->phpSrcDir  ?>/sapi/cli/php <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/
@@ -371,6 +368,10 @@ make_archive() {
     PHP_CLI_FILE_DEBUG=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>-debug.tar.xz
     tar -cJvf ${PHP_CLI_FILE_DEBUG} php LICENSE
 
+    HASH=$(sha256sum ${PHP_CLI_FILE_DEBUG} | awk '{print $1}')
+    echo " ${PHP_CLI_FILE_DEBUG} sha256sum: ${HASH} "
+    echo -n ${HASH} > ${PHP_CLI_FILE_DEBUG}.sha256sum
+
 
     mkdir -p <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist
     cp -f php           dist/
@@ -381,8 +382,15 @@ make_archive() {
     PHP_CLI_FILE=php-cli-v${PHP_VERSION}-<?=$this->getOsType()?>-<?=$this->getSystemArch()?>.tar.xz
     tar -cJvf ${PHP_CLI_FILE} php LICENSE
 
+    HASH=$(sha256sum ${PHP_CLI_FILE} | awk '{print $1}')
+    echo " ${PHP_CLI_FILE} sha256sum: ${HASH} "
+    echo -n ${HASH} > ${PHP_CLI_FILE}.sha256sum
+
+
     mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist/${PHP_CLI_FILE}  ${__PROJECT_DIR__}/
+    mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/dist/${PHP_CLI_FILE}.sha256sum  ${__PROJECT_DIR__}/
     mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/${PHP_CLI_FILE_DEBUG} ${__PROJECT_DIR__}/
+    mv <?= BUILD_PHP_INSTALL_PREFIX ?>/bin/${PHP_CLI_FILE_DEBUG}.sha256sum ${__PROJECT_DIR__}/
 
     cd ${__PROJECT_DIR__}/
 }
@@ -429,7 +437,7 @@ lib_dep_pkg() {
     if test -n  "$1"  ;then
       echo -e "[$1] dependent pkgs :\n\n${array_name[$1]} \n"
     else
-      for i in ${!array_name[@]}
+      for i in "${!array_name[@]}"
       do
             echo -e "[${i}] dependent pkgs :\n\n${array_name[$i]} \n"
             echo "=================================================="
@@ -472,7 +480,7 @@ if [ "$1" = "docker-build" ] ;then
     if [ -n "$2" ]; then
         MIRROR=$2
         case "$MIRROR" in
-        china | openatom | ustc | tuna)
+        china | openatom )
             CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
         ;;
         esac

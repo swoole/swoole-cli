@@ -114,6 +114,7 @@ class Preprocessor
     protected array $extCallbacks = [];
     protected array $beforeConfigure = [];
     protected string $configureVarables;
+
     protected string $buildType = 'release';
     protected bool $inVirtualMachine = false;
 
@@ -185,6 +186,7 @@ class Preprocessor
             return 'base' . '-' . $arch;
         }
     }
+
     public function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
@@ -353,7 +355,7 @@ class Preprocessor
             /*
              * sockat 代理例子
              * http://www.dest-unreach.org/socat/doc/socat.html
-             * socat - socks4a:<socks-server>::%h:%p,socksport=2000
+             * socat - socks4a:<socks-server>:%h:%p,socksport=2000
              * socat - proxy:<proxy-server>:%h:%p,proxyport=2000
              */
 
@@ -1109,16 +1111,6 @@ EOF;
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
-            }
-        }
-
-        if ($this->isMacos()) {
-            if (is_file('/usr/local/opt/bison/bin/bison')) {
-                $this->withBinPath('/usr/local/opt/bison/bin');
-            } elseif (is_file('/opt/homebrew/opt/bison/bin/bison')) { //兼容 arm64
-                $this->withBinPath('/opt/homebrew/opt/bison/bin/');
-            } else {
-                $this->loadDependentLibrary("bison");
             }
         }
 
