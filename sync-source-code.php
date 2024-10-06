@@ -95,6 +95,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     sed -i.backup 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4
     sed -i.backup 's/shared,,/$ext_shared,,/g' ext/opcache/config.m4
+    # sed -i 's/-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1/-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DPHP_ENABLE_OPCACHE/g' ext/opcache/config.m4
     # echo '#include "php.h"\n\nextern zend_module_entry opcache_module_entry;\n#define phpext_opcache_ptr  &opcache_module_entry\n' > ext/opcache/php_opcache.h
     cat > ext/opcache/php_opcache.h <<PHP_OPCACHE_H_EOF
 #include "php.h"
@@ -155,7 +156,7 @@ PHP_OPCACHE_H_EOF
 
 
 
-    # fpm
+    # fpm  [Need to manually compare fpm_main.c]
     # cp -rf $SRC/sapi/fpm/fpm ./sapi/cli/
     sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
     # sed -i.backup "s/{'-', 0, NULL}/{'P', 0, \"fpm\"},\n	{'-', 0, NULL}/g" ./sapi/cli/fpm/fpm_main.c
