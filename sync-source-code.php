@@ -115,10 +115,6 @@ PHP_OPCACHE_H_EOF
 
     cp -rf $SRC/ext/posix/ ./ext/posix
     cp -rf $SRC/ext/readline/ ./ext/readline
-    cp -f patches/0001-fix-readline-not-work.patch 0001-fix-readline-not-work.patch
-    git apply 0001-fix-readline-not-work.patch
-    exit 0
-    git apply 0001-fix-readline-not-work.patch
     cp -rf $SRC/ext/reflection/ ./ext/reflection
     cp -rf $SRC/ext/session/ ./ext/session
     cp -rf $SRC/ext/simplexml/ ./ext/simplexml
@@ -166,12 +162,14 @@ PHP_OPCACHE_H_EOF
     sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
     sed -i.backup 's/{'-', 0, NULL}/{'P', 0, "fpm"},\n	{'-', 0, NULL}/g' ./sapi/cli/fpm/fpm_main.c
 
-
-
     # cli
     cp -rf $SRC/sapi/cli/ps_title.c ./sapi/cli
     cp -rf $SRC/sapi/cli/generate_mime_type_map.php ./sapi/cli
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
+
+    # ext readline_cli patch
+    cp -f patches/0001-fix-readline-not-work.patch 0001-fix-readline-not-work.patch
+    { git apply --check 0001-fix-readline-not-work.patch ; } && { git apply 0001-fix-readline-not-work.patch ; }
 
 EOF;
 
