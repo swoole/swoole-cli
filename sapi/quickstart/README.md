@@ -2,13 +2,13 @@
 
 ## 一个脚本执行整个构建流程
 
-> 定制 build-release.sh 即可开始构建
+> 定制 build-release-php.sh 即可开始构建
 
 ```bash
 
-  cp  build-release-example.sh  build-release.sh
+cp  -f build-release-example.sh  build-release-php.sh
 
-  bash build-release.sh
+bash build-release-php.sh
 
 ```
 
