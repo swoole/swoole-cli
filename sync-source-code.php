@@ -115,6 +115,10 @@ PHP_OPCACHE_H_EOF
 
     cp -rf $SRC/ext/posix/ ./ext/posix
     cp -rf $SRC/ext/readline/ ./ext/readline
+    cp -f patches/0001-fix-readline-not-work.patch 0001-fix-readline-not-work.patch
+    git apply 0001-fix-readline-not-work.patch
+    exit 0
+    git apply 0001-fix-readline-not-work.patch
     cp -rf $SRC/ext/reflection/ ./ext/reflection
     cp -rf $SRC/ext/session/ ./ext/session
     cp -rf $SRC/ext/simplexml/ ./ext/simplexml
