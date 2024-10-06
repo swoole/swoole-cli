@@ -168,7 +168,7 @@ PHP_OPCACHE_H_EOF
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
 
     # ext readline_cli patch
-    cp -f patches/0001-fix-readline-not-work.patch 0001-fix-readline-not-work.patch
+    cp -f sapi/patches/0001-fix-readline-not-work.patch 0001-fix-readline-not-work.patch
     { git apply --check 0001-fix-readline-not-work.patch ; } && { git apply 0001-fix-readline-not-work.patch ; }
 
 EOF;
