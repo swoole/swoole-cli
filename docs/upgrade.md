@@ -12,6 +12,9 @@ php sync-source-code.php
 php sync-source-code.php --action run
 
 
+./bin/runtime/php -c ./bin/runtime/php.ini  sync-source-code.php
+./bin/runtime/php -c ./bin/runtime/php.ini  sync-source-code.php --action run
+
 ```
 
 ## 目录说明
