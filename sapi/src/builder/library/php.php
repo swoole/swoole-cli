@@ -23,6 +23,8 @@ return function (Preprocessor $p) {
             test -d {$php_src} && rm -rf {$php_src}
 
             cp -rf php {$php_src}
+            echo "{$php_tag}" > {$php_src}/X-PHP-VERSION
+
             rm -rf php
             cd {$build_dir}/
 EOF

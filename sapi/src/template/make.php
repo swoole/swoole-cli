@@ -265,6 +265,12 @@ filter_extension() {
 }
 
 make_config() {
+    PHP_VERSION=<?= BUILD_PHP_VERSION; ?> ;
+    if [ ! -f "<?= $this->phpSrcDir ?>/X-PHP-VERSION" ] ; then
+        bash make.sh php ;
+    fi
+    test "${PHP_VERSION}" = "$(cat '<?= $this->phpSrcDir ?>/X-PHP-VERSION')" || bash make.sh php ;
+
     cd <?= $this->phpSrcDir ?>/
 <?php if (in_array($this->buildType, ['dev'])) : ?>
     # dev 环境 过滤扩展，便于调试单个扩展编译
