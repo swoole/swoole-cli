@@ -329,7 +329,6 @@ var/
 php-src/
 ext/swoole/
 sapi/webUI/.idea/
-Dockerfile-all-dependencies-alpine
 php.ini
 sapi/webUI/deploy.sh
 sapi/webUI/public/data/
@@ -340,5 +339,6 @@ libs.log
 ext/apcu/
 ext/ssh2/
 LICENSE
-
+swoole-cli-*
+php-cli-*
 
