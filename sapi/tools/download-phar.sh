@@ -44,6 +44,10 @@ done
 # comopser
 # https://getcomposer.org/
 
+# PIE
+# https://github.com/php/pie/blob/main/docs/usage.md
+# https://packagist.org/extensions?
+
 test -f box.phar || curl -Lo box.phar "https://github.com/box-project/box/releases/latest/download/box.phar"
 chmod +x box.phar
 
@@ -52,6 +56,9 @@ chmod +x phive.phar
 
 test -f composer.phar || curl -Lo composer.phar https://getcomposer.org/download/latest-stable/composer.phar
 chmod +x composer.phar
+
+test -f pie.phar || curl -Lo pie.phar https://github.com/php/pie/releases/latest/download/pie.phar
+chmod +x pie.phar
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
 # shellcheck disable=SC2139
@@ -66,3 +73,4 @@ php -v
 
 ./phive.phar --help
 ./composer.phar --help
+./pie.phar --help
