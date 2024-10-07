@@ -188,6 +188,10 @@ EOF
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $python3_prefix . '/python_hacl/');
     $p->withVariable('LIBS', '$LIBS -lHacl_Hash_SHA2');
 
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $python3_prefix . '/include/python3.12/');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $python3_prefix . '/lib/');
+    $p->withVariable('LIBS', '$LIBS -lpython3.12');
+
 };
 # 构建独立版本 python 参考
 # https://github.com/indygreg/python-build-standalone.git
