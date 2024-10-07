@@ -168,11 +168,25 @@ PHP_OPCACHE_H_EOF
     cp -rf $SRC/sapi/cli/generate_mime_type_map.php ./sapi/cli
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
 
-
     # clean file
     test -f main/main.c.backup && rm -f main/main.c.backup
     test -f ext/opcache/config.m4.backup && rm -f ext/opcache/config.m4.backup
     test -f sapi/cli/fpm/fpm_main.c.backup && rm -f sapi/cli/fpm/fpm_main.c.backup
+
+    # patch for readline cli
+    FOUND_DL_READLINE=$(grep -c '#ifdef COMPILE_DL_READLINE' ext/readline/readline_cli.c)
+    if test $[FOUND_DL_READLINE] -gt 0 ; then
+        # 获得待删除 区间
+        START_LINE_NUM=$(sed  -n "/#ifdef COMPILE_DL_READLINE/=" ext/readline/readline_cli.c)
+        START_LINE_NUM=$(($START_LINE_NUM - 1))
+        END_LINE_NUM=$(sed  -n "/PHP_MINIT_FUNCTION(cli_readline)/=" ext/readline/readline_cli.c)
+        END_LINE_NUM=$(($END_LINE_NUM - 5))
+        sed -i.backup "${START_LINE_NUM},${END_LINE_NUM}d" ext/readline/readline_cli.c
+        REPLACE_LINE_NUM=$(sed  -n "/#define GET_SHELL_CB(cb) (cb) = php_cli_get_shell_callbacks()/=" ext/readline/readline_cli.c)
+        REPLACE_LINE_NUM=$(($REPLACE_LINE_NUM + 1))
+        sed -i.backup "${REPLACE_LINE_NUM} s/.*/  /" ext/readline/readline_cli.c
+    fi
+
 
 
 EOF;
