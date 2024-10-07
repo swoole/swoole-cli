@@ -6,7 +6,7 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $python3_prefix = PYTHON3_PREFIX;
     $openssl_prefix = OPENSSL_PREFIX;;
-    $libintl_prefix = LIBINTL_PREFIX;
+    $libintl_prefix = GETTEXT_PREFIX;
     $libunistring_prefix = LIBUNISTRING_PREFIX;
     $libiconv_prefix = ICONV_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
@@ -47,6 +47,7 @@ return function (Preprocessor $p) {
         CPPFLAGS=" \$CPPFLAGS -I{$bzip2_prefix}/include/ "
         LDFLAGS=" \$LDFLAGS -L{$bzip2_prefix}/lib/ "
         LIBS=" \$LIBS -lbz2 "
+
 
         CPPFLAGS=" \$CPPFLAGS -I{$libintl_prefix}/include/ "
         LDFLAGS=" \$LDFLAGS -L{$libintl_prefix}/lib/ "
@@ -99,13 +100,14 @@ return function (Preprocessor $p) {
         --disable-test-modules \
         --with-static-libpython \
         --with-system-expat=yes \
-        --with-system-libmpdec=yes \
+        --with-system-libmpdec=no \
         --with-readline=readline \
         --with-builtin-hashlib-hashes="md5,sha1,sha2,sha3,blake2" \
         --with-openssl={$openssl_prefix} \
         --with-ssl-default-suites=openssl \
         --without-valgrind \
-        --without-dtrace
+        --without-dtrace \
+        --with-ensurepip=install
 
         # --with-libs='expat libmpdec openssl zlib sqlite3 liblzma ncursesw panelw formw menuw ticw readline uuid '
         # --enable-optimizations \
@@ -117,9 +119,17 @@ return function (Preprocessor $p) {
         cat Modules/Setup.stdlib > Modules/Setup.local
 
         # make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
+
         make -j {$p->getMaxJob()}
 
         make install
+
+        {$python3_prefix}/bin/python3 -E -c 'import sys ; from sysconfig import get_platform ; print("%s-%d.%d" % (get_platform(), *sys.version_info[:2])) ; '
+        {$python3_prefix}/bin/python3 -E -c 'import sys ; print(sys.modules) ; '
+        {$python3_prefix}/bin/python3 -E -c 'import sys ; print(dir(sys)) ; '
+        {$python3_prefix}/bin/python3-config --cflags
+        {$python3_prefix}/bin/python3-config --ldflags
+        {$python3_prefix}/bin/python3-config --libs
 
 
         mkdir -p {$python3_prefix}/python_hacl
@@ -162,10 +172,13 @@ return function (Preprocessor $p) {
 EOF
         )
         ->withPkgName('python3')
-        ->withPkgName('python3-embed')
-        ->withBinPath($python3_prefix . '/bin/')
-        //依赖其它静态链接库
-        ->withDependentLibraries('zlib', 'openssl', 'sqlite3', 'bzip2', 'liblzma', 'readline', 'ncurses', 'libuuid', 'libintl', 'libexpat', 'mpdecimal', 'libb2');
+        //->withPkgName('python3-embed')
+        ->withDependentLibraries(
+            'zlib', 'openssl',
+            'sqlite3', 'bzip2', 'liblzma',
+            'readline', 'ncurses',
+            'util_linux', 'gettext',
+            'libexpat', 'mpdecimal', 'libb2');
 
     $p->addLibrary($lib);
 
