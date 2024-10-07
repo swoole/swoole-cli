@@ -172,10 +172,6 @@ PHP_OPCACHE_H_EOF
     test -f ext/opcache/config.m4.backup && rm -f ext/opcache/config.m4.backup
     test -f sapi/cli/fpm/fpm_main.c.backup && rm -f sapi/cli/fpm/fpm_main.c.backup
 
-    # ext readline_cli patch
-    cp -f sapi/patches/0001-fix-readline-not-work.patch 0001-fix-readline-not-work.patch
-    { git apply --check 0001-fix-readline-not-work.patch ; } && { git apply 0001-fix-readline-not-work.patch ; }
-
 
 EOF;
 
