@@ -131,6 +131,8 @@ return function (Preprocessor $p) {
         {$python3_prefix}/bin/python3-config --ldflags
         {$python3_prefix}/bin/python3-config --libs
 
+        PYTHONPATH=$({$python3_prefix}/bin/python3 -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))")
+        echo \${PYTHONPATH}
 
         mkdir -p {$python3_prefix}/python_hacl
         cp -rf {$p->getBuildDir()}/python3/Modules/_hacl/* {$python3_prefix}/python_hacl/
