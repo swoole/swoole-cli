@@ -28,6 +28,7 @@ return function (Preprocessor $p) {
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
     $options[] = '--enable-swoole-thread';
     $options[] = '--enable-zts';
+    $options[] = '--disable-opcache-jit';
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {
         $options[] = '--enable-iouring';
