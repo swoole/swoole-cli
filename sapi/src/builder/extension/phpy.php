@@ -20,10 +20,6 @@ return function (Preprocessor $p) {
     $options[] = ' --with-python-dir=' . $python3_prefix;
     $options[] = ' --with-python-config=' . $python3_prefix . '/bin/python3-config';
 
-    if (BUILD_PHP_VERSION_ID < 803000) {
-        throw new \RuntimeException(" PHPY extension Only supports PHP 8.3.0 or higher");
-    }
-
     $dependentLibraries = ['python3'];
     $dependentExtensions = [];
 
