@@ -190,7 +190,6 @@ EOF
             'libb2'
         );
 
-
     $p->addLibrary($lib);
 
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $python3_prefix . '/python_hacl/');
@@ -202,6 +201,9 @@ EOF
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $python3_prefix . '/include/python3.12/');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $python3_prefix . '/lib/');
     $p->withVariable('LIBS', '$LIBS -lpython3.12');
+    if ($p->isMacos()) {
+        $p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
+    }
 
 };
 # 构建独立版本 python 参考
