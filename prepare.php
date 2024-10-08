@@ -161,7 +161,7 @@ EOF;
 
 if ($p->isMacos()) {
     //$p->setExtraLdflags('-undefined dynamic_lookup');
-    $p->setExtraLdflags('');
+    $p->setExtraLdflags(' -framework CoreFoundation');
     $homebrew_prefix = trim(shell_exec('brew --prefix'));
     $p->withBinPath($homebrew_prefix . '/opt/llvm/bin')
         ->withBinPath($homebrew_prefix . '/opt/flex/bin')
