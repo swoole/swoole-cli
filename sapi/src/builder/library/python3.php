@@ -174,11 +174,19 @@ EOF
         ->withPkgName('python3')
         //->withPkgName('python3-embed')
         ->withDependentLibraries(
-            'zlib', 'openssl',
-            'sqlite3', 'bzip2', 'liblzma',
-            'readline', 'ncurses',
-            'util_linux', 'gettext',
-            'libexpat', 'mpdecimal', 'libb2');
+            'zlib',
+            'openssl',
+            'sqlite3',
+            'bzip2',
+            'liblzma',
+            'readline',
+            'ncurses',
+            'util_linux',
+            'gettext',
+            'libexpat',
+            'mpdecimal',
+            'libb2'
+        );
 
     $p->addLibrary($lib);
 
