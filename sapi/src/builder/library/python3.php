@@ -57,50 +57,21 @@ return function (Preprocessor $p) {
         LDFLAGS=" \$LDFLAGS -L{$libiconv_prefix}/lib/ "
         LIBS=" \$LIBS -liconv "
 
-        echo \$CFLAGS
-        echo \$CPPFLAGS
-        echo \$LDFLAGS
-        echo \$LIBS
-
-        export CFLAGS="\$CFLAGS "
-        export CPPFLAGS="\$CPPFLAGS "
-        export LDFLAGS="\$LDFLAGS "
-        export LIBS="\$LIBS "
-        export LINKFORSHARED=" "
-
-        export CCSHARED=""
-        export LDSHARED=""
-        export LDCXXSHARED=""
-
-        export LIBLZMA_CFLAGS="\$(pkg-config  --cflags --static liblzma)"
-        export LIBLZMA_LIBS="\$(pkg-config    --libs   --static liblzma)"
-
-        export CURSES_CFLAGS="\$(pkg-config  --cflags --static ncursesw)"
-        export CURSES_LIBS="\$(pkg-config    --libs   --static ncursesw)"
-
-        export PANEL_CFLAGS="\$(pkg-config  --cflags --static panelw)"
-        export PANEL_LIBS="\$(pkg-config    --libs   --static panelw)"
-
-        export LIBMPDEC_CFLAGS="\$(pkg-config  --cflags --static libmpdec)"
-        export LIBMPDEC_LDFLAGS="\$(pkg-config    --libs   --static libmpdec)"
-
-        export LIBEXPAT_CFLAGS="\$(pkg-config  --cflags --static expat)"
-        export LIBEXPAT_LDFLAGS="\$(pkg-config    --libs   --static expat)"
-
-        export OPENSSL_LDFLAGS="\$(pkg-config     --libs-only-L     --static openssl)"
-        export OPENSSL_LIBS="\$(pkg-config        --libs-only-l     --static openssl)"
-        export OPENSSL_INCLUDES="\$(pkg-config    --cflags-only-I   --static openssl)"
-
-        export LIBB2_CFLAGS="\$(pkg-config  --cflags --static libb2)"
-        export LIBB2_LIBS="\$(pkg-config    --libs   --static libb2)"
-
+        CFLAGS="\$CFLAGS " \
+        CPPFLAGS="\$CPPFLAGS " \
+        LDFLAGS="\$LDFLAGS " \
+        LIBS="\$LIBS " \
+        LINKFORSHARED=" " \
+        CCSHARED=" " \
+        LDSHARED=" " \
+        LDCXXSHARED=" " \
         ./configure \
         --prefix={$python3_prefix} \
         --enable-shared=no \
         --disable-test-modules \
         --with-static-libpython \
         --with-system-expat=yes \
-        --with-system-libmpdec=no \
+        --with-system-libmpdec=yes \
         --with-readline=readline \
         --with-builtin-hashlib-hashes="md5,sha1,sha2,sha3,blake2" \
         --with-openssl={$openssl_prefix} \
@@ -136,41 +107,6 @@ return function (Preprocessor $p) {
 
         mkdir -p {$python3_prefix}/python_hacl
         cp -rf {$p->getBuildDir()}/python3/Modules/_hacl/* {$python3_prefix}/python_hacl/
-
-
-        unset CFLAGS
-        unset CPPFLAGS
-        unset LDFLAGS
-        unset LIBS
-        unset LINKFORSHARED
-
-        unset CCSHARED
-        unset LDSHARED
-        unset LDCXXSHARED
-
-        unset LIBLZMA_CFLAGS
-        unset LIBLZMA_LIBS
-
-        unset CURSES_CFLAGS
-        unset CURSES_LIBS
-
-        unset PANEL_CFLAGS
-        unset PANEL_LIBS
-
-        unset LIBMPDEC_CFLAGS
-        unset LIBMPDEC_LDFLAGS
-
-        unset LIBEXPAT_CFLAGS
-        unset LIBEXPAT_LDFLAGS
-
-        unset OPENSSL_LDFLAGS
-        unset OPENSSL_LIBS
-        unset OPENSSL_INCLUDES
-
-        unset LIBB2_CFLAGS
-        unset LIBB2_LIBS
-
-
 EOF
         )
         ->withPkgName('python3')
