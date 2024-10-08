@@ -21,7 +21,7 @@ return function (Preprocessor $p) {
         ->withUrl('https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz')
         ->withPrefix($python3_prefix)
         ->withBuildCached(false)
-        //->withInstallCached(false)
+        ->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
 
@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES libb2"
 
         # -Wl,–no-export-dynamic
-        CFLAGS="-DOPENSSL_THREADS {$ldflags}  "
+        CFLAGS="-DOPENSSL_THREADS {$ldflags} -fPIC "
         CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)  {$ldflags}  "
         LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)   {$ldflags} -DOPENSSL_THREADS  "
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)  {$libs}"
@@ -59,7 +59,7 @@ return function (Preprocessor $p) {
 
         CFLAGS="\$CFLAGS " \
         CPPFLAGS="\$CPPFLAGS " \
-        LDFLAGS="\$LDFLAGS " \
+        LDFLAGS="\$LDFLAGS  " \
         LIBS="\$LIBS " \
         LINKFORSHARED=" " \
         CCSHARED=" " \
@@ -71,23 +71,21 @@ return function (Preprocessor $p) {
         --disable-test-modules \
         --with-static-libpython \
         --with-system-expat=yes \
-        --with-system-libmpdec=yes \
+        --with-system-libmpdec=no \
         --with-readline=readline \
         --with-builtin-hashlib-hashes="md5,sha1,sha2,sha3,blake2" \
         --with-openssl={$openssl_prefix} \
         --with-ssl-default-suites=openssl \
         --without-valgrind \
         --without-dtrace \
-        --with-ensurepip=install
+        --with-ensurepip=install \
+        --without-system-ffi
 
-        # --with-libs='expat libmpdec openssl zlib sqlite3 liblzma ncursesw panelw formw menuw ticw readline uuid '
-        # --enable-optimizations \
-        # --without-system-ffi \
 
         # echo '*static*' >> Modules/Setup.local
 
         sed -i.bak "s/^\*shared\*/\*static\*/g" Modules/Setup.stdlib
-        cat Modules/Setup.stdlib > Modules/Setup.local
+        # cat Modules/Setup.stdlib > Modules/Setup.local
 
         # make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
 

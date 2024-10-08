@@ -39,7 +39,7 @@ return [
     'mongodb',
     //'gettext',
     'uuid',
-    'phpy',
+    //'phpy',
     'apcu',
     'ds',
     'xlswriter',
