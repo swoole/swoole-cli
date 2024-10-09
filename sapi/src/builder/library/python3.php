@@ -78,14 +78,13 @@ return function (Preprocessor $p) {
         --with-ssl-default-suites=openssl \
         --without-valgrind \
         --without-dtrace \
-        --with-ensurepip=install \
-        --without-system-ffi
+        --with-ensurepip=install
 
 
         # echo '*static*' >> Modules/Setup.local
 
         sed -i.bak "s/^\*shared\*/\*static\*/g" Modules/Setup.stdlib
-        # cat Modules/Setup.stdlib > Modules/Setup.local
+        cat Modules/Setup.stdlib > Modules/Setup.local
 
         # make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
 
@@ -107,7 +106,7 @@ return function (Preprocessor $p) {
         cp -rf {$p->getBuildDir()}/python3/Modules/_hacl/* {$python3_prefix}/python_hacl/
 EOF
         )
-        ->withPkgName('python3')
+        //->withPkgName('python3')
         //->withPkgName('python3-embed')
         ->withDependentLibraries(
             'zlib',
