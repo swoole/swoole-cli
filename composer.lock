@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "690528027347b6be07730649a5da93c7",
+    "content-hash": "9588d9ad08a49fe6d573d748aadde202",
     "packages": [
         {
             "name": "marcj/topsort",
@@ -703,16 +703,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.3.0",
+            "version": "v5.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "3abf7425cd284141dc5d8d14a9ee444de3345d1a"
+                "reference": "8eea230464783aa9671db8eea6f8c6ac5285794b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/3abf7425cd284141dc5d8d14a9ee444de3345d1a",
-                "reference": "3abf7425cd284141dc5d8d14a9ee444de3345d1a",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/8eea230464783aa9671db8eea6f8c6ac5285794b",
+                "reference": "8eea230464783aa9671db8eea6f8c6ac5285794b",
                 "shasum": ""
             },
             "require": {
@@ -755,9 +755,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.3.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.3.1"
             },
-            "time": "2024-09-29T13:56:26+00:00"
+            "time": "2024-10-08T18:51:32+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -3027,19 +3027,18 @@
         },
         {
             "name": "swoole/ide-helper",
-            "version": "dev-master",
+            "version": "5.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swoole/ide-helper.git",
-                "reference": "7628f64d93593e18ee0afa478eacf32cefe8a82c"
+                "reference": "e63299f488bf8332404ce4f80142a2ed1397edde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/7628f64d93593e18ee0afa478eacf32cefe8a82c",
-                "reference": "7628f64d93593e18ee0afa478eacf32cefe8a82c",
+                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/e63299f488bf8332404ce4f80142a2ed1397edde",
+                "reference": "e63299f488bf8332404ce4f80142a2ed1397edde",
                 "shasum": ""
             },
-            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -3054,9 +3053,9 @@
             "description": "IDE help files for Swoole.",
             "support": {
                 "issues": "https://github.com/swoole/ide-helper/issues",
-                "source": "https://github.com/swoole/ide-helper/tree/master"
+                "source": "https://github.com/swoole/ide-helper/tree/5.1.x"
             },
-            "time": "2024-06-25T05:13:17+00:00"
+            "time": "2024-09-03T04:39:02+00:00"
         },
         {
             "name": "symfony/console",
