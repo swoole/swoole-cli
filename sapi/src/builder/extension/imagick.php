@@ -16,3 +16,5 @@ return function (Preprocessor $p) {
             ->withDependentLibraries('imagemagick')
     );
 };
+
+# 构建 imagick 扩展时 会自动下载 https://github.com/nikic/PHP-Parser  源码

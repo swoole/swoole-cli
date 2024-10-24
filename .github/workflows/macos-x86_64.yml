@@ -4,8 +4,8 @@ on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
-    if: 1
-    runs-on: macos-12
+    if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[macos-x86_64]')"
+    runs-on: macos-13
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
     # macos-13 CPU 架构 x86_64
@@ -14,31 +14,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare build environment
+      - name: Show Environment Info
         run: |
+          set -x
           uname -s
           uname -m
           uname -r
           env
           echo $HOME
+          sw_vers
+          xcodebuild -version
           brew config
-          set -x
-          bash sapi/quickstart/macos/macos-init.sh
-
-          # sudo rm -rf /Library/Developer/CommandLineTools
-          # xcode-select --install
-
-          # sudo xcode-select --reset
-          # sudo xcode-select -switch /Library/Developer/CommandLineTools
-
-          # softwareupdate --list --verbose
-          # softwareupdate --install -a
-          # xcode-select --install
-
-          # export SDKROOT=$(xcrun --show-sdk-path)
+          xcrun --show-sdk-path
           ls -lh $(xcrun --show-sdk-path)
-          # sudo  xcode-select --switch /Applications/Xcode.app
-          # export MACOSX_DEPLOYMENT_TARGET=12.6
 
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
@@ -47,6 +35,10 @@ jobs:
           echo $IPV6
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+      - name: Prepare Build Environment
+        run: |
+          bash sapi/quickstart/macos/macos-init.sh
 
           export PATH=/usr/local/opt/libtool/bin:$PATH
           ls -lha /usr/local/opt/libtool/bin/
@@ -59,6 +51,7 @@ jobs:
           echo ${CURRENT_USER}
           sudo mkdir -p /usr/local/swoole-cli
           CURRENT_USER=$(whoami) && sudo chown -R ${CURRENT_USER}:staff /usr/local/swoole-cli
+
           git submodule update --init
 
       - name: Cache PHP Runtime
@@ -110,7 +103,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1  +ds +apcu  +xlswriter +ssh2  --with-build-type=release
+          php prepare.php --without-docker=1
 
       - name: Build
         run: |

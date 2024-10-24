@@ -142,7 +142,6 @@ PHP_OPCACHE_H_EOF
 
     # TSRM
     cp -rf $SRC/TSRM/ ./TSRM
-    cp -rf $SRC/TSRM/TSRM.h main/TSRM.h
 
     cp -f $SRC/configure.ac ./configure.ac
     cp -f $SRC/buildconf ./buildconf
@@ -156,7 +155,7 @@ PHP_OPCACHE_H_EOF
 
     test -f main/main.c.backup && rm -f main/main.c.backup
     test -f ext/opcache/config.m4.backup && rm -f ext/opcache/config.m4.backup
-    exit 0
+
 
     # fpm
     cp -rf $SRC/sapi/fpm/fpm ./sapi/cli/
@@ -164,7 +163,6 @@ PHP_OPCACHE_H_EOF
     sed -i.backup 's/{'-', 0, NULL}/{'P', 0, "fpm"},\n	{'-', 0, NULL}/g' ./sapi/cli/fpm/fpm_main.c
 
 
-    # exit 0
 
     # cli
     cp -rf $SRC/sapi/cli/ps_title.c ./sapi/cli
