@@ -91,6 +91,7 @@ class Preprocessor
     protected array $beforeConfigure = [];
     protected string $configureVarables;
     protected string $buildType = 'release';
+    protected string $swooleBranch = 'master';
     protected bool $inVirtualMachine = false;
 
     protected function __construct()
@@ -720,6 +721,12 @@ class Preprocessor
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
 
+        $currentSwooleBranch = trim(`cd {$this->rootDir}/ext/swoole && git branch --show-current`);
+        if ($currentSwooleBranch != $this->swooleBranch) {
+            `cd {$this->rootDir}/ext/swoole && git checkout {$this->swooleBranch}`;
+            echo "Switch swoole to {$this->swooleBranch} branch\n";
+        }
+
         $extAvailabled = [];
         $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
 
@@ -884,5 +891,10 @@ class Preprocessor
     public function hasExtension(string $ext): bool
     {
         return isset($this->extensionMap[$ext]);
+    }
+
+    public function setSwooleBranch(string $branch): void
+    {
+        $this->swooleBranch = $branch;
     }
 }
