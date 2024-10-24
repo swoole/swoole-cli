@@ -155,6 +155,7 @@ class Preprocessor
             return 'base' . '-' . $arch;
         }
     }
+
     public function setPhpSrcDir(string $phpSrcDir)
     {
         $this->phpSrcDir = $phpSrcDir;
@@ -288,7 +289,7 @@ class Preprocessor
      * @param string $file
      * @param object|null $project [ $lib or $ext ]
      */
-    protected function downloadFile(string $url, string $file, object $project = null)
+    protected function downloadFile(string $url, string $file, ?object $project = null)
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
@@ -745,16 +746,6 @@ class Preprocessor
             }
         }
 
-        if ($this->isMacos()) {
-            if (is_file('/usr/local/opt/bison/bin/bison')) {
-                $this->withBinPath('/usr/local/opt/bison/bin');
-            } elseif (is_file('/opt/homebrew/opt/bison/bin/bison')) { //兼容 github action
-                $this->withBinPath('/opt/homebrew/opt/bison/bin/');
-            } else {
-                $this->loadDependentLibrary("bison");
-            }
-        }
-
         // autoload extension depend extension
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->dependentExtensions as $extension_name) {
@@ -795,6 +786,7 @@ class Preprocessor
         }
 
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
+        shell_exec('chmod a+x '.$this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
         $this->generateFile(__DIR__ . '/template/credits.php', $this->rootDir . '/bin/credits.html');
