@@ -142,6 +142,7 @@ PHP_OPCACHE_H_EOF
     cp -rf $SRC/build/. ./build
 
     # TSRM (more info: https://github.com/swoole/swoole-cli/commit/172c76445a631abb1b32fc2a721a2dd9d5a5fc0d)
+    # (https://github.com/php/php-src/pull/16568)
     # cp -rf $SRC/TSRM/. ./TSRM
 
     cp -f $SRC/configure.ac ./configure.ac
@@ -155,12 +156,10 @@ PHP_OPCACHE_H_EOF
     #                                反斜杠、正斜杠、美元符号、引用符号、点号、星号、方括号等
 
 
-
     # fpm  [Need to manually compare fpm_main.c]
-    # cp -rf $SRC/sapi/fpm/fpm ./sapi/cli/
+    # cp -rf $SRC/sapi/fpm/fpm/. ./sapi/cli/fpm
     sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
     # sed -i.backup "s/{'-', 0, NULL}/{'P', 0, \"fpm\"},\n	{'-', 0, NULL}/g" ./sapi/cli/fpm/fpm_main.c
-
 
 
     # cli
