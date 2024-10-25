@@ -158,7 +158,6 @@ PHP_OPCACHE_H_EOF
 
     # fpm  [Need to manually compare fpm_main.c]
     cp -rf $SRC/sapi/fpm/fpm/. ./sapi/cli/fpm
-    X_MATCH_LINE_TOTAL=$(grep 'show_swoole_version(void);' ./sapi/cli/fpm/fpm_main.c | wc -l)
     sed -i.backup '/#include "ext\/standard\/php_standard\.h"/a \
 \
 #include "ext/swoole/include/swoole_version.h"\
