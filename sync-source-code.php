@@ -157,12 +157,15 @@ PHP_OPCACHE_H_EOF
 
 
     # fpm  [Need to manually compare fpm_main.c]
+    # 【执行次命令，影响 swoole-cli 特性，请手动确认功能变更】
     # cp -rf $SRC/sapi/fpm/fpm/. ./sapi/cli/fpm
     sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
     # sed -i.backup "s/{'-', 0, NULL}/{'P', 0, \"fpm\"},\n	{'-', 0, NULL}/g" ./sapi/cli/fpm/fpm_main.c
 
 
     # cli
+    # 【执行次命令，影响 swoole-cli 特性，请手动确认功能变更】
+    # cp -rf $SRC/sapi/cli/. ./sapi/cli
     cp -rf $SRC/sapi/cli/ps_title.c ./sapi/cli
     cp -rf $SRC/sapi/cli/generate_mime_type_map.php ./sapi/cli
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
