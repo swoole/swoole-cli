@@ -42,7 +42,7 @@ if ($p->getInputOption('with-parallel-jobs')) {
 }
 
 if ($p->isMacos()) {
-    $p->setExtraLdflags('-fopenmp');
+    $p->setExtraLdflags('');
     $homebrew_prefix = trim(shell_exec('brew --prefix'));
     $p->withBinPath($homebrew_prefix . '/opt/llvm/bin')
         ->withBinPath($homebrew_prefix . '/opt/flex/bin')
