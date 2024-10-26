@@ -14,6 +14,7 @@ return function (Preprocessor $p) {
         ->withFile('aom-v3.10.0.tar.gz')
         ->withPrefix($aom_prefix)
         ->withUntarArchiveCommand('tar-default')
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             mkdir -p build_dir

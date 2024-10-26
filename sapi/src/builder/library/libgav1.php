@@ -16,6 +16,8 @@ return function (Preprocessor $p) {
             ->withUrl('https://chromium.googlesource.com/codecs/libgav1/+archive/e386d8f1fb983200972d159b9be47fd5d0776708.tar.gz')
             ->withFile('libgav1-v0.19.0.tar.gz')
             ->withPrefix($libgav1_prefix)
+            ->withUntarArchiveCommand('tar-default')
+            ->withBuildCached(false)
             ->withConfigure(
                 <<<EOF
             mkdir -p build
