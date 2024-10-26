@@ -38,5 +38,6 @@ return [
     'imagick',
     'mongodb',
     //'gettext',
-    'uuid'
+    'uuid',
+    'phpy'
 ];
