@@ -10,13 +10,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://code.videolan.org/videolan/dav1d/')
             ->withLicense('https://code.videolan.org/videolan/dav1d/-/blob/master/COPYING', Library::LICENSE_BSD)
             ->withManual('https://code.videolan.org/videolan/dav1d')
-            ->withFile('dav1d-v1.3.0.tar.gz')
-            ->withDownloadScript(
-                'dav1d',
-                <<<EOF
-                git clone -b 1.3.0 --depth=1 --progress https://code.videolan.org/videolan/dav1d.git
-EOF
-            )
+            ->withUrl('https://code.videolan.org/videolan/dav1d/-/archive/1.5.0/dav1d-1.5.0.tar.gz')
+            ->withFile('dav1d-1.5.0.tar.gz')
             ->withPrefix($dav1d_prefix)
             ->withBuildCached(false)
             ->withBuildScript(
