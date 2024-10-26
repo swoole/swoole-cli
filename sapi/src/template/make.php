@@ -24,6 +24,8 @@ export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 OPTIONS="--disable-all \
     --enable-shared=no \
     --enable-static=yes \
+    --with-config-file-path=<?= $this->getGlobalPrefix() ?>/etc/ \
+    --with-config-file-scan-dir=<?= $this->getGlobalPrefix() ?>/etc/conf.d/ \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
