@@ -56,3 +56,7 @@ define("GETTEXT_PREFIX", $p->getGlobalPrefix() . '/gettext');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 
 define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
+
+define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
+define("LIBMPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/libmpdecimal');
+define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
