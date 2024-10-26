@@ -13,6 +13,7 @@ return function (Preprocessor $p) {
         ->withUrl('https://chromium.googlesource.com/libyuv/libyuv/+archive/refs/heads/stable.tar.gz')
         ->withFile('libyuv-stable.tar.gz')
         ->withPrefix($libyuv_prefix)
+        ->withUntarArchiveCommand('tar-default')
         ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
