@@ -126,6 +126,7 @@ EOF
 EOF
         )
         ->withPkgName('python3-embed')
+        ->withPkgName('python3')
         ->withDependentLibraries(
             'zlib',
             'openssl',
@@ -137,7 +138,7 @@ EOF
             'util_linux',
             'gettext',
             'libexpat',
-            'mpdecimal',
+            'libmpdecimal',
             'libb2'
         );
 

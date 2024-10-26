@@ -57,6 +57,7 @@ define("GETTEXT_PREFIX", $p->getGlobalPrefix() . '/gettext');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
 
+
 define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
@@ -78,12 +79,15 @@ define("RAV1E_PREFIX", $p->getGlobalPrefix() . '/rav1e');
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
+define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
+
 define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
-define("MPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/mpdecimal');
+define("LIBMPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/libmpdecimal');
 define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
 
-define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
+
 
 
 
