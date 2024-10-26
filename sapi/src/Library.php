@@ -32,6 +32,7 @@ class Library extends Project
 
     public string|array $binPath = '';
 
+
     public array $preInstallCommands = [];
 
     public bool $enableBuildLibraryHttpProxy = false;

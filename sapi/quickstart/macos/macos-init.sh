@@ -65,6 +65,7 @@ china | ustc)
   export PIPENV_PYPI_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
 
   # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
+   # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
   ;;
 esac
 
