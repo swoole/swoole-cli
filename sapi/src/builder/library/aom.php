@@ -17,7 +17,7 @@ return function (Preprocessor $p) {
             <<<EOF
             mkdir -p build_dir
             cd build_dir
-             cmake ..  \
+             cmake -S .. -B . \
             -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
             -DCMAKE_C_STANDARD=11 \
             -DCMAKE_BUILD_TYPE=Release  \
