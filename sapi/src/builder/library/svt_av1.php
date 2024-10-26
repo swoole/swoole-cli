@@ -28,13 +28,12 @@ return function (Preprocessor $p) {
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON
 
-            make -j \${LOGICAL_PROCESSORS}
+            cmake --build . --config Release
 
-            make install
+            cmake --build . --config Release --target install
 EOF
         )
         ->withPkgName('SvtAv1Enc')
-        ->withPkgName('SvtAv1Dec')
         ->withBinPath($svt_av1_prefix . '/bin/');
 
     $p->addLibrary($lib);
