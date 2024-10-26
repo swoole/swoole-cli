@@ -66,6 +66,7 @@ define("DAV1D_PREFIX", $p->getGlobalPrefix() . '/dav1d');
 define("LIBGAV1_PREFIX", $p->getGlobalPrefix() . '/libgav1');
 define("AOM_PREFIX", $p->getGlobalPrefix() . '/aom');
 define("SVT_AV1_PREFIX", $p->getGlobalPrefix() . '/svt_av1');
+define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
 
 define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
@@ -85,5 +86,6 @@ define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
 
 
