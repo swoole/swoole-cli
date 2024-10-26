@@ -13,6 +13,7 @@ return function (Preprocessor $p) {
         ->withUrl('https://aomedia.googlesource.com/aom/+archive/c2fe6bf370f7c14fbaf12884b76244a3cfd7c5fc.tar.gz')
         ->withFile('aom-v3.10.0.tar.gz')
         ->withPrefix($aom_prefix)
+        ->withUntarArchiveCommand('tar-default')
         ->withConfigure(
             <<<EOF
             mkdir -p build_dir
