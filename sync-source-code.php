@@ -141,10 +141,9 @@ PHP_OPCACHE_H_EOF
     # build
     cp -rf $SRC/build/. ./build
 
-
     # TSRM (more info: https://github.com/swoole/swoole-cli/commit/172c76445a631abb1b32fc2a721a2dd9d5a5fc0d)
+    # (https://github.com/php/php-src/pull/16568)
     # cp -rf $SRC/TSRM/. ./TSRM
-
 
     cp -f $SRC/configure.ac ./configure.ac
     cp -f $SRC/buildconf ./buildconf
@@ -153,17 +152,45 @@ PHP_OPCACHE_H_EOF
     # scripts
     cp -rf $SRC/scripts/. ./scripts
 
-    # 在sed命令中，常见的需要转义的字符有：\、/、$、&、.、*、[、]等
+    # 在sed命令中，常见的需要转义的字符有：\、    /、   $、      &、      .、  *、   [、]等
     #                                反斜杠、正斜杠、美元符号、引用符号、点号、星号、方括号等
 
 
-
     # fpm  [Need to manually compare fpm_main.c]
-    # cp -rf $SRC/sapi/fpm/fpm ./sapi/cli/
+    cp -rf $SRC/sapi/fpm/fpm/. ./sapi/cli/fpm
+    sed -i.backup '/#include "ext\/standard\/php_standard\.h"/a \
+\
+#include "ext/swoole/include/swoole_version.h"\
+extern void show_swoole_version(void);\
+' ./sapi/cli/fpm/fpm_main.c
+
+    sed -i.backup 's/prog = "php";/prog = "swoole-cli";/' ./sapi/cli/fpm/fpm_main.c
+    sed -i.backup 's/Usage: %s \[-n\]/Usage: %s (fpm) [-n]/' ./sapi/cli/fpm/fpm_main.c
+    sed -i.backup "/force_stderr = 1;/a \\
+				break;\\
+\\
+			case 'P': /* enable fpm */\\
+" ./sapi/cli/fpm/fpm_main.c
+
     sed -i.backup 's/int main(int argc, char \*argv\[\])/int fpm_main(int argc, char \*argv\[\])/g' ./sapi/cli/fpm/fpm_main.c
-    # sed -i.backup "s/{'-', 0, NULL}/{'P', 0, \"fpm\"},\n	{'-', 0, NULL}/g" ./sapi/cli/fpm/fpm_main.c
+    sed -i.backup "s/{'-', 0, NULL}/{'P', 0, \"fpm\"},\n	{'-', 0, NULL}/g" ./sapi/cli/fpm/fpm_main.c
+
+    X_FPM_MATCH_LINE_NUM=$(sed -n '/__TIME__, get_zend_version());/=' ./sapi/cli/fpm/fpm_main.c)
+    X_FPM_REPLACE_LINE_NUM=$(($X_FPM_MATCH_LINE_NUM-2))
+    X_FPM_DELETE_START_LINE_NUM=$(($X_FPM_MATCH_LINE_NUM-1))
+    X_FPM_DELETE_END_LINE_NUM=$(($X_FPM_MATCH_LINE_NUM+3))
+
+    sed -i.backup "${X_FPM_REPLACE_LINE_NUM} s/.*/				show_swoole_version();/" ./sapi/cli/fpm/fpm_main.c
+    sed -i.backup "${X_FPM_DELETE_START_LINE_NUM},${X_FPM_DELETE_END_LINE_NUM}d" ./sapi/cli/fpm/fpm_main.c
+
+    # show changed
+    # git diff ./sapi/cli/fpm/fpm_main.c | cat
+    # diff $SRC/sapi/fpm/fpm/fpm_main.c  ./sapi/cli/fpm/fpm_main.c
+
 
     # cli
+    # 【执行本命令，影响 swoole-cli 特性，请手动确认功能变更】
+    # cp -rf $SRC/sapi/cli/. ./sapi/cli
     cp -rf $SRC/sapi/cli/ps_title.c ./sapi/cli
     cp -rf $SRC/sapi/cli/generate_mime_type_map.php ./sapi/cli
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
@@ -186,8 +213,6 @@ PHP_OPCACHE_H_EOF
         REPLACE_LINE_NUM=$(($REPLACE_LINE_NUM + 1))
         sed -i.backup "${REPLACE_LINE_NUM} s/.*/  /" ext/readline/readline_cli.c
     fi
-
-
 
 EOF;
 
