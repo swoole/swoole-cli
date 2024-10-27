@@ -44,6 +44,19 @@ EOF
         ->withDependentLibraries(...$dependentLibraries);
     $p->addExtension($ext);
 
+    $p->withBeforeConfigureScript('phpy', function (Preprocessor $p) {
+        $php_src = $p->getPhpSrcDir();
+        $cmd = <<<EOF
+
+        cd {$php_src}/
+        sed -i.backup "s/ -z now/  /g" ext/phpy/config.m4
+        rm -f ext/phpy/config.m4.backup
+EOF;
+
+        return $cmd;
+    });
+
+
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getPhpSrcDir() . '/ext/phpy/include');
