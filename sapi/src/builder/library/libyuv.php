@@ -17,11 +17,18 @@ return function (Preprocessor $p) {
         ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
-         sed -i.backup 's/target_link_libraries( \${ly_lib_shared} \${JPEG_LIBRARY} )/ /' CMakeLists.txt
-         mkdir -p build
-         cd build
 
-         cmake -S .. -B . \
+        # sed -i.backup 's/^pattern/;\1/' file.txt
+        # 注释匹配行
+        sed -i.backup 's/^add_library( \${ly_lib_shared} SHARED \${ly_lib_parts})/# \1/' CMakeLists.txt
+        sed -i.backup 's/^  target_link_libraries( \${ly_lib_shared} \${JPEG_LIBRARY} )/# \1/' CMakeLists.txt
+        sed -i.backup 's/^set_target_properties( \${ly_lib_shared} PROPERTIES/# \1/' CMakeLists.txt
+        sed -i.backup 's/^set_target_properties( \${ly_lib_shared} PROPERTIES/# \1/' CMakeLists.txt
+        sed -i.backup 's/^install ( TARGETS \${ly_lib_shared} LIBRARY/# \1/' CMakeLists.txt
+        mkdir -p build
+        cd build
+
+        cmake -S .. -B . \
         -DCMAKE_INSTALL_PREFIX={$libyuv_prefix} \
         -DCMAKE_BUILD_TYPE=Release  \
         -DBUILD_SHARED_LIBS=OFF  \
