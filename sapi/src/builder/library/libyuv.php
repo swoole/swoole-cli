@@ -10,13 +10,14 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://chromium.googlesource.com/libyuv/libyuv')
         ->withLicense('https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
         ->withManual('https://chromium.googlesource.com/libyuv/libyuv')
-        ->withUrl('https://chromium.googlesource.com/libyuv/libyuv/+archive/refs/heads/stable.tar.gz')
-        ->withFile('libyuv-stable.tar.gz')
+        ->withUrl('https://chromium.googlesource.com/libyuv/libyuv/+archive/refs/heads/main.tar.gz')
+        ->withFile('libyuv-main.tar.gz')
         ->withPrefix($libyuv_prefix)
         ->withUntarArchiveCommand('tar-default')
         ->withBuildCached(false)
         ->withBuildScript(
             <<<EOF
+         sed -i.backup 's/target_link_libraries( \${ly_lib_shared} \${JPEG_LIBRARY} )/ /' CMakeLists.txt
          mkdir -p build
          cd build
 

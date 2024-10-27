@@ -40,6 +40,11 @@ return function (Preprocessor $p) {
 
 EOF
             )
+            ->withScriptAfterInstall(
+                <<<EOF
+            sed -i.backup "s/-ldl/  /g" {$dav1d_prefix}/lib/pkgconfig/dav1d.pc
+EOF
+            )
             ->withPkgName('dav1d')
             ->withBinPath($dav1d_prefix . '/bin/')
     );
