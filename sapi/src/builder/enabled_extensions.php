@@ -37,4 +37,5 @@ return [
     'yaml',
     'imagick',
     'mongodb',
+    'phpy'
 ];

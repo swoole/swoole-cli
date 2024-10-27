@@ -5,7 +5,7 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $libmpdecimal_prefix = LIBMPDECIMAL_PREFIX;
-    $lib = new Library('bas');
+    $lib = new Library('libmpdecimal');
     $lib->withHomePage('https://www.bytereef.org/mpdecimal/')
         ->withLicense('https://www.bytereef.org/mpdecimal/download.html', Library::LICENSE_BSD)
         ->withManual('https://www.bytereef.org/mpdecimal/quickstart.html')
