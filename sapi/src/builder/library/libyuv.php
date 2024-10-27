@@ -43,9 +43,9 @@ EOF
 EOF
         )
         ->withBinPath($libyuv_prefix . '/bin/')
-        ->withDependentLibraries('libjpeg')
-
-    ;
+        ->withDependentLibraries('libjpeg');
     $p->addLibrary($lib);
-
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libyuv_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libyuv_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -lyuv');
 };
