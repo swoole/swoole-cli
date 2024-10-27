@@ -32,6 +32,7 @@ class Library extends Project
 
     public string|array $binPath = '';
 
+    public string $untarArchiveCommand = 'tar';
 
     public array $preInstallCommands = [];
 
@@ -151,6 +152,16 @@ class Library extends Project
     {
         $this->enableBuildLibraryHttpProxy = $enableBuildLibraryHttpProxy;
         $this->enableBuildLibraryGitProxy = $enableBuildLibraryGitProxy;
+        return $this;
+    }
+
+    /**
+     * @param string $command [ tar | tar-default | xz | unzip ]
+     * @return $this
+     */
+    public function withUntarArchiveCommand(string $command): static
+    {
+        $this->untarArchiveCommand = $command;
         return $this;
     }
 }
