@@ -60,3 +60,4 @@ define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
 define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
 define("LIBMPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/libmpdecimal');
 define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
+define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
