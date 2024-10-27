@@ -11,13 +11,14 @@ return function (Preprocessor $p) {
     $libiconv_prefix = ICONV_PREFIX;
     $bzip2_prefix = BZIP2_PREFIX;
 
-    $ldflags = $p->isMacos() ? '' : ' -static  ';
+    $static_flag = $p->isMacos() ? '' : ' -static  ';
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
 
     $lib = new Library('python3');
     $lib->withHomePage('https://www.python.org/')
         ->withLicense('https://docs.python.org/3/license.html', Library::LICENSE_LGPL)
         ->withManual('https://www.python.org')
+        ->withManual('https://github.com/python/cpython.git')
         ->withUrl('https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz')
         ->withPrefix($python3_prefix)
         ->withBuildCached(false)
@@ -39,9 +40,9 @@ return function (Preprocessor $p) {
         PACKAGES="\$PACKAGES libb2"
 
         # -Wl,–no-export-dynamic
-        CFLAGS="-DOPENSSL_THREADS {$ldflags} -fPIC "
-        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)  {$ldflags}  "
-        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)   {$ldflags} -DOPENSSL_THREADS  "
+        CFLAGS="-DOPENSSL_THREADS {$static_flag}  -fPIC -DCONFIG_64=1"
+        CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES)  {$static_flag}  "
+        LDFLAGS="$(pkg-config   --libs-only-L    --static \$PACKAGES)  {$static_flag}  "
         LIBS="$(pkg-config      --libs-only-l    --static \$PACKAGES)  {$libs}"
 
         CPPFLAGS=" \$CPPFLAGS -I{$bzip2_prefix}/include/ "
@@ -61,19 +62,16 @@ return function (Preprocessor $p) {
         CPPFLAGS="\$CPPFLAGS " \
         LDFLAGS="\$LDFLAGS  " \
         LIBS="\$LIBS " \
-        LINKFORSHARED=" " \
-        CCSHARED=" " \
-        LDSHARED=" " \
-        LDCXXSHARED=" " \
+        CFLAGSFORSHARED="" CCSHARED="" LDSHARED="" LDCXXSHARED="" LINKFORSHARED="" \
+        MODULE_BUILDTYPE=static \
         ./configure \
         --prefix={$python3_prefix} \
         --enable-shared=no \
         --disable-test-modules \
         --with-static-libpython \
         --with-system-expat=yes \
-        --with-system-libmpdec=no \
+        --with-system-libmpdec=yes \
         --with-readline=readline \
-        --with-builtin-hashlib-hashes="md5,sha1,sha2,sha3,blake2" \
         --with-openssl={$openssl_prefix} \
         --with-ssl-default-suites=openssl \
         --without-valgrind \
@@ -81,13 +79,25 @@ return function (Preprocessor $p) {
         --with-ensurepip=install
 
 
-        # echo '*static*' >> Modules/Setup.local
+        # 只能动态构建的扩展 请查看 Modules/Setup.stdlib 描述,找到并注释
+        # 注释方法： sed -i 's/^pattern/;\1/' file.txt
+        # \1 表示匹配到的内容
 
-        sed -i.bak "s/^\*shared\*/\*static\*/g" Modules/Setup.stdlib
-        cat Modules/Setup.stdlib > Modules/Setup.local
+        # sed -i.backup "s/^\*shared\*/\*static\*/g" Modules/Setup.stdlib
+        # sed -i.backup 's/^_ctypes _ctypes\/_ctypes\.c/# \1/' Modules/Setup.stdlib
+        # sed -i.backup 's/^_scproxy _scproxy\.c/# \1/' Modules/Setup.stdlib
 
-        # make -j {$p->getMaxJob()} LDFLAGS="\$LDFLAGS " LINKFORSHARED=" "
+        sed -i.backup 's/^xxlimited xxlimited\.c/# \1/' Modules/Setup.stdlib
+        sed -i.backup 's/^xxlimited_35 xxlimited_35\.c/# \1/' Modules/Setup.stdlib
 
+        cp -f Modules/Setup.stdlib  Modules/Setup.local
+
+        CFLAGS="\$CFLAGS " \
+        CPPFLAGS="\$CPPFLAGS " \
+        LDFLAGS="\$LDFLAGS  " \
+        LIBS="\$LIBS " \
+        CFLAGSFORSHARED="" CCSHARED="" LDSHARED="" LDCXXSHARED="" LINKFORSHARED="" \
+        MODULE_BUILDTYPE=static \
         make -j {$p->getMaxJob()}
 
         make install
@@ -102,12 +112,21 @@ return function (Preprocessor $p) {
         PYTHONPATH=$({$python3_prefix}/bin/python3 -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))")
         echo \${PYTHONPATH}
 
-        mkdir -p {$python3_prefix}/python_hacl
-        cp -rf {$p->getBuildDir()}/python3/Modules/_hacl/* {$python3_prefix}/python_hacl/
+        # PYTHONPATH={$p->getGlobalPrefix()}/bin/python3/bin/
+        # PYTHONHOME=/custom/output
+
 EOF
         )
-        //->withPkgName('python3')
-        //->withPkgName('python3-embed')
+        ->withScriptAfterInstall(
+            <<<EOF
+            sed -i.backup "s/-ldl/  /g" {$python3_prefix}/lib/pkgconfig/python3.pc
+            sed -i.backup "s/-ldl/  /g" {$python3_prefix}/lib/pkgconfig/python3-embed.pc
+            rm -f {$python3_prefix}/lib/pkgconfig/python3.pc.backup
+            rm -f {$python3_prefix}/lib/pkgconfig/python3-embed.pc.backup
+EOF
+        )
+        ->withPkgName('python3-embed')
+        ->withPkgName('python3')
         ->withDependentLibraries(
             'zlib',
             'openssl',
@@ -119,28 +138,27 @@ EOF
             'util_linux',
             'gettext',
             'libexpat',
-            'mpdecimal',
+            'libmpdecimal',
             'libb2'
         );
 
     $p->addLibrary($lib);
 
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $python3_prefix . '/python_hacl/');
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $python3_prefix . '/python_hacl/include/');
-    # $p->withVariable('LDFLAGS', '$LDFLAGS -l:' . $python3_prefix . '/python_hacl/libHacl_Hash_SHA2.a');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $python3_prefix . '/python_hacl/');
-    $p->withVariable('LIBS', '$LIBS -lHacl_Hash_SHA2');
-
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $python3_prefix . '/include/python3.12/');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $python3_prefix . '/lib/');
-    $p->withVariable('LIBS', '$LIBS -lpython3.12');
     if ($p->isMacos()) {
         $p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
+
+        //module  _scproxy needs SystemConfiguration and CoreFoundation framework
+        //$p->withVariable('LDFLAGS', '$LDFLAGS -framework SystemConfiguration -framework CoreFoundation ');
     }
 
 };
 # 构建独立版本 python 参考
 # https://github.com/indygreg/python-build-standalone.git
+# 参考文档： https://wiki.python.org/moin/BuildStatically
+# # https://knazarov.com/posts/statically_linked_python_interpreter/
+
 
 # 配置参考 https://docs.python.org/zh-cn/3.12/using/configure.html
-# 参考文档： https://wiki.python.org/moin/BuildStatically
+
+# https://github.com/python/cpython
+

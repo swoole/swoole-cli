@@ -9,20 +9,17 @@ return function (Preprocessor $p) {
     $lib->withHomePage('https://aomedia.googlesource.com/aom')
         ->withLicense('https://aomedia.googlesource.com/aom/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
         ->withManual('https://aomedia.googlesource.com/aom')
-        ->withUrl('https://aomedia.googlesource.com/aom')
-        ->withFile('aom-v3.7.0.tar.gz')
-        ->withDownloadScript(
-            'aom',
-            <<<EOF
-            git clone -b v3.7.0 --depth=1  https://aomedia.googlesource.com/aom
-EOF
-        )
+        ->withManual('https://aomedia.googlesource.com/aom/+/refs/tags/v3.10.0')
+        ->withUrl('https://aomedia.googlesource.com/aom/+archive/c2fe6bf370f7c14fbaf12884b76244a3cfd7c5fc.tar.gz')
+        ->withFile('aom-v3.10.0.tar.gz')
         ->withPrefix($aom_prefix)
+        ->withUntarArchiveCommand('tar-default')
+        ->withBuildCached(false)
         ->withConfigure(
             <<<EOF
             mkdir -p build_dir
             cd build_dir
-             cmake ..  \
+             cmake -S .. -B . \
             -DCMAKE_INSTALL_PREFIX={$aom_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
             -DCMAKE_C_STANDARD=11 \

@@ -5,7 +5,7 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
 
-    $snappy_prefix = SNAPPY_PREFIX;
+    //$snappy_prefix = SNAPPY_PREFIX;
 
     $p->withExportVariable('PHP_MONGODB_SSL_CFLAGS', '$(pkg-config --cflags --static libcrypto libssl  openssl)');
     $p->withExportVariable('PHP_MONGODB_SSL_LIBS', '$(pkg-config   --libs   --static libcrypto libssl  openssl)');
@@ -40,6 +40,7 @@ return function (Preprocessor $p) {
 
 
     $dependentLibraries = ['icu', 'openssl', 'zlib', 'libzstd'];
+
     //$dependentLibraries[] = 'libsasl';
     //$dependentLibraries[] = 'snappy';
     $ext = new Extension('mongodb');
@@ -59,8 +60,6 @@ EOF
         //->withAutoUpdateFile()
         ->withBuildCached(false)
         ->withDependentLibraries(...$dependentLibraries);
-
-
     $p->addExtension($ext);
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
 };

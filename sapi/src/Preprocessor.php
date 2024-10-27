@@ -421,8 +421,7 @@ __GIT_PROXY_CONFIG_EOF;
      * @param string $httpProxyConfig
      * @return void
      */
-
-    protected function downloadFile(string $url, string $file, object $project = null, string $httpProxyConfig = ''): void
+    protected function downloadFile(string $url, string $file, ?object $project = null, string $httpProxyConfig = ''): void
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $user_agent = DOWNLOAD_FILE_USER_AGENT;//--user-agent='{$user_agent}'
@@ -1159,6 +1158,7 @@ EOF;
             __DIR__ . '/template/make-export-variables.php',
             $this->rootDir . '/make-export-variables.sh'
         );
+        shell_exec('chmod a+x ' . $this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
         $this->generateFile(__DIR__ . '/template/credits.php', $this->rootDir . '/bin/credits.html');
