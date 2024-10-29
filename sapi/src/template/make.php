@@ -22,8 +22,10 @@ export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 
 OPTIONS="--disable-all \
---enable-shared=no \
---enable-static=yes \
+    --enable-shared=no \
+    --enable-static=yes \
+    --with-config-file-path=<?= $this->getGlobalPrefix() ?>/etc/ \
+    --with-config-file-scan-dir=<?= $this->getGlobalPrefix() ?>/etc/conf.d/ \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
@@ -41,7 +43,7 @@ make_<?=$item->name?>() {
     fi
     <?php endif; ?>
 
-    <?php if ($item->cleanBuildDirectory) : ?>
+    <?php if (!$item->enableBuildCached) : ?>
     if [ -d <?=$this->getBuildDir()?>/<?=$item->name?>/ ]; then
         rm -rf <?=$this->getBuildDir()?>/<?=$item->name?>/
     fi
@@ -215,6 +217,8 @@ make_config() {
 
     ./configure --help
     export_variables
+    export LDFLAGS="$LDFLAGS <?= $this->extraLdflags ?>"
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     echo $LDFLAGS > <?= $this->getWorkDir() ?>/ldflags.log
     echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
@@ -287,7 +291,7 @@ make_clean() {
 }
 
 help() {
-    echo "./make.sh docker-build [china|ustc|tuna]"
+    echo "./make.sh docker-build [ china | ustc | tuna ]"
     echo "./make.sh docker-bash"
     echo "./make.sh docker-commit"
     echo "./make.sh docker-push"
@@ -314,17 +318,35 @@ help() {
 
 if [ "$1" = "docker-build" ] ;then
     MIRROR=""
+    CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
     if [ -n "$2" ]; then
         MIRROR=$2
+        case "$MIRROR" in
+        china | openatom )
+            CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
+        ;;
+        esac
     fi
+    PLATFORM=''
+    ARCH=$(uname -m)
+    case $ARCH in
+    'x86_64')
+      PLATFORM='linux/amd64'
+      ;;
+    'aarch64')
+      PLATFORM='linux/arm64'
+      ;;
+    esac
     cd ${__PROJECT_DIR__}/sapi/docker
-    docker build -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f <?= $this->getBaseImageDockerFile() ?>  . --build-arg="MIRROR=${MIRROR}"
+    echo "MIRROR=${MIRROR}"
+    echo "BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
+    docker build --no-cache -t <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> -f Dockerfile  . --build-arg="MIRROR=${MIRROR}" --platform=${PLATFORM} --build-arg="BASE_IMAGE=${CONTAINER_BASE_IMAGE}"
     exit 0
 elif [ "$1" = "docker-bash" ] ;then
     container=$(docker ps -a -f name=<?= Preprocessor::CONTAINER_NAME ?> | tail -n +2 2> /dev/null)
     base_image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getBaseImageTag() ?> | tail -n +2 2> /dev/null)
     image=$(docker images <?= Preprocessor::IMAGE_NAME ?>:<?= $this->getImageTag() ?> | tail -n +2 2> /dev/null)
-    CONTAINER_STATE=$(docker inspect -f {{.State.Running}} <?= Preprocessor::CONTAINER_NAME ?> 2> /dev/null)
+    CONTAINER_STATE=$(docker inspect -f "{{.State.Running}}" <?= Preprocessor::CONTAINER_NAME ?> 2> /dev/null)
     if [[ "${CONTAINER_STATE}" != "true" ]]; then
         bash ./make.sh docker-stop
         container=''

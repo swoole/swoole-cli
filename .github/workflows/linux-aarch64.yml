@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-aarch64:
-    if: 1
+    if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-aarch64]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -129,7 +129,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2  --with-swoole-pgsql=1 --with-libavif=1
+            php prepare.php
 
             bash make.sh all-library
 
