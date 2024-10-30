@@ -84,8 +84,9 @@ return function (Preprocessor $p) {
         # \1 表示匹配到的内容
 
         # sed -i.backup "s/^\*shared\*/\*static\*/g" Modules/Setup.stdlib
-        # sed -i.backup 's/^_ctypes _ctypes\/_ctypes\.c/# \1/' Modules/Setup.stdlib
-        # sed -i.backup 's/^_scproxy _scproxy\.c/# \1/' Modules/Setup.stdlib
+
+        sed -i.backup 's/^_ctypes _ctypes\/_ctypes\.c/# \1/' Modules/Setup.stdlib
+        sed -i.backup 's/^_scproxy _scproxy\.c/# \1/' Modules/Setup.stdlib
 
         sed -i.backup 's/^xxlimited xxlimited\.c/# \1/' Modules/Setup.stdlib
         sed -i.backup 's/^xxlimited_35 xxlimited_35\.c/# \1/' Modules/Setup.stdlib
