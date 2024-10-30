@@ -18,9 +18,10 @@ test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download
 
 cd ${__PROJECT__}/var/download-box/
 
-ALL_DEPS_HASH="ed854e2116ff663404250152af16d850ed69253079c65ee790538c51a09166dd"
+ALL_DEPS_HASH="bdd159b93fd8217e89d206aeb22bf7a8295553db0aff332f049b9025feb31766"
 
-DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.4.0/'
+DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.5.1/'
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
