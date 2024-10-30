@@ -39,7 +39,7 @@ on:
         type: string
 
 env:
-  BUILD_PHP_VERSION: 8.2.13
+  BUILD_PHP_VERSION: 8.2.25
 
 jobs:
   linux-x86_64:
@@ -48,9 +48,9 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.23"
-          - "8.1.29"
-          - "8.3.11"
+          - "8.2.25"
+          - "8.1.30"
+          - "8.3.13"
     steps:
       - uses: actions/checkout@v4
       - name: Show Environment Info

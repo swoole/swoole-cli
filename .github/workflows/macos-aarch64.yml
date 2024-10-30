@@ -3,7 +3,7 @@ name: build-php-cli-macos-aarch64
 on: [ push, pull_request ]
 
 env:
-  BUILD_PHP_VERSION: 8.2.13
+  BUILD_PHP_VERSION: 8.2.25
 
 jobs:
   macos-aarch64:
@@ -17,9 +17,9 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.23"
-          - "8.1.29"
-          - "8.3.11"
+          - "8.2.25"
+          - "8.1.30"
+          - "8.3.13"
 
     steps:
       - uses: actions/checkout@v4
