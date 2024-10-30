@@ -119,6 +119,7 @@ jobs:
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri swoole
           file ./bin/swoole-cli
           otool -L ./bin/swoole-cli
