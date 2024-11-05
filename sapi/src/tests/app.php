@@ -8,7 +8,7 @@ namespace SwooleCli\tests;
 $exts = get_loaded_extensions();
 
 
-$project_dir = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'template');
+$project_dir = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
 foreach ($exts as $ext) {
     if (
