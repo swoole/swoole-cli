@@ -61,6 +61,7 @@ define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
 define("LIBMPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/libmpdecimal');
 define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
 
+
 define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
 define("DAV1D_PREFIX", $p->getGlobalPrefix() . '/dav1d');
 define("LIBGAV1_PREFIX", $p->getGlobalPrefix() . '/libgav1');
@@ -86,6 +87,4 @@ define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
-
-
 
