@@ -60,6 +60,7 @@ define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
 define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
 define("LIBMPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/libmpdecimal');
 define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
+define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
 
 define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
@@ -73,7 +74,7 @@ define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
-define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
+
 
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
