@@ -43,6 +43,7 @@ final class MainTest extends TestCase
         $this->assertEquals($info["BMP Support"], true);
         $this->assertEquals($info["TGA Read Support"], true);
         $this->assertEquals($info["JIS-mapped Japanese Font Support"], false);
+        $this->assertEquals($info["AVIF Support"], true);
     }
 
     public function testImagick(): void
