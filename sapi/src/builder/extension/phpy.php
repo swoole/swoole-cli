@@ -8,7 +8,6 @@ return function (Preprocessor $p) {
     // anaconda 安装包
     // https://repo.anaconda.com/archive/
 
-
     # $options .= ' --with-python-version=3.12';
     # $options .= ' --with-python-dir=/opt/anaconda3';
 
@@ -33,7 +32,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://github.com/swoole/phpy/')
         ->withManual('https://github.com/swoole/phpy/')
         ->withBuildCached(false)
-        ->withPeclVersion('1.0.8')
+        //->withPeclVersion('1.0.8')
         ->withDependentExtensions(...$dependentExtensions)
         ->withDependentLibraries(...$dependentLibraries);
     $p->addExtension($ext);
