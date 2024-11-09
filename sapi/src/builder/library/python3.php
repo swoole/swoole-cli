@@ -22,11 +22,17 @@ return function (Preprocessor $p) {
         ->withUrl('https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz')
         ->withPrefix($python3_prefix)
         ->withBuildCached(false)
-        //->withInstallCached(false)
+        ->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
 
         ./configure --help
+
+        sed -i.backup 's/py_cv_module__ctypes=yes/py_cv_module__ctypes=disabled/' ./configure
+        sed -i.backup 's/py_cv_module_xxlimited=yes/py_cv_module_xxlimited=disabled/' ./configure
+        sed -i.backup 's/py_cv_module_xxlimited_35=yes/py_cv_module_xxlimited_35=disabled/' ./configure
+        sed -i.backup 's/py_cv_module__scproxy=yes/py_cv_module__scproxy=disabled/' ./configure
+        sed -i.backup 's/py_cv_module__tkinter=missing/py_cv_module__tkinter=disabled/' ./configure
 
         PACKAGES='openssl  '
         PACKAGES="\$PACKAGES zlib"
@@ -74,22 +80,24 @@ return function (Preprocessor $p) {
         --with-readline=readline \
         --with-openssl={$openssl_prefix} \
         --with-ssl-default-suites=openssl \
+        --with-builtin-hashlib-hashes=md5,sha1,sha2,sha3,blake2 \
         --without-valgrind \
         --without-dtrace \
         --with-ensurepip=install
 
 
         # 只能动态构建的扩展 请查看 Modules/Setup.stdlib 描述,找到并注释
+        # ctypes 、xxlimited 、scproxy（onliy macos)  、tkinter
         # 注释方法： sed -i 's/^pattern/;\1/' file.txt
         # \1 表示匹配到的内容
 
         # sed -i.backup "s/^\*shared\*/\*static\*/g" Modules/Setup.stdlib
 
-        sed -i.backup 's/^_ctypes _ctypes\/_ctypes\.c/# \1/' Modules/Setup.stdlib
-        sed -i.backup 's/^_scproxy _scproxy\.c/# \1/' Modules/Setup.stdlib
+        # sed -i.backup 's/^_ctypes _ctypes\/_ctypes\.c/# \1/' Modules/Setup.stdlib
+        # sed -i.backup 's/^_scproxy _scproxy\.c/# \1/' Modules/Setup.stdlib
 
-        sed -i.backup 's/^xxlimited xxlimited\.c/# \1/' Modules/Setup.stdlib
-        sed -i.backup 's/^xxlimited_35 xxlimited_35\.c/# \1/' Modules/Setup.stdlib
+        # sed -i.backup 's/^xxlimited xxlimited\.c/# \1/' Modules/Setup.stdlib
+        # sed -i.backup 's/^xxlimited_35 xxlimited_35\.c/# \1/' Modules/Setup.stdlib
 
         cp -f Modules/Setup.stdlib  Modules/Setup.local
 
@@ -102,6 +110,8 @@ return function (Preprocessor $p) {
         make -j {$p->getMaxJob()}
 
         make install
+
+        cp -f Modules/_hacl/libHacl_Hash_SHA2.a   {$python3_prefix}/lib/
 
         {$python3_prefix}/bin/python3 -E -c 'import sys ; from sysconfig import get_platform ; print("%s-%d.%d" % (get_platform(), *sys.version_info[:2])) ; '
         {$python3_prefix}/bin/python3 -E -c 'import sys ; print(sys.modules) ; '
@@ -146,12 +156,13 @@ EOF
     $p->addLibrary($lib);
 
     if ($p->isMacos()) {
-        $p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
+        //$p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
 
         //module  _scproxy needs SystemConfiguration and CoreFoundation framework
         //$p->withVariable('LDFLAGS', '$LDFLAGS -framework SystemConfiguration -framework CoreFoundation ');
     }
-
+    //libHacl_Hash_SHA2.a
+    $p->withVariable('LIBS', '$LIBS -lHacl_Hash_SHA2 ');
 };
 # 构建独立版本 python 参考
 # https://github.com/indygreg/python-build-standalone.git
