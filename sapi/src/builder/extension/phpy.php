@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
     $p->addExtension($ext);
 
     $p->withBeforeConfigureScript('phpy', function (Preprocessor $p) {
-        $php_src = $p->getPhpSrcDir();
+        $php_src = $p->getWorkDir();
         $cmd = <<<EOF
 
         cd {$php_src}/
@@ -53,5 +53,5 @@ EOF;
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getPhpSrcDir() . '/ext/phpy/include');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getWorkDir() . '/ext/phpy/include');
 };
