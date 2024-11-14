@@ -8,7 +8,6 @@ return function (Preprocessor $p) {
     // anaconda 安装包
     // https://repo.anaconda.com/archive/
 
-
     # $options .= ' --with-python-version=3.12';
     # $options .= ' --with-python-dir=/opt/anaconda3';
 
@@ -40,12 +39,13 @@ return function (Preprocessor $p) {
             git clone -b main --depth=1 https://github.com/swoole/phpy.git
 EOF
         )
+        //->withPeclVersion('1.0.8')
         ->withDependentExtensions(...$dependentExtensions)
         ->withDependentLibraries(...$dependentLibraries);
     $p->addExtension($ext);
 
     $p->withBeforeConfigureScript('phpy', function (Preprocessor $p) {
-        $php_src = $p->getPhpSrcDir();
+        $php_src = $p->getWorkDir();
         $cmd = <<<EOF
 
         cd {$php_src}/
@@ -59,5 +59,5 @@ EOF;
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getPhpSrcDir() . '/ext/phpy/include');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getWorkDir() . '/ext/phpy/include');
 };
