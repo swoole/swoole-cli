@@ -9,9 +9,8 @@ return function (Preprocessor $p) {
         (new Extension('pdo_odbc'))
             ->withHomePage('https://www.php.net/manual/zh/ref.pdo-odbc.php')
             ->withLicense('https://github.com/php/php-src/blob/master/LICENSE', Extension::LICENSE_PHP)
-            ->withUrl('https://github.com/php/php-src.git ')
             ->withOptions('--with-pdo-odbc=unixODBC,' . $unixODBC_prefix)
-            ->withDependentLibraries('unixODBC')
+            ->withDependentLibraries('unix_odbc')
             ->withDependentExtensions('pdo')
     );
 };

@@ -10,38 +10,14 @@ return function (Preprocessor $p) {
             ->withHomePage('https://code.videolan.org/videolan/dav1d/')
             ->withLicense('https://code.videolan.org/videolan/dav1d/-/blob/master/COPYING', Library::LICENSE_BSD)
             ->withManual('https://code.videolan.org/videolan/dav1d')
-            ->withFile('dav1d-v1.3.0.tar.gz')
-            ->withDownloadScript(
-                'dav1d',
-                <<<EOF
-                git clone -b 1.3.0 --depth=1 --progress https://code.videolan.org/videolan/dav1d.git
-EOF
-            )
+            ->withUrl('https://code.videolan.org/videolan/dav1d/-/archive/1.5.0/dav1d-1.5.0.tar.gz')
+            ->withFile('dav1d-1.5.0.tar.gz')
             ->withPrefix($dav1d_prefix)
-            ->withPreInstallCommand(
-                'alpine',
-                <<<EOF
-apk add ninja python3 py3-pip  nasm yasm
-apk add meson
-EOF
-            )
-            ->withPreInstallCommand(
-                'macos',
-                <<<EOF
-export HOMEBREW_INSTALL_FROM_API=1
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-brew install  ninja python3  nasm yasm
-# python3 -m pip install --upgrade pip
-brew install meson
-# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-
-EOF
-            )
+            ->withBuildCached(false)
             ->withBuildScript(
                 <<<EOF
-            meson setup  build \
+            mkdir build
+            meson setup  build  \
             -Dprefix={$dav1d_prefix} \
             -Dlibdir={$dav1d_prefix}/lib \
             -Dincludedir={$dav1d_prefix}/include \
@@ -64,8 +40,12 @@ EOF
 
 EOF
             )
+            ->withScriptAfterInstall(
+                <<<EOF
+            sed -i.backup "s/-ldl/  /g" {$dav1d_prefix}/lib/pkgconfig/dav1d.pc
+EOF
+            )
             ->withPkgName('dav1d')
             ->withBinPath($dav1d_prefix . '/bin/')
-            ->withDependentLibraries('sdl2')
     );
 };

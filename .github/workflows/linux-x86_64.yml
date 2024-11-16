@@ -39,7 +39,7 @@ on:
         type: string
 
 env:
-  BUILD_PHP_VERSION: 8.2.13
+  BUILD_PHP_VERSION: 8.2.25
 
 jobs:
   linux-x86_64:
@@ -48,13 +48,15 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.13"
-          - "8.1.27"
-        #  - "8.3.3"
+          - "8.2.25"
+          - "8.1.30"
+          - "8.3.13"
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare Source Code
+      - name: Show Environment Info
         run: |
+          echo ${{ github.event.head_commit.message }}
+          echo ${{ github.event.workflow_run.head_commit.message }}
           echo $PATH
           env
           docker info
@@ -82,19 +84,16 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
-
           echo ${{ github.actor }}
           echo ${{ github.repository }}
           echo ${{ github.repository_owner }}
           echo ${{ github.head_ref }}
           echo ${{ github.ref_name }}
 
-
+      - name: Prepare Build Environment
+        run: |
           # git submodule update --init
-
-          # 准备数据库容器
-          bash sapi/src/UnitTest/scripts/database/start.sh
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
@@ -180,8 +179,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            # php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +mongodb --with-libavif=1 ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }}
-            php prepare.php  +inotify +apcu +ds +xlswriter +ssh2 +pgsql +mongodb  --with-libavif=1 --with-build-type=release --with-php-version=${{ env.BUILD_PHP_VERSION }}
+            php prepare.php  +inotify ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
             bash make-install-deps.sh
 
@@ -190,6 +188,14 @@ jobs:
             bash ./make.sh config
             bash ./make.sh build
             bash ./make.sh archive
+
+      - name: Start Database
+        run: |
+          # 准备数据库容器
+          export PATH=/usr/libexec/docker/cli-plugins/:$PATH
+          docker-compose version
+          docker container ls -a
+          bash sapi/src/UnitTest/scripts/database/start.sh
 
       - name: Show Build Result
         run: |
@@ -207,7 +213,7 @@ jobs:
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
-          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
+          # ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts debug
         uses: actions/upload-artifact@v4

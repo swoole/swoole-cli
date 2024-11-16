@@ -8,15 +8,15 @@ return function (Preprocessor $p) {
     $dav1d_prefix = DAV1D_PREFIX;
     $libgav1_prefix = LIBGAV1_PREFIX;
     $aom_prefix = AOM_PREFIX;
-    $libwebp_prefix = WEBP_PREFIX;
+    $libyuv_prefix = LIBYUV_PREFIX;
     $svt_av1_prefix = SVT_AV1_PREFIX;
     $p->addLibrary(
         (new Library('libavif'))
             ->withHomePage('https://aomediacodec.github.io/av1-avif/')
             ->withLicense('https://github.com/AOMediaCodec/libavif/', Library::LICENSE_BSD)
             ->withManual('https://github.com/AOMediaCodec/libavif/ext/')
-            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.0.1.tar.gz')
-            ->withFile('libavif-v1.0.1.tar.gz')
+            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.1.1.tar.gz')
+            ->withFile('libavif-v1.1.1.tar.gz')
             ->withPrefix($libavif_prefix)
             ->withConfigure(
                 <<<EOF
@@ -33,12 +33,12 @@ return function (Preprocessor $p) {
             -Daom_ROOT={$aom_prefix} \
             -Dlibgav1_ROOT={$libgav1_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
-            -Dlibyuv_ROOT={$libwebp_prefix} \
-            -DAVIF_CODEC_AOM=ON \
-            -DAVIF_CODEC_DAV1D=ON \
-            -DAVIF_CODEC_LIBGAV1=ON \
+            -Dlibyuv_ROOT={$libyuv_prefix} \
+            -DAVIF_CODEC_AOM=SYSTEM \
+            -DAVIF_CODEC_DAV1D=SYSTEM \
+            -DAVIF_CODEC_LIBGAV1=SYSTEM \
             -DAVIF_CODEC_RAV1E=OFF \
-            -DAVIF_CODEC_SVT=ON
+            -DAVIF_CODEC_SVT=SYSTEM
 
 EOF
             )
@@ -47,10 +47,13 @@ EOF
                 'aom',
                 'svt_av1',
                 'libgav1',
-                'dav1d'
+                'dav1d',
+                'libyuv'
             )
-        #  'libyuv', 'libsharpyuv','rav1e'
-        #   'libgav1'  # 测试例子依赖 absl
+
+    #  'libyuv', 'libsharpyuv','rav1e'
+    #   'libgav1'  # 测试例子依赖 absl
+
     );
 
 };

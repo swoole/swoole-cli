@@ -25,7 +25,6 @@ return function (Preprocessor $p) {
 
     //默认这个名称应该和扩展名称一致、和本文件名称一致 ；
     $ext = (new Extension('aaa_example'))
-
         /*
 
         //设置别名 ； 定义的名字和扩展名字不一致时，需要设置别名为扩展名称
@@ -37,7 +36,6 @@ return function (Preprocessor $p) {
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withManual('https://wiki.swoole.com/#/')
-
         /*
 
         //明确申明 使用源地址下载
@@ -124,9 +122,10 @@ EOF
 
     // 扩展钩子 写法
     $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
-        $workdir = $p->getWorkDir();
+        $workDir = $p->getWorkDir();
+        $workExtDir = $p->getWorkExtDir();
         $cmd = <<<EOF
-        cd {$workdir}
+        cd {$workDir}
         # 构建之前对 swoole 源码做一些特别处理
         # 比如加载一个补丁等
         # 比如修改 swoole 源码的构建文件
@@ -135,4 +134,14 @@ EOF;
 
         return $cmd;
     });
+
+    //导入环境变量
+
+    $p->withExportVariable('FREETYPE2_CFLAGS', '$(pkg-config  --cflags --static  libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+    $p->withExportVariable('FREETYPE2_LIBS', '$(pkg-config    --libs   --static  libbrotlicommon libbrotlidec libbrotlienc freetype2 zlib libpng)');
+
+    $libiconv_prefix = ICONV_PREFIX;
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $libiconv_prefix . '/include');
+    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $libiconv_prefix . '/lib');
+    $p->withVariable('LIBS', '$LIBS -liconv');
 };

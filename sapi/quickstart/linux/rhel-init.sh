@@ -76,12 +76,13 @@ dnf makecache
 
 yum install -y git  wget ca-certificates
 
-yum install -y  autoconf automake  clang lld libtool cmake bison  gettext   zip unzip
+yum install -y autoconf automake  clang lld libtool cmake bison  gettext   zip unzip
 yum install -y pkg-config bzip2 flex
 
 
-yum install -y  curl-minimal
+yum install -y curl-minimal
 yum install -y xz
+yum install -y socat
 
 exit 0
 yum install -y clang-tools re2c lzip  coreutils p7zip

@@ -5,22 +5,29 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $python3_prefix = PYTHON3_PREFIX;
+    // anaconda 安装包
+    // https://repo.anaconda.com/archive/
 
-    $options = '--enable-phpy ';
-    $options .= ' --with-python-version=3.12';
+    # $options .= ' --with-python-version=3.12';
     # $options .= ' --with-python-dir=/opt/anaconda3';
-    $options .= ' --with-python-dir=' . $python3_prefix;
-    $options .= ' --with-python-config=' . $python3_prefix . '/bin/python3-config';
 
     $tag = 'v1.0.4';
 
-    if (BUILD_PHP_VERSION_ID < 803000) {
-        throw new \RuntimeException(" PHPY extension Only supports PHP 8.3.0 or higher");
-    }
+
+    $python3_prefix = PYTHON3_PREFIX;
+    $options = [];
+    $options[] = '--enable-phpy';
+    $options[] = ' --with-python-version=3.12.2';
+    $options[] = ' --with-python-dir=' . $python3_prefix;
+    $options[] = ' --with-python-config=' . $python3_prefix . '/bin/python3-config';
+
+
+    $dependentLibraries = ['python3'];
+    $dependentExtensions = [];
+
 
     $ext = (new Extension('phpy'))
-        ->withOptions($options)
+        ->withOptions(implode(' ', $options))
         ->withLicense('https://github.com/swoole/phpy/blob/main/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/phpy/')
         ->withManual('https://github.com/swoole/phpy/')
@@ -32,19 +39,25 @@ return function (Preprocessor $p) {
             git clone -b main --depth=1 https://github.com/swoole/phpy.git
 EOF
         )
-        ->withDependentLibraries('python3');
+        //->withPeclVersion('1.0.8')
+        ->withDependentExtensions(...$dependentExtensions)
+        ->withDependentLibraries(...$dependentLibraries);
     $p->addExtension($ext);
+
+    $p->withBeforeConfigureScript('phpy', function (Preprocessor $p) {
+        $php_src = $p->getWorkDir();
+        $cmd = <<<EOF
+
+        cd {$php_src}/
+        sed -i.backup "s/ -z now/  /g" ext/phpy/config.m4
+        rm -f ext/phpy/config.m4.backup
+EOF;
+
+        return $cmd;
+    });
+
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getPhpSrcDir() . '/ext/phpy/include');
-
-    $python3_prefix = PYTHON3_PREFIX;
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $python3_prefix . '/include');
-    $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $python3_prefix . '/lib/');
-    $p->withVariable('LIBS', '$LIBS -lpython3.12');
-
-
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getWorkDir() . '/ext/phpy/include');
 };
-
-

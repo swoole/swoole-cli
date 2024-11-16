@@ -9,6 +9,9 @@ use Swoole\Coroutine\PostgreSQL;
 
 use function Swoole\Coroutine\run;
 
+error_reporting(E_ALL);
+ini_set("display_errors", "on");
+
 final class SwoolePGSQLTest extends TestCase
 {
     private $pg = null;
@@ -16,6 +19,7 @@ final class SwoolePGSQLTest extends TestCase
 
     public function testSwoolePGSQL(): void
     {
+
         run(function () {
             $this->createDataBase();
             $this->createTable();
@@ -23,7 +27,9 @@ final class SwoolePGSQLTest extends TestCase
             $this->selectTableData();
             $this->deleteTableData();
             $this->dropTable();
+            $this->pg = null;
             $this->dropDatabase();
+            $this->pg_master = null;
         });
     }
 
@@ -33,15 +39,17 @@ final class SwoolePGSQLTest extends TestCase
 
         $pg = new PostgreSQL();
         $conn = $pg->connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=example");
-        if (!$conn) {
-            $this->assertNotTrue($conn, 'pgsql connection postgres error,error info :' . $pg->error);
-            return false;
-        }
+        $this->assertTrue($conn, 'pgsql connection postgres  Error ,Error Info : ' . $pg->error);
+
         $this->pg_master = $pg;
         $stmt = $pg->query("SELECT *  FROM pg_database WHERE datname = 'user_center'");
-        $arr = $stmt->fetchAssoc();
-        if (empty($arr)) {
-            $sql = <<<EOF
+        $arr = $stmt->fetchAll();
+        if (!empty($arr)) {
+            $this->dropDatabase();
+        }
+
+
+        $sql = <<<EOF
 CREATE DATABASE user_center
     WITH
     OWNER = postgres
@@ -52,11 +60,9 @@ CREATE DATABASE user_center
     CONNECTION LIMIT = -1
     IS_TEMPLATE = False
 EOF;
-
-            $pg->query($sql);
-            $this->assertEquals(0, $pg->errCode, 'create database user_center  sucess' . $pg->error);
-        }
-
+        echo $sql . PHP_EOL;
+        $pg->query($sql);
+        $this->assertEquals(0, $pg->errCode, 'create database user_center  Error ,Error Info : ' . $pg->error);
     }
 
     public function createTable()
@@ -64,10 +70,8 @@ EOF;
         $pg = new PostgreSQL();
 
         $conn = $pg->connect("host=127.0.0.1 port=5432 dbname=user_center user=postgres password=example");
-        if (!$conn) {
-            $this->assertNotTrue($conn, 'erro_info' . $pg->error);
-            return;
-        }
+        $this->assertTrue($conn, 'connection database user_center  Error ,Error Info : ' . $pg->error);
+
         $this->pg = $pg;
         $sql = "select *  from pg_tables where schemaname = 'public' and tablename='users'";
         $stmt = $pg->query($sql);
@@ -102,8 +106,9 @@ CACHE 1;
 alter table users alter column id set default nextval('users_id_seq');
 
 EOF;
+            echo $table . PHP_EOL;
             $pg->query($table);
-            $this->assertEquals(0, $pg->errCode, 'create table users sucess' . $pg->error);
+            $this->assertEquals(0, $pg->errCode, 'create table users  Error ,Error Info : ' . $pg->error);
         }
     }
 
@@ -147,19 +152,18 @@ EOF;
             ]
         ];
 
-        echo $sql;
+        echo $sql . PHP_EOL;
 
         $stmt = $this->pg->prepare($sql);
-
-        $i = 100;
+        $i = 30;
         while ($i >= 1) {
             foreach ($list as $data) {
                 $res = $stmt->execute($data);
             }
             $i--;
         }
-        $this->assertGreaterThanOrEqual(1, $stmt->affectedRows(), 'insert data sucess' . $this->pg->error);
-        var_dump($stmt->affectedRows());
+
+        $this->assertGreaterThanOrEqual(1, $stmt->affectedRows(), 'insert data  Error ,Error Info : ' . $this->pg->error);
     }
 
     public function selectTableData()
@@ -170,11 +174,11 @@ ORDER BY id ASC
 
 EOF;
 
-        echo $sql;
+        echo $sql . PHP_EOL;
 
         $stmt = $this->pg->query($sql);
         $list = $stmt->fetchAll();
-        $this->assertGreaterThan(1, count($list), 'select data' . $this->pg->error);
+        $this->assertGreaterThan(1, count($list), 'select data   Error ,Error Info : ' . $this->pg->error);
     }
 
     public function deleteTableData()
@@ -185,27 +189,26 @@ WHERE username=$1
 
 EOF;
 
-        echo $sql;
+        echo $sql . PHP_EOL;
 
         $stmt = $this->pg->prepare($sql);
 
         $stmt->execute(['username2']);
 
-        $this->assertGreaterThan(10, $stmt->affectedRows(), 'delete data' . $this->pg->error);
+        $this->assertGreaterThan(10, $stmt->affectedRows(), 'delete data   Error ,Error Info : ' . $this->pg->error);
     }
 
     public function dropTable()
     {
         $sql = <<<'EOF'
 
-DROP TABLE users ;
-DROP SEQUENCE users_id_seq ;
+DROP TABLE  IF EXISTS  users ;
+DROP SEQUENCE  IF EXISTS users_id_seq ;
 EOF;
 
-        echo $sql;
-
+        echo $sql . PHP_EOL;
         $this->pg->query($sql);
-        $this->assertEquals(0, $this->pg->errCode, 'drop table users' . $this->pg->error);
+        $this->assertEquals(0, $this->pg->errCode, 'drop table users   Error ,Error Info : ' . $this->pg->error);
     }
 
     public function dropDatabase()
@@ -215,10 +218,8 @@ EOF;
 DROP DATABASE IF EXISTS user_center
 EOF;
 
-        echo $sql;
-
+        echo $sql . PHP_EOL;
         $this->pg_master->query($sql);
-        echo PHP_EOL . $this->pg->error . PHP_EOL;
-        $this->assertEquals(0, $this->pg_master->errCode, 'drop database user_center' . $this->pg_master->error);
+        $this->assertEquals(0, $this->pg_master->errCode, 'drop database user_center   Error ,Error Info : ' . $this->pg_master->error);
     }
 }

@@ -101,9 +101,10 @@ abstract class Project
     }
 
     /**
+     * 配置 文件 签名验证
      * https://www.php.net/manual/zh/function.hash-algos.php
      * print_r(hash_algos());
-     * @param string $algo
+     * @param string $algo [ 'md5' | 'sha1' | 'sha256' ]
      * @param string $hash
      * @return $this
      */
@@ -115,8 +116,10 @@ abstract class Project
         return $this;
     }
 
-    /*
+    /**
      * hash 签名验证 ，hash 不匹配，删除文件
+     * @param string $file
+     * @return bool
      */
     public function hashVerify(string $file): bool
     {
@@ -138,18 +141,34 @@ abstract class Project
         return $this->hashVerify;
     }
 
+    /**
+     * https 下载地址
+     * @param string $url
+     * @return $this
+     */
     public function withUrl(string $url): static
     {
         $this->url = $url;
         return $this;
     }
 
+    /**
+     * 指定下载的源码包名称
+     * @param string $file
+     * @return $this
+     */
     public function withFile(string $file): static
     {
         $this->file = $file;
         return $this;
     }
 
+    /**
+     * 使用脚本下载源码包
+     * @param string $downloadDirName 被打包压缩的的目录
+     * @param string $script 待执行的下载脚本
+     * @return $this
+     */
     public function withDownloadScript(string $downloadDirName, string $script): static
     {
         $this->enableDownloadScript = true;

@@ -3,7 +3,7 @@ name: build-php-cli-linux-aarch64
 on: [ push, pull_request ]
 
 env:
-  BUILD_PHP_VERSION: 8.2.13
+  BUILD_PHP_VERSION: 8.2.25
 
 jobs:
   linux-aarch64:
@@ -12,12 +12,12 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.13"
-          - "8.1.27"
-        #  - "8.3.3"
+          - "8.2.25"
+          - "8.1.30"
+          - "8.3.13"
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare Source Code
+      - name: Show Environment Info
         run: |
           echo $PATH
           env
@@ -37,9 +37,10 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
-          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
-
+      - name: Prepare Build Environment
+        run: |
           # git submodule update --init
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
           sudo mkdir -p /usr/local/swoole-cli
           uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
@@ -109,7 +110,7 @@ jobs:
       - name: prepare pre-built library
         uses: addnab/docker-run-action@v3
         with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240106T114724Z
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240618T091126Z
           options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/tmp/
           run: |
             for i in `ls /usr/local/swoole-cli/`
@@ -143,7 +144,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql +mongodb --with-build-type=release --with-libavif=1 --with-php-version=${{ env.BUILD_PHP_VERSION }}
+            php prepare.php +inotify --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
             bash make-install-deps.sh
 

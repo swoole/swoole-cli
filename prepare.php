@@ -2,6 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use SwooleCli\Exception;
 use SwooleCli\Preprocessor;
 use SwooleCli\Library;
 
@@ -10,6 +11,14 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+$buildType = $p->getBuildType();
+if ($p->getInputOption('with-build-type')) {
+    $buildType = $p->getInputOption('with-build-type');
+    $p->setBuildType($buildType);
+}
+
+
+# clean
 # clean old make.sh
 $p->cleanFile(__DIR__ . '/make.sh');
 $p->cleanFile(__DIR__ . '/make-install-deps.sh');
@@ -23,9 +32,9 @@ $p->cleanFile(__DIR__ . '/configure.backup');
 
 
 # PHP 默认版本 （此文件配置 /sapi/PHP-VERSION.conf 在 build_native_php分支 和 衍生分支 无效）
-$php_version = '8.2.13';
-$php_version_id = '802013';
-$php_version_tag = 'php-8.2.13';
+$php_version = '8.2.23';
+$php_version_id = '802023';
+$php_version_tag = 'php-8.2.23';
 
 if ($p->getInputOption('with-php-version')) {
     $subject = $p->getInputOption('with-php-version');
@@ -78,6 +87,8 @@ echo "PHP_VERSION_TAG: " . BUILD_PHP_VERSION_TAG . PHP_EOL;
 echo "CUSTOM_PHP_VERSION_ID: " . BUILD_CUSTOM_PHP_VERSION_ID . PHP_EOL;
 echo PHP_EOL;
 
+// Sync code from php-src
+$p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->isMacos())) {
@@ -101,6 +112,7 @@ define("BUILD_PHP_INSTALL_PREFIX", $p->getRootDir() . '/bin/php-' . BUILD_PHP_VE
 if ($p->getInputOption('with-override-default-enabled-ext')) {
     $p->setExtEnabled([]);
 }
+
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
@@ -148,14 +160,20 @@ EOF;
 
 
 if ($p->isMacos()) {
-    $p->setExtraLdflags('-undefined dynamic_lookup');
-    if (is_file('/usr/local/opt/llvm/bin/ld64.lld')) {
-        $p->withBinPath('/usr/local/opt/llvm/bin')->setLinker('ld64.lld');
-    } elseif (is_file('/opt/homebrew/opt/llvm/bin/ld64.lld')) { //兼容 github action
-        $p->withBinPath('/opt/homebrew/opt/llvm/bin/')->setLinker('ld64.lld');
-    } else {
-        $p->setLinker('lld');
-    }
+    //$p->setExtraLdflags('-undefined dynamic_lookup');
+    //$p->setExtraLdflags(' -framework CoreFoundation');
+    $p->setExtraLdflags(' ');
+    $homebrew_prefix = trim(shell_exec('brew --prefix'));
+    $p->withBinPath($homebrew_prefix . '/opt/llvm/bin')
+        ->withBinPath($homebrew_prefix . '/opt/flex/bin')
+        ->withBinPath($homebrew_prefix . '/opt/bison/bin')
+        ->withBinPath($homebrew_prefix . '/opt/libtool/bin')
+        ->withBinPath($homebrew_prefix . '/opt/m4/bin')
+        ->withBinPath($homebrew_prefix . '/opt/automake/bin/')
+        ->withBinPath($homebrew_prefix . '/opt/autoconf/bin/')
+        ->withBinPath($homebrew_prefix . '/opt/gettext/bin')
+        ->setLinker('ld64.lld');
+
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
     $p->setLinker('ld.lld');
@@ -164,22 +182,13 @@ if ($p->isMacos()) {
 
 
 $c_compiler = $p->getInputOption('with-c-compiler');
-if ($c_compiler == 'musl-gcc') {
-    $p->set_C_COMPILER('musl-gcc');
-    $p->set_CXX_COMPILER('g++');
-    $p->setLinker('ld');
-} elseif ($c_compiler == 'gcc') {
+if ($c_compiler == 'gcc') {
     $p->set_C_COMPILER('gcc');
     $p->set_CXX_COMPILER('g++');
     $p->setLinker('ld');
-} elseif ($c_compiler == 'x86_64-linux-musl-gcc') {
-    $p->set_C_COMPILER('x86_64-linux-musl-gcc');
-    $p->set_CXX_COMPILER('x86_64-linux-musl-g++');
-    $p->setLinker('ld');
 }
 
-
-$p->setExtraCflags(' -Os');
+$p->setExtraCflags(' -Os -fno-openmp');
 
 
 // Generate make.sh
@@ -188,9 +197,6 @@ $p->execute();
 
 function install_libraries(Preprocessor $p): void
 {
-    if ($p->getInputOption('with-c-compiler') == 'x86_64-linux-musl-gcc') {
-        $p->loadDependentLibrary('musl_cross_make');
-    }
-
     $p->loadDependentLibrary('php');
 }
+

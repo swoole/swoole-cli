@@ -25,8 +25,8 @@ cd ${__PROJECT__}/php-src/
 ./buildconf --force
 test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
-  --disable-fiber-asm \
   --enable-opcache \
+  --disable-fiber-asm \
   --without-pcre-jit \
   --with-openssl --enable-openssl \
   --with-curl \
@@ -56,7 +56,7 @@ test -f Makefile && make clean
   --enable-exif \
   --with-sodium \
   --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
-  --enable-gd --with-jpeg  --with-freetype \
+  --enable-gd --with-jpeg --with-freetype \
   --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
   --enable-swoole-pgsql \
   --enable-swoole-sqlite \
@@ -65,7 +65,7 @@ test -f Makefile && make clean
   --with-yaml \
   --with-readline
 
-# --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)
-# --with-pdo-pgsql \
-# --with-pgsql \
-# --with-pdo-sqlite \
+#  --with-pdo-pgsql \
+#  --with-pgsql
+#  --with-pdo-sqlite \
+#  --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)

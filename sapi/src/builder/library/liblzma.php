@@ -28,7 +28,7 @@ return function (Preprocessor $p) {
 EOF
             )
             ->withPkgName('liblzma')
-            ->withBinPath($liblzma_prefix . '/bin/')
+            //->withBinPath($liblzma_prefix . '/bin/')
             ->withDependentLibraries('libiconv')
     );
 };

@@ -103,51 +103,18 @@ class Preprocessor
      * Extensions enabled by default
      * @var array|string[]
      */
-    protected array $extEnabled = [
-        //'opcache', //需要修改源码才能实现
-        'curl',
-        'iconv',
-        'bz2',
-        'bcmath',
-        'pcntl',
-        'filter',
-        'session',
-        'tokenizer',
-        'mbstring',
-        'ctype',
-        'zlib',
-        'zip',
-        'posix',
-        'sockets',
-        'pdo',
-        'sqlite3',
-        'phar',
-        'mysqlnd',
-        'mysqli',
-        'intl',
-        'fileinfo',
-        'pdo_mysql',
-        //'pdo_sqlite',
-        'soap',
-        'xsl',
-        'gmp',
-        'exif',
-        'sodium',
-        'openssl',
-        'readline',
-        'xml',
-        'redis',
-        'swoole',
-        'yaml',
-        'imagick',
-        //'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
-        'gd',
-    ];
+    // 'opcache', //需要修改源码才能实现
+    // 'mongodb', //php8.2 需要处理依赖库问题 more info ： https://github.com/mongodb/mongo-php-driver/issues/1445
+
+    protected array $extEnabled;
+
     protected array $extEnabledBuff = [];
+
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
     protected array $beforeConfigure = [];
     protected string $configureVarables;
+
     protected string $buildType = 'release';
     protected bool $inVirtualMachine = false;
 
@@ -160,6 +127,7 @@ class Preprocessor
     protected function __construct()
     {
         $this->setOsType($this->getRealOsType());
+        $this->extEnabled = require __DIR__ . '/builder/enabled_extensions.php';
     }
 
     public function setLinker(string $ld): static
@@ -220,16 +188,6 @@ class Preprocessor
             return 'base';
         } else {
             return 'base' . '-' . $arch;
-        }
-    }
-
-    public function getBaseImageDockerFile(): string
-    {
-        $arch = $this->getSystemArch();
-        if ($arch == 'x64') {
-            return 'Dockerfile';
-        } else {
-            return 'Dockerfile' . '-' . $arch;
         }
     }
 
@@ -298,6 +256,11 @@ class Preprocessor
         return $this->workDir;
     }
 
+    public function getWorkExtDir(): string
+    {
+        return $this->workDir . '/ext/';
+    }
+
     public function setExtraLdflags(string $flags)
     {
         $this->extraLdflags = $flags;
@@ -345,6 +308,11 @@ class Preprocessor
         return $this;
     }
 
+    /**
+     * @param string $buildType 构建类型 [ release | dev | debug ]
+     * @return $this
+     *
+     */
     public function setBuildType(string $buildType): static
     {
         $this->buildType = $buildType;
@@ -356,6 +324,12 @@ class Preprocessor
         return $this->buildType;
     }
 
+    /**
+     * 生成代理配置
+     * @param string $shell (http_proxy 代理配置 + no_proxy配置 )
+     * @param string $httpProxy (http 代理配置 )
+     * @return $this
+     */
     public function setProxyConfig(string $shell = '', string $httpProxy = ''): static
     {
         $this->proxyConfig = $shell;
@@ -363,26 +337,50 @@ class Preprocessor
         $proxyInfo = parse_url($httpProxy);
         if (!empty($proxyInfo['scheme']) && !empty($proxyInfo['host']) && !empty($proxyInfo['port'])) {
             $proto = '';
+            $socat_proxy_proto = '';
+
             switch (strtolower($proxyInfo['scheme'])) {
                 case 'socks5':
                 case "socks5h":
                     $proto = 5;
+                    $socat_proxy_proto = 'socks4a';
                     break;
                 case "socks4a":
                 case 'socks4':
                     $proto = 4;
+                    $socat_proxy_proto = 'socks4a';
                     break;
                 default:
                     $proto = "connect";
+                    $socat_proxy_proto = 'proxy';
                     break;
             }
+
+            /*
+             * sockat 代理例子
+             * http://www.dest-unreach.org/socat/doc/socat.html
+             * socat - socks4a:<socks-server>:%h:%p,socksport=2000
+             * socat - proxy:<proxy-server>:%h:%p,proxyport=2000
+             */
+
+            $socat_proxy_cmd = '';
+            if ($socat_proxy_proto == 'socks4a') {
+                $socat_proxy_cmd = "socat - socks4a:{$proxyInfo['host']}:\\$1:\\$2,socksport={$proxyInfo['port']}";
+            } else {
+                $socat_proxy_cmd = "socat - proxy:{$proxyInfo['host']}:\\$1:\\$2,proxyport={$proxyInfo['port']}";
+            }
+
             $this->gitProxyConfig = <<<__GIT_PROXY_CONFIG_EOF
 export GIT_PROXY_COMMAND=/tmp/git-proxy;
 
 cat  > \$GIT_PROXY_COMMAND <<___EOF___
 #!/bin/bash
 
-nc -X {$proto}  -x {$proxyInfo['host']}:{$proxyInfo['port']} "\\$1" "\\$2"
+# macos环境下 nc 不可用, 使用 socat 代替
+# nc -X {$proto}  -x {$proxyInfo['host']}:{$proxyInfo['port']} "\\$1" "\\$2"
+
+{$socat_proxy_cmd};
+
 ___EOF___
 
 chmod +x \$GIT_PROXY_COMMAND;
@@ -423,12 +421,11 @@ __GIT_PROXY_CONFIG_EOF;
     /**
      * @param string $url
      * @param string $file
-     * @param object|null $project
+     * @param object|null $project [ $lib or $ext ]
      * @param string $httpProxyConfig
      * @return void
      */
-
-    protected function downloadFile(string $url, string $file, object $project = null, string $httpProxyConfig = ''): void
+    protected function downloadFile(string $url, string $file, ?object $project = null, string $httpProxyConfig = ''): void
     {
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $user_agent = DOWNLOAD_FILE_USER_AGENT;//--user-agent='{$user_agent}'
@@ -590,7 +587,11 @@ EOF;
         }
 
         if (!empty($lib->binPath)) {
-            $this->binPaths[] = $lib->binPath;
+            if (is_array($lib->binPath)) {
+                $this->binPaths = array_merge($this->binPaths, $lib->binPath);
+            } else {
+                $this->binPaths[] = $lib->binPath;
+            }
         }
 
         if (empty($lib->license)) {
@@ -726,7 +727,8 @@ EOF;
                         echo '[ext/' . $ext_name . '] cached ' . PHP_EOL;
                     }
                 } else {
-                    echo $cmd = "tar --strip-components=1 -C $dst_dir -xf {$ext->path}";
+                    $cmd = "tar --strip-components=1 -C $dst_dir -xf {$ext->path}";
+                    echo "[Extension] " . $cmd;
                     echo PHP_EOL;
                     echo `$cmd`;
                     echo PHP_EOL;
@@ -1087,6 +1089,7 @@ EOF;
         }
         $this->mkdirIfNotExists($this->libraryDir, 0777, true);
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
+        $this->deleteDirectoryIfExists($this->getWorkExtDir());
         include __DIR__ . '/constants.php';
 
         $extAvailabled = [];
@@ -1111,16 +1114,6 @@ EOF;
             ($extAvailabled[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
-            }
-        }
-
-        if ($this->isMacos()) {
-            if (is_file('/usr/local/opt/bison/bin/bison')) {
-                $this->withBinPath('/usr/local/opt/bison/bin');
-            } elseif (is_file('/opt/homebrew/opt/bison/bin/bison')) { //兼容 github action
-                $this->withBinPath('/opt/homebrew/opt/bison/bin/');
-            } else {
-                $this->loadDependentLibrary("bison");
             }
         }
 
@@ -1169,6 +1162,7 @@ EOF;
             __DIR__ . '/template/make-export-variables.php',
             $this->rootDir . '/make-export-variables.sh'
         );
+        shell_exec('chmod a+x ' . $this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
         $this->generateFile(__DIR__ . '/template/credits.php', $this->rootDir . '/bin/credits.html');
@@ -1202,6 +1196,7 @@ EOF;
             echo "{$item->name}\n";
         }
     }
+
 
     public function getRealOsType(): string
     {
