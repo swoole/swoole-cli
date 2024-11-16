@@ -22,8 +22,7 @@ return function (Preprocessor $p) {
         --enable-shared=no \
         --enable-static=yes \
         --enable-pc=yes \
-        --enable-doc=no \
-        MACHINE=x64
+        --enable-doc=no
 
 EOF
         )
