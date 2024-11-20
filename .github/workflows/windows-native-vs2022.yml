@@ -10,13 +10,13 @@ env:
 jobs:
   windows-native:
     if: 1
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       matrix:
         php-version:
         #  - "8.2.13"
         #  - "8.1.27"
-          - "8.3.7"
+          - "8.3.11"
 
     steps:
       - uses: actions/checkout@v4
