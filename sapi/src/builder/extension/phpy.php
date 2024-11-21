@@ -46,6 +46,7 @@ EOF
 
     $p->withBeforeConfigureScript('phpy', function (Preprocessor $p) {
         $php_src = $p->getWorkDir();
+        $php_src = $p->getPhpSrcDir();
         $cmd = <<<EOF
 
         cd {$php_src}/
@@ -59,5 +60,6 @@ EOF;
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
-    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getWorkDir() . '/ext/phpy/include');
+    //$p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getWorkDir() . '/ext/phpy/include');
+    $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getPhpSrcDir() . '/ext/phpy/include');
 };
