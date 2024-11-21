@@ -5,11 +5,11 @@ on:
   pull_request:
 
 env:
-  BUILD_PHP_VERSION: 8.2.13
+  BUILD_PHP_VERSION: 8.2.25
 
 jobs:
   macos-x86_64:
-    if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[macos-x86_64]')"
+    if: 1
     runs-on: macos-13
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
@@ -19,9 +19,9 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.23"
-          - "8.1.29"
-          - "8.3.11"
+          - "8.2.25"
+          - "8.1.30"
+          - "8.3.13"
 
     steps:
       - uses: actions/checkout@v4

@@ -13,8 +13,8 @@ cd ${__PROJECT__}
 
 ROOT=${__PROJECT__}
 
-PHP_VERSION='8.2.23'
-SWOOLE_VERSION='v5.1.4'
+PHP_VERSION='8.2.25'
+SWOOLE_VERSION='v5.1.5'
 
 while [ $# -gt 0 ]; do
   case "$1" in
