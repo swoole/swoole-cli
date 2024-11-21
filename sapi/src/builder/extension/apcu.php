@@ -7,7 +7,7 @@ return function (Preprocessor $p) {
     $p->addExtension(
         (new Extension('apcu'))
             ->withOptions('--enable-apcu')
-            ->withPeclVersion('5.1.22')
+            ->withPeclVersion('5.1.24')
             ->withFileHash('md5', '2e1fb1f09725ada616e873c4e4012ff6')
             ->withHomePage('https://github.com/krakjoe/apcu.git')
             ->withManual('https://www.php.net/apcu')
