@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-aarch64:
-    if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-aarch64]')"
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -153,6 +153,7 @@ jobs:
           run: |
             ./bin/swoole-cli -v
             ./bin/swoole-cli -m
+            ./bin/swoole-cli --ri gd
             ./bin/swoole-cli --ri swoole
             ./bin/swoole-cli --ri gd
             ./bin/swoole-cli --ri pgsql

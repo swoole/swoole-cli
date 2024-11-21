@@ -213,7 +213,6 @@ extern void show_swoole_version(void);\
         REPLACE_LINE_NUM=$(($REPLACE_LINE_NUM + 1))
         sed -i.backup "${REPLACE_LINE_NUM} s/.*/  /" ext/readline/readline_cli.c
     fi
-
 EOF;
 
 echo PHP_EOL;
