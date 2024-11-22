@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
 
     $p->withBeforeConfigureScript('protobuf', function (Preprocessor $p) {
         // compatible with redis
-        $workdir = $p->getWorkDir();
+        $workdir = $p->getPhpSrcDir();
         if ($p->isMacos()) {
             $cmd = <<<EOF
                 cd {$workdir}

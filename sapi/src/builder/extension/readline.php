@@ -14,11 +14,10 @@ return function (Preprocessor $p) {
 
     // 扩展钩子
     $p->withBeforeConfigureScript('readline', function (Preprocessor $p) {
-        $workDir = $p->getWorkDir();
-        $php_src = $p->getPhpSrcDir();
+        $workDir = $p->getPhpSrcDir();
         $cmd = <<<EOF
 
-        cd {$php_src}/
+        cd {$workDir}/
 
         FOUND_DL_READLINE=$(grep -c '#ifdef COMPILE_DL_READLINE' ext/readline/readline_cli.c)
 
