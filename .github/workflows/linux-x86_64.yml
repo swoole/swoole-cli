@@ -51,12 +51,13 @@ jobs:
           - "8.2.25"
           - "8.1.30"
           - "8.3.13"
+          - "8.4.1"
     steps:
       - uses: actions/checkout@v4
       - name: Show Environment Info
         run: |
-          echo ${{ github.event.head_commit.message }}
-          echo ${{ github.event.workflow_run.head_commit.message }}
+          echo "${{ github.event.head_commit.message }}"
+          echo "${{ github.event.workflow_run.head_commit.message }}"
           echo $PATH
           env
           docker info
