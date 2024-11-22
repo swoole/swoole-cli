@@ -45,11 +45,10 @@ EOF
     $p->addExtension($ext);
 
     $p->withBeforeConfigureScript('phpy', function (Preprocessor $p) {
-        $php_src = $p->getWorkDir();
-        $php_src = $p->getPhpSrcDir();
+        $workDir = $p->getPhpSrcDir();
         $cmd = <<<EOF
 
-        cd {$php_src}/
+        cd {$workDir}/
         sed -i.backup "s/ -z now/  /g" ext/phpy/config.m4
         rm -f ext/phpy/config.m4.backup
 EOF;

@@ -54,4 +54,23 @@ EOF
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
+
+
+    // 扩展钩子
+    $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
+        $workDir = $p->getPhpSrcDir();
+        $cmd = <<<EOF
+        cd {$workDir}
+        sed -i.backup "s/php_strtolower(/zend_str_tolower(/" ext/swoole/ext-src/swoole_redis_server.cc
+EOF;
+
+        if (BUILD_CUSTOM_PHP_VERSION_ID >= 8040) {
+            //参考
+            //https://github.com/swoole/swoole-src/blob/4787a8a0e8b4adb0e8643901d2b5bae4fafe0876/ext-src/swoole_redis_server.cc#L162
+            $cmd .= PHP_EOL;
+        } else {
+            $cmd = '';
+        }
+        return $cmd;
+    });
 };
