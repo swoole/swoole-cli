@@ -12,9 +12,9 @@ return function (Preprocessor $p) {
 
     // 扩展钩子 写法
     $p->withBeforeConfigureScript('opcache', function (Preprocessor $p) {
-        $php_src_dir = $p->getPhpSrcDir();
+        $workDir = $p->getPhpSrcDir();
         $cmd = <<<EOF
-        cd {$php_src_dir}/ ;
+        cd {$workDir}/ ;
 
 EOF;
 
