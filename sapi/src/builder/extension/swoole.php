@@ -10,6 +10,11 @@ return function (Preprocessor $p) {
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
 
+    if (BUILD_CUSTOM_PHP_VERSION_ID >= 8040) {
+        // v5.1.x 不支持 PHP 8.4
+        // swoole 支持计划 https://wiki.swoole.com/zh-cn/#/version/supported?id=%e6%94%af%e6%8c%81%e8%ae%a1%e5%88%92
+        $swoole_tag = 'master';
+    }
     $options = [];
 
     if ($p->getBuildType() === 'debug') {
@@ -54,23 +59,4 @@ EOF
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
-
-
-    // 扩展钩子
-    $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
-        $workDir = $p->getPhpSrcDir();
-        $cmd = <<<EOF
-        cd {$workDir}
-        sed -i.backup "s/php_strtolower(/zend_str_tolower(/" ext/swoole/ext-src/swoole_redis_server.cc
-EOF;
-
-        if (BUILD_CUSTOM_PHP_VERSION_ID >= 8040) {
-            //参考
-            //https://github.com/swoole/swoole-src/blob/4787a8a0e8b4adb0e8643901d2b5bae4fafe0876/ext-src/swoole_redis_server.cc#L162
-            $cmd .= PHP_EOL;
-        } else {
-            $cmd = '';
-        }
-        return $cmd;
-    });
 };
