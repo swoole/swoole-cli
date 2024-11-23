@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     if (BUILD_CUSTOM_PHP_VERSION_ID >= 8040) {
         // v5.1.x 不支持 PHP 8.4
         // swoole 支持计划 https://wiki.swoole.com/zh-cn/#/version/supported?id=%e6%94%af%e6%8c%81%e8%ae%a1%e5%88%92
-        $swoole_tag = 'master';
+        $swoole_tag = 'v6.0.0-rc1';
     }
     $file = "swoole-{$swoole_tag}.tar.gz";
 
