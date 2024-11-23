@@ -17,7 +17,7 @@ jobs:
           - "8.2.25"
           - "8.1.30"
           - "8.3.13"
-        #  - "8.4.1"
+          - "8.4.1"
 
     steps:
       - name: Prepare git
@@ -96,7 +96,8 @@ jobs:
         run: |
           ./bin/php.exe -v
           ./bin/php.exe -m
-          ./bin/php.exe --ri pdo_pgsql
+          ./bin/php.exe --ri mongodb
+          ./bin/php.exe --ri gd
           ./bin/php.exe --ri swoole
           ./bin/php.exe  -r "echo PHP_VERSION;"
 
