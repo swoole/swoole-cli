@@ -86,7 +86,7 @@ jobs:
 
       - name: Configure
         run: |
-          bash ./sapi/scripts/cygwin/cygwin-config.sh
+          bash ./sapi/scripts/cygwin/cygwin-config.sh --php-version ${{ env.BUILD_PHP_VERSION }}
 
       - name: Build
         run: |
