@@ -12,6 +12,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OPTIONS=''
+X_PHP_VERSION=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --php-version)
@@ -36,6 +37,9 @@ mkdir -p ${__PROJECT__}/bin/
 cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
 
 cd ${__PROJECT__}/php-src/
+if [ "$X_PHP_VERSION" = "8.4" ]; then
+  sed -i.backup 's/!defined(__HAIKU__)/!defined(__HAIKU__) \&\& !defined(__CYGWIN__)/' TSRM/TSRM.c
+fi
 
 # export CPPFLAGS="-I/usr/include"
 # export CFLAGS=""
