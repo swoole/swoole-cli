@@ -12,9 +12,9 @@ cd %__PROJECT__%\php-src\
 
 
 
-set "INCLUDE=%INCLUDE%;%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include"
-set "LIB=%LIB%;%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib"
-set "LIBPATH=%LIBPATH%;%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib\"
+rem set "INCLUDE=%INCLUDE%;%__PROJECT__%\build\openssl\include\;%__PROJECT__%\build\zlib\include"
+rem set "LIB=%LIB%;%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib"
+rem set "LIBPATH=%LIBPATH%;%__PROJECT__%\build\openssl\lib\;%__PROJECT__%\build\zlib\lib\"
 
 echo %INCLUDE%
 echo %LIB%
@@ -28,15 +28,16 @@ configure.bat ^
 --enable-sockets      --enable-ctype     --enable-pdo    --enable-phar  ^
 --enable-filter ^
 --enable-xmlreader   --enable-xmlwriter ^
---enable-tokenizer ^
---disable-zts ^
---enable-apcu ^
---enable-bcmath ^
---enable-zlib  ^
---with-openssl=static ^
---with-toolset=vs ^
---with-extra-includes="%INCLUDE%" ^
---with-extra-libs="%LIB%"
+--enable-tokenizer
+
+:: --disable-zts ^
+:: --enable-apcu ^
+:: --enable-bcmath ^
+:: --enable-zlib  ^
+:: --with-openssl=static ^
+:: --with-toolset=vs ^
+:: --with-extra-includes="%INCLUDE%" ^
+:: --with-extra-libs="%LIB%"
 
 
 :: --enable-mbstring
