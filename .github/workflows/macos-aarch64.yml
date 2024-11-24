@@ -38,6 +38,7 @@ jobs:
           brew config
           xcrun --show-sdk-path
           ls -lh $(xcrun --show-sdk-path)
+          clang --version
 
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')

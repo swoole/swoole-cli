@@ -38,8 +38,8 @@ jobs:
           sw_vers
           xcodebuild -version
           brew config
-
           xcrun --show-sdk-path
+          clang --version
 
           ls -lh $(xcrun --show-sdk-path)
 
