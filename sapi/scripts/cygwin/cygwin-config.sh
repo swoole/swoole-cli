@@ -21,7 +21,7 @@ while [ $# -gt 0 ]; do
     if [ "$X_PHP_VERSION" = "8.4" ]; then
       OPTIONS+=' --enable-swoole-thread '
       OPTIONS+=' --enable-zts '
-      # OPTIONS+=' --disable-opcache-jit '
+      OPTIONS+=' --disable-opcache-jit '
     fi
     ;;
   --*)
