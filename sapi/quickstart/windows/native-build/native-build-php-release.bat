@@ -47,7 +47,7 @@ rem echo 	^@"$(LINK)" ^/nologo $(PHP_GLOBAL_OBJS) $(PHP_GLOBAL_OBJS_RESP) $(CLI_
 rem echo 	^@"$(LINK)" ^/nologo  $(PHP_GLOBAL_OBJS)  $(CLI_GLOBAL_OBJS) $(STATIC_EXT_OBJS) $(STATIC_EXT_LIBS)  $(ASM_OBJS) $(LIBS) $(LIBS_CLI)    $(BUILD_DIR)^\php.exe.res  /out:$(BUILD_DIR)^\php.exe $(LDFLAGS) $(LDFLAGS_CLI)  >> %x_makefile%
 rem echo 	-@$(_VC_MANIFEST_EMBED_EXE)   >> %x_makefile%
 rem echo 	^@echo SAPI sapi\cli build complete  >> %x_makefile%
-rem echo 	@if exist php.exe.manifest $(MT) -nologo -manifest php.exe.manifest -outputresource:php.exe    >> %x_makefile%
+echo 	@if exist php.exe.manifest $(MT) -nologo -manifest php.exe.manifest -outputresource:php.exe    >> %x_makefile%
 
 rem  /WHOLEARCHIVE  /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:msvcrtd.lib /FORCE:MULTIPLE
 rem libcpmt.lib  libvcruntime.lib libucrt.lib msvcrt.lib
