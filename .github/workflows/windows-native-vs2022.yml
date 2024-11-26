@@ -1,4 +1,4 @@
-name: build-php-cli-windows-vs2019
+name: build-php-cli-windows-vs2022
 
 on:
   push:
