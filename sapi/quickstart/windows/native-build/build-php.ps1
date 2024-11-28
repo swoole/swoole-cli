@@ -30,6 +30,7 @@ msiexec /i strawberry-perl-5.38.2.2-64bit.msi  /passive
 --add Microsoft.Component.MSBuild ^
 --add Microsoft.VisualStudio.Workload.MSBuildTools ^
 --add Microsoft.VisualStudio.Workload.NativeDesktop ^
+--add Microsoft.UI.Xaml.2.8 ^
 --passive  --force --norestart
 
 

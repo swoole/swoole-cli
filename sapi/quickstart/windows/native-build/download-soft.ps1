@@ -1,4 +1,5 @@
-
+# PowerShell 切换为超级用户
+powershell -NoProfile -Command "Start-Process powershell -Verb RunAs"
 
 # PowerShell 命令称为 cmdlet(读作 command-let)
 # PowerShell ISE主要用于编写和调试PowerShell脚本
@@ -28,6 +29,10 @@ irm winget.pro | iex
 winget install notepad++
 
 winget install --id Git.Git -e --source winget
+# 换源
+winget source remove winget
+winget source add winget https://mirrors.ustc.edu.cn/winget-source
+winget source reset winget
 
 
 # Chocolatey是一个开源的包管理器
@@ -38,16 +43,31 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 
 irm https://community.chocolatey.org/install.ps1 | iex
 
+choco list
+choco install -y copyq
+choco install -y git
+choco install -y winget
+choco install -y microsoft-windows-terminal
+choco install notepadplusplus
 
 
 # Scoop是Windows的命令行安装程序。
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 irm https://get.scoop.sh | iex
+# irm get.scoop.sh -Proxy 'http://<ip:port>' | iex
+
+irm get.scoop.sh -outfile 'install.ps1'
+.\install.ps1 -RunAsAdmin
+
+# 一行命令完成
+iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
 
 # choco install <package-name>
 scoop install aria2
+
 
 
 
@@ -56,7 +76,13 @@ scoop install aria2
 
 # Add-AppxPackage Microsoft.WindowsTerminal_<versionNumber>.msixbundle
 # https://github.com/microsoft/terminal/releases/download/v1.21.3231.0/Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle
-Add-AppxPackage Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Install-Package Microsoft.UI.Xaml -Source https://api.nuget.org/v3/index.json
+Invoke-WebRequest -Uri "https://aka.ms/Microsoft.UI.Xaml.2.8" -OutFile ".\Microsoft.UI.Xaml.2.8.x64.appx"
+Invoke-WebRequest -Uri "https://github.com/microsoft/terminal/releases/download/v1.21.3231.0/Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle" -OutFile .\"Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle"
+
+Add-AppxPackage -Path  ".\Microsoft.UI.Xaml.2.8.x64.appx"
+Add-AppxPackage -Path  ".\Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle"
 
 winget install --id Microsoft.WindowsTerminal -e
 
