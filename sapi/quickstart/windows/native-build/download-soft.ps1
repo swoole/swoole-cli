@@ -52,6 +52,7 @@ choco install notepadplusplus
 
 
 # Scoop是Windows的命令行安装程序。
+# https://github.com/ScoopInstaller/Install.git
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
@@ -64,7 +65,6 @@ irm get.scoop.sh -outfile 'install.ps1'
 
 # 一行命令完成
 iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
-iex "& {$(irm get.scoop.sh -Proxy 'http://172.23.24.221:8010')} -RunAsAdmin"
 
 # choco install <package-name>
 scoop install aria2
