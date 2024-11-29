@@ -61,7 +61,7 @@ if ($p->isMacos()) {
 
 $p->setExtraCflags(' -Os');
 
-$p->setSwooleBranch('v5.1.5');
+$p->setSwooleBranch('v5.1.6');
 
 // Generate make.sh
 $p->execute();
