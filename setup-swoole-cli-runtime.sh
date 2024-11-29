@@ -149,6 +149,7 @@ opcache.jit_buffer_size=128M
 ; jit 更多配置参考 https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA
 
 expose_php=Off
+apc.enable_cli=1
 
 EOF
 
