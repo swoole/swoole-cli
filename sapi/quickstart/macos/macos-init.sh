@@ -125,3 +125,5 @@ brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
 
 which libtool
+
+brew install meson ninja yasm nasm
