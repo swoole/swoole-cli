@@ -48,9 +48,9 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v5.1.4'
+APP_VERSION='v5.1.5'
 APP_NAME='swoole-cli'
-VERSION='v5.1.4.0'
+VERSION='v5.1.5.1'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
@@ -149,6 +149,7 @@ opcache.jit_buffer_size=128M
 ; jit 更多配置参考 https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA
 
 expose_php=Off
+apc.enable_cli=1
 
 EOF
 
