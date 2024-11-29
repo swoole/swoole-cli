@@ -78,7 +78,7 @@ git submodule update --init
 cd swoole-cli
 
 bash setup-php-runtime.sh
-# 或者
+# 来自 https://www.swoole.com/download
 bash setup-php-runtime.sh --mirror china
 
 ```
