@@ -135,6 +135,7 @@ jobs:
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri swoole
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
