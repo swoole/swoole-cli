@@ -69,4 +69,10 @@ nasm -v
 git version
 curl -V
 
+
+curl.exe -Lo npp.8.6.7.Installer.x64.exe https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.6.7/npp.8.6.7.Installer.x64.exe
+curl.exe -Lo npp.8.6.7.Installer.x64.exe https://php-cli.jingjingxyk.com/npp.8.6.7.Installer.x64.exe
+.\npp.8.6.7.Installer.x64.exe /VERYSILENT /NORESTART /NOCANCEL /SP
+
+
 endlocal

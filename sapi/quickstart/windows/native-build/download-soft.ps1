@@ -68,6 +68,8 @@ iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
 
 # choco install <package-name>
 scoop install aria2
+scoop install notepad++
+scoop install winget
 
 
 
