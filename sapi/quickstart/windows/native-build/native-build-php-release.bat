@@ -60,7 +60,8 @@ rem /MANIFEST:php.exe.manifest /MANIFESTUAC:uiAccess /SUBSYSTEM:CONSOLE  /subsys
 
 
 rem nmake show-variable
-nmake /E x-release-php
+rem nmake /E x-release-php
+nmake /E php.exe
 rem nmake x-build-php-lib
 
 rem nmake install
