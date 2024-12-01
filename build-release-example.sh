@@ -235,15 +235,8 @@ if [ ${WITH_DOWNLOAD_BOX} -eq 1 ]; then
     echo " please exec script: "
     echo " bash sapi/download-box/download-box-batch-downloader.sh "
     echo " bash sapi/download-box/download-box-init.sh "
-
-    php prepare.php --without-docker=1 ${OPTIONS}
-
+    exit 0
   }
-fi
-
-if [ "$OS" = 'linux' ] && [ ${IN_DOCKER} -eq 0 ]; then
-  echo ' please run in container !'
-  exit 0
 fi
 
 if [ ${WITH_BUILD_CONTAINER} -eq 1 ]; then
