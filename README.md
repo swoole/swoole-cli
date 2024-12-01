@@ -48,6 +48,9 @@ curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtim
 # 来自 https://www.swoole.com/download
 curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --mirror china
 
+# 指定发布版本
+curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --version  v5.1.6.0
+
 ```
 
 ## `swoole-cli`构建文档
