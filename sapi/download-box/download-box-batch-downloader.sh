@@ -53,9 +53,8 @@ bash sapi/download-box/download-box-dependencies-use-aria2.sh
 
 cd ${__PROJECT__}
 bash sapi/download-box/download-box-dependencies-use-git.sh
+bash sapi/download-box/download-dependencies-use-aria2.sh
 
 # 例子
 # bash build-release.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-batch-downloader.sh
-
-sh sapi/download-box/download-dependencies-use-aria2.sh
