@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
         ->withLicense('https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE', Library::LICENSE_SPEC)
         ->withManual('https://chromium.googlesource.com/libyuv/libyuv')
         //->withUrl('https://chromium.googlesource.com/libyuv/libyuv/+archive/refs/heads/main.tar.gz')
-        ->withFile('libyuv-main.tar.gz')
+        //->withFile('libyuv-main.tar.gz')
         ->withUrl('https://chromium.googlesource.com/libyuv/libyuv/+archive/b0f72309c6c0b952d0198be5a5b5106f089fe1c5.tar.gz')
         ->withFile('libyuv-b0f72309c6c0b952d0198be5a5b5106f089fe1c5.tar.gz')
         ->withPrefix($libyuv_prefix)

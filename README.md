@@ -79,6 +79,7 @@ cd swoole-cli
 
 bash setup-php-runtime.sh
 # 或者使用镜像
+# 来自 https://www.swoole.com/download
 bash setup-php-runtime.sh --mirror china
 
 ```
