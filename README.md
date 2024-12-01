@@ -33,7 +33,7 @@ curl -fSL https://github.com/swoole/swoole-cli/blob/build_native_php/setup-php-c
 curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-runtime.sh?raw=true | bash
 
 # 指定发布版本
-curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --version  v5.1.6.0
+curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-runtime.sh?raw=true | bash -s -- --version  v5.1.6.0
 
 ```
 
