@@ -43,12 +43,12 @@
 | opcache        | ✅     | ✅     | ✅               | ✅               |
 | swoole         | ✅     | ✅     | ✅               | ✅               |
 | mongodb        | ✅     | ✅     | ❌               | ✅               |
-| ssh2           | ✅     | ✅     | ❌               | ❌               |
-| apcu           | ✅     | ✅     | ❌               | ❌               |
-| ds             | ✅     | ✅     | ✅               | ❌               |
+| ssh2           | ✅     | ✅     | ❌               | ✅               |
+| apcu           | ✅     | ✅     | ❌               | ✅               |
+| ds             | ✅     | ✅     | ✅               | ✅               |
 | inotify        | ✅     | ❌     | ❌               | ❌               |
 | protobuf       | ❌     | ❌     | ❌               | ❌               |
-| uuid           | ✅     | ✅     | ❌               | ❌               |
+| uuid           | ✅     | ✅     | ❌               | ✅               |
 | mailparse      | ✅     | ✅     | ❌               | ❌               |
 | gettext        | ✅     | ❌     | ❌               | ❌               |
 | xslwriter      | ✅     | ✅     | ❌               | ✅               |

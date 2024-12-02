@@ -40,5 +40,5 @@ return [
     //'gettext',
     'uuid',
     //'phpy'
-    'xslwriter'
+    'xlswriter'
 ];
