@@ -39,10 +39,14 @@ return [
     'mongodb',
     //'gettext',
     'uuid',
-    //'phpy',
+    //'phpy'
+<<<<<<< HEAD
+    'xslwriter',
     'apcu',
     'ds',
-    'xlswriter',
     'ssh2',
     'pgsql'
+=======
+    'xlswriter'
+>>>>>>> experiment-feature
 ];

@@ -32,6 +32,9 @@ curl -fSL https://github.com/swoole/swoole-cli/blob/build_native_php/setup-php-c
 
 curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-runtime.sh?raw=true | bash
 
+# 指定发布版本
+curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-runtime.sh?raw=true | bash -s -- --version  v5.1.6.0
+
 ```
 
 ## 构建文档
@@ -63,6 +66,7 @@ cd swoole-cli
 
 bash setup-php-runtime.sh
 # 或者使用镜像
+# 来自 https://www.swoole.com/download
 bash setup-php-runtime.sh --mirror china
 
 ```
