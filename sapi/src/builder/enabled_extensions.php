@@ -40,9 +40,13 @@ return [
     //'gettext',
     'uuid',
     //'phpy'
+<<<<<<< HEAD
     'xslwriter',
     'apcu',
     'ds',
     'ssh2',
     'pgsql'
+=======
+    'xlswriter'
+>>>>>>> experiment-feature
 ];
