@@ -194,7 +194,6 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
   composer config -g --unset repos.packagist
 fi
 
-
 # 可用配置参数
 # --with-swoole-pgsql=1
 # --with-libavif=1
@@ -209,7 +208,7 @@ fi
 # --skip-download=1
 # --with-http-proxy=http://192.168.3.26:8015
 # --with-override-default-enabled-ext=0
-# --with-download-mirror-url=https://php-cli.jingjingxyk.com/
+# --with-download-mirror-url=https://swoole-cli.jingjingxyk.com/
 
 # 定制构建选项
 OPTIONS="${OPTIONS} +apcu +ds +xlswriter +ssh2 +uuid "
@@ -232,10 +231,12 @@ else
 fi
 
 if [ ${WITH_DOWNLOAD_BOX} -eq 1 ]; then
-  echo " please exec script: "
-  echo " bash sapi/download-box/download-box-batch-downloader.sh "
-  echo " bash sapi/download-box/download-box-init.sh "
-  exit 0
+  {
+    echo " please exec script: "
+    echo " bash sapi/download-box/download-box-batch-downloader.sh "
+    echo " bash sapi/download-box/download-box-init.sh "
+    exit 0
+  }
 fi
 
 if [ ${WITH_BUILD_CONTAINER} -eq 1 ]; then

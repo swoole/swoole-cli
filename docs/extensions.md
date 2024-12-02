@@ -43,14 +43,15 @@
 | opcache        | ✅     | ✅     | ✅               | ✅               |
 | swoole         | ✅     | ✅     | ✅               | ✅               |
 | mongodb        | ✅     | ✅     | ❌               | ✅               |
-| ssh2           | ✅     | ✅     | ❌               | ❌               |
-| apcu           | ✅     | ✅     | ❌               | ❌               |
-| ds             | ✅     | ✅     | ✅               | ❌               |
+| ssh2           | ✅     | ✅     | ❌               | ✅               |
+| apcu           | ✅     | ✅     | ❌               | ✅               |
+| ds             | ✅     | ✅     | ✅               | ✅               |
 | inotify        | ✅     | ❌     | ❌               | ❌               |
 | protobuf       | ❌     | ❌     | ❌               | ❌               |
-| uuid           | ✅     | ✅     | ❌               | ❌               |
+| uuid           | ✅     | ✅     | ❌               | ✅               |
 | mailparse      | ✅     | ✅     | ❌               | ❌               |
-| gettext        | ✅     | ✅     | ❌               | ❌               |
+| gettext        | ✅     | ❌     | ❌               | ❌               |
+| xslwriter      | ✅     | ✅     | ❌               | ✅               |
 
 ## 查看 新增的扩展 和 移除的扩展
 

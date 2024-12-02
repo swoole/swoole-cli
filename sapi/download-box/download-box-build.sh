@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -24,9 +24,7 @@ cp -f ${__PROJECT__}/bin/LICENSE .
 cp -f ${__PROJECT__}/bin/credits.html .
 cp -f ${__PROJECT__}/bin/ext-dependency-graph.pdf .
 
-
 cd "${DOWNLOAD_BOX_DIR}"
-
 
 test -f all-deps.zip && rm -rf all-deps.zip
 
@@ -41,5 +39,5 @@ IMAGE="docker.io/phpswoole/swoole-cli-builder:${TAG}"
 IMAGE="docker.io/jingjingxyk/build-swoole-cli:${TAG}"
 
 docker build -t ${IMAGE} -f ./Dockerfile-dowload-box . --progress=plain
-echo ${IMAGE} > download-box.txt
+echo ${IMAGE} >download-box.txt
 docker push ${IMAGE}
