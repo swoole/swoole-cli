@@ -21,7 +21,6 @@ xcodebuild -version
 brew config
 xcrun --show-sdk-path
 
-
 MIRROR=''
 WITH_UPDATE=0
 
@@ -65,7 +64,7 @@ china | ustc)
   export PIPENV_PYPI_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
 
   # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
-   # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
+  # 参考文档： https://help.mirrors.cernet.edu.cn/homebrew/
   ;;
 esac
 
@@ -74,7 +73,6 @@ HOMEBREW_PREFIX=$(brew --prefix)
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_INSTALL_FROM_API=1
 export HOMEBREW_NO_AUTO_UPDATE=1
-
 
 if [ ${WITH_UPDATE} -eq 1 ]; then
   unset HOMEBREW_NO_AUTO_UPDATE
@@ -130,8 +128,10 @@ brew install socat
 brew install mercurial
 brew install meson ninja yasm nasm
 
-
 brew uninstall --ignore-dependencies --force snappy
 brew uninstall --ignore-dependencies --force capstone
 brew uninstall --ignore-dependencies --force php
 
+which libtool
+
+brew install meson ninja yasm nasm

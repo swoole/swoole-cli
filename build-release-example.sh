@@ -215,7 +215,6 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
   composer config -g --unset repos.packagist
 fi
 
-
 # 可用配置参数
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
@@ -253,10 +252,12 @@ else
 fi
 
 if [ ${WITH_DOWNLOAD_BOX} -eq 1 ]; then
-  echo " please exec script: "
-  echo " bash sapi/download-box/download-box-batch-downloader.sh "
-  echo " bash sapi/download-box/download-box-init.sh "
-  exit 0
+  {
+    echo " please exec script: "
+    echo " bash sapi/download-box/download-box-batch-downloader.sh "
+    echo " bash sapi/download-box/download-box-init.sh "
+    exit 0
+  }
 fi
 
 if [ ${WITH_WEB_UI} -eq 1 ]; then

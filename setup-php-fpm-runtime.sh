@@ -55,16 +55,6 @@ VERSION='php-fpm-v0.0.2'
 mkdir -p bin/runtime
 mkdir -p var/runtime
 
-cd ${__PROJECT__}/var/runtime
-
-APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
-COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
-CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
-
-if [ $OS = 'windows' ]; then
-  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-vs2022-${ARCH}.zip"
-fi
-
 MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -81,12 +71,40 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
     export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
     ;;
+  --version)
+    # 指定发布 TAG
+    X_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}$')
+    if [[ -n $X_VERSION ]]; then
+      {
+        VERSION=$X_VERSION
+      }
+    fi
+    ;;
+  --php-version)
+    # 指定发布 TAG
+    X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}$')
+    if [[ -n $X_APP_VERSION ]]; then
+      {
+        APP_VERSION=$X_APP_VERSION
+      }
+    fi
+    ;;
   --*)
     echo "Illegal option $1"
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
 done
+
+cd ${__PROJECT__}/var/runtime
+
+APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
+CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
+
+if [ $OS = 'windows' ]; then
+  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-vs2022-${ARCH}.zip"
+fi
 
 case "$MIRROR" in
 china)
