@@ -39,10 +39,10 @@ return [
     'mongodb',
     //'gettext',
     'uuid',
-    //'phpy',
+    //'phpy'
+    'xlswriter',
     'apcu',
     'ds',
-    'xlswriter',
     'ssh2',
     'pgsql'
 ];

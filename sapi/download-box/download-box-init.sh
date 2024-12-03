@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -x
 __DIR__=$(
@@ -30,6 +30,3 @@ sh sapi/scripts/generate-dependency-graph.sh
 
 awk 'BEGIN { cmd="cp -ri pool/lib/* var/download-box/lib/ "  ; print "n" |cmd; }'
 awk 'BEGIN { cmd="cp -ri pool/ext/* var/download-box/ext/ "  ; print "n" |cmd; }'
-
-
-
