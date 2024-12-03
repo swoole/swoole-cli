@@ -7,6 +7,8 @@ rem curl.exe -Lo Git-2.47.1-64-bit.exe https://php-cli.jingjingxyk.com/Git-2.47.
 start /wait .\Git-2.47.1-64-bit.exe /VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEONEXIT=1 /DIR="C:\Program Files\Git"
 
 set "PATH=%PATH%;C:\Program Files\Git\bin;"
+git config --global core.autocrlf false
+git config --global core.eol lf
 
 curl.exe -Lo strawberry-perl-5.38.2.2-64bit.msi https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit.msi
 curl.exe -Lo strawberry-perl-5.38.2.2-64bit.msi https://php-cli.jingjingxyk.com/strawberry-perl-5.38.2.2-64bit.msi
