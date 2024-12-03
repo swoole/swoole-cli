@@ -4,8 +4,9 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+
     $options = [];
-    $swoole_tag = 'v5.1.5';
+    $swoole_tag = 'v5.1.6';
     if (BUILD_CUSTOM_PHP_VERSION_ID >= 8040) {
         // v5.1.x 不支持 PHP 8.4
         // swoole 支持计划 https://wiki.swoole.com/zh-cn/#/version/supported?id=%e6%94%af%e6%8c%81%e8%ae%a1%e5%88%92
@@ -17,7 +18,6 @@ return function (Preprocessor $p) {
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
-
 
     if ($p->getBuildType() === 'debug') {
         $options[] = ' --enable-debug ';
