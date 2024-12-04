@@ -78,3 +78,6 @@ curl.exe -Lo npp.8.6.7.Installer.x64.exe https://php-cli.jingjingxyk.com/npp.8.6
 
 
 endlocal
+
+
+rem "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
