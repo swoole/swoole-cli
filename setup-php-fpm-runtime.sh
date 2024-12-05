@@ -73,7 +73,13 @@ while [ $# -gt 0 ]; do
     ;;
   --version)
     # 指定发布 TAG
-    X_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}$')
+    if [ $OS = "macos" ]; then
+      X_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}$')
+    elif [ $OS = "linux" ]; then
+      X_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}$')
+    else
+      X_VERSION=''
+    fi
     if [[ -n $X_VERSION ]]; then
       {
         VERSION=$X_VERSION
@@ -82,7 +88,13 @@ while [ $# -gt 0 ]; do
     ;;
   --php-version)
     # 指定发布 TAG
-    X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}$')
+    if [ $OS = "macos" ]; then
+      X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}$')
+    elif [ $OS = "linux" ]; then
+      X_APP_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}$')
+    else
+      X_VERSION=''
+    fi
     if [[ -n $X_APP_VERSION ]]; then
       {
         APP_VERSION=$X_APP_VERSION
