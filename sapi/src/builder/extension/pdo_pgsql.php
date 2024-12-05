@@ -14,4 +14,8 @@ return function (Preprocessor $p) {
             ->withDependentExtensions('pdo')
             ->withDependentLibraries('pgsql')
     );
+    if (BUILD_CUSTOM_PHP_VERSION_ID >= 8040) {
+        $p->withExportVariable('PGSQL_CFLAGS', '$(pkg-config  --cflags --static  libpq)');
+        $p->withExportVariable('PGSQL_LIBS', '$(pkg-config    --libs   --static  libpq)');
+    }
 };
