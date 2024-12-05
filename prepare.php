@@ -17,18 +17,27 @@ if ($p->getInputOption('with-build-type')) {
     $p->setBuildType($buildType);
 }
 
+var_dump($p->getOsType());
 
+$osType = $p->getOsType();
 # clean
-# clean old make.sh
-$p->cleanFile(__DIR__ . '/make.sh');
-$p->cleanFile(__DIR__ . '/make-install-deps.sh');
-$p->cleanFile(__DIR__ . '/make-env.sh');
-$p->cleanFile(__DIR__ . '/make-export-variables.sh');
-$p->cleanFile(__DIR__ . '/make-download-box.sh');
-$p->cleanFile(__DIR__ . '/cppflags.log');
-$p->cleanFile(__DIR__ . '/ldflags.log');
-$p->cleanFile(__DIR__ . '/libs.log');
-$p->cleanFile(__DIR__ . '/configure.backup');
+
+if ($osType == 'win') {
+
+} else {
+
+    # clean old make.sh
+    $p->cleanFile(__DIR__ . '/make.sh');
+    $p->cleanFile(__DIR__ . '/make-install-deps.sh');
+    $p->cleanFile(__DIR__ . '/make-env.sh');
+    $p->cleanFile(__DIR__ . '/make-export-variables.sh');
+    $p->cleanFile(__DIR__ . '/make-download-box.sh');
+    $p->cleanFile(__DIR__ . '/cppflags.log');
+    $p->cleanFile(__DIR__ . '/ldflags.log');
+    $p->cleanFile(__DIR__ . '/libs.log');
+    $p->cleanFile(__DIR__ . '/configure.backup');
+
+}
 
 
 # PHP 默认版本 （此文件配置 /sapi/PHP-VERSION.conf 在 build_native_php分支 和 衍生分支 无效）
