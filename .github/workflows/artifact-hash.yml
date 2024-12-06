@@ -1,27 +1,20 @@
 name: artifact-hash
 
 on:
-  push:
-  pull_request:
+workflow_dispatch:
+  inputs:
+    version:
+      required: true
+      description: "发版版本号 tag"
+      default: '--vesion v5.1.6.0'
+      type: string
 
 jobs:
   generate-artifact-hash:
-    if: 1
-    needs:
-      - auto-cache-pool
-      - linux-aarch64
-      - linux-x86_64
-      - macos-aarch64
-      - macos-x86_64
-      - windows-cygwin
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-      - name: Display structure of downloaded files
+      - name: Show Release File Hash
         run: ｜
-          ls -R
-          ls -p | grep -v /$ | xargs sha256sum
-          ls -p | grep -v /$ | xargs sha256sum > Artifacts.sha256sum
+          bash sapi/scripts/generate-artifact-hash.sh
 
