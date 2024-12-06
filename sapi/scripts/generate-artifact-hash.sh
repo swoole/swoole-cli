@@ -75,7 +75,6 @@ UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "arm64"
 UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "x64"
 UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "arm64"
 
-OS="macos"
 ARCH="x64"
 APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
 

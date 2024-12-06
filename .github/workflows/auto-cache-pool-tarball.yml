@@ -9,7 +9,6 @@ on:
 jobs:
   auto-cache-pool:
     if: 1
-    name: auto-cache-pool
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
