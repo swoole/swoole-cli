@@ -5,6 +5,7 @@ on: [ push, pull_request ]
 jobs:
   linux-aarch64:
     if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-aarch64]')"
+    name: linux-aarch64
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
