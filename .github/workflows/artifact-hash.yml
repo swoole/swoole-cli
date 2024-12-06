@@ -1,13 +1,13 @@
 name: artifact-hash
 
 on:
-workflow_dispatch:
-  inputs:
-    version:
-      required: true
-      description: "发版版本号 tag"
-      default: '--vesion v5.1.6.0'
-      type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: "发版版本号 tag"
+        default: '--vesion v5.1.6.0'
+        type: string
 
 jobs:
   generate-artifact-hash:
