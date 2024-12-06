@@ -56,6 +56,7 @@ while [ $# -gt 0 ]; do
     ;;
   --*)
     echo "Illegal option $1"
+    exit 0
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
