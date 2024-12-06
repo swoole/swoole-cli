@@ -11,12 +11,12 @@ Get-Command curl
 Get-Command curl.exe
 
 # 包管理器（winget、chocolatey、scoop）
+
 # 安裝 WinGet
 # https://github.com/microsoft/winget-cli/releases/
 # https://github.com/microsoft/winget-cli/releases/download/v1.10.40-preview/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
-Add-AppxPackage -Path "C:\path\to\your\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+Add-AppxPackage -Path ".\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
 
 Invoke-WebRequest -Uri "https://aka.ms/MicrosoftWinget" -UseBasicParsing | Invoke-Expression
 
@@ -33,6 +33,8 @@ winget install --id Git.Git -e --source winget
 winget source remove winget
 winget source add winget https://mirrors.ustc.edu.cn/winget-source
 winget source reset winget
+
+
 
 
 # Chocolatey是一个开源的包管理器
@@ -64,13 +66,13 @@ irm get.scoop.sh -outfile 'install.ps1'
 .\install.ps1 -RunAsAdmin
 
 # 一行命令完成
-iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+iex "& {$( irm get.scoop.sh )} -RunAsAdmin"
 
 # choco install <package-name>
 scoop install aria2
 scoop install notepad++
 scoop install winget
-
+scoop install windows-terminal
 
 
 
@@ -79,19 +81,13 @@ scoop install winget
 
 # Add-AppxPackage Microsoft.WindowsTerminal_<versionNumber>.msixbundle
 # https://github.com/microsoft/terminal/releases/download/v1.21.3231.0/Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-Install-Package Microsoft.UI.Xaml -Source https://api.nuget.org/v3/index.json
-Invoke-WebRequest -Uri "https://aka.ms/Microsoft.UI.Xaml.2.8" -OutFile ".\Microsoft.UI.Xaml.2.8.x64.appx"
+
 Invoke-WebRequest -Uri "https://github.com/microsoft/terminal/releases/download/v1.21.3231.0/Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle" -OutFile .\"Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle"
 
 Add-AppxPackage -Path  ".\Microsoft.UI.Xaml.2.8.x64.appx"
 Add-AppxPackage -Path  ".\Microsoft.WindowsTerminal_1.21.3231.0_8wekyb3d8bbwe.msixbundle"
 
 winget install --id Microsoft.WindowsTerminal -e
-
-choco install microsoft-windows-terminal
-
-scoop install windows-terminal
 
 
 
@@ -101,6 +97,8 @@ scoop install windows-terminal
 Invoke-WebRequest -Uri https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe -OutFile .\Git-2.47.1-64-bit.exe
 
 start /wait .\Git-2.47.1-64-bit.exe /VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEONEXIT=1 /DIR="C:\Program Files\Git"
+
+
 
 
 # vcpkg
