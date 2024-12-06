@@ -19,6 +19,8 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-sqlite';
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
     $options[] = '--enable-swoole-thread';
+    $options[] = '--enable-brotli';
+    $options[] = '--enable-zstd';
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {
         $options[] = '--enable-iouring';
