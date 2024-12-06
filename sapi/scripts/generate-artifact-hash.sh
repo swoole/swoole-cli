@@ -19,7 +19,6 @@ APP_VERSION='v5.1.6'
 APP_NAME='swoole-cli'
 VERSION='v5.1.6.0'
 
-MIRROR=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --proxy)
@@ -47,6 +46,11 @@ while [ $# -gt 0 ]; do
       {
         VERSION=$X_VERSION
         APP_VERSION=$X_APP_VERSION
+      }
+    else
+      {
+        echo '--version vx.x.x error !'
+        exit 0
       }
     fi
     ;;
@@ -80,5 +84,8 @@ APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSI
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
 test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+test -f all-deps.zip || curl -LSo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/v5.1.5.1/all-deps.zip
 
 ls -p | grep -v '/$' | xargs sha256sum
+
+ls -p | grep -v '/$' | xargs sha256sum >${__PROJECT__}/${VERSION}-sha256sum
