@@ -104,30 +104,60 @@ done
 mkdir -p ${__PROJECT__}/var/artifact-hash/${VERSION}
 cd ${__PROJECT__}/var/artifact-hash/${VERSION}
 
-echo $VERSION
-echo $APP_VERSION
-exit 0
 UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
   OS="$1"
   ARCH="$2"
-
-  APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+  APP_VERSION="$3"
+  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
   APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
   test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
 
+  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}-debug.tar.xz"
+  APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}-debug"
+  test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
 }
 
-UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "x64"
-UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "arm64"
-UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "x64"
-UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "arm64"
+UNIX_DOWNLOAD() {
+  APP_VERSION="$1"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "x64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "arm64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "x64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "arm64" "${APP_VERSION}"
+}
 
-ARCH="x64"
-APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
+WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
+  APP_VERSION="$1"
+  ARCH="x64"
+  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
 
-APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
-test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
-test -f all-deps.zip || curl -LSo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/v5.1.5.1/all-deps.zip
+  APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
+  test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+  test -f all-deps.zip || curl -LSo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/v5.1.5.1/all-deps.zip
+
+}
+WINDOWS_DOWNLOAD() {
+  WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "$1"
+}
+
+RUN_DOWNLOAD() {
+  UNIX_DOWNLOAD "$1"
+  WINDOWS_DOWNLOAD "$1"
+}
+
+DOWNLOAD() {
+  declare -A PHP_VERSIONS
+  PHP_VERSIONS[0]="v8.2.25"
+  PHP_VERSIONS[1]="v8.1.30"
+  PHP_VERSIONS[2]="v8.3.13"
+  PHP_VERSIONS[3]="v8.4.1"
+  for i in "${!PHP_VERSIONS[@]}"; do
+    # echo ${PHP_VERSIONS[$i]}
+    RUN_DOWNLOAD "${PHP_VERSIONS[$i]}"
+  done
+
+}
+
+DOWNLOAD
 
 ls -p | grep -v '/$' | xargs sha256sum
 
