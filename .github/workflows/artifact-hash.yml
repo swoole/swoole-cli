@@ -6,7 +6,12 @@ on:
       version:
         required: true
         description: "发版 版本号 tag"
-        default: '--vesion v5.1.6.0'
+        default: '--vesion v1.6.0'
+        type: string
+      php-version:
+        required: true
+        description: "PHP 版本号 "
+        default: '--php-vesion v8.1.30,v8.2.25,v8.3.13,v8.4.1'
         type: string
 
 jobs:

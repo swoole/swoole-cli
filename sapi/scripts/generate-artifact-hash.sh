@@ -15,9 +15,9 @@ cd ${__PROJECT__}
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-APP_VERSION='v5.1.6'
-APP_NAME='swoole-cli'
-VERSION='v5.1.6.0'
+APP_VERSION='v8.3.13'
+APP_NAME='php-cli'
+VERSION='v1.6.0'
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -32,24 +32,42 @@ while [ $# -gt 0 ]; do
   --version)
     # 指定发布 TAG
     if [ $OS = "macos" ]; then
-      X_VERSION=$(echo "$2" | grep -E '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
+      X_VERSION=$(echo "$2" | grep -E '^v\d\.\d{1,2}\.\d{1,2}$')
+    elif [ $OS = "linux" ]; then
+      X_VERSION=$(echo "$2" | grep -P '^v\d\.\d{1,2}\.\d{1,2}$')
+    else
+      X_VERSION=''
+    fi
+
+    if [[ -n $X_VERSION ]]; then
+      {
+        VERSION=$X_VERSION
+      }
+    else
+      {
+        echo '--version vx.x.x error !'
+        exit 0
+      }
+    fi
+    ;;
+  --php-version)
+    # 指定 PHP 版本
+    if [ $OS = "macos" ]; then
       X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}')
     elif [ $OS = "linux" ]; then
-      X_VERSION=$(echo "$2" | grep -P '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
       X_APP_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}')
     else
       X_VERSION=''
       X_APP_VERSION=''
     fi
 
-    if [[ -n $X_VERSION ]] && [[ -n $X_APP_VERSION ]]; then
+    if [[ -n $X_APP_VERSION ]]; then
       {
-        VERSION=$X_VERSION
         APP_VERSION=$X_APP_VERSION
       }
     else
       {
-        echo '--version vx.x.x error !'
+        echo '--php-version vx.x.x error !'
         exit 0
       }
     fi
@@ -65,6 +83,9 @@ done
 mkdir -p ${__PROJECT__}/var/artifact-hash/${VERSION}
 cd ${__PROJECT__}/var/artifact-hash/${VERSION}
 
+echo $VERSION
+echo $APP_VERSION
+exit 0
 UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
   OS="$1"
   ARCH="$2"
