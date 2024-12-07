@@ -11,7 +11,7 @@ on:
       php-version:
         required: true
         description: "PHP 版本号 "
-        default: '--php-vesion v8.1.30,v8.2.25,v8.3.13,v8.4.1'
+        default: 'v8.1.30,v8.2.25,v8.3.13,v8.4.1'
         type: string
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Show Release File Hash
         run: ｜
-          bash sapi/scripts/generate-artifact-hash.sh --vesion ${{ inputs.version }} --php-vesion
+          bash sapi/scripts/generate-artifact-hash.sh --vesion ${{ inputs.version }} --php-vesion ${{ inputs.php-version }}
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
