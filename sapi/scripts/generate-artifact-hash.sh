@@ -13,7 +13,28 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OS=$(uname -s)
-ARCH=$(uname -m)
+case $OS in
+'Linux')
+  OS="linux"
+  ;;
+'Darwin')
+  OS="macos"
+  ;;
+*)
+  case $OS in
+  'MSYS_NT'*)
+    OS="windows"
+    ;;
+  'MINGW64_NT'*)
+    OS="windows"
+    ;;
+  *)
+    echo '暂未配置的 OS '
+    exit 0
+    ;;
+  esac
+  ;;
+esac
 
 APP_VERSION='v8.3.13'
 APP_NAME='php-cli'
