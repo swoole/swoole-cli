@@ -80,6 +80,7 @@ while [ $# -gt 0 ]; do
       X_VERSION=''
       X_APP_VERSION=''
     fi
+
     if [[ -n $X_VERSION ]] && [[ -n $X_APP_VERSION ]]; then
       {
         VERSION=$X_VERSION

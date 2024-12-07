@@ -4,8 +4,8 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-
     $options = [];
+
     $swoole_tag = 'v5.1.6';
     if (BUILD_CUSTOM_PHP_VERSION_ID >= 8040) {
         // v5.1.x 不支持 PHP 8.4
@@ -29,6 +29,7 @@ return function (Preprocessor $p) {
     //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
+
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
@@ -41,6 +42,7 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-pgsql';
     $options[] = '--enable-swoole-sqlite';
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
+
 
     $p->addExtension((new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')

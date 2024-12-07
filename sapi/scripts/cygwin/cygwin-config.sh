@@ -48,7 +48,6 @@ fi
 ./buildconf --force
 test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
-  --enable-opcache \
   --disable-fiber-asm \
   --without-pcre-jit \
   --with-openssl --enable-openssl \
@@ -83,6 +82,12 @@ test -f Makefile && make clean
   --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
   --enable-swoole-pgsql \
   --enable-swoole-sqlite \
+  --enable-swoole-thread \
+  --enable-brotli \
+  --enable-zstd \
+  --enable-redis \
+  --enable-opcache \
+  --disable-opcache-jit \
   --enable-redis \
   --with-imagick \
   --with-yaml \
