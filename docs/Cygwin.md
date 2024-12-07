@@ -116,6 +116,7 @@ libpq-devel (如果编译pgsql扩展)
 libpq5 (如果编译pgsql扩展)
 libicu-devel
 icu
+libzstd-devel
 
 ```
 

@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
     }
 
 
-    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
@@ -29,6 +29,8 @@ return function (Preprocessor $p) {
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
     $options[] = '--enable-swoole-thread';
     $options[] = '--enable-zts';
+    $options[] = '--enable-brotli';
+    $options[] = '--enable-zstd';
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {
         $options[] = '--enable-iouring';
@@ -36,6 +38,7 @@ return function (Preprocessor $p) {
         $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
         $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
     }
+
 
     $p->addExtension((new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')
@@ -57,4 +60,7 @@ EOF
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
+
+    $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
+    $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 };

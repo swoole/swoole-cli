@@ -4,7 +4,6 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-
     $swoole_tag = 'v5.1.6';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
@@ -22,6 +21,7 @@ return function (Preprocessor $p) {
     //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
+
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
@@ -34,6 +34,7 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-pgsql';
     $options[] = '--enable-swoole-sqlite';
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
+
 
     $p->addExtension((new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')
@@ -50,7 +51,6 @@ EOF
         ->withBuildCached(false)
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions));
-
 
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
