@@ -41,4 +41,6 @@ return function (Preprocessor $p) {
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
+    $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
+    $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 };
