@@ -122,6 +122,7 @@ jobs:
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri pgsql

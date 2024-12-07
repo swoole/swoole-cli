@@ -6,6 +6,9 @@ use SwooleCli\Extension;
 return function (Preprocessor $p) {
     $swoole_tag = 'v4.8.13';
     $file = "swoole-v{$swoole_tag}.tar.gz";
+
+    $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
+
     $options = [];
 
     if ($p->getBuildType() === 'debug') {
@@ -15,6 +18,10 @@ return function (Preprocessor $p) {
     }
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli'];
+
+//call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
+//call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
+
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
