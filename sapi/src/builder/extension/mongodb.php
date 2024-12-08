@@ -35,6 +35,7 @@ return function (Preprocessor $p) {
     $options[] = ' --with-openssl-dir=' . OPENSSL_PREFIX;
 
     $dependentLibraries = ['icu', 'openssl', 'zlib', 'libzstd'];
+
     //$dependentLibraries[] = 'libsasl';
     //$dependentLibraries[] = 'snappy';
     $ext = new Extension('mongodb');
@@ -45,6 +46,5 @@ return function (Preprocessor $p) {
         ->withPeclVersion('1.19.4')
         ->withFileHash('md5', '91f96b24df7ed5651731671f55cb68a1')
         ->withDependentLibraries(...$dependentLibraries);
-
     $p->addExtension($ext);
 };
