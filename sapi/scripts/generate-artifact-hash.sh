@@ -56,8 +56,15 @@ while [ $# -gt 0 ]; do
       X_VERSION=$(echo "$2" | grep -E '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
       X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}')
     elif [ $OS = "linux" ]; then
-      X_VERSION=$(echo "$2" | grep -P '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
-      X_APP_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}')
+      OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '\n' | tr -d '\"')
+      if [ "$OS_RELEASE" = 'alpine' ]; then
+        X_VERSION=$(echo "$2" | egrep -E '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
+        X_APP_VERSION=$(echo "$2" | egrep -Eo '^v\d\.\d{1,2}\.\d{1,2}')
+      else
+        X_VERSION=$(echo "$2" | grep -P '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
+        X_APP_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}')
+      fi
+
     else
       X_VERSION=''
       X_APP_VERSION=''
