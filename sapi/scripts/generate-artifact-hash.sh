@@ -166,7 +166,7 @@ DOWNLOAD() {
   done
 
 }
-exit 0
+
 DOWNLOAD
 
 ls -p | grep -v '/$' | xargs sha256sum
