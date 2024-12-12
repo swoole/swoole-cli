@@ -86,19 +86,16 @@ test -f Makefile && make clean
   --enable-swoole-pgsql \
   --enable-swoole-sqlite \
   --enable-redis \
+  --enable-opcache \
+  --disable-opcache-jit \
   --with-imagick \
   --with-yaml \
   --with-readline \
-  ${OPTIONS} \
-  --enable-opcache
+  ${OPTIONS}
 
 #  --with-pdo-pgsql \
 #  --with-pgsql
 #  --with-pdo-sqlite \
 #  --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)
-
-# --with-pdo-pgsql \
-# --with-pgsql
-# --with-pdo-sqlite \
 # --enable-zts
 # --disable-opcache-jit
