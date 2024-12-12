@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Show Release File Hash
-        run: ｜
+        run: |
           bash sapi/scripts/generate-artifact-hash.sh --version ${{ inputs.version }} --php-version ${{ inputs.php-version }}
 
       - name: production artifacts

@@ -48,7 +48,6 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-sqlite';
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
 
-
     $p->addExtension((new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
