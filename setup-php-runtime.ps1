@@ -1,14 +1,21 @@
 Set-PSDebug -Strict
-
 $__PROJECT__ = (Get-Location).Path
+$__PROJECT__ = $PSScriptRoot
 
-cmd /c dir
+# 获得当前脚本所在目录
+$__PROJECT__ = Split-Path -Parent $MyInvocation.MyCommand.Definition
 
 cmd /c $__PROJECT__\sapi\quickstart\windows\native-build\windows-init.bat
 
+cd $__PROJECT__
 
 
 
+exit
+
+.\bin\runtime\php\php.exe -c .\bin\runtime\php.ini .\bin\runtime\composer.phar config -g repos.packagist composer https://mirrors.tencent.com/composer/
+.\bin\runtime\php\php.exe -c .\bin\runtime\php.ini .\bin\runtime\composer.phar update
+.\bin\runtime\php\php.exe -c .\bin\runtime\php.ini .\bin\runtime\composer.pharr config -g repos.packagist composer https://packagist.org
 
 exit
 
@@ -29,10 +36,6 @@ New-Item -ItemType Directory -Path $TMP_DOWNLOAD_RUNTIME_DIR -Force | Out-Null
 # Set-Location -Path  "$__PROJECT__\var\runtime\"
 
 
-
-$APP_RUNTIME_DOWNLOAD_URL = "https://windows.php.net/downloads/releases/php-8.4.1-nts-Win32-vs17-x64.zip"
-$COMPOSER_DOWNLOAD_URL = "https://getcomposer.org/download/latest-stable/composer.phar"
-$CACERT_DOWNLOAD_URL = "https://curl.se/ca/cacert.pem"
 
 
 $env:http_proxy = "http://127.0.0.1:8016"
@@ -71,13 +74,5 @@ cd $TMP_DOWNLOAD_RUNTIME_DIR
 
 cd $__PROJECT__
 
-
-
-cd $TMP_DOWNLOAD_RUNTIME_DIR
-Invoke-WebRequest -Uri $APP_RUNTIME_DOWNLOAD_URL  -OutFile .\php-8.4.1-nts-Win32-vs17-x64.zip
-Invoke-WebRequest -Uri $COMPOSER_DOWNLOAD_URL  -OutFile .\composer.phar
-Invoke-WebRequest -Uri $CACERT_DOWNLOAD_URL  -OutFile .\cacert.pem
-
-cd "$__PROJECT__"
 
 set-PSDebug -Off

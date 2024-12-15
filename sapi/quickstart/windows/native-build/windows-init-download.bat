@@ -12,8 +12,8 @@ md %__PROJECT__%\var\windows-build-deps\
 
 cd /d %__PROJECT__%\var\windows-build-deps\
 
-:: set http_proxy=http://127.0.0.1:8016
-:: set https_proxy=http://127.0.0.1:8016
+set http_proxy=http://127.0.0.1:8016
+set https_proxy=http://127.0.0.1:8016
 
 curl.exe -fSLo Git-2.47.1-64-bit.exe https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe
 curl.exe -fSLo strawberry-perl-5.38.2.2-64bit.msi https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit.msi
@@ -31,7 +31,8 @@ curl.exe -fSLo vc_redist.x64.exe https://aka.ms/vs/17/release/vc_redist.x64.exe
 curl.exe -fSLo VisualStudioSetup.exe "https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022"
 
 
-curl.exe -fSLo php-8.4.1-nts-Win32-vs17-x64.zip "https://windows.php.net/downloads/releases/php-8.4.1-nts-Win32-vs17-x64.zip"
+::                                   "https://windows.php.net/downloads/releases/php-8.4.1-nts-Win32-vs17-x64.zip"
+curl.exe -fSLo php-nts-Win32-x64.zip "https://windows.php.net/downloads/releases/php-8.3.14-nts-Win32-vs16-x64.zip"
 curl.exe -fSLo composer.phar "https://getcomposer.org/download/latest-stable/composer.phar"
 curl.exe -fSLo cacert.pem "https://curl.se/ca/cacert.pem"
 

@@ -1,10 +1,10 @@
 {
   "require": {
     "marcj/topsort": "^2.0",
-    "ext-posix": "*",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-fileinfo": "*",
+    "ext-zip": "*",
     "phpunit/phpunit": "^9.6",
     "nikic/php-parser": "^5.0"
   },

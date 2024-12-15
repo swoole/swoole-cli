@@ -96,12 +96,13 @@ echo "CUSTOM_PHP_VERSION_ID: " . BUILD_CUSTOM_PHP_VERSION_ID . PHP_EOL;
 echo PHP_EOL;
 
 // Sync code from php-src
-$p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
+$p->setPhpSrcDir($p->getWorkDir() . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'php-' . BUILD_PHP_VERSION);
+
 
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->isMacos())) {
     $p->setWorkDir(__DIR__);
-    $p->setBuildDir(__DIR__ . '/thirdparty');
+    $p->setBuildDir(__DIR__ . DIRECTORY_SEPARATOR . 'thirdparty');
 }
 
 $p->setRootDir(__DIR__);
@@ -110,7 +111,7 @@ $p->setRootDir(__DIR__);
 if ($p->getInputOption('with-php-src')) {
     $p->setPhpSrcDir($p->getInputOption('with-php-src'));
 } else {
-    $p->setPhpSrcDir($p->getRootDir() . '/thirdparty/php-src');
+    $p->setPhpSrcDir($p->getRootDir() . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'php-src');
 }
 
 //设置PHP 安装目录
@@ -165,6 +166,8 @@ export NO_PROXY="${NO_PROXY},localhost"
 EOF;
     $p->setProxyConfig($proxyConfig, $http_proxy);
 }
+
+die();
 
 
 if ($p->isMacos()) {

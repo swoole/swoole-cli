@@ -55,19 +55,19 @@ if  exist ".\libarchive\" (
    rmdir /s /q ".\libarchive\"
 )
 
-if  exist ".\php-8.4.1-nts-Win32-vs17-x64" (
-   rmdir /s /q ".\php-8.4.1-nts-Win32-vs17-x64"
+if  exist ".\php-nts-Win32-x64" (
+   rmdir /s /q ".\php-nts-Win32-x64"
 )
 
 cd /d %__PROJECT__%\var\windows-build-deps\
 
 7z.exe x -onasm nasm-2.16.03-win64.zip
-7z.exe x -ophp-8.4.1-nts-Win32-vs17-x64 php-8.4.1-nts-Win32-vs17-x64.zip
+7z.exe x -ophp-nts-Win32-x64 php-nts-Win32-x64.zip
 7z.exe x -olibarchive libarchive-v3.7.4-amd64.zip
 
 move nasm\nasm-2.16.03 %__PROJECT__%\bin\runtime\nasm
 move libarchive\libarchive %__PROJECT__%\bin\runtime\libarchive
-move php-8.4.1-nts-Win32-vs17-x64 %__PROJECT__%\bin\runtime\php
+move php-nts-Win32-x64 %__PROJECT__%\bin\runtime\php
 move cacert.pem %__PROJECT__%\bin\runtime\cacert.pem
 
 (
@@ -76,9 +76,22 @@ echo extension=php_curl.dll
 echo extension=php_bz2.dll
 echo extension=php_openssl.dll
 echo extension=php_fileinfo.dll
+echo extension=php_exif.dll
+echo extension=php_gd.dll
+echo extension=php_gettext.dll
+echo extension=php_gmp.dll
+echo extension=php_intl.dll
+echo extension=php_mbstring.dll
+echo extension=php_pdo_mysql.dll
+echo extension=php_pdo_pgsql.dll
+echo extension=php_sqlite3.dll
+echo extension=php_sockets.dll
+echo extension=php_sodium.dll
+echo extension=php_xsl.dll
+echo extension=php_zip.dll
 
-echo curl.cainfo="%__PROJECT__%/bin/runtime/cacert.pem"
-echo openssl.cafile="%__PROJECT__%/bin/runtime/cacert.pem"
+echo curl.cainfo="%__PROJECT__%\bin\runtime\cacert.pem"
+echo openssl.cafile="%__PROJECT__%\bin\runtime\cacert.pem"
 echo display_errors = On
 echo error_reporting = E_ALL
 
@@ -112,7 +125,7 @@ nasm -v
 git version
 curl -V
 php -v
-php -m
+php -c %__PROJECT__%\bin\runtime\php.ini -m
 php -c %__PROJECT__%\bin\runtime\php.ini --ri curl
 
 
