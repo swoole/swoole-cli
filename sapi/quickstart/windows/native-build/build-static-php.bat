@@ -1,0 +1,18 @@
+@echo off
+
+setlocal
+
+
+echo %~dp0
+cd /d %~dp0
+cd /d ..\..\..\..\
+
+set "__PROJECT__=%cd%"
+echo %cd%
+
+
+
+call "%__PROJECT__%\var\windows-build-deps\php-sdk-binary-tools\phpsdk-vs17-x64.bat"
+call "%__PROJECT__%\sapi\quickstart\windows\native-build\native-build-php-config.bat"
+
+endlocal

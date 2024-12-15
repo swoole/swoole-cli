@@ -17,9 +17,30 @@ exit
 .\bin\runtime\php\php.exe -c .\bin\runtime\php.ini .\bin\runtime\composer.phar update
 .\bin\runtime\php\php.exe -c .\bin\runtime\php.ini .\bin\runtime\composer.pharr config -g repos.packagist composer https://packagist.org
 
+
+.\sapi\quickstart\windows\native-build\build-static-php.ps1
+
 exit
 
 
+Write-Host $HOME
+
+
+dir $HOME\AppData\Local\Microsoft\WindowsApps
+
+cmd /c dir %USERPROFILE%\AppData\Local\Microsoft\WindowsApps
+cmd /c echo %USERPROFILE%
+cmd /c echo %HOMEDRIVE%
+cmd /c echo %HOMEPATH%
+cmd /c echo %ProgramFiles%
+
+dir C:\Windows\System32\OpenSSH\
+cmd /c echo %SYSTEMROOT%\System32\OpenSSH\
+cmd /c dir %SYSTEMROOT%\System32\OpenSSH\
+
+cmd /c where curl.exe
+
+exit
 $env:PATH = "$env:PATH;%ProgramFiles%\7-Zip"
 
 # 执行需要使用临时 PATH 的命令
@@ -30,16 +51,15 @@ $env:PATH = "$env:PATH;%ProgramFiles%\7-Zip"
 $env:PATH = $env:PATH.Replace(";%ProgramFiles%\7-Zip", "")
 
 
-$TMP_DOWNLOAD_RUNTIME_DIR = "$__PROJECT__\var\runtime\"
-New-Item -ItemType Directory -Path $TMP_DOWNLOAD_RUNTIME_DIR -Force | Out-Null
+New-Item -ItemType Directory -Path "$__PROJECT__\var\runtime\" -Force | Out-Null
 
 # Set-Location -Path  "$__PROJECT__\var\runtime\"
 
 
 
 
-$env:http_proxy = "http://127.0.0.1:8016"
-$env:https_proxy = "http://127.0.0.1:8016"
+# $env:http_proxy = "http://127.0.0.1:8016"
+# $env:https_proxy = "http://127.0.0.1:8016"
 
 Write-Host "HTTP Proxy: $env:http_proxy"
 Write-Host "HTTPS Proxy: $env:https_proxy"

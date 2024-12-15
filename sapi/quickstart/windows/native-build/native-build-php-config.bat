@@ -8,13 +8,15 @@ cd /d ..\..\..\..\
 
 set "__PROJECT__=%cd%"
 echo %cd%
-cd /d %__PROJECT__%\var\windows-build-deps\
+cd /d %__PROJECT__%\var\windows-build-deps\php-src\
 echo %cd%
 
-call %__PROJECT__%\var\windows-build-deps\php-sdk-binary-tools\phpsdk-vs17-x64.bat
 
 
 buildconf.bat -f
+
+echo "===================="
+
 configure.bat --help
 
 
