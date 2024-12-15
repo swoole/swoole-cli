@@ -12,8 +12,8 @@ md %__PROJECT__%\var\windows-build-deps\
 
 cd /d %__PROJECT__%\var\windows-build-deps\
 
-set http_proxy=http://127.0.0.1:8016
-set https_proxy=http://127.0.0.1:8016
+:: set http_proxy=http://127.0.0.1:8016
+:: set https_proxy=http://127.0.0.1:8016
 
 
 curl.exe -fSLo npp.8.6.7.Installer.x64.exe https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.6.7/npp.8.6.7.Installer.x64.exe
