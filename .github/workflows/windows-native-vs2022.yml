@@ -20,9 +20,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: microsoft/setup-msbuild@v2
+      - uses: ilammy/msvc-dev-cmd@v1
         with:
-          msbuild-architecture: x64
+          arch: amd64
+          vsversion:
       - name: show environment info
         run: |
           git config --global core.autocrlf false
