@@ -17,7 +17,6 @@ if ($p->getInputOption('with-build-type')) {
     $p->setBuildType($buildType);
 }
 
-var_dump($p->getOsType());
 
 $osType = $p->getOsType();
 # clean

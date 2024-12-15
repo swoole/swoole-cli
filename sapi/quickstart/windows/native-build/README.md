@@ -8,13 +8,10 @@
 
 ## 二、CMD 环境构建
 
+> bat 脚本不能包含中文
+
 ```bat
 # 安装  vc 运行时 （ 可跳过 ）
-sapi\quickstart\windows\native-build\install-vc-runtime.bat
-
-sapi\quickstart\windows\native-build\install-visualstudio-2019.bat
-
-sapi\quickstart\windows\native-build\install-deps-soft.bat
 
 
 # vs2019
@@ -123,6 +120,8 @@ https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-paramete
 
 https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022
 
+> MSVC 命令行工具使用 PATH、TMP、INCLUDE、LIB 和 LIBPATH 环境变量
+
 ```shell
 
 
@@ -137,8 +136,7 @@ VisualStudioSetup.exe
 --add Microsoft.VisualStudio.Component.Windows11SDK.22000
 --add Microsoft.VisualStudio.Component.Windows10SDK.20348
 --add Microsoft.VisualStudio.Component.Windows10SDK
---path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:
-\VS\shared"
+--path install="C:\VS" --path cache="C:\VS\cache" --path shared="C:\VS\shared"
 --quiet --force --norestart
 --channelId VisualStudio.16.Release ^
 
@@ -163,7 +161,13 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 
 ```shell
 # 编译cpp
+# https://learn.microsoft.com/zh-cn/cpp/build/walkthrough-creating-and-using-a-static-library-cpp?view=msvc-170
+
+cl /c /EHsc MathLibrary.cpp
+
 cl /EHsc /MT test-vc.cpp /link LIBCMT.LIB /NODEFAULTLIB:msvcrt.lib
+
+LINK first.obj second.obj third.obj /OUT:filename.exe
 
 # 查看连接信息
 
@@ -173,12 +177,13 @@ dumpbin /DEPENDENTS test-vc.exe
 
 ## 参考文档
 
+1. [virtualstudio 命令行安装](https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022)
+1. [使用命令行参数安装、更新和管理 Visual Studio](https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022)
 1. [通过命令行使用 MSVC 工具集](https://learn.microsoft.com/zh-cn/cpp/build/building-on-the-command-line?view=msvc-170)
 1. [从命令行使用 Microsoft C++ 工具集](https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170#download-and-install-the-tools)
 1. [通过命令行使用 MSBuild](https://learn.microsoft.com/zh-cn/cpp/build/msbuild-visual-cpp?view=msvc-1700)
 1. [Microsoft Visual C++ 最新运行时库](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 1. [Visual Studio 生成工具组件目录](https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022)
-1. [使用命令行参数安装、更新和管理 Visual Studio](https://learn.microsoft.com/zh-cn/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022)
 1. [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
 1. [windows 环境下 构建 php 步骤](https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2)
 1. [VisualStudio 导入或导出安装配置](https://learn.microsoft.com/zh-cn/visualstudio/install/import-export-installation-configurations?view=vs-2022)
@@ -194,4 +199,6 @@ dumpbin /DEPENDENTS test-vc.exe
 1. [/MD、/MT、/LD（使用运行时库）](https://learn.microsoft.com/zh-cn/cpp/build/reference/md-mt-ld-use-run-time-library?view=msvc-170)
 1. [Install PowerShell on Windows, Linux, and macOS](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4)
 1. [Sysinternals Utilities Index](https://learn.microsoft.com/en-us/sysinternals/downloads/)
+1. [curl 8.11.1 for Windows](https://curl.se/windows/)
+1. [windows php release ](https://windows.php.net/downloads/releases/archives/)
 
