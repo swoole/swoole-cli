@@ -103,9 +103,9 @@ jobs:
         run: |
           cd var\windows-build-deps\php-src\
 
-          .\x64\Release\php.exe -v
-          .\x64\Release\php.exe -m
-          dumpbin /DEPENDENTS ".\x64\Release\php.exe"
+          .\x64\Release_TS\php.exe -v
+          .\x64\Release_TS\php.exe -m
+          dumpbin /DEPENDENTS ".\x64\Release_TS\php.exe"
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
