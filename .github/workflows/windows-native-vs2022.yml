@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-        #  - "8.2.13"
-        #  - "8.1.27"
+          #  - "8.2.13"
+          #  - "8.1.27"
           - "8.3.11"
 
     steps:
@@ -72,6 +72,7 @@ jobs:
           echo "PATH=$X_PATH"  >> $Env:GITHUB_ENV
 
       - name: build all library
+        if: 0
         run: |
           $CURRENT_DIR = Get-Location
           where perl
@@ -88,24 +89,32 @@ jobs:
           # cmd /c  sapi\quickstart\windows\native-build\library\brotli.bat
           # cmd /c  sapi\quickstart\windows\native-build\library\libpng.bat
 
-      - name: build php
+      - name: php prepare
+        shell: cmd
         run: |
-          $CURRENT_DIR = Get-Location
+          cd var\windows-build-deps\php-src\
+          .\buildconf.bat -f
 
-          cmd /c sapi\quickstart\windows\native-build\native-build-php-config.bat
+      - name: php config
+        shell: cmd
+        run: |
+          cd var\windows-build-deps\php-src\
+          configure.bat ^
+          --disable-all         --disable-cgi      --enable-cli   ^
+          --enable-sockets      --enable-ctype     --enable-pdo    --enable-phar  ^
+          --enable-filter ^
+          --enable-xmlreader   --enable-xmlwriter ^
+          --enable-tokenizer
 
-          # cmd /c sapi\quickstart\windows\native-build\native-build-php-config-help.bat
-
-          cmd /c sapi\quickstart\windows\native-build\native-build-php-build.bat
-
-          cmd /c sapi\quickstart\windows\native-build\native-build-php-release.bat
-
-          # cmd /c sapi\quickstart\windows\native-build\native-build-php-archive.bat
+      - name: php build
+        shell: cmd
+        run: |
+          cd var\windows-build-deps\php-src\
+          nmake /E php.exe
 
       - name: Show Build Result
         run: |
-          $CURRENT_DIR = Get-Location
-          cd $CURRENT_DIR\php-src\
+          cd var\windows-build-deps\php-src\
 
           .\x64\Release\php.exe -v
           .\x64\Release\php.exe -m
