@@ -215,3 +215,11 @@ show-tarball-hash
 ----
 计算并显示已下载的源码包 HASH 值
 
+
+with-libavif
+----
+GD库支持 AVIF图片格式
+
+with-iouring
+----
+swoole 启用支持 iouring 特性

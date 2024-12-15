@@ -1,0 +1,32 @@
+name: artifact-hash
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: "发版 版本号 tag"
+        default: 'v1.6.0'
+        type: string
+      php-version:
+        required: true
+        description: "PHP 版本号 "
+        default: 'v8.1.30,v8.2.25,v8.3.13,v8.4.1'
+        type: string
+
+jobs:
+  generate-artifact-hash:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show Release File Hash
+        run: |
+          bash sapi/scripts/generate-artifact-hash.sh --version ${{ inputs.version }} --php-version ${{ inputs.php-version }}
+
+      - name: production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.version }}-sha256sum
+          retention-days: 90
+          path: |
+            ${{ inputs.version }}-sha256sum
