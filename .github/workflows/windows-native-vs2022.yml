@@ -27,6 +27,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
+          git config --global core.ignorecase false
           env
           ipconfig
           uname -a
@@ -39,35 +40,10 @@ jobs:
           systeminfo
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
 
-      - uses: msys2/setup-msys2@v2
       - name: prepare build environment and download source code
-        shell: msys2 {0}
-        run: |
-          CURRENT_DIR=$(pwd)
-          echo $CURRENT_DIR
-
-          # msys2 下载安装  git curl wget openssl zip unzip xz  lzip 软件包
-          bash sapi/quickstart/windows/native-build/msys2/msys2-install-soft.sh
-
-          # 准备 PHP 运行时 并执行 composer install
-          bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-runtime.sh
-
-          # 提前准备下载依赖库
-          bash sapi/download-box/download-box-get-archive-from-server.sh
-
-          # 准备 依赖库 和 扩展
-          bash sapi/quickstart/windows/native-build/msys2/msys2-download-source-code.sh
-
-          # 准备 PHP 源码 和 PHP SDK
-          bash sapi/quickstart/windows/native-build/msys2/msys2-download-php-and-php-sdk.sh
-
-          # 构建库准备环境依赖
-          bash sapi/quickstart/windows/native-build/msys2/msys2-download-deps-soft.sh
-
-      - name: Install Soft
         shell: cmd
         run: |
-          sapi\quickstart\windows\native-build\install-deps-soft.bat
+          sapi\quickstart\windows\native-build\windows-init.bat
 
       - name: Set  Github ENV variables
         run: |
