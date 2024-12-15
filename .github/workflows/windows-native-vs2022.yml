@@ -66,23 +66,15 @@ jobs:
           echo $X_PATH
           echo "PATH=$X_PATH"  >> $Env:GITHUB_ENV
 
-      - name: build all library
-        if: 0
+      - name: show deps soft
+        if: 1
         run: |
           $CURRENT_DIR = Get-Location
           where perl
           php -v
           perl -v
           nasm -v
-          # cmd /c  sapi\quickstart\windows\native-build\library\zlib.bat
-          # cmd /c  sapi\quickstart\windows\native-build\library\openssl.bat
-          # cmd /c  sapi\quickstart\windows\native-build\library\libssh2.bat
-          # cmd /c  sapi\quickstart\windows\native-build\library\libyaml.bat
-          # cmd /c  sapi\quickstart\windows\native-build\library\libexpat.bat
-          # cmd /c  sapi\quickstart\windows\native-build\library\liblz4.bat
-          # cmd /c  sapi\quickstart\windows\native-build\library\curl.bat
-          # cmd /c  sapi\quickstart\windows\native-build\library\brotli.bat
-          # cmd /c  sapi\quickstart\windows\native-build\library\libpng.bat
+
 
       - name: php prepare
         shell: cmd
@@ -105,7 +97,7 @@ jobs:
         shell: cmd
         run: |
           cd var\windows-build-deps\php-src\
-          nmake /E php.exe
+          nmake /E
 
       - name: Show Build Result
         run: |
