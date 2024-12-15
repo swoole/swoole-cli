@@ -40,16 +40,10 @@ jobs:
           systeminfo
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $Env:GITHUB_ENV
 
-      - name: prepare build environment and download source code
+      - name: prepare deps soft
         shell: cmd
         run: |
           sapi\quickstart\windows\native-build\windows-init.bat
-
-      - name: config
-        shell: cmd
-        run: |
-          sapi\quickstart\windows\native-build\native-build-php-config.bat
-
 
       - name: Set  Github ENV variables
         run: |
@@ -67,7 +61,7 @@ jobs:
           echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
 
 
-          $X_PATH = "${CURRENT_DIR}\php-sdk-binary-tools\bin;${CURRENT_DIR}\php-sdk-binary-tools\msys2\usr\bin;${CURRENT_DIR}\nasm\;$env:PATH"
+          $X_PATH = "${CURRENT_DIR}\var\windows-build-deps\php-sdk-binary-tools\bin;${CURRENT_DIR}\var\windows-build-deps\php-sdk-binary-tools\msys2\usr\bin;${CURRENT_DIR}\bin\runtime\nasm\;$env:PATH"
           echo $X_PATH
           echo "PATH=$X_PATH"  >> $Env:GITHUB_ENV
 
