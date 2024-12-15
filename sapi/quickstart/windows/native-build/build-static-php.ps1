@@ -31,6 +31,7 @@ cd .\x64\Release_TS\
 
 dumpbin /DEPENDENTS .\x64\Release_TS\php.exe
 
+# PHP 8.4 引入了默认的线程安全(ts)版本
 
 #>
 
