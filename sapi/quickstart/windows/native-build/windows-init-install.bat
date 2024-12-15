@@ -20,11 +20,11 @@ cd /d %__PROJECT__%\var\windows-build-deps\
 dir
 
 
-rem msiexec /i strawberry-perl-5.38.2.2-64bit.msi  /passive
+msiexec /i strawberry-perl-5.38.2.2-64bit.msi  /passive
 
-rem .\vc_redist.x64.exe /install /passive /norestart
+.\vc_redist.x64.exe /install /passive /norestart
 
-rem .\7z2409-x64.exe /S
+.\7z2409-x64.exe /S
 
 
 set "PATH=%ProgramFiles%\7-Zip;%PATH%;"

@@ -9,7 +9,7 @@ env:
 
 jobs:
   windows-native:
-    if: 0
+    if: 1
     runs-on: windows-2022
     strategy:
       matrix:
@@ -44,6 +44,17 @@ jobs:
         shell: cmd
         run: |
           sapi\quickstart\windows\native-build\windows-init.bat
+
+      - name: prepare build environment and download source code
+        shell: cmd
+        run: |
+          sapi\quickstart\windows\native-build\windows-init.bat
+
+      - name: config
+        shell: cmd
+        run: |
+          sapi\quickstart\windows\native-build\native-build-php-config.bat
+
 
       - name: Set  Github ENV variables
         run: |
