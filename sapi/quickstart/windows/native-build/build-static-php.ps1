@@ -27,9 +27,16 @@ configure.bat ^
 
 nmake /E php.exe
 
+cd .\x64\Release_TS\
+
+dumpbin /DEPENDENTS .\x64\Release_TS\php.exe
+
+
 #>
 
 exit
+
+
 Invoke-Expression "cmd /c $__PROJECT__\var\windows-build-deps\php-sdk-binary-tools\phpsdk-vs17-x64.bat"
 Invoke-Expression "cmd /c $__PROJECT__\sapi\quickstart\windows\native-build\native-build-php-config.bat"
 
