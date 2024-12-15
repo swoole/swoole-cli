@@ -33,6 +33,7 @@ cmd /c echo %USERPROFILE%
 cmd /c echo %HOMEDRIVE%
 cmd /c echo %HOMEPATH%
 cmd /c echo %ProgramFiles%
+cmd /c echo %NUMBER_OF_PROCESSORS%
 
 dir C:\Windows\System32\OpenSSH\
 cmd /c echo %SYSTEMROOT%\System32\OpenSSH\
