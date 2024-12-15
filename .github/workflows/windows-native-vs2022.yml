@@ -20,9 +20,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1.13.0
-        with:
-          arch: amd64
       - name: show environment info
         run: |
           git config --global core.autocrlf false
@@ -55,16 +52,16 @@ jobs:
         run: |
           $CURRENT_DIR = Get-Location
           echo "PHP_SDK_ARCH=x64" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_BIN_PATH=${CURRENT_DIR}\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_MSYS2_PATH=${CURRENT_DIR}\php-sdk-binary-tools\msys2\usr\bin" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_BIN_PATH=${CURRENT_DIR}\var\windows-build-deps\php-sdk-binary-tools\bin" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_MSYS2_PATH=${CURRENT_DIR}\var\windows-build-deps\php-sdk-binary-tools\msys2\usr\bin" >> $Env:GITHUB_ENV
           echo "PHP_SDK_OS_ARCH=x64" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_PHP_CMD=${CURRENT_DIR}\php-sdk-binary-tools\bin\php\do_php.bat" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_ROOT_PATH=${CURRENT_DIR}\php-sdk-binary-tools" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_VC_DIR=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_PHP_CMD=${CURRENT_DIR}\var\windows-build-deps\php-sdk-binary-tools\bin\php\do_php.bat" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_ROOT_PATH=${CURRENT_DIR}\var\windows-build-deps\php-sdk-binary-tools" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VC_DIR=C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC" >> $Env:GITHUB_ENV
           echo "PHP_SDK_VC_TOOLSET_VER=$env:VCToolsVersion" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_VS=vs16" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_VS_NUM=16" >> $Env:GITHUB_ENV
-          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS=vs17" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS_NUM=17" >> $Env:GITHUB_ENV
+          echo "PHP_SDK_VS_SHELL_CMD=C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat amd64" >> $Env:GITHUB_ENV
 
 
           $X_PATH = "${CURRENT_DIR}\php-sdk-binary-tools\bin;${CURRENT_DIR}\php-sdk-binary-tools\msys2\usr\bin;${CURRENT_DIR}\nasm\;$env:PATH"
