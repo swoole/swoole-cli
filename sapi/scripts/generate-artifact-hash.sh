@@ -113,7 +113,7 @@ APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSI
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
 test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
-test -f all-deps.zip || curl -LSo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/v5.1.5.1/all-deps.zip
+test -f all-deps.zip || curl -LSo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/${VERSION}/all-deps.zip
 
 ls -p | grep -v '/$' | xargs sha256sum
 
