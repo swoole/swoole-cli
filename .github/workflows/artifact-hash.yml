@@ -6,7 +6,7 @@ on:
       version:
         required: true
         description: "发版 版本号 tag"
-        default: '--vesion v5.1.6.0'
+        default: 'v5.1.6.0'
         type: string
 
 jobs:
@@ -15,8 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Show Release File Hash
-        run: ｜
-          bash sapi/scripts/generate-artifact-hash.sh ${{ inputs.version }}
+        run: |
+          bash sapi/scripts/generate-artifact-hash.sh --version ${{ inputs.version }}
 
       - name: production artifacts
         uses: actions/upload-artifact@v4

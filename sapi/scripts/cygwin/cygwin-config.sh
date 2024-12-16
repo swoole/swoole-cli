@@ -14,6 +14,7 @@ cd ${__PROJECT__}
 ./buildconf --force
 test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
+  \
   --disable-fiber-asm \
   --without-pcre-jit \
   --with-openssl --enable-openssl \
@@ -53,13 +54,13 @@ test -f Makefile && make clean
   --enable-brotli \
   --enable-zstd \
   --enable-redis \
-  --enable-opcache \
-  --disable-opcache-jit \
-  --enable-redis \
   --with-imagick \
   --with-yaml \
-  --with-readline
+  --with-readline \
+  --enable-opcache \
+  --disable-opcache-jit
 
-#  --with-pdo-pgsql \
-#  --with-pgsql
-#  --with-pdo-sqlite \
+# --with-pdo-pgsql \
+# --with-pgsql
+# --with-pdo-sqlite \
+# --enable-zts
