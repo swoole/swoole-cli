@@ -17,6 +17,7 @@ REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+APCU_VERSION=5.1.24
 
 if [ ! -d pool/ext ]; then
   mkdir -p pool/ext
@@ -54,6 +55,14 @@ if [ ! -d $ROOT/ext/imagick ]; then
   fi
   tar xvf imagick-${IMAGICK_VERSION}.tgz
   mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
+fi
+
+if [ ! -d $ROOT/ext/apcu ]; then
+  if [ ! -f apcu-${APCU_VERSION}.tgz ]; then
+    curl -fSLo imagick-${APCU_VERSION}.tgz https://pecl.php.net/get/apcu-${APCU_VERSION}.tgz
+  fi
+  tar xvf apcu-${APCU_VERSION}.tgz
+  mv apcu-${APCU_VERSION} $ROOT/ext/apcu
 fi
 
 cd $ROOT
