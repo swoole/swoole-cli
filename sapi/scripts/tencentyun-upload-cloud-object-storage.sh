@@ -83,9 +83,9 @@ if [ ! -f ${cloud_object_storage_config} ]; then
 
   fi
 fi
-COSCLI="${__PROJECT__}/var/upload-release-oss/coscli --config-path ${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml  "
+COSCLI="${__PROJECT__}/var/upload-release-oss/coscli  "
 
-${COSCLI} ls cos://wenda-1252906962/dist/
+${COSCLI} ls cos://wenda-1252906962/dist/ --config-path ${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml
 exit 0
 
 if [ -d ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION} ]; then
