@@ -58,14 +58,21 @@ cp -f ${APP_RUNTIME} coscli
 
 SWOOLE_CLI_VERSION='v5.1.6.0'
 SWOOLE_VERSION='v5.1.6'
+UPLOAD_FILE=''
+UPLOAD_TYPE=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --swoole-cli-version)
     SWOOLE_CLI_VERSION="$2"
     ;;
-  --*)
-    echo "Illegal option $1"
+  --upload-single-file)
+    UPLOAD_FILE="$2"
+    UPLOAD_TYPE='single'
     ;;
+  --upload-all-artifact-file)
+    UPLOAD_TYPE='all'
+    ;;
+
   esac
   shift $(($# > 0 ? 1 : 0))
 done
@@ -78,29 +85,33 @@ if [ ! -f ${CLOUD_OBJECT_STORAGE_CONFIG} ]; then
   if [ -n "${SECRET_ID}" ] && [ -n "${SECRET_KEY}" ]; then
     sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_ID }}/${SECRET_ID}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
     sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_KEY }}/${SECRET_KEY}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
-
   fi
 fi
 COSCLI="${__PROJECT__}/var/upload-release-oss/coscli "
 
 ${COSCLI} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} ls cos://wenda-1252906962/dist/
-exit 0
 
-if [ -d ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION} ]; then
-  SWOOLE_VERSION=$(echo ${SWOOLE_CLI_VERSION} | awk -F '.' '{ printf "%s.%s.%s" ,$1,$2,$3 }')
-else
-  echo "please download release artifact !"
-  echo "bash ${__PROJECT__}/sapi/scripts/generate-artifact-hash.sh --version ${SWOOLE_CLI_VERSION}"
+if [ "${UPLOAD_TYPE}" = 'single' ]; then
+  ${COSCLI} sync ${UPLOAD_FILE} cos://wenda-1252906962/dist/
   exit 0
 fi
 
-cd ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION}
-${COSCLI}
-exit 0
-${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip cos://examplebucket-1250000000/
-${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz cos://examplebucket-1250000000/
-${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz cos://examplebucket-1250000000/
-${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz cos://examplebucket-1250000000/
-${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz cos://examplebucket-1250000000/
+if [ "${UPLOAD_TYPE}" = 'all' ]; then
+  if [ -d ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION} ]; then
+    SWOOLE_VERSION=$(echo ${SWOOLE_CLI_VERSION} | awk -F '.' '{ printf "%s.%s.%s" ,$1,$2,$3 }')
+  else
+    echo "please download release artifact !"
+    echo "bash ${__PROJECT__}/sapi/scripts/generate-artifact-hash.sh --version ${SWOOLE_CLI_VERSION}"
+    exit 0
+  fi
 
-cd ${__PROJECT__}
+  cd ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION}
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip cos://wenda-1252906962/dist/
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz cos://wenda-1252906962/dist/
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz cos://wenda-1252906962/dist/
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz cos://wenda-1252906962/dist/
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz cos://wenda-1252906962/dist/
+
+  cd ${__PROJECT__}
+  exit 0
+fi
