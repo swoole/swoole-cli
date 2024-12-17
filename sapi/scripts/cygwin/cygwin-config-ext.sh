@@ -59,7 +59,7 @@ fi
 
 if [ ! -d $ROOT/ext/apcu ]; then
   if [ ! -f apcu-${APCU_VERSION}.tgz ]; then
-    curl -fSLo imagick-${APCU_VERSION}.tgz https://pecl.php.net/get/apcu-${APCU_VERSION}.tgz
+    curl -fSLo apcu-${APCU_VERSION}.tgz https://pecl.php.net/get/apcu-${APCU_VERSION}.tgz
   fi
   tar xvf apcu-${APCU_VERSION}.tgz
   mv apcu-${APCU_VERSION} $ROOT/ext/apcu
