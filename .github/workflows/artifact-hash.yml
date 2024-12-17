@@ -25,3 +25,4 @@ jobs:
           retention-days: 90
           path: |
             ${{ inputs.version }}-sha256sum
+
