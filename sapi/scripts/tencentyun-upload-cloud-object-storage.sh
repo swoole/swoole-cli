@@ -72,18 +72,18 @@ done
 
 ${__PROJECT__}/var/upload-release-oss/coscli --help
 
-cloud_object_storage_config=${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml
-if [ ! -f ${cloud_object_storage_config} ]; then
-  cp -f ${__PROJECT__}/sapi/scripts/tencentyun-cloud-object-storage.yaml ${cloud_object_storage_config}
+CLOUD_OBJECT_STORAGE_CONFIG=${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml
+if [ ! -f ${CLOUD_OBJECT_STORAGE_CONFIG} ]; then
+  cp -f ${__PROJECT__}/sapi/scripts/tencentyun-cloud-object-storage.yaml ${CLOUD_OBJECT_STORAGE_CONFIG}
   if [ -n "${SECRET_ID}" ] && [ -n "${SECRET_KEY}" ]; then
-    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_ID }}/${SECRET_ID}/" ${cloud_object_storage_config}
-    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_KEY }}/${SECRET_KEY}/" ${cloud_object_storage_config}
+    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_ID }}/${SECRET_ID}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
+    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_KEY }}/${SECRET_KEY}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
 
   fi
 fi
-COSCLI="${__PROJECT__}/var/upload-release-oss/coscli  "
+COSCLI="${__PROJECT__}/var/upload-release-oss/coscli "
 
-${COSCLI} ls cos://wenda-1252906962/dist/ --config-path ${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml
+${COSCLI} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} ls cos://wenda-1252906962/dist/
 exit 0
 
 if [ -d ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION} ]; then
