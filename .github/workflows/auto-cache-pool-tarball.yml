@@ -118,7 +118,7 @@ jobs:
             all-deps.zip.sha256sum
       - name: uploade artifacts to cloud object strage
         env:
-          SECRET_ID: ${{ secrets.SuperSecret }}
-          SECRET_KEY: ${{ secrets.SuperSecret }}
+          SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
+          SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
         run: |
           bash sapi/scripts/tencentyun-upload-cloud-object-storage.sh
