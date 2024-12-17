@@ -55,9 +55,6 @@ test -f ${APP_RUNTIME} || curl -fSLo ${APP_RUNTIME} https://github.com/tencentyu
 
 chmod a+x ${APP_RUNTIME}
 cp -f ${APP_RUNTIME} coscli
-APP="${__PROJECT__}/var/upload-release-oss/coscli --endpoint cos.ap-shanghai.myqcloud.com "
-
-${APP} --help
 
 SWOOLE_CLI_VERSION='v5.1.6.0'
 SWOOLE_VERSION='v5.1.6'
@@ -73,6 +70,23 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+${__PROJECT__}/var/upload-release-oss/coscli --help
+
+cloud_object_storage_config=${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml
+if [ ! -f ${cloud_object_storage_config} ]; then
+  cp -f ${__PROJECT__}/sapi/scripts/tencentyun-cloud-object-storage.yaml ${cloud_object_storage_config}
+
+  if [ -n "${SECRET_ID}" ] && [ -n "${SECRET_KEY}" ]; then
+    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_ID }}/${SECRET_ID}/" ${cloud_object_storage_config}
+    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_KEY }}/${SECRET_KEY}/" ${cloud_object_storage_config}
+
+  fi
+fi
+COSCLI="${__PROJECT__}/var/upload-release-oss/coscli --config-path ${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml  "
+
+${COSCLI} ls cos://wenda-1252906962/dist/
+exit 0
+
 if [ -d ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION} ]; then
   SWOOLE_VERSION=$(echo ${SWOOLE_CLI_VERSION} | awk -F '.' '{ printf "%s.%s.%s" ,$1,$2,$3 }')
 else
@@ -82,11 +96,12 @@ else
 fi
 
 cd ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION}
-
-${APP} cp swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip cos://examplebucket-1250000000/
-${APP} cp swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz cos://examplebucket-1250000000/
-${APP} cp swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz cos://examplebucket-1250000000/
-${APP} cp swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz cos://examplebucket-1250000000/
-${APP} cp swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz cos://examplebucket-1250000000/
+${COSCLI}
+exit 0
+${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip cos://examplebucket-1250000000/
+${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz cos://examplebucket-1250000000/
+${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz cos://examplebucket-1250000000/
+${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz cos://examplebucket-1250000000/
+${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz cos://examplebucket-1250000000/
 
 cd ${__PROJECT__}
