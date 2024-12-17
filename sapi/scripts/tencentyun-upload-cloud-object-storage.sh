@@ -75,7 +75,8 @@ ${__PROJECT__}/var/upload-release-oss/coscli --help
 cloud_object_storage_config=${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml
 if [ ! -f ${cloud_object_storage_config} ]; then
   cp -f ${__PROJECT__}/sapi/scripts/tencentyun-cloud-object-storage.yaml ${cloud_object_storage_config}
-
+  SECRET_ID="8888888"
+  SECRET_KEY="4444444"
   if [ -n "${SECRET_ID}" ] && [ -n "${SECRET_KEY}" ]; then
     sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_ID }}/${SECRET_ID}/" ${cloud_object_storage_config}
     sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_KEY }}/${SECRET_KEY}/" ${cloud_object_storage_config}
