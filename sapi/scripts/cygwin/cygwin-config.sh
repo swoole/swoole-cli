@@ -12,6 +12,12 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OPTIONS=''
+OPTIONS+=' --enable-swoole-thread '
+OPTIONS+=' --enable-brotli '
+OPTIONS+=' --enable-zstd '
+OPTIONS+=' --enable-zts '
+OPTIONS+=' --disable-opcache-jit '
+
 X_PHP_VERSION=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -19,11 +25,7 @@ while [ $# -gt 0 ]; do
     PHP_VERSION="$2"
     X_PHP_VERSION=$(echo ${PHP_VERSION:0:3})
     if [ "$X_PHP_VERSION" = "8.4" ]; then
-      OPTIONS+=' --enable-swoole-thread '
-      OPTIONS+=' --enable-brotli '
-      OPTIONS+=' --enable-zstd '
-      OPTIONS+=' --enable-zts '
-      OPTIONS+=' --disable-opcache-jit '
+      OPTIONS+=''
     fi
     ;;
   --*)
