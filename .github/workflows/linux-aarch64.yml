@@ -184,8 +184,8 @@ jobs:
         with:
           files: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64.tar.xz
 
-      - name: uploade artifacts to cloud object storage
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: upload artifacts to cloud object storage
+        if: (startsWith(github.ref, 'refs/tags/v')) && (github.repository == 'swoole/swoole-cli')
         env:
           SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
           SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}

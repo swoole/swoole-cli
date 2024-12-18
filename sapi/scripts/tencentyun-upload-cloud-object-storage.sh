@@ -69,10 +69,9 @@ while [ $# -gt 0 ]; do
     UPLOAD_FILE="$2"
     UPLOAD_TYPE='single'
     ;;
-  --upload-all-artifact-file)
+  --upload-all)
     UPLOAD_TYPE='all'
     ;;
-
   esac
   shift $(($# > 0 ? 1 : 0))
 done
@@ -100,8 +99,9 @@ if [ "${UPLOAD_TYPE}" = 'all' ]; then
   if [ -d ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION} ]; then
     SWOOLE_VERSION=$(echo ${SWOOLE_CLI_VERSION} | awk -F '.' '{ printf "%s.%s.%s" ,$1,$2,$3 }')
   else
-    echo "please download release artifact !"
+    echo "please download release artifact and upload !"
     echo "bash ${__PROJECT__}/sapi/scripts/generate-artifact-hash.sh --version ${SWOOLE_CLI_VERSION}"
+    echo "bash ${__PROJECT__}/sapi/scripts/tencentyun-upload-cloud-object-storage.sh --swoole-cli-version ${SWOOLE_CLI_VERSION} --upload-all"
     exit 0
   fi
 
