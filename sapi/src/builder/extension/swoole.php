@@ -4,7 +4,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $swoole_tag = 'v5.1.6';
+    $swoole_tag = 'v6.0.0';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
@@ -20,7 +20,7 @@ return function (Preprocessor $p) {
     //call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
     //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
 
-    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql'];
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
@@ -33,6 +33,18 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-pgsql';
     $options[] = '--enable-swoole-sqlite';
     $options[] = '--with-swoole-odbc=unixODBC,' . UNIX_ODBC_PREFIX;
+    $options[] = '--enable-swoole-thread';
+    $options[] = '--enable-brotli';
+    $options[] = '--enable-zstd';
+    $options[] = '--enable-zts';
+
+    if ($p->isLinux() && $p->getInputOption('with-iouring')) {
+        $options[] = '--enable-iouring';
+        $dependentLibraries[] = 'liburing';
+        $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
+        $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
+    }
+
 
     $p->addExtension((new Extension('swoole'))
         ->withHomePage('https://github.com/swoole/swoole-src')
@@ -53,4 +65,8 @@ EOF
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
+
+
+    $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
+    $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 };
