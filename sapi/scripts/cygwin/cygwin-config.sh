@@ -58,4 +58,5 @@ test -f Makefile && make clean
   --with-yaml \
   --with-readline \
   --enable-opcache \
-  --disable-opcache-jit
+  --disable-opcache-jit \
+  --with-xlswriter --enable-reader

@@ -17,6 +17,7 @@ REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+XLSWRITER_VERSION=1.5.5
 
 if [ ! -d pool/ext ]; then
   mkdir -p pool/ext
@@ -54,6 +55,14 @@ if [ ! -d $ROOT/ext/imagick ]; then
   fi
   tar xvf imagick-${IMAGICK_VERSION}.tgz
   mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
+fi
+
+if [ ! -d $ROOT/ext/xlswriter ]; then
+  if [ ! -f xlswriter-${XLSWRITER_VERSION}.tgz ]; then
+    curl -fSLo xlswriter-${XLSWRITER_VERSION}.tgz https://pecl.php.net/get/xlswriter-${XLSWRITER_VERSION}.tgz
+  fi
+  tar xvf xlswriter-${XLSWRITER_VERSION}.tgz
+  mv xlswriter-${XLSWRITER_VERSION} $ROOT/ext/xlswriter
 fi
 
 cd $ROOT
