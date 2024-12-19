@@ -185,9 +185,9 @@ jobs:
           files: swoole-cli-v${{ env.APP_VERSION }}-linux-arm64.tar.xz
 
       - name: upload artifacts to cloud object storage
-        if: (startsWith(github.ref, 'refs/tags/v')) && (github.repository == 'swoole/swoole-cli')
+        # if: (startsWith(github.ref, 'refs/tags/v')) && (github.repository == 'swoole/swoole-cli')
         env:
           SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
           SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
         run: |
-          bash sapi/scripts/tencentyun-upload-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
+          bash sapi/scripts/tencentyun-upload-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-linux-arm64.tar.xz

@@ -76,7 +76,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-${__PROJECT__}/var/upload-release-oss/coscli --help
+# ${__PROJECT__}/var/upload-release-oss/coscli --help
 
 CLOUD_OBJECT_STORAGE_CONFIG=${__PROJECT__}/var/upload-release-oss/.tencentyun-cloud-object-storage.yaml
 if [ ! -f ${CLOUD_OBJECT_STORAGE_CONFIG} ]; then
@@ -86,12 +86,14 @@ if [ ! -f ${CLOUD_OBJECT_STORAGE_CONFIG} ]; then
     sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_KEY }}/${SECRET_KEY}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
   fi
 fi
-COSCLI="${__PROJECT__}/var/upload-release-oss/coscli "
 
-${COSCLI} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} ls cos://wenda-1252906962/dist/
+COSCLI="${__PROJECT__}/var/upload-release-oss/coscli --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} "
+COS_BUCKET_FOLDER="cos://wenda-1257035567/dist/"
+
+${COSCLI}  ls ${COS_BUCKET_FOLDER}
 
 if [ "${UPLOAD_TYPE}" = 'single' ]; then
-  ${COSCLI} sync ${UPLOAD_FILE} cos://wenda-1252906962/dist/
+  ${COSCLI} sync ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
   exit 0
 fi
 
@@ -106,11 +108,11 @@ if [ "${UPLOAD_TYPE}" = 'all' ]; then
   fi
 
   cd ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION}
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip cos://wenda-1252906962/dist/
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz cos://wenda-1252906962/dist/
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz cos://wenda-1252906962/dist/
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz cos://wenda-1252906962/dist/
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz cos://wenda-1252906962/dist/
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip ${COS_BUCKET_FOLDER}
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz ${COS_BUCKET_FOLDER}
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz ${COS_BUCKET_FOLDER}
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz ${COS_BUCKET_FOLDER}
+  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz ${COS_BUCKET_FOLDER}
 
   cd ${__PROJECT__}
   exit 0
