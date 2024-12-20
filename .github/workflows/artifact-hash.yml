@@ -31,7 +31,7 @@ jobs:
             ${{ inputs.version }}-sha256sum
 
       - name: upload artifacts to cloud object storage
-        if: ${{ (github.repository == 'jingjingxyk/swoole-cli') && (inputs.enable_upload_cloud_object_storage == true) }}
+        if: ${{ (github.repository == 'swoole/swoole-cli') && (inputs.enable_upload_cloud_object_storage == true) }}
         env:
           SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
           SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
