@@ -99,7 +99,7 @@ UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
 
   APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
   APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
-  test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
+  test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
 
 }
 
@@ -112,8 +112,8 @@ ARCH="x64"
 APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
-test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
-test -f all-deps.zip || curl -LSo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/${VERSION}/all-deps.zip
+test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/${VERSION}/all-deps.zip
 
 ls -p | grep -v '/$' | xargs sha256sum
 

@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
-    if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[macos-x86_64]')"
+    if: 1
     runs-on: macos-13
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
@@ -150,9 +150,9 @@ jobs:
           files: swoole-cli-v${{ env.APP_VERSION }}-macos-x64.tar.xz
 
       - name: upload artifacts to cloud object storage
-        # if: (startsWith(github.ref, 'refs/tags/v')) && (github.repository == 'swoole/swoole-cli')
+        if: ${{ (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
         env:
           SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
           SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
         run: |
-          bash sapi/scripts/tencentyun-upload-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-macos-x64.tar.xz
+          bash sapi/scripts/tencent-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-macos-x64.tar.xz
