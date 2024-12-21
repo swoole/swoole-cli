@@ -3,7 +3,7 @@ name: build-php-cli-linux-aarch64
 on: [ push, pull_request ]
 
 env:
-  BUILD_PHP_VERSION: 8.2.25
+  BUILD_PHP_VERSION: 8.2.27
 
 jobs:
   linux-aarch64:
@@ -12,10 +12,10 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.25"
-          - "8.1.30"
-          - "8.3.13"
-          - "8.4.1"
+          - "8.2.27"
+          - "8.1.31"
+          - "8.3.15"
+          - "8.4.2"
     steps:
       - uses: actions/checkout@v4
       - name: Show Environment Info
