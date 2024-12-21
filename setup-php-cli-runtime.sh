@@ -50,7 +50,7 @@ esac
 
 APP_VERSION='v8.2.25'
 APP_NAME='php-cli'
-VERSION='v1.5.2'
+VERSION='v1.6.0'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime

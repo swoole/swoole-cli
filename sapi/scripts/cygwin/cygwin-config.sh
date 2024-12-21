@@ -12,6 +12,12 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OPTIONS=''
+OPTIONS+=' --enable-swoole-thread '
+OPTIONS+=' --enable-brotli '
+OPTIONS+=' --enable-zstd '
+OPTIONS+=' --enable-zts '
+OPTIONS+=' --disable-opcache-jit '
+
 X_PHP_VERSION=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -19,11 +25,7 @@ while [ $# -gt 0 ]; do
     PHP_VERSION="$2"
     X_PHP_VERSION=$(echo ${PHP_VERSION:0:3})
     if [ "$X_PHP_VERSION" = "8.4" ]; then
-      OPTIONS+=' --enable-swoole-thread '
-      OPTIONS+=' --enable-brotli '
-      OPTIONS+=' --enable-zstd '
-      OPTIONS+=' --enable-zts '
-      OPTIONS+=' --disable-opcache-jit '
+      OPTIONS+=''
     fi
     ;;
   --*)
@@ -39,7 +41,7 @@ mkdir -p ${__PROJECT__}/bin/
 cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
 
 cd ${__PROJECT__}/php-src/
-if [ "$X_PHP_VERSION" = "8.4" ]; then
+if [ "$X_PHP_VERSION" = "8.4" ] || [ "$X_PHP_VERSION" = "8.3" ] || [ "$X_PHP_VERSION" = "8.2" ] || [ "$X_PHP_VERSION" = "8.1" ]; then
   sed -i.backup 's/!defined(__HAIKU__)/!defined(__HAIKU__) \&\& !defined(__CYGWIN__)/' TSRM/TSRM.c
 fi
 

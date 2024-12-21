@@ -10,7 +10,7 @@ $php_archive_file = $poject_dir . "/pool/php/php-{$php_version_tag}.tar.gz";
 $download_dir = dirname($php_archive_file);
 
 # 下载 PHP 源码
-$download_cmd = "curl -L https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_archive_file}";
+$download_cmd = "curl -fSL https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_archive_file}";
 echo $download_cmd . PHP_EOL;
 if (!file_exists($php_archive_file)) {
     `test -d {$download_dir} || mkdir -p {$download_dir}`;
