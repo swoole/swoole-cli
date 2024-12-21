@@ -5,8 +5,16 @@ on: [ push, pull_request ]
 jobs:
   windows-cygwin:
     if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-cygwin]')"
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
+      - name: Show Environment Info
+        run: |
+          ver
+          wmic cpu get name, caption, maxclockspeed, status
+          systeminfo
+          systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+          systeminfo | findstr /B /C:"Manufacturer" /C:"Product" /C:"Version"
+
       - name: Prepare git
         run: |
           git config --global core.autocrlf false
