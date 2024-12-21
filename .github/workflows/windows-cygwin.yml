@@ -8,6 +8,7 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Show Environment Info
+        shell: cmd
         run: |
           ver
           wmic cpu get name, caption, maxclockspeed, status
