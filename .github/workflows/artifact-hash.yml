@@ -13,6 +13,10 @@ on:
         description: "PHP 版本号 "
         default: 'v8.1.30,v8.2.25,v8.3.13,v8.4.1'
         type: string
+      enable_upload_cloud_object_storage:
+        required: false
+        type: boolean
+        description: "上传到云对象存储 (默认不需要上传）"
 
 jobs:
   generate-artifact-hash:
@@ -30,3 +34,12 @@ jobs:
           retention-days: 90
           path: |
             ${{ inputs.version }}-sha256sum
+
+      - name: upload artifacts to cloud object storage
+        if: ${{ 0 && (github.repository == 'swoole/swoole-cli') && (inputs.enable_upload_cloud_object_storage == true) }}
+        env:
+          SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
+          SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
+        run: |
+          bash sapi/scripts/tencent-cloud-object-storage.sh --upload-all --swoole-cli-version  ${{ inputs.version }}
+
