@@ -7,8 +7,8 @@ return function (Preprocessor $p) {
     $p->addExtension(
         (new Extension('ssh2'))
             ->withOptions('--with-ssh2=' . LIBSSH2_PREFIX)
-            ->withPeclVersion('1.4')
-            ->withFileHash('md5', 'd4ff155a741fcc33c4439a6e20323afd')
+            ->withPeclVersion('1.4.1')
+            ->withFileHash('md5', '9d655fb9e83aec24fcd6f943ddf94000')
             ->withHomePage('https://github.com/php/pecl-networking-ssh2')
             ->withManual('https://www.php.net/ssh2')
             ->withLicense('https://www.php.net/license/', Extension::LICENSE_PHP)
