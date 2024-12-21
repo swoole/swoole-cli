@@ -13,7 +13,7 @@ cd ${__PROJECT__}
 
 ROOT=${__PROJECT__}
 
-SWOOLE_VERSION=v5.1.6
+SWOOLE_VERSION=v6.0.0
 
 while [ $# -gt 0 ]; do
   case "$1" in
