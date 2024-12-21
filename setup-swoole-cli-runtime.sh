@@ -125,24 +125,24 @@ china)
 
 esac
 
-test -f composer.phar || curl -LSo composer.phar ${COMPOSER_DOWNLOAD_URL}
+test -f composer.phar || curl -fSLo composer.phar ${COMPOSER_DOWNLOAD_URL}
 chmod a+x composer.phar
 
-test -f cacert.pem || curl -LSo cacert.pem ${CACERT_DOWNLOAD_URL}
+test -f cacert.pem || curl -fSLo cacert.pem ${CACERT_DOWNLOAD_URL}
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
 
 if [ $OS = 'windows' ]; then
   {
     APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
-    test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+    test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
     echo
     exit 0
   }
 else
-  test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
+  test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
   test -f swoole-cli && rm -f swoole-cli
   tar -xvf ${APP_RUNTIME}.tar
