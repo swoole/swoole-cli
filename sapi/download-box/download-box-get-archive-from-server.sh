@@ -38,7 +38,7 @@ done
 
 URL="${DOMAIN}/all-deps.zip"
 
-test -f all-deps.zip || curl -Lo all-deps.zip ${URL}
+test -f all-deps.zip || curl -fSLo all-deps.zip ${URL}
 
 # hash 签名
 HASH=$(sha256sum all-deps.zip | awk '{print $1}')
