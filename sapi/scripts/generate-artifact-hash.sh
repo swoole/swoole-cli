@@ -156,10 +156,10 @@ RUN_DOWNLOAD() {
 
 DOWNLOAD() {
   declare -A PHP_VERSIONS
-  PHP_VERSIONS[0]="v8.2.25"
-  PHP_VERSIONS[1]="v8.1.30"
-  PHP_VERSIONS[2]="v8.3.13"
-  PHP_VERSIONS[3]="v8.4.1"
+  PHP_VERSIONS[0]="v8.2.27"
+  PHP_VERSIONS[1]="v8.1.31"
+  PHP_VERSIONS[2]="v8.3.15"
+  PHP_VERSIONS[3]="v8.4.2"
   for i in "${!PHP_VERSIONS[@]}"; do
     # echo ${PHP_VERSIONS[$i]}
     RUN_DOWNLOAD "${PHP_VERSIONS[$i]}"

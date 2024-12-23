@@ -11,7 +11,7 @@ on:
       php-version:
         required: true
         description: "PHP 版本号 "
-        default: 'v8.1.30,v8.2.25,v8.3.13,v8.4.1'
+        default: 'v8.1.31,v8.2.27,v8.3.15,v8.4.2'
         type: string
       enable_upload_cloud_object_storage:
         required: false
