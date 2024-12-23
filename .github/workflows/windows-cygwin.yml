@@ -9,7 +9,7 @@ env:
 
 jobs:
   windows-cygwin:
-    if: 0
+    if: 1
     runs-on: windows-2022
     strategy:
       matrix:
