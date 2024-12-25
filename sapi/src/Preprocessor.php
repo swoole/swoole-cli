@@ -89,7 +89,7 @@ class Preprocessor
     protected array $endCallbacks = [];
     protected array $extCallbacks = [];
     protected array $beforeConfigure = [];
-    protected string $configureVarables;
+    protected string $configureVariables;
     protected string $buildType = 'release';
     protected string $swooleBranch = 'master';
     protected bool $inVirtualMachine = false;
@@ -238,12 +238,12 @@ class Preprocessor
         $this->extraCflags = $flags;
     }
 
-    public function setConfigureVarables(string $varables)
+    public function setConfigureVariables(string $variables): void
     {
-        $this->configureVarables = $varables;
+        $this->configureVariables = $variables;
     }
 
-    public function setExtraOptions(string $options)
+    public function setExtraOptions(string $options): void
     {
         $this->extraOptions = $options;
     }
@@ -280,7 +280,7 @@ class Preprocessor
         return $this->buildType;
     }
 
-    public function donotInstallLibrary()
+    public function doNotInstallLibrary(): void
     {
         $this->installLibrary = false;
     }
@@ -635,7 +635,7 @@ class Preprocessor
     /**
      * Scan and load config files in directory
      */
-    protected function scanConfigFiles(string $dir, array &$extAvailabled)
+    protected function scanConfigFiles(string $dir, array &$extAvailable): void
     {
         $files = scandir($dir);
         foreach ($files as $f) {
@@ -644,14 +644,14 @@ class Preprocessor
             }
             $path = $dir . '/' . $f;
             if (is_dir($path)) {
-                $this->scanConfigFiles($path, $extAvailabled);
+                $this->scanConfigFiles($path, $extAvailable);
             } else {
-                $extAvailabled[basename($f, '.php')] = require $path;
+                $extAvailable[basename($f, '.php')] = require $path;
             }
         }
     }
 
-    public function loadDependentExtension($extension_name)
+    public function loadDependentExtension($extension_name): void
     {
         if (!isset($this->extensionMap[$extension_name])) {
             $file = realpath(__DIR__ . '/builder/extension/' . $extension_name . '.php');
@@ -721,14 +721,15 @@ class Preprocessor
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
 
-        $currentSwooleBranch = trim(`cd {$this->rootDir}/ext/swoole && git branch --show-current`);
+        $out = `cd {$this->rootDir}/ext/swoole && git branch --show-current`;
+        $currentSwooleBranch = trim($out ?? $this->swooleBranch);
         if ($currentSwooleBranch != $this->swooleBranch) {
             `cd {$this->rootDir}/ext/swoole && git checkout {$this->swooleBranch}`;
             echo "Switch swoole to {$this->swooleBranch} branch\n";
         }
 
-        $extAvailabled = [];
-        $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailabled);
+        $extAvailable = [];
+        $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailable);
 
         $confPath = $this->getInputOption('conf-path');
         if ($confPath) {
@@ -737,17 +738,17 @@ class Preprocessor
                 if (!is_dir($dir)) {
                     continue;
                 }
-                $this->scanConfigFiles($dir, $extAvailabled);
+                $this->scanConfigFiles($dir, $extAvailable);
             }
         }
 
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
-            if (!isset($extAvailabled[$ext])) {
+            if (!isset($extAvailable[$ext])) {
                 echo "unsupported extension[$ext]\n";
                 continue;
             }
-            ($extAvailabled[$ext])($this);
+            ($extAvailable[$ext])($this);
             if (isset($this->extCallbacks[$ext])) {
                 ($this->extCallbacks[$ext])($this);
             }
@@ -802,7 +803,7 @@ class Preprocessor
 
         if ($this->getInputOption('with-dependency-graph')) {
             $this->generateFile(
-                __DIR__ . '/template/extension_ependency_graph.php',
+                __DIR__ . '/template/extension_dependency_graph.php',
                 $this->rootDir . '/bin/ext-dependency-graph.graphviz.dot'
             );
         }
