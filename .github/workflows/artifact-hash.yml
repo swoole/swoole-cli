@@ -6,7 +6,7 @@ on:
       version:
         required: true
         description: "发版 版本号 tag"
-        default: 'v1.6.0'
+        default: 'v1.7.1'
         type: string
       php-version:
         required: true
