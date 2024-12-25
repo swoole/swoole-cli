@@ -13,12 +13,12 @@ set "__PROJECT__=%cd%"
 echo %cd%
 :: package  separate with commas
 
-set SITE='https://mirrors.kernel.org/sourceware/cygwin/'
+set SITE="https://mirrors.kernel.org/sourceware/cygwin/"
 
 :getopt
 if /i "%1" equ "--mirror" (
 	if /i "%2" equ "china" (
-		set SITE='https://mirrors.ustc.edu.cn/cygwin/'
+		set SITE="https://mirrors.ustc.edu.cn/cygwin/"
 	)
 )
 shift
