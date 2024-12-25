@@ -13,5 +13,10 @@ cd ${__PROJECT__}
 
 mkdir -p bin/.libs
 # export LDFLAGS="-all-static"
-make -j $(nproc)
+LOGICAL_PROCESSORS=$(nproc)
+if test $LOGICAL_PROCESSORS -gt 2; then
+  LOGICAL_PROCESSORS=$((LOGICAL_PROCESSORS - 1))
+fi
+
+make -j $LOGICAL_PROCESSORS
 ./bin/swoole-cli -v
