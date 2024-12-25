@@ -142,8 +142,6 @@ WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
 
   APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
   test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
-  test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/build-static-php/releases/download/${VERSION}/all-deps.zip
-
 }
 WINDOWS_DOWNLOAD() {
   WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "$1"
@@ -166,6 +164,8 @@ DOWNLOAD() {
   done
 
 }
+
+test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/build-static-php/releases/download/${VERSION}/all-deps.zip
 
 DOWNLOAD
 
