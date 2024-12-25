@@ -14,13 +14,13 @@
 
 ## 安装cygwin 和 cygwin 依赖项
 
-> 打开 windows 控制台，并找到 setup-x86_64.exe 所在目录, 将 setup-x86_64.exe 复制到 `sapi\quickstart\windows\` 目录
 > 执行如下命令
 
 ```bash
 
 # 自动安装 cygwin 和  cygwin 依赖项
-sapi\quickstart\windows\install-cygwin.bat
+.\sapi\quickstart\windows\download-cygwin.bat
+.\sapi\quickstart\windows\install-cygwin.bat
 
 ```
 
