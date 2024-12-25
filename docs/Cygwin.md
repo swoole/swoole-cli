@@ -14,13 +14,14 @@
 
 ## 安装cygwin 和 cygwin 依赖项
 
-> 执行如下命令
+> 打开windows CMD 终端 执行如下命令
 
 ```bash
 
 # 自动安装 cygwin 和  cygwin 依赖项
-.\sapi\quickstart\windows\download-cygwin.bat
-.\sapi\quickstart\windows\install-cygwin.bat
+sapi\quickstart\windows\cygwin-build\download-cygwin.bat
+sapi\quickstart\windows\cygwin-build\install-cygwin.bat
+
 
 ```
 
