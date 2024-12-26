@@ -18,7 +18,11 @@ LOGICAL_PROCESSORS=$(nproc)
 
 set +u
 if [ -n "${GITHUB_ACTION}" ]; then
-  make  cli
+  if test $LOGICAL_PROCESSORS -ge 4; then
+    LOGICAL_PROCESSORS=$((LOGICAL_PROCESSORS - 2))
+  fi
+  # make  cli
+  make -j $LOGICAL_PROCESSORS cli
 else
   make -j $LOGICAL_PROCESSORS cli
 fi
