@@ -15,9 +15,13 @@ mkdir -p bin/.libs
 # export LDFLAGS="-all-static"
 LOGICAL_PROCESSORS=$(nproc)
 
-# if test $LOGICAL_PROCESSORS -gt 2; then
-#  LOGICAL_PROCESSORS=$((LOGICAL_PROCESSORS - 1))
-# fi
+set +u
+if [ -n "${GITHUB_ACTION}" ]; then
+  if test $LOGICAL_PROCESSORS -gt 2; then
+    LOGICAL_PROCESSORS=$((LOGICAL_PROCESSORS - 1))
+  fi
+fi
+set -u
 
 make -j $LOGICAL_PROCESSORS
 ./bin/swoole-cli -v

@@ -15,6 +15,7 @@ jobs:
           systeminfo
           systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
           systeminfo | findstr /B /C:"Manufacturer" /C:"Product" /C:"Version"
+          set
 
       - name: Prepare git
         run: |
@@ -63,7 +64,7 @@ jobs:
 
           bash ./sapi/scripts/cygwin/install-cygwin.sh
 
-      - name: Install Cygwin Packages with bat
+      - name: Install Cygwin Packages
         if: 1
         run: |
           Copy-Item -Path "C:\setup.exe" -Destination "${{ github.workspace }}\setup-x86_64.exe"
