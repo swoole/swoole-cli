@@ -33,27 +33,9 @@ pacman -Syy --noconfirm git curl wget openssl zip unzip xz gcc gcc-g++  cmake ma
 
 pacman -Syy --noconfirm openssl-devel libreadline
 
-
 # msys2 环境下 拉取 swoole-cli 源码
 git clone --recursive https://github.com:swoole/swoole-cli.git
 
-# msys2 环境下下载 cygwin (也可以用浏览器下载) 安装包
-wget https://cygwin.com/setup-x86_64.exe
-
-# 将 cygwin 安装包 移动到 window  指定盘符根目 （这里以 C盘为例）
-mv setup-x86_64.exe C:/setup-x86_64.exe
-
 
 ```
 
-### windows 自带默认终端
-
-```shell
-
-# windows 开始菜单，打开 新的 windows 自带终端，执行安装 cygwin
-cd c:\
-
-# 添加 pgsql
-setup-x86_64.exe  --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus    --site  https://mirrors.ustc.edu.cn/cygwin/ --packages libpq5 libpq-deve
-
-```
