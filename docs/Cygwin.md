@@ -146,7 +146,7 @@ libzstd-devel
 
 > 多个包之间 使用逗号分隔
 
-> 编辑修改次文件即可 `.\sapi\quickstart\windows\cygwin-build\install-cygwin.bat`
+> 编辑修改此文件即可 `.\sapi\quickstart\windows\cygwin-build\install-cygwin.bat`
 
 ```bash
 # 安装 cygwin
