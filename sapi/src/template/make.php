@@ -1,3 +1,4 @@
+#!/bin/bash
 <?php
 /**
  * @var $this SwooleCli\Preprocessor
