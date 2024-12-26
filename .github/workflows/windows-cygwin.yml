@@ -27,7 +27,7 @@ jobs:
           systeminfo
           systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
           systeminfo | findstr /B /C:"Manufacturer" /C:"Product" /C:"Version"
-          env
+          set
           ipconfig
           uname -a
           pwd
@@ -75,7 +75,8 @@ jobs:
         #  platform: x64
         #  packages: make wget tar libtool re2c bison gcc-g++ autoconf automake openssl libpcre2-devel libssl-devel libcurl-devel libxml2-devel libxslt-devel libgmp-devel ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel zlib-devel libbz2-devel liblz4-devel liblzma-devel libzip-devel libicu-devel libonig-devel libcares-devel libsodium-devel libyaml-devel libMagick-devel libzstd-devel libbrotli-devel libreadline-devel  libintl-devel libpq-devel libssh2-devel libidn2-devel gettext-devel coreutils openssl-devel zip unzip
 
-      - name: Install Cygwin Packages
+      - name: Install Cygwin Packages with bash
+        if: 0
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           ls -lah /cygdrive/c/
@@ -83,21 +84,31 @@ jobs:
           cp -f /cygdrive/c/setup.exe  /cygdrive/c/cygwin/bin/setup-x86_64.exe
           bash ./sapi/scripts/cygwin/install-cygwin.sh
 
+      - name: Install Cygwin Packages
+        if: 1
+        run: |
+          Copy-Item -Path "C:\setup.exe" -Destination "${{ github.workspace }}\setup-x86_64.exe"
+          cmd /c .\sapi\quickstart\windows\cygwin-build\install-cygwin.bat
+
       - name: Install re2c
+        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
 
       - name: Prepare
+        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           # git submodule update --init
           bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version ${{ env.BUILD_PHP_VERSION }}
 
       - name: Configure
+        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/cygwin/cygwin-config.sh --php-version ${{ env.BUILD_PHP_VERSION }}
 
       - name: Build
+        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/cygwin/cygwin-build.sh
 
@@ -157,7 +168,7 @@ jobs:
           files: php-cli-v${{ env.APP_VERSION }}-cygwin-x64.zip
 
   upload-to-cloud-object-storage:
-    if: 1
+    if: 0
     runs-on: ubuntu-latest
     needs: windows-cygwin
     steps:

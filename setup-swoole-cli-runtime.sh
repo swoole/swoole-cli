@@ -48,9 +48,9 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v5.1.5'
+APP_VERSION='v6.0.0'
 APP_NAME='swoole-cli'
-VERSION='v5.1.5.1'
+VERSION='v6.0.0.0'
 
 MIRROR=''
 while [ $# -gt 0 ]; do
