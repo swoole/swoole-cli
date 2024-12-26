@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 <?php if (in_array($this->buildType, ['dev', 'debug'])) : ?>
 set -x
 <?php endif ;?>
