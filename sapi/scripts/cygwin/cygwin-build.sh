@@ -24,7 +24,8 @@ if [ -n "${GITHUB_ACTION}" ]; then
 fi
 set -u
 
-make -j $LOGICAL_PROCESSORS cli
+# make -j $LOGICAL_PROCESSORS cli
+make -j  cli
 
 ${__PROJECT__}/php-src/sapi/cli/php.exe -v
 
