@@ -18,13 +18,12 @@ LOGICAL_PROCESSORS=$(nproc)
 
 set +u
 if [ -n "${GITHUB_ACTION}" ]; then
-  if test $LOGICAL_PROCESSORS -gt 2; then
-    LOGICAL_PROCESSORS=$((LOGICAL_PROCESSORS - 1))
-  fi
+  make
+else
+  make -j $LOGICAL_PROCESSORS
 fi
 set -u
 
-make -j $LOGICAL_PROCESSORS
 ./bin/swoole-cli -v
 ./bin/swoole-cli -m
 ./bin/swoole-cli --ri swoole
