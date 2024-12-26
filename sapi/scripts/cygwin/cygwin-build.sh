@@ -23,5 +23,6 @@ if [ -n "${GITHUB_ACTION}" ]; then
 fi
 set -u
 
-make -j $LOGICAL_PROCESSORS
+# make -j $LOGICAL_PROCESSORS
+make
 ./bin/swoole-cli -v
