@@ -21,8 +21,8 @@ if [ -n "${GITHUB_ACTION}" ]; then
   if test $LOGICAL_PROCESSORS -ge 4; then
     LOGICAL_PROCESSORS=$((LOGICAL_PROCESSORS - 2))
   fi
-  # make  cli
-  make -j $LOGICAL_PROCESSORS cli
+  make  cli
+  # make -j $LOGICAL_PROCESSORS cli
 else
   make -j $LOGICAL_PROCESSORS cli
 fi
