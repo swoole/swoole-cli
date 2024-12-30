@@ -12,7 +12,6 @@ __PROJECT__=$(
 cd ${__DIR__}
 
 {
-  docker stop swoole-cli-alpine-dev
   docker stop swoole-cli-builder
   sleep 5
 } || {

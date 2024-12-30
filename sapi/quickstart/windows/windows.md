@@ -17,3 +17,11 @@ git config core.ignorecase false # 设置 Git 在 Windows 上也区分大小写
 [7zip](https://7-zip.org/)
 [visualstudio](https://visualstudio.microsoft.com/zh-hans/downloads/)
 [windows-sdk](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
+
+## windows 软连接例子
+
+```bash
+
+mklink composer composer.phar
+
+```

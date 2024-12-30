@@ -12,7 +12,6 @@ __PROJECT__=$(
 cd ${__DIR__}
 
 {
-  docker stop swoole-cli-alpine-dev
   docker stop swoole-cli-builder
   sleep 5
 } || {
@@ -28,9 +27,9 @@ while [ $# -gt 0 ]; do
   --mirror)
     MIRROR="$2"
     case "$MIRROR" in
-      china | openatom)
-        IMAGE="hub.atomgit.com/library/alpine:3.18"
-        ;;
+    china | openatom)
+      IMAGE="hub.atomgit.com/library/alpine:3.18"
+      ;;
     esac
     ;;
   esac
