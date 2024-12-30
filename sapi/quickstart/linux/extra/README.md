@@ -1,6 +1,7 @@
-#
+# debina and alpine install php
 
-## 当环境中没有 PHP 解释器时  可以快速安装 PHP 解释器
+> 当环境中没有 PHP 解释器时 可以快速安装 PHP 解释器
+
 ```bash
 
 # alpine
@@ -14,6 +15,7 @@ bash sapi/quickstart/linux/extra/debian-php-init.sh
 ```
 
 ```bash
+
    wget -O composer.phar https://mirrors.aliyun.com/composer/composer.phar
 
 ```
