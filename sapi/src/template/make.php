@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 <?php
 /**
  * @var $this SwooleCli\Preprocessor
@@ -8,6 +7,7 @@ use SwooleCli\Library;
 use SwooleCli\Preprocessor;
 
 ?>
+#!/usr/bin/env bash
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
 CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
