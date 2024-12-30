@@ -150,7 +150,7 @@ if [ "${UPLOAD_TYPE}" == 'single' ]; then
 fi
 
 if [ "${UPLOAD_TYPE}" == 'show' ]; then
-  cat ${CLOUD_OBJECT_STORAGE_CONFIG}
+  # cat ${CLOUD_OBJECT_STORAGE_CONFIG}
   # ${COSCLI} --help
   ${COSCLI} ls ${COS_BUCKET_FOLDER}
   exit 0
