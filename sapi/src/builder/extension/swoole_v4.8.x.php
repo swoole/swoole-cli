@@ -4,9 +4,12 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $swoole_tag = 'v4.8.13';
     $swoole_tag = '4.8.x';
     $file = "swoole-v{$swoole_tag}.tar.gz";
+
+
+    $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
+
     $options = [];
 
     if ($p->getBuildType() === 'debug') {
@@ -26,9 +29,9 @@ return function (Preprocessor $p) {
     $options[] = '--enable-http2';
     $options[] = '--enable-brotli';
     $options[] = '--with-brotli-dir=' . BROTLI_PREFIX;
+
     $options[] = '--with-openssl-dir=' . OPENSSL_PREFIX;
     $options[] = '--enable-swoole-json';
-
 
     $p->addExtension((new Extension('swoole_v4.8.x'))
         ->withAliasName('swoole')

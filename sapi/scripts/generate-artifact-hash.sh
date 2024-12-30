@@ -13,7 +13,28 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OS=$(uname -s)
-ARCH=$(uname -m)
+case $OS in
+'Linux')
+  OS="linux"
+  ;;
+'Darwin')
+  OS="macos"
+  ;;
+*)
+  case $OS in
+  'MSYS_NT'*)
+    OS="windows"
+    ;;
+  'MINGW64_NT'*)
+    OS="windows"
+    ;;
+  *)
+    echo '暂未配置的 OS '
+    exit 0
+    ;;
+  esac
+  ;;
+esac
 
 APP_VERSION='v5.1.6'
 APP_NAME='swoole-cli'
@@ -35,8 +56,15 @@ while [ $# -gt 0 ]; do
       X_VERSION=$(echo "$2" | grep -E '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
       X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}')
     elif [ $OS = "linux" ]; then
-      X_VERSION=$(echo "$2" | grep -P '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
-      X_APP_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}')
+      OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '\n' | tr -d '\"')
+      if [ "$OS_RELEASE" = 'alpine' ]; then
+        X_VERSION=$(echo "$2" | egrep -E '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
+        X_APP_VERSION=$(echo "$2" | egrep -Eo '^v\d\.\d{1,2}\.\d{1,2}')
+      else
+        X_VERSION=$(echo "$2" | grep -P '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
+        X_APP_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}')
+      fi
+
     else
       X_VERSION=''
       X_APP_VERSION=''
@@ -71,7 +99,7 @@ UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
 
   APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
   APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
-  test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
+  test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
 
 }
 
@@ -84,8 +112,8 @@ ARCH="x64"
 APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
-test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
-test -f all-deps.zip || curl -LSo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/v5.1.5.1/all-deps.zip
+test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/${VERSION}/all-deps.zip
 
 ls -p | grep -v '/$' | xargs sha256sum
 
