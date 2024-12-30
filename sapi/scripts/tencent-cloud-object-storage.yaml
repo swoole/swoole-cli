@@ -1,0 +1,17 @@
+cos:
+  base:
+    secretid: "${{ secrets.QCLOUD_OSS_SECRET_ID }}"
+    secretkey: "${{ secrets.QCLOUD_OSS_SECRET_KEY }}"
+    sessiontoken: ""
+    protocol: https
+    mode: SecretKey
+    cvmrolename: ""
+    closeautoswitchhost: "true"
+  buckets:
+    - name: "${{ vars.QCLOUD_OSS_BUCKET }}"
+      alias: "${{ vars.QCLOUD_OSS_BUCKET }}"
+      region: "${{ vars.QCLOUD_OSS_REGION }}"
+      #      endpoint: cos.ap-shanghai.myqcloud.com
+      #      endpoint: wenda-1252906962.cos.accelerate.myqcloud.com
+      endpoint: "cos.accelerate.myqcloud.com"
+      ofs: false
