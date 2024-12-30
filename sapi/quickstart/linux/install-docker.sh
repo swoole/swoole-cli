@@ -42,10 +42,10 @@ esac
 
 if [ -n "$http_proxy" ] || [ -n "$https_proxy" ] || [ -n "$HTTP_PROXY" ] || [ -n "$HTTPS_PROXY" ]; then
   set +u
-  uset http_proxy
-  uset https_proxy
-  uset HTTP_PROXY
-  uset HTTPS_PROXY
+  unset http_proxy
+  unset https_proxy
+  unset HTTP_PROXY
+  unset HTTPS_PROXY
   set -u
 fi
 
