@@ -160,8 +160,10 @@ jobs:
       - name: upload artifacts to cloud object storage
         if: ${{ (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
         env:
-          SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
-          SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
+          OSS_SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
+          OSS_SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
+          OSS_BUCKET: ${{ vars.QCLOUD_OSS_BUCKET }}
+          OSS_REGION: ${{ vars.QCLOUD_OSS_REGION }}
         run: |
           FILE_NAME=$(ls  -d swoole-cli-v*-cygwin-x64)
           FILE="${{ github.workspace }}/${FILE_NAME}/${FILE_NAME}.zip"
