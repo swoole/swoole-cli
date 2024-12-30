@@ -299,7 +299,7 @@ class Preprocessor
         if ($this->getInputOption('with-downloader') === 'wget') {
             $cmd = "wget   {$url}  -O {$file}  -t {$retry_number} --wait={$wait_retry} -T {$connect_timeout} ";
         } else {
-            $cmd = "curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry}  -Lo '{$file}' '{$url}' ";
+            $cmd = "curl  --connect-timeout {$connect_timeout} --retry {$retry_number}  --retry-delay {$wait_retry}  -fSLo '{$file}' '{$url}' ";
         }
         echo $cmd;
         echo PHP_EOL;
@@ -794,7 +794,9 @@ class Preprocessor
         }
 
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
-        shell_exec('chmod a+x '.$this->rootDir . '/make.sh');
+
+        shell_exec('chmod a+x ' . $this->rootDir . '/make.sh');
+
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
         $this->generateFile(__DIR__ . '/template/credits.php', $this->rootDir . '/bin/credits.html');
