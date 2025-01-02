@@ -85,7 +85,7 @@ while [ $# -gt 0 ]; do
     export NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
     PROXY_OPTION="--proxy $2"
     ;;
-  --show-uploaded-file-list)
+  --show)
     UPLOAD_TYPE="show"
     ;;
   esac
@@ -99,9 +99,11 @@ CLOUD_OBJECT_STORAGE_CONFIG=${__PROJECT__}/var/tencent-cloud-object-storage/.ten
 if [ ! -f ${CLOUD_OBJECT_STORAGE_CONFIG} ]; then
   cp -f ${__PROJECT__}/sapi/scripts/tencent-cloud-object-storage.yaml ${CLOUD_OBJECT_STORAGE_CONFIG}
   set +u
-  if [ -n "${SECRET_ID}" ] && [ -n "${SECRET_KEY}" ]; then
-    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_ID }}/${SECRET_ID}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
-    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_KEY }}/${SECRET_KEY}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
+  if [ -n "${OSS_SECRET_ID}" ] && [ -n "${OSS_SECRET_KEY}" ]; then
+    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_ID }}/${OSS_SECRET_ID}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
+    sed -i.bak "s/\${{ secrets.QCLOUD_OSS_SECRET_KEY }}/${OSS_SECRET_KEY}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
+    sed -i.bak "s/\${{ vars.QCLOUD_OSS_BUCKET }}/${OSS_BUCKET}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
+    sed -i.bak "s/\${{ vars.QCLOUD_OSS_REGION }}/${OSS_REGION}/" ${CLOUD_OBJECT_STORAGE_CONFIG}
   fi
   set -u
 fi
@@ -113,8 +115,9 @@ fi
 test -f ${APP_RUNTIME} || curl -fSLo ${APP_RUNTIME} https://github.com/tencentyun/coscli/releases/download/${APP_VERSION}/${APP_RUNTIME}
 chmod a+x ${APP_RUNTIME}
 
+BUCKET_NAME=$(grep "\- name: " ${CLOUD_OBJECT_STORAGE_CONFIG} | sed 's/\- name: //g' | sed 's/^ *//;s/ *$//' | tr -d '"')
 COSCLI="${__PROJECT__}/var/tencent-cloud-object-storage/${APP_RUNTIME} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} --log-path ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log "
-COS_BUCKET_FOLDER="cos://wenda-1252906962/dist/"
+COS_BUCKET_FOLDER="cos://${BUCKET_NAME}/dist/"
 
 if [ "${UPLOAD_TYPE}" == 'all' ]; then
   if [ ! -d ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION} ]; then
@@ -147,8 +150,8 @@ if [ "${UPLOAD_TYPE}" == 'single' ]; then
 fi
 
 if [ "${UPLOAD_TYPE}" == 'show' ]; then
-  cat ${CLOUD_OBJECT_STORAGE_CONFIG}
-  ${COSCLI} --help
+  # cat ${CLOUD_OBJECT_STORAGE_CONFIG}
+  # ${COSCLI} --help
   ${COSCLI} ls ${COS_BUCKET_FOLDER}
   exit 0
 fi

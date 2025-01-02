@@ -28,7 +28,6 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-
 # https://github.com/docker/docker-install.git
 # test -f get-docker.sh || curl -fsSL https://get.docker.com -o get-docker.sh
 
@@ -41,13 +40,14 @@ china | ustc | tuna)
   ;;
 esac
 
-
 if [ -n "$http_proxy" ] || [ -n "$https_proxy" ] || [ -n "$HTTP_PROXY" ] || [ -n "$HTTPS_PROXY" ]; then
-    echo 'Please delete proxy settings !'
-    echo 'Execute this script again ！'
-    exit 0
+  set +u
+  unset http_proxy
+  unset https_proxy
+  unset HTTP_PROXY
+  unset HTTPS_PROXY
+  set -u
 fi
-
 
 case "$MIRROR" in
 china | ustc)

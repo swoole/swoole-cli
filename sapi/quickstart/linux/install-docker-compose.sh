@@ -24,7 +24,7 @@ if [ ! -f /usr/libexec/docker/cli-plugins/docker-compose ]; then
 
   # show more version info
   # https://github.com/docker/compose/releases
-  VERSION="v2.29.1"
+  VERSION="v2.32.1"
 
   curl -fsSL "https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
