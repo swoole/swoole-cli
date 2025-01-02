@@ -18,9 +18,9 @@ mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
 
-ALL_DEPS_HASH="bdd159b93fd8217e89d206aeb22bf7a8295553db0aff332f049b9025feb31766"
+ALL_DEPS_HASH="a55699ecee994032f33266dfa37eabb49f1f6d6b6b65cdcf7b881cac09c63bea"
 
-DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v5.1.5.1/'
+DOMAIN='https://github.com/swoole/swoole-cli/releases/download/v6.0.0.0/'
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -38,7 +38,7 @@ done
 
 URL="${DOMAIN}/all-deps.zip"
 
-test -f all-deps.zip || curl -Lo all-deps.zip ${URL}
+test -f all-deps.zip || curl -fSLo all-deps.zip ${URL}
 
 # hash 签名
 HASH=$(sha256sum all-deps.zip | awk '{print $1}')

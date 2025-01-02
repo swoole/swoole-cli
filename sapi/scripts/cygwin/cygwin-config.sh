@@ -14,7 +14,7 @@ cd ${__PROJECT__}
 ./buildconf --force
 test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
-  --enable-opcache \
+  \
   --disable-fiber-asm \
   --without-pcre-jit \
   --with-openssl --enable-openssl \
@@ -52,6 +52,8 @@ test -f Makefile && make clean
   --with-imagick \
   --with-yaml \
   --with-readline \
-  --with-pdo-pgsql \
-  --with-pgsql \
-  --with-pdo-sqlite
+  --enable-opcache
+
+# --with-pdo-pgsql \
+# --with-pgsql
+# --with-pdo-sqlite
