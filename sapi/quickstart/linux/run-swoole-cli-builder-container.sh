@@ -12,12 +12,14 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 MIRROR=''
+OPTIONS=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     case "$MIRROR" in
     china)
       MIRROR="$2"
+      OPTIONS=" --mirror china "
       ;;
     esac
 
@@ -26,7 +28,7 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-bash setup-php-runtime.sh ${MIRROR}
+bash setup-php-runtime.sh ${OPTIONS}
 export PATH=${__PROJECT__}/bin/runtime:$PATH
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem "
 
