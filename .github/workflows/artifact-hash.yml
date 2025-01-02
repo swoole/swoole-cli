@@ -33,8 +33,10 @@ jobs:
       - name: upload artifacts to cloud object storage
         if: ${{ (github.repository == 'swoole/swoole-cli') && (inputs.enable_upload_cloud_object_storage == true) }}
         env:
-          SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
-          SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
+          OSS_SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
+          OSS_SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
+          OSS_BUCKET: ${{ vars.QCLOUD_OSS_BUCKET }}
+          OSS_REGION: ${{ vars.QCLOUD_OSS_REGION }}
         run: |
           bash sapi/scripts/tencent-cloud-object-storage.sh --upload-all --swoole-cli-version  ${{ inputs.version }}
 
