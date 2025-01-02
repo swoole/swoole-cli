@@ -13,6 +13,7 @@ cd ${__PROJECT__}
 cd ${__PROJECT__}/php-src
 
 mkdir -p bin/.libs
+# export LDFLAGS="-all-static"
 
 LOGICAL_PROCESSORS=$(nproc)
 
