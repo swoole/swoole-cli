@@ -38,6 +38,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
           git config --global core.ignorecase false
+          git config --global --add safe.directory ${{ github.workspace }}
 
       - uses: actions/checkout@v4
       - name: set php version
@@ -95,7 +96,7 @@ jobs:
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
 
-      - name: Configure
+      - name: Prepare
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
