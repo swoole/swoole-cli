@@ -17,6 +17,7 @@ bash sapi/quickstart/linux/extra/debian-php-init.sh
 ## 安装 `Composer`
 
 ```bash
+
 curl -Lo  /usr/local/bin/composer.phar https://getcomposer.org/download/latest-stable/composer.phar
 
 ln -sf /usr/local/bin/composer.phar /usr/local/bin/composer
