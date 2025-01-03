@@ -16,10 +16,14 @@ OPTIONS=''
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
+    MIRROR="$2"
     case "$MIRROR" in
     china)
-      MIRROR="$2"
       OPTIONS=" --mirror china "
+      ;;
+    *)
+      echo "$0 parameter error"
+      exit 0
       ;;
     esac
 
@@ -31,6 +35,8 @@ done
 bash setup-php-runtime.sh ${OPTIONS}
 export PATH=${__PROJECT__}/bin/runtime:$PATH
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem "
+
+export COMPOSER_ALLOW_SUPERUSER=1
 
 if [ "$MIRROR" = 'china' ]; then
   composer config -g repos.packagist composer https://mirrors.tencent.com/composer/
