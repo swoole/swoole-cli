@@ -52,4 +52,11 @@ fi
 php ./prepare.php --skip-download=yes --without-docker=yes
 
 bash make.sh docker-build ${MIRROR}
+
+{
+  docker exec -it swoole-cli-builder which bash
+} || {
+  docker exec -it swoole-cli-builder sh /work/sapi/quickstart/linux/alpine-init.sh ${OPTIONS}
+}
+
 bash make.sh docker-bash
