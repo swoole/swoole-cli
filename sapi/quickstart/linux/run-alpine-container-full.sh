@@ -12,7 +12,7 @@ __PROJECT__=$(
 cd ${__DIR__}
 
 {
-  docker stop swoole-cli-builder
+  docker stop swoole-cli-alpine-dev
   sleep 5
 } || {
   echo $?
@@ -74,7 +74,7 @@ cd ${__DIR__}
 if [ $DEV_SHM -eq 1 ]; then
   mkdir -p /dev/shm/swoole-cli/thirdparty/
   mkdir -p /dev/shm/swoole-cli/ext/
-  docker run --rm --name swoole-cli-builder -d -v ${__PROJECT__}:/work -v /dev/shm/swoole-cli/thirdparty/:/work/thirdparty/ -v /dev/shm/swoole-cli/ext/:/work/ext/ -w /work --init $IMAGE tail -f /dev/null
+  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -v /dev/shm/swoole-cli/thirdparty/:/work/thirdparty/ -v /dev/shm/swoole-cli/ext/:/work/ext/ -w /work --init $IMAGE tail -f /dev/null
 else
-  docker run --rm --name swoole-cli-builder -d -v ${__PROJECT__}:/work -w /work --init $IMAGE tail -f /dev/null
+  docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work --init $IMAGE tail -f /dev/null
 fi
