@@ -58,9 +58,9 @@ test -f Makefile && make clean
   --with-yaml \
   --with-readline \
   --enable-opcache \
-  --disable-opcache-jit
+  --disable-opcache-jit \
+  --enable-zts
 
 # --with-pdo-pgsql \
 # --with-pgsql
-# --with-pdo-sqlite \
-# --enable-zts
+# --with-pdo-sqlite
