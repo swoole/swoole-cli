@@ -13,6 +13,3 @@ sapi\quickstart\windows\cygwin-build\install-cygwin.bat
 
 
 ```
-
-
-
