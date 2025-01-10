@@ -15,16 +15,16 @@ cd ${__PROJECT__}/
 ldd ${__PROJECT__}/bin/php.exe
 
 cd ${__PROJECT__}
-APP_VERSION=$(${__PROJECT__}/bin/php.exe -v | head -n 1 | awk '{ print $2 }')
-NAME="php-v${APP_VERSION}-cygwin-x64"
+APP_VERSION=$(${__PROJECT__}/bin/swoole-cli.exe -v | head -n 1 | awk '{ print $2 }')
+NAME="swoole-cli-v${APP_VERSION}-cygwin-x64"
 
 test -d /tmp/${NAME} && rm -rf /tmp/${NAME}
 mkdir -p /tmp/${NAME}
 mkdir -p /tmp/${NAME}/etc/
 
 cd ${__PROJECT__}/
-ldd ${__PROJECT__}/bin/php.exe -v | grep -v '/cygdrive/' | awk '{print $3}'
-ldd ${__PROJECT__}/bin/php.exe -v | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/
+ldd ${__PROJECT__}/bin/swoole-cli.exe -v | grep -v '/cygdrive/' | awk '{print $3}'
+ldd ${__PROJECT__}/bin/swoole-cli.exe -v | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/
 
 ls -lh  /tmp/${NAME}/
 
