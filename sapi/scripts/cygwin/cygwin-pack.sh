@@ -12,7 +12,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 cd ${__PROJECT__}/
-ldd ${__PROJECT__}/bin/php.exe
+ldd ${__PROJECT__}/bin/swoole-cli.exe
 
 cd ${__PROJECT__}
 APP_VERSION=$(${__PROJECT__}/bin/swoole-cli.exe -v | head -n 1 | awk '{ print $2 }')
@@ -28,7 +28,7 @@ ldd ${__PROJECT__}/bin/swoole-cli.exe -v | grep -v '/cygdrive/' | awk '{print $3
 
 ls -lh  /tmp/${NAME}/
 
-cp -f ${__PROJECT__}/bin/php.exe /tmp/${NAME}/
+cp -f ${__PROJECT__}/bin/swoole-cli.exe /tmp/${NAME}/
 # cp -f ${__PROJECT__}/bin/LICENSE /tmp/${NAME}/
 # cp -f ${__PROJECT__}/bin/credits.html /tmp/${NAME}/
 
