@@ -65,7 +65,8 @@ fi
 mkdir -p ${WORK_DIR}/ext/imagick/
 tar --strip-components=1 -C ${WORK_DIR}/ext/imagick/ -xf imagick-${IMAGICK_VERSION}.tgz
 
-# cp -rf var/cygwin-build/ext/* var/
+cd ${__PROJECT__}
+# cp -rf var/cygwin-build/ext/* ext/
 cp -rf ${WORK_DIR}/ext/* ${__PROJECT__}/ext/
 
 cd ${__PROJECT__}
