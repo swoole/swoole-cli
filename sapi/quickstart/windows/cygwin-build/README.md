@@ -34,6 +34,10 @@ cmd /c .\sapi\quickstart\windows\cygwin-build\install-cygwin.bat --mirror china
 ```
 C:\cygwin64\bin\mintty.exe -i /Cygwin-Terminal.ico -
 
+
+# 进入项目所在目录 (USER=Administrator)
+cd /cygdrive/c/users/${USER}/swoole-cli
+
 ```
 
 ### cygwin mirror
