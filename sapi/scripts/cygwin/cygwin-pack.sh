@@ -23,8 +23,8 @@ mkdir -p /tmp/${NAME}
 mkdir -p /tmp/${NAME}/etc/
 
 cd ${__PROJECT__}/
-ldd ${__PROJECT__}/bin/swoole-cli.exe -v | grep -v '/cygdrive/' | awk '{print $3}'
-ldd ${__PROJECT__}/bin/swoole-cli.exe -v | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/
+ldd ${__PROJECT__}/bin/swoole-cli.exe | grep -v '/cygdrive/' | awk '{print $3}'
+ldd ${__PROJECT__}/bin/swoole-cli.exe | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/
 
 ls -lh  /tmp/${NAME}/
 
