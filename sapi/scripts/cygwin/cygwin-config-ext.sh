@@ -66,7 +66,20 @@ mkdir -p ${WORK_DIR}/ext/imagick/
 tar --strip-components=1 -C ${WORK_DIR}/ext/imagick/ -xf imagick-${IMAGICK_VERSION}.tgz
 
 cd ${__PROJECT__}
+# clean extension folder
+NO_BUILT_IN_EXTENSIONS=$(ls ${WORK_DIR}/ext/)
+for EXT_NAME in $NO_BUILT_IN_EXTENSIONS
+do
+  echo "extnaion name: $EXT_NAME "
+  test -d ${__PROJECT__}/ext/${EXT_NAME} && rm -rf ${__PROJECT__}/ext/${EXT_NAME}
+done
+
+cd ${__PROJECT__}
+# copy extension
 # cp -rf var/cygwin-build/ext/* ext/
 cp -rf ${WORK_DIR}/ext/* ${__PROJECT__}/ext/
+
+# extension hook
+
 
 cd ${__PROJECT__}
