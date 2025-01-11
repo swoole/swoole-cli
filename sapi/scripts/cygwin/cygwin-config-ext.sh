@@ -70,7 +70,7 @@ cd ${__PROJECT__}
 NO_BUILT_IN_EXTENSIONS=$(ls ${WORK_DIR}/ext/)
 for EXT_NAME in $NO_BUILT_IN_EXTENSIONS
 do
-  echo "extnaion name: $EXT_NAME "
+  echo "EXTENSION_NAME: $EXT_NAME "
   test -d ${__PROJECT__}/ext/${EXT_NAME} && rm -rf ${__PROJECT__}/ext/${EXT_NAME}
 done
 
