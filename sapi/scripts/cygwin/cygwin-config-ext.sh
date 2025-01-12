@@ -116,8 +116,8 @@ tar --strip-components=1 -C ${WORK_TEMP_DIR}/php-src -xf php-${PHP_VERSION}.tar.
 
 cd ${__PROJECT__}
 # copy extension
-# cp -rf var/cygwin-build/ext/* ${WORK_TEMP_DIR}/php-src
-cp -rf ${WORK_TEMP_DIR}/ext/* ${WORK_TEMP_DIR}/php-src
+# cp -rf var/cygwin-build/ext/* var/cygwin-build/php-src/ext/
+cp -rf ${WORK_TEMP_DIR}/ext/* ${WORK_TEMP_DIR}/php-src/ext/
 
 # extension hook
 if [ "$X_PHP_VERSION" = "8.4" ]; then
