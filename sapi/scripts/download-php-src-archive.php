@@ -24,7 +24,7 @@ if ($hash !== $php_archive_file_sha256sum) {
     if ($download_php_counter > 3) {
         throw  new \Exception('curl download php archive Exception!', 500);
     }
-    echo 'archive sha256sum mismatched , will download ' . PHP_EOL;
+    echo 'archive sha256sum mismatched , will re-download ' . PHP_EOL;
     unlink($php_archive_file);
     goto    DOWNLOAD_PHP;
 }
