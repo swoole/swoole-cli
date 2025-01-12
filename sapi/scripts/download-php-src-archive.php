@@ -15,15 +15,15 @@ echo $download_cmd . PHP_EOL;
 if (!file_exists($php_archive_file)) {
     `test -d {$download_dir} || mkdir -p {$download_dir}`;
     $download_php_counter++;
-    if ($download_php_counter > 3) {
-        throw  new \Exception('curl download php archive Exception!', 500);
-    }
     `{$download_cmd}`;
 }
 
 $hash = hash_file('sha256', $php_archive_file);
 echo "sha256sum: " . $hash . PHP_EOL;
 if ($hash !== $php_archive_file_sha256sum) {
+    if ($download_php_counter > 3) {
+        throw  new \Exception('curl download php archive Exception!', 500);
+    }
     echo 'archive sha256sum mismatched , will download ' . PHP_EOL;
     unlink($php_archive_file);
     goto    DOWNLOAD_PHP;
