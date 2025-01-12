@@ -12,9 +12,9 @@ cd /d ..\..\..\..\
 set "__PROJECT__=%cd%"
 echo %cd%
 
-md %__PROJECT__%\var\windows-cygwin-build-deps\
+md %__PROJECT__%\var\cygwin-build\
 
-cd /d %__PROJECT__%\var\windows-cygwin-build-deps\
+cd /d %__PROJECT__%\var\cygwin-build\
 
 curl.exe -fSLo setup-x86_64.exe https://cygwin.com/setup-x86_64.exe
 

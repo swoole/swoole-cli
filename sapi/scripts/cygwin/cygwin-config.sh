@@ -36,14 +36,9 @@ while [ $# -gt 0 ]; do
 done
 
 mkdir -p ${__PROJECT__}/bin/
-# cp -f ${__PROJECT__}/php-src/ext/openssl/config0.m4  ${__PROJECT__}/php-src/ext/openssl/config.m4
 
-cp -rf ${__PROJECT__}/ext/* ${__PROJECT__}/php-src/ext/
-
-cd ${__PROJECT__}/php-src/
-if [ "$X_PHP_VERSION" = "8.4" ] || [ "$X_PHP_VERSION" = "8.3" ] || [ "$X_PHP_VERSION" = "8.2" ] || [ "$X_PHP_VERSION" = "8.1" ]; then
-  sed -i.backup 's/!defined(__HAIKU__)/!defined(__HAIKU__) \&\& !defined(__CYGWIN__)/' TSRM/TSRM.c
-fi
+WORK_TEMP_DIR=${__PROJECT__}/var/cygwin-build/
+cd ${WORK_TEMP_DIR}/php-src/
 
 # export CPPFLAGS="-I/usr/include"
 # export CFLAGS=""
