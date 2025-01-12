@@ -10,7 +10,8 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-cd ${__PROJECT__}/php-src
+WORK_TEMP_DIR=${__PROJECT__}/var/cygwin-build/
+cd ${WORK_TEMP_DIR}/php-src/
 
 mkdir -p bin/.libs
 # export LDFLAGS="-all-static"
@@ -29,9 +30,9 @@ else
 fi
 set -u
 
-${__PROJECT__}/php-src/sapi/cli/php.exe -v
+${WORK_TEMP_DIR}/php-src/sapi/cli/php.exe -v
 
-cp -f ${__PROJECT__}/php-src/sapi/cli/php.exe ${__PROJECT__}/bin/
+cp -f ${WORK_TEMP_DIR}/php-src/sapi/cli/php.exe ${__PROJECT__}/bin/
 
 ${__PROJECT__}/bin/php.exe -v
 ${__PROJECT__}/bin/php.exe -m
