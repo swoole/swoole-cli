@@ -16,7 +16,7 @@ ldd ${__PROJECT__}/bin/php.exe
 
 cd ${__PROJECT__}
 APP_VERSION=$(${__PROJECT__}/bin/php.exe -v | head -n 1 | awk '{ print $2 }')
-NAME="php-cli-v${APP_VERSION}-cygwin-x64"
+NAME="php-cli-v${APP_VERSION}-msys2-x64"
 
 test -d /tmp/${NAME} && rm -rf /tmp/${NAME}
 mkdir -p /tmp/${NAME}/
@@ -24,8 +24,8 @@ mkdir -p /tmp/${NAME}/etc/
 mkdir -p /tmp/${NAME}/bin/
 
 cd ${__PROJECT__}/
-ldd ${__PROJECT__}/bin/php.exe | grep -v '/cygdrive/' | awk '{print $3}'
-ldd ${__PROJECT__}/bin/php.exe | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/bin/
+ldd ${__PROJECT__}/bin/php.exe | grep -v '/c/Windows/' | awk '{print $3}'
+ldd ${__PROJECT__}/bin/php.exe | grep -v '/c/Windows/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/
 
 ls -lh /tmp/${NAME}/
 
@@ -41,3 +41,4 @@ test -f ${__PROJECT__}/${NAME}.zip && rm -f ${__PROJECT__}/${NAME}.zip
 zip -r ${__PROJECT__}/${NAME}.zip .
 
 cd ${__PROJECT__}
+

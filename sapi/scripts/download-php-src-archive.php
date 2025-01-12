@@ -5,16 +5,30 @@ $poject_dir = realpath(__DIR__ . '/../../');
 # $php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'));
 $php_version_tag = '8.2.23';
 $php_source_folder = $poject_dir . "/var/php-{$php_version_tag}";
-$php_archive_file = $poject_dir . "/pool/php/php-{$php_version_tag}.tar.gz";
-
+$php_archive_file = $poject_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
+$php_archive_file_sha256sum = '9c81202e6397d973c89d162e30ab6fe6689dea9cbbb235be5a5366707a38b649';
 $download_dir = dirname($php_archive_file);
+$download_php_counter = 0;
 
+DOWNLOAD_PHP:
 # 下载 PHP 源码
 $download_cmd = "curl -fSL https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_archive_file}";
 echo $download_cmd . PHP_EOL;
 if (!file_exists($php_archive_file)) {
     `test -d {$download_dir} || mkdir -p {$download_dir}`;
+    $download_php_counter++;
     `{$download_cmd}`;
+}
+
+$hash = hash_file('sha256', $php_archive_file);
+echo "sha256sum: " . $hash . PHP_EOL;
+if ($hash !== $php_archive_file_sha256sum) {
+    if ($download_php_counter > 3) {
+        throw  new \Exception('curl download php archive Exception!', 500);
+    }
+    echo 'archive sha256sum mismatched , will re-download ' . PHP_EOL;
+    unlink($php_archive_file);
+    goto    DOWNLOAD_PHP;
 }
 
 # 若不存在则解压 PHP 源码包
