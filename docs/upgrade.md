@@ -2,7 +2,7 @@
 
 > 1、修改 sapi/PHP-VERSION.conf 文件里版本号即可
 
-> 2、修改 sync-source-code.php
+> 2、修改 sync-source-code.php 文件里 PHP 源码包的 sha256sum 配置
 
 > 3、执行同步源码脚本， 拉取 PHP 官方源码 到本项目
 
