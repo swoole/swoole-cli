@@ -25,7 +25,7 @@ mkdir -p /tmp/${NAME}/bin/
 
 cd ${__PROJECT__}/
 ldd ${__PROJECT__}/bin/php.exe | grep -v '/cygdrive/' | awk '{print $3}'
-ldd ${__PROJECT__}/bin/php.exe | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/
+ldd ${__PROJECT__}/bin/php.exe | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/bin/
 
 ls -lh /tmp/${NAME}/
 
