@@ -21,12 +21,13 @@ NAME="swoole-cli-v${APP_VERSION}-cygwin-x64"
 test -d /tmp/${NAME} && rm -rf /tmp/${NAME}
 mkdir -p /tmp/${NAME}
 mkdir -p /tmp/${NAME}/etc/
+mkdir -p /tmp/${NAME}/bin/
 
 cd ${__PROJECT__}/
 ldd ${__PROJECT__}/bin/swoole-cli.exe | grep -v '/cygdrive/' | awk '{print $3}'
-ldd ${__PROJECT__}/bin/swoole-cli.exe | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/
+ldd ${__PROJECT__}/bin/swoole-cli.exe | grep -v '/cygdrive/' | awk '{print $3}' | xargs -I {} cp {} /tmp/${NAME}/bin/
 
-ls -lh  /tmp/${NAME}/
+ls -lh /tmp/${NAME}/
 
 cp -f ${__PROJECT__}/bin/swoole-cli.exe /tmp/${NAME}/
 # cp -f ${__PROJECT__}/bin/LICENSE /tmp/${NAME}/
