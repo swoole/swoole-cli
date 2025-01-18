@@ -35,7 +35,7 @@ fi
 mkdir -p ${WORK_TEMP_DIR}/ext/redis/
 tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/redis/ -xf redis-${REDIS_VERSION}.tgz
 
-: <<EOF
+: <<'EOF'
 # mongodb 扩展 不支持 cygwin 环境下构建
 # 详见： https://github.com/mongodb/mongo-php-driver/issues/1381
 
