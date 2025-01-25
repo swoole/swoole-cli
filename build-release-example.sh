@@ -222,7 +222,7 @@ if [ ${IN_DOCKER} -eq 1 ]; then
   {
     # 容器中
 
-    php prepare.php +inotify ${OPTIONS}
+    php prepare.php ${OPTIONS}
 
   }
 else
