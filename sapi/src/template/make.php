@@ -8,6 +8,7 @@ use SwooleCli\Preprocessor;
 
 ?>
 #!/usr/bin/env bash
+shopt -s expand_aliases
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
 CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>

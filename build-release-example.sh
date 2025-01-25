@@ -146,6 +146,9 @@ if [ ! -f "${__PROJECT__}/bin/runtime/php" ]; then
 fi
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
+# 交互模式下alias 扩展默认是开启的，脚本模式下默认是关闭的
+# 在shell脚本中启用别名扩展功能‌
+shopt -s expand_aliases
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
 
 php -v
