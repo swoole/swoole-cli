@@ -1,7 +1,7 @@
 version: "3"
 services:
   postgresql-server:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     # image: postgis/postgis:16-3.4-alpine
     hostname: "postgresql"
     container_name: "postgresql"
