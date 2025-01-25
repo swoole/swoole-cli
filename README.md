@@ -102,8 +102,8 @@ php -v
 ```shell
 
 composer install
-prepare.php
-prepare.php +inotify +mongodb -mysqli
+php prepare.php
+php prepare.php +inotify +mongodb -mysqli
 
 ```
 
