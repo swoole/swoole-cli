@@ -110,8 +110,16 @@ MIRROR=''
 docker buildx build -t ${IMAGE} -f ./Dockerfile . --platform ${PLATFORM} --build-arg="MIRROR=${MIRROR}"
 
 echo ${IMAGE}
+
 # docker save -o "swoole-cli-image.tar" ${IMAGE}
+{
+  docker push ${IMAGE}
+} || {
+  echo $?
+}
 
 docker run --rm --name demo ${IMAGE} swoole-cli -v
 docker run --rm --name demo ${IMAGE} swoole-cli -m
+docker run --rm --name demo ${IMAGE} swoole-cli -c /usr/local/swoole-cli/etc/php.ini --ri curl
+docker run --rm --name demo ${IMAGE} swoole-cli -c /usr/local/swoole-cli/etc/php.ini --ri openssl
 docker run --rm --name demo ${IMAGE} swoole-cli --ri swoole
