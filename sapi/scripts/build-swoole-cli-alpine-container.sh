@@ -112,11 +112,13 @@ docker buildx build -t ${IMAGE} -f ./Dockerfile . --platform ${PLATFORM} --build
 echo ${IMAGE}
 
 # docker save -o "swoole-cli-image.tar" ${IMAGE}
+: <<'EOF'
 {
   docker push ${IMAGE}
 } || {
   echo $?
 }
+EOF
 
 docker run --rm --name demo ${IMAGE} swoole-cli -v
 docker run --rm --name demo ${IMAGE} swoole-cli -m
