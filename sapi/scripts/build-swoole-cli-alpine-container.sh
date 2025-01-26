@@ -67,7 +67,7 @@ RUN test -f /etc/apk/repositories.save || cp /etc/apk/repositories /etc/apk/repo
 RUN if [ "${MIRROR}" = "ustc" -o "${MIRROR}" = "china"   ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories ; } fi
 RUN if [ "${MIRROR}" = "tuna" ]; then { sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories ; } fi
 
-RUN apk add ca-certificates tini
+RUN apk add ca-certificates tini bash
 
 RUN mkdir /work
 WORKDIR /work
@@ -110,8 +110,18 @@ MIRROR=''
 docker buildx build -t ${IMAGE} -f ./Dockerfile . --platform ${PLATFORM} --build-arg="MIRROR=${MIRROR}"
 
 echo ${IMAGE}
+
 # docker save -o "swoole-cli-image.tar" ${IMAGE}
+: <<'EOF'
+{
+  docker push ${IMAGE}
+} || {
+  echo $?
+}
+EOF
 
 docker run --rm --name demo ${IMAGE} swoole-cli -v
 docker run --rm --name demo ${IMAGE} swoole-cli -m
+docker run --rm --name demo ${IMAGE} swoole-cli -c /usr/local/swoole-cli/etc/php.ini --ri curl
+docker run --rm --name demo ${IMAGE} swoole-cli -c /usr/local/swoole-cli/etc/php.ini --ri openssl
 docker run --rm --name demo ${IMAGE} swoole-cli --ri swoole
