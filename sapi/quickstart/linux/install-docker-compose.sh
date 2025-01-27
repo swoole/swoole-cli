@@ -32,7 +32,7 @@ if [ ! -f /usr/libexec/docker/cli-plugins/docker-compose ]; then
 
 else
   # export PATH=/usr/libexec/docker/cli-plugins/:$PATH
-  ln -sf /usr/libexec/docker/cli-plugins/docker-compose usr/local/bin/docker-compose
+  ln -sf /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
 fi
 
 docker-compose --version
