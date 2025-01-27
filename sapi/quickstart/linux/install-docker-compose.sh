@@ -24,14 +24,15 @@ if [ ! -f /usr/libexec/docker/cli-plugins/docker-compose ]; then
 
   # show more version info
   # https://github.com/docker/compose/releases
-  VERSION="v2.32.1"
+  VERSION="v2.32.4"
 
   curl -fsSL "https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
   chmod +x /usr/local/bin/docker-compose
 
 else
-  export PATH=/usr/libexec/docker/cli-plugins/:$PATH
+  # export PATH=/usr/libexec/docker/cli-plugins/:$PATH
+  ln -sf /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
 fi
 
 docker-compose --version
