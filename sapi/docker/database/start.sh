@@ -8,8 +8,8 @@ __DIR__=$(
 
 cd ${__DIR__}
 
-docker-compose -f docker-compose.yaml up -d
-docker-compose -f docker-compose.yaml ps
+docker compose -f docker-compose.yaml up -d
+docker compose -f docker-compose.yaml ps
 
 docker container ls -a
 

@@ -8,4 +8,4 @@ __DIR__=$(
 
 cd ${__DIR__}
 
-docker-compose -f docker-compose.yaml down --remove-orphans
+docker compose -f docker-compose.yaml down --remove-orphans
