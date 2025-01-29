@@ -193,8 +193,7 @@ jobs:
       - name: Start Database
         run: |
           # 准备数据库容器
-          export PATH=/usr/libexec/docker/cli-plugins/:$PATH
-          docker-compose version
+          docker compose version
           docker container ls -a
           bash sapi/docker/database/start.sh
 
