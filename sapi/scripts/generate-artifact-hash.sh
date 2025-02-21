@@ -36,9 +36,9 @@ case $OS in
   ;;
 esac
 
-APP_VERSION='v5.1.6'
+APP_VERSION='v5.1.7'
 APP_NAME='swoole-cli'
-VERSION='v5.1.6.0'
+VERSION='v5.1.7.0'
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -114,6 +114,7 @@ APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSI
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
 test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
 test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/${VERSION}/all-deps.zip
+
 ls -p | grep -v '/$' | xargs sha256sum
 
 ls -p | grep -v '/$' | xargs sha256sum >${__PROJECT__}/${VERSION}-sha256sum

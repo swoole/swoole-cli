@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   windows-cygwin:
-    if: 1
+    if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-cygwin]')"
     runs-on: windows-2022
     steps:
       - name: Show Environment Info
@@ -22,6 +22,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
           git config --global core.ignorecase false
+          git config --global --add safe.directory ${{ github.workspace }}
           ipconfig
 
       - uses: actions/checkout@v4

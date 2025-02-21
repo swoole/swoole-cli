@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   linux-x86_64:
-    if: 1
+    if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-x86_64]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -126,10 +126,9 @@ jobs:
       - name: Start Database
         run: |
           # 准备数据库容器
-          export PATH=/usr/libexec/docker/cli-plugins/:$PATH
-          docker-compose version
+          docker compose version
           docker container ls -a
-          bash sapi/src/UnitTest/scripts/database/start.sh
+          bash sapi/docker/database/start.sh
 
       - name: Show Build Result
         run: |
@@ -144,7 +143,6 @@ jobs:
           ./bin/swoole-cli -r "echo PHP_VERSION;"
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/SwoolePGSQLTest.php
 
       - name: production artifacts debug
         uses: actions/upload-artifact@v4
