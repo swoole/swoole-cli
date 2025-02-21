@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
     MIRROR="$2"
     case "$MIRROR" in
     china | openatom)
-      IMAGE="hub.atomgit.com/library/alpine:3.18"
+      IMAGE="docker.io/library/alpine:3.18"
       ;;
     esac
     ;;
@@ -37,4 +37,4 @@ while [ $# -gt 0 ]; do
 done
 
 cd ${__DIR__}
-docker run --rm --name swoole-cli-builder -d -v ${__PROJECT__}:/work -w /work --init $IMAGE tail -f /dev/null
+docker run --rm --name swoole-cli-alpine-dev -d -v ${__PROJECT__}:/work -w /work --init $IMAGE tail -f /dev/null

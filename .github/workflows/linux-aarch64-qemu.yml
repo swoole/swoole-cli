@@ -1,0 +1,114 @@
+name: build-swoole-cli-linux-aarch64-qemu
+
+on: [ push, pull_request ]
+
+jobs:
+  linux-aarch64-qemu:
+    if: 0
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show Environment Info
+        run: |
+          lscpu
+          echo $PATH
+          env
+          docker info
+          id -u
+          id -g
+          who
+          cat /etc/os-release
+          hostnamectl
+          uname -s
+          uname -m
+          uname -r
+          export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
+          export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
+          echo $IPV4
+          echo $IPV6
+          echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
+          echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+      - name: Prepare Build Environment
+        run: |
+          git submodule update --init
+
+          sudo mkdir -p /usr/local/swoole-cli
+          uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
+
+          mkdir -p ${{ github.workspace }}/var/build-github-action-container/
+
+      - name: Prepare QEMU
+        run: |
+          set -x
+          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - name: Prepare swoole-cli-builder-image
+        run: |
+          if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
+              docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
+          else
+              bash .github/workflows/build-alpine-builder-container.sh --platform "linux/arm64"
+          fi
+
+      - name: prepare pre-built library
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240618T091126Z
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/tmp/
+          run: |
+            for i in `ls /usr/local/swoole-cli/`
+            do
+               if [ ! -d /usr/local/tmp/${i} ] ; then
+                    echo $i
+                    cp -rf /usr/local/swoole-cli/${i}/  /usr/local/tmp/${i}
+               fi
+            done
+
+      - name: Build
+        uses: addnab/docker-run-action@v3
+        with:
+          image: swoole-cli-builder:latest
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          run: |
+            set -eux
+            uname -m
+            if [ ! -f bin/runtime/php ] ; then
+              bash  setup-php-runtime.sh
+            fi
+
+            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
+            alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
+
+            sh  sapi/quickstart/linux/alpine-init.sh
+            composer install  --no-interaction --no-autoloader --no-scripts --profile
+            composer dump-autoload --optimize --profile
+
+            php prepare.php
+
+            bash make.sh all-library
+
+            bash make.sh config
+            bash make.sh build
+            bash make.sh archive
+
+      - name: Show Build Result
+        uses: addnab/docker-run-action@v3
+        with:
+          image: swoole-cli-builder:latest
+          options: -v ${{ github.workspace }}:/work -w /work
+          run: |
+            ./bin/swoole-cli -v
+            ./bin/swoole-cli -m
+            ./bin/swoole-cli --ri gd
+            ./bin/swoole-cli --ri swoole
+            file ./bin/swoole-cli
+            readelf -h ./bin/swoole-cli
+            APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
+            echo ${APP_VERSION}
+            echo ${APP_VERSION}  > APP_VERSION
+
+            ./bin/swoole-cli -r "echo PHP_VERSION;"
+
+            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+            ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php

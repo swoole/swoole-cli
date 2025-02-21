@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
     MIRROR="$2"
     case "$MIRROR" in
     china | openatom)
-      IMAGE="hub.atomgit.com/library/debian:12"
+      IMAGE="docker.io/library/debian:12"
       ;;
     esac
     ;;

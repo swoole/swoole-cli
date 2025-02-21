@@ -330,7 +330,7 @@ if [ "$1" = "docker-build" ] ;then
         MIRROR=$2
         case "$MIRROR" in
         china | openatom )
-            CONTAINER_BASE_IMAGE="hub.atomgit.com/library/alpine:3.18"
+            CONTAINER_BASE_IMAGE="docker.io/library/alpine:3.18"
         ;;
         esac
     fi
