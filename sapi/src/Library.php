@@ -134,5 +134,4 @@ class Library extends Project
         $this->untarArchiveCommand = $command;
         return $this;
     }
-
 }
