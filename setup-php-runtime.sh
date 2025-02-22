@@ -156,9 +156,11 @@ cd ${__PROJECT__}/
 set +x
 
 echo " "
-echo " USE PHP RUNTIME :"
+echo " USE PHP RUNTIME : "
 echo " "
 echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
+echo " "
+echo " shopt -s expand_aliases "
 echo " "
 echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
 echo " OR "
