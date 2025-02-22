@@ -8,7 +8,7 @@ env:
 jobs:
   linux-aarch64:
     if: 1
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     strategy:
       matrix:
         php-version:
@@ -31,6 +31,13 @@ jobs:
           uname -s
           uname -m
           uname -r
+
+          cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+          cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+          cat /proc/cpuinfo | grep "cpu cores" | uniq
+          cat /proc/cpuinfo| grep "processor"| wc -l
+          lscpu
+
           export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
           export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
           echo $IPV4
@@ -50,14 +57,14 @@ jobs:
 
       - name: Cache PHP Runtime
         uses: actions/cache@v4
-        id: php-runtime-cache
+        id: php-runtime-cache-aarch64
         with:
           path: ${{ github.workspace }}/bin/runtime
           key: ${{ runner.os }}-aarch64-php-runtime
 
       - name: Cache PHP Vendor
         uses: actions/cache@v4
-        id: php-vendor-cache
+        id: php-vendor-cache-aarch64
         with:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-aarch64-php-vendor
@@ -71,34 +78,17 @@ jobs:
 
       - name: Cache all-library
         uses: actions/cache@v4
-        id: all-library-cache
+        id: all-library-cache-aarch64
         with:
           path: /usr/local/swoole-cli
           key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-aarch64-all-library
 
       - name: Cache swoole-cli-builder-image
         uses: actions/cache@v4
-        id: swoole-cli-builder-image-aarch64-cache
+        id: swoole-cli-builder-image-cache-aarch64
         with:
           path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
           key: ${{ runner.os }}-aarch64-swoole-cli-builder-image
-
-      - name: Prepare Libraries and Extensions
-        run: |
-          set -x
-          mkdir -p pool/lib
-          mkdir -p pool/ext
-          mkdir -p bin/runtime
-
-          bash sapi/download-box/download-box-get-archive-from-server.sh
-
-          ls -A pool/lib/
-          ls -A /usr/local/swoole-cli/
-
-      - name: Prepare QEMU
-        run: |
-          set -x
-          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Prepare swoole-cli-builder-image
         run: |
@@ -108,19 +98,18 @@ jobs:
               bash .github/workflows/build-alpine-builder-container.sh --platform "linux/arm64"
           fi
 
-      - name: prepare pre-built library
-        uses: addnab/docker-run-action@v3
-        with:
-          image: docker.io/jingjingxyk/build-swoole-cli:all-dependencies-alpine-3.18-php8-v1.0.0-aarch64-20240618T091126Z
-          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/tmp/
-          run: |
-            for i in `ls /usr/local/swoole-cli/`
-            do
-               if [ ! -d /usr/local/tmp/${i} ] ; then
-                    echo $i
-                    cp -rf /usr/local/swoole-cli/${i}/  /usr/local/tmp/${i}
-               fi
-            done
+      - name: Prepare Runtime and Libraries and Extensions
+        run: |
+          set -x
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/runtime
+          if [ ! -f bin/runtime/php ] ; then
+              bash  setup-php-runtime.sh
+          fi
+          bash sapi/download-box/download-box-get-archive-from-server.sh
+          ls -A pool/lib/
+          ls -A /usr/local/swoole-cli/
 
       - name: Build
         uses: addnab/docker-run-action@v3
@@ -130,10 +119,6 @@ jobs:
           run: |
             set -eux
             uname -m
-            if [ ! -f bin/runtime/php ] ; then
-              bash  setup-php-runtime.sh
-            fi
-
             export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
             alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
@@ -149,31 +134,27 @@ jobs:
 
             bash make-install-deps.sh
 
-            bash make.sh all-library
+            bash ./make.sh all-library
 
-            bash make.sh config
-            bash make.sh build
-            bash make.sh archive
+            bash ./make.sh config
+            bash ./make.sh build
+            bash ./make.sh archive
 
       - name: Show Build Result
-        uses: addnab/docker-run-action@v3
-        with:
-          image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work
-          run: |
-            ./thirdparty/php-src/sapi/cli/php -v
-            ./thirdparty/php-src/sapi/cli/php -m
-            ./thirdparty/php-src/sapi/cli/php --ri gd
-            ./thirdparty/php-src/sapi/cli/php --ri swoole
-            ./thirdparty/php-src/sapi/cli/php --ri pgsql
-            file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-            readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
-            APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
-            echo ${APP_VERSION}
-            echo ${APP_VERSION}  > APP_VERSION
-            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
-            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-            ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
+        run: |
+          ./thirdparty/php-src/sapi/cli/php -v
+          ./thirdparty/php-src/sapi/cli/php -m
+          ./thirdparty/php-src/sapi/cli/php --ri gd
+          ./thirdparty/php-src/sapi/cli/php --ri swoole
+          ./thirdparty/php-src/sapi/cli/php --ri pgsql
+          file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
+          echo ${APP_VERSION}
+          echo ${APP_VERSION}  > APP_VERSION
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
+          ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: get app version
         run: |
@@ -186,14 +167,14 @@ jobs:
         with:
           name: php-cli-v${{ env.APP_VERSION }}-linux-arm64-debug
           retention-days: 90
-          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          path: ./bin/php-${{ env.APP_VERSION }}/bin/php
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
         with:
           name: php-cli-v${{ env.APP_VERSION }}-linux-arm64
           retention-days: 90
-          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/dist/php
+          path: ./bin/php-${{ env.APP_VERSION }}/bin/dist/php
 
       - name: gh release
         uses: softprops/action-gh-release@v2
