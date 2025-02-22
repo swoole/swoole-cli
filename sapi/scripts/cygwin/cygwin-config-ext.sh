@@ -12,7 +12,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 PHP_VERSION='8.2.27'
-SWOOLE_VERSION='v6.0.0'
+SWOOLE_VERSION='v6.0.1'
 X_PHP_VERSION='8.2'
 
 while [ $# -gt 0 ]; do
