@@ -1,8 +1,7 @@
-version: "3"
+name: "database"
 services:
   postgresql-server:
-    image: postgres:16-alpine
-    # image: postgis/postgis:16-3.4-alpine
+    image: postgres:17-alpine
     hostname: "postgresql"
     container_name: "postgresql"
     ports:
