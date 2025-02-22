@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -16,7 +16,7 @@ cd ${__PROJECT__}/var/build-github-action-container/
 
 cp -f ${__PROJECT__}/sapi/quickstart/linux/alpine-init.sh .
 
-cat > Dockerfile <<'EOF'
+cat >Dockerfile <<'EOF'
 FROM alpine:3.18
 
 ENV TZ=Etc/UTC
@@ -25,7 +25,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ADD ./alpine-init.sh /alpine-init.sh
 
 RUN sh /alpine-init.sh
-# RUN sh /alpine-init.sh --mirror china
 
 RUN uname -m
 RUN mkdir /work
@@ -35,9 +34,25 @@ ENTRYPOINT ["tini", "--"]
 
 EOF
 
-
-
-PLATFORM='linux/amd64'
+PLATFORM=''
+ARCH=$(uname -m)
+case $ARCH in
+'x86_64')
+  PLATFORM='linux/amd64'
+  ;;
+'aarch64')
+  PLATFORM='linux/arm64'
+  ;;
+'riscv64')
+  PLATFORM="linux/riscv64"
+  ;;
+'mips64le')
+  PLATFORM="linux/mips64le"
+  ;;
+'loongarch64')
+  PLATFORM="linux/mips64le"
+  ;;
+esac
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -51,18 +66,14 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-
-
 IMAGE='swoole-cli-builder:latest'
-docker buildx build -t ${IMAGE} -f ./Dockerfile .  --platform ${PLATFORM}
+docker buildx build -t ${IMAGE} -f ./Dockerfile . --platform ${PLATFORM}
 
 docker save -o "swoole-cli-builder-image.tar" ${IMAGE}
 
-
-
 # alpine 可设置的架构选项
 # https://hub.docker.com/_/alpine/tags
-:<<'EOF'
+: <<'EOF'
 linux/386
 linux/amd64
 linux/arm/v6
@@ -72,4 +83,5 @@ linux/ppc64le
 linux/s390x
 EOF
 
-
+# 龙芯架构
+# https://cr.loongnix.cn/search
