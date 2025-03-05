@@ -83,5 +83,41 @@ linux/ppc64le
 linux/s390x
 EOF
 
+# 3.20 开始支持 linux/riscv64
 # 龙芯架构
 # https://cr.loongnix.cn/search
+
+: <<'EOF'
+
+# docker.io/tonistiigi/binfmt:latest
+     "supported": [
+      "linux/amd64",
+      "linux/amd64/v2",
+      "linux/amd64/v3",
+      "linux/arm64",
+      "linux/riscv64",
+      "linux/ppc64le",
+      "linux/s390x",
+      "linux/386",
+      "linux/mips64le",
+      "linux/mips64",
+      "linux/loong64",
+      "linux/arm/v7",
+      "linux/arm/v6"
+    ],
+    "emulators": [
+      "llvm-16-runtime.binfmt",
+      "llvm-17-runtime.binfmt",
+      "llvm-18-runtime.binfmt",
+      "python3.12",
+      "qemu-aarch64",
+      "qemu-arm",
+      "qemu-loongarch64",
+      "qemu-mips64",
+      "qemu-mips64el",
+      "qemu-ppc64le",
+      "qemu-riscv64",
+      "qemu-s390x"
+    ]
+
+EOF
