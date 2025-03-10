@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   windows-cygwin:
-    if: "!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-cygwin]')"
+    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-cygwin]') }}
     runs-on: windows-2022
     steps:
       - name: Show Environment Info
@@ -63,7 +63,8 @@ jobs:
           cp -f /cygdrive/c/setup.exe  /cygdrive/c/cygwin/bin/setup-x86_64.exe
           bash ./sapi/scripts/cygwin/install-cygwin.sh
 
-      - name: Install Cygwin Packages
+      - name: Install Cygwin Packages with powershell
+        # 备注：github action 在 windows 上执行命令默认的 shell 是 powershell，如果要使用其它shell , 需要手动指定，例如此也可以使用 bash 来安装 cygwin packages
         if: 1
         run: |
           Copy-Item -Path "C:\setup.exe" -Destination "${{ github.workspace }}\setup-x86_64.exe"
