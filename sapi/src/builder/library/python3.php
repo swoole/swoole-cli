@@ -35,7 +35,6 @@ return function (Preprocessor $p) {
         sed -i.backup 's/py_cv_module__scproxy=yes/py_cv_module__scproxy=disabled/' ./configure
         sed -i.backup 's/py_cv_module__tkinter=yes/py_cv_module__tkinter=disabled/' ./configure
 
-
         PACKAGES='  '
         PACKAGES="\$PACKAGES libmpdec"
         PACKAGES="\$PACKAGES libb2"
@@ -142,7 +141,7 @@ EOF
 EOF
         )
         ->withPkgName('python3-embed')
-        //->withPkgName('python3')
+        ->withPkgName('python3')
         ->withDependentLibraries(
             'libmpdecimal',
             'libb2',
@@ -161,7 +160,7 @@ EOF
     $p->addLibrary($lib);
 
     if ($p->isMacos()) {
-        //$p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
+        $p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
 
         //module  _scproxy needs SystemConfiguration and CoreFoundation framework
         //$p->withVariable('LDFLAGS', '$LDFLAGS -framework SystemConfiguration -framework CoreFoundation ');
@@ -169,7 +168,6 @@ EOF
     //libHacl_Hash_SHA2.a
     $p->withVariable('LIBS', '$LIBS -lHacl_Hash_SHA2');
     $p->withVariable('CPPFLAGS', "\$CPPFLAGS  -I{$python3_prefix}/_hacl/include/");
-
 };
 # 构建独立版本 python 参考
 # https://github.com/indygreg/python-build-standalone.git

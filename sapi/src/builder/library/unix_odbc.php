@@ -13,6 +13,12 @@ return function (Preprocessor $p) {
             ->withUrl('https://github.com/lurcher/unixODBC/releases/download/2.3.11/unixODBC-2.3.11.tar.gz')
             ->withFileHash('md5', '0ff1fdbcb4c3c7dc2357f3fd6ba09169')
             ->withPrefix($unix_odbc_prefix)
+            ->withPreInstallCommand(
+                'alpine',
+                <<<EOF
+            apk add libltdl-static
+EOF
+            )
             ->withconfigure(
                 <<<EOF
             aclocal
@@ -29,10 +35,10 @@ return function (Preprocessor $p) {
             --prefix={$unix_odbc_prefix} \
             --enable-static=yes \
             --enable-shared=no \
-            --enable-readline \
-            --enable-editline \
-            --enable-iconv \
-            --enable-threads \
+            --enable-readline=yes \
+            --enable-editline=no \
+            --enable-iconv=yes \
+            --enable-threads=yes \
             --enable-gui=no
 
 
@@ -45,7 +51,7 @@ EOF
             rm -rf {$unix_odbc_prefix}/lib/*.dylib
 EOF
             )
-            ->withDependentLibraries('readline', 'libiconv', 'libedit')
+            ->withDependentLibraries('readline', 'libiconv') //'libedit'
             ->withBinPath($unix_odbc_prefix . '/bin/')
             ->withPkgName('odbc')
             ->withPkgName('odbccr')
