@@ -13,12 +13,6 @@ return function (Preprocessor $p) {
             ->withUrl('https://github.com/lurcher/unixODBC/releases/download/2.3.11/unixODBC-2.3.11.tar.gz')
             ->withFileHash('md5', '0ff1fdbcb4c3c7dc2357f3fd6ba09169')
             ->withPrefix($unix_odbc_prefix)
-            ->withPreInstallCommand(
-                'alpine',
-                <<<EOF
-            apk add libltdl-static
-EOF
-            )
             ->withconfigure(
                 <<<EOF
             aclocal
