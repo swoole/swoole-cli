@@ -11,7 +11,7 @@ return function (Preprocessor $p) {
     # $options .= ' --with-python-version=3.12';
     # $options .= ' --with-python-dir=/opt/anaconda3';
 
-    $tag = 'v1.0.4';
+    $tag = 'v1.0.11';
 
 
     $python3_prefix = PYTHON3_PREFIX;
@@ -39,7 +39,7 @@ return function (Preprocessor $p) {
             git clone -b main --depth=1 https://github.com/swoole/phpy.git
 EOF
         )
-        //->withPeclVersion('1.0.8')
+        //->withPeclVersion('1.0.11')
         ->withDependentExtensions(...$dependentExtensions)
         ->withDependentLibraries(...$dependentLibraries);
     $p->addExtension($ext);

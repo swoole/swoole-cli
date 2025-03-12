@@ -136,12 +136,11 @@ EOF
             <<<EOF
             sed -i.backup "s/-ldl/  /g" {$python3_prefix}/lib/pkgconfig/python3.pc
             sed -i.backup "s/-ldl/  /g" {$python3_prefix}/lib/pkgconfig/python3-embed.pc
-            rm -f {$python3_prefix}/lib/pkgconfig/python3.pc.backup
-            rm -f {$python3_prefix}/lib/pkgconfig/python3-embed.pc.backup
+
 EOF
         )
         ->withPkgName('python3-embed')
-        //->withPkgName('python3')
+        ->withPkgName('python3')
         ->withDependentLibraries(
             'libmpdecimal',
             'libb2',
@@ -160,7 +159,7 @@ EOF
     $p->addLibrary($lib);
 
     if ($p->isMacos()) {
-        //$p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
+        $p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
 
         //module  _scproxy needs SystemConfiguration and CoreFoundation framework
         //$p->withVariable('LDFLAGS', '$LDFLAGS -framework SystemConfiguration -framework CoreFoundation ');
