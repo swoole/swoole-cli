@@ -8,11 +8,10 @@ return function (Preprocessor $p) {
     // anaconda 安装包
     // https://repo.anaconda.com/archive/
 
-
     # $options .= ' --with-python-version=3.12';
     # $options .= ' --with-python-dir=/opt/anaconda3';
 
-    $tag = 'v1.0.4';
+    $tag = 'v1.0.11';
 
 
     $python3_prefix = PYTHON3_PREFIX;
@@ -40,15 +39,16 @@ return function (Preprocessor $p) {
             git clone -b main --depth=1 https://github.com/swoole/phpy.git
 EOF
         )
+        //->withPeclVersion('1.0.11')
         ->withDependentExtensions(...$dependentExtensions)
         ->withDependentLibraries(...$dependentLibraries);
     $p->addExtension($ext);
 
     $p->withBeforeConfigureScript('phpy', function (Preprocessor $p) {
-        $php_src = $p->getPhpSrcDir();
+        $workDir = $p->getPhpSrcDir();
         $cmd = <<<EOF
 
-        cd {$php_src}/
+        cd {$workDir}/
         sed -i.backup "s/ -z now/  /g" ext/phpy/config.m4
         rm -f ext/phpy/config.m4.backup
 EOF;
@@ -59,5 +59,6 @@ EOF;
 
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
     $p->withVariable('LIBS', '$LIBS ' . $libs);
+    //$p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getWorkDir() . '/ext/phpy/include');
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $p->getPhpSrcDir() . '/ext/phpy/include');
 };

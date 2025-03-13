@@ -3,7 +3,7 @@ name: build-php-cli-macos-aarch64
 on: [ push, pull_request ]
 
 env:
-  BUILD_PHP_VERSION: 8.2.25
+  BUILD_PHP_VERSION: 8.2.27
 
 jobs:
   macos-aarch64:
@@ -17,9 +17,10 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.25"
-          - "8.1.30"
-          - "8.3.13"
+          - "8.2.27"
+          - "8.1.31"
+          - "8.3.15"
+          - "8.4.2"
 
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +38,7 @@ jobs:
           brew config
           xcrun --show-sdk-path
           ls -lh $(xcrun --show-sdk-path)
+          clang --version
 
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
@@ -167,3 +169,13 @@ jobs:
           files: |
             php-cli-v${{ env.BUILD_PHP_VERSION }}-macos-arm64.tar.xz
             php-cli-v${{ env.BUILD_PHP_VERSION }}-macos-arm64-debug.tar.xz
+
+      - name: upload artifacts to cloud object storage
+        if: ${{ 0 && (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
+        env:
+          OSS_SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
+          OSS_SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
+          OSS_BUCKET: ${{ vars.QCLOUD_OSS_BUCKET }}
+          OSS_REGION: ${{ vars.QCLOUD_OSS_REGION }}
+        run: |
+          bash sapi/scripts/tencent-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-macos-arm64.tar.xz

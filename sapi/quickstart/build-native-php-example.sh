@@ -1,18 +1,16 @@
 #!/bin/env bash
 set -uex
 
-
 OS=$(uname -s)
 ARCH=$(uname -m)
-
 
 export CC=clang
 export CXX=clang++
 export LD=ld.lld
 
-if [ "$OS" = 'Linux' ] ;then
+if [ "$OS" = 'Linux' ]; then
 
-: <<'EOF'
+  : <<'EOF'
 # setup container environment
 
 docker run --rm   -ti --init -v .:/work -w /work debian:11
@@ -24,14 +22,11 @@ EOF
 
 fi
 
+if [ "$OS" = 'Darwin' ]; then
 
-if [ "$OS" = 'Darwin' ] ;then
-
-export PATH=/usr/local/opt/bison/bin/:/usr/local/opt/llvm/bin/:$PATH
+  export PATH=/usr/local/opt/bison/bin/:/usr/local/opt/llvm/bin/:$PATH
 
 fi
-
-
 
 mkdir -p /tmp/t
 cd /tmp/t
@@ -52,10 +47,6 @@ tar --strip-components=1 -C mongodb -xf mongodb-${MONGODB_VERSION}.tgz
 
 test -d php-src/ext/mongodb && rm -rf php-src/ext/mongodb
 mv mongodb php-src/ext/
-
-
-
-
 
 cd php-src
 
@@ -83,13 +74,11 @@ cd php-src
 
 make -j $(nproc)
 
-
-if [ "$OS" = 'Linux' ] ;then
+if [ "$OS" = 'Linux' ]; then
 
   file sapi/cli/php
   readelf -h sapi/cli/php
 
 else
-    otool -L sapi/cli/php
+  otool -L sapi/cli/php
 fi
-

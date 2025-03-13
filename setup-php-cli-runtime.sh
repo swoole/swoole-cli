@@ -48,22 +48,12 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v8.2.13'
+APP_VERSION='v8.2.25'
 APP_NAME='php-cli'
-VERSION='v1.3.2'
+VERSION='v1.6.0'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
-
-cd ${__PROJECT__}/var/runtime
-
-APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
-COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
-CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
-
-if [ $OS = 'windows' ]; then
-  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
-fi
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -81,12 +71,52 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
     export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
     ;;
+  --version)
+    # 指定发布 TAG
+    if [ $OS = "macos" ]; then
+      X_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}$')
+    elif [ $OS = "linux" ]; then
+      X_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}$')
+    else
+      X_VERSION=''
+    fi
+    if [[ -n $X_VERSION ]]; then
+      {
+        VERSION=$X_VERSION
+      }
+    fi
+    ;;
+  --php-version)
+    # 指定发布 TAG
+    if [ $OS = "macos" ]; then
+      X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}$')
+    elif [ $OS = "linux" ]; then
+      X_APP_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}$')
+    else
+      X_VERSION=''
+    fi
+    if [[ -n $X_APP_VERSION ]]; then
+      {
+        APP_VERSION=$X_APP_VERSION
+      }
+    fi
+    ;;
   --*)
     echo "Illegal option $1"
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
 done
+
+cd ${__PROJECT__}/var/runtime
+
+APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
+CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
+
+if [ $OS = 'windows' ]; then
+  APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
+fi
 
 case "$MIRROR" in
 china)
@@ -145,6 +175,7 @@ opcache.jit=1254
 opcache.jit_buffer_size=480M
 
 expose_php=Off
+apc.enable_cli=1
 
 EOF
 

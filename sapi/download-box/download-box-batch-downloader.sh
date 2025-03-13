@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -33,8 +33,6 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-
-
 DOWNLOAD_BOX_DIR=${__PROJECT__}/var/download-box/
 mkdir -p ${__PROJECT__}/var/download-box/
 
@@ -42,8 +40,7 @@ cd ${__PROJECT__}/var/download-box/
 mkdir -p lib
 mkdir -p ext
 
-
-if [ -f download_library_urls.txt ] && [ -f download_extension_urls.txt ]  ; then
+if [ -f download_library_urls.txt ] && [ -f download_extension_urls.txt ]; then
   echo 'downloading source code tarball '
 else
   echo 'please run script : '
@@ -56,10 +53,8 @@ bash sapi/download-box/download-box-dependencies-use-aria2.sh
 
 cd ${__PROJECT__}
 bash sapi/download-box/download-box-dependencies-use-git.sh
-
-
+bash sapi/download-box/download-dependencies-use-aria2.sh
 
 # 例子
 # bash build-release.sh --mirror china  --download-box
 # bash sapi/download-box/download-box-batch-downloader.sh
-

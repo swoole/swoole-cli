@@ -76,6 +76,15 @@ jobs:
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
+      - name: Set up QEMU
+        # Add support for more platforms with QEMU (optional)
+        # https://github.com/docker/setup-qemu-action
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        # 例子： https://github.com/tuna/tunasync-scripts/blob/master/.github/workflows/docker-images.yml#L102
+
       - name: Prepare QEMU
         run: |
           set -x

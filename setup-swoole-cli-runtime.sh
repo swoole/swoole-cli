@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -exu
+set -xu
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
@@ -48,22 +48,9 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v5.1.4'
+APP_VERSION='v6.0.0'
 APP_NAME='swoole-cli'
-VERSION='v5.1.4.0'
-
-mkdir -p bin/runtime
-mkdir -p var/runtime
-
-cd ${__PROJECT__}/var/runtime
-
-APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
-COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
-CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
-
-if [ $OS = 'windows' ]; then
-  APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
-fi
+VERSION='v6.0.0.0'
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -81,12 +68,51 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
     export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
     ;;
+  --version)
+    # 指定发布 TAG
+    if [ $OS = "macos" ]; then
+      X_VERSION=$(echo "$2" | grep -E '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
+      X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}')
+    elif [ $OS = "linux" ]; then
+      OS_RELEASE=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '\n' | tr -d '\"')
+      if [ "$OS_RELEASE" = 'alpine' ]; then
+        X_VERSION=$(echo "$2" | grep -E '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
+        X_APP_VERSION=$(echo "$2" | grep -Eo '^v\d\.\d{1,2}\.\d{1,2}')
+      else
+        X_VERSION=$(echo "$2" | grep -P '^v\d\.\d{1,2}\.\d{1,2}\.\d{1,2}$')
+        X_APP_VERSION=$(echo "$2" | grep -Po '^v\d\.\d{1,2}\.\d{1,2}')
+      fi
+    else
+      X_VERSION=''
+      X_APP_VERSION=''
+    fi
+
+    if [[ -n $X_VERSION ]] && [[ -n $X_APP_VERSION ]]; then
+      {
+        VERSION=$X_VERSION
+        APP_VERSION=$X_APP_VERSION
+      }
+    fi
+    ;;
   --*)
     echo "Illegal option $1"
     ;;
   esac
   shift $(($# > 0 ? 1 : 0))
 done
+
+mkdir -p bin/runtime
+mkdir -p var/runtime
+
+cd ${__PROJECT__}/var/runtime
+
+APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
+CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
+
+if [ $OS = 'windows' ]; then
+  APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
+fi
 
 case "$MIRROR" in
 china)
@@ -99,24 +125,24 @@ china)
 
 esac
 
-test -f composer.phar || curl -LSo composer.phar ${COMPOSER_DOWNLOAD_URL}
+test -f composer.phar || curl -fSLo composer.phar ${COMPOSER_DOWNLOAD_URL}
 chmod a+x composer.phar
 
-test -f cacert.pem || curl -LSo cacert.pem ${CACERT_DOWNLOAD_URL}
+test -f cacert.pem || curl -fSLo cacert.pem ${CACERT_DOWNLOAD_URL}
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
 
 if [ $OS = 'windows' ]; then
   {
     APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
-    test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+    test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
     echo
     exit 0
   }
 else
-  test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
+  test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
   test -f swoole-cli && rm -f swoole-cli
   tar -xvf ${APP_RUNTIME}.tar
@@ -149,6 +175,7 @@ opcache.jit_buffer_size=128M
 ; jit 更多配置参考 https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA
 
 expose_php=Off
+apc.enable_cli=1
 
 EOF
 
@@ -200,6 +227,8 @@ echo " "
 echo " USE PHP-CLI RUNTIME :"
 echo " "
 echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
+echo " "
+echo " shopt -s expand_aliases "
 echo " "
 echo " alias swoole-cli='swoole-cli -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
 echo " OR "

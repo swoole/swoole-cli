@@ -186,6 +186,9 @@ if [ ! -f "${__PROJECT__}/bin/runtime/php" ]; then
 fi
 
 export PATH="${__PROJECT__}/bin/runtime:$PATH"
+# 交互模式下alias 扩展默认是开启的，脚本模式下默认是关闭的
+# 在shell脚本中启用别名扩展功能‌
+shopt -s expand_aliases
 alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
 
 php -v
@@ -215,7 +218,6 @@ if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
   composer config -g --unset repos.packagist
 fi
 
-
 # 可用配置参数
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
@@ -241,7 +243,7 @@ if [ ${IN_DOCKER} -eq 1 ]; then
   {
     # 容器中
 
-    php prepare.php +inotify ${OPTIONS}
+    php prepare.php ${OPTIONS}
 
   }
 else
@@ -253,10 +255,12 @@ else
 fi
 
 if [ ${WITH_DOWNLOAD_BOX} -eq 1 ]; then
-  echo " please exec script: "
-  echo " bash sapi/download-box/download-box-batch-downloader.sh "
-  echo " bash sapi/download-box/download-box-init.sh "
-  exit 0
+  {
+    echo " please exec script: "
+    echo " bash sapi/download-box/download-box-batch-downloader.sh "
+    echo " bash sapi/download-box/download-box-init.sh "
+    exit 0
+  }
 fi
 
 if [ ${WITH_WEB_UI} -eq 1 ]; then

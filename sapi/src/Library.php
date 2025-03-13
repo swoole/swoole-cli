@@ -156,7 +156,7 @@ class Library extends Project
     }
 
     /**
-     * @param string $command [ tar | tar-default | xz | unzip ]
+     * @param string $command [ tar | tar-default | unzip ]
      * @return $this
      */
     public function withUntarArchiveCommand(string $command): static

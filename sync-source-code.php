@@ -30,7 +30,6 @@ if (!empty($options['action']) && $options['action'] == 'run') {
     //测试同步
     # 准备工作 测试目录
 
-
     $directories = array_intersect($scanned_directory_source, $scanned_directory_destination);
 
     `test -d {$sync_dest_dir} && rm -rf {$sync_dest_dir}`;
@@ -59,7 +58,9 @@ EOF;
 #  执行代码同步之前准备
 $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<EOF
     SRC={$php_source_folder}
-    cd {$sync_dest_dir}
+    __PROJECT__={$project_dir}
+    __WORKDIR__={$sync_dest_dir}
+    cd \${WORKDIR}
 EOF;
 
 # 准备 同步代码脚本
@@ -70,6 +71,19 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     cp -rf $SRC/Zend/. ./Zend
 
     # Extension
+    echo 'clean extension'
+    cd ${SRC}/ext/
+    EXTENSIONS=$(ls -d */)
+    cd ${__WORKDIR__}/
+    for EXT_NAME in $EXTENSIONS; do
+      EXT_NAME=$(echo "$EXT_NAME" | sed 's@.\{1\}$@@')
+      echo "EXTENSION_NAME: $EXT_NAME "
+      test -d ${__WORKDIR__}/ext/${EXT_NAME} && rm -rf ${__WORKDIR__}/ext/${EXT_NAME}
+    done
+
+    echo 'sync extensions '
+    cd ${__WORKDIR__}/
+
     cp -rf $SRC/ext/bcmath/. ./ext/bcmath
     cp -rf $SRC/ext/bz2/. ./ext/bz2
     cp -rf $SRC/ext/calendar/. ./ext/calendar
@@ -224,8 +238,8 @@ echo PHP_EOL;
 echo "synchronizing  .... ";
 echo PHP_EOL;
 echo PHP_EOL;
-# 暂停执行
-# echo `$SYNC_SOURCE_CODE_SHELL`;
+
+echo `$SYNC_SOURCE_CODE_SHELL`;
 echo PHP_EOL;
 echo PHP_EOL;
 echo "synchronizing  end  ";

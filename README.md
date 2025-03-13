@@ -32,6 +32,9 @@ curl -fSL https://github.com/swoole/swoole-cli/blob/build_native_php/setup-php-c
 
 curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-runtime.sh?raw=true | bash
 
+# 指定发布版本
+curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-runtime.sh?raw=true | bash -s -- --version  v5.1.6.0
+
 ```
 
 ## 构建文档
@@ -63,7 +66,18 @@ cd swoole-cli
 
 bash setup-php-runtime.sh
 # 或者使用镜像
+# 来自 https://www.swoole.com/download
 bash setup-php-runtime.sh --mirror china
+
+# 使用swoole-cli
+# shell脚本中启用别名扩展功能‌
+shopt -s expand_aliases
+__DIR__=$(pwd)
+export PATH="${__DIR__}/bin/runtime:$PATH"
+ln -sf ${__DIR__}/bin/runtime/swoole-cli ${__DIR__}/bin/runtime/php
+alias php="php -d curl.cainfo=${__DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__DIR__}/bin/runtime/cacert.pem"
+which php
+php -v
 
 ```
 
@@ -140,6 +154,7 @@ php prepare.php -swoole +swoole_latest
 
 # 编译最新版 swow
 php prepare.php -swoole +swow_latest
+
 
 ```
 

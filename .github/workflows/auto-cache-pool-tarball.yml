@@ -61,7 +61,7 @@ jobs:
           key: source-code-tarball-pool
 
       - name: Clean Source Code Tarball Cache On Release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run:
           rm -rf ${{ github.workspace }}/pool/*
 
@@ -100,7 +100,6 @@ jobs:
           ls -A pool/ext/
 
       - name: production artifacts
-        if: 1
         uses: actions/upload-artifact@v4
         with:
           name: all-deps
@@ -111,7 +110,7 @@ jobs:
 
       - name: gh release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         with:
           files: |
             all-deps.zip
