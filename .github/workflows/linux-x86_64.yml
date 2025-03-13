@@ -115,7 +115,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php
+            php prepare.php +protobuf +xlswriter +ssh2
 
             bash ./make.sh all-library
 
