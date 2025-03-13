@@ -14,9 +14,9 @@ return function (Preprocessor $p) {
     $iconv_prefix = ICONV_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
     $ncurses_prefix = NCURSES_PREFIX;
-    $options='';
+    $options = '';
     if ($p->isMacos()) {
-        $options .=' --with-included-gettext ';
+        $options .= ' --with-included-gettext ';
     }
 
     $p->addLibrary(
@@ -75,4 +75,7 @@ EOF
     $p->withVariable('CPPFLAGS', '$CPPFLAGS -I' . $gettext_prefix . '/include');
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $gettext_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lintl ');
+    if ($p->isMacos()) {
+        $p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
+    }
 };
