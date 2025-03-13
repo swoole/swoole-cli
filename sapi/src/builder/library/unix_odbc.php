@@ -29,10 +29,10 @@ return function (Preprocessor $p) {
             --prefix={$unix_odbc_prefix} \
             --enable-static=yes \
             --enable-shared=no \
-            --enable-readline \
-            --enable-editline \
-            --enable-iconv \
-            --enable-threads \
+            --enable-readline=yes \
+            --enable-editline=no \
+            --enable-iconv=yes \
+            --enable-threads=yes \
             --enable-gui=no
 
 
@@ -45,7 +45,7 @@ EOF
             rm -rf {$unix_odbc_prefix}/lib/*.dylib
 EOF
             )
-            ->withDependentLibraries('readline', 'libiconv', 'libedit')
+            ->withDependentLibraries('readline', 'libiconv') //'libedit'
             ->withBinPath($unix_odbc_prefix . '/bin/')
             ->withPkgName('odbc')
             ->withPkgName('odbccr')
