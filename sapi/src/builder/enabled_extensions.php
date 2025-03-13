@@ -37,5 +37,6 @@ return [
     'yaml',
     'imagick',
     'mongodb',
-    'xlswriter'
+    'xlswriter',
+    'gettext'
 ];
