@@ -71,7 +71,9 @@ jobs:
           set -x
           mkdir -p pool/lib
           mkdir -p pool/ext
+          mkdir -p pool/php-tar
           mkdir -p bin/runtime
+          mkdir -p bin/var
           if [ ! -f bin/runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
