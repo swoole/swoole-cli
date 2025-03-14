@@ -87,7 +87,7 @@ jobs:
 
           php prepare.php  +inotify +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1
           php prepare.php           +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1 @macos
-          php sapi/sapi/scripts/download-php-src-archive.php
+          php sapi/scripts/download-php-src-archive.php
 
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
