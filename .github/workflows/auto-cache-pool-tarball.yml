@@ -90,7 +90,7 @@ jobs:
           php sapi/scripts/download-php-src-archive.php
 
           cd ${{ github.workspace }}/pool/
-          zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
+          zip -9 -r ${WORK_DIR}/all-deps.zip ext lib php-tar
           HASH=$(sha256sum ${WORK_DIR}/all-deps.zip | awk '{print $1}')
           echo " all-deps.zip sha265: ${HASH} "
           echo -n ${HASH} > ${WORK_DIR}/all-deps.zip.sha256sum
@@ -100,6 +100,7 @@ jobs:
         run: |
           ls -A pool/lib/
           ls -A pool/ext/
+          ls -A pool/php-tar/
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
