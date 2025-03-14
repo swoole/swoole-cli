@@ -3,10 +3,10 @@
 $poject_dir = realpath(__DIR__ . '/../../');
 
 # $php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'));
-$php_version_tag = '8.2.23';
+$php_version_tag = '8.2.28';
 $php_source_folder = $poject_dir . "/var/php-{$php_version_tag}";
 $php_archive_file = $poject_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
-$php_archive_file_sha256sum = '9c81202e6397d973c89d162e30ab6fe6689dea9cbbb235be5a5366707a38b649';
+$php_archive_file_sha256sum = 'c1fbad2787ec3e27bf334cb94b2590f47c10f49b5ea1192165a3e91afe838832';
 $download_dir = dirname($php_archive_file);
 $download_php_counter = 0;
 
