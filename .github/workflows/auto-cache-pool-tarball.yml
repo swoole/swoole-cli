@@ -5,10 +5,11 @@ on:
   pull_request:
   schedule:
     - cron: '0 0 */6 * *'
+  workflow_dispatch:
 
 jobs:
   auto-cache-pool:
-    if: 1
+    if: ${{ (github.repository_owner == 'swoole') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -70,7 +71,9 @@ jobs:
           set -x
           mkdir -p pool/lib
           mkdir -p pool/ext
+          mkdir -p pool/php-tar
           mkdir -p bin/runtime
+          mkdir -p bin/var
           if [ ! -f bin/runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
@@ -84,11 +87,16 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile  --no-dev
           composer dump-autoload --optimize --profile --no-dev
 
-          php prepare.php  +inotify         --show-tarball-hash=1
-          php prepare.php            @macos --show-tarball-hash=1
+          php prepare.php  +inotify +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1
+          php prepare.php           +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1 @macos
+          # php sapi/scripts/download-php-src-archive.php
+          php prepare.php  --show-tarball-hash=1 --with-php-version=8.1.32
+          php prepare.php  --show-tarball-hash=1 --with-php-version=8.2.28
+          php prepare.php  --show-tarball-hash=1 --with-php-version=8.3.19
+          php prepare.php  --show-tarball-hash=1 --with-php-version=8.4.5
 
           cd ${{ github.workspace }}/pool/
-          zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
+          zip -9 -r ${WORK_DIR}/all-deps.zip ext lib php-tar
           HASH=$(sha256sum ${WORK_DIR}/all-deps.zip | awk '{print $1}')
           echo " all-deps.zip sha265: ${HASH} "
           echo -n ${HASH} > ${WORK_DIR}/all-deps.zip.sha256sum
@@ -98,6 +106,7 @@ jobs:
         run: |
           ls -A pool/lib/
           ls -A pool/ext/
+          ls -A pool/php-tar/
 
       - name: production artifacts
         uses: actions/upload-artifact@v4

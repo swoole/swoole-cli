@@ -5,6 +5,7 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
 
+
     $options = [];
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
@@ -12,6 +13,7 @@ return function (Preprocessor $p) {
 
     // v5.1.x 不支持 PHP 8.4
     // swoole 支持计划 https://wiki.swoole.com/zh-cn/#/version/supported?id=%e6%94%af%e6%8c%81%e8%ae%a1%e5%88%92
+
     $swoole_tag = 'v6.0.1';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
