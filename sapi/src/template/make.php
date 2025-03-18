@@ -229,6 +229,7 @@ export_variables() {
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 <?php if ($this->isLinux()) : ?>
+    # 手动指定依赖库链接顺序
     <?php if ($this->hasExtension('phpy')) : ?>
         export LIBS="$LIBS -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu -lncurses++ -lncurses -lpanel -ltic "
     <?php endif; ?>
