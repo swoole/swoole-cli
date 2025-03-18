@@ -29,22 +29,22 @@ return function (Preprocessor $p) {
             sed -i.backup "278 s/^/# /"  ../src/Makefile.shlib
             sed -i.backup "402 s/^/# /"  ../src/Makefile.shlib
 
-            PACKAGES="openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
+            PACKAGES="libssl libcrypto openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs}  " \
             ../configure  \
             --prefix={$pgsql_prefix} \
             --enable-coverage=no \
-            --disable-thread-safety \
+            --with-openssl \
             --with-ssl=openssl  \
             --with-readline \
             --with-icu \
-            --without-ldap \
             --with-libxml  \
             --with-libxslt \
             --with-lz4 \
             --with-zstd \
+            --without-ldap \
             --without-perl \
             --without-python \
             --without-pam \
@@ -69,6 +69,8 @@ EOF
             rm -rf {$pgsql_prefix}/lib/*.so.*
             rm -rf {$pgsql_prefix}/lib/*.so
             rm -rf {$pgsql_prefix}/lib/*.dylib
+            rm -rf {$pgsql_prefix}/lib/libpgcommon_shlib.a
+            rm -rf {$pgsql_prefix}/lib/libpgport_shlib.a
 EOF
             )
             ->withPkgName('libpq')
@@ -86,4 +88,6 @@ EOF
     );
     $p->withExportVariable('LIBPQ_CFLAGS', '$(pkg-config  --cflags --static libpq)');
     $p->withExportVariable('LIBPQ_LIBS', '$(pkg-config    --libs   --static libpq)');
+    $p->withExportVariable('PGSQL_CFLAGS', '$(pkg-config  --cflags --static  libpq)');
+    $p->withExportVariable('PGSQL_LIBS', '$(pkg-config    --libs   --static  libpq)');
 };

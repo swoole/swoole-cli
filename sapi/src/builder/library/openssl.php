@@ -52,8 +52,8 @@ EOF
             sed -i.backup "s/-ldl/  /g" {$openssl_prefix}/lib/pkgconfig/libcrypto.pc
 EOF
             )
-            ->withPkgName('libcrypto')
             ->withPkgName('libssl')
+            ->withPkgName('libcrypto')
             ->withPkgName('openssl')
             ->withBinPath($openssl_prefix . '/bin/')
     );
