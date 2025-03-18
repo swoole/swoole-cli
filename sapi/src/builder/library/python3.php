@@ -136,7 +136,8 @@ EOF
             <<<EOF
             sed -i.backup "s/-ldl/  /g" {$python3_prefix}/lib/pkgconfig/python3.pc
             sed -i.backup "s/-ldl/  /g" {$python3_prefix}/lib/pkgconfig/python3-embed.pc
-
+            rm -f {$python3_prefix}/lib/pkgconfig/python3.pc.backup
+            rm -f {$python3_prefix}/lib/pkgconfig/python3-embed.pc.backup
 EOF
         )
         ->withPkgName('python3-embed')

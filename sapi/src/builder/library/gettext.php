@@ -66,7 +66,6 @@ return function (Preprocessor $p) {
             --without-xz \
             {$options} \
 
-
 EOF
             )
             ->withDependentLibraries('libunistring', 'libiconv', 'ncurses', 'libxml2', 'zlib')
