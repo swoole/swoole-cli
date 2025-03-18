@@ -14,9 +14,9 @@ return function (Preprocessor $p) {
     $iconv_prefix = ICONV_PREFIX;
     $libxml2_prefix = LIBXML2_PREFIX;
     $ncurses_prefix = NCURSES_PREFIX;
-    $options='';
+    $options = '';
     if ($p->isMacos()) {
-        $options .=' --with-included-gettext ';
+        $options .= ' --with-included-gettext ';
     }
 
     $p->addLibrary(
@@ -65,8 +65,6 @@ return function (Preprocessor $p) {
             --without-git \
             --without-xz \
             {$options} \
-
-
 
 EOF
             )
