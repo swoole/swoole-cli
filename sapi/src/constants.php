@@ -72,11 +72,12 @@ define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
 
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
+define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
-
+define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
 
