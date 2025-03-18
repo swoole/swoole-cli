@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -48,9 +48,9 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v8.2.13'
+APP_VERSION='v8.2.28'
 APP_NAME='php-fpm'
-VERSION='php-fpm-v0.0.2'
+VERSION='php-fpm-v2.1.0'
 
 mkdir -p bin/runtime
 mkdir -p var/runtime
