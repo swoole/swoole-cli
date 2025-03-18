@@ -235,6 +235,12 @@ export_variables() {
     export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+<?php if ($this->isLinux()) : ?>
+    # 解决 libpq 依赖链接顺序问题
+    <?php if ($this->hasLibrary('pgsql')) : ?>
+    export LIBS="$LIBS -lcrypto -lssl -lpgcommon -lpgport -lpq"
+    <?php endif; ?>
+<?php endif; ?>
 <?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
     ln -sf /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
     ln -sf /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
