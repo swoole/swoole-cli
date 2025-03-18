@@ -56,12 +56,6 @@ define("UTIL_LINUX_PREFIX", $p->getGlobalPrefix() . '/util_linux');
 define("GETTEXT_PREFIX", $p->getGlobalPrefix() . '/gettext');
 define("LIBUNISTRING_PREFIX", $p->getGlobalPrefix() . '/libunistring');
 define("LIBURING_PREFIX", $p->getGlobalPrefix() . '/liburing');
-
-define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
-define("LIBMPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/libmpdecimal');
-define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
-define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
-
 define("LIBAVIF_PREFIX", $p->getGlobalPrefix() . '/libavif');
 define("DAV1D_PREFIX", $p->getGlobalPrefix() . '/dav1d');
 define("LIBGAV1_PREFIX", $p->getGlobalPrefix() . '/libgav1');
@@ -69,22 +63,19 @@ define("AOM_PREFIX", $p->getGlobalPrefix() . '/aom');
 define("SVT_AV1_PREFIX", $p->getGlobalPrefix() . '/svt_av1');
 define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
 
+define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
+define("LIBMPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/libmpdecimal');
+define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
+define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
-define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
+
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
-define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
-
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
-define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
-define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
-
-define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
-define("RAV1E_PREFIX", $p->getGlobalPrefix() . '/rav1e');
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
-define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
 

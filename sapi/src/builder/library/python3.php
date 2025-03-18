@@ -141,7 +141,7 @@ EOF
 EOF
         )
         ->withPkgName('python3-embed')
-        //->withPkgName('python3')
+        ->withPkgName('python3')
         ->withDependentLibraries(
             'libmpdecimal',
             'libb2',
@@ -160,7 +160,7 @@ EOF
     $p->addLibrary($lib);
 
     if ($p->isMacos()) {
-        //$p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
+        $p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
 
         //module  _scproxy needs SystemConfiguration and CoreFoundation framework
         //$p->withVariable('LDFLAGS', '$LDFLAGS -framework SystemConfiguration -framework CoreFoundation ');
