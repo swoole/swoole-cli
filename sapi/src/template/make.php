@@ -236,18 +236,20 @@ export_variables() {
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 <?php if ($this->isLinux()) : ?>
-    # 解决 libpq 依赖链接顺序问题
+    # 手动指定依赖库链接顺序
     <?php if ($this->hasLibrary('pgsql')) : ?>
-    export LIBS="$LIBS -lcrypto -lssl -lpgcommon -lpgport -lpq"
+        export LIBS="$LIBS -lcrypto -lssl -lpgcommon -lpgport -lpq"
+    <?php endif; ?>
+    <?php if ($this->hasExtension('phpy')) : ?>
+        export LIBS="$LIBS -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu -lncurses++ -lncurses -lpanel -ltic "
     <?php endif; ?>
 <?php endif; ?>
+
 <?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
     ln -sf /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
     ln -sf /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
     ln -sf /usr/include/asm-generic/ /usr/include/x86_64-linux-musl/asm-generic
-
     export LDFLAGS="${LDFLAGS} -static -L/usr/lib/x86_64-linux-musl "
-
 <?php endif ;?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
