@@ -69,21 +69,12 @@ define("LIBB2_PREFIX", $p->getGlobalPrefix() . '/libb2');
 define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
 
-define("ZOOKEEPER_PREFIX", $p->getGlobalPrefix() . '/zookeeper');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
-define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
-
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
-define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
-define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
-
-define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
-define("RAV1E_PREFIX", $p->getGlobalPrefix() . '/rav1e');
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
-define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
 
