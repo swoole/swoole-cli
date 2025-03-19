@@ -40,5 +40,6 @@ return [
     'gettext',
     'uuid',
     'xlswriter',
-    'phpy'
+    'phpy',
+    'gettext'
 ];

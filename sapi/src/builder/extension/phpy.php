@@ -13,7 +13,6 @@ return function (Preprocessor $p) {
 
     $tag = 'v1.0.11';
 
-
     $python3_prefix = PYTHON3_PREFIX;
     $options = [];
     $options[] = '--enable-phpy';
@@ -21,17 +20,14 @@ return function (Preprocessor $p) {
     $options[] = ' --with-python-dir=' . $python3_prefix;
     $options[] = ' --with-python-config=' . $python3_prefix . '/bin/python3-config';
 
-
     $dependentLibraries = ['python3'];
     $dependentExtensions = [];
-
 
     $ext = (new Extension('phpy'))
         ->withOptions(implode(' ', $options))
         ->withLicense('https://github.com/swoole/phpy/blob/main/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/phpy/')
         ->withManual('https://github.com/swoole/phpy/')
-        ->withBuildCached(false)
         ->withFile('phpy-latest.tar.gz')
         ->withDownloadScript(
             'phpy', # 待打包目录名称

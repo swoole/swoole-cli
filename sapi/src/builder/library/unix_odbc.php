@@ -51,7 +51,7 @@ EOF
             rm -rf {$unix_odbc_prefix}/lib/*.dylib
 EOF
             )
-            ->withDependentLibraries('readline', 'libiconv') //'libedit'
+            ->withDependentLibraries('readline', 'libiconv')
             ->withBinPath($unix_odbc_prefix . '/bin/')
             ->withPkgName('odbc')
             ->withPkgName('odbccr')
