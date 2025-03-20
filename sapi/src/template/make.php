@@ -228,15 +228,15 @@ export_variables() {
     export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+<?php if ($this->isMacos() && !empty($this->frameworks['LDFLAGS'])):?>
+    # MACOS 链接 framework
+    export LDFLAGS="$LDFLAGS <?= implode(" ", $this->frameworks['LDFLAGS']) ?>"
+<?php endif; ?>
 <?php if ($this->isLinux()) : ?>
     # 手动指定依赖库链接顺序
     <?php if ($this->hasExtension('phpy')) : ?>
         export LIBS="$LIBS -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu -lncurses++ -lncurses -lpanel -ltic "
     <?php endif; ?>
-<?php endif; ?>
-<?php if ($this->isMacos() && !empty($this->frameworks['LDFLAGS'])):?>
-    # MACOS 链接 framework
-    export LDFLAGS="$LDFLAGS <?= implode(" ", $this->frameworks['LDFLAGS']) ?>"
 <?php endif; ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
