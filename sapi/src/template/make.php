@@ -235,6 +235,10 @@ export_variables() {
     export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+<?php if ($this->isMacos() && !empty($this->frameworks['LDFLAGS'])):?>
+    # MACOS 链接 framework
+    export LDFLAGS="$LDFLAGS <?= implode(" ", $this->frameworks['LDFLAGS']) ?>"
+<?php endif; ?>
 <?php if ($this->isLinux()) : ?>
     # 手动指定依赖库链接顺序
     <?php if ($this->hasLibrary('pgsql')) : ?>
