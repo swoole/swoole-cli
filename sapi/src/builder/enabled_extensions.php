@@ -44,5 +44,6 @@ return [
     'ssh2',
     'pgsql',
     'xlswriter',
-    //'phpy'
+    'gettext',
+    'phpy'
 ];

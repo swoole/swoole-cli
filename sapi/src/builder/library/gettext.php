@@ -6,9 +6,9 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
 
     // gettext 包含 libintl 库
-    //在常见的 Linux 发行版里，libintl 是由 libc 提供的，此时 gettext 编译的时候就不会附带 libintl；
-    //而如果在 macOS 上，由于 macOS 的 libc 没有 libintl 的 API，所以 gettext 编译的时候就要附带 libintl
-    //详情： https://jia.je/devops/2023/07/08/gentoo-prefix-m1/#libintl
+    // 在常见的 Linux 发行版里，libintl 是由 libc 提供的，此时 gettext 编译的时候就不会附带 libintl；
+    // 而如果在 macOS 上，由于 macOS 的 libc 没有 libintl 的 API，所以 gettext 编译的时候就要附带 libintl
+    // 详情： https://jia.je/devops/2023/07/08/gentoo-prefix-m1/#libintl
     $gettext_prefix = GETTEXT_PREFIX;
     $libunistring_prefix = LIBUNISTRING_PREFIX;
     $iconv_prefix = ICONV_PREFIX;
@@ -24,11 +24,9 @@ return function (Preprocessor $p) {
             ->withHomePage('https://www.gnu.org/software/gettext/')
             ->withLicense('https://www.gnu.org/licenses/licenses.html', Library::LICENSE_GPL)
             ->withManual('https://www.gnu.org/software/gettext/')
-            //->withUrl('https://ftp.gnu.org/gnu/gettext/gettext-0.22.5.tar.gz')
             ->withUrl('https://ftpmirror.gnu.org/gettext/gettext-0.22.5.tar.gz')
             ->withFileHash('sha256', "ec1705b1e969b83a9f073144ec806151db88127f5e40fe5a94cb6c8fa48996a0")
             ->withPrefix($gettext_prefix)
-            //->withInstallCached(false)
             ->withConfigure(
                 <<<EOF
 
@@ -75,6 +73,6 @@ EOF
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $gettext_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lintl ');
     if ($p->isMacos()) {
-        $p->withVariable('LDFLAGS', '$LDFLAGS -framework CoreFoundation ');
+        $p->withFramework('CoreFoundation');
     }
 };

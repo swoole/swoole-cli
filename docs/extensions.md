@@ -50,8 +50,10 @@
 | protobuf       | ❌     | ❌     | ❌               | ❌               |
 | uuid           | ✅     | ✅     | ❌               | ✅               |
 | mailparse      | ✅     | ✅     | ❌               | ❌               |
-| gettext        | ✅     | ❌     | ❌               | ❌               |
+| gettext        | ✅     | ✅     | ❌               | ❌               |
 | xslwriter      | ✅     | ✅     | ❌               | ✅               |
+| odbc           | ✅     | ✅     | ❌               | ❌               |
+| pdo_odbc       | ✅     | ✅     | ❌               | ❌               |
 
 ## 查看 新增的扩展 和 移除的扩展
 
