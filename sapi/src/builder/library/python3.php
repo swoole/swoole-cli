@@ -132,8 +132,10 @@ EOF
         )
         ->withScriptAfterInstall(
             <<<EOF
-            sed -i.backup "s/-ldl/  /g" {$python3_prefix}/lib/pkgconfig/python3.pc
-            sed -i.backup "s/-ldl/  /g" {$python3_prefix}/lib/pkgconfig/python3-embed.pc
+        cp -f {$python3_prefix}/lib/pkgconfig/python3.pc {$python3_prefix}/lib/pkgconfig/python3.backup.pc
+        cp -f {$python3_prefix}/lib/pkgconfig/python3-embed.pc {$python3_prefix}/lib/pkgconfig/python3-embed.backup.pc
+        cat {$python3_prefix}/lib/pkgconfig/python3.backup.pc       | sed 's/-ldl/  /g' > {$python3_prefix}/lib/pkgconfig/python3.pc
+        cat {$python3_prefix}/lib/pkgconfig/python3-embed.backup.pc | sed 's/-ldl/  /g' > {$python3_prefix}/lib/pkgconfig/python3-embed.pc
 EOF
         )
         ->withPkgName('python3-embed')
