@@ -44,7 +44,6 @@ apk add vim alpine-sdk xz autoconf automake linux-headers clang-dev clang lld li
 
 apk add bash zip unzip flex pkgconf ca-certificates
 apk add tar gzip zip unzip bzip2
-apk add tar gettext-dev
 
 apk add bash 7zip
 # apk add bash p7zip
