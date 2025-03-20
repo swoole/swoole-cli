@@ -248,11 +248,6 @@ export_variables() {
         export LIBS="$LIBS -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu -lncurses++ -lncurses -lpanel -ltic "
     <?php endif; ?>
 <?php endif; ?>
-<?php if ($this->isMacos() && !empty($this->frameworks['LDFLAGS'])):?>
-    # MACOS 链接 framework
-    export LDFLAGS="$LDFLAGS <?= implode(" ", $this->frameworks['LDFLAGS']) ?>"
-<?php endif; ?>
-
 <?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
     ln -sf /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
     ln -sf /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
