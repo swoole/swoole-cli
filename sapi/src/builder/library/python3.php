@@ -159,8 +159,8 @@ EOF
     $p->addLibrary($lib);
 
     if ($p->isMacos()) {
-        $p->withFramework('LDFLAGS', '-framework CoreFoundation');
-        $p->withFramework('LDFLAGS', '-framework SystemConfiguration');
+        $p->withFramework('CoreFoundation');
+        $p->withFramework('SystemConfiguration');
         // module  _scproxy needs SystemConfiguration and CoreFoundation framework
     }
     $p->withVariable('LIBS', '$LIBS -lHacl_Hash_SHA2');
