@@ -73,6 +73,6 @@ EOF
     $p->withVariable('LDFLAGS', '$LDFLAGS -L' . $gettext_prefix . '/lib');
     $p->withVariable('LIBS', '$LIBS -lintl ');
     if ($p->isMacos()) {
-        $p->withFramework('LDFLAGS', '-framework CoreFoundation');
+        $p->withFramework('CoreFoundation');
     }
 };
