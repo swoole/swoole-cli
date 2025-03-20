@@ -5,10 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    return null;//待改进
-    //PHP 构建选项
     $options = ' --enable-opentelemetry ';
-
     $ext = (new Extension('opentelemetry'))
         ->withOptions($options)
         ->withHomePage('https://opentelemetry.io/')
@@ -24,5 +21,15 @@ return function (Preprocessor $p) {
 
 EOF
         );
+    $p->withBeforeConfigureScript('opentelemetry', function (Preprocessor $p) {
+        $workDir = $p->getPhpSrcDir();
+        $cmd=<<<EOF
+        cd {$workDir}/ext/opentelemetry/
+
+         sed -i '' 's/static void check_conflicts()/static void check_conflicts(void)/' opentelemetry.c
+         sed -i '' 's/static otel_observer \*create_observer()/static otel_observer \*create_observer(void)/' otel_observer.c
+EOF;
+        return $cmd;
+    });
     $p->addExtension($ext);
 };
