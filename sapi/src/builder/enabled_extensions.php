@@ -38,6 +38,6 @@ return [
     'imagick',
     'mongodb',
     'xlswriter',
-    'phpy',
-    'gettext'
+    'gettext',
+    'phpy'
 ];
