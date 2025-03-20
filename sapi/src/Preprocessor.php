@@ -455,7 +455,7 @@ class Preprocessor
         return $this;
     }
 
-    protected array $frameworks = ['LDFLAGS' => []];
+    protected array $frameworks = [];
 
     public function withFramework(string $framework): static
     {
