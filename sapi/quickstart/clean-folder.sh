@@ -11,9 +11,9 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-if [ ! "$BASH_VERSION" ] ; then
-    echo "Please use bash to run this script (bash $0)" 1>&2
-    exit 1
+if [ ! "$BASH_VERSION" ]; then
+  echo "Please use bash to run this script (bash $0)" 1>&2
+  exit 1
 fi
 
 if [[ -f /.dockerenv ]]; then
@@ -24,17 +24,17 @@ GIT_BRANCH=$(git branch | grep '* ' | awk '{print $2}')
 echo $GIT_BRANCH
 ACTION="none"
 case $GIT_BRANCH in
-'build_native_php' | 'build_native_php_t' )
+'build_native_php' | 'build_native_php_t')
   ACTION="delete"
   ;;
-'build_php_8.2' | 'build_php_8.1' | 'build_php_8.0' | 'build_php_7.4' | 'build_php_7.3' )
+'build_php_8.2' | 'build_php_8.1' | 'build_php_8.0' | 'build_php_7.4' | 'build_php_7.3')
   ACTION="delete"
   ;;
 'build_native_php_sfx_micro')
   ACTION="delete"
   ;;
 *)
-  if git ls-files --error-unmatch "sapi/quickstart/clean-folder.sh" > /dev/null 2>&1 ; then
+  if git ls-files --error-unmatch "sapi/quickstart/clean-folder.sh" >/dev/null 2>&1; then
     ACTION="delete"
   else
     echo 'no need delete ext '
@@ -42,8 +42,6 @@ case $GIT_BRANCH in
   ;;
 
 esac
-
-
 
 if [[ $ACTION = "delete" ]]; then
   cd ${__PROJECT__}
@@ -74,5 +72,16 @@ if [[ $ACTION = "delete" ]]; then
   test -f conftest.c && rm -rf conftest.c
   test -d scripts && rm -rf scripts
   test -d sapi/cli && rm -rf sapi/cli/
+  test -f APP_VERSION && rm -f APP_VERSION
+  test -f composer.lock && rm -f composer.lock
+  test -f .gitmodules && rm -f .gitmodules
+  test -f cppflags.log && rm -f cppflags.log
+  test -f ldflags.log && rm -f ldflags.log
+  test -f libs.log && rm -f libs.log
+  test -f make.sh && rm -f make.sh
+  test -f make-env.sh && rm -f make-env.sh
+  test -f make-export-variables.sh && rm -f make-export-variables.sh
+  test -f make-install-deps.sh && rm -f make-install-deps.sh
+  test -f libs.log && rm -f libs.log
   echo $?
 fi
