@@ -780,15 +780,15 @@ EOF;
         return $this;
     }
 
-    protected array $frameworks = ['LDFLAGS' => []];
+    protected array $frameworks = [];
 
-    public function withFramework(string $key, string $value): static
+    public function withFramework(string $framework): static
     {
-        if ($this->isMacos()) {
-            if (isset($this->frameworks[$key]) && !in_array($value, $this->frameworks[$key])) {
-                $this->frameworks[$key][] = $value;
-            }
-
+        if (!$this->isMacos()) {
+            throw new RuntimeException('frameworks only support macOS');
+        }
+        if (!in_array($framework, $this->frameworks)) {
+            $this->frameworks[] = $framework;
         }
         return $this;
     }
