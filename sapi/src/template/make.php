@@ -56,7 +56,7 @@ make_<?=$item->name?>() {
         mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
         <?php if ($item->untarArchiveCommand == 'tar') : ?>
         tar --strip-components=1 -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file ?>;
-        <?php elseif($item->untarArchiveCommand == 'unzip') :?>
+        <?php elseif ($item->untarArchiveCommand == 'unzip') :?>
         unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file ?>;
         <?php elseif ($item->untarArchiveCommand == 'tar-default') :?>
         tar  -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file ?>;
@@ -198,7 +198,10 @@ export_variables() {
     export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-
+<?php if ($this->isMacos() && !empty($this->frameworks['LDFLAGS'])):?>
+    # MACOS 链接 framework
+    export LDFLAGS="$LDFLAGS <?= implode(" ", $this->frameworks['LDFLAGS']) ?>"
+<?php endif; ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     set +x

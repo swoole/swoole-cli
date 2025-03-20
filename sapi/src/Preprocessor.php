@@ -455,6 +455,18 @@ class Preprocessor
         return $this;
     }
 
+    protected array $frameworks = ['LDFLAGS' => []];
+
+    public function withFramework(string $key, string $value): static
+    {
+        if ($this->isMacos()) {
+            if (isset($this->frameworks[$key]) && !in_array($value, $this->frameworks[$key])) {
+                $this->frameworks[$key][] = $value;
+            }
+        }
+        return $this;
+    }
+
     public function getExtension(string $name): ?Extension
     {
         if (!isset($this->extensionMap[$name])) {
