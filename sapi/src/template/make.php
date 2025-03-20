@@ -245,7 +245,7 @@ export_variables() {
         export LIBS="$LIBS -lcrypto -lssl -lpgcommon -lpgport -lpq"
     <?php endif; ?>
     <?php if ($this->hasExtension('phpy')) : ?>
-        export LIBS="$LIBS -lcrypto -lssl -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu -lncurses++ -lncurses -lpanel -ltic "
+        export LIBS="$LIBS -lcrypto -lssl -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu  -ltic -lpanel -lncurses++ -lncurses "
     <?php endif; ?>
 
 <?php endif; ?>
