@@ -14,7 +14,7 @@ return function (Preprocessor $p) {
     // v5.1.x 不支持 PHP 8.4
     // swoole 支持计划 https://wiki.swoole.com/zh-cn/#/version/supported?id=%e6%94%af%e6%8c%81%e8%ae%a1%e5%88%92
 
-    $swoole_tag = 'v6.0.1';
+    $swoole_tag = 'v6.0.2';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
@@ -67,6 +67,35 @@ EOF
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions));
 
+    $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
+        $cmd = '';
+        if ($p->isMacos()) {
+            $workDir = $p->getPhpSrcDir() ;
+            $cmd = <<<EOF
+        cd {$workDir}/
+        sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+EOF;
+        }
+        return $cmd;
+
+    });
+    if ($p->isMacos()) {
+        # 测试 macos 专有特性
+        # 定义 _GNU_SOURCE 会隐式启用 _POSIX_C_SOURCE=200112L 和 _XOPEN_SOURCE=600
+        # export CFLAGS="$CFLAGS  " # -D_DARWIN_C_SOURCE=1 -D_XOPEN_SOURCE=700  -D_GNU_SOURCE  -D_POSIX_C_SOURCE=200809L
+        # export LIBS="-Wl,--start-group -pthread  -Wl,--end-group"
+        # export LIBS="-Wl,--whole-archive -pthread -Wl,--no-whole-archive "
+
+        # 新版macos getdtablesize 函数缺失
+        # sed -i '' 's/getdtablesize();/sysconf(_SC_OPEN_MAX);/' ext/standard/php_fopen_wrapper.c
+        $libc = $p->isMacos() ? '-lc++' : '-lstdc++';
+
+        # cd /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread
+        # 或者
+        # cd /Library/Developer/CommandLineTools/SDKs/MacOSX13.sdk/usr/include/sys/_pthread
+        # grep -r 'pthread_barrier_init' .
+        # grep -r 'pthread_barrier_t' .
+    }
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');

@@ -247,11 +247,6 @@ export_variables() {
         export LIBS="$LIBS -lcrypto -lssl -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu  -ltic -lpanel -lncurses++ -lncurses "
     <?php endif; ?>
 <?php endif; ?>
-<?php if ($this->isMacos()) : ?>
-    <?php if ($this->hasExtension('swoole')) : ?>
-        export LIBS="$LIBS -lpthread"
-    <?php endif; ?>
-<?php endif; ?>
 <?php if ($this->isLinux() && ($this->get_C_COMPILER() == 'musl-gcc')) : ?>
     ln -sf /usr/include/linux/ /usr/include/x86_64-linux-musl/linux
     ln -sf /usr/include/x86_64-linux-gnu/asm/ /usr/include/x86_64-linux-musl/asm
