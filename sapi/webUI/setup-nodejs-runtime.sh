@@ -1,11 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-__PROJECT__=${__DIR__}
+__PROJECT__=$(
+  cd "${__DIR__}/"
+  pwd
+)
 
 cd ${__PROJECT__}
 
@@ -39,7 +42,7 @@ case $ARCH in
 'x86_64')
   ARCH="x64"
   ;;
-'aarch64' | 'arm64' )
+'aarch64' | 'arm64')
   ARCH="arm64"
   ;;
 *)
@@ -57,13 +60,14 @@ mkdir -p var/runtime
 
 cd ${__PROJECT__}/var/runtime
 
-:<<'EOF'
+: <<'EOF'
 https://nodejs.org/dist/v20.15.1/node-v20.15.1-darwin-x64.tar.gz
 https://nodejs.org/dist/v20.15.1/node-v20.15.1-darwin-arm64.tar.gz
 https://nodejs.org/dist/v20.15.1/node-v20.15.1-linux-arm64.tar.xz
 https://nodejs.org/dist/v20.15.1/node-v20.15.1-linux-arm64.tar.xz
 https://nodejs.org/dist/v20.15.1/node-v20.15.1-win-arm64.zip
 https://nodejs.org/dist/v20.15.1/node-v20.15.1-win-x64.zip
+https://registry.npmmirror.com/-/binary/node/v20.15.1/node-v20.15.1-win-x64.zip
 EOF
 
 APP_DOWNLOAD_URL="https://nodejs.org/dist/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
@@ -77,7 +81,6 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
-    MIRROR=""
     ;;
   --proxy)
     export HTTP_PROXY="$2"
@@ -85,8 +88,6 @@ while [ $# -gt 0 ]; do
     NO_PROXY="127.0.0.0/8,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16"
     NO_PROXY="${NO_PROXY},::1/128,fe80::/10,fd00::/8,ff00::/8"
     NO_PROXY="${NO_PROXY},localhost"
-    NO_PROXY="${NO_PROXY},.aliyuncs.com,.aliyun.com,.tencent.com"
-    NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
     export NO_PROXY="${NO_PROXY},.tsinghua.edu.cn,.ustc.edu.cn,.npmmirror.com"
     ;;
   --*)
@@ -98,9 +99,9 @@ done
 
 case "$MIRROR" in
 china)
-  APP_DOWNLOAD_URL="https://swoole-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
+  APP_DOWNLOAD_URL="https://registry.npmmirror.com/-/binary/node/${APP_VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
   if [ $OS = 'windows' ]; then
-    APP_DOWNLOAD_URL="https://swoole-cli.jingjingxyk.com/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.zip"
+    APP_DOWNLOAD_URL="https://registry.npmmirror.com/-/binary/node/${APP_VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.zip"
   fi
   ;;
 esac
@@ -108,26 +109,25 @@ esac
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
 if [ $OS = 'win' ]; then
   {
-    test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+    test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
     exit 0
   }
 else
   if [ $OS = "darwin" ]; then
-      test -f ${APP_RUNTIME}.tar.gz || curl -LSo ${APP_RUNTIME}.tar.gz ${APP_DOWNLOAD_URL}
-      test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
-      tar -xvf ${APP_RUNTIME}.tar.gz
+    test -f ${APP_RUNTIME}.tar.gz || curl -fSLo ${APP_RUNTIME}.tar.gz ${APP_DOWNLOAD_URL}
+    test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
+    tar -xvf ${APP_RUNTIME}.tar.gz
 
   else
-      test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
-      test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
-      test -d ${APP_RUNTIME} || tar -xvf ${APP_RUNTIME}.tar
+    test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
+    test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
+    test -d ${APP_RUNTIME} || tar -xvf ${APP_RUNTIME}.tar
   fi
   test -d ${__PROJECT__}/bin/runtime/node && rm -rf ${__PROJECT__}/bin/runtime/node
   mv ${APP_RUNTIME} ${__PROJECT__}/bin/runtime/node
 fi
-
 
 cd ${__PROJECT__}/
 
@@ -142,3 +142,34 @@ export PATH="${__PROJECT__}/bin/runtime/node/bin/:$PATH"
 node -v
 npm -v
 npx -v
+
+
+
+# shellcheck disable=SC2217
+echo <<'EOF'
+
+# 指定 NPM 仓库下载源
+
+npm install -g yarn --registry=https://registry.npmmirror.com
+
+npm install  yarn --registry=https://registry.npmmirror.com
+
+yarn install --registry=https://registry.npmmirror.com
+
+npx yarn install --registry=https://registry.npmmirror.com
+
+
+npm config  set registry https://registry.npmmirror.com
+
+yarn config set registry https://registry.npmmirror.com
+
+
+# electron 反编译
+npm install asar  --registry=https://registry.npmmirror.com
+
+npx asar extract app.asar app.asar.unpacked
+
+ls -lha app.asar.unpacked
+
+EOF
+

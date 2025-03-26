@@ -7,10 +7,12 @@ __DIR__=$(
 )
 __PROJECT__=${__DIR__}
 cd ${__PROJECT__}
-bash setup-nodejs-runtime.sh
+if [ -f bin/runtime/node/bin/node ] ; then
+  bash setup-nodejs-runtime.sh --mirror china
+fi
 
 export PATH="${__PROJECT__}/bin/runtime/node/bin/:$PATH"
 
-npm install
+npm install pnpm --registry=https://registry.npmmirror.com
 
 bash  sync-frontend-library.sh
