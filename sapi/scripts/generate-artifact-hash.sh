@@ -36,9 +36,9 @@ case $OS in
   ;;
 esac
 
-APP_VERSION='v8.3.15'
+APP_VERSION='v8.3.19'
 APP_NAME='php-cli'
-VERSION='v1.7.1'
+VERSION='v1.9.1'
 
 while [ $# -gt 0 ]; do
   case "$1" in
