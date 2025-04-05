@@ -5,11 +5,17 @@ __DIR__=$(
   cd "$(dirname "$0")"
   pwd
 )
-__PROJECT__=$(
-  cd ${__DIR__}/../../../
-  pwd
-)
-cd ${__DIR__}
+
+if [ -f "${__DIR__}/../../../prepare.php" ]; then
+  __PROJECT__=$(
+    cd ${__DIR__}/../../../
+    pwd
+  )
+else
+  __PROJECT__=${__DIR__}
+fi
+
+cd ${__PROJECT__}
 
 mkdir -p ${__PROJECT__}/var
 
