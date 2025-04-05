@@ -59,7 +59,7 @@ jobs:
         uses: actions/cache@v4
         id: php-runtime-cache-aarch64
         with:
-          path: ${{ github.workspace }}/bin/runtime
+          path: ${{ github.workspace }}/runtime
           key: ${{ runner.os }}-aarch64-php-runtime
 
       - name: Cache PHP Vendor
@@ -103,8 +103,9 @@ jobs:
           set -x
           mkdir -p pool/lib
           mkdir -p pool/ext
-          mkdir -p bin/runtime
-          if [ ! -f bin/runtime/php ] ; then
+          mkdir -p bin/
+          mkdir -p runtime/
+          if [ ! -f runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
@@ -119,8 +120,8 @@ jobs:
           run: |
             set -eux
             uname -m
-            export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
-            alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
+            export PATH=/work/runtime:$PATH  # 容器已经内置 php 和 composer
+            alias php="php -d curl.cainfo=/work/runtime/cacert.pem -d openssl.cafile=/work/runtime/cacert.pem"
 
             # sed -i 's/mirrors.tuna.tsinghua.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories
             # sed -i 's/mirrors.ustc.edu.cn/dl-cdn.alpinelinux.org/g' /etc/apk/repositories

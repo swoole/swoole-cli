@@ -83,7 +83,7 @@ jobs:
         uses: actions/cache@v4
         id: php-runtime-cache
         with:
-          path: ${{ github.workspace }}/bin/runtime
+          path: ${{ github.workspace }}/runtime
           key: ${{ runner.os }}-x86_64-php-runtime
 
       - name: Cache PHP Vendor
@@ -112,9 +112,10 @@ jobs:
           set -x
           mkdir -p pool/lib
           mkdir -p pool/ext
-          mkdir -p bin/runtime
-          if [ ! -f bin/runtime/php ] ; then
-              bash  sapi/quickstart/setup-php-runtime.sh
+          mkdir -p bin/
+          mkdir -p runtime/
+          if [ ! -f runtime/php ] ; then
+              bash  setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
@@ -122,8 +123,8 @@ jobs:
 
       - name: prepare
         run: |
-          export PATH=${{ github.workspace }}/bin/runtime:$PATH
-          alias php="php -d curl.cainfo=${{ github.workspace }}/bin/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/bin/runtime/cacert.pem"
+          export PATH=${{ github.workspace }}/runtime:$PATH
+          alias php="php -d curl.cainfo=${{ github.workspace }}/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/runtime/cacert.pem"
 
           composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
           composer dump-autoload --optimize --profile --no-dev
@@ -132,7 +133,7 @@ jobs:
 
       - name: Build
         run: |
-          export PATH=${{ github.workspace }}/bin/runtime:$PATH
+          export PATH=${{ github.workspace }}/runtime:$PATH
 
           bash make-install-deps.sh
 
