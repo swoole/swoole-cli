@@ -6,7 +6,7 @@ __DIR__=$(
   pwd
 )
 
-if [ -f ${__DIR__}/../../../prepare.php ]; then
+if [ -f "${__DIR__}/../../../prepare.php" ]; then
   __PROJECT__=$(
     cd ${__DIR__}/../../../
     pwd
