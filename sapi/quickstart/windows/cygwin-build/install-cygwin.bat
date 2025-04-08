@@ -39,7 +39,7 @@ set "PACKAGES=make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,ope
 set "PACKAGES=%PACKAGES%,zip,unzip"
 set "PACKAGES=%PACKAGES%,libpq5,libpq-devel"
 set "PACKAGES=%PACKAGES%,libzstd-devel"
-set "PACKAGES=%PACKAGES%,cygwin-devel"
+set "PACKAGES=%PACKAGES%,cygwin-devel,libnet6-devel"
 
 set "OPTIONS=%OPTIONS% --packages %PACKAGES%"
 echo %OPTIONS%
