@@ -52,5 +52,6 @@ PACKAGES="make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl
 PACKAGES="${PACKAGES},zip,unzip,icu,libicu-devel"
 PACKAGES="${PACKAGES},libpq5 libpq-devel"
 PACKAGES="${PACKAGES},libzstd-devel"
-PACKAGES="${PACKAGES},cygwin-devel"
+PACKAGES="${PACKAGES},cygwin-devel,libnet6-devel"
+
 setup-x86_64.exe --no-desktop --no-shortcuts --no-startmenu --quiet-mode --disable-buggy-antivirus --site $SITE --packages $PACKAGES
