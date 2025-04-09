@@ -25,7 +25,8 @@ return function (Preprocessor $p) {
             -DBROTLI_SHARED_LIBS=OFF \
             -DBROTLI_STATIC_LIBS=ON \
             -DBROTLI_DISABLE_TESTS=OFF \
-            -DBROTLI_BUNDLED_MODE=OFF
+            -DBROTLI_BUNDLED_MODE=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
             cmake --build . --config Release --target install
 EOF
