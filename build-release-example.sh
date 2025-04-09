@@ -5,7 +5,7 @@ __DIR__=$(
   pwd
 )
 __PROJECT__=${__DIR__}
-
+shopt -s expand_aliases
 if [ ! -f ${__DIR__}/prepare.php ]; then
   echo 'no found prepare.php'
   exit 0
