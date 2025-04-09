@@ -60,10 +60,10 @@ chmod +x composer.phar
 test -f pie.phar || curl -Lo pie.phar https://github.com/php/pie/releases/latest/download/pie.phar
 chmod +x pie.phar
 
-export PATH="${__PROJECT__}/bin/runtime:$PATH"
+export PATH="${__PROJECT__}/runtime:$PATH"
 # shellcheck disable=SC2139
-#alias php="'php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem'"
-alias php="'php -c ${__PROJECT__}/bin/runtime/php.ini'"
+#alias php="'php -d curl.cainfo=${__PROJECT__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/cacert.pem'"
+alias php="'php -c ${__PROJECT__}/runtime/php.ini'"
 which php
 php -v
 
