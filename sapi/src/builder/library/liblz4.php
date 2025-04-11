@@ -27,7 +27,8 @@ return function (Preprocessor $p) {
                 -DBUILD_STATIC_LIBS=ON \
                 -DLZ4_POSITION_INDEPENDENT_LIB=ON \
                 -DLZ4_BUILD_LEGACY_LZ4C=ON \
-                -DLZ4_BUILD_CLI=ON
+                -DLZ4_BUILD_CLI=ON \
+                -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 EOF
             )
             ->withBinPath($liblz4_prefix . '/bin')
