@@ -71,18 +71,15 @@ jobs:
           set -x
           mkdir -p pool/lib
           mkdir -p pool/ext
-          mkdir -p pool/php-tar
-          mkdir -p bin/runtime
-          mkdir -p bin/var
-          if [ ! -f bin/runtime/php ] ; then
+          mkdir -p pool/php-tar/
+          mkdir -p runtime/
+          if [ ! -f runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
 
-          ls -A pool/lib/
           WORK_DIR=${{ github.workspace }}
-          uname -m
-          export PATH=${WORK_DIR}/bin/runtime:$PATH
-          alias php="php -d curl.cainfo=${WORK_DIR}/bin/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/bin/runtime/cacert.pem"
+          export PATH=${WORK_DIR}/runtime/:$PATH
+          alias php="php -d curl.cainfo=${WORK_DIR}/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/runtime/cacert.pem"
 
           composer install  --no-interaction --no-autoloader --no-scripts --profile  --no-dev
           composer dump-autoload --optimize --profile --no-dev

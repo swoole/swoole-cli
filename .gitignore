@@ -344,4 +344,6 @@ swoole-cli-*
 php-cli-*
 php-fpm-*
 !sapi/patches
+/runtime
+!/runtime/.gitkeep
 

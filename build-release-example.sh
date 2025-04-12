@@ -5,7 +5,7 @@ __DIR__=$(
   pwd
 )
 __PROJECT__=${__DIR__}
-
+shopt -s expand_aliases
 if [ ! -f ${__DIR__}/prepare.php ]; then
   echo 'no found prepare.php'
   exit 0
@@ -177,20 +177,19 @@ if git ls-files --error-unmatch sapi/quickstart/clean-folder.sh >/dev/null 2>&1;
   test -f sapi/quickstart/clean-folder.sh && bash sapi/quickstart/clean-folder.sh
 fi
 
-if [ ! -f "${__PROJECT__}/bin/runtime/php" ]; then
+if [ ! -f "${__PROJECT__}/runtime/php" ]; then
   if [ "$MIRROR" = 'china' ]; then
-    bash sapi/quickstart/setup-php-runtime.sh --mirror china
+    bash ${__PROJECT__}/setup-php-runtime.sh --mirror china
   else
-    bash sapi/quickstart/setup-php-runtime.sh
+    bash ${__PROJECT__}/setup-php-runtime.sh
   fi
 fi
 
-export PATH="${__PROJECT__}/bin/runtime:$PATH"
+export PATH="${__PROJECT__}/runtime:$PATH"
 # 交互模式下alias 扩展默认是开启的，脚本模式下默认是关闭的
 # 在shell脚本中启用别名扩展功能‌
 shopt -s expand_aliases
-alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
-
+alias php="php -d curl.cainfo=${__PROJECT__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/cacert.pem"
 php -v
 
 if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then

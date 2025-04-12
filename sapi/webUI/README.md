@@ -34,6 +34,8 @@ php sapi/webUI/bootstrap.php
 1. [monaco-editor 代码编辑器 ](https://microsoft.github.io/monaco-editor/)
 1. [threejs playground](https://threejs.org/playground/)
 1. [threejs](https://threejs.org/)
+1. [ttyd](https://github.com/tsl0922/ttyd.git)
+1. [wetty](https://github.com/butlerx/wetty.git)
 
 ## npm 指定源
 
