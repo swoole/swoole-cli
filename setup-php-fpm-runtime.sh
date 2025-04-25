@@ -6,7 +6,7 @@ __DIR__=$(
   pwd
 )
 __PROJECT__=${__DIR__}
-
+shopt -s expand_aliases
 cd ${__PROJECT__}
 
 OS=$(uname -s)
@@ -50,10 +50,7 @@ esac
 
 APP_VERSION='v8.2.28'
 APP_NAME='php-fpm'
-VERSION='php-fpm-v2.1.0'
-
-mkdir -p bin/runtime
-mkdir -p var/runtime
+VERSION='php-fpm-v2.2.0'
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -108,6 +105,12 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
+cd ${__PROJECT__}
+mkdir -p runtime/
+mkdir -p var/runtime
+APP_RUNTIME_DIR=${__PROJECT__}/runtime/${APP_NAME}
+mkdir -p ${APP_RUNTIME_DIR}
+
 cd ${__PROJECT__}/var/runtime
 
 APP_DOWNLOAD_URL="https://github.com/swoole/build-static-php/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
@@ -142,25 +145,27 @@ if [ $OS = 'windows' ]; then
     test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
-    echo
     exit 0
   }
 else
   test -f ${APP_RUNTIME}.tar.xz || curl -LSo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
-  test -f php || tar -xvf ${APP_RUNTIME}.tar
-  chmod a+x php
-  cp -f ${__PROJECT__}/var/runtime/php ${__PROJECT__}/bin/runtime/php
+  test -f php-fpm || tar -xvf ${APP_RUNTIME}.tar
+  chmod a+x php-fpm
+  cp -f ${__PROJECT__}/var/runtime/php-fpm ${APP_RUNTIME_DIR}/
+  mkdir -p ${APP_RUNTIME_DIR}/log
+  mkdir -p ${APP_RUNTIME_DIR}/run
+  mkdir -p ${APP_RUNTIME_DIR}/var
 fi
 
 cd ${__PROJECT__}/var/runtime
 
-cp -f ${__PROJECT__}/var/runtime/composer.phar ${__PROJECT__}/bin/runtime/composer
-cp -f ${__PROJECT__}/var/runtime/cacert.pem ${__PROJECT__}/bin/runtime/cacert.pem
+cp -f ${__PROJECT__}/var/runtime/composer.phar ${APP_RUNTIME_DIR}/composer
+cp -f ${__PROJECT__}/var/runtime/cacert.pem ${APP_RUNTIME_DIR}/cacert.pem
 
-cat >${__PROJECT__}/bin/runtime/php.ini <<EOF
-curl.cainfo="${__PROJECT__}/bin/runtime/cacert.pem"
-openssl.cafile="${__PROJECT__}/bin/runtime/cacert.pem"
+cat >${APP_RUNTIME_DIR}/php.ini <<EOF
+curl.cainfo="${APP_RUNTIME_DIR}/cacert.pem"
+openssl.cafile="${APP_RUNTIME_DIR}/cacert.pem"
 swoole.use_shortname=off
 display_errors = On
 error_reporting = E_ALL
@@ -178,7 +183,7 @@ expose_php=Off
 
 EOF
 
-cat >${__PROJECT__}/bin/runtime/php-fpm.conf <<'EOF'
+cat >${APP_RUNTIME_DIR}/php-fpm.conf <<'EOF'
 ; 更多配置参考
 ; https://github.com/php/php-src/blob/master/sapi/fpm/www.conf.in
 ; https://github.com/php/php-src/blob/master/sapi/fpm/php-fpm.conf.in
@@ -216,13 +221,70 @@ EOF
 
 cd ${__PROJECT__}/
 
+tee ${APP_RUNTIME_DIR}/start.sh <<'EOF'
+#!/usr/bin/env bash
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+cd ${__DIR__}
+mkdir -p log
+mkdir -p run
+mkdir -p var
+
+
+OS=$(uname -s)
+if [ "$OS" = 'Darwin' ]; then
+  # 非 root 设置此项无效
+  USER=$(whoami)
+  GROUP=$(groups $(whoami) | cut -d' ' -f1)
+  # chown -R $(whoami):staff
+  sed -i.bak "s/user = nobody/user = ${USER}/" php-fpm.conf
+  sed -i.bak "s/group = nogroup/group = ${GROUP}/" php-fpm.conf
+  test -f php-fpm.conf.bak && rm -f php-fpm.conf.bak
+fi
+
+${__DIR__}/php-fpm -c ${__DIR__}/php.ini --fpm-config ${__DIR__}/php-fpm.conf -p ${__DIR__}/var
+
+EOF
+
+tee ${APP_RUNTIME_DIR}/reload.sh <<'EOF'
+#!/usr/bin/env bash
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+cd ${__DIR__}
+
+kill -USR2 $(cat ${__DIR__}/var/run/php-fpm.pid)
+
+EOF
+
+tee ${APP_RUNTIME_DIR}/stop.sh <<'EOF'
+#!/usr/bin/env bash
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+cd ${__DIR__}
+
+kill -QUIT $(cat ${__DIR__}/var/run/php-fpm.pid)
+
+
+EOF
+
 set +x
 
 echo " "
 echo " USE PHP-FPM :"
 echo " "
-echo " export PATH=\"${__PROJECT__}/runtime/:\$PATH\" "
+echo " export PATH=\"${APP_RUNTIME_DIR}/:\$PATH\" "
 echo " "
-echo " enable start php-fpm ${APP_VERSION}"
+echo " php-fpm.conf example  :  https://gitee.com/jingjingxyk/quickstart-nginx/blob/main/php-fpm.example.conf"
 echo " "
-echo " ${__PROJECT__}/bin/runtime/php-fpm -c ${__PROJECT__}/bin/runtime/php.ini --fpm-config ${__PROJECT__}/runtime/php-fpm.conf "
+echo " start php-fpm ${APP_VERSION}"
+echo " "
+echo " ${APP_RUNTIME_DIR}/php-fpm -c ${APP_RUNTIME_DIR}/php.ini --fpm-config ${APP_RUNTIME_DIR}/php-fpm.conf "
