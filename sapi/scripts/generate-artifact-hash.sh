@@ -103,6 +103,13 @@ while [ $# -gt 0 ]; do
       }
     fi
     ;;
+  --with-php-versions)
+    OLD_IFS=$IFS
+    IFS=','
+    read -r -a PHP_VERSIONS <<<"$2"
+    IFS=$OLD_IFS
+    echo "${PHP_VERSIONS[@]}"
+    ;;
   --*)
     echo "Illegal option $1"
     exit 0
@@ -143,32 +150,30 @@ WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
   APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
   test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
 }
-WINDOWS_DOWNLOAD() {
-  WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "$1"
-}
-
-RUN_DOWNLOAD() {
-  UNIX_DOWNLOAD "$1"
-  WINDOWS_DOWNLOAD "$1"
-}
 
 DOWNLOAD() {
   declare -A PHP_VERSIONS
-  PHP_VERSIONS[0]="v8.2.27"
-  PHP_VERSIONS[1]="v8.1.31"
-  PHP_VERSIONS[2]="v8.3.15"
-  PHP_VERSIONS[3]="v8.4.2"
+  PHP_VERSIONS[0]="v8.2.28"
+  PHP_VERSIONS[1]="v8.1.32"
+  PHP_VERSIONS[2]="v8.3.19"
+  PHP_VERSIONS[3]="v8.4.5"
   for i in "${!PHP_VERSIONS[@]}"; do
     # echo ${PHP_VERSIONS[$i]}
-    RUN_DOWNLOAD "${PHP_VERSIONS[$i]}"
+    UNIX_DOWNLOAD "${PHP_VERSIONS[$i]}"
+    WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "${PHP_VERSIONS[$i]}"
   done
-
 }
 
-test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/build-static-php/releases/download/${VERSION}/all-deps.zip
+if [ -n "$PHP_VERSIONS" ]; then
+  for i in "${!PHP_VERSIONS[@]}"; do
+    # echo ${PHP_VERSIONS[$i]}
+    # RUN_DOWNLOAD "${PHP_VERSIONS[$i]}"
+    UNIX_DOWNLOAD "${PHP_VERSIONS[$i]}"
+    WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "${PHP_VERSIONS[$i]}"
+  done
+  test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/build-static-php/releases/download/${VERSION}/all-deps.zip
 
-DOWNLOAD
+  ls -p | grep -v '/$' | xargs sha256sum
 
-ls -p | grep -v '/$' | xargs sha256sum
-
-ls -p | grep -v '/$' | xargs sha256sum >${__PROJECT__}/${VERSION}-sha256sum
+  ls -p | grep -v '/$' | xargs sha256sum >${__PROJECT__}/${VERSION}-sha256sum
+fi
