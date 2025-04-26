@@ -13,6 +13,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OS=$(uname -s)
+ARCH=$(uname -m)
 case $OS in
 'Linux')
   OS="linux"
@@ -36,9 +37,23 @@ case $OS in
   ;;
 esac
 
+case $ARCH in
+'x86_64')
+  ARCH="x64"
+  ;;
+'aarch64' | 'arm64')
+  ARCH="arm64"
+  ;;
+*)
+  echo '暂未配置的 ARCH '
+  exit 0
+  ;;
+esac
+
 APP_VERSION='v8.3.19'
 APP_NAME='php-cli'
-VERSION='v1.9.1'
+VERSION='v1.9.2'
+PHP_VERSIONS=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -134,14 +149,6 @@ UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
   test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
 }
 
-UNIX_DOWNLOAD() {
-  APP_VERSION="$1"
-  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "x64" "${APP_VERSION}"
-  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "arm64" "${APP_VERSION}"
-  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "x64" "${APP_VERSION}"
-  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "arm64" "${APP_VERSION}"
-}
-
 WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
   APP_VERSION="$1"
   ARCH="x64"
@@ -149,6 +156,14 @@ WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
 
   APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
   test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+}
+
+UNIX_DOWNLOAD() {
+  APP_VERSION="$1"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "x64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "arm64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "x64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "arm64" "${APP_VERSION}"
 }
 
 DOWNLOAD() {
@@ -172,8 +187,10 @@ if [ -n "$PHP_VERSIONS" ]; then
     WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "${PHP_VERSIONS[$i]}"
   done
   test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/build-static-php/releases/download/${VERSION}/all-deps.zip
-
-  ls -p | grep -v '/$' | xargs sha256sum
-
-  ls -p | grep -v '/$' | xargs sha256sum >${__PROJECT__}/${VERSION}-sha256sum
+else
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "${OS}" "${ARCH}" "${APP_VERSION}"
 fi
+
+ls -p | grep -v '/$' | xargs sha256sum
+
+ls -p | grep -v '/$' | xargs sha256sum >${__PROJECT__}/${VERSION}-sha256sum
