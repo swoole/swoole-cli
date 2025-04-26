@@ -6,7 +6,7 @@ __DIR__=$(
   pwd
 )
 __PROJECT__=${__DIR__}
-
+shopt -s expand_aliases
 cd ${__PROJECT__}
 
 OS=$(uname -s)
@@ -50,10 +50,15 @@ esac
 
 APP_VERSION='v8.2.28'
 APP_NAME='php-cli'
-VERSION='v1.9.0'
+VERSION='v1.9.2'
 
-mkdir -p bin/runtime
+cd ${__PROJECT__}
+mkdir -p runtime/
 mkdir -p var/runtime
+APP_RUNTIME_DIR=${__PROJECT__}/runtime/${APP_NAME}
+mkdir -p ${APP_RUNTIME_DIR}
+
+cd ${__PROJECT__}/var/runtime
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -142,7 +147,6 @@ if [ $OS = 'windows' ]; then
     test -f ${APP_RUNTIME}.zip || curl -LSo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
-    echo
     exit 0
   }
 else
@@ -150,17 +154,17 @@ else
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
   test -f php || tar -xvf ${APP_RUNTIME}.tar
   chmod a+x php
-  cp -f ${__PROJECT__}/var/runtime/php ${__PROJECT__}/bin/runtime/php
+  cp -f ${__PROJECT__}/var/runtime/php ${APP_RUNTIME_DIR}/
 fi
 
 cd ${__PROJECT__}/var/runtime
 
-cp -f ${__PROJECT__}/var/runtime/composer.phar ${__PROJECT__}/bin/runtime/composer
-cp -f ${__PROJECT__}/var/runtime/cacert.pem ${__PROJECT__}/bin/runtime/cacert.pem
+cp -f ${__PROJECT__}/var/runtime/composer.phar ${APP_RUNTIME_DIR}/composer
+cp -f ${__PROJECT__}/var/runtime/cacert.pem ${APP_RUNTIME_DIR}/cacert.pem
 
-cat >${__PROJECT__}/bin/runtime/php.ini <<EOF
-curl.cainfo="${__PROJECT__}/bin/runtime/cacert.pem"
-openssl.cafile="${__PROJECT__}/bin/runtime/cacert.pem"
+cat >${APP_RUNTIME_DIR}/php.ini <<EOF
+curl.cainfo="${APP_RUNTIME_DIR}/cacert.pem"
+openssl.cafile="${APP_RUNTIME_DIR}/cacert.pem"
 swoole.use_shortname=off
 display_errors = On
 error_reporting = E_ALL
@@ -186,10 +190,10 @@ set +x
 echo " "
 echo " USE PHP-CLI RUNTIME :"
 echo " "
-echo " export PATH=\"${__PROJECT__}/bin/runtime:\$PATH\" "
+echo " export PATH=\"${APP_RUNTIME_DIR}:\$PATH\" "
 echo " "
-echo " alias php='php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem' "
+echo " alias php='php -d curl.cainfo=${APP_RUNTIME_DIR}/cacert.pem -d openssl.cafile=${APP_RUNTIME_DIR}/cacert.pem' "
 echo " OR "
-echo " alias php='php -c ${__PROJECT__}/bin/runtime/php.ini' "
+echo " alias php='php -c ${APP_RUNTIME_DIR}/php.ini' "
 echo " "
 echo " PHP-CLI VERSION  ${APP_VERSION}"

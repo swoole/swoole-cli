@@ -13,6 +13,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OS=$(uname -s)
+ARCH=$(uname -m)
 case $OS in
 'Linux')
   OS="linux"
@@ -36,9 +37,23 @@ case $OS in
   ;;
 esac
 
+case $ARCH in
+'x86_64')
+  ARCH="x64"
+  ;;
+'aarch64' | 'arm64')
+  ARCH="arm64"
+  ;;
+*)
+  echo '暂未配置的 ARCH '
+  exit 0
+  ;;
+esac
+
 APP_VERSION='v8.3.19'
 APP_NAME='php-cli'
-VERSION='v1.9.1'
+VERSION='v1.9.2'
+PHP_VERSIONS=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -103,6 +118,13 @@ while [ $# -gt 0 ]; do
       }
     fi
     ;;
+  --with-php-versions)
+    OLD_IFS=$IFS
+    IFS=','
+    read -r -a PHP_VERSIONS <<<"$2"
+    IFS=$OLD_IFS
+    echo "${PHP_VERSIONS[@]}"
+    ;;
   --*)
     echo "Illegal option $1"
     exit 0
@@ -127,14 +149,6 @@ UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
   test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
 }
 
-UNIX_DOWNLOAD() {
-  APP_VERSION="$1"
-  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "x64" "${APP_VERSION}"
-  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "arm64" "${APP_VERSION}"
-  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "x64" "${APP_VERSION}"
-  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "arm64" "${APP_VERSION}"
-}
-
 WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
   APP_VERSION="$1"
   ARCH="x64"
@@ -143,31 +157,39 @@ WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME() {
   APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
   test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
 }
-WINDOWS_DOWNLOAD() {
-  WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "$1"
-}
 
-RUN_DOWNLOAD() {
-  UNIX_DOWNLOAD "$1"
-  WINDOWS_DOWNLOAD "$1"
+UNIX_DOWNLOAD() {
+  APP_VERSION="$1"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "x64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "linux" "arm64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "x64" "${APP_VERSION}"
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "macos" "arm64" "${APP_VERSION}"
 }
 
 DOWNLOAD() {
   declare -A PHP_VERSIONS
-  PHP_VERSIONS[0]="v8.2.27"
-  PHP_VERSIONS[1]="v8.1.31"
-  PHP_VERSIONS[2]="v8.3.15"
-  PHP_VERSIONS[3]="v8.4.2"
+  PHP_VERSIONS[0]="v8.2.28"
+  PHP_VERSIONS[1]="v8.1.32"
+  PHP_VERSIONS[2]="v8.3.19"
+  PHP_VERSIONS[3]="v8.4.5"
   for i in "${!PHP_VERSIONS[@]}"; do
     # echo ${PHP_VERSIONS[$i]}
-    RUN_DOWNLOAD "${PHP_VERSIONS[$i]}"
+    UNIX_DOWNLOAD "${PHP_VERSIONS[$i]}"
+    WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "${PHP_VERSIONS[$i]}"
   done
-
 }
 
-test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/build-static-php/releases/download/${VERSION}/all-deps.zip
-
-DOWNLOAD
+if [ -n "$PHP_VERSIONS" ]; then
+  for i in "${!PHP_VERSIONS[@]}"; do
+    # echo ${PHP_VERSIONS[$i]}
+    # RUN_DOWNLOAD "${PHP_VERSIONS[$i]}"
+    UNIX_DOWNLOAD "${PHP_VERSIONS[$i]}"
+    WINDOWS_DOWNLOAD_SWOOLE_CLIE_RUNTIME "${PHP_VERSIONS[$i]}"
+  done
+  test -f all-deps.zip || curl -fSLo all-deps.zip https://github.com/swoole/build-static-php/releases/download/${VERSION}/all-deps.zip
+else
+  UNIX_DOWNLOAD_SWOOLE_CLIE_RUNTIME "${OS}" "${ARCH}" "${APP_VERSION}"
+fi
 
 ls -p | grep -v '/$' | xargs sha256sum
 
