@@ -44,7 +44,8 @@ return function (Preprocessor $p) {
             -DZLIB_ROOT={$zlib_prefix} \
             -DBZip2_ROOT={$bzip2_prefix} \
             -DLibLZMA_ROOT={$liblzma_prefix} \
-            -DZstd_ROOT={$libzstd_prefix}
+            -DZstd_ROOT={$libzstd_prefix} \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
 EOF
             )
