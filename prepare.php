@@ -62,9 +62,7 @@ if ($p->isMacos()) {
 
 $p->setExtraCflags(' -Os');
 
-if ($p->getInputOption('with-mimalloc')) {
-    $p->loadDependentLibrary('mimalloc');
-}
+
 
 // Generate make.sh
 $p->execute();
