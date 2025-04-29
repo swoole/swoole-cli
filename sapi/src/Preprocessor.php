@@ -766,6 +766,10 @@ class Preprocessor
             }
         }
 
+        //custom load library
+        if ($this->getInputOption('with-mimalloc')) {
+            $this->loadDependentLibrary('mimalloc');
+        }
         // autoload  library depend library
         foreach ($this->extensionMap as $ext) {
             foreach ($ext->deps as $library_name) {
