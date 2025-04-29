@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
     MIRROR="$2"
     case "$MIRROR" in
     china | openatom)
-      IMAGE="hub.atomgit.com/library/alpine:3.18"
+      IMAGE="docker.io/library/alpine:3.18"
       ;;
     esac
     ;;

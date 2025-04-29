@@ -17,7 +17,7 @@ function swoole_cli_self_update()
     if (strstr($uname, 'x86_64') !== false) {
         $arch = 'x64';
     } elseif (strstr($uname, 'aarch64') !== false) {
-        $arch = 'aarch64';
+        $arch = 'arm64';
     } else {
         echo "unsupported architecture\n";
         return;
@@ -39,19 +39,25 @@ function swoole_cli_self_update()
         echo "The current version `v" . SWOOLE_VERSION . "-{$arch}` is already the latest\n";
     } else {
         echo "Upgrading to version v{$match[1]}\n";
-        $tmpFile = "/tmp/{$newVersion->filename}";
+        $taskId = uniqid('swoole-cli-update-');
+        $tmpDir = "/tmp/{$taskId}";
+        $tmpFile = $tmpDir . "/{$newVersion->filename}";
+        mkdir($tmpDir, 0755, true);
         echo `wget -O {$tmpFile} {$newVersion->url}`, PHP_EOL;
         if (!is_file($tmpFile) or filesize($tmpFile) !== intval($newVersion->size)) {
             echo "Failed to download {$newVersion->url}\n";
             return;
         }
-        echo `cd /tmp && tar xvf {$newVersion->filename}`, PHP_EOL;
+        echo `cd $tmpDir && tar xvf {$newVersion->filename}`, PHP_EOL;
 
-        $tmpBinFile = '/tmp/swoole-cli';
+        $tmpBinFile = "$tmpDir/swoole-cli";
         if (!is_file($tmpBinFile) or filesize($tmpBinFile) == 0) {
             echo "Failed to decompress archive {$newVersion->filename}\n";
             return;
         }
-        echo `mv /tmp/swoole-cli $binFile`;
+        echo `mv $tmpBinFile $binFile`;
+        echo `rm -rf $tmpDir`;
+        echo `chmod +x $binFile`;
+        echo "Upgrade completed\n";
     }
 }
