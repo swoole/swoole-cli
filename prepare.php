@@ -41,7 +41,6 @@ if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
-
 if ($p->isMacos()) {
     $p->setExtraLdflags('');
     $homebrew_prefix = trim(shell_exec('brew --prefix'));
@@ -61,7 +60,6 @@ if ($p->isMacos()) {
 }
 
 $p->setExtraCflags(' -Os');
-
 
 // Generate make.sh
 $p->execute();
