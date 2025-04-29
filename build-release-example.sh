@@ -145,7 +145,6 @@ if [ ! -f "${__PROJECT__}/runtime/php" ]; then
   fi
 fi
 
-shopt -s expand_aliases
 export PATH="${__PROJECT__}/runtime:$PATH"
 alias php="php -d curl.cainfo=${__PROJECT__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/cacert.pem"
 
