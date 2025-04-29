@@ -166,3 +166,7 @@ GD库支持 AVIF图片格式
 with-iouring
 ----
 swoole 启用支持 iouring 特性
+
+with-mimalloc
+----
+使用mimalloc
