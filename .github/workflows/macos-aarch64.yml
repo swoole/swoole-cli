@@ -104,7 +104,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1 --with-mimalloc=1
+          php prepare.php --without-docker --with-mimalloc
 
       - name: Build
         run: |

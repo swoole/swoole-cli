@@ -116,7 +116,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php --with-mimalloc=1
+            php prepare.php --with-mimalloc
 
             bash ./make.sh all-library
 
