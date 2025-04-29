@@ -41,6 +41,7 @@ return function (Preprocessor $p) {
             -DMI_INSTALL_TOPLEVEL=ON \
             -DMI_PADDING=OFF \
             -DMI_SKIP_COLLECT_ON_EXIT=ON \
+            -DMI_OVERRIDE=ON \
             {$cmake_options}
 
             cmake --build . --config Release
