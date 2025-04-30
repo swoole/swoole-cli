@@ -574,7 +574,7 @@ elif [ "$1" = "variables" ] ;then
 	echo $LIBS
 elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
-    test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -c ${__PROJECT_DIR__}/bin/runtime/php.ini -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
+    test -f ${__PROJECT_DIR__}/runtime/php && PHP_CLI="${__PROJECT_DIR__}/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/runtime/cacert.pem"
     $PHP_CLI -v
     $PHP_CLI sync-source-code.php --action run
     exit 0
