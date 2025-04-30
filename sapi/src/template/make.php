@@ -280,7 +280,8 @@ make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
     <?php if ($this->isLinux()) : ?>
-    export LDFLAGS="$LDFLAGS  -static -all-static "
+    export CFLAGS="$CFLAGS  -fPIE"
+    export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
