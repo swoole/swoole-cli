@@ -52,8 +52,13 @@ try
     dir $TMP_APP_RUNTIME
     dir "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\"
 
+    if (Test-Path "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe")
+    {
+        Remove-Item "$PROJECT_DIR\$APP_RUNTIME\" -Recurse -Force
+    }
     New-Item -ItemType Directory -Path "$PROJECT_DIR\$APP_RUNTIME" -Force
-    Move-Item -Path "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\*" -Destination "$PROJECT_DIR\$APP_RUNTIME"
+
+    Move-Item -Path "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\*" -Destination "$PROJECT_DIR\$APP_RUNTIME" -Force
 
     dir "$PROJECT_DIR\$APP_RUNTIME\"
     dir "$PROJECT_DIR\$APP_RUNTIME\bin\"
@@ -107,8 +112,8 @@ apc.enable_cli=1
     $drive = (Split-Path -Path $PSScriptRoot -Qualifier).TrimEnd(':') + ":"
     Write-Output $drive
 
-    $PHP_INI="$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
-    $PHP_INI="$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
+    $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
+    $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
     # Set-Alias vim "D:\Path\To\vim.exe"
     swoole-cli -v
     swoole-cli --ri swoole
