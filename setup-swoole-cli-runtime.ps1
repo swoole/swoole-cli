@@ -101,6 +101,15 @@ apc.enable_cli=1
         Write-Host Invoke-Expression $command
     }
 
+    $scriptPath = $MyInvocation.MyCommand.Definition
+    $drive = [System.IO.Path]::GetPathRoot($scriptPath).TrimEnd('\')
+    Write-Output $drive
+    $drive = (Split-Path -Path $PSScriptRoot -Qualifier).TrimEnd(':') + ":"
+    Write-Output $drive
+
+    $PHP_INI="$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
+    $PHP_INI="$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
+    # Set-Alias vim "D:\Path\To\vim.exe"
     swoole-cli -v
     swoole-cli --ri swoole
     swoole-cli -c "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini" --ri curl
