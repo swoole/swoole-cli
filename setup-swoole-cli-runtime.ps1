@@ -108,8 +108,8 @@ apc.enable_cli=1
 }
 catch
 {
-    Write-Host "[错误] 详情: $_"
-    Write-Host "异常类型: $( $_.Exception.GetType().FullName )"
+    Write-Host "[error] info: $_"
+    Write-Host "except type: $( $_.Exception.GetType().FullName )"
     exit 1
 }
 
