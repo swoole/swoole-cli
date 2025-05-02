@@ -140,6 +140,7 @@ apc.enable_cli=1
     swoole-cli --ri swoole
     swoole-cli -c $CYGWIN_PHP_INI --ri curl
     swoole-cli -c $CYGWIN_PHP_INI --ri openssl
+    swoole-cli -c $CYGWIN_PHP_INI -i
 }
 catch
 {
