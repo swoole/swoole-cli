@@ -2,6 +2,8 @@ param(
     [string]
     $mirror = ''
 )
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
 # Set-PSDebug -Trace 1
 
 # Set-StrictMode -Version Latest
