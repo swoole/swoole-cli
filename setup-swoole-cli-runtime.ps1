@@ -85,12 +85,6 @@ try
 
     $env:PATH += ";$PROJECT_DIR\$APP_RUNTIME\bin\"
 
-    function x-swoole-cli
-    {
-        $command = "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $PROJECT_DIR\$APP_RUNTIME\etc\php.ini @args"
-        Write-Host Invoke-Expression $command
-    }
-
     $scriptPath = $MyInvocation.MyCommand.Definition
     $drive = [System.IO.Path]::GetPathRoot($scriptPath).TrimEnd('\')
     Write-Output $drive
@@ -138,8 +132,14 @@ apc.enable_cli=1
     write-host "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
     write-host $CYGWIN_PHP_INI
 
-    Set-Alias php "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $CYGWIN_PHP_INI"
-    php -v
+    function x-swoole-cli
+    {
+        $command = "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $PROJECT_DIR\$APP_RUNTIME\etc\php.ini @args"
+        Write-Host Invoke-Expression $command
+    }
+    # Set-Alias php "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $CYGWIN_PHP_INI"
+    # php -v
+
     swoole-cli -v
     swoole-cli --ri swoole
     swoole-cli -c "$CYGWIN_PHP_INI" --ri curl
