@@ -123,12 +123,12 @@ apc.enable_cli=1
     $drive = (Split-Path -Path $PSScriptRoot -Qualifier).TrimEnd(':') + ":"
     Write-Output $drive
     $cygwin_drive = $drive.TrimEnd(":").ToLower()
+    write-host $cygwin_drive
 
     $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
-    $X_PHP_INI = $PHP_INI.Replace($drive, $cygwin_drive)
     $X_PHP_INI = $PHP_INI.Replace('\', '/')
+    $X_PHP_INI = $PHP_INI.Replace($drive, $cygwin_drive)
 
-    write-host $cygwin_drive
     write-host $PHP_INI
     write-output $X_PHP_INI
     write-host $CYGWIN_PHP_INI
