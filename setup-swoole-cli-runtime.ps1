@@ -128,16 +128,17 @@ apc.enable_cli=1
     $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
     $X_PHP_INI = $PHP_INI.Replace('\', '/')
     $X_PHP_INI = $PHP_INI.Replace($drive, $cygwin_drive)
+    $CYGWIN_PHP_INI = "/cygwin/" + $X_PHP_INI
 
     write-host $PHP_INI
     write-output $X_PHP_INI
     write-host $CYGWIN_PHP_INI
-    $PHP_INI = "/cygwin/"
-    # Set-Alias vim "D:\Path\To\vim.exe"
+
+    Set-Alias php "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $CYGWIN_PHP_INI"
     swoole-cli -v
     swoole-cli --ri swoole
-    swoole-cli -c "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini" --ri curl
-    swoole-cli -c "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini" --ri openssl
+    swoole-cli -c $CYGWIN_PHP_INI --ri curl
+    swoole-cli -c $CYGWIN_PHP_INI --ri openssl
 }
 catch
 {
