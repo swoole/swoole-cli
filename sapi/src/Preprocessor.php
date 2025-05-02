@@ -780,6 +780,19 @@ EOF;
         return $this;
     }
 
+    protected array $frameworks = [];
+
+    public function withFramework(string $framework): static
+    {
+        if (!$this->isMacos()) {
+            throw new RuntimeException('frameworks only support macOS');
+        }
+        if (!in_array($framework, $this->frameworks)) {
+            $this->frameworks[] = $framework;
+        }
+        return $this;
+    }
+
     public function getExtension(string $name): ?Extension
     {
         if (!isset($this->extensionMap[$name])) {

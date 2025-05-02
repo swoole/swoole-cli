@@ -36,6 +36,7 @@ return function (Preprocessor $p) {
         -DBUILD_SHARED_LIBS=OFF  \
         -DBUILD_STATIC_LIBS=ON \
         -DCMAKE_PREFIX_PATH="{$libjpeg_prefix}" \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
         cmake --build . --config Release
 

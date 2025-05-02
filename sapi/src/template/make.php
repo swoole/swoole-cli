@@ -64,7 +64,7 @@ make_<?=$item->name?>() {
         mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
         <?php if ($item->untarArchiveCommand == 'tar') : ?>
         tar --strip-components=1 -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file ?>;
-        <?php elseif($item->untarArchiveCommand == 'unzip') :?>
+        <?php elseif ($item->untarArchiveCommand == 'unzip') :?>
         unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file ?>;
         <?php elseif ($item->untarArchiveCommand == 'tar-default') :?>
         tar  -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file ?>;
@@ -218,20 +218,23 @@ export_variables() {
 <?php foreach ($this->exportVariables as $value) : ?>
     export <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
-
-<?php if ($this->hasExtension('opcache')):?>
-    export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
-    export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
-<?php endif; ?>
     export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export CXXFLAGS=$(echo $CXXFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+<?php if ($this->hasExtension('opcache')):?>
+    export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
+    export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
+<?php endif; ?>
+<?php if ($this->isMacos() && !empty($this->frameworks)):?>
+    # MACOS 链接 framework
+    export LDFLAGS="$LDFLAGS <?php foreach($this->frameworks as $framework) { echo "-framework $framework "; } ?>"
+<?php endif; ?>
 <?php if ($this->isLinux()) : ?>
     # 手动指定依赖库链接顺序
     <?php if ($this->hasExtension('phpy')) : ?>
-        export LIBS="$LIBS -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu -lncurses++ -lncurses -lpanel -ltic "
+        export LIBS="$LIBS -lcrypto -lssl -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu  -ltic -lpanel -lncurses++ -lncurses "
     <?php endif; ?>
 <?php endif; ?>
     result_code=$?
@@ -277,7 +280,8 @@ make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
     <?php if ($this->isLinux()) : ?>
-    export LDFLAGS="$LDFLAGS  -static -all-static "
+    export CFLAGS="$CFLAGS  -fPIE"
+    export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
@@ -570,7 +574,7 @@ elif [ "$1" = "variables" ] ;then
 	echo $LIBS
 elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
-    test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -c ${__PROJECT_DIR__}/bin/runtime/php.ini -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
+    test -f ${__PROJECT_DIR__}/runtime/php && PHP_CLI="${__PROJECT_DIR__}/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/runtime/cacert.pem"
     $PHP_CLI -v
     $PHP_CLI sync-source-code.php --action run
     exit 0
