@@ -36,16 +36,20 @@ try
         $APP_DOWNLOAD_URL = "https://wenda-1252906962.file.myqcloud.com/dist/$APP_NAME-$APP_VERSION-cygwin-x64.zip"
     }
 
-    if (Get-Command "curl.exe" -ErrorAction SilentlyContinue)
+    if (-not (Test-Path "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\"))
     {
-        curl.exe -fSLo "$TMP_APP_RUNTIME\$FILE" $APP_DOWNLOAD_URL
+        if (Get-Command "curl.exe" -ErrorAction SilentlyContinue)
+        {
+            curl.exe -fSLo "$TMP_APP_RUNTIME\$FILE" $APP_DOWNLOAD_URL
+        }
+        else
+        {
+            # Invoke-WebRequest $APP_DOWNLOAD_URL -UseBasicParsing -OutFile $FILE
+            # Invoke-WebRequest -Uri $APP_DOWNLOAD_URL -OutFile  $FILE
+            irm $APP_DOWNLOAD_URL -outfile "$TMP_APP_RUNTIME\$FILE"
+        }
     }
-    else
-    {
-        # Invoke-WebRequest $APP_DOWNLOAD_URL -UseBasicParsing -OutFile $FILE
-        # Invoke-WebRequest -Uri $APP_DOWNLOAD_URL -OutFile  $FILE
-        irm $APP_DOWNLOAD_URL -outfile "$TMP_APP_RUNTIME\$FILE"
-    }
+
     if (Test-Path "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\")
     {
         Remove-Item "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\" -Recurse -Force
