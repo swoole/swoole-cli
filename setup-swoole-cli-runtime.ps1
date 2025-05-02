@@ -82,6 +82,34 @@ try
     # Start-Sleep 3
     # Remove-Item $Installer -ErrorAction Ignore
 
+
+    $env:PATH += ";$PROJECT_DIR\$APP_RUNTIME\bin\"
+
+    function x-swoole-cli
+    {
+        $command = "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $PROJECT_DIR\$APP_RUNTIME\etc\php.ini @args"
+        Write-Host Invoke-Expression $command
+    }
+
+    $scriptPath = $MyInvocation.MyCommand.Definition
+    $drive = [System.IO.Path]::GetPathRoot($scriptPath).TrimEnd('\')
+    Write-Output $drive
+    $drive = (Split-Path -Path $PSScriptRoot -Qualifier).TrimEnd(':') + ":"
+    Write-Output $drive
+    $cygwin_drive = $drive.TrimEnd(":").ToLower()
+    write-host $cygwin_drive
+
+    $PHP_INI_DIR = "$PROJECT_DIR\$APP_RUNTIME\etc\"
+    $PHP_INI_DIR = $PHP_INI_DIR.Replace('\', '/')
+    $PHP_INI_DIR = $PHP_INI_DIR.Replace($drive, $cygwin_drive)
+    $CYGWIN_PHP_INI_DIR = "/cygwin/" + $PHP_INI_DIR
+    $CYGWIN_PHP_INI = "/cygwin/" + $PHP_INI_DIR + "/php.ini"
+
+    write-host $PHP_INI
+    write-output $X_PHP_INI
+    write-host $CYGWIN_PHP_INI
+
+
     $template = @"
 curl.cainfo="{0}\cacert.pem"
 openssl.cafile="{0}\cacert.pem"
@@ -104,35 +132,10 @@ opcache.jit_buffer_size=128M
 expose_php=Off
 apc.enable_cli=1
 
-"@ -f "$PROJECT_DIR\$APP_RUNTIME\etc\"
+"@ -f "$CYGWIN_PHP_INI_DIR"
 
     $template | Set-Content -Path "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
     Get-Content -Path "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
-
-    $env:PATH += ";$PROJECT_DIR\$APP_RUNTIME\bin\"
-
-    function x-swoole-cli
-    {
-        $command = "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $PROJECT_DIR\$APP_RUNTIME\etc\php.ini @args"
-        Write-Host Invoke-Expression $command
-    }
-
-    $scriptPath = $MyInvocation.MyCommand.Definition
-    $drive = [System.IO.Path]::GetPathRoot($scriptPath).TrimEnd('\')
-    Write-Output $drive
-    $drive = (Split-Path -Path $PSScriptRoot -Qualifier).TrimEnd(':') + ":"
-    Write-Output $drive
-    $cygwin_drive = $drive.TrimEnd(":").ToLower()
-    write-host $cygwin_drive
-
-    $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
-    $X_PHP_INI = $PHP_INI.Replace('\', '/')
-    $X_PHP_INI = $X_PHP_INI.Replace($drive, $cygwin_drive)
-    $CYGWIN_PHP_INI = "/cygwin/" + $X_PHP_INI
-
-    write-host $PHP_INI
-    write-output $X_PHP_INI
-    write-host $CYGWIN_PHP_INI
 
     Set-Alias php "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $CYGWIN_PHP_INI"
     swoole-cli -v
