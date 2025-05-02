@@ -122,9 +122,11 @@ apc.enable_cli=1
     Write-Output $drive
     $drive = (Split-Path -Path $PSScriptRoot -Qualifier).TrimEnd(':') + ":"
     Write-Output $drive
+    echo $drive.TrimEnd(":").ToLower()
 
     $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
-    $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
+    write-output $PHP_INI
+    $PHP_INI = "/cygwin/"
     # Set-Alias vim "D:\Path\To\vim.exe"
     swoole-cli -v
     swoole-cli --ri swoole
