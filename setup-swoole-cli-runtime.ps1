@@ -125,8 +125,11 @@ apc.enable_cli=1
     $cygwin_drive= $drive.TrimEnd(":").ToLower()
 
     $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
-    $CYGWIN_PHP_INI= $PHP_INI -replace '\\' '/'
+    $X_PHP_INI = $PHP_INI.Replace($drive, $cygwin_drive)
+    $X_PHP_INI = $PHP_INI.Replace('\', '/')
+
     write-host $PHP_INI
+    write-output $X_PHP_INI
     write-host $CYGWIN_PHP_INI
     $PHP_INI = "/cygwin/"
     # Set-Alias vim "D:\Path\To\vim.exe"
