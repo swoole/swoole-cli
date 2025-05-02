@@ -2,6 +2,7 @@ param(
     [string]
     $mirror = ''
 )
+# with utf8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 # Set-PSDebug -Trace 1
@@ -36,7 +37,7 @@ try
         $APP_DOWNLOAD_URL = "https://wenda-1252906962.file.myqcloud.com/dist/$APP_NAME-$APP_VERSION-cygwin-x64.zip"
     }
 
-    if (-not (Test-Path "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\"))
+    if (-not (Test-Path "$TMP_APP_RUNTIME\$FILE" -PathType Leaf))
     {
         if (Get-Command "curl.exe" -ErrorAction SilentlyContinue)
         {
@@ -50,7 +51,7 @@ try
         }
     }
 
-    if (Test-Path "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\")
+    if (Test-Path "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\" -PathType Container)
     {
         Remove-Item "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\" -Recurse -Force
     }
@@ -59,7 +60,7 @@ try
     dir $TMP_APP_RUNTIME
     dir "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\"
 
-    if (Test-Path "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe")
+    if (Test-Path "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe" -PathType Leaf)
     {
         Remove-Item "$PROJECT_DIR\$APP_RUNTIME\" -Recurse -Force
     }
@@ -71,7 +72,10 @@ try
     dir "$PROJECT_DIR\$APP_RUNTIME\bin\"
     dir "$PROJECT_DIR\$APP_RUNTIME\etc\"
 
-    irm "https://curl.se/ca/cacert.pem" -outfile "$PROJECT_DIR\$APP_RUNTIME\etc\cacert.pem"
+    if (-NOT (Test-Path "$PROJECT_DIR\$APP_RUNTIME\etc\cacert.pem" -PathType Leaf))
+    {
+        irm "https://curl.se/ca/cacert.pem" -outfile "$PROJECT_DIR\$APP_RUNTIME\etc\cacert.pem"
+    }
     dir "$PROJECT_DIR\$APP_RUNTIME\etc\"
 
     # Start-Process -FilePath $Installer -Args "/passive /norestart" -Wait
