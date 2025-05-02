@@ -127,7 +127,7 @@ apc.enable_cli=1
 
     $PHP_INI = "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
     $X_PHP_INI = $PHP_INI.Replace('\', '/')
-    $X_PHP_INI = $PHP_INI.Replace($drive, $cygwin_drive)
+    $X_PHP_INI = $X_PHP_INI.Replace($drive, $cygwin_drive)
     $CYGWIN_PHP_INI = "/cygwin/" + $X_PHP_INI
 
     write-host $PHP_INI
