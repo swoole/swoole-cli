@@ -46,7 +46,10 @@ try
         # Invoke-WebRequest -Uri $APP_DOWNLOAD_URL -OutFile  $FILE
         irm $APP_DOWNLOAD_URL -outfile "$TMP_APP_RUNTIME\$FILE"
     }
-
+    if (Test-Path "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\")
+    {
+        Remove-Item "$TMP_APP_RUNTIME\$APP_NAME-$APP_VERSION-cygwin-x64\" -Recurse -Force
+    }
     Expand-Archive -Path "$TMP_APP_RUNTIME\$FILE" -DestinationPath $TMP_APP_RUNTIME
     #  Microsoft.PowerShell.Archive\Expand-Archive -Path $file -DestinationPath $tempDir -Force
     dir $TMP_APP_RUNTIME
