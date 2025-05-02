@@ -102,8 +102,8 @@ try
     $PHP_INI_DIR = "$PROJECT_DIR\$APP_RUNTIME\etc\"
     $PHP_INI_DIR = $PHP_INI_DIR.Replace('\', '/')
     $PHP_INI_DIR = $PHP_INI_DIR.Replace($drive, $cygwin_drive)
-    $CYGWIN_PHP_INI_DIR = "/cygwin/" + $PHP_INI_DIR
-    $CYGWIN_PHP_INI = "/cygwin/" + $PHP_INI_DIR + "/php.ini"
+    $CYGWIN_PHP_INI_DIR = "/cygdrive/" + $PHP_INI_DIR
+    $CYGWIN_PHP_INI = "/cygdrive/" + $PHP_INI_DIR + "/php.ini"
 
     write-host $CYGWIN_PHP_INI
 
