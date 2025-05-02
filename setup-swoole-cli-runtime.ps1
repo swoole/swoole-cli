@@ -111,8 +111,8 @@ try
 
 
     $template = @"
-curl.cainfo="{0}\cacert.pem"
-openssl.cafile="{0}\cacert.pem"
+curl.cainfo="{0}/cacert.pem"
+openssl.cafile="{0}/cacert.pem"
 swoole.use_shortname=off
 display_errors = On
 error_reporting = E_ALL
