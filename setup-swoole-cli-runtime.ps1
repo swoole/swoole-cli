@@ -105,8 +105,6 @@ try
     $CYGWIN_PHP_INI_DIR = "/cygwin/" + $PHP_INI_DIR
     $CYGWIN_PHP_INI = "/cygwin/" + $PHP_INI_DIR + "/php.ini"
 
-    write-host $PHP_INI
-    write-output $X_PHP_INI
     write-host $CYGWIN_PHP_INI
 
 
