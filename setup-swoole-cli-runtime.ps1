@@ -135,6 +135,9 @@ apc.enable_cli=1
     $template | Set-Content -Path "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
     Get-Content -Path "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
 
+    write-host "$PROJECT_DIR\$APP_RUNTIME\etc\php.ini"
+    write-host $CYGWIN_PHP_INI
+
     Set-Alias php "$PROJECT_DIR\$APP_RUNTIME\bin\swoole-cli.exe -c $CYGWIN_PHP_INI"
     swoole-cli -v
     swoole-cli --ri swoole
