@@ -22,7 +22,8 @@ return function (Preprocessor $p) {
             -DCMAKE_INSTALL_PREFIX={$libexpat_prefix} \
             -DCMAKE_BUILD_TYPE=Release  \
             -DBUILD_SHARED_LIBS=OFF  \
-            -DBUILD_STATIC_LIBS=ON
+            -DBUILD_STATIC_LIBS=ON \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
 
 EOF
