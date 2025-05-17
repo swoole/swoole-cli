@@ -280,8 +280,12 @@ make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
     <?php if ($this->isLinux()) : ?>
-    export CFLAGS="$CFLAGS  -fPIE"
-    export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
+    export CFLAGS="$CFLAGS  "
+    export LDFLAGS="$LDFLAGS  -static -all-static "
+        <?php if($this->getInputOption('with-static-pie')) : ?>
+        export CFLAGS="$CFLAGS  -fPIE"
+        export LDFLAGS="$LDFLAGS -static-pie"
+        <?php endif ;?>
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
@@ -299,6 +303,7 @@ make_build() {
     xattr -cr <?= $this->getWorkDir() ?>/bin/swoole-cli
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php else : ?>
+    ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php endif; ?>
