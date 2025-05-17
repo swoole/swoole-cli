@@ -353,8 +353,12 @@ make_build() {
     cd <?= $this->phpSrcDir . PHP_EOL ?>
     export_variables
     <?php if ($this->isLinux()) : ?>
-    export CFLAGS="$CFLAGS  -fPIE"
-    export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
+    export CFLAGS="$CFLAGS  "
+    export LDFLAGS="$LDFLAGS  -static -all-static "
+        <?php if($this->getInputOption('with-static-pie')) : ?>
+        export CFLAGS="$CFLAGS  -fPIE"
+        export LDFLAGS="$LDFLAGS -static-pie"
+        <?php endif ;?>
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
@@ -372,8 +376,14 @@ make_build() {
     xattr -cr <?= $this->phpSrcDir  ?>/sapi/cli/php
     otool -L <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php else : ?>
+<<<<<<< HEAD
     file <?= $this->phpSrcDir  ?>/sapi/cli/php
     readelf -h <?= $this->phpSrcDir  ?>/sapi/cli/php
+=======
+    ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli
+    file <?= $this->getWorkDir() ?>/bin/swoole-cli
+    readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
+>>>>>>> experiment-feature
 <?php endif; ?>
 
     # make install
