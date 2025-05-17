@@ -41,7 +41,7 @@ try
     if ($proxy -ne '')
     {
         $env:HTTP_PROXY = $proxy
-        $env:HTTPS_PROXY = proxy
+        $env:HTTPS_PROXY = $proxy
     }
     if (-not (Test-Path "$TMP_APP_RUNTIME\$FILE" -PathType Leaf))
     {
