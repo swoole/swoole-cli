@@ -120,7 +120,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php +inotify +apcu +ds +xlswriter +ssh2 +pgsql +uuid
+            php prepare.php --with-static-pie +inotify +apcu +ds +xlswriter +ssh2 +pgsql +uuid
 
             bash make-install-deps.sh
 
