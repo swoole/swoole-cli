@@ -1,6 +1,8 @@
 param(
     [string]
-    $mirror = ''
+    $mirror = '',
+    [string]
+    $proxy = ''
 )
 # with utf8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -36,7 +38,11 @@ try
     {
         $APP_DOWNLOAD_URL = "https://wenda-1252906962.file.myqcloud.com/dist/$APP_NAME-$APP_VERSION-cygwin-x64.zip"
     }
-
+    if ($proxy -ne '')
+    {
+        $env:HTTP_PROXY = $proxy
+        $env:HTTPS_PROXY = proxy
+    }
     if (-not (Test-Path "$TMP_APP_RUNTIME\$FILE" -PathType Leaf))
     {
         if (Get-Command "curl.exe" -ErrorAction SilentlyContinue)
