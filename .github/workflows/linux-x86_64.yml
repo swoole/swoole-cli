@@ -213,6 +213,7 @@ jobs:
           APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')
           echo ${APP_VERSION}
           echo ${APP_VERSION}  > APP_VERSION
+          echo "php-cli"  > APP_NAME
 
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -r "echo PHP_VERSION;"
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
@@ -222,30 +223,33 @@ jobs:
       - name: get app version
         run: |
           APP_VERSION=$(cat ./APP_VERSION)
+          APP_NAME=$(cat ./APP_NAME)
           echo $APP_VERSION
+          echo $APP_NAME
           echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+          echo "APP_NAME=${APP_NAME}" >> $GITHUB_ENV
 
       - name: production artifacts debug
         uses: actions/upload-artifact@v4
         with:
-          name: php-cli-v${{ env.APP_VERSION }}-linux-x64-debug
+          name: ${{ env.APP_NAME }}-v${{ env.APP_VERSION }}-linux-x64-debug
           retention-days: 90
-          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
+          path: ./bin/php-${{ env.APP_VERSION }}/bin/php
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: php-cli-v${{ env.APP_VERSION }}-linux-x64
+          name: ${{ env.APP_NAME }}-v${{ env.APP_VERSION }}-linux-x64
           retention-days: 90
-          path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/dist/php
+          path: ./bin/php-${{ env.APP_VERSION }}/bin/dist/php
 
       - name: gh release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            php-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
-            php-cli-v${{ env.APP_VERSION }}-linux-x64-debug.tar.xz
+            ${{ env.APP_NAME }}-v${{ env.APP_VERSION }}-linux-x64.tar.xz
+            ${{ env.APP_NAME }}-v${{ env.APP_VERSION }}-linux-x64-debug.tar.xz
 
       - name: upload artifacts to cloud object storage
         if: ${{ 0 && (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
