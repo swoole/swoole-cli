@@ -37,3 +37,9 @@ cp -f ${WORK_TEMP_DIR}/php-src/sapi/cli/php.exe ${__PROJECT__}/bin/
 ${__PROJECT__}/bin/php.exe -v
 ${__PROJECT__}/bin/php.exe -m
 ${__PROJECT__}/bin/php.exe --ri swoole
+
+cd ${__PROJECT__}
+APP_VERSION=$(${__PROJECT__}/bin/php.exe -v | awk '{print $2}')
+APP_NAME='php-cli'
+echo "v${APP_VERSION}" >${__PROJECT__}/APP_VERSION
+echo ${APP_NAME} >${__PROJECT__}/APP_NAME

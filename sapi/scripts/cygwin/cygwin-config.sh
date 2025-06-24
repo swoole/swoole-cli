@@ -24,9 +24,6 @@ while [ $# -gt 0 ]; do
   --php-version)
     PHP_VERSION="$2"
     X_PHP_VERSION=$(echo ${PHP_VERSION:0:3})
-    if [ "$X_PHP_VERSION" = "8.4" ]; then
-      OPTIONS+=''
-    fi
     ;;
   --*)
     echo "Illegal option $1"
@@ -44,6 +41,7 @@ cd ${WORK_TEMP_DIR}/php-src/
 # export CFLAGS=""
 # export LDFLAGS="-L/usr/lib"
 
+export ICU_CXXFLAGS=" -std=gnu++17 "
 ./buildconf --force
 test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
@@ -88,6 +86,8 @@ test -f Makefile && make clean
   --with-imagick \
   --with-yaml \
   --with-readline \
+  --with-zip \
+  --with-pgsql \
   ${OPTIONS}
 
 #  --with-pdo-pgsql \

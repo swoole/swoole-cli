@@ -33,9 +33,9 @@ if not (%1)==() goto getopt
 
 :: curl.exe -fSLo msys2-x86_64-20241208.exe https://repo.msys2.org/distrib/x86_64/msys2-x86_64-20241208.exe
 :: curl.exe -fSLo msys2-x86_64-20241208.exe https://mirror.msys2.org/distrib/x86_64/msys2-x86_64-20241208.exe
-curl.exe -fSLo msys2-x86_64-20241208.exe %SITE%/distrib/x86_64/msys2-x86_64-20241208.exe
+curl.exe -fSLo msys2-x86_64-20250221.exe %SITE%/distrib/x86_64/msys2-x86_64-20250221.exe
 
-copy .\msys2-x86_64-20241208.exe %__PROJECT__%\msys2-x86_64.exe
+copy .\msys2-x86_64-20250221.exe %__PROJECT__%\msys2-x86_64.exe
 
 
 endlocal

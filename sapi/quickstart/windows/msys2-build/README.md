@@ -43,5 +43,6 @@ c:\msys64\ucrt64.exe
     https://www.msys2.org/dev/mirrors/
     https://www.msys2.org/docs/environments/
     # MSYS2 包搜索
-    https://packages.msys2.org/queue
+    https://packages.msys2.org/search?t=binpkg
+
 
