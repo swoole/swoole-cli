@@ -45,10 +45,12 @@ cd ${__PROJECT__}
 # https://github.com/php/php-src/blob/php-8.1.27/win32/build/confutils.js#L3227
 # export LDFLAGS="-L/usr/lib"
 
-export CXXFLAGS="-std=gnu++14"
+# export CXXFLAGS="-std=gnu++14"
+export ICU_CXXFLAGS=" -std=gnu++17 "
 
 ./buildconf --force
 test -f Makefile && make clean
+./configure --help
 ./configure --prefix=/usr --disable-all \
   \
   --disable-fiber-asm \
@@ -90,6 +92,7 @@ test -f Makefile && make clean
   --with-sodium \
   --enable-mbstring \
   --with-pgsql \
+  --enable-intl \
   ${OPTIONS}
 
 #  --enable-intl \

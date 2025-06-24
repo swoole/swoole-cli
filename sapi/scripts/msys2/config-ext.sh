@@ -13,7 +13,7 @@ cd ${__PROJECT__}
 
 PHP_VERSION=""
 SWOOLE_VERSION='v6.0.0'
-SWOOLE_VERSION='fix-bug-cpu-set-to-array'
+SWOOLE_VERSION='master'
 X_PHP_VERSION=${PHP_VERSION}
 
 while [ $# -gt 0 ]; do
@@ -77,7 +77,7 @@ download_and_extract "imagick" ${IMAGICK_VERSION}
 
 if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
   test -d ${WORK_TEMP_DIR}/swoole && rm -rf ${WORK_TEMP_DIR}/swoole
-  git clone -b ${SWOOLE_VERSION} https://github.com/jingjingxyk/swoole-src.git ${WORK_TEMP_DIR}/swoole
+  git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git ${WORK_TEMP_DIR}/swoole
   cd ${WORK_TEMP_DIR}/swoole
   tar -czvf ${EXT_TEMP_CACHE_DIR}/swoole-${SWOOLE_VERSION}.tgz .
   mv ${EXT_TEMP_CACHE_DIR}/swoole-${SWOOLE_VERSION}.tgz ${__PROJECT__}/pool/ext

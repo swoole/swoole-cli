@@ -17,8 +17,6 @@ cd ${__PROJECT__}
 
 mkdir -p bin/.libs
 
-export CXXFLAGS="-std=gnu++14"
-
 LOGICAL_PROCESSORS=$(nproc)
 make -j $LOGICAL_PROCESSORS
 
