@@ -53,6 +53,7 @@ download_and_extract "redis" ${REDIS_VERSION}
 download_and_extract "yaml" ${YAML_VERSION}
 download_and_extract "imagick" ${IMAGICK_VERSION}
 
+cd ${__PROJECT__}/pool/ext
 # with git clone swoole source code
 if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
   test -d ${WORK_TEMP_DIR}/swoole && rm -rf ${WORK_TEMP_DIR}/swoole
@@ -76,7 +77,7 @@ done
 cd ${__PROJECT__}
 # copy extension
 # cp -rf var/cygwin-build/ext/* ext/
-cp -rf ${WORK_TEMP_DIR}/ext/* ${__PROJECT__}/ext/
+cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
 
 # extension hook
 
