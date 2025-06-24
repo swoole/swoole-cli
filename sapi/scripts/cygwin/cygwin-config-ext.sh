@@ -63,14 +63,12 @@ if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
   cd ${__PROJECT__}/pool/ext
 fi
 mkdir -p ${WORK_TEMP_DIR}/ext/swoole/
-tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf swoole-${SWOOLE_VERSION}.tgz
-
+tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
 
 cd ${__PROJECT__}
 # clean extension folder
 NO_BUILT_IN_EXTENSIONS=$(ls ${WORK_TEMP_DIR}/ext/)
-for EXT_NAME in $NO_BUILT_IN_EXTENSIONS
-do
+for EXT_NAME in $NO_BUILT_IN_EXTENSIONS; do
   echo "EXTENSION_NAME: $EXT_NAME "
   test -d ${__PROJECT__}/ext/${EXT_NAME} && rm -rf ${__PROJECT__}/ext/${EXT_NAME}
 done
@@ -81,6 +79,5 @@ cd ${__PROJECT__}
 cp -rf ${WORK_TEMP_DIR}/ext/* ${__PROJECT__}/ext/
 
 # extension hook
-
 
 cd ${__PROJECT__}
