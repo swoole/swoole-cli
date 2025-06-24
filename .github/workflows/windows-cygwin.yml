@@ -123,10 +123,13 @@ jobs:
         run: |
           ./bin/php.exe -v
           ./bin/php.exe -m
-          ./bin/php.exe --ri mongodb
-          ./bin/php.exe --ri gd
+          ./bin/php.exe --ri curl
+          ./bin/php.exe --ri openssl
           ./bin/php.exe --ri swoole
+          ./bin/php.exe --ri zip
+          ./bin/php.exe --ri gd
           ./bin/php.exe  -r "echo PHP_VERSION;"
+          ./bin/php.exe  -r "echo getcwd();"
           ldd ./bin/php.exe
 
       - name: get app version with bash
