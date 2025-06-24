@@ -83,6 +83,15 @@ jobs:
         run: |
           bash ./sapi/scripts/msys2/archive.sh
 
+      - name: Show Build Result
+        shell: msys2 {0}
+        run: |
+          ./bin/swoole-cli.exe -v
+          ./bin/swoole-cli.exe -m
+          ./bin/swoole-cli.exe --ri swoole
+          ./bin/swoole-cli.exe -r "echo PHP_VERSION;"
+          ldd ./bin/swoole-cli.exe
+
       - name: get app version with bash
         shell: msys2 {0}
         run: |

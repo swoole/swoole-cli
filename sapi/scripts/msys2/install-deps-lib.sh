@@ -11,3 +11,6 @@ __PROJECT__=$(
 )
 cd ${__DIR__}
 bash install-libzip.sh
+bash install-libsodium.sh
+bash install-liboniguruma.sh
+bash install-libpq.sh

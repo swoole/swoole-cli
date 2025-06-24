@@ -14,18 +14,18 @@ mkdir -p pool/lib/
 WORK_TEMP_DIR=${__PROJECT__}/var/msys2-build/
 mkdir -p ${WORK_TEMP_DIR}
 
-LIBZIP_VERSION=1.11.4
+VERSION=1.11.4
 
-download_zip() {
+download() {
   # document https://libzip.org/download/
-  curl -fSLo ${__PROJECT__}/pool/lib/libzip-${LIBZIP_VERSION}.tar.gz https://github.com/nih-at/libzip/releases/download/v${LIBZIP_VERSION}/libzip-${LIBZIP_VERSION}.tar.gz
+  curl -fSLo ${__PROJECT__}/pool/lib/libzip-${VERSION}.tar.gz https://github.com/nih-at/libzip/releases/download/v${LIBZIP_VERSION}/libzip-${VERSION}.tar.gz
 }
 
-build_libzip() {
+build() {
 
   cd ${WORK_TEMP_DIR}
-  tar xvf ${__PROJECT__}/pool/lib/libzip-${LIBZIP_VERSION}.tar.gz
-  cd libzip-${LIBZIP_VERSION}
+  tar xvf ${__PROJECT__}/pool/lib/libzip-${VERSION}.tar.gz
+  cd libzip-${VERSION}
 
   mkdir -p build
   cd build
@@ -57,6 +57,6 @@ build_libzip() {
 }
 
 cd ${__PROJECT__}
-test -f ${__PROJECT__}/pool/lib/libzip-${LIBZIP_VERSION}.tar.gz || download_zip
+test -f ${__PROJECT__}/pool/lib/libzip-${VERSION}.tar.gz || download
 
-build_libzip
+build

@@ -36,6 +36,9 @@ cp -f ${__PROJECT__}/bin/swoole-cli.exe /tmp/${NAME}/bin/
 
 cp -rL /etc/pki/ /tmp/${NAME}/etc/
 
+cd /tmp/${NAME}/etc/
+test -f cacert.pem || curl -LSo cacert.pem https://curl.se/ca/cacert.pem
+
 cd /tmp/${NAME}/
 
 test -f ${__PROJECT__}/${NAME}.zip && rm -f ${__PROJECT__}/${NAME}.zip
@@ -44,4 +47,3 @@ zip -r ${__PROJECT__}/${NAME}.zip .
 ls -lha ${__PROJECT__}/${NAME}.zip
 
 cd ${__PROJECT__}
-

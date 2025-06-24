@@ -80,13 +80,16 @@ test -f Makefile && make clean
   --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
   --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
   --enable-swoole-sqlite \
-  --enable-swoole-thread \
+  --enable-swoole-pgsql \
   --enable-redis \
   --enable-opcache \
   --disable-opcache-jit \
   --with-yaml \
   --with-readline \
   --with-zip \
+  --with-sodium \
+  --enable-mbstring \
+  --with-pgsql \
   ${OPTIONS}
 
 #  --enable-intl \

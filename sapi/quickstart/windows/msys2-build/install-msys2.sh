@@ -65,11 +65,13 @@ pacman -S --noconfirm libssh2-devel libidn2-devel gettext-devel
 pacman -S --noconfirm libzstd-devel
 pacman -S --noconfirm libsqlite-devel libsqlite
 pacman -S --noconfirm gmp-devel
-pacman -S --noconfirm libintl intltool
 pacman -S --noconfirm brotli-devel
 pacman -S --noconfirm pcre pcre2
 pacman -S --noconfirm icu
 pacman -S --noconfirm icu-devel
+pacman -S --noconfirm gettext-devel
+pacman -S --noconfirm libintl
+pacman -S --noconfirm flex
 
 : <<EOF
 # 不存在的包
