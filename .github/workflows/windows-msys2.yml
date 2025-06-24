@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+env:
+  BUILD_PHP_VERSION: 8.2.28
+
 jobs:
   windows-msys2:
     if: 1
@@ -59,6 +62,11 @@ jobs:
         with:
           msystem: MSYS
           location: C:\msys2-packages
+
+      - name: set php version
+        shell: msys2 {0}
+        run: |
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
       - name: prepare build environment
         shell: msys2 {0}
