@@ -24,9 +24,6 @@ while [ $# -gt 0 ]; do
   --php-version)
     PHP_VERSION="$2"
     X_PHP_VERSION=$(echo ${PHP_VERSION:0:3})
-    if [ "$X_PHP_VERSION" = "8.4" ]; then
-      OPTIONS+=''
-    fi
     ;;
   --*)
     echo "Illegal option $1"
@@ -45,8 +42,12 @@ cd ${WORK_TEMP_DIR}/php-src/
 # https://github.com/php/php-src/blob/php-8.1.27/win32/build/confutils.js#L3227
 # export LDFLAGS="-L/usr/lib"
 
+# export CXXFLAGS="-std=gnu++14"
+export ICU_CXXFLAGS=" -std=gnu++17 "
+
 ./buildconf --force
 test -f Makefile && make clean
+./configure --help
 ./configure --prefix=/usr --disable-all \
   \
   --disable-fiber-asm \
@@ -54,7 +55,6 @@ test -f Makefile && make clean
   --with-openssl --enable-openssl \
   --with-curl \
   --with-iconv \
-  --enable-intl \
   --with-bz2 \
   --enable-bcmath \
   --enable-filter \
@@ -79,13 +79,20 @@ test -f Makefile && make clean
   --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
   --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
   --enable-swoole-sqlite \
+  --enable-swoole-pgsql \
   --enable-redis \
   --enable-opcache \
   --disable-opcache-jit \
   --with-yaml \
   --with-readline \
+  --with-zip \
+  --with-sodium \
+  --enable-mbstring \
+  --with-pgsql \
+  --enable-intl \
   ${OPTIONS}
 
+#  --enable-intl \
 #  --with-sodium \
 #  --enable-swoole-pgsql \
 #  --enable-mbstring \ 需要 oniguruma
@@ -95,5 +102,5 @@ test -f Makefile && make clean
 #  --with-pgsql
 #  --with-pdo-sqlite \
 #  --with-zip   #  cygwin libzip-devel 版本库暂不支持函数 zip_encryption_method_supported （2020年新增函数)
-# --enable-zts
-# --disable-opcache-jit
+#  --enable-zts
+#  --disable-opcache-jit

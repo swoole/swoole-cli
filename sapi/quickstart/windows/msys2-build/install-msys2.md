@@ -10,13 +10,13 @@
 
 > https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20230526.exe (支持 win7 的最后一版本)
 
-> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20240507.exe
+> https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/msys2-x86_64-20250221.exe
 
 > 安装 msys2
 
 > 开始菜单，打开 MSYS2 MSYS 控制台，并安装必要的包,命令如下
 
-> MSYS2 包搜索 https://packages.msys2.org/queue
+> MSYS2 包搜索 https://packages.msys2.org/search?t=binpkg
 
 > [ msys2 各版本环境 区别 ](https://www.msys2.org/docs/environments/)
 
