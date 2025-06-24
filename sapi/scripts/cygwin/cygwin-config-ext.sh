@@ -104,8 +104,10 @@ tar --strip-components=1 -C ${WORK_TEMP_DIR}/php-src -xf php-${PHP_VERSION}.tar.
 
 cd ${__PROJECT__}
 # copy extension
-cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
-cp -rf ${__PROJECT__}/ext/. ${WORK_TEMP_DIR}/php-src/ext/
+# cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
+# cp -rf ${__PROJECT__}/ext/. ${WORK_TEMP_DIR}/php-src/ext/
+# cp -rf ${__PROJECT__}/ext/. ${WORK_TEMP_DIR}/php-src/ext/
+cp -rf ${WORK_TEMP_DIR}/ext/. ${WORK_TEMP_DIR}/php-src/ext/
 
 # extension hook
 if [ "$X_PHP_VERSION" = "8.4" ]; then
