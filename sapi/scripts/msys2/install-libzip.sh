@@ -18,7 +18,7 @@ VERSION=1.11.4
 
 download() {
   # document https://libzip.org/download/
-  curl -fSLo ${__PROJECT__}/pool/lib/libzip-${VERSION}.tar.gz https://github.com/nih-at/libzip/releases/download/v${LIBZIP_VERSION}/libzip-${VERSION}.tar.gz
+  curl -fSLo ${__PROJECT__}/pool/lib/libzip-${VERSION}.tar.gz https://github.com/nih-at/libzip/releases/download/v${VERSION}/libzip-${VERSION}.tar.gz
 }
 
 build() {
