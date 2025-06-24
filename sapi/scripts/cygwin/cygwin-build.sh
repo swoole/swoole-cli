@@ -31,3 +31,9 @@ set -u
 ./bin/swoole-cli -v
 ./bin/swoole-cli -m
 ./bin/swoole-cli --ri swoole
+
+cd ${__PROJECT__}
+APP_VERSION=$(./bin/swoole-cli -v | awk '{print $2}')
+APP_NAME='swoole-cli'
+echo "v${APP_VERSION}" >${__PROJECT__}/APP_VERSION
+echo ${APP_NAME} >${__PROJECT__}/APP_NAME
