@@ -79,7 +79,7 @@ pacman -S --noconfirm flex
 pacman -S --noconfirm ImageMagick libpng-devel libjpeg-devel libfreetype-devel libwebp-devel libsqlite3-devel
 pacman -S --noconfirm libzip-devel  libonig-devel libsodium-devel
 pacman -S --noconfirm libMagick-devel  libbrotli-devel libintl-devel
-pacman -S --noconfirm libpq-devel libpq-devel
+pacman -S --noconfirm libpq-devel
 
 
 # msys 环境下 可以安装 re2c
