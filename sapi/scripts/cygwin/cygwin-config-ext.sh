@@ -64,7 +64,7 @@ done
 cd ${__PROJECT__}
 # copy extension
 # cp -rf var/cygwin-build/ext/* ext/
-cp -rf ${WORK_TEMP_DIR}/ext/* ${__PROJECT__}/ext/
+cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
 
 # extension hook
 
