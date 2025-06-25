@@ -108,7 +108,7 @@ jobs:
           ./bin/php.exe --ri swoole
           ./bin/php.exe --ri zip
           ./bin/php.exe -r "echo PHP_VERSION;"
-          ./bin/php.exe -r "echo getcwd();"
+          ./bin/php.exe  -r "echo getcwd();echo PHP_EOL;"
           ldd ./bin/php.exe
 
       - name: get app version with bash

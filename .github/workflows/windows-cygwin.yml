@@ -94,15 +94,14 @@ jobs:
           bash ./sapi/scripts/cygwin/install-re2c.sh
 
       - name: install deps lib with source code
-        if: 0
+        if: 1
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
-          bash ./sapi/scripts/msys2/install-libzip.sh
+          bash sapi/scripts/msys2/install-libzip.sh
 
       - name: Prepare
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
-          # git config --global --add safe.directory /cygdrive/d/a/swoole-cli/swoole-cli
           bash ./sapi/scripts/cygwin/cygwin-config-ext.sh --php-version ${{ env.BUILD_PHP_VERSION }} --swoole-version master
 
       - name: Configure
@@ -129,7 +128,7 @@ jobs:
           ./bin/php.exe --ri zip
           ./bin/php.exe --ri gd
           ./bin/php.exe  -r "echo PHP_VERSION;"
-          ./bin/php.exe  -r "echo getcwd();"
+          ./bin/php.exe  -r "echo getcwd();echo PHP_EOL;"
           ldd ./bin/php.exe
 
       - name: get app version with bash

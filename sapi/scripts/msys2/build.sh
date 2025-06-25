@@ -31,7 +31,7 @@ ${__PROJECT__}/bin/php.exe -m
 ${__PROJECT__}/bin/php.exe --ri swoole
 ${__PROJECT__}/bin/php.exe -v | awk '{print $2}'
 
-APP_VERSION=$(${__PROJECT__}/bin/php.exe -v | awk '{print $2}')
+APP_VERSION=$(${__PROJECT__}/bin/php.exe -v | awk 'NR==1{print $2}')
 APP_NAME='php-cli'
 echo "v${APP_VERSION}" >${__PROJECT__}/APP_VERSION
 echo ${APP_NAME} >${__PROJECT__}/APP_NAME
