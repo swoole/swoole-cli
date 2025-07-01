@@ -732,6 +732,7 @@ class Preprocessor
         $this->mkdirIfNotExists($this->libraryDir, 0777, true);
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
+
         $extAvailable = [];
         $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailable);
 

@@ -55,7 +55,7 @@ return function (Preprocessor $p) {
         if [ -f "ext/swoole/CMakeLists.txt" ] ;then
             CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
             if [[ "${CURRENT_SWOOLE_VERSION}" =~ "-dev" ]]; then
-                echo 'swoole vesion master'
+                echo 'swoole version master'
             fi
         fi
 
@@ -70,7 +70,7 @@ return function (Preprocessor $p) {
             mkdir -p ${WORKDIR}/ext/swoole/
             tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
         fi
-
+        # swoole extension hook
 EOF;
 
         return $shell;
