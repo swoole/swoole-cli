@@ -17,14 +17,20 @@ LOGICAL_PROCESSORS=$(nproc)
 
 set +u
 if [ -n "${GITHUB_ACTION}" ]; then
-    if test $LOGICAL_PROCESSORS -ge 4; then
-      LOGICAL_PROCESSORS=$((LOGICAL_PROCESSORS - 2))
-    fi
-    make
-    # make -j $LOGICAL_PROCESSORS
+  if test $LOGICAL_PROCESSORS -ge 4; then
+    LOGICAL_PROCESSORS=$((LOGICAL_PROCESSORS - 2))
+  fi
+  make
+  # make -j $LOGICAL_PROCESSORS
 else
   make -j $LOGICAL_PROCESSORS
 fi
 set -u
 
 ./bin/swoole-cli -v
+
+cd ${__PROJECT__}
+APP_VERSION=$(./bin/swoole-cli -v | awk '{print $2}')
+APP_NAME='swoole-cli'
+echo "v${APP_VERSION}" >${__PROJECT__}/APP_VERSION
+echo ${APP_NAME} >${__PROJECT__}/APP_NAME
