@@ -53,6 +53,18 @@ download_and_extract "redis" ${REDIS_VERSION}
 download_and_extract "yaml" ${YAML_VERSION}
 download_and_extract "imagick" ${IMAGICK_VERSION}
 
+cd ${__PROJECT__}/pool/ext
+if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
+  test -d ${WORK_TEMP_DIR}/swoole && rm -rf ${WORK_TEMP_DIR}/swoole
+  git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git ${WORK_TEMP_DIR}/swoole
+  cd ${WORK_TEMP_DIR}/swoole
+  tar -czvf ${EXT_TEMP_CACHE_DIR}/swoole-${SWOOLE_VERSION}.tgz .
+  mv ${EXT_TEMP_CACHE_DIR}/swoole-${SWOOLE_VERSION}.tgz ${__PROJECT__}/pool/ext
+  cd ${__PROJECT__}/pool/ext
+fi
+mkdir -p ${WORK_TEMP_DIR}/ext/swoole/
+tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf swoole-${SWOOLE_VERSION}.tgz
+
 cd ${__PROJECT__}
 # clean extension folder
 NO_BUILT_IN_EXTENSIONS=$(ls ${WORK_TEMP_DIR}/ext/)
