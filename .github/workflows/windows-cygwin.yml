@@ -16,6 +16,7 @@ jobs:
           systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
           systeminfo | findstr /B /C:"Manufacturer" /C:"Product" /C:"Version"
           set
+          ifconfig
 
       - name: Prepare git
         run: |
@@ -23,7 +24,6 @@ jobs:
           git config --global core.eol lf
           git config --global core.ignorecase false
           git config --global --add safe.directory ${{ github.workspace }}
-          ipconfig
 
       - uses: actions/checkout@v4
       - name: Prepare submodule
@@ -76,7 +76,6 @@ jobs:
           bash ./sapi/scripts/cygwin/install-re2c.sh
 
       - name: install deps lib with source code
-        if: 0
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/msys2/install-libzip.sh
