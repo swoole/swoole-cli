@@ -99,9 +99,11 @@ php -v
 ## 生成构建脚本
 
 ```shell
+
 composer install
 php prepare.php
 php prepare.php +inotify +mongodb -mysqli
+
 ```
 
 * 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
