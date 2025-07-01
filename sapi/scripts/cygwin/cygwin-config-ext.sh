@@ -15,6 +15,7 @@ REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 
 mkdir -p pool/ext
 mkdir -p pool/lib
@@ -55,8 +56,7 @@ download_and_extract "imagick" ${IMAGICK_VERSION}
 cd ${__PROJECT__}
 # clean extension folder
 NO_BUILT_IN_EXTENSIONS=$(ls ${WORK_TEMP_DIR}/ext/)
-for EXT_NAME in $NO_BUILT_IN_EXTENSIONS
-do
+for EXT_NAME in $NO_BUILT_IN_EXTENSIONS; do
   echo "EXTENSION_NAME: $EXT_NAME "
   test -d ${__PROJECT__}/ext/${EXT_NAME} && rm -rf ${__PROJECT__}/ext/${EXT_NAME}
 done
@@ -67,6 +67,5 @@ cd ${__PROJECT__}
 cp -rf ${WORK_TEMP_DIR}/ext/* ${__PROJECT__}/ext/
 
 # extension hook
-
 
 cd ${__PROJECT__}
