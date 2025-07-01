@@ -2,6 +2,7 @@
 
 :: cygwin site: https://cygwin.com/
 :: start https://cygwin.com/setup-x86_64.exe
+:: search package https://cygwin.com/cgi-bin2/package-grep.cgi
 
 setlocal enableextensions enabledelayedexpansion
 
@@ -35,11 +36,23 @@ if defined GITHUB_ACTIONS (
 )
 
 :: package  separate with commas
-set "PACKAGES=make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake,openssl,libpcre2-devel,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel,libgmp-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel,libsqlite3-devel,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel,libMagick-devel,libzstd-devel,libbrotli-devel,libreadline-devel,libintl-devel,libpq-devel,libssh2-devel,libidn2-devel,gettext-devel,coreutils"
-set "PACKAGES=%PACKAGES%,zip,unzip"
+set "PACKAGES=make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake"
+set "PACKAGES=%PACKAGES%,cmake,openssl,binutils"
+set "PACKAGES=%PACKAGES%,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel"
+set "PACKAGES=%PACKAGES%,libssh2-devel,libidn2-devel"
+set "PACKAGES=%PACKAGES%,libgmp-devel,libsqlite3-devel,libpcre-devel,libpcre2-devel"
+set "PACKAGES=%PACKAGES%,libMagick-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel"
+set "PACKAGES=%PACKAGES%,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel"
+set "PACKAGES=%PACKAGES%,libzstd-devel,libbrotli-devel"
+set "PACKAGES=%PACKAGES%,zip,unzip,xz"
+set "PACKAGES=%PACKAGES%,libreadline-devel,libicu-devel,libonig-devel,libcares-devel,libsodium-devel,libyaml-devel"
+set "PACKAGES=%PACKAGES%,libintl-devel,gettext-devel"
 set "PACKAGES=%PACKAGES%,libpq5,libpq-devel"
-set "PACKAGES=%PACKAGES%,libzstd-devel"
+set "PACKAGES=%PACKAGES%,flex"
 set "PACKAGES=%PACKAGES%,cygwin-devel,libnet6-devel"
+set "PACKAGES=%PACKAGES%,libwrap-devel"
+set "PACKAGES=%PACKAGES%,libedit-devel"
+
 
 set "OPTIONS=%OPTIONS% --packages %PACKAGES%"
 echo %OPTIONS%
