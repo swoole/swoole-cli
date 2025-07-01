@@ -16,7 +16,7 @@ jobs:
           systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
           systeminfo | findstr /B /C:"Manufacturer" /C:"Product" /C:"Version"
           set
-          ifconfig
+          ipconfig
 
       - name: Prepare git
         run: |
