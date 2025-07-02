@@ -113,7 +113,7 @@ jobs:
           mkdir -p pool/ext
           mkdir -p bin/
           mkdir -p runtime/
-          if [ ! -f runtime/php ] ; then
+          if [ ! -f runtime/php/php ] ; then
               bash  setup-php-runtime.sh
           fi
 
@@ -134,8 +134,8 @@ jobs:
           run: |
             set -eux
             uname -m
-            export PATH=/work/runtime:$PATH  # 容器已经内置 php 和 composer
-            alias php="php -d curl.cainfo=/work/runtime/cacert.pem -d openssl.cafile=/work/runtime/cacert.pem"
+            export PATH=/work/runtime/php:$PATH  # 容器已经内置 php 和 composer
+            alias php="php -d curl.cainfo=/work/runtime/php/cacert.pem -d openssl.cafile=/work/runtime/php/cacert.pem"
 
             # bash sapi/quickstart/mark-install-library-cached.sh
 

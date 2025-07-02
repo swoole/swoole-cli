@@ -11,9 +11,16 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+PHP_VERSION=""
 SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
+X_PHP_VERSION=${PHP_VERSION}
+
 while [ $# -gt 0 ]; do
   case "$1" in
+  --php-version)
+    PHP_VERSION="$2"
+    X_PHP_VERSION=$(echo ${PHP_VERSION:0:3})
+    ;;
   --swoole-version)
     SWOOLE_VERSION="$2"
     ;;
@@ -23,23 +30,24 @@ while [ $# -gt 0 ]; do
   esac
   shift $(($# > 0 ? 1 : 0))
 done
-PHP_VERSION=$(cat ${__PROJECT__}/sapi/PHP-VERSION.conf)
 
-REDIS_VERSION=5.3.7
-MONGODB_VERSION=1.14.2
+REDIS_VERSION=6.1.0
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+PHP_VERSION=$(awk 'NR==1' ${__PROJECT__}/sapi/PHP-VERSION.conf)
 
 mkdir -p pool/ext
 mkdir -p pool/lib
 mkdir -p pool/php-tar
 
-WORK_TEMP_DIR=${__PROJECT__}/var/cygwin-build/
+WORK_TEMP_DIR=${__PROJECT__}/var/msys2-build/
 EXT_TEMP_CACHE_DIR=${WORK_TEMP_DIR}/pool/ext/
 mkdir -p ${WORK_TEMP_DIR}
 mkdir -p ${EXT_TEMP_CACHE_DIR}
 test -d ${WORK_TEMP_DIR}/ext/ && rm -rf ${WORK_TEMP_DIR}/ext/
 mkdir -p ${WORK_TEMP_DIR}/ext/
+
+cd ${__PROJECT__}/pool/ext
 
 download_and_extract() {
   local EXT_NAME=$1
@@ -67,7 +75,6 @@ download_and_extract "yaml" ${YAML_VERSION}
 download_and_extract "imagick" ${IMAGICK_VERSION}
 
 cd ${__PROJECT__}/pool/ext
-# with git clone swoole source code
 if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
   test -d ${WORK_TEMP_DIR}/swoole && rm -rf ${WORK_TEMP_DIR}/swoole
   git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git ${WORK_TEMP_DIR}/swoole
@@ -77,7 +84,7 @@ if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
   cd ${__PROJECT__}/pool/ext
 fi
 mkdir -p ${WORK_TEMP_DIR}/ext/swoole/
-tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf swoole-${SWOOLE_VERSION}.tgz
 
 cd ${__PROJECT__}
 # clean extension folder
@@ -92,17 +99,20 @@ cd ${__PROJECT__}/pool/php-tar
 if [ ! -f php-${PHP_VERSION}.tar.gz ]; then
   curl -fSLo php-${PHP_VERSION}.tar.gz https://github.com/php/php-src/archive/refs/tags/php-${PHP_VERSION}.tar.gz
 fi
+
 test -d ${WORK_TEMP_DIR}/php-src && rm -rf ${WORK_TEMP_DIR}/php-src
 mkdir -p ${WORK_TEMP_DIR}/php-src
 tar --strip-components=1 -C ${WORK_TEMP_DIR}/php-src -xf php-${PHP_VERSION}.tar.gz
 
 cd ${__PROJECT__}
 # copy extension
-# cp -rf var/cygwin-build/ext/* ext/
+# cp -rf var/msys2-build/ext/* ext/
 cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
 mkdir -p ${__PROJECT__}/ext/pgsql/
 cp -rf ${WORK_TEMP_DIR}/php-src/ext/pgsql/. ${__PROJECT__}/ext/pgsql/
 
 # extension hook
+
+# php source code hook
 
 cd ${__PROJECT__}
