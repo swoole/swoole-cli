@@ -15,8 +15,11 @@ return function (Preprocessor $p) {
     // swoole 支持计划 https://wiki.swoole.com/zh-cn/#/version/supported?id=%e6%94%af%e6%8c%81%e8%ae%a1%e5%88%92
 
     $swoole_tag = 'v6.0.2';
-    $file = "swoole-{$swoole_tag}.tar.gz";
 
+    $file = new SplFileObject(realpath(__DIR__ . '/../../../../sapi/SWOOLE-VERSION.conf'));
+    $swoole_tag = trim($file->current());
+
+    $file = "swoole-{$swoole_tag}.tar.gz";
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
 
     if ($p->getBuildType() === 'debug') {
@@ -70,7 +73,7 @@ EOF
     $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
         $cmd = '';
         if ($p->isMacos()) {
-            $workDir = $p->getPhpSrcDir() ;
+            $workDir = $p->getPhpSrcDir();
             $cmd = <<<EOF
         cd {$workDir}/
         sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
@@ -102,4 +105,37 @@ EOF;
 
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
+    /*
+        $p->withBeforeConfigureScript('swoole', function () use ($p) {
+            $workDir = $p->getWorkDir();
+            $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
+            $shell .= <<<'EOF'
+
+            SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
+            CURRENT_SWOOLE_VERSION=''
+
+            if [ -f "ext/swoole/CMakeLists.txt" ] ;then
+                CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
+                if [[ "${CURRENT_SWOOLE_VERSION}" =~ "-dev" ]]; then
+                    echo 'swoole version master'
+                fi
+            fi
+
+            if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
+                test -d ext/swoole && rm -rf ext/swoole
+                if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
+                    test -d /tmp/swoole && rm -rf /tmp/swoole
+                    git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
+                    cd  /tmp/swoole
+                    tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
+                fi
+                mkdir -p ${WORKDIR}/ext/swoole/
+                tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+            fi
+            # swoole extension hook
+    EOF;
+
+            return $shell;
+        });
+    */
 };
