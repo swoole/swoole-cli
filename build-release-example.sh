@@ -137,7 +137,7 @@ if [ "$OS" = 'macos' ]; then
 
 fi
 
-if [ ! -f "${__PROJECT__}/runtime/php" ]; then
+if [ ! -f "${__PROJECT__}/runtime/php/php" ]; then
   if [ "$MIRROR" = 'china' ]; then
     bash ${__PROJECT__}/setup-php-runtime.sh --mirror china
   else
@@ -145,8 +145,8 @@ if [ ! -f "${__PROJECT__}/runtime/php" ]; then
   fi
 fi
 
-export PATH="${__PROJECT__}/runtime:$PATH"
-alias php="php -d curl.cainfo=${__PROJECT__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/cacert.pem"
+export PATH="${__PROJECT__}/runtime/php/:$PATH"
+alias php="php -d curl.cainfo=${__PROJECT__}/runtime/php/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/php/cacert.pem"
 
 php -v
 
@@ -170,6 +170,7 @@ fi
 
 # 可用配置参数
 # --with-swoole-pgsql=1
+# --with-libavif=1
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
