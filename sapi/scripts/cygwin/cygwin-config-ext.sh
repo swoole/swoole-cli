@@ -11,7 +11,7 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-SWOOLE_VERSION=v6.0.1
+SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 while [ $# -gt 0 ]; do
   case "$1" in
   --swoole-version)
