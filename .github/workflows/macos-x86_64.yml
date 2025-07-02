@@ -98,8 +98,8 @@ jobs:
 
       - name: prepare
         run: |
-          export PATH=${{ github.workspace }}/runtime:$PATH
-          alias php="php -d curl.cainfo=${{ github.workspace }}/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/runtime/cacert.pem"
+          export PATH=${{ github.workspace }}/runtime/php/:$PATH
+          alias php="php -d curl.cainfo=${{ github.workspace }}/runtime/php/cacert.pem -d openssl.cafile=${{ github.workspace }}/runtime/php/cacert.pem"
 
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
@@ -108,7 +108,7 @@ jobs:
 
       - name: Build
         run: |
-          export PATH=${{ github.workspace }}/runtime:$PATH
+          export PATH=${{ github.workspace }}/runtime/php/:$PATH
 
           bash ./make.sh all-library
 
