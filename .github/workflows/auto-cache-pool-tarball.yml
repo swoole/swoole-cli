@@ -72,13 +72,13 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p runtime/
-          if [ ! -f runtime/php ] ; then
+          if [ ! -f runtime/php/php ] ; then
               bash  setup-php-runtime.sh
           fi
 
           WORK_DIR=${{ github.workspace }}
-          export PATH=${WORK_DIR}/runtime/:$PATH
-          alias php="php -d curl.cainfo=${WORK_DIR}/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/runtime/cacert.pem"
+          export PATH=${WORK_DIR}/runtime/php/:$PATH
+          alias php="php -d curl.cainfo=${WORK_DIR}/runtime/php/cacert.pem -d openssl.cafile=${WORK_DIR}/runtime/php/cacert.pem"
 
           composer install  --no-interaction --no-autoloader --no-scripts --profile  --no-dev
           composer dump-autoload --optimize --profile --no-dev
