@@ -4,7 +4,10 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $swoole_tag = 'v6.0.1';
+    $file = new SplFileObject($p->getWorkDir() . '/sapi/SWOOLE-VERSION.conf');
+
+    $swoole_tag = $file->current();
+    // $swoole_tag = 'v6.0.1';
     $file = "swoole-{$swoole_tag}.tar.gz";
 
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
@@ -99,36 +102,37 @@ EOF;
 
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
+    /*
+        $p->withBeforeConfigureScript('swoole', function () use ($p) {
+            $workDir = $p->getWorkDir();
+            $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
+            $shell .= <<<'EOF'
 
-    $p->withBeforeConfigureScript('swoole', function () use ($p) {
-        $workDir = $p->getWorkDir();
-        $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
-        $shell .= <<<'EOF'
+            SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
+            CURRENT_SWOOLE_VERSION=''
 
-        SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
-        CURRENT_SWOOLE_VERSION=''
-
-        if [ -f "ext/swoole/CMakeLists.txt" ] ;then
-            CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
-            if [[ "${CURRENT_SWOOLE_VERSION}" =~ "-dev" ]]; then
-                echo 'swoole version master'
+            if [ -f "ext/swoole/CMakeLists.txt" ] ;then
+                CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
+                if [[ "${CURRENT_SWOOLE_VERSION}" =~ "-dev" ]]; then
+                    echo 'swoole version master'
+                fi
             fi
-        fi
 
-        if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
-            test -d ext/swoole && rm -rf ext/swoole
-            if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
-                test -d /tmp/swoole && rm -rf /tmp/swoole
-                git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
-                cd  /tmp/swoole
-                tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
+            if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
+                test -d ext/swoole && rm -rf ext/swoole
+                if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
+                    test -d /tmp/swoole && rm -rf /tmp/swoole
+                    git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
+                    cd  /tmp/swoole
+                    tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
+                fi
+                mkdir -p ${WORKDIR}/ext/swoole/
+                tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
             fi
-            mkdir -p ${WORKDIR}/ext/swoole/
-            tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
-        fi
-        # swoole extension hook
-EOF;
+            # swoole extension hook
+    EOF;
 
-        return $shell;
-    });
+            return $shell;
+        });
+    */
 };
