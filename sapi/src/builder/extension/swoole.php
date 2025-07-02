@@ -4,12 +4,10 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $file = new SplFileObject($p->getWorkDir() . '/sapi/SWOOLE-VERSION.conf');
-
+    $file = new SplFileObject(realpath(__DIR__ . '/../../../../sapi/SWOOLE-VERSION.conf'));
     $swoole_tag = trim($file->current());
     // $swoole_tag = 'v6.0.1';
     $file = "swoole-{$swoole_tag}.tar.gz";
-
     $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
 
     $options = [];
