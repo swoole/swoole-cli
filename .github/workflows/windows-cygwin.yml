@@ -76,7 +76,6 @@ jobs:
           bash ./sapi/scripts/cygwin/install-re2c.sh
 
       - name: install deps lib with source code
-        if: 0
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/msys2/install-libzip.sh
