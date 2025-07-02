@@ -16,6 +16,7 @@ jobs:
           systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
           systeminfo | findstr /B /C:"Manufacturer" /C:"Product" /C:"Version"
           set
+          ipconfig
 
       - name: Prepare git
         run: |
@@ -23,7 +24,6 @@ jobs:
           git config --global core.eol lf
           git config --global core.ignorecase false
           git config --global --add safe.directory ${{ github.workspace }}
-          ipconfig
 
       - uses: actions/checkout@v4
       - name: Prepare submodule
@@ -104,6 +104,7 @@ jobs:
           ./bin/swoole-cli -m
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli -r "echo PHP_VERSION;"
+          ./bin/swoole-cli -r "echo getcwd();echo PHP_EOL;"
 
       - name: get app version with bash
         # 参考 https://github.com/marketplace/actions/install-cygwin

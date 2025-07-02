@@ -54,6 +54,7 @@ download_and_extract "yaml" ${YAML_VERSION}
 download_and_extract "imagick" ${IMAGICK_VERSION}
 
 cd ${__PROJECT__}/pool/ext
+# with git clone swoole source code
 if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
   test -d ${WORK_TEMP_DIR}/swoole && rm -rf ${WORK_TEMP_DIR}/swoole
   git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git ${WORK_TEMP_DIR}/swoole
@@ -63,7 +64,7 @@ if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
   cd ${__PROJECT__}/pool/ext
 fi
 mkdir -p ${WORK_TEMP_DIR}/ext/swoole/
-tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf swoole-${SWOOLE_VERSION}.tgz
+tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
 
 cd ${__PROJECT__}
 # clean extension folder
@@ -76,7 +77,7 @@ done
 cd ${__PROJECT__}
 # copy extension
 # cp -rf var/cygwin-build/ext/* ext/
-cp -rf ${WORK_TEMP_DIR}/ext/* ${__PROJECT__}/ext/
+cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
 
 # extension hook
 
