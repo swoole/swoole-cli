@@ -1,16 +1,18 @@
-name: build-php-cli-linux-riscv64
+name: build-php-cli-linux-loongarch
 
 on: [ push, pull_request ]
 
+env:
+  BUILD_PHP_VERSION: 8.2.13
+
 jobs:
-  linux-riscv:
+  linux-loongarch:
     if: 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Prepare Source Code
         run: |
-          lscpu
           echo $PATH
           env
           docker info
@@ -29,6 +31,8 @@ jobs:
           echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
+          echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
+
           # git submodule update --init
 
           sudo mkdir -p /usr/local/swoole-cli
@@ -41,7 +45,7 @@ jobs:
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
-          key: ${{ runner.os }}-riscv64-php-vendor
+          key: ${{ runner.os }}-loongarch-php-vendor
 
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v4
@@ -50,13 +54,19 @@ jobs:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
 
+      - name: Cache all-library
+        uses: actions/cache@v4
+        id: all-library-cache
+        with:
+          path: /usr/local/swoole-cli
+          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-loongarch-all-library
 
       - name: Cache swoole-cli-builder-image
         uses: actions/cache@v4
-        id: swoole-cli-builder-image-riscv64-cache
+        id: swoole-cli-builder-image-loongarch-cache
         with:
           path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
-          key: ${{ runner.os }}-riscv64-swoole-cli-builder-image
+          key: ${{ runner.os }}-loongarch-swoole-cli-builder-image
 
       - name: Prepare Libraries and Extensions
         run: |
@@ -64,31 +74,35 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
 
-          bash sapi/download-box/download-box-get-archive-from-container.sh
+          CACHE_NUM=$(ls -A pool/lib/ | wc -l)
+          LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)
+          echo `expr $LIB_NUM - $CACHE_NUM`
+
+          if test $CACHE_NUM -eq 0  ; then
+              bash sapi/download-box/download-box-get-archive-from-container.sh
+          fi
 
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
-
       - name: Set up QEMU
-        # Add support for more platforms with QEMU (optional)
-        # https://github.com/docker/setup-qemu-action
-        uses: docker/setup-qemu-action@v3
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        # 例子： https://github.com/tuna/tunasync-scripts/blob/master/.github/workflows/docker-images.yml#L102
+        uses: docker://loongarch/qemu-user-static:latest # Replace with your image
+        with:
+          arch: loongarch64
+          qemu-binary: qemu-loongarch64 # Or your QEMU binary
 
-      - name: Prepare QEMU
+      - name: Run LoongArch command
         run: |
-          set -x
-          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          uname -a
+          uname -s
+          uname -m
+
 
       - name: Prepare swoole-cli-builder-image
         run: |
           if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
               docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
           else
-              bash .github/workflows/build-debian-builder-container.sh --platform "linux/riscv64" --container-image "debian:unstable"
+              bash .github/workflows/build-debian-builder-container.sh --platform "linux/loongarch64"
           fi
 
       - name: prepare pre-built library
@@ -96,7 +110,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/swoole-cli
+          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli/:/usr/local/swoole-cli/
           run: |
             for i in `ls /usr/local/swoole-cli/`
             do
@@ -107,27 +121,28 @@ jobs:
             uname -m
             apt install -y php-dev php-cli
 
+
       - name: Build
         if: 1
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          options: -v ${{ github.workspace }}:/work -w /work -e BUILD_PHP_VERSION=${{ env.BUILD_PHP_VERSION }} -v /usr/local/swoole-cli:/usr/local/swoole-cli
           run: |
             set -eux
             uname -m
-            if [ ! -f runtime/php/php ] ; then
+            if [ ! -f bin/runtime/php ] ; then
               bash  setup-php-runtime.sh
             fi
 
-            export PATH=/work/runtime/php/:$PATH  # 容器已经内置 php 和 composer
-            alias php="php -d curl.cainfo=/work/runtime/php/cacert.pem -d openssl.cafile=/work/runtime/php/cacert.pem"
+            # export PATH=/work/bin/runtime:$PATH  # 容器已经内置 php 和 composer
+            # alias php="php -d curl.cainfo=/work/bin/runtime/cacert.pem -d openssl.cafile=/work/bin/runtime/cacert.pem"
 
             sh  sapi/quickstart/linux/alpine-init.sh
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php --with-override-default-enabled-ext=1 --with-php-version=8.3.4 --with-c-compiler=musl-gcc
+            php prepare.php --with-override-default-enabled-ext=1 --with-php-version=8.3.4
 
             bash make-install-deps.sh
 
@@ -166,7 +181,7 @@ jobs:
         if: 0
         uses: actions/upload-artifact@v4
         with:
-          name: php-cli-v${{ env.APP_VERSION }}-linux-riscv64-debug
+          name: php-cli-v${{ env.APP_VERSION }}-linux-mips64le-debug
           retention-days: 90
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
 
@@ -174,7 +189,7 @@ jobs:
         if: 0
         uses: actions/upload-artifact@v4
         with:
-          name: php-cli-v${{ env.APP_VERSION }}-linux-riscv64
+          name: php-cli-v${{ env.APP_VERSION }}-linux-mips64le
           retention-days: 90
           path: ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/dist/php
 
@@ -183,5 +198,5 @@ jobs:
         if: 0 && startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            php-cli-v${{ env.APP_VERSION }}-linux-riscv64.tar.xz
-            php-cli-v${{ env.APP_VERSION }}-linux-riscv64-debug.tar.xz
+            php-cli-v${{ env.APP_VERSION }}-linux-mips64le.tar.xz
+            php-cli-v${{ env.APP_VERSION }}-linux-mips64le-debug.tar.xz
