@@ -12,8 +12,7 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 PHP_VERSION=""
-SWOOLE_VERSION='v6.0.0'
-SWOOLE_VERSION='master'
+SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 X_PHP_VERSION=${PHP_VERSION}
 
 while [ $# -gt 0 ]; do
