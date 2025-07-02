@@ -163,7 +163,7 @@ if [ "$OS" = 'macos' ]; then
 
 fi
 
-if [ ! -f "${__PROJECT__}/runtime/php" ]; then
+if [ ! -f "${__PROJECT__}/runtime/php/php" ]; then
   if [ "$MIRROR" = 'china' ]; then
     bash ${__PROJECT__}/setup-php-runtime.sh --mirror china
   else
@@ -171,8 +171,9 @@ if [ ! -f "${__PROJECT__}/runtime/php" ]; then
   fi
 fi
 
-export PATH="${__PROJECT__}/runtime:$PATH"
-alias php="php -d curl.cainfo=${__PROJECT__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/cacert.pem"
+export PATH="${__PROJECT__}/runtime/php/:$PATH"
+alias php="php -d curl.cainfo=${__PROJECT__}/runtime/php/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/php/cacert.pem"
+
 php -v
 
 if [ ${WITH_PHP_COMPOSER} -eq 1 ]; then
