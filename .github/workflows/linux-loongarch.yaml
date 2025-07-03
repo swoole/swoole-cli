@@ -7,7 +7,7 @@ env:
 
 jobs:
   linux-loongarch:
-    if: 0
+    if: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -84,11 +84,14 @@ jobs:
 
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
-      - name: Set up QEMU
-        uses: docker://loongarch/qemu-user-static:latest # Replace with your image
+
+      - name: Build
+        uses: addnab/docker-run-action@v3
         with:
-          arch: loongarch64
-          qemu-binary: qemu-loongarch64 # Or your QEMU binary
+          image: cr.loongnix.cn/library/debian
+          options: -v ${{ github.workspace }}:/work/
+          run: |
+            --install loong64
 
       - name: Run LoongArch command
         run: |
