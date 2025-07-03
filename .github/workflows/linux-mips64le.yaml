@@ -73,7 +73,6 @@ jobs:
           set -x
           mkdir -p pool/lib
           mkdir -p pool/ext
-          mkdir -p bin/runtime
 
           CACHE_NUM=$(ls -A pool/lib/ | wc -l)
           LIB_NUM=$(ls -A sapi/src/builder/library/ | wc -l)

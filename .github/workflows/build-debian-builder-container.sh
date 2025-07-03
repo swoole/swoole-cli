@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -exu
 __DIR__=$(
@@ -18,7 +18,9 @@ cp -f ${__PROJECT__}/sapi/quickstart/linux/debian-init.sh .
 cp -f ${__PROJECT__}/sapi/quickstart/linux/extra/debian-php-init.sh .
 
 cat > Dockerfile <<'EOF'
-FROM debian:unstable-20240110-slim
+ARG BASE_IMAGE=debian:12
+FROM ${BASE_IMAGE}
+# FROM debian:unstable
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
@@ -43,11 +45,14 @@ EOF
 
 
 PLATFORM='linux/amd64'
-
+BASE_IMAGE="debian:12"
 while [ $# -gt 0 ]; do
   case "$1" in
   --platform)
     PLATFORM="$2"
+    ;;
+  --container-image)
+    BASE_IMAGE="$2"
     ;;
   --*)
     echo "Illegal option $1"
@@ -59,8 +64,8 @@ done
 
 
 IMAGE='swoole-cli-builder:latest'
-docker buildx build -t ${IMAGE} -f ./Dockerfile .  --platform ${PLATFORM}
-
+docker buildx build -t ${IMAGE} -f ./Dockerfile .  --platform ${PLATFORM} --build-arg BASE_IMAGE="${BASE_IMAGE}"
+docker images
 docker save -o "swoole-cli-builder-image.tar" ${IMAGE}
 
 

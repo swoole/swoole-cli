@@ -50,7 +50,7 @@ case $ARCH in
   PLATFORM="linux/mips64le"
   ;;
 'loongarch64')
-  PLATFORM="linux/mips64le"
+  PLATFORM="linux/loongarch64"
   ;;
 esac
 
