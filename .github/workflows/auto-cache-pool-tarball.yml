@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache@v4
         id: php-runtime-cache
         with:
-          path: ${{ github.workspace }}/bin/runtime
+          path: ${{ github.workspace }}/runtime
           key: ${{ runner.os }}-x86_64-php-runtime
 
       - name: Cache PHP Vendor
