@@ -31,8 +31,7 @@ fi
 mkdir -p /tmp/t
 cd /tmp/t
 
-PHP_VERSION=8.1.21
-PHP_VERSION=8.2.7
+PHP_VERSION=8.2.29
 
 test -f php-${PHP_VERSION}.tar.gz || wget -O php-${PHP_VERSION}.tar.gz https://github.com/php/php-src/archive/refs/tags/php-${PHP_VERSION}.tar.gz
 test -d php-src && rm -rf php-src

@@ -87,10 +87,10 @@ jobs:
           php prepare.php  +inotify +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1
           php prepare.php           +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1 @macos
           # php sapi/scripts/download-php-src-archive.php
-          php prepare.php  --show-tarball-hash=1 --with-php-version=8.1.32
-          php prepare.php  --show-tarball-hash=1 --with-php-version=8.2.28
-          php prepare.php  --show-tarball-hash=1 --with-php-version=8.3.19
-          php prepare.php  --show-tarball-hash=1 --with-php-version=8.4.5
+          php prepare.php  --show-tarball-hash=1 --with-php-version=8.1.33
+          php prepare.php  --show-tarball-hash=1 --with-php-version=8.2.29
+          php prepare.php  --show-tarball-hash=1 --with-php-version=8.3.23
+          php prepare.php  --show-tarball-hash=1 --with-php-version=8.4.10
 
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib php-tar
