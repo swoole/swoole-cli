@@ -104,7 +104,7 @@ jobs:
           ./bin/swoole-cli -m
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli -r "echo PHP_VERSION;"
-          ./bin/swoole-cli -r "echo getcwd();echo PHP_EOL;"
+          ./bin/swoole-cli -r "echo getcwd(), PHP_EOL;"
 
       - name: get app version with bash
         # 参考 https://github.com/marketplace/actions/install-cygwin
