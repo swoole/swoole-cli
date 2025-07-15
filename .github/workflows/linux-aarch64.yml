@@ -130,6 +130,7 @@ jobs:
           ./bin/swoole-cli -m
           ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri swoole
+          ./bin/swoole-cli --ri phpy
           ldd ./bin/swoole-cli
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
