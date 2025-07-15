@@ -98,14 +98,13 @@ mkdir -p ${WORK_TEMP_DIR}/php-src
 tar --strip-components=1 -C ${WORK_TEMP_DIR}/php-src -xf php-${PHP_VERSION}.tar.gz
 
 cd ${__PROJECT__}
-mkdir -p ${WORK_TEMP_DIR}/ext/pgsql/
-cp -rf ${WORK_TEMP_DIR}/php-src/ext/pgsql/. ${WORK_TEMP_DIR}/ext/pgsql/
-
-cd ${__PROJECT__}
 # copy extension
 # cp -rf var/cygwin-build/ext/* ext/
 cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
 
-# extension hook
+cd ${__PROJECT__}
+mkdir -p ${__PROJECT__}/ext/pgsql/
+cp -rf ${WORK_TEMP_DIR}/php-src/ext/pgsql/. ${__PROJECT__}/ext/pgsql/
 
+# extension hook
 cd ${__PROJECT__}
