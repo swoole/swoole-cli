@@ -35,6 +35,7 @@ REDIS_VERSION=6.1.0
 MONGODB_VERSION=1.17.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 
 mkdir -p pool/ext
 mkdir -p pool/lib
@@ -105,8 +106,6 @@ tar --strip-components=1 -C ${WORK_TEMP_DIR}/php-src -xf php-${PHP_VERSION}.tar.
 cd ${__PROJECT__}
 # copy extension
 # cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
-# cp -rf ${__PROJECT__}/ext/. ${WORK_TEMP_DIR}/php-src/ext/
-# cp -rf ${__PROJECT__}/ext/. ${WORK_TEMP_DIR}/php-src/ext/
 cp -rf ${WORK_TEMP_DIR}/ext/. ${WORK_TEMP_DIR}/php-src/ext/
 
 # extension hook
