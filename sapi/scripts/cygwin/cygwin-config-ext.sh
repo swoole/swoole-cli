@@ -29,6 +29,7 @@ REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 
 mkdir -p pool/ext
 mkdir -p pool/lib
@@ -97,11 +98,13 @@ mkdir -p ${WORK_TEMP_DIR}/php-src
 tar --strip-components=1 -C ${WORK_TEMP_DIR}/php-src -xf php-${PHP_VERSION}.tar.gz
 
 cd ${__PROJECT__}
+mkdir -p ${WORK_TEMP_DIR}/ext/pgsql/
+cp -rf ${WORK_TEMP_DIR}/php-src/ext/pgsql/. ${WORK_TEMP_DIR}/ext/pgsql/
+
+cd ${__PROJECT__}
 # copy extension
 # cp -rf var/cygwin-build/ext/* ext/
 cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
-mkdir -p ${__PROJECT__}/ext/pgsql/
-cp -rf ${WORK_TEMP_DIR}/php-src/ext/pgsql/. ${__PROJECT__}/ext/pgsql/
 
 # extension hook
 
