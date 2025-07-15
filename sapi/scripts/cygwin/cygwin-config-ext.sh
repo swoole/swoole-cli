@@ -15,6 +15,7 @@ REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 
 mkdir -p pool/ext
 mkdir -p pool/lib
@@ -52,11 +53,23 @@ download_and_extract "redis" ${REDIS_VERSION}
 download_and_extract "yaml" ${YAML_VERSION}
 download_and_extract "imagick" ${IMAGICK_VERSION}
 
+cd ${__PROJECT__}/pool/ext
+# with git clone swoole source code
+if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
+  test -d ${WORK_TEMP_DIR}/swoole && rm -rf ${WORK_TEMP_DIR}/swoole
+  git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git ${WORK_TEMP_DIR}/swoole
+  cd ${WORK_TEMP_DIR}/swoole
+  tar -czvf ${EXT_TEMP_CACHE_DIR}/swoole-${SWOOLE_VERSION}.tgz .
+  mv ${EXT_TEMP_CACHE_DIR}/swoole-${SWOOLE_VERSION}.tgz ${__PROJECT__}/pool/ext
+  cd ${__PROJECT__}/pool/ext
+fi
+mkdir -p ${WORK_TEMP_DIR}/ext/swoole/
+tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+
 cd ${__PROJECT__}
 # clean extension folder
 NO_BUILT_IN_EXTENSIONS=$(ls ${WORK_TEMP_DIR}/ext/)
-for EXT_NAME in $NO_BUILT_IN_EXTENSIONS
-do
+for EXT_NAME in $NO_BUILT_IN_EXTENSIONS; do
   echo "EXTENSION_NAME: $EXT_NAME "
   test -d ${__PROJECT__}/ext/${EXT_NAME} && rm -rf ${__PROJECT__}/ext/${EXT_NAME}
 done
@@ -64,9 +77,8 @@ done
 cd ${__PROJECT__}
 # copy extension
 # cp -rf var/cygwin-build/ext/* ext/
-cp -rf ${WORK_TEMP_DIR}/ext/* ${__PROJECT__}/ext/
+cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
 
 # extension hook
-
 
 cd ${__PROJECT__}
