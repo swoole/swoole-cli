@@ -5,22 +5,18 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
 
+    $file = new SplFileObject(realpath(__DIR__ . '/../../../../sapi/SWOOLE-VERSION.conf'));
+    $swoole_tag = trim($file->current());
+    // $swoole_tag = 'v6.0.1';
+    $file = "swoole-{$swoole_tag}.tar.gz";
+    $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
+    // v5.1.x 不支持 PHP 8.4
+    // swoole 支持计划 https://wiki.swoole.com/zh-cn/#/version/supported?id=%e6%94%af%e6%8c%81%e8%ae%a1%e5%88%92
 
     $options = [];
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
-
-    // v5.1.x 不支持 PHP 8.4
-    // swoole 支持计划 https://wiki.swoole.com/zh-cn/#/version/supported?id=%e6%94%af%e6%8c%81%e8%ae%a1%e5%88%92
-
-    $swoole_tag = 'v6.0.2';
-
-    $file = new SplFileObject(realpath(__DIR__ . '/../../../../sapi/SWOOLE-VERSION.conf'));
-    $swoole_tag = trim($file->current());
-
-    $file = "swoole-{$swoole_tag}.tar.gz";
-    $url = "https://github.com/swoole/swoole-src/archive/refs/tags/{$swoole_tag}.tar.gz";
 
     if ($p->getBuildType() === 'debug') {
         $options[] = ' --enable-debug ';
@@ -70,18 +66,6 @@ EOF
         ->withDependentLibraries(...$dependentLibraries)
         ->withDependentExtensions(...$dependentExtensions));
 
-    $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
-        $cmd = '';
-        if ($p->isMacos()) {
-            $workDir = $p->getPhpSrcDir();
-            $cmd = <<<EOF
-        cd {$workDir}/
-        sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
-EOF;
-        }
-        return $cmd;
-
-    });
     if ($p->isMacos()) {
         # 测试 macos 专有特性
         # 定义 _GNU_SOURCE 会隐式启用 _POSIX_C_SOURCE=200112L 和 _XOPEN_SOURCE=600
@@ -105,6 +89,20 @@ EOF;
 
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
+
+    $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
+        $cmd = '';
+        if ($p->isMacos()) {
+            $workDir = $p->getPhpSrcDir();
+            $cmd = <<<EOF
+        cd {$workDir}/
+        sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+EOF;
+        }
+        return $cmd;
+
+    });
+
     /*
         $p->withBeforeConfigureScript('swoole', function () use ($p) {
             $workDir = $p->getWorkDir();

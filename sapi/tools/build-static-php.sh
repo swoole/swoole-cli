@@ -7,7 +7,7 @@ __DIR__=$(
 
 set -uex
 
-PHP_VERSION=8.2.21
+PHP_VERSION=8.2.29
 
 test -f php-${PHP_VERSION}.tar.gz || curl -fSLo php-${PHP_VERSION}.tar.gz https://github.com/php/php-src/archive/refs/tags/php-${PHP_VERSION}.tar.gz
 test -d php-src && rm -rf php-src

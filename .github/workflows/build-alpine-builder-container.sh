@@ -89,6 +89,8 @@ EOF
 
 : <<'EOF'
 
+# https://github.com/tonistiigi/binfmt
+
 # docker.io/tonistiigi/binfmt:latest
      "supported": [
       "linux/amd64",

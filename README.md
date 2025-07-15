@@ -33,6 +33,9 @@ curl -fSL https://github.com/swoole/build-static-php/blob/main/setup-php-cli-run
 # windows powershell
 irm https://github.com/swoole/build-static-php/blob/main/setup-swoole-cli-runtime.ps1?raw=true | iex
 
+# windows powershell
+irm https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.ps1?raw=true | iex
+
 # 来自 https://www.swoole.com/download
 curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --mirror china
 
