@@ -100,6 +100,7 @@ EOF;
 
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
+
     /*
         $p->withBeforeConfigureScript('swoole', function () use ($p) {
             $workDir = $p->getWorkDir();
