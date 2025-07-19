@@ -5,10 +5,11 @@ on:
   pull_request:
   schedule:
     - cron: '0 0 */6 * *'
+  workflow_dispatch:
 
 jobs:
   auto-cache-pool:
-    if: 1
+    if: ${{ (github.repository_owner == 'swoole') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -70,25 +71,24 @@ jobs:
           set -x
           mkdir -p pool/lib
           mkdir -p pool/ext
-          mkdir -p bin/runtime
-          if [ ! -f bin/runtime/php ] ; then
+          mkdir -p runtime/
+          if [ ! -f runtime/php ] ; then
               bash  setup-php-runtime.sh
           fi
 
-          ls -A pool/lib/
           WORK_DIR=${{ github.workspace }}
-          uname -m
-          export PATH=${WORK_DIR}/bin/runtime:$PATH
-          alias php="php -d curl.cainfo=${WORK_DIR}/bin/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/bin/runtime/cacert.pem"
+          export PATH=${WORK_DIR}/runtime/:$PATH
+          alias php="php -d curl.cainfo=${WORK_DIR}/runtime/cacert.pem -d openssl.cafile=${WORK_DIR}/runtime/cacert.pem"
 
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php  +inotify +apcu +ds +xlswriter +ssh2  +uuid --show-tarball-hash=1
-          php prepare.php           +apcu +ds +xlswriter +ssh2  +uuid @macos --show-tarball-hash=1
+          php prepare.php  +inotify +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1
+          php prepare.php           +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1 @macos
+          php sapi/scripts/download-php-src-archive.php
 
           cd ${{ github.workspace }}/pool/
-          zip -9 -r ${WORK_DIR}/all-deps.zip ext lib
+          zip -9 -r ${WORK_DIR}/all-deps.zip ext lib php-tar
           HASH=$(sha256sum ${WORK_DIR}/all-deps.zip | awk '{print $1}')
           echo " all-deps.zip sha265: ${HASH} "
           echo -n ${HASH} > ${WORK_DIR}/all-deps.zip.sha256sum
@@ -98,6 +98,7 @@ jobs:
         run: |
           ls -A pool/lib/
           ls -A pool/ext/
+          ls -A pool/php-tar/
 
       - name: production artifacts
         uses: actions/upload-artifact@v4

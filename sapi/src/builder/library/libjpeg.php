@@ -23,7 +23,8 @@ return function (Preprocessor $p) {
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
             -DENABLE_SHARED=OFF  \
-            -DENABLE_STATIC=ON
+            -DENABLE_STATIC=ON \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
 EOF
         )

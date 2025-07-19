@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -exu
+shopt -s expand_aliases
 __DIR__=$(
   cd "$(dirname "$0")"
   pwd
@@ -32,9 +33,15 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-bash setup-php-runtime.sh ${OPTIONS}
-export PATH=${__PROJECT__}/bin/runtime:$PATH
-alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem "
+if [ ! -f ${__PROJECT__}/runtime/php ]; then
+  {
+    bash setup-php-runtime.sh $OPTIONS
+  } || {
+    echo $?
+  }
+fi
+export PATH=${__PROJECT__}/runtime:$PATH
+alias php="php -d curl.cainfo=${__PROJECT__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/cacert.pem "
 
 export COMPOSER_ALLOW_SUPERUSER=1
 
@@ -52,11 +59,5 @@ fi
 php ./prepare.php --skip-download=yes --without-docker=yes
 
 bash make.sh docker-build ${MIRROR}
-
-{
-  docker exec -it swoole-cli-builder which bash
-} || {
-  docker exec -it swoole-cli-builder sh /work/sapi/quickstart/linux/alpine-init.sh ${OPTIONS}
-}
 
 bash make.sh docker-bash

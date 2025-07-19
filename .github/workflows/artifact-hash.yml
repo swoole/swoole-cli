@@ -16,7 +16,6 @@ on:
 jobs:
   generate-artifact-hash:
     runs-on: ubuntu-latest
-    if: 0
     steps:
       - uses: actions/checkout@v4
       - name: Show Release File Hash

@@ -34,7 +34,8 @@ return function (Preprocessor $p) {
               -DOpenSSL_ROOT={$openssl_prefix} \
               -DCRYPTO_BACKEND=OpenSSL \
               -DBUILD_TESTING=OFF \
-              -DBUILD_EXAMPLES=OFF
+              -DBUILD_EXAMPLES=OFF \
+              -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
               cmake --build . --target install
 EOF
