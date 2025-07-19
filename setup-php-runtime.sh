@@ -56,7 +56,8 @@ cd ${__PROJECT__}
 mkdir -p bin/
 mkdir -p runtime/
 mkdir -p var/runtime
-APP_RUNTIME_DIR=${__PROJECT__}/runtime
+APP_RUNTIME_DIR=${__PROJECT__}/runtime/php
+test -f ${__PROJECT__}/runtime/php && rm -f ${__PROJECT__}/runtime/php
 mkdir -p ${APP_RUNTIME_DIR}
 
 cd ${__PROJECT__}/var/runtime
@@ -124,7 +125,8 @@ else
   test -f swoole-cli && rm -f swoole-cli
   tar -xvf ${APP_RUNTIME}.tar
   chmod a+x swoole-cli
-  cp -f ${__PROJECT__}/var/runtime/swoole-cli ${APP_RUNTIME_DIR}/php
+  cp -f ${__PROJECT__}/var/runtime/swoole-cli ${APP_RUNTIME_DIR}/
+  cp -f ${APP_RUNTIME_DIR}/swoole-cli ${APP_RUNTIME_DIR}/php
 fi
 
 cd ${__PROJECT__}/var/runtime
