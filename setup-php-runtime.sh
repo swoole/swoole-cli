@@ -57,6 +57,7 @@ mkdir -p bin/
 mkdir -p runtime/
 mkdir -p var/runtime
 APP_RUNTIME_DIR=${__PROJECT__}/runtime/php
+test -f ${__PROJECT__}/runtime/php && rm -f ${__PROJECT__}/runtime/php
 mkdir -p ${APP_RUNTIME_DIR}
 
 cd ${__PROJECT__}/var/runtime
