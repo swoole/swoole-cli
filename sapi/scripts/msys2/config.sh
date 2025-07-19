@@ -12,10 +12,6 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OPTIONS=''
-OPTIONS+=' --enable-swoole-thread '
-OPTIONS+=' --enable-brotli '
-OPTIONS+=' --enable-zstd '
-OPTIONS+=' --enable-zts '
 OPTIONS+=' --disable-opcache-jit '
 
 X_PHP_VERSION=''
