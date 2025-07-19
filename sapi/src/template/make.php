@@ -55,7 +55,7 @@ make_<?=$item->name?>() {
         mkdir -p <?= $this->getBuildDir() ?>/<?= $item->name . PHP_EOL ?>
         <?php if ($item->untarArchiveCommand == 'tar') : ?>
         tar --strip-components=1 -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file ?>;
-        <?php elseif($item->untarArchiveCommand == 'unzip') :?>
+        <?php elseif ($item->untarArchiveCommand == 'unzip') :?>
         unzip -d  <?=$this->getBuildDir()?>/<?=$item->name?>   <?=$this->workDir?>/pool/lib/<?=$item->file ?>;
         <?php elseif ($item->untarArchiveCommand == 'tar-default') :?>
         tar  -C <?= $this->getBuildDir() ?>/<?= $item->name ?> -xf <?= $this->workDir ?>/pool/lib/<?= $item->file ?>;
@@ -197,7 +197,10 @@ export_variables() {
     export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
     export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-
+<?php if ($this->isMacos() && !empty($this->frameworks)):?>
+    # MACOS 链接 framework
+    export LDFLAGS="$LDFLAGS <?php foreach($this->frameworks as $framework) { echo "-framework $framework "; } ?>"
+<?php endif; ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
     set +x
@@ -241,7 +244,8 @@ make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
     <?php if ($this->isLinux()) : ?>
-    export LDFLAGS="$LDFLAGS  -static -all-static "
+    export CFLAGS="$CFLAGS  -fPIE"
+    export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
@@ -251,6 +255,7 @@ make_build() {
     xattr -cr <?= $this->getWorkDir() ?>/bin/swoole-cli
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php else : ?>
+    ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php endif; ?>
@@ -329,7 +334,7 @@ if [ "$1" = "docker-build" ] ;then
     if [ -n "$2" ]; then
         MIRROR=$2
         case "$MIRROR" in
-        china | openatom )
+        china | openatom)
             CONTAINER_BASE_IMAGE="docker.io/library/alpine:3.18"
         ;;
         esac

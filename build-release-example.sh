@@ -5,7 +5,7 @@ __DIR__=$(
   pwd
 )
 __PROJECT__=${__DIR__}
-
+shopt -s expand_aliases
 if [ ! -f ${__DIR__}/prepare.php ]; then
   echo 'no found prepare.php'
   exit 0
@@ -145,8 +145,8 @@ if [ ! -f "${__PROJECT__}/bin/runtime/php" ]; then
   fi
 fi
 
-export PATH="${__PROJECT__}/bin/runtime:$PATH"
-alias php="php -d curl.cainfo=${__PROJECT__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/bin/runtime/cacert.pem"
+export PATH="${__PROJECT__}/runtime/php/:$PATH"
+alias php="php -d curl.cainfo=${__PROJECT__}/runtime/php/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/php/cacert.pem"
 
 php -v
 
@@ -190,7 +190,7 @@ if [ ${IN_DOCKER} -eq 1 ]; then
   {
     # 容器中
 
-    php prepare.php +inotify ${OPTIONS}
+    php prepare.php ${OPTIONS}
 
   }
 else
