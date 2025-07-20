@@ -19,10 +19,7 @@ cd ${__DIR__}
 }
 cd ${__DIR__}
 
-IMAGE=alpine:3.18
-
-OS=$(uname -s)
-ARCH=$(uname -m)
+IMAGE=alpine:3.20
 
 cd ${__DIR__}
 
