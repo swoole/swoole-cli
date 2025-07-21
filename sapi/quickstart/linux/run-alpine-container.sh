@@ -19,7 +19,7 @@ cd ${__DIR__}
 }
 cd ${__DIR__}
 
-IMAGE=alpine:3.20
+IMAGE=alpine:3.18
 
 MIRROR=''
 while [ $# -gt 0 ]; do
@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
     MIRROR="$2"
     case "$MIRROR" in
     china | openatom)
-      IMAGE="docker.io/library/alpine:3.20"
+      IMAGE="docker.io/library/alpine:3.18"
       ;;
     esac
     ;;
