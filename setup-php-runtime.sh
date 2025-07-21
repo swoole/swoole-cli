@@ -51,7 +51,6 @@ esac
 APP_VERSION='v5.1.3'
 APP_NAME='swoole-cli'
 VERSION='v5.1.3.0'
-APP_RUNTIME_TARBALL_SHA256SUM="2cbb09efa8f0047cb67a6d3f02a89c26f0d94810be26efff2408713bae679bef"
 
 cd ${__PROJECT__}
 mkdir -p bin/
@@ -107,30 +106,10 @@ china)
 
 esac
 
-function verfiy_sha256sum() {
-  local tarball=$1
-  if command -v sha256sum >/dev/null 2>&1; then
-    hash2="$(sha256sum -b "$tarball" | cut -c1-64)"
-  elif command -v shasum >/dev/null 2>&1; then
-    hash2="$(shasum -a 256 -b "$tarball" | cut -c1-64)"
-  elif command -v openssl >/dev/null 2>&1; then
-    hash2="$(openssl dgst -r -sha256 "$tarball" | cut -c1-64)"
-  else
-    echo "cannot verify the SHA-256 hash of '$APP_DOWNLOAD_URL'; you need one of 'shasum', 'sha256sum', or 'openssl'"
-    exit 1
-  fi
-
-  if [ "$APP_RUNTIME_TARBALL_SHA256SUM" != "$hash2" ]; then
-    echo "SHA-256 hash mismatch in '$APP_DOWNLOAD_URL'; expected $APP_RUNTIME_TARBALL_SHA256SUM, got $hash2"
-    exit 1
-  fi
-}
-
 downloader() {
   local file=$1
   local url=$2
   eval $(echo "curl $CURL_OPTIONS -fSLo $file $url ")
-  # verfiy_sha256sum $file
 }
 
 test -f composer.phar || curl -fSLo composer.phar ${COMPOSER_DOWNLOAD_URL}
