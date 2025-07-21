@@ -1,4 +1,4 @@
-name: build-swoole-cli-windows-msys2
+name: build-php-cli-windows-msys2
 
 on:
   push:
