@@ -109,7 +109,8 @@ esac
 downloader() {
   local file=$1
   local url=$2
-  eval $(echo "curl $CURL_OPTIONS -fSLo $file $url ")
+  local cmd=$(echo "curl $CURL_OPTIONS -fSLo $file $url ")
+  eval $cmd
 }
 
 test -f composer.phar || curl -fSLo composer.phar ${COMPOSER_DOWNLOAD_URL}
