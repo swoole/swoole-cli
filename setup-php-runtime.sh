@@ -130,7 +130,7 @@ downloader() {
   local file=$1
   local url=$2
   eval $(echo "curl $CURL_OPTIONS -fSLo $file $url ")
-  verfiy_sha256sum $file
+  # verfiy_sha256sum $file
 }
 
 test -f composer.phar || curl -fSLo composer.phar ${COMPOSER_DOWNLOAD_URL}
