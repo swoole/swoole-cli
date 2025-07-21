@@ -19,7 +19,7 @@ cd ${__DIR__}
 }
 cd ${__DIR__}
 
-IMAGE=alpine:3.20
+IMAGE=alpine:3.18
 
 cd ${__DIR__}
 
