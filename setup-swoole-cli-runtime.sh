@@ -59,10 +59,12 @@ APP_RUNTIME_DIR=${__PROJECT__}/runtime/${APP_NAME}
 mkdir -p ${APP_RUNTIME_DIR}
 
 MIRROR=''
+CURL_OPTIONS=""
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
+    CURL_OPTIONS+="-H 'Referer: https://www.swoole.com/download' -H 'User-Agent: download swoole-cli runtime with setup-php-runtime.sh'  -H 'X-Auth-Token: 6F0A7F038A69'"
     ;;
   --proxy)
     export HTTP_PROXY="$2"
@@ -128,6 +130,13 @@ china)
 
 esac
 
+downloader() {
+  local file=$1
+  local url=$2
+  local cmd=$(echo "curl $CURL_OPTIONS -fSLo $file $url ")
+  eval $cmd
+}
+
 test -f composer.phar || curl -fSLo composer.phar ${COMPOSER_DOWNLOAD_URL}
 chmod a+x composer.phar
 
@@ -138,13 +147,13 @@ APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
 if [ $OS = 'windows' ]; then
   {
     APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
-    test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+    test -f ${APP_RUNTIME}.zip || downloader ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
     exit 0
   }
 else
-  test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
+  test -f ${APP_RUNTIME}.tar.xz || downloader ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
   test -f swoole-cli && rm -f swoole-cli
   tar -xvf ${APP_RUNTIME}.tar

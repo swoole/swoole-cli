@@ -33,15 +33,15 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-if [ ! -f ${__PROJECT__}/runtime/php ]; then
+if [ ! -f ${__PROJECT__}/runtime/php/php ]; then
   {
     bash setup-php-runtime.sh $OPTIONS
   } || {
     echo $?
   }
 fi
-export PATH=${__PROJECT__}/runtime:$PATH
-alias php="php -d curl.cainfo=${__PROJECT__}/runtime/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/cacert.pem "
+export PATH=${__PROJECT__}/runtime/php/:$PATH
+alias php="php -d curl.cainfo=${__PROJECT__}/runtime/php/cacert.pem -d openssl.cafile=${__PROJECT__}/runtime/php/cacert.pem "
 
 export COMPOSER_ALLOW_SUPERUSER=1
 
