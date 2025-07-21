@@ -21,21 +21,6 @@ cd ${__DIR__}
 
 IMAGE=alpine:3.20
 
-MIRROR=''
-while [ $# -gt 0 ]; do
-  case "$1" in
-  --mirror)
-    MIRROR="$2"
-    case "$MIRROR" in
-    china | openatom)
-      IMAGE="docker.io/library/alpine:3.20"
-      ;;
-    esac
-    ;;
-  esac
-  shift $(($# > 0 ? 1 : 0))
-done
-
 cd ${__DIR__}
 
 mkdir -p /dev/shm/swoole-cli/thirdparty/
