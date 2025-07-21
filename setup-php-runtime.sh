@@ -51,6 +51,7 @@ esac
 APP_VERSION='v5.1.3'
 APP_NAME='swoole-cli'
 VERSION='v5.1.3.0'
+APP_RUNTIME_TARBALL_SHA256SUM="9bd31a38fa98fcffbef3c4d714519720a50b03d8369c00bee7b499f140b8cf27"
 
 cd ${__PROJECT__}
 mkdir -p bin/
@@ -71,10 +72,12 @@ if [ $OS = 'windows' ]; then
 fi
 
 MIRROR=''
+CURL_OPTIONS=""
 while [ $# -gt 0 ]; do
   case "$1" in
   --mirror)
     MIRROR="$2"
+    CURL_OPTIONS+="-H 'Referer: https://www.swoole.com/download' -H 'User-Agent: download swoole-cli runtime with setup-php-runtime.sh'  -H 'X-Auth-Token: 6F0A7F038A69'"
     ;;
   --proxy)
     export HTTP_PROXY="$2"
@@ -104,6 +107,32 @@ china)
 
 esac
 
+function verfiy_sha256sum() {
+  local tarball=$1
+  if command -v sha256sum >/dev/null 2>&1; then
+    hash2="$(sha256sum -b "$tarball" | cut -c1-64)"
+  elif command -v shasum >/dev/null 2>&1; then
+    hash2="$(shasum -a 256 -b "$tarball" | cut -c1-64)"
+  elif command -v openssl >/dev/null 2>&1; then
+    hash2="$(openssl dgst -r -sha256 "$tarball" | cut -c1-64)"
+  else
+    echo "cannot verify the SHA-256 hash of '$APP_DOWNLOAD_URL'; you need one of 'shasum', 'sha256sum', or 'openssl'"
+    exit 1
+  fi
+
+  if [ "$APP_RUNTIME_TARBALL_SHA256SUM" != "$hash2" ]; then
+    echo "SHA-256 hash mismatch in '$APP_DOWNLOAD_URL'; expected $APP_RUNTIME_TARBALL_SHA256SUM, got $hash2"
+    exit 1
+  fi
+}
+
+downloader() {
+  local file=$1
+  local url=$2
+  eval $(echo "curl $CURL_OPTIONS -fSLo $file $url ")
+  verfiy_sha256sum $file
+}
+
 test -f composer.phar || curl -fSLo composer.phar ${COMPOSER_DOWNLOAD_URL}
 chmod a+x composer.phar
 
@@ -114,13 +143,13 @@ APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
 if [ $OS = 'windows' ]; then
   {
     APP_RUNTIME="${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}"
-    test -f ${APP_RUNTIME}.zip || curl -fSLo ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
+    test -f ${APP_RUNTIME}.zip || downloader ${APP_RUNTIME}.zip ${APP_DOWNLOAD_URL}
     test -d ${APP_RUNTIME} && rm -rf ${APP_RUNTIME}
     unzip "${APP_RUNTIME}.zip"
     exit 0
   }
 else
-  test -f ${APP_RUNTIME}.tar.xz || curl -fSLo ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
+  test -f ${APP_RUNTIME}.tar.xz || downloader ${APP_RUNTIME}.tar.xz ${APP_DOWNLOAD_URL}
   test -f ${APP_RUNTIME}.tar || xz -d -k ${APP_RUNTIME}.tar.xz
   test -f swoole-cli && rm -f swoole-cli
   tar -xvf ${APP_RUNTIME}.tar
