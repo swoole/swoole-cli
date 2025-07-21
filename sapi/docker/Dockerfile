@@ -1,6 +1,6 @@
-ARG BASE_IMAGE="alpine:3.20"
+ARG BASE_IMAGE="alpine:3.18"
 FROM ${BASE_IMAGE}
-# FROM alpine:3.20
+# FROM alpine:3.18
 
 
 ARG MIRROR=""

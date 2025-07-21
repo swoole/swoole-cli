@@ -20,7 +20,7 @@ cd ${__PROJECT__}
 
 # alpine 基础镜像 支持多架构
 
-CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.20'
+CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
 CONTAIENR_NAME='swoole-cli-builder'
 MIRROR=''
 PLATFORM=''
@@ -51,7 +51,7 @@ done
 
 case "$MIRROR" in
 china | openatom)
-  CONTAINER_BASE_IMAGE="docker.io/library/alpine:3.20"
+  CONTAINER_BASE_IMAGE="docker.io/library/alpine:3.18"
   ;;
 esac
 
@@ -63,9 +63,9 @@ test -d swoole-cli && rm -rf swoole-cli
 docker cp ${CONTAIENR_NAME}:/usr/local/swoole-cli/ .
 
 cat >Dockerfile <<'EOF'
-ARG BASE_IMAGE="alpine:3.20"
+ARG BASE_IMAGE="alpine:3.18"
 FROM ${BASE_IMAGE}
-# FROM alpine:3.20
+# FROM alpine:3.18
 
 ARG MIRROR=""
 
