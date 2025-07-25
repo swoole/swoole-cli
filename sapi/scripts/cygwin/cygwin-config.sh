@@ -10,6 +10,7 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
+export LIBS="  -liconv "
 export ICU_CXXFLAGS=" -std=gnu++17 "
 ./buildconf --force
 test -f Makefile && make clean
