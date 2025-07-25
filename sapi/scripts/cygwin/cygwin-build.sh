@@ -10,7 +10,7 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-
+export LIBS="  -liconv "
 mkdir -p bin/.libs
 # export LDFLAGS="-all-static"
 LOGICAL_PROCESSORS=$(nproc)
