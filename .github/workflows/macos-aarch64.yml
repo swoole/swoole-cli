@@ -89,7 +89,8 @@ jobs:
           mkdir -p pool/ext
           mkdir -p bin/
           mkdir -p runtime/
-          if [ ! -f runtime/php ] ; then
+          test -f runtime/php && rm -f runtime/php
+          if [ ! -f runtime/php/php ] ; then
               bash  setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
@@ -98,8 +99,8 @@ jobs:
 
       - name: prepare
         run: |
-          export PATH=${{ github.workspace }}/runtime:$PATH
-          alias php="php -d curl.cainfo=${{ github.workspace }}/runtime/cacert.pem -d openssl.cafile=${{ github.workspace }}/runtime/cacert.pem"
+          export PATH=${{ github.workspace }}/runtime/php/:$PATH
+          alias php="php -d curl.cainfo=${{ github.workspace }}/runtime/php/cacert.pem -d openssl.cafile=${{ github.workspace }}/runtime/php/cacert.pem"
 
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
@@ -108,13 +109,13 @@ jobs:
 
       - name: Build
         run: |
-          export PATH=${{ github.workspace }}/runtime:$PATH
+          export PATH=${{ github.workspace }}/runtime/php/:$PATH
 
-          bash ./make.sh all-library
+          bash make.sh all-library
 
-          bash ./make.sh config
-          bash ./make.sh build
-          bash ./make.sh archive
+          bash make.sh config
+          bash make.sh build
+          bash make.sh archive
 
       - name: Show Build Result
         run: |
