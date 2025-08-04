@@ -190,18 +190,22 @@ export_variables() {
 <?php foreach ($this->exportVariables as $value) : ?>
     export <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
-
+    export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 <?php if ($this->hasExtension('opcache')):?>
     export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
     export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
 <?php endif; ?>
-
-    export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-    export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-    export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 <?php if ($this->isMacos() && !empty($this->frameworks)):?>
     # MACOS 链接 framework
     export LDFLAGS="$LDFLAGS <?php foreach($this->frameworks as $framework) { echo "-framework $framework "; } ?>"
+<?php endif; ?>
+<?php if ($this->isLinux()) : ?>
+    # 手动指定依赖库链接顺序
+    <?php if ($this->hasExtension('phpy')) : ?>
+        export LIBS="$LIBS -lcrypto -lssl -lmpdec -lmpdec++ -lbz2 -llzma -lHacl_Hash_SHA2 -lb2 -lexpat -lxml2 -lform -lmenu  -ltic -lpanel -lncurses++ -lncurses "
+    <?php endif; ?>
 <?php endif; ?>
     result_code=$?
     [[ $result_code -ne 0 ]] &&  echo " [ export_variables  FAILURE ]" && exit  $result_code;
