@@ -10,7 +10,6 @@ return function (Preprocessor $p) {
             ->withPeclVersion('4.29.2')
             ->withFileHash('md5', 'bf1b1d37bf5dd16899e317320a269770')
             ->withHomePage('https://github.com/protocolbuffers/protobuf')
-            //->withHomePage('https://developers.google.com/protocol-buffers')
             ->withManual('https://protobuf.dev/reference/php/php-generated/')
             ->withDependentExtensions('sockets')
     );
