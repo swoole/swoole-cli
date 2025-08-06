@@ -8,6 +8,7 @@ use SwooleCli\Preprocessor;
 
 ?>
 #!/usr/bin/env bash
+shopt -s expand_aliases
 __PROJECT_DIR__=$(cd "$(dirname "$0")"; pwd)
 CLI_BUILD_TYPE=<?= $this->getBuildType() . PHP_EOL ?>
 SRC=<?= $this->phpSrcDir . PHP_EOL ?>
@@ -331,14 +332,6 @@ help() {
 if [ "$1" = "docker-build" ] ;then
     MIRROR=""
     CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
-    if [ -n "$2" ]; then
-        MIRROR=$2
-        case "$MIRROR" in
-        china | openatom)
-            CONTAINER_BASE_IMAGE="docker.io/library/alpine:3.18"
-        ;;
-        esac
-    fi
     PLATFORM=''
     ARCH=$(uname -m)
     case $ARCH in
@@ -473,7 +466,7 @@ elif [ "$1" = "variables" ] ;then
 	echo $LIBS
 elif [ "$1" = "sync" ] ;then
     PHP_CLI=$(which php)
-    test -f ${__PROJECT_DIR__}/bin/runtime/php && PHP_CLI="${__PROJECT_DIR__}/bin/runtime/php -d curl.cainfo=${__PROJECT_DIR__}/bin/runtime/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/bin/runtime/cacert.pem"
+    test -f ${__PROJECT_DIR__}/runtime/php/php && PHP_CLI="${__PROJECT_DIR__}/runtime/php/php -d curl.cainfo=${__PROJECT_DIR__}/runtime/php/cacert.pem -d openssl.cafile=${__PROJECT_DIR__}/runtime/php/cacert.pem"
     $PHP_CLI -v
     $PHP_CLI sync-source-code.php --action run
     exit 0

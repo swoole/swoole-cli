@@ -137,7 +137,7 @@ if [ "$OS" = 'macos' ]; then
 
 fi
 
-if [ ! -f "${__PROJECT__}/bin/runtime/php" ]; then
+if [ ! -f "${__PROJECT__}/runtime/php/php" ]; then
   if [ "$MIRROR" = 'china' ]; then
     bash sapi/quickstart/setup-php-runtime.sh --mirror china
   else
@@ -170,6 +170,7 @@ fi
 
 # 可用配置参数
 # --with-swoole-pgsql=1
+# --with-libavif=1
 # --with-global-prefix=/usr/local/swoole-cli
 # --with-dependency-graph=1
 # --with-web-ui
