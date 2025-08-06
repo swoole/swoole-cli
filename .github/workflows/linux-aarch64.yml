@@ -94,7 +94,8 @@ jobs:
           mkdir -p pool/ext
           mkdir -p bin/
           mkdir -p runtime/
-          if [ ! -f runtime/php ] ; then
+          test -f runtime/php && rm -f runtime/php
+          if [ ! -f runtime/php/php ] ; then
               bash  setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
@@ -109,8 +110,8 @@ jobs:
           run: |
             set -eux
             uname -m
-            export PATH=/work/runtime:$PATH  # 容器已经内置 php 和 composer
-            alias php="php -d curl.cainfo=/work/runtime/cacert.pem -d openssl.cafile=/work/runtime/cacert.pem"
+            export PATH=/work/runtime/php/:$PATH  # 容器已经内置 php 和 composer
+            alias php="php -d curl.cainfo=/work/runtime/php/cacert.pem -d openssl.cafile=/work/runtime/php/cacert.pem"
 
             sh  sapi/quickstart/linux/alpine-init.sh
             composer install  --no-interaction --no-autoloader --no-scripts --profile
@@ -118,11 +119,11 @@ jobs:
 
             php prepare.php
 
-            bash ./make.sh all-library
+            bash make.sh all-library
 
-            bash ./make.sh config
-            bash ./make.sh build
-            bash ./make.sh archive
+            bash make.sh config
+            bash make.sh build
+            bash make.sh archive
 
       - name: Show Build Result
         run: |

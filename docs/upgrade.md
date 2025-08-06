@@ -1,12 +1,9 @@
 # 升级 PHP 版本 步骤
 
-> 1、修改 sapi/PHP-VERSION.conf 文件里版本号即可
-
-> 2、修改 sync-source-code.php 文件里 PHP 源码包的 sha256sum 配置
-
-> 3、执行同步源码脚本， 拉取 PHP 官方源码 到本项目
-
-> 4、sapi/cli/ 代码的升级，需要手动确认
+1. 修改 `sapi/PHP-VERSION.conf` 文件里版本号即可
+2. 修改 `sync-source-code.php` 文件里 PHP 源码包的 sha256sum 配置
+3. 执行同步源码脚本， 拉取 PHP 官方源码 到本项目
+4. sapi/cli 代码的升级，需要手动确认
 
 ```shell
 
@@ -17,7 +14,11 @@ php sync-source-code.php
 php sync-source-code.php --action run
 
 
-./bin/runtime/php -c ./bin/runtime/php.ini  sync-source-code.php
-./bin/runtime/php -c ./bin/runtime/php.ini  sync-source-code.php --action run
+./runtime/php/php -c ./runtime/php/php.ini  sync-source-code.php
+./runtime/php/php -c ./runtime/php/php.ini  sync-source-code.php --action run
 
 ```
+
+## 目录说明
+- `pool`: 持久化目录，存放扩展、 `PHP` 、依赖库等文件，此目录下的文件不会被主动删除
+- `var`: 运行时目录，临时存在一些文件，在完成配置或构建后将被主动清空删除
