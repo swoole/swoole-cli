@@ -456,6 +456,19 @@ class Preprocessor
         return $this;
     }
 
+    protected array $frameworks = [];
+
+    public function withFramework(string $framework): static
+    {
+        if (!$this->isMacos()) {
+            throw new RuntimeException('frameworks only support macOS');
+        }
+        if (!in_array($framework, $this->frameworks)) {
+            $this->frameworks[] = $framework;
+        }
+        return $this;
+    }
+
     public function getExtension(string $name): ?Extension
     {
         if (!isset($this->extensionMap[$name])) {
@@ -720,13 +733,6 @@ class Preprocessor
         $this->mkdirIfNotExists($this->libraryDir, 0777, true);
         $this->mkdirIfNotExists($this->extensionDir, 0777, true);
         include __DIR__ . '/constants.php';
-
-        $out = `cd {$this->rootDir}/ext/swoole && git branch --show-current`;
-        $currentSwooleBranch = trim($out ?? $this->swooleBranch);
-        if ($currentSwooleBranch != $this->swooleBranch) {
-            `cd {$this->rootDir}/ext/swoole && git checkout {$this->swooleBranch}`;
-            echo "Switch swoole to {$this->swooleBranch} branch\n";
-        }
 
         $extAvailable = [];
         $this->scanConfigFiles(__DIR__ . '/builder/extension', $extAvailable);

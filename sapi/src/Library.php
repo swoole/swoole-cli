@@ -24,9 +24,7 @@ class Library extends Project
 
     public string|array $binPath = '';
 
-
     public string $untarArchiveCommand = 'tar';
-
 
     public function withMirrorUrl(string $url): static
     {
@@ -134,4 +132,5 @@ class Library extends Project
         $this->untarArchiveCommand = $command;
         return $this;
     }
+
 }

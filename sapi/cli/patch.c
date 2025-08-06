@@ -1,12 +1,6 @@
 #include "php.h"
 #include "library.h"
 
-#ifdef __CYGWIN__
-#include "ext/zip/php_zip.h"
-int zip_encryption_method_supported(zip_int16_t method, int encrypt) {
-    return 1;
-}
-#endif
 
 zend_module_entry opcache_module_entry = {
     STANDARD_MODULE_HEADER_EX,

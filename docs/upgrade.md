@@ -14,12 +14,13 @@ php sync-source-code.php
 php sync-source-code.php --action run
 
 
-./bin/runtime/php -c ./bin/runtime/php.ini  sync-source-code.php
-./bin/runtime/php -c ./bin/runtime/php.ini  sync-source-code.php --action run
+./runtime/php/php -c ./runtime/php/php.ini  sync-source-code.php
+./runtime/php/php -c ./runtime/php/php.ini  sync-source-code.php --action run
 
 ```
 
 ## 目录说明
 
-    pool :持久化目录，存放扩展、 PHP 、依赖库等文件，此目录下的文件不会被主动删除
-    var :运行时目录，临时存在一些文件，在完成配置或构建后将被主动清空删除
+- `pool`: 持久化目录，存放扩展、 `PHP` 、依赖库等文件，此目录下的文件不会被主动删除
+- `var`: 运行时目录，临时存在一些文件，在完成配置或构建后将被主动清空删除
+

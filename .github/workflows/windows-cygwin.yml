@@ -16,6 +16,7 @@ jobs:
           systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
           systeminfo | findstr /B /C:"Manufacturer" /C:"Product" /C:"Version"
           set
+          ipconfig
 
       - name: Prepare git
         run: |
@@ -23,7 +24,6 @@ jobs:
           git config --global core.eol lf
           git config --global core.ignorecase false
           git config --global --add safe.directory ${{ github.workspace }}
-          ipconfig
 
       - uses: actions/checkout@v4
       - name: Prepare submodule
@@ -63,7 +63,8 @@ jobs:
           cp -f /cygdrive/c/setup.exe  /cygdrive/c/cygwin/bin/setup-x86_64.exe
           bash ./sapi/scripts/cygwin/install-cygwin.sh
 
-      - name: Install Cygwin Packages
+      - name: Install Cygwin Packages with powershell
+        # 备注：github action 在 windows 上执行命令默认的 shell 是 powershell，如果要使用其它shell , 需要手动指定，例如此也可以使用 bash 来安装 cygwin packages
         if: 1
         run: |
           Copy-Item -Path "C:\setup.exe" -Destination "${{ github.workspace }}\setup-x86_64.exe"
@@ -73,6 +74,11 @@ jobs:
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
+
+      - name: install deps lib with source code
+        shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
+        run: |
+          bash ./sapi/scripts/msys2/install-libzip.sh
 
       - name: Configure
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
@@ -88,12 +94,17 @@ jobs:
         run: |
           bash ./sapi/scripts/cygwin/cygwin-build.sh
 
+      - name: Archive
+        run: |
+          bash ./sapi/scripts/cygwin/cygwin-archive.sh
+
       - name: Show Build Result
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli -r "echo PHP_VERSION;"
+          ./bin/swoole-cli -r "echo getcwd(), PHP_EOL;"
 
       - name: get app version with bash
         # 参考 https://github.com/marketplace/actions/install-cygwin
@@ -121,9 +132,6 @@ jobs:
           # Add-Content -Path $env:GITHUB_ENV -Value "name=$value"
           # Add-Content -Path $env:GITHUB_ENV -Value "APP_VERSION=$APP_VERSION"
 
-      - name: Archive
-        run: |
-          bash ./sapi/scripts/cygwin/cygwin-archive.sh
 
       - name: production artifacts
         uses: actions/upload-artifact@v4

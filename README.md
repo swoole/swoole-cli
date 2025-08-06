@@ -45,6 +45,9 @@
 
 curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash
 
+# windows powershell
+irm https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.ps1?raw=true | iex
+
 # 来自 https://www.swoole.com/download
 curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --mirror china
 
@@ -83,6 +86,15 @@ cd swoole-cli
 bash setup-php-runtime.sh
 # 来自 https://www.swoole.com/download
 bash setup-php-runtime.sh --mirror china
+
+# 使用swoole-cli
+# shell脚本中启用别名扩展功能‌
+shopt -s expand_aliases
+__DIR__=$(pwd)
+export PATH="${__DIR__}/runtime/php/:$PATH"
+alias php="php -d curl.cainfo=${__DIR__}/runtime/php/cacert.pem -d openssl.cafile=${__DIR__}/runtime/php/cacert.pem"
+which php
+php -v
 
 ```
 

@@ -11,6 +11,7 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
+export ICU_CXXFLAGS=" -std=gnu++17 "
 ./buildconf --force
 test -f Makefile && make clean
 ./configure --prefix=/usr --disable-all \
