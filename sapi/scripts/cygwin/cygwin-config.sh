@@ -53,6 +53,7 @@ test -f Makefile && make clean
   --enable-swoole-thread \
   --enable-brotli \
   --enable-zstd \
+  --enable-swoole-stdext \
   --enable-redis \
   --with-imagick \
   --with-yaml \

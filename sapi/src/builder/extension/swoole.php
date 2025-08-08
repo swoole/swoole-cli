@@ -21,6 +21,7 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-thread';
     $options[] = '--enable-brotli';
     $options[] = '--enable-zstd';
+    $options[] = '--enable-swoole-stdext';
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {
         $options[] = '--enable-iouring';
