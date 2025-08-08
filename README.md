@@ -23,7 +23,7 @@
 - [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
 - [Swoole-Cli 介绍、使用说明](https://wenda.swoole.com/detail/108876)
 - [Swoole v6.1 将提供 typed array 强类型数组实现，增强 PHP 标准库](https://mp.weixin.qq.com/s/yFuxYdNMqxI1VuZg0J07Wg)
-- [2024 重磅更新：Swoole v6 正式发布，增加 16 项新功能](https://mp.weixin.qq.com/s/Ks1x1LNTLdl5jk0sIS6V_w)
+- [Swoole v6 2024 重磅更新：Swoole v6 正式发布，增加 16 项新功能](https://mp.weixin.qq.com/s/Ks1x1LNTLdl5jk0sIS6V_w)
 - [Swoole v6 Alpha 版本已发布，为 PHP 带来稳定可靠、生产可用的多线程方案](https://mp.weixin.qq.com/s/IeCGVRFQDVbzVWCIZRGFNg)
 - [Swoole v6 将引入 Linux io_uring ，并发读写文件性能提升了 5 倍](https://mp.weixin.qq.com/s/5qnqmjCEb_zxLaT4sR1HAg)
 - [Swoole v6 线程池的使用](https://mp.weixin.qq.com/s/wzdH7voOWcHCLuf16SLeIA)
