@@ -24,6 +24,7 @@
 - [Swoole-Cli 介绍、使用说明](https://wenda.swoole.com/detail/108876)
 - [Swoole v6.1 将提供 typed array 强类型数组实现，增强 PHP 标准库](https://mp.weixin.qq.com/s/yFuxYdNMqxI1VuZg0J07Wg)
 - [Swoole v6 2024 重磅更新：Swoole v6 正式发布，增加 16 项新功能](https://mp.weixin.qq.com/s/Ks1x1LNTLdl5jk0sIS6V_w)
+- [Swoole v6 协程是否支持 PHP 的 JIT ](https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA)
 - [Swoole v6 Alpha 版本已发布，为 PHP 带来稳定可靠、生产可用的多线程方案](https://mp.weixin.qq.com/s/IeCGVRFQDVbzVWCIZRGFNg)
 - [Swoole v6 将引入 Linux io_uring ，并发读写文件性能提升了 5 倍](https://mp.weixin.qq.com/s/5qnqmjCEb_zxLaT4sR1HAg)
 - [Swoole v6 线程池的使用](https://mp.weixin.qq.com/s/wzdH7voOWcHCLuf16SLeIA)
@@ -32,7 +33,9 @@
 - [Swoole v6 开发计划 - 支持多线程运行模式](https://github.com/swoole/rfc/issues/85)
 - [Swoole v5.1 增加更多数据库协程客户端支持](https://wenda.swoole.com/detail/109023)
 - [phpy 2025 支持了更多高级语法](https://mp.weixin.qq.com/s/YCG5ENAVOKzxcdD1Qdepbg)
-- [phpy：连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://wenda.swoole.com/detail/109176)
+- [phpy 1.0.8 已发布，现在 PHP 类可以继承 Python 类了](https://mp.weixin.qq.com/s/mosUpNpm-iY2-vlGZQMlsA)
+- [phpy 中如何调用自定义 Python 模块](https://mp.weixin.qq.com/s/KOV-XZQVqZSXkMQoiDrsMA)
+- [phpy 连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://wenda.swoole.com/detail/109176)
 
 ### 相关文章 知乎
 
