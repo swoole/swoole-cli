@@ -16,12 +16,13 @@
 
 ## 相关文章
 
-- [Swoole-Cli v6.1 将允许对 array/string/stream 类型使用内置方法](https://mp.weixin.qq.com/s/5qnqmjCEb_zxLaT4sR1HAg)
+- [Swoole-Cli 介绍、使用说明](https://wenda.swoole.com/detail/108876)
+- [Swoole-Cli v6.1 将允许对 array/string/stream 类型使用内置方法](https://mp.weixin.qq.com/s/RmdKC5TLREwjcJFc-upZLQ)
 - [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://wenda.swoole.com/detail/108931)
 - [Swoole-Cli v5.0.1 使用说明](https://wenda.swoole.com/detail/108876)
 - [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://wenda.swoole.com/detail/108706)
 - [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
-- [Swoole-Cli 介绍、使用说明](https://wenda.swoole.com/detail/108876)
+- [Swoole RFC ](https://github.com/swoole/rfc/)
 - [Swoole v6.1 将提供 typed array 强类型数组实现，增强 PHP 标准库](https://mp.weixin.qq.com/s/yFuxYdNMqxI1VuZg0J07Wg)
 - [Swoole v6 2024 重磅更新：Swoole v6 正式发布，增加 16 项新功能](https://mp.weixin.qq.com/s/Ks1x1LNTLdl5jk0sIS6V_w)
 - [Swoole v6 协程是否支持 PHP 的 JIT ](https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA)
