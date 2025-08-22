@@ -80,6 +80,7 @@ test -f Makefile && make clean
   --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
   --enable-swoole-sqlite \
   --enable-swoole-pgsql \
+  --enable-swoole-stdext \
   --enable-redis \
   --enable-opcache \
   --disable-opcache-jit \
