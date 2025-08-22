@@ -30,8 +30,9 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-thread';
     $options[] = '--enable-brotli';
     $options[] = '--enable-zstd';
-    $options[] = '--enable-zts';
+    $options[] = '--enable-swoole-stdext';
 
+    $options[] = '--enable-zts';
     $options[] = '--disable-opcache-jit';
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {

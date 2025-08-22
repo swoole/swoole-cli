@@ -75,6 +75,9 @@ download_and_extract "imagick" ${IMAGICK_VERSION}
 
 cd ${__PROJECT__}/pool/ext
 # with git clone swoole source code
+if [ -n "${GITHUB_ACTION}" ]; then
+  test -f ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz && rm -f ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+fi
 if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
   test -d ${WORK_TEMP_DIR}/swoole && rm -rf ${WORK_TEMP_DIR}/swoole
   git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git ${WORK_TEMP_DIR}/swoole

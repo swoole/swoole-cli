@@ -12,9 +12,6 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OPTIONS=''
-OPTIONS+=' --enable-swoole-thread '
-OPTIONS+=' --enable-brotli '
-OPTIONS+=' --enable-zstd '
 OPTIONS+=' --enable-zts '
 OPTIONS+=' --disable-opcache-jit '
 
@@ -80,6 +77,10 @@ test -f Makefile && make clean
   --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
   --enable-swoole-sqlite \
   --enable-swoole-pgsql \
+  --enable-swoole-thread \
+  --enable-brotli \
+  --enable-zstd \
+  --enable-swoole-stdext \
   --enable-redis \
   --enable-opcache \
   --disable-opcache-jit \
