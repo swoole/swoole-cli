@@ -10,7 +10,6 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-
 mkdir -p bin/.libs
 # export LDFLAGS="-all-static"
 
