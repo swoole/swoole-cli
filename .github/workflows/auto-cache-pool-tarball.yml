@@ -93,6 +93,7 @@ jobs:
           php prepare.php  --show-tarball-hash=1 --with-php-version=8.3.23
           php prepare.php  --show-tarball-hash=1 --with-php-version=8.4.10
 
+          echo 'cygwin: https://www.cygwin.com/COPYING' > bin/LICENSE
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib php-tar
           HASH=$(sha256sum ${WORK_DIR}/all-deps.zip | awk '{print $1}')
@@ -105,6 +106,7 @@ jobs:
           ls -A pool/lib/
           ls -A pool/ext/
           ls -A pool/php-tar/
+          cat bin/LICENSE
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
@@ -114,6 +116,7 @@ jobs:
           path: |
             all-deps.zip
             all-deps.zip.sha256sum
+            bin/LICENSE
 
       - name: gh release
         uses: softprops/action-gh-release@v2
@@ -122,3 +125,4 @@ jobs:
           files: |
             all-deps.zip
             all-deps.zip.sha256sum
+            bin/LICENSE
