@@ -88,6 +88,7 @@ jobs:
           php prepare.php           +apcu +ds +ssh2  +uuid +protobuf +gettext --with-libavif=1 --show-tarball-hash=1 @macos
           php sapi/scripts/download-php-src-archive.php
 
+          echo 'cygwin: https://www.cygwin.com/COPYING' > bin/LICENSE
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib php-tar
           HASH=$(sha256sum ${WORK_DIR}/all-deps.zip | awk '{print $1}')
@@ -100,6 +101,7 @@ jobs:
           ls -A pool/lib/
           ls -A pool/ext/
           ls -A pool/php-tar/
+          cat bin/LICENSE
 
       - name: production artifacts
         uses: actions/upload-artifact@v4
@@ -109,6 +111,7 @@ jobs:
           path: |
             all-deps.zip
             all-deps.zip.sha256sum
+            bin/LICENSE
 
       - name: gh release
         uses: softprops/action-gh-release@v2
@@ -117,3 +120,4 @@ jobs:
           files: |
             all-deps.zip
             all-deps.zip.sha256sum
+            bin/LICENSE
