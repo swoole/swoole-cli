@@ -10,7 +10,9 @@ __PROJECT__=$(
   pwd
 )
 cd ${__PROJECT__}
-export LIBS="  -liconv "
+sed -i.bak 's/ICONV_ALIASED_LIBICONV/HAVE_ICONV/' ext/iconv/iconv.c
+export PATH=/usr/bin:$PATH
+
 export ICU_CXXFLAGS=" -std=gnu++17 "
 ./buildconf --force
 test -f Makefile && make clean
