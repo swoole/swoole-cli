@@ -21,6 +21,7 @@ return function (Preprocessor $p) {
     $options[] = '--enable-swoole-thread';
     $options[] = '--enable-brotli';
     $options[] = '--enable-zstd';
+    $options[] = '--enable-swoole-stdext';
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {
         $options[] = '--enable-iouring';
@@ -56,6 +57,10 @@ return function (Preprocessor $p) {
             CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
             if [[ "${CURRENT_SWOOLE_VERSION}" =~ "-dev" ]]; then
                 echo 'swoole version master'
+                if [ -n "${GITHUB_ACTION}" ]; then
+                    test -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz && rm -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+                    CURRENT_SWOOLE_VERSION=''
+                fi
             fi
         fi
 

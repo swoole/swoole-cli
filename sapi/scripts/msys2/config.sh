@@ -83,6 +83,7 @@ test -f Makefile && make clean
   --enable-swoole-thread \
   --enable-brotli \
   --enable-zstd \
+  --enable-swoole-stdext \
   --enable-redis \
   --enable-opcache \
   --disable-opcache-jit \
