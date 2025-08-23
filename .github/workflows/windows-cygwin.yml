@@ -4,7 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   windows-cygwin:
-    if: ${{  startsWith(github.ref, 'refs/tags/') || !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-cygwin]') }}
+    if: ${{  startsWith(github.ref, 'refs/tags/') || github.event.pull_request.merged || !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-cygwin]') }}
     runs-on: windows-2022
     steps:
       - name: Show Environment Info
