@@ -1,0 +1,118 @@
+name: build-swoole-cli-windows-msys2
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  windows-msys2:
+    if: 0
+    runs-on: windows-2022
+    steps:
+      - name: Show Environment Info
+        shell: cmd
+        run: |
+          ver
+          wmic cpu get name, caption, maxclockspeed, status
+          systeminfo
+          systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+          systeminfo | findstr /B /C:"Manufacturer" /C:"Product" /C:"Version"
+          set
+          ipconfig
+          uname -a
+          pwd
+          ipconfig /all
+
+      - name: Prepare git
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          git config --global core.ignorecase false
+          git config --global --add safe.directory ${{ github.workspace }}
+
+      - uses: actions/checkout@v4
+      - name: Cache msys2 packages
+        id: cache-msys2
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-msys2-packages
+        with:
+          path: C:\msys2-packages
+          key: "${{ runner.os }}-build-${{ env.cache-name }}"
+
+      - name: Cache pool
+        id: cache-msys2-pool
+        uses: actions/cache@v4
+        with:
+          path: "${{ github.workspace }}\\pool\\"
+          key: "${{ runner.os }}-build-pool-cache"
+
+      - uses: msys2/setup-msys2@v2
+        # https://github.com/msys2/setup-msys2
+        with:
+          msystem: MSYS
+          location: C:\msys2-packages
+
+      - name: prepare build environment
+        shell: msys2 {0}
+        run: |
+          bash ./sapi/quickstart/windows/msys2-build/install-msys2.sh
+
+      - name: install deps lib with source code
+        shell: msys2 {0}
+        run: |
+          bash ./sapi/scripts/msys2/install-deps-lib.sh
+
+      - name: Prepare
+        shell: msys2 {0}
+        run: |
+          bash ./sapi/scripts/msys2/config-ext.sh
+
+      - name: Configure
+        shell: msys2 {0}
+        run: |
+          bash ./sapi/scripts/msys2/config.sh
+
+      - name: Build
+        shell: msys2 {0}
+        run: |
+          bash ./sapi/scripts/msys2/build.sh
+
+      - name: Archive
+        shell: msys2 {0}
+        run: |
+          bash ./sapi/scripts/msys2/archive.sh
+
+      - name: Show Build Result
+        shell: msys2 {0}
+        run: |
+          ./bin/swoole-cli.exe -v
+          ./bin/swoole-cli.exe -m
+          ./bin/swoole-cli.exe --ri swoole
+          ./bin/swoole-cli.exe -r "echo PHP_VERSION;"
+          ldd ./bin/swoole-cli.exe
+
+      - name: get app version with bash
+        shell: msys2 {0}
+        run: |
+          APP_VERSION=$(cat ./APP_VERSION)
+          APP_NAME=$(cat ./APP_NAME)
+          echo $APP_VERSION
+          echo $APP_NAME
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+          echo "APP_NAME=${APP_NAME}" >> $GITHUB_ENV
+
+      - name: production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-msys2-x64
+          retention-days: 90
+          path: ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-msys2-x64.zip
+
+      - name: gh release
+        uses: softprops/action-gh-release@v2
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-msys2-x64.zip

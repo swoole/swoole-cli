@@ -36,7 +36,8 @@ return function (Preprocessor $p) {
             -DZSTD_LZ4_SUPPORT=ON \
             -DZLIB_ROOT={$zlib_prefix} \
             -DLibLZMA_ROOT={$liblzma_prefix} \
-            -DLibLZ4_ROOT={$liblz4_prefix}
+            -DLibLZ4_ROOT={$liblz4_prefix} \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 EOF
             )
             ->withMakeOptions('lib')

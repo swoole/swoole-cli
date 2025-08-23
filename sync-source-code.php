@@ -71,7 +71,6 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     cp -rf $SRC/Zend/. ./Zend
 
     # Extension
-
     echo 'clean extension'
     cd ${SRC}/ext/
     EXTENSIONS=$(ls -d */)

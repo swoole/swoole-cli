@@ -11,49 +11,77 @@ __PROJECT__=$(
 )
 cd ${__PROJECT__}
 
-ROOT=${__PROJECT__}
-
 REDIS_VERSION=5.3.7
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.7.0
+SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 
-if [ ! -d pool/ext ]; then
-  mkdir -p pool/ext
-fi
+mkdir -p pool/ext
+mkdir -p pool/lib
+mkdir -p pool/php-tar
 
-cd pool/ext
+WORK_TEMP_DIR=${__PROJECT__}/var/cygwin-build/
+EXT_TEMP_CACHE_DIR=${WORK_TEMP_DIR}/pool/ext/
+mkdir -p ${WORK_TEMP_DIR}
+mkdir -p ${EXT_TEMP_CACHE_DIR}
+test -d ${WORK_TEMP_DIR}/ext/ && rm -rf ${WORK_TEMP_DIR}/ext/
+mkdir -p ${WORK_TEMP_DIR}/ext/
 
-if [ ! -d $ROOT/ext/redis ]; then
-  if [ ! -f redis-${REDIS_VERSION}.tgz ]; then
-    curl -fSLo redis-${REDIS_VERSION}.tgz https://pecl.php.net/get/redis-${REDIS_VERSION}.tgz
+download_and_extract() {
+  local EXT_NAME=$1
+  local EXT_VERSION=$2
+  local EXT_URL="https://pecl.php.net/get/${EXT_NAME}-${EXT_VERSION}.tgz"
+
+  cd ${__PROJECT__}/pool/ext
+  if [ ! -f ${EXT_NAME}-${EXT_VERSION}.tgz ]; then
+    curl -fSLo ${EXT_TEMP_CACHE_DIR}/${EXT_NAME}-${EXT_VERSION}.tgz ${EXT_URL}
+    mv ${EXT_TEMP_CACHE_DIR}/${EXT_NAME}-${EXT_VERSION}.tgz ${__PROJECT__}/pool/ext
   fi
-  tar xvf redis-${REDIS_VERSION}.tgz
-  mv redis-${REDIS_VERSION} $ROOT/ext/redis
-fi
 
-if [ ! -d $ROOT/ext/mongodb ]; then
-  if [ ! -f mongodb-${MONGODB_VERSION}.tgz ]; then
-    curl -fSLo mongodb-${MONGODB_VERSION}.tgz https://pecl.php.net/get/mongodb-${MONGODB_VERSION}.tgz
-  fi
-  tar xvf mongodb-${MONGODB_VERSION}.tgz
-  mv mongodb-${MONGODB_VERSION} $ROOT/ext/mongodb
-fi
+  mkdir -p ${WORK_TEMP_DIR}/ext/${EXT_NAME}/
+  tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/${EXT_NAME}/ -xf ${EXT_NAME}-${EXT_VERSION}.tgz
+}
 
-if [ ! -d $ROOT/ext/yaml ]; then
-  if [ ! -f yaml-${YAML_VERSION}.tgz ]; then
-    curl -fSLo yaml-${YAML_VERSION}.tgz https://pecl.php.net/get/yaml-${YAML_VERSION}.tgz
-  fi
-  tar xvf yaml-${YAML_VERSION}.tgz
-  mv yaml-${YAML_VERSION} $ROOT/ext/yaml
-fi
+# Download and extract extensions
+download_and_extract "redis" ${REDIS_VERSION}
 
-if [ ! -d $ROOT/ext/imagick ]; then
-  if [ ! -f imagick-${IMAGICK_VERSION}.tgz ]; then
-    curl -fSLo imagick-${IMAGICK_VERSION}.tgz https://pecl.php.net/get/imagick-${IMAGICK_VERSION}.tgz
-  fi
-  tar xvf imagick-${IMAGICK_VERSION}.tgz
-  mv imagick-${IMAGICK_VERSION} $ROOT/ext/imagick
-fi
+# mongodb 扩展 不支持 cygwin 环境下构建
+# 详见： https://github.com/mongodb/mongo-php-driver/issues/1381
+# download_and_extract "mongodb" ${MONGODB_VERSION}
 
-cd $ROOT
+download_and_extract "yaml" ${YAML_VERSION}
+download_and_extract "imagick" ${IMAGICK_VERSION}
+
+cd ${__PROJECT__}/pool/ext
+# with git clone swoole source code
+if [ -n "${GITHUB_ACTION}" ]; then
+  test -f ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz && rm -f ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+fi
+if [ ! -f swoole-${SWOOLE_VERSION}.tgz ]; then
+  test -d ${WORK_TEMP_DIR}/swoole && rm -rf ${WORK_TEMP_DIR}/swoole
+  git clone -b ${SWOOLE_VERSION} https://github.com/swoole/swoole-src.git ${WORK_TEMP_DIR}/swoole
+  cd ${WORK_TEMP_DIR}/swoole
+  tar -czvf ${EXT_TEMP_CACHE_DIR}/swoole-${SWOOLE_VERSION}.tgz .
+  mv ${EXT_TEMP_CACHE_DIR}/swoole-${SWOOLE_VERSION}.tgz ${__PROJECT__}/pool/ext
+  cd ${__PROJECT__}/pool/ext
+fi
+mkdir -p ${WORK_TEMP_DIR}/ext/swoole/
+tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/swoole/ -xf ${__PROJECT__}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+
+cd ${__PROJECT__}
+# clean extension folder
+NO_BUILT_IN_EXTENSIONS=$(ls ${WORK_TEMP_DIR}/ext/)
+for EXT_NAME in $NO_BUILT_IN_EXTENSIONS; do
+  echo "EXTENSION_NAME: $EXT_NAME "
+  test -d ${__PROJECT__}/ext/${EXT_NAME} && rm -rf ${__PROJECT__}/ext/${EXT_NAME}
+done
+
+cd ${__PROJECT__}
+# copy extension
+# cp -rf var/cygwin-build/ext/* ext/
+cp -rf ${WORK_TEMP_DIR}/ext/. ${__PROJECT__}/ext/
+
+# extension hook
+
+cd ${__PROJECT__}
