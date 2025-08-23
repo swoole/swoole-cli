@@ -12,7 +12,6 @@ __PROJECT__=$(
 cd ${__PROJECT__}
 
 OPTIONS=''
-OPTIONS+=' --disable-opcache-jit '
 
 X_PHP_VERSION=''
 while [ $# -gt 0 ]; do
