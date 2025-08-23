@@ -4,7 +4,8 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
-    $file = "swoole-latest.tar.gz";
+    $swoole_tag = 'master';
+    $file = "swoole-v{$swoole_tag}.tar.gz";
     $options = [];
 
     if ($p->getBuildType() === 'debug') {
@@ -42,7 +43,8 @@ return function (Preprocessor $p) {
         $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
     }
 
-    $p->addExtension((new Extension('swoole'))
+    $p->addExtension((new Extension('swoole_latest'))
+        ->withAliasName('swoole')
         ->withHomePage('https://github.com/swoole/swoole-src')
         ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
         ->withManual('https://wiki.swoole.com/#/')
@@ -50,7 +52,7 @@ return function (Preprocessor $p) {
         ->withDownloadScript(
             'swoole-src',
             <<<EOF
-            git clone -b master --depth=1 https://github.com/swoole/swoole-src.git
+            git clone -b $swoole_tag --depth=1 https://github.com/swoole/swoole-src.git
 EOF
         )
         ->withAutoUpdateFile()
