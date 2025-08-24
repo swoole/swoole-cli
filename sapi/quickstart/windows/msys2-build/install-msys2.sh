@@ -51,18 +51,17 @@ fi
 pacman -S --needed --noconfirm git curl wget openssl
 pacman -S --needed --noconfirm zip unzip xz gcc gcc-libs cmake make
 pacman -S --needed --noconfirm re2c
-pacman -S --needed --noconfirm openssl-devel libreadline
 pacman -S --needed --noconfirm lzip
 pacman -S --needed --noconfirm zip unzip
 pacman -S --needed --noconfirm zlib-devel
 pacman -S --needed --noconfirm bison automake autoconf libtool coreutils
+pacman -S --needed --noconfirm openssl-devel libreadline-devel libiconv-devel
 pacman -S --needed --noconfirm libcurl-devel libxml2-devel libxslt-devel
 pacman -S --needed --noconfirm libbz2-devel liblz4-devel liblzma-devel libcares-devel
-pacman -S --needed --noconfirm libyaml-devel libzstd-devel libreadline-devel
-pacman -S --needed --noconfirm libssh2-devel libidn2-devel gettext-devel
 pacman -S --needed --noconfirm libzstd-devel
-pacman -S --needed --noconfirm icu-devel
-pacman -S --needed --noconfirm libsqlite-devel libsqlite
+pacman -S --needed --noconfirm libyaml-devel
+pacman -S --needed --noconfirm libssh2-devel libidn2-devel gettext-devel
+pacman -S --needed --noconfirm libsqlite-devel
 pacman -S --needed --noconfirm libedit-devel
 pacman -S --needed --noconfirm gmp-devel
 pacman -S --needed --noconfirm brotli-devel

@@ -93,7 +93,7 @@ jobs:
           php prepare.php  --show-tarball-hash=1 --with-php-version=8.3.23
           php prepare.php  --show-tarball-hash=1 --with-php-version=8.4.10
 
-          echo 'cygwin: https://www.cygwin.com/COPYING' > bin/LICENSE
+          echo 'cygwin: https://www.cygwin.com/COPYING' >> bin/LICENSE
           cd ${{ github.workspace }}/pool/
           zip -9 -r ${WORK_DIR}/all-deps.zip ext lib php-tar
           HASH=$(sha256sum ${WORK_DIR}/all-deps.zip | awk '{print $1}')

@@ -26,10 +26,8 @@ return function (Preprocessor $p) {
             ->withDownloadScript(
                 "swow",
                 <<<EOF
-                git clone -b develop https://github.com/swow/swow.git
-                mv swow swow-t
-                mv swow-t/ext  swow
-                rm -rf swow-t
+                git clone -b develop https://github.com/swow/swow.git swow-code
+                mv swow-code/ext  swow
 EOF
             )
             ->withDependentLibraries(...$dependentLibraries)
