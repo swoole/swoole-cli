@@ -116,7 +116,7 @@ test -f ${APP_RUNTIME} || curl -fSLo ${APP_RUNTIME} https://github.com/tencentyu
 chmod a+x ${APP_RUNTIME}
 
 BUCKET_NAME=$(grep "\- name: " ${CLOUD_OBJECT_STORAGE_CONFIG} | sed 's/\- name: //g' | sed 's/^ *//;s/ *$//' | tr -d '"')
-COSCLI="${__PROJECT__}/var/tencent-cloud-object-storage/${APP_RUNTIME} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} --log-path ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log "
+COSCLI="${__PROJECT__}/var/tencent-cloud-object-storage/${APP_RUNTIME} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} --log-path ${__PROJECT__}/var/tencent-cloud-object-storage/"
 COS_BUCKET_FOLDER="cos://${BUCKET_NAME}/dist/"
 
 if [ "${UPLOAD_TYPE}" == 'all' ]; then
