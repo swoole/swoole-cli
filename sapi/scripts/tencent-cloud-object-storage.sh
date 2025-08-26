@@ -135,17 +135,17 @@ set -u
 if [ "${UPLOAD_TYPE}" == 'all' ]; then
   SWOOLE_VERSION=$(echo ${SWOOLE_CLI_VERSION} | awk -F '.' '{ printf "%s.%s.%s" ,$1,$2,$3 }')
   cd ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION}
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip ${COS_BUCKET_FOLDER}
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz ${COS_BUCKET_FOLDER}
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz ${COS_BUCKET_FOLDER}
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz ${COS_BUCKET_FOLDER}
-  ${COSCLI} sync swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz ${COS_BUCKET_FOLDER}
+  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip ${COS_BUCKET_FOLDER}
+  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz ${COS_BUCKET_FOLDER}
+  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz ${COS_BUCKET_FOLDER}
+  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz ${COS_BUCKET_FOLDER}
+  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz ${COS_BUCKET_FOLDER}
   cd ${__PROJECT__}
   exit 0
 fi
 
 if [ "${UPLOAD_TYPE}" == 'single' ]; then
-  ${COSCLI} sync ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
+  ${COSCLI} cp ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
   exit 0
 fi
 
