@@ -139,9 +139,9 @@ fi
 
 if [ ! -f "${__PROJECT__}/runtime/php/php" ]; then
   if [ "$MIRROR" = 'china' ]; then
-    bash sapi/quickstart/setup-php-runtime.sh --mirror china
+    bash ${__PROJECT__}/setup-php-runtime.sh --mirror china
   else
-    bash sapi/quickstart/setup-php-runtime.sh
+    bash ${__PROJECT__}/setup-php-runtime.sh
   fi
 fi
 

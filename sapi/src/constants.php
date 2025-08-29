@@ -63,4 +63,3 @@ define("LIBGAV1_PREFIX", $p->getGlobalPrefix() . '/libgav1');
 define("AOM_PREFIX", $p->getGlobalPrefix() . '/aom');
 define("SVT_AV1_PREFIX", $p->getGlobalPrefix() . '/svt_av1');
 define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
-

@@ -800,9 +800,7 @@ class Preprocessor
         }
 
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
-
         shell_exec('chmod a+x ' . $this->rootDir . '/make.sh');
-
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
         $this->generateFile(__DIR__ . '/template/credits.php', $this->rootDir . '/bin/credits.html');

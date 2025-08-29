@@ -5,7 +5,6 @@ $php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'
 $php_source_folder = $poject_dir . "/var/php-{$php_version_tag}";
 $php_archive_file = $poject_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
 $php_archive_file_sha256sum = '41c9e703caaf73ba6c77ee641709a3a5378a5dcb7bcc1fd1997f6e156a84abd4';
-
 $download_dir = dirname($php_archive_file);
 $download_php_counter = 0;
 

@@ -36,7 +36,7 @@ try
 
     if ($mirror -eq 'china')
     {
-        $APP_DOWNLOAD_URL = "https://wenda-1252906962.file.myqcloud.com/dist/$APP_NAME-$APP_VERSION-cygwin-x64.zip"
+        $APP_DOWNLOAD_URL = "https://storage.swoole.com/dist/$APP_NAME-$APP_VERSION-cygwin-x64.zip"
     }
     if ($proxy -ne '')
     {
@@ -47,13 +47,17 @@ try
     {
         if (Get-Command "curl.exe" -ErrorAction SilentlyContinue)
         {
-            curl.exe -fSLo "$TMP_APP_RUNTIME\$FILE" $APP_DOWNLOAD_URL
+            curl.exe -H 'Referer: https://www.swoole.com/download' -H 'User-Agent: download swoole-cli runtime with setup-swoole-cli-runtime.ps1' -fSLo "$TMP_APP_RUNTIME\$FILE" $APP_DOWNLOAD_URL
         }
         else
         {
+            $headers = @{
+                'User-Agent' = 'download swoole-cli runtime with setup-swoole-cli-runtime.ps1'
+                'Referer' = 'https://www.swoole.com/download'
+            }
             # Invoke-WebRequest $APP_DOWNLOAD_URL -UseBasicParsing -OutFile $FILE
             # Invoke-WebRequest -Uri $APP_DOWNLOAD_URL -OutFile  $FILE
-            irm $APP_DOWNLOAD_URL -outfile "$TMP_APP_RUNTIME\$FILE"
+            irm $APP_DOWNLOAD_URL -Headers $headers -outfile "$TMP_APP_RUNTIME\$FILE"
         }
     }
 
