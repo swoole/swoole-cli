@@ -1,4 +1,4 @@
-# v6.1.0.0-rc1
+# [v6.1.0.0-rc1](https://github.com/swoole/swoole-cli/releases/tag/v6.1.0.0-rc1)
 
 | item           | value        |
 |----------------|--------------|
@@ -14,7 +14,7 @@
 1. swoole version v6.0.2.0 upgrade to
    v6.1.0.0-rc1 , [swoole v6.1.0-rc1 info](https://github.com/swoole/swoole-src/releases/tag/v6.1.0-rc1)
 
-# v5.1.8.0
+# [v5.1.8.0](https://github.com/swoole/swoole-cli/releases/tag/v5.1.8.0)
 
 | item           | value      |
 |----------------|------------|
