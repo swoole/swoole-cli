@@ -45,6 +45,8 @@
 - [Swoole v6 即将增加多线程支持](https://zhuanlan.zhihu.com/p/688462525)
 - [phpy：连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://zhuanlan.zhihu.com/p/670373512)
 
+## [常见问题解答](https://github.com/swoole/swoole-cli/blob/main/docs/FAQ.md)
+
 ## 下载`swoole-cli`发行版
 
 - [https://www.swoole.com/download](https://www.swoole.com/download) (recommend)
