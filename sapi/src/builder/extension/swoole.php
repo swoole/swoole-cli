@@ -44,6 +44,8 @@ return function (Preprocessor $p) {
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
+    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs   --static  odbc odbccr odbcinst readline ncursesw )' . " -liconv");
+
 
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
