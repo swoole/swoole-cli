@@ -22,7 +22,6 @@
 - [Swoole-Cli v5.0.1 使用说明](https://wenda.swoole.com/detail/108876)
 - [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://wenda.swoole.com/detail/108706)
 - [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
-- [Swoole RFC ](https://github.com/swoole/rfc/)
 - [Swoole v6.1 将提供 typed array 强类型数组实现，增强 PHP 标准库](https://mp.weixin.qq.com/s/yFuxYdNMqxI1VuZg0J07Wg)
 - [Swoole v6 2024 重磅更新：Swoole v6 正式发布，增加 16 项新功能](https://mp.weixin.qq.com/s/Ks1x1LNTLdl5jk0sIS6V_w)
 - [Swoole v6 协程是否支持 PHP 的 JIT ](https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA)
@@ -44,6 +43,8 @@
 - [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://zhuanlan.zhihu.com/p/610014616)
 - [Swoole v6 即将增加多线程支持](https://zhuanlan.zhihu.com/p/688462525)
 - [phpy：连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://zhuanlan.zhihu.com/p/670373512)
+
+## [常见问题解答](https://github.com/swoole/swoole-cli/blob/main/docs/FAQ.md)
 
 ## 下载`swoole-cli`发行版
 
