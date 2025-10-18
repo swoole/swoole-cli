@@ -179,6 +179,7 @@ before_configure_script() {
 export_variables() {
     set -x
     CPPFLAGS=""
+    CXXFLAGS=""
     CFLAGS=""
     LDFLAGS=""
     LIBS=""
@@ -190,15 +191,15 @@ export_variables() {
 <?php foreach ($this->exportVariables as $value) : ?>
     export <?= key($value) ?>="<?= current($value) ?>"
 <?php endforeach; ?>
-
+    export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export CXXFLAGS=$(echo $CXXFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export CFLAGS=$(echo $CFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
+    export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 <?php if ($this->hasExtension('opcache')):?>
     export CFLAGS="$CFLAGS -DPHP_ENABLE_OPCACHE"
     export CPPFLAGS="$CPPFLAGS -DPHP_ENABLE_OPCACHE"
 <?php endif; ?>
-
-    export CPPFLAGS=$(echo $CPPFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-    export LDFLAGS=$(echo $LDFLAGS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
-    export LIBS=$(echo $LIBS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 <?php if ($this->isMacos() && !empty($this->frameworks)):?>
     # MACOS 链接 framework
     export LDFLAGS="$LDFLAGS <?php foreach($this->frameworks as $framework) { echo "-framework $framework "; } ?>"
