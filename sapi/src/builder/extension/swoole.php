@@ -5,6 +5,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+    $libiconv_prefix = ICONV_PREFIX;
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
@@ -44,6 +45,8 @@ return function (Preprocessor $p) {
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
+
+    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs   --static  odbc odbccr odbcinst readline ncursesw )' . "-L${$libiconv_prefix}/lib -liconv");
 
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
