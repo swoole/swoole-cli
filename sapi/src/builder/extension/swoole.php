@@ -46,7 +46,7 @@ return function (Preprocessor $p) {
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 
-    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs   --static  odbc odbccr odbcinst readline ncursesw )' . " -L${$libiconv_prefix}/lib -liconv ");
+    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs   --static  odbc odbccr odbcinst readline ncursesw )  -L'. $libiconv_prefix . '/lib -liconv ');
 
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
@@ -78,7 +78,10 @@ return function (Preprocessor $p) {
             mkdir -p ${WORKDIR}/ext/swoole/
             tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
         fi
+
         # swoole extension hook
+        cd ${WORKDIR}
+        sed -i.bakup 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
 EOF;
 
         return $shell;
