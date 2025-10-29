@@ -46,7 +46,7 @@ return function (Preprocessor $p) {
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 
-    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L   --static  odbc odbccr odbcinst readline ncursesw ) $(pkg-config  --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) -L' . $libiconv_prefix . '/lib -liconv ');
+    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) -L' . $libiconv_prefix . '/lib -liconv ');
 
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
