@@ -79,8 +79,15 @@ return function (Preprocessor $p) {
             tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
         fi
         # swoole extension hook
+
 EOF;
 
-        return $shell;
+        if ($p->isMacos()) {
+            $extension_hook_shell = <<<EOF
+        cd {$workDir}/
+        sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+EOF;
+        }
+        return $shell . $extension_hook_shell;
     });
 };
