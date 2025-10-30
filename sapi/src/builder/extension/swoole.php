@@ -85,7 +85,8 @@ EOF;
         if ($p->isMacos()) {
             $extension_hook_shell = <<<EOF
         cd {$workDir}/
-        sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+        sed -i.bak 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+
 EOF;
         }
         return $shell . $extension_hook_shell;
