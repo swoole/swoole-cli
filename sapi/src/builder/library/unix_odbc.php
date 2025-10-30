@@ -43,6 +43,8 @@ EOF
             rm -rf {$unix_odbc_prefix}/lib/*.so.*
             rm -rf {$unix_odbc_prefix}/lib/*.so
             rm -rf {$unix_odbc_prefix}/lib/*.dylib
+            sed -i.bak 's@$(top_build_prefix)libltdl/libltdlc.la@@' {$unix_odbc_prefix}/lib/pkgconfig/odbc.pc
+            sed -i.bak 's@$(top_build_prefix)libltdl/libltdlc.la@@' {$unix_odbc_prefix}/lib/pkgconfig/odbcinst.pc
 EOF
             )
             ->withDependentLibraries('readline', 'libiconv')
