@@ -1,10 +1,10 @@
 <?php
 
-$poject_dir = realpath(__DIR__ . '/../../');
-$php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'));
-$php_source_folder = $poject_dir . "/var/php-{$php_version_tag}";
-$php_archive_file = $poject_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
-$php_archive_file_sha256sum = '41c9e703caaf73ba6c77ee641709a3a5378a5dcb7bcc1fd1997f6e156a84abd4';
+$project_dir = realpath(__DIR__ . '/../../');
+$php_version_tag = trim(file_get_contents($project_dir . '/sapi/PHP-VERSION.conf'));
+$php_source_folder = $project_dir . "/var/php-{$php_version_tag}";
+$php_archive_file = $project_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
+$php_archive_file_sha256sum = '40341f3e03a36d48facdb6cc2ec600ff887a1af9a5e5fee0b40f40b61488afae';
 $download_dir = dirname($php_archive_file);
 $download_php_counter = 0;
 
