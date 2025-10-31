@@ -163,6 +163,7 @@ PHP_OPCACHE_H_EOF
 
     cp -f $SRC/configure.ac ./configure.ac
     cp -f $SRC/buildconf ./buildconf
+    cp -f $SRC/.gdbinit ./.gdbinit
     cp -f $SRC/run-tests.php ./run-tests.php
 
     # scripts
