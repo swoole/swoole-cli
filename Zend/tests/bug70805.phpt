@@ -3,16 +3,18 @@ Bug #70805 (Segmentation faults whilst running Drupal 8 test suite)
 --FILE--
 <?php
 class A {
+    public $b;
 }
 
 class B {
+    public $a;
 }
 
 class C {
     public function __destruct() {
         if (isset($GLOBALS["a"])) {
             unset($GLOBALS["array"]);
-            unset($GLOBALS["a"]); // this will be called in gc_colloct_roots and put $a into gc roots buf
+            unset($GLOBALS["a"]); // this will be called in gc_collect_roots and put $a into gc roots buf
         }
     }
 }
@@ -34,12 +36,12 @@ while ($i++ < 9998) {
 }
 $t = [new C];
 $t[] = &$t;
-unset($t); // This is used to trigger C::__destruct while doing gc_colloct_roots
+unset($t); // This is used to trigger C::__destruct while doing gc_collect_roots
 
 $e = $a;
-unset($a); // This one can not be putted into roots buf because it's full, thus gc_colloct_roots will be called,
-           // but C::__destructor which is called in gc_colloct_roots will put $a into buf
-           // which will make $a be putted into gc roots buf twice
+unset($a); // This one cannot be put into roots buf because it's full, thus gc_collect_roots will be called,
+           // but C::__destructor which is called in gc_collect_roots will put $a into buf
+           // which will make $a be put into gc roots buf twice
 var_dump(gc_collect_cycles());
 ?>
 --EXPECT--

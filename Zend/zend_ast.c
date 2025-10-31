@@ -101,7 +101,7 @@ ZEND_API zend_ast * ZEND_FASTCALL zend_ast_create_constant(zend_string *name, ze
 
 ZEND_API zend_ast * ZEND_FASTCALL zend_ast_create_class_const_or_name(zend_ast *class_name, zend_ast *name) {
 	zend_string *name_str = zend_ast_get_str(name);
-	if (zend_string_equals_literal_ci(name_str, "class")) {
+	if (zend_string_equals_ci(name_str, ZSTR_KNOWN(ZEND_STR_CLASS))) {
 		zend_string_release(name_str);
 		return zend_ast_create(ZEND_AST_CLASS_NAME, class_name);
 	} else {
@@ -121,7 +121,6 @@ ZEND_API zend_ast *zend_ast_create_decl(
 	ast->start_lineno = start_lineno;
 	ast->end_lineno = CG(zend_lineno);
 	ast->flags = flags;
-	ast->lex_pos = LANG_SCNG(yy_text);
 	ast->doc_comment = doc_comment;
 	ast->name = name;
 	ast->child[0] = child0;
@@ -268,6 +267,43 @@ ZEND_API zend_ast * ZEND_FASTCALL zend_ast_create_5(zend_ast_kind kind, zend_ast
 	}
 	ast->lineno = lineno;
 
+	return ast;
+}
+
+ZEND_API zend_ast * ZEND_FASTCALL zend_ast_create_va(
+		zend_ast_kind kind, zend_ast_attr attr, va_list *va) {
+	uint32_t lineno = (uint32_t)-1;
+	uint32_t children = kind >> ZEND_AST_NUM_CHILDREN_SHIFT;
+	zend_ast *ast = zend_ast_alloc(zend_ast_size(children));
+	ast->kind = kind;
+	ast->attr = attr;
+	for (uint32_t i = 0; i < children; i++) {
+		ast->child[i] = va_arg(*va, zend_ast *);
+		if (lineno == (uint32_t)-1 && ast->child[i]) {
+			lineno = zend_ast_get_lineno(ast->child[i]);
+		}
+	}
+	if (lineno == (uint32_t)-1) {
+		lineno = CG(zend_lineno);
+	}
+	ast->lineno = lineno;
+	return ast;
+}
+
+ZEND_API zend_ast * zend_ast_create_n(unsigned kind, ...) {
+	va_list va;
+	va_start(va, kind);
+	zend_ast *ast = zend_ast_create_va(kind, 0, &va);
+	va_end(va);
+	return ast;
+}
+
+ZEND_API zend_ast * zend_ast_create_ex_n(
+		zend_ast_kind kind, unsigned attr, ...) {
+	va_list va;
+	va_start(va, attr);
+	zend_ast *ast = zend_ast_create_va(kind, attr, &va);
+	va_end(va);
 	return ast;
 }
 
@@ -420,6 +456,19 @@ ZEND_API zend_ast *zend_ast_create_list(uint32_t init_children, zend_ast_kind ki
 }
 #endif
 
+zend_ast *zend_ast_create_concat_op(zend_ast *op0, zend_ast *op1) {
+	if (op0->kind == ZEND_AST_ZVAL && op1->kind == ZEND_AST_ZVAL) {
+		zval *zv0 = zend_ast_get_zval(op0);
+		zval *zv1 = zend_ast_get_zval(op1);
+		if (!zend_binary_op_produces_error(ZEND_CONCAT, zv0, zv1) &&
+				concat_function(zv0, zv0, zv1) == SUCCESS) {
+			zval_ptr_dtor_nogc(zv1);
+			return zend_ast_create_zval(zv0);
+		}
+	}
+	return zend_ast_create_binary_op(ZEND_CONCAT, op0, op1);
+}
+
 static inline bool is_power_of_two(uint32_t n) {
 	return ((n != 0) && (n == (n & (~n + 1))));
 }
@@ -479,48 +528,88 @@ static zend_result zend_ast_add_unpacked_element(zval *result, zval *expr) {
 	return FAILURE;
 }
 
-zend_class_entry *zend_ast_fetch_class(zend_ast *ast, zend_class_entry *scope)
+static zend_class_entry *zend_ast_fetch_class(zend_ast *ast, zend_class_entry *scope)
 {
 	return zend_fetch_class_with_scope(zend_ast_get_str(ast), (ast->attr >> ZEND_CONST_EXPR_NEW_FETCH_TYPE_SHIFT) | ZEND_FETCH_CLASS_EXCEPTION, scope);
 }
 
-ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast, zend_class_entry *scope)
-{
+ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate_inner(
+	zval *result,
+	zend_ast *ast,
+	zend_class_entry *scope,
+	bool *short_circuited_ptr,
+	zend_ast_evaluate_ctx *ctx
+);
+
+ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate_ex(
+	zval *result,
+	zend_ast *ast,
+	zend_class_entry *scope,
+	bool *short_circuited_ptr,
+	zend_ast_evaluate_ctx *ctx
+) {
+	zend_string *previous_filename;
+	zend_long previous_lineno;
+	if (scope) {
+		previous_filename = EG(filename_override);
+		previous_lineno = EG(lineno_override);
+		EG(filename_override) = scope->info.user.filename;
+		EG(lineno_override) = zend_ast_get_lineno(ast);
+	}
+	zend_result r = zend_ast_evaluate_inner(result, ast, scope, short_circuited_ptr, ctx);
+	if (scope) {
+		EG(filename_override) = previous_filename;
+		EG(lineno_override) = previous_lineno;
+	}
+	return r;
+}
+
+ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate_inner(
+	zval *result,
+	zend_ast *ast,
+	zend_class_entry *scope,
+	bool *short_circuited_ptr,
+	zend_ast_evaluate_ctx *ctx
+) {
 	zval op1, op2;
 	zend_result ret = SUCCESS;
+	bool short_circuited;
+	*short_circuited_ptr = false;
 
 	switch (ast->kind) {
 		case ZEND_AST_BINARY_OP:
-			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
-			} else if (UNEXPECTED(zend_ast_evaluate(&op2, ast->child[1], scope) != SUCCESS)) {
+			} else if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
 				zval_ptr_dtor_nogc(&op1);
 				ret = FAILURE;
 			} else {
 				binary_op_type op = get_binary_op(ast->attr);
-				ret = op(result, &op1, &op2);
+				op(result, &op1, &op2);
 				zval_ptr_dtor_nogc(&op1);
 				zval_ptr_dtor_nogc(&op2);
+				ret = EG(exception) ? FAILURE : SUCCESS;
 			}
 			break;
 		case ZEND_AST_GREATER:
 		case ZEND_AST_GREATER_EQUAL:
-			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
-			} else if (UNEXPECTED(zend_ast_evaluate(&op2, ast->child[1], scope) != SUCCESS)) {
+			} else if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
 				zval_ptr_dtor_nogc(&op1);
 				ret = FAILURE;
 			} else {
 				/* op1 > op2 is the same as op2 < op1 */
 				binary_op_type op = ast->kind == ZEND_AST_GREATER
 					? is_smaller_function : is_smaller_or_equal_function;
-				ret = op(result, &op2, &op1);
+				op(result, &op2, &op1);
 				zval_ptr_dtor_nogc(&op1);
 				zval_ptr_dtor_nogc(&op2);
+				ret = EG(exception) ? FAILURE : SUCCESS;
 			}
 			break;
 		case ZEND_AST_UNARY_OP:
-			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
 			} else {
 				unary_op_type op = get_unary_op(ast->attr);
@@ -573,12 +662,12 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			}
 			break;
 		case ZEND_AST_AND:
-			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
 				break;
 			}
 			if (zend_is_true(&op1)) {
-				if (UNEXPECTED(zend_ast_evaluate(&op2, ast->child[1], scope) != SUCCESS)) {
+				if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
 					zval_ptr_dtor_nogc(&op1);
 					ret = FAILURE;
 					break;
@@ -591,14 +680,14 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			zval_ptr_dtor_nogc(&op1);
 			break;
 		case ZEND_AST_OR:
-			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
 				break;
 			}
 			if (zend_is_true(&op1)) {
 				ZVAL_TRUE(result);
 			} else {
-				if (UNEXPECTED(zend_ast_evaluate(&op2, ast->child[1], scope) != SUCCESS)) {
+				if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
 					zval_ptr_dtor_nogc(&op1);
 					ret = FAILURE;
 					break;
@@ -609,7 +698,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			zval_ptr_dtor_nogc(&op1);
 			break;
 		case ZEND_AST_CONDITIONAL:
-			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
 				break;
 			}
@@ -617,7 +706,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 				if (!ast->child[1]) {
 					*result = op1;
 				} else {
-					if (UNEXPECTED(zend_ast_evaluate(result, ast->child[1], scope) != SUCCESS)) {
+					if (UNEXPECTED(zend_ast_evaluate_ex(result, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
 						zval_ptr_dtor_nogc(&op1);
 						ret = FAILURE;
 						break;
@@ -625,7 +714,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 					zval_ptr_dtor_nogc(&op1);
 				}
 			} else {
-				if (UNEXPECTED(zend_ast_evaluate(result, ast->child[2], scope) != SUCCESS)) {
+				if (UNEXPECTED(zend_ast_evaluate_ex(result, ast->child[2], scope, &short_circuited, ctx) != SUCCESS)) {
 					zval_ptr_dtor_nogc(&op1);
 					ret = FAILURE;
 					break;
@@ -634,14 +723,14 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			}
 			break;
 		case ZEND_AST_COALESCE:
-			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
 				break;
 			}
 			if (Z_TYPE(op1) > IS_NULL) {
 				*result = op1;
 			} else {
-				if (UNEXPECTED(zend_ast_evaluate(result, ast->child[1], scope) != SUCCESS)) {
+				if (UNEXPECTED(zend_ast_evaluate_ex(result, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
 					zval_ptr_dtor_nogc(&op1);
 					ret = FAILURE;
 					break;
@@ -650,7 +739,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			}
 			break;
 		case ZEND_AST_UNARY_PLUS:
-			if (UNEXPECTED(zend_ast_evaluate(&op2, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
 			} else {
 				ZVAL_LONG(&op1, 0);
@@ -659,7 +748,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			}
 			break;
 		case ZEND_AST_UNARY_MINUS:
-			if (UNEXPECTED(zend_ast_evaluate(&op2, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
 			} else {
 				ZVAL_LONG(&op1, -1);
@@ -680,7 +769,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 				for (i = 0; i < list->children; i++) {
 					zend_ast *elem = list->child[i];
 					if (elem->kind == ZEND_AST_UNPACK) {
-						if (UNEXPECTED(zend_ast_evaluate(&op1, elem->child[0], scope) != SUCCESS)) {
+						if (UNEXPECTED(zend_ast_evaluate_ex(&op1, elem->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 							zval_ptr_dtor_nogc(result);
 							return FAILURE;
 						}
@@ -693,14 +782,14 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 						continue;
 					}
 					if (elem->child[1]) {
-						if (UNEXPECTED(zend_ast_evaluate(&op1, elem->child[1], scope) != SUCCESS)) {
+						if (UNEXPECTED(zend_ast_evaluate_ex(&op1, elem->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
 							zval_ptr_dtor_nogc(result);
 							return FAILURE;
 						}
 					} else {
 						ZVAL_UNDEF(&op1);
 					}
-					if (UNEXPECTED(zend_ast_evaluate(&op2, elem->child[0], scope) != SUCCESS)) {
+					if (UNEXPECTED(zend_ast_evaluate_ex(&op2, elem->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 						zval_ptr_dtor_nogc(&op1);
 						zval_ptr_dtor_nogc(result);
 						return FAILURE;
@@ -719,9 +808,14 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 				zend_error_noreturn(E_COMPILE_ERROR, "Cannot use [] for reading");
 			}
 
-			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
 				ret = FAILURE;
 				break;
+			}
+			if (short_circuited) {
+				*short_circuited_ptr = true;
+				ZVAL_NULL(result);
+				return SUCCESS;
 			}
 
 			// DIM on objects is disallowed because it allows executing arbitrary expressions
@@ -732,7 +826,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 				break;
 			}
 
-			if (UNEXPECTED(zend_ast_evaluate(&op2, ast->child[1], scope) != SUCCESS)) {
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
 				zval_ptr_dtor_nogc(&op1);
 				ret = FAILURE;
 				break;
@@ -762,25 +856,54 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			zend_string *case_name = zend_ast_get_str(case_name_ast);
 
 			zend_ast *case_value_ast = ast->child[2];
-			zval *case_value_zv = case_value_ast != NULL
-				? zend_ast_get_zval(case_value_ast)
-				: NULL;
+
+			zval case_value_zv;
+			ZVAL_UNDEF(&case_value_zv);
+			if (case_value_ast != NULL) {
+				if (UNEXPECTED(zend_ast_evaluate_ex(&case_value_zv, case_value_ast, scope, &short_circuited, ctx) != SUCCESS)) {
+					return FAILURE;
+				}
+			}
 
 			zend_class_entry *ce = zend_lookup_class(class_name);
-			zend_enum_new(result, ce, case_name, case_value_zv);
+			zend_enum_new(result, ce, case_name, case_value_ast != NULL ? &case_value_zv : NULL);
+			zval_ptr_dtor_nogc(&case_value_zv);
 			break;
 		}
 		case ZEND_AST_CLASS_CONST:
 		{
 			zend_string *class_name = zend_ast_get_str(ast->child[0]);
-			zend_string *const_name = zend_ast_get_str(ast->child[1]);
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
+				return FAILURE;
+			}
+			if (UNEXPECTED(Z_TYPE(op2) != IS_STRING)) {
+				zend_invalid_class_constant_type_error(Z_TYPE(op2));
+				zval_ptr_dtor_nogc(&op2);
+				return FAILURE;
+			}
+			zend_string *const_name = Z_STR(op2);
+
+			zend_string *previous_filename;
+			zend_long previous_lineno;
+			if (scope) {
+				previous_filename = EG(filename_override);
+				previous_lineno = EG(lineno_override);
+				EG(filename_override) = scope->info.user.filename;
+				EG(lineno_override) = zend_ast_get_lineno(ast);
+			}
 			zval *zv = zend_get_class_constant_ex(class_name, const_name, scope, ast->attr);
+			if (scope) {
+				EG(filename_override) = previous_filename;
+				EG(lineno_override) = previous_lineno;
+			}
 
 			if (UNEXPECTED(zv == NULL)) {
 				ZVAL_UNDEF(result);
+				zval_ptr_dtor_nogc(&op2);
 				return FAILURE;
 			}
 			ZVAL_COPY_OR_DUP(result, zv);
+			zval_ptr_dtor_nogc(&op2);
 			break;
 		}
 		case ZEND_AST_NEW:
@@ -794,6 +917,9 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 				return FAILURE;
 			}
 
+			/* Even if there is no constructor, the object can have cause side-effects in various ways (__toString(), __get(), __isset(), etc). */
+			ctx->had_side_effects = true;
+
 			zend_ast_list *args_ast = zend_ast_get_list(ast->child[1]);
 			if (args_ast->attr) {
 				/* Has named arguments. */
@@ -806,7 +932,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 						name = zend_ast_get_str(arg_ast->child[0]);
 						arg_ast = arg_ast->child[1];
 					}
-					if (zend_ast_evaluate(&arg, arg_ast, scope) == FAILURE) {
+					if (zend_ast_evaluate_ex(&arg, arg_ast, scope, &short_circuited, ctx) == FAILURE) {
 						zend_array_destroy(args);
 						zval_ptr_dtor(result);
 						return FAILURE;
@@ -836,7 +962,7 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 				ALLOCA_FLAG(use_heap)
 				zval *args = do_alloca(sizeof(zval) * args_ast->children, use_heap);
 				for (uint32_t i = 0; i < args_ast->children; i++) {
-					if (zend_ast_evaluate(&args[i], args_ast->child[i], scope) == FAILURE) {
+					if (zend_ast_evaluate_ex(&args[i], args_ast->child[i], scope, &short_circuited, ctx) == FAILURE) {
 						for (uint32_t j = 0; j < i; j++) {
 							zval_ptr_dtor(&args[j]);
 						}
@@ -865,11 +991,79 @@ ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast
 			}
 			return SUCCESS;
 		}
+		case ZEND_AST_PROP:
+		case ZEND_AST_NULLSAFE_PROP:
+		{
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op1, ast->child[0], scope, &short_circuited, ctx) != SUCCESS)) {
+				return FAILURE;
+			}
+			if (short_circuited) {
+				*short_circuited_ptr = true;
+				ZVAL_NULL(result);
+				return SUCCESS;
+			}
+			if (ast->kind == ZEND_AST_NULLSAFE_PROP && Z_TYPE(op1) == IS_NULL) {
+				*short_circuited_ptr = true;
+				ZVAL_NULL(result);
+				return SUCCESS;
+			}
+
+			if (UNEXPECTED(zend_ast_evaluate_ex(&op2, ast->child[1], scope, &short_circuited, ctx) != SUCCESS)) {
+				zval_ptr_dtor_nogc(&op1);
+				return FAILURE;
+			}
+
+			if (!try_convert_to_string(&op2)) {
+				zval_ptr_dtor_nogc(&op1);
+				zval_ptr_dtor_nogc(&op2);
+				return FAILURE;
+			}
+
+			if (Z_TYPE(op1) != IS_OBJECT) {
+				zend_wrong_property_read(&op1, &op2);
+
+				zval_ptr_dtor_nogc(&op1);
+				zval_ptr_dtor_nogc(&op2);
+
+				ZVAL_NULL(result);
+				return SUCCESS;
+			}
+
+			zend_object *zobj = Z_OBJ(op1);
+			if (!(zobj->ce->ce_flags & ZEND_ACC_ENUM)) {
+				zend_throw_error(NULL, "Fetching properties on non-enums in constant expressions is not allowed");
+				zval_ptr_dtor_nogc(&op1);
+				zval_ptr_dtor_nogc(&op2);
+				return FAILURE;
+			}
+
+			zend_string *name = Z_STR(op2);
+			zval *property_result = zend_read_property_ex(scope, zobj, name, 0, result);
+			if (EG(exception)) {
+				zval_ptr_dtor_nogc(&op1);
+				zval_ptr_dtor_nogc(&op2);
+				return FAILURE;
+			}
+
+			if (result != property_result) {
+				ZVAL_COPY(result, property_result);
+			}
+			zval_ptr_dtor_nogc(&op1);
+			zval_ptr_dtor_nogc(&op2);
+			return SUCCESS;
+		}
 		default:
 			zend_throw_error(NULL, "Unsupported constant expression");
 			ret = FAILURE;
 	}
 	return ret;
+}
+
+ZEND_API zend_result ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast, zend_class_entry *scope)
+{
+	zend_ast_evaluate_ctx ctx = {0};
+	bool short_circuited;
+	return zend_ast_evaluate_ex(result, ast, scope, &short_circuited, &ctx);
 }
 
 static size_t ZEND_FASTCALL zend_ast_tree_size(zend_ast *ast)
@@ -908,12 +1102,14 @@ static void* ZEND_FASTCALL zend_ast_tree_copy(zend_ast *ast, void *buf)
 		new->kind = ZEND_AST_ZVAL;
 		new->attr = ast->attr;
 		ZVAL_COPY(&new->val, zend_ast_get_zval(ast));
+		Z_LINENO(new->val) = zend_ast_get_lineno(ast);
 		buf = (void*)((char*)buf + sizeof(zend_ast_zval));
 	} else if (ast->kind == ZEND_AST_CONSTANT) {
 		zend_ast_zval *new = (zend_ast_zval*)buf;
 		new->kind = ZEND_AST_CONSTANT;
 		new->attr = ast->attr;
 		ZVAL_STR_COPY(&new->val, zend_ast_get_constant_name(ast));
+		Z_LINENO(new->val) = zend_ast_get_lineno(ast);
 		buf = (void*)((char*)buf + sizeof(zend_ast_zval));
 	} else if (zend_ast_is_list(ast)) {
 		zend_ast_list *list = zend_ast_get_list(ast);
@@ -922,6 +1118,7 @@ static void* ZEND_FASTCALL zend_ast_tree_copy(zend_ast *ast, void *buf)
 		new->kind = list->kind;
 		new->attr = list->attr;
 		new->children = list->children;
+		new->lineno = list->lineno;
 		buf = (void*)((char*)buf + zend_ast_list_size(list->children));
 		for (i = 0; i < list->children; i++) {
 			if (list->child[i]) {
@@ -936,6 +1133,7 @@ static void* ZEND_FASTCALL zend_ast_tree_copy(zend_ast *ast, void *buf)
 		zend_ast *new = (zend_ast*)buf;
 		new->kind = ast->kind;
 		new->attr = ast->attr;
+		new->lineno = ast->lineno;
 		buf = (void*)((char*)buf + zend_ast_size(children));
 		for (i = 0; i < children; i++) {
 			if (ast->child[i]) {
@@ -1340,6 +1538,14 @@ static ZEND_COLD void zend_ast_export_stmt(smart_str *str, zend_ast *ast, int in
 			case ZEND_AST_NAMESPACE:
 			case ZEND_AST_DECLARE:
 				break;
+			case ZEND_AST_PROP_GROUP: {
+				zend_ast *first_prop = zend_ast_get_list(ast->child[1])->child[0];
+				zend_ast *hook_list = first_prop->child[3];
+				if (hook_list == NULL) {
+					smart_str_appendc(str, ';');
+				}
+				break;
+			}
 			default:
 				smart_str_appendc(str, ';');
 				break;
@@ -1403,7 +1609,7 @@ static ZEND_COLD void zend_ast_export_zval(smart_str *str, zval *zv, int priorit
 			break;
 		case IS_DOUBLE:
 			smart_str_append_double(
-				str, Z_DVAL_P(zv), (int) EG(precision), /* zero_fraction */ false);
+				str, Z_DVAL_P(zv), (int) EG(precision), /* zero_fraction */ true);
 			break;
 		case IS_STRING:
 			smart_str_appendc(str, '\'');
@@ -1493,13 +1699,23 @@ static ZEND_COLD void zend_ast_export_attributes(smart_str *str, zend_ast *ast, 
 	}
 }
 
-static ZEND_COLD void zend_ast_export_visibility(smart_str *str, uint32_t flags) {
+static ZEND_COLD void zend_ast_export_visibility(smart_str *str, uint32_t flags, zend_modifier_target target) {
 	if (flags & ZEND_ACC_PUBLIC) {
 		smart_str_appends(str, "public ");
 	} else if (flags & ZEND_ACC_PROTECTED) {
 		smart_str_appends(str, "protected ");
 	} else if (flags & ZEND_ACC_PRIVATE) {
 		smart_str_appends(str, "private ");
+	}
+
+	if (target == ZEND_MODIFIER_TARGET_PROPERTY || target == ZEND_MODIFIER_TARGET_CPP) {
+		if (flags & ZEND_ACC_PRIVATE_SET) {
+			smart_str_appends(str, "private(set) ");
+		} else if (flags & ZEND_ACC_PROTECTED_SET) {
+			smart_str_appends(str, "protected(set) ");
+		} else if (flags & ZEND_ACC_PUBLIC_SET) {
+			smart_str_appends(str, "public(set) ");
+		}
 	}
 }
 
@@ -1528,6 +1744,44 @@ static ZEND_COLD void zend_ast_export_type(smart_str *str, zend_ast *ast, int in
 		smart_str_appendc(str, '?');
 	}
 	zend_ast_export_ns_name(str, ast, 0, indent);
+}
+
+static ZEND_COLD void zend_ast_export_hook_list(smart_str *str, zend_ast_list *hook_list, int indent)
+{
+	smart_str_appends(str, " {");
+	smart_str_appendc(str, '\n');
+	indent++;
+	zend_ast_export_indent(str, indent);
+
+	for (uint32_t i = 0; i < hook_list->children; i++) {
+		zend_ast_decl *hook = (zend_ast_decl *)hook_list->child[i];
+		zend_ast_export_visibility(str, hook->flags, ZEND_MODIFIER_TARGET_PROPERTY);
+		if (hook->flags & ZEND_ACC_FINAL) {
+			smart_str_appends(str, "final ");
+		}
+		smart_str_append(str, hook->name);
+		zend_ast *body = hook->child[2];
+		if (body == NULL) {
+			smart_str_appendc(str, ';');
+		} else if (body->kind == ZEND_AST_PROPERTY_HOOK_SHORT_BODY) {
+			smart_str_appends(str, " => ");
+			zend_ast_export_ex(str, body->child[0], 0, indent);
+			smart_str_appendc(str, ';');
+		} else {
+			smart_str_appends(str, " {\n");
+			zend_ast_export_stmt(str, body, indent + 1);
+			zend_ast_export_indent(str, indent);
+			smart_str_appendc(str, '}');
+		}
+		if (i < (hook_list->children - 1)) {
+			smart_str_appendc(str, '\n');
+			zend_ast_export_indent(str, indent);
+		}
+	}
+	smart_str_appendc(str, '\n');
+	indent--;
+	zend_ast_export_indent(str, indent);
+	smart_str_appendc(str, '}');
 }
 
 #define BINARY_OP(_op, _p, _pl, _pr) do { \
@@ -1611,7 +1865,7 @@ tail_call:
 				zend_ast_export_attributes(str, decl->child[4], indent, newlines);
 			}
 
-			zend_ast_export_visibility(str, decl->flags);
+			zend_ast_export_visibility(str, decl->flags, ZEND_MODIFIER_TARGET_METHOD);
 
 			if (decl->flags & ZEND_ACC_STATIC) {
 				smart_str_appends(str, "static ");
@@ -1643,9 +1897,12 @@ tail_call:
 			}
 			if (decl->child[2]) {
 				if (decl->kind == ZEND_AST_ARROW_FUNC) {
-					ZEND_ASSERT(decl->child[2]->kind == ZEND_AST_RETURN);
+					zend_ast *body = decl->child[2];
+					if (body->kind == ZEND_AST_RETURN) {
+						body = body->child[0];
+					}
 					smart_str_appends(str, " => ");
-					zend_ast_export_ex(str, decl->child[2]->child[0], 0, indent);
+					zend_ast_export_ex(str, body, 0, indent);
 					break;
 				}
 
@@ -1677,6 +1934,9 @@ tail_call:
 				}
 				if (decl->flags & ZEND_ACC_FINAL) {
 					smart_str_appends(str, "final ");
+				}
+				if (decl->flags & ZEND_ACC_READONLY_CLASS) {
+					smart_str_appends(str, "readonly ");
 				}
 				smart_str_appends(str, "class ");
 			}
@@ -1731,7 +1991,7 @@ simple_list:
 				zend_ast_export_attributes(str, ast->child[2], indent, 1);
 			}
 
-			zend_ast_export_visibility(str, ast->attr);
+			zend_ast_export_visibility(str, ast->attr, ZEND_MODIFIER_TARGET_PROPERTY);
 
 			if (ast->attr & ZEND_ACC_STATIC) {
 				smart_str_appends(str, "static ");
@@ -1757,8 +2017,12 @@ simple_list:
 				zend_ast_export_attributes(str, ast->child[1], indent, 1);
 			}
 
-			zend_ast_export_visibility(str, ast->attr);
+			zend_ast_export_visibility(str, ast->attr, ZEND_MODIFIER_TARGET_CONSTANT);
 			smart_str_appends(str, "const ");
+			if (ast->child[2]) {
+				zend_ast_export_type(str, ast->child[2], indent);
+				smart_str_appendc(str, ' ');
+			}
 
 			ast = ast->child[0];
 
@@ -1784,6 +2048,7 @@ simple_list:
 				case T_TRAIT_C:  APPEND_STR("__TRAIT__");
 				case T_METHOD_C: APPEND_STR("__METHOD__");
 				case T_FUNC_C:   APPEND_STR("__FUNCTION__");
+				case T_PROPERTY_C: APPEND_STR("__PROPERTY__");
 				case T_NS_C:     APPEND_STR("__NAMESPACE__");
 				case T_CLASS_C:  APPEND_STR("__CLASS__");
 				EMPTY_SWITCH_DEFAULT_CASE();
@@ -1932,6 +2197,12 @@ simple_list:
 			break;
 		case ZEND_AST_CALL:
 			zend_ast_export_ns_name(str, ast->child[0], 0, indent);
+			smart_str_appendc(str, '(');
+			zend_ast_export_ex(str, ast->child[1], 0, indent);
+			smart_str_appendc(str, ')');
+			break;
+		case ZEND_AST_PARENT_PROPERTY_HOOK_CALL:
+			smart_str_append(str, Z_STR_P(zend_ast_get_zval(ast->child[0])));
 			smart_str_appendc(str, '(');
 			zend_ast_export_ex(str, ast->child[1], 0, indent);
 			smart_str_appendc(str, ')');
@@ -2149,7 +2420,18 @@ simple_list:
 			break;
 		case ZEND_AST_PROP_ELEM:
 			smart_str_appendc(str, '$');
-			ZEND_FALLTHROUGH;
+			zend_ast_export_name(str, ast->child[0], 0, indent);
+
+			zend_ast *default_value = ast->child[1];
+			if (default_value) {
+				smart_str_appends(str, " = ");
+				zend_ast_export_ex(str, default_value, 0, indent + 1);
+			}
+
+			if (ast->child[3]) {
+				zend_ast_export_hook_list(str, zend_ast_get_list(ast->child[3]), indent);
+			}
+			break;
 		case ZEND_AST_CONST_ELEM:
 			zend_ast_export_name(str, ast->child[0], 0, indent);
 			APPEND_DEFAULT_VALUE(1);
@@ -2274,6 +2556,7 @@ simple_list:
 			if (ast->child[3]) {
 				zend_ast_export_attributes(str, ast->child[3], indent, 0);
 			}
+			zend_ast_export_visibility(str, ast->attr, ZEND_MODIFIER_TARGET_CPP);
 			if (ast->child[0]) {
 				zend_ast_export_type(str, ast->child[0], indent);
 				smart_str_appendc(str, ' ');
@@ -2286,7 +2569,14 @@ simple_list:
 			}
 			smart_str_appendc(str, '$');
 			zend_ast_export_name(str, ast->child[1], 0, indent);
-			APPEND_DEFAULT_VALUE(2);
+			if (ast->child[2]) {
+				smart_str_appends(str, " = ");
+				zend_ast_export_ex(str, ast->child[2], 0, indent);
+			}
+			if (ast->child[5]) {
+				zend_ast_export_hook_list(str, zend_ast_get_list(ast->child[5]), indent);
+			}
+			break;
 		case ZEND_AST_ENUM_CASE:
 			if (ast->child[3]) {
 				zend_ast_export_attributes(str, ast->child[3], indent, 1);
@@ -2407,6 +2697,7 @@ zend_ast * ZEND_FASTCALL zend_ast_with_attributes(zend_ast *ast, zend_ast *attr)
 	case ZEND_AST_CLOSURE:
 	case ZEND_AST_METHOD:
 	case ZEND_AST_ARROW_FUNC:
+	case ZEND_AST_PROPERTY_HOOK:
 		((zend_ast_decl *) ast)->child[4] = attr;
 		break;
 	case ZEND_AST_CLASS:

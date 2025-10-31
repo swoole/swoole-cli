@@ -68,6 +68,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     echo "sync"
     # ZendVM
+    cd ${__WORKDIR__}/
     cp -rf $SRC/Zend/. ./Zend
 
     # Extension

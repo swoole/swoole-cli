@@ -39,7 +39,7 @@
 #define ZEND_FUNC_JIT_ON_PROF_REQUEST      (1<<14) /* used by JIT */
 #define ZEND_FUNC_JIT_ON_HOT_COUNTERS      (1<<15) /* used by JIT */
 #define ZEND_FUNC_JIT_ON_HOT_TRACE         (1<<16) /* used by JIT */
-
+#define ZEND_FUNC_JITED                    (1<<17) /* used by JIT */
 
 typedef struct _zend_func_info zend_func_info;
 typedef struct _zend_call_info zend_call_info;
@@ -62,8 +62,8 @@ ZEND_API uint32_t zend_get_func_info(
 	const zend_call_info *call_info, const zend_ssa *ssa,
 	zend_class_entry **ce, bool *ce_is_instanceof);
 
-int zend_func_info_startup(void);
-int zend_func_info_shutdown(void);
+zend_result zend_func_info_startup(void);
+zend_result zend_func_info_shutdown(void);
 
 END_EXTERN_C()
 

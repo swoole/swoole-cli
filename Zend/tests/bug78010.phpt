@@ -1,10 +1,15 @@
 --TEST--
 Bug #78010: Segmentation fault during GC
+--SKIPIF--
+<?php
+if (getenv("SKIP_SLOW_TESTS")) die('skip slow test');
+?>
 --INI--
 memory_limit=2G
 --FILE--
 <?php
 
+#[AllowDynamicProperties]
 class foo
 {
     public function __construct()

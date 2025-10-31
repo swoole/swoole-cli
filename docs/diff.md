@@ -2,7 +2,6 @@
 # Extensions
 
 ## added(6)
-+ ds
 + imagick
 + mongodb
 + redis
@@ -41,5 +40,9 @@
 Only CLI SAPI(`sapi/cli`) is available. FPM module(`sapi/fpm`) and cli are merged into one(`sapi/cli/fpm`).
 
 ## List of files maintained by us
-- 
+- Makefile.frag
+- config.m4
+- php_cli.c
+- php_cli_server.h
+- php_cli_server.c
 
