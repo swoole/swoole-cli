@@ -213,7 +213,8 @@ extern void show_swoole_version(void);\
     cp -rf $SRC/sapi/cli/php_cli_server_arginfo.h ./sapi/cli
     cp -rf $SRC/sapi/cli/php_cli_process_title_arginfo.h ./sapi/cli
     cp -rf $SRC/sapi/cli/php_cli_process_title.c ./sapi/cli
-
+    cp -rf $SRC/sapi/cli/php_cli_server.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_server.c ./sapi/cli
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
 
     # clean file
