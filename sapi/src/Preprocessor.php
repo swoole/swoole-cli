@@ -92,6 +92,7 @@ class Preprocessor
     protected string $configureVariables;
     protected string $buildType = 'release';
     protected bool $inVirtualMachine = false;
+    protected bool $skipHashVerify = false;
 
     protected function __construct()
     {
@@ -312,7 +313,7 @@ class Preprocessor
             throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
         }
         // 下载文件的 hash 不一致
-        if ($project->enableHashVerify) {
+        if (!$this->skipHashVerify and $project->enableHashVerify) {
             if (!$project->hashVerify($file)) {
                 throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
             }
@@ -334,7 +335,7 @@ class Preprocessor
         }
 
         $lib->path = $this->libraryDir . '/' . $lib->file;
-        if ($lib->enableHashVerify) {
+        if (!$this->skipHashVerify and $lib->enableHashVerify) {
             // 本地文件被修改，hash 不一致，删除后重新下载
             $lib->hashVerify($lib->path);
         }
@@ -385,7 +386,7 @@ class Preprocessor
                 $ext->url = $this->getInputOption('with-download-mirror-url') . '/ext/' . $ext->file;
             }
 
-            if ($ext->enableHashVerify) {
+            if (!$this->skipHashVerify and $ext->enableHashVerify) {
                 // 检查文件的 hash，若不一致删除后重新下载
                 $ext->hashVerify($ext->path);
             }
@@ -746,6 +747,8 @@ class Preprocessor
                 $this->scanConfigFiles($dir, $extAvailable);
             }
         }
+
+        $this->skipHashVerify = boolval($this->getInputOption('skip-hash-verify'));
 
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
