@@ -24,6 +24,8 @@ class Preprocessor
     protected string $cppCompiler = 'clang++';
 
     protected string $lld = 'ld.lld';
+    protected string $ar = 'ar';
+    protected string $as = 'as';
 
     protected array $downloadExtensionList = [];
 
@@ -911,6 +913,18 @@ class Preprocessor
     public function setCXXCOMPILER(string $cxx): static
     {
         $this->cppCompiler = $cxx;
+        return $this;
+    }
+
+    public function setAR(string $ar): static
+    {
+        $this->ar = $ar;
+        return $this;
+    }
+
+    public function setAS(string $as): static
+    {
+        $this->as = $as;
         return $this;
     }
 }

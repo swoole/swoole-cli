@@ -55,6 +55,8 @@ if ($p->isMacos()) {
         ->withBinPath($homebrew_prefix . '/opt/gettext/bin')
         ->setCCOMPILER($homebrew_prefix . '/opt/llvm/bin/clang')
         ->setCXXCOMPILER($homebrew_prefix . '/opt/llvm/bin/clang++')
+        ->setAR($homebrew_prefix . '/opt/llvm/bin/llvm-ar')
+        ->setAS($homebrew_prefix . '/opt/llvm/bin/llvm-as')
         ->setLinker($homebrew_prefix . '/opt/lld/bin/lld');
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
