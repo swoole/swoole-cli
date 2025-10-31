@@ -4,6 +4,7 @@ use SwooleCli\Preprocessor;
 use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
+
     $file = new SplFileObject(realpath(__DIR__ . '/../../../../sapi/SWOOLE-VERSION.conf'));
     $swoole_tag = trim($file->current());
     // $swoole_tag = 'v6.0.1';
@@ -20,6 +21,8 @@ return function (Preprocessor $p) {
 
     //call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
     //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
+
+    $libiconv_prefix = ICONV_PREFIX;
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
@@ -102,12 +105,14 @@ EOF;
 
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
+    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs   --static  odbc odbccr odbcinst readline ncursesw )' . " -L{$libiconv_prefix}/lib -liconv ");
+
 
     /*
-        $p->withBeforeConfigureScript('swoole', function () use ($p) {
-            $workDir = $p->getWorkDir();
-            $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
-            $shell .= <<<'EOF'
+    $p->withBeforeConfigureScript('swoole', function () use ($p) {
+        $workDir = $p->getWorkDir();
+        $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
+        $shell .= <<<'EOF'
 
             SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
             CURRENT_SWOOLE_VERSION=''
