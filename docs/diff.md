@@ -1,5 +1,7 @@
-Added(6)
-===============================================================
+
+# Extensions
+
+## added(6)
 + ds
 + imagick
 + mongodb
@@ -7,8 +9,7 @@ Added(6)
 + swoole
 + yaml
 
-Removed(26)
-==============================================================
+## Removed(26)
 - calendar
 - com_dotnet
 - dba
@@ -35,4 +36,10 @@ Removed(26)
 - sysvsem
 - sysvshm
 - tidy
+
+# SAPI
+Only CLI SAPI(`sapi/cli`) is available. FPM module(`sapi/fpm`) and cli are merged into one(`sapi/cli/fpm`).
+
+## List of files maintained by us
+- 
 

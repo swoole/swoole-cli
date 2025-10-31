@@ -205,8 +205,15 @@ extern void show_swoole_version(void);\
     # cli
     # 【执行本命令，影响 swoole-cli 特性，请手动确认功能变更】
     # cp -rf $SRC/sapi/cli/. ./sapi/cli
+    cp -rf $SRC/sapi/cli/ps_title.h ./sapi/cli
     cp -rf $SRC/sapi/cli/ps_title.c ./sapi/cli
     cp -rf $SRC/sapi/cli/generate_mime_type_map.php ./sapi/cli
+    cp -rf $SRC/sapi/cli/mime_type_map.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_http_parser.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_server_arginfo.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_process_title_arginfo.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_process_title.c ./sapi/cli
+
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
 
     # clean file

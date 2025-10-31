@@ -15,7 +15,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include "php.h"
@@ -46,7 +46,7 @@ PHP_FUNCTION(cli_set_process_title)
 /* {{{ Return a string with the current process title. NULL if error. */
 PHP_FUNCTION(cli_get_process_title)
 {
-	int length = 0;
+	size_t length = 0;
 	const char* title = NULL;
 	int rc;
 
