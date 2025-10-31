@@ -4,7 +4,10 @@ $project_dir = realpath(__DIR__ . '/../../');
 $php_version_tag = trim(file_get_contents($project_dir . '/sapi/PHP-VERSION.conf'));
 $php_source_folder = $project_dir . "/var/php-{$php_version_tag}";
 $php_archive_file = $project_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
-$php_archive_file_sha256sum = '40341f3e03a36d48facdb6cc2ec600ff887a1af9a5e5fee0b40f40b61488afae';
+// github.com
+$php_archive_file_sha256sum = '22bd132176a2ff5140dd38d30213364ce1119edda4521280d5249bc1f55721e9';
+// php.net
+// $php_archive_file_sha256sum = '40341f3e03a36d48facdb6cc2ec600ff887a1af9a5e5fee0b40f40b61488afae';
 $download_dir = dirname($php_archive_file);
 $download_php_counter = 0;
 
