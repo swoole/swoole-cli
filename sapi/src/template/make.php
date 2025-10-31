@@ -29,6 +29,7 @@ OPTIONS="--disable-all \
     --with-config-file-path=<?= $this->getGlobalPrefix() ?>/etc/ \
     --with-config-file-scan-dir=<?= $this->getGlobalPrefix() ?>/etc/conf.d/ \
     --enable-zts \
+    --without-pcre-jit \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>

@@ -901,4 +901,16 @@ class Preprocessor
     {
         return isset($this->extensionMap[$ext]);
     }
+
+    public function setCCOMPILER(string $cc): static
+    {
+        $this->cCompiler = $cc;
+        return $this;
+    }
+
+    public function setCXXCOMPILER(string $cxx): static
+    {
+        $this->cppCompiler = $cxx;
+        return $this;
+    }
 }

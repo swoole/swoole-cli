@@ -45,6 +45,7 @@ if ($p->isMacos()) {
     $p->setExtraLdflags('');
     $homebrew_prefix = trim(shell_exec('brew --prefix'));
     $p->withBinPath($homebrew_prefix . '/opt/llvm/bin')
+        ->withBinPath($homebrew_prefix . '/opt/lld/bin')
         ->withBinPath($homebrew_prefix . '/opt/flex/bin')
         ->withBinPath($homebrew_prefix . '/opt/bison/bin')
         ->withBinPath($homebrew_prefix . '/opt/libtool/bin')
@@ -52,7 +53,9 @@ if ($p->isMacos()) {
         ->withBinPath($homebrew_prefix . '/opt/automake/bin/')
         ->withBinPath($homebrew_prefix . '/opt/autoconf/bin/')
         ->withBinPath($homebrew_prefix . '/opt/gettext/bin')
-        ->setLinker('ld64.lld');
+        ->setCCOMPILER($homebrew_prefix . '/opt/llvm/bin/clang')
+        ->setCXXCOMPILER($homebrew_prefix . '/opt/llvm/bin/clang++')
+        ->setLinker($homebrew_prefix . '/opt/lld/bin/lld');
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
     $p->setLinker('ld.lld');
