@@ -8,7 +8,7 @@ return function (Preprocessor $p) {
     $p->addExtension(
         (new Extension('zlib'))
             ->withHomePage('https://www.php.net/zlib')
-            ->withOptions('--with-zlib --with-zlib-dir=' . ZLIB_PREFIX)
+            ->withOptions('--with-zlib=' . ZLIB_PREFIX)
             ->withDependentLibraries('zlib')
     );
 };
