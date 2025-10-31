@@ -15,7 +15,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 #include "php.h"
 
@@ -89,7 +89,6 @@ PHP_FILEINFO_API zend_object *finfo_objects_new(zend_class_entry *class_type)
 
 	zend_object_std_init(&intern->zo, class_type);
 	object_properties_init(&intern->zo, class_type);
-	intern->zo.handlers = &finfo_object_handlers;
 
 	return &intern->zo;
 }
@@ -108,6 +107,7 @@ PHP_MINIT_FUNCTION(finfo)
 {
 	finfo_class_entry = register_class_finfo();
 	finfo_class_entry->create_object = finfo_objects_new;
+	finfo_class_entry->default_object_handlers = &finfo_object_handlers;
 
 	/* copy the standard object handlers to you handler table */
 	memcpy(&finfo_object_handlers, &std_object_handlers, sizeof(zend_object_handlers));
@@ -115,25 +115,7 @@ PHP_MINIT_FUNCTION(finfo)
 	finfo_object_handlers.free_obj = finfo_objects_free;
 	finfo_object_handlers.clone_obj = NULL;
 
-	REGISTER_LONG_CONSTANT("FILEINFO_NONE",			MAGIC_NONE, CONST_CS|CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("FILEINFO_SYMLINK",		MAGIC_SYMLINK, CONST_CS|CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("FILEINFO_MIME",			MAGIC_MIME, CONST_CS|CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("FILEINFO_MIME_TYPE",	MAGIC_MIME_TYPE, CONST_CS|CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("FILEINFO_MIME_ENCODING",MAGIC_MIME_ENCODING, CONST_CS|CONST_PERSISTENT);
-/*	REGISTER_LONG_CONSTANT("FILEINFO_COMPRESS",		MAGIC_COMPRESS, CONST_CS|CONST_PERSISTENT); disabled, as it does fork now */
-	REGISTER_LONG_CONSTANT("FILEINFO_DEVICES",		MAGIC_DEVICES, CONST_CS|CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("FILEINFO_CONTINUE",		MAGIC_CONTINUE, CONST_CS|CONST_PERSISTENT);
-#ifdef MAGIC_PRESERVE_ATIME
-	REGISTER_LONG_CONSTANT("FILEINFO_PRESERVE_ATIME",	MAGIC_PRESERVE_ATIME, CONST_CS|CONST_PERSISTENT);
-#endif
-#ifdef MAGIC_RAW
-	REGISTER_LONG_CONSTANT("FILEINFO_RAW",			MAGIC_RAW, CONST_CS|CONST_PERSISTENT);
-#endif
-#if 0
-	/* seems not usable yet. */
-	REGISTER_LONG_CONSTANT("FILEINFO_APPLE",		MAGIC_APPLE, CONST_CS|CONST_PERSISTENT);
-#endif
-	REGISTER_LONG_CONSTANT("FILEINFO_EXTENSION",	MAGIC_EXTENSION, CONST_CS|CONST_PERSISTENT);
+	register_fileinfo_symbols(module_number);
 
 	return SUCCESS;
 }
@@ -335,7 +317,7 @@ static void _php_finfo_get_type(INTERNAL_FUNCTION_PARAMETERS, int mode, int mime
 				break;
 
 			default:
-				zend_argument_type_error(1, "must be of type resource|string, %s given", zend_zval_type_name(what));
+				zend_argument_type_error(1, "must be of type resource|string, %s given", zend_zval_value_name(what));
 				RETURN_THROWS();
 		}
 
@@ -391,12 +373,14 @@ static void _php_finfo_get_type(INTERNAL_FUNCTION_PARAMETERS, int mode, int mime
 			php_stream_wrapper *wrap;
 			php_stream_statbuf ssb;
 
+			// Implementation is used for both finfo_file() and mimetype_emu()
+			int buffer_param_num = (mimetype_emu ? 1 : 2);
 			if (buffer == NULL || buffer_len == 0) {
-				zend_argument_value_error(1, "cannot be empty");
+				zend_argument_must_not_be_empty_error(buffer_param_num);
 				goto clean;
 			}
 			if (CHECK_NULL_PATH(buffer, buffer_len)) {
-				zend_argument_type_error(1, "must not contain any null bytes");
+				zend_argument_type_error(buffer_param_num, "must not contain any null bytes");
 				goto clean;
 			}
 

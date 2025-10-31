@@ -15,7 +15,8 @@ $d->loadXML($xml);
 var_dump($d);
 ?>
 --EXPECTF--
-object(DOMDocument)#1 (39) {
+Deprecated: Creation of dynamic property DOMDocument::$dynamicProperty is deprecated in %s on line %d
+object(DOMDocument)#1 (41) {
   ["dynamicProperty"]=>
   object(stdClass)#2 (0) {
   }
@@ -42,7 +43,7 @@ object(DOMDocument)#1 (39) {
   ["strictErrorChecking"]=>
   bool(true)
   ["documentURI"]=>
-  string(%d) %s
+  string(%d) "%s"
   ["config"]=>
   NULL
   ["formatOutput"]=>
@@ -71,6 +72,8 @@ object(DOMDocument)#1 (39) {
   int(9)
   ["parentNode"]=>
   NULL
+  ["parentElement"]=>
+  NULL
   ["childNodes"]=>
   string(22) "(object value omitted)"
   ["firstChild"]=>
@@ -83,6 +86,8 @@ object(DOMDocument)#1 (39) {
   NULL
   ["attributes"]=>
   NULL
+  ["isConnected"]=>
+  bool(true)
   ["ownerDocument"]=>
   NULL
   ["namespaceURI"]=>

@@ -13,7 +13,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <unicode/ustring.h>
@@ -55,31 +55,125 @@ ZEND_EXTERN_MODULE_GLOBALS( intl )
 #define EXTLANG_KEYNAME_LEN  10
 #define PRIVATE_KEYNAME_LEN  11
 
-/* Based on IANA registry at the time of writing this code
-*
-*/
+/* Based on the IANA language subtag registry (File-Date: 2021-08-06)
+ * https://www.iana.org/assignments/language-subtag-registry
+ *
+ * This list includes all grandfathered tags, as well as redundant
+ * tags that have a Preferred-Value.
+ */
 static const char * const LOC_GRANDFATHERED[] = {
-	"art-lojban",		"i-klingon",		"i-lux",			"i-navajo",		"no-bok",		"no-nyn",
-	"cel-gaulish",		"en-GB-oed",		"i-ami",
-	"i-bnn",		"i-default",		"i-enochian",
-	"i-mingo",		"i-pwn", 		"i-tao",
-	"i-tay",		"i-tsu",		"sgn-BE-fr",
-	"sgn-BE-nl",		"sgn-CH-de", 		"zh-cmn",
- 	"zh-cmn-Hans", 		"zh-cmn-Hant",		"zh-gan" ,
-	"zh-guoyu", 		"zh-hakka", 		"zh-min",
-	"zh-min-nan", 		"zh-wuu", 		"zh-xiang",
-	"zh-yue",		NULL
+	"art-lojban",
+	"cel-gaulish",
+	"en-GB-oed",
+	"i-ami",
+	"i-bnn",
+	"i-default",
+	"i-enochian",
+	"i-hak",
+	"i-klingon",
+	"i-lux",
+	"i-mingo",
+	"i-navajo",
+	"i-pwn",
+	"i-tao",
+	"i-tay",
+	"i-tsu",
+	"no-bok",
+	"no-nyn",
+	"sgn-BE-FR",
+	"sgn-BE-NL",
+	"sgn-BR",
+	"sgn-CH-DE",
+	"sgn-CO",
+	"sgn-DE",
+	"sgn-DK",
+	"sgn-ES",
+	"sgn-FR",
+	"sgn-GB",
+	"sgn-GR",
+	"sgn-IE",
+	"sgn-IT",
+	"sgn-JP",
+	"sgn-MX",
+	"sgn-NI",
+	"sgn-NL",
+	"sgn-NO",
+	"sgn-PT",
+	"sgn-SE",
+	"sgn-US",
+	"sgn-ZA",
+	"zh-cmn",
+	"zh-cmn-Hans",
+	"zh-cmn-Hant",
+	"zh-gan",
+	"zh-guoyu",
+	"zh-hakka",
+	"zh-min",
+	"zh-min-nan",
+	"zh-wuu",
+	"zh-xiang",
+	NULL
 };
 
-/* Based on IANA registry at the time of writing this code
-*  This array lists the preferred values for the grandfathered tags if applicable
-*  This is in sync with the array LOC_GRANDFATHERED
-*  e.g. the offsets of the grandfathered tags match the offset of the preferred  value
-*/
-static const int 		LOC_PREFERRED_GRANDFATHERED_LEN = 6;
-static const char * const 	LOC_PREFERRED_GRANDFATHERED[]  = {
-	"jbo",			"tlh",			"lb",
-	"nv", 			"nb",			"nn",
+/* Based on the IANA language subtag registry (File-Date: 2021-08-06)
+ *
+ * This array lists the preferred values for the grandfathered and redundant
+ * tags listed in LOC_GRANDFATHERED. This is in sync with the array
+ * LOC_GRANDFATHERED, i.e., the offsets of the grandfathered tags match the
+ * offsets of the preferred value. If a value in LOC_PREFERRED_GRANDFATHERED is
+ * NULL, then the matching offset in LOC_GRANDFATHERED has no preferred value.
+ */
+static const char * const LOC_PREFERRED_GRANDFATHERED[] = {
+	"jbo",
+	NULL,
+	"en-GB-oxendict",
+	"ami",
+	"bnn",
+	NULL,
+	NULL,
+	"hak",
+	"tlh",
+	"lb",
+	NULL,
+	"nv",
+	"pwn",
+	"tao",
+	"tay",
+	"tsu",
+	"nb",
+	"nn",
+	"sfb",
+	"vgt",
+	"bzs",
+	"sgg",
+	"csn",
+	"gsg",
+	"dsl",
+	"ssp",
+	"fsl",
+	"bfi",
+	"gss",
+	"isg",
+	"ise",
+	"jsl",
+	"mfs",
+	"ncs",
+	"dse",
+	"nsl",
+	"psr",
+	"swl",
+	"ase",
+	"sfs",
+	"cmn",
+	"cmn-Hans",
+	"cmn-Hant",
+	"gan",
+	"cmn",
+	"hak",
+	NULL,
+	"nan",
+	"wuu",
+	"hsn",
 	NULL
 };
 
@@ -105,7 +199,7 @@ static int16_t findOffset(const char* const* list, const char* key)
 {
 	const char* const* anchor = list;
 	while (*list != NULL) {
-		if (strcmp(key, *list) == 0) {
+		if (strcasecmp(key, *list) == 0) {
 			return (int16_t)(list - anchor);
 		}
 		list++;
@@ -125,7 +219,7 @@ static char* getPreferredTag(const char* gf_tag)
 	if(grOffset < 0) {
 		return NULL;
 	}
-	if( grOffset < LOC_PREFERRED_GRANDFATHERED_LEN ){
+	if( LOC_PREFERRED_GRANDFATHERED[grOffset] != NULL ){
 		/* return preferred tag */
 		result = estrdup( LOC_PREFERRED_GRANDFATHERED[grOffset] );
 	} else {
@@ -204,9 +298,7 @@ static zend_off_t getSingletonPos(const char* str)
 /* {{{ Get default locale */
 PHP_NAMED_FUNCTION(zif_locale_get_default)
 {
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	RETURN_STRING( intl_locale_get_default(  ) );
 }
@@ -222,10 +314,9 @@ PHP_NAMED_FUNCTION(zif_locale_set_default)
 	zend_string *ini_name;
 	char *default_locale = NULL;
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(),  "S", &locale_name) == FAILURE)
-	{
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_STR(locale_name)
+	ZEND_PARSE_PARAMETERS_END();
 
 	if (ZSTR_LEN(locale_name) == 0) {
 		default_locale = (char *)uloc_getDefault();
@@ -376,7 +467,7 @@ static zend_string* get_icu_value_internal( const char* loc_name , char* tag_nam
 static void get_icu_value_src_php( char* tag_name, INTERNAL_FUNCTION_PARAMETERS)
 {
 
-	const char* loc_name        	= NULL;
+	char*          loc_name        	= NULL;
 	size_t         loc_name_len    	= 0;
 
 	zend_string*   tag_value		= NULL;
@@ -389,13 +480,12 @@ static void get_icu_value_src_php( char* tag_name, INTERNAL_FUNCTION_PARAMETERS)
 
 	intl_error_reset( NULL );
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "s",
-	&loc_name ,&loc_name_len ) == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_STRING(loc_name, loc_name_len)
+	ZEND_PARSE_PARAMETERS_END();
 
 	if(loc_name_len == 0) {
-		loc_name = intl_locale_get_default();
+		loc_name = (char *)intl_locale_get_default();
 		loc_name_len = strlen(loc_name);
 	}
 
@@ -456,10 +546,10 @@ PHP_FUNCTION(locale_get_primary_language )
  }}} */
 static void get_icu_disp_value_src_php( char* tag_name, INTERNAL_FUNCTION_PARAMETERS)
 {
-	const char* loc_name        	= NULL;
+	char*          loc_name        	= NULL;
 	size_t         loc_name_len    	= 0;
 
-	const char* disp_loc_name       = NULL;
+	char*       disp_loc_name       = NULL;
 	size_t      disp_loc_name_len   = 0;
 	int         free_loc_name       = 0;
 
@@ -477,12 +567,11 @@ static void get_icu_disp_value_src_php( char* tag_name, INTERNAL_FUNCTION_PARAME
 
 	intl_error_reset( NULL );
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "s|s!",
-		&loc_name, &loc_name_len ,
-		&disp_loc_name ,&disp_loc_name_len ) == FAILURE)
-	{
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 2)
+		Z_PARAM_STRING(loc_name, loc_name_len)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_STRING_OR_NULL(disp_loc_name, disp_loc_name_len)
+	ZEND_PARSE_PARAMETERS_END();
 
 	if(loc_name_len > ULOC_FULLNAME_CAPACITY) {
 		/* See bug 67397: overlong locale names cause trouble in uloc_getDisplayName */
@@ -493,7 +582,7 @@ static void get_icu_disp_value_src_php( char* tag_name, INTERNAL_FUNCTION_PARAME
 	}
 
 	if(loc_name_len == 0) {
-		loc_name = intl_locale_get_default();
+		loc_name = (char *)intl_locale_get_default();
 	}
 
 	if( strcmp(tag_name, DISP_NAME) != 0 ){
@@ -503,7 +592,7 @@ static void get_icu_disp_value_src_php( char* tag_name, INTERNAL_FUNCTION_PARAME
 			if( strcmp(tag_name , LOC_LANG_TAG)==0 ){
 				mod_loc_name = getPreferredTag( loc_name );
 			} else {
-				/* Since Grandfathered, no value, do nothing, retutn NULL */
+				/* Since Grandfathered, no value, do nothing, return NULL */
 				RETURN_FALSE;
 			}
 		}
@@ -640,21 +729,19 @@ PHP_FUNCTION( locale_get_keywords )
 	const char*	 	kw_key        = NULL;
 	int32_t         kw_key_len    = 0;
 
-	const char*       	loc_name        = NULL;
+	char*       	        loc_name        = NULL;
 	size_t        	 	loc_name_len    = 0;
 
 	intl_error_reset( NULL );
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "s",
-		&loc_name, &loc_name_len ) == FAILURE)
-	{
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_STRING(loc_name, loc_name_len)
+	ZEND_PARSE_PARAMETERS_END();
 
 	INTL_CHECK_LOCALE_LEN(strlen(loc_name));
 
 	if(loc_name_len == 0) {
-		loc_name = intl_locale_get_default();
+		loc_name = (char *)intl_locale_get_default();
 	}
 
 	/* Get the keywords */
@@ -720,7 +807,7 @@ static int append_key_value(smart_str* loc_name, HashTable* hash_arr, char* key_
 {
 	zval *ele_value;
 
-	if ((ele_value = zend_hash_str_find(hash_arr , key_name, strlen(key_name))) != NULL ) {
+	if ((ele_value = zend_hash_str_find_deref(hash_arr , key_name, strlen(key_name))) != NULL ) {
 		if(Z_TYPE_P(ele_value)!= IS_STRING ){
 			/* element value is not a string */
 			return FAILURE;
@@ -763,7 +850,7 @@ static int append_multiple_key_values(smart_str* loc_name, HashTable* hash_arr, 
 	int 	isFirstSubtag 	= 0;
 
 	/* Variant/ Extlang/Private etc. */
-	if ((ele_value = zend_hash_str_find( hash_arr , key_name , strlen(key_name))) != NULL) {
+	if ((ele_value = zend_hash_str_find_deref( hash_arr , key_name , strlen(key_name))) != NULL) {
 		if( Z_TYPE_P(ele_value) == IS_STRING ){
 			add_prefix( loc_name , key_name);
 
@@ -775,6 +862,7 @@ static int append_multiple_key_values(smart_str* loc_name, HashTable* hash_arr, 
 			zval *data;
 
 			ZEND_HASH_FOREACH_VAL(arr, data) {
+				ZVAL_DEREF(data);
 				if(Z_TYPE_P(data) != IS_STRING) {
 					return FAILURE;
 				}
@@ -806,7 +894,7 @@ static int append_multiple_key_values(smart_str* loc_name, HashTable* hash_arr, 
 		isFirstSubtag = 0;
 		for( i=0 ; i< max_value; i++ ){
 			snprintf( cur_key_name , 30, "%s%d", key_name , i);
-			if ((ele_value = zend_hash_str_find( hash_arr , cur_key_name , strlen(cur_key_name))) != NULL) {
+			if ((ele_value = zend_hash_str_find_deref( hash_arr , cur_key_name , strlen(cur_key_name))) != NULL) {
 				if( Z_TYPE_P(ele_value)!= IS_STRING ){
 					/* variant is not a string */
 					return FAILURE;
@@ -858,11 +946,9 @@ PHP_FUNCTION(locale_compose)
 
 	intl_error_reset( NULL );
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "a",
-		&arr) == FAILURE)
-	{
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_ARRAY(arr)
+	ZEND_PARSE_PARAMETERS_END();
 
 	hash_arr = Z_ARRVAL_P( arr );
 
@@ -995,12 +1081,14 @@ static int add_array_entry(const char* loc_name, zval* hash_arr, char* key_name)
 			if( cur_key_name ){
 				efree( cur_key_name);
 			}
-			cur_key_name = (char*)ecalloc( 25,  25);
-			sprintf( cur_key_name , "%s%d", key_name , cnt++);
+			/* Over-allocates a few bytes for the integer so we don't have to reallocate. */
+			size_t cur_key_name_size = (sizeof("-2147483648") - 1) + strlen(key_name) + 1;
+			cur_key_name = emalloc(cur_key_name_size);
+			snprintf( cur_key_name, cur_key_name_size , "%s%d", key_name , cnt++);
 			add_assoc_string( hash_arr, cur_key_name , token);
 			/* tokenize on the "_" or "-" and stop  at singleton if any */
 			while( (token = php_strtok_r(NULL , DELIMITER , &last_ptr)) && (strlen(token)>1) ){
-				sprintf( cur_key_name , "%s%d", key_name , cnt++);
+				snprintf( cur_key_name , cur_key_name_size, "%s%d", key_name , cnt++);
 				add_assoc_string( hash_arr, cur_key_name , token);
 			}
 /*
@@ -1031,22 +1119,20 @@ static int add_array_entry(const char* loc_name, zval* hash_arr, char* key_name)
 /* {{{ parses a locale-id into an array the different parts of it */
 PHP_FUNCTION(locale_parse)
 {
-	const char* loc_name        = NULL;
+	char*          loc_name        = NULL;
 	size_t         loc_name_len    = 0;
 	int         grOffset    	= 0;
 
 	intl_error_reset( NULL );
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "s",
-		&loc_name, &loc_name_len ) == FAILURE)
-	{
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_STRING(loc_name, loc_name_len)
+	ZEND_PARSE_PARAMETERS_END();
 
 	INTL_CHECK_LOCALE_LEN(strlen(loc_name));
 
 	if(loc_name_len == 0) {
-		loc_name = intl_locale_get_default();
+		loc_name = (char *)intl_locale_get_default();
 	}
 
 	array_init( return_value );
@@ -1069,7 +1155,7 @@ PHP_FUNCTION(locale_parse)
 /* {{{ gets an array containing the list of variants, or null */
 PHP_FUNCTION(locale_get_all_variants)
 {
-	const char*  	loc_name        = NULL;
+	char*  	                loc_name        = NULL;
 	size_t    		loc_name_len    = 0;
 
 	int	result		= 0;
@@ -1079,14 +1165,12 @@ PHP_FUNCTION(locale_get_all_variants)
 
 	intl_error_reset( NULL );
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "s",
-	&loc_name, &loc_name_len ) == FAILURE)
-	{
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_STRING(loc_name, loc_name_len)
+	ZEND_PARSE_PARAMETERS_END();
 
 	if(loc_name_len == 0) {
-		loc_name = intl_locale_get_default();
+		loc_name = (char *)intl_locale_get_default();
 		loc_name_len = strlen(loc_name);
 	}
 
@@ -1157,7 +1241,7 @@ PHP_FUNCTION(locale_filter_matches)
 {
 	char*       	lang_tag        = NULL;
 	size_t         	lang_tag_len    = 0;
-	const char*     loc_range       = NULL;
+	char*           loc_range       = NULL;
 	size_t         	loc_range_len   = 0;
 
 	int		result		= 0;
@@ -1175,15 +1259,15 @@ PHP_FUNCTION(locale_filter_matches)
 
 	intl_error_reset( NULL );
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "ss|b",
-		&lang_tag, &lang_tag_len , &loc_range , &loc_range_len ,
-		&boolCanonical) == FAILURE)
-	{
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(2, 3)
+		Z_PARAM_STRING(lang_tag, lang_tag_len)
+		Z_PARAM_STRING(loc_range,  loc_range_len)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_BOOL(boolCanonical)
+	ZEND_PARSE_PARAMETERS_END();
 
 	if(loc_range_len == 0) {
-		loc_range = intl_locale_get_default();
+		loc_range = (char *)intl_locale_get_default();
 		loc_range_len = strlen(loc_range);
 	}
 
@@ -1343,6 +1427,7 @@ static zend_string* lookup_loc_range(const char* loc_range, HashTable* hash_arr,
 
 	char **cur_arr = ecalloc(zend_hash_num_elements(hash_arr)*2, sizeof(char *));
 	ZEND_HASH_FOREACH_VAL(hash_arr, ele_value) {
+		ZVAL_DEREF(ele_value);
 	/* convert the array to lowercase , also replace hyphens with the underscore and store it in cur_arr */
 		if(Z_TYPE_P(ele_value)!= IS_STRING) {
 			/* element value is not a string */
@@ -1403,6 +1488,7 @@ static zend_string* lookup_loc_range(const char* loc_range, HashTable* hash_arr,
 		zend_string_release_ex(can_loc_range, 0);
 	}
 	if(result == 0) {
+		efree(cur_loc_range);
 		intl_error_set(NULL, U_ILLEGAL_ARGUMENT_ERROR, "lookup_loc_range: unable to canonicalize lang_tag" , 0);
 		LOOKUP_CLEAN_RETURN(NULL);
 	}
@@ -1438,7 +1524,7 @@ static zend_string* lookup_loc_range(const char* loc_range, HashTable* hash_arr,
 PHP_FUNCTION(locale_lookup)
 {
 	zend_string*   	fallback_loc_str	= NULL;
-	const char*    	loc_range      		= NULL;
+	char*    	loc_range      		= NULL;
 	size_t        	loc_range_len  		= 0;
 
 	zval*		arr				= NULL;
@@ -1448,17 +1534,20 @@ PHP_FUNCTION(locale_lookup)
 
 	intl_error_reset( NULL );
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "as|bS!", &arr, &loc_range, &loc_range_len,
-		&boolCanonical,	&fallback_loc_str) == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(2, 4)
+		Z_PARAM_ARRAY(arr)
+		Z_PARAM_STRING(loc_range, loc_range_len)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_BOOL(boolCanonical)
+		Z_PARAM_STR_OR_NULL(fallback_loc_str)
+	ZEND_PARSE_PARAMETERS_END();
 
 	if(loc_range_len == 0) {
 		if(fallback_loc_str) {
 			loc_range = ZSTR_VAL(fallback_loc_str);
 			loc_range_len = ZSTR_LEN(fallback_loc_str);
 		} else {
-			loc_range = intl_locale_get_default();
+			loc_range = (char *)intl_locale_get_default();
 			loc_range_len = strlen(loc_range);
 		}
 	}
@@ -1497,10 +1586,9 @@ PHP_FUNCTION(locale_accept_from_http)
 	char resultLocale[INTL_MAX_LOCALE_LEN+1];
 	UAcceptResult outResult;
 
-	if(zend_parse_parameters( ZEND_NUM_ARGS(), "s", &http_accept, &http_accept_len) == FAILURE)
-	{
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_STRING(http_accept, http_accept_len)
+	ZEND_PARSE_PARAMETERS_END();
 	if(http_accept_len > ULOC_FULLNAME_CAPACITY) {
 		/* check each fragment, if any bigger than capacity, can't do it due to bug #72533 */
 		char *start = http_accept;

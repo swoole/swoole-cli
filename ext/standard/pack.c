@@ -28,10 +28,8 @@
 #else
 #include <sys/param.h>
 #endif
-#include "ext/standard/head.h"
-#include "php_string.h"
 #include "pack.h"
-#if HAVE_PWD_H
+#ifdef HAVE_PWD_H
 #ifdef PHP_WIN32
 #include "win32/pwd.h"
 #else
@@ -39,7 +37,7 @@
 #endif
 #endif
 #include "fsock.h"
-#if HAVE_NETINET_IN_H
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
 
@@ -102,13 +100,13 @@ static void php_pack(zval *val, size_t size, int *map, char *output)
 }
 /* }}} */
 
-static inline uint16_t php_pack_reverse_int16(uint16_t arg)
+ZEND_ATTRIBUTE_CONST static inline uint16_t php_pack_reverse_int16(uint16_t arg)
 {
 	return ((arg & 0xFF) << 8) | ((arg >> 8) & 0xFF);
 }
 
 /* {{{ php_pack_reverse_int32 */
-static inline uint32_t php_pack_reverse_int32(uint32_t arg)
+ZEND_ATTRIBUTE_CONST static inline uint32_t php_pack_reverse_int32(uint32_t arg)
 {
 	uint32_t result;
 	result = ((arg & 0xFF) << 24) | ((arg & 0xFF00) << 8) | ((arg >> 8) & 0xFF00) | ((arg >> 24) & 0xFF);
@@ -388,7 +386,7 @@ too_few_args:
 		switch ((int) code) {
 			case 'h':
 			case 'H':
-				INC_OUTPUTPOS((arg + (arg % 2)) / 2,1)	/* 4 bit per arg */
+				INC_OUTPUTPOS((arg / 2) + (arg % 2),1)	/* 4 bit per arg */
 				break;
 
 			case 'a':
@@ -979,6 +977,13 @@ PHP_FUNCTION(unpack)
 						zend_string *buf;
 						zend_long ipos, opos;
 
+
+						if (size > INT_MAX / 2) {
+							zend_string_release(real_name);
+							zend_argument_value_error(1, "repeater must be less than or equal to %d", INT_MAX / 2);
+							RETURN_THROWS();
+						}
+
 						/* If size was given take minimum of len and size */
 						if (size >= 0 && len > (size * 2)) {
 							len = size * 2;
@@ -1181,7 +1186,7 @@ PHP_FUNCTION(unpack)
 				/* Reached end of input for '*' repeater */
 				break;
 			} else {
-				php_error_docref(NULL, E_WARNING, "Type %c: not enough input, need %d, have " ZEND_LONG_FMT, type, size, inputlen - inputpos);
+				php_error_docref(NULL, E_WARNING, "Type %c: not enough input values, need %d values but only " ZEND_LONG_FMT " %s provided", type, size, inputlen - inputpos, inputlen - inputpos == 1 ? "was" : "were");
 				zend_array_destroy(Z_ARR_P(return_value));
 				RETURN_FALSE;
 			}
