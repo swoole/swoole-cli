@@ -75,7 +75,7 @@ EOF
             $workDir = $p->getWorkDir();
             $cmd = <<<EOF
         cd {$workDir}/
-        sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+        # sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
 EOF;
         }
         return $cmd;
@@ -90,7 +90,7 @@ EOF;
 
         # 新版macos getdtablesize 函数缺失
         # sed -i '' 's/getdtablesize();/sysconf(_SC_OPEN_MAX);/' ext/standard/php_fopen_wrapper.c
-        $libc = $p->isMacos() ? '-lc++' : '-lstdc++';
+        $libc = $p->isMacos() ? '-lc++ -lpthread' : '-lstdc++';
 
         # cd /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread
         # 或者
@@ -98,7 +98,7 @@ EOF;
         # grep -r 'pthread_barrier_init' .
         # grep -r 'pthread_barrier_t' .
     }
-    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
+    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++ -lpthread' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 
