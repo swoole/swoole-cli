@@ -73,6 +73,7 @@ return function (Preprocessor $p) {
                 test -d /tmp/swoole && rm -rf /tmp/swoole
                 git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
                 cd  /tmp/swoole
+                rm -rf /tmp/swoole/.git/
                 tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
             fi
             mkdir -p ${WORKDIR}/ext/swoole/
