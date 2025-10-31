@@ -27,7 +27,6 @@
 #include "zend_interfaces.h"
 
 #include "ext/reflection/php_reflection.h"
-#include "php_cli_swoole.h"
 
 #include "SAPI.h"
 
@@ -451,6 +450,8 @@ static sapi_module_struct cli_sapi_module = {
 	STANDARD_SAPI_MODULE_PROPERTIES
 };
 /* }}} */
+
+#include "php_cli_swoole.h"
 
 static const zend_function_entry additional_functions[] = {
 	PHP_FE(cli_set_process_title,        arginfo_cli_set_process_title)

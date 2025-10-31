@@ -414,7 +414,7 @@ static const char *get_mime_type(const php_cli_server *server, const char *ext, 
     return (const char *) ret;
 } /* }}} */
 
-PHP_FUNCTION(apache_request_headers) /* {{{ */
+static PHP_FUNCTION(apache_request_headers) /* {{{ */
 {
     php_cli_server_client *client;
 
@@ -457,7 +457,7 @@ static void add_response_header(sapi_header_struct *h, zval *return_value) /* {{
 }
 /* }}} */
 
-PHP_FUNCTION(apache_response_headers) /* {{{ */
+static PHP_FUNCTION(apache_response_headers) /* {{{ */
 {
     if (zend_parse_parameters_none() == FAILURE) {
         RETURN_THROWS();
