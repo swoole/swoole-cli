@@ -7,8 +7,8 @@ return function (Preprocessor $p) {
     $p->addExtension(
         (new Extension('redis'))
             ->withOptions('--enable-redis')
-            ->withPeclVersion('5.3.7')
-            ->withFileHash('md5', '1ed6793902214cc02467666ba69dd2be')
+            ->withPeclVersion('6.2.0')
+            ->withFileHash('md5', 'b713b42a7ad2eb6638de739fffd62c3a')
             ->withHomePage('https://github.com/phpredis/phpredis')
             ->withLicense('https://github.com/phpredis/phpredis/blob/develop/COPYING', Extension::LICENSE_PHP)
     );
