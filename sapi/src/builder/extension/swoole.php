@@ -46,7 +46,7 @@ return function (Preprocessor $p) {
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 
-    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) -L' . $libiconv_prefix . '/lib -liconv ');
+    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) ' . " -L{$libiconv_prefix}/lib -liconv ");
 
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
@@ -73,6 +73,7 @@ return function (Preprocessor $p) {
                 test -d /tmp/swoole && rm -rf /tmp/swoole
                 git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
                 cd  /tmp/swoole
+                rm -rf /tmp/swoole/.git/
                 tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
             fi
             mkdir -p ${WORKDIR}/ext/swoole/
