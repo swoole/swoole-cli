@@ -27,6 +27,8 @@ jobs:
           brew config
           xcrun --show-sdk-path
           ls -lh $(xcrun --show-sdk-path)
+          ls -lh /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/bin
+          ls -lh /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread
 
           ifconfig
           export IPV6=$(ifconfig en0  | grep "inet6 " | grep -v "inet6 fe80:" | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
@@ -42,6 +44,8 @@ jobs:
 
           export PATH="/opt/homebrew/opt/libtool/bin:$PATH"
           ls -lha /opt/homebrew/opt/libtool/bin/
+          ls -lha /opt/homebrew/opt/llvm/bin/
+          ls -lha /opt/homebrew/opt/lld/bin/
           libtoolize --version
           libtool --help-all
 
