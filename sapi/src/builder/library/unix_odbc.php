@@ -10,7 +10,10 @@ return function (Preprocessor $p) {
     if ($p->isMacos()) {
         $custom_clean_script .= <<<EOF
         sed -i.bak 's@$(top_build_prefix)libltdl/libltdlc.la@@' {$unix_odbc_prefix}/lib/pkgconfig/odbc.pc
+        sed -i.bak 's@-lltdl@@' {$unix_odbc_prefix}/lib/pkgconfig/odbc.pc
         sed -i.bak 's@$(top_build_prefix)libltdl/libltdlc.la@@' {$unix_odbc_prefix}/lib/pkgconfig/odbcinst.pc
+        sed -i.bak 's@-lltdl@@' {$unix_odbc_prefix}/lib/pkgconfig/odbcinst.pc
+
 EOF;
     }
 
