@@ -14,48 +14,23 @@ return function (Preprocessor $p) {
             ->withManual('https://curl.se/docs/http3.html')
             ->withUrl('https://github.com/ngtcp2/ngtcp2/releases/download/v1.17.0/ngtcp2-1.17.0.tar.gz')
             ->withFile('ngtcp2-1.17.0.tar.gz')
-            //->withFileHash('md5', 'e05c501244a2af34b492753763c74e04')
+            ->withFileHash('md5', '7b5221830f1f09ea7998aaf7dfcb87ac')
             ->withPrefix($ngtcp2_prefix)
-            ->withConfigure(
-                <<<EOF
-                autoreconf -fi
-                ./configure --help
-
-                PACKAGES="openssl libnghttp3 "
-                CPPFLAGS="$(pkg-config  --cflags-only-I  --static \$PACKAGES )"  \
-                LDFLAGS="$(pkg-config --libs-only-L      --static \$PACKAGES )"  \
-                LIBS="$(pkg-config --libs-only-l         --static \$PACKAGES )"  \
-                ./configure \
-                --prefix=$ngtcp2_prefix \
-                --enable-shared=no \
-                --enable-static=yes \
-                --enable-lib-only \
-                --without-libev \
-                --with-openssl=openssl  \
-                --with-libnghttp3=yes \
-                --without-gnutls \
-                --without-boringssl \
-                --without-picotls \
-                --without-wolfssl \
-                --without-cunit  \
-                --without-jemalloc
-EOF
-            )
             ->withBuildScript(
                 <<<EOF
-         mkdir -p build
-         cd build
+             mkdir -p build
+             cd build
 
-         cmake .. \
-        -DCMAKE_INSTALL_PREFIX={$ngtcp2_prefix} \
-        -DCMAKE_BUILD_TYPE=Release  \
-        -DENABLE_SHARED_LIB=OFF \
-        -DENABLE_STATIC_LIB=ON \
-        -DENABLE_OPENSSL=ON \
-        -DENABLE_LIB_ONLY=ON \
-        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$libnghttp3_prefix}" \
-        -DOPENSSL_ROOT_DIR={$openssl_prefix} \
-        -DBUILD_TESTING=OFF
+             cmake .. \
+            -DCMAKE_INSTALL_PREFIX={$ngtcp2_prefix} \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DENABLE_SHARED_LIB=OFF \
+            -DENABLE_STATIC_LIB=ON \
+            -DENABLE_OPENSSL=ON \
+            -DENABLE_LIB_ONLY=ON \
+            -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$libnghttp3_prefix}" \
+            -DOPENSSL_ROOT_DIR={$openssl_prefix} \
+            -DBUILD_TESTING=OFF
 
 EOF
             )
