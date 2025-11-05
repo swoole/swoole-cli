@@ -5,14 +5,16 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $ngtcp2_prefix = NGTCP2_PREFIX;
+    $openssl_prefix = OPENSSL_PREFIX;
+    $libnghttp3_prefix = NGHTTP3_PREFIX;
     $p->addLibrary(
         (new Library('ngtcp2'))
             ->withHomePage('https://github.com/ngtcp2/ngtcp2')
             ->withLicense('https://github.com/ngtcp2/ngtcp2/blob/main/COPYING', Library::LICENSE_MIT)
             ->withManual('https://curl.se/docs/http3.html')
-            ->withUrl('https://github.com/ngtcp2/ngtcp2/releases/download/v1.1.0/ngtcp2-1.1.0.tar.gz')
-            ->withFile('ngtcp2-1.1.0.tar.gz')
-            ->withFileHash('md5', 'e05c501244a2af34b492753763c74e04')
+            ->withUrl('https://github.com/ngtcp2/ngtcp2/releases/download/v1.17.0/ngtcp2-1.17.0.tar.gz')
+            ->withFile('ngtcp2-1.17.0.tar.gz')
+            //->withFileHash('md5', 'e05c501244a2af34b492753763c74e04')
             ->withPrefix($ngtcp2_prefix)
             ->withConfigure(
                 <<<EOF
@@ -29,7 +31,7 @@ return function (Preprocessor $p) {
                 --enable-static=yes \
                 --enable-lib-only \
                 --without-libev \
-                --with-openssl  \
+                --with-openssl=openssl  \
                 --with-libnghttp3=yes \
                 --without-gnutls \
                 --without-boringssl \
@@ -37,6 +39,24 @@ return function (Preprocessor $p) {
                 --without-wolfssl \
                 --without-cunit  \
                 --without-jemalloc
+EOF
+            )
+            ->withBuildScript(
+                <<<EOF
+         mkdir -p build
+         cd build
+
+         cmake .. \
+        -DCMAKE_INSTALL_PREFIX={$ngtcp2_prefix} \
+        -DCMAKE_BUILD_TYPE=Release  \
+        -DENABLE_SHARED_LIB=OFF \
+        -DENABLE_STATIC_LIB=ON \
+        -DENABLE_OPENSSL=ON \
+        -DENABLE_LIB_ONLY=ON \
+        -DCMAKE_PREFIX_PATH="{$openssl_prefix};{$libnghttp3_prefix}" \
+        -DOPENSSL_ROOT_DIR={$openssl_prefix} \
+        -DBUILD_TESTING=OFF
+
 EOF
             )
             ->withPkgName('libngtcp2')
