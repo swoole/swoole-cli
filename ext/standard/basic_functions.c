@@ -16,23 +16,29 @@
  */
 
 #include "php.h"
+#include "php_assert.h"
+#include "php_crypt.h"
 #include "php_streams.h"
 #include "php_main.h"
 #include "php_globals.h"
 #include "php_variables.h"
 #include "php_ini.h"
+#include "php_image.h"
 #include "php_standard.h"
 #include "php_math.h"
 #include "php_http.h"
 #include "php_incomplete_class.h"
 #include "php_getopt.h"
+#include "php_ext_syslog.h"
 #include "ext/standard/info.h"
 #include "ext/session/php_session.h"
 #include "zend_exceptions.h"
+#include "zend_attributes.h"
+#include "zend_enum.h"
+#include "zend_ini.h"
 #include "zend_operators.h"
 #include "ext/standard/php_dns.h"
 #include "ext/standard/php_uuencode.h"
-#include "ext/standard/php_mt_rand.h"
 #include "ext/standard/crc32_x86.h"
 
 #ifdef PHP_WIN32
@@ -63,26 +69,27 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 
 #ifndef PHP_WIN32
 # include <netdb.h>
-#else
-#include "win32/inet.h"
 #endif
 
-#if HAVE_ARPA_INET_H
+#ifdef HAVE_ARPA_INET_H
 # include <arpa/inet.h>
 #endif
 
-#if HAVE_UNISTD_H
+#ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
 
 #include <string.h>
 #include <locale.h>
+#ifdef HAVE_LANGINFO_H
+# include <langinfo.h>
+#endif
 
-#if HAVE_SYS_MMAN_H
+#ifdef HAVE_SYS_MMAN_H
 # include <sys/mman.h>
 #endif
 
-#if HAVE_SYS_LOADAVG_H
+#ifdef HAVE_SYS_LOADAVG_H
 # include <sys/loadavg.h>
 #endif
 
@@ -91,7 +98,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
 #ifndef INADDR_NONE
-#define INADDR_NONE ((zend_ulong) -1)
+# define INADDR_NONE ((zend_ulong) -1)
 #endif
 
 #include "zend_globals.h"
@@ -107,7 +114,12 @@ PHPAPI php_basic_globals basic_globals;
 
 #include "php_fopen_wrappers.h"
 #include "streamsfuncs.h"
+#include "zend_frameless_function.h"
 #include "basic_functions_arginfo.h"
+
+#if __has_feature(memory_sanitizer)
+# include <sanitizer/msan_interface.h>
+#endif
 
 typedef struct _user_tick_function_entry {
 	zend_fcall_info fci;
@@ -115,7 +127,7 @@ typedef struct _user_tick_function_entry {
 	bool calling;
 } user_tick_function_entry;
 
-#if HAVE_PUTENV
+#ifdef HAVE_PUTENV
 typedef struct {
 	char *putenv_string;
 	char *previous_value;
@@ -149,13 +161,13 @@ zend_module_entry basic_functions_module = { /* {{{ */
 };
 /* }}} */
 
-#if defined(HAVE_PUTENV)
+#ifdef HAVE_PUTENV
 static void php_putenv_destructor(zval *zv) /* {{{ */
 {
 	putenv_entry *pe = Z_PTR_P(zv);
 
 	if (pe->previous_value) {
-# if defined(PHP_WIN32)
+# ifdef PHP_WIN32
 		/* MSVCRT has a bug in putenv() when setting a variable that
 		 * is already set; if the SetEnvironmentVariable() API call
 		 * fails, the Crt will double free() a string.
@@ -163,11 +175,11 @@ static void php_putenv_destructor(zval *zv) /* {{{ */
 		SetEnvironmentVariable(ZSTR_VAL(pe->key), "bugbug");
 # endif
 		putenv(pe->previous_value);
-# if defined(PHP_WIN32)
+# ifdef PHP_WIN32
 		efree(pe->previous_value);
 # endif
 	} else {
-# if HAVE_UNSETENV
+# ifdef HAVE_UNSETENV
 		unsetenv(ZSTR_VAL(pe->key));
 # elif defined(PHP_WIN32)
 		SetEnvironmentVariable(ZSTR_VAL(pe->key), NULL);
@@ -203,35 +215,16 @@ static void php_putenv_destructor(zval *zv) /* {{{ */
 
 static void basic_globals_ctor(php_basic_globals *basic_globals_p) /* {{{ */
 {
-	BG(mt_rand_is_seeded) = 0;
-	BG(mt_rand_mode) = MT_RAND_MT19937;
-	BG(umask) = -1;
-	BG(next) = NULL;
-	BG(left) = -1;
-	BG(user_tick_functions) = NULL;
-	BG(user_filter_map) = NULL;
-	BG(serialize_lock) = 0;
+	memset(basic_globals_p, 0, sizeof(php_basic_globals));
 
-	memset(&BG(serialize), 0, sizeof(BG(serialize)));
-	memset(&BG(unserialize), 0, sizeof(BG(unserialize)));
+	basic_globals_p->umask = -1;
+	basic_globals_p->url_adapt_session_ex.type = 1;
 
-	memset(&BG(url_adapt_session_ex), 0, sizeof(BG(url_adapt_session_ex)));
-	memset(&BG(url_adapt_output_ex), 0, sizeof(BG(url_adapt_output_ex)));
+	zend_hash_init(&basic_globals_p->url_adapt_session_hosts_ht, 0, NULL, NULL, 1);
+	zend_hash_init(&basic_globals_p->url_adapt_output_hosts_ht, 0, NULL, NULL, 1);
 
-	BG(url_adapt_session_ex).type = 1;
-	BG(url_adapt_output_ex).type  = 0;
-
-	zend_hash_init(&BG(url_adapt_session_hosts_ht), 0, NULL, NULL, 1);
-	zend_hash_init(&BG(url_adapt_output_hosts_ht), 0, NULL, NULL, 1);
-
-#if defined(_REENTRANT)
-	memset(&BG(mblen_state), 0, sizeof(BG(mblen_state)));
-#endif
-
-	BG(page_uid) = -1;
-	BG(page_gid) = -1;
-
-	BG(syslog_device) = NULL;
+	basic_globals_p->page_uid = -1;
+	basic_globals_p->page_gid = -1;
 }
 /* }}} */
 
@@ -284,78 +277,24 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 {
 #ifdef ZTS
 	ts_allocate_id(&basic_globals_id, sizeof(php_basic_globals), (ts_allocate_ctor) basic_globals_ctor, (ts_allocate_dtor) basic_globals_dtor);
-#ifdef PHP_WIN32
+# ifdef PHP_WIN32
 	ts_allocate_id(&php_win32_core_globals_id, sizeof(php_win32_core_globals), (ts_allocate_ctor)php_win32_core_globals_ctor, (ts_allocate_dtor)php_win32_core_globals_dtor );
-#endif
+# endif
 #else
 	basic_globals_ctor(&basic_globals);
-#ifdef PHP_WIN32
+# ifdef PHP_WIN32
 	php_win32_core_globals_ctor(&the_php_win32_core_globals);
+# endif
 #endif
-#endif
+
+	register_basic_functions_symbols(module_number);
 
 	php_ce_incomplete_class = register_class___PHP_Incomplete_Class();
 	php_register_incomplete_class_handlers();
 
 	assertion_error_ce = register_class_AssertionError(zend_ce_error);
 
-	REGISTER_LONG_CONSTANT("CONNECTION_ABORTED", PHP_CONNECTION_ABORTED, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("CONNECTION_NORMAL",  PHP_CONNECTION_NORMAL,  CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("CONNECTION_TIMEOUT", PHP_CONNECTION_TIMEOUT, CONST_CS | CONST_PERSISTENT);
-
-	REGISTER_LONG_CONSTANT("INI_USER",   ZEND_INI_USER,   CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("INI_PERDIR", ZEND_INI_PERDIR, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("INI_SYSTEM", ZEND_INI_SYSTEM, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("INI_ALL",    ZEND_INI_ALL,    CONST_CS | CONST_PERSISTENT);
-
-	REGISTER_LONG_CONSTANT("INI_SCANNER_NORMAL", ZEND_INI_SCANNER_NORMAL, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("INI_SCANNER_RAW",    ZEND_INI_SCANNER_RAW,    CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("INI_SCANNER_TYPED",  ZEND_INI_SCANNER_TYPED,  CONST_CS | CONST_PERSISTENT);
-
-	REGISTER_LONG_CONSTANT("PHP_URL_SCHEME", PHP_URL_SCHEME, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_URL_HOST", PHP_URL_HOST, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_URL_PORT", PHP_URL_PORT, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_URL_USER", PHP_URL_USER, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_URL_PASS", PHP_URL_PASS, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_URL_PATH", PHP_URL_PATH, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_URL_QUERY", PHP_URL_QUERY, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_URL_FRAGMENT", PHP_URL_FRAGMENT, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_QUERY_RFC1738", PHP_QUERY_RFC1738, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_QUERY_RFC3986", PHP_QUERY_RFC3986, CONST_CS | CONST_PERSISTENT);
-
-#define REGISTER_MATH_CONSTANT(x)  REGISTER_DOUBLE_CONSTANT(#x, x, CONST_CS | CONST_PERSISTENT)
-	REGISTER_MATH_CONSTANT(M_E);
-	REGISTER_MATH_CONSTANT(M_LOG2E);
-	REGISTER_MATH_CONSTANT(M_LOG10E);
-	REGISTER_MATH_CONSTANT(M_LN2);
-	REGISTER_MATH_CONSTANT(M_LN10);
-	REGISTER_MATH_CONSTANT(M_PI);
-	REGISTER_MATH_CONSTANT(M_PI_2);
-	REGISTER_MATH_CONSTANT(M_PI_4);
-	REGISTER_MATH_CONSTANT(M_1_PI);
-	REGISTER_MATH_CONSTANT(M_2_PI);
-	REGISTER_MATH_CONSTANT(M_SQRTPI);
-	REGISTER_MATH_CONSTANT(M_2_SQRTPI);
-	REGISTER_MATH_CONSTANT(M_LNPI);
-	REGISTER_MATH_CONSTANT(M_EULER);
-	REGISTER_MATH_CONSTANT(M_SQRT2);
-	REGISTER_MATH_CONSTANT(M_SQRT1_2);
-	REGISTER_MATH_CONSTANT(M_SQRT3);
-	REGISTER_DOUBLE_CONSTANT("INF", ZEND_INFINITY, CONST_CS | CONST_PERSISTENT);
-	REGISTER_DOUBLE_CONSTANT("NAN", ZEND_NAN, CONST_CS | CONST_PERSISTENT);
-
-	REGISTER_LONG_CONSTANT("PHP_ROUND_HALF_UP", PHP_ROUND_HALF_UP, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_ROUND_HALF_DOWN", PHP_ROUND_HALF_DOWN, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_ROUND_HALF_EVEN", PHP_ROUND_HALF_EVEN, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("PHP_ROUND_HALF_ODD", PHP_ROUND_HALF_ODD, CONST_CS | CONST_PERSISTENT);
-
-#if ENABLE_TEST_CLASS
-	test_class_startup();
-#endif
-
-	register_phpinfo_constants(INIT_FUNC_ARGS_PASSTHRU);
-	register_html_constants(INIT_FUNC_ARGS_PASSTHRU);
-	register_string_constants(INIT_FUNC_ARGS_PASSTHRU);
+	rounding_mode_ce = register_class_RoundingMode();
 
 	BASIC_MINIT_SUBMODULE(var)
 	BASIC_MINIT_SUBMODULE(file)
@@ -364,30 +303,24 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 	BASIC_MINIT_SUBMODULE(standard_filters)
 	BASIC_MINIT_SUBMODULE(user_filters)
 	BASIC_MINIT_SUBMODULE(password)
-	BASIC_MINIT_SUBMODULE(mt_rand)
 
-#if defined(ZTS)
+#ifdef ZTS
 	BASIC_MINIT_SUBMODULE(localeconv)
 #endif
 
-#if defined(HAVE_NL_LANGINFO)
-	BASIC_MINIT_SUBMODULE(nl_langinfo)
-#endif
-
-#if ZEND_INTRIN_SSE4_2_FUNC_PTR
+#ifdef ZEND_INTRIN_SSE4_2_FUNC_PTR
 	BASIC_MINIT_SUBMODULE(string_intrin)
 #endif
 
-#if ZEND_INTRIN_SSE4_2_PCLMUL_FUNC_PTR
+#ifdef ZEND_INTRIN_SSE4_2_PCLMUL_FUNC_PTR
 	BASIC_MINIT_SUBMODULE(crc32_x86_intrin)
 #endif
 
-#if ZEND_INTRIN_AVX2_FUNC_PTR || ZEND_INTRIN_SSSE3_FUNC_PTR
+#if defined(ZEND_INTRIN_AVX2_FUNC_PTR) || defined(ZEND_INTRIN_SSSE3_FUNC_PTR)
 	BASIC_MINIT_SUBMODULE(base64_intrin)
 #endif
 
 	BASIC_MINIT_SUBMODULE(crypt)
-	BASIC_MINIT_SUBMODULE(lcg)
 
 	BASIC_MINIT_SUBMODULE(dir)
 #ifdef HAVE_SYSLOG_H
@@ -402,7 +335,6 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 	BASIC_MINIT_SUBMODULE(exec)
 
 	BASIC_MINIT_SUBMODULE(user_streams)
-	BASIC_MINIT_SUBMODULE(imagetypes)
 
 	php_register_url_stream_wrapper("php", &php_stream_php_wrapper);
 	php_register_url_stream_wrapper("file", &php_plain_files_wrapper);
@@ -412,16 +344,6 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 	php_register_url_stream_wrapper("data", &php_stream_rfc2397_wrapper);
 	php_register_url_stream_wrapper("http", &php_stream_http_wrapper);
 	php_register_url_stream_wrapper("ftp", &php_stream_ftp_wrapper);
-
-#if defined(PHP_WIN32) || HAVE_DNS_SEARCH_FUNC
-# if defined(PHP_WIN32) || HAVE_FULL_DNS_FUNCS
-	BASIC_MINIT_SUBMODULE(dns)
-# endif
-#endif
-
-	BASIC_MINIT_SUBMODULE(random)
-
-	BASIC_MINIT_SUBMODULE(hrtime)
 
 	return SUCCESS;
 }
@@ -451,11 +373,10 @@ PHP_MSHUTDOWN_FUNCTION(basic) /* {{{ */
 	BASIC_MSHUTDOWN_SUBMODULE(url_scanner_ex)
 	BASIC_MSHUTDOWN_SUBMODULE(file)
 	BASIC_MSHUTDOWN_SUBMODULE(standard_filters)
-#if defined(ZTS)
+#ifdef ZTS
 	BASIC_MSHUTDOWN_SUBMODULE(localeconv)
 #endif
 	BASIC_MSHUTDOWN_SUBMODULE(crypt)
-	BASIC_MSHUTDOWN_SUBMODULE(random)
 	BASIC_MSHUTDOWN_SUBMODULE(password)
 
 	return SUCCESS;
@@ -489,6 +410,9 @@ PHP_RINIT_FUNCTION(basic) /* {{{ */
 	BASIC_RINIT_SUBMODULE(dir)
 	BASIC_RINIT_SUBMODULE(url_scanner_ex)
 
+	/* Initialize memory for last http headers */
+	ZVAL_UNDEF(&BG(last_http_headers));
+
 	/* Setup default context */
 	FG(default_context) = NULL;
 
@@ -513,8 +437,6 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 	zend_hash_destroy(&BG(putenv_ht));
 	tsrm_env_unlock();
 #endif
-
-	BG(mt_rand_is_seeded) = 0;
 
 	if (BG(umask) != -1) {
 		umask(BG(umask));
@@ -554,6 +476,9 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 
 	BASIC_RSHUTDOWN_SUBMODULE(user_filters)
 	BASIC_RSHUTDOWN_SUBMODULE(browscap)
+
+	/* Free last http headers */
+	zval_ptr_dtor(&BG(last_http_headers));
 
 	BG(page_uid) = -1;
 	BG(page_gid) = -1;
@@ -597,7 +522,6 @@ PHP_FUNCTION(constant)
 }
 /* }}} */
 
-#ifdef HAVE_INET_NTOP
 /* {{{ Converts a packed inet address to a human readable IP address string */
 PHP_FUNCTION(inet_ntop)
 {
@@ -626,9 +550,7 @@ PHP_FUNCTION(inet_ntop)
 	RETURN_STRING(buffer);
 }
 /* }}} */
-#endif /* HAVE_INET_NTOP */
 
-#ifdef HAVE_INET_PTON
 /* {{{ Converts a human readable IP address to a packed binary string */
 PHP_FUNCTION(inet_pton)
 {
@@ -661,42 +583,22 @@ PHP_FUNCTION(inet_pton)
 	RETURN_STRINGL(buffer, af == AF_INET ? 4 : 16);
 }
 /* }}} */
-#endif /* HAVE_INET_PTON */
 
 /* {{{ Converts a string containing an (IPv4) Internet Protocol dotted address into a proper address */
 PHP_FUNCTION(ip2long)
 {
 	char *addr;
 	size_t addr_len;
-#ifdef HAVE_INET_PTON
 	struct in_addr ip;
-#else
-	zend_ulong ip;
-#endif
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_STRING(addr, addr_len)
 	ZEND_PARSE_PARAMETERS_END();
 
-#ifdef HAVE_INET_PTON
 	if (addr_len == 0 || inet_pton(AF_INET, addr, &ip) != 1) {
 		RETURN_FALSE;
 	}
 	RETURN_LONG(ntohl(ip.s_addr));
-#else
-	if (addr_len == 0 || (ip = inet_addr(addr)) == INADDR_NONE) {
-		/* The only special case when we should return -1 ourselves,
-		 * because inet_addr() considers it wrong. We return 0xFFFFFFFF and
-		 * not -1 or ~0 because of 32/64bit issues. */
-		if (addr_len == sizeof("255.255.255.255") - 1 &&
-			!memcmp(addr, "255.255.255.255", sizeof("255.255.255.255") - 1)
-		) {
-			RETURN_LONG(0xFFFFFFFF);
-		}
-		RETURN_FALSE;
-	}
-	RETURN_LONG(ntohl(ip));
-#endif
 }
 /* }}} */
 
@@ -706,9 +608,7 @@ PHP_FUNCTION(long2ip)
 	zend_ulong ip;
 	zend_long sip;
 	struct in_addr myaddr;
-#ifdef HAVE_INET_PTON
 	char str[40];
-#endif
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_LONG(sip)
@@ -718,15 +618,10 @@ PHP_FUNCTION(long2ip)
 	ip = (zend_ulong)sip;
 
 	myaddr.s_addr = htonl(ip);
-#ifdef HAVE_INET_PTON
-	if (inet_ntop(AF_INET, &myaddr, str, sizeof(str))) {
-		RETURN_STRING(str);
-	} else {
-		RETURN_FALSE;
-	}
-#else
-	RETURN_STRING(inet_ntoa(myaddr));
-#endif
+	const char* result = inet_ntop(AF_INET, &myaddr, str, sizeof(str));
+	ZEND_ASSERT(result != NULL);
+
+	RETURN_STRING(str);
 }
 /* }}} */
 
@@ -807,7 +702,7 @@ PHP_FUNCTION(getenv)
 
 	if (!str) {
 		array_init(return_value);
-		php_import_environment_variables(return_value);
+		php_load_environment_variables(return_value);
 		return;
 	}
 
@@ -870,7 +765,7 @@ PHP_FUNCTION(putenv)
 	for (env = environ; env != NULL && *env != NULL; env++) {
 		if (!strncmp(*env, ZSTR_VAL(pe.key), ZSTR_LEN(pe.key))
 				&& (*env)[ZSTR_LEN(pe.key)] == '=') {	/* found it */
-#if defined(PHP_WIN32)
+#ifdef PHP_WIN32
 			/* must copy previous value because MSVCRT's putenv can free the string without notice */
 			pe.previous_value = estrdup(*env);
 #else
@@ -880,7 +775,7 @@ PHP_FUNCTION(putenv)
 		}
 	}
 
-#if HAVE_UNSETENV
+#ifdef HAVE_UNSETENV
 	if (!p) { /* no '=' means we want to unset it */
 		unsetenv(pe.putenv_string);
 	}
@@ -926,15 +821,16 @@ PHP_FUNCTION(putenv)
 		}
 #endif
 		tsrm_env_unlock();
-#if defined(PHP_WIN32)
+#ifdef PHP_WIN32
 		free(keyw);
 		free(valw);
 #endif
 		RETURN_TRUE;
 	} else {
+		tsrm_env_unlock();
 		free(pe.putenv_string);
 		zend_string_release(pe.key);
-#if defined(PHP_WIN32)
+#ifdef PHP_WIN32
 		free(keyw);
 		free(valw);
 #endif
@@ -1091,7 +987,7 @@ PHP_FUNCTION(getopt)
 
 		/* the first <len> slots are filled by the one short ops
 		 * we now extend our array and jump to the new added structs */
-		opts = (opt_struct *) erealloc(opts, sizeof(opt_struct) * (len + count + 1));
+		opts = (opt_struct *) safe_erealloc(opts, sizeof(opt_struct), (len + count + 1), 0);
 		orig_opts = opts;
 		opts += len;
 
@@ -1239,13 +1135,13 @@ PHP_FUNCTION(usleep)
 		RETURN_THROWS();
 	}
 
-#if HAVE_USLEEP
+#ifdef HAVE_USLEEP
 	usleep((unsigned int)num);
 #endif
 }
 /* }}} */
 
-#if HAVE_NANOSLEEP
+#ifdef HAVE_NANOSLEEP
 /* {{{ Delay for a number of seconds and nano seconds */
 PHP_FUNCTION(time_nanosleep)
 {
@@ -1292,6 +1188,7 @@ PHP_FUNCTION(time_sleep_until)
 	struct timespec php_req, php_rem;
 	uint64_t current_ns, target_ns, diff_ns;
 	const uint64_t ns_per_sec = 1000000000;
+	const double top_target_sec = (double)(UINT64_MAX / ns_per_sec);
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_DOUBLE(target_secs)
@@ -1299,6 +1196,11 @@ PHP_FUNCTION(time_sleep_until)
 
 	if (gettimeofday((struct timeval *) &tm, NULL) != 0) {
 		RETURN_FALSE;
+	}
+
+	if (UNEXPECTED(!(target_secs >= 0 && target_secs <= top_target_sec))) {
+		zend_argument_value_error(1, "must be between 0 and %" PRIu64, (uint64_t)top_target_sec);
+		RETURN_THROWS();
 	}
 
 	target_ns = (uint64_t) (target_secs * ns_per_sec);
@@ -1605,7 +1507,7 @@ PHP_FUNCTION(forward_static_call)
 		Z_PARAM_VARIADIC('*', fci.params, fci.param_count)
 	ZEND_PARSE_PARAMETERS_END();
 
-	if (!EX(prev_execute_data)->func->common.scope) {
+	if (!EX(prev_execute_data) || !EX(prev_execute_data)->func->common.scope) {
 		zend_throw_error(NULL, "Cannot call forward_static_call() when no class scope is active");
 		RETURN_THROWS();
 	}
@@ -1630,18 +1532,20 @@ PHP_FUNCTION(forward_static_call)
 /* {{{ Call a static method which is the first parameter with the arguments contained in array */
 PHP_FUNCTION(forward_static_call_array)
 {
-	zval *params, retval;
+	zval retval;
+	HashTable *params;
 	zend_fcall_info fci;
 	zend_fcall_info_cache fci_cache;
 	zend_class_entry *called_scope;
 
 	ZEND_PARSE_PARAMETERS_START(2, 2)
 		Z_PARAM_FUNC(fci, fci_cache)
-		Z_PARAM_ARRAY(params)
+		Z_PARAM_ARRAY_HT(params)
 	ZEND_PARSE_PARAMETERS_END();
 
-	zend_fcall_info_args(&fci, params);
 	fci.retval = &retval;
+	/* Add positional arguments */
+	fci.named_params = params;
 
 	called_scope = zend_get_called_scope(execute_data);
 	if (called_scope && fci_cache.calling_scope &&
@@ -1655,8 +1559,6 @@ PHP_FUNCTION(forward_static_call_array)
 		}
 		ZVAL_COPY_VALUE(return_value, &retval);
 	}
-
-	zend_fcall_info_args_clear(&fci, 1);
 }
 /* }}} */
 
@@ -1963,6 +1865,25 @@ PHP_FUNCTION(highlight_string)
 }
 /* }}} */
 
+/* {{{ Get interpreted size from the ini shorthand syntax */
+PHP_FUNCTION(ini_parse_quantity)
+{
+	zend_string *shorthand;
+	zend_string *errstr;
+
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_STR(shorthand)
+	ZEND_PARSE_PARAMETERS_END();
+
+	RETVAL_LONG(zend_ini_parse_quantity(shorthand, &errstr));
+
+	if (errstr) {
+		zend_error(E_WARNING, "%s", ZSTR_VAL(errstr));
+		zend_string_release(errstr);
+	}
+}
+/* }}} */
+
 /* {{{ Get a configuration option */
 PHP_FUNCTION(ini_get)
 {
@@ -2010,7 +1931,7 @@ PHP_FUNCTION(ini_get_all)
 	}
 
 	array_init(return_value);
-	ZEND_HASH_FOREACH_STR_KEY_PTR(EG(ini_directives), key, ini_entry) {
+	ZEND_HASH_MAP_FOREACH_STR_KEY_PTR(EG(ini_directives), key, ini_entry) {
 		zval option;
 
 		if (module_number != 0 && ini_entry->module_number != module_number) {
@@ -2094,10 +2015,8 @@ PHP_FUNCTION(ini_set)
 #define _CHECK_PATH(var, var_len, ini) php_ini_check_path(var, var_len, ini, sizeof(ini))
 	/* open basedir check */
 	if (PG(open_basedir)) {
-		if (_CHECK_PATH(ZSTR_VAL(varname), ZSTR_LEN(varname), "error_log") ||
-			_CHECK_PATH(ZSTR_VAL(varname), ZSTR_LEN(varname), "java.class.path") ||
+		if (_CHECK_PATH(ZSTR_VAL(varname), ZSTR_LEN(varname), "java.class.path") ||
 			_CHECK_PATH(ZSTR_VAL(varname), ZSTR_LEN(varname), "java.home") ||
-			_CHECK_PATH(ZSTR_VAL(varname), ZSTR_LEN(varname), "mail.log") ||
 			_CHECK_PATH(ZSTR_VAL(varname), ZSTR_LEN(varname), "java.library.path") ||
 			_CHECK_PATH(ZSTR_VAL(varname), ZSTR_LEN(varname), "vpopmail.directory")) {
 			if (php_check_open_basedir(ZSTR_VAL(new_value_str))) {
@@ -2149,7 +2068,7 @@ PHP_FUNCTION(set_include_path)
 		RETVAL_FALSE;
 	}
 
-	key = zend_string_init("include_path", sizeof("include_path") - 1, 0);
+	key = ZSTR_INIT_LITERAL("include_path", 0);
 	if (zend_alter_ini_entry_ex(key, new_value, PHP_INI_USER, PHP_INI_STAGE_RUNTIME, 0) == FAILURE) {
 		zend_string_release_ex(key, 0);
 		zval_ptr_dtor_str(return_value);
@@ -2230,7 +2149,7 @@ PHP_FUNCTION(ignore_user_abort)
 	old_setting = (unsigned short)PG(ignore_user_abort);
 
 	if (!arg_is_null) {
-		zend_string *key = zend_string_init("ignore_user_abort", sizeof("ignore_user_abort") - 1, 0);
+		zend_string *key = ZSTR_INIT_LITERAL("ignore_user_abort", 0);
 		zend_alter_ini_entry_chars(key, arg ? "1" : "0", 1, PHP_INI_USER, PHP_INI_STAGE_RUNTIME);
 		zend_string_release_ex(key, 0);
 	}
@@ -2239,7 +2158,7 @@ PHP_FUNCTION(ignore_user_abort)
 }
 /* }}} */
 
-#if HAVE_GETSERVBYNAME
+#ifdef HAVE_GETSERVBYNAME
 /* {{{ Returns port associated with service. Protocol must be "tcp" or "udp" */
 PHP_FUNCTION(getservbyname)
 {
@@ -2264,7 +2183,7 @@ PHP_FUNCTION(getservbyname)
 
 	serv = getservbyname(ZSTR_VAL(name), proto);
 
-#if defined(_AIX)
+#ifdef _AIX
 	/*
         On AIX, imap is only known as imap2 in /etc/services, while on Linux imap is an alias for imap2.
         If a request for imap gives no result, we try again with imap2.
@@ -2282,7 +2201,7 @@ PHP_FUNCTION(getservbyname)
 /* }}} */
 #endif
 
-#if HAVE_GETSERVBYPORT
+#ifdef HAVE_GETSERVBYPORT
 /* {{{ Returns service name associated with port. Protocol must be "tcp" or "udp" */
 PHP_FUNCTION(getservbyport)
 {
@@ -2302,12 +2221,16 @@ PHP_FUNCTION(getservbyport)
 		RETURN_FALSE;
 	}
 
+	/* MSAN false positive, getservbyport() is not properly intercepted. */
+#if __has_feature(memory_sanitizer)
+	__msan_unpoison_string(serv->s_name);
+#endif
 	RETURN_STRING(serv->s_name);
 }
 /* }}} */
 #endif
 
-#if HAVE_GETPROTOBYNAME
+#ifdef HAVE_GETPROTOBYNAME
 /* {{{ Returns protocol number associated with name as per /etc/protocols */
 PHP_FUNCTION(getprotobyname)
 {
@@ -2330,7 +2253,7 @@ PHP_FUNCTION(getprotobyname)
 /* }}} */
 #endif
 
-#if HAVE_GETPROTOBYNUMBER
+#ifdef HAVE_GETPROTOBYNUMBER
 /* {{{ Returns protocol name associated with protocol number proto */
 PHP_FUNCTION(getprotobynumber)
 {
@@ -2498,8 +2421,9 @@ static void php_simple_ini_parser_cb(zval *arg1, zval *arg2, zval *arg3, int cal
 				break;
 			}
 
+			/* entry in the form x[a]=b where x might need to be an array index */
 			if (!(Z_STRLEN_P(arg1) > 1 && Z_STRVAL_P(arg1)[0] == '0') && is_numeric_string(Z_STRVAL_P(arg1), Z_STRLEN_P(arg1), NULL, NULL, 0) == IS_LONG) {
-				zend_ulong key = (zend_ulong) zend_atol(Z_STRVAL_P(arg1), Z_STRLEN_P(arg1));
+				zend_ulong key = (zend_ulong) ZEND_STRTOUL(Z_STRVAL_P(arg1), NULL, 0);
 				if ((find_hash = zend_hash_index_find(Z_ARRVAL_P(arr), key)) == NULL) {
 					array_init(&hash);
 					find_hash = zend_hash_index_add_new(Z_ARRVAL_P(arr), key, &hash);
@@ -2568,7 +2492,7 @@ PHP_FUNCTION(parse_ini_file)
 	ZEND_PARSE_PARAMETERS_END();
 
 	if (ZSTR_LEN(filename) == 0) {
-		zend_argument_value_error(1, "cannot be empty");
+		zend_argument_must_not_be_empty_error(1);
 		RETURN_THROWS();
 	}
 

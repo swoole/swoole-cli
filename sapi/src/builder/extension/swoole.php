@@ -105,7 +105,8 @@ EOF;
 
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
-    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs   --static  odbc odbccr odbcinst readline ncursesw )' . " -L{$libiconv_prefix}/lib -liconv ");
+
+    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) ' . " -L{$libiconv_prefix}/lib -liconv ");
 
 
     /*
@@ -127,16 +128,14 @@ EOF;
                 fi
             fi
 
-            if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
-                test -d ext/swoole && rm -rf ext/swoole
-                if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
-                    test -d /tmp/swoole && rm -rf /tmp/swoole
-                    git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
-                    cd  /tmp/swoole
-                    tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
-                fi
-                mkdir -p ${WORKDIR}/ext/swoole/
-                tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+        if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
+            test -d ext/swoole && rm -rf ext/swoole
+            if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
+                test -d /tmp/swoole && rm -rf /tmp/swoole
+                git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
+                cd  /tmp/swoole
+                rm -rf /tmp/swoole/.git/
+                tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
             fi
             # swoole extension hook
     EOF;

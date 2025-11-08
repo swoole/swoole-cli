@@ -4,6 +4,27 @@
 
 class Locale
 {
+    /** @cvalue ULOC_ACTUAL_LOCALE */
+    public const int ACTUAL_LOCALE = UNKNOWN;
+    /** @cvalue ULOC_VALID_LOCALE */
+    public const int VALID_LOCALE = UNKNOWN;
+
+    public const null DEFAULT_LOCALE = null;
+    /** @cvalue LOC_LANG_TAG */
+    public const string LANG_TAG = UNKNOWN;
+    /** @cvalue LOC_EXTLANG_TAG */
+    public const string EXTLANG_TAG = UNKNOWN;
+    /** @cvalue LOC_SCRIPT_TAG */
+    public const string SCRIPT_TAG = UNKNOWN;
+    /** @cvalue LOC_REGION_TAG */
+    public const string REGION_TAG = UNKNOWN;
+    /** @cvalue LOC_VARIANT_TAG */
+    public const string VARIANT_TAG = UNKNOWN;
+    /** @cvalue LOC_GRANDFATHERED_LANG_TAG */
+    public const string GRANDFATHERED_LANG_TAG = UNKNOWN;
+    /** @cvalue LOC_PRIVATE_TAG */
+    public const string PRIVATE_TAG = UNKNOWN;
+
     /**
      * @tentative-return-type
      * @alias locale_get_default
@@ -11,10 +32,10 @@ class Locale
     public static function getDefault(): string {}
 
     /**
-     * @return bool
+     * @tentative-return-type
      * @alias locale_set_default
      */
-    public static function setDefault(string $locale) {} // TODO make return type void
+    public static function setDefault(string $locale): true {}
 
     /**
      * @tentative-return-type

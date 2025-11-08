@@ -45,8 +45,7 @@ PHP_MSHUTDOWN_FUNCTION(curl);
 PHP_MINFO_FUNCTION(curl);
 
 typedef struct {
-	zval                  func_name;
-	zend_fcall_info_cache fci_cache;
+	zend_fcall_info_cache fcc;
 	FILE                 *fp;
 	smart_str             buf;
 	int                   method;
@@ -54,8 +53,7 @@ typedef struct {
 } php_curl_write;
 
 typedef struct {
-	zval                  func_name;
-	zend_fcall_info_cache fci_cache;
+	zend_fcall_info_cache fcc;
 	FILE                 *fp;
 	zend_resource        *res;
 	int                   method;
@@ -63,18 +61,19 @@ typedef struct {
 } php_curl_read;
 
 typedef struct {
-	zval                  func_name;
-	zend_fcall_info_cache fci_cache;
-} php_curl_callback;
-
-typedef struct {
 	php_curl_write    *write;
 	php_curl_write    *write_header;
 	php_curl_read     *read;
 	zval               std_err;
-	php_curl_callback *progress;
-#if LIBCURL_VERSION_NUM >= 0x071500 /* Available since 7.21.0 */
-	php_curl_callback  *fnmatch;
+	zend_fcall_info_cache progress;
+	zend_fcall_info_cache xferinfo;
+	zend_fcall_info_cache fnmatch;
+	zend_fcall_info_cache debug;
+#if LIBCURL_VERSION_NUM >= 0x075000 /* Available since 7.80.0 */
+	zend_fcall_info_cache prereq;
+#endif
+#if LIBCURL_VERSION_NUM >= 0x075400 /* Available since 7.84.0 */
+	zend_fcall_info_cache sshhostkey;
 #endif
 } php_curl_handlers;
 
@@ -90,9 +89,6 @@ struct _php_curl_send_headers {
 struct _php_curl_free {
 	zend_llist post;
 	zend_llist stream;
-#if LIBCURL_VERSION_NUM < 0x073800 /* 7.56.0 */
-	zend_llist buffers;
-#endif
 	HashTable *slist;
 };
 
@@ -115,7 +111,7 @@ typedef struct {
 #define CURLOPT_SAFE_UPLOAD -1
 
 typedef struct {
-	php_curl_callback	*server_push;
+	zend_fcall_info_cache server_push;
 } php_curlm_handlers;
 
 typedef struct {
@@ -140,8 +136,11 @@ php_curl *init_curl_handle_into_zval(zval *curl);
 void init_curl_handle(php_curl *ch);
 void _php_curl_cleanup_handle(php_curl *);
 void _php_curl_multi_cleanup_list(void *data);
-void _php_curl_verify_handlers(php_curl *ch, int reporterror);
+void _php_curl_verify_handlers(php_curl *ch, bool reporterror);
 void _php_setup_easy_copy_handlers(php_curl *ch, php_curl *source);
+
+/* Consumes `zv` */
+zend_long php_curl_get_long(zval *zv);
 
 static inline php_curl *curl_from_obj(zend_object *obj) {
 	return (php_curl *)((char *)(obj) - XtOffsetOf(php_curl, std));
@@ -158,6 +157,6 @@ static inline php_curlsh *curl_share_from_obj(zend_object *obj) {
 void curl_multi_register_handlers(void);
 void curl_share_register_handlers(void);
 void curlfile_register_class(void);
-int curl_cast_object(zend_object *obj, zval *result, int type);
+zend_result curl_cast_object(zend_object *obj, zval *result, int type);
 
 #endif  /* _PHP_CURL_PRIVATE_H */

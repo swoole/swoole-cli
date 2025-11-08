@@ -28,13 +28,14 @@
  * The following code is adopted from the PostgreSQL's ps_status(.h/.c).
  */
 
+#include <php.h>
 #ifdef PHP_WIN32
 #include "config.w32.h"
 #include <windows.h>
 #include <process.h>
 #include "win32/codepage.h"
 #else
-#include "php_config.h"
+#include <php_config.h>
 extern char** environ;
 #endif
 
@@ -46,6 +47,7 @@ extern char** environ;
 #include <unistd.h>
 #endif
 
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -56,7 +58,7 @@ extern char** environ;
 #include <machine/vmparam.h> /* for old BSD */
 #include <sys/exec.h>
 #endif
-#if defined(DARWIN)
+#if defined(__APPLE__)
 #include <crt_externs.h>
 #endif
 
@@ -90,9 +92,9 @@ extern char** environ;
 #define PS_USE_PSTAT
 #elif defined(HAVE_PS_STRINGS)
 #define PS_USE_PS_STRINGS
-#elif defined(BSD) && !defined(DARWIN)
+#elif defined(BSD) && !defined(__APPLE__)
 #define PS_USE_CHANGE_ARGV
-#elif defined(__linux__) || defined(_AIX) || defined(__sgi) || (defined(sun) && !defined(BSD)) || defined(ultrix) || defined(__osf__) || defined(DARWIN)
+#elif defined(__linux__) || defined(_AIX) || defined(__sgi) || (defined(sun) && !defined(BSD)) || defined(ultrix) || defined(__osf__) || defined(__APPLE__)
 #define PS_USE_CLOBBER_ARGV
 #elif defined(PHP_WIN32)
 #define PS_USE_WIN32
@@ -101,7 +103,7 @@ extern char** environ;
 #endif
 
 /* Different systems want the buffer padded differently */
-#if defined(_AIX) || defined(__linux__) || defined(DARWIN)
+#if defined(_AIX) || defined(__linux__) || defined(__APPLE__)
 #define PS_PADDING '\0'
 #else
 #define PS_PADDING ' '
@@ -154,20 +156,21 @@ char** save_ps_args(int argc, char** argv)
      */
     {
         char* end_of_area = NULL;
-        int non_contiguous_area = 0;
+        bool is_contiguous_area = true;
         int i;
 
         /*
          * check for contiguous argv strings
          */
-        for (i = 0; (non_contiguous_area == 0) && (i < argc); i++)
+        for (i = 0; is_contiguous_area && (i < argc); i++)
         {
-            if (i != 0 && end_of_area + 1 != argv[i])
-                non_contiguous_area = 1;
+            if (i != 0 && end_of_area + 1 != argv[i]) {
+                is_contiguous_area = false;
+            }
             end_of_area = argv[i] + strlen(argv[i]);
         }
 
-        if (non_contiguous_area != 0) {
+        if (!is_contiguous_area) {
             goto clobber_error;
         }
 
@@ -189,8 +192,9 @@ char** save_ps_args(int argc, char** argv)
          */
         new_environ = (char **) malloc((i + 1) * sizeof(char *));
         frozen_environ = (char **) malloc((i + 1) * sizeof(char *));
-        if (!new_environ || !frozen_environ)
+        if (!new_environ || !frozen_environ) {
             goto clobber_error;
+        }
         for (i = 0; environ[i] != NULL; i++)
         {
             new_environ[i] = strdup(environ[i]);
@@ -232,7 +236,7 @@ char** save_ps_args(int argc, char** argv)
         }
         new_argv[argc] = NULL;
 
-#if defined(DARWIN)
+#if defined(__APPLE__)
         /*
          * Darwin (and perhaps other NeXT-derived platforms?) has a static
          * copy of the argv pointer, which we may fix like so:
@@ -280,7 +284,7 @@ clobber_error:
  * and the init function was called.
  * Otherwise returns NOT_AVAILABLE or NOT_INITIALIZED
  */
-int is_ps_title_available()
+int is_ps_title_available(void)
 {
 #ifdef PS_USE_NONE
     return PS_TITLE_NOT_AVAILABLE; /* disabled functionality */
@@ -318,7 +322,7 @@ const char* ps_title_errno(int rc)
 
 #ifdef PS_USE_WIN32
     case PS_TITLE_WINDOWS_ERROR:
-        sprintf(windows_error_details, "Windows error code: %lu", GetLastError());
+        snprintf(windows_error_details, sizeof(windows_error_details), "Windows error code: %lu", GetLastError());
         return windows_error_details;
 #endif
     }
@@ -339,9 +343,8 @@ int set_ps_title(const char* title)
     if (rc != PS_TITLE_SUCCESS)
         return rc;
 
-    strncpy(ps_buffer, title, ps_buffer_size);
-    ps_buffer[ps_buffer_size - 1] = '\0';
-    ps_buffer_cur_len = strlen(ps_buffer);
+    size_t title_len = strlcpy(ps_buffer, title, ps_buffer_size);
+    ps_buffer_cur_len = (title_len >= ps_buffer_size) ? ps_buffer_size - 1 : title_len;
 
 #ifdef PS_USE_SETPROCTITLE
     setproctitle("%s", ps_buffer);
@@ -391,7 +394,7 @@ int set_ps_title(const char* title)
  * length into *displen.
  * The return code indicates the error.
  */
-int get_ps_title(int *displen, const char** string)
+int get_ps_title(size_t *displen, const char** string)
 {
     int rc = is_ps_title_available();
     if (rc != PS_TITLE_SUCCESS)
@@ -417,7 +420,7 @@ int get_ps_title(int *displen, const char** string)
 	free(tmp);
     }
 #endif
-    *displen = (int)ps_buffer_cur_len;
+    *displen = ps_buffer_cur_len;
     *string = ps_buffer;
     return PS_TITLE_SUCCESS;
 }

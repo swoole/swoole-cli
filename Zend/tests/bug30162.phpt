@@ -1,7 +1,8 @@
 --TEST--
-Bug #30162 (Catching exception in constructor couses lose of $this)
+Bug #30162 (Catching exception in constructor causes lose of $this)
 --FILE--
 <?php
+#[AllowDynamicProperties]
 class FIIFO {
 
     public function __construct() {
@@ -11,6 +12,7 @@ class FIIFO {
 
 }
 
+#[AllowDynamicProperties]
 class hariCow extends FIIFO {
 
     public function __construct() {

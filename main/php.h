@@ -22,7 +22,7 @@
 #include <dmalloc.h>
 #endif
 
-#define PHP_API_VERSION 20210902
+#define PHP_API_VERSION 20240924
 #define PHP_HAVE_STREAMS
 #define YYDEBUG 0
 #define PHP_DEFAULT_CHARSET "UTF-8"
@@ -122,11 +122,11 @@ typedef int pid_t;
 #include <unix.h>
 #endif
 
-#if HAVE_ALLOCA_H
+#ifdef HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
 
-#if HAVE_BUILD_DEFS_H
+#ifdef HAVE_BUILD_DEFS_H
 #include <build-defs.h>
 #endif
 
@@ -179,6 +179,10 @@ END_EXTERN_C()
 #define explicit_bzero php_explicit_bzero
 #endif
 
+BEGIN_EXTERN_C()
+PHPAPI int php_safe_bcmp(const zend_string *a, const zend_string *b);
+END_EXTERN_C()
+
 #ifndef HAVE_STRTOK_R
 BEGIN_EXTERN_C()
 char *strtok_r(char *s, const char *delim, char **last);
@@ -197,28 +201,20 @@ typedef unsigned int socklen_t;
 #define SET_MUTEX(a)
 #define FREE_MUTEX(a)
 
-/*
- * Then the ODBC support can use both iodbc and Solid,
- * uncomment this.
- * #define HAVE_ODBC (HAVE_IODBC|HAVE_SOLID)
- */
-
 #include <stdlib.h>
 #include <ctype.h>
-#if HAVE_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
 #include <stdarg.h>
-
-#include "php_stdint.h"
 
 #include "zend_hash.h"
 #include "zend_alloc.h"
 #include "zend_stack.h"
 #include <string.h>
 
-#if HAVE_PWD_H
+#ifdef HAVE_PWD_H
 # ifdef PHP_WIN32
 #include "win32/param.h"
 # else
@@ -297,9 +293,9 @@ void phperror(char *error);
 PHPAPI size_t php_write(void *buf, size_t size);
 PHPAPI size_t php_printf(const char *format, ...) PHP_ATTRIBUTE_FORMAT(printf, 1, 2);
 PHPAPI size_t php_printf_unchecked(const char *format, ...);
-PHPAPI int php_during_module_startup(void);
-PHPAPI int php_during_module_shutdown(void);
-PHPAPI int php_get_module_initialized(void);
+PHPAPI bool php_during_module_startup(void);
+PHPAPI bool php_during_module_shutdown(void);
+PHPAPI bool php_get_module_initialized(void);
 #ifdef HAVE_SYSLOG_H
 #include "php_syslog.h"
 #define php_log_err(msg) php_log_err_with_severity(msg, LOG_NOTICE)
@@ -326,6 +322,7 @@ PHPAPI ZEND_COLD void php_verror(const char *docref, const char *params, int typ
 /* PHPAPI void php_error(int type, const char *format, ...); */
 PHPAPI ZEND_COLD void php_error_docref(const char *docref, int type, const char *format, ...)
 	PHP_ATTRIBUTE_FORMAT(printf, 3, 4);
+PHPAPI ZEND_COLD void php_error_docref_unchecked(const char *docref, int type, const char *format, ...);
 PHPAPI ZEND_COLD void php_error_docref1(const char *docref, const char *param1, int type, const char *format, ...)
 	PHP_ATTRIBUTE_FORMAT(printf, 4, 5);
 PHPAPI ZEND_COLD void php_error_docref2(const char *docref, const char *param1, const char *param2, int type, const char *format, ...)
@@ -344,6 +341,7 @@ END_EXTERN_C()
 #define phpin zendin
 
 #define php_memnstr zend_memnstr
+#define php_memnistr zend_memnistr
 
 /* functions */
 BEGIN_EXTERN_C()
@@ -430,5 +428,11 @@ END_EXTERN_C()
 #define PHP_CONNECTION_TIMEOUT 2
 
 #include "php_reentrancy.h"
+
+/* the following typedefs are deprecated and will be removed in PHP
+ * 9.0; use the standard C99 types instead */
+typedef bool zend_bool;
+typedef intptr_t zend_intptr_t;
+typedef uintptr_t zend_uintptr_t;
 
 #endif

@@ -31,9 +31,9 @@ while [ $# -gt 0 ]; do
   shift $(($# > 0 ? 1 : 0))
 done
 
-REDIS_VERSION=6.1.0
+REDIS_VERSION=6.2.0
 YAML_VERSION=2.2.2
-IMAGICK_VERSION=3.7.0
+IMAGICK_VERSION=3.8.0
 PHP_VERSION=$(awk 'NR==1' ${__PROJECT__}/sapi/PHP-VERSION.conf)
 
 mkdir -p pool/ext

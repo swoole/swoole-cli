@@ -13,6 +13,7 @@
  */
 
 #include <unicode/rbbi.h>
+#include <memory>
 
 extern "C" {
 #define USE_BREAKITERATOR_POINTER 1
@@ -35,15 +36,16 @@ static void _php_intlrbbi_constructor_body(INTERNAL_FUNCTION_PARAMETERS, zend_er
 {
 	char		*rules;
 	size_t		rules_len;
-	bool	compiled	= 0;
+	bool	compiled	= false;
 	UErrorCode	status		= U_ZERO_ERROR;
 	BREAKITER_METHOD_INIT_VARS;
 	object = ZEND_THIS;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s|b",
-			&rules, &rules_len, &compiled) == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_START(1, 2)
+		Z_PARAM_STRING(rules, rules_len)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_BOOL(compiled)
+	ZEND_PARSE_PARAMETERS_END();
 
 	BREAKITER_METHOD_FETCH_OBJECT_NO_CHECK;
 	if (bio->biter) {
@@ -112,9 +114,7 @@ U_CFUNC PHP_METHOD(IntlRuleBasedBreakIterator, getRules)
 	BREAKITER_METHOD_INIT_VARS;
 	object = ZEND_THIS;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	BREAKITER_METHOD_FETCH_OBJECT;
 
@@ -137,9 +137,7 @@ U_CFUNC PHP_METHOD(IntlRuleBasedBreakIterator, getRuleStatus)
 	BREAKITER_METHOD_INIT_VARS;
 	object = ZEND_THIS;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	BREAKITER_METHOD_FETCH_OBJECT;
 
@@ -151,9 +149,7 @@ U_CFUNC PHP_METHOD(IntlRuleBasedBreakIterator, getRuleStatusVec)
 	BREAKITER_METHOD_INIT_VARS;
 	object = ZEND_THIS;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	BREAKITER_METHOD_FETCH_OBJECT;
 
@@ -163,11 +159,10 @@ U_CFUNC PHP_METHOD(IntlRuleBasedBreakIterator, getRuleStatusVec)
 	ZEND_ASSERT(BREAKITER_ERROR_CODE(bio) == U_BUFFER_OVERFLOW_ERROR);
 	BREAKITER_ERROR_CODE(bio) = U_ZERO_ERROR;
 
-	int32_t *rules = new int32_t[num_rules];
-	num_rules = fetch_rbbi(bio)->getRuleStatusVec(rules, num_rules,
+	std::unique_ptr<int32_t[]> rules = std::unique_ptr<int32_t[]>(new int32_t[num_rules]);
+	num_rules = fetch_rbbi(bio)->getRuleStatusVec(rules.get(), num_rules,
 			BREAKITER_ERROR_CODE(bio));
 	if (U_FAILURE(BREAKITER_ERROR_CODE(bio))) {
-		delete[] rules;
 		intl_errors_set(BREAKITER_ERROR_P(bio), BREAKITER_ERROR_CODE(bio),
 				"rbbi_get_rule_status_vec: failed obtaining the status values",
 				0);
@@ -178,7 +173,6 @@ U_CFUNC PHP_METHOD(IntlRuleBasedBreakIterator, getRuleStatusVec)
 	for (int32_t i = 0; i < num_rules; i++) {
 		add_next_index_long(return_value, rules[i]);
 	}
-	delete[] rules;
 }
 
 U_CFUNC PHP_METHOD(IntlRuleBasedBreakIterator, getBinaryRules)
@@ -186,9 +180,7 @@ U_CFUNC PHP_METHOD(IntlRuleBasedBreakIterator, getBinaryRules)
 	BREAKITER_METHOD_INIT_VARS;
 	object = ZEND_THIS;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	BREAKITER_METHOD_FETCH_OBJECT;
 
