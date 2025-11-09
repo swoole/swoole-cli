@@ -99,15 +99,13 @@ EOF
 
     $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) ' . " -L{$libiconv_prefix}/lib -liconv ");
 
-
-    /*
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
         $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
         $shell .= <<<'EOF'
-
-            SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
-            CURRENT_SWOOLE_VERSION=''
+        /*
+        SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
+        CURRENT_SWOOLE_VERSION=''
 
         if [ -f "ext/swoole/CMakeLists.txt" ] ;then
             CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
@@ -128,12 +126,15 @@ EOF
                 rm -rf /tmp/swoole/.git/
                 tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
             fi
-            # swoole extension hook
-            cd {$workDir}
-            sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+        fi
+        */
+        # swoole extension hook
+        cd {$workDir}
+        sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+
     EOF;
 
-            return $shell;
-        });
-    */
+        return $shell;
+    });
+
 };
