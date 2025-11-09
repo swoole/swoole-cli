@@ -27,6 +27,11 @@ return function (Preprocessor $p) {
     //call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
     //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
 
+    $libiconv_prefix = ICONV_PREFIX;
+
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
+    $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
+
     $options[] = '--enable-swoole';
     $options[] = '--enable-sockets';
     $options[] = '--enable-mysqlnd';
@@ -77,7 +82,7 @@ EOF
 
         # 新版macos getdtablesize 函数缺失
         # sed -i '' 's/getdtablesize();/sysconf(_SC_OPEN_MAX);/' ext/standard/php_fopen_wrapper.c
-        $libc = $p->isMacos() ? '-lc++' : '-lstdc++';
+        $libc = $p->isMacos() ? '-lc++ ' : '-lstdc++';
 
         # cd /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread
         # 或者
@@ -85,31 +90,21 @@ EOF
         # grep -r 'pthread_barrier_init' .
         # grep -r 'pthread_barrier_t' .
     }
-    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
+    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++ ' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 
     $p->withExportVariable('ZSTD_CFLAGS', '$(pkg-config  --cflags --static  libzstd)');
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 
-    $p->withBeforeConfigureScript('swoole', function (Preprocessor $p) {
-        $cmd = '';
-        if ($p->isMacos()) {
-            $workDir = $p->getPhpSrcDir();
-            $cmd = <<<EOF
-        cd {$workDir}/
-        sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
-EOF;
-        }
-        return $cmd;
+    $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) ' . " -L{$libiconv_prefix}/lib -liconv ");
 
-    });
 
     /*
-        $p->withBeforeConfigureScript('swoole', function () use ($p) {
-            $workDir = $p->getWorkDir();
-            $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
-            $shell .= <<<'EOF'
+    $p->withBeforeConfigureScript('swoole', function () use ($p) {
+        $workDir = $p->getWorkDir();
+        $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
+        $shell .= <<<'EOF'
 
             SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
             CURRENT_SWOOLE_VERSION=''
@@ -124,18 +119,18 @@ EOF;
                 fi
             fi
 
-            if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
-                test -d ext/swoole && rm -rf ext/swoole
-                if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
-                    test -d /tmp/swoole && rm -rf /tmp/swoole
-                    git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
-                    cd  /tmp/swoole
-                    tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
-                fi
-                mkdir -p ${WORKDIR}/ext/swoole/
-                tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+        if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
+            test -d ext/swoole && rm -rf ext/swoole
+            if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
+                test -d /tmp/swoole && rm -rf /tmp/swoole
+                git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
+                cd  /tmp/swoole
+                rm -rf /tmp/swoole/.git/
+                tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
             fi
             # swoole extension hook
+            cd {$workDir}
+            sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
     EOF;
 
             return $shell;

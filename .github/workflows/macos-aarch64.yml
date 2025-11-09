@@ -7,8 +7,7 @@ env:
 
 jobs:
   macos-aarch64:
-    if: 1
-    runs-on: macos-14
+    runs-on: macos-15
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
     # macos-13 CPU 架构 x86_64

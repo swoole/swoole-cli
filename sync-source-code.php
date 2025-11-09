@@ -23,11 +23,11 @@ $longopts = array(
 $options = getopt('', $longopts);
 
 if (!empty($options['action']) && $options['action'] == 'run') {
-    //正式同步
+    // 正式同步
     $action = 'run';
     $sync_dest_dir = $project_dir;
 } else {
-    //测试同步
+    // 测试同步
     # 准备工作 测试目录
 
     $directories = array_intersect($scanned_directory_source, $scanned_directory_destination);
@@ -68,6 +68,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
 
     echo "sync"
     # ZendVM
+    cd ${__WORKDIR__}/
     cp -rf $SRC/Zend/. ./Zend
 
     # Extension
@@ -105,6 +106,7 @@ $SYNC_SOURCE_CODE_SHELL .= PHP_EOL . <<<'EOF'
     cp -rf $SRC/ext/mbstring/. ./ext/mbstring
     cp -rf $SRC/ext/mysqli/. ./ext/mysqli
     cp -rf $SRC/ext/mysqlnd/. ./ext/mysqlnd
+    cp -rf $SRC/ext/random/. ./ext/random
     cp -rf $SRC/ext/opcache/. ./ext/opcache
 
     sed -i.backup 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4
@@ -161,6 +163,7 @@ PHP_OPCACHE_H_EOF
 
     cp -f $SRC/configure.ac ./configure.ac
     cp -f $SRC/buildconf ./buildconf
+    cp -f $SRC/.gdbinit ./.gdbinit
     cp -f $SRC/run-tests.php ./run-tests.php
 
     # scripts
@@ -205,8 +208,16 @@ extern void show_swoole_version(void);\
     # cli
     # 【执行本命令，影响 swoole-cli 特性，请手动确认功能变更】
     # cp -rf $SRC/sapi/cli/. ./sapi/cli
+    cp -rf $SRC/sapi/cli/ps_title.h ./sapi/cli
     cp -rf $SRC/sapi/cli/ps_title.c ./sapi/cli
     cp -rf $SRC/sapi/cli/generate_mime_type_map.php ./sapi/cli
+    cp -rf $SRC/sapi/cli/mime_type_map.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_http_parser.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_server_arginfo.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_process_title_arginfo.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_process_title.c ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_server.h ./sapi/cli
+    cp -rf $SRC/sapi/cli/php_cli_server.c ./sapi/cli
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
 
     # clean file
@@ -245,4 +256,25 @@ echo PHP_EOL;
 echo "synchronizing  end  ";
 echo PHP_EOL;
 echo PHP_EOL;
+
+echo "apply patches .... " . PHP_EOL;
+function file_replace_str(string $file, string $search, string $replace): void
+{
+    $content = file_get_contents($file);
+    $content = str_replace($search, $replace, $content);
+    file_put_contents($file, $content);
+}
+
+file_replace_str(
+    'sapi/cli/php_cli_server.c',
+    'PHP_FUNCTION(apache_request_headers)',
+    'static PHP_FUNCTION(apache_request_headers)'
+);
+
+file_replace_str(
+    'sapi/cli/php_cli_server.c',
+    'PHP_FUNCTION(apache_response_headers)',
+    'static PHP_FUNCTION(apache_response_headers)'
+);
+
 echo "action: " . $action . ' done !' . PHP_EOL;

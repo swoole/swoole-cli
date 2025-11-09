@@ -47,15 +47,6 @@ jobs:
         run: |
           echo "BUILD_PHP_VERSION=${{ matrix.php-version }}" >> $GITHUB_ENV
 
-      - name: Cache cygwin packages
-        id: cache-cygwin
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-cygwin-packages
-        with:
-          path: C:\cygwin-packages
-          key: "${{ runner.os }}-build-${{ env.cache-name }}"
-
       - name: Cache pool
         id: cache-cygwin-pool
         uses: actions/cache@v4

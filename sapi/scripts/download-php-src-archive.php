@@ -1,12 +1,15 @@
 <?php
 
-$poject_dir = realpath(__DIR__ . '/../../');
+$project_dir = realpath(__DIR__ . '/../../');
+$php_version_tag = trim(file_get_contents($project_dir . '/sapi/PHP-VERSION.conf'));
+# $php_version_tag = '8.2.29';
+$php_source_folder = $project_dir . "/var/php-{$php_version_tag}";
+$php_archive_file = $project_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
+// github.com
+$php_archive_file_sha256sum = '22bd132176a2ff5140dd38d30213364ce1119edda4521280d5249bc1f55721e9';
+// php.net
+// $php_archive_file_sha256sum = '40341f3e03a36d48facdb6cc2ec600ff887a1af9a5e5fee0b40f40b61488afae';
 
-# $php_version_tag = trim(file_get_contents($poject_dir . '/sapi/PHP-VERSION.conf'));
-$php_version_tag = '8.2.29';
-$php_source_folder = $poject_dir . "/var/php-{$php_version_tag}";
-$php_archive_file = $poject_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
-$php_archive_file_sha256sum = '7e340723b5521e29a7fae0eeac6808c29ef0906d3557cdd5af00c77c3484f760';
 $download_dir = dirname($php_archive_file);
 $download_php_counter = 0;
 
