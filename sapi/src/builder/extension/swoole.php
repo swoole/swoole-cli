@@ -98,42 +98,57 @@ EOF
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 
     $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) ' . " -L{$libiconv_prefix}/lib -liconv ");
-
-
     /*
-    $p->withBeforeConfigureScript('swoole', function () use ($p) {
-        $workDir = $p->getWorkDir();
-        $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
-        $shell .= <<<'EOF'
-
+        $p->withBeforeConfigureScript('swoole', function () use ($p) {
+            $workDir = $p->getWorkDir();
+            $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
+            $shell .= <<<'EOF'
             SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
             CURRENT_SWOOLE_VERSION=''
 
-        if [ -f "ext/swoole/CMakeLists.txt" ] ;then
-            CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
-            if [[ "${CURRENT_SWOOLE_VERSION}" =~ "-dev" ]]; then
-                echo 'swoole version master'
-                if [ -n "${GITHUB_ACTION}" ]; then
-                    test -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz && rm -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
-                    CURRENT_SWOOLE_VERSION=''
+            if [ -f "ext/swoole/CMakeLists.txt" ] ;then
+                CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
+                if [[ "${CURRENT_SWOOLE_VERSION}" =~ "-dev" ]]; then
+                    echo 'swoole version master'
+                    if [ -n "${GITHUB_ACTION}" ]; then
+                        test -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz && rm -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
+                        CURRENT_SWOOLE_VERSION=''
+                    fi
                 fi
-            fi
 
-        if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
-            test -d ext/swoole && rm -rf ext/swoole
-            if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
-                test -d /tmp/swoole && rm -rf /tmp/swoole
-                git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
-                cd  /tmp/swoole
-                rm -rf /tmp/swoole/.git/
-                tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
+            if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
+                test -d ext/swoole && rm -rf ext/swoole
+                if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
+                    test -d /tmp/swoole && rm -rf /tmp/swoole
+                    git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
+                    cd  /tmp/swoole
+                    rm -rf /tmp/swoole/.git/
+                    tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
+                fi
             fi
             # swoole extension hook
             cd {$workDir}
             sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
-    EOF;
+
+        EOF;
 
             return $shell;
         });
     */
+    $p->withBeforeConfigureScript('swoole', function () use ($p) {
+        $workDir = $p->getWorkDir();
+        $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ; IS_MACOS={$p->isMacos()}" . PHP_EOL;
+
+        $shell .= <<<'EOF'
+        # swoole extension hook
+        cd ${WORKDIR}
+        if [ ${IS_MACOS} -eq 1 ];then
+            sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
+        fi
+
+    EOF;
+
+        return $shell;
+    });
+
 };
