@@ -311,6 +311,7 @@ tmp-php.ini
 /ext/inotify
 /ext/swoole_tracker_agent
 /ext/loader8
+/ext/swoole
 /ext/ds
 /ext/xlswriter
 /ext/uuid

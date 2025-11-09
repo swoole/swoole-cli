@@ -7,6 +7,13 @@ return function (Preprocessor $p) {
     $pgsql_prefix = PGSQL_PREFIX;
     $ldflags = $p->isMacos() ? '' : ' -static  ';
     $libs = $p->isMacos() ? '-lc++' : ' -lstdc++ ';
+
+    # fix macos error: 'strchrnul' is only available on macOS 15.4 or newer
+    # https://www.postgresql.org/message-id/385134.1743523038@sss.pgh.pa.us
+    # fix solution https://github.com/theory/pgenv/issues/93
+    $custom_env_start = $p->isMacos() ? 'export MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion)"' : '';
+    $custom_env_end = $p->isMacos() ? 'unset MACOSX_DEPLOYMENT_TARGET' : '';
+
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
@@ -18,6 +25,7 @@ return function (Preprocessor $p) {
             ->withPrefix($pgsql_prefix)
             ->withBuildScript(
                 <<<EOF
+            {$custom_env_start}
             test -d build && rm -rf build
             mkdir -p build
             cd build
@@ -62,6 +70,7 @@ return function (Preprocessor $p) {
 
             make -C  src/interfaces/libpq install
 
+            {$custom_env_end}
 EOF
             )
             ->withScriptAfterInstall(
