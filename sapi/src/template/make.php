@@ -255,12 +255,6 @@ make_config() {
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
 
-<?php if ($this->isMacos()) : ?>
-    <?php if ($this->hasLibrary('pgsql')) : ?>
-    sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
-    <?php endif;?>
-<?php endif; ?>
-
    ./configure --help
     export_variables
     export LDFLAGS="$LDFLAGS <?= $this->extraLdflags ?>"
