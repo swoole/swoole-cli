@@ -171,12 +171,7 @@ if ($p->isMacos()) {
         ->withBinPath($homebrew_prefix . '/opt/automake/bin/')
         ->withBinPath($homebrew_prefix . '/opt/autoconf/bin/')
         ->withBinPath($homebrew_prefix . '/opt/gettext/bin')
-<<<<<<< HEAD
-        ->setLinker('ld64.lld');
-
-=======
         ->setLinker('ld');
->>>>>>> experiment-feature
     $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
 } else {
     $p->setLinker('ld.lld');

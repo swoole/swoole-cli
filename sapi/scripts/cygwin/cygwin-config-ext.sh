@@ -32,14 +32,9 @@ while [ $# -gt 0 ]; do
 done
 
 REDIS_VERSION=6.2.0
-<<<<<<< HEAD
-=======
-
->>>>>>> experiment-feature
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.8.0
-SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 
 mkdir -p pool/ext
 mkdir -p pool/lib

@@ -35,10 +35,6 @@ done
 REDIS_VERSION=6.2.0
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.8.0
-<<<<<<< HEAD
-=======
-PHP_VERSION=$(awk 'NR==1' ${__PROJECT__}/sapi/PHP-VERSION.conf)
->>>>>>> experiment-feature
 
 mkdir -p pool/ext
 mkdir -p pool/lib
