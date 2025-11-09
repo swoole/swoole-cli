@@ -13,8 +13,8 @@ return function (Preprocessor $p) {
             ->withLicense('https://libssh2.org/license.html', Library::LICENSE_SPEC)
             ->withManual('https://github.com/libssh2/libssh2.git')
             ->withManual('https://github.com/libssh2/libssh2/blob/master/docs/INSTALL_CMAKE.md')
-            ->withUrl('https://libssh2.org/download/libssh2-1.11.0.tar.gz')
-            ->withFileHash('md5', 'a01d543fd891ca48fe47726540d50b17')
+            ->withUrl('https://libssh2.org/download/libssh2-1.11.1.tar.gz')
+            ->withFileHash('md5', '38857d10b5c5deb198d6989dacace2e6')
             ->withPrefix($libssh2_prefix)
             ->withBuildScript(
                 <<<EOF

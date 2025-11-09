@@ -32,6 +32,10 @@ while [ $# -gt 0 ]; do
 done
 
 REDIS_VERSION=6.2.0
+<<<<<<< HEAD
+=======
+
+>>>>>>> experiment-feature
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.8.0

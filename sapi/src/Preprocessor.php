@@ -1123,6 +1123,7 @@ EOF;
 
         install_libraries($this);
         $this->skipHashVerify = boolval($this->getInputOption('skip-hash-verify'));
+
         $this->extEnabled = array_unique($this->extEnabled);
         foreach ($this->extEnabled as $ext) {
             if (!isset($extAvailable[$ext])) {

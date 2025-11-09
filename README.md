@@ -6,13 +6,42 @@
 
 `php-cli` 是一个 `PHP`的 运行时 ，默认包含 swoole 扩展
 
+<<<<<<< HEAD
 > 本项目 派生于 [swoole-cli](https://github.com/swoole/swoole-cli/)
+=======
+- [Swoole-Cli 介绍、使用说明](https://wenda.swoole.com/detail/108876)
+- [Swoole-Cli v6.1 将允许对 array/string/stream 类型使用内置方法](https://mp.weixin.qq.com/s/RmdKC5TLREwjcJFc-upZLQ)
+- [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://wenda.swoole.com/detail/108931)
+- [Swoole-Cli v5.0.1 使用说明](https://wenda.swoole.com/detail/108876)
+- [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://wenda.swoole.com/detail/108706)
+- [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
+- [Swoole v6.1 将提供 typed array 强类型数组实现，增强 PHP 标准库](https://mp.weixin.qq.com/s/yFuxYdNMqxI1VuZg0J07Wg)
+- [Swoole v6 2024 重磅更新：Swoole v6 正式发布，增加 16 项新功能](https://mp.weixin.qq.com/s/Ks1x1LNTLdl5jk0sIS6V_w)
+- [Swoole v6 协程是否支持 PHP 的 JIT ](https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA)
+- [Swoole v6 Alpha 版本已发布，为 PHP 带来稳定可靠、生产可用的多线程方案](https://mp.weixin.qq.com/s/IeCGVRFQDVbzVWCIZRGFNg)
+- [Swoole v6 将引入 Linux io_uring ，并发读写文件性能提升了 5 倍](https://mp.weixin.qq.com/s/5qnqmjCEb_zxLaT4sR1HAg)
+- [Swoole v6 线程池的使用](https://mp.weixin.qq.com/s/wzdH7voOWcHCLuf16SLeIA)
+- [Swoole v6 PHP 多线程实现原理 深度剖析](https://mp.weixin.qq.com/s/HzPEg7g3PuN2Xky4EQfnHw)
+- [Swoole v6 要来了！即将增加多线程支持](https://segmentfault.com/a/1190000044737434)
+- [Swoole v6 开发计划 - 支持多线程运行模式](https://github.com/swoole/rfc/issues/85)
+- [Swoole v5.1 增加更多数据库协程客户端支持](https://wenda.swoole.com/detail/109023)
+- [phpy 2025 支持了更多高级语法](https://mp.weixin.qq.com/s/YCG5ENAVOKzxcdD1Qdepbg)
+- [phpy 1.0.8 已发布，现在 PHP 类可以继承 Python 类了](https://mp.weixin.qq.com/s/mosUpNpm-iY2-vlGZQMlsA)
+- [phpy 中如何调用自定义 Python 模块](https://mp.weixin.qq.com/s/KOV-XZQVqZSXkMQoiDrsMA)
+- [phpy 连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://wenda.swoole.com/detail/109176)
+>>>>>>> experiment-feature
 
 > 代码与 swoole-cli 项目的 build_native_php 分支的代码 保持一致
 
 > 构建流程 与 swoole-cli 构建流程一致
 
+<<<<<<< HEAD
 > 项目继承 `swoole_cli` 项目的 `main` 分支、`experiment` 分支的构建功能
+=======
+## [常见问题解答](https://github.com/swoole/swoole-cli/blob/main/docs/FAQ.md)
+
+## 下载`swoole-cli`发行版
+>>>>>>> experiment-feature
 
 > 未对 PHP 源码 执行 裁剪、优化、添加新功能等操作
 

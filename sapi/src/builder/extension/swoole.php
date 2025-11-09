@@ -27,7 +27,6 @@ return function (Preprocessor $p) {
     //call_user_func_array([$ext, 'withDependentLibraries'], $dependentLibraries);
     //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
 
-
     $libiconv_prefix = ICONV_PREFIX;
 
     $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
@@ -91,7 +90,7 @@ EOF
         # grep -r 'pthread_barrier_init' .
         # grep -r 'pthread_barrier_t' .
     }
-    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
+    $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++ ' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');
     $p->withExportVariable('CARES_LIBS', '$(pkg-config    --libs   --static  libcares)');
 
