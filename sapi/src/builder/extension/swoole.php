@@ -137,11 +137,12 @@ EOF
     */
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
-        $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ; IS_MACOS={$p->isMacos()}" . PHP_EOL;
+        $phpSrcDir = $p->getPhpSrcDir();
+        $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ; IS_MACOS={$p->isMacos()} ; PHP_SRC_DIR={$phpSrcDir};" . PHP_EOL;
 
         $shell .= <<<'EOF'
         # swoole extension hook
-        cd ${WORKDIR}
+        cd ${PHP_SRC_DIR}
         if [ ${IS_MACOS} -eq 1 ];then
             sed -i '' 's/pthread_barrier_init/pthread_barrier_init_x_fake/' ext/swoole/config.m4
         fi
