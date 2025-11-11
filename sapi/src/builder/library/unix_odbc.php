@@ -11,6 +11,7 @@ return function (Preprocessor $p) {
         $custom_clean_script .= <<<EOF
         sed -i.bak 's@$(top_build_prefix)libltdl/libltdlc.la@@' {$unix_odbc_prefix}/lib/pkgconfig/odbc.pc
         sed -i.bak 's@$(top_build_prefix)libltdl/libltdlc.la@@' {$unix_odbc_prefix}/lib/pkgconfig/odbcinst.pc
+
 EOF;
     }
 
@@ -41,7 +42,8 @@ EOF;
             --enable-editline=no \
             --enable-iconv=yes \
             --enable-threads=yes \
-            --enable-gui=no
+            --enable-gui=no \
+            --enable-ltdl-install
 
 
 EOF
