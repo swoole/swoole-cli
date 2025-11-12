@@ -248,8 +248,8 @@ make_build() {
     export_variables
     <?php if ($this->isLinux()) : ?>
     export CFLAGS="$CFLAGS  -fPIE"
-    # export LDFLAGS="$LDFLAGS  -static -all-static "
-    export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
+    export LDFLAGS="$LDFLAGS  -static -all-static "
+    # export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
