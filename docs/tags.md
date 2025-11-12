@@ -3,14 +3,14 @@
 | item           | value      |
 |----------------|------------|
 | branch         | main       |
-| tag            | v6.1.1.0   |
-| swoole version | v6.1.1     |
+| tag            | v6.1.2.0   |
+| swoole version | v6.1.2     |
 | php  version   | 8.4.14     |
-| release date   | 2025-11-10 |
+| release date   | 2025-11-12 |
 | status         | ok         |
 
 1. [change info](https://github.com/swoole/swoole-cli/blob/ChangeLog-v6.1.1/docs/ChangeLog.md#v6110)
-1. [Code Change Info](https://github.com/swoole/swoole-cli/compare/v6.0.2.0...v6.1.1.0)
+1. [Code Change Info](https://github.com/swoole/swoole-cli/compare/v6.0.2.0...v6.1.2.0)
 1. [faq](https://github.com/swoole/swoole-cli/blob/ChangeLog-v6.1.1/docs/FAQ.md)
 
 # [v6.1.0.0-rc1](https://github.com/swoole/swoole-cli/releases/tag/v6.1.0.0-rc1)
