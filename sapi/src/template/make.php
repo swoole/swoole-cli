@@ -248,8 +248,8 @@ make_build() {
     export_variables
     <?php if ($this->isLinux()) : ?>
     export CFLAGS="$CFLAGS  -fPIE"
-    export LDFLAGS="$LDFLAGS  -static -all-static "
-    # export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
+    # export LDFLAGS="$LDFLAGS  -static -all-static "
+    export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
@@ -262,6 +262,8 @@ make_build() {
     ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
+    readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli
+    objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php endif; ?>
 
 }
