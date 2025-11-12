@@ -18,7 +18,7 @@ return function (Preprocessor $p) {
     $cmake_prefix_path .= "{$libzlib_prefix};";
 
     $lib = new Library('openjpeg');
-    $lib->withHomePage('https://github.com/uclouvain/openjpeg.git')
+    $lib->withHomePage('http://www.openjpeg.org/')
         ->withLicense('https://github.com/uclouvain/openjpeg?tab=License-1-ov-file#readme', Library::LICENSE_BSD)
         ->withManual('https://github.com/uclouvain/openjpeg/wiki/Installation')
         ->withUrl('https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.4.tar.gz')
