@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
     $lib = new Library('libraw');
     $lib->withHomePage('https://www.libraw.org/about')
         ->withLicense('http://www.gnu.org/licenses/lgpl-2.1.html', Library::LICENSE_LGPL)
-        ->withUrl('https://www.libraw.org/data/LibRaw-0.21.1.tar.gz')
+        ->withUrl('https://www.libraw.org/data/LibRaw-0.21.4.tar.gz')
         ->withPrefix($libraw_prefix)
         ->withConfigure(
             <<<EOF

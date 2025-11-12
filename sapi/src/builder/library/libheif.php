@@ -66,7 +66,15 @@ return function (Preprocessor $p) {
         -DWITH_AOM_DECODER=ON \
         -DWITH_SvtEnc=ON \
         -DWITH_OpenH264_ENCODER=ON \
-        -DWITH_OpenH264_DECODER=ON
+        -DWITH_OpenH264_DECODER=ON \
+        -DWITH_OpenH264_DECODER_PLUGIN=OFF \
+        -DWITH_DAV1D_PLUGIN=OFF \
+        -DWITH_SvtEnc_PLUGIN=OFF \
+        -DWITH_OpenJPEG_DECODER=ON \
+        -DWITH_OpenJPEG_DECODER_PLUGIN=OFF \
+        -DWITH_OpenJPEG_ENCODER=ON \
+        -DWITH_OpenJPEG_ENCODER_PLUGIN=OFF \
+        -DENABLE_PLUGIN_LOADING=OFF
 
 
         cmake --build . --config Release

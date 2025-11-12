@@ -10,8 +10,7 @@ return function (Preprocessor $p) {
     $lib = new Library('lcms2');
     $lib->withHomePage('https://littlecms.com/color-engine/')
         ->withLicense('https://www.opensource.org/licenses/mit-license.php', Library::LICENSE_MIT)
-        ->withUrl('https://sourceforge.net/projects/lcms/files/lcms/2.15/lcms2-2.15.tar.gz')
-        ->withFileHash('sha1', 'b143ff29b03676119dbca30f13cbed72af15cce8')
+        ->withUrl('https://sourceforge.net/projects/lcms/files/lcms/2.17/lcms2-2.17.tar.gz')
         ->withManual('https://lfs.lug.org.cn/blfs/view/10.0/general/lcms2.html')
         ->withPrefix($lcms2_prefix)
         ->withConfigure(
@@ -27,7 +26,8 @@ return function (Preprocessor $p) {
             --enable-shared=no \
             --enable-static=yes \
             --with-jpeg={$libjpeg_prefix} \
-            --with-tiff={$libtiff_prefix}
+            --with-tiff={$libtiff_prefix} \
+            --with-pic
 
 EOF
         )
