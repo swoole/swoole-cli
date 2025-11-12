@@ -15,7 +15,7 @@ cd ${__PROJECT__}
 ## 下载与安装配置
 ## https://cloud.tencent.com/document/product/436/63144
 
-APP_VERSION="v1.0.3"
+APP_VERSION="v1.0.7"
 APP_NAME="coscli"
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}"
 
