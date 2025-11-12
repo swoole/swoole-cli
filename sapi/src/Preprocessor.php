@@ -98,7 +98,6 @@ class Preprocessor
     {
         $this->setOsType($this->getRealOsType());
         $this->extEnabled = require __DIR__ . '/builder/enabled_extensions.php';
-        $this->extEnabled = [];
     }
 
     public function setLinker(string $ld): static
