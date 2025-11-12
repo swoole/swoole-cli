@@ -259,11 +259,11 @@ make_build() {
     xattr -cr <?= $this->getWorkDir() ?>/bin/swoole-cli
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php else : ?>
-    { ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? }
+    { ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
-    { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? }
-    { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? }
+    { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
+    { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
 <?php endif; ?>
 
 }
