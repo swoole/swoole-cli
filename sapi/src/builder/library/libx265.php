@@ -28,8 +28,6 @@ return function (Preprocessor $p) {
             -DBUILD_SHARED_LIBS=OFF  \
             -DBUILD_STATIC_LIBS=ON \
             -DCMAKE_CURRENT_SOURCE_DIR={$p->getBuildDir()}/libx265/source/ \
-            -DCMAKE_C_COMPILER=clang \
-            -DCMAKE_CXX_COMPILER=clang++ \
             -DENABLE_SHARED=OFF \
             -DENABLE_LIBNUMA=OFF \
             -DENABLE_PIC=ON \
