@@ -72,4 +72,5 @@ define("OPENH264_PREFIX", $p->getGlobalPrefix() . '/openh264');
 define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
+define("OPENJPEG_PREFIX", $p->getGlobalPrefix() . '/openjpeg');
 

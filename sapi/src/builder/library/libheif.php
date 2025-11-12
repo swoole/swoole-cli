@@ -17,6 +17,7 @@ return function (Preprocessor $p) {
     $libwebp_prefix = WEBP_PREFIX;
     $libopenh264_prefix = OPENH264_PREFIX;
     $libtiff_prefix = LIBTIFF_PREFIX;
+    $openjpeg_prefix = OPENJPEG_PREFIX;
 
     $cmake_prefix_path = "";
     $cmake_prefix_path .= "{$aom_prefix};";
@@ -30,6 +31,7 @@ return function (Preprocessor $p) {
     $cmake_prefix_path .= "{$libwebp_prefix};";
     $cmake_prefix_path .= "{$libopenh264_prefix};";
     $cmake_prefix_path .= "{$libtiff_prefix};";
+    $cmake_prefix_path .= "{$openjpeg_prefix};";
 
 
     $lib = new Library('libheif');
@@ -38,6 +40,8 @@ return function (Preprocessor $p) {
         ->withManual('https://github.com/strukturag/libheif.git')
         ->withUrl('https://github.com/strukturag/libheif/releases/download/v1.20.2/libheif-1.20.2.tar.gz')
         ->withPrefix($libheif_prefix)
+        ->withBuildCached(false)
+        ->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
          mkdir -p build
@@ -60,7 +64,9 @@ return function (Preprocessor $p) {
         -DWITH_DAV1D=ON \
         -DWITH_AOM_ENCODER=ON \
         -DWITH_AOM_DECODER=ON \
-        -DWITH_SvtEnc=ON
+        -DWITH_SvtEnc=ON \
+        -DWITH_OpenH264_ENCODER=ON \
+        -DWITH_OpenH264_DECODER=ON
 
 
         cmake --build . --config Release
@@ -83,7 +89,8 @@ EOF
             'libpng',
             'libwebp',
             'openh264',
-            'libtiff'
+            'libtiff',
+            'openjpeg'
         );
     $p->addLibrary($lib);
 
