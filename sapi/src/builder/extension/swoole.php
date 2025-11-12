@@ -82,7 +82,8 @@ EOF
 
         # 新版macos getdtablesize 函数缺失
         # sed -i '' 's/getdtablesize();/sysconf(_SC_OPEN_MAX);/' ext/standard/php_fopen_wrapper.c
-        $libc = $p->isMacos() ? '-lc++ ' : '-lstdc++';
+
+        $libc = $p->isMacos() ? '-lc++' : '-lstdc++';
 
         # cd /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread
         # 或者

@@ -328,7 +328,7 @@ make_config() {
         test -f ./configure.backup && rm -f ./configure.backup
     <?php endif; ?>
 <?php endif; ?>
-
+   ./configure --help
     export_variables
     export LDFLAGS="$LDFLAGS <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
