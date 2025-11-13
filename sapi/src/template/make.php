@@ -376,22 +376,11 @@ make_build() {
     xattr -cr <?= $this->phpSrcDir  ?>/sapi/cli/php
     otool -L <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php else : ?>
-<<<<<<< HEAD
-    ldd <?= $this->phpSrcDir  ?>/sapi/cli/php
+    { ldd  ldd <?= $this->phpSrcDir  ?>/sapi/cli/php; } || { echo $? ; }
     file <?= $this->phpSrcDir  ?>/sapi/cli/php
     readelf -h <?= $this->phpSrcDir  ?>/sapi/cli/php
-=======
-    { ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
-    file <?= $this->getWorkDir() ?>/bin/swoole-cli
-    readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
-<<<<<<< HEAD
-    # { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
-    # { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
-=======
-    { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
-    { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
->>>>>>> feature-linux-static-pie
->>>>>>> experiment-feature
+    { readelf -l <?= $this->phpSrcDir  ?>/sapi/cli/php ; } || { echo $? ; }
+    { objdump -p <?= $this->phpSrcDir  ?>/sapi/cli/php ; } || { echo $? ; }
 <?php endif; ?>
 
     # make install
