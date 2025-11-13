@@ -250,7 +250,8 @@ make_build() {
     export CFLAGS="$CFLAGS  -fPIE"
     export LDFLAGS="$LDFLAGS  -static -all-static"
     <?php if ($this->getInputOption('with-static-pie')) : ?>
-    export LDFLAGS="$LDFLAGS  -static-pie"
+    export CFLAGS="$CFLAGS  -fPIE"
+    export LDFLAGS="$LDFLAGS -static-pie"
     <?php endif ; ?>
     <?php endif ; ?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
