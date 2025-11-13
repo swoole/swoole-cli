@@ -376,7 +376,7 @@ make_build() {
     xattr -cr <?= $this->phpSrcDir  ?>/sapi/cli/php
     otool -L <?= $this->phpSrcDir  ?>/sapi/cli/php
 <?php else : ?>
-    { ldd  ldd <?= $this->phpSrcDir  ?>/sapi/cli/php; } || { echo $? ; }
+    { ldd  ldd <?= $this->phpSrcDir  ?>/sapi/cli/php ; } || { echo $? ; }
     file <?= $this->phpSrcDir  ?>/sapi/cli/php
     readelf -h <?= $this->phpSrcDir  ?>/sapi/cli/php
     { readelf -l <?= $this->phpSrcDir  ?>/sapi/cli/php ; } || { echo $? ; }
