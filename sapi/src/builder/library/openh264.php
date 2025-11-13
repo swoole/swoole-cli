@@ -25,7 +25,6 @@ return function (Preprocessor $p) {
             --includedir={$openh264_prefix}/include \
             --default-library=static \
             --backend=ninja \
-            --default-both-libraries=static \
             --prefer-static \
             -Dtests=disabled \
 
