@@ -134,7 +134,7 @@ jobs:
           ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli --ri pgsql
-          { ldd ./bin/swoole-cli ; } || { echo $? ; } ;
+          { ldd ./bin/swoole-cli ; } || { echo $? ; }
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
           APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
