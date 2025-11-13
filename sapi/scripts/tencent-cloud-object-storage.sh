@@ -116,7 +116,7 @@ test -f ${APP_RUNTIME} || curl -fSLo ${APP_RUNTIME} https://github.com/tencentyu
 chmod a+x ${APP_RUNTIME}
 
 BUCKET_NAME=$(grep "\- name: " ${CLOUD_OBJECT_STORAGE_CONFIG} | sed 's/\- name: //g' | sed 's/^ *//;s/ *$//' | tr -d '"')
-COSCLI="${__PROJECT__}/var/tencent-cloud-object-storage/${APP_RUNTIME} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} --log-path ${__PROJECT__}/var/tencent-cloud-object-storage/"
+COSCLI="${__PROJECT__}/var/tencent-cloud-object-storage/${APP_RUNTIME} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG}"
 COS_BUCKET_FOLDER="cos://${BUCKET_NAME}/dist/"
 
 if [ "${UPLOAD_TYPE}" == 'all' ]; then
@@ -143,6 +143,7 @@ if [ "${UPLOAD_TYPE}" == 'all' ]; then
   status=$?
   if [[ $status -ne 0 ]]; then
     echo $status
+    cat ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log
     exit 1
   fi
   cd ${__PROJECT__}
@@ -154,6 +155,7 @@ if [ "${UPLOAD_TYPE}" == 'single' ]; then
   status=$?
   if [[ $status -ne 0 ]]; then
     echo $status
+    cat ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log
     exit 1
   fi
   exit 0
@@ -166,6 +168,7 @@ if [ "${UPLOAD_TYPE}" == 'show' ]; then
   status=$?
   if [[ $status -ne 0 ]]; then
     echo $status
+    cat ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log
     exit 1
   fi
   exit 0
