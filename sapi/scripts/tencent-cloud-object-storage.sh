@@ -15,7 +15,7 @@ cd ${__PROJECT__}
 ## 下载与安装配置
 ## https://cloud.tencent.com/document/product/436/63144
 
-APP_VERSION="v1.0.3"
+APP_VERSION="v1.0.7"
 APP_NAME="coscli"
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}"
 
@@ -116,7 +116,7 @@ test -f ${APP_RUNTIME} || curl -fSLo ${APP_RUNTIME} https://github.com/tencentyu
 chmod a+x ${APP_RUNTIME}
 
 BUCKET_NAME=$(grep "\- name: " ${CLOUD_OBJECT_STORAGE_CONFIG} | sed 's/\- name: //g' | sed 's/^ *//;s/ *$//' | tr -d '"')
-COSCLI="${__PROJECT__}/var/tencent-cloud-object-storage/${APP_RUNTIME} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG} --log-path ${__PROJECT__}/var/tencent-cloud-object-storage/"
+COSCLI="${__PROJECT__}/var/tencent-cloud-object-storage/${APP_RUNTIME} --config-path ${CLOUD_OBJECT_STORAGE_CONFIG}"
 COS_BUCKET_FOLDER="cos://${BUCKET_NAME}/dist/"
 
 if [ "${UPLOAD_TYPE}" == 'all' ]; then
@@ -140,12 +140,24 @@ if [ "${UPLOAD_TYPE}" == 'all' ]; then
   ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz ${COS_BUCKET_FOLDER}
   ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz ${COS_BUCKET_FOLDER}
   ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz ${COS_BUCKET_FOLDER}
+  status=$?
+  if [[ $status -ne 0 ]]; then
+    echo $status
+    cat ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log
+    exit 1
+  fi
   cd ${__PROJECT__}
   exit 0
 fi
 
 if [ "${UPLOAD_TYPE}" == 'single' ]; then
   ${COSCLI} cp ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
+  status=$?
+  if [[ $status -ne 0 ]]; then
+    echo $status
+    cat ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log
+    exit 1
+  fi
   exit 0
 fi
 
@@ -153,5 +165,11 @@ if [ "${UPLOAD_TYPE}" == 'show' ]; then
   # cat ${CLOUD_OBJECT_STORAGE_CONFIG}
   # ${COSCLI} --help
   ${COSCLI} ls ${COS_BUCKET_FOLDER}
+  status=$?
+  if [[ $status -ne 0 ]]; then
+    echo $status
+    cat ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log
+    exit 1
+  fi
   exit 0
 fi
