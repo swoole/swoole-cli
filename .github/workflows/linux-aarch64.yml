@@ -131,7 +131,7 @@ jobs:
           ./bin/swoole-cli -m
           ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri swoole
-          ldd ./bin/swoole-cli
+          { ldd ./bin/swoole-cli ; } || { echo $? ; }
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
           APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
