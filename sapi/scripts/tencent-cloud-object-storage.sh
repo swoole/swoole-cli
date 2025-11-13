@@ -140,12 +140,22 @@ if [ "${UPLOAD_TYPE}" == 'all' ]; then
   ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz ${COS_BUCKET_FOLDER}
   ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz ${COS_BUCKET_FOLDER}
   ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz ${COS_BUCKET_FOLDER}
+  status=$?
+  if [[ $status -ne 0 ]]; then
+    echo $status
+    exit 1
+  fi
   cd ${__PROJECT__}
   exit 0
 fi
 
 if [ "${UPLOAD_TYPE}" == 'single' ]; then
   ${COSCLI} cp ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
+  status=$?
+  if [[ $status -ne 0 ]]; then
+    echo $status
+    exit 1
+  fi
   exit 0
 fi
 
@@ -153,5 +163,10 @@ if [ "${UPLOAD_TYPE}" == 'show' ]; then
   # cat ${CLOUD_OBJECT_STORAGE_CONFIG}
   # ${COSCLI} --help
   ${COSCLI} ls ${COS_BUCKET_FOLDER}
+  status=$?
+  if [[ $status -ne 0 ]]; then
+    echo $status
+    exit 1
+  fi
   exit 0
 fi
