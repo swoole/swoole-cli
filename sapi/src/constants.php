@@ -64,6 +64,7 @@ define("LIBGAV1_PREFIX", $p->getGlobalPrefix() . '/libgav1');
 define("AOM_PREFIX", $p->getGlobalPrefix() . '/aom');
 define("SVT_AV1_PREFIX", $p->getGlobalPrefix() . '/svt_av1');
 define("LIBYUV_PREFIX", $p->getGlobalPrefix() . '/libyuv');
+define("LIBPSL_PREFIX", $p->getGlobalPrefix() . '/libpsl');
 
 define("PYTHON3_PREFIX", $p->getGlobalPrefix() . '/python3');
 define("LIBMPDECIMAL_PREFIX", $p->getGlobalPrefix() . '/libmpdecimal');
@@ -73,10 +74,17 @@ define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("SNAPPY_PREFIX", $p->getGlobalPrefix() . '/snappy');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
-define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
-define("LIBPSL_PREFIX", $p->getGlobalPrefix() . '/libpsl');
+
+define("LIBHEIF_PREFIX", $p->getGlobalPrefix() . '/libheif');
+define("LIBX265_PREFIX", $p->getGlobalPrefix() . '/libx265');
+define("LIBDE265_PREFIX", $p->getGlobalPrefix() . '/libde265');
+define("OPENH264_PREFIX", $p->getGlobalPrefix() . '/openh264');
+define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
+define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
+define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
+define("OPENJPEG_PREFIX", $p->getGlobalPrefix() . '/openjpeg');
 
 define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 
@@ -90,5 +98,6 @@ define("LIBMEMCACHED_PREFIX", $p->getGlobalPrefix() . '/libmemcached');
 define("LIBMEMCACHED_AWESOME_PREFIX", $p->getGlobalPrefix() . '/libmemcached_awesome');
 
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
 
 

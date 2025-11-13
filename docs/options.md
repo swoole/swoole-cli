@@ -226,5 +226,6 @@ swoole 启用支持 iouring 特性
 
 with-static-pie
 ----
+linux 环境下启用 static-pie
 -static-pie‌：启用静态链接且生成 PIE 可执行文件
 -fPIE‌：编译器生成位置无关代码（通常与 -static-pie 配合使用）
