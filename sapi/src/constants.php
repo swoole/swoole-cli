@@ -71,9 +71,18 @@ define("LIBEXPAT_PREFIX", $p->getGlobalPrefix() . '/libexpat');
 
 define("LIBEVENT_PREFIX", $p->getGlobalPrefix() . '/libevent');
 define("LIBSASL_PREFIX", $p->getGlobalPrefix() . '/sasl');
-define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("SDL2_PREFIX", $p->getGlobalPrefix() . '/sdl2');
 define("LIBARGON2_PREFIX", $p->getGlobalPrefix() . '/libargon2');
 
+define("LIBHEIF_PREFIX", $p->getGlobalPrefix() . '/libheif');
+define("LIBX265_PREFIX", $p->getGlobalPrefix() . '/libx265');
+define("LIBDE265_PREFIX", $p->getGlobalPrefix() . '/libde265');
+define("OPENH264_PREFIX", $p->getGlobalPrefix() . '/openh264');
+define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
+define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
+define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
+define("OPENJPEG_PREFIX", $p->getGlobalPrefix() . '/openjpeg');
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
+
+
 

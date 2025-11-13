@@ -50,7 +50,7 @@ EOF
                 'dav1d',
                 'libyuv'
             )
-    #  'libyuv', 'libsharpyuv','rav1e'
-    #   'libgav1'  # 测试例子依赖 absl
+        #  'libyuv', 'libsharpyuv','rav1e'
+        #   'libgav1'  # 测试例子依赖 absl
     );
 };
