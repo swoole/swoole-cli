@@ -13,27 +13,29 @@ return function (Preprocessor $p) {
         ->withUrl('https://github.com/cisco/openh264/archive/refs/tags/v2.6.0.tar.gz')
         ->withfile('openh264-v2.6.0.tar.gz')
         ->withPrefix($openh264_prefix)
-        ->withConfigure(
+        ->withBuildScript(
             <<<EOF
-              meson  -h
+            meson  -h
             meson setup -h
             # meson configure -h
 
             meson setup  build_dir \
-            -Dprefix={$openh264_prefix} \
-            -Dlibdir={$openh264_prefix}/lib \
-            -Dincludedir={$openh264_prefix}/include \
-            -Dbackend=ninja \
-            -Dbuildtype=release \
-            -Ddefault_library=static \
-            -Db_staticpic=true \
-            -Db_pie=true \
-            -Dprefer_static=true \
+            --prefix={$openh264_prefix} \
+            --libdir={$openh264_prefix}/lib \
+            --includedir={$openh264_prefix}/include \
+            --default-library=static \
+            --backend=ninja \
+            --default-both-libraries=static \
+            --prefer-static \
             -Dtests=disabled \
 
+            # meson compile -v
+            # cat build.ninja | grep "command ="
+            # ninja -t commands
 
             ninja -C build_dir
             ninja -C build_dir install
+
 EOF
         )
         ->withPkgName('openh264');
