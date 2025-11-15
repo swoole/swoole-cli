@@ -86,6 +86,7 @@ define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
 define("OPENJPEG_PREFIX", $p->getGlobalPrefix() . '/openjpeg');
 
+
 define("ABSL_PREFIX", $p->getGlobalPrefix() . '/absl');
 
 define("MUSL_CROSS_MAKE_PREFIX", $p->getGlobalPrefix() . '/musl_cross_make');
@@ -97,7 +98,7 @@ define("LIBFFI_PREFIX", $p->getGlobalPrefix() . '/libffi');
 define("LIBMEMCACHED_PREFIX", $p->getGlobalPrefix() . '/libmemcached');
 define("LIBMEMCACHED_AWESOME_PREFIX", $p->getGlobalPrefix() . '/libmemcached_awesome');
 
+define("LIBDEFLATE_PREFIX", $p->getGlobalPrefix() . '/libdeflate');
+define("LIBJXL_PREFIX", $p->getGlobalPrefix() . '/libjxl');
+
 define("EXAMPLE_PREFIX", $p->getGlobalPrefix() . '/example');
-
-
-
