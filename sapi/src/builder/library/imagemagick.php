@@ -25,6 +25,7 @@ return function (Preprocessor $p) {
             PACKAGES_NAMES="\${PACKAGES_NAMES} libcrypto libssl   openssl"
             PACKAGES_NAMES="\${PACKAGES_NAMES} libxml-2.0"
             PACKAGES_NAMES="\${PACKAGES_NAMES} libheif lcms2 libraw libraw_r libtiff-4 "
+            PACKAGES_NAMES="\${PACKAGES_NAMES} libdeflate "
             CPPFLAGS="\$(pkg-config --cflags-only-I --static \$PACKAGES_NAMES ) -I{$bzip2_prefix}/include" \
             LDFLAGS="\$(pkg-config  --libs-only-L   --static \$PACKAGES_NAMES ) -L{$bzip2_prefix}/lib"  \
             LIBS="\$(pkg-config     --libs-only-l   --static \$PACKAGES_NAMES ) -lbz2" \
@@ -104,7 +105,9 @@ EOF
                 'libheif',
                 'lcms2',
                 'libraw',
-                'libtiff'
+                'libtiff',
+                'libdeflate',
+               // 'libjxl'
             )
     );
 };

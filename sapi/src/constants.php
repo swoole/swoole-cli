@@ -73,4 +73,6 @@ define("LIBTIFF_PREFIX", $p->getGlobalPrefix() . '/libtiff');
 define("LIBRAW_PREFIX", $p->getGlobalPrefix() . '/libraw');
 define("LCMS2_PREFIX", $p->getGlobalPrefix() . '/lcms2');
 define("OPENJPEG_PREFIX", $p->getGlobalPrefix() . '/openjpeg');
+define("LIBDEFLATE_PREFIX", $p->getGlobalPrefix() . '/libdeflate');
+define("LIBJXL_PREFIX", $p->getGlobalPrefix() . '/libjxl');
 
