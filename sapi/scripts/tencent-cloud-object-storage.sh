@@ -155,7 +155,7 @@ if [ "${UPLOAD_TYPE}" == 'all' ]; then
 fi
 
 if [ "${UPLOAD_TYPE}" == 'single' ]; then
-  ${COSCLI} cp --forbid-overwrite --fail-output-path ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
+  ${COSCLI} cp --fail-output-path ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
   status=$?
   if [[ $status -ne 0 ]]; then
     echo $status
