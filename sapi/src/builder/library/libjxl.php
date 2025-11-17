@@ -6,9 +6,18 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $libjxl_prefix = LIBJXL_PREFIX;
     $brotli_prefix = BROTLI_PREFIX;
+    $libgif_prefix = GIF_PREFIX;
+    $libjpeg_prefix = JPEG_PREFIX;
+    $libpng_prefix = PNG_PREFIX;
+    $zlib_prefix = ZLIB_PREFIX;
+    $libwebp_prefix = WEBP_PREFIX;
     $cmake_prefix_path = "";
     $cmake_prefix_path .= "{$brotli_prefix};";
-    $cmake_prefix_path .= "{$brotli_prefix};";
+    $cmake_prefix_path .= "{$libgif_prefix};";
+    $cmake_prefix_path .= "{$libjpeg_prefix};";
+    $cmake_prefix_path .= "{$libpng_prefix};";
+    $cmake_prefix_path .= "{$zlib_prefix};";
+    $cmake_prefix_path .= "{$libwebp_prefix};";
     $lib = new Library('libjxl');
     $lib->withHomePage('https://github.com/ebiggers/libdeflate')
         ->withLicense('https://github.com/libjxl/libjxl/#BSD-3-Clause-1-ov-file', Library::LICENSE_BSD)
@@ -33,7 +42,8 @@ return function (Preprocessor $p) {
         -DJPEGXL_ENABLE_EXAMPLES=OFF \
         -DJPEGXL_ENABLE_JNI=OFF \
         -DJPEGXL_STATIC=OFF \
-        -DBUILD_TESTING=OFF
+        -DBUILD_TESTING=OFF \
+        -DCMAKE_PREFIX_PATH="{$cmake_prefix_path}" \
 
 
         cmake --build . --config Release
@@ -51,6 +61,8 @@ EOF
         ->withPkgName('aom')
         ->withDependentLibraries(
             'brotli',
+            'libgif',
+            'libjpeg'
         ) ;
 
     $p->addLibrary($lib);
