@@ -16,7 +16,6 @@ return function (Preprocessor $p) {
             //->withFileHash('md5', '90eb1a9263b47b7e844eb817fe08932c')
             ->withPrefix($imagemagick_prefix)
             ->withBuildCached(false)
-            ->withInstallCached(false)
             ->withConfigure(
                 <<<EOF
             ./configure --help
@@ -107,7 +106,7 @@ EOF
                 'libraw',
                 'libtiff',
                 'libdeflate',
-               // 'libjxl'
+            //'libjxl' //咱不启用
             )
     );
 };
