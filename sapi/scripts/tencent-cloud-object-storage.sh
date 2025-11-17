@@ -135,15 +135,19 @@ set -u
 if [ "${UPLOAD_TYPE}" == 'all' ]; then
   SWOOLE_VERSION=$(echo ${SWOOLE_CLI_VERSION} | awk -F '.' '{ printf "%s.%s.%s" ,$1,$2,$3 }')
   cd ${__PROJECT__}/var/artifact-hash/${SWOOLE_CLI_VERSION}
-  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip ${COS_BUCKET_FOLDER}
-  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz ${COS_BUCKET_FOLDER}
-  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz ${COS_BUCKET_FOLDER}
-  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz ${COS_BUCKET_FOLDER}
-  ${COSCLI} cp swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz ${COS_BUCKET_FOLDER}
-  status=$?
+  {
+    ${COSCLI} cp --forbid-overwrite --fail-output-path ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log swoole-cli-${SWOOLE_VERSION}-cygwin-x64.zip ${COS_BUCKET_FOLDER}
+    ${COSCLI} cp --forbid-overwrite --fail-output-path ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log swoole-cli-${SWOOLE_VERSION}-linux-arm64.tar.xz ${COS_BUCKET_FOLDER}
+    ${COSCLI} cp --forbid-overwrite --fail-output-path ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log swoole-cli-${SWOOLE_VERSION}-linux-x64.tar.xz ${COS_BUCKET_FOLDER}
+    ${COSCLI} cp --forbid-overwrite --fail-output-path ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log swoole-cli-${SWOOLE_VERSION}-macos-arm64.tar.xz ${COS_BUCKET_FOLDER}
+    ${COSCLI} cp --forbid-overwrite --fail-output-path ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log swoole-cli-${SWOOLE_VERSION}-macos-x64.tar.xz ${COS_BUCKET_FOLDER}
+    status=$?
+  } || {
+    status=$?
+  }
   if [[ $status -ne 0 ]]; then
     echo $status
-    cat ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log
+    cat ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log
     exit 1
   fi
   cd ${__PROJECT__}
@@ -151,11 +155,11 @@ if [ "${UPLOAD_TYPE}" == 'all' ]; then
 fi
 
 if [ "${UPLOAD_TYPE}" == 'single' ]; then
-  ${COSCLI} cp ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
+  ${COSCLI} cp --forbid-overwrite --fail-output-path ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log ${UPLOAD_FILE} ${COS_BUCKET_FOLDER}
   status=$?
   if [[ $status -ne 0 ]]; then
     echo $status
-    cat ${__PROJECT__}/var/tencent-cloud-object-storage/coscli.log
+    cat ${__PROJECT__}/var/tencent-cloud-object-storage/upload.log
     exit 1
   fi
   exit 0
