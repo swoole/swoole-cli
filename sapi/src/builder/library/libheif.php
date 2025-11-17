@@ -41,7 +41,6 @@ return function (Preprocessor $p) {
         ->withUrl('https://github.com/strukturag/libheif/releases/download/v1.20.2/libheif-1.20.2.tar.gz')
         ->withPrefix($libheif_prefix)
         ->withBuildCached(false)
-        ->withInstallCached(false)
         ->withBuildScript(
             <<<EOF
          mkdir -p build
