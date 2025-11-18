@@ -38,7 +38,7 @@ if defined GITHUB_ACTIONS (
 
 :: package  separate with commas
 set "PACKAGES=make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake"
-set "PACKAGES=%PACKAGES%,cmake,openssl,binutils"
+set "PACKAGES=%PACKAGES%,cmake,openssl,binutils,xz"
 set "PACKAGES=%PACKAGES%,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel"
 set "PACKAGES=%PACKAGES%,libssh2-devel,libidn2-devel"
 set "PACKAGES=%PACKAGES%,libgmp-devel,libsqlite3-devel,libpcre-devel,libpcre2-devel"
