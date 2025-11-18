@@ -71,6 +71,7 @@ jobs:
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/msys2/install-libzip.sh
+          bash ./sapi/scripts/msys2/install-libyuv.sh
           bash ./sapi/scripts/msys2/install-libavif.sh
 
       - name: Configure
