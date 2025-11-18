@@ -18,13 +18,13 @@ VERSION=v1.1.1
 
 download() {
   # document https://github.com/AOMediaCodec/libavif/
-  curl -fSLo ${__PROJECT__}/pool/lib/libavif-${VERSION}.tar.gz https://github.com/AOMediaCodec/libavif/archive/refs/tags/${VERSION}.tar.gz
+  curl -fSLo ${__PROJECT__}/pool/lib/libavif-v${VERSION}.tar.gz https://github.com/AOMediaCodec/libavif/archive/refs/tags/v${VERSION}.tar.gz
 }
 
 build() {
 
   cd ${WORK_TEMP_DIR}
-  tar xvf ${__PROJECT__}/pool/lib/libavif-${VERSION}.tar.gz
+  tar xvf ${__PROJECT__}/pool/lib/libavif-v${VERSION}.tar.gz
   cd libavif-${VERSION}
 
   mkdir -p build
@@ -70,6 +70,6 @@ build() {
 }
 
 cd ${__PROJECT__}
-test -f ${__PROJECT__}/pool/lib/libavif-${VERSION}.tar.gz || download
+test -f ${__PROJECT__}/pool/lib/libavif-v${VERSION}.tar.gz || download
 
 build
