@@ -24,8 +24,9 @@ download() {
 build() {
 
   cd ${WORK_TEMP_DIR}
-  tar xvf ${__PROJECT__}/pool/lib/libyuv-${VERSION}.tar.gz
-  cd llibyuv-${VERSION}
+  mkdir -p libyuv-${VERSION}
+  tar xvf ${__PROJECT__}/pool/lib/libyuv-${VERSION}.tar.gz -C libyuv-${VERSION}
+  cd libyuv-${VERSION}
 
   mkdir -p build
   cd build
