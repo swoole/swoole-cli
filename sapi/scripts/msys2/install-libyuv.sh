@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -exu
+__DIR__=$(
+  cd "$(dirname "$0")"
+  pwd
+)
+__PROJECT__=$(
+  cd ${__DIR__}/../../../
+  pwd
+)
+cd ${__PROJECT__}
+mkdir -p pool/lib/
+WORK_TEMP_DIR=${__PROJECT__}/var/msys2-build/
+mkdir -p ${WORK_TEMP_DIR}
+
+VERSION=b0f72309c6c0b952d0198be5a5b5106f089fe1c5
+
+download() {
+  # document https://github.com/AOMediaCodec/libavif/
+  curl -fSLo ${__PROJECT__}/pool/lib/libyuv-${VERSION}.tar.gz https://chromium.googlesource.com/libyuv/libyuv/+archive/${VERSION}.tar.gz
+}
+
+build() {
+
+  cd ${WORK_TEMP_DIR}
+  tar xvf ${__PROJECT__}/pool/lib/libyuv-${VERSION}.tar.gz
+  cd llibyuv-${VERSION}
+
+  mkdir -p build
+  cd build
+
+  cmake -S .. -B . \
+    -DCMAKE_INSTALL_PREFIX=/usr/ \
+    -DCMAKE_BUILD_TYPE=Release
+
+  cmake --build . --config Release
+
+  cmake --build . --config Release --target install
+
+}
+
+cd ${__PROJECT__}
+test -f ${__PROJECT__}/pool/lib/libyuv-${VERSION}.tar.gz || download
+
+build

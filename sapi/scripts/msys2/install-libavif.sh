@@ -42,30 +42,15 @@ build() {
     -DENABLE_BZIP2=ON \
     -DENABLE_COMMONCRYPTO=OFF \
     -DENABLE_LZMA=ON \
-    -DENABLE_ZSTD=OFF \
-    -DBUILD_REGRESS=OFF \
-    -DBUILD_OSSFUZZ=OFF \
-    -DCMAKE_VERBOSE_MAKEFILE=ON \
-    -DCMAKE_PREFIX_PATH="/usr/local/;/usr/"
-    -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_TOOLS=OFF \
-    -DBUILD_EXAMPLES=OFF \
-    -DBUILD_DOC=OFF \
-    -DLIBZIP_DO_INSTALL=ON \
-    -DENABLE_GNUTLS=OFF \
-    -DENABLE_MBEDTLS=OFF \
-    -DENABLE_OPENSSL=ON \
-    -DENABLE_BZIP2=ON \
-    -DENABLE_COMMONCRYPTO=OFF \
-    -DENABLE_LZMA=ON \
-    -DENABLE_ZSTD=OFF \
+    -DENABLE_ZSTD=ON \
     -DBUILD_REGRESS=OFF \
     -DBUILD_OSSFUZZ=OFF \
     -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_PREFIX_PATH="/usr/local/;/usr/"
 
-  make -j $(nproc)
-  make install
+  cmake --build . --config Release
+
+  cmake --build . --config Release --target install
 
 }
 
