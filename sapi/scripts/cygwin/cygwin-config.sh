@@ -16,6 +16,9 @@ export PATH=/usr/bin:$PATH
 export ICU_CXXFLAGS=" -std=gnu++17 "
 ./buildconf --force
 test -f Makefile && make clean
+export AVIF_CFLAGS=$(pkg-config  --cflags --static libbrotlicommon libbrotlidec libbrotlienc SvtAv1Enc aom dav1d libheif);
+export AVIF_LIBS=$(pkg-config    --libs   --static libbrotlicommon libbrotlidec libbrotlienc SvtAv1Enc aom dav1d libheif);
+
 ./configure --prefix=/usr --disable-all \
   --enable-zts \
   --disable-fiber-asm \
