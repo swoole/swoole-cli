@@ -16,8 +16,7 @@ echo %cd%
 
 
 
-:set "SITE=https://mirrors.kernel.org/sourceware/cygwin/"
-set "SITE= http://mirrors.sonic.net/cygwin/"
+set "SITE=https://mirrors.kernel.org/sourceware/cygwin/"
 
 :getopt
 if /i "%1" equ "--mirror" (
