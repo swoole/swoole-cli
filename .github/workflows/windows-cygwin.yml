@@ -55,7 +55,7 @@ jobs:
           key: "${{ runner.os }}-build-pool-cache"
 
       - name: Install Cygwin
-        uses: cygwin/cygwin-install-action@v2
+        uses: cygwin/cygwin-install-action@v6
         with:
           site: https://mirrors.kernel.org/sourceware/cygwin/
         # with:
@@ -86,7 +86,9 @@ jobs:
       - name: install deps lib with source code
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
-          bash sapi/scripts/msys2/install-libzip.sh
+          bash ./sapi/scripts/msys2/install-libzip.sh
+          bash ./sapi/scripts/msys2/install-libyuv.sh
+          bash ./sapi/scripts/msys2/install-libavif.sh
 
       - name: Prepare
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
@@ -116,7 +118,8 @@ jobs:
           ./bin/php.exe --ri swoole
           ./bin/php.exe --ri zip
           ./bin/php.exe --ri gd
-          ./bin/php.exe  -r "echo PHP_VERSION;"
+          ./bin/php.exe --ri imagick
+          ./bin/php.exe  -r "echo PHP_VERSION;echo PHP_EOL;"
           ./bin/php.exe  -r "echo getcwd();echo PHP_EOL;"
           ldd ./bin/php.exe
 
