@@ -14,7 +14,7 @@ mkdir -p pool/lib/
 WORK_TEMP_DIR=${__PROJECT__}/var/msys2-build/
 mkdir -p ${WORK_TEMP_DIR}
 
-VERSION=b0f72309c6c0b952d0198be5a5b5106f089fe1c5
+VERSION=068c9f2f643ce59eeb3001d61374bf44a2abd825
 
 download() {
   # document https://github.com/AOMediaCodec/libavif/
