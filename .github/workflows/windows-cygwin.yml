@@ -58,7 +58,7 @@ jobs:
         # 备注：github action 在 windows 上执行命令默认的 shell 是 powershell，如果要使用其它shell , 需要手动指定，例如此也可以使用 bash 来安装 cygwin packages
         if: 1
         run: |
-          Copy-Item -Path "C:\setup.exe" -Destination "${{ github.workspace }}\setup-x86_64.exe"
+          Copy-Item -Path "d:\setup.exe" -Destination "${{ github.workspace }}\setup-x86_64.exe"
           cmd /c .\sapi\quickstart\windows\cygwin-build\install-cygwin.bat
 
       - name: Install re2c
