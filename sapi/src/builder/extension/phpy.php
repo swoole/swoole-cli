@@ -13,7 +13,10 @@ return function (Preprocessor $p) {
 
     $tag = 'v1.0.11';
 
+
     $python3_prefix = PYTHON3_PREFIX;
+    # $python3_prefix = '/opt/anaconda3';
+
     $options = [];
     $options[] = '--enable-phpy';
     $options[] = ' --with-python-version=3.12.2';
@@ -25,6 +28,7 @@ return function (Preprocessor $p) {
 
     $ext = (new Extension('phpy'))
         ->withOptions(implode(' ', $options))
+        //->withOptions('') //不启用编译选项
         ->withLicense('https://github.com/swoole/phpy/blob/main/LICENSE', Extension::LICENSE_APACHE2)
         ->withHomePage('https://github.com/swoole/phpy/')
         ->withManual('https://github.com/swoole/phpy/')

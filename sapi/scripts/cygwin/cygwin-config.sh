@@ -45,6 +45,7 @@ export PATH=/usr/bin:$PATH
 export ICU_CXXFLAGS=" -std=gnu++17 "
 ./buildconf --force
 test -f Makefile && make clean
+
 ./configure --prefix=/usr --disable-all \
   \
   --disable-fiber-asm \
@@ -77,7 +78,7 @@ test -f Makefile && make clean
   --enable-exif \
   --with-sodium \
   --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
-  --enable-gd --with-jpeg --with-freetype \
+  --enable-gd --with-jpeg --with-freetype --with-avif --with-webp \
   --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
   --enable-swoole-pgsql \
   --enable-swoole-sqlite \

@@ -5,7 +5,7 @@ use SwooleCli\Extension;
 use SwooleCli\Library;
 
 return function (Preprocessor $p) {
-    $swow_tag = 'v1.6.1';
+    $swow_tag = 'v1.6.2';
     $options = ' --enable-swow ';
     $options .= ' --enable-swow-ssl ';
     $options .= ' --enable-swow-curl ';

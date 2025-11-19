@@ -181,7 +181,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php  --with-static-pie +inotify +apcu +ds +xlswriter +ssh2 +pgsql +uuid ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }}
+            php prepare.php --with-static-pie --with-libavif +inotify +apcu +ds +xlswriter +ssh2 +pgsql +uuid ${{ inputs.build_type }} ${{ inputs.build_options }} --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
             bash make-install-deps.sh
 
@@ -202,11 +202,14 @@ jobs:
         run: |
           ./thirdparty/php-src/sapi/cli/php -v
           ./thirdparty/php-src/sapi/cli/php -m
+          ./thirdparty/php-src/sapi/cli/php --ri mongodb
+          ./thirdparty/php-src/sapi/cli/php --ri curl
           ./thirdparty/php-src/sapi/cli/php --ri gd
+          ./thirdparty/php-src/sapi/cli/php --ri imagick
           ./thirdparty/php-src/sapi/cli/php --ri swoole
           ./thirdparty/php-src/sapi/cli/php --ri pgsql
           ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php -v
-          { ldd ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php } || { echo $? }
+          { ldd ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php ; } || { echo $? ; } ;
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           readelf -h ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
           APP_VERSION=$(./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php  -v | head -n 1 | awk '{print $2}')

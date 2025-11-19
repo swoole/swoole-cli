@@ -118,7 +118,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1  --with-php-version=${{ env.BUILD_PHP_VERSION }}
+          php prepare.php --without-docker=1 --with-libavif +apcu +ds +xlswriter +ssh2 +pgsql +uuid --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
       - name: Build
         run: |
@@ -137,7 +137,9 @@ jobs:
           ./thirdparty/php-src/sapi/cli/php -v
           ./thirdparty/php-src/sapi/cli/php -m
           ./thirdparty/php-src/sapi/cli/php --ri mongodb
+          ./thirdparty/php-src/sapi/cli/php --ri curl
           ./thirdparty/php-src/sapi/cli/php --ri gd
+          ./thirdparty/php-src/sapi/cli/php --ri imagick
           ./thirdparty/php-src/sapi/cli/php --ri swoole
           ./thirdparty/php-src/sapi/cli/php --ri pgsql
           file ./bin/php-${{ env.BUILD_PHP_VERSION }}/bin/php
