@@ -255,12 +255,6 @@ make_config() {
     echo -ne '\n#endif\n' >> main/php_config.h.in
 <?php endif; ?>
 
-<?php if ($this->isMacos()) : ?>
-    <?php if ($this->hasLibrary('pgsql')) : ?>
-    sed -i.backup "s/ac_cv_func_explicit_bzero\" = xyes/ac_cv_func_explicit_bzero\" = x_fake_yes/" ./configure
-    <?php endif;?>
-<?php endif; ?>
-
    ./configure --help
     export_variables
     export LDFLAGS="$LDFLAGS <?= $this->extraLdflags ?>"
@@ -282,10 +276,10 @@ make_build() {
     <?php if ($this->isLinux()) : ?>
     export CFLAGS="$CFLAGS  "
     export LDFLAGS="$LDFLAGS  -static -all-static "
-        <?php if($this->getInputOption('with-static-pie')) : ?>
-        export CFLAGS="$CFLAGS  -fPIE"
-        export LDFLAGS="$LDFLAGS -static-pie"
-        <?php endif ;?>
+    <?php if($this->getInputOption('with-static-pie')) : ?>
+    export CFLAGS="$CFLAGS  -fPIE"
+    export LDFLAGS="$LDFLAGS -static-pie"
+    <?php endif ;?>
     <?php endif ;?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
@@ -303,9 +297,16 @@ make_build() {
     xattr -cr <?= $this->getWorkDir() ?>/bin/swoole-cli
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
 <?php else : ?>
-    ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli
+    { ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
+<<<<<<< HEAD
+    # { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
+    # { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
+=======
+    { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
+    { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
+>>>>>>> feature-linux-static-pie
 <?php endif; ?>
 
 }

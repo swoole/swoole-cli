@@ -142,7 +142,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 
-            php prepare.php --with-static-pie +inotify +apcu +ds +xlswriter +ssh2 +pgsql +uuid
+            php prepare.php --with-static-pie --with-libavif +inotify +apcu +ds +xlswriter +ssh2 +pgsql +uuid
 
             bash make-install-deps.sh
 
@@ -163,10 +163,12 @@ jobs:
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri curl
           ./bin/swoole-cli --ri gd
+          ./bin/swoole-cli --ri imagick
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli --ri pgsql
-          ldd ./bin/swoole-cli
+          { ldd ./bin/swoole-cli ; } || { echo $? ; }
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
           APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')

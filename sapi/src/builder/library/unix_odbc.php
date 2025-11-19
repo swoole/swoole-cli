@@ -6,6 +6,15 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $unix_odbc_prefix = UNIX_ODBC_PREFIX;
     $iconv_prefix = ICONV_PREFIX;
+    $custom_clean_script = '';
+    if ($p->isMacos()) {
+        $custom_clean_script .= <<<EOF
+        sed -i.bak 's@$(top_build_prefix)libltdl/libltdlc.la@@' {$unix_odbc_prefix}/lib/pkgconfig/odbc.pc
+        sed -i.bak 's@$(top_build_prefix)libltdl/libltdlc.la@@' {$unix_odbc_prefix}/lib/pkgconfig/odbcinst.pc
+
+EOF;
+    }
+
     $p->addLibrary(
         (new Library('unix_odbc'))
             ->withHomePage('https://github.com/lurcher/unixODBC')
@@ -39,7 +48,8 @@ EOF
             --enable-editline=no \
             --enable-iconv=yes \
             --enable-threads=yes \
-            --enable-gui=no
+            --enable-gui=no \
+            --enable-ltdl-install
 
 
 EOF
@@ -49,6 +59,8 @@ EOF
             rm -rf {$unix_odbc_prefix}/lib/*.so.*
             rm -rf {$unix_odbc_prefix}/lib/*.so
             rm -rf {$unix_odbc_prefix}/lib/*.dylib
+            {$custom_clean_script}
+
 EOF
             )
             ->withDependentLibraries('readline', 'libiconv')

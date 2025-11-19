@@ -361,20 +361,20 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_server_option)(MYSQLND_CONN_DATA * const c
 
 
 /* {{{ mysqlnd_conn_data::restart_psession */
-static enum_func_status
+static void
 MYSQLND_METHOD(mysqlnd_conn_data, restart_psession)(MYSQLND_CONN_DATA * conn)
 {
 	DBG_ENTER("mysqlnd_conn_data::restart_psession");
 	MYSQLND_INC_CONN_STATISTIC(conn->stats, STAT_CONNECT_REUSED);
 	conn->current_result = NULL;
 	conn->last_message.s = NULL;
-	DBG_RETURN(PASS);
+	DBG_VOID_RETURN;
 }
 /* }}} */
 
 
 /* {{{ mysqlnd_conn_data::end_psession */
-static enum_func_status
+static void
 MYSQLND_METHOD(mysqlnd_conn_data, end_psession)(MYSQLND_CONN_DATA * conn)
 {
 	DBG_ENTER("mysqlnd_conn_data::end_psession");
@@ -385,7 +385,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, end_psession)(MYSQLND_CONN_DATA * conn)
 	}
 	mysqlnd_set_string(&conn->last_message, NULL, 0);
 	conn->error_info = &conn->error_info_impl;
-	DBG_RETURN(PASS);
+	DBG_VOID_RETURN;
 }
 /* }}} */
 
@@ -503,9 +503,8 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect_handshake)(MYSQLND_CONN_DATA * conn,
 	enum_func_status ret = FAIL;
 	DBG_ENTER("mysqlnd_conn_data::connect_handshake");
 
-	if (PASS == conn->vio->data->m.connect(conn->vio, *scheme, conn->persistent, conn->stats, conn->error_info) &&
-		PASS == conn->protocol_frame_codec->data->m.reset(conn->protocol_frame_codec, conn->stats, conn->error_info))
-	{
+	if (PASS == conn->vio->data->m.connect(conn->vio, *scheme, conn->persistent, conn->stats, conn->error_info)) {
+		conn->protocol_frame_codec->data->m.reset(conn->protocol_frame_codec, conn->stats, conn->error_info);
 		size_t client_flags = mysql_flags;
 
 		ret = conn->command->handshake(conn, *username, *password, *database, client_flags);
@@ -513,6 +512,16 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect_handshake)(MYSQLND_CONN_DATA * conn,
 	DBG_RETURN(ret);
 }
 /* }}} */
+
+/* ipv6 addresses have at least two colons, which is how we can differentiate between domain names and addresses */
+static bool mysqlnd_fast_is_ipv6_address(const char *s)
+{
+	const char *first_colon = strchr(s, ':');
+	if (!first_colon) {
+		return false;
+	}
+	return strchr(first_colon + 1, ':') != NULL;
+}
 
 /* {{{ mysqlnd_conn_data::get_scheme */
 static MYSQLND_STRING
@@ -543,7 +552,13 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_scheme)(MYSQLND_CONN_DATA * conn, MYSQLND_
 		if (!port) {
 			port = 3306;
 		}
-		transport.l = mnd_sprintf(&transport.s, 0, "tcp://%s:%u", hostname.s, port);
+
+		/* ipv6 addresses are in the format [address]:port */
+		if (hostname.s[0] != '[' && mysqlnd_fast_is_ipv6_address(hostname.s)) {
+			transport.l = mnd_sprintf(&transport.s, 0, "tcp://[%s]:%u", hostname.s, port);
+		} else {
+			transport.l = mnd_sprintf(&transport.s, 0, "tcp://%s:%u", hostname.s, port);
+		}
 	}
 	DBG_INF_FMT("transport=%s", transport.s? transport.s:"OOM");
 	DBG_RETURN(transport);
@@ -578,7 +593,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect)(MYSQLND_CONN_DATA * conn,
 
 	DBG_INF_FMT("host=%s user=%s db=%s port=%u flags=%u persistent=%u state=%u",
 				hostname.s?hostname.s:"", username.s?username.s:"", database.s?database.s:"", port, mysql_flags,
-				conn? conn->persistent:0, conn? (int)GET_CONNECTION_STATE(&conn->state):-1);
+				conn->persistent, (int)GET_CONNECTION_STATE(&conn->state));
 
 	if (GET_CONNECTION_STATE(&conn->state) > CONN_ALLOCED) {
 		DBG_INF("Connecting on a connected handle.");
@@ -1047,17 +1062,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, refresh)(MYSQLND_CONN_DATA * const conn, uint8
 /* }}} */
 
 
-/* {{{ mysqlnd_conn_data::shutdown */
-static enum_func_status
-MYSQLND_METHOD(mysqlnd_conn_data, shutdown)(MYSQLND_CONN_DATA * const conn, uint8_t level)
-{
-	DBG_ENTER("mysqlnd_conn_data::shutdown");
-	DBG_INF_FMT("conn=%" PRIu64 " level=%u", conn->thread_id, level);
-	DBG_RETURN(conn->command->shutdown(conn, level));
-}
-/* }}} */
-
-
 /* {{{ mysqlnd_send_close */
 static enum_func_status
 MYSQLND_METHOD(mysqlnd_conn_data, send_close)(MYSQLND_CONN_DATA * const conn)
@@ -1456,10 +1460,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 		}
 		case MYSQL_READ_DEFAULT_FILE:
 		case MYSQL_READ_DEFAULT_GROUP:
-#ifdef WHEN_SUPPORTED_BY_MYSQLI
-		case MYSQL_SET_CLIENT_IP:
-		case MYSQL_REPORT_DATA_TRUNCATION:
-#endif
 			/* currently not supported. Todo!! */
 			break;
 		case MYSQL_SET_CHARSET_NAME:
@@ -1487,18 +1487,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 				conn->options->protocol = *(unsigned int*) value;
 			}
 			break;
-#ifdef WHEN_SUPPORTED_BY_MYSQLI
-		case MYSQL_SET_CHARSET_DIR:
-		case MYSQL_OPT_RECONNECT:
-			/* we don't need external character sets, all character sets are
-			   compiled in. For compatibility we just ignore this setting.
-			   Same for protocol, we don't support old protocol */
-		case MYSQL_OPT_USE_REMOTE_CONNECTION:
-		case MYSQL_OPT_USE_EMBEDDED_CONNECTION:
-		case MYSQL_OPT_GUESS_CONNECTION:
-			/* todo: throw an error, we don't support embedded */
-			break;
-#endif
 		case MYSQLND_OPT_MAX_ALLOWED_PACKET:
 			if (*(unsigned int*) value > (1<<16)) {
 				conn->options->max_allowed_packet = *(unsigned int*) value;
@@ -1534,12 +1522,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 				DBG_INF_FMT("%d left", zend_hash_num_elements(conn->options->connect_attr));
 			}
 			break;
-#ifdef WHEN_SUPPORTED_BY_MYSQLI
-		case MYSQL_SHARED_MEMORY_BASE_NAME:
-		case MYSQL_OPT_USE_RESULT:
-		case MYSQL_SECURE_AUTH:
-			/* not sure, todo ? */
-#endif
 		default:
 			ret = FAIL;
 	}
@@ -1956,7 +1938,6 @@ MYSQLND_CLASS_METHODS_START(mysqlnd_conn_data)
 
 	MYSQLND_METHOD(mysqlnd_conn_data, stmt_init),
 
-	MYSQLND_METHOD(mysqlnd_conn_data, shutdown),
 	MYSQLND_METHOD(mysqlnd_conn_data, refresh),
 
 	MYSQLND_METHOD(mysqlnd_conn_data, ping),

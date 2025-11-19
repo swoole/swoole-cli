@@ -10,9 +10,9 @@ return function (Preprocessor $p) {
             ->withHomePage('https://github.com/ngtcp2/nghttp3')
             ->withLicense('https://github.com/ngtcp2/nghttp3/blob/main/COPYING', Library::LICENSE_MIT)
             ->withManual('https://nghttp2.org/nghttp3/')
-            ->withUrl('https://github.com/ngtcp2/nghttp3/archive/refs/tags/v1.0.0.tar.gz')
-            ->withFile('nghttp3-v1.0.0.tar.gz')
-            ->withFileHash('md5', '0446cce05f003bace3ac51277181ae51')
+            ->withUrl('https://github.com/ngtcp2/nghttp3/releases/download/v1.12.0/nghttp3-1.12.0.tar.gz')
+            ->withFile('nghttp3-1.12.0.tar.gz')
+            ->withFileHash('md5', 'ede30acfe793c5e9103eee5d38cd0304')
             ->withPrefix($nghttp3_prefix)
             ->withConfigure(
                 <<<EOF

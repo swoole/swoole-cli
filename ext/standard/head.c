@@ -44,7 +44,7 @@ PHP_FUNCTION(header)
 	ZEND_PARSE_PARAMETERS_END();
 
 	ctr.line = line;
-	ctr.line_len = (uint32_t)len;
+	ctr.line_len = len;
 	sapi_header_op(rep ? SAPI_HEADER_REPLACE:SAPI_HEADER_ADD, &ctr);
 }
 /* }}} */
@@ -62,17 +62,17 @@ PHP_FUNCTION(header_remove)
 	ZEND_PARSE_PARAMETERS_END();
 
 	ctr.line = line;
-	ctr.line_len = (uint32_t)len;
+	ctr.line_len = len;
 	sapi_header_op(line == NULL ? SAPI_HEADER_DELETE_ALL : SAPI_HEADER_DELETE, &ctr);
 }
 /* }}} */
 
-PHPAPI int php_header(void)
+PHPAPI bool php_header(void)
 {
 	if (sapi_send_headers()==FAILURE || SG(request_info).headers_only) {
-		return 0; /* don't allow output */
+		return false; /* don't allow output */
 	} else {
-		return 1; /* allow output */
+		return true; /* allow output */
 	}
 }
 
@@ -87,7 +87,7 @@ PHPAPI zend_result php_setcookie(zend_string *name, zend_string *value, time_t e
 	smart_str buf = {0};
 
 	if (!ZSTR_LEN(name)) {
-		zend_argument_value_error(1, "cannot be empty");
+		zend_argument_must_not_be_empty_error(1);
 		return FAILURE;
 	}
 	if (strpbrk(ZSTR_VAL(name), "=,; \t\r\n\013\014") != NULL) {   /* man isspace for \013 and \014 */
@@ -110,6 +110,14 @@ PHPAPI zend_result php_setcookie(zend_string *name, zend_string *value, time_t e
 			get_active_function_name());
 		return FAILURE;
 	}
+#ifdef ZEND_ENABLE_ZVAL_LONG64
+	if (expires >= 253402300800) {
+		zend_value_error("%s(): \"expires\" option cannot have a year greater than 9999",
+			get_active_function_name());
+		return FAILURE;
+	}
+#endif
+
 	/* Should check value of SameSite? */
 
 	if (value == NULL || ZSTR_LEN(value) == 0) {
@@ -118,7 +126,7 @@ PHPAPI zend_result php_setcookie(zend_string *name, zend_string *value, time_t e
 		 * so in order to force cookies to be deleted, even on MSIE, we
 		 * pick an expiry date in the past
 		 */
-		dt = php_format_date("D, d-M-Y H:i:s T", sizeof("D, d-M-Y H:i:s T")-1, 1, 0);
+		dt = php_format_date("D, d M Y H:i:s \\G\\M\\T", sizeof("D, d M Y H:i:s \\G\\M\\T")-1, 1, 0);
 		smart_str_appends(&buf, "Set-Cookie: ");
 		smart_str_append(&buf, name);
 		smart_str_appends(&buf, "=deleted; expires=");
@@ -136,21 +144,12 @@ PHPAPI zend_result php_setcookie(zend_string *name, zend_string *value, time_t e
 		} else {
 			smart_str_append(&buf, value);
 		}
+
 		if (expires > 0) {
-			const char *p;
 			double diff;
 
 			smart_str_appends(&buf, COOKIE_EXPIRES);
-			dt = php_format_date("D, d-M-Y H:i:s T", sizeof("D, d-M-Y H:i:s T")-1, expires, 0);
-			/* check to make sure that the year does not exceed 4 digits in length */
-			p = zend_memrchr(ZSTR_VAL(dt), '-', ZSTR_LEN(dt));
-			if (!p || *(p + 5) != ' ') {
-				zend_string_free(dt);
-				smart_str_free(&buf);
-				zend_value_error("%s(): \"expires\" option cannot have a year greater than 9999",
-					get_active_function_name());
-				return FAILURE;
-			}
+			dt = php_format_date("D, d M Y H:i:s \\G\\M\\T", sizeof("D, d M Y H:i:s \\G\\M\\T")-1, expires, 0);
 
 			smart_str_append(&buf, dt);
 			zend_string_free(dt);
@@ -364,6 +363,18 @@ PHP_FUNCTION(http_response_code)
 
 	if (response_code)
 	{
+		if (SG(headers_sent) && !SG(request_info).no_headers) {
+			const char *output_start_filename = php_output_get_start_filename();
+			int output_start_lineno = php_output_get_start_lineno();
+
+			if (output_start_filename) {
+				php_error_docref(NULL, E_WARNING, "Cannot set response code - headers already sent "
+					"(output started at %s:%d)", output_start_filename, output_start_lineno);
+			} else {
+				php_error_docref(NULL, E_WARNING, "Cannot set response code - headers already sent");
+			}
+			RETURN_FALSE;
+		}
 		zend_long old_response_code;
 
 		old_response_code = SG(sapi_headers).http_response_code;

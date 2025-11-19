@@ -25,10 +25,11 @@ while [ $# -gt 0 ]; do
 done
 PHP_VERSION=$(cat ${__PROJECT__}/sapi/PHP-VERSION.conf)
 
-REDIS_VERSION=5.3.7
+REDIS_VERSION=6.2.0
+
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
-IMAGICK_VERSION=3.7.0
+IMAGICK_VERSION=3.8.0
 SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${__PROJECT__}/sapi/SWOOLE-VERSION.conf")
 
 mkdir -p pool/ext

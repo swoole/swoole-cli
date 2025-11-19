@@ -30,7 +30,7 @@
 #include "win32/winutil.h"
 #endif
 
-#if HAVE_SCANDIR && HAVE_ALPHASORT && HAVE_DIRENT_H
+#if defined(HAVE_SCANDIR) && defined(HAVE_ALPHASORT) && defined(HAVE_DIRENT_H)
 #include <dirent.h>
 #endif
 
@@ -125,7 +125,7 @@ PHPAPI ZEND_COLD void display_ini_entries(zend_module_entry *module)
 		module_number = 0;
 	}
 
-	ZEND_HASH_FOREACH_PTR(EG(ini_directives), ini_entry) {
+	ZEND_HASH_MAP_FOREACH_PTR(EG(ini_directives), ini_entry) {
 		if (ini_entry->module_number != module_number) {
 			continue;
 		}
@@ -172,7 +172,7 @@ PHPAPI void config_zval_dtor(zval *zvalue)
 		zend_string_release_ex(Z_STR_P(zvalue), 1);
 	}
 }
-/* Reset / free active_ini_sectin global */
+/* Reset / free active_ini_section global */
 #define RESET_ACTIVE_INI_HASH() do { \
 	active_ini_hash = NULL;          \
 	is_special_section = 0;          \
@@ -395,6 +395,17 @@ static void php_load_zend_extension_cb(void *arg) { }
 #endif
 /* }}} */
 
+static void append_ini_path(char *php_ini_search_path, size_t search_path_size, const char *path)
+{
+	static const char paths_separator[] = { ZEND_PATHS_SEPARATOR, 0 };
+
+	if (*php_ini_search_path) {
+		strlcat(php_ini_search_path, paths_separator, search_path_size);
+	}
+
+	strlcat(php_ini_search_path, path, search_path_size);
+}
+
 /* {{{ php_init_config */
 int php_init_config(void)
 {
@@ -421,10 +432,9 @@ int php_init_config(void)
 		php_ini_search_path = sapi_module.php_ini_path_override;
 		free_ini_search_path = 0;
 	} else if (!sapi_module.php_ini_ignore) {
-		int search_path_size;
+		size_t search_path_size;
 		char *default_location;
 		char *env_location;
-		static const char paths_separator[] = { ZEND_PATHS_SEPARATOR, 0 };
 #ifdef PHP_WIN32
 		char *reg_location;
 		char phprc_path[MAXPATHLEN];
@@ -468,17 +478,14 @@ int php_init_config(void)
 		 * Prepare search path
 		 */
 
-		search_path_size = MAXPATHLEN * 4 + (int)strlen(env_location) + 3 + 1;
+		search_path_size = MAXPATHLEN * 4 + strlen(env_location) + 3 + 1;
 		php_ini_search_path = (char *) emalloc(search_path_size);
 		free_ini_search_path = 1;
 		php_ini_search_path[0] = 0;
 
 		/* Add environment location */
 		if (env_location[0]) {
-			if (*php_ini_search_path) {
-				strlcat(php_ini_search_path, paths_separator, search_path_size);
-			}
-			strlcat(php_ini_search_path, env_location, search_path_size);
+			append_ini_path(php_ini_search_path, search_path_size, env_location);
 			php_ini_file_name = env_location;
 		}
 
@@ -486,20 +493,14 @@ int php_init_config(void)
 		/* Add registry location */
 		reg_location = GetIniPathFromRegistry();
 		if (reg_location != NULL) {
-			if (*php_ini_search_path) {
-				strlcat(php_ini_search_path, paths_separator, search_path_size);
-			}
-			strlcat(php_ini_search_path, reg_location, search_path_size);
+			append_ini_path(php_ini_search_path, search_path_size, reg_location);
 			efree(reg_location);
 		}
 #endif
 
 		/* Add cwd (not with CLI) */
 		if (!sapi_module.php_ini_ignore_cwd) {
-			if (*php_ini_search_path) {
-				strlcat(php_ini_search_path, paths_separator, search_path_size);
-			}
-			strlcat(php_ini_search_path, ".", search_path_size);
+			append_ini_path(php_ini_search_path, search_path_size, ".");
 		}
 
 		if (PG(php_binary)) {
@@ -511,10 +512,8 @@ int php_init_config(void)
 			if (separator_location && separator_location != binary_location) {
 				*(separator_location) = 0;
 			}
-			if (*php_ini_search_path) {
-				strlcat(php_ini_search_path, paths_separator, search_path_size);
-			}
-			strlcat(php_ini_search_path, binary_location, search_path_size);
+			append_ini_path(php_ini_search_path, search_path_size, binary_location);
+
 			efree(binary_location);
 		}
 
@@ -523,29 +522,20 @@ int php_init_config(void)
 		default_location = (char *) emalloc(MAXPATHLEN + 1);
 
 		if (0 < GetWindowsDirectory(default_location, MAXPATHLEN)) {
-			if (*php_ini_search_path) {
-				strlcat(php_ini_search_path, paths_separator, search_path_size);
-			}
-			strlcat(php_ini_search_path, default_location, search_path_size);
+			append_ini_path(php_ini_search_path, search_path_size, default_location);
 		}
 
 		/* For people running under terminal services, GetWindowsDirectory will
 		 * return their personal Windows directory, so lets add the system
 		 * windows directory too */
 		if (0 < GetSystemWindowsDirectory(default_location, MAXPATHLEN)) {
-			if (*php_ini_search_path) {
-				strlcat(php_ini_search_path, paths_separator, search_path_size);
-			}
-			strlcat(php_ini_search_path, default_location, search_path_size);
+			append_ini_path(php_ini_search_path, search_path_size, default_location);
 		}
 		efree(default_location);
 
 #else
 		default_location = PHP_CONFIG_FILE_PATH;
-		if (*php_ini_search_path) {
-			strlcat(php_ini_search_path, paths_separator, search_path_size);
-		}
-		strlcat(php_ini_search_path, default_location, search_path_size);
+		append_ini_path(php_ini_search_path, search_path_size, default_location);
 #endif
 	}
 
@@ -566,7 +556,7 @@ int php_init_config(void)
 
 		/* Check if php_ini_file_name is a file and can be opened */
 		if (php_ini_file_name && php_ini_file_name[0]) {
-			zend_stat_t statbuf;
+			zend_stat_t statbuf = {0};
 
 			if (!VCWD_STAT(php_ini_file_name, &statbuf)) {
 				if (!((statbuf.st_mode & S_IFMT) == S_IFDIR)) {
@@ -642,7 +632,7 @@ int php_init_config(void)
 	if (!sapi_module.php_ini_ignore && php_ini_scanned_path_len) {
 		struct dirent **namelist;
 		int ndir, i;
-		zend_stat_t sb;
+		zend_stat_t sb = {0};
 		char ini_file[MAXPATHLEN];
 		char *p;
 		zend_llist scanned_ini_list;
@@ -768,7 +758,7 @@ void php_ini_register_extensions(void)
 /* {{{ php_parse_user_ini_file */
 PHPAPI int php_parse_user_ini_file(const char *dirname, const char *ini_filename, HashTable *target_hash)
 {
-	zend_stat_t sb;
+	zend_stat_t sb = {0};
 	char ini_file[MAXPATHLEN];
 
 	snprintf(ini_file, MAXPATHLEN, "%s%c%s", dirname, DEFAULT_SLASH, ini_filename);
@@ -813,7 +803,7 @@ PHPAPI void php_ini_activate_config(HashTable *source_hash, int modify_type, int
 	zval *data;
 
 	/* Walk through config hash and alter matching ini entries using the values found in the hash */
-	ZEND_HASH_FOREACH_STR_KEY_VAL(source_hash, str, data) {
+	ZEND_HASH_MAP_FOREACH_STR_KEY_VAL(source_hash, str, data) {
 		zend_string *data_str = zend_string_dup(Z_STR_P(data), 0);
 		zend_alter_ini_entry_ex(str, data_str, modify_type, stage, 0);
 		zend_string_release(data_str);

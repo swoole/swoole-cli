@@ -4,8 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
   macos-aarch64:
-    if: 1
-    runs-on: macos-14
+    runs-on: macos-15
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64
     # macos-13 CPU 架构 x86_64
@@ -106,7 +105,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1 +apcu +ds +xlswriter +ssh2 +pgsql +uuid
+          php prepare.php --without-docker=1 --with-libavif +apcu +ds +xlswriter +ssh2 +pgsql +uuid
 
       - name: Build
         run: |
@@ -124,7 +123,9 @@ jobs:
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri curl
           ./bin/swoole-cli --ri gd
+          ./bin/swoole-cli --ri imagick
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli --ri pgsql
           file ./bin/swoole-cli

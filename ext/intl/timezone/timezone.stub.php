@@ -2,8 +2,34 @@
 
 /** @generate-class-entries */
 
+/** @not-serializable */
 class IntlTimeZone
 {
+    /** @cvalue TimeZone::SHORT */
+    public const int DISPLAY_SHORT = UNKNOWN;
+    /** @cvalue TimeZone::LONG */
+    public const int DISPLAY_LONG = UNKNOWN;
+
+    /** @cvalue TimeZone::SHORT_GENERIC */
+    public const int DISPLAY_SHORT_GENERIC = UNKNOWN;
+    /** @cvalue TimeZone::LONG_GENERIC */
+    public const int DISPLAY_LONG_GENERIC = UNKNOWN;
+    /** @cvalue TimeZone::SHORT_GMT */
+    public const int DISPLAY_SHORT_GMT = UNKNOWN;
+    /** @cvalue TimeZone::LONG_GMT */
+    public const int DISPLAY_LONG_GMT = UNKNOWN;
+    /** @cvalue TimeZone::SHORT_COMMONLY_USED */
+    public const int DISPLAY_SHORT_COMMONLY_USED = UNKNOWN;
+    /** @cvalue TimeZone::GENERIC_LOCATION */
+    public const int DISPLAY_GENERIC_LOCATION = UNKNOWN;
+
+    /** @cvalue UCAL_ZONE_TYPE_ANY */
+    public const int TYPE_ANY = UNKNOWN;
+    /** @cvalue UCAL_ZONE_TYPE_CANONICAL */
+    public const int TYPE_CANONICAL = UNKNOWN;
+    /** @cvalue UCAL_ZONE_TYPE_CANONICAL_LOCATION */
+    public const int TYPE_CANONICAL_LOCATION = UNKNOWN;
+
     private function __construct() {}
 
     /**
@@ -85,6 +111,13 @@ class IntlTimeZone
      * @alias intltz_get_gmt
      */
     public static function getGMT(): IntlTimeZone {}
+
+#if U_ICU_VERSION_MAJOR_NUM >= 74
+    /**
+     * @alias intltz_get_iana_id
+     */
+    public static function getIanaID(string $timezoneId): string|false {}
+#endif
 
     /**
      * @tentative-return-type

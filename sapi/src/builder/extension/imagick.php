@@ -8,11 +8,10 @@ return function (Preprocessor $p) {
     $p->addExtension(
         (new Extension('imagick'))
             ->withOptions('--with-imagick=' . IMAGEMAGICK_PREFIX)
-            ->withPeclVersion('3.6.0')
-            ->withFileHash('md5', 'f7b5e9b23fb844e5eb035203d316bc63')
+            ->withPeclVersion('3.8.0')
+            ->withFileHash('md5', 'e6185b1412e65a91e598d1c79a00aeb9')
             ->withHomePage('https://github.com/Imagick/imagick')
             ->withLicense('https://github.com/Imagick/imagick/blob/master/LICENSE', Extension::LICENSE_PHP)
-            ->withMd5sum('f7b5e9b23fb844e5eb035203d316bc63')
             ->withDependentLibraries('imagemagick')
             ->withDependentExtensions('tokenizer')
             ->withBuildCached(false)

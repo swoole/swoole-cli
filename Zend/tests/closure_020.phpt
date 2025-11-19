@@ -5,6 +5,7 @@ Closure 020: Trying to access private property outside class
 
 class foo {
     private $test = 3;
+    public $a;
 
     public function x() {
         $a = &$this;
@@ -27,7 +28,13 @@ object(foo)#%d (2) {
   ["test":"foo":private]=>
   int(3)
   ["a"]=>
-  object(Closure)#%d (2) {
+  object(Closure)#%d (5) {
+    ["name"]=>
+    string(%d) "{closure:%s:%d}"
+    ["file"]=>
+    string(%d) "%s"
+    ["line"]=>
+    int(%d)
     ["static"]=>
     array(1) {
       ["a"]=>

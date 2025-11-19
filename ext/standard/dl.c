@@ -24,7 +24,7 @@
 
 #include "SAPI.h"
 
-#if defined(HAVE_LIBDL)
+#ifdef HAVE_LIBDL
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -77,7 +77,7 @@ PHPAPI PHP_FUNCTION(dl)
 }
 /* }}} */
 
-#if defined(HAVE_LIBDL)
+#ifdef HAVE_LIBDL
 
 /* {{{ php_load_shlib */
 PHPAPI void *php_load_shlib(const char *path, char **errp)
@@ -205,6 +205,11 @@ PHPAPI int php_load_extension(const char *filename, int type, int start_now)
 		return FAILURE;
 	}
 	module_entry = get_module();
+	if (zend_hash_str_exists(&module_registry, module_entry->name, strlen(module_entry->name))) {
+		zend_error(E_CORE_WARNING, "Module \"%s\" is already loaded", module_entry->name);
+		DL_UNLOAD(handle);
+		return FAILURE;
+	}
 	if (module_entry->zend_api != ZEND_MODULE_API_NO) {
 			php_error_docref(NULL, error_type,
 					"%s: Unable to initialize module\n"
@@ -226,28 +231,12 @@ PHPAPI int php_load_extension(const char *filename, int type, int start_now)
 		return FAILURE;
 	}
 
-	int old_type = module_entry->type;
-	int old_module_number = module_entry->module_number;
-	void *old_handle = module_entry->handle;
-
-	module_entry->type = type;
-	module_entry->module_number = zend_next_free_module();
-	module_entry->handle = handle;
-
-	zend_module_entry *added_module_entry;
-	if ((added_module_entry = zend_register_module_ex(module_entry)) == NULL) {
-		/* Module loading failed, potentially because the module was already loaded.
-		 * It is especially important in that case to restore the old type, module_number, and handle.
-		 * Overwriting the values for an already-loaded module causes problem when these fields are used
-		 * to uniquely identify module boundaries (e.g. in dom and reflection). */
-		module_entry->type = old_type;
-		module_entry->module_number = old_module_number;
-		module_entry->handle = old_handle;
+	if ((module_entry = zend_register_module_ex(module_entry, type)) == NULL) {
 		DL_UNLOAD(handle);
 		return FAILURE;
 	}
 
-	module_entry = added_module_entry;
+	module_entry->handle = handle;
 
 	if ((type == MODULE_TEMPORARY || start_now) && zend_startup_module_ex(module_entry) == FAILURE) {
 		DL_UNLOAD(handle);
