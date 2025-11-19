@@ -37,9 +37,8 @@ build() {
     -DCMAKE_SIZEOF_VOID_P=8 \
     -DCMAKE_VERBOSE_MAKEFILE=ON
 
-  cmake --build . --config Release
-
-  cmake --build . --config Release --target install
+  make -j $(nproc)
+  make install
 
 }
 
