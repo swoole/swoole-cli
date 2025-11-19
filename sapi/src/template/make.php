@@ -300,13 +300,8 @@ make_build() {
     { ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
-<<<<<<< HEAD
-    # { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
-    # { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
-=======
     { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
     { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
->>>>>>> feature-linux-static-pie
 <?php endif; ?>
 
 }
