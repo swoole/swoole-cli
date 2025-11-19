@@ -117,7 +117,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php
+            php prepare.php --with-libavif
 
             bash make.sh all-library
 
@@ -129,7 +129,9 @@ jobs:
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri curl
           ./bin/swoole-cli --ri gd
+          ./bin/swoole-cli --ri imagick
           ./bin/swoole-cli --ri swoole
           ldd ./bin/swoole-cli
           file ./bin/swoole-cli
