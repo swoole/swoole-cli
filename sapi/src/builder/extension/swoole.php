@@ -103,8 +103,10 @@ EOF
         $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
         $shell .= <<<'EOF'
 
-            SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
-            CURRENT_SWOOLE_VERSION=''
+        SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
+        ORIGIN_SWOOLE_VERSION=${SWOOLE_VERSION}
+        SWOOLE_VERSION=$(echo "${SWOOLE_VERSION}" | sed 's/[^a-zA-Z0-9]/_/g')
+        CURRENT_SWOOLE_VERSION=''
 
         if [ -f "ext/swoole/CMakeLists.txt" ] ;then
             CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
@@ -120,7 +122,9 @@ EOF
             test -d ext/swoole && rm -rf ext/swoole
             if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
                 test -d /tmp/swoole && rm -rf /tmp/swoole
-                git clone -b "${SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
+                git clone -b "${ORIGIN_SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
+                status=$?
+                if [[ $status -ne 0 ]]; then { echo $status ; exit 1 ; } fi
                 cd  /tmp/swoole
                 rm -rf /tmp/swoole/.git/
                 tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .

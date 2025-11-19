@@ -11,7 +11,5 @@ cos:
     - name: "${{ vars.QCLOUD_OSS_BUCKET }}"
       alias: "${{ vars.QCLOUD_OSS_BUCKET }}"
       region: "${{ vars.QCLOUD_OSS_REGION }}"
-      #      endpoint: cos.ap-shanghai.myqcloud.com
-      #      endpoint: wenda-1252906962.cos.accelerate.myqcloud.com
-      endpoint: "cos.accelerate.myqcloud.com"
+      endpoint: cos.accelerate.myqcloud.com
       ofs: false
