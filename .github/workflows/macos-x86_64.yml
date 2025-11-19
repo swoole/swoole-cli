@@ -106,7 +106,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
           composer dump-autoload --optimize --profile --no-dev
 
-          php prepare.php --without-docker=1 +apcu +ds +xlswriter +ssh2 +pgsql +uuid
+          php prepare.php --without-docker=1 --with-libavif +apcu +ds +xlswriter +ssh2 +pgsql +uuid
 
       - name: Build
         run: |
@@ -124,7 +124,9 @@ jobs:
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri curl
           ./bin/swoole-cli --ri gd
+          ./bin/swoole-cli --ri imagick
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli --ri pgsql
           file ./bin/swoole-cli

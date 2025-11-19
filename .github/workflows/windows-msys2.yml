@@ -88,6 +88,7 @@ jobs:
         run: |
           ./bin/swoole-cli.exe -v
           ./bin/swoole-cli.exe -m
+          ./bin/swoole-cli.exe --ri curl
           ./bin/swoole-cli.exe --ri swoole
           ./bin/swoole-cli.exe -r "echo PHP_VERSION;"
           ldd ./bin/swoole-cli.exe

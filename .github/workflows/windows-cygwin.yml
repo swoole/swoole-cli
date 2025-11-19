@@ -42,7 +42,7 @@ jobs:
           key: ${{ runner.os }}-build-pool-cache
 
       - name: Install Cygwin
-        uses: cygwin/cygwin-install-action@v2
+        uses: cygwin/cygwin-install-action@v6
         with:
           site: https://mirrors.kernel.org/sourceware/cygwin/
         # with:
@@ -74,6 +74,8 @@ jobs:
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/msys2/install-libzip.sh
+          bash ./sapi/scripts/msys2/install-libyuv.sh
+          bash ./sapi/scripts/msys2/install-libavif.sh
 
       - name: Prepare
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
@@ -100,7 +102,9 @@ jobs:
         run: |
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
-          ./bin/swoole-cli --ri pdo_pgsql
+          ./bin/swoole-cli --ri curl
+          ./bin/swoole-cli --ri gd
+          ./bin/swoole-cli --ri imagick
           ./bin/swoole-cli --ri swoole
           ./bin/swoole-cli -r "echo PHP_VERSION;"
           ldd ./bin/swoole-cli
