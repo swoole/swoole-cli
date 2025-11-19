@@ -34,7 +34,8 @@ build() {
   cmake -S .. -B . \
     -DCMAKE_INSTALL_PREFIX=/usr/ \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_SIZEOF_VOID_P=8
+    -DCMAKE_SIZEOF_VOID_P=8 \
+    -DCMAKE_VERBOSE_MAKEFILE=ON
 
   cmake --build . --config Release
 
