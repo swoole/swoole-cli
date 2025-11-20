@@ -1,4 +1,4 @@
-## v6.1.1.0
+## v6.1.2.0
 
 ### 新增
 
@@ -13,7 +13,7 @@
 2. github macos amd64 构建环境由 `macos-13` 升级为 `macos-15-intel`
 3. github macos arm64 构建环境由 `macos-14` 升级为 `macos-15`
 4. 扩展 `swoole`  版本由 `v5.1.x`
-   升级为 `v6.1.1`，[swoole v6.1.1 info](https://github.com/swoole/swoole-src/releases/tag/v6.1.0)
+   升级为 `v6.1.2`，[swoole v6.1.2 info](https://github.com/swoole/swoole-src/releases/tag/v6.1.2)
 5. 扩展 `redis`   版本由 `5.3.7`  升级为 `6.2.0`
 6. 扩展 `imagick` 版本由 `3.6.0`  升级为 `3.8.0`
 7. `openssl` 库版本由 `v3.1.4`  升级为 `v3.6.0` ( openssl 3.5 支持了 quic 协议堆栈)
