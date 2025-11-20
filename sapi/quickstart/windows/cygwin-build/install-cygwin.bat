@@ -37,12 +37,13 @@ if defined GITHUB_ACTIONS (
 
 :: package  separate with commas
 set "PACKAGES=make,git,curl,wget,tar,libtool,bison,gcc-g++,autoconf,automake"
-set "PACKAGES=%PACKAGES%,cmake,openssl,binutils"
+set "PACKAGES=%PACKAGES%,cmake,openssl,binutils,xz"
 set "PACKAGES=%PACKAGES%,libssl-devel,libcurl-devel,libxml2-devel,libxslt-devel"
 set "PACKAGES=%PACKAGES%,libssh2-devel,libidn2-devel"
 set "PACKAGES=%PACKAGES%,libgmp-devel,libsqlite3-devel,libpcre-devel,libpcre2-devel"
 set "PACKAGES=%PACKAGES%,libiconv-devel"
 set "PACKAGES=%PACKAGES%,libMagick-devel,ImageMagick,libpng-devel,libjpeg-devel,libfreetype-devel,libwebp-devel"
+set "PACKAGES=%PACKAGES%,libaom-devel,libsvtav1-devel,libdav1d-devel,libheif-devel"
 set "PACKAGES=%PACKAGES%,zlib-devel,libbz2-devel,liblz4-devel,liblzma-devel,libzip-devel"
 set "PACKAGES=%PACKAGES%,libzstd-devel,libbrotli-devel"
 set "PACKAGES=%PACKAGES%,zip,unzip,xz"
@@ -53,6 +54,8 @@ set "PACKAGES=%PACKAGES%,flex"
 set "PACKAGES=%PACKAGES%,cygwin-devel,libnet6-devel"
 set "PACKAGES=%PACKAGES%,libwrap-devel"
 set "PACKAGES=%PACKAGES%,libedit-devel"
+set "PACKAGES=%PACKAGES%,liblzma-devel"
+set "PACKAGES=%PACKAGES%,gettext-devel"
 
 
 set "OPTIONS=%OPTIONS% --packages %PACKAGES%"

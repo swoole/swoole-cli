@@ -15,8 +15,8 @@ return function (Preprocessor $p) {
             ->withHomePage('https://aomediacodec.github.io/av1-avif/')
             ->withLicense('https://github.com/AOMediaCodec/libavif/', Library::LICENSE_BSD)
             ->withManual('https://github.com/AOMediaCodec/libavif/ext/')
-            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.1.1.tar.gz')
-            ->withFile('libavif-v1.1.1.tar.gz')
+            ->withUrl('https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.3.0.tar.gz')
+            ->withFile('libavif-v1.3.0.tar.gz')
             ->withPrefix($libavif_prefix)
             ->withConfigure(
                 <<<EOF
