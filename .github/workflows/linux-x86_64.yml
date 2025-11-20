@@ -117,7 +117,7 @@ jobs:
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php
+            php prepare.php --with-static-pie
 
             bash make.sh all-library
 
