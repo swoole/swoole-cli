@@ -53,6 +53,7 @@ set "PACKAGES=%PACKAGES%,flex"
 set "PACKAGES=%PACKAGES%,cygwin-devel,libnet6-devel"
 set "PACKAGES=%PACKAGES%,libwrap-devel"
 set "PACKAGES=%PACKAGES%,libedit-devel"
+set "PACKAGES=%PACKAGES%,libssh2-devel"
 
 
 set "OPTIONS=%OPTIONS% --packages %PACKAGES%"
