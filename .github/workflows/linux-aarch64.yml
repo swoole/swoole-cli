@@ -116,8 +116,8 @@ jobs:
             sh  sapi/quickstart/linux/alpine-init.sh
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
-
-            php prepare.php --with-libavif
+            
+            php prepare.php --with-static-pie --with-libavif
 
             bash make.sh all-library
 
@@ -133,7 +133,8 @@ jobs:
           ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri imagick
           ./bin/swoole-cli --ri swoole
-          ldd ./bin/swoole-cli
+          { ldd ./bin/swoole-cli ; } || { echo $? ; } ;
+
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
           APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
