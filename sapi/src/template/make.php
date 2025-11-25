@@ -248,9 +248,12 @@ make_build() {
     export_variables
     <?php if ($this->isLinux()) : ?>
     export CFLAGS="$CFLAGS  -fPIE"
-    export LDFLAGS="$LDFLAGS  -static -all-static "
-    # export LDFLAGS="$LDFLAGS  -static -all-static -static-pie"
-    <?php endif ;?>
+    export LDFLAGS="$LDFLAGS  -static -all-static"
+    <?php if ($this->getInputOption('with-static-pie')) : ?>
+    export CFLAGS="$CFLAGS  -fPIE"
+    export LDFLAGS="$LDFLAGS -static-pie"
+    <?php endif ; ?>
+    <?php endif ; ?>
     export LDFLAGS="$LDFLAGS   <?= $this->extraLdflags ?>"
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
@@ -265,7 +268,6 @@ make_build() {
     # { readelf -l <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
     # { objdump -p <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
 <?php endif; ?>
-
 }
 
 make_archive() {
