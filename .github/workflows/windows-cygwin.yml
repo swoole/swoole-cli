@@ -83,6 +83,7 @@ jobs:
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: install deps lib with source code
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
