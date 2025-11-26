@@ -346,3 +346,5 @@ php-fpm-*
 !sapi/patches
 /runtime
 !/runtime/.gitkeep
+/APP_NAME
+/APP_VERSION
