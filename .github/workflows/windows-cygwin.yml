@@ -16,8 +16,9 @@ jobs:
         php-version:
           - "8.2.29"
           - "8.1.33"
-          - "8.3.23"
-          - "8.4.10"
+          - "8.3.28"
+          - "8.4.15"
+        #  - "8.5.0"
     steps:
       - name: Show Environment Info
         shell: cmd
@@ -82,6 +83,7 @@ jobs:
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: install deps lib with source code
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
