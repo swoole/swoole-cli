@@ -310,6 +310,25 @@ make_clean() {
     rm -f ext/opcache/minilua
 }
 
+make_swoole_cli_with_linux_gcc() {
+    if [ ! -f bin/swoole-cli ] ;then
+        ./buildconf --force
+        ./sapi/scripts/build-swoole-cli-with-linux-gcc.sh
+    fi
+}
+
+make_deb_pkg() {
+    make_swoole_cli_with_linux_gcc
+    nfpm pkg --config nfpm-deb.yaml --target swoole-cli-<?=$this->getSwooleVersion()?>.deb
+    return 0
+}
+
+make_yum_pkg() {
+    make_swoole_cli_with_linux_gcc
+    nfpm pkg --config nfpm-yum.yaml --target swoole-cli-<?=$this->getSwooleVersion()?>.rpm
+    return 0
+}
+
 help() {
     echo "./make.sh docker-build [ china | ustc | tuna ]"
     echo "./make.sh docker-bash"
@@ -327,10 +346,13 @@ help() {
     echo "./make.sh clean-all-library-cached"
     echo "./make.sh sync"
     echo "./make.sh pkg-check"
+    echo "./make.sh deb-depends-check"
     echo "./make.sh variables"
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
+    echo "./make.sh deb-pkg"
+    echo "./make.sh yum-pkg"
     echo  "./make.sh clean-[library-name]"
     echo  "./make.sh clean-[library-name]-cached"
     echo  "./make.sh clean"
@@ -459,6 +481,14 @@ elif [ "$1" = "list-extension" ] ;then
     echo "<?= $item->name ?>"
 <?php endforeach; ?>
     exit 0
+elif [ "$1" = "deb-pkg" ] ;then
+    make_deb_pkg
+elif [ "$1" = "deb-depends-check" ] ;then
+<?php foreach($this->nfpmDepends['deb'] as $pkg => $version) : ?>
+    apt info <?=$pkg . PHP_EOL?>
+<?php endforeach; ?>
+elif [ "$1" = "yum-pkg" ] ;then
+    make_yum_pkg
 elif [ "$1" = "clean" ] ;then
     make_clean
 elif [ "$1" = "variables" ] ;then

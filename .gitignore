@@ -327,3 +327,5 @@ cppflags.log
 libs.log
 /runtime
 !/runtime/.gitkeep
+*.deb
+nfpm-deb.yaml
