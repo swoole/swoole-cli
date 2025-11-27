@@ -9,8 +9,13 @@ description: |
     SWOOLE-CLI is a php binary distribution composed swoole & php-core & cli & fpm and mostly of common extensions
 homepage: "https://github.com/swoole/swoole-cli"
 
-depends:
-    - libc6 (>=2.35)
+overrides:
+    deb:
+        depends:
+            - libc6 (>=2.35)
+    rpm:
+        depends:
+            - glibc >= 2.35
 
 contents:
     - src: "bin/swoole-cli"
