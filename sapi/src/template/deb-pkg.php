@@ -10,10 +10,10 @@ description: |
 homepage: "https://github.com/swoole/swoole-cli"
 
 depends:
-<?php foreach($this->nfpmDepends['deb'] as $pkg => $version) : ?>
-    - <?=$pkg?> <?php if ($version) : ?>(<?=$version?>)<?php endif; ?> <?=PHP_EOL?>
-<?php endforeach; ?>
+    libc6 (>=2.35)
 
 contents:
     - src: "bin/swoole-cli"
       dst: "/usr/local/bin/swoole-cli"
+    - src: "runtime/libs/"
+      dst: "/usr/local/swoole-cli/lib/"

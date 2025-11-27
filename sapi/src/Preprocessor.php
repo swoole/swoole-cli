@@ -820,8 +820,6 @@ class Preprocessor
             $this->generateDownloadLinks();
         }
 
-        $this->nfpmDepends['deb'] = require __DIR__ . '/builder/nfpm/deb-depends.php';
-
         $this->generateFile(__DIR__ . '/template/make.php', $this->rootDir . '/make.sh');
         shell_exec('chmod a+x ' . $this->rootDir . '/make.sh');
         $this->mkdirIfNotExists($this->rootDir . '/bin');
