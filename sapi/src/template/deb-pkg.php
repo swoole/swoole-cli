@@ -10,7 +10,7 @@ description: |
 homepage: "https://github.com/swoole/swoole-cli"
 
 depends:
-    libc6 (>=2.35)
+    - libc6 (>=2.35)
 
 contents:
     - src: "bin/swoole-cli"

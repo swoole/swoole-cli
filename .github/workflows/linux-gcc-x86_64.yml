@@ -111,8 +111,6 @@ jobs:
           ./bin/swoole-cli --ri swoole
           { ldd ./bin/swoole-cli ; } || { echo $? ; } ;
           file ./bin/swoole-cli
-          ./bin/swoole-cli sapi/scripts/copy-depend-libs.php
-          patchelf --force-rpath --set-rpath '/usr/local/swoole-cli/lib' bin/swoole-cli
           wget https://github.com/goreleaser/nfpm/releases/download/v2.43.4/nfpm_2.43.4_amd64.deb
           dpkg -i nfpm_2.43.4_amd64.deb
           ./make.sh deb-pkg

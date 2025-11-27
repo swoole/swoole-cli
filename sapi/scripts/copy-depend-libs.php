@@ -4,8 +4,8 @@
  */
 
 // Define paths
-$binaryPath = __DIR__ . '/../../bin/swoole-cli';
-$targetDir = __DIR__ . '/../../runtime/libs';
+$binaryPath = realpath(__DIR__ . '/../../bin/swoole-cli');
+$targetDir = realpath(__DIR__ . '/../../runtime/libs');
 
 // Libraries that should be ignored (system/core libraries)
 $ignoredLibraries = [

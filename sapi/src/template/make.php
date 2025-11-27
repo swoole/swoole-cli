@@ -319,6 +319,8 @@ make_swoole_cli_with_linux_gcc() {
 
 make_deb_pkg() {
     make_swoole_cli_with_linux_gcc
+    ./bin/swoole-cli sapi/scripts/copy-depend-libs.php
+    patchelf --force-rpath --set-rpath '/usr/local/swoole-cli/lib' bin/swoole-cli
     nfpm pkg --config nfpm-deb.yaml --target swoole-cli-<?=$this->getSwooleVersion()?>.deb
     return 0
 }
@@ -483,10 +485,6 @@ elif [ "$1" = "list-extension" ] ;then
     exit 0
 elif [ "$1" = "deb-pkg" ] ;then
     make_deb_pkg
-elif [ "$1" = "deb-depends-check" ] ;then
-<?php foreach($this->nfpmDepends['deb'] as $pkg => $version) : ?>
-    apt info <?=$pkg . PHP_EOL?>
-<?php endforeach; ?>
 elif [ "$1" = "yum-pkg" ] ;then
     make_yum_pkg
 elif [ "$1" = "clean" ] ;then
