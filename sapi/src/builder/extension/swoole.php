@@ -47,45 +47,4 @@ return function (Preprocessor $p) {
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 
     $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) ' . " -L{$libiconv_prefix}/lib -liconv ");
-
-    $p->withBeforeConfigureScript('swoole', function () use ($p) {
-        $workDir = $p->getWorkDir();
-        $shell = "set -x ;cd {$workDir} ; WORKDIR={$workDir} ;" . PHP_EOL;
-        $shell .= <<<'EOF'
-
-        SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
-        ORIGIN_SWOOLE_VERSION=${SWOOLE_VERSION}
-        SWOOLE_VERSION=$(echo "${SWOOLE_VERSION}" | sed 's/[^a-zA-Z0-9]/_/g')
-        CURRENT_SWOOLE_VERSION=''
-
-        if [ -f "ext/swoole/CMakeLists.txt" ] ;then
-            CURRENT_SWOOLE_VERSION=$(grep 'set(SWOOLE_VERSION' ext/swoole/CMakeLists.txt | awk '{ print $2 }' | sed 's/)//')
-            if [[ "${CURRENT_SWOOLE_VERSION}" =~ "-dev" ]]; then
-                echo 'swoole version master'
-                if [ -n "${GITHUB_ACTION}" ]; then
-                    test -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz && rm -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
-                    CURRENT_SWOOLE_VERSION=''
-                fi
-            fi
-        fi
-
-        if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
-            test -d ext/swoole && rm -rf ext/swoole
-            if [ ! -f ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz ] ;then
-                test -d /tmp/swoole && rm -rf /tmp/swoole
-                git clone -b "${ORIGIN_SWOOLE_VERSION}" https://github.com/swoole/swoole-src.git /tmp/swoole
-                status=$?
-                if [[ $status -ne 0 ]]; then { echo $status ; exit 1 ; } fi
-                cd  /tmp/swoole
-                rm -rf /tmp/swoole/.git/
-                tar -czvf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz .
-            fi
-            mkdir -p ${WORKDIR}/ext/swoole/
-            tar --strip-components=1 -C ${WORKDIR}/ext/swoole/ -xf ${WORKDIR}/pool/ext/swoole-${SWOOLE_VERSION}.tgz
-        fi
-        # swoole extension hook
-EOF;
-
-        return $shell;
-    });
 };

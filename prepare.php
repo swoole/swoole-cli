@@ -7,7 +7,6 @@ use SwooleCli\Preprocessor;
 $php_version_tag = trim(file_get_contents(__DIR__ . '/sapi/PHP-VERSION.conf'));
 define('BUILD_PHP_VERSION', $php_version_tag);
 
-
 $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
@@ -26,12 +25,16 @@ if (($buildType == 'dev') && file_exists(__DIR__ . '/make.sh')) {
 // Sync code from php-src
 $p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
+// Download swoole-src
+if (!is_dir(__DIR__ . '/ext/swoole')) {
+    shell_exec(__DIR__ . '/sapi/scripts/download-swoole-src-archive.sh');
+}
+
 // Compile directly on the host machine, not in the docker container
 if ($p->getInputOption('without-docker') || ($p->isMacos())) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
-
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
