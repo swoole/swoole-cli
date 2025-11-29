@@ -99,6 +99,10 @@ EOF
     $p->withExportVariable('ZSTD_LIBS', '$(pkg-config    --libs   --static  libzstd)');
 
     $p->withExportVariable('SWOOLE_ODBC_LIBS', '$(pkg-config    --libs-only-L --libs-only-l   --static  odbc odbccr odbcinst readline ncursesw ) ' . " -L{$libiconv_prefix}/lib -liconv ");
+
+    // Download swoole-src
+    # shell_exec(__DIR__ . '/sapi/scripts/download-swoole-src-archive.sh');
+
     /*
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
@@ -140,6 +144,7 @@ EOF
             return $shell;
         });
     */
+
     $p->withBeforeConfigureScript('swoole', function () use ($p) {
         $workDir = $p->getWorkDir();
         $phpSrcDir = $p->getPhpSrcDir();
@@ -156,5 +161,6 @@ EOF
 
         return $shell;
     });
+
 
 };

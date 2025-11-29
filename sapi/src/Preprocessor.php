@@ -48,6 +48,7 @@ class Preprocessor
     protected string $libraryDir;
     protected string $extensionDir;
     protected array $pkgConfigPaths = [];
+    protected array $nfpmDepends = [];
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
     /**
@@ -169,6 +170,19 @@ class Preprocessor
         }
     }
 
+    public function getDebArch(): string
+    {
+        $uname = posix_uname();
+        switch ($uname['machine']) {
+            case 'x86_64':
+                return 'amd64';
+            case 'aarch64':
+                return 'arm64';
+            default:
+                return $uname['machine'];
+        }
+    }
+
     public function getImageTag(): string
     {
         $arch = $this->getSystemArch();
@@ -247,6 +261,11 @@ class Preprocessor
     public function getBuildDir(): string
     {
         return $this->buildDir;
+    }
+
+    public function getSwooleVersion(): string
+    {
+        return trim(file_get_contents($this->rootDir . '/sapi/SWOOLE-VERSION.conf'));
     }
 
     public function getWorkDir(): string
@@ -1187,6 +1206,7 @@ EOF;
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
         $this->generateFile(__DIR__ . '/template/credits.php', $this->rootDir . '/bin/credits.html');
+        $this->generateFile(__DIR__ . '/template/nfpm-yaml.php', $this->rootDir . '/nfpm-pkg.yaml');
 
         copy($this->rootDir . '/sapi/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
 

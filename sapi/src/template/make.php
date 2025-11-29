@@ -483,6 +483,23 @@ lib_dep_pkg() {
     exit 0
 }
 
+make_swoole_cli_with_linux_gcc() {
+    if [ ! -f bin/swoole-cli ] ;then
+        ./buildconf --force
+        ./sapi/scripts/build-swoole-cli-with-linux-gcc.sh
+    fi
+}
+
+make_nfpm_pkg() {
+    make_swoole_cli_with_linux_gcc
+    ./bin/swoole-cli sapi/scripts/copy-depend-libs.php
+    patchelf --force-rpath --set-rpath '/usr/local/swoole-cli/lib' bin/swoole-cli
+    NFPM_PKG_FILENAME=swoole-cli-<?=$this->getSwooleVersion()?>-linux-<?=$this->getSystemArch()?>-glibc
+    nfpm pkg --config nfpm-pkg.yaml --target "${NFPM_PKG_FILENAME}.rpm"
+    nfpm pkg --config nfpm-pkg.yaml --target "${NFPM_PKG_FILENAME}.deb"
+    return 0
+}
+
 help() {
     echo "./make.sh docker-build [ china | ustc | tuna ]"
     echo "./make.sh docker-bash"
@@ -506,6 +523,7 @@ help() {
     echo "./make.sh list-swoole-branch"
     echo "./make.sh switch-swoole-branch"
     echo "./make.sh [library-name]"
+    echo "./make.sh nfpm-pkg"
     echo  "./make.sh clean-[library-name]"
     echo  "./make.sh clean-[library-name]-cached"
     echo  "./make.sh clean"
@@ -642,6 +660,8 @@ elif [ "$1" = "list-extension" ] ;then
     echo "<?= $item->name ?>"
 <?php endforeach; ?>
     exit 0
+elif [ "$1" = "nfpm-pkg" ] ;then
+    make_nfpm_pkg
 elif [ "$1" = "clean" ] ;then
     make_clean
     exit 0
