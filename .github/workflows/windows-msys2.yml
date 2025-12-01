@@ -69,11 +69,12 @@ jobs:
         shell: msys2 {0}
         run: |
           bash ./sapi/scripts/msys2/install-deps-lib.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: Prepare
         shell: msys2 {0}
         run: |
-          bash ./sapi/scripts/msys2/config-ext.sh --php-version ${{ env.BUILD_PHP_VERSION }} --swoole-version master
+          bash ./sapi/scripts/msys2/config-ext.sh --php-version ${{ env.BUILD_PHP_VERSION }}
 
       - name: Configure
         shell: msys2 {0}

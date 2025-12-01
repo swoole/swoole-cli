@@ -1,0 +1,150 @@
+name: build-swoole-cli-linux-glibc-x86_64
+
+on: [ push, pull_request ]
+
+jobs:
+  linux-glibc:
+    if: ${{ 0 && !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-glibc]') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-22.04, ubuntu-22.04-arm ]
+    name: linux-glibc-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show Environment Info
+        run: |
+          echo $PATH
+          env
+          docker info
+          id -u
+          id -g
+          who
+          cat /etc/os-release
+          hostnamectl
+          uname -s
+          uname -m
+          uname -r
+
+          cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+          cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+          cat /proc/cpuinfo | grep "cpu cores" | uniq
+          cat /proc/cpuinfo| grep "processor"| wc -l
+          lscpu
+
+          export IPV6=$(ip -6 address show  | grep inet6 | awk '{print $2}' | cut -d'/' -f1 | sed -n '2p')
+          export IPV4=$(ip -4 address show  | grep inet | grep -v 127.0.0 | awk '{print $2}' | cut -d'/' -f1 | sed -n '1p')
+          echo $IPV4
+          echo $IPV6
+          echo "X_IPV6=${IPV6}" >> $GITHUB_ENV
+          echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
+
+      - name: Prepare Build Environment
+        run: |
+          git submodule update --init
+
+          sudo mkdir -p /usr/local/swoole-cli
+          uid=$(id -u) && gid=$(id -g) && sudo chown -R ${uid}:${gid} /usr/local/swoole-cli
+
+          mkdir -p ${{ github.workspace }}/var/build-github-action-container/
+
+      - name: Cache PHP Runtime
+        uses: actions/cache@v4
+        id: php-runtime-cache-x86_64
+        with:
+          path: ${{ github.workspace }}/runtime
+          key: ${{ runner.os }}-x86_64-php-runtime
+
+      - name: Cache PHP Vendor
+        uses: actions/cache@v4
+        id: php-vendor-cache-x86_64
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-x86_64-php-vendor
+
+      - name: Cache Dependency Source Code Tarball
+        uses: actions/cache@v4
+        id: pool-cache
+        with:
+          path: ${{ github.workspace }}/pool/
+          key: source-code-tarball-pool
+
+      - name: Cache all-library
+        uses: actions/cache@v4
+        id: all-library-cache-x86_64
+        with:
+          path: /usr/local/swoole-cli
+          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-all-library
+
+      - name: Prepare Runtime and Libraries and Extensions
+        run: |
+          set -x
+          mkdir -p pool/lib
+          mkdir -p pool/ext
+          mkdir -p bin/
+          mkdir -p runtime/
+          test -f runtime/php && rm -f runtime/php
+          if [ ! -f runtime/php/php ] ; then
+              bash  setup-php-runtime.sh
+          fi
+          bash sapi/download-box/download-box-get-archive-from-server.sh
+          ls -A pool/lib/
+          ls -A /usr/local/swoole-cli/
+
+      - name: Build
+        run: |
+          set -eux
+          uname -m
+          composer install  --no-interaction --no-autoloader --no-scripts --profile
+          composer dump-autoload --optimize --profile
+
+          php prepare.php --with-libavif
+
+          sudo apt update
+          bash ./sapi/scripts/install-deps-on-ubuntu.sh
+          bash ./ext/swoole/scripts/install-deps-on-ubuntu.sh
+          bash ./sapi/scripts/build-swoole-cli-with-linux-gcc.sh
+
+          ./bin/swoole-cli -v
+          ./bin/swoole-cli -m
+          ./bin/swoole-cli --ri curl
+          ./bin/swoole-cli --ri gd
+          ./bin/swoole-cli --ri imagick
+          ./bin/swoole-cli --ri swoole
+          { ldd ./bin/swoole-cli ; } || { echo $? ; } ;
+          file ./bin/swoole-cli
+
+      - name: Make nfpm package
+        run: |
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "aarch64" ]; then
+            NFPM_ARCH="arm64"
+          else
+            NFPM_ARCH="amd64"
+          fi
+          wget https://github.com/goreleaser/nfpm/releases/download/v2.43.4/nfpm_2.43.4_${NFPM_ARCH}.deb
+          sudo dpkg -i nfpm_2.43.4_${NFPM_ARCH}.deb
+          strip ./bin/swoole-cli
+          ./make.sh nfpm-pkg
+          ls -ls ./*.deb
+          ls -ls ./*.rpm
+
+      - name: upload artifacts to cloud object storage
+        if: ${{ (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
+        env:
+          OSS_SECRET_ID: ${{ secrets.QCLOUD_OSS_SECRET_ID }}
+          OSS_SECRET_KEY: ${{ secrets.QCLOUD_OSS_SECRET_KEY }}
+          OSS_BUCKET: ${{ vars.QCLOUD_OSS_BUCKET }}
+          OSS_REGION: ${{ vars.QCLOUD_OSS_REGION }}
+        run: |
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "aarch64" ]; then
+            FILE_ARCH="arm64"
+          else
+            FILE_ARCH="x64"
+          fi
+          SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
+          OS="linux"
+          bash sapi/scripts/tencent-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-"${SWOOLE_VERSION}-${OS}-${FILE_ARCH}"-glibc.deb
+          bash sapi/scripts/tencent-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-"${SWOOLE_VERSION}-${OS}-${FILE_ARCH}"-glibc.rpm

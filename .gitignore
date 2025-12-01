@@ -349,3 +349,6 @@ php-fpm-*
 !/runtime/.gitkeep
 /APP_NAME
 /APP_VERSION
+*.deb
+*.rpm
+nfpm-pkg.yaml
