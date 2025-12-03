@@ -45,8 +45,7 @@ build() {
     -DENABLE_ZSTD=ON \
     -DBUILD_REGRESS=OFF \
     -DBUILD_OSSFUZZ=OFF \
-    -DCMAKE_VERBOSE_MAKEFILE=ON \
-    -DCMAKE_PREFIX_PATH="/usr/local/;/usr/"
+    -DCMAKE_VERBOSE_MAKEFILE=ON
 
 
   make -j $(nproc)

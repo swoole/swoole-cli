@@ -17,7 +17,6 @@ mkdir -p ${WORK_TEMP_DIR}
 VERSION=068c9f2f643ce59eeb3001d61374bf44a2abd825
 
 download() {
-  # document https://github.com/AOMediaCodec/libavif/
   curl -fSLo ${__PROJECT__}/pool/lib/libyuv-${VERSION}.tar.gz https://chromium.googlesource.com/libyuv/libyuv/+archive/${VERSION}.tar.gz
 }
 
