@@ -6,7 +6,7 @@ on:
 
 jobs:
   windows-msys2:
-    if: 0
+    if: 1
     runs-on: windows-2022
     steps:
       - name: Show Environment Info
