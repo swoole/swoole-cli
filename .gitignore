@@ -330,3 +330,5 @@ libs.log
 *.deb
 *.rpm
 nfpm-pkg.yaml
+/APP_VERSION
+/APP_NAME
