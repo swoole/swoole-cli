@@ -322,11 +322,11 @@ cppflags.log
 /packages
 /conf.d.loader
 Makefile.backup
-ldflags.log
-cppflags.log
 libs.log
 /runtime
 !/runtime/.gitkeep
 *.deb
 *.rpm
 nfpm-pkg.yaml
+!/var/.gitkeep
+

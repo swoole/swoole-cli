@@ -114,9 +114,10 @@ jobs:
             alias php="php -d curl.cainfo=/work/runtime/php/cacert.pem -d openssl.cafile=/work/runtime/php/cacert.pem"
 
             sh  sapi/quickstart/linux/alpine-init.sh
+            git config --global --add safe.directory /work
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
-            
+
             php prepare.php --with-static-pie --with-libavif
 
             bash make.sh all-library
