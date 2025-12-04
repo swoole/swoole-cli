@@ -322,8 +322,6 @@ cppflags.log
 /packages
 /conf.d.loader
 Makefile.backup
-ldflags.log
-cppflags.log
 libs.log
 /runtime
 !/runtime/.gitkeep
@@ -332,3 +330,5 @@ libs.log
 nfpm-pkg.yaml
 /APP_VERSION
 /APP_NAME
+!/var/.gitkeep
+
