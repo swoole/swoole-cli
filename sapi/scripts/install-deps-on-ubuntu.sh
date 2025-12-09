@@ -34,4 +34,5 @@ sudo apt install libyaml-dev \
     libonig-dev \
     libxslt-dev \
     libzip-dev \
-    libavif-dev
+    libavif-dev \
+    libpython3-dev
