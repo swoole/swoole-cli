@@ -35,7 +35,7 @@ fi
   --enable-exif \
   --with-sodium \
   --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
-  --enable-gd --with-jpeg --with-freetype \
+  --enable-gd --with-jpeg --with-freetype --with-avif \
   --enable-swoole \
   --enable-swoole-curl \
   --enable-cares \
@@ -50,6 +50,7 @@ fi
   --with-imagick \
   --with-yaml \
   --with-readline \
+  --enable-phpy --with-python-config=python3-config \
   --enable-opcache
 
 make -j "$(nproc)"

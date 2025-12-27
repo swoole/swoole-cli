@@ -12,10 +12,10 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.29"
-          - "8.1.33"
-          - "8.3.28"
-          - "8.4.15"
+          - "8.2.30"
+          - "8.1.34"
+          - "8.3.29"
+          - "8.4.16"
         #  - "8.5.0"
     steps:
       - uses: actions/checkout@v4
@@ -126,6 +126,8 @@ jobs:
             alias php="php -d curl.cainfo=/work/runtime/php/cacert.pem -d openssl.cafile=/work/runtime/php/cacert.pem"
 
             sh  sapi/quickstart/linux/alpine-init.sh
+            git config --global --add safe.directory /work
+
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 

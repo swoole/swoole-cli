@@ -15,7 +15,10 @@ ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
 export LOGICAL_PROCESSORS=<?= trim($this->logicalProcessors). PHP_EOL ?>
 export CMAKE_BUILD_PARALLEL_LEVEL=<?= $this->maxJob. PHP_EOL ?>
-
+<?php if ($this->isMacos()) :?>
+# 兼容 最低 macOS 版本
+export MACOSX_DEPLOYMENT_TARGET=12.0
+<?php endif; ?>
 export CC=<?= $this->cCompiler . PHP_EOL ?>
 export CXX=<?= $this->cppCompiler . PHP_EOL ?>
 export LD=<?= $this->lld . PHP_EOL ?>

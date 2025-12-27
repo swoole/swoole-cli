@@ -35,7 +35,9 @@ REDIS_VERSION=6.2.0
 MONGODB_VERSION=1.14.2
 YAML_VERSION=2.2.2
 IMAGICK_VERSION=3.8.0
-
+if [ "${X_PHP_VERSION}" == "8.1" ]; then
+  SWOOLE_VERSION="v6.1.4"
+fi
 mkdir -p pool/ext
 mkdir -p pool/lib
 mkdir -p pool/php-tar

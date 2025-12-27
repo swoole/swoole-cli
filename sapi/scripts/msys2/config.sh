@@ -91,7 +91,9 @@ test -f Makefile && make clean
   --enable-mbstring \
   --with-pgsql \
   --enable-intl \
-  ${OPTIONS}
+  ${OPTIONS} \
+  --enable-gd --with-jpeg --with-freetype --with-webp --with-avif \
+  --with-imagick
 
 #  --enable-intl \
 #  --with-sodium \

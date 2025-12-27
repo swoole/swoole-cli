@@ -71,6 +71,7 @@ pacman -S --needed --noconfirm icu-devel
 pacman -S --needed --noconfirm gettext-devel
 pacman -S --needed --noconfirm libintl
 pacman -S --needed --noconfirm flex
+pacman -S --needed --noconfirm nasm yasm
 
 : <<'COMMENT'
 # 不存在的包
