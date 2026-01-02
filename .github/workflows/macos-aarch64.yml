@@ -181,7 +181,6 @@ jobs:
         with:
           files: |
             ${{ env.APP_NAME }}-v${{ env.APP_VERSION }}-macos-arm64.tar.xz
-            ${{ env.APP_NAME }}-v${{ env.APP_VERSION }}-macos-arm64-debug.tar.xz
 
       - name: upload artifacts to cloud object storage
         if: ${{ 0 && (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
