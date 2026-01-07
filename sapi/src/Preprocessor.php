@@ -367,7 +367,6 @@ EOF;
         echo '------------RUNNING   END-------------';
         echo PHP_EOL;
         $file = $path;
-        die(0);
         // 下载失败
         if (!is_file($file) or filesize($file) == 0) {
             throw new Exception("with pie Downloading file[" . basename($file) . "] from  failed");
