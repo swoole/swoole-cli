@@ -31,14 +31,18 @@ return function (Preprocessor $p) {
         $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
     }
 
-    $p->addExtension((new Extension('swoole'))
-        ->withHomePage('https://github.com/swoole/swoole-src')
-        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
-        ->withManual('https://wiki.swoole.com/#/')
-        ->withOptions(implode(' ', $options))
-        ->withBuildCached(false)
-        ->withDependentLibraries(...$dependentLibraries)
-        ->withDependentExtensions(...$dependentExtensions));
+    $p->addExtension(
+        (new Extension('swoole'))
+            ->withHomePage('https://github.com/swoole/swoole-src')
+            ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
+            ->withManual('https://wiki.swoole.com/#/')
+            ->withOptions(implode(' ', $options))
+            ->withBuildCached(false)
+            ->withDependentLibraries(...$dependentLibraries)
+            ->withDependentExtensions(...$dependentExtensions)
+            ->withPieName('swoole/swoole')
+            ->withPieVersion('v6.1.6')
+    );
 
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
     $p->withExportVariable('CARES_CFLAGS', '$(pkg-config  --cflags --static  libcares)');

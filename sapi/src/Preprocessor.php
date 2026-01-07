@@ -339,6 +339,39 @@ class Preprocessor
         }
     }
 
+    public function downloadFileWithPie(string $pieName, string $pieVersion, string $file, string $path, object $project): void
+    {
+        $workdir = $this->getWorkDir();
+        $cmd = <<<EOF
+test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH
+export PIE_WORKING_DIRECTORY={$workdir}/var/ext/pie/
+test -d \$PIE_WORKING_DIRECTORY || mkdir -p \$PIE_WORKING_DIRECTORY
+cd {$workdir}/var/
+BASE_DIR=\$(pie show | grep 'Using pie.json: ' | awk -F 'pie.json: ' '{ print $2 }'  | sed 's/pie.json//')
+pie info {$pieName}:{$pieVersion}
+pie download {$pieName}:{$pieVersion}
+cd \${BASE_DIR}/vendor/{$pieName}
+tar -czf "{$workdir}/var/ext/{$file}" .
+cp -f {$workdir}/var/ext/{$file} {$path}
+cd {$workdir}
+EOF;
+        echo $cmd;
+        echo PHP_EOL;
+        echo `$cmd`;
+        echo PHP_EOL;
+        $file = $path;
+        // 下载失败
+        if (!is_file($file) or filesize($file) == 0) {
+            throw new Exception("with pie Downloading file[" . basename($file) . "] from  failed");
+        }
+        // 下载文件的 hash 不一致
+        if (!$this->skipHashVerify and $project->enableHashVerify) {
+            if (!$project->hashVerify($file)) {
+                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+            }
+        }
+    }
+
     /**
      * @param Library $lib
      * @throws Exception
@@ -396,8 +429,10 @@ class Preprocessor
 
     public function addExtension(Extension $ext): void
     {
-        if ($ext->peclVersion) {
-            $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+        if ($ext->peclVersion || $ext->pieVersion) {
+            $extensionVersion = !empty($ext->peclVersion) ? $ext->peclVersion : $ext->pieVersion;
+            $downloadType = $ext->peclVersion ? 'pecl' : 'pie';
+            $ext->file = $ext->name . '-' . $extensionVersion . '.tgz';
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
@@ -411,8 +446,14 @@ class Preprocessor
             }
             if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
-                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path, $ext);
+                    if ($downloadType === 'pecl') {
+                        echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                        $this->downloadFile($ext->url, $ext->path, $ext);
+                    } else {
+                        echo "[Extension] {$ext->file} not found, download with pie.phar " . $ext->homePage . PHP_EOL;
+                        $this->downloadFileWithPie($ext->pieName, $ext->pieVersion, $ext->file, $ext->path, $ext);
+                    }
+
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
