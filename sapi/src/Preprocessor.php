@@ -343,11 +343,11 @@ class Preprocessor
     {
         $workdir = $this->getWorkDir();
         $cmd = <<<EOF
-test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH
+test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH ;
 export PIE_WORKING_DIRECTORY={$workdir}/var/ext/pie/
-test -d \$PIE_WORKING_DIRECTORY || mkdir -p \$PIE_WORKING_DIRECTORY
+test -d \$PIE_WORKING_DIRECTORY || mkdir -p \$PIE_WORKING_DIRECTORY ;
 cd {$workdir}/var/
-pie download {$pieName}:{$pieVersion} --skip-enable-extension
+pie download {$pieName}:{$pieVersion}
 pie info {$pieName}:{$pieVersion}
 pie show
 BASE_DIR=\$(pie show | grep 'Using pie.json: ' | awk -F 'pie.json: ' '{ print $2 }'  | sed 's/pie.json//')
@@ -361,6 +361,7 @@ EOF;
         echo `$cmd`;
         echo PHP_EOL;
         $file = $path;
+        die(0);
         // 下载失败
         if (!is_file($file) or filesize($file) == 0) {
             throw new Exception("with pie Downloading file[" . basename($file) . "] from  failed");
