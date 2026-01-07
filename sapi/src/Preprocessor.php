@@ -346,20 +346,25 @@ class Preprocessor
 test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH ;
 export PIE_WORKING_DIRECTORY={$workdir}/var/ext/pie/
 test -d \$PIE_WORKING_DIRECTORY || mkdir -p \$PIE_WORKING_DIRECTORY ;
-cd {$workdir}/var/
-pie download {$pieName}:{$pieVersion}
-pie info {$pieName}:{$pieVersion}
-pie show
-exit 0
-BASE_DIR=\$(pie show | grep 'Using pie.json: ' | awk -F 'pie.json: ' '{ print $2 }'  | sed 's/pie.json//')
-cd \${BASE_DIR}/vendor/{$pieName}
+cd {$workdir}/var/ext/
+TEMP_FILE=$(mktemp) && echo "TEMP_FILE: \${TEMP_FILE}" ;
+{ pie download {$pieName}:{$pieVersion} ; } > \${TEMP_FILE} 2>&1
+cat \${TEMP_FILE}
+SOURCE_CODE_DIR=\$(cat \${TEMP_FILE} | grep 'source to: ' | awk -F 'source to: ' '{ print $2 }')
+rm -f \${TEMP_FILE}
+echo "{$pieName}:{$pieVersion} source code: \${SOURCE_CODE_DIR}"
+pie info {$pieName}:{$pieVersion};
+cd \${SOURCE_CODE_DIR}
 tar -czf "{$workdir}/var/ext/{$file}" .
 cp -f {$workdir}/var/ext/{$file} {$path}
 cd {$workdir}
 EOF;
         echo $cmd;
         echo PHP_EOL;
+        echo '------------RUNNING START-------------';
+        echo PHP_EOL;
         echo `$cmd`;
+        echo '------------RUNNING   END-------------';
         echo PHP_EOL;
         $file = $path;
         die(0);

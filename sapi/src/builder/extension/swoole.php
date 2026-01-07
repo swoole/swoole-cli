@@ -30,7 +30,7 @@ return function (Preprocessor $p) {
         $p->withExportVariable('URING_CFLAGS', '$(pkg-config  --cflags --static  liburing)');
         $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
     }
-
+    $swoole_version = trim(file_get_contents(__DIR__ . '/../../../SWOOLE-VERSION.conf'));
     $p->addExtension(
         (new Extension('swoole'))
             ->withHomePage('https://github.com/swoole/swoole-src')
@@ -41,7 +41,7 @@ return function (Preprocessor $p) {
             ->withDependentLibraries(...$dependentLibraries)
             ->withDependentExtensions(...$dependentExtensions)
             ->withPieName('swoole/swoole')
-            ->withPieVersion('v6.1.6')
+            ->withPieVersion($swoole_version)
     );
 
     $p->withVariable('LIBS', '$LIBS ' . ($p->isMacos() ? '-lc++' : '-lstdc++'));
