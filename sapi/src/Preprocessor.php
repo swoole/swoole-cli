@@ -347,9 +347,9 @@ test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH
 export PIE_WORKING_DIRECTORY={$workdir}/var/ext/pie/
 test -d \$PIE_WORKING_DIRECTORY || mkdir -p \$PIE_WORKING_DIRECTORY
 cd {$workdir}/var/
+pie download {$pieName}:{$pieVersion} --skip-enable-extension
 BASE_DIR=\$(pie show | grep 'Using pie.json: ' | awk -F 'pie.json: ' '{ print $2 }'  | sed 's/pie.json//')
 pie info {$pieName}:{$pieVersion}
-pie download {$pieName}:{$pieVersion} --skip-enable-extension
 cd \${BASE_DIR}/vendor/{$pieName}
 tar -czf "{$workdir}/var/ext/{$file}" .
 cp -f {$workdir}/var/ext/{$file} {$path}
