@@ -90,7 +90,7 @@ jobs:
           mkdir -p bin/
           mkdir -p runtime/
           test -f runtime/php && rm -f runtime/php
-          if [ ! -f runtime/php/php ] ; then
+          if [ ! -f runtime/php/pie ] ; then
               bash  setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh

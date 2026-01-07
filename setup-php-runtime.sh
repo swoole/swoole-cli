@@ -51,7 +51,7 @@ esac
 APP_VERSION='v5.1.3'
 APP_NAME='swoole-cli'
 VERSION='v5.1.3.0'
-PIE_VERSION="1.2.1"
+PIE_VERSION="1.3.5"
 # 查看pie最新版本 https://github.com/php/pie/releases/latest
 
 cd ${__PROJECT__}
