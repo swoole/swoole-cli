@@ -350,6 +350,7 @@ cd {$workdir}/var/
 pie download {$pieName}:{$pieVersion}
 pie info {$pieName}:{$pieVersion}
 pie show
+exit 0
 BASE_DIR=\$(pie show | grep 'Using pie.json: ' | awk -F 'pie.json: ' '{ print $2 }'  | sed 's/pie.json//')
 cd \${BASE_DIR}/vendor/{$pieName}
 tar -czf "{$workdir}/var/ext/{$file}" .
