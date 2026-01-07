@@ -46,7 +46,12 @@ if ($p->getInputOption('with-parallel-jobs')) {
 
 if ($p->isMacos()) {
     $p->setExtraLdflags('');
-    $homebrew_prefix = trim(shell_exec('brew --prefix'));
+    exec("brew --prefix 2>&1", $output, $result_code);
+    if ($result_code == 0) {
+        $homebrew_prefix = trim(implode(' ', $output));
+    } else {
+        $homebrew_prefix = "";
+    }
     $p->withBinPath($homebrew_prefix . '/opt/flex/bin')
         ->withBinPath($homebrew_prefix . '/opt/bison/bin')
         ->withBinPath($homebrew_prefix . '/opt/libtool/bin')
