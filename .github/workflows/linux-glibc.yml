@@ -99,7 +99,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --with-libavif
+          php prepare.php --with-libavif --without-docker
 
           sudo apt update
           bash ./sapi/scripts/install-deps-on-ubuntu.sh
