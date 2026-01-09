@@ -31,15 +31,6 @@ jobs:
           git config --global --add safe.directory ${{ github.workspace }}
 
       - uses: actions/checkout@v4
-      - name: Cache msys2 packages
-        id: cache-msys2
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-msys2-packages
-        with:
-          path: C:\msys2-packages
-          key: "${{ runner.os }}-build-${{ env.cache-name }}"
-
       - name: Cache pool
         id: cache-msys2-pool
         uses: actions/cache@v4
