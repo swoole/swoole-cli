@@ -309,8 +309,10 @@ class Preprocessor
      * @param string $file
      * @param object|null $project [ $lib or $ext ]
      */
-    protected function downloadFile(string $url, string $file, ?object $project = null)
+    protected function downloadFile(?object $project = null)
     {
+        $url = $project->url;
+        $file = $project->path;
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
         $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
@@ -324,23 +326,14 @@ class Preprocessor
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
-        if (is_file($file) && (filesize($file) == 0)) {
-            unlink($file);
-        }
-        // 下载失败
-        if (!is_file($file) or filesize($file) == 0) {
-            throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
-        }
-        // 下载文件的 hash 不一致
-        if (!$this->skipHashVerify and $project->enableHashVerify) {
-            if (!$project->hashVerify($file)) {
-                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
-            }
-        }
     }
 
-    public function downloadFileWithPie(string $pieName, string $pieVersion, string $file, string $path, object $project): void
+    public function downloadFileWithPie(?object $project = null): void
     {
+        $pieName = $project->pieName;
+        $pieVersion = $project->pieVersion;
+        $file = $project->file;
+        $path = $project->path;
         $workdir = $this->getWorkDir();
         $cmd = <<<EOF
 test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH ;
@@ -366,17 +359,6 @@ EOF;
         echo `$cmd`;
         echo '------------RUNNING   END-------------';
         echo PHP_EOL;
-        $file = $path;
-        // 下载失败
-        if (!is_file($file) or filesize($file) == 0) {
-            throw new Exception("with pie Downloading file[" . basename($file) . "] from  failed");
-        }
-        // 下载文件的 hash 不一致
-        if (!$this->skipHashVerify and $project->enableHashVerify) {
-            if (!$project->hashVerify($file)) {
-                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
-            }
-        }
     }
 
     /**
@@ -403,7 +385,18 @@ EOF;
         if (!$skip_download) {
             if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, $lib->path, $lib);
+                $this->downloadFile($lib);
+                $file = $lib->path;
+                // 下载失败
+                if (!is_file($file) or filesize($file) == 0) {
+                    throw new Exception("with Downloading file[" . basename($file) . "] from  failed");
+                }
+                // 下载文件的 hash 不一致
+                if (!$this->skipHashVerify and $lib->enableHashVerify) {
+                    if (!$lib->hashVerify($file)) {
+                        throw new Exception("The {$lib->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+                    }
+                }
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -455,12 +448,22 @@ EOF;
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
                     if ($downloadType === 'pecl') {
                         echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                        $this->downloadFile($ext->url, $ext->path, $ext);
+                        $this->downloadFile($ext);
                     } else {
-                        echo "[Extension] {$ext->file} not found, download with pie.phar " . $ext->homePage . PHP_EOL;
-                        $this->downloadFileWithPie($ext->pieName, $ext->pieVersion, $ext->file, $ext->path, $ext);
+                        echo "[Extension] {$ext->file} not found, downloading with pie.phar https://packagist.org/packages/" . $ext->pieName . PHP_EOL;
+                        $this->downloadFileWithPie($ext);
                     }
-
+                    $file = $ext->path;
+                    // 下载失败
+                    if (!is_file($file) or filesize($file) == 0) {
+                        throw new Exception("with Downloading file[" . basename($file) . "] from  failed");
+                    }
+                    // 下载文件的 hash 不一致
+                    if (!$this->skipHashVerify and $ext->enableHashVerify) {
+                        if (!$ext->hashVerify($file)) {
+                            throw new Exception("The {$ext->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+                        }
+                    }
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
