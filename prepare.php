@@ -35,17 +35,22 @@ $p->cleanFile(__DIR__ . '/configure.backup');
 // Sync code from php-src
 $p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
+/*
+// Download swoole-src
+if (!is_dir(__DIR__ . '/ext/swoole')) {
+    //shell_exec(__DIR__ . '/sapi/scripts/download-swoole-src-archive.sh');
+}
+*/
+
 // Compile directly on the host machine, not in the docker container
-if ($p->getInputOption('without-docker') || ($p->isMacos())) {
+if ($p->getInputOption('without-docker') || ($p->isMacos()) || ($p->isLinux() && (!is_file('/.dockerenv')))) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
-
 if ($p->getInputOption('with-override-default-enabled-ext')) {
     $p->setExtEnabled([]);
 }
-
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
@@ -93,7 +98,12 @@ EOF;
 if ($p->isMacos()) {
     //$p->setExtraLdflags('-undefined dynamic_lookup');
     $p->setExtraLdflags('');
-    $homebrew_prefix = trim(shell_exec('brew --prefix'));
+    exec("brew --prefix 2>&1", $output, $result_code);
+    if ($result_code == 0) {
+        $homebrew_prefix = trim(implode(' ', $output));
+    } else {
+        $homebrew_prefix = "";
+    }
     $p->withBinPath($homebrew_prefix . '/opt/flex/bin')
         ->withBinPath($homebrew_prefix . '/opt/bison/bin')
         ->withBinPath($homebrew_prefix . '/opt/libtool/bin')

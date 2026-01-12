@@ -114,7 +114,7 @@ jobs:
           mkdir -p bin/
           mkdir -p runtime/
           test -f runtime/php && rm -f runtime/php
-          if [ ! -f runtime/php/php ] ; then
+          if [ ! -f runtime/php/pie ] ; then
               bash  setup-php-runtime.sh
           fi
 
@@ -139,6 +139,8 @@ jobs:
             alias php="php -d curl.cainfo=/work/runtime/php/cacert.pem -d openssl.cafile=/work/runtime/php/cacert.pem"
 
             sh  sapi/quickstart/linux/alpine-init.sh
+            git config --global --add safe.directory /work
+
             composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
             composer dump-autoload --optimize --profile --no-dev
 

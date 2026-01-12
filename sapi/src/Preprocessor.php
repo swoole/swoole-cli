@@ -45,6 +45,7 @@ class Preprocessor
     protected string $libraryDir;
     protected string $extensionDir;
     protected array $pkgConfigPaths = [];
+    protected array $nfpmDepends = [];
     protected string $phpSrcDir;
     protected string $dockerVersion = 'latest';
     /**
@@ -163,6 +164,19 @@ class Preprocessor
         }
     }
 
+    public function getDebArch(): string
+    {
+        $uname = posix_uname();
+        switch ($uname['machine']) {
+            case 'x86_64':
+                return 'amd64';
+            case 'aarch64':
+                return 'arm64';
+            default:
+                return $uname['machine'];
+        }
+    }
+
     public function getImageTag(): string
     {
         $arch = $this->getSystemArch();
@@ -242,6 +256,11 @@ class Preprocessor
     public function getBuildDir(): string
     {
         return $this->buildDir;
+    }
+
+    public function getSwooleVersion(): string
+    {
+        return trim(file_get_contents($this->rootDir . '/sapi/SWOOLE-VERSION.conf'));
     }
 
     public function getWorkDir(): string
@@ -419,8 +438,10 @@ __GIT_PROXY_CONFIG_EOF;
      * @param string $httpProxyConfig
      * @return void
      */
-    protected function downloadFile(string $url, string $file, ?object $project = null, string $httpProxyConfig = ''): void
+    protected function downloadFile(?object $project = null, string $httpProxyConfig = ''): void
     {
+        $url = $project->url;
+        $file = $project->path;
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
         $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
@@ -435,48 +456,83 @@ __GIT_PROXY_CONFIG_EOF;
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
-        if (is_file($file) && (filesize($file) == 0)) {
-            unlink($file);
-        }
-        // 下载失败
-        if (!is_file($file) or filesize($file) == 0) {
-            throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
-        }
-        // 下载文件的 hash 不一致
-        if (!$this->skipHashVerify and $project->enableHashVerify) {
-            if (!$project->hashVerify($file)) {
-                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
-            }
-        }
     }
 
     /**
-     * @param string $file
-     * @param string $downloadScript
-     * @param object|null $project
+     * @param object $project
+     * @param string $httpProxyConfig
      * @return void
      */
-    protected function downloadFileWithScript(string $file, string $downloadScript, object $project = null): void
+    public function downloadFileWithPie(?object $project = null, string $httpProxyConfig): void
     {
+        $pieName = $project->pieName;
+        $pieVersion = $project->pieVersion;
+        $file = $project->file;
+        $path = $project->path;
+
+        $workdir = $this->getWorkDir();
+        $cmd = <<<EOF
+test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH ;
+{$httpProxyConfig}
+export PIE_WORKING_DIRECTORY={$workdir}/var/ext/pie/
+test -d \$PIE_WORKING_DIRECTORY || mkdir -p \$PIE_WORKING_DIRECTORY ;
+cd {$workdir}/var/ext/
+TEMP_FILE=$(mktemp) && echo "TEMP_FILE: \${TEMP_FILE}" ;
+{ pie download {$pieName}:{$pieVersion} ; } > \${TEMP_FILE} 2>&1
+cat \${TEMP_FILE}
+SOURCE_CODE_DIR=\$(cat \${TEMP_FILE} | grep 'source to: ' | awk -F 'source to: ' '{ print $2 }')
+rm -f \${TEMP_FILE}
+echo "{$pieName}:{$pieVersion} source code: \${SOURCE_CODE_DIR}"
+pie info {$pieName}:{$pieVersion};
+cd \${SOURCE_CODE_DIR}
+tar -czf "{$workdir}/var/ext/{$file}" .
+cp -f {$workdir}/var/ext/{$file} {$path}
+cd {$workdir}
+EOF;
+        echo $cmd;
+        echo PHP_EOL;
+        echo '------------RUNNING START-------------';
+        echo PHP_EOL;
+        echo `$cmd`;
+        echo '------------RUNNING   END-------------';
+        echo PHP_EOL;
+    }
+
+    /**
+     * @param object|null $project
+     * @param string $httpProxyConfig
+     * @return void
+     */
+    protected function downloadFileWithScript(?object $project = null, string $httpProxyConfig): void
+    {
+
+        if (!empty($project->downloadScript) && !empty($project->downloadDirName)) {
+            $workDir = $this->getRootDir();
+            $cacheDir = '${__DIR__}/var/tmp/' . $project->name;
+            $downloadScript = <<<EOF
+                            __DIR__={$workDir}/
+                            {$httpProxyConfig}
+                            test -d {$cacheDir} && rm -rf {$cacheDir}
+                            mkdir -p {$cacheDir}
+                            cd {$cacheDir}
+                            {$project->downloadScript}
+                            cd {$project->downloadDirName}
+                            test -f {$project->path} ||  tar  -zcf {$project->path} ./
+                            cd {$workDir}
+
+EOF;
+
+        } else {
+            throw new Exception(
+                "[Extension] withDownloadScript() require \$downloadDirName and \$downloadScript  "
+            );
+        }
+
         echo PHP_EOL;
         echo $downloadScript;
         echo PHP_EOL;
         echo `$downloadScript`;
         echo PHP_EOL;
-
-        if (is_file($file) && (filesize($file) == 0)) {
-            unlink($file);
-        }
-        // 下载失败
-        if (!is_file($file) or filesize($file) == 0) {
-            throw new Exception("Downloading file[" . basename($file) . "]  failed");
-        }
-        // 下载文件的 hash 不一致
-        if ($project->enableHashVerify) {
-            if (!$project->hashVerify($file)) {
-                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
-            }
-        }
     }
 
     /**
@@ -485,8 +541,14 @@ __GIT_PROXY_CONFIG_EOF;
      */
     public function addLibrary(Library $lib): void
     {
-
-        if ($lib->enableDownloadScript || !empty($lib->url)) {
+        $downloadType = ""; //curl , download_script
+        if ($lib->enableDownloadScript) {
+            $downloadType = "download_script";
+        }
+        if (!empty($lib->url)) {
+            $downloadType = "curl";
+        }
+        if (!empty($downloadType)) {
             if (empty($lib->file)) {
                 if ($lib->enableDownloadScript) {
                     $lib->file = $lib->name . '.tar.gz';
@@ -499,6 +561,7 @@ __GIT_PROXY_CONFIG_EOF;
                 if ($lib->enableDownloadWithOriginURL === false) {
                     $lib->url = $this->getInputOption('with-download-mirror-url') . '/lib/' . $lib->file;
                     $lib->enableDownloadWithMirrorURL = true;
+                    $downloadType = "curl";
                 }
             }
 
@@ -530,36 +593,26 @@ __GIT_PROXY_CONFIG_EOF;
                     if (!$lib->enableHttpProxy) {
                         $httpProxyConfig = '';
                     }
-                    if ($lib->enableDownloadScript && !$lib->enableDownloadWithMirrorURL) {
-                        if (!empty($lib->downloadScript) && !empty($lib->downloadDirName)) {
-                            $workDir = $this->getRootDir();
-                            $cacheDir = '${__DIR__}/var/tmp/lib/' . $lib->name;
-                            $lib->downloadScript = <<<EOF
-                            __DIR__={$workDir}/
-                            {$httpProxyConfig}
-                            test -d {$cacheDir} && rm -rf {$cacheDir}
-                            mkdir -p {$cacheDir}
-                            cd {$cacheDir}
-                            {$lib->downloadScript}
-                            cd {$lib->downloadDirName}
-                            test -f {$lib->path} || tar   -zcf {$lib->path} ./
-                            cd {$workDir}
-
-EOF;
-
-                            $this->downloadFileWithScript(
-                                $lib->path,
-                                $lib->downloadScript,
-                                $lib
-                            );
-                        } else {
-                            throw new Exception(
-                                "[Library] withDownloadScript() require \$downloadDirName and \$downloadScript  "
-                            );
-                        }
+                    if ($downloadType == "download_script") {
+                        $this->downloadFileWithScript($lib, $httpProxyConfig);
                     } else {
                         echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                        $this->downloadFile($lib->url, $lib->path, $lib, $httpProxyConfig);
+                        $this->downloadFile($lib, $httpProxyConfig);
+                    }
+
+                    $file = $lib->path;
+                    if (is_file($file) && (filesize($file) == 0)) {
+                        unlink($file);
+                    }
+                    // 下载失败
+                    if (!is_file($file) or filesize($file) == 0) {
+                        throw new Exception("Downloading file [" . basename($file) . "] failed");
+                    }
+                    // 下载文件的 hash 不一致
+                    if (!$this->skipHashVerify and $lib->enableHashVerify) {
+                        if (!$lib->hashVerify($file)) {
+                            throw new Exception("The {$lib->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+                        }
                     }
                 }
 
@@ -573,7 +626,7 @@ EOF;
             }
         } else {
             throw new Exception(
-                "[Library] require url OR downloadscript "
+                "[Library] require url OR download_script "
             );
         }
         if (!empty($lib->pkgConfig)) {
@@ -609,48 +662,69 @@ EOF;
 
     public function addExtension(Extension $ext): void
     {
-        if (!empty($ext->peclVersion) || $ext->enableDownloadScript || !empty($ext->url)) {
+        $extensionVersion = "";
+        $downloadType = ""; //pecl , pie , curl , download_script
+
+        if (
+            !empty($ext->peclVersion) ||
+            $ext->enableDownloadScript ||
+            !empty($ext->url) ||
+            !empty($ext->pieVersion)
+        ) {
+            if (!empty($ext->peclVersion)) {
+                $extensionVersion = $ext->peclVersion;
+                $downloadType = "pecl";
+                $ext->file = $ext->name . '-' . $extensionVersion . '.tgz';
+                $ext->url = "https://pecl.php.net/get/{$ext->file}";
+            }
+            if (!empty($ext->pieVersion)) {
+                $extensionVersion = $ext->pieVersion;
+                $downloadType = "pie";
+                $ext->file = $ext->name . '-' . $extensionVersion . '.tgz';
+                $ext->url = '';
+            }
+
             if (!empty($ext->url)) {
+                $downloadType = "curl";
                 if (empty($ext->file)) {
                     $ext->file = $ext->name . '.tgz';
                 }
             }
-            if (!empty($ext->peclVersion)) {
-                $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
-                $ext->url = "https://pecl.php.net/get/{$ext->file}";
-            }
 
             if ($ext->enableDownloadScript) {
+                $downloadType = "download_script";
                 if (empty($ext->file)) {
                     $ext->file = $ext->name . '.tgz';
                 }
                 $ext->url = '';
             }
+
             $ext->path = $this->extensionDir . '/' . $ext->file;
 
             if (!empty($this->getInputOption('with-download-mirror-url'))) {
                 if ($ext->enableDownloadWithOriginURL === false) {
                     $ext->url = $this->getInputOption('with-download-mirror-url') . '/ext/' . $ext->file;
                     $ext->enableDownloadWithMirrorURL = true;
+                    $downloadType = "curl";
                 }
             }
 
-            if (!$this->skipHashVerify and $ext->enableHashVerify) {
-                // 检查文件的 hash，若不一致删除后重新下载
-                $ext->hashVerify($ext->path);
+            if (file_exists($ext->path)) {
+                if (!$this->skipHashVerify and $ext->enableHashVerify) {
+                    // 检查文件的 hash，若不一致删除后重新下载
+                    $ext->hashVerify($ext->path);
+                }
+                //文件内容为空，重新下载
+                if ((filesize($ext->path) == 0)) {
+                    unlink($ext->path);
+                }
+                //不使用缓存包，拉取最新源码包
+                if ($ext->enableLatestTarball) {
+                    unlink($ext->path);
+                }
             }
 
-            //文件内容为空，重新下载
-            if (file_exists($ext->path) && (filesize($ext->path) == 0)) {
-                unlink($ext->path);
-            }
-
-            //不使用缓存包，拉取最新源码包
-            if (file_exists($ext->path) && $ext->enableLatestTarball) {
-                unlink($ext->path);
-            }
-            $skip_download = ($this->getInputOption('skip-download'));
-            if (!$skip_download) {
+            if (!$this->getInputOption('skip-download')) {
                 if (!file_exists($ext->path)) {
                     $httpProxyConfig = $this->getProxyConfig();
                     if ($ext->enableGitProxy) {
@@ -659,37 +733,39 @@ EOF;
                     if (!$ext->enableHttpProxy) {
                         $httpProxyConfig = '';
                     }
-                    if ($ext->enableDownloadScript && !$ext->enableDownloadWithMirrorURL) {
-                        if (!empty($ext->downloadScript) && !empty($ext->downloadDirName)) {
-                            $workDir = $this->getRootDir();
-                            $cacheDir = '${__DIR__}/var/tmp/ext/' . $ext->name;
-                            $ext->downloadScript = <<<EOF
-                            __DIR__={$workDir}/
-                            {$httpProxyConfig}
-                            test -d {$cacheDir} && rm -rf {$cacheDir}
-                            mkdir -p {$cacheDir}
-                            cd {$cacheDir}
-                            {$ext->downloadScript}
-                            cd {$ext->downloadDirName}
-                            test -f {$ext->path} ||  tar  -zcf {$ext->path} ./
-                            cd {$workDir}
-
-EOF;
-
-                            $this->downloadFileWithScript(
-                                $ext->path,
-                                $ext->downloadScript,
-                                $ext
-                            );
-                        } else {
-                            throw new Exception(
-                                "[Extension] withDownloadScript() require \$downloadDirName and \$downloadScript  "
-                            );
-                        }
-                    } else {
-                        echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                        $this->downloadFile($ext->url, $ext->path, $ext, $httpProxyConfig);
+                    switch ($downloadType) { ////pecl , pie , curl , script
+                        case "pecl" :
+                        case "curl" :
+                            echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                            $this->downloadFile($ext, $httpProxyConfig);
+                            break;
+                        case "pie" :
+                            echo "[Extension] {$ext->file} not found, download with pie.phar " . $ext->homePage . PHP_EOL;
+                            $this->downloadFileWithPie($ext, $httpProxyConfig);
+                            break;
+                        case "download_script" :
+                            $this->downloadFileWithScript($ext, $httpProxyConfig);
+                            break;
+                        default:
+                            break;
                     }
+
+                    $file = $ext->path;
+                    if (is_file($file) && (filesize($file) == 0)) {
+                        unlink($file);
+                    }
+                    // 下载失败
+                    if (!is_file($file) or filesize($file) == 0) {
+                        throw new Exception("Downloading file[" . basename($file) . "]  failed");
+                    }
+                    // 下载文件的 hash 不一致
+                    if (!$this->skipHashVerify and $ext->enableHashVerify) {
+                        if (!$ext->hashVerify($file)) {
+                            throw new Exception("The {$ext->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+                        }
+                    }
+                } else {
+                    echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }
 
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
@@ -707,9 +783,10 @@ EOF;
                     echo PHP_EOL;
                 }
 
-                if (($ext->enableLatestTarball || !$ext->enableBuildCached)
+                if (
+                    ($ext->enableLatestTarball || !$ext->enableBuildCached)
                     &&
-                    (!empty($ext->peclVersion) || $ext->enableDownloadScript || !empty($ext->url))
+                    (!empty($downloadType))
                 ) {
                     $this->deleteDirectoryIfExists($dst_dir);
                 }
@@ -1172,6 +1249,7 @@ EOF;
         $this->mkdirIfNotExists($this->rootDir . '/bin');
         $this->generateFile(__DIR__ . '/template/license.php', $this->rootDir . '/bin/LICENSE');
         $this->generateFile(__DIR__ . '/template/credits.php', $this->rootDir . '/bin/credits.html');
+        $this->generateFile(__DIR__ . '/template/nfpm-yaml.php', $this->rootDir . '/nfpm-pkg.yaml');
 
         copy($this->rootDir . '/sapi/scripts/pack-sfx.php', $this->rootDir . '/bin/pack-sfx.php');
 
