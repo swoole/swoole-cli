@@ -25,6 +25,7 @@ return function (Preprocessor $p) {
     $options[] = '--enable-zstd';
     $options[] = '--enable-swoole-stdext';
     $options[] = '--with-swoole-ssh2=' . $libssh2_prefix;
+    $options[] = '--enable-swoole-ftp' . $libssh2_prefix;
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {
         $options[] = '--enable-iouring';
