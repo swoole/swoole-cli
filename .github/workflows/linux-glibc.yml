@@ -1,11 +1,16 @@
-name: build-swoole-cli-linux-x86_64
+name: build-swoole-cli-linux-glibc-x86_64
 
 on: [ push, pull_request ]
 
 jobs:
-  linux-x86_64:
-    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-x86_64]') }}
-    runs-on: ubuntu-latest
+  linux-glibc:
+    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-glibc]') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-22.04, ubuntu-22.04-arm ]
+    name: linux-glibc-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Show Environment Info
@@ -72,21 +77,6 @@ jobs:
           path: /usr/local/swoole-cli
           key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-all-library
 
-      - name: Cache swoole-cli-builder-image
-        uses: actions/cache@v4
-        id: swoole-cli-builder-image-cache-x86_64
-        with:
-          path: ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
-          key: ${{ runner.os }}-x86_64-swoole-cli-builder-image
-
-      - name: Prepare swoole-cli-builder-image
-        run: |
-          if [ -f ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar ] ; then
-              docker load -i  ${{ github.workspace }}/var/build-github-action-container/swoole-cli-builder-image.tar
-          else
-              bash .github/workflows/build-alpine-builder-container.sh
-          fi
-
       - name: Prepare Runtime and Libraries and Extensions
         run: |
           set -x
@@ -103,38 +93,19 @@ jobs:
           ls -A /usr/local/swoole-cli/
 
       - name: Build
-        uses: addnab/docker-run-action@v3
-        with:
-          image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
-          run: |
-            set -eux
-            uname -m
-            export PATH=/work/runtime/php:$PATH  # 容器已经内置 php 和 composer
-            alias php="php -d curl.cainfo=/work/runtime/php/cacert.pem -d openssl.cafile=/work/runtime/php/cacert.pem"
-
-            sh  sapi/quickstart/linux/alpine-init.sh
-            git config --global --add safe.directory /work
-            composer install  --no-interaction --no-autoloader --no-scripts --profile
-            composer dump-autoload --optimize --profile
-
-            php prepare.php --with-libavif --with-static-pie
-
-            bash make.sh all-library
-
-            bash make.sh config
-            bash make.sh build
-            bash make.sh archive
-
-      - name: Start Database
         run: |
-          # 准备数据库容器
-          docker compose version
-          docker container ls -a
-          bash sapi/docker/database/start.sh
+          set -eux
+          uname -m
+          composer install  --no-interaction --no-autoloader --no-scripts --profile
+          composer dump-autoload --optimize --profile
 
-      - name: Show Build Result
-        run: |
+          php prepare.php --with-libavif
+
+          sudo apt update
+          bash ./sapi/scripts/install-deps-on-ubuntu.sh
+          bash ./ext/swoole/scripts/install-deps-on-ubuntu.sh
+          bash ./sapi/scripts/build-swoole-cli-with-linux-gcc.sh
+
           ./bin/swoole-cli -v
           ./bin/swoole-cli -m
           ./bin/swoole-cli --ri curl
@@ -143,32 +114,21 @@ jobs:
           ./bin/swoole-cli --ri swoole
           { ldd ./bin/swoole-cli ; } || { echo $? ; } ;
           file ./bin/swoole-cli
-          readelf -h ./bin/swoole-cli
-          APP_VERSION=$(./bin/swoole-cli  -v | awk '{print $2}')
-          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
-          ./bin/swoole-cli -r "echo PHP_VERSION;"
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php  --list-tests
-          ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
-      - name: production artifacts debug
-        uses: actions/upload-artifact@v4
-        with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-linux-x64-debug
-          retention-days: 90
-          path: ./bin/swoole-cli
-
-      - name: production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: swoole-cli-v${{ env.APP_VERSION }}-linux-x64
-          retention-days: 90
-          path: ./bin/dist/swoole-cli
-
-      - name: gh release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: swoole-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
+      - name: Make nfpm package
+        run: |
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "aarch64" ]; then
+            NFPM_ARCH="arm64"
+          else
+            NFPM_ARCH="amd64"
+          fi
+          wget https://github.com/goreleaser/nfpm/releases/download/v2.43.4/nfpm_2.43.4_${NFPM_ARCH}.deb
+          sudo dpkg -i nfpm_2.43.4_${NFPM_ARCH}.deb
+          strip ./bin/swoole-cli
+          ./make.sh nfpm-pkg
+          ls -ls ./*.deb
+          ls -ls ./*.rpm
 
       - name: upload artifacts to cloud object storage
         if: ${{ (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
@@ -178,4 +138,13 @@ jobs:
           OSS_BUCKET: ${{ vars.QCLOUD_OSS_BUCKET }}
           OSS_REGION: ${{ vars.QCLOUD_OSS_REGION }}
         run: |
-          bash sapi/scripts/tencent-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "aarch64" ]; then
+            FILE_ARCH="arm64"
+          else
+            FILE_ARCH="x64"
+          fi
+          SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "sapi/SWOOLE-VERSION.conf")
+          OS="linux"
+          bash sapi/scripts/tencent-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-"${SWOOLE_VERSION}-${OS}-${FILE_ARCH}"-glibc.deb
+          bash sapi/scripts/tencent-cloud-object-storage.sh --upload-file ${{ github.workspace }}/swoole-cli-"${SWOOLE_VERSION}-${OS}-${FILE_ARCH}"-glibc.rpm

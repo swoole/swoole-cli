@@ -1,4 +1,9 @@
-./configure --prefix=/usr --disable-all \
+if [ ! -f ./configure ]; then
+  ./buildconf --force
+fi
+
+./configure --prefix=/usr/local/swoole-cli \
+  --disable-all \
   --enable-zts \
   --without-pcre-jit \
   --with-openssl --enable-openssl \
@@ -30,18 +35,22 @@
   --enable-exif \
   --with-sodium \
   --enable-xml --enable-simplexml --enable-xmlreader --enable-xmlwriter --enable-dom --with-libxml \
-  --enable-gd --with-jpeg --with-freetype \
-  --enable-swoole --enable-sockets --enable-mysqlnd --enable-swoole-curl --enable-cares \
+  --enable-gd --with-jpeg --with-freetype --with-avif \
+  --enable-swoole \
+  --enable-swoole-curl \
+  --enable-cares \
   --enable-swoole-pgsql \
   --enable-swoole-sqlite \
+  --with-swoole-odbc=unixODBC,/usr \
   --enable-swoole-thread \
+  --enable-swoole-stdext \
   --enable-brotli \
   --enable-zstd \
-  --enable-swoole-stdext \
   --enable-redis \
   --with-imagick \
   --with-yaml \
   --with-readline \
+  --enable-phpy --with-python-config=python3-config \
   --enable-opcache
 
 make -j "$(nproc)"
