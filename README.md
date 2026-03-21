@@ -18,6 +18,7 @@
 
 - [Swoole-Cli 介绍、使用说明](https://wenda.swoole.com/detail/108876)
 - [Swoole-Cli 6.1 版本已发布，PHP 更新至 8.4](https://mp.weixin.qq.com/s/V9HrgUZav6gws1_d6Sucig)
+- [Swoole-Cli v6.1 将允许对 array/string/stream 类型使用内置方法](https://mp.weixin.qq.com/s/RmdKC5TLREwjcJFc-upZLQ)
 - [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://wenda.swoole.com/detail/108931)
 - [Swoole-Cli v5.0.1 使用说明](https://wenda.swoole.com/detail/108876)
 - [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://wenda.swoole.com/detail/108706)
