@@ -25,6 +25,7 @@
 - [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
 - [Swoole 6.2 正式版已发布，增加 10 项新功能](https://mp.weixin.qq.com/s/VsUfNVN-HLFeix1VfLILYw)
 - [Swoole 6.2 革命性升级：iouring 替代 epoll，异步 IO 性能飙升至 Golang 的 3 倍、Node.js 的 4.4 倍！](https://mp.weixin.qq.com/s/bcrHZeF1Yu5ITstsl7rLlQ)
+- [Swoole v6.2 已悄然构建起媲美 Golang/Node.js 的完整 PHP 异步并发编程生态体系](https://mp.weixin.qq.com/s/6Qr2SZ68hkoRmhugTxnIQA)
 - [Swoole 6.2 将内置全新的阻塞 IO 检测工具](https://mp.weixin.qq.com/s/wSyIltuQ0brZMBjpUBUolQ)
 - [基于 Swoole RemoteObject 模块实现 MongoDB 协程客户端](https://mp.weixin.qq.com/s/hOVWeg091Ygm4MREugCOfA)
 - [Swoole v6.1 关于 mutex、rwlock、spinlock 的重构](https://mp.weixin.qq.com/s/0cQ9t0dwAJ7dPynk3RVWYQ)
