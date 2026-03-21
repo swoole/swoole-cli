@@ -68,6 +68,7 @@ APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSI
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 PIE_DOWNLOAD_URL="https://github.com/php/pie/releases/download/${PIE_VERSION}/pie.phar"
+BOX_DOWNLOAD_URL="https://github.com/box-project/box/releases/latest/download/box.phar"
 
 if [ $OS = 'windows' ]; then
   APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-cygwin-${ARCH}.zip"
@@ -122,6 +123,9 @@ chmod a+x composer.phar
 test -f pie.phar || curl -fSLo pie.phar ${PIE_DOWNLOAD_URL}
 chmod a+x pie.phar
 
+test -f box.phar || curl -fSLo box.phar ${BOX_DOWNLOAD_URL}
+chmod a+x box.phar
+
 test -f cacert.pem || curl -fSLo cacert.pem ${CACERT_DOWNLOAD_URL}
 
 APP_RUNTIME="${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}"
@@ -149,6 +153,7 @@ cd ${__PROJECT__}/var/runtime
 cp -f ${__PROJECT__}/var/runtime/composer.phar ${APP_RUNTIME_DIR}/composer
 cp -f ${__PROJECT__}/var/runtime/cacert.pem ${APP_RUNTIME_DIR}/cacert.pem
 cp -f ${__PROJECT__}/var/runtime/pie.phar ${APP_RUNTIME_DIR}/pie
+cp -f ${__PROJECT__}/var/runtime/box.phar ${APP_RUNTIME_DIR}/box
 
 cat >${APP_RUNTIME_DIR}/php.ini <<EOF
 curl.cainfo="${APP_RUNTIME_DIR}/cacert.pem"
