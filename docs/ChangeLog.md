@@ -1,13 +1,13 @@
 ## v6.2.0.0
 
-| item           | value      |
-|----------------|------------|
-| branch         | main       |
-| tag            | v6.2.0.0   |
-| swoole version | v6.2.0     |
-| php  version   | 8.4.14     |
-| release date   | 2026-03-21 |
-| status         | ok         |
+| item           | value                                                              |
+|----------------|--------------------------------------------------------------------|
+| branch         | main                                                               |
+| tag            | v6.2.0.0                                                           |
+| swoole version | [v6.2.0](https://github.com/swoole/swoole-src/releases/tag/v6.2.0) |
+| php  version   | 8.4.14                                                             |
+| release date   | 2026-03-21                                                         |
+| status         | ok                                                                 |
 
 1. [change info](https://github.com/swoole/swoole-cli/blob/main/docs/ChangeLog.md#v6110)
 1. [Code Change Info](https://github.com/swoole/swoole-cli/compare/v6.1.4.0...v6.2.0.0)
@@ -23,7 +23,7 @@
 
 ### 变更
 
-1. swoole 版本升级为 v6.2.0
+1. swoole 版本升级为 [v6.2.0](https://github.com/swoole/swoole-src/releases/tag/v6.2.0)
 2. liburing 版本由 2.6 升级为 2.14
 3. libsodium 版本由 1.0.18 升级为 1.0.21
 
@@ -41,17 +41,17 @@
 
 ## v6.1.7.0
 
-| item           | value      |
-|----------------|------------|
-| branch         | 6.1        |
-| tag            | v6.1.7.0   |
-| swoole version | v6.1.7     |
-| php  version   | 8.4.14     |
-| release date   | 2026-03-21 |
-| status         | ok         |
+| item           | value                                                              |
+|----------------|--------------------------------------------------------------------|
+| branch         | 6.1                                                                |
+| tag            | v6.1.7.0                                                           |
+| swoole version | [v6.1.7](https://github.com/swoole/swoole-src/releases/tag/v6.1.7) |
+| php  version   | 8.4.14                                                             |
+| release date   | 2026-03-21                                                         |
+| status         | ok                                                                 |
 
 1. [change info](https://github.com/swoole/swoole-cli/blob/main/docs/ChangeLog.md#v6110)
-1. [Code Change Info](https://github.com/swoole/swoole-cli/compare/v6.1.4.0...v6.1.4.0)
+1. [Code Change Info](https://github.com/swoole/swoole-cli/compare/v6.1.4.0...v6.1.7.0)
 1. [faq](https://github.com/swoole/swoole-cli/blob/main/docs/FAQ.md)
 
 ### 变更
