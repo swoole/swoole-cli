@@ -31,7 +31,7 @@ if (!is_dir(__DIR__ . '/ext/swoole')) {
 }
 
 // Compile directly on the host machine, not in the docker container
-if ($p->getInputOption('without-docker') || ($p->isMacos())) {
+if ($p->getInputOption('without-docker') || ($p->isMacos()) || ($p->isLinux() && (!is_file('/.dockerenv')))) {
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
@@ -46,7 +46,12 @@ if ($p->getInputOption('with-parallel-jobs')) {
 
 if ($p->isMacos()) {
     $p->setExtraLdflags('');
-    $homebrew_prefix = trim(shell_exec('brew --prefix'));
+    exec("brew --prefix 2>&1", $output, $result_code);
+    if ($result_code == 0) {
+        $homebrew_prefix = trim(implode(' ', $output));
+    } else {
+        $homebrew_prefix = "";
+    }
     $p->withBinPath($homebrew_prefix . '/opt/flex/bin')
         ->withBinPath($homebrew_prefix . '/opt/bison/bin')
         ->withBinPath($homebrew_prefix . '/opt/libtool/bin')
