@@ -84,8 +84,6 @@ test -f Makefile && make clean
   --enable-brotli \
   --enable-zstd \
   --enable-swoole-stdext \
-  --with-swoole-ssh2 \
-  --enable-swoole-ftp \
   --enable-redis \
   --enable-opcache \
   --disable-opcache-jit \

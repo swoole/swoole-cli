@@ -6,8 +6,7 @@ use SwooleCli\Extension;
 
 return function (Preprocessor $p) {
     $libiconv_prefix = ICONV_PREFIX;
-    $libssh2_prefix = LIBSSH2_PREFIX;
-    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd', 'libssh2'];
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
@@ -24,8 +23,6 @@ return function (Preprocessor $p) {
     $options[] = '--enable-brotli';
     $options[] = '--enable-zstd';
     $options[] = '--enable-swoole-stdext';
-    $options[] = '--with-swoole-ssh2=' . $libssh2_prefix;
-    $options[] = '--enable-swoole-ftp';
 
     if ($p->isLinux() && $p->getInputOption('with-iouring')) {
         $options[] = '--enable-iouring';
