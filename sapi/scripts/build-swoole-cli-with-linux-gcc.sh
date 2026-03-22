@@ -46,6 +46,10 @@ fi
   --enable-swoole-stdext \
   --enable-brotli \
   --enable-zstd \
+  --with-swoole-ssh2 \
+  --enable-swoole-ftp \
+  --enable-iouring \
+  --enable-uring-socket \
   --enable-redis \
   --with-imagick \
   --with-yaml \
