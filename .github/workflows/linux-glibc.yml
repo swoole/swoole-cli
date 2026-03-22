@@ -85,7 +85,7 @@ jobs:
           mkdir -p bin/
           mkdir -p runtime/
           test -f runtime/php && rm -f runtime/php
-          if [ ! -f runtime/php/php ] ; then
+          if [ ! -f runtime/php/box ] ; then
               bash  setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
@@ -102,8 +102,8 @@ jobs:
           php prepare.php --with-libavif
 
           sudo apt update
-          bash ./sapi/scripts/install-deps-on-ubuntu.sh
-          bash ./ext/swoole/scripts/install-deps-on-ubuntu.sh
+          sudo bash ./sapi/scripts/install-deps-on-ubuntu.sh
+          sudo bash ./ext/swoole/scripts/install-deps-on-ubuntu.sh
           bash ./sapi/scripts/build-swoole-cli-with-linux-gcc.sh
 
           ./bin/swoole-cli -v
