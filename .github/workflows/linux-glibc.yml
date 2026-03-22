@@ -91,6 +91,7 @@ jobs:
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
+          echo "${{ github.workspace }}/runtime/php/" >> $GITHUB_PATH
 
       - name: Build
         run: |
