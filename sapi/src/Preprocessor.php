@@ -336,6 +336,7 @@ class Preprocessor
         $path = $project->path;
         $workdir = $this->getWorkDir();
         $cmd = <<<EOF
+set -x
 test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH ;
 export PIE_WORKING_DIRECTORY={$workdir}/var/ext/pie/
 test -d \$PIE_WORKING_DIRECTORY || mkdir -p \$PIE_WORKING_DIRECTORY ;
@@ -347,6 +348,7 @@ SOURCE_CODE_DIR=\$(cat \${TEMP_FILE} | grep 'source to: ' | awk -F 'source to: '
 rm -f \${TEMP_FILE}
 echo "{$pieName}:{$pieVersion} source code: \${SOURCE_CODE_DIR}"
 pie info {$pieName}:{$pieVersion};
+echo \${SOURCE_CODE_DIR}
 cd \${SOURCE_CODE_DIR}
 tar -czf "{$workdir}/var/ext/{$file}" .
 cp -f {$workdir}/var/ext/{$file} {$path}
