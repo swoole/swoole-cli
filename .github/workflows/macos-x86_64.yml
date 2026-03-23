@@ -90,7 +90,7 @@ jobs:
           mkdir -p bin/
           mkdir -p runtime/
           test -f runtime/php && rm -f runtime/php
-          if [ ! -f runtime/php/php ] ; then
+          if [ ! -f runtime/php/box ] ; then
               bash  setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
@@ -134,14 +134,14 @@ jobs:
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts debug
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64-debug
           retention-days: 90
           path: ./bin/swoole-cli
 
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64
           retention-days: 90

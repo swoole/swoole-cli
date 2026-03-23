@@ -14,7 +14,7 @@ mkdir -p pool/lib/
 WORK_TEMP_DIR=${__PROJECT__}/var/msys2-build/
 mkdir -p ${WORK_TEMP_DIR}
 
-VERSION=1.0.18
+VERSION=1.0.21
 
 download() {
   # document https://doc.libsodium.org/

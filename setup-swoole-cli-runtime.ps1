@@ -17,9 +17,9 @@ $PROJECT_DIR = Get-Location
 $CPU_COUNT = $env:NUMBER_OF_PROCESSORS
 $OS_ARCH = $env:PROCESSOR_ARCHITECTURE
 
-$APP_VERSION = "v6.0.1"
+$APP_VERSION = "v6.2.0"
 $APP_NAME = 'swoole-cli'
-$VERSION = "v6.0.1.0"
+$VERSION = "v6.2.0.0"
 
 try
 {
