@@ -56,6 +56,8 @@ set "PACKAGES=%PACKAGES%,libwrap-devel"
 set "PACKAGES=%PACKAGES%,libedit-devel"
 set "PACKAGES=%PACKAGES%,liblzma-devel"
 set "PACKAGES=%PACKAGES%,gettext-devel"
+set "PACKAGES=%PACKAGES%,libssh2-devel"
+
 
 
 set "OPTIONS=%OPTIONS% --packages %PACKAGES%"
