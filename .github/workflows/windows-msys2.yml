@@ -53,6 +53,7 @@ jobs:
       - name: install deps lib with source code
         shell: msys2 {0}
         run: |
+          bash sapi/download-box/download-box-get-archive-from-server.sh
           bash ./sapi/scripts/msys2/install-deps-lib.sh
 
       - name: Prepare
