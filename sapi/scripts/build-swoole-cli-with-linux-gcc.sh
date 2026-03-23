@@ -46,8 +46,6 @@ fi
   --enable-swoole-stdext \
   --enable-brotli \
   --enable-zstd \
-  --with-swoole-ssh2 \
-  --enable-swoole-ftp \
   --enable-redis \
   --with-imagick \
   --with-yaml \
@@ -55,7 +53,7 @@ fi
   --enable-phpy --with-python-config=python3-config \
   --enable-opcache
 
-#   --enable-iouring \
+#  --enable-iouring \
 #  --enable-uring-socket \
 
 make -j "$(nproc)"
