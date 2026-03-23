@@ -134,14 +134,14 @@ jobs:
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts debug
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64-debug
           retention-days: 90
           path: ./bin/swoole-cli
 
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-x64
           retention-days: 90
