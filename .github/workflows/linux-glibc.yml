@@ -84,7 +84,7 @@ jobs:
 
           sudo apt update
           sudo bash ./sapi/scripts/install-deps-on-ubuntu.sh
-          sudo bash ./sapi/scripts//install-deps-on-ubuntu.sh
+          sudo bash /ext/swoole/scripts/install-deps-on-ubuntu.sh
           bash ./sapi/scripts/build-swoole-cli-with-linux-gcc.sh
 
           ./bin/swoole-cli -v
