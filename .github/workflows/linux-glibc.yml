@@ -124,14 +124,14 @@ jobs:
       - name: production artifacts debian
         uses: actions/upload-artifact@v5
         with:
-          name: swoole-cli-glibc-for-debian
+          name: swoole-cli-glibc-for-debian-${{ env.FILE_ARCH }}
           retention-days: 90
           path: ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-${{ env.OS }}-${{ env.FILE_ARCH }}-glibc.deb
 
       - name: production artifacts redhat
         uses: actions/upload-artifact@v5
         with:
-          name: swoole-cli-glibc-for-redhat
+          name: swoole-cli-glibc-for-redhat-${{ env.FILE_ARCH }}
           retention-days: 90
           path: ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-${{ env.OS }}-${{ env.FILE_ARCH }}-glibc.rpm
 
