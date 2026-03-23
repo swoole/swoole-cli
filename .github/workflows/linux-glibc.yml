@@ -1,4 +1,4 @@
-name: build-swoole-cli-linux-glibc-x86_64
+name: build-swoole-cli-linux-glibc
 
 on: [ push, pull_request ]
 
@@ -49,33 +49,12 @@ jobs:
 
           mkdir -p ${{ github.workspace }}/var/build-github-action-container/
 
-      - name: Cache PHP Runtime
-        uses: actions/cache@v4
-        id: php-runtime-cache-x86_64
-        with:
-          path: ${{ github.workspace }}/runtime
-          key: ${{ runner.os }}-x86_64-php-runtime
-
-      - name: Cache PHP Vendor
-        uses: actions/cache@v4
-        id: php-vendor-cache-x86_64
-        with:
-          path: ${{ github.workspace }}/vendor
-          key: ${{ runner.os }}-x86_64-php-vendor
-
       - name: Cache Dependency Source Code Tarball
         uses: actions/cache@v4
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
-
-      - name: Cache all-library
-        uses: actions/cache@v4
-        id: all-library-cache-x86_64
-        with:
-          path: /usr/local/swoole-cli
-          key: ${{ github.head_ref || github.ref_name }}-${{ runner.os }}-x86_64-all-library
 
       - name: Prepare Runtime and Libraries and Extensions
         run: |
