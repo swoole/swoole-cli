@@ -13,7 +13,7 @@ jobs:
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Show Environment Info
         run: |
           set -x
@@ -55,28 +55,28 @@ jobs:
           git submodule update --init
 
       - name: Cache PHP Runtime
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: php-runtime-cache
         with:
           path: ${{ github.workspace }}/runtime
           key: ${{ runner.os }}-aarch64-php-runtime
 
       - name: Cache PHP Vendor
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-aarch64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
 
       - name: Cache all-library
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
@@ -134,14 +134,14 @@ jobs:
           ./bin/swoole-cli ./vendor/bin/phpunit ./sapi/src/UnitTest/MainTest.php
 
       - name: Archive production artifacts debug
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64-debug
           retention-days: 90
           path: ./bin/swoole-cli
 
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-macos-arm64
           retention-days: 90
