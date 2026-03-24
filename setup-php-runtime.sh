@@ -66,6 +66,7 @@ cd ${__PROJECT__}/var/runtime
 
 APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
+COMPOSER_DOWNLOAD_URL="https://github.com/composer/composer/releases/latest/download/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
 # PIE_DOWNLOAD_URL="https://github.com/php/pie/releases/download/${PIE_VERSION}/pie.phar"
 PIE_DOWNLOAD_URL="https://github.com/php/pie/releases/latest/download/pie.phar"
