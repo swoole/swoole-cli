@@ -30,10 +30,10 @@ jobs:
           git config --global core.ignorecase false
           git config --global --add safe.directory ${{ github.workspace }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Cache pool
         id: cache-msys2-pool
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: "${{ github.workspace }}\\pool\\"
           key: "${{ runner.os }}-build-pool-cache"
@@ -52,6 +52,7 @@ jobs:
       - name: install deps lib with source code
         shell: msys2 {0}
         run: |
+          bash sapi/download-box/download-box-get-archive-from-server.sh
           bash ./sapi/scripts/msys2/install-deps-lib.sh
 
       - name: Prepare
@@ -95,7 +96,7 @@ jobs:
           echo "APP_NAME=${APP_NAME}" >> $GITHUB_ENV
 
       - name: production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-msys2-x64
           retention-days: 90
@@ -118,7 +119,7 @@ jobs:
       - name: Prepare Run Environment
         run:
           sudo apt install -y curl
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
       - name: upload artifacts to cloud object storage
         if: ${{ (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}

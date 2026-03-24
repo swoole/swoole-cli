@@ -48,9 +48,9 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v6.0.1'
+APP_VERSION='v6.1.7'
 APP_NAME='swoole-cli'
-VERSION='v6.0.1.0'
+VERSION='v6.1.7.0'
 
 cd ${__PROJECT__}
 mkdir -p runtime

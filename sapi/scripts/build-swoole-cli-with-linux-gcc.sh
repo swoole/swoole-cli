@@ -53,4 +53,7 @@ fi
   --enable-phpy --with-python-config=python3-config \
   --enable-opcache
 
+#  --enable-iouring \
+#  --enable-uring-socket \
+
 make -j "$(nproc)"
