@@ -25,14 +25,14 @@ jobs:
           git config --global core.ignorecase false
           git config --global --add safe.directory ${{ github.workspace }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Prepare submodule
         run: |
           git submodule update --init
 
       - name: Cache pool
         id: cache-cygwin-pool
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: "${{ github.workspace }}\\pool\\"
           key: ${{ runner.os }}-build-pool-cache
@@ -131,7 +131,7 @@ jobs:
 
 
       - name: production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-v${{ env.APP_VERSION }}-cygwin-x64
           retention-days: 90
@@ -153,7 +153,7 @@ jobs:
       - name: Prepare Run Environment
         run:
           sudo apt install -y curl
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
       - name: upload artifacts to cloud object storage
         if: ${{ (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
