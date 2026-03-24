@@ -48,10 +48,11 @@ case $ARCH in
   ;;
 esac
 
-APP_VERSION='v6.1.4'
+APP_VERSION='v6.2.0'
 APP_NAME='swoole-cli'
-VERSION='v6.1.4.0'
-PIE_VERSION="1.3.10"
+VERSION='v6.2.0.0'
+# PIE_VERSION="1.3.10"
+
 # 查看pie最新版本 https://github.com/php/pie/releases/latest
 
 cd ${__PROJECT__}
@@ -66,8 +67,10 @@ cd ${__PROJECT__}/var/runtime
 
 APP_DOWNLOAD_URL="https://github.com/swoole/swoole-cli/releases/download/${VERSION}/${APP_NAME}-${APP_VERSION}-${OS}-${ARCH}.tar.xz"
 COMPOSER_DOWNLOAD_URL="https://getcomposer.org/download/latest-stable/composer.phar"
+COMPOSER_DOWNLOAD_URL="https://github.com/composer/composer/releases/latest/download/composer.phar"
 CACERT_DOWNLOAD_URL="https://curl.se/ca/cacert.pem"
-PIE_DOWNLOAD_URL="https://github.com/php/pie/releases/download/${PIE_VERSION}/pie.phar"
+# PIE_DOWNLOAD_URL="https://github.com/php/pie/releases/download/${PIE_VERSION}/pie.phar"
+PIE_DOWNLOAD_URL="https://github.com/php/pie/releases/latest/download/pie.phar"
 BOX_DOWNLOAD_URL="https://github.com/box-project/box/releases/latest/download/box.phar"
 
 if [ $OS = 'windows' ]; then

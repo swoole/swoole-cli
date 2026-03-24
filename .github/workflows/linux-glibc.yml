@@ -12,7 +12,7 @@ jobs:
     name: linux-glibc-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Show Environment Info
         run: |
           echo $PATH
@@ -50,7 +50,7 @@ jobs:
           mkdir -p ${{ github.workspace }}/var/build-github-action-container/
 
       - name: Cache Dependency Source Code Tarball
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
@@ -124,14 +124,14 @@ jobs:
           echo "OS=${OS}" >> $GITHUB_ENV
 
       - name: production artifacts debian
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-glibc-for-debian-${{ env.FILE_ARCH }}
           retention-days: 90
           path: ${{ github.workspace }}/swoole-cli-v${{ env.APP_VERSION }}-${{ env.OS }}-${{ env.FILE_ARCH }}-glibc.deb
 
       - name: production artifacts redhat
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: swoole-cli-glibc-for-redhat-${{ env.FILE_ARCH }}
           retention-days: 90
