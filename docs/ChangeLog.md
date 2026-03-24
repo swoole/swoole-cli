@@ -6,12 +6,11 @@
 | tag            | v6.2.0.0                                                           |
 | swoole version | [v6.2.0](https://github.com/swoole/swoole-src/releases/tag/v6.2.0) |
 | php  version   | 8.4.14                                                             |
-| release date   | 2026-03-21                                                         |
+| release date   | 2026-03-24                                                         |
 | status         | ok                                                                 |
 
-1. [change info](https://github.com/swoole/swoole-cli/blob/main/docs/ChangeLog.md#v6200)
-1. [Code Change Info](https://github.com/swoole/swoole-cli/compare/v6.1.4.0...v6.2.0.0)
-1. [faq](https://github.com/swoole/swoole-cli/blob/main/docs/FAQ.md)
+1. [代码变更详情](https://github.com/swoole/swoole-cli/compare/v6.1.4.0...v6.2.0.0)
+1. [常见问题](https://github.com/swoole/swoole-cli/blob/main/docs/FAQ.md)
 
 ### 新增
 
