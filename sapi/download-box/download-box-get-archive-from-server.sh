@@ -17,15 +17,15 @@ mkdir -p pool/ext
 test -d ${__PROJECT__}/var/download-box/ || mkdir -p ${__PROJECT__}/var/download-box/
 
 cd ${__PROJECT__}/var/download-box/
-SWOOLE_CLI_RELEASE_VERSION="v6.1.1.1"
-ALL_DEPS_HASH="39983e8b050bfc31265b6c385220026d58ebb04f72cba3ff9f461c97b546e25a"
+SWOOLE_CLI_RELEASE_VERSION="v6.2.0.0"
+ALL_DEPS_HASH="3b8e5261dcb1d3d0f83f32db2494b793b1ad014a46576ea22da6be525e3f71a9"
 
 DOMAIN="https://github.com/swoole/swoole-cli/releases/download/${SWOOLE_CLI_RELEASE_VERSION}/"
 
 # show sha256sum
-# curl -fSL https://github.com/swoole/swoole-cli/releases/download/v6.1.1.1/all-deps.zip.sha256sum && echo
+# curl -fSL https://github.com/swoole/swoole-cli/releases/download/v6.2.0.0/all-deps.zip.sha256sum && echo
 # download command
-# curl -fSLo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/v6.1.1.1/all-deps.zip
+# curl -fSLo all-deps.zip https://github.com/swoole/swoole-cli/releases/download/v6.2.0.0/all-deps.zip
 
 while [ $# -gt 0 ]; do
   case "$1" in

@@ -28,6 +28,34 @@ mkdir -p ${EXT_TEMP_CACHE_DIR}
 test -d ${WORK_TEMP_DIR}/ext/ && rm -rf ${WORK_TEMP_DIR}/ext/
 mkdir -p ${WORK_TEMP_DIR}/ext/
 
+download_and_extract_with_pie() {
+  local EXT_NAME=$1
+  local PIE_EXT_NAME=$3
+  local PIE_EXT_VERSION=$2
+
+  local EXT_FILE="${EXT_NAME}-${PIE_EXT_VERSION}.tgz"
+
+  test -f ${WORK_TEMP_DIR}/runtime/php/php && export PATH=${WORK_TEMP_DIR}/runtime/php/:$PATH
+  export PIE_WORKING_DIRECTORY=${WORK_TEMP_DIR}/var/ext/pie/
+  test -d $PIE_WORKING_DIRECTORY || mkdir -p $PIE_WORKING_DIRECTORY
+  cd ${WORK_TEMP_DIR}/var/ext/
+  TEMP_FILE=$(mktemp) && echo "TEMP_FILE: ${TEMP_FILE}"
+  { pie download ${PIE_EXT_NAME}:${PIE_EXT_VERSION}; } >${TEMP_FILE} 2>&1
+  cat ${TEMP_FILE}
+  SOURCE_CODE_DIR=$(cat ${TEMP_FILE} | grep 'source to: ' | awk -F 'source to: ' '{ print $2 }')
+  rm -f ${TEMP_FILE}
+  echo "${PIE_EXT_NAME}:${PIE_EXT_VERSION} source code: ${SOURCE_CODE_DIR}"
+  pie info ${PIE_EXT_NAME}:${PIE_EXT_VERSION}
+  cd ${SOURCE_CODE_DIR}
+  tar -czf "${WORK_TEMP_DIR}/var/ext/${EXT_FILE}" .
+  cp -f ${WORK_TEMP_DIR}/var/ext/${EXT_FILE} ${__PROJECT__}/pool/ext/${EXT_FILE}
+  cd ${WORK_TEMP_DIR}
+
+  cd ${__PROJECT__}/pool/ext
+  mkdir -p ${WORK_TEMP_DIR}/ext/${EXT_NAME}/
+  tar --strip-components=1 -C ${WORK_TEMP_DIR}/ext/${EXT_NAME}/ -xf ${EXT_FILE}
+}
+
 download_and_extract() {
   local EXT_NAME=$1
   local EXT_VERSION=$2
