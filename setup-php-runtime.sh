@@ -186,7 +186,7 @@ php -v
 php --ri curl
 php --ri openssl
 php --ri swoole
-
+export COMPOSER_ALLOW_SUPERUSER=1
 composer -v
 # search package
 # https://packagist.org
