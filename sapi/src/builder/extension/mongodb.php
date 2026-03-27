@@ -40,8 +40,8 @@ return function (Preprocessor $p) {
     $ext->withHomePage('https://www.php.net/mongodb')
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions(implode(' ', $options))
-        ->withPeclVersion('1.19.4')
-        ->withFileHash('md5', '91f96b24df7ed5651731671f55cb68a1')
+        ->withPeclVersion('2.2.0')
+        ->withFileHash('md5', '1cb289cfd3ea757aa1fe053718875578')
         ->withDependentLibraries(...$dependentLibraries);
     $p->addExtension($ext);
 };
