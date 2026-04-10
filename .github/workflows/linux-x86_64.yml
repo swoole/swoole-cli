@@ -141,6 +141,7 @@ jobs:
           ./bin/swoole-cli --ri gd
           ./bin/swoole-cli --ri imagick
           ./bin/swoole-cli --ri swoole
+          ./bin/swoole-cli --ri mongodb
           { ldd ./bin/swoole-cli ; } || { echo $? ; } ;
           file ./bin/swoole-cli
           readelf -h ./bin/swoole-cli
