@@ -5,7 +5,7 @@ on:
   pull_request:
 
 env:
-  BUILD_PHP_VERSION: 8.2.28
+  BUILD_PHP_VERSION: 8.4.21
 
 jobs:
   windows-cygwin:
@@ -14,11 +14,11 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.30"
-          - "8.1.34"
-          - "8.3.29"
-          - "8.4.16"
-        #  - "8.5.0"
+          - "8.2.31"
+          # - "8.1.34"
+          - "8.3.31"
+          - "8.4.21"
+          - "8.5.6"
     steps:
       - name: Show Environment Info
         shell: cmd
@@ -41,7 +41,7 @@ jobs:
           git config --global core.ignorecase false
           git config --global --add safe.directory ${{ github.workspace }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: set php version
         # 参考文档：  https://docs.github.com/zh/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
         shell: bash
@@ -50,7 +50,7 @@ jobs:
 
       - name: Cache pool
         id: cache-cygwin-pool
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: "${{ github.workspace }}\\pool\\"
           key: "${{ runner.os }}-build-pool-cache"
@@ -83,11 +83,11 @@ jobs:
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
-          bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: install deps lib with source code
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
+          bash sapi/download-box/download-box-get-archive-from-server.sh
           bash ./sapi/scripts/msys2/install-libzip.sh
           bash ./sapi/scripts/msys2/install-libyuv.sh
           bash ./sapi/scripts/msys2/install-libavif.sh
@@ -154,7 +154,7 @@ jobs:
 
 
       - name: production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: php-cli-v${{ env.APP_VERSION }}-cygwin-x64
           retention-days: 90
@@ -176,7 +176,7 @@ jobs:
       - name: Prepare Run Environment
         run:
           sudo apt install -y curl
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
       - name: upload artifacts to cloud object storage
         if: ${{ 0 && (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}

@@ -5,7 +5,7 @@ on:
   pull_request:
 
 env:
-  BUILD_PHP_VERSION: 8.2.28
+  BUILD_PHP_VERSION: 8.4.21
 
 jobs:
   windows-msys2:
@@ -14,11 +14,11 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.30"
-        #  - "8.1.34"
-          - "8.3.29"
-          - "8.4.16"
-        #  - "8.5.0"
+          - "8.2.31"
+          # - "8.1.34"
+          - "8.3.31"
+          - "8.4.21"
+          - "8.5.6"
     steps:
       - name: Show Environment Info
         shell: cmd
@@ -41,10 +41,10 @@ jobs:
           git config --global core.ignorecase false
           git config --global --add safe.directory ${{ github.workspace }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Cache pool
         id: cache-msys2-pool
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: "${{ github.workspace }}\\pool\\"
           key: "${{ runner.os }}-build-pool-cache"
@@ -63,11 +63,13 @@ jobs:
       - name: prepare build environment
         shell: msys2 {0}
         run: |
-          bash ./sapi/quickstart/windows/msys2-build/install-msys2.sh
+          bash sapi/quickstart/windows/msys2-build/install-msys2.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: install deps lib with source code
         shell: msys2 {0}
         run: |
+          bash sapi/download-box/download-box-get-archive-from-server.sh
           bash ./sapi/scripts/msys2/install-deps-lib.sh
           bash sapi/download-box/download-box-get-archive-from-server.sh
 
@@ -117,7 +119,7 @@ jobs:
           echo "APP_NAME=${APP_NAME}" >> $GITHUB_ENV
 
       - name: production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-msys2-x64
           retention-days: 90
@@ -140,7 +142,7 @@ jobs:
       - name: Prepare Run Environment
         run:
           sudo apt install -y curl
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
       - name: upload artifacts to cloud object storage
         if: ${{ 0 && (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}

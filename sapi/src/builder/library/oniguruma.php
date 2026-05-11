@@ -14,7 +14,16 @@ return function (Preprocessor $p) {
             ->withFileHash('md5', '6a3defb3d5e57c2fa4b6f3b4ec6de28b')
             ->withPrefix($oniguruma_prefix)
             ->withConfigure(
-                './autogen.sh && ./configure --prefix=' . $oniguruma_prefix . ' --enable-static --disable-shared'
+                <<<EOF
+            ./autogen.sh
+            ./configure --help
+            CFLAGS="-std=gnu17" \
+            ./configure \
+            --prefix={$oniguruma_prefix}  \
+            --enable-shared=no \
+            --enable-static=yes
+
+EOF
             )
             ->withPkgName('oniguruma')
             ->withBinPath($oniguruma_prefix . '/bin/')

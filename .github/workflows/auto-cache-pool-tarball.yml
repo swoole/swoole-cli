@@ -12,7 +12,7 @@ jobs:
     if: ${{ (github.repository_owner == 'swoole') || (github.repository_owner == 'jingjingxyk') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Prepare Source Code
         run: |
           echo $PATH
@@ -41,21 +41,21 @@ jobs:
           echo "X_IPV4=${IPV4}" >> $GITHUB_ENV
 
       - name: Cache PHP Runtime
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: php-runtime-cache
         with:
           path: ${{ github.workspace }}/runtime
           key: ${{ runner.os }}-x86_64-php-runtime
 
       - name: Cache PHP Vendor
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-x86_64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
@@ -74,7 +74,7 @@ jobs:
           mkdir -p pool/php-tar/
           mkdir -p runtime/
           test -f runtime/php && rm -f runtime/php
-          if [ ! -f runtime/php/php ] ; then
+          if [ ! -f runtime/php/box ] ; then
               bash  setup-php-runtime.sh
           fi
 
@@ -109,7 +109,7 @@ jobs:
           cat bin/LICENSE
 
       - name: production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: all-deps
           retention-days: 90

@@ -5,7 +5,7 @@ on:
   pull_request:
 
 env:
-  BUILD_PHP_VERSION: 8.2.28
+  BUILD_PHP_VERSION: 8.4.21
 
 jobs:
   macos-x86_64:
@@ -19,13 +19,13 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2.30"
-          - "8.1.34"
-          - "8.3.29"
-          - "8.4.16"
-        #  - "8.5.0"
+          - "8.2.31"
+          # - "8.1.34"
+          - "8.3.31"
+          - "8.4.21"
+          - "8.5.6"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Show Environment Info
         run: |
           set -x
@@ -81,28 +81,28 @@ jobs:
           # git submodule update --init
 
       - name: Cache PHP Runtime
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: php-runtime-cache
         with:
           path: ${{ github.workspace }}/runtime
           key: ${{ runner.os }}-x86_64-php-runtime
 
       - name: Cache PHP Vendor
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: php-vendor-cache
         with:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-x86_64-php-vendor
 
       - name: Cache Dependency Source Code Tarball
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
 
       - name: Cache all-library
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: all-library-cache
         with:
           path: /usr/local/swoole-cli
@@ -116,7 +116,7 @@ jobs:
           mkdir -p bin/
           mkdir -p runtime/
           test -f runtime/php && rm -f runtime/php
-          if [ ! -f runtime/php/php ] ; then
+          if [ ! -f runtime/php/box ] ; then
               bash  setup-php-runtime.sh
           fi
           bash sapi/download-box/download-box-get-archive-from-server.sh
@@ -131,7 +131,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile --no-dev
           composer dump-autoload --optimize --profile --no-dev
 
-          php prepare.php --without-docker=1 --with-libavif +apcu +ds +xlswriter +ssh2 +pgsql +uuid --with-php-version=${{ env.BUILD_PHP_VERSION }}
+          php prepare.php --without-docker=1 --with-libavif +apcu +ds +pgsql +uuid --with-php-version=${{ env.BUILD_PHP_VERSION }}
 
       - name: Build
         run: |
@@ -175,14 +175,14 @@ jobs:
           echo "APP_NAME=${APP_NAME}" >> $GITHUB_ENV
 
       - name: Archive production artifacts debug
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.APP_NAME }}-v${{ env.APP_VERSION }}-macos-x64-debug
           retention-days: 90
           path: ./bin/php-${{ env.APP_VERSION }}/bin/php
 
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.APP_NAME }}-v${{ env.APP_VERSION }}-macos-x64
           retention-days: 90

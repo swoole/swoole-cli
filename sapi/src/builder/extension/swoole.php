@@ -9,8 +9,11 @@ return function (Preprocessor $p) {
     $swoole_tag = trim($file->current());
 
     // $swoole_tag = 'v6.0.1';
-    if (BUILD_CUSTOM_PHP_VERSION_ID == '8010') {
-        $swoole_tag = 'v6.1.6';
+    if (BUILD_CUSTOM_PHP_VERSION_ID == 8010) {
+        $swoole_tag = 'v6.1.7';
+    }
+    if (BUILD_CUSTOM_PHP_VERSION_ID == 8050) {
+        $swoole_tag = 'v6.2.0';
     }
 
     $file = "swoole-{$swoole_tag}.tar.gz";
@@ -32,8 +35,8 @@ return function (Preprocessor $p) {
     //call_user_func_array([$ext, 'withDependentExtensions'], $dependentExtensions);
 
     $libiconv_prefix = ICONV_PREFIX;
-
-    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd'];
+    $libssh2_prefix = LIBSSH2_PREFIX;
+    $dependentLibraries = ['curl', 'openssl', 'cares', 'zlib', 'brotli', 'nghttp2', 'sqlite3', 'unix_odbc', 'pgsql', 'libzstd', 'libssh2'];
     $dependentExtensions = ['curl', 'openssl', 'sockets', 'mysqlnd', 'pdo'];
 
     $options[] = '--enable-swoole';
@@ -50,6 +53,8 @@ return function (Preprocessor $p) {
     $options[] = '--enable-brotli';
     $options[] = '--enable-zstd';
     $options[] = '--enable-swoole-stdext';
+    $options[] = '--with-swoole-ssh2=' . $libssh2_prefix;
+    $options[] = '--enable-swoole-ftp';
 
     $options[] = '--enable-zts';
     $options[] = '--disable-opcache-jit';
@@ -61,21 +66,28 @@ return function (Preprocessor $p) {
         $p->withExportVariable('URING_LIBS', '$(pkg-config    --libs   --static  liburing)');
     }
 
-    $p->addExtension((new Extension('swoole'))
-        ->withHomePage('https://github.com/swoole/swoole-src')
-        ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
-        ->withManual('https://wiki.swoole.com/#/')
-        ->withFile($file)
-        ->withDownloadScript(
-            'swoole-src',
-            <<<EOF
+
+    $p->addExtension(
+        (new Extension('swoole'))
+            ->withHomePage('https://github.com/swoole/swoole-src')
+            ->withLicense('https://github.com/swoole/swoole-src/blob/master/LICENSE', Extension::LICENSE_APACHE2)
+            ->withManual('https://wiki.swoole.com/#/')
+            //->withAutoUpdateFile()
+            ->withFile($file)
+            //->withPeclVersion('6.1.6')
+            //->withPieName('swoole/swoole')
+            //->withPieVersion('v6.1.6')
+            ->withDownloadScript(
+                'swoole-src',
+                <<<EOF
             git clone -b {$swoole_tag} --depth=1 https://github.com/swoole/swoole-src.git
 EOF
-        )
-        ->withOptions(implode(' ', $options))
-        ->withBuildCached(false)
-        ->withDependentLibraries(...$dependentLibraries)
-        ->withDependentExtensions(...$dependentExtensions));
+            )
+            ->withOptions(implode(' ', $options))
+            ->withBuildCached(false)
+            ->withDependentLibraries(...$dependentLibraries)
+            ->withDependentExtensions(...$dependentExtensions)
+    );
 
     if ($p->isMacos()) {
         # 测试 macos 专有特性

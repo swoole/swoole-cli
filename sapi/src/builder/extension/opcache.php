@@ -77,6 +77,15 @@ PHP_FPM_OPCACHE_EOF
 
 EOF;
 
+        if (BUILD_CUSTOM_PHP_VERSION_ID >= 8050) {
+            $cmd = <<<EOF
+        cd {$workDir}/ ;
+        sed -i.backup 's/ext_shared=yes/ext_shared=no/g' ext/opcache/config.m4
+        sed -i.backup 's/shared,,/\$ext_shared,,/g' ext/opcache/config.m4
+EOF;
+
+        }
+
         return $cmd;
     });
 };

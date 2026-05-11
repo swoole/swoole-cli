@@ -29,9 +29,9 @@ DOMAIN="https://github.com/swoole/swoole-cli/releases/download/${SWOOLE_CLI_RELE
 
 if [ ! -f "${__PROJECT__}/sync-source-code.php" ]; then
   # show sha256sum
-  # curl -fSL https://github.com/swoole/build-static-php/releases/download/v1.11.0/all-deps.zip.sha256sum && echo
-  DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.11.0/'
-  ALL_DEPS_HASH="6b96e505c066c1a628d05b899edd81b237ce78a617f2c754df227bfcb3a8a4a5"
+  # curl -fSL https://github.com/swoole/build-static-php/releases/download/v1.15.0/all-deps.zip.sha256sum && echo
+  DOMAIN='https://github.com/swoole/build-static-php/releases/download/v1.15.0/'
+  ALL_DEPS_HASH="9d216a02aec50d67e1ee770cb02fcfca3d40b2f0c15a5f11ce7900cb0dce6999"
 fi
 
 DOWNLOAD_ARCHIVE=0
