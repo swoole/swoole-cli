@@ -94,10 +94,6 @@ curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtim
 git clone https://github.com/swoole/swoole-cli.git
 ```
 
-```shell
-git clone https://github.com/swoole/swoole-cli.git
-```
-
 ## 快速准备 PHP 运行时
 
 ```shell
@@ -111,7 +107,7 @@ bash setup-php-runtime.sh --mirror china
 # shell脚本中启用别名扩展功能‌
 shopt -s expand_aliases
 __DIR__=$(pwd)
-export PATH="${__DIR__}/runtime/php/:$PATH"
+export PATH="${__DIR__}/runtime/swoole-cli/:$PATH"
 alias php="php -d curl.cainfo=${__DIR__}/runtime/php/cacert.pem -d openssl.cafile=${__DIR__}/runtime/php/cacert.pem"
 which php
 php -v
