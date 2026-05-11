@@ -41,7 +41,7 @@ return function (Preprocessor $p) {
         ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
         ->withOptions(implode(' ', $options))
         ->withPeclVersion('2.3.1')
-        //->withFileHash('md5', '91f96b24df7ed5651731671f55cb68a1')
+        ->withFileHash('sha256', '2738972432d36c370fde3c76c208c31bd5a7a0afc4a7705874f92f322f3d2786')
         ->withDependentLibraries(...$dependentLibraries);
     $p->addExtension($ext);
 };
