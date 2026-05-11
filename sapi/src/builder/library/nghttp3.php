@@ -12,7 +12,7 @@ return function (Preprocessor $p) {
             ->withManual('https://nghttp2.org/nghttp3/')
             ->withUrl('https://github.com/ngtcp2/nghttp3/releases/download/v1.15.0/nghttp3-1.15.0.tar.gz')
             ->withFile('nghttp3-1.15.0.tar.gz')
-            //->withFileHash('md5', 'ede30acfe793c5e9103eee5d38cd0304')
+            ->withFileHash('sha256', '0e431c81eb2d3df5ced048d6e942925ff922ad053e76a0274eea7b164c9b776e')
             ->withPrefix($nghttp3_prefix)
             ->withConfigure(
                 <<<EOF
