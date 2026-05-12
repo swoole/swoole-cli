@@ -75,6 +75,7 @@ jobs:
         run: |
           set -eux
           uname -m
+          test -f  composer.lock && rm -f composer.lock
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 

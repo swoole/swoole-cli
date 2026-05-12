@@ -101,7 +101,7 @@ jobs:
         run: |
           export PATH=${{ github.workspace }}/runtime/php/:$PATH
           alias php="php -d curl.cainfo=${{ github.workspace }}/runtime/php/cacert.pem -d openssl.cafile=${{ github.workspace }}/runtime/php/cacert.pem"
-
+          test -f  composer.lock && rm -f composer.lock
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 

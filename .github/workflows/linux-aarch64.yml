@@ -115,6 +115,7 @@ jobs:
 
             sh  sapi/quickstart/linux/alpine-init.sh
             git config --global --add safe.directory /work
+            test -f  composer.lock && rm -f composer.lock
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
