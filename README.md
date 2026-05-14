@@ -94,10 +94,6 @@ curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtim
 git clone https://github.com/swoole/swoole-cli.git
 ```
 
-```shell
-git clone https://github.com/swoole/swoole-cli.git
-```
-
 ## 快速准备 PHP 运行时
 
 ```shell
