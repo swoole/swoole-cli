@@ -11,18 +11,22 @@ return function (Preprocessor $p) {
     # fix macos error: 'strchrnul' is only available on macOS 15.4 or newer
     # https://www.postgresql.org/message-id/385134.1743523038@sss.pgh.pa.us
     # fix solution https://github.com/theory/pgenv/issues/93
+    $custom_env_start = $p->isMacos() ? 'export MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion)"' : '';
+    $custom_env_end = $p->isMacos() ? 'unset MACOSX_DEPLOYMENT_TARGET' : '';
 
     $p->addLibrary(
         (new Library('pgsql'))
             ->withHomePage('https://www.postgresql.org/')
             ->withLicense('https://www.postgresql.org/about/licence/', Library::LICENSE_SPEC)
-            ->withUrl('https://ftp.postgresql.org/pub/source/v16.3/postgresql-16.3.tar.gz')
+            //->withUrl('https://ftp.postgresql.org/pub/source/v16.3/postgresql-16.3.tar.gz')
+            ->withUrl('https://ftp.postgresql.org/pub/source/v18.3/postgresql-18.3.tar.gz')
             ->withManual('https://www.postgresql.org/docs/current/install-procedure.html#CONFIGURE-OPTIONS#:~:text=Client-only%20installation')
-            //->withFileHash('sha256', '9e054ffd6e013da2c2c9a1bfd6e062c98875d340df080516551c96b9b0926a59')
+            ->withFileHash('sha256', '9e054ffd6e013da2c2c9a1bfd6e062c98875d340df080516551c96b9b0926a59')
             ->withPrefix($pgsql_prefix)
             ->withBuildCached(false)
             ->withBuildScript(
                 <<<EOF
+            # {$custom_env_start}
             test -d build && rm -rf build
             mkdir -p build
             cd build
@@ -31,10 +35,12 @@ return function (Preprocessor $p) {
 
             sed -i.backup "s/invokes exit\'; exit 1;/invokes exit\';/"  ../src/interfaces/libpq/Makefile
 
-            sed -i.backup '/\$(LINK.shared) -o \$@ \$(OBJS) \$(LDFLAGS) \$(LDFLAGS_SL) \$(SHLIB_LINK)/s/^/# /'        ../src/Makefile.shlib
-            sed -i.backup "402 s/^/# /"  ../src/Makefile.shlib
+            # postgresql 18 需要如下配置
+            sed -i.backup '/install-lib: install-lib-shared/s/^/# /'        ../src/Makefile.shlib
+            sed -i.backup '/\$(COMPILER) -dynamiclib -install_name/s/^/#/' ../src/Makefile.shlib
 
             PACKAGES="libssl libcrypto openssl zlib icu-uc icu-io icu-i18n readline libxml-2.0  libxslt libzstd liblz4"
+            CFLAGS="-DUSE_PRIVATE_ENCODING_FUNCS" \
             CPPFLAGS="$(pkg-config  --cflags-only-I --static \$PACKAGES )" \
             LDFLAGS="$(pkg-config   --libs-only-L   --static \$PACKAGES ) {$ldflags} " \
             LIBS="$(pkg-config      --libs-only-l   --static \$PACKAGES ) {$libs}  " \
@@ -67,6 +73,7 @@ return function (Preprocessor $p) {
 
             make -C  src/interfaces/libpq install
 
+            # {$custom_env_end}
 EOF
             )
             ->withScriptAfterInstall(
