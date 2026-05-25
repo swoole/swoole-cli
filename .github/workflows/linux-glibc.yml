@@ -70,6 +70,8 @@ jobs:
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
+          ./runtime/php/php -v
+          echo "${{ github.workspace }}/runtime/php/" >> $GITHUB_PATH
 
       - name: Build
         run: |
@@ -78,7 +80,7 @@ jobs:
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --with-libavif --with-iouring
+          php prepare.php --with-libavif --without-docker
 
           sudo apt update
           sudo bash ./sapi/scripts/install-deps-on-ubuntu.sh

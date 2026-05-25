@@ -7,6 +7,9 @@ class Extension extends Project
     public string $options = '';
     public string $peclVersion = '';
 
+    public string $pieVersion = '';
+    public string $pieName = '';
+
     public array $dependentExtensions = [];
 
     public function withOptions(string $options): static
@@ -26,4 +29,17 @@ class Extension extends Project
         $this->dependentExtensions += $extensions;
         return $this;
     }
+
+    public function withPieVersion(string $pieVersion): static
+    {
+        $this->pieVersion = $pieVersion;
+        return $this;
+    }
+
+    public function withPieName(string $pieName): static
+    {
+        $this->pieName = $pieName;
+        return $this;
+    }
+
 }

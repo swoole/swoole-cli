@@ -309,8 +309,10 @@ class Preprocessor
      * @param string $file
      * @param object|null $project [ $lib or $ext ]
      */
-    protected function downloadFile(string $url, string $file, ?object $project = null)
+    protected function downloadFile(?object $project = null)
     {
+        $url = $project->url;
+        $file = $project->path;
         $retry_number = DOWNLOAD_FILE_RETRY_NUMBE;
         $wait_retry = DOWNLOAD_FILE_WAIT_RETRY;
         $connect_timeout = DOWNLOAD_FILE_CONNECTION_TIMEOUT;
@@ -324,19 +326,41 @@ class Preprocessor
         echo PHP_EOL;
         echo `$cmd`;
         echo PHP_EOL;
-        if (is_file($file) && (filesize($file) == 0)) {
-            unlink($file);
-        }
-        // 下载失败
-        if (!is_file($file) or filesize($file) == 0) {
-            throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
-        }
-        // 下载文件的 hash 不一致
-        if (!$this->skipHashVerify and $project->enableHashVerify) {
-            if (!$project->hashVerify($file)) {
-                throw new Exception("The {$project->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
-            }
-        }
+    }
+
+    public function downloadFileWithPie(?object $project = null): void
+    {
+        $pieName = $project->pieName;
+        $pieVersion = $project->pieVersion;
+        $file = $project->file;
+        $path = $project->path;
+        $workdir = $this->getWorkDir();
+        $cmd = <<<EOF
+set -x
+test -f {$workdir}/runtime/php/php && export PATH={$workdir}/runtime/php/:\$PATH ;
+export PIE_WORKING_DIRECTORY={$workdir}/var/ext/pie/
+test -d \$PIE_WORKING_DIRECTORY || mkdir -p \$PIE_WORKING_DIRECTORY ;
+cd {$workdir}/var/ext/
+TEMP_FILE=$(mktemp) && echo "TEMP_FILE: \${TEMP_FILE}" ;
+{ pie download {$pieName}:{$pieVersion} ; } > \${TEMP_FILE} 2>&1
+cat \${TEMP_FILE}
+SOURCE_CODE_DIR=\$(cat \${TEMP_FILE} | grep 'source to: ' | awk -F 'source to: ' '{ print $2 }')
+rm -f \${TEMP_FILE}
+echo "{$pieName}:{$pieVersion} source code: \${SOURCE_CODE_DIR}"
+pie info {$pieName}:{$pieVersion};
+echo \${SOURCE_CODE_DIR}
+cd \${SOURCE_CODE_DIR}
+tar -czf "{$workdir}/var/ext/{$file}" .
+cp -f {$workdir}/var/ext/{$file} {$path}
+cd {$workdir}
+EOF;
+        echo $cmd;
+        echo PHP_EOL;
+        echo '------------RUNNING START-------------';
+        echo PHP_EOL;
+        echo `$cmd`;
+        echo '------------RUNNING   END-------------';
+        echo PHP_EOL;
     }
 
     /**
@@ -363,7 +387,18 @@ class Preprocessor
         if (!$skip_download) {
             if (!is_file($lib->path) or filesize($lib->path) === 0) {
                 echo "[Library] {$lib->file} not found, downloading: " . $lib->url . PHP_EOL;
-                $this->downloadFile($lib->url, $lib->path, $lib);
+                $this->downloadFile($lib);
+                $file = $lib->path;
+                // 下载失败
+                if (!is_file($file) or filesize($file) == 0) {
+                    throw new Exception("with Downloading file[" . basename($file) . "] from  failed");
+                }
+                // 下载文件的 hash 不一致
+                if (!$this->skipHashVerify and $lib->enableHashVerify) {
+                    if (!$lib->hashVerify($file)) {
+                        throw new Exception("The {$lib->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+                    }
+                }
             } else {
                 echo "[Library] file cached: " . $lib->file . PHP_EOL;
             }
@@ -396,8 +431,10 @@ class Preprocessor
 
     public function addExtension(Extension $ext): void
     {
-        if ($ext->peclVersion) {
-            $ext->file = $ext->name . '-' . $ext->peclVersion . '.tgz';
+        if ($ext->peclVersion || $ext->pieVersion) {
+            $extensionVersion = !empty($ext->peclVersion) ? $ext->peclVersion : $ext->pieVersion;
+            $downloadType = $ext->peclVersion ? 'pecl' : 'pie';
+            $ext->file = $ext->name . '-' . $extensionVersion . '.tgz';
             $ext->path = $this->extensionDir . '/' . $ext->file;
             $ext->url = "https://pecl.php.net/get/{$ext->file}";
 
@@ -411,8 +448,24 @@ class Preprocessor
             }
             if (!$this->getInputOption('skip-download')) {
                 if (!is_file($ext->path) or filesize($ext->path) === 0) {
-                    echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
-                    $this->downloadFile($ext->url, $ext->path, $ext);
+                    if ($downloadType === 'pecl') {
+                        echo "[Extension] {$ext->file} not found, downloading: " . $ext->url . PHP_EOL;
+                        $this->downloadFile($ext);
+                    } else {
+                        echo "[Extension] {$ext->file} not found, downloading with pie.phar https://packagist.org/packages/" . $ext->pieName . PHP_EOL;
+                        $this->downloadFileWithPie($ext);
+                    }
+                    $file = $ext->path;
+                    // 下载失败
+                    if (!is_file($file) or filesize($file) == 0) {
+                        throw new Exception("with Downloading file[" . basename($file) . "] from  failed");
+                    }
+                    // 下载文件的 hash 不一致
+                    if (!$this->skipHashVerify and $ext->enableHashVerify) {
+                        if (!$ext->hashVerify($file)) {
+                            throw new Exception("The {$ext->hashAlgo} of downloaded file[$file] is inconsistent with the configuration");
+                        }
+                    }
                 } else {
                     echo "[Extension] file cached: " . $ext->file . PHP_EOL;
                 }

@@ -47,7 +47,8 @@ jobs:
       - name: prepare build environment
         shell: msys2 {0}
         run: |
-          bash ./sapi/quickstart/windows/msys2-build/install-msys2.sh
+          bash sapi/quickstart/windows/msys2-build/install-msys2.sh
+          bash sapi/download-box/download-box-get-archive-from-server.sh
 
       - name: install deps lib with source code
         shell: msys2 {0}

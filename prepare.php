@@ -27,7 +27,7 @@ $p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
 // Download swoole-src
 if (!is_dir(__DIR__ . '/ext/swoole')) {
-    shell_exec(__DIR__ . '/sapi/scripts/download-swoole-src-archive.sh');
+    //shell_exec(__DIR__ . '/sapi/scripts/download-swoole-src-archive.sh');
 }
 
 // Compile directly on the host machine, not in the docker container
