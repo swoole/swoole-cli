@@ -15,7 +15,7 @@ return function (Preprocessor $p) {
             ->withHomePage('https://libzip.org/')
             ->withLicense('https://libzip.org/license/', Library::LICENSE_BSD)
             ->withUrl('https://libzip.org/download/libzip-1.11.4.tar.gz')
-            //->withFileHash('md5', '233f380e7fa2f74eb594946515fda1ad')
+            ->withFileHash('md5', 'd28a3340febfb7fcf5d760895a4cab01')
             ->withManual('https://libzip.org')
             ->withPrefix($libzip_prefix)
             ->withConfigure(
