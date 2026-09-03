@@ -52,10 +52,10 @@ else
     exit 1
 fi
 
-# 2. PHP 内核头文件（只收集 *.h，保持目录结构）
+# 2. PHP 内核头文件（只收集 *.h，保持目录结构；含 sapi/embed/php_embed.h）
 (
     cd "${WORK_DIR}"
-    find main Zend TSRM ext -name '*.h' -print \
+    find main Zend TSRM ext sapi/embed -name '*.h' -print \
         | tar -cf - -T - \
         | tar -xf - -C "${SDK_ROOT}/include/php/"
 )
@@ -67,6 +67,14 @@ fi
         | tar -cf - -T - \
         | tar -xf - -C "${SDK_ROOT}/include/phpx/"
 )
+
+# 3.1 mpdecimal 头（phpx 的 decimal 依赖，phpx_decimal.h 用 #include <decimal.hh>，
+#     平铺到 include/ 根，与 /usr/include 效果一致）
+for h in \
+    "${WORK_DIR}/thirdparty/phpx/thirdparty/mpdecimal/libmpdec++/decimal.hh" \
+    "${WORK_DIR}/thirdparty/phpx/thirdparty/mpdecimal/libmpdec/mpdecimal.h"; do
+    [ -f "$h" ] && cp -f "$h" "${SDK_ROOT}/include/"
+done
 
 # 4. 第三方库头文件（直接平铺到 include/ 根，保持各自的相对子目录，如 openssl/、curl/）
 for inc in "${GLOBAL_PREFIX}"/*/include; do
