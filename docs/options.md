@@ -124,6 +124,21 @@ sh sapi/scripts/generate-dependency-graph.sh
 
 ```
 
+with-dependency-json
+----
+导出当前构建配置的依赖关系为 JSON，供 `sapi/deps-viewer` 生成交互式依赖图网页
+
+导出内容包含库与扩展的依赖关系、版本、开源许可证。
+
+```shell
+php ./prepare.php --with-dependency-json=1
+
+# 产物
+#   bin/dependency-graph.json
+```
+
+> 生成网页见 [sapi/deps-viewer/README.md](../sapi/deps-viewer/README.md)
+
 with-downloader
 ----
 指定 `wget` 作为下载器 （默认使用`curl` 作为依赖库和扩展的下载器）

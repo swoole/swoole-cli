@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>swoole-cli 构建依赖图</title>
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body data-theme="dark">
+
+<header class="header">
+  <h1>swoole-cli 构建依赖图</h1>
+  <div class="versions" id="versions"></div>
+  <div class="search">
+    <input type="search" id="search" placeholder="搜索库或扩展…" autocomplete="off">
+    <div class="suggest" id="suggest"></div>
+  </div>
+  <button class="btn" id="theme-btn" title="切换明暗主题">亮色</button>
+</header>
+
+<section class="stats" id="stats"></section>
+
+<main class="main">
+  <aside class="sidebar">
+    <section>
+      <h3>类型</h3>
+      <div id="filter-type"></div>
+    </section>
+    <section>
+      <h3>许可证</h3>
+      <div id="filter-license"></div>
+    </section>
+    <section>
+      <h3>依赖边</h3>
+      <div id="filter-edge"></div>
+    </section>
+    <section>
+      <h3>数据质量</h3>
+      <div id="issues"></div>
+    </section>
+  </aside>
+
+  <div class="graph" id="graph">
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,1 L7,4 L0,7 z" fill="var(--edge)"></path>
+        </marker>
+        <marker id="arrow-up" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,1 L7,4 L0,7 z" fill="var(--warn)"></path>
+        </marker>
+        <marker id="arrow-down" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,1 L7,4 L0,7 z" fill="var(--ext)"></path>
+        </marker>
+      </defs>
+      <g id="viewport">
+        <g id="edges"></g>
+        <g id="nodes"></g>
+      </g>
+    </svg>
+    <div class="graph-hint">滚轮缩放 · 拖拽空白平移 · 拖动节点重排 · 点击节点查看上下游</div>
+    <div class="graph-tools">
+      <button class="btn" id="zoom-in" title="放大">+</button>
+      <button class="btn" id="zoom-out" title="缩小">−</button>
+      <button class="btn" id="zoom-reset" title="重置视图">⟲</button>
+      <button class="btn" id="relayout" title="重新布局">✧</button>
+    </div>
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+
+  <aside class="detail" id="detail">
+    <div class="empty">点击左侧图中任一节点查看详情</div>
+  </aside>
+</main>
+
+<script id="deps-data" type="application/json">/*__DATA__*/</script>
+<script>
+/*__APP_JS__*/
+</script>
+</body>
+</html>

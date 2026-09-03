@@ -1,0 +1,17 @@
+{
+  "name": "swoole-cli-deps-viewer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "把 swoole-cli 的构建依赖关系生成单文件交互式 HTML 依赖图",
+  "scripts": {
+    "json": "cd ../.. && php prepare.php --skip-download=1 --with-dependency-json=1",
+    "check": "node bin/deps-viewer.mjs check",
+    "build": "node bin/deps-viewer.mjs build",
+    "verify": "node bin/deps-viewer.mjs verify",
+    "all": "npm run json && npm run check && npm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

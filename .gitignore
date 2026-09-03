@@ -326,6 +326,9 @@ Makefile.backup
 # before_configure_script 使用 sed -i.backup 修改源码时留下的备份
 *.backup
 libs.log
+# 依赖可视化工具的产物
+sapi/deps-viewer/dist/
+sapi/deps-viewer/node_modules/
 /runtime
 !/runtime/.gitkeep
 *.deb

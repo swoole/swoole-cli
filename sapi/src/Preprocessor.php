@@ -836,6 +836,13 @@ class Preprocessor
             );
         }
 
+        if ($this->getInputOption('with-dependency-json')) {
+            $this->generateFile(
+                __DIR__ . '/template/dependency_json.php',
+                $this->rootDir . '/bin/dependency-graph.json'
+            );
+        }
+
         foreach ($this->endCallbacks as $endCallback) {
             $endCallback($this);
         }
