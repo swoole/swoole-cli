@@ -22,18 +22,18 @@ if (($buildType == 'dev') && file_exists(__DIR__ . '/make.sh')) {
     unlink(__DIR__ . '/make.sh');
 }
 
+// Compile directly on the host machine, not in the docker container
+if ($p->getInputOption('without-docker') || ($p->isMacos()) || ($p->isLinux() && (!is_file('/.dockerenv')))) {
+    $p->setWorkDir(__DIR__);
+    $p->setBuildDir(__DIR__ . '/thirdparty');
+}
+
 // Sync code from php-src
 $p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
 // Download swoole-src
 if (!is_dir(__DIR__ . '/ext/swoole')) {
-    shell_exec(__DIR__ . '/sapi/scripts/download-swoole-src-archive.sh');
-}
-
-// Compile directly on the host machine, not in the docker container
-if ($p->getInputOption('without-docker') || ($p->isMacos()) || ($p->isLinux() && is_file('/.dockerenv'))) {
-    $p->setWorkDir(__DIR__);
-    $p->setBuildDir(__DIR__ . '/thirdparty');
+    shell_exec('bash ' . __DIR__ . '/sapi/scripts/download-swoole-src-archive.sh');
 }
 
 if ($p->getInputOption('with-global-prefix')) {
