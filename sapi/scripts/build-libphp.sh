@@ -2,30 +2,34 @@
 # 生成完全自包含的静态归档 libs/libphp.a
 #
 # 输入：
-#   libs/libphp-core.a   make 产出的纯 PHP 归档（PHP 内核 + Zend + TSRM + 内置扩展 + embed SAPI）
+#   libs/libphp.a        make 产出的纯 PHP 归档（PHP 内核 + Zend + TSRM + 内置扩展 + embed SAPI）
 #   libs.log             由 make.sh config 阶段写入，记录构建 swoole-cli 时解析出的第三方库 -l 列表
 #   ldflags.log          由 make.sh config 阶段写入，记录第三方库的 -L 搜索路径
+#   <sysroot>/libc.a     musl libc（与 bin/swoole-cli 一样静态并入，不依赖目标机器的 libc）
 #
 # 输出：
-#   libs/libphp.a        PHP 目标文件 + 全部 swoole-cli 自编译第三方静态库合并后的单一归档
+#   libs/libphp.a        PHP 目标文件 + 全部第三方静态库 + musl libc 合并后的单一归档
 #
 # 说明：
 #   合并使用 ar 的 MRI 模式 ADDLIB，逐成员拷贝，不会丢失同名的归档成员。
-#   系统库（libc / libm / libpthread / libdl / libstdc++ / libgomp / libgcc）不并入归档，
-#   仍由链接器在 -static 时自动提供，参见 docs/libphp.md。
+#   musl libc.a 位于 ${CC} -print-file-name=libc.a（通常 /usr/lib/libc.a）。
+#   musl 把 libm / libpthread / libdl / libcrypt / libresolv / librt 全部并入 libc.a，
+#   其余 *.a 都是空壳，因此只需合并 libc.a 一个文件即可。
 
 set -e
 
 WORK_DIR=${WORK_DIR:-/work}
 GLOBAL_PREFIX=${GLOBAL_PREFIX:-/usr/local/swoole-cli}
+CC=${CC:-clang}
 
-CORE_ARCHIVE="${WORK_DIR}/libs/libphp-core.a"
+# make 产出的纯 PHP 归档（输入），最终产物与之同名（输出）
+PHP_ARCHIVE="${WORK_DIR}/libs/libphp.a"
 OUTPUT_ARCHIVE="${WORK_DIR}/libs/libphp.a"
 LIBS_LOG="${WORK_DIR}/libs.log"
 LDFLAGS_LOG="${WORK_DIR}/ldflags.log"
 
-if [ ! -f "${CORE_ARCHIVE}" ]; then
-    echo "[libphp] 未找到 ${CORE_ARCHIVE}，请先执行 ./make.sh build 或 make libs/libphp.a"
+if [ ! -f "${PHP_ARCHIVE}" ]; then
+    echo "[libphp] 未找到 ${PHP_ARCHIVE}，请先执行 ./make.sh build 或 make libs/libphp.a"
     exit 1
 fi
 
@@ -35,6 +39,22 @@ for f in "${LIBS_LOG}" "${LDFLAGS_LOG}"; do
         exit 1
     fi
 done
+
+# 定位 musl libc.a
+LIBC_ARCHIVE="$(${CC} -print-file-name=libc.a 2>/dev/null || true)"
+if [ -z "${LIBC_ARCHIVE}" ] || [ "${LIBC_ARCHIVE}" = "libc.a" ] || [ ! -f "${LIBC_ARCHIVE}" ]; then
+    # clang 找不到时回退到常见 musl 路径
+    for candidate in /usr/lib/libc.a /lib/libc.a; do
+        if [ -f "$candidate" ]; then
+            LIBC_ARCHIVE="$candidate"
+            break
+        fi
+    done
+fi
+if [ -z "${LIBC_ARCHIVE}" ] || [ ! -f "${LIBC_ARCHIVE}" ]; then
+    echo "[libphp] 未找到 musl libc.a，无法产出与 bin/swoole-cli 同等自包含的归档"
+    exit 1
+fi
 
 # 收集 -L 搜索路径
 LIB_DIRS=()
@@ -54,10 +74,9 @@ done < <(tr ' ' '\n' < "${LIBS_LOG}")
 
 # 把 -l 名称解析成归档路径
 # 只合并 ${GLOBAL_PREFIX} 下由 swoole-cli 自行编译的静态库；
-# 其余（libc / libm / libpthread / libstdc++ / libgomp 等）属于工具链提供的系统库，交给链接器。
+# 其余（libstdc++ / libgomp / libgcc 等）属于工具链运行时，链接时由编译器提供。
 ARCHIVES=()
 SYSTEM_LIBS=()
-MISSING=()
 for name in "${LIB_NAMES[@]}"; do
     found=""
     for dir in "${LIB_DIRS[@]}"; do
@@ -67,13 +86,11 @@ for name in "${LIB_NAMES[@]}"; do
         fi
     done
     if [ -z "$found" ]; then
-        # 在搜索路径里找到的是动态库，或根本找不到，都按系统库处理
         SYSTEM_LIBS+=("$name")
         continue
     fi
     case "$found" in
         "${GLOBAL_PREFIX}"/*)
-            # 去重：同一个归档只合并一次
             dup=0
             for a in ${ARCHIVES[@]+"${ARCHIVES[@]}"}; do
                 [ "$a" = "$found" ] && dup=1 && break
@@ -87,30 +104,38 @@ for name in "${LIB_NAMES[@]}"; do
 done
 
 echo "===============================[libphp]==============================="
-echo "core archive : ${CORE_ARCHIVE}"
+echo "php archive  : ${PHP_ARCHIVE}"
 echo "global prefix: ${GLOBAL_PREFIX}"
+echo "musl libc    : ${LIBC_ARCHIVE}"
 echo "lib dirs     : ${#LIB_DIRS[@]}"
 echo "lib names    : ${#LIB_NAMES[@]}"
 echo "merged(.a)   : ${#ARCHIVES[@]}"
 echo "system libs  : ${SYSTEM_LIBS[*]}"
-if [ ${#MISSING[@]} -gt 0 ]; then
-    echo "missing      : ${MISSING[*]}"
-fi
 echo "----------------------------------------------------------------------"
 
 mkdir -p "${WORK_DIR}/libs"
+
+# 清理旧流程遗留的中间产物（现在只产出单一的 libs/libphp.a）
+rm -f "${WORK_DIR}/libs/libphp-core.a"
+
+# 输出与输入同名，先把纯 PHP 归档挪到临时位置，避免 CREATE 提前覆盖掉输入
+TMP_PHP_ARCHIVE="$(mktemp "${WORK_DIR}/libs/.libphp-input.XXXXXX")"
+mv -f "${PHP_ARCHIVE}" "${TMP_PHP_ARCHIVE}"
 rm -f "${OUTPUT_ARCHIVE}"
 
-# 用 ar 的 MRI 模式把 core 与全部第三方归档逐个成员合并
+# 用 ar 的 MRI 模式按顺序合并：PHP 目标文件 -> 第三方静态库 -> musl libc
 {
     echo "CREATE ${OUTPUT_ARCHIVE}"
-    echo "ADDLIB ${CORE_ARCHIVE}"
+    echo "ADDLIB ${TMP_PHP_ARCHIVE}"
     for a in "${ARCHIVES[@]}"; do
         echo "ADDLIB $a"
     done
+    echo "ADDLIB ${LIBC_ARCHIVE}"
     echo "SAVE"
     echo "END"
 } | ar -M
+
+rm -f "${TMP_PHP_ARCHIVE}"
 
 # 重建符号索引（ADDLIB 合并后索引可能不完整）
 ranlib "${OUTPUT_ARCHIVE}"
@@ -131,6 +156,14 @@ if nm -g --defined-only "${OUTPUT_ARCHIVE}" 2>/dev/null | grep -qw 'php_embed_sh
     echo "  php_embed_shutdown  OK"
 else
     echo "  php_embed_shutdown  MISSING"
+    exit 1
+fi
+echo ""
+echo "[libphp] 校验 musl libc 符号："
+if nm -g --defined-only "${OUTPUT_ARCHIVE}" 2>/dev/null | grep -qw 'printf'; then
+    echo "  printf (musl libc)  OK"
+else
+    echo "  printf (musl libc)  MISSING"
     exit 1
 fi
 echo "======================================================================"

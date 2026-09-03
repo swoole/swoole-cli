@@ -8,12 +8,12 @@
 
 | 路径 | 内容 |
 |------|------|
-| `libs/libphp-core.a` | 纯 PHP 目标文件归档：PHP 内核 + Zend + TSRM + 全部内置扩展 + embed SAPI |
-| `libs/libphp.a` | 自包含胖归档 = `libphp-core.a` + swoole-cli 自行编译的全部第三方静态库 |
+| `libs/libphp.a` | 完全自包含归档 = PHP 目标文件 + 全部第三方静态库 + **musl libc** |
 
-`libs/libphp.a` 是最终交付物。链接时**不需要**再指定
-`-lcurl -lssl -licui18n -lMagickWand …` 等一长串第三方库，因为它们的目标文件
-已经在归档里了。
+`libs/libphp.a` 是唯一交付物，与 `bin/swoole-cli` 一样静态并入了 musl libc，
+链接时**不需要**再指定 `-lcurl -lssl -licui18n -lMagickWand -lm -lpthread …`
+等一长串库，因为它们的目标文件已经在归档里了（musl 的 libm/libpthread/libdl
+等本就包含在 libc 中）。
 
 ## 编译教程
 
@@ -83,37 +83,42 @@ phpSrcDir : /work/var/php-8.4.14
 实际执行的动作：
 
 ```shell
+rm -f libs/libphp.a                    # 强制重新归档，避免残留旧产物被 make 判为 up to date
 make -j $(nproc) libs/libphp.a        # 归档 PHP 自身目标文件 -> libs/libphp.a
-mv -f libs/libphp.a libs/libphp-core.a
-bash ./sapi/scripts/build-libphp.sh   # 合并第三方静态库 -> libs/libphp.a
+bash ./sapi/scripts/build-libphp.sh   # 合并第三方静态库 + musl libc -> libs/libphp.a
 ```
 
 合并依据 `libs.log` 与 `ldflags.log`，使用 `ar` 的 MRI 模式 `ADDLIB` 逐成员拷贝，
-因此不会丢失同名的归档成员。
+因此不会丢失同名的归档成员；最后把 `musl libc.a` 并入，使归档与 `bin/swoole-cli`
+一样静态自带 libc。
 
 合成脚本的输出示例：
 
 ```
 ===============================[libphp]===============================
-core archive : /work/libs/libphp-core.a
+php archive  : /work/libs/libphp.a
 global prefix: /usr/local/swoole-cli
-lib dirs     : 36
-lib names    : 58
-merged(.a)   : 52
-system libs  : m pthread stdc++ intl ltdl
+musl libc    : /usr/lib/libc.a
+lib dirs     : 49
+lib names    : 72
+merged(.a)   : 68
+system libs  : m pthread rt stdc++
 ----------------------------------------------------------------------
 output       : /work/libs/libphp.a
-members      : 33128
-size         : 1.2G
-```
+members      : 8919
+size         : 261M
 
 [libphp] 校验 embed SAPI 符号：
   php_embed_init      OK
   php_embed_shutdown  OK
+
+[libphp] 校验 musl libc 符号：
+  printf (musl libc)  OK
 ```
 
-最后两行 `OK` 是关键：`php_embed_init` / `php_embed_shutdown` 找得到，
-才说明归档可用。若显示 `MISSING`，脚本会以非 0 退出。
+最后几行 `OK` 是关键：`php_embed_init` / `php_embed_shutdown` 找得到说明
+embed 入口可用；`printf` 找得到说明 musl libc 已并入。任一 `MISSING`
+脚本都会以非 0 退出。
 
 ### 步骤 6：验证产物
 
@@ -127,6 +132,9 @@ nm -g --defined-only /work/libs/libphp.a | grep -E 'php_embed_(init|shutdown)'
 
 # 确认归档里已含第三方库（例如 curl）
 nm -g --defined-only /work/libs/libphp.a | grep -w curl_easy_init
+
+# 确认归档里已含 musl libc（抽查几个常见符号）
+nm -g --defined-only /work/libs/libphp.a | grep -wE 'printf|malloc|pthread_create'
 ```
 
 ### 步骤 7：编译一个嵌入示例
@@ -147,22 +155,35 @@ int main(int argc, char **argv)
 }
 ```
 
-编译链接：
+编译链接（**注意用 `clang++`**，因为 PHP 里有 C++ 对象）：
 
 ```shell
-clang -static -no-pie -o embed_demo embed_demo.c \
+# 方式一：musl 环境下直接 -static（libc 已内置，自动 -lc 无副作用）
+clang++ -static -no-pie -o embed_demo embed_demo.c \
     -I/work -I/work/main -I/work/Zend -I/work/TSRM \
-    /work/libs/libphp.a \
-    -lstdc++ -lgomp -lcrypt -ldl -lm -lpthread
+    /work/libs/libphp.a
+
+# 方式二：完全不依赖系统 libc.a（可把 libphp.a 拿到没有 musl 静态库的机器上）
+clang++ -static -nodefaultlibs -no-pie -o embed_demo embed_demo.c \
+    -I/work -I/work/main -I/work/Zend -I/work/TSRM \
+    -Wl,--start-group \
+        /work/libs/libphp.a \
+        $(clang -print-file-name=libgcc.a) \
+        $(clang -print-file-name=libgcc_eh.a) \
+        /usr/lib/libstdc++.a /usr/lib/libgomp.a \
+    -Wl,--end-group
 ```
 
 要点：
 
 - `-I/work` 必需：`sapi/embed/php_embed.h` 里的 `#include <main/php.h>` 基于源码根目录；
   `-I/work/Zend` 用于 `<zend_ini.h>`
-- `-static -no-pie` 必需，原因见下方"已知限制"
-- 末尾几个 `-l` 是工具链提供的系统库（不在归档内，见"已知限制 2"）。
-  若报 `undefined reference`，按提示再补 `-lresolv`、`-lintl`、`-lltdl` 等
+- `-static -no-pie` 必需，原因见下方"已知限制 1"
+- musl 的 `libm` / `libpthread` / `libdl` / `libcrypt` 都并进了 `libc.a`，
+  而 libc 又已并入归档，所以**不再需要** `-lm -lpthread -ldl -lcrypt -lc`
+- 仍需工具链运行时库 `libstdc++` / `libgomp` / `libgcc`（方式一由 `clang++` 自动加，
+  方式二需显式给出）；libstdc++/libgomp 会引用 libc 里的 `wmemmove`、`pthread_*`
+  等符号，因此方式二必须用 `--start-group` 让链接器循环解析
 - `sapi/embed/php_embed.h` 会随 `make install` 安装到 `$(prefix)/include/php/sapi/embed/`
 
 验证：
@@ -226,8 +247,8 @@ apt install python3  # debian
 
 ### `libs/libphp.a` 太大 / 想减小体积
 
-归档含 ICU 数据表、ImageMagick、libheif 等，GB 量级属正常。若确定用不到某些扩展，
-通过 `php prepare.php -mongodb -imagick ...` 关闭后重新走一遍流程。
+归档含 ICU 数据表、ImageMagick、libheif 等，数百 MB 量级属正常。若确定用不到
+某些扩展，通过 `php prepare.php -mongodb -imagick ...` 关闭后重新走一遍流程。
 
 ## 已知限制
 
@@ -243,13 +264,18 @@ apt install python3  # debian
 如果确实需要 PIC 版本，需要把所有第三方库都用 `CFLAGS=-fPIC` 重新编译一遍，
 再 `./make.sh clean && ./make.sh build && ./make.sh libphp`。
 
-### 2. 系统库不在归档里
+### 2. libc 已内置，但工具链运行时库仍在归档外
 
-归档只包含 `/usr/local/swoole-cli/*/lib/` 下由 swoole-cli 自行编译的静态库。
-以下系统库仍由工具链在 `-static` 时提供，合成脚本会把它们打印在
-`system libs` 一行：
+归档包含 `/usr/local/swoole-cli/*/lib/` 下的第三方静态库，以及 **musl libc**
+（`${CC} -print-file-name=libc.a`）。musl 的 `libm` / `libpthread` / `libdl` /
+`libcrypt` / `libresolv` / `librt` 本就并入 libc，因此一并进入归档。
 
-`libc` `libm` `libpthread` `libdl` `libstdc++` `libgomp` `libcrypt` `libresolv` `libintl` `libltdl`
+仍在归档外、链接时需工具链提供的是：
+
+`libstdc++` `libgomp` `libgcc`（以及 `libgcc_eh`）
+
+它们属于编译器运行时而非 libc，`clang++ -static` 会自动链接；
+若用上面的"方式二"（`-nodefaultlibs`）则需显式给出并用 `--start-group`。
 
 ### 3. 只有 musl（alpine）容器下才是真正"不依赖系统 so"
 
@@ -276,7 +302,7 @@ apt install python3  # debian
 
 ### 6. 产物体积
 
-`libs/libphp.a` 通常在 GB 量级（ICU 数据表、ImageMagick、libheif 等占大头）。
+`libs/libphp.a` 通常数百 MB（ICU 数据表、ImageMagick、libheif、musl libc 等占大头）。
 `libs/` 已被 `.gitignore` 忽略，不会进入版本库。
 
 ## 实现说明
@@ -287,7 +313,16 @@ apt install python3  # debian
   `PHP_SAPI` / `OVERALL_TARGET` / `install_sapi`。改为只把 `php_embed.c`
   编译进独立的 `PHP_EMBED_OBJS`，因此对 `bin/swoole-cli` 的构建零影响。
   `sync-source-code.php` 只同步 `php_embed.c/h`，不会覆盖改写的 `config.m4`。
-- `sapi/embed/Makefile.frag` —— `libs/libphp.a` 目标
-- `sapi/scripts/build-libphp.sh` —— 胖归档合成
+- `sapi/embed/Makefile.frag` —— `libs/libphp.a` 目标。除 PHP 自身对象外，
+  还并入了 swoole-cli 对内核的 patch/hook 对象（`sapi/cli/patch.c`、
+  `sapi/cli/sfx/hook_phar.c`、`sapi/cli/sfx/sfx.c`），这些虽在 `sapi/cli` 下，
+  却是 `ext/phar`、`ext/zip` 等内核对象硬依赖的（`opcache_module_entry`、
+  `hook_plain_stream_*` 等符号）
+- `sapi/embed/php_embed_stub.c` —— 桩实现。`ext/readline/readline_cli.c`
+  引用了含 `main()` 的 `php_cli.c` 里的 `php_cli_get_shell_callbacks()`，
+  而 `readline_cli.c` 又是 readline 扩展的一部分（`readline.c` 引用它的
+  MINIT/MSHUTDOWN/MINFO）无法排除，故在 embed 侧提供该函数的桩（返回 NULL，
+  让 readline_cli 跳过 CLI shell 回调注册，不影响 readline 核心功能）
+- `sapi/scripts/build-libphp.sh` —— 归档合成（第三方静态库 + musl libc）
 - `sapi/src/template/make.php` —— `make_libphp()` 与 `./make.sh libphp` 入口
   （改模板后需重新生成 `make.sh`）

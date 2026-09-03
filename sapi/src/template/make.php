@@ -281,11 +281,14 @@ make_libphp() {
     export CFLAGS="$CFLAGS  -fPIE"
 <?php endif ; ?>
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
+    # 先删除旧归档，强制 make 重新归档纯 PHP 目标文件；
+    # 否则残留的旧 libs/libphp.a 会被 make 判为 up to date，导致第三方库被重复合并
+    rm -f libs/libphp.a
     make -j <?= $this->maxJob ?> libs/libphp.a
 
-    # make 产出的是纯 PHP 目标文件归档，改名后交给合成脚本
-    # 合成脚本把它与 <?= $this->getGlobalPrefix() ?> 下的第三方静态库合并成自包含的 libs/libphp.a
-    mv -f libs/libphp.a libs/libphp-core.a
+    # make 产出纯 PHP 目标文件归档（libs/libphp.a），合成脚本会在此基础上
+    # 合并 <?= $this->getGlobalPrefix() ?> 下的第三方静态库与 musl libc，
+    # 最终覆盖产出与 bin/swoole-cli 同等自包含的 libs/libphp.a（不保留中间产物）
     bash ./sapi/scripts/build-libphp.sh
 }
 

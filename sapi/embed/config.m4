@@ -19,7 +19,7 @@ if test "$PHP_EMBED" != "no"; then
 
   PHP_ADD_BUILD_DIR([sapi/embed])
   PHP_ADD_SOURCES_X([sapi/embed],
-    [php_embed.c],
+    [php_embed.c php_embed_stub.c],
     [-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1],
     [PHP_EMBED_OBJS])
 
