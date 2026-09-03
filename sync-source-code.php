@@ -45,6 +45,7 @@ if (!empty($options['action']) && $options['action'] == 'run') {
     cd {$sync_dest_dir}
     mkdir -p ./sapi/cli
     mkdir -p ./sapi/cli/fpm/
+    mkdir -p ./sapi/embed/
     mkdir -p ./TSRM/
     mkdir -p ./Zend/
     mkdir -p ./build/
@@ -219,6 +220,14 @@ extern void show_swoole_version(void);\
     cp -rf $SRC/sapi/cli/php_cli_server.h ./sapi/cli
     cp -rf $SRC/sapi/cli/php_cli_server.c ./sapi/cli
     cp -rf $SRC/sapi/cli/php.1.in ./sapi/cli
+
+    # embed
+    # 【只同步源码，不同步 config.m4】
+    # swoole-cli 的 sapi/embed/config.m4 经过改写（不走 PHP_SELECT_SAPI），不可被 php-src 原版覆盖
+    cp -rf $SRC/sapi/embed/php_embed.c ./sapi/embed
+    cp -rf $SRC/sapi/embed/php_embed.h ./sapi/embed
+    cp -rf $SRC/sapi/embed/CREDITS ./sapi/embed
+    cp -rf $SRC/sapi/embed/README.md ./sapi/embed
 
     # clean file
     test -f main/main.c.backup && rm -f main/main.c.backup

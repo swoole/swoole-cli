@@ -32,6 +32,7 @@ OPTIONS="--disable-all \
     --with-config-file-path=<?= $this->getGlobalPrefix() ?>/etc/ \
     --with-config-file-scan-dir=<?= $this->getGlobalPrefix() ?>/etc/conf.d/ \
     --enable-zts \
+    --enable-embed \
 <?php foreach ($this->extensionList as $item) : ?>
     <?=$item->options?> \
 <?php endforeach; ?>
@@ -273,6 +274,21 @@ make_build() {
 <?php endif; ?>
 }
 
+make_libphp() {
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    export_variables
+<?php if ($this->isLinux()) : ?>
+    export CFLAGS="$CFLAGS  -fPIE"
+<?php endif ; ?>
+    export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
+    make -j <?= $this->maxJob ?> libs/libphp.a
+
+    # make 产出的是纯 PHP 目标文件归档，改名后交给合成脚本
+    # 合成脚本把它与 <?= $this->getGlobalPrefix() ?> 下的第三方静态库合并成自包含的 libs/libphp.a
+    mv -f libs/libphp.a libs/libphp-core.a
+    bash ./sapi/scripts/build-libphp.sh
+}
+
 make_archive() {
     set -x
     cd ${__PROJECT_DIR__}/bin/
@@ -338,6 +354,7 @@ help() {
     echo "./make.sh docker-stop"
     echo "./make.sh config"
     echo "./make.sh build"
+    echo "./make.sh libphp"
     echo "./make.sh test"
     echo "./make.sh archive"
     echo "./make.sh all-library"
@@ -428,6 +445,8 @@ elif [ "$1" = "config" ] ;then
     make_config
 elif [ "$1" = "build" ] ;then
     make_build
+elif [ "$1" = "libphp" ] ;then
+    make_libphp
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
