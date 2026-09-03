@@ -22,10 +22,25 @@ if (($buildType == 'dev') && file_exists(__DIR__ . '/make.sh')) {
     unlink(__DIR__ . '/make.sh');
 }
 
-// Compile directly on the host machine, not in the docker container
-if ($p->getInputOption('without-docker') || ($p->isMacos()) || ($p->isLinux() && (!is_file('/.dockerenv')))) {
+// Linux 下默认在构建容器中进行（workDir 为容器内的 /work）
+// 只有显式指定 --without-docker 时才在宿主机上直接编译
+$buildInContainer = !$p->getInputOption('without-docker');
+if ($p->isMacos()) {
+    // macOS 不使用构建容器，直接在宿主机编译
+    $buildInContainer = false;
+}
+
+if (!$buildInContainer) {
+    // Compile directly on the host machine, not in the docker container
     $p->setWorkDir(__DIR__);
     $p->setBuildDir(__DIR__ . '/thirdparty');
+}
+
+// --with-work-dir=DIR 优先级最高，用于显式覆盖工作目录
+if ($p->getInputOption('with-work-dir')) {
+    $workDir = rtrim($p->getInputOption('with-work-dir'), '/');
+    $p->setWorkDir($workDir);
+    $p->setBuildDir($workDir . '/thirdparty');
 }
 
 // Sync code from php-src
@@ -69,5 +84,14 @@ if ($p->isMacos()) {
 $p->setExtraCflags(' -Os');
 
 // Generate make.sh
+echo "build in container : " . ($buildInContainer ? 'yes' : 'no') . PHP_EOL;
+echo "workDir   : " . $p->getWorkDir() . PHP_EOL;
+echo "buildDir  : " . $p->getBuildDir() . PHP_EOL;
+echo "phpSrcDir : " . $p->getPhpSrcDir() . PHP_EOL;
+echo PHP_EOL;
+echo "提示：Linux 下默认按容器内构建生成 make.sh（workDir=/work）；" . PHP_EOL;
+echo "      若要在宿主机上直接编译，请显式指定 --without-docker" . PHP_EOL;
+echo PHP_EOL;
+
 $p->execute();
 

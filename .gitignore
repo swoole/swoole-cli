@@ -323,6 +323,8 @@ cppflags.log
 /packages
 /conf.d.loader
 Makefile.backup
+# before_configure_script 使用 sed -i.backup 修改源码时留下的备份
+*.backup
 libs.log
 /runtime
 !/runtime/.gitkeep
