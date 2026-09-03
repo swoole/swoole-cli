@@ -6,21 +6,26 @@
 #   libs.log             由 make.sh config 阶段写入，记录构建 swoole-cli 时解析出的第三方库 -l 列表
 #   ldflags.log          由 make.sh config 阶段写入，记录第三方库的 -L 搜索路径
 #   <sysroot>/libc.a     musl libc（与 bin/swoole-cli 一样静态并入，不依赖目标机器的 libc）
+#   <sysroot>/libstdc++.a / libgcc.a / libgcc_eh.a / libgomp.a  C++ 运行时
+#                        （PHP 内核含 C++ 对象，需要 operator new/delete 等符号）
 #
 # 输出：
-#   libs/libphp.a        PHP 目标文件 + 全部第三方静态库 + musl libc 合并后的单一归档
+#   libs/libphp.a        PHP 目标文件 + 全部第三方静态库 + musl libc + C++ 运行时 合并后的单一归档
 #
 # 说明：
 #   合并使用 ar 的 MRI 模式 ADDLIB，逐成员拷贝，不会丢失同名的归档成员。
 #   musl libc.a 位于 ${CC} -print-file-name=libc.a（通常 /usr/lib/libc.a）。
 #   musl 把 libm / libpthread / libdl / libcrypt / libresolv / librt 全部并入 libc.a，
 #   其余 *.a 都是空壳，因此只需合并 libc.a 一个文件即可。
+#   C++ 运行时用的是 libstdc++（clang++ 未指定 -stdlib 时默认，而非 libc++），
+#   因此 operator new/delete 等符号合并自 libstdc++.a。
 
 set -e
 
 WORK_DIR=${WORK_DIR:-/work}
 GLOBAL_PREFIX=${GLOBAL_PREFIX:-/usr/local/swoole-cli}
 CC=${CC:-clang}
+CXX=${CXX:-clang++}
 
 # make 产出的纯 PHP 归档（输入），最终产物与之同名（输出）
 PHP_ARCHIVE="${WORK_DIR}/libs/libphp.a"
@@ -55,6 +60,30 @@ if [ -z "${LIBC_ARCHIVE}" ] || [ ! -f "${LIBC_ARCHIVE}" ]; then
     echo "[libphp] 未找到 musl libc.a，无法产出与 bin/swoole-cli 同等自包含的归档"
     exit 1
 fi
+
+# 定位 C++ 运行时静态库。
+# swoole-cli 用 clang++ 编译且未指定 -stdlib，因此 C++ 运行时是 libstdc++
+# （而不是 libc++）；operator new/delete、std::string 等符号都在 libstdc++.a 里。
+# libgcc / libgcc_eh 是 clang++ 链接时自动附加的编译器运行时；libgomp 是 OpenMP。
+locate_archive() {
+    local lib="$1"
+    local locator="$2"
+    local path
+    path="$("${locator}" -print-file-name="${lib}" 2>/dev/null || true)"
+    if [ -n "$path" ] && [ "$path" != "$lib" ] && [ -f "$path" ]; then
+        echo "$path"
+    fi
+}
+
+CPP_RUNTIME_ARCHIVES=()
+for lib in libstdc++.a libgomp.a; do
+    path="$(locate_archive "$lib" "$CXX")"
+    [ -n "$path" ] && CPP_RUNTIME_ARCHIVES+=("$path")
+done
+for lib in libgcc.a libgcc_eh.a; do
+    path="$(locate_archive "$lib" "$CC")"
+    [ -n "$path" ] && CPP_RUNTIME_ARCHIVES+=("$path")
+done
 
 # 收集 -L 搜索路径
 LIB_DIRS=()
@@ -107,6 +136,7 @@ echo "===============================[libphp]==============================="
 echo "php archive  : ${PHP_ARCHIVE}"
 echo "global prefix: ${GLOBAL_PREFIX}"
 echo "musl libc    : ${LIBC_ARCHIVE}"
+echo "c++ runtime  : ${CPP_RUNTIME_ARCHIVES[*]:-(无)}"
 echo "lib dirs     : ${#LIB_DIRS[@]}"
 echo "lib names    : ${#LIB_NAMES[@]}"
 echo "merged(.a)   : ${#ARCHIVES[@]}"
@@ -123,7 +153,8 @@ TMP_PHP_ARCHIVE="$(mktemp "${WORK_DIR}/libs/.libphp-input.XXXXXX")"
 mv -f "${PHP_ARCHIVE}" "${TMP_PHP_ARCHIVE}"
 rm -f "${OUTPUT_ARCHIVE}"
 
-# 用 ar 的 MRI 模式按顺序合并：PHP 目标文件 -> 第三方静态库 -> musl libc
+# 用 ar 的 MRI 模式按顺序合并：
+# PHP 目标文件 -> 第三方静态库 -> musl libc -> C++ 运行时（libgcc/libgcc_eh -> libstdc++/libgomp）
 {
     echo "CREATE ${OUTPUT_ARCHIVE}"
     echo "ADDLIB ${TMP_PHP_ARCHIVE}"
@@ -131,6 +162,9 @@ rm -f "${OUTPUT_ARCHIVE}"
         echo "ADDLIB $a"
     done
     echo "ADDLIB ${LIBC_ARCHIVE}"
+    for a in "${CPP_RUNTIME_ARCHIVES[@]}"; do
+        echo "ADDLIB $a"
+    done
     echo "SAVE"
     echo "END"
 } | ar -M
@@ -164,6 +198,20 @@ if nm -g --defined-only "${OUTPUT_ARCHIVE}" 2>/dev/null | grep -qw 'printf'; the
     echo "  printf (musl libc)  OK"
 else
     echo "  printf (musl libc)  MISSING"
+    exit 1
+fi
+echo ""
+echo "[libphp] 校验 C++ 运行时符号："
+if nm -g --defined-only "${OUTPUT_ARCHIVE}" 2>/dev/null | grep -qw '_Znwm'; then
+    echo "  operator new(_Znwm)   OK"
+else
+    echo "  operator new(_Znwm)   MISSING"
+    exit 1
+fi
+if nm -g --defined-only "${OUTPUT_ARCHIVE}" 2>/dev/null | grep -qw '_ZdlPv'; then
+    echo "  operator delete(_ZdlPv) OK"
+else
+    echo "  operator delete(_ZdlPv) MISSING"
     exit 1
 fi
 echo "======================================================================"

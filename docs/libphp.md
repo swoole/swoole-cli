@@ -155,23 +155,18 @@ int main(int argc, char **argv)
 }
 ```
 
-编译链接（**注意用 `clang++`**，因为 PHP 里有 C++ 对象）：
+编译链接（libc 与 C++ 运行时都已并入归档，用 `clang` 即可）：
 
 ```shell
-# 方式一：musl 环境下直接 -static（libc 已内置，自动 -lc 无副作用）
-clang++ -static -no-pie -o embed_demo embed_demo.c \
+# 方式一：直接 -static（最简单，clang 自动附加的 -lc / -lstdc++ 无副作用）
+clang -static -no-pie -o embed_demo embed_demo.c \
     -I/work -I/work/main -I/work/Zend -I/work/TSRM \
     /work/libs/libphp.a
 
-# 方式二：完全不依赖系统 libc.a（可把 libphp.a 拿到没有 musl 静态库的机器上）
-clang++ -static -nodefaultlibs -no-pie -o embed_demo embed_demo.c \
+# 方式二：完全不依赖系统库（可把 libphp.a 拿到没有 musl 静态库的机器上）
+clang -static -nodefaultlibs -no-pie -o embed_demo embed_demo.c \
     -I/work -I/work/main -I/work/Zend -I/work/TSRM \
-    -Wl,--start-group \
-        /work/libs/libphp.a \
-        $(clang -print-file-name=libgcc.a) \
-        $(clang -print-file-name=libgcc_eh.a) \
-        /usr/lib/libstdc++.a /usr/lib/libgomp.a \
-    -Wl,--end-group
+    -Wl,--start-group /work/libs/libphp.a -Wl,--end-group
 ```
 
 要点：
@@ -180,10 +175,10 @@ clang++ -static -nodefaultlibs -no-pie -o embed_demo embed_demo.c \
   `-I/work/Zend` 用于 `<zend_ini.h>`
 - `-static -no-pie` 必需，原因见下方"已知限制 1"
 - musl 的 `libm` / `libpthread` / `libdl` / `libcrypt` 都并进了 `libc.a`，
-  而 libc 又已并入归档，所以**不再需要** `-lm -lpthread -ldl -lcrypt -lc`
-- 仍需工具链运行时库 `libstdc++` / `libgomp` / `libgcc`（方式一由 `clang++` 自动加，
-  方式二需显式给出）；libstdc++/libgomp 会引用 libc 里的 `wmemmove`、`pthread_*`
-  等符号，因此方式二必须用 `--start-group` 让链接器循环解析
+  libc 又已并入归档；C++ 运行时（`libstdc++` / `libgcc` / `libgcc_eh` /
+  `libgomp`）也已并入。因此不再需要 `-lm -lpthread -lc -lstdc++ -lgomp` 等
+- 方式二用 `-nodefaultlibs` 去掉 clang 自动附加的库，归档内的 libc / libstdc++
+  成员互相引用，`--start-group` 让链接器循环解析以保证符号闭合
 - `sapi/embed/php_embed.h` 会随 `make install` 安装到 `$(prefix)/include/php/sapi/embed/`
 
 验证：
@@ -264,18 +259,19 @@ apt install python3  # debian
 如果确实需要 PIC 版本，需要把所有第三方库都用 `CFLAGS=-fPIC` 重新编译一遍，
 再 `./make.sh clean && ./make.sh build && ./make.sh libphp`。
 
-### 2. libc 已内置，但工具链运行时库仍在归档外
+### 2. libc 与 C++ 运行时均已内置
 
-归档包含 `/usr/local/swoole-cli/*/lib/` 下的第三方静态库，以及 **musl libc**
-（`${CC} -print-file-name=libc.a`）。musl 的 `libm` / `libpthread` / `libdl` /
-`libcrypt` / `libresolv` / `librt` 本就并入 libc，因此一并进入归档。
+归档包含 `/usr/local/swoole-cli/*/lib/` 下的第三方静态库、**musl libc**，以及
+**C++ 运行时**（`libstdc++`、`libgcc`、`libgcc_eh`、`libgomp`）。
 
-仍在归档外、链接时需工具链提供的是：
+- musl 的 `libm` / `libpthread` / `libdl` / `libcrypt` / `libresolv` / `librt`
+  本就并入 libc，因此一并进入归档
+- PHP 内核含 C++ 对象（ICU、ImageMagick 等），其 `operator new/delete`、
+  `std::string` 等符号来自 `libstdc++.a`。注意 swoole-cli 用 `clang++` 编译且
+  未指定 `-stdlib`，因此是 **libstdc++ ABI**（不是 libc++），不可混用
 
-`libstdc++` `libgomp` `libgcc`（以及 `libgcc_eh`）
-
-它们属于编译器运行时而非 libc，`clang++ -static` 会自动链接；
-若用上面的"方式二"（`-nodefaultlibs`）则需显式给出并用 `--start-group`。
+因此链接时不再需要任何额外的 `-l` 库；用 `-nodefaultlibs` 时也只需
+`libphp.a` 一个归档（配合 `--start-group`）。
 
 ### 3. 只有 musl（alpine）容器下才是真正"不依赖系统 so"
 
