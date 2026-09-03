@@ -36,7 +36,7 @@ echo "arch          : ${ARCH}"
 echo "----------------------------------------------------------------------"
 
 rm -rf "${SDK_ROOT}"
-mkdir -p "${SDK_ROOT}/lib" "${SDK_ROOT}/include/php" "${SDK_ROOT}/include/phpx" "${SDK_ROOT}/include/deps"
+mkdir -p "${SDK_ROOT}/lib" "${SDK_ROOT}/include/php" "${SDK_ROOT}/include/phpx"
 
 # 1. 静态库
 if [ -f "${WORK_DIR}/libs/libphp.a" ]; then
@@ -68,16 +68,14 @@ fi
         | tar -xf - -C "${SDK_ROOT}/include/phpx/"
 )
 
-# 4. 第三方库头文件（按库名分目录）
+# 4. 第三方库头文件（直接平铺到 include/ 根，保持各自的相对子目录，如 openssl/、curl/）
 for inc in "${GLOBAL_PREFIX}"/*/include; do
     [ -d "$inc" ] || continue
-    libname=$(basename "$(dirname "$inc")")
-    mkdir -p "${SDK_ROOT}/include/deps/${libname}"
     (
         cd "$inc"
         find . -name '*.h' -print \
             | tar -cf - -T - \
-            | tar -xf - -C "${SDK_ROOT}/include/deps/${libname}/"
+            | tar -xf - -C "${SDK_ROOT}/include/"
     )
 done
 
