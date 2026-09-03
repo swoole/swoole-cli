@@ -23,10 +23,12 @@ return function (Preprocessor $p) {
             --prefix=$gmp_prefix \
             --enable-static=yes \
             --enable-shared=no \
+            --enable-cxx \
             --with-pic
 
 EOF
             )
             ->withPkgName('gmp')
+            ->withPkgName('gmpxx')
     );
 };

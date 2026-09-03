@@ -15,6 +15,7 @@ define("CURL_PREFIX", $p->getGlobalPrefix() . '/curl');
 define("CARES_PREFIX", $p->getGlobalPrefix() . '/cares');
 define("OPENSSL_PREFIX", $p->getGlobalPrefix() . '/openssl');
 define("GMP_PREFIX", $p->getGlobalPrefix() . '/gmp');
+define("MPFR_PREFIX", $p->getGlobalPrefix() . '/mpfr');
 define("ICONV_PREFIX", $p->getGlobalPrefix() . '/libiconv');
 define("IMAGEMAGICK_PREFIX", $p->getGlobalPrefix() . '/imagemagick');
 define("ICU_PREFIX", $p->getGlobalPrefix() . '/icu');
