@@ -43,6 +43,25 @@ if ($p->getInputOption('with-work-dir')) {
     $p->setBuildDir($workDir . '/thirdparty');
 }
 
+// 在宿主机上直接创建 thirdparty 目录，并确保当前用户可写。
+// 容器内构建始终是 root，可以往里写任何内容不受影响；而 phpx 等源码是宿主机
+// 下载的，若 thirdparty 由容器 root 创建（0755），宿主机普通用户将无法写入。
+// 这里不假定执行 prepare.php 的具体用户，统一放宽为 0777 让所有用户可写。
+$thirdpartyDir = __DIR__ . '/thirdparty';
+if (!is_dir($thirdpartyDir)) {
+    mkdir($thirdpartyDir, 0777, true);
+    chmod($thirdpartyDir, 0777);
+} elseif (!is_writable($thirdpartyDir)) {
+    // thirdparty 已存在但当前用户不可写（例如之前由容器 root 创建）。
+    // 普通用户无法修改 root 所有的目录，chmod 会失败，此时给出通用提示。
+    @chmod($thirdpartyDir, 0777);
+    if (!is_writable($thirdpartyDir)) {
+        fwrite(STDERR, "thirdparty 目录不可写：{$thirdpartyDir}" . PHP_EOL
+            . "请在构建容器内执行：chmod 777 /work/thirdparty" . PHP_EOL);
+        exit(1);
+    }
+}
+
 // 下载 php-src 源码（按 PHP-VERSION.conf 的版本，下载/解压到 var/php-<version>；
 // 容器内通过挂载即 /work/var/php-<version>）
 require __DIR__ . '/sapi/scripts/download-php-src-archive.php';

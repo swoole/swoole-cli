@@ -10,7 +10,7 @@ set -e
 WORK_DIR=${WORK_DIR:-/work}
 GLOBAL_PREFIX=${GLOBAL_PREFIX:-/usr/local/swoole-cli}
 
-PHPX_DIR="${WORK_DIR}/phpx"
+PHPX_DIR="${WORK_DIR}/thirdparty/phpx"
 OUTPUT="${WORK_DIR}/libs/libphpx.a"
 
 if [ ! -f "${PHPX_DIR}/full-static/CMakeLists.txt" ]; then

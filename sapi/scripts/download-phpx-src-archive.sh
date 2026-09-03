@@ -24,7 +24,7 @@ PHPX_VERSION_NUM="${PHPX_VERSION#v}"
 
 cd "${WORKDIR}" || exit
 
-PHPX_DIR="phpx"
+PHPX_DIR="thirdparty/phpx"
 
 # ---------------------------------------------------------------------------
 # master 开发分支：用 git 管理
