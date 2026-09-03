@@ -26,14 +26,14 @@ echo "gmp          : ${GLOBAL_PREFIX}/gmp"
 echo "mpfr         : ${GLOBAL_PREFIX}/mpfr"
 echo "----------------------------------------------------------------------"
 
-cd "${PHPX_DIR}"
-
-# 清理旧的构建目录，避免残留
-rm -rf build/full-static
+# 构建目录放在 /tmp，避免容器(root)产物污染 phpx/ 源码目录（宿主机 swoole 用户
+# 无法删除 root 文件，会卡住下一次 git clone/pull）
+BUILD_DIR="/tmp/phpx-full-static"
+rm -rf "${BUILD_DIR}"
 
 cmake \
-    -S full-static \
-    -B build/full-static \
+    -S "${PHPX_DIR}/full-static" \
+    -B "${BUILD_DIR}" \
     -DCMAKE_BUILD_TYPE=Release \
     -DPHPX_PHP_INCLUDE_DIR="${WORK_DIR}" \
     -DPHPX_GMP_INCLUDE_DIR="${GLOBAL_PREFIX}/gmp/include" \
@@ -41,10 +41,10 @@ cmake \
     -DPHPX_MPFR_INCLUDE_DIR="${GLOBAL_PREFIX}/mpfr/include" \
     -DPHPX_MPFR_LIB_DIR="${GLOBAL_PREFIX}/mpfr/lib"
 
-cmake --build build/full-static --parallel "$(nproc 2>/dev/null || echo 4)"
+cmake --build "${BUILD_DIR}" --parallel "$(nproc 2>/dev/null || echo 4)"
 
 mkdir -p "${WORK_DIR}/libs"
-cp -f build/full-static/libphpx.a "${OUTPUT}"
+cp -f "${BUILD_DIR}/libphpx.a" "${OUTPUT}"
 
 echo "----------------------------------------------------------------------"
 echo "output       : ${OUTPUT}"
