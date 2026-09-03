@@ -137,7 +137,7 @@ php ./prepare.php --with-dependency-json=1
 #   bin/dependency-graph.json
 ```
 
-> 生成网页见 [sapi/deps-viewer/README.md](../sapi/deps-viewer/README.md)
+> 生成网页见 [构建依赖可视化工具教程](dependency-graph.md)
 
 with-downloader
 ----

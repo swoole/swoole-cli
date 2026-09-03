@@ -15,27 +15,81 @@
 `-lcurl -lssl -licui18n -lMagickWand …` 等一长串第三方库，因为它们的目标文件
 已经在归档里了。
 
-## 构建
+## 编译教程
 
-在构建容器中执行：
+下面是从零到产出 `libs/libphp.a`、并编译一个可运行的嵌入程序的完整流程。
+**所有命令都在构建容器内执行**。
+
+### 步骤 1：准备构建容器
 
 ```shell
-./make.sh all-library   # 第三方库尚未编译时先执行
+./make.sh docker-build    # 构建基础镜像，只需执行一次
+./make.sh docker-bash     # 启动并进入容器
+```
+
+基础镜像为 `alpine:3.18`（musl libc），只有 musl 环境才能产出真正不依赖系统
+`.so` 的静态产物。
+
+### 步骤 2：生成构建脚本 `make.sh`
+
+```shell
+php prepare.php
+```
+
+Linux 下**默认按容器内构建**生成，输出应为：
+
+```
+build in container : yes
+workDir   : /work
+buildDir  : /work/thirdparty
+phpSrcDir : /work/var/php-8.4.14
+```
+
+> 如果 `workDir` 显示的是宿主机路径（如 `/home/xxx/swoole-cli`），说明 `make.sh`
+> 是按宿主机直编生成的，进容器后会因找不到 `pool/lib/xxx.tar.gz` 而失败。
+> 此时重新执行一次 `php prepare.php`（不要带 `--without-docker`）即可。
+> 该选项详见 [options.md](options.md#without-docker)。
+
+### 步骤 3：编译第三方依赖库
+
+```shell
+./make.sh all-library
+```
+
+48 个第三方库，首次全量编译约 1–2 小时。每个库编译完成后会在
+`/usr/local/swoole-cli/<库名>/.completed` 留下标记，重跑时会跳过。
+
+### 步骤 4：生成 `configure` 与 `Makefile`
+
+```shell
 ./make.sh config
+```
+
+这一步会做四件事，缺一不可：
+
+1. `./buildconf --force` 重新生成 `configure`——**必须重新生成**，否则新增的
+   `--enable-embed` 选项不会出现，`libs/libphp.a` 目标也就不会存在
+2. `./configure $OPTIONS` 生成 `Makefile`
+3. 导出并写入 `ldflags.log`（第三方库 `-L` 搜索路径）与 `libs.log`（`-l` 列表），
+   **第 5 步的合并脚本依赖这两个文件**
+4. 把 `Makefile` 里的 `-export-dynamic` 替换为 `-all-static`
+
+### 步骤 5：编译 libphp.a
+
+```shell
 ./make.sh libphp
 ```
 
-`./make.sh libphp` 实际做了三件事：
+实际执行的动作：
 
 ```shell
-make -j $(nproc) libs/libphp.a        # 1. 归档 PHP 自己的目标文件
+make -j $(nproc) libs/libphp.a        # 归档 PHP 自身目标文件 -> libs/libphp.a
 mv -f libs/libphp.a libs/libphp-core.a
-bash ./sapi/scripts/build-libphp.sh   # 2. 合并第三方静态库 -> libs/libphp.a
+bash ./sapi/scripts/build-libphp.sh   # 合并第三方静态库 -> libs/libphp.a
 ```
 
-合并依据 `libs.log`（第三方库 `-l` 列表）和 `ldflags.log`（`-L` 搜索路径），
-二者由 `./make.sh config` 写入工作目录。合并使用 `ar` 的 MRI 模式 `ADDLIB`
-逐成员拷贝，因此不会丢失同名的归档成员。
+合并依据 `libs.log` 与 `ldflags.log`，使用 `ar` 的 MRI 模式 `ADDLIB` 逐成员拷贝，
+因此不会丢失同名的归档成员。
 
 合成脚本的输出示例：
 
@@ -53,11 +107,31 @@ members      : 33128
 size         : 1.2G
 ```
 
-## 使用
+[libphp] 校验 embed SAPI 符号：
+  php_embed_init      OK
+  php_embed_shutdown  OK
+```
 
-### 1. 嵌入代码
+最后两行 `OK` 是关键：`php_embed_init` / `php_embed_shutdown` 找得到，
+才说明归档可用。若显示 `MISSING`，脚本会以非 0 退出。
 
-embed SAPI 的接口与 php-src 完全一致，示例见
+### 步骤 6：验证产物
+
+```shell
+# 归档成员数与体积
+ar t /work/libs/libphp.a | wc -l
+ls -lh /work/libs/libphp.a
+
+# embed SAPI 入口符号
+nm -g --defined-only /work/libs/libphp.a | grep -E 'php_embed_(init|shutdown)'
+
+# 确认归档里已含第三方库（例如 curl）
+nm -g --defined-only /work/libs/libphp.a | grep -w curl_easy_init
+```
+
+### 步骤 7：编译一个嵌入示例
+
+embed SAPI 的接口与 php-src 完全一致，更多示例见
 [`sapi/embed/README.md`](../sapi/embed/README.md)。最小示例：
 
 ```c
@@ -73,7 +147,7 @@ int main(int argc, char **argv)
 }
 ```
 
-### 2. 编译与链接
+编译链接：
 
 ```shell
 clang -static -no-pie -o embed_demo embed_demo.c \
@@ -87,14 +161,73 @@ clang -static -no-pie -o embed_demo embed_demo.c \
 - `-I/work` 必需：`sapi/embed/php_embed.h` 里的 `#include <main/php.h>` 基于源码根目录；
   `-I/work/Zend` 用于 `<zend_ini.h>`
 - `-static -no-pie` 必需，原因见下方"已知限制"
+- 末尾几个 `-l` 是工具链提供的系统库（不在归档内，见"已知限制 2"）。
+  若报 `undefined reference`，按提示再补 `-lresolv`、`-lintl`、`-lltdl` 等
 - `sapi/embed/php_embed.h` 会随 `make install` 安装到 `$(prefix)/include/php/sapi/embed/`
 
-### 3. 验证静态性
+验证：
 
 ```shell
+$ ./embed_demo
+hello 8.4.14
+
 $ ldd ./embed_demo
 	不是动态可执行文件
 ```
+
+## 常见问题
+
+### `configure: error: C compiler cannot create executables`
+
+看起来像编译器坏了，实际几乎总是**链接阶段找不到库**。打开 `config.log` 搜
+`cannot find -l`，例如：
+
+```
+/usr/bin/ld: cannot find -lngtcp2: No such file or directory
+```
+
+典型成因是 `/usr/local/swoole-cli` 下残留了**旧版本**的第三方库：旧库编译时的配置
+与当前 `make.sh` 不一致，其 `pkg-config` 文件（`.pc`）里声明了 `-lxxx` 却没有对应的
+`-L` 路径，于是链接探测失败。
+
+排查与修复：
+
+```shell
+# 1. 确认报错的库来自哪个 .pc 文件
+grep -rn "lngtcp2" /usr/local/swoole-cli/*/lib/pkgconfig/*.pc
+
+# 2. 看哪些库是旧的（对比 .completed 的时间戳）
+ls -la /usr/local/swoole-cli/*/.completed
+
+# 3. 清掉旧库后重新全量编译
+./make.sh clean-all-library
+./make.sh all-library
+./make.sh config
+```
+
+### `tar: /home/xxx/swoole-cli/pool/lib/xxx.tar.gz: Cannot open`
+
+`make.sh` 里的路径是宿主机目录，容器内不存在。原因见
+[options.md](options.md#without-docker)：重新执行 `php prepare.php`
+（不带 `--without-docker`），确认输出 `workDir : /work` 后即可。
+
+### `no suitable Python interpreter found`（libpsl）
+
+libpsl 构建时要用 `src/psl-make-dafsa`（Python 脚本）把 public suffix list
+转成静态 C 数组，**仅在编译期需要**，产物是纯 C 的字节数组，运行时不依赖 Python。
+
+alpine 基础镜像已包含 `RUN apk add python3`（见 `sapi/docker/Dockerfile`）。
+若在自建环境遇到，安装 python3 即可：
+
+```shell
+apk add python3      # alpine
+apt install python3  # debian
+```
+
+### `libs/libphp.a` 太大 / 想减小体积
+
+归档含 ICU 数据表、ImageMagick、libheif 等，GB 量级属正常。若确定用不到某些扩展，
+通过 `php prepare.php -mongodb -imagick ...` 关闭后重新走一遍流程。
 
 ## 已知限制
 

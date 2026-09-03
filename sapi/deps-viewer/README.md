@@ -14,6 +14,9 @@
 
 零 npm 依赖（只使用 Node 内置模块）。
 
+完整教程见 [docs/dependency-graph.md](../../docs/dependency-graph.md)，
+本文档侧重工具的目录结构与 JSON 数据格式。
+
 ## 用法
 
 ```bash
