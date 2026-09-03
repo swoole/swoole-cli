@@ -37,8 +37,20 @@ return function (Preprocessor $p) {
     $dependentLibraries = ['icu', 'openssl', 'zlib', 'libzstd'];
     $ext = new Extension('mongodb');
 
-    $ext->withHomePage('https://www.php.net/mongodb')
-        ->withHomePage('https://www.mongodb.com/docs/drivers/php/')
+    $ext->withHomePage('https://www.mongodb.com/docs/drivers/php/')
+        ->withManual('https://www.php.net/mongodb')
+        // 主许可证为 Apache-2.0（源码包根目录 LICENSE 为 Apache 2.0 全文）
+        //
+        // 注意：源码包 src/libmongocrypt/src/unicode/ 下的 case-fold-map.c、
+        // diacritic-fold-map.c、fold.c 三个文件是 SSPL v1（强传染性许可证）。
+        // 它们只在 config.m4 的 `if test "$PHP_MONGODB_CLIENT_SIDE_ENCRYPTION" = "yes"`
+        // 分支里加入编译，本配置传 --with-mongodb-client-side-encryption=no，
+        // 因此不会进入 swoole-cli 产物。若将来开启客户端字段级加密，需要重新评估
+        // SSPL 带来的合规影响。
+        ->withLicense(
+            'https://github.com/mongodb/mongo-php-driver/blob/2.3.1/LICENSE',
+            Extension::LICENSE_APACHE2
+        )
         ->withOptions(implode(' ', $options))
         ->withPeclVersion('2.3.1')
         ->withFileHash('sha256', '2738972432d36c370fde3c76c208c31bd5a7a0afc4a7705874f92f322f3d2786')
