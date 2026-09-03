@@ -20,5 +20,5 @@ overrides:
 contents:
     - src: "bin/swoole-cli"
       dst: "/usr/local/bin/swoole-cli"
-    - src: "runtime/libs/"
+    - src: "var/runtime/libs/"
       dst: "/usr/local/swoole-cli/lib/"

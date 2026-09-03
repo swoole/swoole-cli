@@ -56,10 +56,9 @@ PIE_VERSION="1.2.1"
 
 cd ${__PROJECT__}
 mkdir -p bin/
-mkdir -p runtime/
 mkdir -p var/runtime
-APP_RUNTIME_DIR=${__PROJECT__}/runtime/php
-test -f ${__PROJECT__}/runtime/php && rm -f ${__PROJECT__}/runtime/php
+APP_RUNTIME_DIR=${__PROJECT__}/var/runtime/php
+test -f ${__PROJECT__}/var/runtime/php && rm -f ${__PROJECT__}/var/runtime/php
 mkdir -p ${APP_RUNTIME_DIR}
 
 cd ${__PROJECT__}/var/runtime

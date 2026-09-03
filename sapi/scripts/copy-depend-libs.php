@@ -1,11 +1,11 @@
 <?php
 /**
- * Copy shared library dependencies of swoole-cli to runtime/libs directory
+ * Copy shared library dependencies of swoole-cli to var/runtime/libs directory
  */
 
 // Define paths
 $binaryPath = __DIR__ . '/../../bin/swoole-cli';
-$targetDir = __DIR__ . '/../../runtime/libs';
+$targetDir = __DIR__ . '/../../var/runtime/libs';
 
 // Libraries that should be ignored (system/core libraries)
 $ignoredLibraries = [

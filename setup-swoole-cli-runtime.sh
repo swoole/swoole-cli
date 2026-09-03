@@ -53,9 +53,8 @@ APP_NAME='swoole-cli'
 VERSION='v6.2.0.0'
 
 cd ${__PROJECT__}
-mkdir -p runtime
 mkdir -p var/runtime
-APP_RUNTIME_DIR=${__PROJECT__}/runtime/${APP_NAME}
+APP_RUNTIME_DIR=${__PROJECT__}/var/runtime/${APP_NAME}
 mkdir -p ${APP_RUNTIME_DIR}
 
 MIRROR=''
@@ -240,7 +239,7 @@ set +x
 echo " "
 echo " USE PHP-FPM RUNTIME :"
 echo " "
-echo "${APP_RUNTIME_DIR}/swoole-cli -c ${APP_RUNTIME_DIR}/php.ini -P --fpm-config ${APP_RUNTIME_DIR}/php-fpm.conf -p ${__PROJECT__}/runtime/var "
+echo "${APP_RUNTIME_DIR}/swoole-cli -c ${APP_RUNTIME_DIR}/php.ini -P --fpm-config ${APP_RUNTIME_DIR}/php-fpm.conf -p ${__PROJECT__}/var "
 echo " "
 echo " USE PHP-CLI RUNTIME :"
 echo " "

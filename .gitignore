@@ -331,8 +331,6 @@ libs.log
 # 依赖可视化工具的产物
 sapi/deps-viewer/dist/
 sapi/deps-viewer/node_modules/
-/runtime
-!/runtime/.gitkeep
 *.deb
 *.rpm
 nfpm-pkg.yaml
