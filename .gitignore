@@ -300,6 +300,7 @@ tmp-php.ini
 /bin
 /pool/
 /vendor
+/sdk
 /thirdparty
 /var
 /ext/redis

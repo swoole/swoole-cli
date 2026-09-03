@@ -298,6 +298,12 @@ make_phpx() {
     bash ./sapi/scripts/build-phpx.sh
 }
 
+make_sdk() {
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    # 打包 SDK：libphp.a / libphpx.a + php/phpx/第三方库头文件
+    bash ./sapi/scripts/build-sdk.sh
+}
+
 make_archive() {
     set -x
     cd ${__PROJECT_DIR__}/bin/
@@ -365,6 +371,7 @@ help() {
     echo "./make.sh build"
     echo "./make.sh libphp"
     echo "./make.sh phpx"
+    echo "./make.sh sdk"
     echo "./make.sh test"
     echo "./make.sh archive"
     echo "./make.sh all-library"
@@ -459,6 +466,8 @@ elif [ "$1" = "libphp" ] ;then
     make_libphp
 elif [ "$1" = "phpx" ] ;then
     make_phpx
+elif [ "$1" = "sdk" ] ;then
+    make_sdk
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
