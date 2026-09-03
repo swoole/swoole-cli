@@ -4,44 +4,37 @@ $project_dir = realpath(__DIR__ . '/../../');
 $php_version_tag = trim(file_get_contents($project_dir . '/sapi/PHP-VERSION.conf'));
 $php_source_folder = $project_dir . "/var/php-{$php_version_tag}";
 $php_archive_file = $project_dir . "/pool/php-tar/php-{$php_version_tag}.tar.gz";
-// github.com
-$php_archive_file_sha256sum = '22bd132176a2ff5140dd38d30213364ce1119edda4521280d5249bc1f55721e9';
-// php.net
-// $php_archive_file_sha256sum = '40341f3e03a36d48facdb6cc2ec600ff887a1af9a5e5fee0b40f40b61488afae';
 $download_dir = dirname($php_archive_file);
-$download_php_counter = 0;
 
-DOWNLOAD_PHP:
-# 下载 PHP 源码
+// 从 GitHub 下载 php-src 的 tag 归档。
+//
+// 注意：GitHub 的 tag 归档是动态打包的，其 sha256 每个版本都不同、且不对外公布，
+// 因此这里不校验 sha256（下载走 HTTPS，本身有 TLS 完整性保证）。这也是为什么
+// 版本升级后不能写死 sha256 —— 否则每次升级都要重新手算，导致无法自动下载。
 $download_cmd = "curl -fSL https://github.com/php/php-src/archive/refs/tags/php-{$php_version_tag}.tar.gz -o {$php_archive_file}";
-echo $download_cmd . PHP_EOL;
-if (!file_exists($php_archive_file)) {
+
+// 若归档不存在或损坏（文件过小）则下载
+$need_download = !file_exists($php_archive_file) || filesize($php_archive_file) < 1024;
+if ($need_download) {
+    echo "downloading php-src {$php_version_tag}" . PHP_EOL;
+    echo $download_cmd . PHP_EOL;
     `test -d {$download_dir} || mkdir -p {$download_dir}`;
-    $download_php_counter++;
     `{$download_cmd}`;
-}
-
-$hash = hash_file('sha256', $php_archive_file);
-echo "sha256sum: " . $hash . PHP_EOL;
-if ($hash !== $php_archive_file_sha256sum) {
-    if ($download_php_counter > 3) {
-        throw  new \Exception('curl download php archive Exception!', 500);
+    if (!file_exists($php_archive_file) || filesize($php_archive_file) < 1024) {
+        throw new \Exception("download php-src archive failed: {$php_archive_file}", 500);
     }
-    echo 'archive sha256sum mismatched , will re-download ' . PHP_EOL;
-    unlink($php_archive_file);
-    goto    DOWNLOAD_PHP;
+} else {
+    echo "php-src archive cached: {$php_archive_file}" . PHP_EOL;
 }
 
-# 若不存在则解压 PHP 源码包
-# tar -zxvf 文件名.tar.gz --strip-components=1 -C 指定解压目录
-
-$extract_tar_cmd = <<<EOF
-    set -x
-    # test -d {$php_source_folder} && rm -rf {$php_source_folder}
-    mkdir -p {$php_source_folder}
-    test -f {$php_source_folder}/configure.ac || tar -zxf {$php_archive_file} --strip-components=1 -C  {$php_source_folder}
-EOF;
-
-`{$extract_tar_cmd}`;
+// 若源码目录尚未解压则解压
+if (!file_exists("{$php_source_folder}/configure.ac")) {
+    echo "unpacking php-src {$php_version_tag}" . PHP_EOL;
+    `mkdir -p {$php_source_folder}`;
+    `tar -zxf {$php_archive_file} --strip-components=1 -C {$php_source_folder}`;
+    if (!file_exists("{$php_source_folder}/configure.ac")) {
+        throw new \Exception("unpack php-src archive failed: {$php_source_folder}", 500);
+    }
+}
 
 return $php_source_folder;

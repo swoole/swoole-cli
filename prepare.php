@@ -43,12 +43,20 @@ if ($p->getInputOption('with-work-dir')) {
     $p->setBuildDir($workDir . '/thirdparty');
 }
 
+// 下载 php-src 源码（按 PHP-VERSION.conf 的版本，下载/解压到 var/php-<version>；
+// 容器内通过挂载即 /work/var/php-<version>）
+require __DIR__ . '/sapi/scripts/download-php-src-archive.php';
+
 // Sync code from php-src
 $p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
-// Download swoole-src
-if (!is_dir(__DIR__ . '/ext/swoole')) {
-    shell_exec('bash ' . __DIR__ . '/sapi/scripts/download-swoole-src-archive.sh');
+// 下载/更新 swoole-src（脚本内部按 SWOOLE-VERSION.conf 判断是否需要 checkout）
+// 用 passthru 让脚本输出与退出码透传，下载失败（如网络超时）时能看到具体错误
+$swoole_download_status = 0;
+passthru('bash ' . __DIR__ . '/sapi/scripts/download-swoole-src-archive.sh', $swoole_download_status);
+if ($swoole_download_status !== 0) {
+    fwrite(STDERR, "download swoole-src failed with exit code: {$swoole_download_status}" . PHP_EOL);
+    exit($swoole_download_status);
 }
 
 if ($p->getInputOption('with-global-prefix')) {

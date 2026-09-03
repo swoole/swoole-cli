@@ -40,9 +40,9 @@ if [ "${SWOOLE_VERSION}" != "${CURRENT_SWOOLE_VERSION}" ] ;then
         tar -czvf "$TGZ_FILE" .
     fi
 
-    if [ ! -d "$SWOOLE_DIR" ] ;then
-        echo "unpacking swoole-${ORIGIN_SWOOLE_VERSION}.tgz"
-        mkdir -p "${SWOOLE_DIR}"
-        tar --strip-components=1 -C "${SWOOLE_DIR}" -xf "$TGZ_FILE"
-    fi
+    # 版本不一致时删除旧目录，重新解压新版本
+    echo "unpacking swoole-${ORIGIN_SWOOLE_VERSION}.tgz"
+    test -d "$SWOOLE_DIR" && rm -rf "$SWOOLE_DIR"
+    mkdir -p "${SWOOLE_DIR}"
+    tar --strip-components=1 -C "${SWOOLE_DIR}" -xf "$TGZ_FILE"
 fi
