@@ -338,3 +338,6 @@ nfpm-pkg.yaml
 /APP_NAME
 !/var/.gitkeep
 
+# 库项目不提交依赖锁文件，与其他开源库保持一致
+composer.lock
+
