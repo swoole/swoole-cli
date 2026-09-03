@@ -311,6 +311,8 @@ tmp-php.ini
 /ext/swoole_tracker_agent
 /ext/loader8
 /ext/swoole
+# phpx 源码（按 PHPX-VERSION.conf 从 github 下载）
+/phpx
 /ext/ds
 /ext/xlswriter
 /ext/uuid

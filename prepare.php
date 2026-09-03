@@ -59,6 +59,14 @@ if ($swoole_download_status !== 0) {
     exit($swoole_download_status);
 }
 
+// 下载/更新 phpx-src（脚本内部按 PHPX-VERSION.conf 判断 master 走 git、固定版本走归档下载）
+$phpx_download_status = 0;
+passthru('bash ' . __DIR__ . '/sapi/scripts/download-phpx-src-archive.sh', $phpx_download_status);
+if ($phpx_download_status !== 0) {
+    fwrite(STDERR, "download phpx-src failed with exit code: {$phpx_download_status}" . PHP_EOL);
+    exit($phpx_download_status);
+}
+
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
 }

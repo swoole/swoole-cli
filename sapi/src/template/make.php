@@ -292,6 +292,12 @@ make_libphp() {
     bash ./sapi/scripts/build-libphp.sh
 }
 
+make_phpx() {
+    cd <?= $this->getWorkDir() . PHP_EOL ?>
+    # 用 phpx 仓库的 full-static/ 独立构建目录编译全静态 libphpx.a
+    bash ./sapi/scripts/build-phpx.sh
+}
+
 make_archive() {
     set -x
     cd ${__PROJECT_DIR__}/bin/
@@ -358,6 +364,7 @@ help() {
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh libphp"
+    echo "./make.sh phpx"
     echo "./make.sh test"
     echo "./make.sh archive"
     echo "./make.sh all-library"
@@ -450,6 +457,8 @@ elif [ "$1" = "build" ] ;then
     make_build
 elif [ "$1" = "libphp" ] ;then
     make_libphp
+elif [ "$1" = "phpx" ] ;then
+    make_phpx
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then
