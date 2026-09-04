@@ -126,6 +126,13 @@ jobs:
             bash make.sh build
             bash make.sh archive
 
+            # 构建 SDK（自包含 libphp.a / libphpx.a + 头文件），随 release 分发
+            bash make.sh libphp
+            bash make.sh phpx
+            bash make.sh sdk
+            ls -lh libs/libphp.a libs/libphpx.a
+            ls -lh sdk/*.tar.xz
+
       - name: Start Database
         run: |
           # 准备数据库容器
@@ -168,7 +175,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: swoole-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
+          files: |
+            swoole-cli-v${{ env.APP_VERSION }}-linux-x64.tar.xz
+            sdk/*.tar.xz
 
       - name: upload artifacts to cloud object storage
         if: ${{ (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}
