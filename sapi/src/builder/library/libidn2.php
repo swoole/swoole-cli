@@ -20,8 +20,9 @@ return function (Preprocessor $p) {
             ->withHomePage('https://gitlab.com/libidn/libidn2')
             ->withManual('https://www.gnu.org/software/libidn/libidn2/manual/')
             ->withLicense('https://www.gnu.org/licenses/old-licenses/gpl-2.0.html', Library::LICENSE_GPL)
-            //->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.8.tar.gz')
-            ->withUrl('https://ftpmirror.gnu.org/gnu/libidn/libidn2-2.3.8.tar.gz')
+            //->withUrl('https://ftpmirror.gnu.org/gnu/libidn/libidn2-2.3.8.tar.gz')
+            // ftpmirror.gnu.org 曾持续 502，改用主源（内容与哈希一致，md5 a8e113e040d57a523684e141970eea7a）
+            ->withUrl('https://ftp.gnu.org/gnu/libidn/libidn2-2.3.8.tar.gz')
             ->withFileHash('md5', 'a8e113e040d57a523684e141970eea7a')
             ->withPrefix($libidn2_prefix)
             ->withConfigure(
