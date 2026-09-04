@@ -40,7 +40,10 @@ define("BISON_PREFIX", $p->getGlobalPrefix() . '/bison');
 define("NGHTTP2_PREFIX", $p->getGlobalPrefix() . '/nghttp2');
 define("LIBIDN2_PREFIX", $p->getGlobalPrefix() . '/libidn2');
 
-const DOWNLOAD_FILE_RETRY_NUMBE = 5;
+// curl 对 5xx/408/429 等"暂态"HTTP 错误也会按 --retry 重试。
+// 服务端故障（如镜像 502）重试价值低，5 次会白等约 100 秒；
+// 降到 2 次，保留对瞬时网络错误的容忍，同时缩短失败等待。
+const DOWNLOAD_FILE_RETRY_NUMBE = 2;
 const DOWNLOAD_FILE_WAIT_RETRY = 5;
 const DOWNLOAD_FILE_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36';
 
