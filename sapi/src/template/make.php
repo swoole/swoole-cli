@@ -218,7 +218,7 @@ make_config() {
     before_configure_script
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
-    ./buildconf --force
+    ./buildconf --force || { echo "[make.sh] buildconf failed" >&2; exit 1; }
 <?php if ($this->isLinux()) : ?>
     mv main/php_config.h.in /tmp/cnt
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
@@ -240,7 +240,7 @@ make_config() {
     echo $CPPFLAGS > <?= $this->getWorkDir() ?>/cppflags.log
     echo $LIBS > <?= $this->getWorkDir() ?>/libs.log
 
-    ./configure $OPTIONS
+    ./configure $OPTIONS || { echo "[make.sh] configure failed" >&2; exit 1; }
 
 <?php if ($this->isLinux()) : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
@@ -346,7 +346,7 @@ make_clean() {
 
 make_swoole_cli_with_linux_gcc() {
     if [ ! -f bin/swoole-cli ] ;then
-        ./buildconf --force
+        ./buildconf --force || { echo "[make.sh] buildconf failed" >&2; exit 1; }
         ./sapi/scripts/build-swoole-cli-with-linux-gcc.sh
     fi
 }

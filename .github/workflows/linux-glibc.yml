@@ -58,12 +58,12 @@ jobs:
 
       - name: Prepare Runtime and Libraries and Extensions
         run: |
-          set -x
+          set -ex
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/
           mkdir -p runtime/
-          test -f runtime/php && rm -f runtime/php
+          if [ -f runtime/php ]; then rm -f runtime/php; fi
           if [ ! -f runtime/php/box ] ; then
               bash  setup-php-runtime.sh
           fi
