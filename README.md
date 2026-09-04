@@ -85,6 +85,7 @@ curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtim
 - [windows WSL 版构建文档](docs/wsl.md)
 - [swoole-cli 构建选项文档](docs/options.md)
 - [构建完全静态的 libphp.a 教程](docs/libphp.md)
+- [构建与使用 swoole-cli-sdk 教程](docs/sdk.md)
 - [构建依赖可视化工具教程](docs/dependency-graph.md)
 - [打包成二进制可执行文件 文档](sapi/samples/sfx/README.md)
 - [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
