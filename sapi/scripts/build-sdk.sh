@@ -8,11 +8,15 @@
 #
 # 静态库只打包 libphp.a 与 libphpx.a；第三方库的 .a 不打包，
 # 因为它们的符号已经合并进 libphp.a 了。
+#
+# 另外打包 musl 的启动文件（crt1.o / crti.o / crtn.o）到 lib/musl/：
+# libphp.a 内嵌的是 musl libc，最终可执行文件必须用 musl 的 C 运行时链接。
 
 set -e
 
 WORK_DIR=${WORK_DIR:-/work}
 GLOBAL_PREFIX=${GLOBAL_PREFIX:-/usr/local/swoole-cli}
+CC=${CC:-clang}
 
 SWOOLE_VERSION=$(awk 'NR==1{ print $1 }' "${WORK_DIR}/sapi/SWOOLE-VERSION.conf")
 PHP_VERSION=$(awk 'NR==1{ print $1 }' "${WORK_DIR}/sapi/PHP-VERSION.conf")
@@ -51,6 +55,40 @@ else
     echo "[sdk] 未找到 libs/libphpx.a，请先执行 ./make.sh phpx" >&2
     exit 1
 fi
+
+# 1.1 musl 启动文件
+#     最终链接必须用 musl 的 crt1.o。若混进 glibc 的 crt1.o，它的 _start 会把
+#     控制权交给 libphp.a 里 musl 的 __libc_start_main，后者安装的线程指针布局
+#     与链接器（按 glibc 目标）算出的 TLS 偏移不一致，PHP 的 __thread 变量
+#     （ZTS 模块全局）会读到错误地址，进程在 php_module_startup 阶段崩溃。
+CRT_SRC=""
+CRT_PATH="$(${CC} -print-file-name=crt1.o 2>/dev/null || true)"
+if [ -n "${CRT_PATH}" ] && [ "${CRT_PATH}" != "crt1.o" ] && [ -f "${CRT_PATH}" ]; then
+    CRT_SRC="$(dirname "${CRT_PATH}")"
+else
+    for candidate in /usr/lib /lib; do
+        if [ -f "${candidate}/crt1.o" ]; then
+            CRT_SRC="${candidate}"
+            break
+        fi
+    done
+fi
+
+if [ -z "${CRT_SRC}" ]; then
+    echo "[sdk] 未找到 musl crt1.o，无法产出可用于 --full-static 的 SDK" >&2
+    exit 1
+fi
+
+mkdir -p "${SDK_ROOT}/lib/musl"
+for f in crt1.o crti.o crtn.o rcrt1.o Scrt1.o; do
+    [ -f "${CRT_SRC}/${f}" ] && cp -f "${CRT_SRC}/${f}" "${SDK_ROOT}/lib/musl/"
+done
+
+if [ ! -f "${SDK_ROOT}/lib/musl/crt1.o" ]; then
+    echo "[sdk] musl crt1.o 拷贝失败（源目录：${CRT_SRC}）" >&2
+    exit 1
+fi
+echo "musl crt      : ${CRT_SRC} -> lib/musl/"
 
 # 2. PHP 内核头文件（只收集 *.h，保持目录结构；含 sapi/embed/php_embed.h）
 (
