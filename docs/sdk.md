@@ -33,9 +33,11 @@ swoole-cli-sdk-v<swoole版本>-php<php版本>-<os>-<arch>.tar.xz
 ```
 swoole-cli-sdk-v6.2.2-php8.4.25-linux-x64/
 ├── include/
-│   ├── <第三方库头文件，平铺到根>   # openssl/ curl/ gmp.h mpfr.h decimal.hh mpdecimal.h …
+│   ├── <第三方库头文件，平铺到根>   # openssl/ curl/ gmp.h mpfr.h …
 │   ├── php/                        # PHP 内核头：main/ Zend/ TSRM/ ext/ sapi/embed/
 │   └── phpx/                       # phpx 头：phpx.h phpx_func.h phpx_decimal.h …
+│                                   # 另含 phpx 依赖的第三方头：
+│                                   # decimal.hh、mpdecimal.h
 └── lib/
     ├── libphp.a                    # 自包含：PHP + 扩展 + 第三方库 + musl libc + C++ 运行时
     ├── libphpx.a                   # phpx（mpdecimal/wren_gc 已内置，gmp/gmpxx/mpfr 由 libphp.a 提供）
@@ -48,6 +50,9 @@ swoole-cli-sdk-v6.2.2-php8.4.25-linux-x64/
   `#include <openssl/ssl.h>`、`#include <curl/curl.h>` 等用法与 `/usr/include` 完全一致
 - PHP 内核头在 `include/php/` 下保持 `main/ Zend/ TSRM/ ext/ sapi/embed/` 目录结构，
   `-I {SDK}/include/php` 后 `#include <main/php.h>`、`#include <sapi/embed/php_embed.h>` 可用
+- phpx 依赖的头（`decimal.hh`、`mpdecimal.h`）放在 `include/phpx/` 下
+  与 phpx 自身头文件同目录——`phpx_decimal.h` 属于 phpx 公开 API，
+  其 `#include <decimal.hh>` 靠 `-I {SDK}/include/phpx` 命中
 - `lib/musl/` 里是 musl 的启动文件：`libphp.a` 内嵌的是 **musl libc**，
   最终可执行文件必须用 musl 的 C 运行时（而不是目标机 glibc 的）链接
 
@@ -222,6 +227,43 @@ $ ./phpx_demo
 hello phpx
 sum=3
 ```
+
+### 用 phpx 的 Decimal（依赖 decimal.hh）
+
+`phpx_decimal.h` 提供高精度十进制计算，其内部的 `#include <decimal.hh>`
+由 SDK 的 `include/phpx/decimal.hh` 提供：
+
+```cpp
+/* decimal_demo.cc */
+#include "sapi/embed/php_embed.h"
+#include "phpx.h"
+#include "phpx_decimal.h"
+
+using namespace php;
+
+int main(int argc, char *argv[])
+{
+	php_embed_init(argc, argv);
+
+	Variant a = toDecimal(String("123.456"));
+	Variant b = toDecimal(String("0.544"));
+	Variant sum = Decimal::add(a, b);
+	echo("a+b=%s\n", Decimal::toString(sum).toCString());
+
+	php_embed_shutdown();
+	return 0;
+}
+```
+
+编译命令与上面的 phpx 示例完全一致（只是源文件换成 `decimal_demo.cc`）。
+运行：
+
+```shell
+$ ./decimal_demo
+a+b=124.000
+```
+
+能得到精确结果，说明 `libphpx.a` 里内置的 mpdecimal 符号工作正常。
 
 ---
 

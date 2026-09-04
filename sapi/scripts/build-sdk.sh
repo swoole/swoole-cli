@@ -106,12 +106,15 @@ echo "musl crt      : ${CRT_SRC} -> lib/musl/"
         | tar -xf - -C "${SDK_ROOT}/include/phpx/"
 )
 
-# 3.1 mpdecimal 头（phpx 的 decimal 依赖，phpx_decimal.h 用 #include <decimal.hh>，
-#     平铺到 include/ 根，与 /usr/include 效果一致）
+# 3.1 mpdecimal 头（phpx 的 decimal 依赖）
+#     phpx_decimal.h 用 #include <decimal.hh>，是 phpx 公开 API 的一部分，
+#     放在 include/phpx/ 下与 phpx 自身头文件同目录，
+#     用户 -I {SDK}/include/phpx 即可一并找到，不必再额外加 include 路径。
+#     （wren_gc.h 不导出：只被 phpx 内部 native_gc.cc 引用，公开头完全抽象了 wren_gc）
 for h in \
     "${WORK_DIR}/thirdparty/phpx/thirdparty/mpdecimal/libmpdec++/decimal.hh" \
     "${WORK_DIR}/thirdparty/phpx/thirdparty/mpdecimal/libmpdec/mpdecimal.h"; do
-    [ -f "$h" ] && cp -f "$h" "${SDK_ROOT}/include/"
+    [ -f "$h" ] && cp -f "$h" "${SDK_ROOT}/include/phpx/"
 done
 
 # 4. 第三方库头文件（直接平铺到 include/ 根，保持各自的相对子目录，如 openssl/、curl/）
