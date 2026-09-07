@@ -6,6 +6,12 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $mpfr_prefix = MPFR_PREFIX;
     $gmp_prefix = GMP_PREFIX;
+    $configureEnvironment = $p->isIphoneOs()
+        ? 'CFLAGS="$CFLAGS -fPIC"'
+        : 'CFLAGS="-fPIC"';
+    $targetOptions = $p->isIphoneOs()
+        ? " \\\n            --host=arm-apple-darwin"
+        : '';
     $p->addLibrary(
         (new Library('mpfr'))
             ->withHomePage('https://www.mpfr.org/')
@@ -19,13 +25,13 @@ return function (Preprocessor $p) {
                 <<<EOF
             ./configure --help
 
-            CFLAGS="-fPIC" \
+            {$configureEnvironment} \
             ./configure \
             --prefix={$mpfr_prefix} \
             --with-gmp={$gmp_prefix} \
             --enable-static=yes \
             --enable-shared=no \
-            --with-pic
+            --with-pic{$targetOptions}
 
 EOF
             )

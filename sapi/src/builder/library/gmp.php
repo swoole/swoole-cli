@@ -5,6 +5,12 @@ use SwooleCli\Preprocessor;
 
 return function (Preprocessor $p) {
     $gmp_prefix = GMP_PREFIX;
+    $configureEnvironment = $p->isIphoneOs()
+        ? 'CFLAGS="$CFLAGS -fPIC" CXXFLAGS="$CXXFLAGS -fPIC"'
+        : 'CFLAGS="-fPIC"';
+    $targetOptions = $p->isIphoneOs()
+        ? " \\\n            --host=arm-apple-darwin \\\n            --disable-assembly"
+        : '';
     $p->addLibrary(
         (new Library('gmp'))
             ->withHomePage('https://gmplib.org/')
@@ -18,13 +24,13 @@ return function (Preprocessor $p) {
                 <<<EOF
             ./configure --help
 
-            CFLAGS="-fPIC" \
+            {$configureEnvironment} \
             ./configure \
             --prefix=$gmp_prefix \
             --enable-static=yes \
             --enable-shared=no \
             --enable-cxx \
-            --with-pic
+            --with-pic{$targetOptions}
 
 EOF
             )

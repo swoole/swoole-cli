@@ -81,6 +81,7 @@ curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtim
 
 - [linux 版构建文档](docs/linux.md)
 - [macOS 版构建文档](docs/macOS.md)
+- [iPhoneOS arm64 SDK 构建文档](docs/iOS.md)
 - [windows Cygwin 版构建文档](docs/Cygwin.md)
 - [windows WSL 版构建文档](docs/wsl.md)
 - [swoole-cli 构建选项文档](docs/options.md)

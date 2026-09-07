@@ -16,13 +16,13 @@ ROOT=<?= $this->getRootDir() . PHP_EOL ?>
 PREPARE_ARGS="<?= implode(' ', $this->getPrepareArgs())?>"
 export LOGICAL_PROCESSORS=<?= trim($this->logicalProcessors). PHP_EOL ?>
 export CMAKE_BUILD_PARALLEL_LEVEL=<?= $this->maxJob. PHP_EOL ?>
-<?php if ($this->isMacos()) :?>
+<?php if ($this->isMacos() && !$this->isIphoneOs()) :?>
 # 兼容 最低 macOS 版本
 export MACOSX_DEPLOYMENT_TARGET=12.0
 <?php endif; ?>
-export CC=<?= $this->cCompiler . PHP_EOL ?>
-export CXX=<?= $this->cppCompiler . PHP_EOL ?>
-export LD=<?= $this->lld . PHP_EOL ?>
+export CC=<?= escapeshellarg($this->cCompiler) . PHP_EOL ?>
+export CXX=<?= escapeshellarg($this->cppCompiler) . PHP_EOL ?>
+export LD=<?= escapeshellarg($this->lld) . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 
@@ -262,10 +262,10 @@ make_build() {
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
     make -j <?= $this->maxJob ?> ;
 
-<?php if ($this->isMacos()) : ?>
+<?php if ($this->isMacos() && !$this->isIphoneOs()) : ?>
     xattr -cr <?= $this->getWorkDir() ?>/bin/swoole-cli
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
-<?php else : ?>
+<?php elseif (!$this->isIphoneOs()) : ?>
     { ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
@@ -286,22 +286,42 @@ make_libphp() {
     rm -f libs/libphp.a
     make -j <?= $this->maxJob ?> libs/libphp.a
 
+<?php if (!$this->isIphoneOs()) : ?>
     # make 产出纯 PHP 目标文件归档（libs/libphp.a），合成脚本会在此基础上
     # 合并 <?= $this->getGlobalPrefix() ?> 下的第三方静态库与 musl libc，
     # 最终覆盖产出与 bin/swoole-cli 同等自包含的 libs/libphp.a（不保留中间产物）
     bash ./sapi/scripts/build-libphp.sh
+<?php else : ?>
+    # Keep libphp and its target dependencies as separate archives. Apple
+    # libc/libc++ are supplied by the final Xcode link.
+<?php endif; ?>
 }
 
 make_phpx() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+<?php if ($this->isIphoneOs()) : ?>
+    WORK_DIR=<?= escapeshellarg($this->getWorkDir()) ?> \
+    GLOBAL_PREFIX=<?= escapeshellarg($this->getGlobalPrefix()) ?> \
+        bash ./sapi/scripts/stage-iphoneos-sdk.sh
+    bash ./thirdparty/phpx/ios/build.sh \
+        --prefix ./thirdparty/phpx/ios/iphoneos-arm64 \
+        --build-dir ./thirdparty/iphoneos-arm64/phpx-build \
+        --jobs <?= $this->maxJob ?>
+<?php else : ?>
     # 用 phpx 仓库的 full-static/ 独立构建目录编译全静态 libphpx.a
     bash ./sapi/scripts/build-phpx.sh
+<?php endif; ?>
 }
 
 make_sdk() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
+<?php if ($this->isIphoneOs()) : ?>
+    WORK_DIR=<?= escapeshellarg($this->getWorkDir()) ?> \
+        bash ./sapi/scripts/package-iphoneos-sdk.sh
+<?php else : ?>
     # 打包 SDK：libphp.a / libphpx.a + php/phpx/第三方库头文件
     bash ./sapi/scripts/build-sdk.sh
+<?php endif; ?>
 }
 
 make_archive() {
@@ -543,4 +563,3 @@ elif [ "$1" = "sync" ] ;then
 else
     help
 fi
-

@@ -11,6 +11,13 @@ $homeDir = getenv('HOME');
 $p = Preprocessor::getInstance();
 $p->parseArguments($argc, $argv);
 
+if ($p->isIphoneOs()
+    && trim((string) shell_exec('xcrun --sdk iphoneos --show-sdk-path 2>/dev/null')) === ''
+) {
+    fwrite(STDERR, "iphoneos-arm64 requires full Xcode and the iPhoneOS SDK" . PHP_EOL);
+    exit(1);
+}
+
 $buildType = $p->getBuildType();
 if ($p->getInputOption('with-build-type')) {
     $buildType = $p->getInputOption('with-build-type');
@@ -36,11 +43,18 @@ if (!$buildInContainer) {
     $p->setBuildDir(__DIR__ . '/thirdparty');
 }
 
+if ($p->isIphoneOs()) {
+    // Host tools still run on macOS, but every target object and dependency
+    // gets a separate build/prefix so Homebrew artifacts cannot leak in.
+    $p->setWorkDir(__DIR__);
+    $p->setBuildDir(__DIR__ . '/thirdparty/iphoneos-arm64');
+}
+
 // --with-work-dir=DIR 优先级最高，用于显式覆盖工作目录
 if ($p->getInputOption('with-work-dir')) {
     $workDir = rtrim($p->getInputOption('with-work-dir'), '/');
     $p->setWorkDir($workDir);
-    $p->setBuildDir($workDir . '/thirdparty');
+    $p->setBuildDir($workDir . ($p->isIphoneOs() ? '/thirdparty/iphoneos-arm64' : '/thirdparty'));
 }
 
 // 在宿主机上直接创建 thirdparty 目录，并确保当前用户可写。
@@ -71,11 +85,13 @@ $p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
 // 下载/更新 swoole-src（脚本内部按 SWOOLE-VERSION.conf 判断是否需要 checkout）
 // 用 passthru 让脚本输出与退出码透传，下载失败（如网络超时）时能看到具体错误
-$swoole_download_status = 0;
-passthru('bash ' . __DIR__ . '/sapi/scripts/download-swoole-src-archive.sh', $swoole_download_status);
-if ($swoole_download_status !== 0) {
-    fwrite(STDERR, "download swoole-src failed with exit code: {$swoole_download_status}" . PHP_EOL);
-    exit($swoole_download_status);
+if (!$p->isIphoneOs()) {
+    $swoole_download_status = 0;
+    passthru('bash ' . __DIR__ . '/sapi/scripts/download-swoole-src-archive.sh', $swoole_download_status);
+    if ($swoole_download_status !== 0) {
+        fwrite(STDERR, "download swoole-src failed with exit code: {$swoole_download_status}" . PHP_EOL);
+        exit($swoole_download_status);
+    }
 }
 
 // 下载/更新 phpx-src（脚本内部按 PHPX-VERSION.conf 判断 master 走 git、固定版本走归档下载）
@@ -88,13 +104,65 @@ if ($phpx_download_status !== 0) {
 
 if ($p->getInputOption('with-global-prefix')) {
     $p->setGlobalPrefix($p->getInputOption('with-global-prefix'));
+} elseif ($p->isIphoneOs()) {
+    $p->setGlobalPrefix(__DIR__ . '/var/iphoneos-arm64/deps');
 }
 
 if ($p->getInputOption('with-parallel-jobs')) {
     $p->setMaxJob(intval($p->getInputOption('with-parallel-jobs')));
 }
 
-if ($p->isMacos()) {
+if ($p->isIphoneOs()) {
+    $sdkRoot = trim((string) shell_exec('xcrun --sdk iphoneos --show-sdk-path 2>/dev/null'));
+    $clang = trim((string) shell_exec('xcrun --sdk iphoneos --find clang 2>/dev/null'));
+    $clangxx = trim((string) shell_exec('xcrun --sdk iphoneos --find clang++ 2>/dev/null'));
+    $ar = trim((string) shell_exec('xcrun --sdk iphoneos --find ar 2>/dev/null'));
+    $ranlib = trim((string) shell_exec('xcrun --sdk iphoneos --find ranlib 2>/dev/null'));
+    if ($sdkRoot === '' || $clang === '' || $clangxx === '' || $ar === '' || $ranlib === '') {
+        fwrite(STDERR, "iphoneos-arm64 requires full Xcode and the iPhoneOS SDK" . PHP_EOL);
+        exit(1);
+    }
+    if (preg_match('/\s/', $sdkRoot)) {
+        fwrite(STDERR, "The iPhoneOS SDK path must not contain whitespace: {$sdkRoot}" . PHP_EOL);
+        exit(1);
+    }
+
+    // export_variables() de-duplicates whitespace-separated flags, so every
+    // target option must remain a self-contained token. Otherwise sorting
+    // would separate `-target`/`-isysroot` from their operands.
+    $targetFlags = '--target=arm64-apple-ios15.0 -isysroot' . $sdkRoot . ' -miphoneos-version-min=15.0';
+    $p->setCCompiler($clang)
+        ->setCppCompiler($clangxx)
+        ->setLinker($clangxx)
+        ->withExportVariable('SDKROOT', $sdkRoot)
+        ->withExportVariable('AR', $ar)
+        ->withExportVariable('RANLIB', $ranlib)
+        ->withVariable('CPPFLAGS', '$CPPFLAGS ' . $targetFlags)
+        ->withVariable('CFLAGS', '$CFLAGS ' . $targetFlags)
+        ->withVariable('CXXFLAGS', '$CXXFLAGS ' . $targetFlags)
+        ->withVariable('LDFLAGS', '$LDFLAGS ' . $targetFlags)
+        ->withExportVariable('PKG_CONFIG_LIBDIR', $p->getGlobalPrefix() . '/gmp/lib/pkgconfig:'
+            . $p->getGlobalPrefix() . '/mpfr/lib/pkgconfig');
+    $p->setExtraOptions(<<<'OPTIONS'
+    --host=arm-apple-darwin \
+    --disable-cli \
+    --disable-cgi \
+    --disable-phpdbg \
+    --disable-fpm \
+    --disable-fiber-asm \
+    --without-pcre-jit \
+    --without-pear
+OPTIONS);
+
+    $p->withBinPath('/opt/homebrew/opt/flex/bin')
+        ->withBinPath('/opt/homebrew/opt/bison/bin')
+        ->withBinPath('/opt/homebrew/opt/libtool/bin')
+        ->withBinPath('/opt/homebrew/opt/m4/bin')
+        ->withBinPath('/opt/homebrew/opt/automake/bin')
+        ->withBinPath('/opt/homebrew/opt/autoconf/bin')
+        ->withBinPath('/opt/homebrew/opt/gettext/bin');
+    $p->setLogicalProcessors('$(sysctl -n hw.ncpu)');
+} elseif ($p->isMacos()) {
     $p->setExtraLdflags('');
     exec("brew --prefix 2>&1", $output, $result_code);
     if ($result_code == 0) {
@@ -129,4 +197,3 @@ echo "      若要在宿主机上直接编译，请显式指定 --without-docker
 echo PHP_EOL;
 
 $p->execute();
-

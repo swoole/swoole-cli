@@ -17,6 +17,7 @@ class Preprocessor
 
     protected array $prepareArgs = [];
     protected string $osType = 'linux';
+    protected string $targetType = 'native';
     protected array $libraryList = [];
     protected array $extensionList = [];
 
@@ -123,6 +124,23 @@ class Preprocessor
     public function getOsType(): string
     {
         return $this->osType;
+    }
+
+    public function isIphoneOs(): bool
+    {
+        return $this->targetType === 'iphoneos-arm64';
+    }
+
+    public function setCCompiler(string $compiler): static
+    {
+        $this->cCompiler = $compiler;
+        return $this;
+    }
+
+    public function setCppCompiler(string $compiler): static
+    {
+        $this->cppCompiler = $compiler;
+        return $this;
     }
 
     public function getSystemArch(): string
@@ -581,9 +599,35 @@ class Preprocessor
     public function parseArguments(int $argc, array $argv): void
     {
         $this->prepareArgs = $argv;
-        // parse the parameters passed in by the user
+
+        // Resolve the build target before applying +/- extension overrides so
+        // argument order does not change the selected profile.
         for ($i = 1; $i < $argc; $i++) {
             $arg = $argv[$i];
+            if ($arg === '' || $arg[0] !== '@') {
+                continue;
+            }
+            $value = substr($arg, 1);
+            if ($value === 'iphoneos-arm64') {
+                if ($this->getRealOsType() !== 'macos') {
+                    throw new RuntimeException('iphoneos-arm64 must be cross-compiled on a macOS host');
+                }
+                $this->targetType = $value;
+                $this->inVirtualMachine = false;
+                $this->extEnabled = require __DIR__ . '/builder/enabled_extensions_iphoneos.php';
+            } else {
+                $this->targetType = 'native';
+                $this->inVirtualMachine = $value != $this->getRealOsType();
+                $this->setOsType($value);
+            }
+        }
+
+        // Apply options and explicit extension overrides after the profile.
+        for ($i = 1; $i < $argc; $i++) {
+            $arg = $argv[$i];
+            if ($arg === '') {
+                continue;
+            }
             $op = $arg[0];
             $value = substr($argv[$i], 1);
             if ($op == '+') {
@@ -598,9 +642,6 @@ class Preprocessor
                         unset($this->extEnabled[$key]);
                     }
                 }
-            } elseif ($op == '@') {
-                $this->inVirtualMachine = $value != $this->getRealOsType();
-                $this->setOsType($value);
             }
         }
     }
