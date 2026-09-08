@@ -37,6 +37,19 @@ if (!is_dir($thirdpartyDir)) {
     }
 }
 
+$varDir = __DIR__ . '/var';
+if (!is_dir($varDir)) {
+    mkdir($varDir, 0777, true);
+    chmod($varDir, 0777);
+} elseif (!is_writable($varDir)) {
+    @chmod($varDir, 0777);
+    if (!is_writable($varDir)) {
+        fwrite(STDERR, "var 目录不可写：{$varDir}" . PHP_EOL
+            . "请在构建容器内执行：chmod 777 /work/var" . PHP_EOL);
+        exit(1);
+    }
+}
+
 // 下载 php-src 源码（按 PHP-VERSION.conf 的版本，下载/解压到 var/php-<version>；
 // 容器内通过挂载即 /work/var/php-<version>）
 require __DIR__ . '/sapi/scripts/download-php-src-archive.php';
