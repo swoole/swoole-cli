@@ -8,27 +8,6 @@
 extern void swoole_cli_self_update(void);
 extern int fpm_main(int argc, char *argv[]);
 
-static inline void show_swoole_version(void) {
-    php_printf("Swoole %s (%s) (built: %s %s) (%s)\n",
-        SWOOLE_VERSION, cli_sapi_module.name, __DATE__, __TIME__,
-#ifdef ZTS
-        "ZTS"
-#else
-        "NTS"
-#endif
-#ifdef PHP_BUILD_COMPILER
-        " " PHP_BUILD_COMPILER
-#endif
-#ifdef PHP_BUILD_ARCH
-        " " PHP_BUILD_ARCH
-#endif
-#if ZEND_DEBUG
-        " DEBUG"
-#endif
-#ifdef HAVE_GCOV
-        " GCOV"
-#endif
-    );
-}
+void show_swoole_version(void);
 
 #endif /* PHP_CLI_SWOOLE_H */

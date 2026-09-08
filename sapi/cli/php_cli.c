@@ -453,6 +453,30 @@ static sapi_module_struct cli_sapi_module = {
 
 #include "php_cli_swoole.h"
 
+void show_swoole_version(void)
+{
+	php_printf("Swoole %s (%s) (built: %s %s) (%s)\n",
+		SWOOLE_VERSION, cli_sapi_module.name, __DATE__, __TIME__,
+#ifdef ZTS
+		"ZTS"
+#else
+		"NTS"
+#endif
+#ifdef PHP_BUILD_COMPILER
+		" " PHP_BUILD_COMPILER
+#endif
+#ifdef PHP_BUILD_ARCH
+		" " PHP_BUILD_ARCH
+#endif
+#if ZEND_DEBUG
+		" DEBUG"
+#endif
+#ifdef HAVE_GCOV
+		" GCOV"
+#endif
+	);
+}
+
 static const zend_function_entry additional_functions[] = {
 	PHP_FE(cli_set_process_title,        arginfo_cli_set_process_title)
 	PHP_FE(cli_get_process_title,        arginfo_cli_get_process_title)
