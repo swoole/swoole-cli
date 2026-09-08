@@ -90,7 +90,9 @@ jobs:
           set -euo pipefail
           archive=$(find runtime-layer -maxdepth 1 -name '*.tar.xz' -print -quit)
           test -n "${archive}"
-          tar -tJf "${archive}" | grep -q '/lib/libphp.a$'
+          archive_listing="${RUNNER_TEMP}/android-runtime-layer-files.txt"
+          tar -tJf "${archive}" > "${archive_listing}"
+          grep -q '/lib/libphp.a$' "${archive_listing}"
           package_root=${archive%.tar.xz}
           test "$(sed -n 's/.*"target": "\([^"]*\)".*/\1/p' \
             "${package_root}/manifest.json")" = android-arm64-v8a
