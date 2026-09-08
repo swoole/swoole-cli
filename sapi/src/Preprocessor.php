@@ -229,9 +229,6 @@ class Preprocessor
         $this->setExtraOptions(<<<'OPTIONS'
     --host=aarch64-apple-darwin \
     --disable-cli \
-    --disable-cgi \
-    --disable-phpdbg \
-    --disable-fpm \
     --disable-fiber-asm \
     --without-pcre-jit \
     --without-pear
