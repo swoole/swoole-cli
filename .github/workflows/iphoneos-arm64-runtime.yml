@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   iphoneos-arm64:
+    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[iphoneos-arm64]') }}
     runs-on: macos-15
     timeout-minutes: 120
 
