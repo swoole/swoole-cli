@@ -4,7 +4,9 @@ on: [ push, pull_request ]
 
 jobs:
   linux-glibc:
-    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-glibc]') }}
+    # 已临时停用：该构建版本作用不大。
+    # 恢复方法：把下面的 if: false 改回 -> if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[linux-glibc]') }}
+    if: false
     strategy:
       fail-fast: false
       matrix:
