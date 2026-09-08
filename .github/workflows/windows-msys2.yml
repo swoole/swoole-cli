@@ -6,7 +6,9 @@ on:
 
 jobs:
   windows-msys2:
-    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-msys2]') }}
+    # 已临时停用：swoole 已支持原生 Windows，msys2 构建暂停，后续将迁移为原生 Windows workflow。
+    # 恢复方法：把下面的 if: false 改回 -> if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-msys2]') }}
+    if: false
     runs-on: windows-2022
     steps:
       - name: Show Environment Info

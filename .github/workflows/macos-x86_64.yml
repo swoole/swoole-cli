@@ -4,7 +4,9 @@ on: [ push, pull_request ]
 
 jobs:
   macos-x86_64:
-    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[macos-x86_64]') }}
+    # 已临时停用：Apple 已于 2026-09-01 宣布停止支持 x86，macos-x86_64 构建暂停。
+    # 恢复方法：把下面的 if: false 改回 -> if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[macos-x86_64]') }}
+    if: false
     runs-on: macos-15-intel
     # macos-latest (macos-14)  变更了 CPU 架构，由 x86_64 变更为 arm64
     # macos-14 CPU 架构 arm64

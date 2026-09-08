@@ -4,7 +4,9 @@ on: [ push, pull_request ]
 
 jobs:
   windows-cygwin:
-    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-cygwin]') }}
+    # 已临时停用：swoole 已支持原生 Windows，cygwin 构建暂停，后续将迁移为原生 Windows workflow。
+    # 恢复方法：把下面的 if: false 改回 -> if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[windows-cygwin]') }}
+    if: false
     runs-on: windows-2022
     steps:
       - name: Show Environment Info
@@ -46,7 +48,30 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cygwin-ccache-
 
+      - name: Cache Cygwin environment
+        # 缓存整个已安装好的 Cygwin 环境（dev 包 + re2c + 源码编译的 libzip/libyuv/libavif）。
+        # 命中时跳过下面的 Install Cygwin / Install packages / re2c / install deps 步骤，
+        # 避免每次运行都从 cygwin.com 下载 setup.exe 并重装全部包。
+        # key 不随 commit 变化，仅当上述安装脚本（包列表/依赖版本）变更时才失效重建。
+        id: cache-cygwin-env
+        uses: actions/cache@v5
+        with:
+          path: D:\cygwin
+          key: cygwin-env-v1-${{ hashFiles('sapi/quickstart/windows/cygwin-build/install-cygwin.bat', 'sapi/scripts/cygwin/install-re2c.sh', 'sapi/scripts/msys2/install-libzip.sh', 'sapi/scripts/msys2/install-libyuv.sh', 'sapi/scripts/msys2/install-libavif.sh') }}
+
+      - name: Recreate C:\cygwin junction on cache hit
+        # cygwin-install-action 会把 C:\cygwin 建成指向 D:\cygwin 的 junction；
+        # 缓存命中时该 action 不会执行，这里手动重建 junction，并把 D:\cygwin\bin 加回 PATH
+        # （install action 的 add-to-path 默认行为，供后续默认 pwsh 步骤中的 bash 使用）
+        if: steps.cache-cygwin-env.outputs.cache-hit == 'true'
+        shell: pwsh
+        run: |
+          if (Test-Path -LiteralPath 'C:\cygwin') { cmd /c rmdir 'C:\cygwin' }
+          cmd /c mklink /d 'C:\cygwin' 'D:\cygwin'
+          Add-Content -Path $env:GITHUB_PATH -Value 'D:\cygwin\bin'
+
       - name: Install Cygwin
+        if: steps.cache-cygwin-env.outputs.cache-hit != 'true'
         uses: cygwin/cygwin-install-action@v6
         with:
           site: https://mirrors.kernel.org/sourceware/cygwin/
@@ -65,17 +90,20 @@ jobs:
 
       - name: Install Cygwin Packages with powershell
         # 备注：github action 在 windows 上执行命令默认的 shell 是 powershell，如果要使用其它shell , 需要手动指定，例如此也可以使用 bash 来安装 cygwin packages
-        if: 1
+        if: steps.cache-cygwin-env.outputs.cache-hit != 'true'
         run: |
           Copy-Item -Path "d:\setup.exe" -Destination "${{ github.workspace }}\setup-x86_64.exe"
           cmd /c .\sapi\quickstart\windows\cygwin-build\install-cygwin.bat
 
       - name: Install re2c
+        if: steps.cache-cygwin-env.outputs.cache-hit != 'true'
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash ./sapi/scripts/cygwin/install-re2c.sh
 
       - name: install deps lib with source code
+        # libzip/libyuv/libavif 已随 Cygwin 环境缓存；命中时跳过，避免重复编译
+        if: steps.cache-cygwin-env.outputs.cache-hit != 'true'
         shell: C:\cygwin\bin\bash.EXE --noprofile --norc -e -o pipefail -o igncr   {0}
         run: |
           bash sapi/download-box/download-box-get-archive-from-server.sh
