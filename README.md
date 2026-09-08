@@ -1,183 +1,176 @@
 # swoole-cli
 
-`Swoole-Cli` 是一个 `PHP`的二进制发行版，<br/>
-集成了 `swoole`、`php 内核`、`php-cli`、`php-fpm`以及多个常用扩展。<br/>
-`Swoole-Cli`是全部静态编译打包的，不依赖任何操作系统的`so`
-动态链接库，具备非常好的移植性，<br/>
-可以在任意 `Linux`/`macOS`/`Windows(CygWin)`系统之间复制，下载即可使用。
+> Language: **English** | [中文](README.zh-CN.md)
 
-> 作为 PHP 开发者都应该知道 PHP 有两种运行模式：php-fpm和php-cli，<br/>
-> 那么在 Swoole 5.0 中将迎来一种新的运行模式：swoole-cli。<br/>
-> <strong>
-> Swoole将像node.js这样作为独立程序提供给用户，而不是作为PHP的一个扩展。
-> </strong><br/>
-> 除此之外swoole-cli会尽可能地对php-src进行裁剪，<br/>
-> 移除一些不用的机制、模块、扩展、函数、类型、常量、代码，使得整个程序可以在几分钟之内编译完成。
+## What is swoole-cli?
 
-## 相关文章
+`swoole-cli` is a **standalone, statically-linked PHP binary distribution**.
 
-- [Swoole-Cli 介绍、使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole-Cli 6.1 版本已发布，PHP 更新至 8.4](https://mp.weixin.qq.com/s/V9HrgUZav6gws1_d6Sucig)
-- [Swoole-Cli v6.1 将允许对 array/string/stream 类型使用内置方法](https://mp.weixin.qq.com/s/RmdKC5TLREwjcJFc-upZLQ)
-- [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://wenda.swoole.com/detail/108931)
-- [Swoole-Cli v5.0.1 使用说明](https://wenda.swoole.com/detail/108876)
-- [Swoole-Cli v5.0.0 版本新特性预览之新的运行模式](https://wenda.swoole.com/detail/108706)
-- [Swoole-Cli 已提供 Windows 平台 （cygwin64）支持](https://wenda.swoole.com/detail/108743)
-- [Swoole 6.2 正式版已发布，增加 10 项新功能](https://mp.weixin.qq.com/s/VsUfNVN-HLFeix1VfLILYw)
-- [Swoole 6.2 革命性升级：iouring 替代 epoll，异步 IO 性能飙升至 Golang 的 3 倍、Node.js 的 4.4 倍！](https://mp.weixin.qq.com/s/bcrHZeF1Yu5ITstsl7rLlQ)
-- [Swoole v6.2 已悄然构建起媲美 Golang/Node.js 的完整 PHP 异步并发编程生态体系](https://mp.weixin.qq.com/s/6Qr2SZ68hkoRmhugTxnIQA)
-- [Swoole 6.2 将内置全新的阻塞 IO 检测工具](https://mp.weixin.qq.com/s/wSyIltuQ0brZMBjpUBUolQ)
-- [基于 Swoole RemoteObject 模块实现 MongoDB 协程客户端](https://mp.weixin.qq.com/s/hOVWeg091Ygm4MREugCOfA)
-- [Swoole v6.1 关于 mutex、rwlock、spinlock 的重构](https://mp.weixin.qq.com/s/0cQ9t0dwAJ7dPynk3RVWYQ)
-- [Swoole v6.1 将提供 typed array 强类型数组实现，增强 PHP 标准库](https://mp.weixin.qq.com/s/yFuxYdNMqxI1VuZg0J07Wg)
-- [Swoole v6 2024 重磅更新：Swoole v6 正式发布，增加 16 项新功能](https://mp.weixin.qq.com/s/Ks1x1LNTLdl5jk0sIS6V_w)
-- [Swoole v6 协程是否支持 PHP 的 JIT ](https://mp.weixin.qq.com/s/Tm-6XVGQSlz0vDENLB3ylA)
-- [Swoole v6 Alpha 版本已发布，为 PHP 带来稳定可靠、生产可用的多线程方案](https://mp.weixin.qq.com/s/IeCGVRFQDVbzVWCIZRGFNg)
-- [Swoole v6 将引入 Linux io_uring ，并发读写文件性能提升了 5 倍](https://mp.weixin.qq.com/s/5qnqmjCEb_zxLaT4sR1HAg)
-- [Swoole v6 线程池的使用](https://mp.weixin.qq.com/s/wzdH7voOWcHCLuf16SLeIA)
-- [Swoole v6 PHP 多线程实现原理 深度剖析](https://mp.weixin.qq.com/s/HzPEg7g3PuN2Xky4EQfnHw)
-- [Swoole v6 要来了！即将增加多线程支持](https://segmentfault.com/a/1190000044737434)
-- [Swoole v6 开发计划 - 支持多线程运行模式](https://github.com/swoole/rfc/issues/85)
-- [Swoole v5.1 增加更多数据库协程客户端支持](https://wenda.swoole.com/detail/109023)
-- [phpy v2.2 支持了操作符重载，可直接使用 PHP 语法编写 Numpy 程序](https://mp.weixin.qq.com/s/Xxb6r_IXtnXTrv7CpTvcFg)
-- [phpy 2025 支持了更多高级语法](https://mp.weixin.qq.com/s/YCG5ENAVOKzxcdD1Qdepbg)
-- [phpy 1.0.8 已发布，现在 PHP 类可以继承 Python 类了](https://mp.weixin.qq.com/s/mosUpNpm-iY2-vlGZQMlsA)
-- [phpy 中如何调用自定义 Python 模块](https://mp.weixin.qq.com/s/KOV-XZQVqZSXkMQoiDrsMA)
-- [phpy 连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://wenda.swoole.com/detail/109176)
+It packages the PHP engine (CLI/FPM), the Swoole extension, and many commonly used
+extensions into a single executable. Everything is compiled statically — it has no
+dependency on system shared libraries (`*.so`), so you can copy it between machines
+and run it immediately.
 
-### 相关文章 知乎
+Unlike the traditional "PHP + swoole extension" model, Swoole runs here as an
+independent program (similar to Node.js), not as a PHP add-on. The project also trims
+`php-src` aggressively so the whole binary can be built in a few minutes.
 
-- [Swoole-Cli v5.0.1 PHP 的二进制发行版](https://zhuanlan.zhihu.com/p/581695339)
-- [Swoole-Cli v5.0.2 增加 opcache/readline 扩展，强化 Cli-Server](https://zhuanlan.zhihu.com/p/610014616)
-- [Swoole v6 即将增加多线程支持](https://zhuanlan.zhihu.com/p/688462525)
-- [phpy：连接 PHP 与 Python 互调用库，为 PHP 引入 Python 生态，PHP 也可以写 AI 了](https://zhuanlan.zhihu.com/p/670373512)
+### Highlights
 
-## [常见问题解答](https://github.com/swoole/swoole-cli/blob/main/docs/FAQ.md)
+- Single static binary, zero system runtime dependencies, high portability
+- Built-in `swoole`, `php-cli`, `php-fpm` and a rich set of common extensions
+- Download & run — no installation required
+- Source build pipeline generates `make.sh` for one-command builds on each platform
 
-## 下载`swoole-cli`发行版
+## Download & quick start
 
-- [https://www.swoole.com/download](https://www.swoole.com/download) (recommend)
-- [https://github.com/swoole/swoole-cli/releases](https://github.com/swoole/swoole-cli/releases)
-- [https://github.com/swoole/swoole-src/releases](https://github.com/swoole/swoole-src/releases)
+Release binaries are available at:
 
-## 立即使用 swoole-cli
+- https://www.swoole.com/download
+- https://github.com/swoole/swoole-cli/releases
+
+Install the latest release:
 
 ```shell
-
+# Linux / macOS
 curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash
 
-# windows powershell
+# Windows (PowerShell)
 irm https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.ps1?raw=true | iex
+```
 
-# 来自 https://www.swoole.com/download
+Optional flags (see `setup-swoole-cli-runtime.sh -h`):
+
+```shell
+# Use the China mirror (https://www.swoole.com/download)
 curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --mirror china
 
-# 指定发布版本
-curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --version  v5.1.6.0
-
+# Pin a specific release version
+curl -fSL https://github.com/swoole/swoole-cli/blob/main/setup-swoole-cli-runtime.sh?raw=true | bash -s -- --version v6.2.2.1
 ```
 
-## `swoole-cli`构建文档
+## Supported platforms
 
-- [linux 版构建文档](docs/linux.md)
-- [macOS 版构建文档](docs/macOS.md)
-- [iPhoneOS arm64 PHP Runtime Layer 构建文档](docs/iOS.md)
-- [windows Cygwin 版构建文档](docs/Cygwin.md)
-- [windows WSL 版构建文档](docs/wsl.md)
-- [swoole-cli 构建选项文档](docs/options.md)
-- [构建完全静态的 libphp.a 教程](docs/libphp.md)
-- [构建 PHP Runtime Layer](docs/sdk.md)
-- [构建依赖可视化工具教程](docs/dependency-graph.md)
-- [打包成二进制可执行文件 文档](sapi/samples/sfx/README.md)
-- [swoole-cli 搭建依赖库镜像服务](sapi/download-box/README.md)
-- [快速初始化构建环境](sapi/quickstart/README.md)
+| Platform | Target | Artifact |
+|---|---|---|
+| Linux x86_64 | `swoole-cli` | Full static binary (`.tar.xz`) |
+| Linux aarch64 | `swoole-cli` | Full static binary (`.tar.xz`) |
+| macOS arm64 | `swoole-cli` | Full static binary (`.tar.xz`) |
+| iPhoneOS arm64 | PHP Runtime Layer | `libphp.a` runtime layer (`runtime-layer/*.tar.xz`) |
+| Android arm64-v8a | PHP Runtime Layer | `libphp.a` runtime layer (`runtime-layer/*.tar.xz`) |
+| Windows | — | Native Windows support is under development. The legacy Cygwin/MSYS2 build scripts have been discontinued (kept under `.github/backup/`). |
 
-## Clone
+## Build from source
+
+### Prerequisites
+
+- `git`, PHP 8.x (`php-cli` with `curl`/`json`/`posix`) or run `bash setup-php-runtime.sh`
+  to obtain a managed build PHP runtime
+- `composer`
+- `docker` for the default Linux container build (not required for `--without-docker`)
+
+### Common pipeline
 
 ```shell
-git clone https://github.com/swoole/swoole-cli.git
-```
+git clone https://github.com/swoole/swoole-cli.git && cd swoole-cli
 
-## 快速准备 PHP 运行时
-
-```shell
-cd swoole-cli
-
+# 1. prepare the host PHP runtime (optional; used to run composer/prepare.php)
 bash setup-php-runtime.sh
-# 来自 https://www.swoole.com/download
-bash setup-php-runtime.sh --mirror china
 
-# 使用swoole-cli
-# shell脚本中启用别名扩展功能‌
-shopt -s expand_aliases
-__DIR__=$(pwd)
-export PATH="${__DIR__}/var/runtime/php/:$PATH"
-alias php="php -d curl.cainfo=${__DIR__}/var/runtime/php/cacert.pem -d openssl.cafile=${__DIR__}/var/runtime/php/cacert.pem"
-which php
-php -v
-
-```
-
-## 生成构建脚本
-
-```shell
+# 2. install composer dependencies and generate make.sh
 composer install
-php prepare.php
-php prepare.php +inotify +mongodb -mysqli
+php prepare.php               # add/remove extensions: php prepare.php +inotify -mysqli
+
+# 3. build
+./make.sh all-library         # build the third-party C/C++ dependency libraries
+./make.sh config              # configure the PHP build
+./make.sh build               # compile swoole-cli -> bin/swoole-cli
+./make.sh archive             # package into swoole-cli-{version}-{os}-{arch}.tar.xz
 ```
 
-* 脚本会自动下载相关的`C/C++`库以及`PECL`扩展
-* 可使用`+{ext}`或者`-{ext}`增减扩展
+Use `+{ext}` / `-{ext}` to enable / disable extensions, `@{os}` to pick a build
+target, and `--` options to tweak the build. See [docs/options.md](docs/options.md).
 
-## 进入 Docker Bash
+### Linux (x86_64 / aarch64)
+
+The default pipeline runs inside an Alpine container for a fully static `glibc`-free
+build:
 
 ```shell
-./make.sh docker-bash
+./make.sh docker-bash        # enter the builder container (repo mapped to /work)
+# inside the container:
+composer install
+php prepare.php --with-static-pie --with-libavif
+bash make.sh all-library
+bash make.sh config
+bash make.sh build
+bash make.sh archive
 ```
 
-> 需要将 `swoole-cli` 的目录映射到容器的 `/work` 目录
-
-## 构建 `C/C++` 依赖库
+To build directly on a Linux host with the system toolchain, pass `--without-docker`:
 
 ```shell
+php prepare.php --without-docker --with-libavif
+./make.sh all-library && ./make.sh config && ./make.sh build
+```
+
+Details: [docs/linux.md](docs/linux.md)
+
+### macOS (arm64)
+
+```shell
+bash sapi/quickstart/macos/macos-init.sh   # install brew toolchain deps
+php prepare.php --without-docker=1 --with-libavif
 ./make.sh all-library
-```
-
-## 编译配置
-
-```shell
 ./make.sh config
-```
-
-## 构建 swoole-cli
-
-```shell
 ./make.sh build
-```
-
-> 编译成功后会生成`bin/swoole-cli`
-
-## 打包
-
-```shell
 ./make.sh archive
 ```
 
-> 打包成功后会生成 `swoole-cli-{version}-{os}-{arch}.tar.xz`
-> 压缩包，包含 `swoole-cli` 可执行文件、`LICENSE` 授权协议文件。
+Details: [docs/macOS.md](docs/macOS.md)
 
-## 授权协议
+### iPhoneOS / Android (PHP Runtime Layer)
 
-* `swoole-cli` 使用了多个其他开源项目，请认真阅读自动生成的 `bin/LICENSE`
-  文件中版权协议，遵守对应开源项目的 `LICENSE`
-* `swoole-cli`
-  本身的软件源代码、文档等内容以 `Apache 2.0 LICENSE`+`SWOOLE-CLI LICENSE`
-  作为双重授权协议，用户需要同时遵守 `Apache 2.0 LICENSE`和`SWOOLE-CLI LICENSE`
-  所规定的条款
+Cross-compile a static `libphp.a` PHP runtime layer for mobile targets; the final
+SDK is assembled by the consuming project (e.g. swoole/phpx):
 
-## SWOOLE-CLI LICENSE
+```shell
+# iPhoneOS arm64
+php prepare.php @iphoneos-arm64 --with-parallel-jobs=3
+bash make.sh all-library
+bash make.sh config
+bash make.sh libphp
+GLOBAL_PREFIX="$PWD/var/iphoneos-arm64/deps" \
+  bash sapi/scripts/package-php-runtime-layer.sh iphoneos-arm64
 
-* 对 `swoole-cli` 代码进行使用、修改、发布的新项目必须含有 `SWOOLE-CLI LICENSE`
-  的全部内容
-* 使用 `swoole-cli`
-  代码重新发布为新项目或者产品时，项目或产品名称不得包含 `swoole` 单词
+# Android arm64-v8a (requires Android NDK)
+php prepare.php @android-arm64-v8a --with-parallel-jobs=4
+bash make.sh all-library
+bash make.sh config
+bash make.sh libphp
+GLOBAL_PREFIX="$PWD/var/android-arm64-v8a/deps" \
+  bash sapi/scripts/package-php-runtime-layer.sh android-arm64-v8a
+```
+
+Details: [docs/iOS.md](docs/iOS.md) · [docs/sdk.md](docs/sdk.md) · [docs/libphp.md](docs/libphp.md)
+
+### Related docs
+
+- [Build options](docs/options.md) · [Common questions](docs/FAQ.md)
+- [Extended extensions](docs/extensions.md) · [Dependency graph](docs/dependency-graph.md)
+- [Quickstart build environment](sapi/quickstart/README.md)
+- [Host a dependency-source mirror](sapi/download-box/README.md)
+
+## License
+
+- `swoole-cli` bundles many other open-source projects. Please review the license
+  notices in the auto-generated `bin/LICENSE` and comply with each upstream license.
+- The source code and documentation of `swoole-cli` itself are dual-licensed under
+  **Apache 2.0 LICENSE** and **SWOOLE-CLI LICENSE**; both licenses must be observed.
+
+### SWOOLE-CLI LICENSE
+
+- Any new project that uses, modifies, or distributes `swoole-cli` code must retain
+  all contents of the SWOOLE-CLI LICENSE.
+- When re-publishing `swoole-cli` code as a new project or product, the project or
+  product name must not contain the word `swoole`.
