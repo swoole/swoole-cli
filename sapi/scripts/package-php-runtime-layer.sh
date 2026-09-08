@@ -93,23 +93,29 @@ if [[ "${TARGET}" == android-arm64-v8a ]]; then
         exit 1
     fi
     readelf_path=$(find "${ndk_root}/toolchains/llvm/prebuilt" -path '*/bin/llvm-readelf' -print -quit)
-    ar_path=$(find "${ndk_root}/toolchains/llvm/prebuilt" -path '*/bin/llvm-ar' -print -quit)
-    if [[ -z "${readelf_path}" || -z "${ar_path}" ]]; then
-        echo "Android NDK archive tools were not found under ${ndk_root}." >&2
+    if [[ -z "${readelf_path}" ]]; then
+        echo "Android NDK llvm-readelf was not found under ${ndk_root}." >&2
         exit 1
     fi
-    probe_dir=$(mktemp -d)
-    trap 'rm -rf "${probe_dir}"' EXIT
-    first_member=$("${ar_path}" -t "${PACKAGE_ROOT}/lib/libphp.a" | sed -n '1p')
-    (
-        cd "${probe_dir}"
-        "${ar_path}" -x "${PACKAGE_ROOT}/lib/libphp.a" "${first_member}"
-    )
-    if ! "${readelf_path}" -h "${probe_dir}/${first_member}" | grep -q 'Machine:.*AArch64'; then
-        echo "libphp.a does not contain AArch64 objects." >&2
+    elf_headers=$(mktemp)
+    trap 'rm -f "${elf_headers}"' EXIT
+    if ! "${readelf_path}" -h "${PACKAGE_ROOT}/lib/libphp.a" > "${elf_headers}"; then
+        echo "Failed to inspect Android libphp.a." >&2
         exit 1
     fi
-    rm -rf "${probe_dir}"
+    if ! awk '
+        /Machine:/ {
+            found = 1
+            if ($0 !~ /AArch64/) {
+                invalid = 1
+            }
+        }
+        END { exit !(found && !invalid) }
+    ' "${elf_headers}"; then
+        echo "Android libphp.a contains missing or non-AArch64 ELF objects." >&2
+        exit 1
+    fi
+    rm -f "${elf_headers}"
     trap - EXIT
     printf '%s\n' 'typephp-android-arm64-v8a-api24-php-zts-pic-abi-v1' \
         > "${PACKAGE_ROOT}/.typephp-php-runtime-abi"

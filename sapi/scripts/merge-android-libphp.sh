@@ -24,8 +24,8 @@ done
 
 temporary=$(mktemp "${WORK_DIR}/libs/libphp.merged.XXXXXX")
 mri=$(mktemp "${WORK_DIR}/libs/libphp.mri.XXXXXX")
-probe_dir=$(mktemp -d "${WORK_DIR}/libs/libphp.probe.XXXXXX")
-trap 'rm -f "${temporary}" "${mri}"; rm -rf "${probe_dir}"' EXIT
+elf_headers=$(mktemp "${WORK_DIR}/libs/libphp.elf-headers.XXXXXX")
+trap 'rm -f "${temporary}" "${mri}" "${elf_headers}"' EXIT
 
 {
     echo "CREATE ${temporary}"
@@ -38,24 +38,33 @@ trap 'rm -f "${temporary}" "${mri}"; rm -rf "${probe_dir}"' EXIT
 "${AR}" -M < "${mri}"
 "${RANLIB}" "${temporary}"
 
-first_member=$("${AR}" -t "${temporary}" | sed -n '1p')
-if [[ -z "${first_member}" ]]; then
+if [[ -z "$("${AR}" -t "${temporary}" | sed -n '1p')" ]]; then
     echo "Merged Android libphp.a is empty." >&2
     exit 1
 fi
-(
-    cd "${probe_dir}"
-    "${AR}" -x "${temporary}" "${first_member}"
-)
-if ! "${READELF}" -h "${probe_dir}/${first_member}" | grep -q 'Machine:.*AArch64'; then
-    echo "Merged Android libphp.a does not contain AArch64 objects." >&2
+
+# Validate the complete archive instead of relying on its first member. MRI
+# archive member order is not an ABI guarantee and differs between ar versions.
+if ! "${READELF}" -h "${temporary}" > "${elf_headers}"; then
+    echo "Failed to inspect merged Android libphp.a." >&2
+    exit 1
+fi
+if ! awk '
+    /Machine:/ {
+        found = 1
+        if ($0 !~ /AArch64/) {
+            invalid = 1
+        }
+    }
+    END { exit !(found && !invalid) }
+' "${elf_headers}"; then
+    echo "Merged Android libphp.a contains missing or non-AArch64 ELF objects." >&2
     exit 1
 fi
 
 members=$("${AR}" -t "${temporary}" | wc -l | tr -d ' ')
 mv -f "${temporary}" "${PHP_ARCHIVE}"
 trap - EXIT
-rm -f "${mri}"
-rm -rf "${probe_dir}"
+rm -f "${mri}" "${elf_headers}"
 
 echo "Merged Android PHP and third-party objects into ${PHP_ARCHIVE} (${members} members)"
