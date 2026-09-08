@@ -131,6 +131,16 @@ class Preprocessor
         return $this->targetType === 'iphoneos-arm64';
     }
 
+    public function isAndroid(): bool
+    {
+        return $this->targetType === 'android-arm64-v8a';
+    }
+
+    public function isMobileTarget(): bool
+    {
+        return $this->isIphoneOs() || $this->isAndroid();
+    }
+
     /**
      * Configure paths, toolchains and flags for the selected build target.
      *
@@ -146,7 +156,7 @@ class Preprocessor
         }
 
         $buildInContainer = !$this->getInputOption('without-docker');
-        if ($this->isMacos()) {
+        if ($this->isMacos() || $this->isAndroid()) {
             $buildInContainer = false;
         }
 
@@ -155,23 +165,23 @@ class Preprocessor
             $this->setBuildDir($projectDir . '/thirdparty');
         }
 
-        if ($this->isIphoneOs()) {
+        if ($this->isMobileTarget()) {
             $this->setWorkDir($projectDir);
-            $this->setBuildDir($projectDir . '/thirdparty/iphoneos-arm64');
+            $this->setBuildDir($projectDir . '/thirdparty/' . $this->targetType);
         }
 
         $workDir = $this->getInputOption('with-work-dir');
         if ($workDir !== '') {
             $workDir = rtrim($workDir, '/');
             $this->setWorkDir($workDir);
-            $this->setBuildDir($workDir . ($this->isIphoneOs() ? '/thirdparty/iphoneos-arm64' : '/thirdparty'));
+            $this->setBuildDir($workDir . ($this->isMobileTarget() ? '/thirdparty/' . $this->targetType : '/thirdparty'));
         }
 
         $globalPrefix = $this->getInputOption('with-global-prefix');
         if ($globalPrefix !== '') {
             $this->setGlobalPrefix($globalPrefix);
-        } elseif ($this->isIphoneOs()) {
-            $this->setGlobalPrefix($projectDir . '/var/iphoneos-arm64/deps');
+        } elseif ($this->isMobileTarget()) {
+            $this->setGlobalPrefix($projectDir . '/var/' . $this->targetType . '/deps');
         }
 
         $parallelJobs = $this->getInputOption('with-parallel-jobs');
@@ -181,6 +191,8 @@ class Preprocessor
 
         if ($this->isIphoneOs()) {
             $this->configureIphoneOsEnvironment();
+        } elseif ($this->isAndroid()) {
+            $this->configureAndroidEnvironment();
         } elseif ($this->isMacos()) {
             $this->configureMacosEnvironment();
         } else {
@@ -188,8 +200,76 @@ class Preprocessor
             $this->setLogicalProcessors('$(nproc 2> /dev/null)');
         }
 
-        $this->setExtraCflags(' -Os');
+        $extraCflags = ' -Os';
+        if ($this->isAndroid()) {
+            $extraCflags .= ' -include ' . $this->getWorkDir() . '/sapi/android/php_android_compat.h';
+        }
+        $this->setExtraCflags($extraCflags);
         return $buildInContainer;
+    }
+
+    private function configureAndroidEnvironment(): void
+    {
+        $ndkRoot = getenv('ANDROID_NDK_HOME') ?: getenv('ANDROID_NDK_ROOT');
+        if (!is_string($ndkRoot) || $ndkRoot === '' || !is_dir($ndkRoot)) {
+            throw new RuntimeException(
+                'android-arm64-v8a requires ANDROID_NDK_HOME to point to an Android NDK'
+            );
+        }
+        $ndkRoot = rtrim($ndkRoot, '/');
+        $prebuiltRoots = glob($ndkRoot . '/toolchains/llvm/prebuilt/*', GLOB_ONLYDIR) ?: [];
+        $toolchain = $prebuiltRoots[0] ?? '';
+        if ($toolchain === '' || !is_executable($toolchain . '/bin/clang')) {
+            throw new RuntimeException('Android NDK LLVM toolchain was not found under: ' . $ndkRoot);
+        }
+
+        $api = getenv('TYPEPHP_ANDROID_API') ?: '24';
+        if (!preg_match('/^[0-9]+$/', $api) || (int) $api < 21) {
+            throw new RuntimeException('TYPEPHP_ANDROID_API must be an integer greater than or equal to 21');
+        }
+        $clang = $toolchain . '/bin/aarch64-linux-android' . $api . '-clang';
+        $clangxx = $toolchain . '/bin/aarch64-linux-android' . $api . '-clang++';
+        foreach ([$clang, $clangxx] as $compiler) {
+            if (!is_executable($compiler)) {
+                throw new RuntimeException('Android NDK compiler was not found: ' . $compiler);
+            }
+        }
+
+        $targetFlags = '-fPIC -Wno-unused-command-line-argument';
+        $linkFlags = '-Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384';
+        $pkgConfigDir = $this->getGlobalPrefix() . '/gmp/lib/pkgconfig:'
+            . $this->getGlobalPrefix() . '/mpfr/lib/pkgconfig';
+
+        $this->setCCompiler($clang)
+            ->setCppCompiler($clangxx)
+            ->setLinker($clangxx)
+            ->withExportVariable('ANDROID_NDK_HOME', $ndkRoot)
+            ->withExportVariable('ANDROID_API', $api)
+            ->withExportVariable('AR', $toolchain . '/bin/llvm-ar')
+            ->withExportVariable('RANLIB', $toolchain . '/bin/llvm-ranlib')
+            ->withExportVariable('STRIP', $toolchain . '/bin/llvm-strip')
+            ->withExportVariable('READELF', $toolchain . '/bin/llvm-readelf')
+            ->withExportVariable('NM', $toolchain . '/bin/llvm-nm')
+            ->withExportVariable('OBJDUMP', $toolchain . '/bin/llvm-objdump')
+            ->withExportVariable('CC_FOR_BUILD', '/usr/bin/cc')
+            ->withExportVariable('CPP_FOR_BUILD', '/usr/bin/cc -E')
+            ->withExportVariable('ac_cv_func_fork', 'no')
+            ->withExportVariable('ac_cv_func_vfork', 'no')
+            ->withExportVariable('ac_cv_func_posix_spawn_file_actions_addchdir_np', 'no')
+            // PHP's intmax_t probe executes the target binary unless cached.
+            ->withExportVariable('php_cv_sizeof_intmax_t', '8')
+            ->withVariable('CPPFLAGS', '$CPPFLAGS ' . $targetFlags)
+            ->withVariable('CFLAGS', '$CFLAGS ' . $targetFlags)
+            ->withVariable('CXXFLAGS', '$CXXFLAGS ' . $targetFlags)
+            ->withVariable('LDFLAGS', '$LDFLAGS ' . $linkFlags)
+            ->withExportVariable('PKG_CONFIG_LIBDIR', $pkgConfigDir);
+        $this->setExtraOptions(<<<'OPTIONS'
+    --host=aarch64-linux-android \
+    --disable-cli \
+    --without-pcre-jit \
+    --without-pear
+OPTIONS);
+        $this->setLogicalProcessors('$(nproc 2> /dev/null)');
     }
 
     private function configureIphoneOsEnvironment(): void
@@ -764,6 +844,13 @@ OPTIONS);
                 $this->targetType = $value;
                 $this->inVirtualMachine = false;
                 $this->extEnabled = require __DIR__ . '/builder/enabled_extensions_iphoneos.php';
+            } elseif ($value === 'android-arm64-v8a') {
+                if ($this->getRealOsType() !== 'linux') {
+                    throw new RuntimeException('android-arm64-v8a currently requires a Linux build host');
+                }
+                $this->targetType = $value;
+                $this->inVirtualMachine = false;
+                $this->extEnabled = require __DIR__ . '/builder/enabled_extensions_android.php';
             } else {
                 $this->targetType = 'native';
                 $this->inVirtualMachine = $value != $this->getRealOsType();

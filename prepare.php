@@ -46,7 +46,7 @@ $p->setPhpSrcDir($p->getWorkDir() . '/var/php-' . BUILD_PHP_VERSION);
 
 // 下载/更新 swoole-src（脚本内部按 SWOOLE-VERSION.conf 判断是否需要 checkout）
 // 用 passthru 让脚本输出与退出码透传，下载失败（如网络超时）时能看到具体错误
-if (!$p->isIphoneOs()) {
+if (!$p->isMobileTarget()) {
     $swoole_download_status = 0;
     passthru('bash ' . __DIR__ . '/sapi/scripts/download-swoole-src-archive.sh', $swoole_download_status);
     if ($swoole_download_status !== 0) {

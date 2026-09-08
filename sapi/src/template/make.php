@@ -24,8 +24,8 @@ export CC=<?= escapeshellarg($this->cCompiler) . PHP_EOL ?>
 export CXX=<?= escapeshellarg($this->cppCompiler) . PHP_EOL ?>
 export LD=<?= escapeshellarg($this->lld) . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
-<?php if ($this->isIphoneOs()) : ?>
-# Cross builds must never discover Homebrew libraries from the macOS host.
+<?php if ($this->isMobileTarget()) : ?>
+# Cross builds must never discover libraries from the build host.
 export PKG_CONFIG_PATH=<?= $this->getGlobalPrefix() ?>/gmp/lib/pkgconfig:<?= $this->getGlobalPrefix() ?>/mpfr/lib/pkgconfig
 export PKG_CONFIG_LIBDIR=$PKG_CONFIG_PATH
 <?php endif; ?>
@@ -47,7 +47,7 @@ OPTIONS="--disable-all \
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
-<?php if ($this->isIphoneOs()) : ?>
+<?php if ($this->isMobileTarget()) : ?>
     export_variables
 <?php endif; ?>
 
@@ -227,7 +227,7 @@ make_config() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     test -f ./configure &&  rm ./configure
     ./buildconf --force || { echo "[make.sh] buildconf failed" >&2; exit 1; }
-<?php if ($this->isLinux()) : ?>
+<?php if ($this->isLinux() && !$this->isAndroid()) : ?>
     mv main/php_config.h.in /tmp/cnt
     echo -ne '#ifndef __PHP_CONFIG_H\n#define __PHP_CONFIG_H\n' > main/php_config.h.in
     cat /tmp/cnt >> main/php_config.h.in
@@ -250,7 +250,19 @@ make_config() {
 
     ./configure $OPTIONS || { echo "[make.sh] configure failed" >&2; exit 1; }
 
-<?php if ($this->isLinux()) : ?>
+<?php if ($this->isAndroid()) : ?>
+    # Bionic exposes only part of the resolver API expected by PHP. In
+    # particular dn_skipname and the glibc-compatible re-entrant state API are
+    # unavailable. Disable all resolver variants together so PHP does not
+    # register dns_get_record()/dns_get_mx() without their implementations.
+    sed -i \
+        -e 's/^#define HAVE_RES_NSEARCH 1$/\/\* #undef HAVE_RES_NSEARCH \*\//' \
+        -e 's/^#define HAVE_RES_SEARCH 1$/\/\* #undef HAVE_RES_SEARCH \*\//' \
+        -e 's/^#define HAVE_DN_SKIPNAME 1$/\/\* #undef HAVE_DN_SKIPNAME \*\//' \
+        main/php_config.h
+<?php endif ; ?>
+
+<?php if ($this->isLinux() && !$this->isAndroid()) : ?>
     sed -i.backup 's/-export-dynamic/-all-static/g' Makefile
 <?php endif ; ?>
 }
@@ -258,7 +270,7 @@ make_config() {
 make_build() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-    <?php if ($this->isLinux()) : ?>
+    <?php if ($this->isLinux() && !$this->isAndroid()) : ?>
     export CFLAGS="$CFLAGS  -fPIE"
     export LDFLAGS="$LDFLAGS  -static -all-static"
     <?php if ($this->getInputOption('with-static-pie')) : ?>
@@ -273,7 +285,7 @@ make_build() {
 <?php if ($this->isMacos() && !$this->isIphoneOs()) : ?>
     xattr -cr <?= $this->getWorkDir() ?>/bin/swoole-cli
     otool -L <?= $this->getWorkDir() ?>/bin/swoole-cli
-<?php elseif (!$this->isIphoneOs()) : ?>
+<?php elseif (!$this->isMobileTarget()) : ?>
     { ldd  <?= $this->getWorkDir() ?>/bin/swoole-cli ; } || { echo $? ; }
     file <?= $this->getWorkDir() ?>/bin/swoole-cli
     readelf -h <?= $this->getWorkDir() ?>/bin/swoole-cli
@@ -285,7 +297,10 @@ make_build() {
 make_libphp() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
-<?php if ($this->isLinux()) : ?>
+<?php if ($this->isAndroid()) : ?>
+    export CFLAGS="$CFLAGS -fPIC"
+    export CXXFLAGS="$CXXFLAGS -fPIC"
+<?php elseif ($this->isLinux()) : ?>
     export CFLAGS="$CFLAGS  -fPIE"
 <?php endif ; ?>
     export EXTRA_CFLAGS='<?= $this->extraCflags ?>'
@@ -294,7 +309,13 @@ make_libphp() {
     rm -f libs/libphp.a
     make -j <?= $this->maxJob ?> libs/libphp.a
 
-<?php if (!$this->isIphoneOs()) : ?>
+<?php if ($this->isAndroid()) : ?>
+    # Android supplies Bionic and libc++ at the final application link. Merge
+    # only PHP and the target third-party archives into the distributable file.
+    WORK_DIR=<?= escapeshellarg($this->getWorkDir()) ?> \
+    GLOBAL_PREFIX=<?= escapeshellarg($this->getGlobalPrefix()) ?> \
+        bash ./sapi/scripts/merge-android-libphp.sh
+<?php elseif (!$this->isIphoneOs()) : ?>
     # make 产出纯 PHP 目标文件归档（libs/libphp.a），合成脚本会在此基础上
     # 合并 <?= $this->getGlobalPrefix() ?> 下的第三方静态库与 musl libc，
     # 最终覆盖产出与 bin/swoole-cli 同等自包含的 libs/libphp.a（不保留中间产物）

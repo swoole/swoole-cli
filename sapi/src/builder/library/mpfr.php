@@ -6,12 +6,15 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
     $mpfr_prefix = MPFR_PREFIX;
     $gmp_prefix = GMP_PREFIX;
-    $configureEnvironment = $p->isIphoneOs()
+    $configureEnvironment = $p->isMobileTarget()
         ? 'CFLAGS="$CFLAGS -fPIC"'
         : 'CFLAGS="-fPIC"';
-    $targetOptions = $p->isIphoneOs()
+    $targetOptions = $p->isMobileTarget()
         ? " \\\n            --host=aarch64-apple-darwin"
         : '';
+    if ($p->isAndroid()) {
+        $targetOptions = str_replace('aarch64-apple-darwin', 'aarch64-linux-android', $targetOptions);
+    }
     $p->addLibrary(
         (new Library('mpfr'))
             ->withHomePage('https://www.mpfr.org/')

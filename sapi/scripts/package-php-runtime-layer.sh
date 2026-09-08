@@ -8,17 +8,17 @@ DIST_DIR=${RUNTIME_LAYER_DIST_DIR:-${WORK_DIR}/runtime-layer}
 
 usage()
 {
-    echo "Usage: $0 <linux-x64|linux-arm64|iphoneos-arm64>" >&2
+    echo "Usage: $0 <linux-x64|linux-arm64|iphoneos-arm64|android-arm64-v8a>" >&2
 }
 
 case "${TARGET}" in
-    linux-x64|linux-arm64|iphoneos-arm64) ;;
+    linux-x64|linux-arm64|iphoneos-arm64|android-arm64-v8a) ;;
     *) usage; exit 2 ;;
 esac
 
 if [[ -z "${GLOBAL_PREFIX:-}" ]]; then
-    if [[ "${TARGET}" == iphoneos-arm64 ]]; then
-        GLOBAL_PREFIX=${WORK_DIR}/var/iphoneos-arm64/deps
+    if [[ "${TARGET}" == iphoneos-arm64 || "${TARGET}" == android-arm64-v8a ]]; then
+        GLOBAL_PREFIX=${WORK_DIR}/var/${TARGET}/deps
     else
         GLOBAL_PREFIX=/usr/local/swoole-cli
     fi
@@ -45,7 +45,7 @@ required_files=(
     "${WORK_DIR}/var/php-${PHP_VERSION}/LICENSE"
 )
 
-if [[ "${TARGET}" == iphoneos-arm64 ]]; then
+if [[ "${TARGET}" == iphoneos-arm64 || "${TARGET}" == android-arm64-v8a ]]; then
     required_files+=(
         "${GLOBAL_PREFIX}/gmp/include/gmp.h"
         "${GLOBAL_PREFIX}/gmp/include/gmpxx.h"
@@ -69,7 +69,51 @@ done
 
 cp -p "${WORK_DIR}/libs/libphp.a" "${PACKAGE_ROOT}/lib/"
 
-if [[ "${TARGET}" == iphoneos-arm64 ]]; then
+if [[ "${TARGET}" == android-arm64-v8a ]]; then
+    if [[ $(uname -s) != Linux ]]; then
+        echo "android-arm64-v8a must be packaged on Linux." >&2
+        exit 1
+    fi
+    if ! grep -Eq '^#define[[:space:]]+ZTS([[:space:]]+1)?([[:space:]]|$)' \
+        "${WORK_DIR}/main/php_config.h"; then
+        echo "The Android PHP runtime layer must use ZTS." >&2
+        exit 1
+    fi
+
+    cp -p "${GLOBAL_PREFIX}/gmp/include/gmp.h" "${PACKAGE_ROOT}/include/"
+    cp -p "${GLOBAL_PREFIX}/gmp/include/gmpxx.h" "${PACKAGE_ROOT}/include/"
+    cp -p "${GLOBAL_PREFIX}/mpfr/include/mpfr.h" "${PACKAGE_ROOT}/include/"
+    if [[ -f "${GLOBAL_PREFIX}/mpfr/include/mpf2mpfr.h" ]]; then
+        cp -p "${GLOBAL_PREFIX}/mpfr/include/mpf2mpfr.h" "${PACKAGE_ROOT}/include/"
+    fi
+
+    ndk_root=${ANDROID_NDK_HOME:-${ANDROID_NDK_ROOT:-}}
+    if [[ -z "${ndk_root}" ]]; then
+        echo "ANDROID_NDK_HOME is required to validate android-arm64-v8a." >&2
+        exit 1
+    fi
+    readelf_path=$(find "${ndk_root}/toolchains/llvm/prebuilt" -path '*/bin/llvm-readelf' -print -quit)
+    ar_path=$(find "${ndk_root}/toolchains/llvm/prebuilt" -path '*/bin/llvm-ar' -print -quit)
+    if [[ -z "${readelf_path}" || -z "${ar_path}" ]]; then
+        echo "Android NDK archive tools were not found under ${ndk_root}." >&2
+        exit 1
+    fi
+    probe_dir=$(mktemp -d)
+    trap 'rm -rf "${probe_dir}"' EXIT
+    first_member=$("${ar_path}" -t "${PACKAGE_ROOT}/lib/libphp.a" | sed -n '1p')
+    (
+        cd "${probe_dir}"
+        "${ar_path}" -x "${PACKAGE_ROOT}/lib/libphp.a" "${first_member}"
+    )
+    if ! "${readelf_path}" -h "${probe_dir}/${first_member}" | grep -q 'Machine:.*AArch64'; then
+        echo "libphp.a does not contain AArch64 objects." >&2
+        exit 1
+    fi
+    rm -rf "${probe_dir}"
+    trap - EXIT
+    printf '%s\n' 'typephp-android-arm64-v8a-api24-php-zts-pic-abi-v1' \
+        > "${PACKAGE_ROOT}/.typephp-php-runtime-abi"
+elif [[ "${TARGET}" == iphoneos-arm64 ]]; then
     if [[ $(uname -s) != Darwin ]]; then
         echo "iphoneos-arm64 must be packaged on macOS." >&2
         exit 1

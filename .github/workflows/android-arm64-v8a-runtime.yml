@@ -1,0 +1,127 @@
+name: build-php-runtime-android-arm64-v8a
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-arm64-v8a:
+    if: ${{ !contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[android-arm64-v8a]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Verify Android NDK r27
+        run: |
+          set -euo pipefail
+          test -f "${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake"
+          test "$(sed -n 's/^Pkg.Revision = //p' "${ANDROID_NDK_HOME}/source.properties")" \
+            = 27.3.13750724
+          "${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang" \
+            --version
+
+      - name: Prepare host build environment
+        run: |
+          set -euo pipefail
+          git submodule update --init
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf automake bison build-essential cmake libtool lzip \
+            ninja-build pkg-config re2c xz-utils
+          mkdir -p pool/lib pool/ext bin var/runtime var/android-arm64-v8a/deps
+
+      - name: Cache PHP runtime
+        uses: actions/cache@v5
+        with:
+          path: var/runtime
+          key: ${{ runner.os }}-${{ runner.arch }}-php-runtime
+
+      - name: Cache Composer vendor
+        uses: actions/cache@v5
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{ runner.arch }}-php-vendor
+
+      - name: Cache dependency source archives
+        uses: actions/cache@v5
+        with:
+          path: pool
+          key: source-code-tarball-pool
+
+      - name: Cache Android target dependencies
+        uses: actions/cache@v5
+        with:
+          path: var/android-arm64-v8a/deps
+          key: android-arm64-v8a-deps-${{ hashFiles('sapi/PHP-VERSION.conf', 'sapi/src/builder/enabled_extensions_android.php', 'sapi/src/builder/library/gmp.php', 'sapi/src/builder/library/mpfr.php') }}
+
+      - name: Prepare PHP build runtime and sources
+        run: |
+          set -euo pipefail
+          if [[ ! -x var/runtime/php/php ]]; then
+            bash setup-php-runtime.sh
+          fi
+          export PATH="${GITHUB_WORKSPACE}/var/runtime/php:${PATH}"
+          bash sapi/download-box/download-box-get-archive-from-server.sh
+          composer install --no-interaction --no-autoloader --no-scripts --profile
+          composer dump-autoload --optimize --profile
+          php prepare.php @android-arm64-v8a --with-parallel-jobs=4
+
+      - name: Build Android PHP Runtime Layer
+        id: runtime-layer
+        run: |
+          set -euo pipefail
+          export PATH="${GITHUB_WORKSPACE}/var/runtime/php:${PATH}"
+          bash make.sh all-library
+          bash make.sh config
+          bash make.sh libphp
+          RUNTIME_LAYER_VERSION="${GITHUB_REF_NAME}" \
+          GLOBAL_PREFIX="${GITHUB_WORKSPACE}/var/android-arm64-v8a/deps" \
+          ANDROID_NDK_HOME="${ANDROID_NDK_HOME}" \
+            bash sapi/scripts/package-php-runtime-layer.sh android-arm64-v8a
+
+      - name: Validate Android Runtime Layer
+        run: |
+          set -euo pipefail
+          archive=$(find runtime-layer -maxdepth 1 -name '*.tar.xz' -print -quit)
+          test -n "${archive}"
+          tar -tJf "${archive}" | grep -q '/lib/libphp.a$'
+          package_root=${archive%.tar.xz}
+          test "$(sed -n 's/.*"target": "\([^"]*\)".*/\1/p' \
+            "${package_root}/manifest.json")" = android-arm64-v8a
+          test "$(<"${package_root}/.typephp-php-runtime-abi")" \
+            = typephp-android-arm64-v8a-api24-php-zts-pic-abi-v1
+
+      - name: Upload Android PHP Runtime Layer
+        uses: actions/upload-artifact@v5
+        with:
+          name: php-runtime-layer-android-arm64-v8a
+          retention-days: 14
+          path: runtime-layer/*.tar.xz*
+          if-no-files-found: error
+
+  publish:
+    name: Publish Android Runtime Layer
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: android-arm64-v8a
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: php-runtime-layer-android-arm64-v8a
+          path: runtime-layer
+
+      - name: Publish runtime layer release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            runtime-layer/*.tar.xz
+            runtime-layer/*.tar.xz.sha256
