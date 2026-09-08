@@ -52,17 +52,17 @@ mkdir -p "${SDK_ROOT}/include/php" "${SDK_ROOT}/include" "${SDK_ROOT}/lib"
         | tar -xf - -C "${SDK_ROOT}/include/php"
 )
 
-cp "${GLOBAL_PREFIX}/gmp/include/gmp.h" "${SDK_ROOT}/include/"
-cp "${GLOBAL_PREFIX}/gmp/include/gmpxx.h" "${SDK_ROOT}/include/"
-cp "${GLOBAL_PREFIX}/mpfr/include/mpfr.h" "${SDK_ROOT}/include/"
+cp -p "${GLOBAL_PREFIX}/gmp/include/gmp.h" "${SDK_ROOT}/include/"
+cp -p "${GLOBAL_PREFIX}/gmp/include/gmpxx.h" "${SDK_ROOT}/include/"
+cp -p "${GLOBAL_PREFIX}/mpfr/include/mpfr.h" "${SDK_ROOT}/include/"
 if [[ -f "${GLOBAL_PREFIX}/mpfr/include/mpf2mpfr.h" ]]; then
-    cp "${GLOBAL_PREFIX}/mpfr/include/mpf2mpfr.h" "${SDK_ROOT}/include/"
+    cp -p "${GLOBAL_PREFIX}/mpfr/include/mpf2mpfr.h" "${SDK_ROOT}/include/"
 fi
 
-cp "${WORK_DIR}/libs/libphp.a" "${SDK_ROOT}/lib/"
-cp "${GLOBAL_PREFIX}/gmp/lib/libgmp.a" "${SDK_ROOT}/lib/"
-cp "${GLOBAL_PREFIX}/gmp/lib/libgmpxx.a" "${SDK_ROOT}/lib/"
-cp "${GLOBAL_PREFIX}/mpfr/lib/libmpfr.a" "${SDK_ROOT}/lib/"
+cp -p "${WORK_DIR}/libs/libphp.a" "${SDK_ROOT}/lib/"
+cp -p "${GLOBAL_PREFIX}/gmp/lib/libgmp.a" "${SDK_ROOT}/lib/"
+cp -p "${GLOBAL_PREFIX}/gmp/lib/libgmpxx.a" "${SDK_ROOT}/lib/"
+cp -p "${GLOBAL_PREFIX}/mpfr/lib/libmpfr.a" "${SDK_ROOT}/lib/"
 
 for archive in libphp.a libgmp.a libgmpxx.a libmpfr.a; do
     archs=$(xcrun lipo -archs "${SDK_ROOT}/lib/${archive}")

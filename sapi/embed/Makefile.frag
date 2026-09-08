@@ -18,7 +18,7 @@ libs/libphp.a: $(PHP_GLOBAL_OBJS) $(PHP_BINARY_OBJS) $(PHP_EMBED_OBJS) $(PHP_LIB
 	@echo ""
 	@echo "Built $@"
 	@echo "  members : $$(ar t $@ | wc -l)"
-	@echo "  embed   : $$(nm -g $@ 2>/dev/null | grep -c ' T php_embed_init')"
+	@echo "  embed   : $$(nm -g $@ 2>/dev/null | grep -Ec ' T _?php_embed_init$$')"
 	@echo ""
 
 clean-libphp:

@@ -131,6 +131,147 @@ class Preprocessor
         return $this->targetType === 'iphoneos-arm64';
     }
 
+    /**
+     * Configure paths, toolchains and flags for the selected build target.
+     *
+     * @return bool Whether the build runs inside the Linux build container.
+     */
+    public function configureBuildEnvironment(string $projectDir): bool
+    {
+        $projectDir = rtrim($projectDir, '/');
+
+        $buildType = $this->getInputOption('with-build-type');
+        if ($buildType !== '') {
+            $this->setBuildType($buildType);
+        }
+
+        $buildInContainer = !$this->getInputOption('without-docker');
+        if ($this->isMacos()) {
+            $buildInContainer = false;
+        }
+
+        if (!$buildInContainer) {
+            $this->setWorkDir($projectDir);
+            $this->setBuildDir($projectDir . '/thirdparty');
+        }
+
+        if ($this->isIphoneOs()) {
+            $this->setWorkDir($projectDir);
+            $this->setBuildDir($projectDir . '/thirdparty/iphoneos-arm64');
+        }
+
+        $workDir = $this->getInputOption('with-work-dir');
+        if ($workDir !== '') {
+            $workDir = rtrim($workDir, '/');
+            $this->setWorkDir($workDir);
+            $this->setBuildDir($workDir . ($this->isIphoneOs() ? '/thirdparty/iphoneos-arm64' : '/thirdparty'));
+        }
+
+        $globalPrefix = $this->getInputOption('with-global-prefix');
+        if ($globalPrefix !== '') {
+            $this->setGlobalPrefix($globalPrefix);
+        } elseif ($this->isIphoneOs()) {
+            $this->setGlobalPrefix($projectDir . '/var/iphoneos-arm64/deps');
+        }
+
+        $parallelJobs = $this->getInputOption('with-parallel-jobs');
+        if ($parallelJobs !== '') {
+            $this->setMaxJob((int) $parallelJobs);
+        }
+
+        if ($this->isIphoneOs()) {
+            $this->configureIphoneOsEnvironment();
+        } elseif ($this->isMacos()) {
+            $this->configureMacosEnvironment();
+        } else {
+            $this->setLinker('ld.lld');
+            $this->setLogicalProcessors('$(nproc 2> /dev/null)');
+        }
+
+        $this->setExtraCflags(' -Os');
+        return $buildInContainer;
+    }
+
+    private function configureIphoneOsEnvironment(): void
+    {
+        $sdkRoot = $this->findIphoneOsTool('--show-sdk-path');
+        $clang = $this->findIphoneOsTool('--find clang');
+        $clangxx = $this->findIphoneOsTool('--find clang++');
+        $ar = $this->findIphoneOsTool('--find ar');
+        $ranlib = $this->findIphoneOsTool('--find ranlib');
+
+        if (preg_match('/\s/', $sdkRoot)) {
+            throw new RuntimeException('The iPhoneOS SDK path must not contain whitespace: ' . $sdkRoot);
+        }
+
+        // export_variables() de-duplicates whitespace-separated flags, so
+        // options and their operands must remain a single shell token.
+        $targetFlags = '--target=arm64-apple-ios15.0 -isysroot' . $sdkRoot
+            . ' -miphoneos-version-min=15.0';
+        $pkgConfigDir = $this->getGlobalPrefix() . '/gmp/lib/pkgconfig:'
+            . $this->getGlobalPrefix() . '/mpfr/lib/pkgconfig';
+
+        $this->setCCompiler($clang)
+            ->setCppCompiler($clangxx)
+            ->setLinker($clangxx)
+            ->withExportVariable('SDKROOT', $sdkRoot)
+            ->withExportVariable('AR', $ar)
+            ->withExportVariable('RANLIB', $ranlib)
+            ->withExportVariable('CC_FOR_BUILD', 'env -u SDKROOT /usr/bin/clang')
+            ->withExportVariable('CPP_FOR_BUILD', 'env -u SDKROOT /usr/bin/clang -E')
+            ->withExportVariable('ac_cv_func_fork', 'no')
+            ->withExportVariable('ac_cv_func_posix_spawn_file_actions_addchdir_np', 'no')
+            ->withVariable('CPPFLAGS', '$CPPFLAGS ' . $targetFlags)
+            ->withVariable('CFLAGS', '$CFLAGS ' . $targetFlags)
+            ->withVariable('CXXFLAGS', '$CXXFLAGS ' . $targetFlags)
+            ->withVariable('LDFLAGS', '$LDFLAGS ' . $targetFlags)
+            ->withExportVariable('PKG_CONFIG_LIBDIR', $pkgConfigDir);
+        $this->setExtraOptions(<<<'OPTIONS'
+    --host=aarch64-apple-darwin \
+    --disable-cli \
+    --disable-cgi \
+    --disable-phpdbg \
+    --disable-fpm \
+    --disable-fiber-asm \
+    --without-pcre-jit \
+    --without-pear
+OPTIONS);
+
+        $this->withBinPath('/opt/homebrew/opt/flex/bin')
+            ->withBinPath('/opt/homebrew/opt/bison/bin')
+            ->withBinPath('/opt/homebrew/opt/libtool/bin')
+            ->withBinPath('/opt/homebrew/opt/m4/bin')
+            ->withBinPath('/opt/homebrew/opt/automake/bin')
+            ->withBinPath('/opt/homebrew/opt/autoconf/bin')
+            ->withBinPath('/opt/homebrew/opt/gettext/bin');
+        $this->setLogicalProcessors('$(sysctl -n hw.ncpu)');
+    }
+
+    private function findIphoneOsTool(string $arguments): string
+    {
+        $value = trim((string) shell_exec('xcrun --sdk iphoneos ' . $arguments . ' 2>/dev/null'));
+        if ($value === '') {
+            throw new RuntimeException('iphoneos-arm64 requires full Xcode and the iPhoneOS SDK');
+        }
+        return $value;
+    }
+
+    private function configureMacosEnvironment(): void
+    {
+        $this->setExtraLdflags('');
+        exec('brew --prefix 2>&1', $output, $resultCode);
+        $homebrewPrefix = $resultCode === 0 ? trim(implode(' ', $output)) : '';
+        $this->withBinPath($homebrewPrefix . '/opt/flex/bin')
+            ->withBinPath($homebrewPrefix . '/opt/bison/bin')
+            ->withBinPath($homebrewPrefix . '/opt/libtool/bin')
+            ->withBinPath($homebrewPrefix . '/opt/m4/bin')
+            ->withBinPath($homebrewPrefix . '/opt/automake/bin/')
+            ->withBinPath($homebrewPrefix . '/opt/autoconf/bin/')
+            ->withBinPath($homebrewPrefix . '/opt/gettext/bin')
+            ->setLinker('ld');
+        $this->setLogicalProcessors('$(sysctl -n hw.ncpu)');
+    }
+
     public function setCCompiler(string $compiler): static
     {
         $this->cCompiler = $compiler;
@@ -340,7 +481,10 @@ class Preprocessor
         }
         echo $cmd;
         echo PHP_EOL;
-        echo `$cmd`;
+        passthru($cmd, $download_status);
+        if ($download_status !== 0) {
+            throw new Exception("Downloading file[" . basename($file) . "] from url[$url] failed");
+        }
         echo PHP_EOL;
         if (is_file($file) && (filesize($file) == 0)) {
             unlink($file);
@@ -444,7 +588,15 @@ class Preprocessor
                 $dst_dir = "{$this->rootDir}/ext/{$ext->name}";
                 $this->mkdirIfNotExists($dst_dir, 0777, true);
 
-                echo `tar --strip-components=1 -C $dst_dir -xf {$ext->path}`;
+                $extract_cmd = sprintf(
+                    'tar --strip-components=1 -C %s -xf %s',
+                    escapeshellarg($dst_dir),
+                    escapeshellarg($ext->path),
+                );
+                passthru($extract_cmd, $extract_status);
+                if ($extract_status !== 0) {
+                    throw new Exception("Extracting extension archive[{$ext->path}] failed");
+                }
             }
             $this->downloadExtensionList[] = ['url' => $ext->url, 'file' => $ext->file];
         }

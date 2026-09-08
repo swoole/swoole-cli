@@ -10,7 +10,7 @@ return function (Preprocessor $p) {
         ? 'CFLAGS="$CFLAGS -fPIC"'
         : 'CFLAGS="-fPIC"';
     $targetOptions = $p->isIphoneOs()
-        ? " \\\n            --host=arm-apple-darwin"
+        ? " \\\n            --host=aarch64-apple-darwin"
         : '';
     $p->addLibrary(
         (new Library('mpfr'))

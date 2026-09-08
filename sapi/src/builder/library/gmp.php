@@ -9,7 +9,7 @@ return function (Preprocessor $p) {
         ? 'CFLAGS="$CFLAGS -fPIC" CXXFLAGS="$CXXFLAGS -fPIC"'
         : 'CFLAGS="-fPIC"';
     $targetOptions = $p->isIphoneOs()
-        ? " \\\n            --host=arm-apple-darwin \\\n            --disable-assembly"
+        ? " \\\n            --host=aarch64-apple-darwin \\\n            --disable-assembly"
         : '';
     $p->addLibrary(
         (new Library('gmp'))

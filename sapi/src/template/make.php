@@ -24,6 +24,11 @@ export CC=<?= escapeshellarg($this->cCompiler) . PHP_EOL ?>
 export CXX=<?= escapeshellarg($this->cppCompiler) . PHP_EOL ?>
 export LD=<?= escapeshellarg($this->lld) . PHP_EOL ?>
 export PKG_CONFIG_PATH=<?= implode(':', $this->pkgConfigPaths) . PHP_EOL ?>
+<?php if ($this->isIphoneOs()) : ?>
+# Cross builds must never discover Homebrew libraries from the macOS host.
+export PKG_CONFIG_PATH=<?= $this->getGlobalPrefix() ?>/gmp/lib/pkgconfig:<?= $this->getGlobalPrefix() ?>/mpfr/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=$PKG_CONFIG_PATH
+<?php endif; ?>
 export PATH=<?= implode(':', $this->binPaths) . PHP_EOL ?>
 
 OPTIONS="--disable-all \
@@ -42,6 +47,9 @@ OPTIONS="--disable-all \
 <?php foreach ($this->libraryList as $item) : ?>
 make_<?=$item->name?>() {
     echo "build <?=$item->name?>"
+<?php if ($this->isIphoneOs()) : ?>
+    export_variables
+<?php endif; ?>
 
     <?php if ($item->enableInstallCached) : ?>
     if [ -f <?= $this->getGlobalPrefix() . '/'.  $item->name ?>/.completed ] ;then
@@ -307,6 +315,7 @@ make_phpx() {
         --prefix ./thirdparty/phpx/ios/iphoneos-arm64 \
         --build-dir ./thirdparty/iphoneos-arm64/phpx-build \
         --jobs <?= $this->maxJob ?>
+
 <?php else : ?>
     # 用 phpx 仓库的 full-static/ 独立构建目录编译全静态 libphpx.a
     bash ./sapi/scripts/build-phpx.sh
