@@ -287,7 +287,18 @@ zend_result dom_node_child_nodes_read(dom_object *obj, zval *retval)
 {
 	DOM_PROP_NODE(xmlNodePtr, nodep, obj);
 
-	php_dom_create_iterator(retval, DOM_NODELIST, php_dom_follow_spec_intern(obj));
+	php_dom_create_iterator(retval, DOM_NODELIST, false);
+	dom_object *intern = Z_DOMOBJ_P(retval);
+	dom_namednode_iter(obj, XML_ELEMENT_NODE, intern, NULL, NULL, 0, NULL, 0);
+
+	return SUCCESS;
+}
+
+zend_result dom_modern_node_child_nodes_read(dom_object *obj, zval *retval)
+{
+	DOM_PROP_NODE(xmlNodePtr, nodep, obj);
+
+	php_dom_create_iterator(retval, DOM_NODELIST, true);
 	dom_object *intern = Z_DOMOBJ_P(retval);
 	dom_namednode_iter(obj, XML_ELEMENT_NODE, intern, NULL, NULL, 0, NULL, 0);
 
@@ -659,14 +670,25 @@ zend_result dom_node_base_uri_read(dom_object *obj, zval *retval)
 		ZVAL_STRING(retval, (const char *) baseuri);
 		xmlFree(baseuri);
 	} else {
-		if (php_dom_follow_spec_intern(obj)) {
-			if (nodep->doc->URL) {
-				ZVAL_STRING(retval, (const char *) nodep->doc->URL);
-			} else {
-				ZVAL_STRING(retval, "about:blank");
-			}
+		ZVAL_NULL(retval);
+	}
+
+	return SUCCESS;
+}
+
+zend_result dom_modern_node_base_uri_read(dom_object *obj, zval *retval)
+{
+	DOM_PROP_NODE(xmlNodePtr, nodep, obj);
+
+	xmlChar *baseuri = xmlNodeGetBase(nodep->doc, nodep);
+	if (baseuri) {
+		ZVAL_STRING(retval, (const char *) baseuri);
+		xmlFree(baseuri);
+	} else {
+		if (nodep->doc && nodep->doc->URL) {
+			ZVAL_STRING(retval, (const char *) nodep->doc->URL);
 		} else {
-			ZVAL_NULL(retval);
+			ZVAL_STRING(retval, "about:blank");
 		}
 	}
 
@@ -943,7 +965,7 @@ static void dom_node_insert_before_legacy(zval *return_value, zval *ref, dom_obj
 			xmlAttrPtr lastattr;
 
 			if (child->ns == NULL)
-				lastattr = xmlHasProp(refp->parent, child->name);
+				lastattr = xmlHasNsProp(refp->parent, child->name, NULL);
 			else
 				lastattr = xmlHasNsProp(refp->parent, child->name, child->ns->href);
 			if (lastattr != NULL && lastattr->type != XML_ATTRIBUTE_DECL) {
@@ -990,7 +1012,7 @@ static void dom_node_insert_before_legacy(zval *return_value, zval *ref, dom_obj
 			xmlAttrPtr lastattr;
 
 			if (child->ns == NULL)
-				lastattr = xmlHasProp(parentp, child->name);
+				lastattr = xmlHasNsProp(parentp, child->name, NULL);
 			else
 				lastattr = xmlHasNsProp(parentp, child->name, child->ns->href);
 			if (lastattr != NULL && lastattr->type != XML_ATTRIBUTE_DECL) {
@@ -1352,7 +1374,7 @@ static void dom_node_append_child_legacy(zval *return_value, dom_object *intern,
 		xmlAttrPtr lastattr;
 
 		if (child->ns == NULL)
-			lastattr = xmlHasProp(nodep, child->name);
+			lastattr = xmlHasNsProp(nodep, child->name, NULL);
 		else
 			lastattr = xmlHasNsProp(nodep, child->name, child->ns->href);
 		if (lastattr != NULL && lastattr->type != XML_ATTRIBUTE_DECL) {
@@ -1708,10 +1730,26 @@ static bool php_dom_is_equal_attr(const xmlAttr *this_attr, const xmlAttr *other
 		&& php_dom_node_is_content_equal((const xmlNode *) this_attr, (const xmlNode *) other_attr);
 }
 
+static zend_always_inline bool php_dom_node_is_equal_node_check_stack_limit(void)
+{
+#ifdef ZEND_CHECK_STACK_LIMIT
+	return zend_call_stack_overflowed(EG(stack_limit));
+#else
+	return false;
+#endif
+}
+
 static bool php_dom_node_is_equal_node(const xmlNode *this, const xmlNode *other, bool spec_compliant)
 {
 	ZEND_ASSERT(this != NULL);
 	ZEND_ASSERT(other != NULL);
+
+	if (UNEXPECTED(php_dom_node_is_equal_node_check_stack_limit())) {
+		if (!EG(exception)) {
+			zend_throw_error(NULL, "Maximum call stack size reached.");
+		}
+		return false;
+	}
 
 	if (this->type != other->type) {
 		return false;
@@ -1773,6 +1811,7 @@ static void dom_node_is_equal_node_common(INTERNAL_FUNCTION_PARAMETERS, bool mod
 	zval *id, *node;
 	xmlNodePtr otherp, nodep;
 	dom_object *intern;
+	bool result;
 
 	id = ZEND_THIS;
 	ZEND_PARSE_PARAMETERS_START(1, 1)
@@ -1795,7 +1834,11 @@ static void dom_node_is_equal_node_common(INTERNAL_FUNCTION_PARAMETERS, bool mod
 		RETURN_BOOL(nodep == NULL && otherp == NULL);
 	}
 
-	RETURN_BOOL(php_dom_node_is_equal_node(nodep, otherp, modern));
+	result = php_dom_node_is_equal_node(nodep, otherp, modern);
+	if (UNEXPECTED(EG(exception))) {
+		RETURN_THROWS();
+	}
+	RETURN_BOOL(result);
 }
 
 PHP_METHOD(DOMNode, isEqualNode)
@@ -2126,7 +2169,7 @@ static void dom_canonicalization(INTERNAL_FUNCTION_PARAMETERS, int mode) /* {{{ 
 		}
 	} else {
 		if (zend_parse_parameters(ZEND_NUM_ARGS(),
-			"s|bba!a!", &file, &file_len, &exclusive,
+			"p|bba!a!", &file, &file_len, &exclusive,
 			&with_comments, &xpath_array, &ns_prefixes) == FAILURE) {
 			RETURN_THROWS();
 		}
@@ -2136,7 +2179,27 @@ static void dom_canonicalization(INTERNAL_FUNCTION_PARAMETERS, int mode) /* {{{ 
 
 	docp = nodep->doc;
 
-	if (! docp) {
+	HashTable links;
+	bool modern = php_dom_follow_spec_node(nodep);
+	if (modern) {
+		xmlNodePtr root = nodep;
+		while (root->parent) {
+			root = root->parent;
+		}
+
+		if (UNEXPECTED(root->type != XML_DOCUMENT_NODE && root->type != XML_HTML_DOCUMENT_NODE)) {
+			php_dom_throw_error_with_message(HIERARCHY_REQUEST_ERR, "Canonicalization can only happen on nodes attached to a document.", /* strict */ true);
+			RETURN_THROWS();
+		}
+
+		zend_hash_init(&links, 0, NULL, NULL, false);
+		xmlNodePtr root_element = xmlDocGetRootElement(docp);
+
+		if (root_element) {
+			dom_relink_ns_decls(&links, root_element);
+		}
+	} else if (!docp) {
+		/* Note: not triggerable with modern DOM */
 		zend_throw_error(NULL, "Node must be associated with a document");
 		RETURN_THROWS();
 	}
@@ -2158,12 +2221,12 @@ static void dom_canonicalization(INTERNAL_FUNCTION_PARAMETERS, int mode) /* {{{ 
 		if (!tmp) {
 			/* if mode == 0 then $xpath arg is 3, if mode == 1 then $xpath is 4 */
 			zend_argument_value_error(3 + mode, "must have a \"query\" key");
-			RETURN_THROWS();
+			goto clean_links;
 		}
 		if (Z_TYPE_P(tmp) != IS_STRING) {
 			/* if mode == 0 then $xpath arg is 3, if mode == 1 then $xpath is 4 */
 			zend_argument_type_error(3 + mode, "\"query\" option must be a string, %s given", zend_zval_value_name(tmp));
-			RETURN_THROWS();
+			goto clean_links;
 		}
 		xquery = Z_STRVAL_P(tmp);
 
@@ -2195,7 +2258,7 @@ static void dom_canonicalization(INTERNAL_FUNCTION_PARAMETERS, int mode) /* {{{ 
 			}
 			xmlXPathFreeContext(ctxp);
 			zend_throw_error(NULL, "XPath query did not return a nodeset");
-			RETURN_THROWS();
+			goto clean_links;
 		}
 	}
 
@@ -2263,6 +2326,12 @@ static void dom_canonicalization(INTERNAL_FUNCTION_PARAMETERS, int mode) /* {{{ 
 		if (mode == 1 && (ret >= 0)) {
 			RETURN_LONG(bytes);
 		}
+	}
+
+clean_links:
+	if (modern) {
+		dom_unlink_ns_decls(&links);
+		zend_hash_destroy(&links);
 	}
 }
 /* }}} */

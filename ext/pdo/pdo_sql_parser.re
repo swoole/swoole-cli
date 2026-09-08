@@ -117,7 +117,7 @@ PDO_API int pdo_parse_params(pdo_stmt_t *stmt, zend_string *inquery, zend_string
 
 			if (t == PDO_PARSER_BIND) {
 				ptrdiff_t len = s.cur - s.tok;
-				if ((ZSTR_VAL(inquery) < (s.cur - len)) && isalnum(*(s.cur - len - 1))) {
+				if ((ZSTR_VAL(inquery) < (s.cur - len)) && isalnum((unsigned char)s.cur[-len - 1])) {
 					continue;
 				}
 				query_type |= PDO_PLACEHOLDER_NAMED;
@@ -300,6 +300,12 @@ safe:
 							}
 
 							plc->quoted = stmt->dbh->methods->quoter(stmt->dbh, buf, param_type);
+							if (plc->quoted == NULL) {
+								/* bork */
+								ret = -1;
+								strncpy(stmt->error_code, stmt->dbh->error_code, 6);
+								goto clean_up;
+							}
 						}
 					}
 

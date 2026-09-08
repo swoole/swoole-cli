@@ -216,6 +216,7 @@ typedef struct _phar_entry_info {
 	php_stream               *fp;
 	php_stream               *cfp;
 	int                      fp_refcount;
+	unsigned int             fileinfo_lock_count;
 	char                     *tmp;
 	phar_archive_data        *phar;
 	char                     *link; /* symbolic link to another file */
@@ -380,6 +381,31 @@ static inline bool phar_validate_alias(const char *alias, size_t alias_len) /* {
 }
 /* }}} */
 
+static inline bool phar_path_is_magic_phar_ex(const char *path, size_t path_len) /* {{{ */
+{
+	if (path_len > 0 && path[0] == '/') {
+		path++;
+		path_len--;
+	}
+
+	if (path_len < sizeof(".phar") - 1 || memcmp(path, ".phar", sizeof(".phar") - 1) != 0) {
+		return false;
+	}
+
+	if (path_len == sizeof(".phar") - 1) {
+		return true;
+	}
+
+	return path[sizeof(".phar") - 1] == '/' || path[sizeof(".phar") - 1] == '\\';
+}
+/* }}} */
+
+static inline bool phar_is_magic_phar(const zend_string *path) /* {{{ */
+{
+	return phar_path_is_magic_phar_ex(ZSTR_VAL(path), ZSTR_LEN(path));
+}
+/* }}} */
+
 static inline void phar_set_inode(phar_entry_info *entry) /* {{{ */
 {
 	char tmp[MAXPATHLEN];
@@ -447,12 +473,12 @@ zend_result phar_copy_on_write(phar_archive_data **pphar);
 bool phar_is_tar(char *buf, char *fname);
 zend_result phar_parse_tarfile(php_stream* fp, char *fname, size_t fname_len, char *alias, size_t alias_len, phar_archive_data** pphar, uint32_t compression, char **error);
 zend_result phar_open_or_create_tar(char *fname, size_t fname_len, char *alias, size_t alias_len, int is_data, uint32_t options, phar_archive_data** pphar, char **error);
-void phar_tar_flush(phar_archive_data *phar, zend_string *user_stub, bool is_default_stub, char **error);
+int phar_tar_flush(phar_archive_data *phar, zend_string *user_stub, bool is_default_stub, char **error);
 
 /* zip functions in zip.c */
 int phar_parse_zipfile(php_stream *fp, char *fname, size_t fname_len, char *alias, size_t alias_len, phar_archive_data** pphar, char **error);
 int phar_open_or_create_zip(char *fname, size_t fname_len, char *alias, size_t alias_len, int is_data, uint32_t options, phar_archive_data** pphar, char **error);
-void phar_zip_flush(phar_archive_data *archive, zend_string *user_stub, bool is_default_stub, char **error);
+int phar_zip_flush(phar_archive_data *archive, zend_string *user_stub, bool is_default_stub, char **error);
 
 #ifdef PHAR_MAIN
 extern const php_stream_wrapper php_stream_phar_wrapper;
@@ -468,8 +494,8 @@ phar_entry_info *phar_get_entry_info(phar_archive_data *phar, char *path, size_t
 phar_entry_info *phar_get_entry_info_dir(phar_archive_data *phar, char *path, size_t path_len, char dir, char **error, int security);
 phar_entry_data *phar_get_or_create_entry_data(char *fname, size_t fname_len, char *path, size_t path_len, const char *mode, char allow_dir, char **error, int security);
 zend_result phar_get_entry_data(phar_entry_data **ret, char *fname, size_t fname_len, char *path, size_t path_len, const char *mode, char allow_dir, char **error, int security);
-void phar_flush_ex(phar_archive_data *archive, zend_string *user_stub, bool is_default_stub, char **error);
-void phar_flush(phar_archive_data *archive, char **error);
+int phar_flush_ex(phar_archive_data *archive, zend_string *user_stub, bool is_default_stub, char **error);
+int phar_flush(phar_archive_data *archive, char **error);
 zend_result phar_detect_phar_fname_ext(const char *filename, size_t filename_len, const char **ext_str, size_t *ext_len, int executable, int for_create, int is_complete);
 zend_result phar_split_fname(const char *filename, size_t filename_len, char **arch, size_t *arch_len, char **entry, size_t *entry_len, int executable, int for_create);
 

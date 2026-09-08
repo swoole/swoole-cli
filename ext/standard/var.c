@@ -41,6 +41,12 @@ struct php_serialize_data {
 
 static void php_array_element_dump(zval *zv, zend_ulong index, zend_string *key, int level) /* {{{ */
 {
+#ifdef ZEND_CHECK_STACK_LIMIT
+	if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+		php_printf("%*cnesting level too deep", level + 1, ' ');
+		return;
+	}
+#endif
 	if (key == NULL) { /* numeric key */
 		php_printf("%*c[" ZEND_LONG_FMT "]=>\n", level + 1, ' ', index);
 	} else { /* string key */
@@ -56,6 +62,12 @@ static void php_object_property_dump(zend_property_info *prop_info, zval *zv, ze
 {
 	const char *prop_name, *class_name;
 
+#ifdef ZEND_CHECK_STACK_LIMIT
+	if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+		php_printf("%*cnesting level too deep", level + 1, ' ');
+		return;
+	}
+#endif
 	if (key == NULL) { /* numeric key */
 		php_printf("%*c[" ZEND_LONG_FMT "]=>\n", level + 1, ' ', index);
 	} else { /* string key */
@@ -249,6 +261,12 @@ PHP_FUNCTION(var_dump)
 
 static void zval_array_element_dump(zval *zv, zend_ulong index, zend_string *key, int level) /* {{{ */
 {
+#ifdef ZEND_CHECK_STACK_LIMIT
+	if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+		php_printf("%*cnesting level too deep", level + 1, ' ');
+		return;
+	}
+#endif
 	if (key == NULL) { /* numeric key */
 		php_printf("%*c[" ZEND_LONG_FMT "]=>\n", level + 1, ' ', index);
 	} else { /* string key */
@@ -264,6 +282,12 @@ static void zval_object_property_dump(zend_property_info *prop_info, zval *zv, z
 {
 	const char *prop_name, *class_name;
 
+#ifdef ZEND_CHECK_STACK_LIMIT
+	if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+		php_printf("%*cnesting level too deep", level + 1, ' ');
+		return;
+	}
+#endif
 	if (key == NULL) { /* numeric key */
 		php_printf("%*c[" ZEND_LONG_FMT "]=>\n", level + 1, ' ', index);
 	} else { /* string key */
@@ -1414,19 +1438,20 @@ PHPAPI void php_unserialize_with_options(zval *return_value, const char *buf, co
 						function_name, zend_zval_value_name(entry));
 					goto cleanup;
 				}
-				zend_string *name = zval_try_get_string(entry);
+				zend_string *tmp_str;
+				zend_string *name = zval_try_get_tmp_string(entry, &tmp_str);
 				if (UNEXPECTED(name == NULL)) {
 					goto cleanup;
 				}
 				if (UNEXPECTED(!zend_is_valid_class_name(name))) {
 					zend_value_error("%s(): Option \"allowed_classes\" must be an array of class names, \"%s\" given", function_name, ZSTR_VAL(name));
-					zend_string_release_ex(name, false);
+					zend_tmp_string_release(tmp_str);
 					goto cleanup;
 				}
 				zend_string *lcname = zend_string_tolower(name);
 				zend_hash_add_empty_element(class_hash, lcname);
-		        zend_string_release_ex(name, false);
 		        zend_string_release_ex(lcname, false);
+		        zend_tmp_string_release(tmp_str);
 			} ZEND_HASH_FOREACH_END();
 		}
 		php_var_unserialize_set_allowed_classes(var_hash, class_hash);

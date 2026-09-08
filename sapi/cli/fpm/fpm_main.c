@@ -1716,7 +1716,7 @@ int fpm_main(int argc, char *argv[])
 				SG(headers_sent) = 1;
 				SG(request_info).no_headers = 1;
 
-				php_print_version(&sapi_module);
+				show_swoole_version();
 				php_request_shutdown((void *) 0);
 				fcgi_shutdown();
 				exit_status = FPM_EXIT_OK;

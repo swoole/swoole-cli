@@ -983,6 +983,9 @@ PHPAPI void php_implode(const zend_string *glue, HashTable *pieces, zval *return
 
 	uint32_t flags = ZSTR_GET_COPYABLE_CONCAT_PROPERTIES(glue);
 
+	/* Converting an element may call __toString(), which can destroy pieces. */
+	GC_TRY_ADDREF(pieces);
+
 	ZEND_HASH_FOREACH_VAL(pieces, tmp) {
 		if (EXPECTED(Z_TYPE_P(tmp) == IS_STRING)) {
 			ptr->str = Z_STR_P(tmp);
@@ -1042,6 +1045,7 @@ PHPAPI void php_implode(const zend_string *glue, HashTable *pieces, zval *return
 	}
 
 	free_alloca(strings, use_heap);
+	GC_TRY_DTOR_NO_REF(pieces);
 	RETURN_NEW_STR(str);
 }
 /* }}} */
@@ -3392,7 +3396,12 @@ static void php_strtr_array(zval *return_value, zend_string *str, HashTable *fro
 {
 	if (zend_hash_num_elements(from_ht) < 1) {
 		RETURN_STR_COPY(str);
-	} else if (zend_hash_num_elements(from_ht) == 1) {
+	}
+
+	/* Converting a replacement may call __toString(), which can destroy from_ht. */
+	GC_TRY_ADDREF(from_ht);
+
+	if (zend_hash_num_elements(from_ht) == 1) {
 		zend_long num_key;
 		zend_string *str_key, *tmp_str, *replace, *tmp_replace;
 		zval *entry;
@@ -3421,11 +3430,13 @@ static void php_strtr_array(zval *return_value, zend_string *str, HashTable *fro
 			}
 			zend_tmp_string_release(tmp_str);
 			zend_tmp_string_release(tmp_replace);
-			return;
+			break;
 		} ZEND_HASH_FOREACH_END();
 	} else {
 		php_strtr_array_ex(return_value, str, from_ht);
 	}
+
+	GC_TRY_DTOR_NO_REF(from_ht);
 }
 
 /* {{{ Translates characters in str using given translation tables */
@@ -3748,9 +3759,9 @@ PHPAPI void php_stripcslashes(zend_string *str)
 				case 'f':  *target++='\f'; nlen--; break;
 				case '\\': *target++='\\'; nlen--; break;
 				case 'x':
-					if (source+1 < end && isxdigit((int)(*(source+1)))) {
+					if (source+1 < end && isxdigit((unsigned char)source[1])) {
 						numtmp[0] = *++source;
-						if (source+1 < end && isxdigit((int)(*(source+1)))) {
+						if (source+1 < end && isxdigit((unsigned char)source[1])) {
 							numtmp[1] = *++source;
 							numtmp[2] = '\0';
 							nlen-=3;
@@ -4485,6 +4496,17 @@ static void _php_str_replace_common(
 		RETURN_THROWS();
 	}
 
+	/* Converting an element may call __toString(), which can destroy the arrays. */
+	if (search_ht) {
+		GC_TRY_ADDREF(search_ht);
+	}
+	if (replace_ht) {
+		GC_TRY_ADDREF(replace_ht);
+	}
+	if (subject_ht) {
+		GC_TRY_ADDREF(subject_ht);
+	}
+
 	/* if subject is an array */
 	if (subject_ht) {
 		array_init(return_value);
@@ -4510,6 +4532,16 @@ static void _php_str_replace_common(
 	}
 	if (zcount) {
 		ZEND_TRY_ASSIGN_REF_LONG(zcount, count);
+	}
+
+	if (search_ht) {
+		GC_TRY_DTOR_NO_REF(search_ht);
+	}
+	if (replace_ht) {
+		GC_TRY_DTOR_NO_REF(replace_ht);
+	}
+	if (subject_ht) {
+		GC_TRY_DTOR_NO_REF(subject_ht);
 	}
 }
 
@@ -4605,7 +4637,7 @@ PHP_FUNCTION(hebrev)
 
 	do {
 		if (block_type == _HEB_BLOCK_TYPE_HEB) {
-			while ((isheb((int)*(tmp+1)) || _isblank((int)*(tmp+1)) || ispunct((int)*(tmp+1)) || (int)*(tmp+1)=='\n' ) && block_end<str_len-1) {
+			while ((isheb((int)*(tmp+1)) || _isblank((int)*(tmp+1)) || ispunct((unsigned char)tmp[1]) || (int)*(tmp+1)=='\n' ) && block_end<str_len-1) {
 				tmp++;
 				block_end++;
 			}
@@ -4653,7 +4685,7 @@ PHP_FUNCTION(hebrev)
 				tmp++;
 				block_end++;
 			}
-			while ((_isblank((int)*tmp) || ispunct((int)*tmp)) && *tmp!='/' && *tmp!='-' && block_end > block_start) {
+			while ((_isblank((int)*tmp) || ispunct((unsigned char)*tmp)) && *tmp!='/' && *tmp!='-' && block_end > block_start) {
 				tmp--;
 				block_end--;
 			}
@@ -5036,7 +5068,7 @@ static bool php_tag_find(char *tag, size_t len, const char *set) {
 				done =1;
 				break;
 			default:
-				if (!isspace((int)c)) {
+				if (!isspace((unsigned char)c)) {
 					if (state == 0) {
 						state=1;
 					}
@@ -5126,7 +5158,7 @@ state_0:
 			if (in_q) {
 				break;
 			}
-			if (isspace(*(p + 1)) && !allow_tag_spaces) {
+			if (isspace((unsigned char)p[1]) && !allow_tag_spaces) {
 				*(rp++) = c;
 				break;
 			}
@@ -5173,7 +5205,7 @@ state_1:
 			if (in_q) {
 				break;
 			}
-			if (isspace(*(p + 1)) && !allow_tag_spaces) {
+			if (isspace((unsigned char)p[1]) && !allow_tag_spaces) {
 				goto reg_char_1;
 			}
 			depth++;

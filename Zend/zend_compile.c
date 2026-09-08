@@ -2023,12 +2023,12 @@ ZEND_API void zend_activate_auto_globals(void) /* {{{ */
 	zend_auto_global *auto_global;
 
 	ZEND_HASH_MAP_FOREACH_PTR(CG(auto_globals), auto_global) {
-		if (auto_global->jit) {
-			auto_global->armed = 1;
-		} else if (auto_global->auto_global_callback) {
+		auto_global->armed = auto_global->jit || auto_global->auto_global_callback;
+	} ZEND_HASH_FOREACH_END();
+
+	ZEND_HASH_MAP_FOREACH_PTR(CG(auto_globals), auto_global) {
+		if (auto_global->armed && !auto_global->jit) {
 			auto_global->armed = auto_global->auto_global_callback(auto_global->name);
-		} else {
-			auto_global->armed = 0;
 		}
 	} ZEND_HASH_FOREACH_END();
 }
@@ -2188,7 +2188,7 @@ ZEND_API size_t zend_dirname(char *path, size_t len)
 	/* Note that on Win32 CWD is per drive (heritage from CP/M).
 	 * This means dirname("c:foo") maps to "c:." or "c:" - which means CWD on C: drive.
 	 */
-	if ((2 <= len) && isalpha((int)((unsigned char *)path)[0]) && (':' == path[1])) {
+	if ((2 <= len) && isalpha((unsigned char)path[0]) && (':' == path[1])) {
 		/* Skip over the drive spec (if any) so as not to change */
 		path += 2;
 		len_adjust += 2;
@@ -5203,7 +5203,7 @@ static void zend_compile_call(znode *result, zend_ast *ast, uint32_t type) /* {{
 		}
 
 		zval_ptr_dtor(&name_node.u.constant);
-		ZVAL_NEW_STR(&name_node.u.constant, lcname);
+		ZVAL_STR(&name_node.u.constant, lcname);
 
 		opline = zend_emit_op(NULL, ZEND_INIT_FCALL, NULL, &name_node);
 		opline->result.num = zend_alloc_cache_slot();

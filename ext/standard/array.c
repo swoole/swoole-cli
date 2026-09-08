@@ -611,10 +611,18 @@ PHPAPI zend_long php_count_recursive(HashTable *ht) /* {{{ */
 	zend_long cnt = 0;
 	zval *element;
 
+#ifdef ZEND_CHECK_STACK_LIMIT
+	if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+		zend_call_stack_size_error();
+		return -1;
+	}
+#endif
+
 	if (!(GC_FLAGS(ht) & GC_IMMUTABLE)) {
 		if (GC_IS_RECURSIVE(ht)) {
 			php_error_docref(NULL, E_WARNING, "Recursion detected");
-			return 0;
+			/* A user error handler may have thrown. */
+			return EG(exception) ? -1 : 0;
 		}
 		GC_PROTECT_RECURSION(ht);
 	}
@@ -623,7 +631,12 @@ PHPAPI zend_long php_count_recursive(HashTable *ht) /* {{{ */
 	ZEND_HASH_FOREACH_VAL(ht, element) {
 		ZVAL_DEREF(element);
 		if (Z_TYPE_P(element) == IS_ARRAY) {
-			cnt += php_count_recursive(Z_ARRVAL_P(element));
+			zend_long sub_cnt = php_count_recursive(Z_ARRVAL_P(element));
+			if (UNEXPECTED(sub_cnt < 0)) {
+				cnt = -1;
+				break;
+			}
+			cnt += sub_cnt;
 		}
 	} ZEND_HASH_FOREACH_END();
 
@@ -656,6 +669,9 @@ PHP_FUNCTION(count)
 				cnt = zend_hash_num_elements(Z_ARRVAL_P(array));
 			} else {
 				cnt = php_count_recursive(Z_ARRVAL_P(array));
+				if (UNEXPECTED(cnt < 0)) {
+					RETURN_THROWS();
+				}
 			}
 			RETURN_LONG(cnt);
 			break;
@@ -1464,6 +1480,13 @@ static zend_result php_array_walk(
 	/* Create a local copy of fci, as we want to use different arguments at different
 	 * levels of recursion. */
 	zend_fcall_info fci = context->fci;
+
+#ifdef ZEND_CHECK_STACK_LIMIT
+	if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+		zend_call_stack_size_error();
+		return FAILURE;
+	}
+#endif
 
 	if (zend_hash_num_elements(target_hash) == 0) {
 		return result;
@@ -2692,7 +2715,7 @@ PHP_FUNCTION(extract)
 }
 /* }}} */
 
-static void php_compact_var(HashTable *eg_active_symbol_table, zval *return_value, zval *entry, uint32_t pos) /* {{{ */
+static zend_result php_compact_var(HashTable *eg_active_symbol_table, zval *return_value, zval *entry, uint32_t pos) /* {{{ */
 {
 	zval *value_ptr, data;
 
@@ -2710,25 +2733,43 @@ static void php_compact_var(HashTable *eg_active_symbol_table, zval *return_valu
 			}
 		} else {
 			php_error_docref_unchecked(NULL, E_WARNING, "Undefined variable $%S", Z_STR_P(entry));
+			/* A user error handler may have thrown. */
+			return EG(exception) ? FAILURE : SUCCESS;
 		}
 	} else if (Z_TYPE_P(entry) == IS_ARRAY) {
+		zend_result result = SUCCESS;
+
+#ifdef ZEND_CHECK_STACK_LIMIT
+		if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+			zend_call_stack_size_error();
+			return FAILURE;
+		}
+#endif
 		if (Z_REFCOUNTED_P(entry)) {
 			if (Z_IS_RECURSIVE_P(entry)) {
 				zend_throw_error(NULL, "Recursion detected");
-				return;
+				return FAILURE;
 			}
 			Z_PROTECT_RECURSION_P(entry);
 		}
 		ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(entry), value_ptr) {
-			php_compact_var(eg_active_symbol_table, return_value, value_ptr, pos);
+			if (UNEXPECTED(php_compact_var(eg_active_symbol_table, return_value, value_ptr, pos) == FAILURE)) {
+				result = FAILURE;
+				break;
+			}
 		} ZEND_HASH_FOREACH_END();
 		if (Z_REFCOUNTED_P(entry)) {
 			Z_UNPROTECT_RECURSION_P(entry);
 		}
+
+		return result;
 	} else {
 		php_error_docref(NULL, E_WARNING, "Argument #%d must be string or array of strings, %s given", pos, zend_zval_value_name(entry));
-		return;
+		/* A user error handler may have thrown. */
+		return EG(exception) ? FAILURE : SUCCESS;
 	}
+
+	return SUCCESS;
 }
 /* }}} */
 
@@ -2760,7 +2801,9 @@ PHP_FUNCTION(compact)
 	}
 
 	for (i = 0; i < num_args; i++) {
-		php_compact_var(symbol_table, return_value, &args[i], i + 1);
+		if (UNEXPECTED(php_compact_var(symbol_table, return_value, &args[i], i + 1) == FAILURE)) {
+			RETURN_THROWS();
+		}
 	}
 }
 /* }}} */
@@ -4161,6 +4204,13 @@ PHPAPI int php_array_replace_recursive(HashTable *dest, HashTable *src) /* {{{ *
 	zend_ulong num_key;
 	int ret;
 
+#ifdef ZEND_CHECK_STACK_LIMIT
+	if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+		zend_call_stack_size_error();
+		return 0;
+	}
+#endif
+
 	ZEND_HASH_FOREACH_KEY_VAL(src, num_key, string_key, src_entry) {
 		src_zval = src_entry;
 		ZVAL_DEREF(src_zval);
@@ -4281,7 +4331,7 @@ static zend_always_inline void php_array_merge_wrapper(INTERNAL_FUNCTION_PARAMET
 	uint32_t argc, i;
 	zval *src_entry;
 	HashTable *src, *dest;
-	uint32_t count = 0;
+	uint64_t count = 0;
 
 	ZEND_PARSE_PARAMETERS_START(0, -1)
 		Z_PARAM_VARIADIC('+', args, argc)
@@ -4299,6 +4349,11 @@ static zend_always_inline void php_array_merge_wrapper(INTERNAL_FUNCTION_PARAMET
 			RETURN_THROWS();
 		}
 		count += zend_hash_num_elements(Z_ARRVAL_P(arg));
+	}
+
+	if (UNEXPECTED(count >= HT_MAX_SIZE)) {
+		zend_throw_error(NULL, "The total number of elements must be lower than %u", HT_MAX_SIZE);
+		RETURN_THROWS();
 	}
 
 	if (argc == 2) {
@@ -5889,6 +5944,7 @@ PHP_FUNCTION(array_diff)
 
 		for (i = 1; i < argc; i++) {
 			if (Z_TYPE(args[i]) != IS_ARRAY) {
+				zend_tmp_string_release(tmp_search_str);
 				zend_argument_type_error(i + 1, "must be of type array, %s given", zend_zval_value_name(&args[i]));
 				RETURN_THROWS();
 			}
@@ -6040,6 +6096,7 @@ PHP_FUNCTION(array_multisort)
 {
 	zval*			args;
 	zval**			arrays;
+	HashTable**		hashes;
 	Bucket**		indirect;
 	uint32_t		idx;
 	HashTable*		hash;
@@ -6161,11 +6218,17 @@ PHP_FUNCTION(array_multisort)
 	for (i = 0; i < array_size; i++) {
 		indirect[i] = indirects + (i * (num_arrays + 1));
 	}
+	hashes = safe_emalloc(num_arrays, sizeof(HashTable *), 0);
+	for (i = 0; i < num_arrays; i++) {
+		hashes[i] = Z_ARRVAL_P(arrays[i]);
+		GC_ADDREF(hashes[i]);
+		HT_ALLOW_COW_VIOLATION(hashes[i]);
+	}
 	for (i = 0; i < num_arrays; i++) {
 		k = 0;
-		if (HT_IS_PACKED(Z_ARRVAL_P(arrays[i]))) {
-			zval *zv = Z_ARRVAL_P(arrays[i])->arPacked;
-			for (idx = 0; idx < Z_ARRVAL_P(arrays[i])->nNumUsed; idx++, zv++) {
+		if (HT_IS_PACKED(hashes[i])) {
+			zval *zv = hashes[i]->arPacked;
+			for (idx = 0; idx < hashes[i]->nNumUsed; idx++, zv++) {
 				if (Z_TYPE_P(zv) == IS_UNDEF) continue;
 				ZVAL_COPY_VALUE(&indirect[k][i].val, zv);
 				indirect[k][i].h = idx;
@@ -6173,8 +6236,8 @@ PHP_FUNCTION(array_multisort)
 				k++;
 			}
 		} else {
-			Bucket *p = Z_ARRVAL_P(arrays[i])->arData;
-			for (idx = 0; idx < Z_ARRVAL_P(arrays[i])->nNumUsed; idx++, p++) {
+			Bucket *p = hashes[i]->arData;
+			for (idx = 0; idx < hashes[i]->nNumUsed; idx++, p++) {
 				if (Z_TYPE(p->val) == IS_UNDEF) continue;
 				indirect[k][i] = *p;
 				k++;
@@ -6194,7 +6257,7 @@ PHP_FUNCTION(array_multisort)
 
 	/* Restructure the arrays based on sorted indirect - this is mostly taken from zend_hash_sort() function. */
 	for (i = 0; i < num_arrays; i++) {
-		hash = Z_ARRVAL_P(arrays[i]);
+		hash = hashes[i];
 		hash->nNumUsed = array_size;
 		hash->nNextFreeElement = array_size;
 		hash->nInternalPointer = 0;
@@ -6223,6 +6286,14 @@ PHP_FUNCTION(array_multisort)
 	RETVAL_TRUE;
 
 clean_up:
+	for (i = 0; i < num_arrays; i++) {
+		if (UNEXPECTED(GC_DELREF(hashes[i]) == 0)) {
+			zend_array_destroy(hashes[i]);
+		} else {
+			gc_check_possible_root((zend_refcounted *)hashes[i]);
+		}
+	}
+	efree(hashes);
 	efree(indirects);
 	efree(indirect);
 	efree(func);

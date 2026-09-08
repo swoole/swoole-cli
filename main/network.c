@@ -317,6 +317,8 @@ static inline void php_network_set_limit_time(struct timeval *limit_time,
 		struct timeval *timeout)
 {
 	gettimeofday(limit_time, NULL);
+	const double timeoutmax = (double) PHP_TIMEOUT_ULL_MAX / 1000000.0;
+	ZEND_ASSERT(limit_time->tv_sec < (timeoutmax - timeout->tv_sec));
 	limit_time->tv_sec += timeout->tv_sec;
 	limit_time->tv_usec += timeout->tv_usec;
 	if (limit_time->tv_usec >= 1000000) {
@@ -551,7 +553,7 @@ bound:
 
 PHPAPI zend_result php_network_parse_network_address_with_port(const char *addr, size_t addrlen, struct sockaddr *sa, socklen_t *sl)
 {
-	char *colon;
+	const char *colon;
 	char *tmp;
 	zend_result ret = FAILURE;
 	short port;

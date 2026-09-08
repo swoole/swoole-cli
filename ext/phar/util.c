@@ -60,14 +60,10 @@ static char *phar_get_link_location(phar_entry_info *entry) /* {{{ */
 }
 /* }}} */
 
-phar_entry_info *phar_get_link_source(phar_entry_info *entry) /* {{{ */
+static phar_entry_info *phar_follow_one_link(phar_entry_info *entry)
 {
 	phar_entry_info *link_entry;
 	char *link;
-
-	if (!entry->link) {
-		return entry;
-	}
 
 	link = phar_get_link_location(entry);
 	if (NULL != (link_entry = zend_hash_str_find_ptr(&(entry->phar->manifest), entry->link, strlen(entry->link))) ||
@@ -75,15 +71,48 @@ phar_entry_info *phar_get_link_source(phar_entry_info *entry) /* {{{ */
 		if (link != entry->link) {
 			efree(link);
 		}
-		return phar_get_link_source(link_entry);
-	} else {
-		if (link != entry->link) {
-			efree(link);
+		return link_entry;
+	}
+
+	if (link != entry->link) {
+		efree(link);
+	}
+	return NULL;
+}
+
+phar_entry_info *phar_get_link_source(phar_entry_info *entry)
+{
+	phar_entry_info *slow, *fast;
+
+	if (!entry->link) {
+		return entry;
+	}
+
+	/*
+	 * Use Floyd's cycle detection algorithm to follow the symlink chain without unbounded
+	 * recursion. Each entry has at most one outgoing link, so if a cycle exists the fast pointer
+	 * will eventually meet the slow one. Otherwise the fast pointer reaches the end first.
+	 */
+	slow = fast = entry;
+	while (1) {
+		fast = phar_follow_one_link(fast);
+		if (!fast || !fast->link) {
+			return fast;
 		}
-		return NULL;
+		fast = phar_follow_one_link(fast);
+		if (!fast || !fast->link) {
+			return fast;
+		}
+
+		/* no need to check slow as it's always behind */
+		slow = phar_follow_one_link(slow);
+
+		if (slow == fast) {
+			/* circular symlink chain */
+			return NULL;
+		}
 	}
 }
-/* }}} */
 
 static php_stream *phar_get_entrypufp(const phar_entry_info *entry)
 {
@@ -198,7 +227,7 @@ zend_result phar_mount_entry(phar_archive_data *phar, char *filename, size_t fil
 		return FAILURE;
 	}
 
-	if (path_len >= sizeof(".phar")-1 && !memcmp(path, ".phar", sizeof(".phar")-1)) {
+	if (phar_path_is_magic_phar_ex(path, path_len)) {
 		/* no creating magic phar files by mounting them */
 		return FAILURE;
 	}
@@ -1280,7 +1309,7 @@ phar_entry_info *phar_get_entry_info_dir(phar_archive_data *phar, char *path, si
 		*error = NULL;
 	}
 
-	if (security && path_len >= sizeof(".phar")-1 && !memcmp(path, ".phar", sizeof(".phar")-1)) {
+	if (security && phar_path_is_magic_phar_ex(path, path_len)) {
 		if (error) {
 			spprintf(error, 4096, "phar error: cannot directly access magic \".phar\" directory or files within it");
 		}
@@ -1520,7 +1549,6 @@ static int phar_call_openssl_signverify(int is_sign, php_stream *fp, zend_off_t 
 	zval_ptr_dtor_str(&zp[2]);
 
 	switch (Z_TYPE(retval)) {
-		default:
 		case IS_LONG:
 			zval_ptr_dtor(&zp[1]);
 			if (1 == Z_LVAL(retval)) {
@@ -1532,6 +1560,9 @@ static int phar_call_openssl_signverify(int is_sign, php_stream *fp, zend_off_t 
 			*signature_len = Z_STRLEN(zp[1]);
 			zval_ptr_dtor(&zp[1]);
 			return SUCCESS;
+		default:
+			zval_ptr_dtor(&retval);
+			ZEND_FALLTHROUGH;
 		case IS_FALSE:
 			zval_ptr_dtor(&zp[1]);
 			return FAILURE;
@@ -1638,6 +1669,7 @@ zend_result phar_verify_signature(php_stream *fp, size_t end_of_phar, uint32_t s
 				if (md_ctx) {
 					EVP_MD_CTX_destroy(md_ctx);
 				}
+				EVP_PKEY_free(key);
 				if (error) {
 					spprintf(error, 0, "openssl signature could not be verified");
 				}
@@ -1952,7 +1984,7 @@ zend_result phar_create_signature(phar_archive_data *phar, php_stream *fp, char 
 
 			if (!EVP_SignInit(md_ctx, mdtype)) {
 				EVP_PKEY_free(key);
-				EVP_MD_CTX_free(md_ctx);
+				EVP_MD_CTX_destroy(md_ctx);
 				efree(sigbuf);
 				if (error) {
 					spprintf(error, 0, "unable to initialize openssl signature for phar \"%s\"", phar->fname);
@@ -1963,7 +1995,7 @@ zend_result phar_create_signature(phar_archive_data *phar, php_stream *fp, char 
 			while ((sig_len = php_stream_read(fp, (char*)buf, sizeof(buf))) > 0) {
 				if (!EVP_SignUpdate(md_ctx, buf, sig_len)) {
 					EVP_PKEY_free(key);
-					EVP_MD_CTX_free(md_ctx);
+					EVP_MD_CTX_destroy(md_ctx);
 					efree(sigbuf);
 					if (error) {
 						spprintf(error, 0, "unable to update the openssl signature for phar \"%s\"", phar->fname);
@@ -1974,7 +2006,7 @@ zend_result phar_create_signature(phar_archive_data *phar, php_stream *fp, char 
 
 			if (!EVP_SignFinal (md_ctx, sigbuf, &siglen, key)) {
 				EVP_PKEY_free(key);
-				EVP_MD_CTX_free(md_ctx);
+				EVP_MD_CTX_destroy(md_ctx);
 				efree(sigbuf);
 				if (error) {
 					spprintf(error, 0, "unable to write phar \"%s\" with requested openssl signature", phar->fname);
@@ -1984,7 +2016,7 @@ zend_result phar_create_signature(phar_archive_data *phar, php_stream *fp, char 
 
 			sigbuf[siglen] = '\0';
 			EVP_PKEY_free(key);
-			EVP_MD_CTX_free(md_ctx);
+			EVP_MD_CTX_destroy(md_ctx);
 #else
 			size_t siglen;
 			sigbuf = NULL;

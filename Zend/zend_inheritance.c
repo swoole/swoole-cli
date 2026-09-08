@@ -988,7 +988,9 @@ static ZEND_COLD zend_string *zend_get_function_declaration(
 							zend_ast *ast = Z_ASTVAL_P(zv);
 							if (ast->kind == ZEND_AST_CONSTANT) {
 								smart_str_append(&str, zend_ast_get_constant_name(ast));
-							} else if (ast->kind == ZEND_AST_CLASS_CONST) {
+							} else if (ast->kind == ZEND_AST_CLASS_CONST
+							 && ast->child[1]->kind == ZEND_AST_ZVAL
+							 && Z_TYPE_P(zend_ast_get_zval(ast->child[1])) == IS_STRING) {
 								smart_str_append(&str, zend_ast_get_str(ast->child[0]));
 								smart_str_appends(&str, "::");
 								smart_str_append(&str, zend_ast_get_str(ast->child[1]));
@@ -1493,10 +1495,9 @@ static void do_inherit_property(zend_property_info *parent_info, zend_string *ke
 				}
 
 				int parent_num = OBJ_PROP_TO_NUM(parent_info->offset);
+				/* Don't keep default properties in GC (they may be freed by opcache) */
+				zval_ptr_dtor_nogc(&(ce->default_properties_table[parent_num]));
 				if (child_info->offset != ZEND_VIRTUAL_PROPERTY_OFFSET) {
-					/* Don't keep default properties in GC (they may be freed by opcache) */
-					zval_ptr_dtor_nogc(&(ce->default_properties_table[parent_num]));
-
 					if (use_child_prop) {
 						ZVAL_UNDEF(&ce->default_properties_table[parent_num]);
 					} else {
@@ -2756,6 +2757,19 @@ static void emit_incompatible_trait_constant_error(
 	);
 }
 
+static void emit_trait_constant_enum_case_conflict_error(
+	const zend_class_entry *ce, const zend_class_constant *trait_constant, zend_string *name
+) {
+	zend_error_noreturn(E_COMPILE_ERROR,
+		"Cannot use trait %s, because %s::%s conflicts with enum case %s::%s",
+		ZSTR_VAL(trait_constant->ce->name),
+		ZSTR_VAL(trait_constant->ce->name),
+		ZSTR_VAL(name),
+		ZSTR_VAL(ce->name),
+		ZSTR_VAL(name)
+	);
+}
+
 static bool do_trait_constant_check(
 	zend_class_entry *ce, zend_class_constant *trait_constant, zend_string *name, zend_class_entry **traits, size_t current_trait
 ) {
@@ -2768,6 +2782,11 @@ static bool do_trait_constant_check(
 	}
 
 	zend_class_constant *existing_constant = Z_PTR_P(zv);
+
+	if (UNEXPECTED(ZEND_CLASS_CONST_FLAGS(existing_constant) & ZEND_CLASS_CONST_IS_CASE)) {
+		emit_trait_constant_enum_case_conflict_error(ce, trait_constant, name);
+		return false;
+	}
 
 	if ((ZEND_CLASS_CONST_FLAGS(trait_constant) & flags_mask) != (ZEND_CLASS_CONST_FLAGS(existing_constant) & flags_mask)) {
 		emit_incompatible_trait_constant_error(ce, existing_constant, trait_constant, name, traits, current_trait);
@@ -3716,6 +3735,11 @@ ZEND_API zend_class_entry *zend_do_link_class(zend_class_entry *ce, zend_string 
 		if (ce->ce_flags & ZEND_ACC_UNRESOLVED_VARIANCE) {
 			resolve_delayed_variance_obligations(ce);
 		}
+		/* Delayed variance resolution can re-enter linking before the full
+		 * hierarchy is linked. See ext/opcache/tests/gh20469*.phpt. */
+		if (CG(unlinked_uses) && zend_hash_index_exists(CG(unlinked_uses), (zend_long)(uintptr_t) ce)) {
+			ce->ce_flags &= ~ZEND_ACC_CACHEABLE;
+		}
 		if (ce->ce_flags & ZEND_ACC_CACHEABLE) {
 			ce->ce_flags &= ~ZEND_ACC_CACHEABLE;
 		} else {
@@ -3723,6 +3747,7 @@ ZEND_API zend_class_entry *zend_do_link_class(zend_class_entry *ce, zend_string 
 		}
 	}
 
+	bool was_cacheable = is_cacheable;
 	if (!CG(current_linking_class)) {
 		is_cacheable = 0;
 	}
@@ -3743,6 +3768,13 @@ ZEND_API zend_class_entry *zend_do_link_class(zend_class_entry *ce, zend_string 
 			zend_hash_destroy(ht);
 			FREE_HASHTABLE(ht);
 		}
+	} else if (was_cacheable && ce->inheritance_cache) {
+		/* Cacheability can be disabled after dependency tracking prepared
+		 * an inheritance-cache dependency table. Discard it here. */
+		HashTable *ht = (HashTable*)ce->inheritance_cache;
+		ce->inheritance_cache = NULL;
+		zend_hash_destroy(ht);
+		FREE_HASHTABLE(ht);
 	}
 
 	if (!orig_record_errors) {

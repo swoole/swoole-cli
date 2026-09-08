@@ -394,6 +394,18 @@ static zend_long php_session_gc(bool immediate) /* {{{ */
 	/* GC must be done before reading session data. */
 	if ((PS(mod_data) || PS(mod_user_implemented))) {
 		if (!collect && PS(gc_probability) > 0) {
+			/* Seed lazily on first GC draw per process. */
+			if (UNEXPECTED(!PS(random_seeded))) {
+				php_random_uint128_t seed;
+				if (php_random_bytes_silent(&seed, sizeof(seed)) == FAILURE) {
+					seed = php_random_uint128_constant(
+						php_random_generate_fallback_seed(),
+						php_random_generate_fallback_seed()
+					);
+				}
+				php_random_pcgoneseq128xslrr64_seed128(PS(random).state, seed);
+				PS(random_seeded) = true;
+			}
 			collect = php_random_range(PS(random), 0, PS(gc_divisor) - 1) < PS(gc_probability);
 		}
 
@@ -431,6 +443,7 @@ static zend_result php_session_initialize(void) /* {{{ */
 	if (!PS(id) || !ZSTR_VAL(PS(id))[0]) {
 		if (PS(id)) {
 			zend_string_release_ex(PS(id), 0);
+			PS(id) = NULL;
 		}
 		PS(id) = PS(mod)->s_create_sid(&PS(mod_data));
 		if (!PS(id)) {
@@ -448,6 +461,7 @@ static zend_result php_session_initialize(void) /* {{{ */
 	) {
 		if (PS(id)) {
 			zend_string_release_ex(PS(id), 0);
+			PS(id) = NULL;
 		}
 		PS(id) = PS(mod)->s_create_sid(&PS(mod_data));
 		if (!PS(id)) {
@@ -2428,6 +2442,7 @@ PHP_FUNCTION(session_regenerate_id)
 			/* Try to generate non-existing ID */
 			while (limit-- && PS(mod)->s_validate_sid(&PS(mod_data), PS(id)) == SUCCESS) {
 				zend_string_release_ex(PS(id), 0);
+				PS(id) = NULL;
 				PS(id) = PS(mod)->s_create_sid(&PS(mod_data));
 				if (!PS(id)) {
 					PS(mod)->s_close(&PS(mod_data));
@@ -2984,14 +2999,7 @@ static PHP_GINIT_FUNCTION(ps) /* {{{ */
 		.algo = &php_random_algo_pcgoneseq128xslrr64,
 		.state = &ps_globals->random_state,
 	};
-	php_random_uint128_t seed;
-	if (php_random_bytes_silent(&seed, sizeof(seed)) == FAILURE) {
-		seed = php_random_uint128_constant(
-			php_random_generate_fallback_seed(),
-			php_random_generate_fallback_seed()
-		);
-	}
-	php_random_pcgoneseq128xslrr64_seed128(ps_globals->random.state, seed);
+	ps_globals->random_seeded = false;
 }
 /* }}} */
 

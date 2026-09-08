@@ -1473,6 +1473,7 @@ PHP_FUNCTION(sodium_crypto_pwhash)
 	}
 	if (memlimit < crypto_pwhash_MEMLIMIT_MIN) {
 		zend_argument_error(sodium_exception_ce, 5, "must be greater than or equal to %d", crypto_pwhash_MEMLIMIT_MIN);
+		RETURN_THROWS();
 	}
 	hash = zend_string_alloc((size_t) hash_len, 0);
 	ret = -1;
@@ -1532,9 +1533,11 @@ PHP_FUNCTION(sodium_crypto_pwhash_str)
 	}
 	if (opslimit < crypto_pwhash_OPSLIMIT_MIN) {
 		zend_argument_error(sodium_exception_ce, 2, "must be greater than or equal to %d", crypto_pwhash_OPSLIMIT_MIN);
+		RETURN_THROWS();
 	}
 	if (memlimit < crypto_pwhash_MEMLIMIT_MIN) {
 		zend_argument_error(sodium_exception_ce, 3, "must be greater than or equal to %d", crypto_pwhash_MEMLIMIT_MIN);
+		RETURN_THROWS();
 	}
 	hash_str = zend_string_alloc(crypto_pwhash_STRBYTES - 1, 0);
 	if (crypto_pwhash_str
@@ -1640,9 +1643,11 @@ PHP_FUNCTION(sodium_crypto_pwhash_scryptsalsa208sha256)
 	}
 	if (opslimit < crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE) {
 		zend_argument_error(sodium_exception_ce, 4, "must be greater than or equal to %d", crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE);
+		RETURN_THROWS();
 	}
 	if (memlimit < crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE) {
 		zend_argument_error(sodium_exception_ce, 5, "must be greater than or equal to %d", crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE);
+		RETURN_THROWS();
 	}
 	hash = zend_string_alloc((size_t) hash_len, 0);
 	if (crypto_pwhash_scryptsalsa208sha256
@@ -1685,9 +1690,11 @@ PHP_FUNCTION(sodium_crypto_pwhash_scryptsalsa208sha256_str)
 	}
 	if (opslimit < crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE) {
 		zend_argument_error(sodium_exception_ce, 2, "must be greater than or equal to %d", crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE);
+		RETURN_THROWS();
 	}
 	if (memlimit < crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE) {
 		zend_argument_error(sodium_exception_ce, 3, "must be greater than or equal to %d", crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE);
+		RETURN_THROWS();
 	}
 	hash_str = zend_string_alloc
 		(crypto_pwhash_scryptsalsa208sha256_STRBYTES - 1, 0);
@@ -2603,7 +2610,7 @@ PHP_FUNCTION(sodium_crypto_scalarmult)
 		RETURN_THROWS();
 	}
 	if (p_len != crypto_scalarmult_BYTES) {
-		zend_argument_error(sodium_exception_ce, 2, "must be SODIUM_CRYPTO_SCALARMULT_SCALARBYTES bytes long");
+		zend_argument_error(sodium_exception_ce, 2, "must be SODIUM_CRYPTO_SCALARMULT_BYTES bytes long");
 		RETURN_THROWS();
 	}
 	q = zend_string_alloc(crypto_scalarmult_BYTES, 0);
@@ -2674,7 +2681,7 @@ PHP_FUNCTION(sodium_crypto_scalarmult_ristretto255_base)
 		zend_argument_error(sodium_exception_ce, 1, "must not be zero", 0);
 		RETURN_THROWS();
 	}
-	ZSTR_VAL(q)[crypto_scalarmult_BYTES] = 0;
+	ZSTR_VAL(q)[crypto_scalarmult_ristretto255_BYTES] = 0;
 
 	RETURN_NEW_STR(q);
 }
@@ -3214,7 +3221,7 @@ PHP_FUNCTION(sodium_crypto_kdf_derive_from_key)
 		RETURN_THROWS();
 	}
 	if (key_len != crypto_kdf_KEYBYTES) {
-		zend_argument_error(sodium_exception_ce, 4, "must be SODIUM_CRYPTO_KDF_BYTES_MIN bytes long");
+		zend_argument_error(sodium_exception_ce, 4, "must be SODIUM_CRYPTO_KDF_KEYBYTES bytes long");
 		RETURN_THROWS();
 	}
 	memcpy(ctx_padded, ctx, crypto_kdf_CONTEXTBYTES);

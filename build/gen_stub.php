@@ -84,7 +84,7 @@ function processStubFile(string $stubFile, Context $context, bool $includeOnly =
         }
 
         /* Because exit() and die() are proper token/keywords we need to hack-around */
-        $hasSpecialExitAsFunctionHandling = str_ends_with($stubFile, 'zend_builtin_functions.stub.php');
+        $hasSpecialExitAsFunctionHandling = basename($stubFile) == 'zend_builtin_functions.stub.php';
         if (!$fileInfo = $context->parsedFiles[$stubFile] ?? null) {
             initPhpParser();
             $stubContent = $stubCode ?? file_get_contents($stubFile);
@@ -4087,7 +4087,7 @@ class DocCommentTag {
         $matches = [];
 
         if ($this->name === "param") {
-            preg_match('/^\s*([\w\|\\\\\[\]<>, ]+)\s*(?:[{(]|\$\w+).*$/', $value, $matches);
+            preg_match('/^\s*([\w\|\\\\\[\]<>, ]+)\s*(?:[{(]|(\.\.\.)?\$\w+).*$/', $value, $matches);
         } elseif ($this->name === "return" || $this->name === "var") {
             preg_match('/^\s*([\w\|\\\\\[\]<>, ]+)/', $value, $matches);
         }
@@ -4109,7 +4109,7 @@ class DocCommentTag {
 
         if ($this->name === "param") {
             // Allow for parsing extended types like callable(string):mixed in docblocks
-            preg_match('/^\s*(?<type>[\w\|\\\\]+(?<parens>\((?<inparens>(?:(?&parens)|[^(){}[\]]*+))++\)|\{(?&inparens)\}|\[(?&inparens)\])*+(?::(?&type))?)\s*\$(?<name>\w+).*$/', $value, $matches);
+            preg_match('/^\s*(?<type>[\w\|\\\\]+(?<parens>\((?<inparens>(?:(?&parens)|[^(){}[\]]*+))++\)|\{(?&inparens)\}|\[(?&inparens)\])*+(?::(?&type))?)\s*(\.\.\.)?\$(?<name>\w+).*$/', $value, $matches);
         } elseif ($this->name === "prefer-ref") {
             preg_match('/^\s*\$(?<name>\w+).*$/', $value, $matches);
         }
@@ -5970,9 +5970,10 @@ function installPhpParser(string $version, string $phpParserDir) {
         chdir(__DIR__);
 
         $tarName = "v$version.tar.gz";
-        passthru("wget https://github.com/nikic/PHP-Parser/archive/$tarName", $exit);
+        $downloadUrl = "https://github.com/nikic/PHP-Parser/archive/$tarName";
+        passthru("wget -O $tarName $downloadUrl", $exit);
         if ($exit !== 0) {
-            passthru("curl -LO https://github.com/nikic/PHP-Parser/archive/$tarName", $exit);
+            passthru("curl -LO $downloadUrl", $exit);
         }
         if ($exit !== 0) {
             throw new Exception("Failed to download PHP-Parser tarball");
@@ -5982,6 +5983,7 @@ function installPhpParser(string $version, string $phpParserDir) {
         }
         passthru("tar xvzf $tarName -C PHP-Parser-$version --strip-components 1", $exit);
         if ($exit !== 0) {
+            rmdir($phpParserDir);
             throw new Exception("Failed to extract PHP-Parser tarball");
         }
         unlink(__DIR__ . "/$tarName");

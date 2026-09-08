@@ -1281,7 +1281,7 @@ PHP_METHOD(DOMDocument, __construct)
 	}
 
 	if (encoding_len > 0) {
-		docp->encoding = (const xmlChar *) xmlStrdup(BAD_CAST encoding);
+		docp->encoding = xmlStrdup((const xmlChar *) encoding);
 	}
 
 	intern = Z_DOMOBJ_P(ZEND_THIS);
@@ -1599,12 +1599,16 @@ PHP_METHOD(DOMDocument, save)
 	libxml_doc_props const* doc_props = dom_get_doc_props_read_only(intern->document);
 	bool format = doc_props->formatoutput;
 	if (options & LIBXML_SAVE_NOEMPTYTAG) {
+		ZEND_DIAGNOSTIC_IGNORED_START("-Wdeprecated-declarations")
 		saveempty = xmlSaveNoEmptyTags;
 		xmlSaveNoEmptyTags = 1;
+		ZEND_DIAGNOSTIC_IGNORED_END
 	}
 	zend_long bytes = intern->document->handlers->dump_doc_to_file(file, docp, format, (const char *) docp->encoding);
 	if (options & LIBXML_SAVE_NOEMPTYTAG) {
+		ZEND_DIAGNOSTIC_IGNORED_START("-Wdeprecated-declarations")
 		xmlSaveNoEmptyTags = saveempty;
+		ZEND_DIAGNOSTIC_IGNORED_END
 	}
 	if (bytes == -1) {
 		RETURN_FALSE;
@@ -1645,10 +1649,14 @@ static void dom_document_save_xml(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry
 
 		/* Save libxml2 global, override its value, and restore after saving (don't move me or risk breaking the state
 		 * w.r.t. the implicit return in DOM_GET_OBJ). */
+		ZEND_DIAGNOSTIC_IGNORED_START("-Wdeprecated-declarations")
 		old_xml_save_no_empty_tags = xmlSaveNoEmptyTags;
 		xmlSaveNoEmptyTags = (options & LIBXML_SAVE_NOEMPTYTAG) ? 1 : 0;
+		ZEND_DIAGNOSTIC_IGNORED_END
 		res = intern->document->handlers->dump_node_to_str(docp, node, format, (const char *) docp->encoding);
+		ZEND_DIAGNOSTIC_IGNORED_START("-Wdeprecated-declarations")
 		xmlSaveNoEmptyTags = old_xml_save_no_empty_tags;
+		ZEND_DIAGNOSTIC_IGNORED_END
 	} else {
 		int converted_options = XML_SAVE_AS_XML;
 		if (options & XML_SAVE_NO_DECL) {
@@ -1659,14 +1667,20 @@ static void dom_document_save_xml(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry
 		}
 
 		/* Save libxml2 global, override its value, and restore after saving. */
+		ZEND_DIAGNOSTIC_IGNORED_START("-Wdeprecated-declarations")
 		old_xml_save_no_empty_tags = xmlSaveNoEmptyTags;
 		xmlSaveNoEmptyTags = (options & LIBXML_SAVE_NOEMPTYTAG) ? 1 : 0;
+		ZEND_DIAGNOSTIC_IGNORED_END
 		res = intern->document->handlers->dump_doc_to_str(docp, converted_options, (const char *) docp->encoding);
+		ZEND_DIAGNOSTIC_IGNORED_START("-Wdeprecated-declarations")
 		xmlSaveNoEmptyTags = old_xml_save_no_empty_tags;
+		ZEND_DIAGNOSTIC_IGNORED_END
 	}
 
 	if (!res) {
-		php_error_docref(NULL, E_WARNING, "Could not save document");
+		if (!EG(exception)) {
+			php_error_docref(NULL, E_WARNING, "Could not save document");
+		}
 		RETURN_FALSE;
 	} else {
 		RETURN_NEW_STR(res);
@@ -1745,6 +1759,35 @@ static int dom_perform_xinclude(xmlDocPtr docp, dom_object *intern, zend_long fl
 	return err;
 }
 
+/* For modern DOM, namespace declarations are stored as attributes (node->nsDef
+ * is NULL), so libxml's native validators can't resolve prefixed QNames found in
+ * content (e.g. an xs:QName attribute value). Temporarily relink them, mirroring
+ * what C14N does in dom_canonicalization(). */
+typedef struct {
+	HashTable links;
+	bool active;
+} dom_validate_ns_guard;
+
+static void dom_validate_ns_guard_begin(dom_validate_ns_guard *guard, xmlDocPtr docp)
+{
+	guard->active = php_dom_follow_spec_node((const xmlNode *) docp);
+	if (guard->active) {
+		zend_hash_init(&guard->links, 0, NULL, NULL, false);
+		xmlNodePtr root_element = xmlDocGetRootElement(docp);
+		if (root_element) {
+			dom_relink_ns_decls(&guard->links, root_element);
+		}
+	}
+}
+
+static void dom_validate_ns_guard_end(dom_validate_ns_guard *guard)
+{
+	if (guard->active) {
+		dom_unlink_ns_decls(&guard->links);
+		zend_hash_destroy(&guard->links);
+	}
+}
+
 /* {{{ Substitutues xincludes in a DomDocument */
 PHP_METHOD(DOMDocument, xinclude)
 {
@@ -1820,8 +1863,11 @@ PHP_METHOD(DOMDocument, validate)
 	cvp->userData = NULL;
 	cvp->error    = (xmlValidityErrorFunc) php_libxml_error_handler;
 	cvp->warning  = (xmlValidityErrorFunc) php_libxml_error_handler;
-
-	if (xmlValidateDocument(cvp, docp)) {
+	dom_validate_ns_guard guard;
+	dom_validate_ns_guard_begin(&guard, docp);
+	int dtd_valid = xmlValidateDocument(cvp, docp);
+	dom_validate_ns_guard_end(&guard);
+	if (dtd_valid) {
 		RETVAL_TRUE;
 	} else {
 		RETVAL_FALSE;
@@ -1918,7 +1964,10 @@ static void dom_document_schema_validate(INTERNAL_FUNCTION_PARAMETERS, int type)
 	PHP_LIBXML_SANITIZE_GLOBALS(validate);
 	xmlSchemaSetValidOptions(vptr, valid_opts);
 	xmlSchemaSetValidErrors(vptr, php_libxml_error_handler, php_libxml_error_handler, vptr);
+	dom_validate_ns_guard guard;
+	dom_validate_ns_guard_begin(&guard, docp);
 	is_valid = xmlSchemaValidateDoc(vptr, docp);
+	dom_validate_ns_guard_end(&guard);
 	xmlSchemaFree(sptr);
 	xmlSchemaFreeValidCtxt(vptr);
 	PHP_LIBXML_RESTORE_GLOBALS(validate);
@@ -2016,7 +2065,10 @@ static void dom_document_relaxNG_validate(INTERNAL_FUNCTION_PARAMETERS, int type
 	}
 
 	xmlRelaxNGSetValidErrors(vptr, php_libxml_error_handler, php_libxml_error_handler, vptr);
+	dom_validate_ns_guard guard;
+	dom_validate_ns_guard_begin(&guard, docp);
 	is_valid = xmlRelaxNGValidateDoc(vptr, docp);
+	dom_validate_ns_guard_end(&guard);
 	xmlRelaxNGFree(sptr);
 	xmlRelaxNGFreeValidCtxt(vptr);
 

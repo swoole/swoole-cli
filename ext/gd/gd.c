@@ -556,7 +556,7 @@ PHP_FUNCTION(imageloadfont)
 	 */
 	font = (gdFontPtr) emalloc(sizeof(gdFont));
 	b = 0;
-	while (b < hdr_size && (n = php_stream_read(stream, (char*)&font[b], hdr_size - b)) > 0) {
+	while (b < hdr_size && (n = php_stream_read(stream, (char *) font + b, hdr_size - b)) > 0) {
 		b += n;
 	}
 
@@ -2498,8 +2498,18 @@ PHP_FUNCTION(imagegammacorrect)
 		RETURN_THROWS();
 	}
 
+	if (!zend_finite(input)) {
+		zend_argument_value_error(2, "must be finite");
+		RETURN_THROWS();
+	}
+
 	if (output <= 0.0) {
 		zend_argument_value_error(3, "must be greater than 0");
+		RETURN_THROWS();
+	}
+
+	if (!zend_finite(output)) {
+		zend_argument_value_error(3, "must be finite");
 		RETURN_THROWS();
 	}
 
@@ -3013,7 +3023,8 @@ static void php_imagechar(INTERNAL_FUNCTION_PARAMETERS, int mode)
 	zend_long X, Y, COL;
 	zend_string *C;
 	gdImagePtr im;
-	int ch = 0, col, x, y, i, l = 0;
+	int ch = 0, col, i, l = 0;
+	unsigned int x, y;
 	unsigned char *str = NULL;
 	zend_object *font_obj = NULL;
 	zend_long font_int = 0;
@@ -3045,21 +3056,21 @@ static void php_imagechar(INTERNAL_FUNCTION_PARAMETERS, int mode)
 
 	switch (mode) {
 		case 0:
-			gdImageChar(im, font, x, y, ch, col);
+			gdImageChar(im, font, (int)x, (int)y, ch, col);
 			break;
 		case 1:
 			php_gdimagecharup(im, font, x, y, ch, col);
 			break;
 		case 2:
 			for (i = 0; (i < l); i++) {
-				gdImageChar(im, font, x, y, (int) ((unsigned char) str[i]), col);
+				gdImageChar(im, font, (int)x, (int)y, (int) ((unsigned char) str[i]), col);
 				x += font->w;
 			}
 			break;
 		case 3: {
 			for (i = 0; (i < l); i++) {
 				/* php_gdimagecharup(im, font, x, y, (int) str[i], col); */
-				gdImageCharUp(im, font, x, y, (int) str[i], col);
+				gdImageCharUp(im, font, (int)x, (int)y, (int) str[i], col);
 				y -= font->w;
 			}
 			break;
@@ -3732,9 +3743,11 @@ PHP_FUNCTION(imagefilter)
 		RETURN_THROWS();
 	}
 
-	if (filtertype >= 0 && filtertype <= IMAGE_FILTER_MAX) {
-		filters[filtertype](INTERNAL_FUNCTION_PARAM_PASSTHRU);
+	if (UNEXPECTED(filtertype < 0 || filtertype > IMAGE_FILTER_MAX)) {
+		zend_argument_value_error(2, "must be one of the IMG_FILTER_* filter constants");
+		RETURN_THROWS();
 	}
+	filters[filtertype](INTERNAL_FUNCTION_PARAM_PASSTHRU);
 }
 /* }}} */
 
@@ -4030,9 +4043,17 @@ PHP_FUNCTION(imagescale)
 		src_y = gdImageSY(im);
 
 		if (src_x && tmp_h < 0) {
+			if (tmp_w > (ZEND_LONG_MAX / src_y)) {
+				zend_argument_value_error(2, "must be less than or equal to " ZEND_LONG_FMT, (zend_long)(ZEND_LONG_MAX / src_y));
+				RETURN_THROWS();
+			}
 			tmp_h = tmp_w * src_y / src_x;
 		}
 		if (src_y && tmp_w < 0) {
+			if (tmp_h > (ZEND_LONG_MAX / src_x)) {
+				zend_argument_value_error(3, "must be less than or equal to " ZEND_LONG_FMT, (zend_long)(ZEND_LONG_MAX / src_x));
+				RETURN_THROWS();
+			}
 			tmp_w = tmp_h * src_x / src_y;
 		}
 	}

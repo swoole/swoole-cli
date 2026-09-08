@@ -4290,12 +4290,14 @@ static void preload_fix_trait_op_array(zend_op_array *op_array)
 	uint32_t fn_flags = op_array->fn_flags;
 	zend_function *prototype = op_array->prototype;
 	HashTable *ht = op_array->static_variables;
+	const zend_property_info *prop_info = op_array->prop_info;
 	*op_array = *orig_op_array;
 	op_array->function_name = function_name;
 	op_array->scope = scope;
 	op_array->fn_flags = fn_flags;
 	op_array->prototype = prototype;
 	op_array->static_variables = ht;
+	op_array->prop_info = prop_info;
 }
 
 static void preload_fix_trait_methods(zend_class_entry *ce)
@@ -4441,16 +4443,6 @@ static void preload_load(size_t orig_map_ptr_static_last)
 		for (; p != end; p++) {
 			_zend_hash_append_ex(CG(class_table), p->key, &p->val, 1);
 		}
-	}
-
-	if (EG(zend_constants)) {
-		EG(persistent_constants_count) = EG(zend_constants)->nNumUsed;
-	}
-	if (EG(function_table)) {
-		EG(persistent_functions_count) = EG(function_table)->nNumUsed;
-	}
-	if (EG(class_table)) {
-		EG(persistent_classes_count)   = EG(class_table)->nNumUsed;
 	}
 
 	size_t old_map_ptr_last = CG(map_ptr_last);
@@ -4721,6 +4713,12 @@ static zend_result accel_preload(const char *config, bool in_child)
 		HANDLE_UNBLOCK_INTERRUPTIONS();
 
 		preload_load(orig_map_ptr_static_last);
+
+		/* Update persistent counts, as shutdown will discard anything past
+		 * that, and these tables are aliases to global ones at this point. */
+		EG(persistent_functions_count) = EG(function_table)->nNumUsed;
+		EG(persistent_classes_count)   = EG(class_table)->nNumUsed;
+		EG(persistent_constants_count) = EG(zend_constants)->nNumUsed;
 
 		/* Store individual scripts with unlinked classes */
 		HANDLE_BLOCK_INTERRUPTIONS();

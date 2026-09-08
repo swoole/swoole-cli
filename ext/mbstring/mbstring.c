@@ -630,7 +630,7 @@ static char *php_mb_rfc1867_getword(const zend_encoding *encoding, char **line, 
 
 static char *php_mb_rfc1867_getword_conf(const zend_encoding *encoding, char *str) /* {{{ */
 {
-	while (*str && isspace(*(unsigned char *)str)) {
+	while (*str && isspace((unsigned char)*str)) {
 		++str;
 	}
 
@@ -646,7 +646,7 @@ static char *php_mb_rfc1867_getword_conf(const zend_encoding *encoding, char *st
 	} else {
 		char *strend = str;
 
-		while (*strend && !isspace(*(unsigned char *)strend)) {
+		while (*strend && !isspace((unsigned char)*strend)) {
 			++strend;
 		}
 		return php_mb_rfc1867_substring_conf(encoding, str, strend - str, 0);
@@ -1931,7 +1931,7 @@ static size_t mb_find_strpos(zend_string *haystack, zend_string *needle, const m
 	} else if (offset >= 0) {
 		found_pos = zend_memnrstr((const char*)offset_pointer, ZSTR_VAL(needle_u8), ZSTR_LEN(needle_u8), ZSTR_VAL(haystack_u8) + ZSTR_LEN(haystack_u8));
 	} else {
-		size_t needle_len = pointer_to_offset_utf8((unsigned char*)ZSTR_VAL(needle), (unsigned char*)ZSTR_VAL(needle) + ZSTR_LEN(needle));
+		size_t needle_len = pointer_to_offset_utf8((unsigned char*)ZSTR_VAL(needle_u8), (unsigned char*)ZSTR_VAL(needle_u8) + ZSTR_LEN(needle_u8));
 		offset_pointer = offset_to_pointer_utf8(offset_pointer, (unsigned char*)ZSTR_VAL(haystack_u8) + ZSTR_LEN(haystack_u8), needle_len);
 		if (!offset_pointer) {
 			offset_pointer = (unsigned char*)ZSTR_VAL(haystack_u8) + ZSTR_LEN(haystack_u8);
@@ -3376,8 +3376,9 @@ MBSTRING_API const mbfl_encoding* mb_guess_encoding_for_strings(const unsigned c
 		return *elist;
 	}
 
-	/* Allocate on stack; when we return, this array is automatically freed */
-	struct candidate *array = alloca(elist_size * sizeof(struct candidate));
+	/* Allocate on stack or heap */
+	ALLOCA_FLAG(use_heap)
+	struct candidate *array = do_alloca(elist_size * sizeof(struct candidate), use_heap);
 	elist_size = init_candidate_array(array, elist_size, elist, strings, str_lengths, n, strict, order_significant);
 
 	while (n--) {
@@ -3385,6 +3386,7 @@ MBSTRING_API const mbfl_encoding* mb_guess_encoding_for_strings(const unsigned c
 		elist_size = count_demerits(array, elist_size, strict);
 		if (elist_size == 0) {
 			/* All candidates were eliminated */
+			free_alloca(array, use_heap);
 			return NULL;
 		}
 	}
@@ -3396,7 +3398,10 @@ MBSTRING_API const mbfl_encoding* mb_guess_encoding_for_strings(const unsigned c
 			best = i;
 		}
 	}
-	return array[best].enc;
+
+	const mbfl_encoding *result = array[best].enc;
+	free_alloca(array, use_heap);
+	return result;
 }
 
 /* When doing 'strict' detection, any string which is invalid in the candidate encoding
@@ -3691,10 +3696,25 @@ next_option:
 	RETVAL_STR(jp_kana_convert(str, enc, opt));
 }
 
+static zend_always_inline bool mb_check_stack_limit(void)
+{
+#ifdef ZEND_CHECK_STACK_LIMIT
+	if (UNEXPECTED(zend_call_stack_overflowed(EG(stack_limit)))) {
+		zend_call_stack_size_error();
+		return true;
+	}
+#endif
+	return false;
+}
+
 static unsigned int mb_recursive_count_strings(zval *var)
 {
 	unsigned int count = 0;
 	ZVAL_DEREF(var);
+
+	if (mb_check_stack_limit()) {
+		return 0;
+	}
 
 	if (Z_TYPE_P(var) == IS_STRING) {
 		count++;
@@ -3725,6 +3745,10 @@ static unsigned int mb_recursive_count_strings(zval *var)
 static bool mb_recursive_find_strings(zval *var, const unsigned char **val_list, size_t *len_list, unsigned int *count)
 {
 	ZVAL_DEREF(var);
+
+	if (mb_check_stack_limit()) {
+		return true;
+	}
 
 	if (Z_TYPE_P(var) == IS_STRING) {
 		val_list[*count] = (const unsigned char*)Z_STRVAL_P(var);
@@ -3763,6 +3787,10 @@ static bool mb_recursive_convert_variable(zval *var, const mbfl_encoding* from_e
 {
 	zval *entry, *orig_var;
 
+	if (mb_check_stack_limit()) {
+		return true;
+	}
+
 	orig_var = var;
 	ZVAL_DEREF(var);
 
@@ -3771,17 +3799,25 @@ static bool mb_recursive_convert_variable(zval *var, const mbfl_encoding* from_e
 		zval_ptr_dtor(orig_var);
 		ZVAL_STR(orig_var, ret);
 	} else if (Z_TYPE_P(var) == IS_ARRAY || Z_TYPE_P(var) == IS_OBJECT) {
-		if (Z_TYPE_P(var) == IS_ARRAY) {
-			SEPARATE_ARRAY(var);
-		}
-		if (Z_REFCOUNTED_P(var)) {
-			if (Z_IS_RECURSIVE_P(var)) {
+		HashTable *ht = HASH_OF(var);
+		HashTable *orig_ht = ht;
+
+		if (ht) {
+			if (GC_IS_RECURSIVE(ht)) {
 				return true;
 			}
-			Z_PROTECT_RECURSION_P(var);
+
+			GC_TRY_PROTECT_RECURSION(ht);
 		}
 
-		HashTable *ht = HASH_OF(var);
+		if (Z_TYPE_P(var) == IS_ARRAY) {
+			SEPARATE_ARRAY(var);
+			ht = Z_ARRVAL_P(var);
+
+			if (ht && ht != orig_ht && !GC_IS_RECURSIVE(ht)) {
+				GC_TRY_PROTECT_RECURSION(ht);
+			}
+		}
 		if (ht != NULL) {
 			ZEND_HASH_FOREACH_VAL(ht, entry) {
 				/* Can be a typed property declaration, in which case we need to remove the reference from the source list.
@@ -3800,16 +3836,22 @@ static bool mb_recursive_convert_variable(zval *var, const mbfl_encoding* from_e
 				}
 
 				if (mb_recursive_convert_variable(entry, from_encoding, to_encoding)) {
-					if (Z_REFCOUNTED_P(var)) {
-						Z_UNPROTECT_RECURSION_P(var);
+					if (ht && ht != orig_ht) {
+						GC_TRY_UNPROTECT_RECURSION(ht);
+					}
+					if (orig_ht) {
+						GC_TRY_UNPROTECT_RECURSION(orig_ht);
 					}
 					return true;
 				}
 			} ZEND_HASH_FOREACH_END();
 		}
 
-		if (Z_REFCOUNTED_P(var)) {
-			Z_UNPROTECT_RECURSION_P(var);
+		if (ht && ht != orig_ht) {
+			GC_TRY_UNPROTECT_RECURSION(ht);
+		}
+		if (orig_ht) {
+			GC_TRY_UNPROTECT_RECURSION(orig_ht);
 		}
 	}
 
@@ -3883,7 +3925,9 @@ PHP_FUNCTION(mb_convert_variables)
 				efree(ZEND_VOIDP(elist));
 				efree(ZEND_VOIDP(val_list));
 				efree(len_list);
-				php_error_docref(NULL, E_WARNING, "Cannot handle recursive references");
+				if (!EG(exception)) {
+					php_error_docref(NULL, E_WARNING, "Cannot handle recursive references");
+				}
 				RETURN_FALSE;
 			}
 		}
@@ -3905,7 +3949,9 @@ PHP_FUNCTION(mb_convert_variables)
 		zval *zv = &args[n];
 		ZVAL_DEREF(zv);
 		if (mb_recursive_convert_variable(zv, from_encoding, to_encoding)) {
-			php_error_docref(NULL, E_WARNING, "Cannot handle recursive references");
+			if (!EG(exception)) {
+				php_error_docref(NULL, E_WARNING, "Cannot handle recursive references");
+			}
 			RETURN_FALSE;
 		}
 	}
@@ -4398,12 +4444,14 @@ static int _php_mbstr_parse_mail_headers(HashTable *ht, const char *str, size_t 
 								fld_val = zend_string_init(token, token_pos, 0);
 							}
 
-							if (fld_name != NULL && fld_val != NULL) {
-								zval val;
-								zend_str_tolower(ZSTR_VAL(fld_name), ZSTR_LEN(fld_name));
-								ZVAL_STR(&val, fld_val);
+							if (fld_name != NULL) {
+								if (fld_val != NULL) {
+									zval val;
+									zend_str_tolower(ZSTR_VAL(fld_name), ZSTR_LEN(fld_name));
+									ZVAL_STR(&val, fld_val);
 
-								zend_hash_update(ht, fld_name, &val);
+									zend_hash_update(ht, fld_name, &val);
+								}
 
 								zend_string_release_ex(fld_name, 0);
 							}
@@ -4444,11 +4492,13 @@ out:
 		if(token && token_pos > 0) {
 			fld_val = zend_string_init(token, token_pos, 0);
 		}
-		if (fld_name != NULL && fld_val != NULL) {
-			zval val;
-			zend_str_tolower(ZSTR_VAL(fld_name), ZSTR_LEN(fld_name));
-			ZVAL_STR(&val, fld_val);
-			zend_hash_update(ht, fld_name, &val);
+		if (fld_name != NULL) {
+			if (fld_val != NULL) {
+				zval val;
+				zend_str_tolower(ZSTR_VAL(fld_name), ZSTR_LEN(fld_name));
+				ZVAL_STR(&val, fld_val);
+				zend_hash_update(ht, fld_name, &val);
+			}
 
 			zend_string_release_ex(fld_name, 0);
 		}
@@ -5848,6 +5898,11 @@ PHP_FUNCTION(mb_str_pad)
 	}
 
 	size_t pad_length = mb_get_strlen(pad, encoding);
+	if (pad_length == 0) {
+		/* Possible with invalidly encoded padding string. */
+		zend_argument_must_not_be_empty_error(3);
+		RETURN_THROWS();
+	}
 
 	size_t num_mb_pad_chars = pad_to_length - input_length;
 
@@ -6662,13 +6717,15 @@ static zend_string* mb_mime_header_decode(zend_string *input, const mbfl_encodin
 					p = temp;
 					/* Decoding of MIME encoded word was successful;
 					 * Try to collapse a run of whitespace */
-					if (p < e && (*p == '\n' || *p == '\r')) {
+					if (p < e && (*p == '\n' || *p == '\r' || *p == '\t' || *p == ' ')) {
 						do {
 							p++;
 						} while (p < e && (*p == '\n' || *p == '\r' || *p == '\t' || *p == ' '));
 						/* We will only actually output a space if this is not immediately followed
 						 * by another valid encoded word */
 						space_pending = true;
+					} else {
+						space_pending = false;
 					}
 					continue;
 				}

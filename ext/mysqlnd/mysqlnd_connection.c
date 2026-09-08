@@ -553,11 +553,29 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_scheme)(MYSQLND_CONN_DATA * conn, MYSQLND_
 			port = 3306;
 		}
 
-		/* ipv6 addresses are in the format [address]:port */
 		if (hostname.s[0] != '[' && mysqlnd_fast_is_ipv6_address(hostname.s)) {
+			/* IPv6 without square brackets so without port */
 			transport.l = mnd_sprintf(&transport.s, 0, "tcp://[%s]:%u", hostname.s, port);
 		} else {
-			transport.l = mnd_sprintf(&transport.s, 0, "tcp://%s:%u", hostname.s, port);
+			const char *p;
+
+			/* IPv6 addresses are in the format [address]:port */
+			if (hostname.s[0] == '[') { /* IPv6 */
+				p = strchr(hostname.s, ']');
+				if (p && p[1] != ':') {
+					p = NULL;
+				}
+			} else { /* IPv4 or name */
+				p = strchr(hostname.s, ':');
+			}
+			/* Could already contain a port number, in which case we should not add an extra port.
+			 * See GH-8978. In a port doubling scenario, the first port would be used so we do the same to keep BC. */
+			if (p) {
+				/* TODO: Ideally we should be able to get rid of this workaround in the future. */
+				transport.l = mnd_sprintf(&transport.s, 0, "tcp://%s", hostname.s);
+			} else {
+				transport.l = mnd_sprintf(&transport.s, 0, "tcp://%s:%u", hostname.s, port);
+			}
 		}
 	}
 	DBG_INF_FMT("transport=%s", transport.s? transport.s:"OOM");
@@ -1554,17 +1572,14 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option_2d)(MYSQLND_CONN_DATA * cons
 				zval attrz;
 				zend_string *str;
 
+				str = zend_string_init(key, strlen(key), conn->persistent);
+				ZVAL_NEW_STR(&attrz, zend_string_init(value, strlen(value), conn->persistent));
 				if (conn->persistent) {
-					str = zend_string_init(key, strlen(key), 1);
 					GC_MAKE_PERSISTENT_LOCAL(str);
-					ZVAL_NEW_STR(&attrz, zend_string_init(value, strlen(value), 1));
 					GC_MAKE_PERSISTENT_LOCAL(Z_COUNTED(attrz));
-				} else {
-					str = zend_string_init(key, strlen(key), 0);
-					ZVAL_NEW_STR(&attrz, zend_string_init(value, strlen(value), 0));
 				}
 				zend_hash_update(conn->options->connect_attr, str, &attrz);
-				zend_string_release_ex(str, 1);
+				zend_string_release_ex(str, conn->persistent);
 			}
 			break;
 		default:
