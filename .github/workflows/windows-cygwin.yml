@@ -37,6 +37,15 @@ jobs:
           path: "${{ github.workspace }}\\pool\\"
           key: ${{ runner.os }}-build-pool-cache
 
+      - name: Cache ccache
+        id: cache-cygwin-ccache
+        uses: actions/cache@v5
+        with:
+          path: "${{ github.workspace }}\\var\\ccache\\"
+          key: "${{ runner.os }}-cygwin-ccache-${{ github.sha }}"
+          restore-keys: |
+            ${{ runner.os }}-cygwin-ccache-
+
       - name: Install Cygwin
         uses: cygwin/cygwin-install-action@v6
         with:

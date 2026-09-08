@@ -51,6 +51,7 @@ pacman -S --needed --noconfirm git curl wget openssl
 pacman -S --needed --noconfirm zip unzip xz gcc gcc-libs cmake make
 pacman -S --needed --noconfirm re2c
 pacman -S --needed --noconfirm lzip
+pacman -S --needed --noconfirm ccache
 pacman -S --needed --noconfirm zip unzip
 pacman -S --needed --noconfirm zlib-devel
 pacman -S --needed --noconfirm bison automake autoconf libtool coreutils

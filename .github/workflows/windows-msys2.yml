@@ -38,6 +38,15 @@ jobs:
           path: "${{ github.workspace }}\\pool\\"
           key: "${{ runner.os }}-build-pool-cache"
 
+      - name: Cache ccache
+        id: cache-msys2-ccache
+        uses: actions/cache@v5
+        with:
+          path: "${{ github.workspace }}\\var\\ccache\\"
+          key: "${{ runner.os }}-msys2-ccache-${{ github.sha }}"
+          restore-keys: |
+            ${{ runner.os }}-msys2-ccache-
+
       - uses: msys2/setup-msys2@v2
         # https://github.com/msys2/setup-msys2
         with:

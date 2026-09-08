@@ -56,6 +56,21 @@ jobs:
           path: ${{ github.workspace }}/pool/
           key: source-code-tarball-pool
 
+      - name: Cache PHP Runtime
+        # 与 linux-x86_64 / linux-aarch64 使用相同 key，按矩阵架构区分并跨 workflow 复用
+        uses: actions/cache@v5
+        id: php-runtime-cache-glibc
+        with:
+          path: ${{ github.workspace }}/runtime
+          key: ${{ runner.os }}-${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}-php-runtime
+
+      - name: Cache PHP Vendor
+        uses: actions/cache@v5
+        id: php-vendor-cache-glibc
+        with:
+          path: ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}-php-vendor
+
       - name: Prepare Runtime and Libraries and Extensions
         run: |
           set -ex

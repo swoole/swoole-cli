@@ -13,6 +13,20 @@ cd ${__PROJECT__}
 sed -i.bak 's/ICONV_ALIASED_LIBICONV/HAVE_ICONV/' ext/iconv/iconv.c
 export PATH=/usr/bin:$PATH
 
+# --- enable ccache to accelerate repeated CI builds (no-op when ccache is missing) ---
+if command -v ccache >/dev/null 2>&1; then
+    CCACHE_BIN_DIR="${__PROJECT__}/var/ccache-bin"
+    CCACHE_DATA_DIR="${__PROJECT__}/var/ccache"
+    mkdir -p "${CCACHE_BIN_DIR}" "${CCACHE_DATA_DIR}"
+    for CCACHE_TOOL in cc gcc c++ g++; do
+        test -e "${CCACHE_BIN_DIR}/${CCACHE_TOOL}" || ln -sf "$(command -v ccache)" "${CCACHE_BIN_DIR}/${CCACHE_TOOL}"
+    done
+    unset CCACHE_TOOL
+    export PATH="${CCACHE_BIN_DIR}:${PATH}"
+    export CCACHE_DIR="${CCACHE_DATA_DIR}"
+    export CCACHE_MAXSIZE="${CCACHE_MAXSIZE:-2G}"
+fi
+
 export ICU_CXXFLAGS=" -std=gnu++17 "
 ./buildconf --force
 test -f Makefile && make clean
