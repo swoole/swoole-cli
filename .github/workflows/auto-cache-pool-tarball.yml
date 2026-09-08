@@ -9,7 +9,7 @@ on:
 
 jobs:
   auto-cache-pool:
-    if: ${{ (github.repository_owner == 'swoole') }}
+    if: ${{ (github.repository_owner == 'swoole') && (!contains(github.event.head_commit.message, '--filter=') || contains(github.event.head_commit.message, '[auto-cache-pool]')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

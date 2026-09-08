@@ -42,6 +42,7 @@ required_files=(
     "${WORK_DIR}/libs/libphp.a"
     "${WORK_DIR}/main/php.h"
     "${WORK_DIR}/main/php_config.h"
+    "${WORK_DIR}/var/php-${PHP_VERSION}/LICENSE"
 )
 
 if [[ "${TARGET}" == iphoneos-arm64 ]]; then
@@ -147,10 +148,15 @@ else
         > "${PACKAGE_ROOT}/.typephp-php-runtime-abi"
 fi
 
-cp -p "${WORK_DIR}/LICENSE" "${PACKAGE_ROOT}/LICENSES/PHP-LICENSE"
+cp -p "${WORK_DIR}/var/php-${PHP_VERSION}/LICENSE" \
+    "${PACKAGE_ROOT}/LICENSES/PHP-LICENSE"
 if [[ -f "${WORK_DIR}/ext/swoole/LICENSE" ]]; then
     cp -p "${WORK_DIR}/ext/swoole/LICENSE" \
         "${PACKAGE_ROOT}/LICENSES/SWOOLE-LICENSE"
+fi
+if [[ -f "${WORK_DIR}/bin/LICENSE" ]]; then
+    cp -p "${WORK_DIR}/bin/LICENSE" \
+        "${PACKAGE_ROOT}/LICENSES/RUNTIME-DEPENDENCIES"
 fi
 
 PRODUCER_REVISION=${GITHUB_SHA:-$(git -C "${WORK_DIR}" rev-parse HEAD)}
