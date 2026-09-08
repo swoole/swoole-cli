@@ -78,7 +78,8 @@ jobs:
           bash make.sh all-library
           bash make.sh config
           bash make.sh libphp
-          bash sapi/scripts/package-php-runtime-layer.sh iphoneos-arm64
+          GLOBAL_PREFIX="${GITHUB_WORKSPACE}/var/iphoneos-arm64/deps" \
+            bash sapi/scripts/package-php-runtime-layer.sh iphoneos-arm64
 
       - name: Validate iPhoneOS runtime layer
         run: |

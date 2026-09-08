@@ -3,7 +3,6 @@
 set -euo pipefail
 
 WORK_DIR=${WORK_DIR:-$(pwd)}
-GLOBAL_PREFIX=${GLOBAL_PREFIX:-/usr/local/swoole-cli}
 TARGET=${1:-}
 DIST_DIR=${RUNTIME_LAYER_DIST_DIR:-${WORK_DIR}/runtime-layer}
 
@@ -16,6 +15,14 @@ case "${TARGET}" in
     linux-x64|linux-arm64|iphoneos-arm64) ;;
     *) usage; exit 2 ;;
 esac
+
+if [[ -z "${GLOBAL_PREFIX:-}" ]]; then
+    if [[ "${TARGET}" == iphoneos-arm64 ]]; then
+        GLOBAL_PREFIX=${WORK_DIR}/var/iphoneos-arm64/deps
+    else
+        GLOBAL_PREFIX=/usr/local/swoole-cli
+    fi
+fi
 
 PHP_VERSION=$(awk 'NR == 1 { print $1 }' "${WORK_DIR}/sapi/PHP-VERSION.conf")
 SWOOLE_VERSION=$(awk 'NR == 1 { print $1 }' "${WORK_DIR}/sapi/SWOOLE-VERSION.conf")
