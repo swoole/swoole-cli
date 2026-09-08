@@ -126,12 +126,12 @@ jobs:
             bash make.sh build
             bash make.sh archive
 
-            # 构建 SDK（自包含 libphp.a / libphpx.a + 头文件），随 release 分发
+            # 只生产 PHP Runtime Layer；最终 PHPX SDK 由 swoole/phpx 组装发布。
             bash make.sh libphp
-            bash make.sh phpx
-            bash make.sh sdk
-            ls -lh libs/libphp.a libs/libphpx.a
-            ls -lh sdk/*.tar.xz
+            RUNTIME_LAYER_VERSION=${{ github.ref_name }} \
+              bash sapi/scripts/package-php-runtime-layer.sh linux-arm64
+            ls -lh libs/libphp.a
+            ls -lh runtime-layer/*.tar.xz*
 
       - name: Show Build Result
         run: |
@@ -165,13 +165,22 @@ jobs:
           retention-days: 90
           path: ./bin/dist/swoole-cli
 
+      - name: PHP runtime layer artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: php-runtime-layer-linux-arm64
+          retention-days: 14
+          path: runtime-layer/*.tar.xz*
+          if-no-files-found: error
+
       - name: gh release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             swoole-cli-v${{ env.APP_VERSION }}-linux-arm64.tar.xz
-            sdk/*.tar.xz
+            runtime-layer/*.tar.xz
+            runtime-layer/*.tar.xz.sha256
 
       - name: upload artifacts to cloud object storage
         if: ${{ (github.repository == 'swoole/swoole-cli') && (startsWith(github.ref, 'refs/tags/'))  }}

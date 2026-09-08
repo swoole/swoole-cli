@@ -19,8 +19,8 @@ if (($buildType == 'dev') && file_exists(__DIR__ . '/make.sh')) {
 }
 
 // 在宿主机上直接创建 thirdparty 目录，并确保当前用户可写。
-// 容器内构建始终是 root，可以往里写任何内容不受影响；而 phpx 等源码是宿主机
-// 下载的，若 thirdparty 由容器 root 创建（0755），宿主机普通用户将无法写入。
+// 容器内构建始终是 root，可以往里写任何内容不受影响；依赖源码由宿主机下载，
+// 若 thirdparty 由容器 root 创建（0755），宿主机普通用户将无法写入。
 // 这里不假定执行 prepare.php 的具体用户，统一放宽为 0777 让所有用户可写。
 $thirdpartyDir = __DIR__ . '/thirdparty';
 if (!is_dir($thirdpartyDir)) {
@@ -53,14 +53,6 @@ if (!$p->isIphoneOs()) {
         fwrite(STDERR, "download swoole-src failed with exit code: {$swoole_download_status}" . PHP_EOL);
         exit($swoole_download_status);
     }
-}
-
-// 下载/更新 phpx-src（脚本内部按 PHPX-VERSION.conf 判断 master 走 git、固定版本走归档下载）
-$phpx_download_status = 0;
-passthru('bash ' . __DIR__ . '/sapi/scripts/download-phpx-src-archive.sh', $phpx_download_status);
-if ($phpx_download_status !== 0) {
-    fwrite(STDERR, "download phpx-src failed with exit code: {$phpx_download_status}" . PHP_EOL);
-    exit($phpx_download_status);
 }
 
 // Generate make.sh

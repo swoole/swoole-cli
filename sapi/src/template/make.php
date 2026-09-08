@@ -300,36 +300,11 @@ make_libphp() {
     # 最终覆盖产出与 bin/swoole-cli 同等自包含的 libs/libphp.a（不保留中间产物）
     bash ./sapi/scripts/build-libphp.sh
 <?php else : ?>
-    # Keep libphp and its target dependencies as separate archives. Apple
-    # libc/libc++ are supplied by the final Xcode link.
-<?php endif; ?>
-}
-
-make_phpx() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-<?php if ($this->isIphoneOs()) : ?>
+    # Merge target third-party archives into the single distributable libphp.a.
+    # Apple libc/libc++ remain supplied by the final Xcode link.
     WORK_DIR=<?= escapeshellarg($this->getWorkDir()) ?> \
     GLOBAL_PREFIX=<?= escapeshellarg($this->getGlobalPrefix()) ?> \
-        bash ./sapi/scripts/stage-iphoneos-sdk.sh
-    bash ./thirdparty/phpx/ios/build.sh \
-        --prefix ./thirdparty/phpx/ios/iphoneos-arm64 \
-        --build-dir ./thirdparty/iphoneos-arm64/phpx-build \
-        --jobs <?= $this->maxJob ?>
-
-<?php else : ?>
-    # 用 phpx 仓库的 full-static/ 独立构建目录编译全静态 libphpx.a
-    bash ./sapi/scripts/build-phpx.sh
-<?php endif; ?>
-}
-
-make_sdk() {
-    cd <?= $this->getWorkDir() . PHP_EOL ?>
-<?php if ($this->isIphoneOs()) : ?>
-    WORK_DIR=<?= escapeshellarg($this->getWorkDir()) ?> \
-        bash ./sapi/scripts/package-iphoneos-sdk.sh
-<?php else : ?>
-    # 打包 SDK：libphp.a / libphpx.a + php/phpx/第三方库头文件
-    bash ./sapi/scripts/build-sdk.sh
+        bash ./sapi/scripts/merge-iphoneos-libphp.sh
 <?php endif; ?>
 }
 
@@ -399,8 +374,6 @@ help() {
     echo "./make.sh config"
     echo "./make.sh build"
     echo "./make.sh libphp"
-    echo "./make.sh phpx"
-    echo "./make.sh sdk"
     echo "./make.sh test"
     echo "./make.sh archive"
     echo "./make.sh all-library"
@@ -493,10 +466,6 @@ elif [ "$1" = "build" ] ;then
     make_build
 elif [ "$1" = "libphp" ] ;then
     make_libphp
-elif [ "$1" = "phpx" ] ;then
-    make_phpx
-elif [ "$1" = "sdk" ] ;then
-    make_sdk
 elif [ "$1" = "test" ] ;then
     ./bin/swoole-cli vendor/bin/phpunit
 elif [ "$1" = "archive" ] ;then

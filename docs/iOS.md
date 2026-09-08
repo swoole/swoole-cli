@@ -1,57 +1,35 @@
-# iPhoneOS arm64 SDK
+# iPhoneOS arm64 PHP Runtime Layer
 
-The iPhoneOS build is a cross target hosted on macOS. It does not change the
-host operating-system model and it never uses Docker. Full Xcode is required;
-Command Line Tools do not contain the iPhoneOS SDK.
+The iPhoneOS build is a cross target hosted on macOS with full Xcode. GitHub's
+macOS runner images include Xcode and an iPhoneOS SDK, so the build does not
+need a physical device or code signing.
 
 ```sh
-sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+xcodebuild -version
 xcrun --sdk iphoneos --show-sdk-path
+xcrun --sdk iphoneos --show-sdk-version
 ```
 
-Generate the dedicated build profile and build its dependencies:
+Build the runtime for a physical arm64 iPhone:
 
 ```sh
 php prepare.php @iphoneos-arm64 --with-parallel-jobs=8
 ./make.sh all-library
 ./make.sh config
 ./make.sh libphp
-./make.sh phpx
-./make.sh sdk
+bash sapi/scripts/package-php-runtime-layer.sh iphoneos-arm64
 ```
 
-The build uses `arm64-apple-ios15.0`, ZTS, static PHP/PHPX/dependency archives,
-and a target-only dependency prefix under `var/iphoneos-arm64`. The integrated
-SDK is staged directly in:
+`make.sh libphp` combines the PHP archive with the target GMP, GMP C++ and MPFR
+objects into one `libphp.a`. Apple libc and libc++ remain platform libraries
+supplied by the final Xcode link. The runtime archive contains `libphp.a` and
+the matching headers, but never contains `libphpx.a` or a complete SDK.
 
-```text
-thirdparty/phpx/ios/iphoneos-arm64/
-```
+The profile targets `arm64-apple-ios15.0`, uses ZTS, and intentionally enables
+only bcmath, ctype, filter and gmp. Server, process, JIT and dynamic extension
+facilities are excluded from the mobile runtime.
 
-The final `sdk` command also creates a distributable archive under `sdk/`.
-TypePHP resolves the installed directory through `PHPX_HOME`, in the same way
-that it resolves `full-static/sdk` and `wasm/wasm32-wasip2`; `PHP_HOME` is not
-used for this cross target.
-
-## Extension profile
-
-The first mobile profile intentionally enables only:
-
-- bcmath
-- ctype
-- filter
-- gmp, together with the MPFR library required by PHPX
-
-It disables server- and process-oriented facilities such as Opcache/JIT,
-pcntl, POSIX, sockets, Swoole, Redis, MongoDB, MySQL clients, readline, and
-other PECL services. curl/OpenSSL and SQLite can be introduced later as
-separately tested mobile capability layers; they are not prerequisites for the
-TypePHP UIKit example.
-
-PHP fibers remain available, but `fiber-asm` is disabled. This keeps PHP's
-assembly context switcher from conflicting with Swoole's coroutine context
-switching implementation.
-
-Apple libc, libc++, UIKit, and Foundation remain platform libraries. They are
-linked by the final application build and must not be copied or merged into
-`libphp.a`.
+The `build-php-runtime-iphoneos-arm64` workflow validates the installed SDK,
+cross-compiles the runtime, checks the Mach-O archive architecture, and uploads
+the immutable Runtime Layer. The PHPX workflow downloads that layer and owns
+the final SDK assembly and release.
