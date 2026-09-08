@@ -111,8 +111,8 @@ bash setup-php-runtime.sh --mirror china
 # shell脚本中启用别名扩展功能‌
 shopt -s expand_aliases
 __DIR__=$(pwd)
-export PATH="${__DIR__}/runtime/php/:$PATH"
-alias php="php -d curl.cainfo=${__DIR__}/runtime/php/cacert.pem -d openssl.cafile=${__DIR__}/runtime/php/cacert.pem"
+export PATH="${__DIR__}/var/runtime/php/:$PATH"
+alias php="php -d curl.cainfo=${__DIR__}/var/runtime/php/cacert.pem -d openssl.cafile=${__DIR__}/var/runtime/php/cacert.pem"
 which php
 php -v
 

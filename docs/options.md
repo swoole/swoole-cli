@@ -9,7 +9,7 @@
 示例：
 
 ```shell
-./prepare.php --without-docker +mimalloc -mongodb --with-brotli=yes --conf-path="./conf.d" @linux
+./prepare.php --without-docker -mongodb --with-brotli=yes @linux
 ```
 
 参数设置也可以使用环境变量来代替，格式为 `SWOOLE_CLI_{$option}`
@@ -76,7 +76,8 @@ sh  sapi/download-box/download-box-get-archive-from-container.sh
 
 conf-path
 ----
-设置扩展配置文件的目录，默认仅加载 `conf.d` 目录中的扩展，若希望增加更多扩展，可设置此环境变量。
+指定额外的扩展定义文件目录（目录内为返回 `SwooleCli\Preprocessor` 回调的 PHP 文件）。
+默认加载内置目录 `sapi/src/builder/extension/` 下的扩展定义；如需追加自定义扩展，可设置此参数。
 多个目录使用`:`冒号分割。
 
 ```shell

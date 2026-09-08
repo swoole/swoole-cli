@@ -138,7 +138,6 @@ const opt_struct OPTIONS[] = {
 	{'m', 0, "modules"},
 	{'n', 0, "no-php-ini"},
 	{'P', 0, "fpm"},
-	{'U', 0, "self-update"},
 	{'q', 0, "no-header"}, /* for compatibility with CGI (do not generate HTTP headers) */
 	{'R', 1, "process-code"},
 	{'H', 0, "hide-args"},
@@ -522,7 +521,6 @@ static void php_cli_usage(char *argv0)
 				"  -E <end_code>    Run PHP <end_code> after processing all input lines\n"
 				"  -H               Hide any passed arguments from external tools.\n"
 				"  -S <addr>:<port> Run with built-in web server.\n"
-				"  -U               Update swoole-cli to the latest version\n"
 				"  -t <docroot>     Specify document root <docroot> for built-in web server.\n"
 				"  -W <worker_num>  Specify number of workers <worker_num> for built-in web server.\n"
 				"  -o <log_file>    Specify log file path <log_file> for built-in web server.\n"
@@ -676,16 +674,6 @@ static int do_cli(int argc, char **argv) /* {{{ */
 				php_printf("\n[Zend Modules]\n");
 				print_extensions();
 				php_printf("\n");
-				php_output_end_all();
-				EG(exit_status) = 0;
-				goto out;
-
-			case 'U': /* self update */
-				if (php_request_startup() == FAILURE) {
-				    goto err;
-				}
-				request_started = 1;
-				swoole_cli_self_update();
 				php_output_end_all();
 				EG(exit_status) = 0;
 				goto out;

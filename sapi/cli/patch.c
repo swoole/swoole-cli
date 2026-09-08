@@ -1,5 +1,4 @@
 #include "php.h"
-#include "library.h"
 
 
 zend_module_entry opcache_module_entry = {
@@ -13,12 +12,7 @@ zend_module_entry opcache_module_entry = {
     NULL,
     NULL,
     NULL,
+    NULL,
     PHP_VERSION,
     STANDARD_MODULE_PROPERTIES
 };
-
-void swoole_cli_self_update(void) {
-    php_swoole_cli_load_library();
-    zend_eval_string_ex("swoole_cli_self_update();", NULL, "self update", 1);
-}
-

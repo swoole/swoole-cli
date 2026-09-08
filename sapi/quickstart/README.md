@@ -17,20 +17,20 @@
 ```bash
 
 # 准备 PHP 运行时
-bash sapi/setup-php-runtime.sh
+bash setup-php-runtime.sh
 
 # 准备PHP 运行时 使用代理
-bash sapi/setup-php-runtime.sh --proxy http://192.168.3.26:8015
+bash setup-php-runtime.sh --proxy http://192.168.3.26:8015
 
 # 准备PHP 运行时 使用镜像 （镜像源 https://www.swoole.com/download）
-bash sapi/setup-php-runtime.sh --mirror china
+bash setup-php-runtime.sh --mirror china
 
 
 # 验证
 shopt -s expand_aliases
 __DIR__=$(pwd)
-export PATH="${__DIR__}/runtime/php/:$PATH"
-alias php="php -d curl.cainfo=${__DIR__}/runtime/php/cacert.pem -d openssl.cafile=${__DIR__}/runtime/php/cacert.pem"
+export PATH="${__DIR__}/var/runtime/php/:$PATH"
+alias php="php -d curl.cainfo=${__DIR__}/var/runtime/php/cacert.pem -d openssl.cafile=${__DIR__}/var/runtime/php/cacert.pem"
 
 php -v
 composer -v

@@ -20,7 +20,6 @@ define("ICONV_PREFIX", $p->getGlobalPrefix() . '/libiconv');
 define("IMAGEMAGICK_PREFIX", $p->getGlobalPrefix() . '/imagemagick');
 define("ICU_PREFIX", $p->getGlobalPrefix() . '/icu');
 define("ONIGURUMA_PREFIX", $p->getGlobalPrefix() . '/oniguruma');
-define("MIMALLOC_PREFIX", $p->getGlobalPrefix() . '/mimalloc');
 define("NCURSES_PREFIX", $p->getGlobalPrefix() . '/ncurses');
 define("READLINE_PREFIX", $p->getGlobalPrefix() . '/readline');
 define("LIBYAML_PREFIX", $p->getGlobalPrefix() . '/libyaml');

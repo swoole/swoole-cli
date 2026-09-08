@@ -50,8 +50,8 @@
 | protobuf       | ❌     | ❌     | ❌               | ❌               |
 | uuid           | ✅     | ✅     | ❌               | ❌               |
 | mailparse      | ✅     | ✅     | ❌               | ❌               |
-| gettext        | ✅     | ✅     | ❌               | ❌               |
-| xslwriter      | ✅     | ✅     | ❌               | ✅               |
+| gettext        | ✅     | ✅     | ❌               | ✅               |
+| xlswriter      | ✅     | ✅     | ❌               | ❌               |
 
 ## 查看 新增的扩展 和 移除的扩展
 

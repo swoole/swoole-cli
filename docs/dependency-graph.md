@@ -189,7 +189,7 @@ php prepare.php --with-dependency-json=1
 ### 想看全部库/扩展，而不只是当前构建启用的
 
 目前只展示当前构建配置实际参与的部分（48 库 + 38 扩展），与实际产物一致。
-`builder/` 目录下还定义了未启用的库（如 `libavif`、`liburing`、`mimalloc`），
+`builder/` 目录下还定义了未启用的库（如 `libavif`、`liburing`），
 暂未纳入展示。
 
 ### 许可证显示 `Unknown` 怎么办

@@ -48,7 +48,6 @@ while [ $# -gt 0 ]; do
     NO_PROXY="${NO_PROXY},ftpmirror.gnu.org"
     NO_PROXY="${NO_PROXY},gitee.com,gitcode.com"
     NO_PROXY="${NO_PROXY},.myqcloud.com,.swoole.com"
-    NO_PROXY="${NO_PROXY},.jingjingxyk.com,jingjingxyk.cn"
     export NO_PROXY="${NO_PROXY},.npmmirror.com"
     ;;
   --*)

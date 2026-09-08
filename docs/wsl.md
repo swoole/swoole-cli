@@ -61,9 +61,9 @@ Windows 环境推荐使用 WSL2。因为swoole-cli为了统一构建路径，使
 
 可使用\`+{ext}\`或者\`-{ext}\`增减扩展，如+mongodb代表需要mongodb扩展，-bcmath代表不使用bcmath扩展。
 
-脚本会根据swoole-cli/conf.d目录中的配置自动下载相关的C/C++库以及PECL扩展，下载后的文件会放在swoole-cli/pool目录中。
+脚本会根据仓库内置的扩展/依赖库定义（`sapi/src/builder/extension`、`sapi/src/builder/library`）自动下载相关的C/C++库以及PECL扩展，下载后的文件会放在swoole-cli/pool目录中。
 
-**需要自定义扩展可以参考swoole-cli/conf.d/redis.php**
+**需要自定义扩展可以参考 `sapi/src/builder/extension/` 下已有的定义，并用 `--conf-path` 指向自定义目录**
 
 脚本执行完成后检查你需要的扩展是否已添加，**需要注意 Extension count 输出前面是否存在错误提示**。
 
@@ -79,7 +79,7 @@ tar error：这是因为网络原因下载的包不完整导致的解压错误�
 
 *   直接删除swoole-cli/pool对应的包重新执行prepare脚本
 
-*   按照swoole-cli/conf.d配置下载替换swoole-cli/pool对应的包，重新执行prepare脚本
+*   修改 `sapi/src/builder/library`（或 `extension`）中对应包的下载地址后，删除swoole-cli/pool对应的包重新执行prepare脚本
 
 *   按需自行构筑镜像服务器，替换对应库为镜像服务器下载地址，重新执行prepare脚本
 
