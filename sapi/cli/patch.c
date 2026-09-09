@@ -12,7 +12,6 @@ zend_module_entry opcache_module_entry = {
     NULL,
     NULL,
     NULL,
-    NULL,
     PHP_VERSION,
     STANDARD_MODULE_PROPERTIES
 };
