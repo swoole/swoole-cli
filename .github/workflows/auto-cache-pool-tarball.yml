@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache@v5
         id: php-runtime-cache
         with:
-          path: ${{ github.workspace }}/runtime
+          path: ${{ github.workspace }}/var/runtime
           key: ${{ runner.os }}-x86_64-pool-refresh-php-runtime-${{ hashFiles('sapi/PHP-VERSION.conf') }}
           restore-keys: |
             ${{ runner.os }}-x86_64-pool-refresh-php-runtime-
@@ -75,15 +75,14 @@ jobs:
           set -ex
           mkdir -p pool/lib
           mkdir -p pool/ext
-          mkdir -p runtime/
-          if [ -f runtime/php ]; then rm -f runtime/php; fi
-          if [ ! -f runtime/php/box ] ; then
+          mkdir -p var/runtime/
+          if [ ! -x var/runtime/php/php ] || [ ! -x var/runtime/php/composer ]; then
               bash  setup-php-runtime.sh
           fi
 
           WORK_DIR=${{ github.workspace }}
-          export PATH=${WORK_DIR}/runtime/php/:$PATH
-          alias php="php -d curl.cainfo=${WORK_DIR}/runtime/php/cacert.pem -d openssl.cafile=${WORK_DIR}/runtime/php/cacert.pem"
+          export PATH=${WORK_DIR}/var/runtime/php/:$PATH
+          alias php="php -d curl.cainfo=${WORK_DIR}/var/runtime/php/cacert.pem -d openssl.cafile=${WORK_DIR}/var/runtime/php/cacert.pem"
 
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile

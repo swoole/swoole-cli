@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Configure build parallelism
+        run: bash .github/scripts/configure-build-jobs.sh
+
       - name: Verify Xcode and iPhoneOS SDK
         run: |
           set -euo pipefail
@@ -69,7 +72,7 @@ jobs:
           bash sapi/download-box/download-box-get-archive-from-server.sh
           composer install --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
-          php prepare.php @iphoneos-arm64 --with-parallel-jobs=3
+          php prepare.php @iphoneos-arm64 --with-parallel-jobs="${BUILD_JOBS}"
 
       - name: Build iPhoneOS PHP runtime layer
         id: runtime-layer

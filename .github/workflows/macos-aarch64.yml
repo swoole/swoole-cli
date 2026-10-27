@@ -14,6 +14,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+
+      - name: Configure build parallelism
+        run: bash .github/scripts/configure-build-jobs.sh
+
       - name: Show Environment Info
         run: |
           set -x
@@ -58,8 +62,8 @@ jobs:
         uses: actions/cache@v5
         id: php-runtime-cache
         with:
-          path: ${{ github.workspace }}/runtime
-          key: ${{ runner.os }}-aarch64-php-runtime
+          path: ${{ github.workspace }}/var/runtime
+          key: ${{ runner.os }}-aarch64-php-runtime-${{ hashFiles('setup-php-runtime.sh') }}
 
       - name: Cache PHP Vendor
         uses: actions/cache@v5
@@ -90,28 +94,33 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/
-          mkdir -p runtime/
-          if [ -f runtime/php ]; then rm -f runtime/php; fi
-          if [ ! -f runtime/php/box ] ; then
+          mkdir -p var/runtime/
+          if [ ! -x var/runtime/php/php ] || [ ! -x var/runtime/php/composer ]; then
               bash  setup-php-runtime.sh
           fi
+          test -x var/runtime/php/php
+          test -x var/runtime/php/composer
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
 
       - name: prepare
         run: |
-          export PATH=${{ github.workspace }}/runtime/php/:$PATH
-          alias php="php -d curl.cainfo=${{ github.workspace }}/runtime/php/cacert.pem -d openssl.cafile=${{ github.workspace }}/runtime/php/cacert.pem"
+          export PATH=${{ github.workspace }}/var/runtime/php/:$PATH
+          alias php="php -d curl.cainfo=${{ github.workspace }}/var/runtime/php/cacert.pem -d openssl.cafile=${{ github.workspace }}/var/runtime/php/cacert.pem"
 
+          command -v php
+          command -v composer
+          php -v
+          composer --version
           composer install  --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
 
-          php prepare.php --without-docker=1 --with-libavif
+          php prepare.php --without-docker=1 --with-libavif --with-parallel-jobs="${BUILD_JOBS}"
 
       - name: Build
         run: |
-          export PATH=${{ github.workspace }}/runtime/php/:$PATH
+          export PATH=${{ github.workspace }}/var/runtime/php/:$PATH
 
           bash make.sh all-library
 

@@ -32,8 +32,8 @@ return function (Preprocessor $p) {
             # cat build.ninja | grep "command ="
             # ninja -t commands
 
-            ninja -C build_dir
-            ninja -C build_dir install
+            ninja -j \${CMAKE_BUILD_PARALLEL_LEVEL} -C build_dir
+            ninja -j \${CMAKE_BUILD_PARALLEL_LEVEL} -C build_dir install
 
 EOF
         )

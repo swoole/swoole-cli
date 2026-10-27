@@ -35,8 +35,8 @@ return function (Preprocessor $p) {
             -Dlogging=false \
             -Dfuzzing_engine=none
 
-            ninja -C build
-            ninja -C build install
+            ninja -j \${CMAKE_BUILD_PARALLEL_LEVEL} -C build
+            ninja -j \${CMAKE_BUILD_PARALLEL_LEVEL} -C build install
 
 EOF
             )

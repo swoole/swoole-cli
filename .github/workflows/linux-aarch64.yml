@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v5
+
+      - name: Configure build parallelism
+        run: bash .github/scripts/configure-build-jobs.sh
+
       - name: Show Environment Info
         run: |
           echo $PATH
@@ -48,8 +52,8 @@ jobs:
         uses: actions/cache@v5
         id: php-runtime-cache-aarch64
         with:
-          path: ${{ github.workspace }}/runtime
-          key: ${{ runner.os }}-aarch64-php-runtime
+          path: ${{ github.workspace }}/var/runtime
+          key: ${{ runner.os }}-aarch64-php-runtime-${{ hashFiles('setup-php-runtime.sh') }}
 
       - name: Cache PHP Vendor
         uses: actions/cache@v5
@@ -95,11 +99,12 @@ jobs:
           mkdir -p pool/lib
           mkdir -p pool/ext
           mkdir -p bin/
-          mkdir -p runtime/
-          if [ -f runtime/php ]; then rm -f runtime/php; fi
-          if [ ! -f runtime/php/box ] ; then
+          mkdir -p var/runtime/
+          if [ ! -x var/runtime/php/php ] || [ ! -x var/runtime/php/composer ]; then
               bash  setup-php-runtime.sh
           fi
+          test -x var/runtime/php/php
+          test -x var/runtime/php/composer
           bash sapi/download-box/download-box-get-archive-from-server.sh
           ls -A pool/lib/
           ls -A /usr/local/swoole-cli/
@@ -108,19 +113,32 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: swoole-cli-builder:latest
-          options: -v ${{ github.workspace }}:/work -w /work  -v /usr/local/swoole-cli:/usr/local/swoole-cli
+          options: >-
+            -v ${{ github.workspace }}:/work -w /work
+            -v /usr/local/swoole-cli:/usr/local/swoole-cli
+            -e BUILD_JOBS=${{ env.BUILD_JOBS }}
+            -e CMAKE_BUILD_PARALLEL_LEVEL=${{ env.CMAKE_BUILD_PARALLEL_LEVEL }}
+            -e PHP_COMPILER_JOBS=${{ env.PHP_COMPILER_JOBS }}
+            -e CARGO_BUILD_JOBS=${{ env.CARGO_BUILD_JOBS }}
+            -e MAKEFLAGS=${{ env.MAKEFLAGS }}
+            -e MFLAGS=${{ env.MFLAGS }}
+            -e TEST_PHP_JOBS=${{ env.TEST_PHP_JOBS }}
           run: |
             set -eux
             uname -m
-            export PATH=/work/runtime/php/:$PATH  # 容器已经内置 php 和 composer
-            alias php="php -d curl.cainfo=/work/runtime/php/cacert.pem -d openssl.cafile=/work/runtime/php/cacert.pem"
+            export PATH=/work/var/runtime/php:$PATH
+            alias php="php -d curl.cainfo=/work/var/runtime/php/cacert.pem -d openssl.cafile=/work/var/runtime/php/cacert.pem"
 
             sh  sapi/quickstart/linux/alpine-init.sh
             git config --global --add safe.directory /work
+            command -v php
+            command -v composer
+            php -v
+            composer --version
             composer install  --no-interaction --no-autoloader --no-scripts --profile
             composer dump-autoload --optimize --profile
 
-            php prepare.php --with-static-pie --with-libavif
+            php prepare.php --with-static-pie --with-libavif --with-parallel-jobs="${BUILD_JOBS}"
 
             bash make.sh all-library
 

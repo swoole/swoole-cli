@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Configure build parallelism
+        run: bash .github/scripts/configure-build-jobs.sh
+
       - name: Verify Android NDK r27
         run: |
           set -euo pipefail
@@ -70,7 +73,7 @@ jobs:
           bash sapi/download-box/download-box-get-archive-from-server.sh
           composer install --no-interaction --no-autoloader --no-scripts --profile
           composer dump-autoload --optimize --profile
-          php prepare.php @android-arm64-v8a --with-parallel-jobs=4
+          php prepare.php @android-arm64-v8a --with-parallel-jobs="${BUILD_JOBS}"
 
       - name: Build Android PHP Runtime Layer
         id: runtime-layer
