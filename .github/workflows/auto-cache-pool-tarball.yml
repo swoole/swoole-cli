@@ -1,11 +1,21 @@
 name: auto-cache-pool-tarball
 
+# 该 workflow 负责生成/刷新依赖源码池（pool + all-deps.zip）：
+#   - schedule       : 每 6 天定时刷新，保持 pool 缓存热度
+#   - workflow_dispatch : 手动触发
+#   - push tags 'v*' : 发版时重建 pool 并产出 Release / 云对象存储资产
+# 普通 push / pull_request 不再触发：各构建 workflow 自身会在需要时补齐 pool。
 on:
   push:
-  pull_request:
+    tags:
+      - 'v*'
   schedule:
     - cron: '0 0 */6 * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
 
 jobs:
   auto-cache-pool:
@@ -59,7 +69,7 @@ jobs:
             ${{ runner.os }}-x86_64-pool-refresh-php-vendor-
 
       - name: Cache Dependency Source Code Tarball
-        uses: actions/cache@v5
+        uses: actions/cache/restore@v5
         id: pool-cache
         with:
           path: ${{ github.workspace }}/pool/
@@ -105,6 +115,27 @@ jobs:
           ls -A pool/ext/
           ls -A pool/php-tar/
           cat bin/LICENSE
+
+      - name: Drop stale pool cache before refresh
+        # restore/save 分开执行，避免精确命中后跳过保存。
+        # 只删除当前 ref 的同名缓存，发版时保留默认分支和其他分支的缓存。
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CACHE_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          cache_ids=$(gh api --method GET "repos/${GITHUB_REPOSITORY}/actions/caches" \
+            -f key=source-code-tarball-pool -f ref="${CACHE_REF}" \
+            --paginate --jq '.actions_caches[] | select(.key == "source-code-tarball-pool") | .id')
+          for cache_id in ${cache_ids}; do
+            gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/caches/${cache_id}"
+          done
+
+      - name: Save refreshed dependency source archives
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ github.workspace }}/pool/
+          key: ${{ steps.pool-cache.outputs.cache-primary-key }}
 
       - name: production artifacts
         uses: actions/upload-artifact@v5
