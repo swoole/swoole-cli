@@ -415,7 +415,7 @@ help() {
 }
 
 if [ "$1" = "docker-build" ] ;then
-    MIRROR=""
+    MIRROR="${2:-}"
     CONTAINER_BASE_IMAGE='docker.io/library/alpine:3.18'
     PLATFORM=''
     ARCH=$(uname -m)
