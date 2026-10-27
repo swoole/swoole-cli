@@ -74,6 +74,11 @@ jobs:
           composer dump-autoload --optimize --profile
           php prepare.php @iphoneos-arm64 --with-parallel-jobs="${BUILD_JOBS}"
 
+      - name: Test iOS build target state
+        run: |
+          export PATH="${GITHUB_WORKSPACE}/var/runtime/php:${PATH}"
+          php vendor/bin/phpunit sapi/src/UnitTest/BuildStateTest.php
+
       - name: Build iPhoneOS PHP runtime layer
         id: runtime-layer
         run: |

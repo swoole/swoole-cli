@@ -8,16 +8,16 @@ DIST_DIR=${RUNTIME_LAYER_DIST_DIR:-${WORK_DIR}/runtime-layer}
 
 usage()
 {
-    echo "Usage: $0 <linux-x64|linux-arm64|iphoneos-arm64|android-arm64-v8a>" >&2
+    echo "Usage: $0 <linux-x64|linux-arm64|iphoneos-arm64|iphonesimulator-arm64|android-arm64-v8a>" >&2
 }
 
 case "${TARGET}" in
-    linux-x64|linux-arm64|iphoneos-arm64|android-arm64-v8a) ;;
+    linux-x64|linux-arm64|iphoneos-arm64|iphonesimulator-arm64|android-arm64-v8a) ;;
     *) usage; exit 2 ;;
 esac
 
 if [[ -z "${GLOBAL_PREFIX:-}" ]]; then
-    if [[ "${TARGET}" == iphoneos-arm64 || "${TARGET}" == android-arm64-v8a ]]; then
+    if [[ "${TARGET}" == iphoneos-arm64 || "${TARGET}" == iphonesimulator-arm64 || "${TARGET}" == android-arm64-v8a ]]; then
         GLOBAL_PREFIX=${WORK_DIR}/var/${TARGET}/deps
     else
         GLOBAL_PREFIX=/usr/local/swoole-cli
@@ -45,7 +45,7 @@ required_files=(
     "${WORK_DIR}/var/php-${PHP_VERSION}/LICENSE"
 )
 
-if [[ "${TARGET}" == iphoneos-arm64 || "${TARGET}" == android-arm64-v8a ]]; then
+if [[ "${TARGET}" == iphoneos-arm64 || "${TARGET}" == iphonesimulator-arm64 || "${TARGET}" == android-arm64-v8a ]]; then
     required_files+=(
         "${GLOBAL_PREFIX}/gmp/include/gmp.h"
         "${GLOBAL_PREFIX}/gmp/include/gmpxx.h"
@@ -119,12 +119,13 @@ if [[ "${TARGET}" == android-arm64-v8a ]]; then
     trap - EXIT
     printf '%s\n' 'typephp-android-arm64-v8a-api24-php-zts-pic-abi-v1' \
         > "${PACKAGE_ROOT}/.typephp-php-runtime-abi"
-elif [[ "${TARGET}" == iphoneos-arm64 ]]; then
+elif [[ "${TARGET}" == iphoneos-arm64 || "${TARGET}" == iphonesimulator-arm64 ]]; then
     if [[ $(uname -s) != Darwin ]]; then
         echo "iphoneos-arm64 must be packaged on macOS." >&2
         exit 1
     fi
-    xcrun --sdk iphoneos --show-sdk-path >/dev/null
+    ios_sdk=${TARGET%-arm64}
+    xcrun --sdk "${ios_sdk}" --show-sdk-path >/dev/null
 
     if ! grep -Eq '^#define[[:space:]]+ZTS([[:space:]]+1)?([[:space:]]|$)' \
         "${WORK_DIR}/main/php_config.h"; then
@@ -139,12 +140,12 @@ elif [[ "${TARGET}" == iphoneos-arm64 ]]; then
         cp -p "${GLOBAL_PREFIX}/mpfr/include/mpf2mpfr.h" "${PACKAGE_ROOT}/include/"
     fi
 
-    archs=$(xcrun --sdk iphoneos lipo -archs "${PACKAGE_ROOT}/lib/libphp.a")
+    archs=$(xcrun --sdk "${ios_sdk}" lipo -archs "${PACKAGE_ROOT}/lib/libphp.a")
     if [[ " ${archs} " != *" arm64 "* ]]; then
         echo "libphp.a does not contain arm64: ${archs}" >&2
         exit 1
     fi
-    printf '%s\n' 'typephp-iphoneos-arm64-php-zts-abi-v1' \
+    printf 'typephp-%s-php-zts-abi-v1\n' "${TARGET}" \
         > "${PACKAGE_ROOT}/.typephp-php-runtime-abi"
 else
     machine=$(uname -m)

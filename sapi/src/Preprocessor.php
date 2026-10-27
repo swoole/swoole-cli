@@ -128,7 +128,13 @@ class Preprocessor
 
     public function isIphoneOs(): bool
     {
-        return $this->targetType === 'iphoneos-arm64';
+        return $this->targetType === 'iphoneos-arm64'
+            || $this->targetType === 'iphonesimulator-arm64';
+    }
+
+    public function isIphoneSimulator(): bool
+    {
+        return $this->targetType === 'iphonesimulator-arm64';
     }
 
     public function isAndroid(): bool
@@ -286,8 +292,12 @@ OPTIONS);
 
         // export_variables() de-duplicates whitespace-separated flags, so
         // options and their operands must remain a single shell token.
-        $targetFlags = '--target=arm64-apple-ios15.0 -isysroot' . $sdkRoot
-            . ' -miphoneos-version-min=15.0';
+        $targetFlags = '--target=arm64-apple-ios15.0'
+            . ($this->isIphoneSimulator() ? '-simulator' : '')
+            . ' -isysroot' . $sdkRoot
+            . ($this->isIphoneSimulator()
+                ? ' -mios-simulator-version-min=15.0'
+                : ' -miphoneos-version-min=15.0');
         $pkgConfigDir = $this->getGlobalPrefix() . '/gmp/lib/pkgconfig:'
             . $this->getGlobalPrefix() . '/mpfr/lib/pkgconfig';
 
@@ -326,9 +336,10 @@ OPTIONS);
 
     private function findIphoneOsTool(string $arguments): string
     {
-        $value = trim((string) shell_exec('xcrun --sdk iphoneos ' . $arguments . ' 2>/dev/null'));
+        $sdk = $this->isIphoneSimulator() ? 'iphonesimulator' : 'iphoneos';
+        $value = trim((string) shell_exec('xcrun --sdk ' . $sdk . ' ' . $arguments . ' 2>/dev/null'));
         if ($value === '') {
-            throw new RuntimeException('iphoneos-arm64 requires full Xcode and the iPhoneOS SDK');
+            throw new RuntimeException($this->targetType . ' requires full Xcode and the ' . $sdk . ' SDK');
         }
         return $value;
     }
@@ -837,9 +848,9 @@ OPTIONS);
                 continue;
             }
             $value = substr($arg, 1);
-            if ($value === 'iphoneos-arm64') {
+            if ($value === 'iphoneos-arm64' || $value === 'iphonesimulator-arm64') {
                 if ($this->getRealOsType() !== 'macos') {
-                    throw new RuntimeException('iphoneos-arm64 must be cross-compiled on a macOS host');
+                    throw new RuntimeException($value . ' must be cross-compiled on a macOS host');
                 }
                 $this->targetType = $value;
                 $this->inVirtualMachine = false;

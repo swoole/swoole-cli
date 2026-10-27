@@ -4,13 +4,19 @@ set -euo pipefail
 
 WORK_DIR=${WORK_DIR:?WORK_DIR is required}
 GLOBAL_PREFIX=${GLOBAL_PREFIX:?GLOBAL_PREFIX is required}
+IOS_SDK_NAME=${IOS_SDK_NAME:-iphoneos}
 PHP_ARCHIVE=${WORK_DIR}/libs/libphp.a
+
+case "${IOS_SDK_NAME}" in
+    iphoneos|iphonesimulator) ;;
+    *) echo "Unsupported iOS SDK: ${IOS_SDK_NAME}" >&2; exit 2 ;;
+esac
 
 if [[ $(uname -s) != Darwin ]]; then
     echo "The iPhoneOS libphp archive must be merged on macOS." >&2
     exit 1
 fi
-xcrun --sdk iphoneos --show-sdk-path >/dev/null
+xcrun --sdk "${IOS_SDK_NAME}" --show-sdk-path >/dev/null
 
 archives=(
     "${PHP_ARCHIVE}"
@@ -23,7 +29,7 @@ for archive in "${archives[@]}"; do
         echo "iPhoneOS libphp input is missing: ${archive}" >&2
         exit 1
     fi
-    archs=$(xcrun --sdk iphoneos lipo -archs "${archive}")
+    archs=$(xcrun --sdk "${IOS_SDK_NAME}" lipo -archs "${archive}")
     if [[ " ${archs} " != *" arm64 "* ]]; then
         echo "iPhoneOS archive does not contain arm64: ${archive} (${archs})" >&2
         exit 1
@@ -32,10 +38,10 @@ done
 
 temporary=$(mktemp "${WORK_DIR}/libs/libphp.merged.XXXXXX")
 trap 'rm -f "${temporary}"' EXIT
-xcrun --sdk iphoneos libtool -static -o "${temporary}" "${archives[@]}"
-xcrun --sdk iphoneos ranlib "${temporary}"
+xcrun --sdk "${IOS_SDK_NAME}" libtool -static -o "${temporary}" "${archives[@]}"
+xcrun --sdk "${IOS_SDK_NAME}" ranlib "${temporary}"
 
-members=$(xcrun --sdk iphoneos ar -t "${temporary}" | wc -l | tr -d ' ')
+members=$(xcrun --sdk "${IOS_SDK_NAME}" ar -t "${temporary}" | wc -l | tr -d ' ')
 if [[ "${members}" -eq 0 ]]; then
     echo "Merged iPhoneOS libphp.a is empty." >&2
     exit 1

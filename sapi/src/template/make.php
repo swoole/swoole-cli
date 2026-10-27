@@ -297,6 +297,19 @@ make_build() {
 make_libphp() {
     cd <?= $this->getWorkDir() . PHP_EOL ?>
     export_variables
+<?php if ($this->isIphoneOs()) : ?>
+    # PHP object files live in the shared source tree. Rebuild them when
+    # switching between device and simulator, even if source dates are older.
+    ios_object_target=<?= $this->isIphoneSimulator() ? 'iphonesimulator-arm64' : 'iphoneos-arm64' ?>
+    ios_object_marker=var/.typephp-ios-object-target
+    ios_previous_target=$(cat "$ios_object_marker" 2>/dev/null || true)
+    # A failed build may leave objects for a different target. Invalidate the
+    # previous marker before changing any objects, including same-target builds.
+    rm -f "$ios_object_marker" || return $?
+    if [ "$ios_previous_target" != "$ios_object_target" ]; then
+        find main Zend TSRM ext sapi -type f \( -name '*.lo' -o -name '*.o' -o -name '*.dep' \) -delete || return $?
+    fi
+<?php endif; ?>
 <?php if ($this->isAndroid()) : ?>
     export CFLAGS="$CFLAGS -fPIC"
     export CXXFLAGS="$CXXFLAGS -fPIC"
@@ -307,7 +320,7 @@ make_libphp() {
     # 先删除旧归档，强制 make 重新归档纯 PHP 目标文件；
     # 否则残留的旧 libs/libphp.a 会被 make 判为 up to date，导致第三方库被重复合并
     rm -f libs/libphp.a
-    make -j <?= $this->maxJob ?> libs/libphp.a
+    make -j <?= $this->maxJob ?> libs/libphp.a || return $?
 
 <?php if ($this->isAndroid()) : ?>
     # Android supplies Bionic and libc++ at the final application link. Merge
@@ -325,7 +338,11 @@ make_libphp() {
     # Apple libc/libc++ remain supplied by the final Xcode link.
     WORK_DIR=<?= escapeshellarg($this->getWorkDir()) ?> \
     GLOBAL_PREFIX=<?= escapeshellarg($this->getGlobalPrefix()) ?> \
-        bash ./sapi/scripts/merge-iphoneos-libphp.sh
+    IOS_SDK_NAME=<?= $this->isIphoneSimulator() ? 'iphonesimulator' : 'iphoneos' ?> \
+        bash ./sapi/scripts/merge-iphoneos-libphp.sh || return $?
+    ios_object_marker_tmp="${ios_object_marker}.tmp"
+    printf '%s\n' "$ios_object_target" > "$ios_object_marker_tmp" || return $?
+    mv -f "$ios_object_marker_tmp" "$ios_object_marker"
 <?php endif; ?>
 }
 

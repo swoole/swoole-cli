@@ -29,6 +29,12 @@ The profile targets `arm64-apple-ios15.0`, uses ZTS, and intentionally enables
 only bcmath, ctype, filter and gmp. Server, process, JIT and dynamic extension
 facilities are excluded from the mobile runtime.
 
+For Apple silicon simulators, use `@iphonesimulator-arm64` and package the
+runtime with `iphonesimulator-arm64` instead. This profile builds into separate
+`thirdparty/iphonesimulator-arm64` and `var/iphonesimulator-arm64` directories,
+uses the iPhoneSimulator SDK, and marks the runtime with a separate ABI stamp.
+Build PHPX with `ios/build.sh --platform simulator` after staging that runtime.
+
 The `build-php-runtime-iphoneos-arm64` workflow validates the installed SDK,
 cross-compiles the runtime, checks the Mach-O archive architecture, and uploads
 the immutable Runtime Layer. The PHPX workflow downloads that layer and owns
