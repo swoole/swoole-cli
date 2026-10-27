@@ -411,9 +411,12 @@ PDO_API void php_pdo_internal_construct_driver(INTERNAL_FUNCTION_PARAMETERS, zen
 
 					/* is the connection still alive ? */
 					if (pdbh->methods->check_liveness && FAILURE == (pdbh->methods->check_liveness)(pdbh)) {
-						/* nope... need to kill it */
-						pdbh->refcount--;
-						zend_list_close(le);
+						if (pdbh->refcount > 1) {
+							pdbh->refcount--;
+							zend_list_close(le);
+						} else {
+							zend_hash_str_del(&EG(persistent_list), hashkey, plen);
+						}
 						pdbh = NULL;
 					}
 				}
@@ -628,7 +631,7 @@ PHP_METHOD(PDO, prepare)
 		if ((item = zend_hash_index_find(Z_ARRVAL_P(value), 1)) != NULL) {
 			if (Z_TYPE_P(item) != IS_ARRAY) {
 				zend_type_error("PDO::ATTR_STATEMENT_CLASS constructor_args must be of type ?array, %s given",
-					zend_zval_value_name(value));
+					zend_zval_value_name(item));
 				RETURN_THROWS();
 			}
 			ZVAL_COPY_VALUE(&ctor_args, item);
@@ -922,17 +925,18 @@ static bool pdo_dbh_attribute_set(pdo_dbh_t *dbh, zend_long attr, zval *value) /
 				zend_type_error("User-supplied statement class cannot have a public constructor");
 				return false;
 			}
+			item = zend_hash_index_find(Z_ARRVAL_P(value), 1);
+			if (item != NULL && Z_TYPE_P(item) != IS_ARRAY) {
+				zend_type_error("PDO::ATTR_STATEMENT_CLASS constructor_args must be of type ?array, %s given",
+					zend_zval_value_name(item));
+				return false;
+			}
 			dbh->def_stmt_ce = pce;
 			if (!Z_ISUNDEF(dbh->def_stmt_ctor_args)) {
 				zval_ptr_dtor(&dbh->def_stmt_ctor_args);
 				ZVAL_UNDEF(&dbh->def_stmt_ctor_args);
 			}
-			if ((item = zend_hash_index_find(Z_ARRVAL_P(value), 1)) != NULL) {
-				if (Z_TYPE_P(item) != IS_ARRAY) {
-					zend_type_error("PDO::ATTR_STATEMENT_CLASS constructor_args must be of type ?array, %s given",
-						zend_zval_value_name(value));
-					return false;
-				}
+			if (item != NULL) {
 				ZVAL_COPY(&dbh->def_stmt_ctor_args, item);
 			}
 			return true;
@@ -1518,7 +1522,9 @@ static void pdo_dbh_free_storage(zend_object *std)
 		return;
 	}
 
-	if (dbh->driver_data && dbh->methods && dbh->methods->rollback && pdo_is_in_transaction(dbh)) {
+	/* The persistent list holds one reference, other objects may hold the rest */
+	if (dbh->driver_data && dbh->methods && dbh->methods->rollback
+			&& (!dbh->is_persistent || dbh->refcount <= 2) && pdo_is_in_transaction(dbh)) {
 		dbh->methods->rollback(dbh);
 		dbh->in_txn = false;
 	}

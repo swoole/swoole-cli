@@ -19,7 +19,6 @@
 #include <config.h>
 #endif
 
-#include <math.h>
 #include "php_hash.h"
 #include "ext/standard/info.h"
 #include "ext/standard/file.h"
@@ -1043,10 +1042,10 @@ PHP_FUNCTION(hash_pbkdf2)
 	}
 	digest_length = length;
 	if (!raw_output) {
-		digest_length = (zend_long) ceil((float) length / 2.0);
+		digest_length = length / 2 + (length % 2);
 	}
 
-	loops = (zend_long) ceil((float) digest_length / (float) ops->digest_size);
+	loops = (digest_length - 1) / ops->digest_size + 1;
 
 	result = safe_emalloc(loops, ops->digest_size, 0);
 
@@ -1329,7 +1328,7 @@ PHP_FUNCTION(mhash_keygen_s2k)
 				context = php_hash_alloc_context(ops);
 				ops->hash_init(context, NULL);
 
-				key = ecalloc(1, times * block_size);
+				key = ecalloc(times, block_size);
 				digest = emalloc(ops->digest_size + 1);
 
 				for (i = 0; i < times; i++) {

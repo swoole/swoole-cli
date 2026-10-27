@@ -61,6 +61,10 @@ PHP_FUNCTION( numfmt_parse )
 	/* Convert given string to UTF-16. */
 	intl_convert_utf8_to_utf16(&sstr, &sstr_len, str, str_len, &INTL_DATA_ERROR_CODE(nfo));
 	INTL_METHOD_CHECK_STATUS( nfo, "String conversion to UTF-16 failed" );
+	if (zposition && !intl_convert_utf8_offset_to_utf16(str, str_len, &position, &INTL_DATA_ERROR_CODE(nfo))) {
+		efree(sstr);
+		INTL_METHOD_CHECK_STATUS(nfo, "Invalid UTF-8 offset");
+	}
 
 #if ICU_LOCALE_BUG && defined(LC_NUMERIC)
 	/* need to copy here since setlocale may change it later */
@@ -101,6 +105,7 @@ PHP_FUNCTION( numfmt_parse )
 	}
 
 	if (zposition) {
+		position = intl_convert_utf16_offset_to_utf8(sstr, sstr_len, position);
 		ZEND_TRY_ASSIGN_REF_LONG(zposition, position);
 	}
 
@@ -150,11 +155,16 @@ PHP_FUNCTION( numfmt_parse_currency )
 
 	if(zposition) {
 		position = (int32_t) zval_get_long(zposition);
+		if (!intl_convert_utf8_offset_to_utf16(str, str_len, &position, &INTL_DATA_ERROR_CODE(nfo))) {
+			efree(sstr);
+			INTL_METHOD_CHECK_STATUS(nfo, "Invalid UTF-8 offset");
+		}
 		position_p = &position;
 	}
 
 	number = unum_parseDoubleCurrency(FORMATTER_OBJECT(nfo), sstr, sstr_len, position_p, currency, &INTL_DATA_ERROR_CODE(nfo));
 	if(zposition) {
+		position = intl_convert_utf16_offset_to_utf8(sstr, sstr_len, position);
 		ZEND_TRY_ASSIGN_REF_LONG(zposition, position);
 	}
 	if (sstr) {

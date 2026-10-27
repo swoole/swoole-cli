@@ -108,7 +108,6 @@ static int my_module_number = 0;
 static inline void php_rinit_session_globals(void) /* {{{ */
 {
 	/* Do NOT init PS(mod_user_names) here! */
-	/* TODO: These could be moved to MINIT and removed. These should be initialized by php_rshutdown_session_globals() always when execution is finished. */
 	PS(id) = NULL;
 	PS(session_status) = php_session_none;
 	PS(in_save_handler) = 0;
@@ -118,6 +117,7 @@ static inline void php_rinit_session_globals(void) /* {{{ */
 	PS(define_sid) = 1;
 	PS(session_vars) = NULL;
 	PS(module_number) = my_module_number;
+	PS(in_rfc1867_update) = false;
 	ZVAL_UNDEF(&PS(http_session_vars));
 }
 /* }}} */
@@ -465,7 +465,11 @@ static zend_result php_session_initialize(void) /* {{{ */
 		}
 		PS(id) = PS(mod)->s_create_sid(&PS(mod_data));
 		if (!PS(id)) {
-			PS(id) = php_session_create_id(NULL);
+			php_session_abort();
+			if (!EG(exception)) {
+				zend_throw_error(NULL, "Failed to create session ID: %s (path: %s)", PS(mod)->s_name, PS(save_path));
+			}
+			return FAILURE;
 		}
 		if (PS(use_cookies)) {
 			PS(send_cookie) = 1;
@@ -957,13 +961,35 @@ PHP_INI_END()
 /* ***************
    * Serializers *
    *************** */
+
+/* The upload progress handler (php_session_rfc1867_update()) decodes and
+ * re-encodes the session during request startup, before RINIT, when no user
+ * code may run. Objects are then kept as __PHP_Incomplete_Class: no
+ * autoloading, no unserialize_callback_func, no __wakeup() or __unserialize(),
+ * and they are written back unchanged. */
+static void php_session_unserialize_init(php_unserialize_data_t *var_hash)
+{
+	PHP_VAR_UNSERIALIZE_INIT(*var_hash);
+	if (PS(in_rfc1867_update)) {
+		php_var_unserialize_set_incomplete_classes_only(*var_hash, true);
+	}
+}
+
+static void php_session_serialize_init(php_serialize_data_t *var_hash)
+{
+	PHP_VAR_SERIALIZE_INIT(*var_hash);
+	if (PS(in_rfc1867_update)) {
+		php_var_serialize_set_incomplete_classes_only(*var_hash, true);
+	}
+}
+
 PS_SERIALIZER_ENCODE_FUNC(php_serialize) /* {{{ */
 {
 	smart_str buf = {0};
 	php_serialize_data_t var_hash;
 
 	IF_SESSION_VARS() {
-		PHP_VAR_SERIALIZE_INIT(var_hash);
+		php_session_serialize_init(&var_hash);
 		php_var_serialize(&buf, Z_REFVAL(PS(http_session_vars)), &var_hash);
 		PHP_VAR_SERIALIZE_DESTROY(var_hash);
 	}
@@ -980,7 +1006,7 @@ PS_SERIALIZER_DECODE_FUNC(php_serialize) /* {{{ */
 	zend_string *var_name = ZSTR_INIT_LITERAL("_SESSION", 0);
 
 	ZVAL_NULL(&session_vars);
-	PHP_VAR_UNSERIALIZE_INIT(var_hash);
+	php_session_unserialize_init(&var_hash);
 	result = php_var_unserialize(
 		&session_vars, (const unsigned char **)&val, (const unsigned char *)endptr, &var_hash);
 	PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
@@ -1013,7 +1039,7 @@ PS_SERIALIZER_ENCODE_FUNC(php_binary) /* {{{ */
 	php_serialize_data_t var_hash;
 	PS_ENCODE_VARS;
 
-	PHP_VAR_SERIALIZE_INIT(var_hash);
+	php_session_serialize_init(&var_hash);
 
 	PS_ENCODE_LOOP(
 			if (ZSTR_LEN(key) > PS_BIN_MAX) continue;
@@ -1037,7 +1063,7 @@ PS_SERIALIZER_DECODE_FUNC(php_binary) /* {{{ */
 	php_unserialize_data_t var_hash;
 	zval *current, rv;
 
-	PHP_VAR_UNSERIALIZE_INIT(var_hash);
+	php_session_unserialize_init(&var_hash);
 
 	for (p = val; p < endptr; ) {
 		size_t namelen = ((unsigned char)(*p)) & (~PS_BIN_UNDEF);
@@ -1079,7 +1105,7 @@ PS_SERIALIZER_ENCODE_FUNC(php) /* {{{ */
 	bool fail = false;
 	PS_ENCODE_VARS;
 
-	PHP_VAR_SERIALIZE_INIT(var_hash);
+	php_session_serialize_init(&var_hash);
 
 	PS_ENCODE_LOOP(
 		smart_str_appendl(&buf, ZSTR_VAL(key), ZSTR_LEN(key));
@@ -1114,7 +1140,7 @@ PS_SERIALIZER_DECODE_FUNC(php) /* {{{ */
 	php_unserialize_data_t var_hash;
 	zval *current, rv;
 
-	PHP_VAR_UNSERIALIZE_INIT(var_hash);
+	php_session_unserialize_init(&var_hash);
 
 	p = val;
 
@@ -1499,10 +1525,10 @@ static zend_result php_session_send_cookie(void) /* {{{ */
 	php_session_remove_cookie(); /* remove already sent session ID cookie */
 	/*	'replace' must be 0 here, else a previous Set-Cookie
 		header, probably sent with setcookie() will be replaced! */
-	sapi_add_header_ex(estrndup(ZSTR_VAL(ncookie.s), ZSTR_LEN(ncookie.s)), ZSTR_LEN(ncookie.s), 0, 0);
+	zend_result result = sapi_add_header_ex(estrndup(ZSTR_VAL(ncookie.s), ZSTR_LEN(ncookie.s)), ZSTR_LEN(ncookie.s), 0, 0);
 	smart_str_free(&ncookie);
 
-	return SUCCESS;
+	return result;
 }
 /* }}} */
 
@@ -2508,6 +2534,9 @@ PHP_FUNCTION(session_create_id)
 		int limit = 3;
 		while (limit--) {
 			new_id = PS(mod)->s_create_sid(&PS(mod_data));
+			if (!new_id) {
+				break;
+			}
 			if (!PS(mod)->s_validate_sid || (PS(mod_user_implemented) && Z_ISUNDEF(PS(mod_user_names).ps_validate_sid))) {
 				break;
 			} else {
@@ -2529,6 +2558,9 @@ PHP_FUNCTION(session_create_id)
 		zend_string_release_ex(new_id, 0);
 	} else {
 		smart_str_free(&id);
+		if (EG(exception)) {
+			RETURN_THROWS();
+		}
 		php_error_docref(NULL, E_WARNING, "Failed to create new ID");
 		RETURN_FALSE;
 	}
@@ -2974,6 +3006,7 @@ static PHP_GINIT_FUNCTION(ps) /* {{{ */
 	ps_globals->mod = NULL;
 	ps_globals->serializer = NULL;
 	ps_globals->mod_data = NULL;
+	ps_globals->in_rfc1867_update = false;
 	ps_globals->session_status = php_session_none;
 	ps_globals->default_mod = NULL;
 	ps_globals->mod_user_implemented = 0;
@@ -3187,8 +3220,12 @@ static void php_session_rfc1867_update(php_session_rfc1867_progress *progress, i
 		progress->next_update = Z_LVAL_P(progress->post_bytes_processed) + progress->update_step;
 	}
 
-	php_session_initialize();
-	PS(session_status) = php_session_active;
+	/* Runs before RINIT: no user code may be invoked, see php_session_unserialize_init() */
+	PS(in_rfc1867_update) = true;
+	if (php_session_initialize() == FAILURE || PS(session_status) != php_session_active) {
+		PS(in_rfc1867_update) = false;
+		return;
+	}
 	IF_SESSION_VARS() {
 		zval *sess_var = Z_REFVAL(PS(http_session_vars));
 		SEPARATE_ARRAY(sess_var);
@@ -3198,18 +3235,23 @@ static void php_session_rfc1867_update(php_session_rfc1867_progress *progress, i
 		zend_hash_update(Z_ARRVAL_P(sess_var), progress->key.s, &progress->data);
 	}
 	php_session_flush(1);
+	PS(in_rfc1867_update) = false;
 } /* }}} */
 
 static void php_session_rfc1867_cleanup(php_session_rfc1867_progress *progress) /* {{{ */
 {
-	php_session_initialize();
-	PS(session_status) = php_session_active;
+	PS(in_rfc1867_update) = true;
+	if (php_session_initialize() == FAILURE || PS(session_status) != php_session_active) {
+		PS(in_rfc1867_update) = false;
+		return;
+	}
 	IF_SESSION_VARS() {
 		zval *sess_var = Z_REFVAL(PS(http_session_vars));
 		SEPARATE_ARRAY(sess_var);
 		zend_hash_del(Z_ARRVAL_P(sess_var), progress->key.s);
 	}
 	php_session_flush(1);
+	PS(in_rfc1867_update) = false;
 } /* }}} */
 
 static zend_result php_session_rfc1867_callback(unsigned int event, void *event_data, void **extra) /* {{{ */
@@ -3223,12 +3265,20 @@ static zend_result php_session_rfc1867_callback(unsigned int event, void *event_
 	if (!PS(rfc1867_enabled)) {
 		return retval;
 	}
+	if (PG(modules_activated)) {
+		/* request_parse_body(). Do not run here as it corrupts the session. */
+		return retval;
+	}
 
 	progress = PS(rfc1867_progress);
 
 	switch(event) {
 		case MULTIPART_EVENT_START: {
 			multipart_event_start *data = (multipart_event_start *) event_data;
+
+			/* This runs before RINIT, so we need to clear these early */
+			php_rinit_session_globals();
+
 			progress = ecalloc(1, sizeof(php_session_rfc1867_progress));
 			progress->content_length = data->content_length;
 			progress->sname_len  = strlen(PS(session_name));
@@ -3386,6 +3436,11 @@ static zend_result php_session_rfc1867_callback(unsigned int event, void *event_
 			efree(progress);
 			progress = NULL;
 			PS(rfc1867_progress) = NULL;
+
+			/* $_SESSION was populated in incomplete_classes_only mode */
+			zend_string *session_var_name = ZSTR_INIT_LITERAL("_SESSION", 0);
+			zend_delete_global_variable(session_var_name);
+			zend_string_release_ex(session_var_name, 0);
 		}
 		break;
 	}

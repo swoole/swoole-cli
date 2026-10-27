@@ -145,6 +145,11 @@ static uint32_t zend_jit_trace_get_exit_point(const zend_op *to_opline, uint32_t
 	}
 	if (JIT_G(current_frame)) {
 		op_array = &JIT_G(current_frame)->func->op_array;
+		if (!(op_array->fn_flags & ZEND_ACC_IMMUTABLE)) {
+			zend_jit_op_array_trace_extension *jit_extension =
+				(zend_jit_op_array_trace_extension*)ZEND_FUNC_INFO(op_array);
+			op_array = jit_extension->op_array;
+		}
 		stack_size = op_array->last_var + op_array->T;
 		if (stack_size) {
 			stack = JIT_G(current_frame)->stack;
@@ -6382,21 +6387,29 @@ static const void *zend_jit_trace(zend_jit_trace_rec *trace_buffer, uint32_t par
 						}
 						goto done;
 					case ZEND_FRAMELESS_ICALL_0:
-						jit_frameless_icall0(jit, opline);
+						if (!jit_frameless_icall0(jit, opline)) {
+							goto jit_failure;
+						}
 						goto done;
 					case ZEND_FRAMELESS_ICALL_1:
 						op1_info = OP1_INFO();
-						jit_frameless_icall1(jit, opline, op1_info);
+						if (!jit_frameless_icall1(jit, opline, op1_info)) {
+							goto jit_failure;
+						}
 						goto done;
 					case ZEND_FRAMELESS_ICALL_2:
 						op1_info = OP1_INFO();
 						op2_info = OP2_INFO();
-						jit_frameless_icall2(jit, opline, op1_info, op2_info);
+						if (!jit_frameless_icall2(jit, opline, op1_info, op2_info)) {
+							goto jit_failure;
+						}
 						goto done;
 					case ZEND_FRAMELESS_ICALL_3:
 						op1_info = OP1_INFO();
 						op2_info = OP2_INFO();
-						jit_frameless_icall3(jit, opline, op1_info, op2_info, OP1_DATA_INFO());
+						if (!jit_frameless_icall3(jit, opline, op1_info, op2_info, OP1_DATA_INFO())) {
+							goto jit_failure;
+						}
 						goto done;
 					default:
 						break;

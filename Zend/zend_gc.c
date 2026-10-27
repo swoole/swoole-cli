@@ -1517,6 +1517,9 @@ tail_call:
 				GC_ADDREF(ht);
 				if (GC_REF_CHECK_COLOR(ht, GC_WHITE)) {
 					GC_REF_SET_BLACK(ht);
+					if (!GC_INFO(ht)) {
+						gc_add_garbage((zend_refcounted *)ht);
+					}
 					for (; n != 0; n--) {
 						if (Z_REFCOUNTED_P(zv)) {
 							ref = Z_COUNTED_P(zv);
@@ -1895,6 +1898,7 @@ static zend_never_inline void gc_call_destructors_in_fiber(uint32_t end)
 
 	zend_object *exception = NULL;
 	remember_prev_exception(&exception);
+	zend_object *old_exception = exception;
 
 	if (UNEXPECTED(!fiber)) {
 		fiber = gc_create_destructor_fiber();
@@ -1929,6 +1933,12 @@ static zend_never_inline void gc_call_destructors_in_fiber(uint32_t end)
 	}
 
 	EG(exception) = exception;
+
+	/* Destructors ran in another fiber, out of reach of zend_call_function()'s rethrow */
+	if (exception && !old_exception && EG(current_execute_data) && EG(current_execute_data)->func
+			&& ZEND_USER_CODE(EG(current_execute_data)->func->common.type)) {
+		zend_rethrow_exception(EG(current_execute_data));
+	}
 }
 
 ZEND_API int zend_gc_collect_cycles(void)

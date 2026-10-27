@@ -59,7 +59,7 @@ ZEND_GET_MODULE(bz2)
 
 struct php_bz2_stream_data_t {
 	BZFILE *bz_file;
-	php_stream *stream;
+	zend_resource *stream_res;
 };
 
 /* {{{ BZip2 stream implementation */
@@ -131,8 +131,15 @@ static int php_bz2iop_close(php_stream *stream, int close_handle)
 		BZ2_bzclose(self->bz_file);
 	}
 
-	if (self->stream) {
-		php_stream_free(self->stream, PHP_STREAM_FREE_CLOSE | (close_handle == 0 ? PHP_STREAM_FREE_PRESERVE_HANDLE : 0));
+	/* The inner stream may have been closed by the user, only its resource is held */
+	if (self->stream_res) {
+		php_stream *inner = zend_fetch_resource2(
+				self->stream_res, NULL, php_file_le_stream(), php_file_le_pstream());
+		if (inner) {
+			php_stream_free(inner, PHP_STREAM_FREE_CLOSE | (close_handle == 0 ? PHP_STREAM_FREE_PRESERVE_HANDLE : 0));
+		} else {
+			zend_list_delete(self->stream_res);
+		}
 	}
 
 	efree(self);
@@ -158,6 +165,23 @@ const php_stream_ops php_stream_bz2io_ops = {
 };
 
 /* {{{ Bzip2 stream openers */
+
+/* bzlib closes the descriptor it is given, so it gets a duplicate */
+static BZFILE *php_bz2_bzdopen(php_socket_t fd, const char *mode)
+{
+	int dup_fd = dup((int) fd);
+	if (dup_fd == -1) {
+		return NULL;
+	}
+
+	BZFILE *bz = BZ2_bzdopen(dup_fd, mode);
+	if (!bz) {
+		close(dup_fd);
+	}
+
+	return bz;
+}
+
 PHP_BZ2_API php_stream *_php_stream_bz2open_from_BZFILE(BZFILE *bz,
 														const char *mode, php_stream *innerstream STREAMS_DC)
 {
@@ -165,8 +189,9 @@ PHP_BZ2_API php_stream *_php_stream_bz2open_from_BZFILE(BZFILE *bz,
 
 	self = emalloc(sizeof(*self));
 
-	self->stream = innerstream;
+	self->stream_res = NULL;
 	if (innerstream) {
+		self->stream_res = innerstream->res;
 		GC_ADDREF(innerstream->res);
 	}
 	self->bz_file = bz;
@@ -223,7 +248,7 @@ PHP_BZ2_API php_stream *_php_stream_bz2open(php_stream_wrapper *wrapper,
 		if (stream) {
 			php_socket_t fd;
 			if (SUCCESS == php_stream_cast(stream, PHP_STREAM_AS_FD, (void **) &fd, REPORT_ERRORS)) {
-				bz_file = BZ2_bzdopen((int)fd, mode);
+				bz_file = php_bz2_bzdopen(fd, mode);
 			}
 		}
 
@@ -399,7 +424,10 @@ PHP_FUNCTION(bzopen)
 			RETURN_FALSE;
 		}
 
-		bz = BZ2_bzdopen((int)fd, mode);
+		bz = php_bz2_bzdopen(fd, mode);
+		if (!bz) {
+			RETURN_FALSE;
+		}
 
 		stream = php_stream_bz2open_from_BZFILE(bz, mode, stream);
 	} else {
@@ -469,7 +497,10 @@ PHP_FUNCTION(bzcompress)
 	dest_len = (unsigned int) chunk_len;
 
 	/* Allocate the destination buffer */
-	dest = zend_string_alloc(dest_len, 0);
+	dest = zend_string_falloc(dest_len, 0, /* fallible */ true);
+	if (!dest) {
+		RETURN_OOM();
+	}
 
 	/* Handle the optional arguments */
 	if (argc > 1) {
@@ -498,7 +529,7 @@ PHP_FUNCTION(bzcompress)
 PHP_FUNCTION(bzdecompress)
 {
 	char *source;
-	zend_string *dest;
+	zend_string *dest = NULL, *tmp;
 	size_t source_len;
 	int error;
 	bool small = 0;
@@ -520,7 +551,10 @@ PHP_FUNCTION(bzdecompress)
 	bzs.avail_in = source_len;
 
 	/* in most cases bz2 offers at least 2:1 compression, so we use that as our base */
-	dest = zend_string_safe_alloc(source_len, 2, 1, 0);
+	dest = zend_string_safe_falloc(source_len, 2, 1, 0, /* fallible */ true);
+	if (!dest) {
+		goto failure;
+	}
 	bzs.avail_out = source_len * 2;
 	bzs.next_out = ZSTR_VAL(dest);
 
@@ -532,7 +566,11 @@ PHP_FUNCTION(bzdecompress)
 			/* no reason to continue if we're going to drop it anyway */
 			break;
 		}
-		dest = zend_string_safe_realloc(dest, 1, bzs.avail_out+1, (size_t) size, 0);
+		tmp = zend_string_safe_frealloc(dest, 1, bzs.avail_out+1, (size_t) size, 0, /* fallible */ true);
+		if (!tmp) {
+			goto failure;
+		}
+		dest = tmp;
 		bzs.next_out = ZSTR_VAL(dest) + size;
 	}
 
@@ -543,7 +581,11 @@ PHP_FUNCTION(bzdecompress)
 			zend_string_efree(dest);
 			RETVAL_LONG(BZ_MEM_ERROR);
 		} else {
-			dest = zend_string_safe_realloc(dest, 1, (size_t)size, 1, 0);
+			tmp = zend_string_safe_frealloc(dest, 1, (size_t)size, 1, 0, /* fallible */ true);
+			if (!tmp) {
+				goto failure;
+			}
+			dest = tmp;
 			ZSTR_LEN(dest) = (size_t)size;
 			ZSTR_VAL(dest)[(size_t)size] = '\0';
 			RETVAL_STR(dest);
@@ -553,6 +595,13 @@ PHP_FUNCTION(bzdecompress)
 		RETVAL_LONG(error);
 	}
 
+	BZ2_bzDecompressEnd(&bzs);
+	return;
+
+failure:
+	if (dest) {
+		zend_string_efree(dest);
+	}
 	BZ2_bzDecompressEnd(&bzs);
 }
 /* }}} */

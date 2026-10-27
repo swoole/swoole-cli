@@ -106,6 +106,9 @@ int32_t grapheme_strpos_utf16(char *haystack, size_t haystack_len, char *needle,
 	if(puchar_pos) {
 		*puchar_pos = -1;
 	}
+	if (haystack_len == 0 && needle_len > 0) {
+		return -1;
+	}
 	/* convert the strings to UTF-16. */
 
 	status = U_ZERO_ERROR;
@@ -131,7 +134,11 @@ int32_t grapheme_strpos_utf16(char *haystack, size_t haystack_len, char *needle,
 			ret_pos = -1;
 			goto finish;
 		}
-		ret_pos = last && offset >= 0 ? uhaystack_len : offset_pos;
+		if (last && offset >= 0) {
+			ret_pos = grapheme_count_graphemes(bi, uhaystack, uhaystack_len);
+		} else {
+			ret_pos = grapheme_count_graphemes(bi, uhaystack, offset_pos);
+		}
 		goto finish;
 	}
 
@@ -177,6 +184,12 @@ int32_t grapheme_strpos_utf16(char *haystack, size_t haystack_len, char *needle,
 					break;
 				}
 				prev_pos = char_pos;
+				int32_t next_pos = ubrk_following(bi, char_pos);
+				if (next_pos == UBRK_DONE) {
+					break;
+				}
+				usearch_setOffset(src, next_pos, &status);
+				STRPOS_CHECK_STATUS(status, "Invalid search offset");
 			} while(1);
 		}
 	} else {
@@ -186,7 +199,7 @@ int32_t grapheme_strpos_utf16(char *haystack, size_t haystack_len, char *needle,
 	if(char_pos != USEARCH_DONE && ubrk_isBoundary(bi, char_pos)) {
 		ret_pos = grapheme_count_graphemes(bi, uhaystack,char_pos);
 		if(puchar_pos) {
-			*puchar_pos = char_pos;
+			*puchar_pos = u_countChar32(uhaystack, char_pos);
 		}
 	} else {
 		ret_pos = -1;

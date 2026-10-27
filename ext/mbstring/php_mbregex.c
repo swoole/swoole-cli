@@ -730,6 +730,10 @@ static inline void mb_regex_substitute(
 	eos = replace + replace_len;
 
 	while (p < eos) {
+		if (ZEND_HAS_OOM()) {
+			return;
+		}
+
 		clen = (int) php_mb_mbchar_bytes(p, enc);
 		if (clen != 1 || p == eos || p[0] != '\\') {
 			/* skip anything that's not an ascii backslash */
@@ -771,7 +775,7 @@ static inline void mb_regex_substitute(
 				clen = (int) php_mb_mbchar_bytes(++p, enc);
 				if (clen != 1 || p == eos || (p[0] != '<' && p[0] != '\'')) {
 					/* not a backref delimiter */
-					p += clen;
+					p = MIN(p + clen, eos);
 					smart_str_appendl(pbuf, sp, p - sp);
 					continue;
 				}
@@ -791,12 +795,13 @@ static inline void mb_regex_substitute(
 					if (maybe_num && !isdigit((unsigned char)name_end[0])) maybe_num = 0;
 					name_end++;
 				}
-				p = name_end + 1;
 				if (name_end - name < 1 || name_end >= eos) {
 					/* the backref was empty or we failed to find the end delimiter */
+					p = MIN(name_end + 1, eos);
 					smart_str_appendl(pbuf, sp, p - sp);
 					continue;
 				}
+				p = name_end + 1;
 				/* we have either a name or a number */
 				if (maybe_num) {
 					if (!onig_noname_group_capture_is_active(regexp)) {
@@ -1240,6 +1245,10 @@ PHP_FUNCTION(mb_split)
 			pos++;
 		}
 		onig_region_free(regs, 0);
+		if (ZEND_HAS_OOM()) {
+			err = -2;
+			break;
+		}
 	}
 
 	onig_region_free(regs, 1);
