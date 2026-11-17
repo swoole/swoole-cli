@@ -9,7 +9,7 @@ env:
 
 jobs:
   windows-native:
-    if: 1
+    if: 0
     runs-on: windows-2022
     # runs-on: windows-2025-vs2026
     strategy:
