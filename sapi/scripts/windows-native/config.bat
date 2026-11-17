@@ -254,6 +254,7 @@ configure.bat ^
 --with-toolset=vs ^
 --with-mp=auto ^
 --disable-all  ^
+--disable-phpdbg ^
 --disable-cgi  ^
 --enable-cli   ^
 --enable-zts ^
