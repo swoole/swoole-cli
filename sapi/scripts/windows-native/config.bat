@@ -6,10 +6,12 @@ echo %~dp0
 cd /d %~dp0
 cd /d ..\..\..\
 
+set "PATH=%__PROJECT__%\var\native-build\php-sdk-binary-tools\bin\;%__PROJECT__%\var\native-build\php-sdk-binary-tools\msys2\bin;%PATH%;"
 
 vswhere -products * -latest -prerelease -find **\VC\Auxiliary\Build\vcvarsall.bat
 rem call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
 env
+
 
 where bison
 bison --version
