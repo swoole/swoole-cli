@@ -34,9 +34,6 @@ set "X_CUSTOM_LIBS= %X_CUSTOM_LIBS% odbc32.lib "
 set "X_CUSTOM_LIBS= %X_CUSTOM_LIBS% libsqlite3_a.lib "
 
 
-sed.exe -i.bak "s/sapi\\phpdbg\\phpdbg_parser\.c//" Makefile
-sed.exe -i.bak "s/sapi\\phpdbg\\phpdbg_parser\.c sapi\\phpdbg\\phpdbg_lexer\.c//" Makefile
-
 :: nmake /E /f Makefile  x-show-var
 nmake  /E /f Makefile  x-release-static-php
 :: jom.exe /E /f Makefile  x-release-static-php
