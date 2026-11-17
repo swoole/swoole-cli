@@ -246,6 +246,8 @@ extern void show_swoole_version(void);\
     # 同步 win32
     cp -f $SRC/buildconf.bat ./buildconf.bat
     cp -rf $SRC/win32/. ./win32
+    cp -f $SRC/sapi/cli/config.w32 ./sapi/cli/config.w32
+    cp -f $SRC/sapi/cli/cli_win32.c ./sapi/cli/cli_win32.c
 
     # clean file
     test -f main/main.c.backup && rm -f main/main.c.backup
