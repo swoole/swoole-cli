@@ -62,7 +62,6 @@ build_dirs: $(BUILD_DIR) $(BUILD_DIRS_SUB) $(BUILD_DIR_DEV)
 generated_files: build_dirs \
 	Zend\zend_ini_parser.c Zend\zend_ini_parser.h \
 	Zend\zend_language_parser.c \
-	sapi\phpdbg\phpdbg_parser.c \
 	$(PHPDEF) $(MCFILE)
 !else
 generated_files: build_dirs \
@@ -70,7 +69,6 @@ generated_files: build_dirs \
 	Zend\zend_language_parser.c \
 	Zend\zend_ini_scanner.c Zend\zend_ini_scanner_defs.h \
 	Zend\zend_language_scanner.c Zend\zend_language_scanner_defs.h \
-	sapi\phpdbg\phpdbg_parser.c sapi\phpdbg\phpdbg_lexer.c \
 	$(PHPDEF) $(MCFILE)
 !endif
 
