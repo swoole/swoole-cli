@@ -26,10 +26,6 @@ sed.exe -i "s/PHP_LDFLAGS=\$(DLL_LDFLAGS) \/nodefaultlib:libcmt \/def:\$(PHPDEF)
 sed.exe -i "s/\/LD \/MD/\/MT/" %X_MAKEFILE%
 sed.exe -i "s/\/D _USRDLL/ /" %X_MAKEFILE%
 
-:: sed.exe -i.bak "s/sapi\\phpdbg\\phpdbg_parser\.c//" Makefile
-:: sed.exe -i.bak "s/sapi\\phpdbg\\phpdbg_parser\.c sapi\\phpdbg\\phpdbg_lexer\.c//" Makefile
-:: sed.exe -i.bak "s/: sapi\\phpdbg\\phpdbg_parser\.y//" Makefile
-
 
 findstr /C:"x-show-var: " %X_MAKEFILE%
 findstr /C:"x-show-var: " %X_MAKEFILE% > nul
