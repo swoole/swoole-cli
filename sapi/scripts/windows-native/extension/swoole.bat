@@ -9,7 +9,7 @@ cd ..\..\..\..\
 set __PROJECT__=%cd%
 cd /d %__PROJECT__%
 
-cd /d %__PROJECT__%\var\native-build\php-src\
+cd /d %__PROJECT__%
 set "PHP_SRC=%cd%"
 cd /d %__PROJECT__%\var\native-build\
 echo %cd%
@@ -21,11 +21,11 @@ if not exist "swoole" (
 	git -C  swoole pull
 )
 
-if exist "%__PROJECT__%\var\native-build\php-src\ext\swoole" (
-    rd /S /Q "%__PROJECT__%\var\native-build\php-src\ext\swoole"
+if exist "%__PROJECT__%\ext\swoole" (
+    rd /S /Q "%__PROJECT__%\ext\swoole"
 )
 
-xcopy "swoole" "%__PROJECT__%\var\native-build\php-src\ext\swoole" /E /I /Y
+xcopy "swoole" "%__PROJECT__%\ext\swoole" /E /I /Y
 
 
 cd %__PROJECT__%

@@ -8,7 +8,7 @@ cd /d ..\..\..\
 
 set "__PROJECT__=%cd%"
 echo %cd%
-cd "%__PROJECT__%\var\native-build\php-src"
+cd "%__PROJECT__%"
 
 set "PATH=%__PROJECT__%\runtime\jom;%PATH%"
 

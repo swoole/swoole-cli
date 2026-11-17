@@ -9,7 +9,7 @@ cd ..\..\..\..\
 set __PROJECT__=%cd%
 cd /d %__PROJECT__%
 
-cd /d %__PROJECT__%\var\native-build\php-src\
+cd /d %__PROJECT__%
 set "PHP_SRC=%cd%"
 cd /d %__PROJECT__%\var\native-build\
 echo %cd%
@@ -26,11 +26,11 @@ if not exist "redis" (
    git clone -b 6.3.0 https://github.com/phpredis/phpredis.git redis
 )
 
-if exist "%__PROJECT__%\var\native-build\php-src\ext\redis" (
-    rd /S /Q "%__PROJECT__%\var\native-build\php-src\ext\redis"
+if exist "%__PROJECT__%\ext\redis" (
+    rd /S /Q "%__PROJECT__%\ext\redis"
 )
 
-xcopy "redis" "%__PROJECT__%\var\native-build\php-src\ext\redis" /E /I /Y
+xcopy "redis" "%__PROJECT__%\ext\redis" /E /I /Y
 
 
 cd %__PROJECT__%

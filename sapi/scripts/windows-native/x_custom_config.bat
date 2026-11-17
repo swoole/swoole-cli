@@ -9,9 +9,9 @@ cd /d ..\..\..\
 set "__PROJECT__=%cd%"
 echo %cd%
 
-cd /d %__PROJECT__%\var\native-build\php-src\
+cd /d %__PROJECT__%\
 
-set X_MAKEFILE=%__PROJECT__%\var\native-build\php-src\Makefile
+set X_MAKEFILE=%__PROJECT__%\Makefile
 
 :: set "PATH=%ProgramFiles%\7-Zip;%ProgramFiles%\Git\bin;%__PROJECT__%\runtime\;%__PROJECT__%\runtime\nasm\;%__PROJECT__%\runtime\php;%__PROJECT__%\runtime\libarchive\bin;%PATH%"
 
