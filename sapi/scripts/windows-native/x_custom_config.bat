@@ -28,6 +28,7 @@ sed.exe -i "s/\/D _USRDLL/ /" %X_MAKEFILE%
 
 sed.exe -i.bak "s/sapi\\phpdbg\\phpdbg_parser\.c//" Makefile
 sed.exe -i.bak "s/sapi\\phpdbg\\phpdbg_parser\.c sapi\\phpdbg\\phpdbg_lexer\.c//" Makefile
+sed.exe -i.bak "s/: sapi\\phpdbg\\phpdbg_parser\.y//" Makefile
 
 
 findstr /C:"x-show-var: " %X_MAKEFILE%
