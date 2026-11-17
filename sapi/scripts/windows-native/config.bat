@@ -243,8 +243,9 @@ sed.exe -i.bak 's/ZEND_TSRMLS_CACHE_DEFINE()/ /' sapi/cli/php_cli.c
 
 sed.exe -i.bak 's/#ifdef HAVE_LIBXML/#ifdef HAVE_LIBXML_X/' win32/dllmain.c
 
-bison.exe -Wall --output=Zend/zend_language_parser.c -v -d Zend/zend_language_parser.y
+:: bison.exe -Wall --output=Zend/zend_language_parser.c -v -d Zend/zend_language_parser.y
 
+sed.exe -i.bak "s/sapi\\phpdbg\\phpdbg_parser\.c//" Makefile
 sed.exe -i.bak "s/sapi\\phpdbg\\phpdbg_parser\.c sapi\\phpdbg\\phpdbg_lexer\.c//" Makefile
 
 set CL=/MP
