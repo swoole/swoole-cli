@@ -24,7 +24,8 @@ set "PHP_SRC=%cd%"
 echo %cd%
 
 if exist "configure.js" (
-    nmake clean
+::    nmake clean
+    del /Q "configure.js"
 )
 
 
