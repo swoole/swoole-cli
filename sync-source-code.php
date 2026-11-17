@@ -243,6 +243,10 @@ extern void show_swoole_version(void);\
     cp -rf $SRC/sapi/embed/CREDITS ./sapi/embed
     cp -rf $SRC/sapi/embed/README.md ./sapi/embed
 
+    # 同步 win32
+    cp -f $SRC/buildconf.bat ./buildconf.bat
+    cp -rf $SRC/win32/. ./win32
+
     # clean file
     test -f main/main.c.backup && rm -f main/main.c.backup
     test -f ext/opcache/config.m4.backup && rm -f ext/opcache/config.m4.backup
