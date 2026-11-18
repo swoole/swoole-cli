@@ -9,7 +9,7 @@ env:
 
 jobs:
   windows-native:
-    if: 0
+    if: 1
     runs-on: windows-2022
     # runs-on: windows-2025-vs2026
     strategy:
@@ -83,7 +83,12 @@ jobs:
           # Start-Process cmd -ArgumentList "${CURRENT_DIR}\var\windows-build-deps\php-sdk-binary-tools\phpsdk-vs17-x64.bat -a x64  " -NoNewWindow
           cmd /c ${CURRENT_DIR}\var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -h
 
+      - name: build libs
+        run: |
+          cmd /c sapi\scripts\windows-native\build-libs.bat
+
       - name: run build
+        if: 0
         run: |
           cmd /c sapi\scripts\windows-native\entry.bat
 
