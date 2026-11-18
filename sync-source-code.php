@@ -249,6 +249,9 @@ extern void show_swoole_version(void);\
     cp -f $SRC/sapi/cli/config.w32 ./sapi/cli/config.w32
     cp -f $SRC/sapi/cli/cli_win32.c ./sapi/cli/cli_win32.c
 
+    sed -i.bak "/sapi\\\\phpdbg\\\\phpdbg_parser\.c.*phpdbg_lexer\.c/d" ./win32/build/Makefile
+    sed -i.bak "/sapi\\\\phpdbg\\\\phpdbg_parser\.c/d" ./win32/build/Makefile
+
     # clean file
     test -f main/main.c.backup && rm -f main/main.c.backup
     test -f ext/opcache/config.m4.backup && rm -f ext/opcache/config.m4.backup
