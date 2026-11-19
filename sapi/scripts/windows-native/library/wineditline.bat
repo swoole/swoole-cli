@@ -53,8 +53,9 @@ xcopy "%__PROJECT__%\thirdparty\wineditline\include" "%__PROJECT__%\build\winedi
 copy /Y "%__PROJECT__%\thirdparty\wineditline\lib64\edit_static.lib" "%__PROJECT__%\build\wineditline\lib\edit_a.lib"
 copy /Y "%__PROJECT__%\thirdparty\wineditline\lib64\edit_static.lib" "%__PROJECT__%\build\wineditline\lib\edit.lib"
 
-
-type nul > "%__PROJECT__%\build\wineditline\.completed"
+if exist "%__PROJECT__%\build\wineditline\lib\edit_a.lib" (
+    type nul > "%__PROJECT__%\build\wineditline\.completed"
+)
 
 cd /d %__PROJECT__%
 goto :ok

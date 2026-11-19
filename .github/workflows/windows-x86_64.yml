@@ -9,7 +9,7 @@ env:
 
 jobs:
   windows-native:
-    if: 1
+    if: 0
     runs-on: windows-2022
     # runs-on: windows-2025-vs2026
     strategy:
@@ -86,6 +86,19 @@ jobs:
       - name: build libs
         run: |
           cmd /c sapi\scripts\windows-native\build-libs.bat
+
+      - name: prepare extensions
+        run: |
+          cmd /c var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -c vs17 -a x64  -t sapi\scripts\windows-native\build-extensions.bat
+
+      - name: prepare build config
+        run: |
+          cmd /c var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -c vs17 -a x64  -t sapi\scripts\windows-native\config.bat
+          cmd /c var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -c vs17 -a x64  -t sapi\scripts\windows-native\x_custom_config.bat
+
+      - name: run build
+        run: |
+          cmd /c var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -c vs17 -a x64  -t sapi\scripts\windows-native\build.bat
 
       - name: run build
         if: 0

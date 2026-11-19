@@ -29,7 +29,10 @@ xcopy "%__PROJECT__%\var\native-build\vcpkg\packages\mpir_x64-windows-static\lib
 copy /Y "%__PROJECT__%\build\mpir\lib\mpir.lib" "%__PROJECT__%\build\mpir\lib\mpir_a.lib"
 copy /Y "%__PROJECT__%\build\mpir\lib\mpirxx.lib" "%__PROJECT__%\build\mpir\lib\mpirxx_a.lib"
 
-type nul > "%__PROJECT__%\build\mpir\.completed"
+if exist "%__PROJECT__%\build\mpir\lib\mpirxx_a.lib" (
+    type nul > "%__PROJECT__%\build\mpir\.completed"
+)
+
 
 cd /d %__PROJECT__%
 goto :ok
@@ -45,4 +48,3 @@ echo "mpir build completed ! "
 cd /d %__PROJECT__%
 exit /b 0
 endlocal
-
