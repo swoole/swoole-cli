@@ -10,7 +10,7 @@ set __PROJECT__=%cd%
 cd /d %__PROJECT__%
 mkdir  "%__PROJECT__%\build"
 
-if exist "%__PROJECT__%\build\lib\libcurl.lib" goto :skip
+if exist "%__PROJECT__%\build\curl\.completed" goto :skip
 
 set CMAKE_BUILD_PARALLEL_LEVEL=%NUMBER_OF_PROCESSORS%
 
@@ -30,13 +30,12 @@ cd /d %__PROJECT__%\thirdparty\curl\curl-8.21.0\
 dir
 
 :: set "LIBCURL_PREFIX=%__PROJECT__%\build\curl"
-set "LIBCURL_PREFIX=%__PROJECT__%\build"
+set "LIBCURL_PREFIX=%__PROJECT__%\build\curl"
 set "OPENSSL_PREFIX=%__PROJECT__%\build\openssl"
 set "LIBNGHTTP2_PREFIX=%__PROJECT__%\build\libnghttp2"
 set "LIBPSL_PREFIX=%__PROJECT__%\build\libpsl"
 set "LIBZLIB_PREFIX=%__PROJECT__%\build\zlib"
 set "LIBSSH2_PREFIX=%__PROJECT__%\build\libssh2"
-set "LIBPSL_PREFIX=%__PROJECT__%\build\libpsl"
 set "LIBBROTLI_PREFIX=%__PROJECT__%\build\brotli"
 set "LIBZSTD_PREFIX=%__PROJECT__%\build\libzstd"
 set "LIBCARES_PREFIX=%__PROJECT__%\build\cares"
@@ -89,9 +88,16 @@ cmake --build . --config Release
 cmake --build . --config Release --target install
 
 
-copy /Y %__PROJECT__%\build\lib\libcurl.lib "%__PROJECT__%\build\lib\libcurl_a.lib"
+dumpbin /DIRECTIVES %__PROJECT__%\build\curl\lib\libcurl.lib | findstr /i "DEFAULTLIB"
 
-dumpbin /DIRECTIVES %__PROJECT__%\build\lib\libcurl.lib | findstr /i "DEFAULTLIB"
+copy /Y %__PROJECT__%\build\curl\lib\libcurl.lib "%__PROJECT__%\build\curl\lib\libcurl_a.lib"
+
+xcopy "%__PROJECT__%\build\curl\include" "%__PROJECT__%\build\include" /E /I /H /Y
+xcopy "%__PROJECT__%\build\curl\lib" "%__PROJECT__%\build\lib" /E /I /H /Y
+
+if exist "%__PROJECT__%\build\curl\lib\libcurl_a.lib" (
+    type nul > "%__PROJECT__%\build\curl\.completed"
+)
 
 cd /d %__PROJECT__%
 goto :ok

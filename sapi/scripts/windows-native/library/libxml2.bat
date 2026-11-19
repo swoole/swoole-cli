@@ -8,9 +8,9 @@ cd ..\..\..\..\
 
 set __PROJECT__=%cd%
 cd /d %__PROJECT__%
-mkdir  "%__PROJECT__%\build"
+mkdir  "%__PROJECT__%\build\libxml2"
 
-if exist "%__PROJECT__%\build\lib\libxml2s.lib" goto :skip
+if exist "%__PROJECT__%\build\libxml2\.completed" goto :skip
 
 cd /d %__PROJECT__%\pool\lib\
 7z.exe x -aoa -y   %__PROJECT__%\pool\lib\libxml2-v2.9.14.tar.gz
@@ -39,7 +39,7 @@ cmake -S .. -B . ^
 -DBUILD_SHARED_LIBS=OFF ^
 -DCMAKE_BUILD_TYPE=Release ^
 -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ^
--DCMAKE_INSTALL_PREFIX=%__PROJECT__%\build ^
+-DCMAKE_INSTALL_PREFIX=%__PROJECT__%\build\libxml2 ^
 -DIconv_LIBRARY="%__PROJECT__%\build\libiconv\lib\libiconv_a.lib" ^
 -DIconv_INCLUDE_DIR="%__PROJECT__%\build\libiconv\include" ^
 -DLIBXML_STATIC=ON ^
@@ -54,10 +54,18 @@ cmake -S .. -B . ^
 
 cmake --build . --config Release --target install
 
-copy %__PROJECT__%\build\lib\libxml2s.lib %__PROJECT__%\build\lib\libxml2_a.lib
 
-dumpbin /DIRECTIVES %__PROJECT__%\build\lib\libxml2_a.lib | findstr /i "DEFAULTLIB"
+dumpbin /DIRECTIVES %__PROJECT__%\build\libxml2\lib\libxml2s.lib | findstr /i "DEFAULTLIB"
 
+copy /Y %__PROJECT__%\build\libxml2\lib\libxml2s.lib "%__PROJECT__%\build\libxml2\lib\libxml2_a.lib"
+
+xcopy "%__PROJECT__%\build\libxml2\include" "%__PROJECT__%\build\include" /E /I /H /Y
+xcopy "%__PROJECT__%\build\libxml2\lib" "%__PROJECT__%\build\lib" /E /I /H /Y
+
+
+if exist "%__PROJECT__%\build\libxml2\lib\libxml2_a.lib" (
+    type nul > "%__PROJECT__%\build\libxml2\.completed"
+)
 
 cd /d %__PROJECT__%
 goto :ok

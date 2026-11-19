@@ -28,7 +28,7 @@ cd %__PROJECT__%\thirdparty\libunistring\libunistring-1.1
 exit 0
 set "OPENSSL_PREFIX=%__PROJECT__%\build\openssl"
 set "ZLIB_PREFIX=%__PROJECT__%\build\zlib"
-set "LIBXML2_PREFIX=%__PROJECT__%\build"
+set "LIBXML2_PREFIX=%__PROJECT__%\build\libxml2"
 set "LIBBROTLI_PREFIX=%__PROJECT__%\build\brotli"
 set "LIBZSTD_PREFIX=%__PROJECT__%\build\libzstd"
 
@@ -50,7 +50,7 @@ cmake .. ^
 -DBUILD_TESTING=OFF ^
 -DOPENSSL_ROOT_DIR=%OPENSSL_PREFIX% ^
 -DWITH_LIBXML2=ON ^
--DLIBXML2_LIBRARY="%LIBXML2_PREFIX%\libxml2_a.lib" ^
+-DLIBXML2_LIBRARY="%LIBXML2_PREFIX%\lib\libxml2_a.lib" ^
 -DLIBXML2_INCLUDE_DIR="%LIBXML2_PREFIX%" ^
 -DCMAKE_PREFIX_PATH="%OPENSSL_PREFIX%;%ZLIB_PREFIX%;%LIBXML2_PREFIX%;" ^
 -DCMAKE_DISABLE_FIND_PACKAGE_Libngtcp2=ON ^

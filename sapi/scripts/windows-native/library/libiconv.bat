@@ -8,8 +8,8 @@ cd ..\..\..\..\
 
 set __PROJECT__=%cd%
 cd /d %__PROJECT__%
-mkdir  %__PROJECT__%\build\libiconv\lib\
-mkdir  %__PROJECT__%\build\libiconv\include\
+mkdir  %__PROJECT__%\build\libiconv\lib
+mkdir  %__PROJECT__%\build\libiconv\include
 
 if exist "%__PROJECT__%\build\libiconv\.completed" goto :skip
 
