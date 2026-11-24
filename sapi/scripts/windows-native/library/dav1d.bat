@@ -12,7 +12,8 @@ mkdir  %__PROJECT__%\build\dav1d
 
 
 if exist "%__PROJECT__%\build\dav1d\.completed" goto :skip
-
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312;%PATH%;"
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312\Scripts;%PATH%;"
 
 mkdir %__PROJECT__%\var\native-build
 cd /d %__PROJECT__%\var\native-build
