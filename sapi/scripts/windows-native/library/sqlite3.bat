@@ -26,7 +26,10 @@ xcopy "%__PROJECT__%\var\native-build\vcpkg\packages\sqlite3_x64-windows-static\
 copy /Y "%__PROJECT__%\build\sqlite3\lib\sqlite3.lib" "%__PROJECT__%\build\sqlite3\lib\libsqlite3_a.lib"
 copy /Y "%__PROJECT__%\build\sqlite3\lib\sqlite3.lib" "%__PROJECT__%\build\sqlite3\lib\libsqlite3.lib"
 
-type nul > "%__PROJECT__%\build\sqlite3\.completed"
+if exist "%__PROJECT__%\build\sqlite3\lib\libsqlite3_a.lib" (
+    type nul > "%__PROJECT__%\build\sqlite3\.completed"
+)
+
 
 cd /d %__PROJECT__%
 goto :ok
