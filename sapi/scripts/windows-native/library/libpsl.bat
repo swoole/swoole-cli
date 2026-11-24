@@ -13,7 +13,8 @@ mkdir  "%__PROJECT__%\build\libpsl"
 if exist "%__PROJECT__%\build\libpsl\.completed" goto :skip
 
 set CMAKE_BUILD_PARALLEL_LEVEL=%NUMBER_OF_PROCESSORS%
-
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312;%PATH%;"
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312\Scripts;%PATH%;"
 
 cd /d %__PROJECT__%\pool\lib\
 7z.exe x -aoa -y   %__PROJECT__%\pool\lib\libpsl-0.21.5.tar.gz
