@@ -8,67 +8,67 @@ cd ..\..\..\..\
 
 set __PROJECT__=%cd%
 cd /d %__PROJECT__%
-mkdir  %__PROJECT__%\build\freetype
+mkdir  %__PROJECT__%\build\dav1d
 
 
-if exist "%__PROJECT__%\build\freetype\.completed" goto :skip
+if exist "%__PROJECT__%\build\dav1d\.completed" goto :skip
 
 
-mkdir %__PROJECT__%\var\native-build\
-cd /d %__PROJECT__%\var\native-build\
-
-
-set CMAKE_BUILD_PARALLEL_LEVEL=%NUMBER_OF_PROCESSORS%
+mkdir %__PROJECT__%\var\native-build
+cd /d %__PROJECT__%\var\native-build
 
 
 cd /d %__PROJECT__%\pool\lib\
-7z.exe x -aoa -y   %__PROJECT__%\pool\lib\freetype-2.13.2.tar.gz
+7z.exe x -aoa -y   %__PROJECT__%\pool\lib\dav1d-1.5.0.tar.gz
 
-if  exist "%__PROJECT__%\thirdparty\freetype" rmdir /s /q "%__PROJECT__%\thirdparty\freetype"
-mkdir "%__PROJECT__%\thirdparty\freetype"
+if  exist "%__PROJECT__%\thirdparty\dav1d" rmdir /s /q "%__PROJECT__%\thirdparty\dav1d"
+mkdir "%__PROJECT__%\thirdparty\dav1d"
 
-7z.exe x -aoa -y  -o"%__PROJECT__%\thirdparty\freetype"  %__PROJECT__%\pool\lib\freetype-2.13.2.tar
-cd /d %__PROJECT__%\thirdparty\freetype\freetype-VER-2-13-2
+7z.exe x -aoa -y  -o"%__PROJECT__%\thirdparty\dav1d"  %__PROJECT__%\pool\lib\dav1d-1.5.0.tar
+cd %__PROJECT__%\thirdparty\dav1d\dav1d-1.5.0
 
 dir
 
+for /f "delims=" %%i in ('python -c "import sysconfig; print(sysconfig.get_path('scripts'))" 2^>nul') do set "PYTHON_SCRIPTS=%%i"
 
+echo %PYTHON_SCRIPTS%
+set "PATH=%__PROJECT__%\runtime\nasm;%PYTHON_SCRIPTS%;%PATH%;"
+meson --version
 
 if exist "build_static" (
     rmdir /S /Q build_static
 )
 
-mkdir  build_static
-cmake -B build_static -S . ^
-	-DCMAKE_INSTALL_PREFIX="%__PROJECT__%\build\freetype" ^
-	-DCMAKE_BUILD_TYPE=Release  ^
-	-DBUILD_SHARED_LIBS=OFF  ^
-	-DBUILD_STATIC_LIBS=ON  ^
-	-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ^
-	-DFT_REQUIRE_ZLIB=TRUE  ^
-	-DFT_REQUIRE_BZIP2=TRUE  ^
-	-DFT_REQUIRE_BROTLI=TRUE  ^
-	-DFT_REQUIRE_PNG=TRUE  ^
-	-DFT_DISABLE_HARFBUZZ=TRUE  ^
-	-DCMAKE_PREFIX_PATH="%__PROJECT__%\build\zlib;%__PROJECT__%\build\bzip2;%__PROJECT__%\build\libpng;%__PROJECT__%\build\brotli" ^
-	-DBZIP2_LIBRARIES="%__PROJECT__%\build\bzip2\lib\libbz2_a.lib" ^
-	-DCMAKE_C_FLAGS="/MT /O2 /W3 /DNDEBUG" ^
-	-DCMAKE_C_FLAGS_RELEASE="/MT /O2 /W3 /DNDEBUG" ^
-	-DCMAKE_VERBOSE_MAKEFILE=ON
+:: https://github.com/videolan/dav1d.git
 
+mkdir build
+meson setup  build  ^
+	-Dprefix=%__PROJECT__%\build\dav1d  ^
+	-Dlibdir=%__PROJECT__%\build\dav1d\lib  ^
+	-Dincludedir=%__PROJECT__%\build\dav1d\include  ^
+	-Dbackend=ninja  ^
+	-Dbuildtype=release  ^
+	-Ddefault_library=static  ^
+	-Db_staticpic=true  ^
+	-Db_pie=true  ^
+	-Dprefer_static=true  ^
+	-Denable_asm=true  ^
+	-Denable_tools=true  ^
+	-Denable_examples=false  ^
+	-Denable_tests=false  ^
+	-Denable_docs=false  ^
+	-Dlogging=false  ^
+	-Dfuzzing_engine=none
 
+	ninja -C build
+	ninja -C build install
 
-cmake --build build_static --config Release --target install
+copy /Y "%__PROJECT__%\build\dav1d\lib\libdav1d.a" "%__PROJECT__%\build\dav1d\lib\avif_a.lib"
+copy /Y "%__PROJECT__%\build\dav1d\lib\libdav1d.a" "%__PROJECT__%\build\dav1d\lib\aviflib"
 
-copy /Y "%__PROJECT__%\build\freetype\lib\freetype.lib" "%__PROJECT__%\build\freetype\lib\freetype_a.lib"
-
-rem  Compatible with PHP build system detection
-xcopy "%__PROJECT__%\build\freetype\include" "%__PROJECT__%\build\include" /E /I /H /Y
-
-if exist "%__PROJECT__%\build\freetype\lib\freetype_a.lib" (
-   type nul > "%__PROJECT__%\build\freetype\.completed"
+if exist "%__PROJECT__%\build\dav1d\lib\avif_a.lib" (
+    type nul > "%__PROJECT__%\build\dav1d\.completed"
 )
-
 
 cd /d %__PROJECT__%
 goto :ok
@@ -78,7 +78,7 @@ echo "skip build step"
 goto :ok
 
 :ok
-echo "freetype build completed ! "
+echo "dav1d build completed ! "
 
 exit /b 0
 

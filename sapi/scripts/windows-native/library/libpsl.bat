@@ -39,8 +39,9 @@ set "LIBPSL_PREFIX=%__PROJECT__%\build\libpsl"
 
 nmake /f Makefile.vc CFG=release DISABLE_BUILTIN=1 DISABLE_RUNTIME=1 STATIC=1 PREFIX="%LIBPSL_PREFIX%" install
 
-
-type nul > "%__PROJECT__%\build\libpsl\.completed"
+if exist "%__PROJECT__%\build\libpsl\lib\psl.lib" (
+   type nul > "%__PROJECT__%\build\libpsl\.completed"
+)
 
 cd /d %__PROJECT__%
 goto :ok

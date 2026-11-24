@@ -62,6 +62,9 @@ set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libzip\lib"
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\libiconv\include"
 set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libiconv\lib"
 
+set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\libxml2\include"
+set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libxml2\lib"
+
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\libpsl\include"
 set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libpsl\lib"
 
@@ -79,6 +82,9 @@ set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libnghttp3\lib"
 
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\ngtcp2\include"
 set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\ngtcp2\lib"
+
+set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\curl\include"
+set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\curl\lib"
 
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\oniguruma\include"
 set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\oniguruma\lib"
