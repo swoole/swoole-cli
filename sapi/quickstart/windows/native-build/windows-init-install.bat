@@ -45,7 +45,10 @@ dir "%WINGET_EXE%"
 :: "%WINGET_EXE%" search Python
 :: python -m pip install --upgrade pip
 :: python -m ensurepip --upgrade
-"%WINGET_EXE%" install -e --id Python.Python.3.12 --exact --silent --accept-package-agreements --accept-source-agreements --override "PrependPath=1"
+"%WINGET_EXE%" install -e --id Python.Python.3.12 --exact --silent --accept-package-agreements --accept-source-agreements
+
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312;%PATH%;"
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312\Scripts;%PATH%;"
 python -m pip --version
 python -m pip  install meson ninja
 :: show pythone sctipts
