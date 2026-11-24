@@ -39,7 +39,7 @@ dir "%WINGET_EXE%"
 "%WINGET_EXE%" source reset --force
 "%WINGET_EXE%" source update
 
-"%WINGET_EXE%" install vim.vim  --silent --accept-package-agreements --accept-source-agreements --override " PrependPath=1"
+"%WINGET_EXE%" install vim.vim  --silent --accept-package-agreements --accept-source-agreements
 :: winget install --id mesonbuild.meson --exact --silent --accept-package-agreements --accept-source-agreements
 
 :: "%WINGET_EXE%" search Python
