@@ -242,6 +242,7 @@ extern void show_swoole_version(void);\
     cp -rf $SRC/sapi/embed/php_embed.h ./sapi/embed
     cp -rf $SRC/sapi/embed/CREDITS ./sapi/embed
     cp -rf $SRC/sapi/embed/README.md ./sapi/embed
+    cp -f $SRC/sapi/embed/config.w32 ./sapi/embed/config.w32
 
     # 同步 win32
     cp -f $SRC/buildconf.bat ./buildconf.bat

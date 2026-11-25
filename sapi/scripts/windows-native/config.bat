@@ -269,6 +269,7 @@ configure.bat ^
 --disable-phpdbg ^
 --disable-cgi  ^
 --enable-cli   ^
+--enable-embed ^
 --enable-zts ^
 --enable-filter ^
 --enable-session ^
