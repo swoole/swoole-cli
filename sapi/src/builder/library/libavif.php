@@ -30,26 +30,25 @@ return function (Preprocessor $p) {
             -DBUILD_STATIC_LIBS=ON \
             -DAVIF_BUILD_EXAMPLES=OFF \
             -Dsvt_ROOT={$svt_av1_prefix} \
-            -Daom_ROOT={$aom_prefix} \
-            -Dlibgav1_ROOT={$libgav1_prefix} \
             -Ddav1d_ROOT={$dav1d_prefix} \
             -Dlibyuv_ROOT={$libyuv_prefix} \
-            -DAVIF_CODEC_AOM=SYSTEM \
+            -DAVIF_CODEC_AOM=OFF \
             -DAVIF_CODEC_DAV1D=SYSTEM \
-            -DAVIF_CODEC_LIBGAV1=SYSTEM \
+            -DAVIF_CODEC_LIBGAV1=OFF \
             -DAVIF_CODEC_RAV1E=OFF \
-            -DAVIF_CODEC_SVT=SYSTEM
+            -DAVIF_CODEC_SVT=SYSTEM \
+            -DAVIF_BUILD_TESTS=OFF
 
 EOF
             )
             ->withPkgName('libavif')
             ->withDependentLibraries(
-                'aom',
                 'svt_av1',
-                'libgav1',
                 'dav1d',
                 'libyuv'
             )
+        #   'aom',
+        #   'libgav1',
         #  'libyuv', 'libsharpyuv','rav1e'
         #   'libgav1'  # 测试例子依赖 absl
     );
