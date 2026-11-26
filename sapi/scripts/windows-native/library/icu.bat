@@ -35,7 +35,10 @@ vcpkg install icu:x64-windows-static
 xcopy "%__PROJECT__%\var\native-build\vcpkg\packages\icu_x64-windows-static\include" "%__PROJECT__%\build\icu\include" /E /I /H /Y
 xcopy "%__PROJECT__%\var\native-build\vcpkg\packages\icu_x64-windows-static\lib" "%__PROJECT__%\build\icu\lib" /E /I /H /Y
 
-type nul > "%__PROJECT__%\build\icu\.completed"
+if exist "%__PROJECT__%\build\icu\include\unicode\utf.h" (
+    type nul > "%__PROJECT__%\build\icu\.completed"
+)
+
 
 cd /d %__PROJECT__%
 goto :ok

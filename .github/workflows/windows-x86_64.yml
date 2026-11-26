@@ -5,7 +5,7 @@ on:
   pull_request:
 
 env:
-  BUILD_PHP_VERSION: 8.4.27
+  BUILD_PHP_VERSION: 8.4.28
 
 jobs:
   windows-native:
@@ -18,8 +18,8 @@ jobs:
           # - "8.2.32"
           # - "8.1.34"
           # - "8.3.32"
-          # - "8.4.23"
-          - "8.5.8"
+          - "8.4.28"
+          # - "8.5.8"
 
     steps:
       - uses: actions/checkout@v4
@@ -99,11 +99,6 @@ jobs:
       - name: run build
         run: |
           cmd /c var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -c vs17 -a x64  -t sapi\scripts\windows-native\build.bat
-
-      - name: run build
-        if: 0
-        run: |
-          cmd /c sapi\scripts\windows-native\entry.bat
 
       - name: Show Build Result
         if: 0

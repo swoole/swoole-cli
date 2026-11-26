@@ -7,6 +7,8 @@ cd /d %~dp0
 cd /d ..\..\..\
 
 set "PATH=%__PROJECT__%\var\native-build\php-sdk-binary-tools\bin\;%__PROJECT__%\var\native-build\php-sdk-binary-tools\msys2\bin;%PATH%;"
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312;%PATH%;"
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312\Scripts;%PATH%;"
 
 vswhere -products * -latest -prerelease -find **\VC\Auxiliary\Build\vcvarsall.bat
 rem call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -62,6 +64,9 @@ set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libzip\lib"
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\libiconv\include"
 set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libiconv\lib"
 
+set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\libxml2\include"
+set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libxml2\lib"
+
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\libpsl\include"
 set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libpsl\lib"
 
@@ -79,6 +84,9 @@ set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libnghttp3\lib"
 
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\ngtcp2\include"
 set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\ngtcp2\lib"
+
+set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\curl\include"
+set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\curl\lib"
 
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\oniguruma\include"
 set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\oniguruma\lib"
@@ -140,11 +148,11 @@ set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\libavif\lib"
 
 set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\sapi\cli\sfx\include"
 
-:: set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\include"
+set "X_INCLUDES=%X_INCLUDES%;%__PROJECT__%\build\include"
 
 set "X_INCLUDES=%X_INCLUDES%;%SDK_UM%"
 
-:: set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\lib"
+set "X_LIBS=%X_LIBS%;%__PROJECT__%\build\lib"
 
 :: set "INCLUDE=%INCLUDE%;%PHP_SRC%\ext"
 set "INCLUDE=%X_INCLUDES%;%INCLUDE%"
@@ -261,6 +269,7 @@ configure.bat ^
 --disable-phpdbg ^
 --disable-cgi  ^
 --enable-cli   ^
+--enable-embed ^
 --enable-zts ^
 --enable-filter ^
 --enable-session ^

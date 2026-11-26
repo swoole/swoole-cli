@@ -54,7 +54,9 @@ ls x64\lib\
 xcopy ..\source\include\iconv.h %__PROJECT__%\build\libiconv\include\* /E /I /H /Y
 xcopy x64\lib\*.lib %__PROJECT__%\build\libiconv\lib\* /E /I /H /Y
 
-type nul > "%__PROJECT__%\build\libiconv\.completed"
+if exist "%__PROJECT__%\build\libiconv\lib\libiconv_a.lib" (
+   type nul > "%__PROJECT__%\build\libiconv\.completed"
+)
 
 cd /d %__PROJECT__%
 goto :ok

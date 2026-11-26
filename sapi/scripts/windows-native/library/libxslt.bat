@@ -48,6 +48,7 @@ cmake -B build_static -S . ^
   -DCMAKE_PREFIX_PATH="%__PROJECT__%\build"^
   -DIconv_LIBRARY="%__PROJECT__%\build\libiconv\lib\libiconv_a.lib" ^
   -DIconv_INCLUDE_DIR="%__PROJECT__%\build\libiconv\include" ^
+  -DCMAKE_PREFIX_PATH="%__PROJECT__%\build\libiconv;%__PROJECT__%\build\libxml2;" ^
   -DCMAKE_VERBOSE_MAKEFILE=ON
 
 
