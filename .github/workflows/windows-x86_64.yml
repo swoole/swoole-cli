@@ -100,6 +100,10 @@ jobs:
         run: |
           cmd /c var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -c vs17 -a x64  -t sapi\scripts\windows-native\build.bat
 
+      - name: archive
+        run: |
+          cmd /c var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -c vs17 -a x64  -t sapi\scripts\windows-native\archive.bat
+
       - name: Show Build Result
         run: |
           .\bin\swoole-cli.exe -v
