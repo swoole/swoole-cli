@@ -29,6 +29,8 @@ cd "%__PROJECT__%\bin"
 
 7z a -tzip %__PROJECT__%\swoole-cli-v%SWOOLE_VERSION%-windows-x64.zip swoole-cli.exe
 
+cd "%__PROJECT__%\bin"
+
 dir
 
 exit /b 0
