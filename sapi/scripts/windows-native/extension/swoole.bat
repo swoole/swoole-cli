@@ -14,9 +14,11 @@ set "PHP_SRC=%cd%"
 cd /d %__PROJECT__%\var\native-build\
 echo %cd%
 
+set /p SWOOLE_VERSION=<"%__PROJECT__%\sapi\SWOOLE-VERSION.conf"
+
 :: if not exist "swoole" git clone -b v6.3.0-rc1 --depth=1 https://github.com/swoole/swoole-src.git swoole
 if not exist "swoole" (
-    git clone -b master https://github.com/swoole/swoole-src.git swoole
+    git clone -b %SWOOLE_VERSION% https://github.com/swoole/swoole-src.git swoole
 ) else (
 	git -C  swoole pull
 )
