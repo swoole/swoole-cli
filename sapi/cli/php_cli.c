@@ -101,6 +101,14 @@ PHPAPI extern char *php_ini_scanned_files;
 ZEND_TSRMLS_CACHE_DEFINE()
 #endif
 static DWORD orig_cp = 0;
+
+int fpm_main(int argc, char *argv[])
+{
+	(void)argc;
+	(void)argv;
+	fprintf(stderr,"FPM is not supported on Windows . Use the standard CLI SAPI instead.\n");
+	return 1;
+}
 #endif
 
 #ifndef O_BINARY
