@@ -100,29 +100,24 @@ jobs:
         run: |
           cmd /c var\native-build\php-sdk-binary-tools\phpsdk-starter.bat -c vs17 -a x64  -t sapi\scripts\windows-native\build.bat
 
-      - name: run build
-        if: 0
-        run: |
-          cmd /c sapi\scripts\windows-native\entry.bat
-
       - name: Show Build Result
-        if: 0
         run: |
-          .\var\native-build\php-src\x64\Release\php.exe -v
-          .\var\native-build\php-src\x64\Release_TS\php.exe -v
-          .\var\native-builde\php-src\x64\Release_TS\php.exe -m
-          dumpbin /DEPENDENTS ".\var\native-build\php-src\x64\Release_TS\php.exe"
+          .\bin\swoole-cli.exe -v
+          .\bin\swoole-cli.exe -v
+          .\bin\swoole-cli.exe -m
+          .\bin\swoole-cli.exe --ri openssl
+          .\bin\swoole-cli.exe --ri curl
+          .\bin\swoole-cli.exe --ri swoole
 
       - name: production artifacts
-        uses: actions/upload-artifact@v4
-        if: 0
+        uses: actions/upload-artifact@v7
         with:
-          name: php-cli-v${{ env.BUILD_PHP_VERSION }}-vs17-x64-makefile
+          name: swoole-cli
           retention-days: 90
-          path: "var/native-build/php-src/Makefile"
+          path: "bin/swoole-cli.exe"
 
       - name: lib production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-build-library-dir
           retention-days: 90
