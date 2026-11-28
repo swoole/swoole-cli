@@ -3,8 +3,11 @@
 ARG_ENABLE('cli', 'Build CLI version of PHP', 'yes');
 ARG_ENABLE('cli-win32', 'Build console-less CLI version of PHP', 'no');
 
+ var cli_sources = "php_cli.c php_http_parser.c php_cli_server.c php_cli_process_title.c ps_title.c" +
+                      ' sfx\\hook_cli.c sfx\\hook_phar.c sfx\\sfx.c ';
+
 if (PHP_CLI == "yes") {
-	SAPI('cli', 'php_cli.c php_http_parser.c php_cli_server.c php_cli_process_title.c ps_title.c', 'php.exe', '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
+	SAPI('cli', cli_sources, 'php.exe', '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
 	ADD_FLAG("LIBS_CLI", "ws2_32.lib");
 	ADD_FLAG("LIBS_CLI", "shell32.lib");
 	ADD_FLAG("LDFLAGS_CLI", "/stack:67108864");

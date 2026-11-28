@@ -239,10 +239,7 @@ set "LDFLAGS=%LDFLAGS% /NODEFAULTLIB:MSVCRT"
 rem no link vcruntime140d.dll
 rem https://github.com/php/php-src/blob/PHP-8.5.8/win32/winutil.c#L487
 
-if not exist "win32\winutil.c.bak" (
-    echo "win32\winutil.c.bak no found , now creating it ..."
-    sed.exe -i.bak "s/#if PHP_LINKER_MAJOR == 14/#if 0/" win32\winutil.c
-)
+sed.exe -i.bak "s/#if PHP_LINKER_MAJOR == 14/#if 0/" win32\winutil.c
 
 
 set "CFLAGS=%CFLAGS% -D isatty=_isatty"
