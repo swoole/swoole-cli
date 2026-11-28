@@ -65,7 +65,9 @@ copy /Y "%__PROJECT__%\build\freetype\lib\freetype.lib" "%__PROJECT__%\build\fre
 rem  Compatible with PHP build system detection
 xcopy "%__PROJECT__%\build\freetype\include" "%__PROJECT__%\build\include" /E /I /H /Y
 
-type nul > "%__PROJECT__%\build\freetype\.completed"
+if exist "%__PROJECT__%\build\freetype\lib\freetype_a.lib" (
+   type nul > "%__PROJECT__%\build\freetype\.completed"
+)
 
 cd /d %__PROJECT__%
 goto :ok

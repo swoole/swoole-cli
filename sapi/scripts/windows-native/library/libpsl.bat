@@ -13,7 +13,8 @@ mkdir  "%__PROJECT__%\build\libpsl"
 if exist "%__PROJECT__%\build\libpsl\.completed" goto :skip
 
 set CMAKE_BUILD_PARALLEL_LEVEL=%NUMBER_OF_PROCESSORS%
-
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312;%PATH%;"
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312\Scripts;%PATH%;"
 
 cd /d %__PROJECT__%\pool\lib\
 7z.exe x -aoa -y   %__PROJECT__%\pool\lib\libpsl-0.21.5.tar.gz
@@ -39,8 +40,9 @@ set "LIBPSL_PREFIX=%__PROJECT__%\build\libpsl"
 
 nmake /f Makefile.vc CFG=release DISABLE_BUILTIN=1 DISABLE_RUNTIME=1 STATIC=1 PREFIX="%LIBPSL_PREFIX%" install
 
-
-type nul > "%__PROJECT__%\build\libpsl\.completed"
+if exist "%__PROJECT__%\build\libpsl\lib\psl.lib" (
+   type nul > "%__PROJECT__%\build\libpsl\.completed"
+)
 
 cd /d %__PROJECT__%
 goto :ok

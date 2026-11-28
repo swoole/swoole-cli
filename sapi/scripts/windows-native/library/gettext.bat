@@ -27,7 +27,9 @@ xcopy "%__PROJECT__%\var\native-build\vcpkg\packages\gettext-libintl_x64-windows
 copy /Y "%__PROJECT__%\build\gettext\lib\intl.lib" "%__PROJECT__%\build\gettext\lib\libintl_a.lib"
 copy /Y "%__PROJECT__%\build\gettext\lib\intl.lib" "%__PROJECT__%\build\gettext\lib\libintl.lib"
 
-type nul > "%__PROJECT__%\build\gettext\.completed"
+if exist "%__PROJECT__%\build\gettext\lib\libintl_a.lib" (
+    type nul > "%__PROJECT__%\build\gettext\.completed"
+)
 
 cd /d %__PROJECT__%
 goto :ok
@@ -43,4 +45,3 @@ exit /b 0
 
 cd /d %__PROJECT__%
 endlocal
-

@@ -46,8 +46,18 @@ dir "%WINGET_EXE%"
 :: python -m pip install --upgrade pip
 :: python -m ensurepip --upgrade
 "%WINGET_EXE%" install -e --id Python.Python.3.12 --exact --silent --accept-package-agreements --accept-source-agreements
+
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312;%PATH%;"
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312\Scripts;%PATH%;"
 python -m pip --version
 python -m pip  install meson ninja
+:: show pythone sctipts
+python -c "import sysconfig; print(sysconfig.get_path('scripts'))" 2^>nul
+
+for /f "delims=" %%i in ('python -c "import sysconfig; print(sysconfig.get_path('scripts'))" 2^>nul') do set "PYTHON_SCRIPTS=%%i"
+echo %PYTHON_SCRIPTS%
+set "PATH=%__PROJECT__%\runtime\nasm;%PYTHON_SCRIPTS%;%PATH%;"
+
 :: pip3 install uv
 :: uv pip install meson ninja
 :: uv venv --system

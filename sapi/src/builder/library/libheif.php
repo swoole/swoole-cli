@@ -6,7 +6,6 @@ use SwooleCli\Preprocessor;
 return function (Preprocessor $p) {
 
     $libheif_prefix = LIBHEIF_PREFIX;
-    $aom_prefix = AOM_PREFIX;
     $libx265_prefix = LIBX265_PREFIX;
     $dav1d_prefix = DAV1D_PREFIX;
     $svt_av1_prefix = SVT_AV1_PREFIX;
@@ -20,7 +19,6 @@ return function (Preprocessor $p) {
     $openjpeg_prefix = OPENJPEG_PREFIX;
 
     $cmake_prefix_path = "";
-    $cmake_prefix_path .= "{$aom_prefix};";
     $cmake_prefix_path .= "{$dav1d_prefix};";
     $cmake_prefix_path .= "{$svt_av1_prefix};";
     $cmake_prefix_path .= "{$libx265_prefix};";
@@ -35,7 +33,7 @@ return function (Preprocessor $p) {
 
 
     $lib = new Library('libheif');
-    $lib->withHomePage('https://opencv.org/')
+    $lib->withHomePage('https://github.com/strukturag/libheif.git')
         ->withLicense('https://github.com/strukturag/libheif#License-1-ov-file', Library::LICENSE_LGPL)
         ->withManual('https://github.com/strukturag/libheif.git')
         ->withUrl('https://github.com/strukturag/libheif/releases/download/v1.20.2/libheif-1.20.2.tar.gz')
@@ -61,8 +59,8 @@ return function (Preprocessor $p) {
         -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON \
         -DBUILD_TESTING=OFF \
         -DWITH_DAV1D=ON \
-        -DWITH_AOM_ENCODER=ON \
-        -DWITH_AOM_DECODER=ON \
+        -DWITH_AOM_ENCODER=OFF \
+        -DWITH_AOM_DECODER=OFF \
         -DWITH_SvtEnc=ON \
         -DWITH_OpenH264_ENCODER=ON \
         -DWITH_OpenH264_DECODER=ON \
@@ -88,7 +86,6 @@ EOF
         ->withDependentLibraries(
             'libx265',
             'libde265',
-            'aom',
             'dav1d',
             'svt_av1',
             'libjpeg',
